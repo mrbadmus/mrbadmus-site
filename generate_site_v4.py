@@ -1180,6 +1180,12 @@ ${ALL_SPECS}`,
 
 The student is currently on the Biology section of the site, so prioritise Biology when relevant — but answer ANY science question they ask.
 
+${ALL_SPECS}`,
+
+    science: `${BASE_PROMPT}
+
+The student is on the main homepage. Answer questions from ALL three AQA GCSE sciences equally — Physics, Chemistry and Biology. Never favour one subject over another.
+
 ${ALL_SPECS}`
   };
 
@@ -1227,7 +1233,7 @@ ${ALL_SPECS}`
   function init(config) {
     currentSubject = config.subject || 'physics';
     currentTopic = config.topic || '';
-    systemPrompt = SUBJECT_PROMPTS[currentSubject] || SUBJECT_PROMPTS.physics;
+    systemPrompt = SUBJECT_PROMPTS[currentSubject] || SUBJECT_PROMPTS.science;
     if (currentTopic) systemPrompt += `\n\nThe student is currently studying: ${currentTopic}. Focus on this topic when possible.`;
 
     document.getElementById('chatOverlay')?.addEventListener('click', e => { if(e.target===document.getElementById('chatOverlay')) close(); });
@@ -1449,7 +1455,7 @@ def page_shell(title, subject, body_html, topic_id="", topic_title=""):
   {nav_html(subject)}
   {body_html}
   {chat_html()}
-  <script src="/shared/mrbadmus.js?v=3"></script>
+  <script src="/shared/mrbadmus.js?v=4"></script>
   <script>
     MrBadmus.init({{
       subject: '{subject}',
@@ -1515,8 +1521,8 @@ def make_landing():
   {nav_html()}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus.js?v=3"></script>
-  <script>MrBadmus.init({{ subject: 'physics' }});</script>
+  <script src="/shared/mrbadmus.js?v=4"></script>
+  <script>MrBadmus.init({{ subject: 'science' }});</script>
 </body>
 </html>"""
 
@@ -3911,7 +3917,7 @@ try {{
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js?v=3"></script>
+  <script src="/shared/mrbadmus.js?v=4"></script>
   <script>
     MrBadmus.init({{ subject: 'physics', topic: '{st['title']} (AQA {st['spec']})' }});
   </script>
@@ -4017,7 +4023,7 @@ def make_updated_electricity_page():
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js?v=3"></script>
+  <script src="/shared/mrbadmus.js?v=4"></script>
   <script>MrBadmus.init({{subject:'physics',topic:'Electricity (AQA 4.2)'}});</script>
   <script>
   function toggleExpand(id) {{
@@ -4182,7 +4188,7 @@ def make_rollout_topic_hub(subject, topic, subtopic_list):
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js?v=3"></script>
+  <script src="/shared/mrbadmus.js?v=4"></script>
   <script>MrBadmus.init({{subject:'{subject}',topic:'{topic_title} ({subject_label} {spec})'}});</script>
   <script>
   function toggleExpand(id) {{
