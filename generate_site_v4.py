@@ -1439,6 +1439,14 @@ def page_shell(title, subject, body_html, topic_id="", topic_title=""):
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X0CG0VPG9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', 'G-6X0CG0VPG9');
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{title} | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
@@ -1513,6 +1521,14 @@ def make_landing():
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X0CG0VPG9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', 'G-6X0CG0VPG9');
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MrBadmusAI — AQA GCSE Science Revision</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
@@ -3908,6 +3924,14 @@ try {{
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X0CG0VPG9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', 'G-6X0CG0VPG9');
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{st['title']} | Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
@@ -4014,6 +4038,14 @@ def make_updated_electricity_page():
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X0CG0VPG9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', 'G-6X0CG0VPG9');
+  </script>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
@@ -4179,6 +4211,14 @@ def make_rollout_topic_hub(subject, topic, subtopic_list):
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-6X0CG0VPG9"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){{dataLayer.push(arguments);}}
+    gtag('js', new Date());
+    gtag('config', 'G-6X0CG0VPG9');
+  </script>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>{topic_title} | {subject_label} | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
