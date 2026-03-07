@@ -137,7 +137,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     if (!chatInited) {
       chatInited = true;
       const sn = {physics:'Physics ⚡',chemistry:'Chemistry 🧪',biology:'Biology 🌿'}[currentSubject];
-      addMsg('bot', `Hey! 👋 I\'m Mr Badmus — here to help you smash this GCSE ${currentSubject}. What are we stuck on?`);
+      addMsg('bot', `Hey! 👋 I\'m Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?`);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }
