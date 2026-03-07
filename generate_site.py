@@ -1103,9 +1103,12 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 7. Always state the AQA spec point if relevant (e.g. "AQA 4.2.1.3")
 8. For higher tier content, label it clearly: ⭐ HIGHER TIER
 9. For triple science only content, label it: 🔬 TRIPLE ONLY
-10. Format responses clearly with line breaks — never write a wall of text
-11. If a student seems confused, offer to break it down further
-12. Never give a one-word answer — always explain the physics/chemistry/biology`;
+10. Keep responses SHORT and punchy — 3 to 6 lines max unless doing a full FIFA example
+11. Never start with a long introduction — get straight to the point
+12. If a student just says hello or greets you, respond with ONE friendly line only — e.g. "Hey! What are we working on today? 🔥"
+13. Never list topics unprompted — only show a list if the student asks "what can you help with"
+14. Format clearly with line breaks — never write a wall of text
+15. If a student is confused, offer to break it down — but keep the offer to one sentence`;
 
   const SUBJECT_PROMPTS = {
     physics: `${BASE_PROMPT}
@@ -1216,7 +1219,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     if (!chatInited) {
       chatInited = true;
       const sn = {physics:'Physics ⚡',chemistry:'Chemistry 🧪',biology:'Biology 🌿'}[currentSubject];
-      addMsg('bot', `Hello! I\'m <strong>Mr. Badmus AI</strong> — your ${sn} tutor! 👋<br><br>I know the full AQA GCSE ${currentSubject} spec. Ask me anything — concepts, calculations, exam questions, or upload a photo of a question!<br><br>I always use <strong>FIFA</strong> for calculations and label Higher Tier and Triple content clearly.`);
+      addMsg('bot', `Hey! 👋 I\'m Mr Badmus — here to help you smash this GCSE ${currentSubject}. What are we stuck on?`);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }
@@ -2045,20 +2048,20 @@ ELECTRICITY_SUBTOPICS = [
         "matching": {
             "title": "Match the Component to its Symbol",
             "instruction": "Drag each description to the correct component name.",
-            "pairs": [
-                ("Cell", "Long and short parallel lines — long line is positive (+)"),
-                ("Battery", "Several cells joined together in a line"),
-                ("Open Switch", "A gap in the line — circuit is broken"),
-                ("Closed Switch", "A line with no gap — circuit is complete"),
-                ("Resistor", "A rectangle"),
-                ("Variable Resistor", "A rectangle with an arrow through it"),
-                ("Lamp / Bulb", "A circle with an X inside"),
-                ("Voltmeter", "A circle with a V inside — connected in PARALLEL"),
-                ("Ammeter", "A circle with an A inside — connected in SERIES"),
-                ("Diode", "A triangle pointing into a line — one-way only"),
-                ("LED", "A diode with two small arrows pointing away"),
-                ("Thermistor", "A rectangle with a T — resistance changes with temperature"),
-                ("LDR", "A rectangle with arrows pointing at it — resistance changes with light"),
+            "svg_pairs": [
+                ("Cell", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="30" y2="15" stroke="white" stroke-width="2"/><line x1="30" y1="5" x2="30" y2="25" stroke="white" stroke-width="3"/><line x1="38" y1="10" x2="38" y2="20" stroke="white" stroke-width="1.5"/><line x1="38" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Battery", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="15" y2="15" stroke="white" stroke-width="2"/><line x1="15" y1="5" x2="15" y2="25" stroke="white" stroke-width="3"/><line x1="22" y1="10" x2="22" y2="20" stroke="white" stroke-width="1.5"/><line x1="29" y1="5" x2="29" y2="25" stroke="white" stroke-width="3"/><line x1="36" y1="10" x2="36" y2="20" stroke="white" stroke-width="1.5"/><line x1="36" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Open Switch", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="25" y2="15" stroke="white" stroke-width="2"/><circle cx="25" cy="15" r="3" fill="white"/><line x1="28" y1="15" x2="52" y2="5" stroke="white" stroke-width="2"/><circle cx="55" cy="15" r="3" fill="white"/><line x1="55" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Closed Switch", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="25" y2="15" stroke="white" stroke-width="2"/><circle cx="25" cy="15" r="3" fill="white"/><line x1="28" y1="15" x2="52" y2="15" stroke="white" stroke-width="2"/><circle cx="55" cy="15" r="3" fill="white"/><line x1="55" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Resistor", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="18" y2="15" stroke="white" stroke-width="2"/><rect x="18" y="8" width="44" height="14" fill="none" stroke="white" stroke-width="2"/><line x1="62" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Variable Resistor", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="18" y2="15" stroke="white" stroke-width="2"/><rect x="18" y="8" width="44" height="14" fill="none" stroke="white" stroke-width="2"/><line x1="62" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/><line x1="55" y1="25" x2="28" y2="5" stroke="white" stroke-width="2"/><polygon points="25,4 32,2 30,9" fill="white"/></svg>'),
+                ("Lamp / Bulb", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="22" y2="15" stroke="white" stroke-width="2"/><circle cx="40" cy="15" r="12" fill="none" stroke="white" stroke-width="2"/><line x1="30" y1="7" x2="50" y2="23" stroke="white" stroke-width="2"/><line x1="50" y1="7" x2="30" y2="23" stroke="white" stroke-width="2"/><line x1="52" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Voltmeter", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="22" y2="15" stroke="white" stroke-width="2"/><circle cx="40" cy="15" r="12" fill="none" stroke="white" stroke-width="2"/><text x="40" y="20" text-anchor="middle" fill="white" font-size="12" font-family="Arial">V</text><line x1="52" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Ammeter", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="22" y2="15" stroke="white" stroke-width="2"/><circle cx="40" cy="15" r="12" fill="none" stroke="white" stroke-width="2"/><text x="40" y="20" text-anchor="middle" fill="white" font-size="12" font-family="Arial">A</text><line x1="52" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("Diode", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="28" y2="15" stroke="white" stroke-width="2"/><polygon points="28,6 28,24 52,15" fill="white"/><line x1="52" y1="6" x2="52" y2="24" stroke="white" stroke-width="2.5"/><line x1="52" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/></svg>'),
+                ("LED", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="28" y2="15" stroke="white" stroke-width="2"/><polygon points="28,6 28,24 52,15" fill="white"/><line x1="52" y1="6" x2="52" y2="24" stroke="white" stroke-width="2.5"/><line x1="52" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/><line x1="44" y1="4" x2="54" y2="-2" stroke="white" stroke-width="1.5"/><polygon points="54,-2 50,0 52,-4" fill="white"/><line x1="48" y1="7" x2="58" y2="1" stroke="white" stroke-width="1.5"/><polygon points="58,1 54,3 56,-1" fill="white"/></svg>'),
+                ("Thermistor", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="18" y2="15" stroke="white" stroke-width="2"/><rect x="18" y="8" width="44" height="14" fill="none" stroke="white" stroke-width="2"/><line x1="62" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/><line x1="22" y1="22" x2="38" y2="8" stroke="white" stroke-width="2"/><text x="44" y="20" fill="white" font-size="9" font-family="Arial" font-style="italic">T</text></svg>'),
+                ("LDR", '<svg width="80" height="30" viewBox="0 0 80 30"><line x1="0" y1="15" x2="18" y2="15" stroke="white" stroke-width="2"/><rect x="18" y="8" width="44" height="14" fill="none" stroke="white" stroke-width="2"/><line x1="62" y1="15" x2="80" y2="15" stroke="white" stroke-width="2"/><line x1="20" y1="4" x2="28" y2="10" stroke="white" stroke-width="1.5" stroke-dasharray="2"/><line x1="28" y1="2" x2="36" y2="8" stroke="white" stroke-width="1.5" stroke-dasharray="2"/><polygon points="20,4 24,5 22,1" fill="white"/><polygon points="28,2 32,3 30,-1" fill="white"/></svg>'),
             ]
         },
         "fifas": [],
@@ -3289,15 +3292,24 @@ def make_variable_rows(variables):
 def make_matching_widget(matching, st_id, color):
     if not matching:
         return ""
-    pairs = matching["pairs"]
     import json as _json
-    pairs_json = _json.dumps(pairs)
+
+    # Support both svg_pairs and regular pairs
+    pairs = matching.get("svg_pairs") or matching.get("pairs", [])
+    use_svg = "svg_pairs" in matching
+
+    # For JSON checking we just need indices
+    pairs_len = len(pairs)
+
     items_html = ""
-    for i, (term, definition) in enumerate(pairs):
-        items_html += f'<div class="match-def" data-index="{i}" draggable="true">{definition}</div>\n'
+    for i, pair in enumerate(pairs):
+        term, content_item = pair
+        display = content_item if use_svg else content_item
+        items_html += f'<div class="match-def{" match-def-svg" if use_svg else ""}" data-index="{i}" draggable="true">{display}</div>\n'
 
     terms_html = ""
-    for i, (term, definition) in enumerate(pairs):
+    for i, pair in enumerate(pairs):
+        term, _ = pair
         terms_html += f'''<div class="match-target" data-index="{i}">
   <div class="match-term">{term}</div>
   <div class="match-drop" data-accepts="{i}">Drop here</div>
@@ -3306,14 +3318,14 @@ def make_matching_widget(matching, st_id, color):
     return f"""<div class="section">
   <div class="section-title">🎯 Matching Activity — {matching['title']}</div>
   <div class="card">
-    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">{matching['instruction']} — drag the descriptions on the right to match the terms on the left.</p>
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">{matching['instruction']} — drag the symbols on the right to match the component names on the left.</p>
     <div class="match-layout">
       <div class="match-targets">{terms_html}</div>
       <div class="match-defs" id="defPool-{st_id}">{items_html}</div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
-      <button class="match-check-btn" onclick="checkMatching('{st_id}', {pairs_json})">✅ Check Answers</button>
-      <button class="match-reset-btn" onclick="resetMatching('{st_id}', {pairs_json})">🔄 Reset</button>
+      <button class="match-check-btn" onclick="checkMatching('{st_id}', {pairs_len})">✅ Check Answers</button>
+      <button class="match-reset-btn" onclick="resetMatching('{st_id}', {pairs_len})">🔄 Reset</button>
     </div>
     <div class="match-result" id="matchResult-{st_id}"></div>
   </div>
