@@ -3890,17 +3890,17 @@ def make_updated_electricity_page():
 # ═══════════════════════════════════════════════════════════
 
 import sys as _sys
-_sys.path.insert(0, "/home/claude")
 
 def _load_all_subtopics():
     import importlib.util, os
+    _here = os.path.dirname(os.path.abspath(__file__))
     result = {}
     for fname, key in [
         ("all_subtopics_physics.py", "PHYSICS_SUBTOPICS_ALL"),
         ("all_subtopics_chemistry.py", "CHEMISTRY_SUBTOPICS_ALL"),
         ("all_subtopics_biology.py", "BIOLOGY_SUBTOPICS_ALL"),
     ]:
-        fpath = f"/home/claude/{fname}"
+        fpath = os.path.join(_here, fname)
         if os.path.exists(fpath):
             spec = importlib.util.spec_from_file_location("_mod", fpath)
             mod = importlib.util.module_from_spec(spec)

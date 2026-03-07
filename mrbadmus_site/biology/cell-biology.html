@@ -2,17 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cell Biology | Biology | MrBadmusAI | MrBadmusAI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Cell Biology | Biology | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-    :root { --subject: #6BCB77; }
-    .topic-card { border-left-color: var(--subject); }
-    .section-title { color: var(--subject); }
-    .go-btn { background: var(--subject); }
-    .spec-pill { border-color: var(--subject); }
-    .subject-tag { color: var(--subject); }
-  </style>
+:root { --subject: #6BCB77; }
+.section-title { color: var(--subject); }
+.subtopic-list-new { display:flex;flex-direction:column; }
+.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
+.subtopic-row:last-child { border-bottom:none; }
+.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
+.subtopic-main:hover { background:rgba(255,255,255,0.03); }
+.subtopic-link { display:flex;align-items:center;gap:6px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
+.subtopic-link:hover .subtopic-title { color:#6BCB77;text-decoration:underline; }
+.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#6BCB77;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
+.expand-btn.open { transform:rotate(45deg); }
+.subtopic-expand { display:none;padding:0 20px 16px 36px;border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.15); }
+.subtopic-expand.open { display:block; }
+.expand-full-link { display:inline-block;margin-top:10px;padding:8px 18px;background:rgba(78,205,196,0.1);border:1px solid rgba(78,205,196,0.3);border-radius:8px; }
+</style>
 </head>
 <body>
   <nav class="nav">
@@ -26,144 +34,77 @@
   
 <div class="topic-header">
   <a class="back-link" href="/biology/index.html">← Back to Biology</a>
-  <h1 style="color:#6BCB77">🌿 Cell Biology</h1>
-  <span class="spec-pill">Spec 4.1</span>
-  <span class="paper-pill">Paper 1</span>
+  <h1 style="color:#6BCB77">Cell Biology</h1>
+  <span class="spec-pill">Spec 4.1</span><span class="paper-pill">Paper 1</span>
 </div>
-
 <div class="content-area">
-
   <div class="section">
     <div class="section-title">📋 What You Need to Know</div>
-    <div class="card">
-      <ul class="subtopic-list">
-        <li><span style="color:#6BCB77">●</span> Animal and plant cells — structure and function</li>
-<li><span style="color:#6BCB77">●</span> Prokaryotic and eukaryotic cells</li>
-<li><span style="color:#6BCB77">●</span> Cell specialisation</li>
-<li><span style="color:#6BCB77">●</span> Microscopy — magnification = image ÷ actual</li>
-<li><span style="color:#6BCB77">●</span> Diffusion, osmosis, active transport</li>
-<li><span style="color:#6BCB77">●</span> Cell division — mitosis</li>
-<li><span style="color:#6BCB77">●</span> Growth and differentiation</li>
-<li><span style="color:#6BCB77">●</span> Stem cells</li>
-      </ul>
-    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="subtopic-list-new">
+<div class="subtopic-row" id="row-cell-structure">
+  <div class="subtopic-main">
+    <a href="/biology/cell-biology/cell-structure.html" class="subtopic-link">
+      <span style="color:#6BCB77;margin-right:8px;">●</span>
+      <span class="subtopic-title">Animal, Plant and Prokaryotic Cells</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.1.1</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge badge-rp">📋 RP</span><span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('cell-structure')" title="Preview">+</button>
   </div>
-
+  <div class="subtopic-expand" id="expand-cell-structure">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Nucleus: contains DNA — controls cell activity.</p>
+    <div class='formula-grid' style='margin-bottom:12px;'><span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">Magnification = image size ÷ actual size</span></div>
+    <a href="/biology/cell-biology/cell-structure.html" class="expand-full-link" style="color:#6BCB77;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-transport-in-cells">
+  <div class="subtopic-main">
+    <a href="/biology/cell-biology/transport-in-cells.html" class="subtopic-link">
+      <span style="color:#6BCB77;margin-right:8px;">●</span>
+      <span class="subtopic-title">Diffusion, Osmosis and Active Transport</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.1.3</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge badge-rp">📋 RP</span><span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('transport-in-cells')" title="Preview">+</button>
+  </div>
+  <div class="subtopic-expand" id="expand-transport-in-cells">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Diffusion = net movement of particles from HIGH concentration to LOW concentration.</p>
+    
+    <a href="/biology/cell-biology/transport-in-cells.html" class="expand-full-link" style="color:#6BCB77;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-cell-division">
+  <div class="subtopic-main">
+    <a href="/biology/cell-biology/cell-division.html" class="subtopic-link">
+      <span style="color:#6BCB77;margin-right:8px;">●</span>
+      <span class="subtopic-title">Cell Division — Mitosis and Stem Cells</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.1.4</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('cell-division')" title="Preview">+</button>
+  </div>
+  <div class="subtopic-expand" id="expand-cell-division">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Mitosis = cell division producing two genetically identical daughter cells.</p>
+    
+    <a href="/biology/cell-biology/cell-division.html" class="expand-full-link" style="color:#6BCB77;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div></div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a topic title to open the full notes page, or press <strong>+</strong> to preview it here.</p>
+  </div>
+  
   <div class="section">
     <div class="section-title">📐 Key Equations</div>
-    <div class="formula-grid">
-      <div class="formula-pill">Magnification = image size ÷ actual size</div>
-    </div>
+    <div class="formula-grid"><div class="formula-pill">Magnification = image size ÷ actual size</div></div>
   </div>
-
-  <div class="section">
-    <div class="section-title">⚽ FIFA Worked Example</div>
-    <div class="fifa-box">
-  <div class="fifa-title">⚽ FIFA Example</div>
-  <p style="margin-bottom:14px;font-size:0.95rem;font-style:italic;color:#ccc;">A cell has an image size of 30 mm on a slide. The actual size of the cell is 0.03 mm. Calculate the magnification.</p>
-  
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>Magnification = image size ÷ actual size</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">I</div>
-  <p>M = 30 ÷ 0.03</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>No unit conversion — both in mm</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">A</div>
-  <p>Magnification = <strong>×1000</strong></p>
-</div>
-</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">⭐ Higher Tier Content</div>
-    <div class="higher-box"><p>Meiosis and genetic variation</p></div><div class="higher-box"><p>Stem cell ethics and uses</p></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🔬 Triple Science Extensions</div>
-    <p style="color:var(--muted);font-size:0.9rem;">No Triple Science-only content for this topic.</p>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🧪 Required Practicals</div>
-    
-<div class="rp-card">
-  <h4>🔬 RP1 — Microscopy (plant or animal cells)</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Required Practical — you need to know the method, variables, equipment and how to analyse results.</p>
-  <p style="margin-top:8px;font-size:0.85rem;">
-    <a href="https://www.youtube.com/results?search_query=AQA+GCSE+Microscopy+(plant+or+animal+cells)" target="_blank" 
-       style="color:#6BCB77;font-weight:700;">▶ Find tutorial videos on YouTube →</a>
-  </p>
-</div>
-<div class="rp-card">
-  <h4>🔬 RP2 — Osmosis in plant tissue</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Required Practical — you need to know the method, variables, equipment and how to analyse results.</p>
-  <p style="margin-top:8px;font-size:0.85rem;">
-    <a href="https://www.youtube.com/results?search_query=AQA+GCSE+Osmosis+in+plant+tissue" target="_blank" 
-       style="color:#6BCB77;font-weight:700;">▶ Find tutorial videos on YouTube →</a>
-  </p>
-</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🎯 Quick Quiz</div>
-    
-<div class="quiz-card" data-answer="opt0_0">
-  <div class="q-text">1. Which organelle is found in plant cells but NOT animal cells?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt0_0">Chloroplast</button>
-<button class="quiz-opt" data-val="opt0_1">Nucleus</button>
-<button class="quiz-opt" data-val="opt0_2">Mitochondria</button>
-<button class="quiz-opt" data-val="opt0_3">Ribosomes</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! Chloroplasts are only found in plant cells — they carry out photosynthesis ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. Chloroplasts are found only in plant cells. Nucleus, mitochondria and ribosomes are in both.</div>
-</div>
-<div class="quiz-card" data-answer="opt1_0">
-  <div class="q-text">2. A cell image measures 5 mm. The actual cell is 0.05 mm. What is the magnification?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt1_0">×100</button>
-<button class="quiz-opt" data-val="opt1_1">×10</button>
-<button class="quiz-opt" data-val="opt1_2">×1000</button>
-<button class="quiz-opt" data-val="opt1_3">×0.01</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! M = 5 ÷ 0.05 = ×100 ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. Magnification = image size ÷ actual size = 5 ÷ 0.05 = ×100</div>
-</div>
-<div class="quiz-card" data-answer="opt2_0">
-  <div class="q-text">3. Which process moves substances from HIGH to LOW concentration without using energy?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt2_0">Diffusion</button>
-<button class="quiz-opt" data-val="opt2_1">Active transport</button>
-<button class="quiz-opt" data-val="opt2_2">Osmosis (water only)</button>
-<button class="quiz-opt" data-val="opt2_3">Endocytosis</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! Diffusion moves substances down a concentration gradient — no energy needed ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. Diffusion is the passive movement from high to low concentration. Active transport uses energy and goes against the gradient.</div>
-</div>
-  </div>
-
   <div class="section">
     <div class="section-title">🤖 Ask Mr Badmus AI</div>
     <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;">Stuck on something? Ask me anything about <strong>Cell Biology</strong>!</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and label Higher Tier content clearly.</p>
-      <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">
-        💬 Ask Mr Badmus AI
-      </button>
+      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Cell Biology? 💬</p>
+      <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
-
 </div>
   <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI">🤖</button>
 
@@ -190,33 +131,16 @@
   </div>
 </div>
   <script src="/shared/mrbadmus.js"></script>
+  <script>MrBadmus.init({subject:'biology',topic:'Cell Biology (Biology 4.1)'});</script>
   <script>
-    MrBadmus.init({
-      subject: 'biology',
-      topic: 'Cell Biology'
-    });
-  </script>
-  <script>
-  // Quiz logic
-  document.querySelectorAll('.quiz-opt').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const card = this.closest('.quiz-card');
-      if (card.dataset.answered) return;
-      card.dataset.answered = '1';
-      const correct = card.dataset.answer;
-      const allOpts = card.querySelectorAll('.quiz-opt');
-      allOpts.forEach(o => {
-        if (o.dataset.val === correct) o.classList.add('correct');
-        else if (o === this) o.classList.add('wrong');
-      });
-      const fb = card.querySelector('.quiz-feedback');
-      if (fb) {
-        fb.classList.add('show');
-        if (this.dataset.val === correct) fb.classList.add('correct-fb');
-        else fb.classList.add('wrong-fb');
-      }
-    });
-  });
+  function toggleExpand(id) {
+    const expand = document.getElementById('expand-' + id);
+    const btn    = document.getElementById('row-'    + id).querySelector('.expand-btn');
+    const isOpen = expand.classList.contains('open');
+    document.querySelectorAll('.subtopic-expand.open').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.expand-btn.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) { expand.classList.add('open'); btn.classList.add('open'); }
+  }
   </script>
 </body>
 </html>

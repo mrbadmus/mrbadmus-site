@@ -2,17 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Energy | Physics | MrBadmusAI | MrBadmusAI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Energy | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-    :root { --subject: #4ECDC4; }
-    .topic-card { border-left-color: var(--subject); }
-    .section-title { color: var(--subject); }
-    .go-btn { background: var(--subject); }
-    .spec-pill { border-color: var(--subject); }
-    .subject-tag { color: var(--subject); }
-  </style>
+:root { --subject: #4ECDC4; }
+.section-title { color: var(--subject); }
+.subtopic-list-new { display:flex;flex-direction:column; }
+.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
+.subtopic-row:last-child { border-bottom:none; }
+.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
+.subtopic-main:hover { background:rgba(255,255,255,0.03); }
+.subtopic-link { display:flex;align-items:center;gap:6px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
+.subtopic-link:hover .subtopic-title { color:#4ECDC4;text-decoration:underline; }
+.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#4ECDC4;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
+.expand-btn.open { transform:rotate(45deg); }
+.subtopic-expand { display:none;padding:0 20px 16px 36px;border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.15); }
+.subtopic-expand.open { display:block; }
+.expand-full-link { display:inline-block;margin-top:10px;padding:8px 18px;background:rgba(78,205,196,0.1);border:1px solid rgba(78,205,196,0.3);border-radius:8px; }
+</style>
 </head>
 <body>
   <nav class="nav">
@@ -26,145 +34,93 @@
   
 <div class="topic-header">
   <a class="back-link" href="/physics/index.html">← Back to Physics</a>
-  <h1 style="color:#4ECDC4">⚡ Energy</h1>
-  <span class="spec-pill">Spec 4.1</span>
-  <span class="paper-pill">Paper 1</span>
+  <h1 style="color:#4ECDC4">Energy</h1>
+  <span class="spec-pill">Spec 4.1</span><span class="paper-pill">Paper 1</span>
 </div>
-
 <div class="content-area">
-
   <div class="section">
     <div class="section-title">📋 What You Need to Know</div>
-    <div class="card">
-      <ul class="subtopic-list">
-        <li><span style="color:#4ECDC4">●</span> Energy stores and systems</li>
-<li><span style="color:#4ECDC4">●</span> Changes in energy — kinetic, gravitational potential, elastic potential</li>
-<li><span style="color:#4ECDC4">●</span> Conservation of energy</li>
-<li><span style="color:#4ECDC4">●</span> Energy transfer — conduction, convection, radiation</li>
-<li><span style="color:#4ECDC4">●</span> Efficiency</li>
-<li><span style="color:#4ECDC4">●</span> Renewable and non-renewable energy resources</li>
-      </ul>
-    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="subtopic-list-new">
+<div class="subtopic-row" id="row-energy-stores-systems">
+  <div class="subtopic-main">
+    <a href="/physics/energy/energy-stores-systems.html" class="subtopic-link">
+      <span style="color:#4ECDC4;margin-right:8px;">●</span>
+      <span class="subtopic-title">Energy Stores and Systems</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.1.1</span>
+      <span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('energy-stores-systems')" title="Preview">+</button>
   </div>
-
+  <div class="subtopic-expand" id="expand-energy-stores-systems">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Energy is always stored somewhere before it moves.</p>
+    
+    <a href="/physics/energy/energy-stores-systems.html" class="expand-full-link" style="color:#4ECDC4;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-changes-in-energy">
+  <div class="subtopic-main">
+    <a href="/physics/energy/changes-in-energy.html" class="subtopic-link">
+      <span style="color:#4ECDC4;margin-right:8px;">●</span>
+      <span class="subtopic-title">Calculating Changes in Energy</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.1.1</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge badge-rp">📋 RP</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('changes-in-energy')" title="Preview">+</button>
+  </div>
+  <div class="subtopic-expand" id="expand-changes-in-energy">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Every moving object has kinetic energy.</p>
+    <div class='formula-grid' style='margin-bottom:12px;'><span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">KE = ½mv²</span><span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">GPE = mgh</span><span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">E = mcΔθ</span></div>
+    <a href="/physics/energy/changes-in-energy.html" class="expand-full-link" style="color:#4ECDC4;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-conservation-energy">
+  <div class="subtopic-main">
+    <a href="/physics/energy/conservation-energy.html" class="subtopic-link">
+      <span style="color:#4ECDC4;margin-right:8px;">●</span>
+      <span class="subtopic-title">Conservation and Dissipation of Energy</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.1.2</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge badge-rp">📋 RP</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('conservation-energy')" title="Preview">+</button>
+  </div>
+  <div class="subtopic-expand" id="expand-conservation-energy">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Energy cannot be created or destroyed.</p>
+    <div class='formula-grid' style='margin-bottom:12px;'><span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">Efficiency = useful output energy ÷ total input energy</span></div>
+    <a href="/physics/energy/conservation-energy.html" class="expand-full-link" style="color:#4ECDC4;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-energy-resources">
+  <div class="subtopic-main">
+    <a href="/physics/energy/energy-resources.html" class="subtopic-link">
+      <span style="color:#4ECDC4;margin-right:8px;">●</span>
+      <span class="subtopic-title">Energy Resources</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.1.4</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('energy-resources')" title="Preview">+</button>
+  </div>
+  <div class="subtopic-expand" id="expand-energy-resources">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Fossil fuels (coal, oil, natural gas) formed over millions of years — they will run out.</p>
+    
+    <a href="/physics/energy/energy-resources.html" class="expand-full-link" style="color:#4ECDC4;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div></div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a topic title to open the full notes page, or press <strong>+</strong> to preview it here.</p>
+  </div>
+  
   <div class="section">
     <div class="section-title">📐 Key Equations</div>
-    <div class="formula-grid">
-      <div class="formula-pill">KE = ½mv²</div>
-<div class="formula-pill">GPE = mgh</div>
-<div class="formula-pill">E = QΔθ</div>
-<div class="formula-pill">Efficiency = useful output ÷ total input</div>
-    </div>
+    <div class="formula-grid"><div class="formula-pill">KE = ½mv²</div><div class="formula-pill">GPE = mgh</div><div class="formula-pill">E = QΔθ</div><div class="formula-pill">Efficiency = useful output ÷ total input</div></div>
   </div>
-
-  <div class="section">
-    <div class="section-title">⚽ FIFA Worked Example</div>
-    <div class="fifa-box">
-  <div class="fifa-title">⚽ FIFA Example</div>
-  <p style="margin-bottom:14px;font-size:0.95rem;font-style:italic;color:#ccc;">A 2 kg ball falls 5 m. Calculate its gain in gravitational potential energy. (g = 10 N/kg)</p>
-  
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>GPE = m × g × h</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">I</div>
-  <p>GPE = 2 × 10 × 5</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>No unit conversion needed</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">A</div>
-  <p>GPE = <strong>100 J</strong></p>
-</div>
-</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">⭐ Higher Tier Content</div>
-    <div class="higher-box"><p>Elastic potential energy: E = ½ke²</p></div><div class="higher-box"><p>Derivation of KE formula</p></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🔬 Triple Science Extensions</div>
-    <p style="color:var(--muted);font-size:0.9rem;">No Triple Science-only content for this topic.</p>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🧪 Required Practicals</div>
-    
-<div class="rp-card">
-  <h4>🔬 RP1 — Specific heat capacity</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Required Practical — you need to know the method, variables, equipment and how to analyse results.</p>
-  <p style="margin-top:8px;font-size:0.85rem;">
-    <a href="https://www.youtube.com/results?search_query=AQA+GCSE+Specific+heat+capacity" target="_blank" 
-       style="color:#4ECDC4;font-weight:700;">▶ Find tutorial videos on YouTube →</a>
-  </p>
-</div>
-<div class="rp-card">
-  <h4>🔬 RP2 — Thermal insulation</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Required Practical — you need to know the method, variables, equipment and how to analyse results.</p>
-  <p style="margin-top:8px;font-size:0.85rem;">
-    <a href="https://www.youtube.com/results?search_query=AQA+GCSE+Thermal+insulation" target="_blank" 
-       style="color:#4ECDC4;font-weight:700;">▶ Find tutorial videos on YouTube →</a>
-  </p>
-</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🎯 Quick Quiz</div>
-    
-<div class="quiz-card" data-answer="opt0_0">
-  <div class="q-text">1. A 5 kg object moves at 4 m/s. Calculate its kinetic energy.</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt0_0">40 J</button>
-<button class="quiz-opt" data-val="opt0_1">20 J</button>
-<button class="quiz-opt" data-val="opt0_2">80 J</button>
-<button class="quiz-opt" data-val="opt0_3">100 J</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! KE = ½mv² = ½ × 5 × 16 = 40 J ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. KE = ½mv² = ½ × 5 × 4² = ½ × 5 × 16 = 40 J</div>
-</div>
-<div class="quiz-card" data-answer="opt1_0">
-  <div class="q-text">2. What is the unit of energy?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt1_0">Joule (J)</button>
-<button class="quiz-opt" data-val="opt1_1">Watt (W)</button>
-<button class="quiz-opt" data-val="opt1_2">Newton (N)</button>
-<button class="quiz-opt" data-val="opt1_3">Pascal (Pa)</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! Energy is measured in Joules (J) ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. Energy is measured in Joules (J). Watts = power, Newtons = force.</div>
-</div>
-<div class="quiz-card" data-answer="opt2_0">
-  <div class="q-text">3. Which statement about energy is always true?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt2_0">Energy is conserved — it cannot be created or destroyed</button>
-<button class="quiz-opt" data-val="opt2_1">Energy is always lost as heat</button>
-<button class="quiz-opt" data-val="opt2_2">Useful energy output can exceed total input</button>
-<button class="quiz-opt" data-val="opt2_3">Efficiency can be greater than 100%</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! The law of conservation of energy — energy is never created or destroyed, only transferred ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. Energy is always conserved — it cannot be created or destroyed, only transferred between stores.</div>
-</div>
-  </div>
-
   <div class="section">
     <div class="section-title">🤖 Ask Mr Badmus AI</div>
     <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;">Stuck on something? Ask me anything about <strong>Energy</strong>!</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and label Higher Tier content clearly.</p>
-      <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">
-        💬 Ask Mr Badmus AI
-      </button>
+      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Energy? 💬</p>
+      <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
-
 </div>
   <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI">🤖</button>
 
@@ -191,33 +147,16 @@
   </div>
 </div>
   <script src="/shared/mrbadmus.js"></script>
+  <script>MrBadmus.init({subject:'physics',topic:'Energy (Physics 4.1)'});</script>
   <script>
-    MrBadmus.init({
-      subject: 'physics',
-      topic: 'Energy'
-    });
-  </script>
-  <script>
-  // Quiz logic
-  document.querySelectorAll('.quiz-opt').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const card = this.closest('.quiz-card');
-      if (card.dataset.answered) return;
-      card.dataset.answered = '1';
-      const correct = card.dataset.answer;
-      const allOpts = card.querySelectorAll('.quiz-opt');
-      allOpts.forEach(o => {
-        if (o.dataset.val === correct) o.classList.add('correct');
-        else if (o === this) o.classList.add('wrong');
-      });
-      const fb = card.querySelector('.quiz-feedback');
-      if (fb) {
-        fb.classList.add('show');
-        if (this.dataset.val === correct) fb.classList.add('correct-fb');
-        else fb.classList.add('wrong-fb');
-      }
-    });
-  });
+  function toggleExpand(id) {
+    const expand = document.getElementById('expand-' + id);
+    const btn    = document.getElementById('row-'    + id).querySelector('.expand-btn');
+    const isOpen = expand.classList.contains('open');
+    document.querySelectorAll('.subtopic-expand.open').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.expand-btn.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) { expand.classList.add('open'); btn.classList.add('open'); }
+  }
   </script>
 </body>
 </html>

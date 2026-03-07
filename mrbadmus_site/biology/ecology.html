@@ -2,17 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ecology | Biology | MrBadmusAI | MrBadmusAI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Ecology | Biology | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-    :root { --subject: #6BCB77; }
-    .topic-card { border-left-color: var(--subject); }
-    .section-title { color: var(--subject); }
-    .go-btn { background: var(--subject); }
-    .spec-pill { border-color: var(--subject); }
-    .subject-tag { color: var(--subject); }
-  </style>
+:root { --subject: #6BCB77; }
+.section-title { color: var(--subject); }
+.subtopic-list-new { display:flex;flex-direction:column; }
+.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
+.subtopic-row:last-child { border-bottom:none; }
+.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
+.subtopic-main:hover { background:rgba(255,255,255,0.03); }
+.subtopic-link { display:flex;align-items:center;gap:6px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
+.subtopic-link:hover .subtopic-title { color:#6BCB77;text-decoration:underline; }
+.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#6BCB77;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
+.expand-btn.open { transform:rotate(45deg); }
+.subtopic-expand { display:none;padding:0 20px 16px 36px;border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.15); }
+.subtopic-expand.open { display:block; }
+.expand-full-link { display:inline-block;margin-top:10px;padding:8px 18px;background:rgba(78,205,196,0.1);border:1px solid rgba(78,205,196,0.3);border-radius:8px; }
+</style>
 </head>
 <body>
   <nav class="nav">
@@ -26,125 +34,61 @@
   
 <div class="topic-header">
   <a class="back-link" href="/biology/index.html">← Back to Biology</a>
-  <h1 style="color:#6BCB77">🌿 Ecology</h1>
-  <span class="spec-pill">Spec 4.7</span>
-  <span class="paper-pill">Paper 2</span>
+  <h1 style="color:#6BCB77">Ecology</h1>
+  <span class="spec-pill">Spec 4.7</span><span class="paper-pill">Paper 2</span>
 </div>
-
 <div class="content-area">
-
   <div class="section">
     <div class="section-title">📋 What You Need to Know</div>
-    <div class="card">
-      <ul class="subtopic-list">
-        <li><span style="color:#6BCB77">●</span> Levels of organisation — population, community, ecosystem</li>
-<li><span style="color:#6BCB77">●</span> Abiotic and biotic factors</li>
-<li><span style="color:#6BCB77">●</span> Interdependence — food webs, competition</li>
-<li><span style="color:#6BCB77">●</span> Adaptations</li>
-<li><span style="color:#6BCB77">●</span> Sampling — quadrats and transects</li>
-<li><span style="color:#6BCB77">●</span> Cycling of materials — water cycle, carbon cycle, nitrogen cycle</li>
-<li><span style="color:#6BCB77">●</span> Biodiversity and its importance</li>
-<li><span style="color:#6BCB77">●</span> Human impacts — deforestation, global warming, pollution</li>
-<li><span style="color:#6BCB77">●</span> Conservation</li>
-      </ul>
-    </div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="subtopic-list-new">
+<div class="subtopic-row" id="row-ecosystems-food-webs">
+  <div class="subtopic-main">
+    <a href="/biology/ecology/ecosystems-food-webs.html" class="subtopic-link">
+      <span style="color:#6BCB77;margin-right:8px;">●</span>
+      <span class="subtopic-title">Ecosystems, Food Webs and Population</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.7</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge badge-rp">📋 RP</span><span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('ecosystems-food-webs')" title="Preview">+</button>
   </div>
-
+  <div class="subtopic-expand" id="expand-ecosystems-food-webs">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Ecosystem: all the living organisms (community) AND non-living factors (abiotic) in an area.</p>
+    <div class='formula-grid' style='margin-bottom:12px;'><span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">N = (n₁ × n₂) ÷ m  (mark-recapture)</span></div>
+    <a href="/biology/ecology/ecosystems-food-webs.html" class="expand-full-link" style="color:#6BCB77;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-nutrient-cycles">
+  <div class="subtopic-main">
+    <a href="/biology/ecology/nutrient-cycles.html" class="subtopic-link">
+      <span style="color:#6BCB77;margin-right:8px;">●</span>
+      <span class="subtopic-title">Nutrient Cycles and Biodiversity</span>
+      <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">4.7.3</span>
+      <span class="badge badge-h">⭐ Higher</span><span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>
+    </a>
+    <button class="expand-btn" onclick="toggleExpand('nutrient-cycles')" title="Preview">+</button>
+  </div>
+  <div class="subtopic-expand" id="expand-nutrient-cycles">
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">Carbon moves between the atmosphere, organisms and the Earth in a continuous cycle.</p>
+    
+    <a href="/biology/ecology/nutrient-cycles.html" class="expand-full-link" style="color:#6BCB77;font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
+  </div>
+</div></div>
+    </div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a topic title to open the full notes page, or press <strong>+</strong> to preview it here.</p>
+  </div>
+  
   <div class="section">
     <div class="section-title">📐 Key Equations</div>
-    <div class="formula-grid">
-      <div class="formula-pill">Population size = (n1 × n2) ÷ m (mark-recapture)</div>
-    </div>
+    <div class="formula-grid"><div class="formula-pill">Population size = (n1 × n2) ÷ m (mark-recapture)</div></div>
   </div>
-
-  <div class="section">
-    <div class="section-title">⚽ FIFA Worked Example</div>
-    <div class="fifa-box">
-  <div class="fifa-title">⚽ FIFA Example</div>
-  <p style="margin-bottom:14px;font-size:0.95rem;font-style:italic;color:#ccc;">In a mark-recapture experiment, 60 fish were caught and marked. Later, 50 fish were caught and 10 were marked. Estimate the total population.</p>
-  
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>Population = (n1 × n2) ÷ m</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">I</div>
-  <p>Population = (60 × 50) ÷ 10</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>Population = 3000 ÷ 10</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">A</div>
-  <p>Estimated population = <strong>300 fish</strong></p>
-</div>
-</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">⭐ Higher Tier Content</div>
-    <div class="higher-box"><p>Calculating biodiversity index</p></div><div class="higher-box"><p>Interactions in food webs — predator-prey cycles</p></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🔬 Triple Science Extensions</div>
-    <p style="color:var(--muted);font-size:0.9rem;">No Triple Science-only content for this topic.</p>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🧪 Required Practicals</div>
-    
-<div class="rp-card">
-  <h4>🔬 RP8 — Sampling organisms in a habitat</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Required Practical — you need to know the method, variables, equipment and how to analyse results.</p>
-  <p style="margin-top:8px;font-size:0.85rem;">
-    <a href="https://www.youtube.com/results?search_query=AQA+GCSE+Sampling+organisms+in+a+habitat" target="_blank" 
-       style="color:#6BCB77;font-weight:700;">▶ Find tutorial videos on YouTube →</a>
-  </p>
-</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🎯 Quick Quiz</div>
-    
-<div class="quiz-card" data-answer="opt0_0">
-  <div class="q-text">1. Which specification section covers Ecology?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt0_0">AQA Spec 4.7</button>
-<button class="quiz-opt" data-val="opt0_1">AQA Spec 1.1</button>
-<button class="quiz-opt" data-val="opt0_2">AQA Spec 9.9</button>
-<button class="quiz-opt" data-val="opt0_3">Not in the spec</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! Ecology is covered in AQA spec section 4.7 ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. This topic is in AQA spec section 4.7.</div>
-</div>
-<div class="quiz-card" data-answer="opt1_0">
-  <div class="q-text">2. Which exam paper is Ecology assessed in?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt1_0">Paper 2</button>
-<button class="quiz-opt" data-val="opt1_1">Paper 1</button>
-<button class="quiz-opt" data-val="opt1_2">Both papers equally</button>
-<button class="quiz-opt" data-val="opt1_3">Not assessed</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! Ecology is assessed in Paper 2 ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. Ecology is examined in Paper 2.</div>
-</div>
-  </div>
-
   <div class="section">
     <div class="section-title">🤖 Ask Mr Badmus AI</div>
     <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;">Stuck on something? Ask me anything about <strong>Ecology</strong>!</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and label Higher Tier content clearly.</p>
-      <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">
-        💬 Ask Mr Badmus AI
-      </button>
+      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Ecology? 💬</p>
+      <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
-
 </div>
   <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI">🤖</button>
 
@@ -171,33 +115,16 @@
   </div>
 </div>
   <script src="/shared/mrbadmus.js"></script>
+  <script>MrBadmus.init({subject:'biology',topic:'Ecology (Biology 4.7)'});</script>
   <script>
-    MrBadmus.init({
-      subject: 'biology',
-      topic: 'Ecology'
-    });
-  </script>
-  <script>
-  // Quiz logic
-  document.querySelectorAll('.quiz-opt').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const card = this.closest('.quiz-card');
-      if (card.dataset.answered) return;
-      card.dataset.answered = '1';
-      const correct = card.dataset.answer;
-      const allOpts = card.querySelectorAll('.quiz-opt');
-      allOpts.forEach(o => {
-        if (o.dataset.val === correct) o.classList.add('correct');
-        else if (o === this) o.classList.add('wrong');
-      });
-      const fb = card.querySelector('.quiz-feedback');
-      if (fb) {
-        fb.classList.add('show');
-        if (this.dataset.val === correct) fb.classList.add('correct-fb');
-        else fb.classList.add('wrong-fb');
-      }
-    });
-  });
+  function toggleExpand(id) {
+    const expand = document.getElementById('expand-' + id);
+    const btn    = document.getElementById('row-'    + id).querySelector('.expand-btn');
+    const isOpen = expand.classList.contains('open');
+    document.querySelectorAll('.subtopic-expand.open').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.expand-btn.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) { expand.classList.add('open'); btn.classList.add('open'); }
+  }
   </script>
 </body>
 </html>
