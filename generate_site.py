@@ -2006,595 +2006,1465 @@ def make_quiz(subject, topic, color):
 #  BUILD FUNCTION
 # ─────────────────────────────────────────────
 
+PHYSICS_COLOR = "#4ECDC4"
+
 ELECTRICITY_SUBTOPICS = [
+    # ─────────────────────────────────────────────
+    # 1. CIRCUIT SYMBOLS
+    # ─────────────────────────────────────────────
     {
         "id": "circuit-symbols",
         "title": "Circuit Symbols and Diagrams",
         "spec": "4.2.1.1",
-        "summary": "Draw and interpret circuit diagrams using standard AQA symbols for all components.",
+        "summary": "Draw and interpret circuit diagrams using standard AQA symbols.",
         "theory": [
             {
-                "heading": "What are circuit symbols?",
-                "content": "Circuit symbols are standardised drawings used to represent electrical components in a circuit diagram. Every physicist uses the same symbols so diagrams can be understood internationally."
+                "heading": "What is a circuit diagram?",
+                "content": "A circuit diagram is a map of an electrical circuit.\nInstead of drawing real components, we use standard symbols.\nEvery physicist in the world uses the same symbols — so anyone can read your diagram."
             },
             {
-                "heading": "Key symbols you MUST know",
-                "content": "Cell — long and short parallel lines (+ on long side). Battery — multiple cells. Switch (open) — gap in line. Switch (closed) — line connected. Resistor — rectangle. Variable resistor — rectangle with arrow. Lamp/bulb — circle with X. Voltmeter — circle with V (connected in PARALLEL). Ammeter — circle with A (connected in SERIES). Diode — triangle pointing to line. LED — diode with arrows. Thermistor — resistor with T. LDR — resistor with arrows (light)."
+                "heading": "How to draw a good circuit diagram",
+                "content": "Always use a ruler — no freehand wiggly lines!\nComponents sit on straight horizontal or vertical lines.\nCorners are right angles — like a rectangle.\nLabel components with their values where given (e.g. '6 Ω')."
             },
             {
-                "heading": "Drawing circuit diagrams",
-                "content": "Always use a ruler. Components sit on straight lines. Corners are right angles. Voltmeters connect in parallel (branching off). Ammeters connect in series (in the main line). Label all components with their values where given."
+                "heading": "Series vs Parallel — spot the difference",
+                "content": "Series: one single loop — like a one-way street with no junctions.\nParallel: the wire splits into branches — like a road that forks then rejoins."
             },
             {
-                "heading": "Series vs parallel — spotting the difference",
-                "content": "Series circuit: one single loop — all components on the same wire path. Parallel circuit: the wire splits into branches — each branch is a separate path for current."
+                "heading": "Ammeter and Voltmeter — where do they go?",
+                "content": "Ammeter — measures current. Goes IN SERIES (in the main loop).\nVoltmeter — measures potential difference. Goes IN PARALLEL (branching across the component).\nSwap these and you'll get zero readings or blow the meter!"
             }
         ],
+        "common_mistake": "Students often draw voltmeters in series and ammeters in parallel — the wrong way round! Remember: Ammeter = in the main line (series). Voltmeter = branching across (parallel).",
+        "key_note": None,
         "higher": None,
         "triple_only": None,
         "equations": [],
+        "variables": [],
         "rp": None,
-        "fifa": {
-            "question": "A circuit contains a battery, a switch, an ammeter and two resistors in series. Draw a circuit diagram and state where the voltmeter should be placed to measure the potential difference across the second resistor.",
-            "steps": [
-                ("F", "Identify all components: battery, switch, ammeter (series), two resistors, voltmeter"),
-                ("I", "Draw: battery → switch → ammeter → resistor 1 → resistor 2 → back to battery (one loop)"),
-                ("F", "Voltmeter must connect IN PARALLEL — branching across resistor 2 only"),
-                ("A", "Voltmeter connects across the terminals of resistor 2, forming a branch parallel to it")
+        "matching": {
+            "title": "Match the Component to its Symbol",
+            "instruction": "Drag each description to the correct component name.",
+            "pairs": [
+                ("Cell", "Long and short parallel lines — long line is positive (+)"),
+                ("Battery", "Several cells joined together in a line"),
+                ("Open Switch", "A gap in the line — circuit is broken"),
+                ("Closed Switch", "A line with no gap — circuit is complete"),
+                ("Resistor", "A rectangle"),
+                ("Variable Resistor", "A rectangle with an arrow through it"),
+                ("Lamp / Bulb", "A circle with an X inside"),
+                ("Voltmeter", "A circle with a V inside — connected in PARALLEL"),
+                ("Ammeter", "A circle with an A inside — connected in SERIES"),
+                ("Diode", "A triangle pointing into a line — one-way only"),
+                ("LED", "A diode with two small arrows pointing away"),
+                ("Thermistor", "A rectangle with a T — resistance changes with temperature"),
+                ("LDR", "A rectangle with arrows pointing at it — resistance changes with light"),
             ]
         },
+        "fifas": [],
         "quiz": [
             {
-                "q": "Where is an ammeter always connected in a circuit?",
-                "opts": [("In series — in the main current path", True), ("In parallel — branching off the component", False), ("Across the battery terminals", False), ("Outside the circuit", False)],
-                "correct_fb": "Correct! Ammeters always go in series so all the current flows through them ✅",
-                "wrong_fb": "Not quite. Ammeters connect in SERIES so all current passes through. Voltmeters connect in parallel."
+                "q": "An ammeter must always be connected — how?",
+                "opts": [
+                    ("In series — in the main current path", True),
+                    ("In parallel — branching across the component", False),
+                    ("Across the battery terminals only", False),
+                    ("Outside the circuit, nearby", False)
+                ],
+                "wrong_explanations": {
+                    1: "That's where a VOLTMETER goes — not an ammeter. If you put an ammeter in parallel, it has almost zero resistance and would short-circuit the component.",
+                    2: "The battery terminals are where the voltmeter goes to measure the supply p.d. The ammeter must be in the main loop.",
+                    3: "Electrical components only work when they're physically connected in the circuit."
+                }
             },
             {
-                "q": "Which symbol represents a thermistor?",
-                "opts": [("A resistor symbol with a T through it", True), ("A circle with an X", False), ("A triangle pointing to a line", False), ("A rectangle with arrows pointing at it", False)],
-                "correct_fb": "Correct! A thermistor is drawn as a resistor with a T ✅",
-                "wrong_fb": "Not quite. A thermistor = resistor with T. Circle with X = lamp. Triangle to line = diode. Resistor with arrows = LDR."
+                "q": "A voltmeter is connected across a lamp. What does this tell you about the connection?",
+                "opts": [
+                    ("It is in parallel with the lamp", True),
+                    ("It is in series with the lamp", False),
+                    ("It is outside the circuit", False),
+                    ("It replaces the lamp in the circuit", False)
+                ],
+                "wrong_explanations": {
+                    1: "Series connection means the voltmeter is in the main loop — but a voltmeter in series would block current and give a wrong reading.",
+                    2: "Outside the circuit means no connection at all — the voltmeter would read zero.",
+                    3: "The voltmeter measures the lamp — it doesn't replace it. Both must be in the circuit."
+                }
             },
             {
-                "q": "How are components arranged in a parallel circuit?",
-                "opts": [("The wire splits into separate branches, one for each component", True), ("All components are on one single loop", False), ("Components share the same current", False), ("Resistance adds up across all components", False)],
-                "correct_fb": "Correct! In parallel, the circuit splits into branches — each component gets its own path ✅",
-                "wrong_fb": "Not quite. Parallel = wire splits into branches. Series = one single loop."
+                "q": "Which component only allows current to flow in one direction?",
+                "opts": [
+                    ("Diode", True),
+                    ("Resistor", False),
+                    ("LDR", False),
+                    ("Thermistor", False)
+                ],
+                "wrong_explanations": {
+                    1: "A resistor slows current in both directions — it doesn't block it in one direction.",
+                    2: "An LDR changes resistance with light, but current can flow both ways through it.",
+                    3: "A thermistor changes resistance with temperature, but current can flow both ways."
+                }
+            },
+            {
+                "q": "What does an LDR do when light intensity increases?",
+                "opts": [
+                    ("Its resistance decreases", True),
+                    ("Its resistance increases", False),
+                    ("It stops working", False),
+                    ("Its resistance stays the same", False)
+                ],
+                "wrong_explanations": {
+                    1: "This is a very common mix-up! More light → LOWER resistance in an LDR. Think: light 'frees up' the electrons to flow more easily.",
+                    2: "An LDR doesn't stop working — it just changes resistance depending on light level.",
+                    3: "LDR stands for Light-DEPENDENT Resistor — its whole purpose is to change resistance with light."
+                }
+            },
+            {
+                "q": "In a circuit diagram, what shape represents a resistor?",
+                "opts": [
+                    ("A rectangle", True),
+                    ("A circle with an X", False),
+                    ("A triangle pointing to a line", False),
+                    ("Two parallel lines of different lengths", False)
+                ],
+                "wrong_explanations": {
+                    1: "Circle with X = a lamp/bulb. Don't mix these up!",
+                    2: "Triangle pointing to a line = a diode. That's the one-way component.",
+                    3: "Two parallel lines of different lengths = a cell (single) or battery (multiple)."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 2. CHARGE, CURRENT AND TIME
+    # ─────────────────────────────────────────────
     {
         "id": "charge-current-time",
         "title": "Charge, Current and Time",
         "spec": "4.2.1.2",
-        "summary": "Use Q = It to calculate charge flow, current and time in electrical circuits.",
+        "summary": "Use Q = It to calculate charge, current and time in electrical circuits.",
         "theory": [
             {
+                "heading": "Think of it like a water pipe — but cooler",
+                "content": "Imagine Mr Badmus has a burger van.\nThe burgers being delivered are the CHARGE — each burger is a tiny electron.\nThe number of burgers delivered every second is the CURRENT.\nMore burgers per second = bigger current.\nThe total number of burgers delivered over the whole shift = total charge."
+            },
+            {
                 "heading": "What is electric current?",
-                "content": "Electric current is the rate of flow of charge. In metal wires, it's actually electrons moving. Current is measured in amperes (A) using an ammeter connected in series."
+                "content": "Current is the rate of flow of charge — how much charge passes a point every second.\nIn metal conductors, electrons are the charge carriers.\nCurrent is measured in Amperes (A) using an ammeter in series."
             },
             {
-                "heading": "What is charge?",
-                "content": "Electric charge is measured in coulombs (C). One coulomb is the charge carried by approximately 6.24 × 10¹⁸ electrons. The charge on one electron is −1.6 × 10⁻¹⁹ C."
-            },
-            {
-                "heading": "The equation: Q = It",
-                "content": "Q = charge in coulombs (C). I = current in amperes (A). t = time in SECONDS (s) — always convert minutes to seconds! Rearranged: I = Q ÷ t and t = Q ÷ I."
-            },
-            {
-                "heading": "Common mistake — time units!",
-                "content": "Always convert time to seconds before using Q = It. 1 minute = 60 seconds. 1 hour = 3600 seconds. If you leave time in minutes, your answer will be wrong by a factor of 60!"
+                "heading": "What is electric charge?",
+                "content": "Charge is the 'stuff' that flows — it's carried by electrons.\nOne electron carries a tiny charge of 1.6 × 10⁻¹⁹ C.\nCharge is measured in Coulombs (C)."
             }
         ],
+        "variables": [
+            ("Q", "Charge", "Coulombs", "C"),
+            ("I", "Current", "Amperes", "A"),
+            ("t", "Time", "Seconds", "s"),
+        ],
+        "common_mistake": "Time MUST be in seconds before you use Q = It. If the question gives minutes, multiply by 60 first. Forgetting to convert is the single most common error in this topic — examiners know it and test it deliberately!",
+        "key_note": None,
         "higher": None,
         "triple_only": None,
-        "equations": ["Q = It", "I = Q ÷ t", "t = Q ÷ I"],
+        "equations": ["Q = It"],
         "rp": None,
-        "fifa": {
-            "question": "A current of 2 A flows through a wire for 3 minutes. Calculate the total charge that flows.",
-            "steps": [
-                ("F", "Q = I × t"),
-                ("I", "Q = 2 × 3 (but time is in minutes — must convert!)"),
-                ("F", "3 minutes = 3 × 60 = 180 seconds → Q = 2 × 180"),
-                ("A", "Q = 360 C")
-            ]
-        },
-        "quiz": [
+        "matching": None,
+        "fifas": [
             {
-                "q": "A charge of 120 C flows in 60 seconds. What is the current?",
-                "opts": [("2 A", True), ("7200 A", False), ("0.5 A", False), ("120 A", False)],
-                "correct_fb": "Correct! I = Q ÷ t = 120 ÷ 60 = 2 A ✅",
-                "wrong_fb": "Not quite. I = Q ÷ t = 120 ÷ 60 = 2 A"
+                "label": "Example 1 — Find charge (Q)",
+                "question": "A current of 2 A flows through a wire for 3 minutes. Calculate the total charge that flows.",
+                "steps": [
+                    ("F", "Q = I × t"),
+                    ("I", "I = 2 A, t = 3 minutes → MUST convert: 3 × 60 = 180 s"),
+                    ("F", "Q = 2 × 180"),
+                    ("A", "Q = 360 C")
+                ]
             },
             {
-                "q": "A 5 A current flows for 2 minutes. What charge flows?",
-                "opts": [("600 C", True), ("10 C", False), ("2.5 C", False), ("150 C", False)],
-                "correct_fb": "Correct! Q = I × t = 5 × 120 = 600 C (2 min = 120 s) ✅",
-                "wrong_fb": "Not quite. Convert time first: 2 min = 120 s. Then Q = 5 × 120 = 600 C."
+                "label": "Example 2 — Find current (I)",
+                "question": "A total charge of 450 C flows through a circuit in 1.5 minutes. Calculate the current.",
+                "steps": [
+                    ("F", "I = Q ÷ t"),
+                    ("I", "Q = 450 C, t = 1.5 min → convert: 1.5 × 60 = 90 s"),
+                    ("F", "I = 450 ÷ 90"),
+                    ("A", "I = 5 A")
+                ]
+            },
+            {
+                "label": "Example 3 — Find time (t)",
+                "question": "A current of 0.5 A delivers a charge of 180 C. How long does this take? Give your answer in minutes.",
+                "steps": [
+                    ("F", "t = Q ÷ I"),
+                    ("I", "t = 180 ÷ 0.5"),
+                    ("F", "t = 360 s → convert to minutes: 360 ÷ 60"),
+                    ("A", "t = 6 minutes")
+                ]
+            }
+        ],
+        "quiz": [
+            {
+                "q": "A charge of 120 C flows past a point in 60 seconds. What is the current?",
+                "opts": [
+                    ("2 A", True),
+                    ("7200 A", False),
+                    ("0.5 A", False),
+                    ("120 A", False)
+                ],
+                "wrong_explanations": {
+                    1: "You multiplied Q × t instead of dividing! That gives 7200, which would mean a current bigger than a lightning bolt. Always use I = Q ÷ t.",
+                    2: "You divided the wrong way — that's t ÷ Q, not Q ÷ t. Remember: I = Q ÷ t = 120 ÷ 60 = 2 A.",
+                    3: "You might have used Q ÷ I instead of Q ÷ t. Be careful which quantity is which."
+                }
+            },
+            {
+                "q": "A 4 A current flows for 5 minutes. What is the total charge that flows?",
+                "opts": [
+                    ("1200 C", True),
+                    ("20 C", False),
+                    ("0.8 C", False),
+                    ("300 C", False)
+                ],
+                "wrong_explanations": {
+                    1: "You forgot to convert minutes to seconds! Q = 4 × 5 = 20 C only works if time is in seconds. 5 minutes = 300 s, so Q = 4 × 300 = 1200 C.",
+                    2: "You divided instead of multiplied, and forgot the time conversion. Q = I × t = 4 × 300 = 1200 C.",
+                    3: "You converted time correctly (300 s) but then divided instead of multiplying. Q = I × t."
+                }
             },
             {
                 "q": "What is the unit of electric charge?",
-                "opts": [("Coulomb (C)", True), ("Ampere (A)", False), ("Volt (V)", False), ("Watt (W)", False)],
-                "correct_fb": "Correct! Charge is measured in coulombs (C) ✅",
-                "wrong_fb": "Not quite. Charge = coulombs (C). Current = amperes (A). P.d. = volts (V). Power = watts (W)."
+                "opts": [
+                    ("Coulomb (C)", True),
+                    ("Ampere (A)", False),
+                    ("Volt (V)", False),
+                    ("Joule (J)", False)
+                ],
+                "wrong_explanations": {
+                    1: "Ampere is the unit of CURRENT (I), not charge. Don't confuse the quantity with its unit.",
+                    2: "Volt is the unit of potential difference (V) — the 'push' in a circuit. Charge is measured in Coulombs.",
+                    3: "Joule is the unit of energy. Charge and energy are different quantities — don't mix them up."
+                }
+            },
+            {
+                "q": "A current of 3 A flows for 2 minutes. How much charge flows?",
+                "opts": [
+                    ("360 C", True),
+                    ("6 C", False),
+                    ("90 C", False),
+                    ("1.5 C", False)
+                ],
+                "wrong_explanations": {
+                    1: "Classic time conversion error! Q = 3 × 2 = 6 only if time is in seconds. 2 minutes = 120 s, so Q = 3 × 120 = 360 C.",
+                    2: "You divided Q by I somewhere. Remember the formula is Q = I × t, not Q = I ÷ t.",
+                    3: "You may have divided I by t. Q = I × t = 3 × 120 = 360 C."
+                }
+            },
+            {
+                "q": "How long does it take a 6 A current to deliver 900 C of charge?",
+                "opts": [
+                    ("150 seconds", True),
+                    ("5400 seconds", False),
+                    ("0.0067 seconds", False),
+                    ("906 seconds", False)
+                ],
+                "wrong_explanations": {
+                    1: "You multiplied instead of dividing — that gives Q, not t. Use t = Q ÷ I = 900 ÷ 6 = 150 s.",
+                    2: "You divided I by Q instead of Q by I. t = Q ÷ I = 900 ÷ 6 = 150 s.",
+                    3: "You added Q and I, which doesn't make physical sense. t = Q ÷ I = 900 ÷ 6 = 150 s."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 3. POTENTIAL DIFFERENCE, CURRENT, RESISTANCE
+    # ─────────────────────────────────────────────
     {
         "id": "potential-difference-resistance",
         "title": "Potential Difference, Current and Resistance",
         "spec": "4.2.1.3",
-        "summary": "Apply V = IR (Ohm's Law) to calculate potential difference, current and resistance.",
+        "summary": "Apply V = IR to calculate potential difference, current and resistance.",
         "theory": [
             {
-                "heading": "What is potential difference (p.d.)?",
-                "content": "Potential difference (never call it 'voltage' in physics!) is the energy transferred per unit charge between two points in a circuit. It is the 'push' that drives current around. Measured in volts (V) using a voltmeter in PARALLEL."
+                "heading": "The Burger Van — Mr Badmus' Circuit",
+                "content": "Mr Badmus runs a burger van.\nThe number of burgers he MAKES per minute is the Potential Difference (p.d.) — the driving force.\nThe waiters and waitresses DELIVERING burgers are the charge carriers (electrons).\nHow many burgers get delivered per second is the Current.\nA congested street, a broken-down van blocking the road, a queue of people — that's Resistance.\nMore congestion = fewer burgers delivered = lower current."
             },
             {
-                "heading": "What is resistance?",
-                "content": "Resistance is the opposition to current flow. Measured in ohms (Ω). A higher resistance means less current flows for the same potential difference. Every component has resistance — even wires (though we usually ignore wire resistance)."
+                "heading": "What is Potential Difference?",
+                "content": "Potential difference (p.d.) is the energy given to each unit of charge by the power supply.\nDon't call it 'voltage' in your exam — call it potential difference!\nMeasured in Volts (V) using a voltmeter in PARALLEL."
             },
             {
-                "heading": "Ohm's Law — V = IR",
-                "content": "V = potential difference in volts (V). I = current in amperes (A). R = resistance in ohms (Ω). Rearranged: I = V ÷ R and R = V ÷ I. An ohmic conductor obeys Ohm's Law — resistance stays constant as long as temperature is constant."
+                "heading": "What is Resistance?",
+                "content": "Resistance is anything that opposes the flow of current.\nThe higher the resistance, the less current flows for the same p.d.\nThink: a narrow road vs a wide road — fewer cars get through the narrow one.\nMeasured in Ohms (Ω)."
             },
             {
-                "heading": "The I-V graph for an ohmic conductor",
-                "content": "A straight line through the origin. The steeper the line, the lower the resistance (more current per volt). Gradient = 1/R. If the line curves, the component is non-ohmic (resistance is changing)."
+                "heading": "Ohm's Law",
+                "content": "A component is ohmic if its resistance stays constant when temperature stays constant.\nOn an I-V graph, an ohmic conductor gives a straight line through the origin.\nA curved I-V graph means resistance is changing — non-ohmic."
             }
         ],
+        "variables": [
+            ("V", "Potential Difference", "Volts", "V"),
+            ("I", "Current", "Amperes", "A"),
+            ("R", "Resistance", "Ohms", "Ω"),
+        ],
+        "common_mistake": "Students write 'voltage' instead of 'potential difference' and lose marks. Also — never put a voltmeter in series or an ammeter in parallel. The voltmeter goes ACROSS (parallel), the ammeter goes IN THE LINE (series).",
+        "key_note": None,
         "higher": None,
         "triple_only": None,
-        "equations": ["V = IR", "I = V ÷ R", "R = V ÷ I"],
-        "rp": "RP4 — I-V characteristics: plot graphs for a resistor, filament lamp and diode",
-        "fifa": {
-            "question": "A resistor has a potential difference of 9 V across it and a resistance of 3 Ω. Calculate the current through it.",
-            "steps": [
-                ("F", "I = V ÷ R"),
-                ("I", "I = 9 ÷ 3"),
-                ("F", "No unit conversion needed"),
-                ("A", "I = 3 A")
-            ]
-        },
+        "equations": ["V = IR"],
+        "rp": "RP4 — I-V characteristics: plot I-V graphs for a resistor, filament lamp and diode",
+        "matching": None,
+        "fifas": [
+            {
+                "label": "Example 1 — Find current (I)",
+                "question": "A resistor has a potential difference of 9 V across it and a resistance of 3 Ω. Calculate the current.",
+                "steps": [
+                    ("F", "I = V ÷ R"),
+                    ("I", "I = 9 ÷ 3"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "I = 3 A")
+                ]
+            },
+            {
+                "label": "Example 2 — Find resistance (R)",
+                "question": "A current of 0.5 A flows through a component when a p.d. of 6 V is applied. Calculate the resistance.",
+                "steps": [
+                    ("F", "R = V ÷ I"),
+                    ("I", "R = 6 ÷ 0.5"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "R = 12 Ω")
+                ]
+            },
+            {
+                "label": "Example 3 — Find potential difference (V)",
+                "question": "A 15 Ω resistor carries a current of 0.4 A. Calculate the potential difference across it.",
+                "steps": [
+                    ("F", "V = I × R"),
+                    ("I", "V = 0.4 × 15"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "V = 6 V")
+                ]
+            }
+        ],
         "quiz": [
             {
-                "q": "A 12 V battery drives a current through a 4 Ω resistor. What is the current?",
-                "opts": [("3 A", True), ("48 A", False), ("0.33 A", False), ("8 A", False)],
-                "correct_fb": "Correct! I = V ÷ R = 12 ÷ 4 = 3 A ✅",
-                "wrong_fb": "Not quite. I = V ÷ R = 12 ÷ 4 = 3 A"
+                "q": "A 12 V supply drives current through a 4 Ω resistor. What is the current?",
+                "opts": [
+                    ("3 A", True),
+                    ("48 A", False),
+                    ("0.33 A", False),
+                    ("8 A", False)
+                ],
+                "wrong_explanations": {
+                    1: "You multiplied V × R instead of dividing. That gives power, not current. Use I = V ÷ R = 12 ÷ 4 = 3 A.",
+                    2: "You divided R by V instead of V by R. I = V ÷ R = 12 ÷ 4 = 3 A.",
+                    3: "You subtracted R from V. Equations don't work with subtraction here — use I = V ÷ R."
+                }
             },
             {
-                "q": "What does it mean for a component to be 'ohmic'?",
-                "opts": [("Its resistance stays constant (straight line on I-V graph)", True), ("It has zero resistance", False), ("Current increases faster than p.d.", False), ("It only works in one direction", False)],
-                "correct_fb": "Correct! An ohmic conductor has constant resistance — giving a straight I-V graph through the origin ✅",
-                "wrong_fb": "Not quite. Ohmic = constant resistance = straight line through origin on I-V graph."
+                "q": "What does Ohm's Law tell us about a resistor at constant temperature?",
+                "opts": [
+                    ("Current is proportional to potential difference — resistance stays constant", True),
+                    ("Resistance increases as current increases", False),
+                    ("Current decreases as potential difference increases", False),
+                    ("Resistance is zero at constant temperature", False)
+                ],
+                "wrong_explanations": {
+                    1: "This describes a filament lamp, not an ohmic conductor. In a lamp, resistance increases as it heats up.",
+                    2: "This is the opposite! V = IR means increasing V increases I — they go up together when R is constant.",
+                    3: "Zero resistance would mean a superconductor — not what Ohm's Law describes."
+                }
             },
             {
-                "q": "Where is a voltmeter always connected?",
-                "opts": [("In parallel — across the component", True), ("In series — in the main loop", False), ("Between the two batteries", False), ("Outside the circuit entirely", False)],
-                "correct_fb": "Correct! Voltmeters connect in parallel to measure p.d. across a component ✅",
-                "wrong_fb": "Not quite. Voltmeters always connect in PARALLEL across the component being measured."
+                "q": "A current of 2 A flows through a 10 Ω resistor. What is the potential difference?",
+                "opts": [
+                    ("20 V", True),
+                    ("5 V", False),
+                    ("0.2 V", False),
+                    ("12 V", False)
+                ],
+                "wrong_explanations": {
+                    1: "You divided instead of multiplying. V = I × R = 2 × 10 = 20 V.",
+                    2: "You divided both numbers in the wrong way. V = I × R = 2 × 10 = 20 V.",
+                    3: "There's no subtraction in Ohm's Law. V = I × R = 2 × 10 = 20 V."
+                }
+            },
+            {
+                "q": "On an I-V graph, what does a straight line through the origin tell you?",
+                "opts": [
+                    ("The component is ohmic — resistance is constant", True),
+                    ("The component has zero resistance", False),
+                    ("The component only works in one direction", False),
+                    ("The component is heating up as current increases", False)
+                ],
+                "wrong_explanations": {
+                    1: "Zero resistance would mean no p.d. at all — the line would be vertical, not diagonal.",
+                    2: "One-direction only = a diode. Its I-V graph is NOT a straight line.",
+                    3: "Heating up as current increases = filament lamp. Its I-V graph CURVES — not a straight line."
+                }
+            },
+            {
+                "q": "The p.d. across a component is 8 V and the current through it is 0.4 A. What is the resistance?",
+                "opts": [
+                    ("20 Ω", True),
+                    ("3.2 Ω", False),
+                    ("0.05 Ω", False),
+                    ("8.4 Ω", False)
+                ],
+                "wrong_explanations": {
+                    1: "You multiplied V × I instead of dividing. That gives power (in watts), not resistance.",
+                    2: "You divided I by V instead of V by I. R = V ÷ I = 8 ÷ 0.4 = 20 Ω.",
+                    3: "You added V and I — that's not a valid electrical equation. R = V ÷ I = 8 ÷ 0.4 = 20 Ω."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 4. RESISTANCE — COMPONENTS
+    # ─────────────────────────────────────────────
     {
         "id": "resistance-components",
-        "title": "Resistance — Components and Their Characteristics",
+        "title": "Resistance — How Components Behave",
         "spec": "4.2.1.4",
-        "summary": "Describe how resistance varies in ohmic conductors, filament lamps, diodes, thermistors and LDRs.",
+        "summary": "Describe how resistance varies in different components and interpret I-V graphs.",
         "theory": [
             {
-                "heading": "Ohmic conductor (fixed resistor)",
-                "content": "Resistance stays constant as long as temperature stays constant. I-V graph: straight line through origin. Examples: metal wire at constant temp, fixed resistors in circuits."
+                "heading": "The Ohmic Conductor — Mr Consistent",
+                "content": "An ohmic conductor is like a well-trained waiter — no matter how busy the burger van gets, he always delivers at the same rate per burger.\nResistance stays constant at constant temperature.\nI-V graph: a perfectly straight line through the origin.\nExample: a fixed resistor."
             },
             {
-                "heading": "Filament lamp",
-                "content": "As current increases, the filament gets hotter, resistance increases. I-V graph: curves — starts steep then flattens (less current per extra volt). Shape = S-curve. The lamp glows because electrons transfer energy to the filament by heating."
+                "heading": "The Filament Lamp — Slows Down When Tired",
+                "content": "As current increases, the filament wire gets hotter.\nHotter wire = electrons collide more with the vibrating ions = more resistance.\nSo the lamp gets harder to push current through as it heats up.\nI-V graph: starts steep (easy to push current through when cold), then curves and flattens (harder when hot).\nShape = a gentle S-curve."
             },
             {
-                "heading": "Diode",
-                "content": "Only allows current in ONE direction (forward bias). In reverse, resistance is almost infinite — no current flows. Forward threshold ≈ 0.7 V before current flows. I-V graph: flat (reverse), then sharp curve upward (forward). Used in rectification (converting AC to DC)."
+                "heading": "The Diode — One-Way Street",
+                "content": "A diode is like a turnstile — current can only go one way.\nForward direction: almost no resistance once p.d. exceeds about 0.7 V.\nReverse direction: almost infinite resistance — no current flows at all.\nI-V graph: flat line in reverse, then shoots up steeply in the forward direction.\nUsed to convert AC to DC."
             },
             {
-                "heading": "Thermistor (NTC)",
-                "content": "NTC = Negative Temperature Coefficient. As temperature INCREASES → resistance DECREASES. Used in: thermostats, temperature sensors, overheat protection. Real-world: the sensor in your phone that detects temperature."
+                "heading": "The Thermistor — Hot and Helpful",
+                "content": "NTC = Negative Temperature Coefficient.\nAs temperature INCREASES → resistance DECREASES.\nThink: when the burger van heats up, the congestion mysteriously clears!\nUsed in: thermostats, temperature sensors, phone overheating protection."
             },
             {
-                "heading": "LDR (Light-Dependent Resistor)",
-                "content": "As light intensity INCREASES → resistance DECREASES. Used in: automatic street lights (turn on in dark), phone screen brightness sensors. In a potential divider: bright light → LDR resistance drops → less p.d. across LDR → more p.d. available for other components."
+                "heading": "The LDR — Lights Up When Needed",
+                "content": "LDR = Light-Dependent Resistor.\nAs light intensity INCREASES → resistance DECREASES.\nThink: when the sun comes out, more electrons get 'excited' and the current flows more easily.\nUsed in: automatic street lights (come on in the dark), phone screen brightness sensors."
             }
         ],
-        "higher": "In a potential divider with an LDR or thermistor: Vout = Vin × R2 ÷ (R1 + R2). As LDR resistance drops (bright light), if LDR is R2, Vout drops. Useful for automatic switching circuits.",
+        "variables": [],
+        "common_mistake": "Students mix up thermistors and LDRs with normal resistors. Remember: BOTH thermistors and LDRs DECREASE in resistance when their trigger (heat/light) INCREASES. This feels backwards — but it's NTC (Negative Temperature Coefficient) for a reason!",
+        "key_note": None,
+        "higher": "In a potential divider with an LDR: as light increases, LDR resistance drops, so the voltage across the LDR drops. If LDR is in position R2: Vout = Vin × R2 ÷ (R1 + R2).",
         "triple_only": None,
-        "equations": ["V = IR (for each component)", "Vout = Vin × R2/(R1+R2) (Higher — potential divider)"],
-        "rp": "RP4 — Investigate I-V characteristics of a lamp, diode and resistor. Plot current (y-axis) vs p.d. (x-axis).",
-        "fifa": {
-            "question": "A thermistor has a resistance of 2000 Ω at 20°C and 200 Ω at 80°C. The supply p.d. is 6 V. Calculate the current at each temperature.",
-            "steps": [
-                ("F", "I = V ÷ R"),
-                ("I", "At 20°C: I = 6 ÷ 2000 = 0.003 A. At 80°C: I = 6 ÷ 200 = 0.03 A"),
-                ("F", "No conversion needed"),
-                ("A", "At 20°C: I = 0.003 A (3 mA). At 80°C: I = 0.03 A (30 mA). Higher temp → lower R → more current ✅")
+        "equations": ["V = IR (applies to each component individually)"],
+        "rp": "RP4 — Investigate I-V characteristics: plot current vs p.d. graphs for a resistor, filament lamp and diode.",
+        "matching": {
+            "title": "Match the Component to its I-V Graph Shape",
+            "instruction": "Match each component to how its I-V graph looks.",
+            "pairs": [
+                ("Ohmic resistor", "Straight line through the origin"),
+                ("Filament lamp", "S-shaped curve — starts steep, then flattens"),
+                ("Diode (forward)", "Flat near zero, then shoots up steeply"),
+                ("Diode (reverse)", "Completely flat — no current flows"),
+                ("Thermistor (heated)", "Steeper line — resistance has dropped"),
+                ("LDR (in bright light)", "Steeper line — resistance has dropped"),
             ]
         },
+        "fifas": [
+            {
+                "label": "Example 1 — Thermistor current at two temperatures",
+                "question": "A thermistor has resistance 2000 Ω at 20°C and 200 Ω at 80°C. The supply p.d. is 6 V. Calculate the current at each temperature.",
+                "steps": [
+                    ("F", "I = V ÷ R (apply separately at each temperature)"),
+                    ("I", "At 20°C: I = 6 ÷ 2000 = 0.003 A. At 80°C: I = 6 ÷ 200 = 0.03 A"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "At 20°C: I = 0.003 A (3 mA). At 80°C: I = 0.03 A (30 mA). Higher temp = lower R = more current ✅")
+                ]
+            },
+            {
+                "label": "Example 2 — Find resistance from I-V graph data",
+                "question": "From an I-V graph, a resistor shows a current of 0.6 A when the p.d. is 3 V. Calculate its resistance and state whether it is ohmic.",
+                "steps": [
+                    ("F", "R = V ÷ I"),
+                    ("I", "R = 3 ÷ 0.6"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "R = 5 Ω. If the I-V graph is a straight line through the origin, it is ohmic.")
+                ]
+            }
+        ],
         "quiz": [
             {
-                "q": "As temperature increases, what happens to a thermistor's resistance?",
-                "opts": [("It decreases", True), ("It increases", False), ("It stays the same", False), ("It becomes infinite", False)],
-                "correct_fb": "Correct! NTC thermistors decrease in resistance as temperature rises ✅",
-                "wrong_fb": "Not quite. NTC (Negative Temperature Coefficient) thermistors: ↑ temperature → ↓ resistance."
+                "q": "As temperature increases, what happens to an NTC thermistor's resistance?",
+                "opts": [
+                    ("It decreases", True),
+                    ("It increases", False),
+                    ("It stays the same", False),
+                    ("It becomes infinite", False)
+                ],
+                "wrong_explanations": {
+                    1: "This is the most common mistake in this topic! NTC = Negative Temperature Coefficient. NEGATIVE means resistance goes DOWN as temperature goes UP.",
+                    2: "Only a fixed resistor stays constant. A thermistor is specifically designed to change with temperature.",
+                    3: "Infinite resistance would mean no current at all — that describes a diode in reverse, not a thermistor."
+                }
             },
             {
                 "q": "What shape is the I-V graph for a filament lamp?",
-                "opts": [("S-curve — starts steep, then flattens", True), ("Straight line through origin", False), ("Flat then sharp upward curve (one direction only)", False), ("Horizontal straight line", False)],
-                "correct_fb": "Correct! The filament lamp gives an S-curve because resistance increases as it heats up ✅",
-                "wrong_fb": "Not quite. Filament lamp = S-curve (resistance increases with temperature). Straight line = ohmic resistor. One-direction curve = diode."
+                "opts": [
+                    ("A curve — starts steep then flattens (S-shape)", True),
+                    ("A straight line through the origin", False),
+                    ("Flat in one direction, steep in the other", False),
+                    ("A horizontal straight line", False)
+                ],
+                "wrong_explanations": {
+                    1: "Straight line = ohmic conductor. A filament lamp HEATS UP as current increases, so its resistance changes — giving a curve.",
+                    2: "Flat one direction, steep the other = a diode. The lamp allows current both ways.",
+                    3: "A horizontal line would mean zero current regardless of p.d. — that's not how a lamp works."
+                }
             },
             {
                 "q": "An LDR is placed in a dark room. What happens to its resistance?",
-                "opts": [("Resistance increases", True), ("Resistance decreases", False), ("Resistance stays the same", False), ("Resistance becomes zero", False)],
-                "correct_fb": "Correct! Less light → higher resistance in an LDR ✅",
-                "wrong_fb": "Not quite. LDR: ↓ light → ↑ resistance. It's the opposite of a thermistor — but the same principle applies in reverse."
+                "opts": [
+                    ("Resistance increases", True),
+                    ("Resistance decreases", False),
+                    ("Resistance stays the same", False),
+                    ("Resistance becomes zero", False)
+                ],
+                "wrong_explanations": {
+                    1: "Less light = LOWER resistance? No! Less light means fewer free electrons = HIGHER resistance. Dark = high R in an LDR.",
+                    2: "LDR means Light-DEPENDENT — it changes with light. In the dark it doesn't stay the same.",
+                    3: "Zero resistance would mean a perfect conductor — an LDR in the dark has very HIGH resistance, not zero."
+                }
+            },
+            {
+                "q": "Which component has almost infinite resistance in one direction?",
+                "opts": [
+                    ("Diode", True),
+                    ("Thermistor", False),
+                    ("LDR", False),
+                    ("Fixed resistor", False)
+                ],
+                "wrong_explanations": {
+                    1: "Thermistors change resistance with temperature, but current can flow both ways through them.",
+                    2: "LDRs change resistance with light, but current can flow both ways through them.",
+                    3: "A fixed resistor has the same resistance in both directions — it doesn't block current in reverse."
+                }
+            },
+            {
+                "q": "A component at 20°C shows a straight I-V graph. At 200°C, the graph curves. What is it?",
+                "opts": [
+                    ("A filament lamp or wire — resistance increases with temperature", True),
+                    ("A diode — it only works at high temperatures", False),
+                    ("An LDR — it changes with temperature as well as light", False),
+                    ("An ohmic conductor — it always gives a straight line", False)
+                ],
+                "wrong_explanations": {
+                    1: "A diode's behaviour is about direction, not temperature. And it works at all temperatures, not just high ones.",
+                    2: "LDRs respond to LIGHT, not temperature. And their graph doesn't curve at high temperatures.",
+                    3: "An ohmic conductor maintains a straight I-V graph as long as temperature stays constant. Change the temperature and it stops being ohmic."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 5. SERIES AND PARALLEL CIRCUITS
+    # ─────────────────────────────────────────────
     {
         "id": "series-parallel-circuits",
         "title": "Series and Parallel Circuits",
         "spec": "4.2.2",
-        "summary": "Apply the rules for current, potential difference and resistance in series and parallel circuits.",
+        "summary": "Apply the rules for current, p.d. and resistance in series and parallel circuits.",
         "theory": [
             {
-                "heading": "Series circuit rules",
-                "content": "1. CURRENT: same everywhere — I is identical at every point in a series circuit. 2. POTENTIAL DIFFERENCE: shared between components — V_total = V₁ + V₂ + V₃. 3. RESISTANCE: adds up — R_total = R₁ + R₂ + R₃. Adding more components in series increases total resistance and decreases current."
+                "heading": "Series — The One-Way Motorway",
+                "content": "Imagine a single motorway with no exits.\nEvery car (electron) passes through every junction.\nSo the flow (current) is the same at every point — no car gets lost.\nThe motorway has toll booths (resistors) — each one slows the traffic down a little.\nAll the tolls add up to the total journey cost (total p.d.)."
             },
             {
-                "heading": "Parallel circuit rules",
-                "content": "1. POTENTIAL DIFFERENCE: same across every branch — V is identical across every parallel branch. 2. CURRENT: splits between branches — I_total = I₁ + I₂ + I₃. 3. RESISTANCE: total resistance is LESS than the smallest individual branch resistance. Adding more branches in parallel decreases total resistance and increases total current."
+                "heading": "Series Circuit Rules",
+                "content": "Current (I): the same at every point in the circuit.\nPotential difference (V): shared — V_total = V₁ + V₂ + V₃.\nResistance (R): adds up — R_total = R₁ + R₂ + R₃.\nAdding more resistors in series → total resistance increases → current decreases."
             },
             {
-                "heading": "Why parallel is used in homes",
-                "content": "All appliances in your home are connected in parallel. This means: each device gets the full 230 V. Turning one device off doesn't affect others. Each device can be controlled independently with its own switch."
+                "heading": "Parallel — The Multi-Lane Bypass",
+                "content": "Now imagine the motorway splits into three lanes.\nTraffic (charge) can choose any lane.\nEach lane has its own toll booth — but each driver only pays ONE toll.\nSo every lane has the SAME journey cost (same p.d.).\nBut more lanes = more total traffic = more current overall."
             },
             {
-                "heading": "Calculating current in parallel branches",
-                "content": "Each branch: use I = V ÷ R (same V across all branches). Total current from battery = sum of all branch currents. Total resistance: 1/R_total = 1/R₁ + 1/R₂ (Higher Tier)."
+                "heading": "Parallel Circuit Rules",
+                "content": "Potential difference (V): the same across every parallel branch.\nCurrent (I): splits — I_total = I₁ + I₂ + I₃.\nResistance (R): total is LESS than any individual branch.\nAdding more branches in parallel → total resistance decreases → total current increases."
+            },
+            {
+                "heading": "Why your home is wired in parallel",
+                "content": "Every appliance in your home gets the full 230 V mains.\nTurning one appliance off doesn't affect the others.\nEach device has its own switch — independent control.\nIf it were series, one broken bulb would cut off everything!"
             }
         ],
-        "higher": "Calculating total resistance in parallel: 1/R_total = 1/R₁ + 1/R₂ + ... For two resistors: R_total = (R₁ × R₂) ÷ (R₁ + R₂). The total is always less than the smallest resistor.",
+        "variables": [],
+        "common_mistake": "Students often say 'p.d. is the same in series' — it's NOT! P.d. SPLITS in series and stays the SAME in parallel. Current is the same in series, and SPLITS in parallel. These are always swapped in exams — be very careful!",
+        "key_note": None,
+        "higher": "Total resistance in parallel: 1/R_total = 1/R₁ + 1/R₂. For two resistors: R_total = (R₁ × R₂) ÷ (R₁ + R₂). The total is always LESS than the smallest individual resistor.",
         "triple_only": None,
-        "equations": ["R_total = R₁ + R₂ (series)", "V_total = V₁ + V₂ (series)", "1/R_total = 1/R₁ + 1/R₂ (parallel, Higher)"],
+        "equations": ["R_total = R₁ + R₂ (series)", "V_total = V₁ + V₂ (series)", "I_total = I₁ + I₂ (parallel)"],
         "rp": None,
-        "fifa": {
-            "question": "Two resistors of 4 Ω and 8 Ω are connected in series to a 24 V battery. Calculate (a) total resistance, (b) current, (c) p.d. across each resistor.",
-            "steps": [
-                ("F", "(a) R_total = R₁ + R₂. (b) I = V ÷ R_total. (c) V = I × R for each"),
-                ("I", "(a) R_total = 4 + 8 = 12 Ω. (b) I = 24 ÷ 12 = 2 A. (c) V₁ = 2×4 = 8 V, V₂ = 2×8 = 16 V"),
-                ("F", "Check: 8 + 16 = 24 V ✅ (p.d.s must add up to battery p.d.)"),
-                ("A", "R_total = 12 Ω, I = 2 A, V₁ = 8 V, V₂ = 16 V")
+        "matching": {
+            "title": "Series or Parallel?",
+            "instruction": "Sort each statement into Series or Parallel.",
+            "pairs": [
+                ("Series", "Current is the same at every point"),
+                ("Series", "Potential difference is shared between components"),
+                ("Series", "Total resistance = sum of all resistances"),
+                ("Parallel", "Potential difference is the same across every branch"),
+                ("Parallel", "Current splits between branches"),
+                ("Parallel", "Total resistance is less than the smallest branch"),
+                ("Parallel", "Used in household wiring"),
+                ("Series", "One broken component stops the whole circuit"),
             ]
         },
+        "fifas": [
+            {
+                "label": "Example 1 — Series circuit",
+                "question": "Two resistors of 4 Ω and 8 Ω are connected in series to a 24 V battery. Calculate (a) total resistance, (b) current, (c) p.d. across each resistor.",
+                "steps": [
+                    ("F", "(a) R_total = R₁ + R₂. (b) I = V ÷ R_total. (c) V = I × R for each resistor"),
+                    ("I", "(a) R_total = 4 + 8 = 12 Ω. (b) I = 24 ÷ 12 = 2 A. (c) V₁ = 2×4 = 8 V, V₂ = 2×8 = 16 V"),
+                    ("F", "Check: V₁ + V₂ = 8 + 16 = 24 V ✅ (must equal battery p.d.)"),
+                    ("A", "R_total = 12 Ω, I = 2 A, V₁ = 8 V, V₂ = 16 V")
+                ]
+            },
+            {
+                "label": "Example 2 — Parallel circuit (branch currents)",
+                "question": "Two resistors of 6 Ω and 12 Ω are connected in parallel across a 12 V supply. Calculate the current in each branch and the total current.",
+                "steps": [
+                    ("F", "Each branch: I = V ÷ R (same V = 12 V across both branches)"),
+                    ("I", "I₁ = 12 ÷ 6 = 2 A. I₂ = 12 ÷ 12 = 1 A"),
+                    ("F", "I_total = I₁ + I₂"),
+                    ("A", "I₁ = 2 A, I₂ = 1 A, I_total = 3 A")
+                ]
+            }
+        ],
         "quiz": [
             {
                 "q": "In a series circuit, what is the same at every point?",
-                "opts": [("Current", True), ("Potential difference", False), ("Resistance", False), ("Power", False)],
-                "correct_fb": "Correct! In series, current is the same everywhere ✅",
-                "wrong_fb": "Not quite. In series: current is the same everywhere. P.d. splits. In parallel: p.d. is the same across each branch."
+                "opts": [
+                    ("Current", True),
+                    ("Potential difference", False),
+                    ("Resistance", False),
+                    ("Power", False)
+                ],
+                "wrong_explanations": {
+                    1: "P.d. is SHARED in series — it splits across each component. Only current stays the same throughout a series circuit.",
+                    2: "Resistance is different for each component — it doesn't stay the same throughout the circuit.",
+                    3: "Power = VI — since both V and I vary by component, power varies too."
+                }
             },
             {
                 "q": "Two 6 Ω resistors are in series with a 12 V battery. What is the current?",
-                "opts": [("1 A", True), ("2 A", False), ("4 A", False), ("0.5 A", False)],
-                "correct_fb": "Correct! R_total = 12 Ω, I = V ÷ R = 12 ÷ 12 = 1 A ✅",
-                "wrong_fb": "Not quite. R_total = 6 + 6 = 12 Ω. I = V ÷ R = 12 ÷ 12 = 1 A."
+                "opts": [
+                    ("1 A", True),
+                    ("2 A", False),
+                    ("4 A", False),
+                    ("0.5 A", False)
+                ],
+                "wrong_explanations": {
+                    1: "You forgot to add the resistors first! In series, R_total = 6 + 6 = 12 Ω. Then I = V ÷ R = 12 ÷ 12 = 1 A.",
+                    2: "You divided V by one resistor only. In series you must add them: R_total = 12 Ω, I = 12 ÷ 12 = 1 A.",
+                    3: "You multiplied instead of dividing somewhere. I = V ÷ R_total = 12 ÷ 12 = 1 A."
+                }
+            },
+            {
+                "q": "In a parallel circuit, what is the same across every branch?",
+                "opts": [
+                    ("Potential difference", True),
+                    ("Current", False),
+                    ("Resistance", False),
+                    ("Charge", False)
+                ],
+                "wrong_explanations": {
+                    1: "Current SPLITS in parallel — branches with lower resistance carry more current.",
+                    2: "Resistance is different for each branch — that's why current splits unevenly.",
+                    3: "Charge splits between branches just like current does."
+                }
             },
             {
                 "q": "Why are household appliances connected in parallel?",
-                "opts": [("Each appliance gets the full mains p.d. and can be switched independently", True), ("It reduces the current through each appliance", False), ("It increases the total resistance of the circuit", False), ("It makes the circuit simpler to wire", False)],
-                "correct_fb": "Correct! Parallel means full 230 V to each appliance and independent switching ✅",
-                "wrong_fb": "Not quite. Parallel gives each appliance the full p.d. (230 V) and allows them to work independently."
+                "opts": [
+                    ("Each appliance gets full mains p.d. and can be switched independently", True),
+                    ("It reduces the current through each appliance", False),
+                    ("It means the total resistance is higher", False),
+                    ("It prevents any current from flowing until all appliances are on", False)
+                ],
+                "wrong_explanations": {
+                    1: "Parallel actually allows MORE total current from the supply — not less. Each branch carries its own current.",
+                    2: "Adding more parallel branches DECREASES total resistance, it doesn't increase it.",
+                    3: "In parallel, each branch works independently — you don't need all appliances on for any to work."
+                }
+            },
+            {
+                "q": "A series circuit has a 3 Ω and a 7 Ω resistor. The current is 2 A. What is the supply p.d.?",
+                "opts": [
+                    ("20 V", True),
+                    ("5 V", False),
+                    ("0.2 V", False),
+                    ("8 V", False)
+                ],
+                "wrong_explanations": {
+                    1: "You only used one resistor. In series, R_total = 3 + 7 = 10 Ω. V = I × R = 2 × 10 = 20 V.",
+                    2: "You divided instead of multiplying. V = I × R_total = 2 × 10 = 20 V.",
+                    3: "You may have just added the resistor values without multiplying by current. V = I × R = 2 × 10 = 20 V."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 6. MAINS ELECTRICITY
+    # ─────────────────────────────────────────────
     {
         "id": "mains-electricity",
-        "title": "Mains Electricity — AC, DC and Wiring",
+        "title": "Mains Electricity — AC, DC and Safe Wiring",
         "spec": "4.2.3",
-        "summary": "Describe AC and DC, UK mains supply, and the role of live, neutral and earth wires.",
+        "summary": "Describe AC and DC, the UK mains supply, and the role of each wire in a plug.",
         "theory": [
             {
-                "heading": "AC vs DC",
-                "content": "DC (Direct Current): current always flows in the same direction. Source: batteries and cells. AC (Alternating Current): current repeatedly reverses direction. Source: UK mains, generators. UK mains: 230 V, 50 Hz (changes direction 50 times per second)."
+                "heading": "DC — The Loyal Soldier",
+                "content": "DC (Direct Current) always flows in the same direction — like a loyal soldier marching in one direction.\nSource: batteries, cells, solar panels.\nExample: the current from a phone battery is DC."
             },
             {
-                "heading": "The three wires in a UK plug",
-                "content": "LIVE (brown): carries the 230 V alternating p.d. — this is the dangerous wire. NEUTRAL (blue): completes the circuit, at 0 V. EARTH (green and yellow): safety wire, connected to the metal case of appliances — only carries current if there's a fault."
+                "heading": "AC — The Indecisive One",
+                "content": "AC (Alternating Current) repeatedly reverses direction — like someone who can't decide which way to walk.\nIn the UK: 50 times per second (50 Hz).\nSource: mains supply, generators.\nYour phone charger converts AC mains into DC for the battery."
             },
             {
-                "heading": "Why is the live wire dangerous even when the switch is open?",
-                "content": "The live wire is always at 230 V even when the switch is open (off). The switch breaks the live wire, but the live wire between the supply and the switch is still energised. If you touch it, current passes through you to earth — even if the device appears off."
+                "heading": "The Three Wires — Know Them Cold",
+                "content": "LIVE (brown): carries the 230 V alternating p.d. This is the dangerous wire.\nNEUTRAL (blue): completes the circuit, held at 0 V.\nEARTH (green and yellow): safety wire — only carries current if there's a fault."
             },
             {
-                "heading": "Fuses and circuit breakers",
-                "content": "Fuse: thin wire that melts if current gets too high, breaking the circuit. Always in the LIVE wire. Circuit breaker: electromagnetic switch that trips if current exceeds the rated value — can be reset. RCDs (Residual Current Devices) detect tiny imbalances between live and neutral and cut off in milliseconds — faster than a fuse."
+                "heading": "Why the Earth Wire Saves Lives",
+                "content": "If a fault occurs and the live wire touches the metal case of an appliance:\nWithout earth wire: you touch the case → current flows through YOU to earth → electric shock.\nWith earth wire: current flows through earth wire instead → fuse blows → circuit breaks → you're safe.\nThe earth wire is always connected to the metal casing of appliances."
+            },
+            {
+                "heading": "Fuses vs Circuit Breakers",
+                "content": "Fuse: a thin wire that melts if current gets too high, breaking the circuit. Always in the LIVE wire. Must be replaced after blowing.\nCircuit breaker: electromagnetic switch that trips if current exceeds the rated value. Can be reset.\nRCD (Residual Current Device): detects tiny imbalances between live and neutral. Trips in milliseconds — faster than a fuse. Used in bathrooms and outdoors."
             }
         ],
+        "variables": [],
+        "common_mistake": "Students say the live wire is safe when the switch is off — it is NOT. The live wire is ALWAYS at 230 V, even when the switch is open. The switch only breaks the circuit between the switch and the appliance — the wire from the mains to the switch is still live!",
+        "key_note": "UK mains electricity: 230 V, 50 Hz (alternating current)",
         "higher": None,
         "triple_only": None,
-        "equations": ["UK mains: 230 V, 50 Hz"],
+        "equations": [],
         "rp": None,
-        "fifa": {
-            "question": "Explain why a person could receive an electric shock from a faulty appliance even if the switch is turned off.",
-            "steps": [
-                ("F", "Identify what 'switch off' actually disconnects"),
-                ("I", "The switch breaks the circuit in the LIVE wire between switch and appliance"),
-                ("F", "But the live wire between the mains supply and the switch is STILL at 230 V"),
-                ("A", "If the person touches the live side of the switch or a live wire, current flows through them to earth — causing an electric shock — because the live wire is always energised regardless of switch position")
+        "matching": {
+            "title": "Match the Wire to its Description",
+            "instruction": "Match each wire to its colour and role.",
+            "pairs": [
+                ("Live wire", "Brown — carries the 230 V alternating p.d."),
+                ("Neutral wire", "Blue — completes the circuit, held at 0 V"),
+                ("Earth wire", "Green and yellow — safety wire, connected to metal casing"),
+                ("Fuse", "Always in the live wire — melts to break circuit if current too high"),
+                ("RCD", "Detects imbalance between live and neutral — trips in milliseconds"),
             ]
         },
+        "fifas": [],
         "quiz": [
             {
                 "q": "What colour is the live wire in a UK plug?",
-                "opts": [("Brown", True), ("Blue", False), ("Green and yellow", False), ("Red", False)],
-                "correct_fb": "Correct! Live = brown. Neutral = blue. Earth = green and yellow ✅",
-                "wrong_fb": "Not quite. Live = BROWN. Neutral = blue. Earth = green/yellow. (Old wiring used red for live — be careful!)"
+                "opts": [
+                    ("Brown", True),
+                    ("Blue", False),
+                    ("Green and yellow", False),
+                    ("Red", False)
+                ],
+                "wrong_explanations": {
+                    1: "Blue is the NEUTRAL wire — it completes the circuit but is held at 0 V, not 230 V.",
+                    2: "Green and yellow is the EARTH wire — the safety wire. It's the one that saves you from electric shock.",
+                    3: "Red was the old colour for live in UK wiring before 2006. Modern wiring uses BROWN for live."
+                }
             },
             {
                 "q": "What is the frequency of UK mains electricity?",
-                "opts": [("50 Hz", True), ("60 Hz", False), ("230 Hz", False), ("100 Hz", False)],
-                "correct_fb": "Correct! UK mains = 230 V at 50 Hz ✅",
-                "wrong_fb": "Not quite. UK mains = 230 V, 50 Hz. (USA uses 120 V, 60 Hz.)"
+                "opts": [
+                    ("50 Hz", True),
+                    ("60 Hz", False),
+                    ("230 Hz", False),
+                    ("100 Hz", False)
+                ],
+                "wrong_explanations": {
+                    1: "60 Hz is used in the USA and Canada — not in the UK.",
+                    2: "230 is the VOLTAGE of UK mains, not the frequency.",
+                    3: "100 Hz is double the mains frequency — this is actually the flicker rate you sometimes see in fluorescent lights."
+                }
+            },
+            {
+                "q": "Why is the live wire dangerous even when the switch is turned off?",
+                "opts": [
+                    ("The live wire is always at 230 V — the switch only breaks the circuit after itself", True),
+                    ("Because the switch stores electricity", False),
+                    ("The neutral wire passes charge to the live wire when the switch is off", False),
+                    ("It is not dangerous when the switch is off", False)
+                ],
+                "wrong_explanations": {
+                    1: "Switches don't store electricity! The danger is that the wire from the supply to the switch is still live.",
+                    2: "The neutral wire is held at 0 V — it doesn't pass charge to the live wire.",
+                    3: "This is dangerously wrong! The live wire between the mains supply and the switch is always at 230 V — never touch it."
+                }
             },
             {
                 "q": "What is the purpose of the earth wire?",
-                "opts": [("Safety — carries fault current to earth to prevent electric shock", True), ("It carries the main 230 V supply", False), ("It completes the normal circuit", False), ("It carries current to the fuse", False)],
-                "correct_fb": "Correct! The earth wire is a safety wire — it only carries current if there's a fault, preventing electric shock ✅",
-                "wrong_fb": "Not quite. Earth wire = safety only. It connects the metal case to earth so that if a fault occurs, current flows to earth (not through you) and blows the fuse."
+                "opts": [
+                    ("Safety — it carries fault current to earth, preventing electric shock and blowing the fuse", True),
+                    ("It carries the main 230 V supply to the appliance", False),
+                    ("It completes the normal circuit when the appliance is on", False),
+                    ("It reduces the current through the appliance", False)
+                ],
+                "wrong_explanations": {
+                    1: "The LIVE wire carries the 230 V supply. The earth wire only carries current during a fault.",
+                    2: "The NEUTRAL wire completes the normal circuit. The earth wire is purely a safety backup.",
+                    3: "The earth wire doesn't limit current during normal operation. That's what fuses and resistors are for."
+                }
+            },
+            {
+                "q": "Which safety device trips the fastest in a fault?",
+                "opts": [
+                    ("RCD (Residual Current Device)", True),
+                    ("Fuse", False),
+                    ("Circuit breaker", False),
+                    ("Earth wire", False)
+                ],
+                "wrong_explanations": {
+                    1: "A fuse melts when current gets too high — but melting takes time. An RCD detects tiny imbalances and trips in milliseconds.",
+                    2: "Circuit breakers are faster than fuses but slower than RCDs. RCDs detect faults that wouldn't even blow a fuse.",
+                    3: "The earth wire isn't a switching device — it just provides a safe path for fault current."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 7. ELECTRICAL POWER
+    # ─────────────────────────────────────────────
     {
         "id": "electrical-power",
         "title": "Electrical Power",
         "spec": "4.2.4",
-        "summary": "Calculate power using P = VI and P = I²R, and energy using E = Pt and E = QV.",
+        "summary": "Calculate power using P = VI and P = I²R.",
         "theory": [
             {
-                "heading": "What is electrical power?",
-                "content": "Power is the rate of energy transfer — how quickly a device uses energy. Measured in watts (W). 1 watt = 1 joule per second. A 2000 W kettle transfers 2000 J every second."
+                "heading": "What is Power?",
+                "content": "Power is how quickly energy is transferred.\nA 2000 W kettle transfers 2000 J every single second.\nA 100 W bulb transfers 100 J every second.\nHigher wattage = more energy per second = 'more powerful'."
             },
             {
-                "heading": "Power equations",
-                "content": "P = V × I (power = potential difference × current). P = I² × R (useful when you know current and resistance but not p.d.). Rearrangements: V = P ÷ I, I = P ÷ V."
+                "heading": "P = VI — The Main Power Equation",
+                "content": "Use this when you know voltage and current.\nA higher p.d. means each charge carries more energy.\nA higher current means more charge passes every second.\nSo power goes up when EITHER p.d. or current increases."
             },
             {
-                "heading": "Energy equations",
-                "content": "E = P × t (energy = power × time — time in SECONDS). E = Q × V (energy = charge × potential difference). These let you calculate the total energy transferred over a period of time."
+                "heading": "P = I²R — When You Don't Know Voltage",
+                "content": "Use this when you know current and resistance but not p.d.\nNotice the I² — this means doubling the current QUADRUPLES the power.\nThis is why cables heat up — even a small increase in current causes a BIG increase in power lost as heat.\nThis is also why the National Grid uses HIGH voltage and LOW current — to reduce I²R losses in the cables."
             },
             {
                 "heading": "The National Grid",
-                "content": "Electricity is transmitted across the country at very HIGH voltage (400,000 V) and LOW current. Why? Power lost in cables = I²R. Lower current → much less power lost as heat. Step-up transformers increase voltage (and decrease current) for transmission. Step-down transformers decrease voltage for safe use in homes (230 V)."
+                "content": "Electricity travels across the UK at 400,000 V — step-up transformers boost the voltage.\nHigh voltage = low current for the same power.\nLow current = less power wasted as heat in the cables (P_loss = I²R).\nBefore it reaches your home, step-down transformers bring it back to 230 V."
             }
         ],
-        "higher": "National Grid efficiency: power loss = I²R. Doubling the transmission voltage halves the current, reducing power loss to one quarter. This is why the grid uses 400 kV for long-distance transmission.",
+        "variables": [
+            ("P", "Power", "Watts", "W"),
+            ("V", "Potential Difference", "Volts", "V"),
+            ("I", "Current", "Amperes", "A"),
+            ("R", "Resistance", "Ohms", "Ω"),
+        ],
+        "common_mistake": "In P = I²R, students forget to square the current first. Write it out as P = (I × I) × R if it helps. Also — don't mix up P = VI with E = QV. Power (P) is energy per second. Energy (E) is power × time.",
+        "key_note": None,
+        "higher": "National Grid power loss: P_loss = I²R. Doubling transmission voltage halves current, reducing power loss to ONE QUARTER (because I² is quartered). This is why the grid uses 400 kV.",
         "triple_only": None,
-        "equations": ["P = VI", "P = I²R", "E = Pt", "E = QV"],
+        "equations": ["P = VI", "P = I²R"],
         "rp": None,
-        "fifa": {
-            "question": "A hairdryer operates at 230 V and draws a current of 5 A. Calculate (a) its power rating and (b) the energy it uses in 3 minutes.",
-            "steps": [
-                ("F", "(a) P = V × I. (b) E = P × t"),
-                ("I", "(a) P = 230 × 5 = 1150 W. (b) t = 3 min = 180 s → E = 1150 × 180"),
-                ("F", "Convert time: 3 minutes = 180 seconds"),
-                ("A", "(a) P = 1150 W. (b) E = 207,000 J = 207 kJ")
-            ]
-        },
+        "matching": None,
+        "fifas": [
+            {
+                "label": "Example 1 — Using P = VI",
+                "question": "A hairdryer operates at 230 V and draws a current of 5 A. Calculate its power rating.",
+                "steps": [
+                    ("F", "P = V × I"),
+                    ("I", "P = 230 × 5"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "P = 1150 W")
+                ]
+            },
+            {
+                "label": "Example 2 — Using P = I²R",
+                "question": "A resistor of 6 Ω carries a current of 3 A. Calculate the power dissipated.",
+                "steps": [
+                    ("F", "P = I² × R"),
+                    ("I", "P = 3² × 6 = 9 × 6"),
+                    ("F", "Square the current FIRST — don't multiply 3 × 6 then square!"),
+                    ("A", "P = 54 W")
+                ]
+            },
+            {
+                "label": "Example 3 — National Grid power loss",
+                "question": "A transmission cable has resistance 5 Ω and carries a current of 200 A. Calculate the power wasted as heat.",
+                "steps": [
+                    ("F", "P_loss = I² × R"),
+                    ("I", "P_loss = 200² × 5 = 40,000 × 5"),
+                    ("F", "Square the current first: 200² = 40,000"),
+                    ("A", "P_loss = 200,000 W = 200 kW — this is why high voltage (low current) matters!")
+                ]
+            }
+        ],
         "quiz": [
             {
-                "q": "A 6 Ω resistor carries a current of 3 A. Calculate its power output.",
-                "opts": [("54 W", True), ("18 W", False), ("2 W", False), ("9 W", False)],
-                "correct_fb": "Correct! P = I²R = 3² × 6 = 9 × 6 = 54 W ✅",
-                "wrong_fb": "Not quite. Use P = I²R = 3² × 6 = 9 × 6 = 54 W."
+                "q": "A 6 Ω resistor carries a current of 3 A. What is its power output?",
+                "opts": [
+                    ("54 W", True),
+                    ("18 W", False),
+                    ("2 W", False),
+                    ("162 W", False)
+                ],
+                "wrong_explanations": {
+                    1: "You forgot to square the current! P = I²R = 3 × 6 = 18 only if you don't square. P = (3²) × 6 = 9 × 6 = 54 W.",
+                    2: "You divided R by I. P = I²R = 9 × 6 = 54 W — always multiply.",
+                    3: "You squared the whole of (I × R) instead of just I. Square I first: P = I² × R = 9 × 6 = 54 W."
+                }
             },
             {
                 "q": "Why does the National Grid transmit electricity at high voltage?",
-                "opts": [("High voltage means low current, which reduces I²R power losses in cables", True), ("High voltage means high current, which is more efficient", False), ("It makes the electricity safer to use at home", False), ("It increases the total power available", False)],
-                "correct_fb": "Correct! Higher voltage → lower current → less power wasted as heat (P_loss = I²R) ✅",
-                "wrong_fb": "Not quite. High voltage → low current → power loss (I²R) is much smaller. This is why the grid uses 400,000 V."
+                "opts": [
+                    ("High voltage means low current, which reduces I²R power losses", True),
+                    ("High voltage means high current, giving more power", False),
+                    ("It makes the electricity safer for homes", False),
+                    ("It increases the total power generated", False)
+                ],
+                "wrong_explanations": {
+                    1: "High voltage means HIGH current for the same power — but that would massively increase heating losses. It's the opposite!",
+                    2: "400,000 V would kill you instantly — it's not safe for homes. That's why step-down transformers bring it to 230 V.",
+                    3: "The grid doesn't generate more power — it just transmits the same power more efficiently."
+                }
             },
             {
-                "q": "How long does it take a 500 W device to transfer 15,000 J of energy?",
-                "opts": [("30 seconds", True), ("300 seconds", False), ("0.033 seconds", False), ("7,500,000 seconds", False)],
-                "correct_fb": "Correct! t = E ÷ P = 15,000 ÷ 500 = 30 s ✅",
-                "wrong_fb": "Not quite. Rearrange E = Pt → t = E ÷ P = 15,000 ÷ 500 = 30 s."
+                "q": "A kettle is rated 2 kW. It runs for 3 minutes. How much energy does it transfer?",
+                "opts": [
+                    ("360,000 J", True),
+                    ("6000 J", False),
+                    ("360 J", False),
+                    ("6 J", False)
+                ],
+                "wrong_explanations": {
+                    1: "You forgot to convert time to seconds! E = P × t = 2000 × 3 = 6000 J only if t is in seconds. 3 minutes = 180 s → E = 2000 × 180 = 360,000 J.",
+                    2: "You divided energy by time somewhere. E = P × t — always multiply power by time (in seconds).",
+                    3: "You used minutes directly AND divided. Always convert to seconds: 3 min = 180 s."
+                }
+            },
+            {
+                "q": "An appliance is rated 230 V, 2 A. What is its power?",
+                "opts": [
+                    ("460 W", True),
+                    ("115 W", False),
+                    ("232 W", False),
+                    ("4 W", False)
+                ],
+                "wrong_explanations": {
+                    1: "You divided V by I. P = V × I = 230 × 2 = 460 W — always multiply.",
+                    2: "You added V and I instead of multiplying. P = V × I = 230 × 2 = 460 W.",
+                    3: "You subtracted V and I. There's no subtraction in P = VI."
+                }
+            },
+            {
+                "q": "The current in a cable doubles. What happens to the power lost as heat (P = I²R)?",
+                "opts": [
+                    ("It quadruples (×4)", True),
+                    ("It doubles (×2)", False),
+                    ("It stays the same", False),
+                    ("It halves (÷2)", False)
+                ],
+                "wrong_explanations": {
+                    1: "Doubling I means power DOUBLES — but remember P = I²R. If I doubles, I² becomes 4 times bigger. So power quadruples.",
+                    2: "If resistance R stayed constant but current changed, it would have no effect — but R is multiplied by I², not I.",
+                    3: "If I doubles, P = I²R means P = (2I)²R = 4I²R — the power halves only if current halves."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 8. ENERGY TRANSFER
+    # ─────────────────────────────────────────────
     {
         "id": "energy-transfer",
         "title": "Energy Transfers in Electrical Circuits",
         "spec": "4.2.4",
-        "summary": "Calculate energy transferred using E = Pt and E = QV, and understand the role of the National Grid.",
+        "summary": "Calculate energy transferred using E = Pt and E = QV.",
         "theory": [
             {
-                "heading": "Energy and charge",
-                "content": "E = Q × V — the energy transferred equals the charge that flows multiplied by the potential difference. This links the charge equation (Q = It) with energy. Substituting: E = I × t × V = P × t. All three equations are connected."
+                "heading": "E = Pt — Energy from Power and Time",
+                "content": "Energy = Power × Time.\nThink: a powerful appliance running for a long time transfers a LOT of energy.\nTime MUST be in seconds for the answer to be in Joules.\nIf you want the answer in kWh (for electricity bills), keep power in kW and time in hours."
             },
             {
-                "heading": "Paying for electricity — kilowatt-hours",
-                "content": "In everyday life, energy is measured in kilowatt-hours (kWh). 1 kWh = the energy used by a 1 kW device in 1 hour = 3,600,000 J = 3.6 MJ. Your electricity meter measures kWh. Cost = power (kW) × time (hours) × price per kWh."
+                "heading": "E = QV — Energy from Charge and P.D.",
+                "content": "Each unit of charge carries energy equal to the p.d. it moves through.\nSo total energy = total charge × potential difference.\nThis links nicely with Q = It — substituting gives E = I × t × V = P × t. All connected!"
             },
             {
-                "heading": "Transformers and the National Grid",
-                "content": "Step-UP transformer: increases voltage, decreases current (for efficient long-distance transmission). Step-DOWN transformer: decreases voltage, increases current (for safe home use). Transformer equation: Vp/Vs = Np/Ns (covered in Magnetism topic)."
+                "heading": "Paying for Electricity — kWh",
+                "content": "Your electricity meter counts energy in kilowatt-hours (kWh).\n1 kWh = the energy used by a 1 kW appliance in 1 hour.\n1 kWh = 1000 × 3600 = 3,600,000 J = 3.6 MJ.\nCost = power (kW) × time (hours) × price per kWh."
+            },
+            {
+                "heading": "Transformers in the National Grid",
+                "content": "Step-UP transformer: increases p.d., decreases current — used to send electricity across the country.\nStep-DOWN transformer: decreases p.d., increases current — used before electricity enters homes.\nFor a 100% efficient transformer: power in = power out, so Vp × Ip = Vs × Is."
             }
         ],
-        "higher": "For 100% efficient transformer: Vp × Ip = Vs × Is (power in = power out). Real transformers are very close to 100% efficient — energy losses are mainly due to resistance heating in the coils.",
+        "variables": [
+            ("E", "Energy", "Joules", "J"),
+            ("P", "Power", "Watts", "W"),
+            ("t", "Time", "Seconds", "s"),
+            ("Q", "Charge", "Coulombs", "C"),
+            ("V", "Potential Difference", "Volts", "V"),
+        ],
+        "common_mistake": "Mixing up E = Pt (energy from power) with P = VI (power from voltage and current). They're related but different! Also — when using kWh for electricity bills, keep power in kW and time in HOURS. Switch to seconds only when you need Joules.",
+        "key_note": "1 kilowatt-hour (kWh) = 3,600,000 J = 3.6 MJ",
+        "higher": "For a 100% efficient transformer: Vp/Vs = Np/Ns and Vp × Ip = Vs × Is. Real transformers are close to 100% efficient — energy losses are mainly heating in the coils.",
         "triple_only": None,
-        "equations": ["E = QV", "E = Pt", "1 kWh = 3,600,000 J"],
+        "equations": ["E = Pt", "E = QV"],
         "rp": None,
-        "fifa": {
-            "question": "A charge of 500 C flows through a device with a potential difference of 12 V across it. Calculate the energy transferred.",
-            "steps": [
-                ("F", "E = Q × V"),
-                ("I", "E = 500 × 12"),
-                ("F", "No conversion needed — Q in coulombs, V in volts"),
-                ("A", "E = 6000 J")
-            ]
-        },
-        "quiz": [
+        "matching": None,
+        "fifas": [
             {
-                "q": "A 2 kW heater runs for 3 hours. How many kWh does it use?",
-                "opts": [("6 kWh", True), ("0.67 kWh", False), ("2 kWh", False), ("5 kWh", False)],
-                "correct_fb": "Correct! Energy = 2 kW × 3 h = 6 kWh ✅",
-                "wrong_fb": "Not quite. Energy (kWh) = power (kW) × time (h) = 2 × 3 = 6 kWh."
+                "label": "Example 1 — Using E = QV",
+                "question": "A charge of 500 C flows through a device with a p.d. of 12 V across it. Calculate the energy transferred.",
+                "steps": [
+                    ("F", "E = Q × V"),
+                    ("I", "E = 500 × 12"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "E = 6000 J")
+                ]
             },
             {
-                "q": "What does a step-up transformer do?",
-                "opts": [("Increases voltage and decreases current", True), ("Increases both voltage and current", False), ("Decreases voltage and increases current", False), ("Keeps voltage and current the same", False)],
-                "correct_fb": "Correct! Step-up: ↑ voltage, ↓ current — used in the National Grid to reduce transmission losses ✅",
-                "wrong_fb": "Not quite. Step-up transformer increases voltage AND decreases current (power = VI stays constant for 100% efficiency)."
+                "label": "Example 2 — Using E = Pt (with time conversion)",
+                "question": "A 1500 W electric heater runs for 2 hours. Calculate the energy transferred in Joules and in kWh.",
+                "steps": [
+                    ("F", "In Joules: E = P × t (t in seconds). In kWh: E = P(kW) × t(hours)"),
+                    ("I", "In Joules: t = 2 × 3600 = 7200 s → E = 1500 × 7200. In kWh: P = 1.5 kW, t = 2 h → E = 1.5 × 2"),
+                    ("F", "Two different approaches — both valid"),
+                    ("A", "E = 10,800,000 J = 10.8 MJ. In kWh: E = 3 kWh")
+                ]
+            },
+            {
+                "label": "Example 3 — Electricity bill calculation",
+                "question": "A 2.5 kW tumble dryer runs for 90 minutes. Electricity costs 28p per kWh. Calculate the cost.",
+                "steps": [
+                    ("F", "Energy (kWh) = P(kW) × t(hours). Cost = energy × price per kWh"),
+                    ("I", "t = 90 min = 1.5 hours. Energy = 2.5 × 1.5 = 3.75 kWh"),
+                    ("F", "Cost = 3.75 × 28p"),
+                    ("A", "Cost = 105p = £1.05")
+                ]
+            }
+        ],
+        "quiz": [
+            {
+                "q": "A 2 kW heater runs for 3 hours. How much energy does it use in kWh?",
+                "opts": [
+                    ("6 kWh", True),
+                    ("0.67 kWh", False),
+                    ("7200 kWh", False),
+                    ("2 kWh", False)
+                ],
+                "wrong_explanations": {
+                    1: "You divided instead of multiplying. Energy (kWh) = P(kW) × t(hours) = 2 × 3 = 6 kWh.",
+                    2: "You converted hours to seconds (×3600) when using kWh — you don't need to! For kWh, keep time in hours: 2 × 3 = 6 kWh.",
+                    3: "You used just the power without multiplying by time. E = P × t = 2 × 3 = 6 kWh."
+                }
             },
             {
                 "q": "How many joules are in 1 kWh?",
-                "opts": [("3,600,000 J", True), ("1000 J", False), ("3600 J", False), ("1,000,000 J", False)],
-                "correct_fb": "Correct! 1 kWh = 1000 W × 3600 s = 3,600,000 J ✅",
-                "wrong_fb": "Not quite. 1 kWh = 1 kW × 1 hour = 1000 W × 3600 s = 3,600,000 J."
+                "opts": [
+                    ("3,600,000 J", True),
+                    ("1000 J", False),
+                    ("3600 J", False),
+                    ("1,000,000 J", False)
+                ],
+                "wrong_explanations": {
+                    1: "1000 J = 1 kJ, not 1 kWh. A kilowatt-hour is much bigger than a kilojoule.",
+                    2: "3600 J = 1 Wh (watt-hour), not 1 kWh. You need to multiply by 1000: 1 kWh = 3,600,000 J.",
+                    3: "A megajoule (MJ) = 1,000,000 J. 1 kWh = 3.6 MJ = 3,600,000 J — close but not 1 MJ."
+                }
+            },
+            {
+                "q": "A charge of 200 C moves through a p.d. of 9 V. How much energy is transferred?",
+                "opts": [
+                    ("1800 J", True),
+                    ("22.2 J", False),
+                    ("191 J", False),
+                    ("209 J", False)
+                ],
+                "wrong_explanations": {
+                    1: "You divided Q by V. E = Q × V = 200 × 9 = 1800 J — always multiply.",
+                    2: "You subtracted V from Q instead of multiplying. E = Q × V = 200 × 9 = 1800 J.",
+                    3: "You added Q and V instead of multiplying. E = Q × V = 200 × 9 = 1800 J."
+                }
+            },
+            {
+                "q": "What does a step-up transformer do?",
+                "opts": [
+                    ("Increases voltage and decreases current", True),
+                    ("Increases both voltage and current", False),
+                    ("Decreases voltage and increases current", False),
+                    ("Keeps voltage the same but increases current", False)
+                ],
+                "wrong_explanations": {
+                    1: "If both increased, power would increase — a transformer can't create energy! Power in = Power out, so V up means I down.",
+                    2: "A step-DOWN transformer decreases voltage and increases current — used before electricity enters your home.",
+                    3: "A transformer that keeps voltage the same is not a transformer — it's just a wire!"
+                }
+            },
+            {
+                "q": "Electricity costs 30p per kWh. A 3 kW appliance runs for 2 hours. What is the cost?",
+                "opts": [
+                    ("£1.80", True),
+                    ("90p", False),
+                    ("£18.00", False),
+                    ("60p", False)
+                ],
+                "wrong_explanations": {
+                    1: "You only used power without multiplying by time. Energy = 3 × 2 = 6 kWh. Cost = 6 × 30p = 180p = £1.80.",
+                    2: "You moved the decimal point wrong. 6 kWh × 30p = 180p = £1.80, not £18.",
+                    3: "You used watts instead of kilowatts. P = 3 kW (not 3000 kW). Energy = 3 × 2 = 6 kWh. Cost = 6 × 30 = 180p = £1.80."
+                }
             }
         ]
     },
+
+    # ─────────────────────────────────────────────
+    # 9. STATIC ELECTRICITY (Triple only)
+    # ─────────────────────────────────────────────
     {
         "id": "static-electricity",
         "title": "Static Electricity",
         "spec": "4.2.5",
-        "summary": "Explain how static charge builds up, the role of electric fields, and effects of static electricity.",
+        "summary": "Explain static charge build-up, electric fields, and real-world applications.",
         "theory": [
             {
-                "heading": "How static charge builds up",
-                "content": "When two insulators are rubbed together, electrons transfer from one to the other. The object that gains electrons becomes negatively charged. The object that loses electrons becomes positively charged. Only electrons move — protons stay in the nucleus."
+                "heading": "How Static Charge Builds Up",
+                "content": "When two insulators are rubbed together, electrons transfer from one to the other.\nThe object that GAINS electrons becomes negatively charged.\nThe object that LOSES electrons becomes positively charged.\nOnly electrons move — protons are locked in the nucleus and never transfer."
             },
             {
-                "heading": "Attraction and repulsion",
-                "content": "Like charges repel — two negative objects push away from each other. Unlike charges attract — positive and negative objects pull toward each other. This is used in: photocopiers, laser printers, spray painting (charged paint droplets attracted to earthed car body)."
+                "heading": "Attraction and Repulsion",
+                "content": "Like charges REPEL — two negative objects push away from each other.\nUnlike charges ATTRACT — positive and negative pull towards each other.\nThink: North poles of two magnets pushing apart — same idea with same charges."
             },
             {
-                "heading": "Electric fields",
-                "content": "An electric field is the region around a charged object where another charged object experiences a force. Field lines point from positive to negative. The closer together the field lines, the stronger the field. A uniform field (between two parallel plates) has evenly spaced, parallel field lines."
+                "heading": "Electric Fields",
+                "content": "An electric field is the region around a charged object where another charge experiences a force.\nField lines point FROM positive TO negative — like an arrow showing the direction a positive charge would move.\nCloser field lines = stronger field.\nBetween two parallel plates: uniform field — evenly spaced parallel lines."
             },
             {
-                "heading": "Dangers and uses of static electricity",
-                "content": "Dangers: sparks from static can ignite fuel vapour (why tankers are earthed when refuelling). Build-up on aircraft during flight. Uses: electrostatic precipitators (remove dust from chimney gases), defibrillators, inkjet printers, spray painting."
+                "heading": "Real-World Uses",
+                "content": "Inkjet printers: charged ink droplets are deflected by electric fields to land in the right place.\nElectrostatic paint sprayers: paint droplets are charged, car body is earthed — paint is attracted evenly.\nElectrostatic precipitators: remove dust and soot from factory chimneys using charged plates.\nDefibrillators: deliver a controlled electric shock to restart the heart."
+            },
+            {
+                "heading": "Dangers of Static",
+                "content": "Fuel tankers are earthed before refuelling — a spark from static could ignite fuel vapour.\nAircraft build up charge during flight — earthing strips discharge them safely on landing.\nElectronic components can be destroyed by static discharge — handled with anti-static mats and wristbands."
             }
         ],
-        "higher": "Electric field strength E = V ÷ d (potential difference ÷ distance between plates). The force on a charge in a field: F = EQ. Stronger field or larger charge = larger force.",
-        "triple_only": "Static electricity (4.2.5) is TRIPLE SCIENCE ONLY — not in Combined Science Trilogy.",
+        "variables": [],
+        "common_mistake": "Students say 'protons transfer during charging by friction' — they DON'T. Only electrons move. Protons are in the nucleus and can't transfer. Always say 'electrons are transferred from X to Y'.",
+        "key_note": None,
+        "higher": "Electric field strength: E = V ÷ d (p.d. between plates ÷ distance apart). Force on a charge: F = EQ. Stronger field or larger charge = larger force.",
+        "triple_only": "This entire subtopic (4.2.5) is TRIPLE SCIENCE ONLY — it does not appear in Combined Science Trilogy.",
         "equations": ["F = EQ (Higher)", "E = V/d (Higher)"],
         "rp": None,
-        "fifa": {
-            "question": "A plastic rod is rubbed with a cloth. The rod becomes negatively charged. Explain why, in terms of electron transfer.",
-            "steps": [
-                ("F", "Identify what type of particles move during charging by friction"),
-                ("I", "Electrons (negative) transfer from the cloth TO the plastic rod"),
-                ("F", "Protons cannot move — they are fixed in the nucleus"),
-                ("A", "The plastic rod gains electrons → becomes negatively charged. The cloth loses electrons → becomes positively charged")
+        "matching": {
+            "title": "Match the Application to How Static is Used",
+            "instruction": "Match each device or situation to how it uses static electricity.",
+            "pairs": [
+                ("Inkjet printer", "Charged ink droplets are deflected by electric fields to land precisely"),
+                ("Electrostatic paint sprayer", "Charged paint droplets are attracted to an earthed car body"),
+                ("Electrostatic precipitator", "Charged plates attract soot and dust particles from chimney smoke"),
+                ("Fuel tanker earthing", "Prevents sparks from static charge that could ignite fuel vapour"),
+                ("Anti-static wristband", "Safely conducts static charge away from sensitive electronics"),
             ]
         },
+        "fifas": [
+            {
+                "label": "Example 1 — Explaining charge transfer",
+                "question": "A plastic rod is rubbed with a cloth. Explain why the rod becomes negatively charged.",
+                "steps": [
+                    ("F", "Identify what transfers during friction charging"),
+                    ("I", "Electrons (negatively charged) transfer from the cloth to the plastic rod"),
+                    ("F", "Protons cannot move — they are fixed in the nucleus"),
+                    ("A", "The rod gains electrons → gains negative charge. The cloth loses electrons → becomes positively charged")
+                ]
+            },
+            {
+                "label": "Example 2 — Electric field strength (Higher)",
+                "question": "Two parallel plates are 0.02 m apart. The p.d. between them is 500 V. Calculate the electric field strength.",
+                "steps": [
+                    ("F", "E = V ÷ d"),
+                    ("I", "E = 500 ÷ 0.02"),
+                    ("F", "No unit conversion needed"),
+                    ("A", "E = 25,000 V/m = 25 kV/m")
+                ]
+            }
+        ],
         "quiz": [
             {
-                "q": "When two objects are rubbed together and one becomes negatively charged, what has happened?",
-                "opts": [("Electrons transferred to that object", True), ("Protons left that object", False), ("Neutrons moved between the objects", False), ("The object gained protons from the other", False)],
-                "correct_fb": "Correct! Only electrons move. Gaining electrons = negative charge ✅",
-                "wrong_fb": "Not quite. Only ELECTRONS move during friction charging. Gaining electrons → negative. Losing electrons → positive. Protons and neutrons never move."
+                "q": "A plastic rod is rubbed with a cloth and becomes negatively charged. What happened?",
+                "opts": [
+                    ("Electrons transferred from the cloth to the rod", True),
+                    ("Protons transferred from the rod to the cloth", False),
+                    ("Neutrons transferred from the cloth to the rod", False),
+                    ("Electrons transferred from the rod to the cloth", False)
+                ],
+                "wrong_explanations": {
+                    1: "Protons are locked in the nucleus and NEVER transfer. Only electrons move during friction charging.",
+                    2: "Neutrons are uncharged — they play no role in static electricity.",
+                    3: "If electrons transferred FROM the rod, it would lose negative charge and become POSITIVE. The rod is negative, so it must have GAINED electrons."
+                }
             },
             {
-                "q": "Two positively charged balls are brought close together. What happens?",
-                "opts": [("They repel each other", True), ("They attract each other", False), ("Nothing happens", False), ("One becomes neutral", False)],
-                "correct_fb": "Correct! Like charges repel — two positive charges push apart ✅",
-                "wrong_fb": "Not quite. Like charges REPEL. Unlike charges (+ and −) attract."
+                "q": "Two positively charged spheres are brought close together. What happens?",
+                "opts": [
+                    ("They repel each other", True),
+                    ("They attract each other", False),
+                    ("Nothing happens", False),
+                    ("One becomes neutral", False)
+                ],
+                "wrong_explanations": {
+                    1: "Unlike charges (+ and −) attract. LIKE charges (both + or both −) always REPEL.",
+                    2: "If nothing happened, there would be no electric field — but charged objects always create fields and exert forces.",
+                    3: "Charges don't neutralise just by being near each other — they need to physically touch and share charge."
+                }
             },
             {
-                "q": "Which direction do electric field lines point?",
-                "opts": [("From positive to negative", True), ("From negative to positive", False), ("In circles around the charge", False), ("Randomly in all directions", False)],
-                "correct_fb": "Correct! Electric field lines always point from positive (+) to negative (−) ✅",
-                "wrong_fb": "Not quite. Field lines point FROM positive TO negative — like an arrow showing the direction a positive test charge would move."
+                "q": "In which direction do electric field lines point?",
+                "opts": [
+                    ("From positive to negative", True),
+                    ("From negative to positive", False),
+                    ("In circles around the charge", False),
+                    ("Randomly in all directions", False)
+                ],
+                "wrong_explanations": {
+                    1: "Field lines point FROM positive TO negative — the direction a positive test charge would move.",
+                    2: "Circular field lines are for magnetic fields around a wire — not electric fields.",
+                    3: "Electric field lines are not random — they follow specific patterns from + to −."
+                }
+            },
+            {
+                "q": "Why are fuel tankers earthed before refuelling?",
+                "opts": [
+                    ("To safely discharge any built-up static charge and prevent sparks near fuel vapour", True),
+                    ("To increase the flow rate of the fuel", False),
+                    ("To measure how much fuel is in the tanker", False),
+                    ("To prevent the fuel from evaporating", False)
+                ],
+                "wrong_explanations": {
+                    1: "Earthing has nothing to do with fuel flow rate — it's purely an electrical safety measure.",
+                    2: "Earthing is a safety measure against static sparks, not a measuring device.",
+                    3: "Earthing removes electrical charge — it has no effect on fuel vapour pressure."
+                }
+            },
+            {
+                "q": "How does an electrostatic paint sprayer work?",
+                "opts": [
+                    ("Charged paint droplets are attracted to the earthed metal body of the car", True),
+                    ("Paint is heated and sprayed at high pressure", False),
+                    ("The car body is charged positively and repels the paint away evenly", False),
+                    ("Magnets in the sprayer attract the paint to the surface", False)
+                ],
+                "wrong_explanations": {
+                    1: "Pressure spraying is used in conventional sprayers — it doesn't use static electricity.",
+                    2: "If the car body repelled the paint, none would stick! Unlike charges attract — earthed body (neutral) attracts charged paint.",
+                    3: "Electrostatic paint sprayers use electric charge, not magnetism. Paint isn't magnetic."
+                }
             }
         ]
     }
 ]
 
+
+
 # ─────────────────────────────────────────────
-# HTML TEMPLATE HELPERS (match main site style)
+# PAGE RENDERER — all corrections applied
 # ─────────────────────────────────────────────
 
-PHYSICS_COLOR = "#4ECDC4"
+def make_variable_rows(variables):
+    if not variables:
+        return ""
+    rows = ""
+    for sym, name, unit_name, unit_sym in variables:
+        rows += f'<div class="var-row"><span class="var-sym">{sym}</span><span class="var-desc">{name} ({sym}) is measured in {unit_name} ({unit_sym})</span></div>\n'
+    return f'<div class="var-table">{rows}</div>'
 
-# nav_html defined above
 
-# chat_html defined above
+def make_matching_widget(matching, st_id, color):
+    if not matching:
+        return ""
+    pairs = matching["pairs"]
+    import json as _json
+    pairs_json = _json.dumps(pairs)
+    items_html = ""
+    for i, (term, definition) in enumerate(pairs):
+        items_html += f'<div class="match-def" data-index="{i}" draggable="true">{definition}</div>\n'
 
-def make_fifa_box(fifa):
-    steps_html = ""
-    for letter, text in fifa["steps"]:
-        steps_html += f"""<div class="fifa-step">
+    terms_html = ""
+    for i, (term, definition) in enumerate(pairs):
+        terms_html += f'''<div class="match-target" data-index="{i}">
+  <div class="match-term">{term}</div>
+  <div class="match-drop" data-accepts="{i}">Drop here</div>
+</div>\n'''
+
+    return f"""<div class="section">
+  <div class="section-title">🎯 Matching Activity — {matching['title']}</div>
+  <div class="card">
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">{matching['instruction']} — drag the descriptions on the right to match the terms on the left.</p>
+    <div class="match-layout">
+      <div class="match-targets">{terms_html}</div>
+      <div class="match-defs" id="defPool-{st_id}">{items_html}</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+      <button class="match-check-btn" onclick="checkMatching('{st_id}', {pairs_json})">✅ Check Answers</button>
+      <button class="match-reset-btn" onclick="resetMatching('{st_id}', {pairs_json})">🔄 Reset</button>
+    </div>
+    <div class="match-result" id="matchResult-{st_id}"></div>
+  </div>
+</div>"""
+
+
+def make_fifa_boxes(fifas):
+    if not fifas:
+        return ""
+    boxes = ""
+    for fifa in fifas:
+        steps_html = ""
+        for letter, text in fifa["steps"]:
+            steps_html += f"""<div class="fifa-step">
   <div class="fifa-letter">{letter}</div>
   <p>{text}</p>
 </div>"""
-    return f"""<div class="fifa-box">
-  <div class="fifa-title">⚽ FIFA Worked Example</div>
+        boxes += f"""<div class="fifa-box" style="margin-bottom:20px;">
+  <div class="fifa-label">{fifa['label']}</div>
   <p style="margin-bottom:14px;font-size:0.95rem;font-style:italic;color:#ccc;">{fifa['question']}</p>
   {steps_html}
 </div>"""
+    return f"""<div class="section">
+  <div class="section-title">⚽ FIFA Worked Examples</div>
+  {boxes}
+</div>"""
 
-def make_quiz_html(quiz):
-    html = ""
+
+def make_new_quiz(quiz, color):
+    if not quiz:
+        return ""
+    cards_html = ""
     for i, q in enumerate(quiz):
         opts_html = ""
-        correct_val = ""
+        correct_idx = None
         for j, (opt_text, is_correct) in enumerate(q["opts"]):
-            val = f"opt{i}_{j}"
+            val = f"q{i}o{j}"
             if is_correct:
-                correct_val = val
-            opts_html += f'<button class="quiz-opt" data-val="{val}">{opt_text}</button>\n'
-        html += f"""<div class="quiz-card" data-answer="{correct_val}">
+                correct_idx = j
+            opts_html += f'<button class="quiz-opt" data-val="{val}" data-qi="{i}" data-oi="{j}">{opt_text}</button>\n'
+
+        # Build wrong explanations
+        wrong_exp_js = "{"
+        for idx, explanation in q.get("wrong_explanations", {}).items():
+            safe = explanation.replace("'", "\\'").replace('"', '\\"')
+            wrong_exp_js += f'{idx}: "{safe}",'
+        wrong_exp_js += "}"
+
+        cards_html += f"""<div class="quiz-card" id="qcard-{i}" data-answer="{correct_idx}" data-wrong-exp='{wrong_exp_js}'>
   <div class="q-text">{i+1}. {q['q']}</div>
   <div class="quiz-options">{opts_html}</div>
-  <div class="quiz-feedback correct-fb">{q['correct_fb']}</div>
-  <div class="quiz-feedback wrong-fb">{q['wrong_fb']}</div>
+  <div class="quiz-fb" id="qfb-{i}"></div>
 </div>"""
-    return html
 
-def make_subtopic_page(st):
-    """Generate a full dedicated subtopic page."""
-    color = PHYSICS_COLOR
+    return f"""<div class="section">
+  <div class="section-title">🎯 Test Yourself</div>
+  <div class="quiz-progress" id="quizProgress">Question 1 of {len(quiz)}</div>
+  {cards_html}
+</div>"""
 
-    # Theory cards
+
+def make_star_rating(st_id):
+    return f"""<div class="section">
+  <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
+  <div class="card star-rating-card">
+    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Be honest with yourself — this helps you know what to revise!</p>
+    <div class="stars-row" id="stars-{st_id}">
+      <button class="star-btn" data-rating="1" onclick="rateTopic('{st_id}', 1)" title="I don't understand this at all">⭐</button>
+      <button class="star-btn" data-rating="2" onclick="rateTopic('{st_id}', 2)" title="I understand a little">⭐</button>
+      <button class="star-btn" data-rating="3" onclick="rateTopic('{st_id}', 3)" title="I understand about half of it">⭐</button>
+      <button class="star-btn" data-rating="4" onclick="rateTopic('{st_id}', 4)" title="I mostly understand it">⭐</button>
+      <button class="star-btn" data-rating="5" onclick="rateTopic('{st_id}', 5)" title="I understand it perfectly">⭐</button>
+    </div>
+    <div class="star-labels">
+      <span>Don't get it</span>
+      <span>Getting there</span>
+      <span>Nailed it!</span>
+    </div>
+    <div class="star-feedback" id="starfb-{st_id}"></div>
+  </div>
+</div>"""
+
+
+STAR_MESSAGES = [
+    "No worries — that's what Mr Badmus AI is here for! Hit the chat button below and ask me to explain it from scratch. 💬",
+    "Good start! Read through the theory again, then try the quiz once more. You'll get there! 📖",
+    "Solid — you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. 🗣️",
+    "Great work! Just review the parts you found tricky and you'll be flying. 🚀",
+    "PERFECT! You've nailed this topic. Move on — you're ready! 🏆"
+]
+
+
+def make_new_subtopic_page(st, color):
+    """Generate a full dedicated subtopic page with all corrections applied."""
+    st_id = st["id"]
+
+    # Theory sections — short paragraphs
     theory_html = ""
     for section in st["theory"]:
-        theory_html += f"""<div class="card">
-  <h4>{section['heading']}</h4>
-  <p style="font-size:0.95rem;line-height:1.7;">{section['content']}</p>
+        # Split content by \n for short lines
+        lines = section["content"].split("\n")
+        lines_html = "".join(f"<p style='font-size:0.9rem;line-height:1.8;margin:4px 0;'>{line}</p>" for line in lines if line.strip())
+        theory_html += f"""<div class="card" style="margin-bottom:14px;">
+  <h4 style="margin-bottom:10px;font-size:1rem;">{section['heading']}</h4>
+  {lines_html}
+</div>"""
+
+    # Variables
+    var_html = ""
+    if st.get("variables"):
+        var_html = f"""<div class="section">
+  <div class="section-title">📐 Variables</div>
+  <div class="card">{make_variable_rows(st['variables'])}</div>
 </div>"""
 
     # Equations
     eq_html = ""
-    if st["equations"]:
+    if st.get("equations"):
         pills = "".join(f'<div class="formula-pill">{eq}</div>' for eq in st["equations"])
         eq_html = f"""<div class="section">
   <div class="section-title">📐 Key Equations</div>
   <div class="formula-grid">{pills}</div>
 </div>"""
 
+    # Key note
+    keynote_html = ""
+    if st.get("key_note"):
+        keynote_html = f"""<div class="section">
+  <div class="section-title">📌 Key Note</div>
+  <div class="keynote-box"><p>{st['key_note']}</p></div>
+</div>"""
+
+    # Common mistake
+    mistake_html = ""
+    if st.get("common_mistake"):
+        mistake_html = f"""<div class="mistake-box">
+  <div class="mistake-title">⚠️ Common Mistake</div>
+  <p style="font-size:0.9rem;line-height:1.7;">{st['common_mistake']}</p>
+</div>"""
+
     # Higher box
     higher_html = ""
-    if st["higher"]:
+    if st.get("higher"):
         higher_html = f"""<div class="section">
-  <div class="section-title">⭐ Higher Tier</div>
+  <div class="section-title">⭐ Higher Tier Only</div>
   <div class="higher-box"><p>{st['higher']}</p></div>
 </div>"""
 
-    # Triple only box
+    # Triple only
     triple_html = ""
-    if st["triple_only"]:
+    if st.get("triple_only"):
         triple_html = f"""<div class="section">
   <div class="section-title">🔬 Triple Science Only</div>
   <div class="triple-box"><p>{st['triple_only']}</p></div>
@@ -2602,14 +3472,178 @@ def make_subtopic_page(st):
 
     # RP box
     rp_html = ""
-    if st["rp"]:
+    if st.get("rp"):
         rp_html = f"""<div class="section">
   <div class="section-title">🧪 Required Practical</div>
   <div class="rp-card"><h4>🔬 {st['rp']}</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Know the method, variables, equipment and how to analyse results.</p>
-  <p style="margin-top:8px;font-size:0.85rem;"><a href="https://www.youtube.com/results?search_query=AQA+GCSE+{st['rp'].replace(' ','+')}" target="_blank" style="color:{color};font-weight:700;">▶ Find tutorial videos on YouTube →</a></p>
+  <p style="font-size:0.88rem;color:var(--muted);margin-top:6px;">Know the method, variables, equipment and how to analyse results.</p>
   </div>
 </div>"""
+
+    # Matching widget
+    matching_html = make_matching_widget(st.get("matching"), st_id, color)
+
+    # FIFA boxes
+    fifa_html = make_fifa_boxes(st.get("fifas", []))
+
+    # Quiz
+    quiz_html = make_new_quiz(st.get("quiz", []), color)
+
+    # Star rating
+    star_html = make_star_rating(st_id)
+
+    # AI chat section
+    chat_section = f"""<div class="section">
+  <div class="section-title">🤖 Ask Mr Badmus AI</div>
+  <div class="card" style="text-align:center;padding:32px;">
+    <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and flag Higher Tier and Triple content clearly.</p>
+    <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+  </div>
+</div>"""
+
+    import json as _json
+    star_msgs_js = _json.dumps(STAR_MESSAGES)
+
+    quiz_js = """
+document.querySelectorAll('.quiz-opt').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const card = this.closest('.quiz-card');
+    if (card.dataset.answered) return;
+    card.dataset.answered = '1';
+    const correctIdx = parseInt(card.dataset.answer);
+    const clickedIdx = parseInt(this.dataset.oi);
+    const isCorrect = clickedIdx === correctIdx;
+    const fb = document.getElementById('qfb-' + this.dataset.qi);
+
+    // Mark options
+    card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
+      if (idx === correctIdx) o.classList.add('correct');
+      else if (o === this && !isCorrect) o.classList.add('wrong');
+    });
+
+    // Feedback
+    if (isCorrect) {
+      fb.className = 'quiz-fb correct-fb show';
+      fb.innerHTML = '✅ Correct! Well done!';
+    } else {
+      const wrongExp = card.dataset.wrongExp ? JSON.parse(card.dataset.wrongExp.replace(/'/g, '"')) : {};
+      const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
+      fb.className = 'quiz-fb wrong-fb show';
+      fb.innerHTML = '❌ Incorrect. ' + explanation;
+    }
+
+    // Update progress
+    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    const total = document.querySelectorAll('.quiz-card').length;
+    const prog = document.getElementById('quizProgress');
+    if (prog) {
+      if (answered === total) {
+        const correct = document.querySelectorAll('.quiz-opt.correct').length;
+        prog.innerHTML = '🎉 Finished! You got ' + answered + '/' + total + ' questions answered.';
+        prog.style.background = 'rgba(78,205,196,0.15)';
+      } else {
+        prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
+      }
+    }
+  });
+});
+"""
+
+    matching_js = f"""
+function checkMatching(stId, pairs) {{
+  const targets = document.querySelectorAll('.match-target');
+  let correct = 0;
+  targets.forEach(target => {{
+    const drop = target.querySelector('.match-drop');
+    const accepts = parseInt(target.querySelector('.match-drop').dataset.accepts);
+    const placed = drop.querySelector('.match-def');
+    if (placed && parseInt(placed.dataset.index) === accepts) {{
+      drop.classList.add('match-correct');
+      drop.classList.remove('match-wrong');
+      correct++;
+    }} else if (placed) {{
+      drop.classList.add('match-wrong');
+      drop.classList.remove('match-correct');
+    }}
+  }});
+  const result = document.getElementById('matchResult-' + stId);
+  const total = pairs.length;
+  if (correct === total) {{
+    result.innerHTML = '🎉 Perfect! All ' + total + ' matched correctly!';
+    result.className = 'match-result match-result-win';
+  }} else {{
+    result.innerHTML = correct + '/' + total + ' correct — keep trying! Wrong answers are highlighted in red.';
+    result.className = 'match-result match-result-partial';
+  }}
+}}
+
+function resetMatching(stId, pairs) {{
+  const pool = document.getElementById('defPool-' + stId);
+  const drops = document.querySelectorAll('.match-drop');
+  drops.forEach(drop => {{
+    const placed = drop.querySelector('.match-def');
+    if (placed) {{
+      pool.appendChild(placed);
+    }}
+    drop.innerHTML = 'Drop here';
+    drop.classList.remove('match-correct', 'match-wrong', 'has-item');
+  }});
+  const result = document.getElementById('matchResult-' + stId);
+  if (result) {{ result.innerHTML = ''; result.className = 'match-result'; }}
+}}
+
+// Drag and drop
+document.querySelectorAll('.match-def').forEach(def => {{
+  def.addEventListener('dragstart', e => {{
+    e.dataTransfer.setData('text/plain', def.dataset.index);
+    def.classList.add('dragging');
+  }});
+  def.addEventListener('dragend', () => def.classList.remove('dragging'));
+}});
+
+document.querySelectorAll('.match-drop').forEach(drop => {{
+  drop.addEventListener('dragover', e => {{ e.preventDefault(); drop.classList.add('drag-over'); }});
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {{
+    e.preventDefault();
+    drop.classList.remove('drag-over');
+    const idx = e.dataTransfer.getData('text/plain');
+    const def = document.querySelector('.match-def[data-index="' + idx + '"]');
+    if (!def) return;
+    // Return existing item to pool if occupied
+    const existing = drop.querySelector('.match-def');
+    if (existing) {{
+      const pool = document.getElementById('defPool-{st_id}');
+      pool.appendChild(existing);
+    }}
+    drop.innerHTML = '';
+    drop.appendChild(def);
+    drop.classList.add('has-item');
+    drop.classList.remove('match-correct', 'match-wrong');
+  }});
+}});
+"""
+
+    star_js = f"""
+const STAR_MESSAGES_{st_id.replace('-','_')} = {star_msgs_js};
+function rateTopic(stId, rating) {{
+  const stars = document.querySelectorAll('#stars-' + stId + ' .star-btn');
+  stars.forEach((s, i) => {{
+    s.classList.toggle('star-active', i < rating);
+  }});
+  const fb = document.getElementById('starfb-' + stId);
+  fb.innerHTML = STAR_MESSAGES_{st_id.replace('-','_')}[rating - 1];
+  fb.style.display = 'block';
+  // Save to localStorage
+  try {{ localStorage.setItem('star_' + stId, rating); }} catch(e) {{}}
+}}
+// Load saved rating
+try {{
+  const saved = localStorage.getItem('star_{st_id}');
+  if (saved) rateTopic('{st_id}', parseInt(saved));
+}} catch(e) {{}}
+"""
 
     body = f"""
 <div class="topic-header">
@@ -2624,34 +3658,84 @@ def make_subtopic_page(st):
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
     {theory_html}
+    {mistake_html}
   </div>
 
+  {var_html}
   {eq_html}
-
-  <div class="section">
-    <div class="section-title">⚽ FIFA Worked Example</div>
-    {make_fifa_box(st['fifa'])}
-  </div>
-
+  {keynote_html}
+  {matching_html}
+  {fifa_html}
   {higher_html}
   {triple_html}
   {rp_html}
-
-  <div class="section">
-    <div class="section-title">🎯 Test Yourself</div>
-    {make_quiz_html(st['quiz'])}
-  </div>
-
-  <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
-    <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;">Stuck on <strong>{st['title']}</strong>? Ask me anything!</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and label Higher Tier content clearly.</p>
-      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
-    </div>
-  </div>
+  {quiz_html}
+  {star_html}
+  {chat_section}
 
 </div>"""
+
+    extra_css = f"""
+<style>
+:root {{ --subject: {color}; }}
+.section-title {{ color: var(--subject); }}
+
+/* Variables */
+.var-table {{ display:flex;flex-direction:column;gap:8px; }}
+.var-row {{ display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid {color}; }}
+.var-sym {{ font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:{color};min-width:28px; }}
+.var-desc {{ font-size:0.9rem;color:var(--text); }}
+
+/* Common mistake */
+.mistake-box {{ background:rgba(255,100,50,0.08);border:1px solid rgba(255,100,50,0.3);border-left:4px solid #FF6435;border-radius:10px;padding:16px 20px;margin-top:16px; }}
+.mistake-title {{ color:#FF6435;font-weight:800;font-size:0.95rem;margin-bottom:8px; }}
+
+/* Key note */
+.keynote-box {{ background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.3);border-left:4px solid #FFD93D;border-radius:10px;padding:16px 20px; }}
+.keynote-box p {{ font-size:0.9rem;color:#FFD93D;font-weight:600; }}
+
+/* FIFA label */
+.fifa-label {{ font-size:0.8rem;font-weight:700;color:{color};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px; }}
+
+/* Matching */
+.match-layout {{ display:flex;gap:16px;flex-wrap:wrap; }}
+.match-targets {{ flex:1;min-width:220px;display:flex;flex-direction:column;gap:8px; }}
+.match-defs {{ flex:1;min-width:220px;display:flex;flex-direction:column;gap:8px; }}
+.match-target {{ display:flex;flex-direction:column;gap:4px; }}
+.match-term {{ font-weight:700;font-size:0.88rem;color:{color};padding:4px 0; }}
+.match-drop {{ background:rgba(255,255,255,0.04);border:2px dashed rgba(255,255,255,0.15);border-radius:8px;padding:10px 14px;font-size:0.85rem;color:var(--muted);min-height:42px;transition:all 0.15s; }}
+.match-drop.drag-over {{ border-color:{color};background:rgba(78,205,196,0.1); }}
+.match-drop.has-item {{ border-style:solid;border-color:rgba(255,255,255,0.2);color:var(--text); }}
+.match-drop.match-correct {{ border-color:#6BCB77;background:rgba(107,203,119,0.1); }}
+.match-drop.match-wrong {{ border-color:#FF6B6B;background:rgba(255,107,107,0.1); }}
+.match-def {{ background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;font-size:0.85rem;cursor:grab;transition:all 0.15s; }}
+.match-def:hover {{ background:rgba(255,255,255,0.1);border-color:{color}; }}
+.match-def.dragging {{ opacity:0.5; }}
+.match-check-btn,.match-reset-btn {{ border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.88rem;font-family:'Nunito',sans-serif; }}
+.match-check-btn {{ background:{color};color:#0F0F1A; }}
+.match-reset-btn {{ background:rgba(255,255,255,0.08);color:var(--text); }}
+.match-result {{ margin-top:12px;font-weight:700;font-size:0.9rem;padding:10px 16px;border-radius:8px;display:none; }}
+.match-result-win {{ background:rgba(107,203,119,0.15);color:#6BCB77;display:block; }}
+.match-result-partial {{ background:rgba(255,107,107,0.1);color:#FF6B6B;display:block; }}
+
+/* Quiz */
+.quiz-progress {{ background:rgba(78,205,196,0.08);border:1px solid rgba(78,205,196,0.2);border-radius:8px;padding:10px 16px;font-size:0.88rem;color:{color};font-weight:700;margin-bottom:16px; }}
+.quiz-fb {{ display:none;padding:12px 16px;border-radius:8px;font-size:0.88rem;font-weight:600;margin-top:10px;line-height:1.6; }}
+.quiz-fb.show {{ display:block; }}
+.quiz-fb.correct-fb {{ background:rgba(107,203,119,0.12);color:#6BCB77;border:1px solid rgba(107,203,119,0.3); }}
+.quiz-fb.wrong-fb {{ background:rgba(255,107,107,0.1);color:#FF8080;border:1px solid rgba(255,107,107,0.3); }}
+
+/* Stars */
+.star-rating-card {{ text-align:center;padding:28px; }}
+.stars-row {{ display:flex;justify-content:center;gap:8px;margin-bottom:8px; }}
+.star-btn {{ background:none;border:none;font-size:2rem;cursor:pointer;transition:transform 0.15s;filter:grayscale(1);opacity:0.4; }}
+.star-btn:hover,.star-btn.star-active {{ filter:grayscale(0);opacity:1;transform:scale(1.2); }}
+.star-labels {{ display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:12px;padding:0 8px; }}
+.star-feedback {{ display:none;margin-top:12px;padding:12px 16px;background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.2);border-radius:8px;font-size:0.9rem;color:#FFD93D;font-weight:600; }}
+</style>"""
+
+    nav = nav_html("physics")
+    chat = chat_html()
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -2660,65 +3744,36 @@ def make_subtopic_page(st):
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>{st['title']} | Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
-  <style>
-    :root {{ --subject: {color}; }}
-    .section-title {{ color: var(--subject); }}
-  </style>
+  {extra_css}
 </head>
 <body>
-  {nav_html("physics")}
+  {nav}
   {body}
-  {chat_html()}
+  {chat}
   <script src="/shared/mrbadmus.js"></script>
   <script>
     MrBadmus.init({{ subject: 'physics', topic: '{st['title']} (AQA {st['spec']})' }});
   </script>
   <script>
-  document.querySelectorAll('.quiz-opt').forEach(btn => {{
-    btn.addEventListener('click', function() {{
-      const card = this.closest('.quiz-card');
-      if (card.dataset.answered) return;
-      card.dataset.answered = '1';
-      const correct = card.dataset.answer;
-      card.querySelectorAll('.quiz-opt').forEach(o => {{
-        if (o.dataset.val === correct) o.classList.add('correct');
-        else if (o === this) o.classList.add('wrong');
-      }});
-      const fb = card.querySelector('.quiz-feedback');
-      if (fb) {{
-        fb.classList.add('show');
-        fb.classList.add(this.dataset.val === correct ? 'correct-fb' : 'wrong-fb');
-      }}
-    }});
-  }});
+  {quiz_js}
+  {matching_js}
+  {star_js}
   </script>
 </body>
 </html>"""
 
-
 def make_updated_electricity_page():
-    """
-    Regenerate electricity.html with:
-    - Each subtopic row has a clickable title (→ dedicated page)
-    - A '+' expand button that shows inline detail
-    """
+    """Electricity topic hub with expand/link subtopic rows."""
     color = PHYSICS_COLOR
-
-    # Build the subtopics list with expand/link behaviour
     subtopic_rows = ""
     for st in ELECTRICITY_SUBTOPICS:
-        # Build inline expand content
-        theory_preview = st["theory"][0]["content"] if st["theory"] else ""
-        eq_pills = "".join(f'<span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">{eq}</span>' for eq in st["equations"]) if st["equations"] else ""
-
-        # Higher/Triple badges
+        theory_preview = st["theory"][0]["content"].split("\n")[0] if st["theory"] else ""
+        eq_pills = "".join(f'<span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">{eq}</span>' for eq in st.get("equations", [])) if st.get("equations") else ""
         badges = ""
-        if st["higher"]:
-            badges += '<span class="badge badge-h">⭐ Higher</span>'
-        if st["triple_only"]:
-            badges += '<span class="badge badge-t">🔬 Triple</span>'
-        if st["rp"]:
-            badges += '<span class="badge badge-rp">📋 RP</span>'
+        if st.get("higher"): badges += '<span class="badge badge-h">⭐ Higher</span>'
+        if st.get("triple_only"): badges += '<span class="badge badge-t">🔬 Triple</span>'
+        if st.get("rp"): badges += '<span class="badge badge-rp">📋 RP</span>'
+        if st.get("matching"): badges += '<span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>'
 
         subtopic_rows += f"""
 <div class="subtopic-row" id="row-{st['id']}">
@@ -2729,253 +3784,89 @@ def make_updated_electricity_page():
       <span style="font-size:0.75rem;color:var(--muted);margin-left:8px;">{st['spec']}</span>
       {badges}
     </a>
-    <button class="expand-btn" onclick="toggleExpand('{st['id']}')" title="Expand details">+</button>
+    <button class="expand-btn" onclick="toggleExpand('{st['id']}')" title="Preview">+</button>
   </div>
   <div class="subtopic-expand" id="expand-{st['id']}">
-    <p style="font-size:0.9rem;line-height:1.7;margin-bottom:12px;">{theory_preview}</p>
+    <p style="font-size:0.88rem;line-height:1.7;margin-bottom:12px;">{theory_preview}</p>
     {"<div class='formula-grid' style='margin-bottom:12px;'>" + eq_pills + "</div>" if eq_pills else ""}
-    <a href="/physics/electricity/{st['id']}.html" class="expand-full-link" style="color:{color};font-weight:700;font-size:0.88rem;">📖 Full notes, FIFA example &amp; quiz →</a>
+    <a href="/physics/electricity/{st['id']}.html" class="expand-full-link" style="color:{color};font-weight:700;font-size:0.88rem;">📖 Full notes, examples &amp; quiz →</a>
   </div>
 </div>"""
+
+    extra_css = f"""<style>
+:root {{ --subject: {color}; }}
+.section-title {{ color: var(--subject); }}
+.subtopic-list-new {{ display:flex;flex-direction:column; }}
+.subtopic-row {{ border-bottom:1px solid rgba(255,255,255,0.06); }}
+.subtopic-row:last-child {{ border-bottom:none; }}
+.subtopic-main {{ display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }}
+.subtopic-main:hover {{ background:rgba(255,255,255,0.03); }}
+.subtopic-link {{ display:flex;align-items:center;gap:6px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }}
+.subtopic-link:hover .subtopic-title {{ color:{color};text-decoration:underline; }}
+.expand-btn {{ background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:{color};width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }}
+.expand-btn.open {{ transform:rotate(45deg); }}
+.subtopic-expand {{ display:none;padding:0 20px 16px 36px;border-top:1px solid rgba(255,255,255,0.05);background:rgba(0,0,0,0.15); }}
+.subtopic-expand.open {{ display:block; }}
+.expand-full-link {{ display:inline-block;margin-top:10px;padding:8px 18px;background:rgba(78,205,196,0.1);border:1px solid rgba(78,205,196,0.3);border-radius:8px; }}
+</style>"""
 
     body = f"""
 <div class="topic-header">
   <a class="back-link" href="/physics/index.html">← Back to Physics</a>
   <h1 style="color:{color}">⚡ Electricity</h1>
-  <span class="spec-pill">Spec 4.2</span>
-  <span class="paper-pill">Paper 1</span>
+  <span class="spec-pill">Spec 4.2</span><span class="paper-pill">Paper 1</span>
 </div>
-
 <div class="content-area">
-
   <div class="section">
     <div class="section-title">📋 What You Need to Know</div>
     <div class="card" style="padding:0;overflow:hidden;">
-      <div class="subtopic-list-new">
-        {subtopic_rows}
-      </div>
+      <div class="subtopic-list-new">{subtopic_rows}</div>
     </div>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a topic title to open the full notes page, or press <strong>+</strong> to expand a preview here.</p>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a topic title to open the full notes page, or press <strong>+</strong> to preview it here.</p>
   </div>
-
   <div class="section">
     <div class="section-title">📐 Key Equations</div>
     <div class="formula-grid">
-      <div class="formula-pill">Q = It</div>
-      <div class="formula-pill">V = IR</div>
-      <div class="formula-pill">P = VI</div>
-      <div class="formula-pill">P = I²R</div>
-      <div class="formula-pill">E = Pt</div>
-      <div class="formula-pill">E = QV</div>
+      <div class="formula-pill">Q = It</div><div class="formula-pill">V = IR</div>
+      <div class="formula-pill">P = VI</div><div class="formula-pill">P = I²R</div>
+      <div class="formula-pill">E = Pt</div><div class="formula-pill">E = QV</div>
     </div>
   </div>
-
-  <div class="section">
-    <div class="section-title">⚽ FIFA Worked Example</div>
-    <div class="fifa-box">
-      <div class="fifa-title">⚽ FIFA Example — P = I²R</div>
-      <p style="margin-bottom:14px;font-size:0.95rem;font-style:italic;color:#ccc;">A resistor of 6 Ω carries a current of 3 A. Calculate its power output.</p>
-      <div class="fifa-step"><div class="fifa-letter">F</div><p>P = I² × R</p></div>
-      <div class="fifa-step"><div class="fifa-letter">I</div><p>P = 3² × 6 = 9 × 6</p></div>
-      <div class="fifa-step"><div class="fifa-letter">F</div><p>No conversion needed</p></div>
-      <div class="fifa-step"><div class="fifa-letter">A</div><p class="fifa-answer">P = 54 W</p></div>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">⭐ Higher Tier</div>
-    <div class="higher-box"><p>Potential divider circuits: Vout = Vin × R2/(R1+R2). Used with LDRs and thermistors for automatic switching.</p></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🔬 Triple Science Extensions</div>
-    <div class="triple-box"><p>Static electricity (4.2.5) and electric fields — Triple Science only, not in Combined Science Trilogy.</p></div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🧪 Required Practicals</div>
-    <div class="rp-card">
-      <h4>🔬 RP3 — Resistance of a wire (length)</h4>
-      <p style="font-size:0.88rem;color:var(--muted);">Investigate how resistance varies with length of wire.</p>
-    </div>
-    <div class="rp-card">
-      <h4>🔬 RP4 — I-V Characteristics</h4>
-      <p style="font-size:0.88rem;color:var(--muted);">Plot current-voltage graphs for a resistor, filament lamp and diode.</p>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🎯 Quick Quiz</div>
-    <div class="quiz-card" data-answer="opt0_0">
-      <div class="q-text">1. A charge of 30 C flows past a point in 6 seconds. What is the current?</div>
-      <div class="quiz-options">
-        <button class="quiz-opt" data-val="opt0_0">5 A</button>
-        <button class="quiz-opt" data-val="opt0_1">180 A</button>
-        <button class="quiz-opt" data-val="opt0_2">0.2 A</button>
-        <button class="quiz-opt" data-val="opt0_3">36 A</button>
-      </div>
-      <div class="quiz-feedback correct-fb">Correct! I = Q ÷ t = 30 ÷ 6 = 5 A ✅</div>
-      <div class="quiz-feedback wrong-fb">Not quite. Use I = Q ÷ t → I = 30 ÷ 6 = 5 A</div>
-    </div>
-    <div class="quiz-card" data-answer="opt1_0">
-      <div class="q-text">2. Which component has resistance that DECREASES as temperature increases?</div>
-      <div class="quiz-options">
-        <button class="quiz-opt" data-val="opt1_0">Thermistor</button>
-        <button class="quiz-opt" data-val="opt1_1">Filament lamp</button>
-        <button class="quiz-opt" data-val="opt1_2">Diode</button>
-        <button class="quiz-opt" data-val="opt1_3">Fixed resistor</button>
-      </div>
-      <div class="quiz-feedback correct-fb">Correct! NTC thermistor: ↑ temperature → ↓ resistance ✅</div>
-      <div class="quiz-feedback wrong-fb">Not quite. A thermistor (NTC) decreases in resistance as temperature rises.</div>
-    </div>
-    <div class="quiz-card" data-answer="opt2_0">
-      <div class="q-text">3. In a parallel circuit, what is the same across every branch?</div>
-      <div class="quiz-options">
-        <button class="quiz-opt" data-val="opt2_0">Potential difference</button>
-        <button class="quiz-opt" data-val="opt2_1">Current</button>
-        <button class="quiz-opt" data-val="opt2_2">Resistance</button>
-        <button class="quiz-opt" data-val="opt2_3">Charge</button>
-      </div>
-      <div class="quiz-feedback correct-fb">Correct! P.D. is the same across all parallel branches ✅</div>
-      <div class="quiz-feedback wrong-fb">Not quite. In parallel: p.d. is the same across every branch. Current splits.</div>
-    </div>
-  </div>
-
   <div class="section">
     <div class="section-title">🤖 Ask Mr Badmus AI</div>
     <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;">Stuck on Electricity? Ask me anything!</p>
+      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Electricity? 💬</p>
       <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
-
 </div>"""
 
-    extra_css = f"""
-<style>
-:root {{ --subject: {color}; }}
-.section-title {{ color: var(--subject); }}
-
-.subtopic-list-new {{ display: flex; flex-direction: column; }}
-
-.subtopic-row {{
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}}
-.subtopic-row:last-child {{ border-bottom: none; }}
-
-.subtopic-main {{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  transition: background 0.15s;
-}}
-.subtopic-main:hover {{ background: rgba(255,255,255,0.03); }}
-
-.subtopic-link {{
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-  text-decoration: none;
-  color: var(--text);
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: color 0.15s;
-}}
-.subtopic-link:hover .subtopic-title {{ color: {color}; text-decoration: underline; }}
-
-.expand-btn {{
-  background: rgba(78,205,196,0.15);
-  border: 1px solid rgba(78,205,196,0.3);
-  color: {color};
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  transition: background 0.15s, transform 0.2s;
-  flex-shrink: 0;
-  margin-left: 12px;
-}}
-.expand-btn:hover {{ background: rgba(78,205,196,0.3); }}
-.expand-btn.open {{ transform: rotate(45deg); }}
-
-.subtopic-expand {{
-  display: none;
-  padding: 0 20px 16px 36px;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  background: rgba(0,0,0,0.15);
-  animation: slideDown 0.2s ease;
-}}
-.subtopic-expand.open {{ display: block; }}
-
-@keyframes slideDown {{
-  from {{ opacity: 0; transform: translateY(-8px); }}
-  to {{ opacity: 1; transform: translateY(0); }}
-}}
-
-.expand-full-link {{
-  display: inline-block;
-  margin-top: 10px;
-  padding: 8px 18px;
-  background: rgba(78,205,196,0.1);
-  border: 1px solid rgba(78,205,196,0.3);
-  border-radius: 8px;
-  transition: background 0.15s;
-}}
-.expand-full-link:hover {{ background: rgba(78,205,196,0.2); }}
-</style>"""
-
+    nav = nav_html("physics")
+    chat = chat_html()
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
   <title>Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   {extra_css}
 </head>
 <body>
-  {nav_html("physics")}
+  {nav}
   {body}
-  {chat_html()}
+  {chat}
   <script src="/shared/mrbadmus.js"></script>
+  <script>MrBadmus.init({{subject:'physics',topic:'Electricity (AQA 4.2)'}});</script>
   <script>
-    MrBadmus.init({{ subject: 'physics', topic: 'Electricity (AQA 4.2)' }});
-
-    function toggleExpand(id) {{
-      const expand = document.getElementById('expand-' + id);
-      const btn = expand.previousElementSibling.querySelector('.expand-btn');
-      const isOpen = expand.classList.contains('open');
-      // Close all others
-      document.querySelectorAll('.subtopic-expand.open').forEach(el => el.classList.remove('open'));
-      document.querySelectorAll('.expand-btn.open').forEach(el => el.classList.remove('open'));
-      if (!isOpen) {{
-        expand.classList.add('open');
-        btn.classList.add('open');
-      }}
-    }}
-  </script>
-  <script>
-  document.querySelectorAll('.quiz-opt').forEach(btn => {{
-    btn.addEventListener('click', function() {{
-      const card = this.closest('.quiz-card');
-      if (card.dataset.answered) return;
-      card.dataset.answered = '1';
-      const correct = card.dataset.answer;
-      card.querySelectorAll('.quiz-opt').forEach(o => {{
-        if (o.dataset.val === correct) o.classList.add('correct');
-        else if (o === this) o.classList.add('wrong');
-      }});
-      const fb = card.querySelector('.quiz-feedback');
-      if (fb) {{
-        fb.classList.add('show');
-        fb.classList.add(this.dataset.val === correct ? 'correct-fb' : 'wrong-fb');
-      }}
-    }});
-  }});
+  function toggleExpand(id) {{
+    const expand = document.getElementById('expand-' + id);
+    const btn = document.getElementById('row-' + id).querySelector('.expand-btn');
+    const isOpen = expand.classList.contains('open');
+    document.querySelectorAll('.subtopic-expand.open').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.expand-btn.open').forEach(el => el.classList.remove('open'));
+    if (!isOpen) {{ expand.classList.add('open'); btn.classList.add('open'); }}
+  }}
   </script>
 </body>
 </html>"""
@@ -3038,15 +3929,15 @@ def build_site(output_dir="mrbadmus_site"):
             print(f"     ✅ {subject}/{topic['id']}.html")
             total_pages += 1
 
-    # Build electricity subtopic pages
+    # Build electricity subtopic pages (v2 — all corrections applied)
     elec_subdir = f"{output_dir}/physics/electricity"
     os.makedirs(elec_subdir, exist_ok=True)
     for st in ELECTRICITY_SUBTOPICS:
         path = f"{elec_subdir}/{st['id']}.html"
         with open(path, "w") as f:
-            f.write(make_subtopic_page(st))
+            f.write(make_new_subtopic_page(st, PHYSICS_COLOR))
         print(f"     ✅ physics/electricity/{st['id']}.html")
-    # Overwrite electricity.html with subtopic-enabled version
+    # Overwrite electricity.html with updated subtopic-enabled version
     with open(f"{output_dir}/physics/electricity.html", "w") as f:
         f.write(make_updated_electricity_page())
     print(f"     ✅ physics/electricity.html (with subtopic links)")
