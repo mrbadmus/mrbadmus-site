@@ -1121,12 +1121,8 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 13. Format clearly with line breaks — never write a wall of text
 14. If a student is confused, offer to break it down — but keep the offer to one sentence`;
 
-  const SUBJECT_PROMPTS = {
-    physics: `${BASE_PROMPT}
-
-CURRENT SUBJECT: AQA GCSE Physics (8463)
-
-FULL PHYSICS SPECIFICATION TOPICS:
+  // All three specs — included in every prompt so AI can answer any subject from any page
+  const PHYSICS_SPEC = `PHYSICS TOPICS (AQA 8463):
 4.1 Energy: KE=½mv², GPE=mgh, E=mcΔθ, E=½ke², efficiency, energy resources, conduction/convection/radiation. RP1 specific heat capacity, RP2 insulation.
 4.2 Electricity: Q=It, V=IR, circuit symbols, ohmic/non-ohmic, series and parallel, AC/DC, mains wiring, P=VI, P=I²R, E=Pt, E=QV, National Grid, transformers. RP3 resistance of wire, RP4 I-V characteristics. Higher: potential dividers. Triple: static electricity, electric fields.
 4.3 Particle Model: density ρ=m/V, states of matter, changes of state, internal energy, E=mcΔθ, E=mL (latent heat), gas pressure and temperature. Higher: Boyle's law, absolute zero. RP5 density.
@@ -1134,39 +1130,57 @@ FULL PHYSICS SPECIFICATION TOPICS:
 4.5 Forces: scalars/vectors, W=mg, resultant forces, W=Fs, F=ke (Hooke's Law), moments, p=F/A, pressure in fluids, s=vt, v=u+at, s=½(u+v)t, F=ma, Newton's laws, momentum p=mv, stopping distances. Higher: impulse=FΔt, terminal velocity. RP7 acceleration, RP8 spring extension.
 4.6 Waves: v=fλ, T=1/f, transverse/longitudinal, EM spectrum, reflection, refraction, sound. Higher: n=sin(i)/sin(r). Triple: lenses, X-rays, radio waves. RP9 waves, RP10 light.
 4.7 Magnetism: magnetic fields, electromagnets, Fleming's LHR, F=BIL, motors, induction, generators, Vp/Vs=Np/Ns, transformer efficiency. Higher: induced EMF. RP11 motor effect.
-4.8 Space (TRIPLE ONLY): Solar System, stellar life cycles, orbital motion, red-shift, Big Bang, expanding universe.
+4.8 Space (TRIPLE ONLY): Solar System, stellar life cycles, orbital motion, red-shift, Big Bang, expanding universe.`;
 
-REQUIRED PRACTICALS: RP1-RP11 as listed above.
-KEY EQUATIONS: All equation sheet equations apply.`,
-
-    chemistry: `${BASE_PROMPT}
-
-CURRENT SUBJECT: AQA GCSE Chemistry (8462)
-
-FULL CHEMISTRY SPECIFICATION TOPICS:
+  const CHEMISTRY_SPEC = `CHEMISTRY TOPICS (AQA 8462):
 4.1 Atomic Structure & Periodic Table: protons/neutrons/electrons, Ar, Mr, isotopes, electronic structure, periodic table groups/periods, Group 1 (alkali metals), Group 7 (halogens), Group 0 (noble gases), transition metals.
 4.2 Bonding: ionic (electron transfer, giant lattice), covalent (electron sharing, simple molecular vs giant), metallic (delocalised electrons), alloys, polymers. Higher: dot-cross diagrams. Triple: intermolecular forces.
 4.3 Quantitative Chemistry: mol=mass÷Mr, mol=c×V, mol=V÷24, % yield=actual÷theoretical×100, atom economy=Mr(useful)÷Mr(all)×100, balancing equations. Higher: limiting reactants, titration calcs.
 4.4 Chemical Changes: reactivity series, displacement, metal extraction, pH scale, neutralisation, acid+metal→salt+H₂, acid+base→salt+H₂O, acid+carbonate→salt+H₂O+CO₂, making salts, electrolysis (molten and solutions). Higher: half equations. RP1 making salts, RP2 electrolysis.
 4.5 Energy Changes: exothermic/endothermic, reaction profiles, activation energy, bond energies (ΔH=bonds broken−bonds formed), cells, fuel cells. Higher: bond energy calcs. RP3 temperature changes.
 4.6 Rate & Equilibrium: rate=quantity÷time, collision theory, factors (concentration, temp, surface area, catalyst), measuring rate, reversible reactions, Le Chatelier's principle, Haber process. Higher: equilibrium position calculations. RP4 thiosulfate, RP5 marble chips.
-4.7 Organic Chemistry: crude oil, fractional distillation, alkanes (CₙH₂ₙ₊₂), cracking, alkenes (CₙH₂ₙ), addition reactions, polymerisation, alcohols, carboxylic acids, esters. Higher: mechanisms. Triple: amino acids, condensation polymers. 
+4.7 Organic Chemistry: crude oil, fractional distillation, alkanes (CₙH₂ₙ₊₂), cracking, alkenes (CₙH₂ₙ), addition reactions, polymerisation, alcohols, carboxylic acids, esters. Higher: mechanisms. Triple: amino acids, condensation polymers.
 4.8 Chemical Analysis: pure substances, chromatography (Rf=spot÷solvent), flame tests, testing gases, ion tests, mass spectrometry, IR spectroscopy. Higher: interpreting spectra. RP6 chromatography, RP7 ion tests.
 4.9 Atmosphere: composition, evolution of atmosphere, greenhouse effect, climate change, carbon footprint, pollutants (CO, NOₓ, SO₂, particulates).
-4.10 Using Resources: finite/renewable, water treatment, LCA, corrosion, alloys, ceramics, polymers, composites, Haber process (N₂+3H₂⇌2NH₃), NPK fertilisers. Higher: fertiliser calculations. RP8 water purification.`,
+4.10 Using Resources: finite/renewable, water treatment, LCA, corrosion, alloys, ceramics, polymers, composites, Haber process (N₂+3H₂⇌2NH₃), NPK fertilisers. Higher: fertiliser calculations. RP8 water purification.`;
 
-    biology: `${BASE_PROMPT}
-
-CURRENT SUBJECT: AQA GCSE Biology (8461)
-
-FULL BIOLOGY SPECIFICATION TOPICS:
+  const BIOLOGY_SPEC = `BIOLOGY TOPICS (AQA 8461):
 4.1 Cell Biology: animal/plant/bacterial cells, eukaryotic/prokaryotic, specialised cells, magnification=image÷actual, diffusion/osmosis/active transport, mitosis, stem cells, growth. Higher: meiosis, stem cell ethics. RP1 microscopy, RP2 osmosis.
 4.2 Organisation: cell→tissue→organ→system, digestive system, enzymes (lock-and-key, active site), effect of temp/pH on enzymes, heart, blood vessels (arteries/veins/capillaries), blood components, respiratory system, health and disease, cancer. Higher: CHD treatments, plant transport. RP3 enzyme pH, RP4 food tests.
 4.3 Infection & Response: pathogens (bacteria/viruses/fungi/protists), spread of disease, specific diseases (measles, HIV, malaria, TMV, rose black spot, Salmonella), immune system (phagocytosis, antibodies, memory cells), vaccination, antibiotics, drug development. Higher: monoclonal antibodies, plant defences.
 4.4 Bioenergetics: photosynthesis (6CO₂+6H₂O→C₆H₁₂O₆+6O₂), limiting factors (light, CO₂, temp), uses of glucose, aerobic respiration (C₆H₁₂O₆+6O₂→6CO₂+6H₂O), anaerobic (glucose→lactic acid; glucose→ethanol+CO₂), exercise response. Higher: rate graphs, metabolism. RP5 photosynthesis, RP6 fermentation.
 4.5 Homeostasis & Response: homeostasis, nervous system (CNS, neurons, synapses), reflex arc, brain, eye, endocrine system, blood glucose (insulin/glucagon), diabetes Type 1&2, thermoregulation, kidneys/ADH, menstrual cycle (FSH/LH/oestrogen/progesterone), contraception, fertility treatments. Higher: negative feedback, IVF ethics. Triple: kidney detail. RP7 reaction time.
 4.6 Inheritance: DNA structure, genes/alleles/chromosomes, dominant/recessive, Punnett squares, cystic fibrosis, polydactyly, sex determination, variation (genetic/environmental), mutation, natural selection, evolution evidence, classification. Higher: codominance, genetic engineering. Triple: protein synthesis.
-4.7 Ecology: populations/communities/ecosystems, abiotic/biotic factors, interdependence, food webs, competition, adaptations, quadrats/transects, water/carbon/nitrogen cycles, biodiversity, deforestation, climate change, conservation, mark-recapture formula. Higher: biodiversity index, predator-prey. RP8 habitat sampling.`
+4.7 Ecology: populations/communities/ecosystems, abiotic/biotic factors, interdependence, food webs, competition, adaptations, quadrats/transects, water/carbon/nitrogen cycles, biodiversity, deforestation, climate change, conservation, mark-recapture formula. Higher: biodiversity index, predator-prey. RP8 habitat sampling.`;
+
+  const ALL_SPECS = `YOU COVER ALL THREE AQA GCSE SCIENCES — always help regardless of which subject the student asks about.
+
+IMPORTANT: Never say "that's not my subject" or redirect the student elsewhere. If a student on the Physics page asks about Biology or Chemistry, just answer it. You are their full science tutor.
+
+${PHYSICS_SPEC}
+
+${CHEMISTRY_SPEC}
+
+${BIOLOGY_SPEC}`;
+
+  const SUBJECT_PROMPTS = {
+    physics: `${BASE_PROMPT}
+
+The student is currently on the Physics section of the site, so prioritise Physics when relevant — but answer ANY science question they ask.
+
+${ALL_SPECS}`,
+
+    chemistry: `${BASE_PROMPT}
+
+The student is currently on the Chemistry section of the site, so prioritise Chemistry when relevant — but answer ANY science question they ask.
+
+${ALL_SPECS}`,
+
+    biology: `${BASE_PROMPT}
+
+The student is currently on the Biology section of the site, so prioritise Biology when relevant — but answer ANY science question they ask.
+
+${ALL_SPECS}`
   };
 
   const FALLBACKS = {
@@ -1435,7 +1449,7 @@ def page_shell(title, subject, body_html, topic_id="", topic_title=""):
   {nav_html(subject)}
   {body_html}
   {chat_html()}
-  <script src="/shared/mrbadmus.js?v=2"></script>
+  <script src="/shared/mrbadmus.js?v=3"></script>
   <script>
     MrBadmus.init({{
       subject: '{subject}',
@@ -1501,7 +1515,7 @@ def make_landing():
   {nav_html()}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus.js?v=2"></script>
+  <script src="/shared/mrbadmus.js?v=3"></script>
   <script>MrBadmus.init({{ subject: 'physics' }});</script>
 </body>
 </html>"""
@@ -3897,7 +3911,7 @@ try {{
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js?v=2"></script>
+  <script src="/shared/mrbadmus.js?v=3"></script>
   <script>
     MrBadmus.init({{ subject: 'physics', topic: '{st['title']} (AQA {st['spec']})' }});
   </script>
@@ -4003,7 +4017,7 @@ def make_updated_electricity_page():
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js?v=2"></script>
+  <script src="/shared/mrbadmus.js?v=3"></script>
   <script>MrBadmus.init({{subject:'physics',topic:'Electricity (AQA 4.2)'}});</script>
   <script>
   function toggleExpand(id) {{
@@ -4168,7 +4182,7 @@ def make_rollout_topic_hub(subject, topic, subtopic_list):
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js?v=2"></script>
+  <script src="/shared/mrbadmus.js?v=3"></script>
   <script>MrBadmus.init({{subject:'{subject}',topic:'{topic_title} ({subject_label} {spec})'}});</script>
   <script>
   function toggleExpand(id) {{
