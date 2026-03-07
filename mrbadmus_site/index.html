@@ -19,6 +19,7 @@
 <section class="hero">
   <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
   <p>Your AQA GCSE Science revision hub — Physics, Chemistry &amp; Biology covered with AI-powered help, FIFA worked examples and exam-ready content.</p>
+  <button data-open-chat style="margin-top:20px;background:linear-gradient(135deg,#4ECDC4,#6BCB77);color:#0F0F1A;border:none;padding:16px 36px;border-radius:50px;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 20px rgba(78,205,196,0.3);">🤖 Ask Mr Badmus AI</button>
 </section>
 <div class="subject-grid">
   
@@ -40,6 +41,30 @@
     <p>AQA GCSE Biology (AQA 8461) — 7 topics covered</p>
     <span class="btn">Explore Biology →</span>
   </a>
+</div>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI">🤖</button>
+
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-modal">
+    <div class="chat-head">
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p>AQA GCSE Science Tutor</p>
+      </div>
+      <button class="close-btn">✕</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="img-preview-row" id="imgPreviewRow">
+      <img id="imgPreview" src="" alt="preview"/>
+      <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
+    </div>
+    <div class="chat-input-row">
+      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <input type="file" id="imgInput" accept="image/*" style="display:none"/>
+      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <button class="chat-send-btn">➤</button>
+    </div>
+  </div>
 </div>
   <script src="/shared/mrbadmus.js"></script>
   <script>MrBadmus.init({ subject: 'physics' });</script>

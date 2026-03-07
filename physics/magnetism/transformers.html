@@ -206,6 +206,7 @@
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
 </div>
+  <div class="quiz-score-msg" id="quizScoreMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:1rem;font-weight:700;text-align:center;"></div>
 </div>
   <div class="section">
   <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
@@ -266,6 +267,44 @@
   </script>
   <script>
   
+// ── Score message banks ──────────────────────────────────────────
+const SCORE_MSGS = {
+  low: ["Keep going, every expert starts somewhere.","Every pro starts somewhere, this is just your starting scene.","Not the final form yet, but the upgrade is loading.","You've taken the first step, and that matters.","This is the warm-up, not the whole story.","You're still in the tutorial, keep going.","No stress, this is where learning begins.","The comeback starts here.","Not there yet, but definitely not done yet.","Even small scores can grow into big wins.","Step one: show up. Step two: level up.","This is the part where the hero gets better.","You've planted the seed, now keep growing it.","Rough start, strong future.","You're building, even if it doesn't feel like it yet.","The score is temporary, the progress is the real story.","You're at the beginning, not the end.","Nothing to panic about, just time to build.","The first try is rarely the final headline.","You've got room to grow, and that's powerful.","Not your peak yet, but peaks don't appear on the first climb.","This is your 'before' picture.","You've started the engine, now let it run.","Keep going, this chapter has a better ending.","You're learning the map right now.","Not a disaster, just the origin story.","Today's score is not tomorrow's limit.","There's something to build on here.","Every master once had a score like this.","The only bad move is stopping now.","Quiet start, loud comeback coming.","This is where progress begins to whisper.","One step in, plenty more to go.","This is not failure, this is data.","The glow-up has begun.","You're in the early levels, keep moving.","Even this score can turn into something serious.","You've opened the door, now walk through it.","A beginning is still a win.","You don't need perfect, you just need progress."],
+  fortyish: ["You're closer than you think.","This is starting to take shape now.","Not far off at all, keep pushing.","You've got a foothold now.","The pieces are starting to come together.","There's real progress here.","You're not stuck, you're building.","This is a decent platform to grow from.","You're right on the edge of a breakthrough.","One more push and this could look very different.","There's definitely something cooking here.","You're finding your feet now.","This is moving in the right direction.","You've got the spark, now build the fire.","This score says potential.","Bit by bit, it's starting to click.","You're closer to the next level than it looks.","This is a stronger score than you think.","The foundation is there now.","You've started building something solid.","Momentum is beginning to show.","This is where the climb starts getting interesting.","You're not far from turning a corner.","That's enough to work with, let's build on it.","Progress is peeking through now.","You're getting warmer.","That's the kind of score that says 'keep going'.","You're circling the breakthrough now.","The gears are turning.","You've got something to build from here.","This is early progress with potential.","You're knocking on the door now.","The comeback arc is forming nicely.","Not there yet, but definitely getting there.","You're closer to confidence than you realise.","The jump is coming, stay with it.","This is where things begin to shift.","A few more right and this becomes a very different story.","You're heading somewhere good now.","Keep going, you're building real momentum."],
+  fifty: ["You're warming up nicely now.","There's something cooking here, keep pushing.","You're closer than you think.","Not bad at all, this is starting to click.","The brain gears are turning now.","Solid progress, don't stop here.","You've definitely got something building.","Bit by bit, you're becoming dangerous.","That's a proper start, keep the streak alive.","You're finding your rhythm now."],
+  sixty: ["You're about to unlock something special — keep going legend.","Now we're talking.","This is looking sharp, keep the pressure on.","You're not guessing anymore, you're learning.","Proper momentum now.","You've moved from trying to doing.","This is strong work, keep climbing.","You're in the zone now.","That's the kind of score that turns heads.","Looking very serious all of a sudden."],
+  seventy: ["What a legend.","You're cooking now.","This is elite progress.","You've gone from decent to dangerous.","Different level.","You're moving like someone who actually knows what they're doing.","This is getting impressive now.","Big score, big energy.","You're officially one to watch.","Confidence suits you, keep going."],
+  eighty: ["Certified baller.","You're built for this.","This is top-tier work.","You're flying through this topic now.","You've entered serious performer territory.","This is not luck, this is skill.","You're making this look easy.","Proper masterclass behaviour.","You're on a whoooooole different level today.","This is excellence with a pulse."],
+  ninety: ["This topic is starting to fear you.","You've gone full mastermind.","Unreal scenes.","You're operating at villain-level intelligence now.","This is frighteningly good.","You didn't just pass, you took over.","You've officially ascended.","This is champion behaviour.","You're the one the questions need to revise for."],
+  perfect: ["Perfect. Absolutely outrageous.","Nah, this was disrespectful to the quiz.","Flawless victory.","You completed that like the answer sheet wrote itself.","Full marks. Cinema.","That was a demolition job.","Not a single crack. Elite.","You've beaten the level and unlocked myth status.","Somebody check if you wrote the textbook.","That was scandalously good.","Sikkkkeeeeeeeeee!","WHO. ARE. YOU?!"]
+};
+
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function getScoreMsg(pct, topicTitle) {
+  let msg, bg, col;
+  if (pct === 100) {
+    msg = pick(SCORE_MSGS.perfect); bg = 'rgba(255,217,61,0.12)'; col = '#FFD93D';
+  } else if (pct >= 90) {
+    msg = 'You are now the final boss of ' + topicTitle + '. ' + pick(SCORE_MSGS.ninety);
+    bg = 'rgba(255,107,107,0.12)'; col = '#FF6B6B';
+  } else if (pct >= 80) {
+    msg = pick(SCORE_MSGS.eighty); bg = 'rgba(78,205,196,0.12)'; col = '#4ECDC4';
+  } else if (pct >= 70) {
+    msg = pick(SCORE_MSGS.seventy); bg = 'rgba(107,203,119,0.12)'; col = '#6BCB77';
+  } else if (pct >= 60) {
+    msg = pick(SCORE_MSGS.sixty); bg = 'rgba(78,205,196,0.1)'; col = '#4ECDC4';
+  } else if (pct >= 50) {
+    msg = pick(SCORE_MSGS.fifty); bg = 'rgba(255,217,61,0.08)'; col = '#FFD93D';
+  } else if (pct >= 40) {
+    msg = pick(SCORE_MSGS.fortyish); bg = 'rgba(255,217,61,0.08)'; col = '#FFD93D';
+  } else {
+    msg = pick(SCORE_MSGS.low); bg = 'rgba(255,107,107,0.08)'; col = '#FF8080';
+  }
+  return { msg, bg, col };
+}
+
+// ── Quiz logic ──────────────────────────────────────────────────
 document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
@@ -276,58 +315,99 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     const isCorrect = clickedIdx === correctIdx;
     const fb = document.getElementById('qfb-' + this.dataset.qi);
 
-    // Mark options
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
       if (idx === correctIdx) o.classList.add('correct');
       else if (o === this && !isCorrect) o.classList.add('wrong');
     });
 
-    // Feedback
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
-      fb.innerHTML = '✅ Correct! Well done!';
+      fb.innerHTML = '\u2705 Correct! Well done!';
     } else {
-      const wrongExp = card.dataset.wrongExp ? JSON.parse(card.dataset.wrongExp.replace(/'/g, '"')) : {};
+      let wrongExp = {};
+      try { wrongExp = JSON.parse(card.dataset.wrongExp.replace(/'/g, '"')); } catch(e) {}
       const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
       fb.className = 'quiz-fb wrong-fb show';
-      fb.innerHTML = '❌ Incorrect. ' + explanation;
+      fb.innerHTML = '\u274C Incorrect. ' + explanation;
     }
 
-    // Update progress
+    const allCards = document.querySelectorAll('.quiz-card');
     const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
-    const total = document.querySelectorAll('.quiz-card').length;
-    const prog = document.getElementById('quizProgress');
-    if (prog) {
-      if (answered === total) {
-        const correct = document.querySelectorAll('.quiz-opt.correct').length;
-        prog.innerHTML = '🎉 Finished! You got ' + answered + '/' + total + ' questions answered.';
+    const total    = allCards.length;
+    const prog     = document.getElementById('quizProgress');
+
+    if (answered === total) {
+      // Count correct: one .correct button per card
+      let correctCount = 0;
+      allCards.forEach(c => {
+        const correctBtn = c.querySelector('.quiz-opt.correct');
+        const answeredOpt = c.querySelector('.quiz-opt.wrong, .quiz-opt.correct');
+        // A question is correct if the chosen answer IS the correct button
+        // Check: if no .wrong button exists in this card, the user got it right
+        if (!c.querySelector('.quiz-opt.wrong')) correctCount++;
+      });
+      const pct = Math.round((correctCount / total) * 100);
+      const topicTitle = document.querySelector('h1') ? document.querySelector('h1').textContent.trim() : 'this topic';
+      const { msg, bg, col } = getScoreMsg(pct, topicTitle);
+
+      if (prog) {
+        prog.innerHTML = '\uD83C\uDF89 Finished! ' + correctCount + '/' + total + ' correct (' + pct + '%)';
         prog.style.background = 'rgba(78,205,196,0.15)';
-      } else {
-        prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
       }
+      const scoreEl = document.getElementById('quizScoreMsg');
+      if (scoreEl) {
+        scoreEl.innerHTML = msg;
+        scoreEl.style.display = 'block';
+        scoreEl.style.background = bg;
+        scoreEl.style.color = col;
+        scoreEl.style.border = '1px solid ' + col.replace(')', ',0.3)').replace('rgb','rgba');
+      }
+    } else {
+      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
     }
   });
 });
 
   
+// ── Shuffle matching items on load ──────────────────────────────
+(function shuffleMatchDefs() {
+  const pool = document.getElementById('defPool-transformers');
+  if (!pool) return;
+  const items = Array.from(pool.querySelectorAll('.match-def'));
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    pool.appendChild(items[j]);
+    items.splice(j, 1);
+    items.splice(i, 0, pool.querySelector('.match-def:last-child'));
+  }
+  // simpler shuffle
+  for (let i = items.length - 1; i > 0; i--) {
+    pool.appendChild(pool.children[Math.floor(Math.random() * (i + 1))]);
+  }
+})();
+
 function checkMatching(stId, pairs) {
   const targets = document.querySelectorAll('.match-target');
   let correct = 0;
+  let answered = 0;
   targets.forEach(target => {
     const drop = target.querySelector('.match-drop');
-    const accepts = parseInt(target.querySelector('.match-drop').dataset.accepts);
+    const accepts = parseInt(drop.dataset.accepts);
     const placed = drop.querySelector('.match-def');
-    if (placed && parseInt(placed.dataset.index) === accepts) {
-      drop.classList.add('match-correct');
-      drop.classList.remove('match-wrong');
-      correct++;
-    } else if (placed) {
-      drop.classList.add('match-wrong');
-      drop.classList.remove('match-correct');
+    if (placed) {
+      answered++;
+      if (parseInt(placed.dataset.index) === accepts) {
+        drop.classList.add('match-correct');
+        drop.classList.remove('match-wrong');
+        correct++;
+      } else {
+        drop.classList.add('match-wrong');
+        drop.classList.remove('match-correct');
+      }
     }
   });
   const result = document.getElementById('matchResult-' + stId);
-  const total = pairs.length;
+  const total = pairs;
   if (correct === total) {
     result.innerHTML = '🎉 Perfect! All ' + total + ' matched correctly!';
     result.className = 'match-result match-result-win';
@@ -342,14 +422,17 @@ function resetMatching(stId, pairs) {
   const drops = document.querySelectorAll('.match-drop');
   drops.forEach(drop => {
     const placed = drop.querySelector('.match-def');
-    if (placed) {
-      pool.appendChild(placed);
-    }
+    if (placed) pool.appendChild(placed);
     drop.innerHTML = 'Drop here';
     drop.classList.remove('match-correct', 'match-wrong', 'has-item');
   });
   const result = document.getElementById('matchResult-' + stId);
   if (result) { result.innerHTML = ''; result.className = 'match-result'; }
+  // Re-shuffle after reset
+  const items = Array.from(pool.querySelectorAll('.match-def'));
+  for (let i = items.length - 1; i > 0; i--) {
+    pool.appendChild(pool.children[Math.floor(Math.random() * (i + 1))]);
+  }
 }
 
 // Drag and drop
@@ -370,7 +453,6 @@ document.querySelectorAll('.match-drop').forEach(drop => {
     const idx = e.dataTransfer.getData('text/plain');
     const def = document.querySelector('.match-def[data-index="' + idx + '"]');
     if (!def) return;
-    // Return existing item to pool if occupied
     const existing = drop.querySelector('.match-def');
     if (existing) {
       const pool = document.getElementById('defPool-transformers');
