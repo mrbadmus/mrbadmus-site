@@ -205,10 +205,15 @@ ${ALL_SPECS}`
       chatInited = true;
       let hasVisited = false;
       try { hasVisited = !!localStorage.getItem('mbai_visited'); } catch(e) {}
-      const pool = hasVisited ? OPEN_GREETINGS_RETURN : OPEN_GREETINGS_FIRST;
-      const greeting = pool[Math.floor(Math.random() * pool.length)];
+      let introMsg;
+      if (hasVisited) {
+        const returnPool = OPEN_GREETINGS_RETURN;
+        introMsg = returnPool[Math.floor(Math.random() * returnPool.length)];
+      } else {
+        introMsg = "Hey! I\'m the AI set up by Mr Badmus to help you study and smash your GCSEs. 🎯<br><br>I know the full AQA spec for Physics, Chemistry and Biology — ask me to explain any topic, work through a calculation with you, or just break something down in a way that actually makes sense.<br><br>What are we working on today?";
+      }
       try { localStorage.setItem('mbai_visited', '1'); } catch(e) {}
-      addMsg('bot', greeting);
+      addMsg('bot', introMsg);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }
