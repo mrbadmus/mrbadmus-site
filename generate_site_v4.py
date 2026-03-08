@@ -1453,7 +1453,10 @@ def page_shell(title, subject, body_html, topic_id="", topic_title=""):
     gtag('config', 'G-6X0CG0VPG9');
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>{title} | MrBadmusAI</title>
+  <title>{title} | AQA GCSE Science Revision | MrBadmusAI</title>
+  <meta name="description" content="Revise AQA GCSE {title} with clear topic breakdowns, FIFA worked examples, quizzes and AI-powered help. Built by a real science teacher."/>
+  <meta name="keywords" content="AQA GCSE {title} revision, GCSE {title} topics, AQA spec, GCSE science revision"/>
+  <meta name="robots" content="index, follow"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
     :root {{ --subject: {color}; }}
@@ -1536,7 +1539,15 @@ def make_landing():
     gtag('config', 'G-6X0CG0VPG9');
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MrBadmusAI — AQA GCSE Science Revision</title>
+  <title>MrBadmusAI — AQA GCSE Science Revision | Physics, Chemistry & Biology</title>
+  <meta name="description" content="Free AQA GCSE Science revision for Physics, Chemistry and Biology. FIFA worked examples, topic quizzes, required practicals and 24/7 AI tutor — built by a real science teacher."/>
+  <meta name="keywords" content="AQA GCSE Science revision, GCSE Physics revision, GCSE Chemistry revision, GCSE Biology revision, AQA 8464, AQA 8461, AQA 8462, AQA 8463, GCSE revision, science tutor"/>
+  <meta property="og:title" content="MrBadmusAI — AQA GCSE Science Revision"/>
+  <meta property="og:description" content="Free AQA GCSE Science revision for Physics, Chemistry and Biology with AI-powered help, FIFA worked examples and exam-ready content."/>
+  <meta property="og:url" content="https://mrbadmusai.netlify.app"/>
+  <meta name="google-site-verification" content="N8I9nyFxhLILzIQaDHijn_n4ihOLUBKOBCsolkGYVzY"/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="canonical" href="https://mrbadmusai.netlify.app/"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
 </head>
 <body>
@@ -4273,6 +4284,10 @@ def build_site(output_dir="mrbadmus_site"):
         f.write(SHARED_CSS)
     print("  ✅ shared/styles.css")
 
+    # Google Search Console verification file
+    with open(f"{output_dir}/google23f9c9bb613e70af.html", "w") as f:
+        f.write("google-site-verification: google23f9c9bb613e70af.html")
+    print("  ✅ google23f9c9bb613e70af.html")
     with open(f"{output_dir}/shared/mrbadmus2.js", "w") as f:
         f.write(SHARED_JS)
     print("  ✅ shared/mrbadmus2.js")
