@@ -1418,7 +1418,7 @@ def chat_html():
     <div class="chat-head">
       <div class="chat-head-info">
         <h3>Mr. Badmus AI</h3>
-        <p>AQA GCSE Science Tutor</p>
+        <p>GCSE Science Tutor</p>
       </div>
       <button class="close-btn">✕</button>
     </div>
