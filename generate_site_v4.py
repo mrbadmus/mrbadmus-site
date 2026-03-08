@@ -1287,10 +1287,15 @@ ${ALL_SPECS}`
       chatInited = true;
       let hasVisited = false;
       try { hasVisited = !!localStorage.getItem('mbai_visited'); } catch(e) {}
-      const pool = hasVisited ? OPEN_GREETINGS_RETURN : OPEN_GREETINGS_FIRST;
-      const greeting = pool[Math.floor(Math.random() * pool.length)];
+      let introMsg;
+      if (hasVisited) {
+        const returnPool = OPEN_GREETINGS_RETURN;
+        introMsg = returnPool[Math.floor(Math.random() * returnPool.length)];
+      } else {
+        introMsg = "Hey! I\'m the AI set up by Mr Badmus to help you study and smash your GCSEs. 🎯<br><br>I know the full AQA spec for Physics, Chemistry and Biology — ask me to explain any topic, work through a calculation with you, or just break something down in a way that actually makes sense.<br><br>What are we working on today?";
+      }
       try { localStorage.setItem('mbai_visited', '1'); } catch(e) {}
-      addMsg('bot', greeting);
+      addMsg('bot', introMsg);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }
@@ -1510,7 +1515,8 @@ def make_landing():
     body = f"""
 <section class="hero">
   <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
-  <p>Your AQA GCSE Science revision hub — Physics, Chemistry &amp; Biology covered with AI-powered help, FIFA worked examples and exam-ready content.</p>
+  <p style="font-size:1.05rem;color:var(--muted);max-width:660px;margin:0 auto 12px;line-height:1.7;">Hi, I'm Mr Badmus — a science teacher who built this site for the students I teach.</p>
+  <p style="font-size:0.95rem;color:var(--muted);max-width:660px;margin:0 auto 32px;line-height:1.7;">Whether you're revising the night before or getting ahead early, this is your go-to hub for AQA GCSE Physics, Chemistry and Biology. Every topic is broken down into clear theory, worked examples using the FIFA method, quizzes with real feedback, and an AI tutor available 24/7 — ready to explain anything, in plain English, at any time. Built around the AQA spec. No fluff. Just the stuff that actually helps you pass.</p>
   <button data-open-chat style="margin-top:20px;background:linear-gradient(135deg,#4ECDC4,#6BCB77);color:#0F0F1A;border:none;padding:16px 36px;border-radius:50px;font-size:1.05rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;box-shadow:0 4px 20px rgba(78,205,196,0.3);">🤖 Ask Mr Badmus AI</button>
 </section>
 <div class="subject-grid">
