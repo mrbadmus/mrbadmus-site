@@ -4288,6 +4288,7 @@ def build_site(output_dir="mrbadmus_site"):
     with open(f"{output_dir}/google23f9c9bb613e70af.html", "w") as f:
         f.write("google-site-verification: google23f9c9bb613e70af.html")
     print("  ✅ google23f9c9bb613e70af.html")
+
     with open(f"{output_dir}/shared/mrbadmus2.js", "w") as f:
         f.write(SHARED_JS)
     print("  ✅ shared/mrbadmus2.js")
@@ -4374,6 +4375,24 @@ def build_site(output_dir="mrbadmus_site"):
             _sh.copytree(s, d)
         else:
             _sh.copy2(s, d)
+
+    # Generate sitemap.xml after all pages are built
+    import glob as _glob
+    _base = "https://mrbadmusai.netlify.app"
+    _html_files = _glob.glob(f"{output_dir}/**/*.html", recursive=True) + _glob.glob(f"{output_dir}/*.html")
+    _urls = []
+    for _hf in sorted(set(_html_files)):
+        _rel = _hf.replace(output_dir, "").replace("\\", "/")
+        if not _rel.startswith("/"): _rel = "/" + _rel
+        if "google" in _rel: continue
+        _urls.append(f"{_base}{_rel}")
+    _sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for _url in _urls:
+        _sitemap += f"  <url><loc>{_url}</loc></url>\n"
+    _sitemap += "</urlset>"
+    with open(f"{output_dir}/sitemap.xml", "w") as _sf:
+        _sf.write(_sitemap)
+    print(f"  ✅ sitemap.xml ({len(_urls)} URLs)")
 
     print(f"\n🎉 Done! {total_pages} pages generated and copied to repo root")
     print(f"\nTotal structure:")
