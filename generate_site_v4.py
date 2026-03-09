@@ -1472,7 +1472,7 @@ def page_shell(title, subject, body_html, topic_id="", topic_title=""):
   {nav_html(subject)}
   {body_html}
   {chat_html()}
-  <script src="/shared/mrbadmus3.js"></script>
+  <script src="/shared/mrbadmus4.js"></script>
   <script>
     MrBadmus.init({{
       subject: '{subject}',
@@ -1555,7 +1555,7 @@ def make_landing():
   {nav_html()}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus3.js"></script>
+  <script src="/shared/mrbadmus4.js"></script>
   <script>MrBadmus.init({{ subject: 'science' }});</script>
 </body>
 </html>"""
@@ -4014,7 +4014,7 @@ try {{
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus3.js"></script>
+  <script src="/shared/mrbadmus4.js"></script>
   <script>
     MrBadmus.init({{ subject: 'physics', topic: '{st['title']} (AQA {st['spec']})' }});
   </script>
@@ -4128,7 +4128,7 @@ def make_updated_electricity_page():
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus3.js"></script>
+  <script src="/shared/mrbadmus4.js"></script>
   <script>MrBadmus.init({{subject:'physics',topic:'Electricity (AQA 4.2)'}});</script>
   <script>
   function toggleExpand(id) {{
@@ -4301,7 +4301,7 @@ def make_rollout_topic_hub(subject, topic, subtopic_list):
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus3.js"></script>
+  <script src="/shared/mrbadmus4.js"></script>
   <script>MrBadmus.init({{subject:'{subject}',topic:'{topic_title} ({subject_label} {spec})'}});</script>
   <script>
   function toggleExpand(id) {{
@@ -4345,9 +4345,9 @@ def build_site(output_dir="mrbadmus_site"):
         f.write("google-site-verification: google23f9c9bb613e70af.html")
     print("  ✅ google23f9c9bb613e70af.html")
 
-    with open(f"{output_dir}/shared/mrbadmus3.js", "w") as f:
+    with open(f"{output_dir}/shared/mrbadmus4.js", "w") as f:
         f.write(SHARED_JS)
-    print("  ✅ shared/mrbadmus3.js")
+    print("  ✅ shared/mrbadmus4.js")
 
     # Netlify
     with open(f"{output_dir}/netlify/functions/chat.js", "w") as f:
@@ -4431,6 +4431,12 @@ def build_site(output_dir="mrbadmus_site"):
             _sh.copytree(s, d)
         else:
             _sh.copy2(s, d)
+
+    # Delete old versioned JS files so GitHub detects the change
+    for old_js in ['shared/mrbadmus.js', 'shared/mrbadmus2.js', 'shared/mrbadmus3.js']:
+        if os.path.exists(old_js):
+            os.remove(old_js)
+            print(f"  🗑️  Deleted old {old_js}")
 
     # Generate sitemap.xml after all pages are built
     import glob as _glob

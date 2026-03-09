@@ -1,6 +1,7 @@
 /**
  * mrbadmus.js — Shared AI chat engine
  * Works across Physics, Chemistry, Biology
+ * v202603090037
  */
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
@@ -210,7 +211,7 @@ ${ALL_SPECS}`
         const returnPool = OPEN_GREETINGS_RETURN;
         introMsg = returnPool[Math.floor(Math.random() * returnPool.length)];
       } else {
-        introMsg = "Hey! I\'m the AI set up by Mr Badmus to help you study and smash your GCSEs. 🎯<br><br>I know the full AQA spec for Physics, Chemistry and Biology — ask me to explain any topic, work through a calculation with you, or just break something down in a way that actually makes sense.<br><br>What are we working on today?";
+        introMsg = "Hey! I\'m the AI set up by Mr Badmus to help you study and smash your GCSEs. 🎯<br><br>I know Physics, Chemistry and Biology inside out — ask me to explain any topic, work through a calculation with you, or just break something down in a way that actually makes sense.<br><br>What are we working on today?";
       }
       try { localStorage.setItem('mbai_visited', '1'); } catch(e) {}
       addMsg('bot', introMsg);
