@@ -1166,7 +1166,8 @@ SHARED_JS = r"""/**
  */
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
-
+  let msgCount = 0;
+  const MSG_LIMIT = 30;
   const BASE_PROMPT = `You are Mr Badmus AI — an expert AQA GCSE Science teacher and the coolest revision companion a student could have. You cover Physics, Chemistry and Biology (AQA 8463 / 8462 / 8461).
 
 YOUR PERSONALITY — THIS IS WHO YOU ARE:
@@ -1200,7 +1201,7 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 12. Never list topics unprompted — only show a list if the student asks "what can you help with"
 13. Format clearly with line breaks — never write a wall of text
 14. If a student is confused, offer to break it down — but keep the offer to one sentence
-15. CRITICAL: NEVER teach content beyond the AQA GCSE spec. If a student asks about A-level topics (e.g. Maxwell-Boltzmann distributions, tests for ammonium ions, named types of intermolecular forces like van der Waals/dipole-dipole/hydrogen bonds, reaction mechanisms, EMF/flux), tell them it's beyond GCSE and they'll cover it at A-level. Stick to what's in the spec below.`;
+15. SPEC AWARENESS: When a student asks about content beyond AQA GCSE (e.g. Maxwell-Boltzmann distributions, tests for ammonium ions, named types of intermolecular forces like van der Waals/dipole-dipole/hydrogen bonds, reaction mechanisms, EMF/flux), STILL ANSWER the question helpfully — but always flag it clearly at the start: "Heads up — this is A-level content, so you won't get tested on it in your GCSE exam. But since you asked..." Then explain it. Never refuse to help just because it's beyond GCSE. When teaching GCSE topics though, stick strictly to what's in the spec below and don't add A-level detail unless the student specifically asks.`;
 
   // All three specs — included in every prompt so AI can answer any subject from any page
   const PHYSICS_SPEC = `PHYSICS TOPICS (AQA 8463):
@@ -1404,6 +1405,11 @@ ${ALL_SPECS}`
 
   async function ask(preset) {
     if (!chatInited) open();
+    // Rate limit check
+    if (msgCount >= MSG_LIMIT) {
+      const t = addMsg('bot', `<strong>You've used your ${MSG_LIMIT} free AI messages for this session.</strong><br><br>Refresh the page to start a new session, or use the notes and quizzes on each topic page to keep revising! 💪`);
+      return;
+    }
     const input = document.getElementById('ci');
     const q = preset || (input ? input.value.trim() : '');
     const hasImg = !!pendingImg;
@@ -1422,6 +1428,11 @@ ${ALL_SPECS}`
       const reply = data.content?.map(c=>c.text||'').filter(Boolean).join('') || 'Sorry, no response.';
       if (t) t.querySelector('.chat-msg__bubble').innerHTML = formatReply(reply);
       chatHistory.push({ role:'assistant', content:reply });
+      msgCount++;
+      const remaining = MSG_LIMIT - msgCount;
+      if (remaining === 10 || remaining === 5) {
+        addMsg('bot', `<em style="color:var(--muted);font-size:0.85rem;">📝 ${remaining} AI messages remaining this session</em>`);
+      }
       if (chatHistory.length > 20) chatHistory.splice(0,2);
     } catch(err) {
       chatHistory.pop();
