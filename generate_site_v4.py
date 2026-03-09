@@ -160,7 +160,7 @@ SITE_DATA = {
                 ],
                 "equations": ["F = BIL", "Vp/Vs = Np/Ns", "Vp × Ip = Vs × Is (100% efficiency)"],
                 "rp": ["RP11 — Investigate the factors affecting the force on a conductor"],
-                "higher": ["Induced EMF and flux", "Transformer efficiency calculations"],
+                "higher": ["Induced potential difference", "Transformer efficiency calculations"],
                 "triple_only": [],
             },
             {
@@ -176,7 +176,7 @@ SITE_DATA = {
                     "The expanding universe",
                     "Dark matter and dark energy",
                 ],
-                "equations": ["Orbital speed ∝ 1/√r"],
+                "equations": [],
                 "rp": [],
                 "higher": ["Red-shift calculations", "Evidence for the Big Bang"],
                 "triple_only": ["Space Physics is TRIPLE ONLY (Physics 8463)"],
@@ -230,7 +230,7 @@ SITE_DATA = {
                 "equations": [],
                 "rp": [],
                 "higher": ["Dot and cross diagrams for covalent molecules", "Graphene and nanotubes"],
-                "triple_only": ["Intermolecular forces — van der Waals, dipole-dipole, hydrogen bonds"],
+                "triple_only": ["Intermolecular forces and how they affect properties of substances"],
             },
             {
                 "id": "quantitative",
@@ -323,12 +323,11 @@ SITE_DATA = {
                     "Addition polymerisation",
                     "Alcohols — ethanol, fermentation, combustion",
                     "Carboxylic acids",
-                    "Condensation polymerisation",
                 ],
                 "equations": ["CₙH₂ₙ₊₂ (alkanes)", "CₙH₂ₙ (alkenes)"],
                 "rp": [],
-                "higher": ["Mechanisms — addition reactions of alkenes", "Ester formation"],
-                "triple_only": ["Amino acids and proteins", "DNA — condensation polymerisation"],
+                "higher": [],
+                "triple_only": ["Amino acids and proteins", "DNA — condensation polymerisation", "Esters and their formation"],
             },
             {
                 "id": "analysis",
@@ -341,12 +340,12 @@ SITE_DATA = {
                     "Flame tests — identifying metal ions",
                     "Testing for gases — hydrogen, oxygen, CO₂, chlorine",
                     "Testing for ions — precipitation reactions",
-                    "Instrumental analysis — mass spectrometry, IR spectroscopy",
+                    "Instrumental methods — advantages over chemical tests",
                 ],
                 "equations": ["Rf = distance by spot ÷ distance by solvent"],
                 "rp": ["RP6 — Paper chromatography", "RP7 — Identify ions using chemical tests"],
-                "higher": ["Interpreting mass spectra", "IR spectroscopy — functional groups"],
-                "triple_only": [],
+                "higher": [],
+                "triple_only": ["Flame emission spectroscopy", "Interpreting mass spectra and IR spectroscopy"],
             },
             {
                 "id": "atmosphere",
@@ -483,7 +482,6 @@ SITE_DATA = {
                     "Homeostasis — maintaining internal conditions",
                     "The nervous system — CNS, neurons, synapses",
                     "Reflex arc",
-                    "The brain — cerebrum, cerebellum, medulla",
                     "The eye — structure and function",
                     "The endocrine system — hormones and glands",
                     "Blood glucose regulation — insulin and glucagon",
@@ -496,7 +494,7 @@ SITE_DATA = {
                 "equations": [],
                 "rp": ["RP7 — Investigating reaction time"],
                 "higher": ["Negative feedback loops", "IVF treatment and ethical considerations"],
-                "triple_only": ["Thermoregulation detail", "Kidney — ultrafiltration and reabsorption"],
+                "triple_only": ["The brain — cerebrum, cerebellum, medulla", "Thermoregulation detail", "Kidney — ultrafiltration and reabsorption"],
             },
             {
                 "id": "inheritance",
@@ -620,6 +618,87 @@ a { color: inherit; text-decoration: none; }
 .nav-links a.phy { color: var(--physics); }
 .nav-links a.che { color: var(--chemistry); }
 .nav-links a.bio { color: var(--biology); }
+
+/* ── SEARCH ── */
+.search-toggle {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  color: var(--text);
+  font-size: 1.1rem;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.search-toggle:hover { background: rgba(255,255,255,0.15); }
+.search-bar {
+  display: none;
+  position: fixed;
+  top: 60px;
+  left: 0; right: 0;
+  background: var(--dark);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  z-index: 99;
+  padding: 12px 24px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+}
+.search-bar.open { display: block; }
+.search-container {
+  display: flex;
+  gap: 10px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+.search-container input {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.15);
+  background: var(--card);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search-container input:focus { border-color: var(--yellow); }
+.search-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0 8px;
+}
+.search-results {
+  max-width: 700px;
+  margin: 8px auto 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+.search-result {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 10px;
+  background: var(--card);
+  margin-bottom: 6px;
+  transition: background 0.2s;
+  text-decoration: none;
+  color: var(--text);
+}
+.search-result:hover { background: var(--card2); }
+.search-result .sr-subject {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.search-result .sr-subject.phy { color: var(--physics); }
+.search-result .sr-subject.che { color: var(--chemistry); }
+.search-result .sr-subject.bio { color: var(--biology); }
+.search-result .sr-title { font-weight: 700; font-size: 1rem; }
+.search-result .sr-match { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+.search-no-results { color: var(--muted); text-align: center; padding: 20px; font-size: 0.95rem; }
 
 /* ── HERO ── */
 .hero {
@@ -1120,7 +1199,8 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 11. If a student just says hello or greets you, respond with ONE casual line only — pick something like "Yo, what are we saying?", "Okay legend, what are we working on?", "Right, what's the situation?", "What's the science chaos today?" — vary it every time
 12. Never list topics unprompted — only show a list if the student asks "what can you help with"
 13. Format clearly with line breaks — never write a wall of text
-14. If a student is confused, offer to break it down — but keep the offer to one sentence`;
+14. If a student is confused, offer to break it down — but keep the offer to one sentence
+15. CRITICAL: NEVER teach content beyond the AQA GCSE spec. If a student asks about A-level topics (e.g. Maxwell-Boltzmann distributions, tests for ammonium ions, named types of intermolecular forces like van der Waals/dipole-dipole/hydrogen bonds, reaction mechanisms, EMF/flux), tell them it's beyond GCSE and they'll cover it at A-level. Stick to what's in the spec below.`;
 
   // All three specs — included in every prompt so AI can answer any subject from any page
   const PHYSICS_SPEC = `PHYSICS TOPICS (AQA 8463):
@@ -1130,18 +1210,18 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 4.4 Atomic Structure: protons/neutrons/electrons, isotopes, atomic model history, radioactive decay (alpha/beta/gamma), nuclear equations, half-life, background radiation, fission/fusion. RP6 half-life sim.
 4.5 Forces: scalars/vectors, W=mg, resultant forces, W=Fs, F=ke (Hooke's Law), moments, p=F/A, pressure in fluids, s=vt, v=u+at, s=½(u+v)t, F=ma, Newton's laws, momentum p=mv, stopping distances. Higher: impulse=FΔt, terminal velocity. RP7 acceleration, RP8 spring extension.
 4.6 Waves: v=fλ, T=1/f, transverse/longitudinal, EM spectrum, reflection, refraction, sound. Higher: n=sin(i)/sin(r). Triple: lenses, X-rays, radio waves. RP9 waves, RP10 light.
-4.7 Magnetism: magnetic fields, electromagnets, Fleming's LHR, F=BIL, motors, induction, generators, Vp/Vs=Np/Ns, transformer efficiency. Higher: induced EMF. RP11 motor effect.
+4.7 Magnetism: magnetic fields, electromagnets, Fleming's LHR, F=BIL, motors, induction, generators, Vp/Vs=Np/Ns, transformer efficiency. Higher: induced potential difference. RP11 motor effect.
 4.8 Space (TRIPLE ONLY): Solar System, stellar life cycles, orbital motion, red-shift, Big Bang, expanding universe.`;
 
   const CHEMISTRY_SPEC = `CHEMISTRY TOPICS (AQA 8462):
 4.1 Atomic Structure & Periodic Table: protons/neutrons/electrons, Ar, Mr, isotopes, electronic structure, periodic table groups/periods, Group 1 (alkali metals), Group 7 (halogens), Group 0 (noble gases), transition metals.
-4.2 Bonding: ionic (electron transfer, giant lattice), covalent (electron sharing, simple molecular vs giant), metallic (delocalised electrons), alloys, polymers. Higher: dot-cross diagrams. Triple: intermolecular forces.
+4.2 Bonding: ionic (electron transfer, giant lattice), covalent (electron sharing, simple molecular vs giant), metallic (delocalised electrons), alloys, polymers. Higher: dot-cross diagrams. Triple: intermolecular forces (do NOT name specific types like van der Waals, dipole-dipole, or hydrogen bonds — those are A-level).
 4.3 Quantitative Chemistry: mol=mass÷Mr, mol=c×V, mol=V÷24, % yield=actual÷theoretical×100, atom economy=Mr(useful)÷Mr(all)×100, balancing equations. Higher: limiting reactants, titration calcs.
 4.4 Chemical Changes: reactivity series, displacement, metal extraction, pH scale, neutralisation, acid+metal→salt+H₂, acid+base→salt+H₂O, acid+carbonate→salt+H₂O+CO₂, making salts, electrolysis (molten and solutions). Higher: half equations. RP1 making salts, RP2 electrolysis.
 4.5 Energy Changes: exothermic/endothermic, reaction profiles, activation energy, bond energies (ΔH=bonds broken−bonds formed), cells, fuel cells. Higher: bond energy calcs. RP3 temperature changes.
 4.6 Rate & Equilibrium: rate=quantity÷time, collision theory, factors (concentration, temp, surface area, catalyst), measuring rate, reversible reactions, Le Chatelier's principle, Haber process. Higher: equilibrium position calculations. RP4 thiosulfate, RP5 marble chips.
-4.7 Organic Chemistry: crude oil, fractional distillation, alkanes (CₙH₂ₙ₊₂), cracking, alkenes (CₙH₂ₙ), addition reactions, polymerisation, alcohols, carboxylic acids, esters. Higher: mechanisms. Triple: amino acids, condensation polymers.
-4.8 Chemical Analysis: pure substances, chromatography (Rf=spot÷solvent), flame tests, testing gases, ion tests, mass spectrometry, IR spectroscopy. Higher: interpreting spectra. RP6 chromatography, RP7 ion tests.
+4.7 Organic Chemistry: crude oil, fractional distillation, alkanes (CₙH₂ₙ₊₂), cracking, alkenes (CₙH₂ₙ), addition reactions, polymerisation, alcohols, carboxylic acids. Triple: esters, amino acids, condensation polymers. Do NOT teach reaction mechanisms — that is A-level content.
+4.8 Chemical Analysis: pure substances, chromatography (Rf=spot÷solvent), flame tests, testing gases, ion tests. Triple: instrumental methods (flame emission spectroscopy, mass spectrometry, IR spectroscopy — students need to know advantages of instrumental methods and interpret simple spectra). Do NOT teach tests for ammonium ions or Maxwell-Boltzmann distributions — those are A-level. RP6 chromatography, RP7 ion tests.
 4.9 Atmosphere: composition, evolution of atmosphere, greenhouse effect, climate change, carbon footprint, pollutants (CO, NOₓ, SO₂, particulates).
 4.10 Using Resources: finite/renewable, water treatment, LCA, corrosion, alloys, ceramics, polymers, composites, Haber process (N₂+3H₂⇌2NH₃), NPK fertilisers. Higher: fertiliser calculations. RP8 water purification.`;
 
@@ -1150,7 +1230,7 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 4.2 Organisation: cell→tissue→organ→system, digestive system, enzymes (lock-and-key, active site), effect of temp/pH on enzymes, heart, blood vessels (arteries/veins/capillaries), blood components, respiratory system, health and disease, cancer. Higher: CHD treatments, plant transport. RP3 enzyme pH, RP4 food tests.
 4.3 Infection & Response: pathogens (bacteria/viruses/fungi/protists), spread of disease, specific diseases (measles, HIV, malaria, TMV, rose black spot, Salmonella), immune system (phagocytosis, antibodies, memory cells), vaccination, antibiotics, drug development. Higher: monoclonal antibodies, plant defences.
 4.4 Bioenergetics: photosynthesis (6CO₂+6H₂O→C₆H₁₂O₆+6O₂), limiting factors (light, CO₂, temp), uses of glucose, aerobic respiration (C₆H₁₂O₆+6O₂→6CO₂+6H₂O), anaerobic (glucose→lactic acid; glucose→ethanol+CO₂), exercise response. Higher: rate graphs, metabolism. RP5 photosynthesis, RP6 fermentation.
-4.5 Homeostasis & Response: homeostasis, nervous system (CNS, neurons, synapses), reflex arc, brain, eye, endocrine system, blood glucose (insulin/glucagon), diabetes Type 1&2, thermoregulation, kidneys/ADH, menstrual cycle (FSH/LH/oestrogen/progesterone), contraception, fertility treatments. Higher: negative feedback, IVF ethics. Triple: kidney detail. RP7 reaction time.
+4.5 Homeostasis & Response: homeostasis, nervous system (CNS, neurons, synapses), reflex arc, eye, endocrine system, blood glucose (insulin/glucagon), diabetes Type 1&2, thermoregulation, kidneys/ADH, menstrual cycle (FSH/LH/oestrogen/progesterone), contraception, fertility treatments. Higher: negative feedback, IVF ethics. Triple: brain (cerebrum, cerebellum, medulla), kidney detail. RP7 reaction time.
 4.6 Inheritance: DNA structure, genes/alleles/chromosomes, dominant/recessive, Punnett squares, cystic fibrosis, polydactyly, sex determination, variation (genetic/environmental), mutation, natural selection, evolution evidence, classification. Higher: codominance, genetic engineering. Triple: protein synthesis.
 4.7 Ecology: populations/communities/ecosystems, abiotic/biotic factors, interdependence, food webs, competition, adaptations, quadrats/transects, water/carbon/nitrogen cycles, biodiversity, deforestation, climate change, conservation, mark-recapture formula. Higher: biodiversity index, predator-prey. RP8 habitat sampling.`;
 
@@ -1408,8 +1488,16 @@ def nav_html(active=""):
     <a class="phy{' active' if active=='physics' else ''}" href="/physics/index.html">⚡ Physics</a>
     <a class="che{' active' if active=='chemistry' else ''}" href="/chemistry/index.html">🧪 Chemistry</a>
     <a class="bio{' active' if active=='biology' else ''}" href="/biology/index.html">🌿 Biology</a>
+    <button class="search-toggle" onclick="toggleSearch()" title="Search all topics">🔍</button>
   </div>
-</nav>"""
+</nav>
+<div class="search-bar" id="searchBar">
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search any topic across Physics, Chemistry & Biology..." oninput="doSearch(this.value)" autocomplete="off"/>
+    <button class="search-close" onclick="toggleSearch()">✕</button>
+  </div>
+  <div class="search-results" id="searchResults"></div>
+</div>"""
 
 def chat_html():
     return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI">🤖</button>
@@ -1436,6 +1524,86 @@ def chat_html():
     </div>
   </div>
 </div>"""
+
+def search_js():
+    """Generate inline search index + logic from SITE_DATA"""
+    items = []
+    emojis = {"physics": "⚡", "chemistry": "🧪", "biology": "🌿"}
+    codes = {"physics": "phy", "chemistry": "che", "biology": "bio"}
+    for subj, data in SITE_DATA.items():
+        for topic in data["topics"]:
+            keywords = [topic["title"]]
+            keywords.extend(topic.get("subtopics", []))
+            keywords.extend(topic.get("equations", []))
+            keywords.extend(topic.get("higher", []))
+            keywords.extend(topic.get("triple_only", []))
+            for rp in topic.get("rp", []):
+                keywords.append(rp)
+            items.append({
+                "subject": subj,
+                "code": codes[subj],
+                "emoji": emojis[subj],
+                "label": data["label"],
+                "title": topic["title"],
+                "spec": topic.get("spec", ""),
+                "url": f"/{subj}/{topic['id']}.html",
+                "text": " | ".join(keywords),
+            })
+    index_json = json.dumps(items)
+    return f"""<script>
+var _searchIndex = {index_json};
+function toggleSearch() {{
+  var bar = document.getElementById('searchBar');
+  bar.classList.toggle('open');
+  if (bar.classList.contains('open')) {{
+    document.getElementById('searchInput').focus();
+  }} else {{
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchResults').innerHTML = '';
+  }}
+}}
+function doSearch(q) {{
+  var box = document.getElementById('searchResults');
+  if (!q || q.length < 2) {{ box.innerHTML = ''; return; }}
+  var lower = q.toLowerCase();
+  var terms = lower.split(/\\s+/);
+  var hits = _searchIndex.filter(function(item) {{
+    var txt = item.text.toLowerCase();
+    return terms.every(function(t) {{ return txt.indexOf(t) !== -1; }});
+  }});
+  if (hits.length === 0) {{
+    box.innerHTML = '<div class="search-no-results">No results found — try different keywords</div>';
+    return;
+  }}
+  var html = '';
+  hits.slice(0, 12).forEach(function(h) {{
+    // Find matching snippet
+    var parts = h.text.split(' | ');
+    var matchSnippet = '';
+    for (var i = 0; i < parts.length; i++) {{
+      if (terms.some(function(t) {{ return parts[i].toLowerCase().indexOf(t) !== -1; }})) {{
+        matchSnippet = parts[i];
+        break;
+      }}
+    }}
+    html += '<a class="search-result" href="' + h.url + '">';
+    html += '<div class="sr-subject ' + h.code + '">' + h.emoji + ' ' + h.label + ' — AQA ' + h.spec + '</div>';
+    html += '<div class="sr-title">' + h.title + '</div>';
+    if (matchSnippet && matchSnippet !== h.title) {{
+      html += '<div class="sr-match">' + matchSnippet + '</div>';
+    }}
+    html += '</a>';
+  }});
+  box.innerHTML = html;
+}}
+// Close search on Escape
+document.addEventListener('keydown', function(e) {{
+  if (e.key === 'Escape') {{
+    var bar = document.getElementById('searchBar');
+    if (bar && bar.classList.contains('open')) toggleSearch();
+  }}
+}});
+</script>"""
 
 def page_shell(title, subject, body_html, topic_id="", topic_title=""):
     color = SITE_DATA[subject]["color"]
@@ -1479,6 +1647,7 @@ def page_shell(title, subject, body_html, topic_id="", topic_title=""):
       topic: '{topic_title}'
     }});
   </script>
+  {search_js()}
   <script>
   // Quiz logic
   document.querySelectorAll('.quiz-opt').forEach(btn => {{
@@ -1557,6 +1726,7 @@ def make_landing():
   {chat_html()}
   <script src="/shared/mrbadmus4.js"></script>
   <script>MrBadmus.init({{ subject: 'science' }});</script>
+  {search_js()}
 </body>
 </html>"""
 
@@ -4023,6 +4193,7 @@ try {{
   {matching_js}
   {star_js}
   </script>
+  {search_js()}
 </body>
 </html>"""
 
@@ -4140,6 +4311,7 @@ def make_updated_electricity_page():
     if (!isOpen) {{ expand.classList.add('open'); btn.classList.add('open'); }}
   }}
   </script>
+  {search_js()}
 </body>
 </html>"""
 
@@ -4313,6 +4485,7 @@ def make_rollout_topic_hub(subject, topic, subtopic_list):
     if (!isOpen) {{ expand.classList.add('open'); btn.classList.add('open'); }}
   }}
   </script>
+  {search_js()}
 </body>
 </html>"""
 
