@@ -1083,6 +1083,7 @@ a { color: inherit; text-decoration: none; }
 SHARED_JS = r"""/**
  * mrbadmus.js — Shared AI chat engine
  * Works across Physics, Chemistry, Biology
+ * v""" + __import__('time').strftime('%Y%m%d%H%M') + r"""
  */
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
@@ -1292,7 +1293,7 @@ ${ALL_SPECS}`
         const returnPool = OPEN_GREETINGS_RETURN;
         introMsg = returnPool[Math.floor(Math.random() * returnPool.length)];
       } else {
-        introMsg = "Hey! I\'m the AI set up by Mr Badmus to help you study and smash your GCSEs. 🎯<br><br>I know the full AQA spec for Physics, Chemistry and Biology — ask me to explain any topic, work through a calculation with you, or just break something down in a way that actually makes sense.<br><br>What are we working on today?";
+        introMsg = "Hey! I\'m the AI set up by Mr Badmus to help you study and smash your GCSEs. 🎯<br><br>I know Physics, Chemistry and Biology inside out — ask me to explain any topic, work through a calculation with you, or just break something down in a way that actually makes sense.<br><br>What are we working on today?";
       }
       try { localStorage.setItem('mbai_visited', '1'); } catch(e) {}
       addMsg('bot', introMsg);
@@ -1568,7 +1569,7 @@ def make_hub(subject):
     for t in topics:
         badges = ""
         if t["rp"]: badges += f'<span class="badge badge-rp">📋 {len(t["rp"])} RP</span>'
-        if t["higher"]: badges += f'<span class="badge badge-h">⭐ Higher</span>'
+        # Higher badge removed — avoids students thinking they can skip it
         if t["triple_only"]: badges += f'<span class="badge badge-t">🔬 Triple</span>'
 
         cards += f"""
@@ -3467,15 +3468,30 @@ def make_new_quiz(quiz, color):
     total = len(quiz)
     for i, q in enumerate(quiz):
         opts_html = ""
+    for i, q in enumerate(quiz):
+        opts_html = ""
+        # Shuffle options so correct answer isn't always first
+        import random
+        opts = list(q["opts"])
+        random.shuffle(opts)
         correct_idx = None
-        for j, (opt_text, is_correct) in enumerate(q["opts"]):
+        # Build wrong_explanations mapping based on shuffled positions
+        orig_wrong_exp = q.get("wrong_explanations", {})
+        # Map original indices to new shuffled indices for wrong explanations
+        orig_opts = list(q["opts"])
+        new_wrong_exp = {}
+        for j, (opt_text, is_correct) in enumerate(opts):
             val = f"q{i}o{j}"
             if is_correct:
                 correct_idx = j
             opts_html += f'<button class="quiz-opt" data-val="{val}" data-qi="{i}" data-oi="{j}">{opt_text}</button>\n'
+            # Find original index of this option
+            for orig_j, (orig_text, _) in enumerate(orig_opts):
+                if orig_text == opt_text and orig_j in orig_wrong_exp:
+                    new_wrong_exp[j] = orig_wrong_exp[orig_j]
 
         wrong_exp_js = "{"
-        for idx, explanation in q.get("wrong_explanations", {}).items():
+        for idx, explanation in new_wrong_exp.items():
             safe = explanation.replace("'", "\\'").replace('"', '\\"')
             wrong_exp_js += f'{idx}: "{safe}",'
         wrong_exp_js += "}"
@@ -3540,21 +3556,21 @@ def make_new_subtopic_page(st, color):
   {lines_html}
 </div>"""
 
-    # Variables
-    var_html = ""
-    if st.get("variables"):
-        var_html = f"""<div class="section">
-  <div class="section-title">📐 Variables</div>
-  <div class="card">{make_variable_rows(st['variables'])}</div>
-</div>"""
-
-    # Equations
+    # Equations FIRST, then variables underneath
     eq_html = ""
     if st.get("equations"):
         pills = "".join(f'<div class="formula-pill">{eq}</div>' for eq in st["equations"])
         eq_html = f"""<div class="section">
   <div class="section-title">📐 Key Equations</div>
   <div class="formula-grid">{pills}</div>
+</div>"""
+
+    # Variables (after equations so students see formula first, then what each letter means)
+    var_html = ""
+    if st.get("variables"):
+        var_html = f"""<div class="section">
+  <div class="section-title">📐 Variables</div>
+  <div class="card">{make_variable_rows(st['variables'])}</div>
 </div>"""
 
     # Key note
@@ -3794,35 +3810,73 @@ function resetMatching(stId, pairs) {{
   }}
 }}
 
-// Drag and drop
-document.querySelectorAll('.match-def').forEach(def => {{
-  def.addEventListener('dragstart', e => {{
-    e.dataTransfer.setData('text/plain', def.dataset.index);
-    def.classList.add('dragging');
-  }});
-  def.addEventListener('dragend', () => def.classList.remove('dragging'));
-}});
+// Drag and drop (desktop) + Tap-to-select (mobile)
+(function initMatching() {{
+  let selectedDef = null;
 
-document.querySelectorAll('.match-drop').forEach(drop => {{
-  drop.addEventListener('dragover', e => {{ e.preventDefault(); drop.classList.add('drag-over'); }});
-  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
-  drop.addEventListener('drop', e => {{
-    e.preventDefault();
-    drop.classList.remove('drag-over');
-    const idx = e.dataTransfer.getData('text/plain');
-    const def = document.querySelector('.match-def[data-index="' + idx + '"]');
-    if (!def) return;
-    const existing = drop.querySelector('.match-def');
-    if (existing) {{
-      const pool = document.getElementById('defPool-{st_id}');
-      pool.appendChild(existing);
-    }}
-    drop.innerHTML = '';
-    drop.appendChild(def);
-    drop.classList.add('has-item');
-    drop.classList.remove('match-correct', 'match-wrong');
+  function clearSelected() {{
+    document.querySelectorAll('.match-def.selected').forEach(d => d.classList.remove('selected'));
+    selectedDef = null;
+  }}
+
+  // TAP / CLICK logic — works on both mobile and desktop
+  document.querySelectorAll('.match-def').forEach(def => {{
+    def.addEventListener('click', e => {{
+      e.stopPropagation();
+      if (selectedDef === def) {{ clearSelected(); return; }}
+      clearSelected();
+      def.classList.add('selected');
+      selectedDef = def;
+    }});
+    // Desktop drag
+    def.setAttribute('draggable', 'true');
+    def.addEventListener('dragstart', e => {{
+      e.dataTransfer.setData('text/plain', def.dataset.index);
+      def.classList.add('dragging');
+      selectedDef = def;
+    }});
+    def.addEventListener('dragend', () => def.classList.remove('dragging'));
   }});
-}});
+
+  document.querySelectorAll('.match-drop').forEach(drop => {{
+    // TAP on a drop zone
+    drop.addEventListener('click', e => {{
+      e.stopPropagation();
+      if (!selectedDef) return;
+      const existing = drop.querySelector('.match-def');
+      const pool = document.getElementById('defPool-{st_id}');
+      if (existing) pool.appendChild(existing);
+      drop.innerHTML = '';
+      drop.appendChild(selectedDef);
+      drop.classList.add('has-item');
+      drop.classList.remove('match-correct', 'match-wrong');
+      clearSelected();
+    }});
+    // Desktop drag-over/drop
+    drop.addEventListener('dragover', e => {{ e.preventDefault(); drop.classList.add('drag-over'); }});
+    drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+    drop.addEventListener('drop', e => {{
+      e.preventDefault();
+      drop.classList.remove('drag-over');
+      const idx = e.dataTransfer.getData('text/plain');
+      const def = document.querySelector('.match-def[data-index="' + idx + '"]');
+      if (!def) return;
+      const existing = drop.querySelector('.match-def');
+      if (existing) {{
+        const pool = document.getElementById('defPool-{st_id}');
+        pool.appendChild(existing);
+      }}
+      drop.innerHTML = '';
+      drop.appendChild(def);
+      drop.classList.add('has-item');
+      drop.classList.remove('match-correct', 'match-wrong');
+      clearSelected();
+    }});
+  }});
+
+  // Tap outside clears selection
+  document.addEventListener('click', clearSelected);
+}})();
 """
 
     star_js = f"""
@@ -3911,6 +3965,8 @@ try {{
 .match-def {{ background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;font-size:0.85rem;cursor:grab;transition:all 0.15s; }}
 .match-def:hover {{ background:rgba(255,255,255,0.1);border-color:{color}; }}
 .match-def.dragging {{ opacity:0.5; }}
+.match-def.selected {{ border-color:{color};background:rgba(78,205,196,0.15);box-shadow:0 0 0 2px {color}; cursor:pointer; }}
+.match-drop {{ cursor:pointer; }}
 .match-check-btn,.match-reset-btn {{ border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.88rem;font-family:'Nunito',sans-serif; }}
 .match-check-btn {{ background:{color};color:#0F0F1A; }}
 .match-reset-btn {{ background:rgba(255,255,255,0.08);color:var(--text); }}
@@ -3978,7 +4034,7 @@ def make_updated_electricity_page():
         theory_preview = st["theory"][0]["content"].split("\n")[0] if st["theory"] else ""
         eq_pills = "".join(f'<span class="formula-pill" style="font-size:0.8rem;padding:6px 12px;">{eq}</span>' for eq in st.get("equations", [])) if st.get("equations") else ""
         badges = ""
-        if st.get("higher"): badges += '<span class="badge badge-h">⭐ Higher</span>'
+        # Higher badge removed — avoids students thinking they can skip it
         if st.get("triple_only"): badges += '<span class="badge badge-t">🔬 Triple</span>'
         if st.get("rp"): badges += '<span class="badge badge-rp">📋 RP</span>'
         if st.get("matching"): badges += '<span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>'
@@ -4149,7 +4205,7 @@ def make_rollout_topic_hub(subject, topic, subtopic_list):
             for eq in st.get("equations", [])
         ) if st.get("equations") else ""
         badges = ""
-        if st.get("higher"):     badges += '<span class="badge badge-h">⭐ Higher</span>'
+        # Higher badge removed — avoids students thinking they can skip it
         if st.get("triple_only"):badges += '<span class="badge badge-t">🔬 Triple</span>'
         if st.get("rp"):         badges += '<span class="badge badge-rp">📋 RP</span>'
         if st.get("matching"):   badges += '<span class="badge" style="background:rgba(255,217,61,0.15);color:#FFD93D;border-color:rgba(255,217,61,0.3);">🎯 Matching</span>'
