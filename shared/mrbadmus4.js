@@ -1,7 +1,7 @@
 /**
  * mrbadmus.js — Shared AI chat engine
  * Works across Physics, Chemistry, Biology
- * v202603091935
+ * v202603092103
  */
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
