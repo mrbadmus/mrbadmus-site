@@ -26,12 +26,13 @@ CORE TEACHING RULES — ALWAYS FOLLOW:
 12. If a student just says hello or greets you, respond with ONE friendly line only — e.g. "Hey! What are we working on today? 🔥"
 13. Never list topics unprompted — only show a list if the student asks "what can you help with"
 14. Format clearly with line breaks — never write a wall of text
-15. If a student is confused, offer to break it down — but keep the offer to one sentence`;
+15. If a student is confused, offer to break it down — but keep the offer to one sentence
+16. CRITICAL — You are a FULL GCSE Science tutor covering ALL THREE sciences. You MUST answer questions about Biology, Chemistry AND Physics regardless of which subject page the student is on. NEVER say "I'm only the Physics tutor" or refuse to answer Chemistry or Biology questions. If a student on a Physics page asks about photosynthesis, answer it fully. Always help with any AQA GCSE Science topic.`;
 
   const SUBJECT_PROMPTS = {
     physics: `${BASE_PROMPT}
 
-CURRENT SUBJECT: AQA GCSE Physics (8463)
+CURRENT PAGE CONTEXT: AQA GCSE Physics (8463) — but answer ALL science subjects if asked
 
 FULL PHYSICS SPECIFICATION TOPICS:
 4.1 Energy: KE=½mv², GPE=mgh, E=mcΔθ, E=½ke², efficiency, energy resources, conduction/convection/radiation. RP1 specific heat capacity, RP2 insulation.
@@ -48,7 +49,7 @@ KEY EQUATIONS: All equation sheet equations apply.`,
 
     chemistry: `${BASE_PROMPT}
 
-CURRENT SUBJECT: AQA GCSE Chemistry (8462)
+CURRENT PAGE CONTEXT: AQA GCSE Chemistry (8462) — but answer ALL science subjects if asked
 
 FULL CHEMISTRY SPECIFICATION TOPICS:
 4.1 Atomic Structure & Periodic Table: protons/neutrons/electrons, Ar, Mr, isotopes, electronic structure, periodic table groups/periods, Group 1 (alkali metals), Group 7 (halogens), Group 0 (noble gases), transition metals.
@@ -64,7 +65,7 @@ FULL CHEMISTRY SPECIFICATION TOPICS:
 
     biology: `${BASE_PROMPT}
 
-CURRENT SUBJECT: AQA GCSE Biology (8461)
+CURRENT PAGE CONTEXT: AQA GCSE Biology (8461) — but answer ALL science subjects if asked
 
 FULL BIOLOGY SPECIFICATION TOPICS:
 4.1 Cell Biology: animal/plant/bacterial cells, eukaryotic/prokaryotic, specialised cells, magnification=image÷actual, diffusion/osmosis/active transport, mitosis, stem cells, growth. Higher: meiosis, stem cell ethics. RP1 microscopy, RP2 osmosis.
@@ -117,11 +118,26 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
   }
 
+  const VOICE_ADDENDUM = `
+
+VOICE MODE — YOU ARE SPEAKING OUT LOUD, NOT WRITING:
+- Reply in 2 to 3 SHORT spoken sentences MAXIMUM. Never more.
+- NO bullet points, NO numbered lists, NO asterisks, NO markdown, NO emojis.
+- NO headers, NO bold, NO dashes used as lists.
+- Write like you are talking directly to the student face to face.
+- Use natural spoken language: say "for example" not "e.g.", say "which means" not an arrow symbol.
+- For calculations, talk through steps verbally: "First write the formula, then substitute the values..."
+- End with ONE short follow-up question to keep the conversation going.
+- Keep it warm, punchy and human. You are a teacher talking, not writing a textbook.`;
+
+  let _voiceSystemPrompt = '';
+
   function init(config) {
     currentSubject = config.subject || 'physics';
     currentTopic = config.topic || '';
     systemPrompt = SUBJECT_PROMPTS[currentSubject] || SUBJECT_PROMPTS.physics;
     if (currentTopic) systemPrompt += `\n\nThe student is currently studying: ${currentTopic}. Focus on this topic when possible.`;
+    _voiceSystemPrompt = systemPrompt + VOICE_ADDENDUM;
 
     document.getElementById('chatOverlay')?.addEventListener('click', e => { if(e.target===document.getElementById('chatOverlay')) close(); });
     document.querySelector('.close-btn')?.addEventListener('click', close);
@@ -176,7 +192,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;
     chatHistory.push({ role:'user', content:userContent });
     try {
-      const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ system:systemPrompt, messages:chatHistory }) });
+      const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ system:(window._mrBadmusVoiceMode ? _voiceSystemPrompt : systemPrompt), messages:chatHistory }) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
@@ -230,9 +246,17 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
     window.speechSynthesis.cancel();
     var clean = text
-      .replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')
-      .replace(/`(.*?)`/g, '$1').replace(/#{1,3} /g, '')
-      .split('\n').join(' ').substring(0, 1000);
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .replace(/`([^`]*)`/g, '$1')
+      .replace(/#{1,6} /g, '')
+      .replace(/^[-*+] /gm, '')
+      .replace(/e\.g\./gi, 'for example')
+      .replace(/i\.e\./gi, 'that is')
+      .replace(/\n+/g, ' ')
+      .replace(/  +/g, ' ')
+      .trim()
+      .substring(0, 1000);
     var utt = new SpeechSynthesisUtterance(clean);
     utt.rate = 0.92; utt.pitch = 1.0; utt.lang = 'en-GB';
     function _trySpeak() {
@@ -267,7 +291,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
       alert('Voice mode needs Chrome or Edge. Safari on iPhone also works.');
       return;
     }
-    _voiceMode = true; _ttsEnabled = true;
+    _voiceMode = true; _ttsEnabled = true; window._mrBadmusVoiceMode = true;
     var banner = _banner(); var msgs = _msgs();
     if (banner) banner.style.display = 'flex';
     if (msgs)   msgs.style.display   = 'none';
@@ -285,7 +309,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
   };
 
   MB.exitVoiceMode = function() {
-    _voiceMode = false;
+    _voiceMode = false; window._mrBadmusVoiceMode = false;
     if (_recognition) { try { _recognition.stop(); } catch(e){} }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     _isSpeaking = false; _isListening = false;
