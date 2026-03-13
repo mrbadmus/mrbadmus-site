@@ -195,83 +195,184 @@ FULL BIOLOGY SPECIFICATION TOPICS:
 })();
 
 
-// ── TTS & VOICE (added outside IIFE so they don't interfere with chat module) ──
-var _ttsEnabled = false;
-var _recognition = null;
-var _voiceActive = false;
+// ══════════════════════════════════════════════════════
+//  MR BADMUS VOICE MODE
+//  Student speaks → AI replies → Mr Badmus speaks back
+// ══════════════════════════════════════════════════════
 
-MrBadmus.toggleTTS = function() {
-  _ttsEnabled = !_ttsEnabled;
-  var btn = document.getElementById('ttsToggle');
-  if (btn) {
-    btn.textContent = _ttsEnabled ? '🔊 ON' : '🔊 TTS';
-    btn.style.background = _ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
-    btn.style.borderColor = _ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
-  }
-  if (!_ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
-};
-
-function _speakText(text) {
-  if (!_ttsEnabled || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  var clean = text.replace(/[*_`#>\[\]]/g,'').replace(/\n/g,' ').substring(0,800);
-  var utt = new SpeechSynthesisUtterance(clean);
-  utt.rate = 0.95; utt.pitch = 1.0; utt.lang = 'en-GB';
-  var voices = window.speechSynthesis.getVoices();
-  var v = voices.find(function(v){return v.lang==='en-GB';}) || voices.find(function(v){return v.lang.startsWith('en');});
-  if (v) utt.voice = v;
-  window.speechSynthesis.speak(utt);
-}
-
-// Wrap ask() to auto-speak bot replies when TTS on
 (function() {
-  var _origAsk = MrBadmus.ask;
-  MrBadmus.ask = function(preset) {
-    var p = _origAsk(preset);
-    if (p && p.then) {
+  var MB = window.MrBadmus;
+
+  var _ttsEnabled  = false;
+  var _voiceMode   = false;
+  var _recognition = null;
+  var _isSpeaking  = false;
+  var _isThinking  = false;
+  var _isListening = false;
+
+  function _orb()        { return document.getElementById('voiceOrb'); }
+  function _label()      { return document.getElementById('voiceStateLabel'); }
+  function _transcript() { return document.getElementById('voiceTranscript'); }
+  function _banner()     { return document.getElementById('voiceBanner'); }
+  function _msgs()       { return document.getElementById('chatMsgs'); }
+  function _subtitle()   { return document.getElementById('chatSubtitle'); }
+
+  function _setOrbState(state, emoji, labelText) {
+    var orb = _orb(); var lbl = _label();
+    if (!orb) return;
+    orb.className = 'voice-orb voice-orb--' + state;
+    orb.textContent = emoji;
+    orb.onclick = (state === 'idle') ? function(){ MB.startListening(); } : null;
+    if (lbl) lbl.textContent = labelText;
+  }
+
+  function _speak(text, onEnd) {
+    if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
+    window.speechSynthesis.cancel();
+    var clean = text
+      .replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')
+      .replace(/`(.*?)`/g, '$1').replace(/#{1,3} /g, '')
+      .split('\n').join(' ').substring(0, 1000);
+    var utt = new SpeechSynthesisUtterance(clean);
+    utt.rate = 0.92; utt.pitch = 1.0; utt.lang = 'en-GB';
+    function _trySpeak() {
+      var voices = window.speechSynthesis.getVoices();
+      var v = voices.find(function(v){ return v.name === 'Daniel'; })
+           || voices.find(function(v){ return v.lang === 'en-GB'; })
+           || voices.find(function(v){ return v.lang.startsWith('en'); });
+      if (v) utt.voice = v;
+      utt.onend  = function() { _isSpeaking = false; if (onEnd) onEnd(); };
+      utt.onerror = function() { _isSpeaking = false; if (onEnd) onEnd(); };
+      _isSpeaking = true;
+      window.speechSynthesis.speak(utt);
+    }
+    if (window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.onvoiceschanged = _trySpeak;
+    } else { _trySpeak(); }
+  }
+
+  MB.toggleTTS = function() {
+    _ttsEnabled = !_ttsEnabled;
+    var btn = document.getElementById('ttsToggle');
+    if (btn) {
+      btn.textContent = _ttsEnabled ? '🔊 ON' : '🔊 TTS';
+      btn.style.background  = _ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
+      btn.style.borderColor = _ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
+    }
+    if (!_ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+  };
+
+  MB.enterVoiceMode = function() {
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert('Voice mode needs Chrome or Edge. Safari on iPhone also works.');
+      return;
+    }
+    _voiceMode = true; _ttsEnabled = true;
+    var banner = _banner(); var msgs = _msgs();
+    if (banner) banner.style.display = 'flex';
+    if (msgs)   msgs.style.display   = 'none';
+    var sub = _subtitle(); if (sub) sub.textContent = '🎤 Voice mode';
+    var ttsBtn = document.getElementById('ttsToggle');
+    if (ttsBtn) { ttsBtn.textContent = '🔊 ON'; ttsBtn.style.background = 'rgba(78,205,196,0.3)'; ttsBtn.style.borderColor = '#4ECDC4'; }
+    _setOrbState('idle', '🎤', 'Tap to speak');
+    if (!window._voiceWelcomeDone) {
+      window._voiceWelcomeDone = true;
+      _setOrbState('speaking', '🔊', 'Mr Badmus is speaking...');
+      _speak('Voice mode is on. Tap the mic and ask me anything.', function() {
+        _setOrbState('idle', '🎤', 'Tap to speak');
+      });
+    }
+  };
+
+  MB.exitVoiceMode = function() {
+    _voiceMode = false;
+    if (_recognition) { try { _recognition.stop(); } catch(e){} }
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    _isSpeaking = false; _isListening = false;
+    var banner = _banner(); var msgs = _msgs();
+    if (banner) banner.style.display = 'none';
+    if (msgs)   msgs.style.display   = '';
+    var sub = _subtitle(); if (sub) sub.textContent = 'GCSE Science Tutor';
+  };
+
+  MB.startListening = function() {
+    if (_isListening || _isThinking || _isSpeaking) return;
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('Voice not supported in this browser.'); return; }
+    _recognition = new SR();
+    _recognition.lang = 'en-GB';
+    _recognition.interimResults = true;
+    _recognition.onstart = function() {
+      _isListening = true;
+      _setOrbState('listening', '🔴', 'Listening...');
+      var tr = _transcript(); if (tr) tr.textContent = '';
+    };
+    _recognition.onresult = function(e) {
+      var interim = '', final_t = '';
+      for (var i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final_t += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      var tr = _transcript(); if (tr) tr.textContent = final_t || interim;
+    };
+    _recognition.onerror = function(e) {
+      _isListening = false;
+      _setOrbState('idle', '🎤', e.error === 'no-speech' ? 'Tap to speak' : 'Error: ' + e.error);
+    };
+    _recognition.onend = function() {
+      _isListening = false;
+      var tr = _transcript();
+      var text = tr ? tr.textContent.trim() : '';
+      if (!text || !_voiceMode) { if (_voiceMode) _setOrbState('idle', '🎤', 'Tap to speak'); return; }
+      _setOrbState('thinking', '💭', 'Mr Badmus is thinking...');
+      _isThinking = true;
+      if (tr) tr.textContent = '“' + text + '”';
+      var p = MB.ask(text);
+      if (!p || typeof p.then !== 'function') p = Promise.resolve();
       p.then(function() {
-        if (_ttsEnabled) {
-          var msgs = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
-          if (msgs.length) _speakText(msgs[msgs.length-1].innerText);
-        }
+        _isThinking = false;
+        setTimeout(function() {
+          var bubbles = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
+          var reply = bubbles.length ? bubbles[bubbles.length - 1].innerText : '';
+          if (reply) {
+            _setOrbState('speaking', '🔊', 'Mr Badmus is speaking...');
+            _speak(reply, function() { setTimeout(function() { _setOrbState('idle', '🎤', 'Tap to speak'); }, 400); });
+          } else {
+            _setOrbState('idle', '🎤', 'Tap to speak');
+          }
+        }, 300);
+      }).catch(function() {
+        _isThinking = false; _setOrbState('idle', '🎤', 'Something went wrong — tap to retry');
+      });
+    };
+    _recognition.start();
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var orb = _orb();
+    if (!orb) return;
+    orb.addEventListener('click', function() {
+      if (_isListening) { if (_recognition) _recognition.stop(); }
+      else if (_isSpeaking) { if (window.speechSynthesis) window.speechSynthesis.cancel(); _isSpeaking = false; setTimeout(function(){ if (_voiceMode) MB.startListening(); }, 200); }
+      else if (!_isThinking) { MB.startListening(); }
+    });
+  });
+
+  var _origAsk = MB.ask;
+  MB.ask = function(preset) {
+    var p = _origAsk(preset);
+    if (!p || typeof p.then !== 'function') return Promise.resolve();
+    if (_ttsEnabled && !_voiceMode) {
+      p.then(function() {
+        setTimeout(function() {
+          var bubbles = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
+          if (bubbles.length) _speak(bubbles[bubbles.length - 1].innerText, null);
+        }, 150);
       });
     }
     return p;
   };
-})();
 
-MrBadmus.toggleVoice = function() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('Voice input is not supported in this browser. Try Chrome or Edge.');
-    return;
-  }
-  if (_voiceActive) { if (_recognition) _recognition.stop(); return; }
-  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  _recognition = new SR();
-  _recognition.lang = 'en-GB';
-  _recognition.interimResults = false;
-  _recognition.onstart = function() {
-    _voiceActive = true;
-    var btn = document.getElementById('voiceBtn');
-    var st = document.getElementById('voiceStatus');
-    if (btn) { btn.textContent = '⏹'; btn.style.color = '#FF6B6B'; }
-    if (st) st.style.display = 'block';
-  };
-  _recognition.onresult = function(e) {
-    var t = e.results[0][0].transcript;
-    var inp = document.getElementById('ci');
-    if (inp) { inp.value = t; MrBadmus.ask(); }
-  };
-  _recognition.onerror = function(e) {
-    var st = document.getElementById('voiceStatus');
-    if (st) { st.textContent = '⚠️ Error: ' + e.error; setTimeout(function(){ st.style.display='none'; st.textContent='🔴 Listening...'; }, 3000); }
-  };
-  _recognition.onend = function() {
-    _voiceActive = false;
-    var btn = document.getElementById('voiceBtn');
-    var st = document.getElementById('voiceStatus');
-    if (btn) { btn.textContent = '🎤'; btn.style.color = ''; }
-    if (st) st.style.display = 'none';
-  };
-  _recognition.start();
-};
+  MB.toggleVoice = MB.enterVoiceMode;
+
+})();

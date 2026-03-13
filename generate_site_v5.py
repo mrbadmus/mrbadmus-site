@@ -1528,373 +1528,191 @@ def chat_html():
 # Extract original SHARED_JS and patch it — we inject TTS/voice at the end of the module
 # The patched JS is appended to the SHARED_JS string already defined above.
 
-VOICE_TTS_JS = """
-// ── TALK FEATURE ──────────────────────────────────────────
-
-let ttsEnabled = false;
-let recognition = null;
-let voiceActive = false;
-
-function toggleTTS() {
-  ttsEnabled = !ttsEnabled;
-  const btn = document.getElementById('ttsToggle');
-  if (btn) {
-    btn.textContent = ttsEnabled ? '🔊 TTS ON' : '🔊 TTS';
-    btn.style.background = ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
-    btn.style.borderColor = ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
-  }
-  if (!ttsEnabled) window.speechSynthesis?.cancel();
-}
-
-function speakText(text) {
-  if (!ttsEnabled || !window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  // Strip markdown-style formatting for TTS
-  const clean = text.replace(/[*_`#>\\[\\]]/g, '').replace(/\\n/g, ' ');
-  const utt = new SpeechSynthesisUtterance(clean);
-  utt.rate = 0.95;
-  utt.pitch = 1.0;
-  utt.lang = 'en-GB';
-  // Try to get a good voice
-  const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v => v.lang === 'en-GB' && v.name.toLowerCase().includes('male'))
-    || voices.find(v => v.lang === 'en-GB')
-    || voices.find(v => v.lang.startsWith('en'));
-  if (preferred) utt.voice = preferred;
-  window.speechSynthesis.speak(utt);
-}
-
-function toggleVoice() {
-  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    addMsg('bot', '⚠️ Voice input is not supported in your browser. Try Chrome or Edge.');
-    return;
-  }
-  if (voiceActive) {
-    recognition?.stop();
-    return;
-  }
-  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SpeechRec();
-  recognition.lang = 'en-GB';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  recognition.onstart = () => {
-    voiceActive = true;
-    const btn = document.getElementById('voiceBtn');
-    const status = document.getElementById('voiceStatus');
-    if (btn) { btn.textContent = '⏹'; btn.style.color = '#FF6B6B'; }
-    if (status) status.style.display = 'block';
-  };
-
-  recognition.onresult = e => {
-    const transcript = e.results[0][0].transcript;
-    const input = document.getElementById('ci');
-    if (input) {
-      input.value = transcript;
-      ask();
-    }
-  };
-
-  recognition.onerror = e => {
-    addMsg('bot', '⚠️ Voice input error: ' + e.error + '. Please try again or type your question.');
-  };
-
-  recognition.onend = () => {
-    voiceActive = false;
-    const btn = document.getElementById('voiceBtn');
-    const status = document.getElementById('voiceStatus');
-    if (btn) { btn.textContent = '🎤'; btn.style.color = ''; }
-    if (status) status.style.display = 'none';
-  };
-
-  recognition.start();
-}
-
-// Override addMsg to auto-speak bot replies when TTS is on
-const _originalAsk = ask;
-"""
-
-# Build the full patched SHARED_JS
-# We need to insert TTS/voice into the module pattern that ends with `return { init, open, close, ask };`
-# Strategy: patch the return statement and expose toggleTTS/toggleVoice
+VOICE_TTS_JS = ""  # unused
 
 SHARED_JS_PATCHED = SHARED_JS.replace(
     "  return { init, open, close, ask };\n})();",
     "  return { init, open, close, ask };\n})();\n"
 ) + """
 // ══════════════════════════════════════════════════════
-//  MR BADMUS VOICE MODE — full two-way voice conversation
+//  MR BADMUS VOICE MODE
 //  Student speaks → AI replies → Mr Badmus speaks back
 // ══════════════════════════════════════════════════════
 
 (function() {
+  var MB = window.MrBadmus;
 
-  // ── State ──
-  var _ttsEnabled    = false;
-  var _voiceMode     = false;   // are we in full voice conversation mode?
-  var _recognition   = null;
-  var _isSpeaking    = false;
-  var _isThinking    = false;
-  var _isListening   = false;
-  var _currentUtter  = null;
-  var _autoListen    = false;   // after AI speaks, auto-restart listening
+  var _ttsEnabled  = false;
+  var _voiceMode   = false;
+  var _recognition = null;
+  var _isSpeaking  = false;
+  var _isThinking  = false;
+  var _isListening = false;
 
-  // ── DOM helpers ──
-  function _orb()         { return document.getElementById('voiceOrb'); }
-  function _label()       { return document.getElementById('voiceStateLabel'); }
-  function _transcript()  { return document.getElementById('voiceTranscript'); }
-  function _banner()      { return document.getElementById('voiceBanner'); }
-  function _msgs()        { return document.getElementById('chatMsgs'); }
-  function _subtitle()    { return document.getElementById('chatSubtitle'); }
+  function _orb()        { return document.getElementById('voiceOrb'); }
+  function _label()      { return document.getElementById('voiceStateLabel'); }
+  function _transcript() { return document.getElementById('voiceTranscript'); }
+  function _banner()     { return document.getElementById('voiceBanner'); }
+  function _msgs()       { return document.getElementById('chatMsgs'); }
+  function _subtitle()   { return document.getElementById('chatSubtitle'); }
 
-  // ── Orb state ──
   function _setOrbState(state, emoji, labelText) {
-    var orb = _orb();
-    var lbl = _label();
+    var orb = _orb(); var lbl = _label();
     if (!orb) return;
     orb.className = 'voice-orb voice-orb--' + state;
     orb.textContent = emoji;
-    orb.onclick = state === 'idle' ? function(){ MrBadmus.startListening(); } : null;
+    orb.onclick = (state === 'idle') ? function(){ MB.startListening(); } : null;
     if (lbl) lbl.textContent = labelText;
   }
 
-  // ── TTS toggle (header button) ──
-  MrBadmus.toggleTTS = function() {
+  function _speak(text, onEnd) {
+    if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
+    window.speechSynthesis.cancel();
+    var clean = text
+      .replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')
+      .replace(/`(.*?)`/g, '$1').replace(/#{1,3} /g, '')
+      .split('\\n').join(' ').substring(0, 1000);
+    var utt = new SpeechSynthesisUtterance(clean);
+    utt.rate = 0.92; utt.pitch = 1.0; utt.lang = 'en-GB';
+    function _trySpeak() {
+      var voices = window.speechSynthesis.getVoices();
+      var v = voices.find(function(v){ return v.name === 'Daniel'; })
+           || voices.find(function(v){ return v.lang === 'en-GB'; })
+           || voices.find(function(v){ return v.lang.startsWith('en'); });
+      if (v) utt.voice = v;
+      utt.onend  = function() { _isSpeaking = false; if (onEnd) onEnd(); };
+      utt.onerror = function() { _isSpeaking = false; if (onEnd) onEnd(); };
+      _isSpeaking = true;
+      window.speechSynthesis.speak(utt);
+    }
+    if (window.speechSynthesis.getVoices().length === 0) {
+      window.speechSynthesis.onvoiceschanged = _trySpeak;
+    } else { _trySpeak(); }
+  }
+
+  MB.toggleTTS = function() {
     _ttsEnabled = !_ttsEnabled;
     var btn = document.getElementById('ttsToggle');
     if (btn) {
       btn.textContent = _ttsEnabled ? '🔊 ON' : '🔊 TTS';
-      btn.style.background    = _ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
-      btn.style.borderColor   = _ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
+      btn.style.background  = _ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
+      btn.style.borderColor = _ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
     }
     if (!_ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
   };
 
-  // ── Speak text (used by both TTS toggle and voice mode) ──
-  function _speak(text, onEnd) {
-    if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
-    window.speechSynthesis.cancel();
-    // Strip markdown
-    var clean = text
-      .replace(/\\*\\*(.*?)\\*\\*/g, '$1')
-      .replace(/\\*(.*?)\\*/g, '$1')
-      .replace(/`(.*?)`/g, '$1')
-      .replace(/#{1,3}\\s/g, '')
-      .replace(/\\n/g, ' ')
-      .substring(0, 1000);
-
-    var utt = new SpeechSynthesisUtterance(clean);
-    utt.rate  = 0.92;
-    utt.pitch = 1.0;
-    utt.lang  = 'en-GB';
-
-    // Pick best available voice
-    function _trySpeak() {
-      var voices = window.speechSynthesis.getVoices();
-      var v = voices.find(function(v){ return v.name === 'Daniel'; })
-           || voices.find(function(v){ return v.lang === 'en-GB' && !v.name.toLowerCase().includes('female'); })
-           || voices.find(function(v){ return v.lang === 'en-GB'; })
-           || voices.find(function(v){ return v.lang.startsWith('en'); });
-      if (v) utt.voice = v;
-      _currentUtter = utt;
-      utt.onend = function() {
-        _isSpeaking = false;
-        _currentUtter = null;
-        if (onEnd) onEnd();
-      };
-      utt.onerror = function() {
-        _isSpeaking = false;
-        if (onEnd) onEnd();
-      };
-      _isSpeaking = true;
-      window.speechSynthesis.speak(utt);
-    }
-
-    // Voices may not be loaded yet
-    if (window.speechSynthesis.getVoices().length === 0) {
-      window.speechSynthesis.onvoiceschanged = function() { _trySpeak(); };
-    } else {
-      _trySpeak();
-    }
-  }
-
-  // ── Enter voice mode ──
-  MrBadmus.enterVoiceMode = function() {
+  MB.enterVoiceMode = function() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Voice mode needs Chrome or Edge on desktop/Android. Safari on iPhone also works.');
+      alert('Voice mode needs Chrome or Edge. Safari on iPhone also works.');
       return;
     }
-    _voiceMode    = true;
-    _autoListen   = true;
-    _ttsEnabled   = true;  // voice mode always speaks replies
-
-    // Show banner, hide msgs
-    var banner = _banner();
-    var msgs   = _msgs();
+    _voiceMode = true; _ttsEnabled = true;
+    var banner = _banner(); var msgs = _msgs();
     if (banner) banner.style.display = 'flex';
     if (msgs)   msgs.style.display   = 'none';
-
-    var sub = _subtitle();
-    if (sub) sub.textContent = '🎤 Voice mode';
-
-    // Update TTS button
+    var sub = _subtitle(); if (sub) sub.textContent = '🎤 Voice mode';
     var ttsBtn = document.getElementById('ttsToggle');
-    if (ttsBtn) {
-      ttsBtn.textContent    = '🔊 ON';
-      ttsBtn.style.background  = 'rgba(78,205,196,0.3)';
-      ttsBtn.style.borderColor = '#4ECDC4';
-    }
-
+    if (ttsBtn) { ttsBtn.textContent = '🔊 ON'; ttsBtn.style.background = 'rgba(78,205,196,0.3)'; ttsBtn.style.borderColor = '#4ECDC4'; }
     _setOrbState('idle', '🎤', 'Tap to speak');
-
-    // Speak a welcome if first time
     if (!window._voiceWelcomeDone) {
       window._voiceWelcomeDone = true;
       _setOrbState('speaking', '🔊', 'Mr Badmus is speaking...');
-      _speak("Voice mode is on. Tap the mic and ask me anything.", function() {
+      _speak('Voice mode is on. Tap the mic and ask me anything.', function() {
         _setOrbState('idle', '🎤', 'Tap to speak');
       });
     }
   };
 
-  // ── Exit voice mode ──
-  MrBadmus.exitVoiceMode = function() {
-    _voiceMode  = false;
-    _autoListen = false;
+  MB.exitVoiceMode = function() {
+    _voiceMode = false;
     if (_recognition) { try { _recognition.stop(); } catch(e){} }
     if (window.speechSynthesis) window.speechSynthesis.cancel();
-    _isSpeaking  = false;
-    _isListening = false;
-
-    var banner = _banner();
-    var msgs   = _msgs();
+    _isSpeaking = false; _isListening = false;
+    var banner = _banner(); var msgs = _msgs();
     if (banner) banner.style.display = 'none';
     if (msgs)   msgs.style.display   = '';
-
-    var sub = _subtitle();
-    if (sub) sub.textContent = 'GCSE Science Tutor';
+    var sub = _subtitle(); if (sub) sub.textContent = 'GCSE Science Tutor';
   };
 
-  // ── Start listening ──
-  MrBadmus.startListening = function() {
+  MB.startListening = function() {
     if (_isListening || _isThinking || _isSpeaking) return;
-
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) { alert('Voice not supported in this browser.'); return; }
     _recognition = new SR();
     _recognition.lang = 'en-GB';
     _recognition.interimResults = true;
-    _recognition.maxAlternatives = 1;
-
     _recognition.onstart = function() {
       _isListening = true;
       _setOrbState('listening', '🔴', 'Listening...');
-      var tr = _transcript();
-      if (tr) tr.textContent = '';
+      var tr = _transcript(); if (tr) tr.textContent = '';
     };
-
     _recognition.onresult = function(e) {
-      var interim = '';
-      var final_t = '';
+      var interim = '', final_t = '';
       for (var i = e.resultIndex; i < e.results.length; i++) {
         if (e.results[i].isFinal) final_t += e.results[i][0].transcript;
         else interim += e.results[i][0].transcript;
       }
-      var tr = _transcript();
-      if (tr) tr.textContent = final_t || interim;
+      var tr = _transcript(); if (tr) tr.textContent = final_t || interim;
     };
-
     _recognition.onerror = function(e) {
       _isListening = false;
-      if (e.error === 'no-speech') {
-        _setOrbState('idle', '🎤', 'Tap to speak');
-      } else {
-        _setOrbState('idle', '🎤', 'Error: ' + e.error + ' — tap to retry');
-      }
+      _setOrbState('idle', '🎤', e.error === 'no-speech' ? 'Tap to speak' : 'Error: ' + e.error);
     };
-
     _recognition.onend = function() {
       _isListening = false;
       var tr = _transcript();
       var text = tr ? tr.textContent.trim() : '';
-
-      if (!text || !_voiceMode) {
-        if (_voiceMode) _setOrbState('idle', '🎤', 'Tap to speak');
-        return;
-      }
-
-      // Got speech — send to AI
+      if (!text || !_voiceMode) { if (_voiceMode) _setOrbState('idle', '🎤', 'Tap to speak'); return; }
       _setOrbState('thinking', '💭', 'Mr Badmus is thinking...');
       _isThinking = true;
-      if (tr) tr.textContent = '"' + text + '"';
-
-      MrBadmus.ask(text).then(function() {
+      if (tr) tr.textContent = '\u201c' + text + '\u201d';
+      var p = MB.ask(text);
+      if (!p || typeof p.then !== 'function') p = Promise.resolve();
+      p.then(function() {
         _isThinking = false;
-        // Get the last bot reply from chat history
-        var bubbles = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
-        var replyText = bubbles.length ? bubbles[bubbles.length-1].innerText : '';
-
-        if (replyText) {
-          _setOrbState('speaking', '🔊', 'Mr Badmus is speaking...');
-          _speak(replyText, function() {
-            if (_voiceMode && _autoListen) {
-              // Auto-restart listening after reply
-              setTimeout(function() {
-                _setOrbState('idle', '🎤', 'Tap to speak');
-              }, 400);
-            } else {
-              _setOrbState('idle', '🎤', 'Tap to speak');
-            }
-          });
-        } else {
-          _setOrbState('idle', '🎤', 'Tap to speak');
-        }
+        setTimeout(function() {
+          var bubbles = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
+          var reply = bubbles.length ? bubbles[bubbles.length - 1].innerText : '';
+          if (reply) {
+            _setOrbState('speaking', '🔊', 'Mr Badmus is speaking...');
+            _speak(reply, function() { setTimeout(function() { _setOrbState('idle', '🎤', 'Tap to speak'); }, 400); });
+          } else {
+            _setOrbState('idle', '🎤', 'Tap to speak');
+          }
+        }, 300);
       }).catch(function() {
-        _isThinking = false;
-        _setOrbState('idle', '🎤', 'Something went wrong — tap to retry');
+        _isThinking = false; _setOrbState('idle', '🎤', 'Something went wrong — tap to retry');
       });
     };
-
     _recognition.start();
   };
 
-  // ── Wire orb click ──
   document.addEventListener('DOMContentLoaded', function() {
     var orb = _orb();
-    if (orb) orb.addEventListener('click', function() {
-      if (_isListening) {
-        // Stop listening early — send what we have
-        if (_recognition) _recognition.stop();
-      } else if (!_isThinking && !_isSpeaking) {
-        MrBadmus.startListening();
-      } else if (_isSpeaking) {
-        // Interrupt Mr Badmus speaking
-        if (window.speechSynthesis) window.speechSynthesis.cancel();
-        _isSpeaking = false;
-        setTimeout(function() {
-          if (_voiceMode) MrBadmus.startListening();
-        }, 200);
-      }
+    if (!orb) return;
+    orb.addEventListener('click', function() {
+      if (_isListening) { if (_recognition) _recognition.stop(); }
+      else if (_isSpeaking) { if (window.speechSynthesis) window.speechSynthesis.cancel(); _isSpeaking = false; setTimeout(function(){ if (_voiceMode) MB.startListening(); }, 200); }
+      else if (!_isThinking) { MB.startListening(); }
     });
   });
 
-  // ── Wrap ask() so TTS also works in text mode ──
-  (function() {
-    var _origAsk = MrBadmus.ask;
-    MrBadmus.ask = function(preset) {
-      var p = _origAsk(preset);
-      if (p && p.then && _ttsEnabled && !_voiceMode) {
-        p.then(function() {
+  var _origAsk = MB.ask;
+  MB.ask = function(preset) {
+    var p = _origAsk(preset);
+    if (!p || typeof p.then !== 'function') return Promise.resolve();
+    if (_ttsEnabled && !_voiceMode) {
+      p.then(function() {
+        setTimeout(function() {
           var bubbles = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
-          if (bubbles.length) _speak(bubbles[bubbles.length-1].innerText, null);
-        });
-      }
-      return p || Promise.resolve();
-    };
-  })();
+          if (bubbles.length) _speak(bubbles[bubbles.length - 1].innerText, null);
+        }, 150);
+      });
+    }
+    return p;
+  };
 
-  // ── Legacy toggleVoice (for any leftover references) ──
-  MrBadmus.toggleVoice = function() { MrBadmus.enterVoiceMode(); };
+  MB.toggleVoice = MB.enterVoiceMode;
 
 })();
 """
