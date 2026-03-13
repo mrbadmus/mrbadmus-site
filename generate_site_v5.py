@@ -1848,6 +1848,10 @@ def make_landing():
 <section class="hero">
   <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
   <p>Your GCSE Science revision hub — Physics, Chemistry &amp; Biology. Choose your course below.</p>
+  <div class="hero-search">
+    <input type="text" id="siteSearch" placeholder="🔍 Search topics e.g. 'photosynthesis', 'forces'..." autocomplete="off"/>
+    <div id="searchResults" class="search-results"></div>
+  </div>
 </section>
 
 <div class="pathway-grid">
@@ -1872,14 +1876,88 @@ def make_landing():
     <div class="pathway-badge-row">
       <span class="pathway-badge" style="background:rgba(107,203,119,0.2);color:#6BCB77;">Foundation</span>
       <span class="pathway-badge" style="background:rgba(255,217,61,0.2);color:#FFD93D;">Higher</span>
-      <span class="pathway-badge" style="background:rgba(255,107,107,0.2);color:#FF6B6B;">Triple only</span>
     </div>
     <div style="margin-top:20px;">
       <span style="background:#FF6B6B;color:#0F0F1A;padding:8px 20px;border-radius:20px;font-size:0.85rem;font-weight:800;">Start Triple Science →</span>
     </div>
   </a>
 
-</div>"""
+</div>
+
+<style>
+.hero-search { max-width:560px;margin:24px auto 0;position:relative; }
+.hero-search input { width:100%;padding:14px 20px;border-radius:50px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;outline:none;transition:border-color 0.2s; }
+.hero-search input:focus { border-color:#4ECDC4; }
+.search-results { position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card);border:1px solid rgba(255,255,255,0.12);border-radius:14px;max-height:320px;overflow-y:auto;z-index:200;display:none; }
+.search-results.open { display:block; }
+.search-result-item { padding:12px 18px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.9rem;display:flex;align-items:center;gap:10px; }
+.search-result-item:last-child { border-bottom:none; }
+.search-result-item:hover { background:rgba(255,255,255,0.05); }
+.search-result-subject { font-size:0.72rem;padding:2px 8px;border-radius:10px;font-weight:700;flex-shrink:0; }
+</style>
+
+<script>
+(function() {
+  // Quick search index — pathway links for Combined Higher as default deep link
+  const INDEX = [
+    {t:'Energy Stores and Systems',s:'Physics',url:'/combined/higher/physics/energy/energy-stores-systems.html',c:'#4ECDC4'},
+    {t:'Calculating Changes in Energy',s:'Physics',url:'/combined/higher/physics/energy/changes-in-energy.html',c:'#4ECDC4'},
+    {t:'Conservation of Energy',s:'Physics',url:'/combined/higher/physics/energy/conservation-energy.html',c:'#4ECDC4'},
+    {t:'Energy Resources',s:'Physics',url:'/combined/higher/physics/energy/energy-resources.html',c:'#4ECDC4'},
+    {t:'Circuit Symbols',s:'Physics',url:'/combined/higher/physics/electricity/circuit-symbols.html',c:'#4ECDC4'},
+    {t:'Charge and Current',s:'Physics',url:'/combined/higher/physics/electricity/charge-current.html',c:'#4ECDC4'},
+    {t:'Potential Difference and Resistance',s:'Physics',url:'/combined/higher/physics/electricity/potential-difference-resistance.html',c:'#4ECDC4'},
+    {t:'Series and Parallel Circuits',s:'Physics',url:'/combined/higher/physics/electricity/series-parallel.html',c:'#4ECDC4'},
+    {t:'Mains Electricity and AC/DC',s:'Physics',url:'/combined/higher/physics/electricity/mains-electricity.html',c:'#4ECDC4'},
+    {t:'Electrical Power and Energy',s:'Physics',url:'/combined/higher/physics/electricity/electrical-power-energy.html',c:'#4ECDC4'},
+    {t:'States of Matter and Density',s:'Physics',url:'/combined/higher/physics/particle-model/states-of-matter.html',c:'#4ECDC4'},
+    {t:'Atomic Structure',s:'Physics',url:'/combined/higher/physics/atomic-structure/structure-of-atom.html',c:'#4ECDC4'},
+    {t:'Radioactive Decay',s:'Physics',url:'/combined/higher/physics/atomic-structure/radioactive-decay.html',c:'#4ECDC4'},
+    {t:'Half-Life',s:'Physics',url:'/combined/higher/physics/atomic-structure/half-life.html',c:'#4ECDC4'},
+    {t:'Forces and Newton\'s Laws',s:'Physics',url:'/combined/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
+    {t:'Momentum',s:'Physics',url:'/combined/higher/physics/forces/momentum.html',c:'#4ECDC4'},
+    {t:'Electromagnetic Spectrum',s:'Physics',url:'/combined/higher/physics/waves/em-spectrum.html',c:'#4ECDC4'},
+    {t:'Magnetic Fields and Motor Effect',s:'Physics',url:'/combined/higher/physics/magnetism/motor-effect.html',c:'#4ECDC4'},
+    {t:'Transformers',s:'Physics',url:'/combined/higher/physics/magnetism/transformers.html',c:'#4ECDC4'},
+    {t:'Atomic Structure and Periodic Table',s:'Chemistry',url:'/combined/higher/chemistry/atomic-structure/chem-atomic-structure.html',c:'#FF6B6B'},
+    {t:'Ionic and Covalent Bonding',s:'Chemistry',url:'/combined/higher/chemistry/bonding/ionic-bonding.html',c:'#FF6B6B'},
+    {t:'Moles and Calculations',s:'Chemistry',url:'/combined/higher/chemistry/quantitative/moles-calculations.html',c:'#FF6B6B'},
+    {t:'Acids, Bases and Salts',s:'Chemistry',url:'/combined/higher/chemistry/chemical-changes/acids-reactions.html',c:'#FF6B6B'},
+    {t:'Electrolysis',s:'Chemistry',url:'/combined/higher/chemistry/chemical-changes/electrolysis.html',c:'#FF6B6B'},
+    {t:'Rates of Reaction and Collision Theory',s:'Chemistry',url:'/combined/higher/chemistry/rates-equilibrium/rate-collision-theory.html',c:'#FF6B6B'},
+    {t:'Atmosphere and Climate Change',s:'Chemistry',url:'/combined/higher/chemistry/atmosphere/atmosphere-climate.html',c:'#FF6B6B'},
+    {t:'Cell Structure',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-structure.html',c:'#6BCB77'},
+    {t:'Transport in Cells (Diffusion, Osmosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
+    {t:'Cell Division (Mitosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-division.html',c:'#6BCB77'},
+    {t:'Enzymes and Digestion',s:'Biology',url:'/combined/higher/biology/organisation/enzymes-digestion.html',c:'#6BCB77'},
+    {t:'Heart and Circulation',s:'Biology',url:'/combined/higher/biology/organisation/heart-circulation.html',c:'#6BCB77'},
+    {t:'Pathogens and Immunity',s:'Biology',url:'/combined/higher/biology/infection-response/pathogens-immunity.html',c:'#6BCB77'},
+    {t:'Photosynthesis',s:'Biology',url:'/combined/higher/biology/bioenergetics/photosynthesis.html',c:'#6BCB77'},
+    {t:'Respiration',s:'Biology',url:'/combined/higher/biology/bioenergetics/respiration.html',c:'#6BCB77'},
+    {t:'Nervous System',s:'Biology',url:'/combined/higher/biology/homeostasis/nervous-system.html',c:'#6BCB77'},
+    {t:'Endocrine System and Hormones',s:'Biology',url:'/combined/higher/biology/homeostasis/endocrine-system.html',c:'#6BCB77'},
+    {t:'DNA and Genetics',s:'Biology',url:'/combined/higher/biology/inheritance/dna-genetics.html',c:'#6BCB77'},
+    {t:'Evolution and Classification',s:'Biology',url:'/combined/higher/biology/inheritance/evolution-classification.html',c:'#6BCB77'},
+    {t:'Ecosystems and Food Webs',s:'Biology',url:'/combined/higher/biology/ecology/ecosystems-food-webs.html',c:'#6BCB77'},
+  ];
+  const input = document.getElementById('siteSearch');
+  const results = document.getElementById('searchResults');
+  if (!input) return;
+  input.addEventListener('input', function() {
+    const q = this.value.trim().toLowerCase();
+    if (q.length < 2) { results.classList.remove('open'); return; }
+    const matches = INDEX.filter(item => item.t.toLowerCase().includes(q) || item.s.toLowerCase().includes(q)).slice(0,8);
+    if (!matches.length) { results.classList.remove('open'); return; }
+    results.innerHTML = matches.map(m =>
+      '<a class="search-result-item" href="' + m.url + '">' +
+      '<span class="search-result-subject" style="background:' + m.c + '22;color:' + m.c + '">' + m.s + '</span>' +
+      '<span>' + m.t + '</span></a>'
+    ).join('');
+    results.classList.add('open');
+  });
+  document.addEventListener('click', e => { if (!e.target.closest('.hero-search')) results.classList.remove('open'); });
+})();
+</script>"""
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -1893,6 +1971,7 @@ def make_landing():
 <body>
   {nav_html()}
   {body}
+  {chat_html()}
   <script src="/shared/mrbadmus.js"></script>
   <script>MrBadmus.init({{ subject: 'physics' }});</script>
 </body>
@@ -1951,6 +2030,7 @@ def make_pathway_page(pathway):
 <body>
   {nav_html(pathway=pathway)}
   {body}
+  {chat_html()}
   <script src="/shared/mrbadmus.js"></script>
   <script>MrBadmus.init({{ subject: 'physics' }});</script>
 </body>
@@ -2002,6 +2082,7 @@ def make_tier_page(pathway, tier):
 <body>
   {nav_html(pathway=pathway, tier=tier)}
   {body}
+  {chat_html()}
   <script src="/shared/mrbadmus.js"></script>
   <script>MrBadmus.init({{ subject: 'physics' }});</script>
 </body>
@@ -3890,19 +3971,23 @@ def make_matching_widget(matching, st_id, color):
     if not matching:
         return ""
     import json as _json
+    import random
 
     # Support both svg_pairs and regular pairs
     pairs = matching.get("svg_pairs") or matching.get("pairs", [])
     use_svg = "svg_pairs" in matching
 
-    # For JSON checking we just need indices
     pairs_len = len(pairs)
 
+    # Shuffle the definitions (right-hand side) so they don't appear in order
+    indexed_pairs = list(enumerate(pairs))
+    shuffled_defs = list(indexed_pairs)
+    random.shuffle(shuffled_defs)
+
     items_html = ""
-    for i, pair in enumerate(pairs):
+    for i, pair in shuffled_defs:
         term, content_item = pair
-        display = content_item if use_svg else content_item
-        items_html += f'<div class="match-def{" match-def-svg" if use_svg else ""}" data-index="{i}" draggable="true">{display}</div>\n'
+        items_html += f'<div class="match-def{" match-def-svg" if use_svg else ""}" data-index="{i}" draggable="true">{content_item}</div>\n'
 
     terms_html = ""
     for i, pair in enumerate(pairs):
@@ -3952,36 +4037,63 @@ def make_fifa_boxes(fifas):
 
 
 def make_new_quiz(quiz, color):
+    import random
     if not quiz:
         return ""
     cards_html = ""
     for i, q in enumerate(quiz):
-        opts_html = ""
-        correct_idx = None
-        for j, (opt_text, is_correct) in enumerate(q["opts"]):
-            val = f"q{i}o{j}"
-            if is_correct:
-                correct_idx = j
-            opts_html += f'<button class="quiz-opt" data-val="{val}" data-qi="{i}" data-oi="{j}">{opt_text}</button>\n'
+        # Shuffle options so correct answer isn't always option A
+        opts = list(enumerate(q["opts"]))  # [(original_idx, (text, is_correct)), ...]
+        random.shuffle(opts)
 
-        # Build wrong explanations
+        opts_html = ""
+        correct_display_idx = None  # position after shuffle
+        wrong_exp_map = {}          # display_idx → explanation
+        orig_wrong_exp = q.get("wrong_explanations", {})
+
+        for display_j, (orig_j, (opt_text, is_correct)) in enumerate(opts):
+            if is_correct:
+                correct_display_idx = display_j
+            else:
+                # Map original wrong explanation index to new display position
+                if orig_j in orig_wrong_exp:
+                    wrong_exp_map[display_j] = orig_wrong_exp[orig_j]
+            opts_html += f'<button class="quiz-opt" data-qi="{i}" data-oi="{display_j}">{opt_text}</button>\n'
+
         wrong_exp_js = "{"
-        for idx, explanation in q.get("wrong_explanations", {}).items():
-            safe = explanation.replace("'", "\\'").replace('"', '\\"')
+        for idx, explanation in wrong_exp_map.items():
+            safe = explanation.replace("\\", "\\\\").replace('"', '\\"').replace("'", "\\'")
             wrong_exp_js += f'{idx}: "{safe}",'
         wrong_exp_js += "}"
 
-        cards_html += f"""<div class="quiz-card" id="qcard-{i}" data-answer="{correct_idx}" data-wrong-exp='{wrong_exp_js}'>
+        cards_html += f"""<div class="quiz-card" id="qcard-{i}" data-answer="{correct_display_idx}" data-wrong-exp='{wrong_exp_js}'>
   <div class="q-text">{i+1}. {q['q']}</div>
   <div class="quiz-options">{opts_html}</div>
   <div class="quiz-fb" id="qfb-{i}"></div>
 </div>"""
 
+    score_messages = [
+        "Keep going — re-read the theory and try again. You'll get there! 📖",
+        "Not bad — review the sections you missed and have another go. 💪",
+        "Decent effort! A bit more revision and you'll nail it. 🔄",
+        "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+        "Excellent! You've really got this topic down. 🏆",
+    ]
+    score_msgs_json = str(score_messages).replace("'", '"')
+
     return f"""<div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of {len(quiz)}</div>
   {cards_html}
-</div>"""
+  <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
+</div>
+<script>
+(function(){{
+  const scoreMessages = {score_msgs_json};
+  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{{}});
+  // handled by global quiz JS below
+}})();
+</script>"""
 
 
 def make_star_rating(st_id):
@@ -4610,6 +4722,14 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
     star_msgs_js = _json.dumps(STAR_MESSAGES)
 
     quiz_js = """
+const SCORE_MESSAGES = [
+  "Keep going — re-read the theory and try again. You'll get there! 📖",
+  "Not bad — review the sections you missed and have another go. 💪",
+  "Decent effort! A bit more revision and you'll nail it. 🔄",
+  "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+  "Excellent! You've really got this topic down. 🏆",
+];
+
 document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
@@ -4619,26 +4739,64 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     const clickedIdx = parseInt(this.dataset.oi);
     const isCorrect = clickedIdx === correctIdx;
     const fb = document.getElementById('qfb-' + this.dataset.qi);
+
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
       if (idx === correctIdx) o.classList.add('correct');
       else if (o === this && !isCorrect) o.classList.add('wrong');
+      o.disabled = true;
     });
+
+    let wrongExpRaw = card.dataset.wrongExp || '{}';
+    let wrongExp = {};
+    try { wrongExp = JSON.parse(wrongExpRaw); } catch(e) {}
+
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
       fb.innerHTML = '✅ Correct! Well done!';
     } else {
-      const wrongExp = card.dataset.wrongExp ? JSON.parse(card.dataset.wrongExp.replace(/'/g, '"')) : {};
       const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
       fb.className = 'quiz-fb wrong-fb show';
       fb.innerHTML = '❌ Incorrect. ' + explanation;
     }
+
+    const allCards = document.querySelectorAll('.quiz-card');
     const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
-    const total = document.querySelectorAll('.quiz-card').length;
+    const total = allCards.length;
     const prog = document.getElementById('quizProgress');
-    if (prog) {
-      prog.innerHTML = answered === total
-        ? '🎉 Finished! You answered all ' + total + ' questions.'
-        : 'Question ' + (answered + 1) + ' of ' + total;
+
+    if (answered === total) {
+      // Count correct answers
+      let correctCount = 0;
+      allCards.forEach(c => {
+        const corrIdx = parseInt(c.dataset.answer);
+        const chosen = c.querySelector('.quiz-opt.correct');
+        if (chosen && parseInt(chosen.dataset.oi) === corrIdx) correctCount++;
+      });
+      // Actually count by checking which correct buttons were clicked
+      correctCount = document.querySelectorAll('.quiz-opt.correct').length;
+      // But correct buttons are highlighted even if student didn't click them
+      // Better: count cards where the answered button has .correct class
+      correctCount = 0;
+      allCards.forEach(c => {
+        const corrIdx = parseInt(c.dataset.answer);
+        const clickedBtn = Array.from(c.querySelectorAll('.quiz-opt')).find(b => b.classList.contains('correct') || b.classList.contains('wrong'));
+        if (clickedBtn && clickedBtn.classList.contains('correct')) correctCount++;
+      });
+
+      if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+
+      const endMsg = document.getElementById('quizEndMsg');
+      if (endMsg) {
+        const ratio = correctCount / total;
+        const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+        endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+        endMsg.style.display = 'block';
+        endMsg.style.background = ratio === 1 ? 'rgba(107,203,119,0.15)' : ratio >= 0.6 ? 'rgba(255,217,61,0.12)' : 'rgba(255,107,107,0.12)';
+        endMsg.style.color = ratio === 1 ? '#6BCB77' : ratio >= 0.6 ? '#FFD93D' : '#FF8888';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(107,203,119,0.3)' : ratio >= 0.6 ? 'rgba(255,217,61,0.3)' : 'rgba(255,107,107,0.3)');
+      }
+    } else {
+      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
     }
   });
 });
