@@ -64,6 +64,7 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
     <a href="/combined/index.html" style="color:#4ECDC4;font-weight:700;">Combined Science</a>
@@ -167,18 +168,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 5</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "0.25 is the wasted fraction (200÷800), not the efficiency. Efficiency = 600÷800 = 0.75.",1: "Joules is the unit for energy, not efficiency. Efficiency = useful output ÷ total input = 0.75.",2: "You divided input by output (800÷600). Always do useful OUTPUT ÷ INPUT = 600÷800 = 0.75.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "You divided input by output (800÷600). Always do useful OUTPUT ÷ INPUT = 600÷800 = 0.75.",2: "0.25 is the wasted fraction (200÷800), not the efficiency. Efficiency = 600÷800 = 0.75.",3: "Joules is the unit for energy, not efficiency. Efficiency = useful output ÷ total input = 0.75.",}'>
   <div class="q-text">1. A machine uses 800 J and outputs 600 J of useful energy. What is its efficiency?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0.25 (25%)</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">200 J</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">1.33</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">0.75 (75%)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">1.33</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">0.75 (75%)</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">0.25 (25%)</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">200 J</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "There\'s no rule that limits efficiency to exactly 50% — it varies by machine and design.",1: "Over 100% would mean creating energy from nothing — impossible! That breaks conservation of energy.",2: "100% efficiency is theoretically possible but never achieved in reality — friction always wastes some energy.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Over 100% would mean creating energy from nothing — impossible! That breaks conservation of energy.",1: "There\'s no rule that limits efficiency to exactly 50% — it varies by machine and design.",2: "100% efficiency is theoretically possible but never achieved in reality — friction always wastes some energy.",}'>
   <div class="q-text">2. What is the maximum possible efficiency of any real machine?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">0.5 (50%)</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Greater than 1 (over 100%)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Greater than 1 (over 100%)</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">0.5 (50%)</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Exactly 1 (100%)</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Less than 1 (less than 100%)</button>
 </div>
@@ -191,19 +192,19 @@
 <button class="quiz-opt" data-qi="2" data-oi="3">200 J</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="1" data-wrong-exp='{0: "Insulation reduces heat loss through walls/materials — not friction between moving parts.",2: "Heavier components would increase friction — making things worse, not better.",3: "Streamlining reduces air resistance drag — not friction between machine parts.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Streamlining reduces air resistance drag — not friction between machine parts.",1: "Heavier components would increase friction — making things worse, not better.",2: "Insulation reduces heat loss through walls/materials — not friction between moving parts.",}'>
   <div class="q-text">4. Which method reduces energy loss due to friction in machines?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Insulation</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">Lubrication</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">Using heavier components</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">Streamlining</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Streamlining</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">Using heavier components</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">Insulation</button>
+<button class="quiz-opt" data-qi="3" data-oi="3">Lubrication</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="0" data-wrong-exp='{1: "Conservation means the total doesn\'t change — but transfers can still be inefficient.",2: "Energy can never be created or destroyed — conservation of energy is one of the most fundamental laws in physics.",3: "Energy is wasted all the time — it just gets transferred to less useful stores, not destroyed.",}'>
+</div><div class="quiz-card" id="qcard-4" data-answer="0" data-wrong-exp='{1: "Energy can never be created or destroyed — conservation of energy is one of the most fundamental laws in physics.",2: "Conservation means the total doesn\'t change — but transfers can still be inefficient.",3: "Energy is wasted all the time — it just gets transferred to less useful stores, not destroyed.",}'>
   <div class="q-text">5. Energy is always conserved. What does this mean?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">The total energy in a closed system stays the same</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">All energy transfers are 100% efficient</button>
-<button class="quiz-opt" data-qi="4" data-oi="2">Energy can be created if needed</button>
+<button class="quiz-opt" data-qi="4" data-oi="1">Energy can be created if needed</button>
+<button class="quiz-opt" data-qi="4" data-oi="2">All energy transfers are 100% efficient</button>
 <button class="quiz-opt" data-qi="4" data-oi="3">No energy is ever wasted</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
@@ -297,10 +298,13 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
     if (card.dataset.answered) return;
-    card.dataset.answered = '1';
     const correctIdx = parseInt(card.dataset.answer);
     const clickedIdx = parseInt(this.dataset.oi);
     const isCorrect = clickedIdx === correctIdx;
+
+    // Store whether student got THIS card right
+    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
+
     const fb = document.getElementById('qfb-' + this.dataset.qi);
 
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
@@ -309,9 +313,8 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
       o.disabled = true;
     });
 
-    let wrongExpRaw = card.dataset.wrongExp || '{}';
     let wrongExp = {};
-    try { wrongExp = JSON.parse(wrongExpRaw); } catch(e) {}
+    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
 
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
@@ -323,29 +326,14 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     }
 
     const allCards = document.querySelectorAll('.quiz-card');
-    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
     const total = allCards.length;
+    const answered = answeredCards.length;
     const prog = document.getElementById('quizProgress');
 
     if (answered === total) {
-      // Count correct answers
-      let correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const chosen = c.querySelector('.quiz-opt.correct');
-        if (chosen && parseInt(chosen.dataset.oi) === corrIdx) correctCount++;
-      });
-      // Actually count by checking which correct buttons were clicked
-      correctCount = document.querySelectorAll('.quiz-opt.correct').length;
-      // But correct buttons are highlighted even if student didn't click them
-      // Better: count cards where the answered button has .correct class
-      correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const clickedBtn = Array.from(c.querySelectorAll('.quiz-opt')).find(b => b.classList.contains('correct') || b.classList.contains('wrong'));
-        if (clickedBtn && clickedBtn.classList.contains('correct')) correctCount++;
-      });
-
+      // Count only cards where student clicked correct
+      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
       if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
 
       const endMsg = document.getElementById('quizEndMsg');

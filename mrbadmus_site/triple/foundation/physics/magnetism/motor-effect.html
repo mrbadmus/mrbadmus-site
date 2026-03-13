@@ -64,6 +64,7 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
     <a href="/triple/index.html" style="color:#FF6B6B;font-weight:700;">Triple Science</a>
@@ -181,27 +182,27 @@
 <button class="quiz-opt" data-qi="1" data-oi="3">4 N</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Longer wire increases force magnitude but not direction.",1: "Increasing current changes the MAGNITUDE of force — not its direction.",2: "Stronger field increases force magnitude but not direction.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Longer wire increases force magnitude but not direction.",1: "Stronger field increases force magnitude but not direction.",2: "Increasing current changes the MAGNITUDE of force — not its direction.",}'>
   <div class="q-text">3. How is the direction of the motor effect force reversed?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Use a longer wire</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Increase the current</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">Increase the field strength</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">Increase the field strength</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">Increase the current</button>
 <button class="quiz-opt" data-qi="2" data-oi="3">Reverse the current OR reverse the magnetic field direction</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="0" data-wrong-exp='{1: "F is directly proportional to I — no squared term here.",2: "If current doubles, force halves? No — F = BIL means they\'re directly proportional.",3: "F = BIL — squaring only applies in KE = ½mv². Here it\'s a direct proportion: double I = double F.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="0" data-wrong-exp='{1: "F = BIL — squaring only applies in KE = ½mv². Here it\'s a direct proportion: double I = double F.",2: "F is directly proportional to I — no squared term here.",3: "If current doubles, force halves? No — F = BIL means they\'re directly proportional.",}'>
   <div class="q-text">4. What happens to the force if the current is doubled?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">It doubles</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">It stays the same</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">It halves</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">It quadruples</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">It quadruples</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">It stays the same</button>
+<button class="quiz-opt" data-qi="3" data-oi="3">It halves</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="0" data-wrong-exp='{1: "Right hand rule = GENERATOR (induced EMF). Left hand = MOTOR (force on conductor).",2: "One hand only — left for motor effect.",3: "You must use the correct hand or the direction will be wrong!",}'>
+</div><div class="quiz-card" id="qcard-4" data-answer="1" data-wrong-exp='{0: "One hand only — left for motor effect.",2: "Right hand rule = GENERATOR (induced EMF). Left hand = MOTOR (force on conductor).",3: "You must use the correct hand or the direction will be wrong!",}'>
   <div class="q-text">5. Which hand do you use for the motor effect rule?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Left hand</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">Right hand</button>
-<button class="quiz-opt" data-qi="4" data-oi="2">Both hands together</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Both hands together</button>
+<button class="quiz-opt" data-qi="4" data-oi="1">Left hand</button>
+<button class="quiz-opt" data-qi="4" data-oi="2">Right hand</button>
 <button class="quiz-opt" data-qi="4" data-oi="3">Either hand</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
@@ -295,10 +296,13 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
     if (card.dataset.answered) return;
-    card.dataset.answered = '1';
     const correctIdx = parseInt(card.dataset.answer);
     const clickedIdx = parseInt(this.dataset.oi);
     const isCorrect = clickedIdx === correctIdx;
+
+    // Store whether student got THIS card right
+    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
+
     const fb = document.getElementById('qfb-' + this.dataset.qi);
 
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
@@ -307,9 +311,8 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
       o.disabled = true;
     });
 
-    let wrongExpRaw = card.dataset.wrongExp || '{}';
     let wrongExp = {};
-    try { wrongExp = JSON.parse(wrongExpRaw); } catch(e) {}
+    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
 
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
@@ -321,29 +324,14 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     }
 
     const allCards = document.querySelectorAll('.quiz-card');
-    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
     const total = allCards.length;
+    const answered = answeredCards.length;
     const prog = document.getElementById('quizProgress');
 
     if (answered === total) {
-      // Count correct answers
-      let correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const chosen = c.querySelector('.quiz-opt.correct');
-        if (chosen && parseInt(chosen.dataset.oi) === corrIdx) correctCount++;
-      });
-      // Actually count by checking which correct buttons were clicked
-      correctCount = document.querySelectorAll('.quiz-opt.correct').length;
-      // But correct buttons are highlighted even if student didn't click them
-      // Better: count cards where the answered button has .correct class
-      correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const clickedBtn = Array.from(c.querySelectorAll('.quiz-opt')).find(b => b.classList.contains('correct') || b.classList.contains('wrong'));
-        if (clickedBtn && clickedBtn.classList.contains('correct')) correctCount++;
-      });
-
+      // Count only cards where student clicked correct
+      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
       if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
 
       const endMsg = document.getElementById('quizEndMsg');

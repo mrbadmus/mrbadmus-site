@@ -64,6 +64,7 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
     <a href="/combined/index.html" style="color:#4ECDC4;font-weight:700;">Combined Science</a>
@@ -162,44 +163,44 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 5</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "You divided m by v. p = m × v = 0.5 × 10 = 5 kg m/s.",2: "You divided instead of multiplying. p = m × v = 0.5 × 10 = 5 kg m/s.",3: "You added m and v. p = m × v = 0.5 × 10 = 5 kg m/s.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "You added m and v. p = m × v = 0.5 × 10 = 5 kg m/s.",2: "You divided m by v. p = m × v = 0.5 × 10 = 5 kg m/s.",3: "You divided instead of multiplying. p = m × v = 0.5 × 10 = 5 kg m/s.",}'>
   <div class="q-text">1. A 0.5 kg ball moves at 10 m/s. What is its momentum?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">5 kg m/s</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">0.05 kg m/s</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">20 kg m/s</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">10.5 kg m/s</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">10.5 kg m/s</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">0.05 kg m/s</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">20 kg m/s</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "KE is only conserved in ELASTIC collisions. Most real collisions lose some KE to heat/sound.",2: "Forces are internal to the collision — they change during impact and are not conserved as a total.",3: "Individual speeds change in collisions — only TOTAL momentum is conserved.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Forces are internal to the collision — they change during impact and are not conserved as a total.",2: "KE is only conserved in ELASTIC collisions. Most real collisions lose some KE to heat/sound.",3: "Individual speeds change in collisions — only TOTAL momentum is conserved.",}'>
   <div class="q-text">2. In a closed system, what is conserved in all collisions?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Total momentum</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Total kinetic energy</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Total force</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Total force</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Total kinetic energy</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Speed of each object</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="0" data-wrong-exp='{1: "Momentum DOES change — the passenger stops. Airbags reduce FORCE by increasing time.",2: "Airbags can\'t absorb ALL kinetic energy — some converts to heat, sound, deformation.",3: "Airbags don\'t change mass. They change the rate of momentum change — longer time = less force.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="2" data-wrong-exp='{0: "Airbags don\'t change mass. They change the rate of momentum change — longer time = less force.",1: "Airbags can\'t absorb ALL kinetic energy — some converts to heat, sound, deformation.",3: "Momentum DOES change — the passenger stops. Airbags reduce FORCE by increasing time.",}'>
   <div class="q-text">3. Why do airbags reduce injury in car crashes?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">They increase collision time, reducing the force on the passenger</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">They prevent momentum from changing</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">They absorb all the kinetic energy</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">They increase the passenger's mass</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">They increase the passenger's mass</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">They absorb all the kinetic energy</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">They increase collision time, reducing the force on the passenger</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">They prevent momentum from changing</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="0" data-wrong-exp='{1: "Mass difference affects how much the gun moves (velocity), not whether it moves. The gun ALWAYS recoils.",2: "Recoil is linear (straight back), not rotational — unless the gun has a special design.",3: "The gun moves BACKWARD, not forward — the bullet goes forward, so the gun must go the opposite way.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "The gun moves BACKWARD, not forward — the bullet goes forward, so the gun must go the opposite way.",1: "Recoil is linear (straight back), not rotational — unless the gun has a special design.",2: "Mass difference affects how much the gun moves (velocity), not whether it moves. The gun ALWAYS recoils.",}'>
   <div class="q-text">4. A gun fires a bullet forward. What happens to the gun?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">It recoils backward — conservation of momentum</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">Nothing — the gun is much heavier</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">It spins around</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">It moves forward with the bullet</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">It moves forward with the bullet</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">It spins around</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">Nothing — the gun is much heavier</button>
+<button class="quiz-opt" data-qi="3" data-oi="3">It recoils backward — conservation of momentum</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="1" data-wrong-exp='{0: "m/s² is acceleration — momentum = mass × velocity = kg × m/s = kg m/s.",2: "J (Joules) is the unit of energy — momentum = kg m/s.",3: "N (Newtons) is the unit of force — not momentum.",}'>
+</div><div class="quiz-card" id="qcard-4" data-answer="3" data-wrong-exp='{0: "N (Newtons) is the unit of force — not momentum.",1: "m/s² is acceleration — momentum = mass × velocity = kg × m/s = kg m/s.",2: "J (Joules) is the unit of energy — momentum = kg m/s.",}'>
   <div class="q-text">5. What is the unit of momentum?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">m/s²</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">kg m/s</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">N</button>
+<button class="quiz-opt" data-qi="4" data-oi="1">m/s²</button>
 <button class="quiz-opt" data-qi="4" data-oi="2">J</button>
-<button class="quiz-opt" data-qi="4" data-oi="3">N</button>
+<button class="quiz-opt" data-qi="4" data-oi="3">kg m/s</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
 </div>
@@ -292,10 +293,13 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
     if (card.dataset.answered) return;
-    card.dataset.answered = '1';
     const correctIdx = parseInt(card.dataset.answer);
     const clickedIdx = parseInt(this.dataset.oi);
     const isCorrect = clickedIdx === correctIdx;
+
+    // Store whether student got THIS card right
+    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
+
     const fb = document.getElementById('qfb-' + this.dataset.qi);
 
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
@@ -304,9 +308,8 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
       o.disabled = true;
     });
 
-    let wrongExpRaw = card.dataset.wrongExp || '{}';
     let wrongExp = {};
-    try { wrongExp = JSON.parse(wrongExpRaw); } catch(e) {}
+    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
 
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
@@ -318,29 +321,14 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     }
 
     const allCards = document.querySelectorAll('.quiz-card');
-    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
     const total = allCards.length;
+    const answered = answeredCards.length;
     const prog = document.getElementById('quizProgress');
 
     if (answered === total) {
-      // Count correct answers
-      let correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const chosen = c.querySelector('.quiz-opt.correct');
-        if (chosen && parseInt(chosen.dataset.oi) === corrIdx) correctCount++;
-      });
-      // Actually count by checking which correct buttons were clicked
-      correctCount = document.querySelectorAll('.quiz-opt.correct').length;
-      // But correct buttons are highlighted even if student didn't click them
-      // Better: count cards where the answered button has .correct class
-      correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const clickedBtn = Array.from(c.querySelectorAll('.quiz-opt')).find(b => b.classList.contains('correct') || b.classList.contains('wrong'));
-        if (clickedBtn && clickedBtn.classList.contains('correct')) correctCount++;
-      });
-
+      // Count only cards where student clicked correct
+      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
       if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
 
       const endMsg = document.getElementById('quizEndMsg');

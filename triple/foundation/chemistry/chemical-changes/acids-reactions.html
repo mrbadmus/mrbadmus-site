@@ -64,6 +64,7 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
     <a href="/triple/index.html" style="color:#FF6B6B;font-weight:700;">Triple Science</a>
@@ -135,10 +136,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-acids-reactions"><div class="match-def" data-index="1" draggable="true">Salt + water</div>
-<div class="match-def" data-index="0" draggable="true">Salt + hydrogen gas</div>
-<div class="match-def" data-index="2" draggable="true">Salt + water + carbon dioxide</div>
+      <div class="match-defs" id="defPool-acids-reactions"><div class="match-def" data-index="2" draggable="true">Salt + water + carbon dioxide</div>
 <div class="match-def" data-index="3" draggable="true">Salt + water (neutralisation)</div>
+<div class="match-def" data-index="0" draggable="true">Salt + hydrogen gas</div>
+<div class="match-def" data-index="1" draggable="true">Salt + water</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -160,44 +161,44 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 5</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Oxygen comes from electrolysis or decomposition of water — not this reaction.",1: "CO₂ comes from acid + CARBONATE reactions — not acid + metal.",3: "Chlorine would require oxidation of Cl⁻ ions — not a simple acid + metal reaction.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "CO₂ comes from acid + CARBONATE reactions — not acid + metal.",2: "Chlorine would require oxidation of Cl⁻ ions — not a simple acid + metal reaction.",3: "Oxygen comes from electrolysis or decomposition of water — not this reaction.",}'>
   <div class="q-text">1. What gas is produced when zinc reacts with hydrochloric acid?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Oxygen</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Carbon dioxide</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Hydrogen</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Chlorine</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Carbon dioxide</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Hydrogen</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Chlorine</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Oxygen</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Hydrogen comes from acid + METAL — copper oxide is a base/metal oxide, not a metal.",1: "The acid here is SULFuric — it gives sulfate salts. Chloride would come from hydrochloric acid.",3: "Copper oxide is the reactant — the copper becomes part of the salt product, not released as metal.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Copper oxide is the reactant — the copper becomes part of the salt product, not released as metal.",2: "Hydrogen comes from acid + METAL — copper oxide is a base/metal oxide, not a metal.",3: "The acid here is SULFuric — it gives sulfate salts. Chloride would come from hydrochloric acid.",}'>
   <div class="q-text">2. What products form when sulfuric acid reacts with copper oxide?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Copper sulfate + hydrogen</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Copper chloride + water</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Copper sulfate + water</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Copper + sulfur dioxide</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Copper + sulfur dioxide</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Copper sulfate + water</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Copper sulfate + hydrogen</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Copper chloride + water</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Hydrogen comes from acid + METAL. CaCO₃ is a carbonate → CO₂ is produced.",1: "No oxygen source in this reaction — oxygen needs electrolysis or decomposition.",2: "Chlorine from this reaction would need the Cl⁻ to be oxidised — doesn\'t happen here.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="2" data-wrong-exp='{0: "Hydrogen comes from acid + METAL. CaCO₃ is a carbonate → CO₂ is produced.",1: "Chlorine from this reaction would need the Cl⁻ to be oxidised — doesn\'t happen here.",3: "No oxygen source in this reaction — oxygen needs electrolysis or decomposition.",}'>
   <div class="q-text">3. Marble chips (CaCO₃) react with HCl. What gas is produced?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Hydrogen</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Oxygen</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">Chlorine</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">Carbon dioxide</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">Chlorine</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">Carbon dioxide</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">Oxygen</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="1" data-wrong-exp='{0: "Limewater turning cloudy = CO₂ test.",2: "Glowing splint relights = OXYGEN test.",3: "Damp litmus bleaching = CHLORINE test.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="0" data-wrong-exp='{1: "Glowing splint relights = OXYGEN test.",2: "Limewater turning cloudy = CO₂ test.",3: "Damp litmus bleaching = CHLORINE test.",}'>
   <div class="q-text">4. What is the test for hydrogen gas?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Limewater — turns cloudy</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">Burning splint — squeaky pop</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">Glowing splint — relights</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Burning splint — squeaky pop</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">Glowing splint — relights</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">Limewater — turns cloudy</button>
 <button class="quiz-opt" data-qi="3" data-oi="3">Damp litmus — bleaches</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="1" data-wrong-exp='{0: "H atom count per molecule doesn\'t determine strength. HCl has 1 H, H₂SO₄ has 2, but both are strong acids.",2: "They are definitely different — strong acid has lower pH at same concentration because more H⁺ ions.",3: "Concentration = how much acid is present. Strength = how much dissociates. Different concentrations can have same pH if one is strong and one weak.",}'>
+</div><div class="quiz-card" id="qcard-4" data-answer="0" data-wrong-exp='{1: "Concentration = how much acid is present. Strength = how much dissociates. Different concentrations can have same pH if one is strong and one weak.",2: "They are definitely different — strong acid has lower pH at same concentration because more H⁺ ions.",3: "H atom count per molecule doesn\'t determine strength. HCl has 1 H, H₂SO₄ has 2, but both are strong acids.",}'>
   <div class="q-text">5. What is the difference between a strong and weak acid at the same concentration?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Weak acid has more H atoms per molecule</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">Strong acid fully dissociates — more H⁺ ions, lower pH</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Strong acid fully dissociates — more H⁺ ions, lower pH</button>
+<button class="quiz-opt" data-qi="4" data-oi="1">Strong acid has more molecules</button>
 <button class="quiz-opt" data-qi="4" data-oi="2">They are identical at the same concentration</button>
-<button class="quiz-opt" data-qi="4" data-oi="3">Strong acid has more molecules</button>
+<button class="quiz-opt" data-qi="4" data-oi="3">Weak acid has more H atoms per molecule</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
 </div>
@@ -290,10 +291,13 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
     if (card.dataset.answered) return;
-    card.dataset.answered = '1';
     const correctIdx = parseInt(card.dataset.answer);
     const clickedIdx = parseInt(this.dataset.oi);
     const isCorrect = clickedIdx === correctIdx;
+
+    // Store whether student got THIS card right
+    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
+
     const fb = document.getElementById('qfb-' + this.dataset.qi);
 
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
@@ -302,9 +306,8 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
       o.disabled = true;
     });
 
-    let wrongExpRaw = card.dataset.wrongExp || '{}';
     let wrongExp = {};
-    try { wrongExp = JSON.parse(wrongExpRaw); } catch(e) {}
+    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
 
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
@@ -316,29 +319,14 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     }
 
     const allCards = document.querySelectorAll('.quiz-card');
-    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
     const total = allCards.length;
+    const answered = answeredCards.length;
     const prog = document.getElementById('quizProgress');
 
     if (answered === total) {
-      // Count correct answers
-      let correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const chosen = c.querySelector('.quiz-opt.correct');
-        if (chosen && parseInt(chosen.dataset.oi) === corrIdx) correctCount++;
-      });
-      // Actually count by checking which correct buttons were clicked
-      correctCount = document.querySelectorAll('.quiz-opt.correct').length;
-      // But correct buttons are highlighted even if student didn't click them
-      // Better: count cards where the answered button has .correct class
-      correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const clickedBtn = Array.from(c.querySelectorAll('.quiz-opt')).find(b => b.classList.contains('correct') || b.classList.contains('wrong'));
-        if (clickedBtn && clickedBtn.classList.contains('correct')) correctCount++;
-      });
-
+      // Count only cards where student clicked correct
+      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
       if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
 
       const endMsg = document.getElementById('quizEndMsg');

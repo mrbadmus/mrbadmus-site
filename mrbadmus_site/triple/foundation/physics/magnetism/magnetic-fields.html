@@ -64,6 +64,7 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
     <a href="/triple/index.html" style="color:#FF6B6B;font-weight:700;">Triple Science</a>
@@ -132,10 +133,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-magnetic-fields"><div class="match-def" data-index="3" draggable="true">Electromagnets repel track to levitate the train</div>
-<div class="match-def" data-index="2" draggable="true">Very strong magnetic fields image soft tissue inside the body</div>
-<div class="match-def" data-index="0" draggable="true">Electromagnet repeatedly attracts a hammer when AC current flows</div>
+      <div class="match-defs" id="defPool-magnetic-fields"><div class="match-def" data-index="2" draggable="true">Very strong magnetic fields image soft tissue inside the body</div>
 <div class="match-def" data-index="1" draggable="true">Current switched on to attract metal; switched off to drop it</div>
+<div class="match-def" data-index="0" draggable="true">Electromagnet repeatedly attracts a hammer when AC current flows</div>
+<div class="match-def" data-index="3" draggable="true">Electromagnets repel track to levitate the train</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -157,44 +158,44 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 5</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Field lines curve around the magnet in three dimensions — not just parallel.",1: "South to North is the direction INSIDE the magnet. Outside = North to South.",3: "Field lines follow a defined pattern — not random.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Field lines curve around the magnet in three dimensions — not just parallel.",2: "Field lines follow a defined pattern — not random.",3: "South to North is the direction INSIDE the magnet. Outside = North to South.",}'>
   <div class="q-text">1. In which direction do magnetic field lines point outside a magnet?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Parallel to the magnet only</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">From South to North</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">From North to South</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Randomly in all directions</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">From North to South</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Randomly in all directions</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">From South to North</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Not necessarily — a permanent magnet can be stronger. The key feature is on/off switching.",2: "Permanent magnets can be very strong — neodymium magnets are extremely powerful.",3: "Both types attract magnetic materials (iron, steel, nickel, cobalt).",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Not necessarily — a permanent magnet can be stronger. The key feature is on/off switching.",1: "Permanent magnets can be very strong — neodymium magnets are extremely powerful.",2: "Both types attract magnetic materials (iron, steel, nickel, cobalt).",}'>
   <div class="q-text">2. What makes an electromagnet different from a permanent magnet?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">It is always stronger</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">It can be switched on and off using electric current</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">It never loses its magnetism</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">It only attracts iron, not steel</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">It never loses its magnetism</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">It only attracts iron, not steel</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">It can be switched on and off using electric current</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="0" data-wrong-exp='{1: "Steel is a HARD magnetic material — it stays magnetic even when current stops. Iron (soft) is better for electromagnets.",2: "Fewer turns = weaker field — you want MORE turns to strengthen it.",3: "Decreasing current weakens the magnetic field — opposite effect.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Decreasing current weakens the magnetic field — opposite effect.",1: "Steel is a HARD magnetic material — it stays magnetic even when current stops. Iron (soft) is better for electromagnets.",2: "Fewer turns = weaker field — you want MORE turns to strengthen it.",}'>
   <div class="q-text">3. How can you increase the strength of an electromagnet?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Increase current or add more coil turns</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Decrease the current</button>
 <button class="quiz-opt" data-qi="2" data-oi="1">Use a steel core instead of iron</button>
 <button class="quiz-opt" data-qi="2" data-oi="2">Use fewer turns of wire</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">Decrease the current</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">Increase current or add more coil turns</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Steel would stay magnetised — but iron is a SOFT magnetic material, it loses magnetism quickly when current stops.",1: "The field would increase when current stops? No — no current = no electromagnetic field.",2: "Normal currents in electromagnets don\'t generate enough heat to melt iron.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="1" data-wrong-exp='{0: "Steel would stay magnetised — but iron is a SOFT magnetic material, it loses magnetism quickly when current stops.",2: "Normal currents in electromagnets don\'t generate enough heat to melt iron.",3: "The field would increase when current stops? No — no current = no electromagnetic field.",}'>
   <div class="q-text">4. What happens to an iron-core electromagnet when the current is switched off?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">It stays permanently magnetised</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">It becomes more strongly magnetised</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">It loses its magnetism almost immediately</button>
 <button class="quiz-opt" data-qi="3" data-oi="2">The iron core melts</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">It loses its magnetism almost immediately</button>
+<button class="quiz-opt" data-qi="3" data-oi="3">It becomes more strongly magnetised</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="2" data-wrong-exp='{0: "Steel has a much higher melting point than coil temperatures — melting isn\'t the issue.",1: "Actually steel is harder than iron physically — but magnetically, iron is \'softer\' (easier to switch).",3: "Both iron and steel conduct electricity — this isn\'t why iron is chosen.",}'>
+</div><div class="quiz-card" id="qcard-4" data-answer="3" data-wrong-exp='{0: "Steel has a much higher melting point than coil temperatures — melting isn\'t the issue.",1: "Actually steel is harder than iron physically — but magnetically, iron is \'softer\' (easier to switch).",2: "Both iron and steel conduct electricity — this isn\'t why iron is chosen.",}'>
   <div class="q-text">5. Why is an iron core used inside an electromagnet coil rather than steel?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Steel would melt inside the coil</button>
 <button class="quiz-opt" data-qi="4" data-oi="1">Iron is harder than steel</button>
-<button class="quiz-opt" data-qi="4" data-oi="2">Iron is soft magnetically — easy to magnetise and demagnetise</button>
-<button class="quiz-opt" data-qi="4" data-oi="3">Iron conducts electricity better</button>
+<button class="quiz-opt" data-qi="4" data-oi="2">Iron conducts electricity better</button>
+<button class="quiz-opt" data-qi="4" data-oi="3">Iron is soft magnetically — easy to magnetise and demagnetise</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
 </div>
@@ -287,10 +288,13 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
     if (card.dataset.answered) return;
-    card.dataset.answered = '1';
     const correctIdx = parseInt(card.dataset.answer);
     const clickedIdx = parseInt(this.dataset.oi);
     const isCorrect = clickedIdx === correctIdx;
+
+    // Store whether student got THIS card right
+    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
+
     const fb = document.getElementById('qfb-' + this.dataset.qi);
 
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
@@ -299,9 +303,8 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
       o.disabled = true;
     });
 
-    let wrongExpRaw = card.dataset.wrongExp || '{}';
     let wrongExp = {};
-    try { wrongExp = JSON.parse(wrongExpRaw); } catch(e) {}
+    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
 
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
@@ -313,29 +316,14 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     }
 
     const allCards = document.querySelectorAll('.quiz-card');
-    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
     const total = allCards.length;
+    const answered = answeredCards.length;
     const prog = document.getElementById('quizProgress');
 
     if (answered === total) {
-      // Count correct answers
-      let correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const chosen = c.querySelector('.quiz-opt.correct');
-        if (chosen && parseInt(chosen.dataset.oi) === corrIdx) correctCount++;
-      });
-      // Actually count by checking which correct buttons were clicked
-      correctCount = document.querySelectorAll('.quiz-opt.correct').length;
-      // But correct buttons are highlighted even if student didn't click them
-      // Better: count cards where the answered button has .correct class
-      correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const clickedBtn = Array.from(c.querySelectorAll('.quiz-opt')).find(b => b.classList.contains('correct') || b.classList.contains('wrong'));
-        if (clickedBtn && clickedBtn.classList.contains('correct')) correctCount++;
-      });
-
+      // Count only cards where student clicked correct
+      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
       if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
 
       const endMsg = document.getElementById('quizEndMsg');

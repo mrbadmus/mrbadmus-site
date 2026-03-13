@@ -191,95 +191,87 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     document.getElementById('chatMsgs').scrollTop = 99999;
   }
 
-  // Auto-speak bot replies when TTS is on
-  const _origAsk = ask;
-  async function askWithTTS(preset) {
-    await _origAsk(preset);
-    // After ask completes, read last bot message if TTS on
-    if (ttsEnabled) {
-      const msgs = document.querySelectorAll('.chat-msg.bot .chat-msg__bubble');
-      if (msgs.length) {
-        speakText(msgs[msgs.length-1].innerText);
-      }
-    }
-  }
-
-  return { init, open, close, ask: askWithTTS, toggleTTS, toggleVoice };
+  return { init, open, close, ask };
 })();
 
-// ── TTS & VOICE ──
-let ttsEnabled = false;
-let recognition = null;
-let voiceActive = false;
+
+// ── TTS & VOICE (added outside IIFE so they don't interfere with chat module) ──
+var _ttsEnabled = false;
+var _recognition = null;
+var _voiceActive = false;
 
 MrBadmus.toggleTTS = function() {
-  ttsEnabled = !ttsEnabled;
-  const btn = document.getElementById('ttsToggle');
+  _ttsEnabled = !_ttsEnabled;
+  var btn = document.getElementById('ttsToggle');
   if (btn) {
-    btn.textContent = ttsEnabled ? '🔊 ON' : '🔊 TTS';
-    btn.style.background = ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
-    btn.style.borderColor = ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
+    btn.textContent = _ttsEnabled ? '🔊 ON' : '🔊 TTS';
+    btn.style.background = _ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
+    btn.style.borderColor = _ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
   }
-  if (!ttsEnabled) window.speechSynthesis?.cancel();
+  if (!_ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
 };
 
 function _speakText(text) {
-  if (!ttsEnabled || !window.speechSynthesis) return;
+  if (!_ttsEnabled || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  const clean = text.replace(/[*_`#>\[\]]/g, '').replace(/\n/g,' ').substring(0, 800);
-  const utt = new SpeechSynthesisUtterance(clean);
+  var clean = text.replace(/[*_`#>\[\]]/g,'').replace(/\n/g,' ').substring(0,800);
+  var utt = new SpeechSynthesisUtterance(clean);
   utt.rate = 0.95; utt.pitch = 1.0; utt.lang = 'en-GB';
-  const voices = window.speechSynthesis.getVoices();
-  const v = voices.find(v => v.lang==='en-GB') || voices.find(v => v.lang.startsWith('en'));
+  var voices = window.speechSynthesis.getVoices();
+  var v = voices.find(function(v){return v.lang==='en-GB';}) || voices.find(function(v){return v.lang.startsWith('en');});
   if (v) utt.voice = v;
   window.speechSynthesis.speak(utt);
 }
 
-// Patch the module to speak after bot replies
+// Wrap ask() to auto-speak bot replies when TTS on
 (function() {
-  const orig = MrBadmus.ask;
-  MrBadmus.ask = async function(preset) {
-    await orig(preset);
-    if (ttsEnabled) {
-      const msgs = document.querySelectorAll('.chat-msg.bot .chat-msg__bubble');
-      if (msgs.length) _speakText(msgs[msgs.length-1].innerText);
+  var _origAsk = MrBadmus.ask;
+  MrBadmus.ask = function(preset) {
+    var p = _origAsk(preset);
+    if (p && p.then) {
+      p.then(function() {
+        if (_ttsEnabled) {
+          var msgs = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
+          if (msgs.length) _speakText(msgs[msgs.length-1].innerText);
+        }
+      });
     }
+    return p;
   };
 })();
 
 MrBadmus.toggleVoice = function() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('Voice input not supported in this browser. Try Chrome or Edge.');
+    alert('Voice input is not supported in this browser. Try Chrome or Edge.');
     return;
   }
-  if (voiceActive) { recognition?.stop(); return; }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'en-GB';
-  recognition.interimResults = false;
-  recognition.onstart = () => {
-    voiceActive = true;
-    const btn = document.getElementById('voiceBtn');
-    const st = document.getElementById('voiceStatus');
+  if (_voiceActive) { if (_recognition) _recognition.stop(); return; }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  _recognition = new SR();
+  _recognition.lang = 'en-GB';
+  _recognition.interimResults = false;
+  _recognition.onstart = function() {
+    _voiceActive = true;
+    var btn = document.getElementById('voiceBtn');
+    var st = document.getElementById('voiceStatus');
     if (btn) { btn.textContent = '⏹'; btn.style.color = '#FF6B6B'; }
     if (st) st.style.display = 'block';
   };
-  recognition.onresult = e => {
-    const t = e.results[0][0].transcript;
-    const inp = document.getElementById('ci');
+  _recognition.onresult = function(e) {
+    var t = e.results[0][0].transcript;
+    var inp = document.getElementById('ci');
     if (inp) { inp.value = t; MrBadmus.ask(); }
   };
-  recognition.onerror = e => {
-    const st = document.getElementById('voiceStatus');
-    if (st) { st.textContent = '⚠️ Error: ' + e.error; setTimeout(()=>{ st.style.display='none'; st.textContent='🔴 Listening...'; },3000); }
+  _recognition.onerror = function(e) {
+    var st = document.getElementById('voiceStatus');
+    if (st) { st.textContent = '⚠️ Error: ' + e.error; setTimeout(function(){ st.style.display='none'; st.textContent='🔴 Listening...'; }, 3000); }
   };
-  recognition.onend = () => {
-    voiceActive = false;
-    const btn = document.getElementById('voiceBtn');
-    const st = document.getElementById('voiceStatus');
+  _recognition.onend = function() {
+    _voiceActive = false;
+    var btn = document.getElementById('voiceBtn');
+    var st = document.getElementById('voiceStatus');
     if (btn) { btn.textContent = '🎤'; btn.style.color = ''; }
     if (st) st.style.display = 'none';
   };
-  recognition.start();
+  _recognition.start();
 };
-

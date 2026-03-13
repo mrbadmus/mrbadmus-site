@@ -1379,7 +1379,7 @@ BIOLOGY_COLOR   = "#6BCB77"
 # ─────────────────────────────────────────────
 
 def nav_html(active_subject="", pathway="", tier=""):
-    """Nav bar — shows home, and optionally pathway breadcrumb."""
+    """Nav bar — shows home, search icon, and optionally pathway breadcrumb."""
     pathway_links = ""
     if pathway and tier:
         pc = PATHWAY_COLORS.get(pathway, "#4ECDC4")
@@ -1396,11 +1396,17 @@ def nav_html(active_subject="", pathway="", tier=""):
             pathway_links += f"""
     <span style="color:var(--muted)">›</span>
     <a href="/{pathway}/{tier}/{active_subject}/index.html" style="color:{sc};font-weight:700;">{se} {sl}</a>"""
+    elif pathway:
+        pc = PATHWAY_COLORS.get(pathway, "#4ECDC4")
+        pathway_links = f"""
+    <span style="color:var(--muted)">›</span>
+    <a href="/{pathway}/index.html" style="color:{pc};font-weight:700;">{pathway.title()} Science</a>"""
 
     return f"""<nav class="nav">
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     {pathway_links}
   </div>
 </nav>"""
@@ -1545,99 +1551,89 @@ const _originalAsk = ask;
 
 SHARED_JS_PATCHED = SHARED_JS.replace(
     "  return { init, open, close, ask };\n})();",
-    """  // Auto-speak bot replies when TTS is on
-  const _origAsk = ask;
-  async function askWithTTS(preset) {
-    await _origAsk(preset);
-    // After ask completes, read last bot message if TTS on
-    if (ttsEnabled) {
-      const msgs = document.querySelectorAll('.chat-msg.bot .chat-msg__bubble');
-      if (msgs.length) {
-        speakText(msgs[msgs.length-1].innerText);
-      }
-    }
-  }
-
-  return { init, open, close, ask: askWithTTS, toggleTTS, toggleVoice };
-})();
-
-// ── TTS & VOICE ──
-let ttsEnabled = false;
-let recognition = null;
-let voiceActive = false;
+    "  return { init, open, close, ask };\n})();\n"
+) + """
+// ── TTS & VOICE (added outside IIFE so they don't interfere with chat module) ──
+var _ttsEnabled = false;
+var _recognition = null;
+var _voiceActive = false;
 
 MrBadmus.toggleTTS = function() {
-  ttsEnabled = !ttsEnabled;
-  const btn = document.getElementById('ttsToggle');
+  _ttsEnabled = !_ttsEnabled;
+  var btn = document.getElementById('ttsToggle');
   if (btn) {
-    btn.textContent = ttsEnabled ? '🔊 ON' : '🔊 TTS';
-    btn.style.background = ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
-    btn.style.borderColor = ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
+    btn.textContent = _ttsEnabled ? '🔊 ON' : '🔊 TTS';
+    btn.style.background = _ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
+    btn.style.borderColor = _ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
   }
-  if (!ttsEnabled) window.speechSynthesis?.cancel();
+  if (!_ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
 };
 
 function _speakText(text) {
-  if (!ttsEnabled || !window.speechSynthesis) return;
+  if (!_ttsEnabled || !window.speechSynthesis) return;
   window.speechSynthesis.cancel();
-  const clean = text.replace(/[*_`#>\\[\\]]/g, '').replace(/\\n/g,' ').substring(0, 800);
-  const utt = new SpeechSynthesisUtterance(clean);
+  var clean = text.replace(/[*_`#>\\[\\]]/g,'').replace(/\\n/g,' ').substring(0,800);
+  var utt = new SpeechSynthesisUtterance(clean);
   utt.rate = 0.95; utt.pitch = 1.0; utt.lang = 'en-GB';
-  const voices = window.speechSynthesis.getVoices();
-  const v = voices.find(v => v.lang==='en-GB') || voices.find(v => v.lang.startsWith('en'));
+  var voices = window.speechSynthesis.getVoices();
+  var v = voices.find(function(v){return v.lang==='en-GB';}) || voices.find(function(v){return v.lang.startsWith('en');});
   if (v) utt.voice = v;
   window.speechSynthesis.speak(utt);
 }
 
-// Patch the module to speak after bot replies
+// Wrap ask() to auto-speak bot replies when TTS on
 (function() {
-  const orig = MrBadmus.ask;
-  MrBadmus.ask = async function(preset) {
-    await orig(preset);
-    if (ttsEnabled) {
-      const msgs = document.querySelectorAll('.chat-msg.bot .chat-msg__bubble');
-      if (msgs.length) _speakText(msgs[msgs.length-1].innerText);
+  var _origAsk = MrBadmus.ask;
+  MrBadmus.ask = function(preset) {
+    var p = _origAsk(preset);
+    if (p && p.then) {
+      p.then(function() {
+        if (_ttsEnabled) {
+          var msgs = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
+          if (msgs.length) _speakText(msgs[msgs.length-1].innerText);
+        }
+      });
     }
+    return p;
   };
 })();
 
 MrBadmus.toggleVoice = function() {
   if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-    alert('Voice input not supported in this browser. Try Chrome or Edge.');
+    alert('Voice input is not supported in this browser. Try Chrome or Edge.');
     return;
   }
-  if (voiceActive) { recognition?.stop(); return; }
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.lang = 'en-GB';
-  recognition.interimResults = false;
-  recognition.onstart = () => {
-    voiceActive = true;
-    const btn = document.getElementById('voiceBtn');
-    const st = document.getElementById('voiceStatus');
+  if (_voiceActive) { if (_recognition) _recognition.stop(); return; }
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  _recognition = new SR();
+  _recognition.lang = 'en-GB';
+  _recognition.interimResults = false;
+  _recognition.onstart = function() {
+    _voiceActive = true;
+    var btn = document.getElementById('voiceBtn');
+    var st = document.getElementById('voiceStatus');
     if (btn) { btn.textContent = '⏹'; btn.style.color = '#FF6B6B'; }
     if (st) st.style.display = 'block';
   };
-  recognition.onresult = e => {
-    const t = e.results[0][0].transcript;
-    const inp = document.getElementById('ci');
+  _recognition.onresult = function(e) {
+    var t = e.results[0][0].transcript;
+    var inp = document.getElementById('ci');
     if (inp) { inp.value = t; MrBadmus.ask(); }
   };
-  recognition.onerror = e => {
-    const st = document.getElementById('voiceStatus');
-    if (st) { st.textContent = '⚠️ Error: ' + e.error; setTimeout(()=>{ st.style.display='none'; st.textContent='🔴 Listening...'; },3000); }
+  _recognition.onerror = function(e) {
+    var st = document.getElementById('voiceStatus');
+    if (st) { st.textContent = '⚠️ Error: ' + e.error; setTimeout(function(){ st.style.display='none'; st.textContent='🔴 Listening...'; }, 3000); }
   };
-  recognition.onend = () => {
-    voiceActive = false;
-    const btn = document.getElementById('voiceBtn');
-    const st = document.getElementById('voiceStatus');
+  _recognition.onend = function() {
+    _voiceActive = false;
+    var btn = document.getElementById('voiceBtn');
+    var st = document.getElementById('voiceStatus');
     if (btn) { btn.textContent = '🎤'; btn.style.color = ''; }
     if (st) st.style.display = 'none';
   };
-  recognition.start();
+  _recognition.start();
 };
 """
-)
 
 
 # Also add voice button CSS to SHARED_CSS
@@ -4734,10 +4730,13 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
   btn.addEventListener('click', function() {
     const card = this.closest('.quiz-card');
     if (card.dataset.answered) return;
-    card.dataset.answered = '1';
     const correctIdx = parseInt(card.dataset.answer);
     const clickedIdx = parseInt(this.dataset.oi);
     const isCorrect = clickedIdx === correctIdx;
+
+    // Store whether student got THIS card right
+    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
+
     const fb = document.getElementById('qfb-' + this.dataset.qi);
 
     card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
@@ -4746,9 +4745,8 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
       o.disabled = true;
     });
 
-    let wrongExpRaw = card.dataset.wrongExp || '{}';
     let wrongExp = {};
-    try { wrongExp = JSON.parse(wrongExpRaw); } catch(e) {}
+    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
 
     if (isCorrect) {
       fb.className = 'quiz-fb correct-fb show';
@@ -4760,29 +4758,14 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
     }
 
     const allCards = document.querySelectorAll('.quiz-card');
-    const answered = document.querySelectorAll('.quiz-card[data-answered]').length;
+    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
     const total = allCards.length;
+    const answered = answeredCards.length;
     const prog = document.getElementById('quizProgress');
 
     if (answered === total) {
-      // Count correct answers
-      let correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const chosen = c.querySelector('.quiz-opt.correct');
-        if (chosen && parseInt(chosen.dataset.oi) === corrIdx) correctCount++;
-      });
-      // Actually count by checking which correct buttons were clicked
-      correctCount = document.querySelectorAll('.quiz-opt.correct').length;
-      // But correct buttons are highlighted even if student didn't click them
-      // Better: count cards where the answered button has .correct class
-      correctCount = 0;
-      allCards.forEach(c => {
-        const corrIdx = parseInt(c.dataset.answer);
-        const clickedBtn = Array.from(c.querySelectorAll('.quiz-opt')).find(b => b.classList.contains('correct') || b.classList.contains('wrong'));
-        if (clickedBtn && clickedBtn.classList.contains('correct')) correctCount++;
-      });
-
+      // Count only cards where student clicked correct
+      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
       if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
 
       const endMsg = document.getElementById('quizEndMsg');
