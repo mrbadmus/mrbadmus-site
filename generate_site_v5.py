@@ -1197,26 +1197,11 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
   }
 
-  const VOICE_ADDENDUM = `
-
-VOICE MODE — YOU ARE SPEAKING OUT LOUD, NOT WRITING:
-- Reply in 2 to 3 SHORT spoken sentences MAXIMUM. Never more.
-- NO bullet points, NO numbered lists, NO asterisks, NO markdown, NO emojis.
-- NO headers, NO bold, NO dashes used as lists.
-- Write like you are talking directly to the student face to face.
-- Use natural spoken language: say "for example" not "e.g.", say "which means" not an arrow symbol.
-- For calculations, talk through steps verbally: "First write the formula, then substitute the values..."
-- End with ONE short follow-up question to keep the conversation going.
-- Keep it warm, punchy and human. You are a teacher talking, not writing a textbook.`;
-
-  let _voiceSystemPrompt = '';
-
   function init(config) {
     currentSubject = config.subject || 'physics';
     currentTopic = config.topic || '';
     systemPrompt = SUBJECT_PROMPTS[currentSubject] || SUBJECT_PROMPTS.physics;
     if (currentTopic) systemPrompt += `\n\nThe student is currently studying: ${currentTopic}. Focus on this topic when possible.`;
-    _voiceSystemPrompt = systemPrompt + VOICE_ADDENDUM;
 
     document.getElementById('chatOverlay')?.addEventListener('click', e => { if(e.target===document.getElementById('chatOverlay')) close(); });
     document.querySelector('.close-btn')?.addEventListener('click', close);
@@ -1271,7 +1256,7 @@ VOICE MODE — YOU ARE SPEAKING OUT LOUD, NOT WRITING:
     let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;
     chatHistory.push({ role:'user', content:userContent });
     try {
-      const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ system:(window._mrBadmusVoiceMode ? _voiceSystemPrompt : systemPrompt), messages:chatHistory }) });
+      const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ system:systemPrompt, messages:chatHistory }) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
@@ -1437,103 +1422,26 @@ def chat_html():
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
-
     <div class="chat-head">
       <div class="chat-head-info">
         <h3>Mr. Badmus AI</h3>
-        <p id="chatSubtitle">GCSE Science Tutor</p>
+        <p>GCSE Science Tutor</p>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button id="ttsToggle" title="Toggle Mr Badmus speaking replies aloud" onclick="MrBadmus.toggleTTS()"
-          style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#E8F4FD;
-                 border-radius:8px;padding:4px 8px;cursor:pointer;font-size:0.8rem;">🔊 TTS</button>
-        <button class="close-btn">✕</button>
-      </div>
+      <button class="close-btn">✕</button>
     </div>
-
-    <!-- Voice mode banner — shown when voice is active -->
-    <div id="voiceBanner" style="display:none;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;gap:16px;">
-      <div id="voiceOrb" class="voice-orb voice-orb--idle">🎤</div>
-      <div id="voiceStateLabel" style="font-size:1rem;font-weight:700;color:#E8F4FD;">Tap the mic to speak</div>
-      <div id="voiceTranscript" style="font-size:0.82rem;color:var(--muted);min-height:20px;text-align:center;max-width:260px;font-style:italic;"></div>
-      <button onclick="MrBadmus.exitVoiceMode()"
-        style="margin-top:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
-               color:var(--muted);padding:6px 16px;border-radius:20px;cursor:pointer;font-size:0.8rem;font-family:'Nunito',sans-serif;">
-        ✕ Exit voice mode
-      </button>
-    </div>
-
-    <!-- Normal chat messages -->
     <div class="chat-msgs" id="chatMsgs"></div>
-
-    <!-- Image preview -->
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
-      <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
+      <button onclick="document.getElementById(\'imgPreview\').src=\'\';document.getElementById(\'imgPreviewRow\').style.display=\'none\';">✕</button>
     </div>
-
-    <!-- Input row -->
     <div class="chat-input-row">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <button id="voiceModeBtn" class="voice-btn" title="Switch to voice conversation mode" onclick="MrBadmus.enterVoiceMode()">🎤</button>
-      <input type="text" id="ci" placeholder="Type a question or press 🎤 to talk..."/>
+      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
       <button class="chat-send-btn">➤</button>
     </div>
-
   </div>
-</div>
-
-<style>
-/* ── VOICE ORB ── */
-.voice-orb {
-  width: 90px; height: 90px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.4rem;
-  cursor: pointer;
-  transition: all 0.3s;
-  position: relative;
-}
-.voice-orb--idle {
-  background: rgba(78,205,196,0.15);
-  border: 3px solid rgba(78,205,196,0.4);
-  box-shadow: 0 0 0 0 rgba(78,205,196,0.4);
-}
-.voice-orb--idle:hover {
-  background: rgba(78,205,196,0.25);
-  border-color: #4ECDC4;
-  transform: scale(1.05);
-}
-.voice-orb--listening {
-  background: rgba(255,107,107,0.2);
-  border: 3px solid #FF6B6B;
-  animation: orbPulse 1.2s infinite;
-}
-.voice-orb--thinking {
-  background: rgba(255,217,61,0.15);
-  border: 3px solid rgba(255,217,61,0.5);
-  animation: orbSpin 1.5s linear infinite;
-}
-.voice-orb--speaking {
-  background: rgba(107,203,119,0.2);
-  border: 3px solid #6BCB77;
-  animation: orbBounce 0.6s ease-in-out infinite alternate;
-}
-@keyframes orbPulse {
-  0%   { box-shadow: 0 0 0 0 rgba(255,107,107,0.5); }
-  70%  { box-shadow: 0 0 0 20px rgba(255,107,107,0); }
-  100% { box-shadow: 0 0 0 0 rgba(255,107,107,0); }
-}
-@keyframes orbSpin {
-  from { box-shadow: 0 0 0 4px rgba(255,217,61,0.1), 0 0 20px rgba(255,217,61,0.2); filter: hue-rotate(0deg); }
-  to   { box-shadow: 0 0 0 4px rgba(255,217,61,0.1), 0 0 20px rgba(255,217,61,0.2); filter: hue-rotate(30deg); }
-}
-@keyframes orbBounce {
-  from { transform: scale(1.0); box-shadow: 0 0 10px rgba(107,203,119,0.3); }
-  to   { transform: scale(1.08); box-shadow: 0 0 24px rgba(107,203,119,0.5); }
-}
-</style>"""
+</div>"""
 
 
 
@@ -1544,223 +1452,13 @@ def chat_html():
 # Extract original SHARED_JS and patch it — we inject TTS/voice at the end of the module
 # The patched JS is appended to the SHARED_JS string already defined above.
 
-VOICE_TTS_JS = ""  # unused
+SHARED_JS_PATCHED = SHARED_JS  # no voice patch
 
-SHARED_JS_PATCHED = SHARED_JS.replace(
-    "  return { init, open, close, ask };\n})();",
-    "  return { init, open, close, ask };\n})();\n"
-) + """
-// ══════════════════════════════════════════════════════
-//  MR BADMUS VOICE MODE
-//  Student speaks → AI replies → Mr Badmus speaks back
-// ══════════════════════════════════════════════════════
-
-(function() {
-  var MB = window.MrBadmus;
-
-  var _ttsEnabled  = false;
-  var _voiceMode   = false;
-  var _recognition = null;
-  var _isSpeaking  = false;
-  var _isThinking  = false;
-  var _isListening = false;
-
-  function _orb()        { return document.getElementById('voiceOrb'); }
-  function _label()      { return document.getElementById('voiceStateLabel'); }
-  function _transcript() { return document.getElementById('voiceTranscript'); }
-  function _banner()     { return document.getElementById('voiceBanner'); }
-  function _msgs()       { return document.getElementById('chatMsgs'); }
-  function _subtitle()   { return document.getElementById('chatSubtitle'); }
-
-  function _setOrbState(state, emoji, labelText) {
-    var orb = _orb(); var lbl = _label();
-    if (!orb) return;
-    orb.className = 'voice-orb voice-orb--' + state;
-    orb.textContent = emoji;
-    orb.onclick = (state === 'idle') ? function(){ MB.startListening(); } : null;
-    if (lbl) lbl.textContent = labelText;
-  }
-
-  function _speak(text, onEnd) {
-    if (!window.speechSynthesis) { if (onEnd) onEnd(); return; }
-    window.speechSynthesis.cancel();
-    var clean = text
-      .replace(/\\*\\*(.*?)\\*\\*/g, '$1')
-      .replace(/\\*(.*?)\\*/g, '$1')
-      .replace(/`([^`]*)`/g, '$1')
-      .replace(/#{1,6} /g, '')
-      .replace(/^[-*+] /gm, '')
-      .replace(/e\.g\./gi, 'for example')
-      .replace(/i\.e\./gi, 'that is')
-      .replace(/\\n+/g, ' ')
-      .replace(/  +/g, ' ')
-      .trim()
-      .substring(0, 1000);
-    var utt = new SpeechSynthesisUtterance(clean);
-    utt.rate = 0.92; utt.pitch = 1.0; utt.lang = 'en-GB';
-    function _trySpeak() {
-      var voices = window.speechSynthesis.getVoices();
-      var v = voices.find(function(v){ return v.name === 'Daniel'; })
-           || voices.find(function(v){ return v.lang === 'en-GB'; })
-           || voices.find(function(v){ return v.lang.startsWith('en'); });
-      if (v) utt.voice = v;
-      utt.onend  = function() { _isSpeaking = false; if (onEnd) onEnd(); };
-      utt.onerror = function() { _isSpeaking = false; if (onEnd) onEnd(); };
-      _isSpeaking = true;
-      window.speechSynthesis.speak(utt);
-    }
-    if (window.speechSynthesis.getVoices().length === 0) {
-      window.speechSynthesis.onvoiceschanged = _trySpeak;
-    } else { _trySpeak(); }
-  }
-
-  MB.toggleTTS = function() {
-    _ttsEnabled = !_ttsEnabled;
-    var btn = document.getElementById('ttsToggle');
-    if (btn) {
-      btn.textContent = _ttsEnabled ? '🔊 ON' : '🔊 TTS';
-      btn.style.background  = _ttsEnabled ? 'rgba(78,205,196,0.3)' : 'rgba(255,255,255,0.1)';
-      btn.style.borderColor = _ttsEnabled ? '#4ECDC4' : 'rgba(255,255,255,0.2)';
-    }
-    if (!_ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
-  };
-
-  MB.enterVoiceMode = function() {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      alert('Voice mode needs Chrome or Edge. Safari on iPhone also works.');
-      return;
-    }
-    _voiceMode = true; _ttsEnabled = true; window._mrBadmusVoiceMode = true;
-    var banner = _banner(); var msgs = _msgs();
-    if (banner) banner.style.display = 'flex';
-    if (msgs)   msgs.style.display   = 'none';
-    var sub = _subtitle(); if (sub) sub.textContent = '🎤 Voice mode';
-    var ttsBtn = document.getElementById('ttsToggle');
-    if (ttsBtn) { ttsBtn.textContent = '🔊 ON'; ttsBtn.style.background = 'rgba(78,205,196,0.3)'; ttsBtn.style.borderColor = '#4ECDC4'; }
-    _setOrbState('idle', '🎤', 'Tap to speak');
-    if (!window._voiceWelcomeDone) {
-      window._voiceWelcomeDone = true;
-      _setOrbState('speaking', '🔊', 'Mr Badmus is speaking...');
-      _speak('Voice mode is on. Tap the mic and ask me anything.', function() {
-        _setOrbState('idle', '🎤', 'Tap to speak');
-      });
-    }
-  };
-
-  MB.exitVoiceMode = function() {
-    _voiceMode = false; window._mrBadmusVoiceMode = false;
-    if (_recognition) { try { _recognition.stop(); } catch(e){} }
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    _isSpeaking = false; _isListening = false;
-    var banner = _banner(); var msgs = _msgs();
-    if (banner) banner.style.display = 'none';
-    if (msgs)   msgs.style.display   = '';
-    var sub = _subtitle(); if (sub) sub.textContent = 'GCSE Science Tutor';
-  };
-
-  MB.startListening = function() {
-    if (_isListening || _isThinking || _isSpeaking) return;
-    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) { alert('Voice not supported in this browser.'); return; }
-    _recognition = new SR();
-    _recognition.lang = 'en-GB';
-    _recognition.interimResults = true;
-    _recognition.onstart = function() {
-      _isListening = true;
-      _setOrbState('listening', '🔴', 'Listening...');
-      var tr = _transcript(); if (tr) tr.textContent = '';
-    };
-    _recognition.onresult = function(e) {
-      var interim = '', final_t = '';
-      for (var i = e.resultIndex; i < e.results.length; i++) {
-        if (e.results[i].isFinal) final_t += e.results[i][0].transcript;
-        else interim += e.results[i][0].transcript;
-      }
-      var tr = _transcript(); if (tr) tr.textContent = final_t || interim;
-    };
-    _recognition.onerror = function(e) {
-      _isListening = false;
-      _setOrbState('idle', '🎤', e.error === 'no-speech' ? 'Tap to speak' : 'Error: ' + e.error);
-    };
-    _recognition.onend = function() {
-      _isListening = false;
-      var tr = _transcript();
-      var text = tr ? tr.textContent.trim() : '';
-      if (!text || !_voiceMode) { if (_voiceMode) _setOrbState('idle', '🎤', 'Tap to speak'); return; }
-      _setOrbState('thinking', '💭', 'Mr Badmus is thinking...');
-      _isThinking = true;
-      if (tr) tr.textContent = '\u201c' + text + '\u201d';
-      var p = MB.ask(text);
-      if (!p || typeof p.then !== 'function') p = Promise.resolve();
-      p.then(function() {
-        _isThinking = false;
-        setTimeout(function() {
-          var bubbles = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
-          var reply = bubbles.length ? bubbles[bubbles.length - 1].innerText : '';
-          if (reply) {
-            _setOrbState('speaking', '🔊', 'Mr Badmus is speaking...');
-            _speak(reply, function() { setTimeout(function() { _setOrbState('idle', '🎤', 'Tap to speak'); }, 400); });
-          } else {
-            _setOrbState('idle', '🎤', 'Tap to speak');
-          }
-        }, 300);
-      }).catch(function() {
-        _isThinking = false; _setOrbState('idle', '🎤', 'Something went wrong — tap to retry');
-      });
-    };
-    _recognition.start();
-  };
-
-  document.addEventListener('DOMContentLoaded', function() {
-    var orb = _orb();
-    if (!orb) return;
-    orb.addEventListener('click', function() {
-      if (_isListening) { if (_recognition) _recognition.stop(); }
-      else if (_isSpeaking) { if (window.speechSynthesis) window.speechSynthesis.cancel(); _isSpeaking = false; setTimeout(function(){ if (_voiceMode) MB.startListening(); }, 200); }
-      else if (!_isThinking) { MB.startListening(); }
-    });
-  });
-
-  var _origAsk = MB.ask;
-  MB.ask = function(preset) {
-    var p = _origAsk(preset);
-    if (!p || typeof p.then !== 'function') return Promise.resolve();
-    if (_ttsEnabled && !_voiceMode) {
-      p.then(function() {
-        setTimeout(function() {
-          var bubbles = document.querySelectorAll('.chat-msg--bot .chat-msg__bubble');
-          if (bubbles.length) _speak(bubbles[bubbles.length - 1].innerText, null);
-        }, 150);
-      });
-    }
-    return p;
-  };
-
-  MB.toggleVoice = MB.enterVoiceMode;
-
-})();
-"""
 
 
 # Also add voice button CSS to SHARED_CSS
 SHARED_CSS_PATCHED = SHARED_CSS + """
-/* ── VOICE BUTTON ── */
-.voice-btn {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.2);
-  color: var(--text);
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s;
-}
-.voice-btn:hover { background: rgba(78,205,196,0.2); border-color: #4ECDC4; }
+
 
 /* ── PATHWAY CARDS (landing) ── */
 .pathway-grid {
