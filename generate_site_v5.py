@@ -3948,9 +3948,9 @@ def make_new_subtopic_page(st, color):
         lines_html = ""
         for line in lines:
             if line.strip():
-                lines_html += f"<p style='font-size:0.93rem;line-height:1.75;margin:0 0 8px 0;'>{line}</p>"
+                lines_html += f"<div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>{line}</div>"
             else:
-                lines_html += "<div style='height:6px;'></div>"
+                lines_html += "<div style='height:4px;'></div>"
         theory_html += f"""<div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">{section['heading']}</h4>
   {lines_html}
@@ -4452,9 +4452,9 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
         lines_html = ""
         for line in lines:
             if line.strip():
-                lines_html += f"<p style='font-size:0.93rem;line-height:1.75;margin:0 0 8px 0;'>{line}</p>"
+                lines_html += f"<div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>{line}</div>"
             else:
-                lines_html += "<div style='height:6px;'></div>"
+                lines_html += "<div style='height:4px;'></div>"
         theory_html += f"""<div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">{section['heading']}</h4>
   {lines_html}
