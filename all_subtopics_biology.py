@@ -2,15 +2,6 @@
 """
 Biology subtopics — Combined Foundation
 AQA 8464 / Biology 8461  *** COMPLETE ***
-
-Cell Biology:          7 subtopics
-Organisation:         11 subtopics
-Infection & Response:  8 subtopics
-Bioenergetics:         7 subtopics
-Homeostasis:           8 subtopics
-Inheritance:          12 subtopics
-Ecology:              11 subtopics
-
 Total: 64 subtopics
 """
 
@@ -5925,10 +5916,10 @@ BIOLOGY_SUBTOPICS_ALL = {
             }
         ],
         "variables": [
-            {"symbol": "N", "name": "Estimated population size", "unit": "individuals"},
-            {"symbol": "n₁", "name": "Number caught and marked in first sample", "unit": "individuals"},
-            {"symbol": "n₂", "name": "Total number caught in second sample", "unit": "individuals"},
-            {"symbol": "m", "name": "Number of marked individuals in second sample", "unit": "individuals"},
+            ("N",  "Estimated population size",                      "individuals", ""),
+            ("n₁", "Number caught and marked in first sample",       "individuals", ""),
+            ("n₂", "Total number caught in second sample",           "individuals", ""),
+            ("m",  "Number of marked individuals in second sample",  "individuals", ""),
         ],
         "equations": ["N = (n₁ × n₂) ÷ m"],
         "common_mistake": "In the mark-recapture formula N = (n₁ × n₂) ÷ m — students often confuse what n₁, n₂ and m represent. n₁ = first catch (all marked). n₂ = second catch (total number caught). m = marked individuals IN the second catch. Do NOT divide by n₂ or mix up m and n₂.",
