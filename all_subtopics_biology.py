@@ -3,9 +3,10 @@
 Biology subtopics — Combined Foundation
 AQA 8464 / Biology 8461
 
-Cell Biology:        7 subtopics (updated)
-Organisation:       11 subtopics (updated)
-Infection & Response: 8 subtopics (updated)
+Cell Biology:          7 subtopics (updated)
+Organisation:         11 subtopics (updated)
+Infection & Response:  8 subtopics (updated)
+Bioenergetics:         7 subtopics (updated)
 All other topics: unchanged
 """
 
@@ -2722,110 +2723,687 @@ BIOLOGY_SUBTOPICS_ALL = {
 ],
 
 "bioenergetics": [
+
+
+    # ══════════════════════════════════════════════
+    # 1. PHOTOSYNTHESIS
+    # ══════════════════════════════════════════════
     {
         "id": "photosynthesis",
         "title": "Photosynthesis",
-        "spec": "4.4.1",
-        "summary": "Describe photosynthesis, its equation and the factors that limit its rate.",
+        "spec": "4.4.1.1",
+        "summary": "Describe photosynthesis — what it is, where it happens and what the equation means.",
         "theory": [
-            {"heading": "What is Photosynthesis?",
-             "content": "Plants use light energy to convert CO₂ and water into glucose and oxygen.\nChloroplasts contain chlorophyll which absorbs light (mainly red and blue, reflects green).\nPhotosynthesis is ENDOTHERMIC — light energy is stored as chemical energy in glucose.\nOccurs in two stages: light reactions and the Calvin cycle (simplified at GCSE)."},
-            {"heading": "The Word and Symbol Equation",
-             "content": "Carbon dioxide + water → glucose + oxygen (using light energy).\n6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂\nGlucose is used for: respiration (energy), making cellulose (cell walls), making proteins, stored as starch."},
-            {"heading": "Limiting Factors",
-             "content": "If any one factor is in short supply, it limits the rate regardless of other conditions.\nLight intensity: more light → faster rate (up to a limit).\nCO₂ concentration: more CO₂ → faster rate (up to a limit).\nTemperature: higher temp → faster rate (up to ~40°C — then enzymes denature).\nAt high light and CO₂, temperature is often the limiting factor."},
-            {"heading": "Inverse Square Law and Light",
-             "content": "Light intensity ∝ 1/distance².\nDouble the distance → ¼ the light intensity.\nUsed in experiments: moving a lamp further reduces light intensity predictably.\nGreenhouses use artificial lighting and added CO₂ to maximise photosynthesis rate and crop yield."}
+            {
+                "heading": "What is Photosynthesis?",
+                "content": "Photosynthesis is the process by which green plants (and some other organisms) use LIGHT ENERGY to make their own food.\n\nIt converts two simple raw materials — carbon dioxide and water — into glucose and oxygen.\n\nPhotosynthesis is an ENDOTHERMIC reaction — it takes in energy (from light) and stores it as chemical energy in glucose molecules.\n\nThis is the opposite of respiration, which releases energy from glucose.\n\nPhotosynthesis is the foundation of almost all food chains on Earth — it is the process that converts the Sun's energy into a form that living organisms can use."
+            },
+            {
+                "heading": "Where Photosynthesis Happens",
+                "content": "Photosynthesis takes place in the CHLOROPLASTS — organelles found in the cells of green plants and algae.\n\nChloroplasts contain a green pigment called CHLOROPHYLL.\n\nChlorophyll absorbs LIGHT ENERGY — mainly red and blue wavelengths of light.\n\nGreen light is REFLECTED by chlorophyll — this is why plants appear green to our eyes.\n\nNot all plant cells have chloroplasts:\nLeaf palisade cells — packed with chloroplasts (maximum photosynthesis).\nRoot cells — no chloroplasts (underground, no light available).\nStorage cells — no chloroplasts (no photosynthesis needed)."
+            },
+            {
+                "heading": "The Equation for Photosynthesis",
+                "content": "Word equation:\ncarbon dioxide + water → glucose + oxygen\n\nSymbol equation:\n6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂\n\nThis equation requires LIGHT ENERGY — usually written above the arrow.\n\nREACTANTS (what goes in):\nCarbon dioxide (CO₂) — absorbed from the air through stomata in the leaves.\nWater (H₂O) — absorbed from the soil by root hair cells, transported up to leaves through xylem.\n\nPRODUCTS (what comes out):\nGlucose (C₆H₁₂O₆) — a sugar used by the plant for energy and building materials.\nOxygen (O₂) — released as a by-product through stomata."
+            },
+            {
+                "heading": "Photosynthesis vs Respiration",
+                "content": "Students often confuse these two processes. Here is the key difference:\n\nPHOTOSYNTHESIS:\nOccurs ONLY in light.\nOccurs ONLY in cells that have chloroplasts.\nTakes in CO₂ and water → makes glucose and O₂.\nStores energy in glucose (endothermic).\n\nRESPIRATION:\nOccurs ALL THE TIME — day and night.\nOccurs in ALL living cells (including animals, bacteria).\nBreaks down glucose + O₂ → CO₂ and water.\nReleases energy from glucose (exothermic).\n\nIn BRIGHT LIGHT: rate of photosynthesis > rate of respiration → net release of oxygen.\nIn LOW LIGHT: rate of photosynthesis < rate of respiration → net release of carbon dioxide.\nAt the COMPENSATION POINT: rate of photosynthesis = rate of respiration → no net gas exchange."
+            }
         ],
         "variables": [],
-        "equations": ["6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂ (light energy)"],
-        "common_mistake": "Photosynthesis only happens in LIGHT. Respiration happens ALL THE TIME (day and night). In bright light, rate of photosynthesis > rate of respiration → net O₂ release. At the compensation point they are equal.",
-        "key_note": "Limiting factors: light intensity, CO₂ concentration, temperature. Any one can be the bottleneck.",
-        "higher": "Inverse square law: light intensity = 1/d². Light-dependent reactions (chlorophyll absorbs light, produces ATP, splits water). Light-independent reactions (Calvin cycle — CO₂ fixed using ATP to make glucose).",
+        "equations": ["6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂  (light energy)"],
+        "common_mistake": "Photosynthesis only happens in LIGHT and only in cells with CHLOROPLASTS. Respiration happens ALL THE TIME in ALL living cells. Never say 'plants don't respire' — they do, constantly. In bright light they photosynthesise faster than they respire, which is why we see net O₂ production.",
+        "key_note": "Photosynthesis: CO₂ + H₂O → glucose + O₂. Needs light energy. Occurs in chloroplasts. Endothermic — stores energy. Chlorophyll absorbs red and blue light, reflects green.",
+        "higher": None,
         "triple_only": None,
-        "rp": "RP5 — Investigate the effect of light intensity on the rate of photosynthesis using aquatic plants (counting bubbles or measuring O₂).",
+        "rp": "RP5 — Investigate the effect of light intensity on the rate of photosynthesis using aquatic plants (e.g. Elodea or Cabomba). Count oxygen bubbles per minute at different distances from a lamp.",
         "matching": {
-            "title": "Match the Factor to How it Limits Photosynthesis",
-            "instruction": "Match each factor to its role as a limiting factor.",
+            "title": "Photosynthesis — Match the Term",
+            "instruction": "Match each item to the correct category.",
             "pairs": [
-                ("Low light intensity", "Not enough energy to drive light reactions — rate is slow"),
-                ("Low CO₂ concentration", "Not enough raw material for glucose production — rate is slow"),
-                ("Low temperature", "Enzymes work slower — fewer collisions per second"),
-                ("High temperature", "Enzymes denature — active sites change shape permanently"),
+                ("Reactant", "Carbon dioxide — enters through stomata from the air"),
+                ("Reactant", "Water — absorbed by roots, travels up through xylem"),
+                ("Product", "Glucose — used for energy, building and storage"),
+                ("Product", "Oxygen — released as a by-product through stomata"),
+                ("Where it happens", "Chloroplasts — contain chlorophyll that absorbs light"),
+                ("Energy type", "Endothermic — light energy absorbed and stored in glucose"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "What is the word equation for photosynthesis?",
-             "opts": [("Carbon dioxide + water → glucose + oxygen", True), ("Glucose + oxygen → carbon dioxide + water", False), ("Carbon dioxide + glucose → water + oxygen", False), ("Water + oxygen → carbon dioxide + glucose", False)],
-             "wrong_explanations": {1: "That's the equation for AEROBIC RESPIRATION — the reverse of photosynthesis!", 2: "Carbon dioxide and glucose are on different sides — CO₂ is a REACTANT, glucose is a PRODUCT.", 3: "Oxygen is a product — it comes FROM photosynthesis, it doesn't go in."}},
-            {"q": "A plant is well-lit and has plenty of CO₂. What might now be the limiting factor?",
-             "opts": [("Temperature", True), ("Light intensity", False), ("CO₂", False), ("Oxygen", False)],
-             "wrong_explanations": {1: "Light is already plentiful — it's not the limiting factor.", 2: "CO₂ is plentiful — not limiting. When these are satisfied, temperature (enzyme rate) becomes the bottleneck.", 3: "Oxygen is a PRODUCT of photosynthesis — high O₂ doesn't limit the rate."}},
-            {"q": "Where in the cell does photosynthesis take place?",
-             "opts": [("Chloroplasts", True), ("Mitochondria", False), ("Nucleus", False), ("Vacuole", False)],
-             "wrong_explanations": {1: "Mitochondria are for RESPIRATION — releasing energy from glucose. Chloroplasts are for photosynthesis.", 2: "The nucleus contains DNA — it controls the cell but doesn't carry out photosynthesis.", 3: "The vacuole stores cell sap — it's not involved in photosynthesis."}},
-            {"q": "Why do plants appear green?",
-             "opts": [("Chlorophyll reflects green light and absorbs red and blue light", True), ("They contain green pigments that produce green light", False), ("Green light makes them grow", False), ("All plants contain green water in their cells", False)],
-             "wrong_explanations": {1: "Plants don't PRODUCE light — they reflect it. Chlorophyll reflects the green wavelengths we see.", 2: "Green light actually makes plants grow slightly slower — red and blue are most useful for photosynthesis.", 3: "Cell sap in vacuoles is usually colourless or slightly coloured — not green."}},
-            {"q": "How is glucose used by plants after photosynthesis?",
-             "opts": [("Respiration (energy), cellulose (cell walls), proteins, stored as starch", True), ("Immediately released as oxygen", False), ("Converted to carbon dioxide and excreted", False), ("Sent to roots as the only use", False)],
-             "wrong_explanations": {1: "Oxygen is a PRODUCT of photosynthesis — not made from glucose.", 2: "CO₂ is exhaled in RESPIRATION but glucose is also used for many other things.", 3: "Glucose is used throughout the whole plant — not just in roots."}}
+            {
+                "q": "What is the word equation for photosynthesis?",
+                "opts": [
+                    ("Carbon dioxide + water → glucose + oxygen", True),
+                    ("Glucose + oxygen → carbon dioxide + water", False),
+                    ("Carbon dioxide + glucose → water + oxygen", False),
+                    ("Water + oxygen → carbon dioxide + glucose", False)
+                ],
+                "wrong_explanations": {
+                    1: "That is the equation for AEROBIC RESPIRATION — the exact reverse of photosynthesis.",
+                    2: "CO₂ and glucose are never on the same side. CO₂ is a reactant; glucose is a product of photosynthesis.",
+                    3: "Oxygen is a PRODUCT — it is produced by photosynthesis and released. It doesn't go in."
+                }
+            },
+            {
+                "q": "Why do plants appear green?",
+                "opts": [
+                    ("Chlorophyll reflects green light — it absorbs red and blue wavelengths instead", True),
+                    ("Plants produce green light as a by-product of photosynthesis", False),
+                    ("Green light is needed most for photosynthesis so it is absorbed", False),
+                    ("All plant cells are filled with green-coloured water", False)
+                ],
+                "wrong_explanations": {
+                    1: "Plants don't produce or emit light — they only reflect it. Green is the colour reflected, not produced.",
+                    2: "Green is actually the LEAST useful wavelength for photosynthesis — red and blue are absorbed most efficiently.",
+                    3: "Cell sap in vacuoles is usually colourless — the green colour comes from chlorophyll in chloroplasts."
+                }
+            },
+            {
+                "q": "In a dark room, does a plant carry out photosynthesis?",
+                "opts": [
+                    ("No — photosynthesis requires light energy and cannot occur in darkness", True),
+                    ("Yes — plants always photosynthesise, day and night", False),
+                    ("Yes — plants store light energy during the day and use it at night", False),
+                    ("Only partially — stomata close so photosynthesis slows but doesn't stop", False)
+                ],
+                "wrong_explanations": {
+                    1: "Respiration occurs day and night — but PHOTOSYNTHESIS specifically requires light energy. Without light, it stops completely.",
+                    2: "Plants do store glucose — but photosynthesis itself cannot run without light. The stored glucose is used in respiration at night.",
+                    3: "Stomata closing does reduce gas exchange in the dark, but photosynthesis stops specifically because there is no light energy, not because stomata are closed."
+                }
+            },
+            {
+                "q": "Where exactly in a plant cell does photosynthesis take place?",
+                "opts": [
+                    ("Chloroplasts — which contain the chlorophyll pigment that absorbs light", True),
+                    ("Mitochondria — which produce the energy needed for photosynthesis", False),
+                    ("The nucleus — which contains the genes controlling photosynthesis", False),
+                    ("The vacuole — which stores the raw materials for photosynthesis", False)
+                ],
+                "wrong_explanations": {
+                    1: "Mitochondria are the site of RESPIRATION — they produce ATP energy but do not carry out photosynthesis.",
+                    2: "The nucleus contains the DNA instructions but is not the location where photosynthesis reactions actually occur.",
+                    3: "The vacuole stores cell sap (sugars and salts) — it is not involved in carrying out photosynthesis."
+                }
+            }
         ]
     },
+
+    # ══════════════════════════════════════════════
+    # 2. RATE OF PHOTOSYNTHESIS
+    # ══════════════════════════════════════════════
     {
-        "id": "respiration",
-        "title": "Aerobic and Anaerobic Respiration",
-        "spec": "4.4.2",
-        "summary": "Describe and compare aerobic and anaerobic respiration.",
+        "id": "rate-of-photosynthesis",
+        "title": "Rate of Photosynthesis",
+        "spec": "4.4.1.2",
+        "summary": "Explain what limits the rate of photosynthesis and how to investigate it.",
         "theory": [
-            {"heading": "Aerobic Respiration",
-             "content": "Glucose + oxygen → carbon dioxide + water (+ energy as ATP).\nC₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + ATP.\nOccurs in MITOCHONDRIA.\nReleases large amount of energy — most efficient method.\nOccurs continuously in all living cells, day and night."},
-            {"heading": "Anaerobic Respiration",
-             "content": "Respiration WITHOUT oxygen — releases much less energy.\nIn animals/bacteria: glucose → lactic acid + small amount of ATP.\nIn yeast/plants: glucose → ethanol + CO₂ + small amount of ATP (fermentation).\nYeast fermentation is used for making bread (CO₂ makes dough rise) and alcohol (ethanol)."},
-            {"heading": "Oxygen Debt",
-             "content": "During intense exercise, not enough O₂ reaches muscles → anaerobic respiration → lactic acid builds up.\nLactic acid causes muscle fatigue and pain.\nAfter exercise: continue breathing hard — extra O₂ oxidises lactic acid to CO₂ and water.\nThis extra O₂ needed = oxygen debt (excess post-exercise oxygen consumption, EPOC)."},
-            {"heading": "Response to Exercise",
-             "content": "Heart rate increases — delivers more O₂ and glucose to muscles.\nBreathing rate and depth increase — takes in more O₂, removes more CO₂.\nBlood flow redirected to muscles.\nAfter prolonged exercise: glycogen (stored glucose in muscles and liver) depleted."}
+            {
+                "heading": "What is a Limiting Factor?",
+                "content": "A LIMITING FACTOR is any factor that, when in short supply, restricts the rate of a reaction — even if all other factors are in abundance.\n\nImagine a factory with three workers on a production line. If one worker is absent (or working slowly), the whole line slows down — even if the other two are working perfectly.\n\nFor photosynthesis, the three main limiting factors are:\n1. LIGHT INTENSITY\n2. CARBON DIOXIDE CONCENTRATION\n3. TEMPERATURE\n\nAt any given moment, the rate of photosynthesis is limited by whichever of these three factors is in shortest supply."
+            },
+            {
+                "heading": "Light Intensity",
+                "content": "Light provides the ENERGY for photosynthesis.\n\nAs light intensity INCREASES:\nMore energy available → chlorophyll absorbs more light → faster reactions → rate of photosynthesis increases.\n\nBut once light is no longer the limiting factor, increasing it further has NO effect — another factor takes over as the bottleneck.\n\nIn very LOW light:\nRate is slow — not enough energy to drive the reactions.\nThis is why plants grow more slowly in winter (shorter days, lower light levels).\n\nEVIDENCE in experiments:\nAquatic plants (e.g. Elodea) produce oxygen bubbles.\nMoving a lamp CLOSER increases bubble rate.\nMoving it FURTHER decreases bubble rate.\n\nNOTE: Light intensity decreases with distance from a source."
+            },
+            {
+                "heading": "Carbon Dioxide Concentration",
+                "content": "Carbon dioxide is a RAW MATERIAL for photosynthesis — needed to build glucose molecules.\n\nAs CO₂ concentration INCREASES:\nMore raw material available → more glucose can be produced → rate increases.\n\nIf CO₂ falls too low:\nRate is limited even if light and temperature are optimal.\n\nThis is why GREENHOUSES often pump extra CO₂ into the air — raising CO₂ concentration above the normal atmospheric level (~0.04%) can significantly increase crop yields.\n\nNormal atmospheric CO₂ is quite low — for many plants, CO₂ is often the limiting factor during a warm, sunny day."
+            },
+            {
+                "heading": "Temperature",
+                "content": "Temperature affects the ENZYMES that control the reactions of photosynthesis.\n\nAs temperature INCREASES (below optimum):\nEnzyme molecules and substrate molecules have more kinetic energy.\nMore frequent and more successful collisions.\nRate of photosynthesis increases.\n\nAt OPTIMUM TEMPERATURE (~25–40°C depending on the plant):\nMaximum rate of photosynthesis.\n\nABOVE OPTIMUM TEMPERATURE:\nEnzymes in the chloroplast BEGIN TO DENATURE.\nActive site shape changes permanently.\nEnzyme-substrate complexes can no longer form.\nRate of photosynthesis FALLS SHARPLY — eventually to zero.\n\nThis explains why very hot conditions reduce photosynthesis even in good light with plenty of CO₂ — the enzyme system has broken down."
+            },
+            {
+                "heading": "Investigating Photosynthesis Rate",
+                "content": "The rate of photosynthesis can be measured by:\nCounting the number of O₂ bubbles produced per minute by an aquatic plant.\nMeasuring the volume of O₂ collected over a set time.\nUsing a CO₂ sensor to measure how fast CO₂ is being absorbed.\n\nIn RP5 you investigate the effect of LIGHT INTENSITY:\nSet up a beaker of water with an aquatic plant (Elodea or Cabomba).\nPlace a lamp at a measured distance.\nCount bubbles per minute (or collect gas).\nMove the lamp to different distances and repeat.\nPlot a graph of rate (bubbles/min) against light intensity.\n\nKey controls:\nKeep temperature constant (use a water bath or ice).\nKeep CO₂ constant (add sodium bicarbonate solution to the water).\nThis ensures only light intensity is the independent variable."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "When a graph of photosynthesis rate levels off (plateaus), students often say 'the plant has run out of chlorophyll' or 'there is no more light'. The correct answer is that ANOTHER FACTOR has become limiting — usually CO₂ or temperature. The plant hasn't run out of anything — a different factor is now the bottleneck.",
+        "key_note": "Three limiting factors: light intensity, CO₂ concentration, temperature. Rate increases with each up to a point, then another factor limits. Above optimum temperature — enzymes denature, rate falls.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP5 — Investigate the effect of light intensity on rate of photosynthesis using aquatic plants. Count bubbles per minute. Move lamp to change light intensity. Control CO₂ (add sodium bicarbonate) and temperature.",
+        "matching": {
+            "title": "Match the Limiting Factor to its Effect",
+            "instruction": "Match each condition to what happens to the rate of photosynthesis.",
+            "pairs": [
+                ("Low light intensity", "Not enough energy — rate is slow even if CO₂ and temperature are optimal"),
+                ("Low CO₂ concentration", "Not enough raw material to build glucose — rate is slow"),
+                ("Low temperature", "Enzymes have less kinetic energy — fewer successful collisions, slow rate"),
+                ("Temperature above optimum", "Enzymes denature permanently — rate falls sharply to zero"),
+                ("Rate levels off (plateau)", "Another factor has become limiting — not that the plant ran out of chlorophyll"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "A plant is given very bright light and high CO₂. The rate of photosynthesis stops increasing. What is now the most likely limiting factor?",
+                "opts": [
+                    ("Temperature — enzyme activity is now the bottleneck", True),
+                    ("Light intensity — the plant needs even more light", False),
+                    ("Carbon dioxide — the plant needs more CO₂", False),
+                    ("The plant has used up all its chlorophyll", False)
+                ],
+                "wrong_explanations": {
+                    1: "Light is already very bright — it is NOT the limiting factor.",
+                    2: "CO₂ is already high — it is NOT the limiting factor.",
+                    3: "Chlorophyll is not used up — it is a pigment that absorbs light and is not consumed. Another factor is now limiting the rate."
+                }
+            },
+            {
+                "q": "In an experiment, moving a lamp further from an aquatic plant reduces the bubble count. What does this show?",
+                "opts": [
+                    ("Light intensity is the limiting factor at that distance — reducing it reduces the rate of photosynthesis", True),
+                    ("The plant needs to be closer to warm water", False),
+                    ("CO₂ levels decrease as the lamp moves further away", False),
+                    ("The plant becomes stressed when the lamp moves", False)
+                ],
+                "wrong_explanations": {
+                    1: "The lamp produces light, not heat — the water bath controls temperature.",
+                    2: "Moving a lamp doesn't change CO₂ levels — CO₂ comes from the water/air around the plant.",
+                    3: "Plants don't have a stress response in the same way animals do — the reduced bubble rate is a direct physical consequence of reduced light energy."
+                }
+            },
+            {
+                "q": "Why does photosynthesis rate decrease at temperatures above the optimum?",
+                "opts": [
+                    ("Enzymes in the chloroplast denature — their active sites change shape permanently and can no longer function", True),
+                    ("The plant closes its stomata to prevent water loss in the heat", False),
+                    ("High temperatures cause chlorophyll to break down permanently", False),
+                    ("More CO₂ evaporates from the leaf at higher temperatures", False)
+                ],
+                "wrong_explanations": {
+                    1: "Stomata closing reduces CO₂ entry — but the primary reason for rate decrease above optimum temperature is ENZYME DENATURATION.",
+                    2: "Chlorophyll can be affected by extreme heat, but at typical above-optimum temperatures (e.g. 45–50°C) the main limiting effect is enzyme denaturation.",
+                    3: "CO₂ is a gas that dissolves in water — it doesn't 'evaporate from the leaf'. The CO₂ supply issue is about stomata and diffusion rates."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 3. USES OF GLUCOSE FROM PHOTOSYNTHESIS
+    # ══════════════════════════════════════════════
+    {
+        "id": "uses-of-glucose",
+        "title": "Uses of Glucose from Photosynthesis",
+        "spec": "4.4.1.3",
+        "summary": "Describe how plants use the glucose produced by photosynthesis.",
+        "theory": [
+            {
+                "heading": "What Does a Plant Do with Glucose?",
+                "content": "After photosynthesis produces glucose, the plant uses it in several important ways.\n\nGlucose is the plant's primary fuel and building material — it is used for energy, for constructing cell structures, and for making other essential molecules.\n\nUnderstanding the uses of glucose helps explain how plants grow, store energy and support animal life."
+            },
+            {
+                "heading": "Respiration",
+                "content": "The PRIMARY use of glucose is AEROBIC RESPIRATION — breaking down glucose to release energy (ATP).\n\nThis energy powers everything the plant does:\nActive transport — moving mineral ions into root cells against concentration gradients.\nCell division — growing new cells during growth.\nProtein synthesis — making enzymes and structural proteins.\nMovement — opening and closing stomata (guard cells).\n\nRespiration occurs in ALL living plant cells, day and night — using glucose produced by photosynthesis."
+            },
+            {
+                "heading": "Making Cellulose",
+                "content": "Glucose molecules are joined together to form CELLULOSE — a structural carbohydrate.\n\nCellulose makes up the CELL WALLS of plant cells — providing rigidity and structural support.\n\nThis is why plants can stand upright and have firm stems and leaves.\n\nCellulose is the most abundant organic molecule on Earth — made entirely from glucose produced by photosynthesis."
+            },
+            {
+                "heading": "Making Starch for Storage",
+                "content": "When glucose is produced faster than it can be used, plants convert it into STARCH for storage.\n\nWhy starch and not glucose?\nGlucose is SOLUBLE — it would dissolve in cell sap and change the water potential of cells, causing osmosis problems.\nStarch is INSOLUBLE — it does not dissolve, so it doesn't affect osmosis and can be packed into cells safely.\nStarch can be converted BACK to glucose when energy is needed.\n\nWhere starch is stored:\nLeaves — starch grains in chloroplasts and cells.\nRoots — e.g. carrots, parsnips are swollen roots packed with starch.\nSeeds — energy store for germination.\nTubers — e.g. potato tubers are storage organs filled with starch."
+            },
+            {
+                "heading": "Making Proteins and Fats",
+                "content": "PROTEINS:\nGlucose provides the CARBON SKELETON for making amino acids.\nNITRATE IONS (absorbed from the soil through roots) provide the NITROGEN needed to make the amino group (–NH₂) part of amino acids.\nAmino acids are joined to make PROTEINS — enzymes, structural proteins, transport proteins.\n\nFATS AND OILS:\nGlucose is also used to make LIPIDS (fats and oils).\nUsed in cell membranes (phospholipids).\nUsed as energy-rich storage in seeds (oils in sunflower seeds, olive oil etc).\nAlso used to make the waxy cuticle on leaf surfaces."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Starch is stored instead of glucose because starch is INSOLUBLE — it doesn't affect osmosis. Glucose is soluble and would draw water into cells by osmosis if it accumulated. Students often say 'starch is easier to digest' — that's not the reason plants store starch instead of glucose.",
+        "key_note": "Glucose uses: respiration (energy), cellulose (cell walls), starch (storage — insoluble), proteins (needs nitrate ions from soil), fats/oils (membranes, seeds). Starch stored not glucose because starch is insoluble.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Use of Glucose",
+            "instruction": "Match each molecule to how it is made from glucose.",
+            "pairs": [
+                ("Respiration", "Glucose broken down to release ATP energy for all cell processes"),
+                ("Cellulose", "Glucose polymerised to make plant cell walls — structural support"),
+                ("Starch", "Glucose converted to insoluble storage carbohydrate in leaves, roots and seeds"),
+                ("Proteins", "Glucose + nitrate ions → amino acids → proteins (enzymes, structure)"),
+                ("Fats and oils", "Glucose converted to lipids — used in membranes and as energy-rich seed stores"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why do plants store glucose as starch rather than keeping it as glucose?",
+                "opts": [
+                    ("Starch is insoluble — it doesn't affect osmosis or water potential inside cells", True),
+                    ("Starch contains more energy per molecule than glucose", False),
+                    ("Starch is easier to transport around the plant than glucose", False),
+                    ("Glucose would be eaten by bacteria if stored directly", False)
+                ],
+                "wrong_explanations": {
+                    1: "Glucose and starch (a polymer of glucose) contain the same energy per gram — starch isn't more energy-dense.",
+                    2: "It's actually GLUCOSE that is transported in the phloem (as sucrose) — not starch. Starch is specifically an insoluble store.",
+                    3: "Bacteria can break down starch too — the reason is osmosis, not bacterial protection."
+                }
+            },
+            {
+                "q": "A plant is grown in soil with no nitrate ions. Which molecule will it struggle to make?",
+                "opts": [
+                    ("Proteins — amino acids need nitrogen (from nitrates) to form the amino group", True),
+                    ("Glucose — nitrates are needed for photosynthesis", False),
+                    ("Starch — nitrate ions are needed to convert glucose to starch", False),
+                    ("Cellulose — cell walls require nitrogen to polymerise glucose", False)
+                ],
+                "wrong_explanations": {
+                    1: "Glucose is produced by photosynthesis using CO₂ and water — nitrates are not needed.",
+                    2: "Starch is made from glucose polymerisation — no nitrogen is needed for this process.",
+                    3: "Cellulose is made from glucose joined by glycosidic bonds — no nitrogen involved."
+                }
+            },
+            {
+                "q": "What is the main use of glucose in plants?",
+                "opts": [
+                    ("Aerobic respiration — releasing energy (ATP) to power all cell processes", True),
+                    ("Making starch — all glucose is stored for later use", False),
+                    ("Building cell walls from cellulose — the plant's primary structural need", False),
+                    ("Making proteins — converting glucose to amino acids", False)
+                ],
+                "wrong_explanations": {
+                    1: "Not all glucose is stored — plants use glucose continuously for growth, which means some becomes cellulose, but energy supply via respiration is the primary ongoing use.",
+                    2: "Cellulose is important but only for cell walls — energy supply through respiration is the primary ongoing requirement.",
+                    3: "Protein synthesis is important, but requires nitrogen — not all glucose goes to proteins."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 4. AEROBIC RESPIRATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "aerobic-respiration",
+        "title": "Aerobic Respiration",
+        "spec": "4.4.2.1",
+        "summary": "Describe aerobic respiration — what it is, where it happens and what it produces.",
+        "theory": [
+            {
+                "heading": "What is Respiration?",
+                "content": "Respiration is the process by which ALL living cells release energy from organic molecules — mainly GLUCOSE — to produce ATP (adenosine triphosphate).\n\nATENTION: Respiration is NOT the same as BREATHING. Breathing (ventilation) moves air in and out of the lungs. Respiration is a CHEMICAL PROCESS happening inside every cell.\n\nATP is the ENERGY CURRENCY of cells — it is the molecule that directly powers all cellular processes:\nMuscle contraction.\nActive transport.\nProtein synthesis.\nCell division.\nMaintaining body temperature.\n\nRespiration is continuous — happening in every living cell, day and night, throughout your entire life."
+            },
+            {
+                "heading": "The Equation for Aerobic Respiration",
+                "content": "Aerobic respiration uses OXYGEN to completely break down glucose.\n\nWord equation:\nglucose + oxygen → carbon dioxide + water (+ energy released as ATP)\n\nSymbol equation:\nC₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O\n\nKey points:\nGlucose is completely broken down — all the carbon atoms end up as CO₂.\nWater is produced — the hydrogen from glucose combines with oxygen.\nLarge amount of ENERGY is released — approximately 36–38 ATP molecules per glucose.\nThis is the most efficient form of respiration."
+            },
+            {
+                "heading": "Where Aerobic Respiration Occurs",
+                "content": "Aerobic respiration takes place in the MITOCHONDRIA — the 'powerhouses' of the cell.\n\nThe mitochondria have a folded inner membrane (called cristae) which increases the surface area for the reactions.\n\nCells with HIGH energy demands have MORE mitochondria:\nMuscle cells — need large amounts of ATP for contraction.\nLiver cells — highly metabolically active, many chemical reactions.\nSperm cells — need ATP to power the flagellum for swimming.\nHeart muscle cells — never stop contracting, need a constant ATP supply.\n\nCells with lower energy demands have fewer mitochondria."
+            },
+            {
+                "heading": "Why Aerobic Respiration is so Efficient",
+                "content": "Aerobic respiration releases approximately 36–38 ATP molecules per glucose molecule — far more than anaerobic respiration (which produces only about 2 ATP).\n\nThis is because oxygen allows the complete breakdown of glucose:\nAll six carbon atoms → 6 CO₂ (carbon fully released).\nAll hydrogen atoms → 6 H₂O (hydrogen fully removed).\nAll the chemical energy stored in the C–H bonds of glucose is harvested.\n\nWithout oxygen, only a small fraction of this energy can be released — the rest remains locked in the waste products (lactic acid or ethanol).\n\nThis is why we breathe — to supply the constant oxygen demand of aerobic respiration in every cell."
+            }
         ],
         "variables": [],
         "equations": [
-            "Aerobic: glucose + oxygen → carbon dioxide + water",
-            "Anaerobic (animals): glucose → lactic acid",
-            "Anaerobic (yeast): glucose → ethanol + carbon dioxide"
+            "glucose + oxygen → carbon dioxide + water",
+            "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O"
         ],
-        "common_mistake": "Anaerobic respiration in ANIMALS produces LACTIC ACID. Anaerobic respiration in YEAST produces ETHANOL + CO₂. These are different products — students often mix them up!",
-        "key_note": "Aerobic = lots of ATP, needs O₂. Anaerobic = little ATP, no O₂ needed. Both start with glucose.",
-        "higher": "ATP is the immediate energy currency of cells. Glucose → ATP via respiration → ATP drives cell processes (muscle contraction, active transport, protein synthesis).",
-        "triple_only": None, "rp": None,
+        "common_mistake": "RESPIRATION is not the same as BREATHING. Breathing is ventilation — moving air in and out of lungs. Respiration is the CHEMICAL PROCESS in cells that releases energy from glucose. Also: aerobic respiration happens in MITOCHONDRIA — not in the nucleus, not in chloroplasts.",
+        "key_note": "Aerobic respiration: glucose + oxygen → CO₂ + water. In mitochondria. Releases ~36–38 ATP. Continuous in all living cells. Exothermic — energy released.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Aerobic or Anaerobic?",
-            "instruction": "Sort each statement into aerobic or anaerobic respiration.",
+            "title": "Aerobic Respiration — Match the Term",
+            "instruction": "Match each term to its correct description.",
             "pairs": [
-                ("Aerobic", "Needs oxygen, occurs in mitochondria, produces lots of ATP"),
-                ("Anaerobic — animals", "No oxygen, produces lactic acid, causes muscle fatigue"),
-                ("Anaerobic — yeast", "No oxygen, produces ethanol + CO₂, used in brewing and baking"),
-                ("Both", "Starts with glucose"),
-                ("Aerobic", "Produces CO₂ and water as waste products"),
+                ("Glucose", "The fuel molecule broken down in respiration"),
+                ("Oxygen", "Needed for aerobic respiration — allows complete breakdown of glucose"),
+                ("ATP", "The energy molecule produced — directly powers all cell processes"),
+                ("Carbon dioxide", "Waste product — produced when glucose is completely broken down"),
+                ("Mitochondria", "The organelle where aerobic respiration takes place"),
+                ("Water", "Produced when hydrogen from glucose combines with oxygen"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "Where does aerobic respiration take place in cells?",
-             "opts": [("Mitochondria", True), ("Nucleus", False), ("Chloroplasts", False), ("Cell membrane", False)],
-             "wrong_explanations": {1: "Nucleus contains DNA — it doesn't carry out respiration.", 2: "Chloroplasts do PHOTOSYNTHESIS. Mitochondria do respiration.", 3: "Cell membrane controls transport — respiration occurs in mitochondria."}},
-            {"q": "What is produced by anaerobic respiration in yeast?",
-             "opts": [("Ethanol and carbon dioxide", True), ("Lactic acid", False), ("Glucose and oxygen", False), ("Carbon dioxide and water", False)],
-             "wrong_explanations": {1: "Lactic acid is produced by ANIMAL muscles — not yeast. Yeast produces ethanol + CO₂.", 2: "Glucose + oxygen are REACTANTS in aerobic respiration — not products of anaerobic.", 3: "CO₂ + water = AEROBIC respiration. Anaerobic in yeast = ethanol + CO₂."}},
-            {"q": "What causes the 'burning' feeling in muscles during intense exercise?",
-             "opts": [("Lactic acid build-up from anaerobic respiration", True), ("Oxygen being used up too fast", False), ("Glucose being depleted", False), ("Mitochondria overheating", False)],
-             "wrong_explanations": {1: "Oxygen depletion triggers anaerobic respiration — but the burning sensation is specifically from LACTIC ACID accumulation.", 2: "Glucose depletion causes tiredness and 'hitting the wall' — but burning feeling = lactic acid.", 3: "Mitochondria don't overheat — the burning is a chemical effect of lactic acid lowering pH in muscles."}},
-            {"q": "What is oxygen debt?",
-             "opts": [("Extra O₂ needed after exercise to oxidise lactic acid back to CO₂ and water", True), ("The amount of O₂ missing from the blood", False), ("The O₂ stored in muscles before exercise", False), ("The difference in O₂ between inhaled and exhaled air", False)],
-             "wrong_explanations": {1: "O₂ levels in blood vary — oxygen debt specifically refers to post-exercise O₂ needed to process lactic acid.", 2: "Myoglobin in muscles stores O₂ — oxygen debt is about post-exercise metabolism of lactic acid.", 3: "O₂ difference between inhaled/exhaled air is related to metabolic rate — oxygen debt is specifically post-exercise."}},
-            {"q": "Which type of respiration releases the most energy from glucose?",
-             "opts": [("Aerobic — produces about 36-38 ATP per glucose", True), ("Anaerobic — faster so releases more energy", False), ("They release the same amount", False), ("Anaerobic — produces lactic acid which has more energy", False)],
-             "wrong_explanations": {1: "Anaerobic is faster at producing ATP in a crisis — but produces only 2 ATP per glucose vs ~36 for aerobic.", 2: "They don't release the same: aerobic ≈ 36-38 ATP per glucose, anaerobic ≈ 2 ATP.", 3: "Lactic acid is a waste product containing unused chemical energy — but anaerobic releases far less usable ATP."}}
+            {
+                "q": "Where in the cell does aerobic respiration take place?",
+                "opts": [
+                    ("Mitochondria", True),
+                    ("Chloroplasts", False),
+                    ("Nucleus", False),
+                    ("Ribosomes", False)
+                ],
+                "wrong_explanations": {
+                    1: "Chloroplasts carry out PHOTOSYNTHESIS — they capture energy from light. Mitochondria RELEASE energy from glucose.",
+                    2: "The nucleus contains DNA and controls the cell — it is not the site of aerobic respiration.",
+                    3: "Ribosomes build proteins — they are not involved in energy release from glucose."
+                }
+            },
+            {
+                "q": "What is the difference between respiration and breathing?",
+                "opts": [
+                    ("Breathing moves air in and out of the lungs. Respiration is the chemical process in cells that releases energy from glucose.", True),
+                    ("They are the same process — both refer to taking in oxygen and releasing carbon dioxide.", False),
+                    ("Breathing produces ATP. Respiration produces oxygen.", False),
+                    ("Respiration only occurs in the lungs. Breathing occurs throughout the body.", False)
+                ],
+                "wrong_explanations": {
+                    1: "Breathing and respiration are NOT the same — confusing them is one of the most common biology mistakes. Breathing is a mechanical process; respiration is a chemical one.",
+                    2: "Breathing takes in air (including O₂) — but ATP is produced by RESPIRATION in cells. Oxygen is produced by photosynthesis, not breathing.",
+                    3: "Respiration occurs in ALL living cells throughout the body — not just the lungs."
+                }
+            },
+            {
+                "q": "Why do muscle cells contain more mitochondria than skin cells?",
+                "opts": [
+                    ("Muscle cells need much more ATP energy for contraction — more mitochondria produce more ATP", True),
+                    ("Mitochondria are heavier than other organelles and sink to the bottom of active cells", False),
+                    ("Skin cells are too small to contain many mitochondria", False),
+                    ("Muscle cells use more oxygen, so they need more mitochondria to absorb it", False)
+                ],
+                "wrong_explanations": {
+                    1: "Organelles don't 'sink' — they are distributed throughout the cytoplasm based on cellular need.",
+                    2: "Skin cells are actually similar in size to muscle cells — it's energy demand, not size, that determines mitochondria number.",
+                    3: "Mitochondria do use oxygen in respiration — but they use it to produce ATP. The driving factor for more mitochondria is the ENERGY DEMAND, not simply oxygen availability."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 5. ANAEROBIC RESPIRATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "anaerobic-respiration",
+        "title": "Anaerobic Respiration",
+        "spec": "4.4.2.2",
+        "summary": "Describe anaerobic respiration in animals and yeast and explain its uses.",
+        "theory": [
+            {
+                "heading": "What is Anaerobic Respiration?",
+                "content": "Anaerobic respiration is respiration WITHOUT OXYGEN.\n\nIt occurs when oxygen is in short supply — for example, during very intense exercise when muscles cannot get enough oxygen fast enough.\n\nAnaerobic respiration:\nDoes NOT require oxygen.\nStarts with glucose, like aerobic respiration.\nProduces MUCH LESS ATP than aerobic respiration (only about 2 ATP per glucose compared to ~36 for aerobic).\nProduces different waste products depending on the organism.\n\nIt is a short-term emergency measure — useful for bursts of intense activity but not sustainable for long."
+            },
+            {
+                "heading": "Anaerobic Respiration in Animals (including Humans)",
+                "content": "In animal muscles (and some bacteria):\n\nWord equation:\nglucose → lactic acid\n\nNo oxygen needed. Only a small amount of ATP is produced.\n\nLactic acid is produced because glucose cannot be fully broken down without oxygen — lactic acid is the incomplete breakdown product.\n\nEffects of lactic acid:\nLactic acid LOWERS the pH inside muscle cells.\nThis disrupts enzyme activity → muscles stop contracting properly.\nThis causes the BURNING SENSATION in muscles during intense exercise.\nLeads to MUSCLE FATIGUE — the muscles cannot maintain maximum effort.\n\nLactic acid is NOT toxic long-term — after exercise, it is transported to the LIVER where it is converted back to glucose (or broken down further in aerobic respiration)."
+            },
+            {
+                "heading": "Anaerobic Respiration in Yeast (Fermentation)",
+                "content": "In YEAST (and also in plants under waterlogged conditions):\n\nWord equation:\nglucose → ethanol + carbon dioxide\n\nThis process is called FERMENTATION.\n\nFermentation is enormously important in food and drink production:\n\nBREAD MAKING:\nYeast is added to dough.\nYeast ferments sugars in the dough → produces CO₂.\nCO₂ bubbles make the dough RISE (become light and airy).\nEthanol produced evaporates during baking.\n\nALCOHOLIC DRINKS (beer, wine, cider):\nYeast ferments sugars in grain (beer), grapes (wine) or fruit (cider).\nEthanol accumulates → forms the alcohol in the drink.\nCO₂ also produced → gives fizzy drinks their bubbles.\n\nBIOFUELS:\nEthanol from fermentation can be used as a biofuel — a renewable energy source."
+            },
+            {
+                "heading": "Comparing Aerobic and Anaerobic Respiration",
+                "content": "Here is a clear side-by-side comparison:\n\nAEROBIC RESPIRATION:\nNeeds oxygen? YES.\nProducts: CO₂ + water.\nATP produced: ~36–38 per glucose.\nWhere: Mitochondria.\nWhen used: Normal conditions.\n\nANAEROBIC RESPIRATION (animals):\nNeeds oxygen? NO.\nProducts: Lactic acid.\nATP produced: ~2 per glucose.\nWhere: Cytoplasm.\nWhen used: Intense exercise, emergency.\n\nANAEROBIC RESPIRATION (yeast):\nNeeds oxygen? NO.\nProducts: Ethanol + CO₂.\nATP produced: ~2 per glucose.\nWhere: Cytoplasm.\nWhen used: Absence of oxygen (e.g. in dough, in fermenting liquid)."
+            }
+        ],
+        "variables": [],
+        "equations": [
+            "Anaerobic (animals): glucose → lactic acid",
+            "Anaerobic (yeast): glucose → ethanol + carbon dioxide"
+        ],
+        "common_mistake": "Anaerobic respiration in ANIMALS produces LACTIC ACID. Anaerobic respiration in YEAST produces ETHANOL + CO₂. These are different products — this distinction comes up repeatedly in exams. Do NOT say 'lactic acid' when asked about yeast fermentation.",
+        "key_note": "Animals: glucose → lactic acid (no O₂, little ATP, causes muscle fatigue). Yeast: glucose → ethanol + CO₂ (fermentation — used in bread, beer, wine). Both produce far less ATP than aerobic respiration.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Aerobic or Anaerobic — and Which Organism?",
+            "instruction": "Sort each statement into the correct type of respiration.",
+            "pairs": [
+                ("Aerobic", "Requires oxygen — produces CO₂, water and ~36 ATP"),
+                ("Anaerobic — animals", "No oxygen — produces lactic acid, causes burning feeling in muscles"),
+                ("Anaerobic — yeast", "No oxygen — produces ethanol and CO₂, used in bread and alcohol production"),
+                ("Anaerobic — animals", "Causes muscle fatigue during intense exercise"),
+                ("Anaerobic — yeast", "CO₂ produced makes bread dough rise"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is produced by anaerobic respiration in yeast?",
+                "opts": [
+                    ("Ethanol and carbon dioxide", True),
+                    ("Lactic acid", False),
+                    ("Glucose and oxygen", False),
+                    ("Carbon dioxide and water", False)
+                ],
+                "wrong_explanations": {
+                    1: "Lactic acid is produced by ANIMAL muscles during anaerobic respiration — NOT by yeast. Yeast produces ethanol + CO₂.",
+                    2: "Glucose and oxygen are the REACTANTS in aerobic respiration — they go in, not come out of anaerobic respiration.",
+                    3: "CO₂ and water = products of AEROBIC respiration. Anaerobic respiration in yeast produces ethanol + CO₂ (not water)."
+                }
+            },
+            {
+                "q": "Why does bread dough rise when yeast is added?",
+                "opts": [
+                    ("Yeast ferments sugars in the dough — the CO₂ produced forms bubbles that make the dough expand", True),
+                    ("Yeast produces oxygen which inflates the dough", False),
+                    ("Yeast absorbs water from the dough, making it lighter", False),
+                    ("Yeast produces lactic acid which reacts with flour to create gas", False)
+                ],
+                "wrong_explanations": {
+                    1: "Yeast produces CO₂ and ethanol during fermentation — not oxygen. The ethanol evaporates when the bread is baked.",
+                    2: "Yeast absorbs sugars for fermentation — it doesn't absorb significant water from the dough.",
+                    3: "Yeast (not animals) in bread produces ethanol and CO₂ — not lactic acid."
+                }
+            },
+            {
+                "q": "During a sprint race, an athlete's muscles switch to anaerobic respiration. Why?",
+                "opts": [
+                    ("The muscles are working so hard that oxygen cannot be delivered fast enough — anaerobic respiration continues without it", True),
+                    ("Anaerobic respiration produces more ATP, so athletes switch to it for maximum performance", False),
+                    ("The lungs stop absorbing oxygen during intense exercise", False),
+                    ("Glucose runs out during sprinting so the muscles use a different fuel", False)
+                ],
+                "wrong_explanations": {
+                    1: "Anaerobic respiration produces FAR LESS ATP (~2 vs ~36) — it is not chosen for maximum performance. It is an emergency fallback when oxygen supply is insufficient.",
+                    2: "The lungs work harder during exercise, not less — breathing rate and depth increase. But even this can't supply enough oxygen for maximum muscle output.",
+                    3: "Muscles use glucose during sprinting — glycogen stores are broken down to supply glucose. Glucose shortage ('hitting the wall') is different from the short-term switch to anaerobic respiration."
+                }
+            },
+            {
+                "q": "Which process produces more ATP per glucose molecule?",
+                "opts": [
+                    ("Aerobic respiration — approximately 36–38 ATP compared to 2 ATP from anaerobic", True),
+                    ("Anaerobic respiration — it happens faster so produces more total ATP", False),
+                    ("They produce the same amount — both start with glucose", False),
+                    ("Anaerobic respiration — the lactic acid contains extra energy", False)
+                ],
+                "wrong_explanations": {
+                    1: "Anaerobic can produce ATP FASTER per unit time in emergencies — but produces FAR LESS per glucose molecule.",
+                    2: "They both start with glucose but have completely different efficiencies. Aerobic: ~36–38 ATP. Anaerobic: ~2 ATP.",
+                    3: "Lactic acid does retain some chemical energy (glucose isn't fully broken down) — but from the cell's perspective, anaerobic yields only ~2 ATP of USABLE energy."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 6. RESPONSE TO EXERCISE
+    # ══════════════════════════════════════════════
+    {
+        "id": "response-to-exercise",
+        "title": "Response to Exercise",
+        "spec": "4.4.2.3",
+        "summary": "Describe how the body responds during and after exercise, including oxygen debt.",
+        "theory": [
+            {
+                "heading": "Why Exercise Demands More from the Body",
+                "content": "During exercise, muscles work harder — contracting more frequently and with more force.\n\nThis increased muscle activity requires:\nMORE GLUCOSE — the fuel for respiration.\nMORE OXYGEN — for aerobic respiration.\nFASTER REMOVAL of carbon dioxide and lactic acid — waste products.\n\nThe body must respond to these increased demands almost immediately.\n\nThree systems work together to meet the demands of exercise:\nThe HEART — pumps blood faster and harder.\nThe LUNGS — breathe faster and deeper.\nThe BLOOD VESSELS — redistribute blood flow to muscles."
+            },
+            {
+                "heading": "Changes During Exercise",
+                "content": "The body makes several rapid adjustments when exercise begins:\n\nHEART RATE INCREASES:\nThe heart beats faster (higher rate) and contracts more strongly (higher stroke volume).\nMore blood circulates per minute → more O₂ and glucose delivered to muscles.\nMore CO₂ and waste removed per minute.\n\nBREATHING RATE AND DEPTH INCREASE:\nYou breathe faster and take deeper breaths.\nMore O₂ inhaled per minute.\nMore CO₂ exhaled per minute.\nMaintains the concentration gradients in the alveoli.\n\nVASODILATION — blood vessels to muscles widen:\nMore blood is redirected to active muscles.\nSkin flushes (more blood near surface for cooling).\nBlood flow reduced to non-essential organs (e.g. digestive system) temporarily.\n\nGLYCOGEN BREAKDOWN:\nGlycogen stored in the LIVER and MUSCLES is converted back to glucose.\nIncreases the blood glucose supply to muscles."
+            },
+            {
+                "heading": "Lactic Acid and Oxygen Debt",
+                "content": "During very intense exercise (e.g. sprinting), the body cannot supply oxygen fast enough.\n\nMuscles switch to ANAEROBIC RESPIRATION:\nglucose → lactic acid\n\nLACTIC ACID ACCUMULATES in muscles:\nLowers the pH of the muscle tissue.\nDisrupts enzyme activity.\nCauses the burning, aching sensation during intense effort.\nLeads to muscle fatigue.\n\nOXYGEN DEBT (also called EPOC — Excess Post-Exercise Oxygen Consumption):\nAfter exercise stops, the body continues to breathe faster than normal.\nThis extra oxygen is used to process the accumulated lactic acid.\nLactic acid is transported in the blood to the LIVER.\nIn the liver, lactic acid is converted BACK into glucose — this requires oxygen.\nThe amount of extra oxygen needed after exercise to clear the lactic acid = the OXYGEN DEBT.\n\nThe harder the exercise, the more lactic acid produced, the larger the oxygen debt, and the longer recovery takes."
+            },
+            {
+                "heading": "Why Training Improves Performance",
+                "content": "Regular exercise training causes adaptations that improve the body's response:\n\nHEART:\nCardiac muscle becomes stronger — heart pumps more blood per beat (larger stroke volume).\nResting heart rate falls (a sign of cardiovascular fitness).\n\nMUSCLES:\nMore mitochondria develop in muscle cells — greater capacity for aerobic respiration.\nLarger glycogen stores — more fuel available.\nImproved blood vessel density — more efficient oxygen delivery.\n\nLUNGS:\nLarger lung capacity.\nMore efficient gas exchange.\n\nBLOOD:\nHigher red blood cell count in trained athletes — more haemoglobin → more O₂ carried per litre of blood."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Oxygen debt is NOT the lack of oxygen in the blood during exercise. It is the EXTRA oxygen needed AFTER exercise to convert the lactic acid that accumulated. Students often say 'you breathe harder during exercise to repay oxygen debt' — you breathe harder DURING exercise to supply O₂, and continue breathing hard AFTER to repay the debt.",
+        "key_note": "Exercise → more O₂ and glucose needed → heart rate up, breathing rate up, vasodilation. Intense exercise → anaerobic → lactic acid → muscle fatigue. After exercise → oxygen debt → lactic acid converted to glucose in liver.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Exercise Response to its Purpose",
+            "instruction": "Match each change to why it happens during exercise.",
+            "pairs": [
+                ("Heart rate increases", "Delivers more O₂ and glucose to muscles, removes CO₂ faster"),
+                ("Breathing rate and depth increase", "Takes in more O₂ and expels more CO₂ per minute"),
+                ("Vasodilation in muscles", "More blood redirected to active muscles — better O₂ supply"),
+                ("Glycogen breakdown in liver", "Converts stored glycogen to glucose to fuel muscles"),
+                ("Continued heavy breathing after exercise", "Repaying oxygen debt — extra O₂ to convert lactic acid back to glucose"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why does heart rate increase during exercise?",
+                "opts": [
+                    ("To deliver more oxygen and glucose to muscles and remove CO₂ and lactic acid faster", True),
+                    ("To raise body temperature to improve enzyme efficiency", False),
+                    ("To produce more red blood cells for the increased demand", False),
+                    ("To increase blood pressure so more oxygen enters through the skin", False)
+                ],
+                "wrong_explanations": {
+                    1: "Exercise does raise body temperature slightly — but this is a consequence, not the purpose of increased heart rate.",
+                    2: "New red blood cells take days to produce — the immediate response is to pump existing blood faster.",
+                    3: "Oxygen doesn't enter through the skin in humans — it enters through the lungs. The skin's increased blood flow is for COOLING, not oxygen absorption."
+                }
+            },
+            {
+                "q": "Why do you continue to breathe heavily for several minutes after stopping intense exercise?",
+                "opts": [
+                    ("Repaying the oxygen debt — extra O₂ is needed to convert accumulated lactic acid back to glucose in the liver", True),
+                    ("The lungs take time to slow down after being stimulated", False),
+                    ("To replace all the oxygen used during exercise", False),
+                    ("Lactic acid in the blood stimulates the lungs to keep working hard", False)
+                ],
+                "wrong_explanations": {
+                    1: "The lungs respond to chemical signals from the blood — they slow down when CO₂ and lactic acid levels normalise.",
+                    2: "All the oxygen used during exercise was already replaced during exercise — the post-exercise breathing is specifically about the lactic acid that accumulated.",
+                    3: "Lactic acid in the blood does stimulate breathing — but the reason breathing stays elevated is specifically to process that lactic acid in the liver."
+                }
+            },
+            {
+                "q": "What is oxygen debt?",
+                "opts": [
+                    ("The extra oxygen needed after exercise to convert accumulated lactic acid back to glucose in the liver", True),
+                    ("The oxygen missing from muscle cells during intense exercise", False),
+                    ("The difference between oxygen inhaled and oxygen used during exercise", False),
+                    ("The oxygen stored in myoglobin in muscles before exercise", False)
+                ],
+                "wrong_explanations": {
+                    1: "The lack of oxygen in muscles during exercise is what CAUSES anaerobic respiration — oxygen debt specifically refers to the post-exercise oxygen requirement to process the resulting lactic acid.",
+                    2: "Difference between inhaled and used oxygen relates to metabolic efficiency — oxygen debt is specifically post-exercise processing of lactic acid.",
+                    3: "Myoglobin stores oxygen in muscles — this is used during exercise, but 'oxygen debt' refers to the post-exercise recovery process."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 7. METABOLISM
+    # ══════════════════════════════════════════════
+    {
+        "id": "metabolism",
+        "title": "Metabolism",
+        "spec": "4.4.2.4",
+        "summary": "Define metabolism and describe the key metabolic reactions in living organisms.",
+        "theory": [
+            {
+                "heading": "What is Metabolism?",
+                "content": "METABOLISM is the sum of ALL the chemical reactions taking place in a cell or organism at any given time.\n\nEvery reaction that builds something up or breaks something down is part of metabolism.\n\nMetabolism is what keeps you alive — it powers growth, movement, repair, digestion, nerve signals, and every other process your body performs.\n\nMetabolic reactions fall into two broad categories:\nCATABOLISM — breaking large molecules into smaller ones (releasing energy).\nANABOLISM — building large molecules from smaller ones (requires energy)."
+            },
+            {
+                "heading": "Building Reactions (Anabolism)",
+                "content": "These reactions USE energy (ATP) to build large molecules from small ones:\n\nProtein synthesis:\nAmino acids → proteins (e.g. enzymes, haemoglobin, structural proteins).\nRequires ATP and takes place at ribosomes.\n\nCellulose synthesis:\nGlucose molecules → cellulose (for plant cell walls).\n\nStarch and glycogen synthesis:\nGlucose → starch (storage in plants).\nGlucose → glycogen (storage in animal liver and muscles).\n\nFat synthesis:\nFatty acids + glycerol → triglycerides (for cell membranes, energy storage, insulation).\n\nDNA replication:\nNucleotides → new DNA strands (before cell division)."
+            },
+            {
+                "heading": "Breaking-Down Reactions (Catabolism)",
+                "content": "These reactions RELEASE energy by breaking large molecules into smaller ones:\n\nRespiration (the most important catabolic reaction):\nGlucose + oxygen → carbon dioxide + water (releases ATP).\n\nDigestion:\nStarch → maltose → glucose (by amylase).\nProteins → amino acids (by proteases).\nFats → fatty acids + glycerol (by lipase).\n\nGlycolysis:\nGlucose broken down in the cytoplasm — the first step of respiration.\n\nDeamination (in the liver):\nExcess amino acids → removed amino group → excreted as urea.\nThe remaining carbon skeleton → used in respiration.\n\nAll these reactions are controlled by ENZYMES — which is why temperature and pH are so important for survival."
+            },
+            {
+                "heading": "Why Metabolism Matters",
+                "content": "Metabolic rate is the overall speed at which an organism's metabolism runs.\n\nFactors affecting metabolic rate:\nBODY SIZE — larger organisms have a higher total metabolic rate (but lower per gram).\nMUSCLE MASS — muscle tissue is metabolically very active; more muscle = higher metabolic rate.\nEXERCISE — physical activity greatly increases metabolic rate.\nTEMPERATURE — ectothermic organisms (e.g. reptiles) have metabolic rates heavily influenced by external temperature.\nHORMONES — thyroxine (from the thyroid gland) controls the basal metabolic rate.\n\nUREA PRODUCTION is a key metabolic waste product:\nExcess amino acids cannot be stored.\nThe liver removes the amino group (–NH₂) through DEAMINATION.\nAmmonia is produced → converted to UREA (less toxic).\nUrea is carried in the blood to the KIDNEYS where it is filtered out and excreted in urine."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Metabolism is the TOTAL of ALL chemical reactions — not just respiration. Students often say 'metabolism = respiration' but metabolism includes digestion, protein synthesis, DNA replication, urea production and many more reactions. Respiration is the most central metabolic process, but not the only one.",
+        "key_note": "Metabolism = all chemical reactions in the body. Anabolism = building up (uses ATP). Catabolism = breaking down (releases ATP). Key examples: protein synthesis, respiration, digestion, glycogen synthesis, urea production.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Anabolism or Catabolism?",
+            "instruction": "Sort each reaction into building up (anabolism) or breaking down (catabolism).",
+            "pairs": [
+                ("Anabolism — building up", "Amino acids joined to make proteins at ribosomes"),
+                ("Catabolism — breaking down", "Glucose broken down in aerobic respiration to release ATP"),
+                ("Anabolism — building up", "Glucose polymerised to make glycogen in liver and muscles"),
+                ("Catabolism — breaking down", "Proteins in food broken down to amino acids by proteases"),
+                ("Catabolism — breaking down", "Excess amino acids deaminated in the liver to produce urea"),
+                ("Anabolism — building up", "Fatty acids and glycerol joined to form triglycerides for fat storage"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is metabolism?",
+                "opts": [
+                    ("The sum of all chemical reactions taking place in a cell or organism", True),
+                    ("Only the reactions that release energy — such as respiration", False),
+                    ("The process of digesting food in the gut", False),
+                    ("How quickly a person breathes and moves", False)
+                ],
+                "wrong_explanations": {
+                    1: "Metabolism includes ALL reactions — both energy-releasing (catabolism) and energy-using (anabolism). Respiration is just one part.",
+                    2: "Digestion is one part of metabolism — but metabolism includes protein synthesis, DNA replication, glycogen synthesis, and many more reactions.",
+                    3: "Breathing rate and movement speed are consequences of metabolic activity — metabolism itself refers to the chemical reactions, not the physical movements."
+                }
+            },
+            {
+                "q": "Why is urea produced in the liver?",
+                "opts": [
+                    ("Excess amino acids cannot be stored — the amino group is removed (deamination) and converted to urea for excretion", True),
+                    ("Urea is produced when glucose is broken down in anaerobic respiration", False),
+                    ("The liver converts CO₂ and water into urea to reduce acid in the blood", False),
+                    ("Urea is made when fat molecules are broken down into fatty acids", False)
+                ],
+                "wrong_explanations": {
+                    1: "Anaerobic respiration in animals produces LACTIC ACID — not urea. Urea comes specifically from amino acid breakdown.",
+                    2: "CO₂ is transported in the blood and exhaled — it is not converted to urea.",
+                    3: "Fat breakdown produces fatty acids and glycerol — not urea. Urea specifically comes from amino acid deamination."
+                }
+            },
+            {
+                "q": "Which of the following is an example of an ANABOLIC (building) reaction?",
+                "opts": [
+                    ("Amino acids joined together at ribosomes to make a protein", True),
+                    ("Glucose broken down in aerobic respiration to release ATP", False),
+                    ("Starch digested by amylase into maltose in the mouth", False),
+                    ("Lactic acid produced in muscles during anaerobic respiration", False)
+                ],
+                "wrong_explanations": {
+                    1: "Aerobic respiration BREAKS DOWN glucose — this is a catabolic reaction.",
+                    2: "Digestion BREAKS DOWN starch — another catabolic reaction.",
+                    3: "Lactic acid production is the result of breaking down glucose — catabolic."
+                }
+            }
         ]
     },
 ],
