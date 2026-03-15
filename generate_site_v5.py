@@ -1786,6 +1786,16 @@ def make_landing():
     {t:'The Nitrogen Cycle',s:'Biology',url:'/combined/higher/biology/ecology/nitrogen-cycle.html',c:'#6BCB77'},
     {t:'Decomposition',s:'Biology',url:'/combined/higher/biology/ecology/decomposition.html',c:'#6BCB77'},
     {t:'Sampling Techniques',s:'Biology',url:'/combined/higher/biology/ecology/sampling-techniques.html',c:'#6BCB77'},
+    {t:'Culturing Microorganisms',s:'Biology',url:'/combined/higher/biology/cell-biology/culturing-microorganisms.html',c:'#6BCB77'},
+    {t:'Monoclonal Antibodies',s:'Biology',url:'/combined/higher/biology/infection-response/monoclonal-antibodies.html',c:'#6BCB77'},
+    {t:'Reaction Time',s:'Biology',url:'/combined/higher/biology/homeostasis/reaction-time.html',c:'#6BCB77'},
+    {t:'The Brain',s:'Biology',url:'/combined/higher/biology/homeostasis/the-brain.html',c:'#6BCB77'},
+    {t:'The Eye',s:'Biology',url:'/combined/higher/biology/homeostasis/the-eye.html',c:'#6BCB77'},
+    {t:'Defects of the Eye',s:'Biology',url:'/combined/higher/biology/homeostasis/defects-of-the-eye.html',c:'#6BCB77'},
+    {t:'Trophic Levels and Biomass',s:'Biology',url:'/combined/higher/biology/ecology/trophic-levels-biomass.html',c:'#6BCB77'},
+    {t:'Food Production and Sustainable Fishing',s:'Biology',url:'/combined/higher/biology/ecology/food-production.html',c:'#6BCB77'},
+    {t:'Impact of Environmental Change',s:'Biology',url:'/combined/higher/biology/ecology/environmental-change.html',c:'#6BCB77'},
+    {t:'Role of Biotechnology',s:'Biology',url:'/combined/higher/biology/ecology/role-of-biotechnology.html',c:'#6BCB77'},
   ];
   const input = document.getElementById('siteSearch');
   const results = document.getElementById('searchResults');
@@ -4989,15 +4999,17 @@ def build_site(output_dir="mrbadmus_site"):
 
     # Import subtopic data
     try:
-        from all_subtopics_physics   import PHYSICS_SUBTOPICS_ALL
-        from all_subtopics_chemistry import CHEMISTRY_SUBTOPICS_ALL
-        from all_subtopics_biology   import BIOLOGY_SUBTOPICS_ALL
+        from all_subtopics_physics        import PHYSICS_SUBTOPICS_ALL
+        from all_subtopics_chemistry      import CHEMISTRY_SUBTOPICS_ALL
+        from all_subtopics_biology        import BIOLOGY_SUBTOPICS_ALL
+        from all_subtopics_biology_higher import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_HIGHER
         print("  ✅ Loaded subtopic modules")
     except ImportError as e:
         print(f"  ⚠️  Could not load subtopics: {e}")
-        PHYSICS_SUBTOPICS_ALL   = {}
-        CHEMISTRY_SUBTOPICS_ALL = {}
-        BIOLOGY_SUBTOPICS_ALL   = {}
+        PHYSICS_SUBTOPICS_ALL      = {}
+        CHEMISTRY_SUBTOPICS_ALL    = {}
+        BIOLOGY_SUBTOPICS_ALL      = {}
+        BIOLOGY_SUBTOPICS_HIGHER   = {}
 
     SUBTOPICS_ALL = {
         "physics":   PHYSICS_SUBTOPICS_ALL,
@@ -5082,7 +5094,11 @@ def build_site(output_dir="mrbadmus_site"):
                 # ── Topic pages ──
                 topic_ids = PATHWAY_TOPIC_MAP[(pathway, tier)][subject]
                 subj_data = SITE_DATA[subject]
-                subj_subtopics = SUBTOPICS_ALL[subject]
+                # Use Higher biology data for Higher tier biology pages
+                if subject == "biology" and tier == "higher":
+                    subj_subtopics = BIOLOGY_SUBTOPICS_HIGHER
+                else:
+                    subj_subtopics = SUBTOPICS_ALL[subject]
                 color = subj_data["color"]
 
                 for topic in subj_data["topics"]:
