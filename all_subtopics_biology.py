@@ -7,6 +7,7 @@ Cell Biology:          7 subtopics (updated)
 Organisation:         11 subtopics (updated)
 Infection & Response:  8 subtopics (updated)
 Bioenergetics:         7 subtopics (updated)
+Homeostasis:           8 subtopics (updated)
 All other topics: unchanged
 """
 
@@ -3409,101 +3410,732 @@ BIOLOGY_SUBTOPICS_ALL = {
 ],
 
 "homeostasis": [
+
+
+    # ══════════════════════════════════════════════
+    # 1. HOMEOSTASIS
+    # ══════════════════════════════════════════════
     {
-        "id": "nervous-system",
-        "title": "The Nervous System and Homeostasis",
-        "spec": "4.5",
-        "summary": "Describe the nervous system, reflex arc and principles of homeostasis.",
+        "id": "homeostasis",
+        "title": "Homeostasis",
+        "spec": "4.5.1",
+        "summary": "Define homeostasis and explain how negative feedback maintains a stable internal environment.",
         "theory": [
-            {"heading": "What is Homeostasis?",
-             "content": "Homeostasis = maintaining a constant internal environment.\nControlled conditions: body temperature (37°C), blood glucose levels, water balance.\nNegative feedback: if a variable goes above/below the set point, the system responds to bring it back.\nInvolves: receptor (detects change), coordination centre (processes signal), effector (muscle or gland responds)."},
-            {"heading": "The Nervous System",
-             "content": "Central nervous system (CNS): brain + spinal cord — processes information.\nPeripheral nervous system: sensory and motor neurones connecting CNS to body.\nSensory neurone: carries signal FROM receptor TO CNS.\nMotor neurone: carries signal FROM CNS TO effector (muscle/gland).\nRelay neurone: connects sensory and motor neurones in the CNS."},
-            {"heading": "Synapses",
-             "content": "Gap between neurones — signals can't jump across electrically.\nNeurotransmitters released from one neurone → diffuse across gap → bind to receptors on next neurone.\nOne-way transmission — neurotransmitters only released in one direction.\nDrugs can affect synapses: stimulants increase neurotransmitter release; sedatives block receptors."},
-            {"heading": "The Reflex Arc",
-             "content": "Reflex = fast, automatic response to stimulus — bypasses conscious brain.\nPathway: stimulus → receptor → sensory neurone → relay neurone (in spinal cord) → motor neurone → effector (muscle/gland).\nFaster than a voluntary response — protects from harm.\nExamples: knee-jerk reflex, pupil response to light, withdrawing hand from hot object."}
+            {
+                "heading": "What is Homeostasis?",
+                "content": "HOMEOSTASIS is the maintenance of a stable internal environment despite changes in external conditions or internal activity.\n\nThe body must keep the following conditions within very narrow limits:\nBODY TEMPERATURE — maintained at ~37°C for optimal enzyme activity.\nBLOOD GLUCOSE CONCENTRATION — maintained at ~5 mmol/L for cell function.\nWATER CONTENT of blood and tissue fluid — controlled to prevent cells shrinking or swelling.\n\nIf any of these deviate significantly from their set points, cells and organs begin to malfunction — potentially causing death.\n\nHomeostasis is what allows warm-blooded animals like humans to survive in very different environments, from Arctic tundra to tropical desert."
+            },
+            {
+                "heading": "Negative Feedback",
+                "content": "All homeostatic control systems use NEGATIVE FEEDBACK.\n\nNegative feedback means: when a variable moves AWAY from the set point, the system responds to bring it BACK.\n\nThe word 'negative' means the response OPPOSES the change — it works against the deviation, not with it.\n\nExample: if body temperature rises, the response is to COOL the body (opposing the rise). If body temperature falls, the response is to WARM the body (opposing the fall).\n\nNegative feedback keeps variables oscillating slightly around a set point — rarely exactly at it, but always returning to it."
+            },
+            {
+                "heading": "The Three Components of Homeostatic Control",
+                "content": "Every homeostatic control system has the same three components:\n\n1. RECEPTOR (sensor):\nDetects changes in the variable being controlled.\nGenerates a signal proportional to the degree of change.\nExamples: thermoreceptors in skin (detect temperature), osmoreceptors in hypothalamus (detect blood water content), glucose receptors in pancreas.\n\n2. COORDINATION CENTRE (control centre):\nReceives information from receptors.\nCompares the actual value to the set point.\nDetermines the appropriate response.\nExamples: the hypothalamus in the brain (temperature, water), the pancreas (blood glucose).\n\n3. EFFECTOR:\nCarries out the response that corrects the deviation.\nCan be a MUSCLE (e.g. skeletal muscles shivering) or a GLAND (e.g. sweat glands, endocrine glands releasing hormones).\n\nThe effector's response reduces the original stimulus — this completes the negative feedback loop."
+            },
+            {
+                "heading": "Why Homeostasis is Essential",
+                "content": "Enzymes control almost every biochemical reaction in the body — and enzymes are extremely sensitive to temperature, pH and concentration.\n\nIF TEMPERATURE RISES TOO HIGH:\nEnzymes denature → active site shape changes permanently → reactions stop → cells die.\nBody temperature above ~40°C causes proteins to denature → organ failure → death.\n\nIF BLOOD GLUCOSE FALLS TOO LOW (hypoglycaemia):\nBrain cells are starved of glucose → confusion, unconsciousness, brain damage, coma.\n\nIF BLOOD GLUCOSE STAYS TOO HIGH (hyperglycaemia):\nLong-term damage to blood vessels → blindness, kidney failure, nerve damage, cardiovascular disease.\n\nIF WATER CONTENT IS WRONG:\nToo little water → cells shrink → dehydration of tissues → organ failure.\nToo much water → cells swell → can burst (lysis) in animal cells.\n\nHomeostasis protects all these systems from harmful fluctuations."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "A reflex arc goes through the SPINAL CORD (or brainstem), not the thinking brain. That's why reflexes are faster — they don't wait for conscious processing. Students often say 'the brain controls reflexes' — it doesn't (except for certain brainstem reflexes).",
-        "key_note": "Reflex order: stimulus → receptor → sensory neurone → relay neurone → motor neurone → effector → response.",
-        "higher": "The brain: cerebral cortex (thinking, memory), cerebellum (balance, coordination), medulla oblongata (breathing, heart rate). Brain mapping via MRI and stimulation experiments.",
-        "triple_only": None, "rp": None,
+        "common_mistake": "Negative feedback does NOT mean the response is negative or harmful. It means the response OPPOSES the change — it is a corrective response. If temperature rises, the negative feedback brings it back DOWN. If temperature falls, it brings it back UP. The 'negative' refers to the direction of the response relative to the change.",
+        "key_note": "Homeostasis: stable internal environment via negative feedback. Receptor → coordination centre → effector. Controls: temperature (37°C), blood glucose (~5 mmol/L), water content. Essential because enzymes are sensitive to these conditions.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Match the Component to its Role",
-            "instruction": "Match each part of the nervous system to its function.",
+            "title": "Match the Homeostatic Component",
+            "instruction": "Match each component to its role in the homeostatic control system.",
             "pairs": [
-                ("Receptor", "Detects a stimulus (change in environment)"),
-                ("Sensory neurone", "Carries impulse from receptor to CNS"),
-                ("Relay neurone", "Connects sensory and motor neurones in CNS"),
-                ("Motor neurone", "Carries impulse from CNS to effector"),
-                ("Effector", "Muscle or gland — produces the response"),
-                ("Synapse", "Gap between neurones — signals cross via neurotransmitters"),
+                ("Receptor", "Detects a change in the variable — generates a signal"),
+                ("Coordination centre", "Receives the signal, compares to set point, decides the response"),
+                ("Effector", "Carries out the response — a muscle or gland"),
+                ("Negative feedback", "The response opposes the original change — brings the variable back to the set point"),
+                ("Set point", "The target value the body aims to maintain — e.g. 37°C for temperature"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "What is homeostasis?",
-             "opts": [("Maintaining a stable internal environment using negative feedback", True), ("Increasing body temperature when hot", False), ("Removing waste products from the body", False), ("Regulating body size", False)],
-             "wrong_explanations": {1: "Increasing temperature when hot is the PROBLEM — homeostasis CORRECTS it back to normal.", 2: "Excretion is important but homeostasis specifically refers to maintaining STABLE CONDITIONS.", 3: "Body size isn't regulated by homeostasis — it's controlled by genetics and nutrition."}},
-            {"q": "What is the correct order of a reflex arc?",
-             "opts": [("Stimulus → receptor → sensory neurone → relay neurone → motor neurone → effector", True), ("Stimulus → brain → motor neurone → effector", False), ("Effector → receptor → motor neurone → response", False), ("Receptor → brain → spinal cord → effector", False)],
-             "wrong_explanations": {1: "Reflexes BYPASS the conscious brain — they go through the spinal cord, not the cerebral cortex.", 2: "The pathway goes forward — receptors detect, then neurones carry signals to effectors.", 3: "The reflex goes through the SPINAL CORD but it doesn't go up to the brain first — that's the key to its speed."}},
-            {"q": "How does a synapse allow a signal to pass from one neurone to the next?",
-             "opts": [("Neurotransmitters released, diffuse across gap, bind to receptors on next neurone", True), ("Electrical signal jumps directly across the gap", False), ("The two neurones fuse together", False), ("Blood carries the signal across the gap", False)],
-             "wrong_explanations": {1: "The synapse is specifically a GAP — electricity can't jump across. It must use chemical neurotransmitters.", 2: "Neurones never physically fuse — the synapse is always maintained as a gap.", 3: "Signal transmission in nerves is far too fast for blood transport — it uses chemical neurotransmitters."}},
-            {"q": "Why are reflexes faster than voluntary responses?",
-             "opts": [("They bypass the conscious brain — processed in the spinal cord", True), ("Reflex neurones are longer", False), ("Reflexes use more neurotransmitters", False), ("The brain processes reflex signals first", False)],
-             "wrong_explanations": {1: "Longer neurones = slower, not faster. Reflexes are fast because of the SHORT pathway through the spinal cord.", 2: "More neurotransmitters would actually slow things down slightly — speed comes from fewer synapses and bypassing the brain.", 3: "The brain does receive information AFTER the reflex has occurred — it's aware of it, but doesn't initiate the response."}}
+            {
+                "q": "What is homeostasis?",
+                "opts": [
+                    ("Maintaining a stable internal environment using negative feedback mechanisms", True),
+                    ("Increasing body temperature when the environment is hot", False),
+                    ("Removing waste products from the body through excretion", False),
+                    ("Controlling how fast organisms grow", False)
+                ],
+                "wrong_explanations": {
+                    1: "Increasing body temperature when hot would make things WORSE — homeostasis CORRECTS deviations. When the body is hot, homeostasis acts to COOL it down.",
+                    2: "Excretion is important but homeostasis specifically refers to maintaining STABLE internal conditions like temperature, blood glucose and water content.",
+                    3: "Growth rate is controlled by hormones and genetics — not by homeostatic mechanisms."
+                }
+            },
+            {
+                "q": "Why is maintaining body temperature at 37°C so important?",
+                "opts": [
+                    ("Enzymes in the body work best at this temperature — deviations cause slower reactions or denaturation", True),
+                    ("Bacteria cannot survive at 37°C, so the body stays infection-free", False),
+                    ("The heart muscle can only contract at exactly 37°C", False),
+                    ("Red blood cells carry oxygen most efficiently at 37°C", False)
+                ],
+                "wrong_explanations": {
+                    1: "Bacteria can survive at 37°C — indeed, body temperature of ~37°C is actually ideal for many pathogens like Staphylococcus.",
+                    2: "Cardiac muscle can contract across a range of temperatures — the critical issue is enzyme function at the cellular level.",
+                    3: "Red blood cells do function across a range of temperatures — the enzyme sensitivity argument is the primary reason for temperature homeostasis."
+                }
+            },
+            {
+                "q": "A person's blood glucose level drops too low. What type of response will occur?",
+                "opts": [
+                    ("Negative feedback — mechanisms are activated to raise blood glucose back to the set point", True),
+                    ("Positive feedback — more insulin is released to lower it further", False),
+                    ("No response — the body cannot detect blood glucose levels", False),
+                    ("The person's temperature rises to compensate for the energy loss", False)
+                ],
+                "wrong_explanations": {
+                    1: "Positive feedback would make the problem WORSE — releasing more insulin when glucose is already low would be dangerous. Homeostasis uses negative feedback to correct deviations.",
+                    2: "The pancreas and liver continuously monitor and respond to blood glucose levels — receptors in the pancreas detect low glucose and release glucagon.",
+                    3: "Temperature and blood glucose are regulated independently by different systems — a drop in glucose does not trigger a temperature rise."
+                }
+            }
         ]
     },
+
+    # ══════════════════════════════════════════════
+    # 2. THE HUMAN NERVOUS SYSTEM
+    # ══════════════════════════════════════════════
     {
-        "id": "endocrine-system",
-        "title": "The Endocrine System and Blood Glucose",
-        "spec": "4.5.3",
-        "summary": "Describe how hormones regulate blood glucose and compare nervous and hormonal control.",
+        "id": "nervous-system",
+        "title": "The Human Nervous System",
+        "spec": "4.5.2",
+        "summary": "Describe the structure and function of the nervous system, neurones and synapses.",
         "theory": [
-            {"heading": "The Endocrine System",
-             "content": "Hormones = chemical messengers secreted by glands into the blood.\nCarried by blood to target organs — slower than nerves but longer-lasting effects.\nPituitary gland: 'master gland' — controls other glands (releases FSH, LH, ADH etc).\nAdrenal gland: adrenaline (fight or flight response).\nPancreas: insulin and glucagon (blood glucose control).\nThyroid: thyroxine (metabolism)."},
-            {"heading": "Blood Glucose Regulation",
-             "content": "After eating: blood glucose RISES → pancreas releases INSULIN.\nInsulin: causes liver and muscles to convert glucose → glycogen (storage). Blood glucose falls.\nIf too low: pancreas releases GLUCAGON → liver converts glycogen back to glucose. Blood glucose rises.\nThis is negative feedback — maintains blood glucose at ~5 mmol/L."},
-            {"heading": "Diabetes",
-             "content": "Type 1 diabetes: pancreas produces little/no insulin (autoimmune). Treated with insulin injections.\nType 2 diabetes: cells become resistant to insulin. Linked to obesity, poor diet.\nTreated with: diet, exercise, tablets (sometimes insulin).\nBoth types cause dangerously high blood glucose if untreated — damage to blood vessels, nerves, kidneys, eyes."},
-            {"heading": "Nervous vs Hormonal Control",
-             "content": "Nervous: electrical signals along neurones, fast, short duration, precise target.\nHormonal: chemicals in blood, slower, longer lasting, affects many target organs.\nBoth work together: e.g. adrenaline (hormonal) prepares the body for emergency while nervous system coordinates the response."}
+            {
+                "heading": "Overview of the Nervous System",
+                "content": "The nervous system detects changes (stimuli) in the environment and coordinates rapid responses.\n\nIt is divided into two main parts:\nCENTRAL NERVOUS SYSTEM (CNS): the BRAIN and SPINAL CORD. Processes all incoming information and determines the appropriate response.\nPERIPHERAL NERVOUS SYSTEM (PNS): all the NERVES that connect the CNS to the rest of the body — carrying signals to and from every organ, muscle and sense organ.\n\nThe nervous system communicates via ELECTRICAL IMPULSES — signals that travel along specialised cells called NEURONES at speeds of up to 120 m/s.\n\nThis is much faster than hormonal communication, making the nervous system ideal for rapid, precise responses."
+            },
+            {
+                "heading": "Types of Neurone",
+                "content": "There are three types of neurone, each with a specific role:\n\nSENSORY NEURONE:\nCarries electrical impulses FROM receptors (sense organs) TO the CNS.\nLong dendron carrying signal towards the cell body, then axon to the CNS.\nExample: carries pain signal from finger to spinal cord when you burn yourself.\n\nRELAY NEURONE:\nFound entirely WITHIN the CNS (brain and spinal cord).\nConnects sensory neurones to motor neurones.\nActs as a processing junction — signals can be passed on, filtered or directed to the appropriate response pathway.\n\nMOTOR NEURONE:\nCarries impulses FROM the CNS TO effectors (muscles or glands).\nLong axon — can be over 1 metre long (e.g. from spinal cord to foot).\nCovered in a MYELIN SHEATH — a fatty insulating layer that speeds up signal conduction.\nExample: carries signal to leg muscle to pull foot away from a sharp object."
+            },
+            {
+                "heading": "The Synapse",
+                "content": "A SYNAPSE is the junction between two neurones — a tiny gap called the SYNAPTIC CLEFT.\n\nElectrical impulses CANNOT jump across this gap — transmission across a synapse is CHEMICAL.\n\nHow a synapse works:\n1. An electrical impulse arrives at the end of the pre-synaptic neurone (the sending neurone).\n2. Vesicles containing NEUROTRANSMITTER molecules fuse with the membrane.\n3. Neurotransmitters are released into the synaptic cleft.\n4. They DIFFUSE across the gap.\n5. They bind to RECEPTOR PROTEINS on the post-synaptic neurone (the receiving neurone).\n6. This triggers a new electrical impulse in the next neurone.\n7. Neurotransmitters are then broken down by enzymes or reabsorbed — resetting the synapse.\n\nTransmission is ONE-WAY only — neurotransmitters are released from the pre-synaptic side and receptors are only on the post-synaptic side."
+            },
+            {
+                "heading": "How Drugs Affect Synapses",
+                "content": "Many drugs affect the nervous system by interfering with synapse function:\n\nSTIMULANTS (e.g. caffeine, nicotine, cocaine, amphetamines):\nIncrease neurotransmitter activity at synapses.\nMore impulses transmitted → increased alertness, faster heart rate, increased energy.\nCan cause addiction — the brain adapts to higher neurotransmitter levels and requires the drug to function normally.\n\nDEPRESSANTS (e.g. alcohol, benzodiazepines, sleeping tablets):\nReduce neurotransmitter activity.\nFewer impulses transmitted → slowed reactions, reduced anxiety, drowsiness, loss of coordination.\nAlcohol specifically slows the CNS — increasing reaction time significantly.\n\nSSRIs (antidepressants, e.g. fluoxetine):\nBlock the reabsorption of serotonin after it has been released.\nSerotonin stays in the synapse longer — improves mood.\nUsed to treat depression and anxiety."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "INSULIN causes blood glucose to FALL (glucose → glycogen storage). GLUCAGON causes blood glucose to RISE (glycogen → glucose released). Students often confuse which hormone does which.",
-        "key_note": "Insulin: blood glucose too high → falls. Glucagon: blood glucose too low → rises. Negative feedback.",
-        "higher": "ADH and water balance: ADH from pituitary controls kidney water reabsorption. More ADH → more water reabsorbed → small amount of concentrated urine.",
-        "triple_only": None, "rp": None,
+        "common_mistake": "Transmission WITHIN a neurone is electrical (an impulse). Transmission ACROSS a synapse is CHEMICAL (neurotransmitters). Students often say 'electrical signals cross the synapse' — they cannot. The synapse is a gap and must be crossed using chemical neurotransmitters that then trigger a new electrical impulse in the next neurone.",
+        "key_note": "CNS = brain + spinal cord. PNS = all nerves. Sensory: receptor → CNS. Relay: within CNS. Motor: CNS → effector. Synapse: electrical → chemical (neurotransmitter) → electrical. One-way transmission.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Match the Gland to its Hormone and Function",
-            "instruction": "Match each gland to the hormone it produces and its effect.",
+            "title": "Match the Nervous System Component",
+            "instruction": "Match each component to its correct role.",
             "pairs": [
-                ("Pancreas (β cells)", "Insulin — lowers blood glucose by promoting glycogen storage"),
-                ("Pancreas (α cells)", "Glucagon — raises blood glucose by breaking down glycogen"),
-                ("Adrenal gland", "Adrenaline — fight or flight, increases heart rate and breathing"),
-                ("Pituitary gland", "FSH and LH — control menstrual cycle and reproduction"),
-                ("Thyroid gland", "Thyroxine — controls metabolic rate"),
+                ("Sensory neurone", "Carries impulse FROM receptor TO CNS"),
+                ("Relay neurone", "Connects sensory and motor neurones — found within the CNS"),
+                ("Motor neurone", "Carries impulse FROM CNS TO effector (muscle or gland)"),
+                ("Synapse", "Junction between neurones — signal crosses via chemical neurotransmitters"),
+                ("Myelin sheath", "Fatty insulating layer around axon — speeds up impulse conduction"),
+                ("CNS", "Brain and spinal cord — processes information and coordinates responses"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "Blood glucose rises after a meal. Which hormone is released?",
-             "opts": [("Insulin", True), ("Glucagon", False), ("Adrenaline", False), ("Thyroxine", False)],
-             "wrong_explanations": {1: "Glucagon is released when glucose is TOO LOW — it raises blood glucose.", 2: "Adrenaline is the fight-or-flight hormone — not involved in routine blood glucose control.", 3: "Thyroxine controls metabolic rate — not blood glucose levels."}},
-            {"q": "A person with Type 1 diabetes doesn't produce insulin. What happens if untreated?",
-             "opts": [("Blood glucose stays dangerously high — damages blood vessels and organs", True), ("Blood glucose becomes dangerously low", False), ("The pancreas produces extra glucagon to compensate", False), ("No symptoms — insulin isn't essential", False)],
-             "wrong_explanations": {1: "Without insulin, glucose can't enter cells easily — it STAYS HIGH in the blood, causing damage.", 2: "Glucagon would be produced — but without insulin to balance it, glucose just keeps rising.", 3: "Insulin is absolutely essential — without it, cells starve and blood glucose becomes toxic."}},
-            {"q": "How does insulin reduce blood glucose?",
-             "opts": [("Causes liver and muscle cells to convert glucose into glycogen for storage", True), ("Causes the kidneys to excrete excess glucose", False), ("Causes cells to burn glucose faster", False), ("Blocks glucagon from working", False)],
-             "wrong_explanations": {1: "The kidneys do excrete glucose in diabetes — but insulin's mechanism is specifically glycogen STORAGE.", 2: "Respiration does increase with insulin signalling — but the primary mechanism is glycogen synthesis.", 3: "Insulin and glucagon are both active — insulin doesn't directly block glucagon."}},
-            {"q": "How does hormonal communication differ from nervous communication?",
-             "opts": [("Hormones travel in blood — slower but longer lasting and affect many target organs", True), ("Hormones travel faster than nerve signals", False), ("Hormones only affect one specific cell", False), ("Nervous signals are permanent; hormones are temporary", False)],
-             "wrong_explanations": {1: "Hormones are SLOWER — nerve signals travel at up to 120 m/s, hormones travel at blood flow speed.", 2: "Hormones travel in blood to MANY organs. Nerve signals are specific to the cells the nerve connects to.", 3: "Both are temporary — but hormonal effects tend to last longer (minutes to hours vs milliseconds for nerves)."}}
+            {
+                "q": "What is the correct pathway for a nerve signal from receptor to effector?",
+                "opts": [
+                    ("Receptor → sensory neurone → relay neurone → motor neurone → effector", True),
+                    ("Receptor → motor neurone → relay neurone → sensory neurone → effector", False),
+                    ("Effector → sensory neurone → CNS → motor neurone → receptor", False),
+                    ("Receptor → CNS → sensory neurone → motor neurone", False)
+                ],
+                "wrong_explanations": {
+                    1: "Motor and sensory neurones are in the wrong order. SENSORY carries to the CNS; MOTOR carries away from the CNS.",
+                    2: "The pathway runs from receptor to effector — not in reverse.",
+                    3: "Sensory neurones carry signals TO the CNS. They come AFTER the receptor, not after the CNS."
+                }
+            },
+            {
+                "q": "How does a nerve signal cross a synapse?",
+                "opts": [
+                    ("Neurotransmitters are released, diffuse across the gap and bind to receptors on the next neurone", True),
+                    ("The electrical impulse jumps across the gap directly", False),
+                    ("The two neurones fuse temporarily to allow the signal through", False),
+                    ("Blood vessels carry chemical signals across the synaptic gap", False)
+                ],
+                "wrong_explanations": {
+                    1: "The synapse is a liquid-filled gap — electrical impulses cannot jump across it. Chemical neurotransmitters are essential.",
+                    2: "Neurones never physically fuse — the synaptic gap is always maintained. Fusion would prevent the one-way transmission that synapses provide.",
+                    3: "Synaptic transmission takes microseconds — blood flow is far too slow. Neurotransmitters diffuse across the tiny gap."
+                }
+            },
+            {
+                "q": "Why is synaptic transmission one-directional?",
+                "opts": [
+                    ("Neurotransmitters are released only from the pre-synaptic side, and receptors are only on the post-synaptic side", True),
+                    ("Electrical impulses can only travel in one direction through an axon", False),
+                    ("The synaptic gap is too narrow for signals to travel both ways", False),
+                    ("Enzymes on the post-synaptic side destroy neurotransmitters before they can go back", False)
+                ],
+                "wrong_explanations": {
+                    1: "Electrical impulses technically can propagate in both directions in an isolated axon — the one-way nature of synapse transmission comes from the asymmetry of neurotransmitter release and receptor location.",
+                    2: "Gap width has nothing to do with directionality — it's the arrangement of vesicles and receptors that enforces one-way flow.",
+                    3: "Enzymes do break down neurotransmitters after binding — but this prevents prolonged stimulation, not directionality."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 3. REFLEX ACTIONS
+    # ══════════════════════════════════════════════
+    {
+        "id": "reflex-actions",
+        "title": "Reflex Actions",
+        "spec": "4.5.2",
+        "summary": "Describe reflex actions, the reflex arc and why reflexes are faster than voluntary responses.",
+        "theory": [
+            {
+                "heading": "What is a Reflex?",
+                "content": "A REFLEX is a rapid, automatic response to a stimulus that does not require conscious thought.\n\nReflexes are protective — they allow the body to respond to potentially harmful stimuli BEFORE the conscious brain can process the situation.\n\nKey features of a reflex:\nAUTOMATIC — happens without thinking.\nRAPID — much faster than a voluntary response.\nINVOLUNTARY — you cannot choose not to do it.\nSTEREOTYPED — always the same response to the same stimulus.\n\nExamples:\nWithdrawing your hand from a hot surface.\nKnee-jerk reflex (tapping the patellar tendon).\nPupil constricting in bright light (pupil reflex).\nSneezing and coughing.\nBlinking when an object moves towards the eye.\nBaby's grasp reflex."
+            },
+            {
+                "heading": "The Reflex Arc",
+                "content": "A reflex arc is the specific nerve pathway along which a reflex signal travels. Crucially, it passes through the SPINAL CORD rather than up to the conscious brain — this is what makes it so fast.\n\nThe pathway of a reflex arc:\n1. STIMULUS — a change detected by a sense organ (e.g. heat on the skin).\n2. RECEPTOR — specialised cells detect the stimulus and generate an electrical impulse.\n3. SENSORY NEURONE — carries the impulse to the spinal cord (part of the CNS).\n4. RELAY NEURONE — in the spinal cord, receives the impulse and passes it on. Also sends a signal UP to the brain — so the brain becomes aware AFTER the reflex has already occurred.\n5. MOTOR NEURONE — carries impulse from spinal cord to the effector.\n6. EFFECTOR — the muscle contracts (or gland secretes) to produce the response.\n7. RESPONSE — e.g. the hand moves away from the heat source.\n\nThe brain is aware of the reflex — but AFTER the response has already happened."
+            },
+            {
+                "heading": "Why Reflexes are Faster than Voluntary Responses",
+                "content": "VOLUNTARY response pathway:\nReceptor → sensory neurone → spinal cord → UP to brain → conscious processing → DOWN from brain → motor neurone → effector.\n\nREFLEX pathway:\nReceptor → sensory neurone → spinal cord (relay neurone) → motor neurone → effector.\n\nThe reflex bypasses the conscious brain (cerebral cortex) — this eliminates the time needed for:\nSignal travelling up to the brain.\nConscious processing and decision-making.\nSignal travelling back down from the brain.\n\nTypical voluntary reaction time: 0.2–0.3 seconds.\nTypical reflex reaction time: 0.04–0.1 seconds.\n\nThis 3–5× speed advantage can prevent serious injury — for example, moving your hand away from a sharp object or flame before the pain signal has even reached consciousness."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "A reflex bypasses the CONSCIOUS BRAIN (cerebral cortex) — it is processed in the SPINAL CORD. The brain does receive the signal (that's why you become aware of it), but it does NOT initiate the reflex. Students often say 'the brain controls reflexes' — the brain is only aware of them afterwards.",
+        "key_note": "Reflex arc: stimulus → receptor → sensory neurone → relay neurone (spinal cord) → motor neurone → effector → response. Faster than voluntary because it bypasses the conscious brain. Involuntary and automatic.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match Each Step of the Reflex Arc",
+            "instruction": "Match each component to its role in the reflex arc.",
+            "pairs": [
+                ("Stimulus", "The change that triggers the reflex — e.g. touching a sharp object"),
+                ("Receptor", "Detects the stimulus and generates an electrical impulse"),
+                ("Sensory neurone", "Carries the impulse from the receptor to the spinal cord"),
+                ("Relay neurone", "In the spinal cord — connects sensory to motor neurone"),
+                ("Motor neurone", "Carries impulse from spinal cord to the effector"),
+                ("Effector", "Muscle contracts or gland secretes — produces the response"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why are reflexes faster than voluntary responses?",
+                "opts": [
+                    ("They bypass the conscious brain — the signal is processed in the spinal cord using a shorter pathway", True),
+                    ("Reflex neurones conduct impulses faster than voluntary neurones", False),
+                    ("Reflexes use fewer neurotransmitters so synaptic delay is reduced", False),
+                    ("The brain prioritises reflex signals over other information", False)
+                ],
+                "wrong_explanations": {
+                    1: "Neurone conduction speed varies by myelination — not fundamentally by whether it's a reflex or voluntary pathway.",
+                    2: "Synaptic delay is similar in both — the key saving is the elimination of the brain processing step entirely.",
+                    3: "The brain doesn't 'prioritise' reflexes — it is simply not involved in initiating them."
+                }
+            },
+            {
+                "q": "You touch a hot surface and pull your hand away before you feel pain. What does this demonstrate?",
+                "opts": [
+                    ("The reflex arc bypasses the conscious brain — the withdrawal response occurred before pain was processed", True),
+                    ("Pain receptors in the hand don't work under extreme heat", False),
+                    ("The brain sends an emergency signal faster than normal in dangerous situations", False),
+                    ("Motor neurones are faster than sensory neurones", False)
+                ],
+                "wrong_explanations": {
+                    1: "Pain receptors DO work — you feel the pain a fraction of a second after your hand has already moved away.",
+                    2: "The brain doesn't speed up for emergencies — the reflex works independently of conscious brain processing.",
+                    3: "Motor and sensory neurones have similar conduction speeds — the key is the PATHWAY length, not individual neurone speed."
+                }
+            },
+            {
+                "q": "In which part of the CNS is a spinal reflex arc processed?",
+                "opts": [
+                    ("The spinal cord — relay neurones connect sensory and motor neurones here", True),
+                    ("The cerebral cortex — the thinking part of the brain", False),
+                    ("The cerebellum — which coordinates movement", False),
+                    ("The medulla oblongata — which controls heart rate and breathing", False)
+                ],
+                "wrong_explanations": {
+                    1: "The cerebral cortex is the conscious thinking brain — reflex arcs specifically BYPASS this to be fast.",
+                    2: "The cerebellum coordinates balance and smooth movement — it is not the site of spinal reflex processing.",
+                    3: "The medulla oblongata controls automatic functions like heart rate — but reflex arcs for quick withdrawal responses are processed in the spinal cord."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 4. THERMOREGULATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "thermoregulation",
+        "title": "Thermoregulation",
+        "spec": "4.5.1",
+        "summary": "Describe how the body maintains a constant core temperature of 37°C.",
+        "theory": [
+            {
+                "heading": "Why Temperature Must Be Controlled",
+                "content": "The human body must maintain a core temperature of approximately 37°C.\n\nThis is the OPTIMUM TEMPERATURE for human enzymes — the temperature at which they work most efficiently.\n\nIf temperature rises above ~40°C: enzymes denature → reactions stop → organ failure → death (hyperthermia).\n\nIf temperature falls below ~34°C: enzyme activity decreases dramatically → brain and heart function affected → loss of consciousness → death (hypothermia).\n\nThe body is constantly generating heat (from respiration in all cells) and losing heat (to the environment). Thermoregulation balances these."
+            },
+            {
+                "heading": "The Hypothalamus — The Body's Thermostat",
+                "content": "The HYPOTHALAMUS — a region in the brain — acts as the body's thermostat.\n\nIt has two types of thermoreceptors:\nCENTRAL THERMORECEPTORS in the hypothalamus itself — monitor the temperature of blood flowing through the brain.\nPERIPHERAL THERMORECEPTORS in the skin — detect changes in surface temperature (giving advance warning of environmental temperature changes).\n\nWhen the hypothalamus detects deviation from 37°C, it sends signals via the nervous system and hormones to trigger corrective responses."
+            },
+            {
+                "heading": "Responses When Too Hot",
+                "content": "When body temperature rises ABOVE 37°C, the hypothalamus triggers responses to LOSE heat:\n\nSWEATING:\nSweat glands in the skin produce sweat (mainly water + salts).\nSweat spreads over the skin surface.\nAs water EVAPORATES from the skin, it absorbs latent heat from the body → body cools.\nMore sweating occurs in hot conditions or during exercise.\n\nVASODILATION:\nBlood vessels (arterioles) near the skin surface WIDEN.\nMore blood flows close to the skin surface.\nMore heat is lost by radiation and convection from the skin.\nThis is why the skin looks flushed or red when hot.\n\nHAIRS LIE FLAT:\nErector pili muscles RELAX → hairs lie flat.\nNo trapped air layer → less insulation → more heat can escape.\n(More significant in other mammals than in humans due to less body hair.)"
+            },
+            {
+                "heading": "Responses When Too Cold",
+                "content": "When body temperature falls BELOW 37°C, the hypothalamus triggers responses to GENERATE and RETAIN heat:\n\nSHIVERING:\nSkeletal muscles contract rapidly and repeatedly.\nMuscle contractions require RESPIRATION → releases heat as a by-product.\nShivering can increase heat production up to 5× the resting rate.\n\nVASOCONSTRICTION:\nBlood vessels near the skin surface NARROW.\nLess blood flows close to the skin surface.\nLess heat lost by radiation from the skin.\nFingers and toes may become pale or blue in extreme cold.\n\nHAIRS STAND ON END:\nErector pili muscles CONTRACT → hairs raise upright.\nTraps a layer of warm air close to the skin → insulation layer.\n(More effective in other mammals — in humans this causes 'goosebumps').\n\nREDUCED SWEATING:\nSweat glands become less active.\nLess evaporative cooling.\n\nADRENALINE RELEASED:\nHormone that increases metabolic rate → more respiration → more heat produced."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "VASODILATION means blood vessels WIDEN — MORE blood near skin surface — MORE heat lost — occurs when TOO HOT. VASOCONSTRICTION means blood vessels NARROW — LESS blood near skin surface — LESS heat lost — occurs when TOO COLD. Students often get these mixed up. Remember: Dilation = Diameter increases = more heat lost.",
+        "key_note": "Too hot: sweat (evaporation cools), vasodilation (more heat lost from skin), hairs flat. Too cold: shiver (respiration generates heat), vasoconstriction (less heat lost), hairs raised (insulation). Hypothalamus = the thermostat.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Too Hot or Too Cold?",
+            "instruction": "Sort each response — does it happen when the body is too hot or too cold?",
+            "pairs": [
+                ("Too hot", "Sweating — evaporation removes heat from the body surface"),
+                ("Too hot", "Vasodilation — blood vessels widen, more heat lost from skin surface"),
+                ("Too cold", "Shivering — rapid muscle contractions generate heat via respiration"),
+                ("Too cold", "Vasoconstriction — blood vessels narrow, less heat lost from skin"),
+                ("Too hot", "Hairs lie flat — less insulation, more heat can escape"),
+                ("Too cold", "Hairs stand on end — traps air for insulation (causes goosebumps)"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why does sweating cool the body down?",
+                "opts": [
+                    ("Water evaporating from the skin surface absorbs latent heat energy from the body — cooling it", True),
+                    ("Sweat removes hot blood from deep in the body and cools it at the surface", False),
+                    ("The salt in sweat chemically reacts with the skin to absorb heat", False),
+                    ("Sweating increases blood flow to the skin, which cools the blood", False)
+                ],
+                "wrong_explanations": {
+                    1: "Sweating doesn't involve blood — it is a secretion from sweat glands. The cooling effect is from EVAPORATION.",
+                    2: "Salt in sweat helps retain water on the skin surface longer — the cooling mechanism is evaporation of water, not a chemical reaction.",
+                    3: "Vasodilation increases blood flow to the skin for cooling — sweating itself is a separate mechanism that works through evaporation."
+                }
+            },
+            {
+                "q": "What is vasodilation and when does it occur?",
+                "opts": [
+                    ("Blood vessels near the skin widen — occurs when the body is too hot, allowing more heat to be lost", True),
+                    ("Blood vessels narrow — occurs when the body is too cold, to conserve heat", False),
+                    ("Blood vessels widen — occurs when the body is too cold, to warm the skin", False),
+                    ("Blood vessels contract — occurs when the body is too hot, to prevent overheating", False)
+                ],
+                "wrong_explanations": {
+                    1: "Blood vessels NARROWING = VASOCONSTRICTION — this happens when cold, to reduce heat loss. Vasodilation is widening.",
+                    2: "If blood vessels widened when cold, more heat would be LOST — that would make the cold problem worse. Vasodilation occurs when HOT.",
+                    3: "Blood vessels CONTRACTING = VASOCONSTRICTION — occurs when cold, not hot."
+                }
+            },
+            {
+                "q": "Why does shivering help when you are cold?",
+                "opts": [
+                    ("Rapid muscle contractions require aerobic respiration — heat is released as a by-product of respiration", True),
+                    ("Shivering increases blood flow to the skin, warming the surface", False),
+                    ("The vibration of muscles generates electrical energy that heats the body", False),
+                    ("Shivering activates sweat glands which release warm fluid to the skin", False)
+                ],
+                "wrong_explanations": {
+                    1: "Increased blood flow to the skin (vasodilation) increases heat LOSS — when cold, vasoconstriction REDUCES blood flow to the skin. Shivering warms the body through metabolic heat.",
+                    2: "Muscles generate heat through CHEMICAL energy released in respiration — not by converting movement to electrical energy.",
+                    3: "Sweat glands are LESS active when cold — sweating causes heat loss, which is the opposite of what's needed."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 5. THE ENDOCRINE SYSTEM
+    # ══════════════════════════════════════════════
+    {
+        "id": "endocrine-system",
+        "title": "The Endocrine System",
+        "spec": "4.5.3",
+        "summary": "Describe the endocrine system, the main glands and hormones, and compare hormonal with nervous communication.",
+        "theory": [
+            {
+                "heading": "What is the Endocrine System?",
+                "content": "The ENDOCRINE SYSTEM is the body's chemical communication system.\n\nIt uses HORMONES — chemical messenger molecules — to coordinate responses across the body.\n\nHormones are produced by ENDOCRINE GLANDS and secreted DIRECTLY INTO THE BLOODSTREAM — they have no ducts (unlike exocrine glands like salivary glands which have ducts).\n\nThe blood carries hormones to every organ in the body — but only TARGET ORGANS respond, because only they have the correct RECEPTOR PROTEINS for that hormone.\n\nHormonal responses are:\nSLOWER to start than nervous responses (blood must carry the hormone to the target).\nLONGER LASTING than nervous responses.\nMore WIDESPREAD — hormones reach all organs (though only targets respond)."
+            },
+            {
+                "heading": "Key Endocrine Glands and Their Hormones",
+                "content": "PITUITARY GLAND (in the brain — below the hypothalamus):\nThe 'master gland' — releases hormones that control other endocrine glands.\nProduces: FSH and LH (control reproduction), growth hormone, ADH (water balance).\n\nTHYROID GLAND (in the neck):\nProduces THYROXINE — controls METABOLIC RATE (the speed of chemical reactions in cells).\nAlso involved in growth and development.\n\nADRENAL GLANDS (above the kidneys — one on each kidney):\nProduce ADRENALINE — the 'fight or flight' hormone.\nReleased in response to stress, fear or excitement.\nEffects: increased heart rate, increased breathing rate, pupils dilate, blood redirected to muscles.\nPrepares the body for rapid physical action.\n\nPANCREAS:\nProduces INSULIN and GLUCAGON — regulate blood glucose concentration (see next subtopic).\n\nOVARIES (females):\nProduce OESTROGEN and PROGESTERONE — control the menstrual cycle and female secondary sexual characteristics.\n\nTESTES (males):\nProduce TESTOSTERONE — controls male secondary sexual characteristics and sperm production."
+            },
+            {
+                "heading": "Nervous vs Hormonal Communication",
+                "content": "The nervous system and endocrine system both communicate and coordinate responses, but work differently:\n\nNERVOUS SYSTEM:\nSignal type: electrical impulse along neurones.\nSpeed: very fast — up to 120 m/s.\nDuration: short-lived (milliseconds to seconds).\nTarget: specific cells connected by nerve fibres.\nResponse: immediate and precise.\nExamples: muscle contraction, reflex arc, heart rate control.\n\nENDOCRINE SYSTEM:\nSignal type: chemical hormone in bloodstream.\nSpeed: slower — limited by blood flow speed.\nDuration: longer lasting (minutes to hours or even days).\nTarget: any organ with the correct receptor.\nResponse: prolonged, broader.\nExamples: blood glucose regulation, puberty, growth, stress response.\n\nBOTH SYSTEMS WORK TOGETHER:\nFor example, during an emergency:\nThe NERVOUS SYSTEM detects danger and triggers an immediate response (e.g. jump back).\nThe ENDOCRINE SYSTEM releases adrenaline to sustain the response over the next few minutes."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Hormones travel in the BLOOD to target organs — they do NOT travel along nerves. Do not confuse the two systems. Also: not all organs respond to every hormone — only TARGET ORGANS with the correct receptor proteins respond.",
+        "key_note": "Endocrine system: hormones in blood → target organs. Key glands: pituitary (master), thyroid (metabolism), adrenal (adrenaline), pancreas (insulin/glucagon), ovaries/testes (sex hormones). Slower but longer-lasting than nervous communication.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Gland to its Hormone and Function",
+            "instruction": "Match each gland to what it produces and what that hormone does.",
+            "pairs": [
+                ("Pituitary gland", "FSH, LH and growth hormone — controls other glands — 'master gland'"),
+                ("Thyroid gland", "Thyroxine — controls metabolic rate and development"),
+                ("Adrenal gland", "Adrenaline — fight or flight, increases heart rate and breathing"),
+                ("Pancreas", "Insulin and glucagon — regulate blood glucose concentration"),
+                ("Ovaries", "Oestrogen and progesterone — menstrual cycle and female characteristics"),
+                ("Testes", "Testosterone — male characteristics and sperm production"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "How do hormones reach their target organs?",
+                "opts": [
+                    ("Via the bloodstream — secreted directly into the blood by endocrine glands", True),
+                    ("Via nerve fibres — along the same pathways as electrical impulses", False),
+                    ("Through ducts that lead directly to the target organ", False),
+                    ("They diffuse through tissue fluid between neighbouring cells only", False)
+                ],
+                "wrong_explanations": {
+                    1: "Hormones travel in BLOOD, not along nerves — this is the fundamental difference between the two communication systems.",
+                    2: "EXOCRINE glands (e.g. salivary glands, sweat glands) use ducts. ENDOCRINE glands secrete directly into the blood — they have no ducts.",
+                    3: "Hormones travel long distances in the blood — they don't diffuse locally like paracrine signals."
+                }
+            },
+            {
+                "q": "Which hormone prepares the body for 'fight or flight'?",
+                "opts": [
+                    ("Adrenaline — released by the adrenal glands in response to stress or danger", True),
+                    ("Insulin — released by the pancreas to lower blood glucose", False),
+                    ("Thyroxine — released by the thyroid to increase metabolic rate", False),
+                    ("Oestrogen — released by the ovaries to prepare the body for reproduction", False)
+                ],
+                "wrong_explanations": {
+                    1: "Insulin lowers blood glucose — it is released after eating, not in response to danger.",
+                    2: "Thyroxine controls long-term metabolic rate — it is not the emergency stress hormone.",
+                    3: "Oestrogen is involved in the menstrual cycle — not in acute stress responses."
+                }
+            },
+            {
+                "q": "Which best describes the difference between nervous and hormonal communication?",
+                "opts": [
+                    ("Nervous = fast, short-lived, specific target via nerves. Hormonal = slower, longer-lasting, via bloodstream to target organs.", True),
+                    ("Nervous = slow, long-lasting. Hormonal = fast, short-lived.", False),
+                    ("They work in the same way — both use chemicals to transmit signals.", False),
+                    ("Nervous system only controls muscles. Hormonal system only controls glands.", False)
+                ],
+                "wrong_explanations": {
+                    1: "This is exactly the wrong way round. Nervous is FAST and SHORT. Hormonal is SLOWER and LONGER-LASTING.",
+                    2: "Both do use chemicals at some point (neurotransmitters at synapses / hormones in blood) — but their overall mechanisms, speeds and targets are very different.",
+                    3: "The nervous system controls both muscles AND glands. Hormones affect many different tissues — not just glands."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 6. BLOOD GLUCOSE CONTROL AND DIABETES
+    # ══════════════════════════════════════════════
+    {
+        "id": "blood-glucose-diabetes",
+        "title": "Blood Glucose Control and Diabetes",
+        "spec": "4.5.3",
+        "summary": "Describe how insulin and glucagon regulate blood glucose, and explain Type 1 and Type 2 diabetes.",
+        "theory": [
+            {
+                "heading": "Why Blood Glucose Must Be Controlled",
+                "content": "Blood glucose concentration must be kept within a narrow range — approximately 4–6 mmol/L.\n\nTOO LOW (hypoglycaemia):\nBrain cells are deprived of glucose → confusion, weakness, loss of consciousness, coma, brain damage.\nThe brain depends almost entirely on glucose as its energy source.\n\nTOO HIGH (hyperglycaemia):\nLong-term: glucose draws water out of cells by osmosis → dehydration of tissues.\nDamages blood vessel walls → reduced blood supply → blindness, kidney failure, poor wound healing.\nDamages nerves → neuropathy (tingling, pain, numbness in hands and feet).\nIncreased risk of heart attack and stroke.\n\nThe PANCREAS is the organ that monitors and regulates blood glucose — it contains specialised cells that detect glucose concentration and release hormones accordingly."
+            },
+            {
+                "heading": "Insulin — Lowering Blood Glucose",
+                "content": "After eating a meal:\nCarbohydrates are digested → glucose absorbed into blood → blood glucose RISES.\nPancreas BETA CELLS detect the rise and release INSULIN into the bloodstream.\n\nInsulin travels to the LIVER and MUSCLE CELLS and causes them to:\nAbsorb MORE glucose from the blood.\nConvert glucose → GLYCOGEN (a storage polymer) — this is called GLYCOGENESIS.\n\nBlood glucose concentration FALLS back to the set point.\n\nThis is NEGATIVE FEEDBACK — the response (insulin release + glucose storage) opposes the original change (rising glucose)."
+            },
+            {
+                "heading": "Glucagon — Raising Blood Glucose",
+                "content": "Between meals, during fasting or after exercise:\nCells use glucose for respiration → blood glucose FALLS.\nPancreas ALPHA CELLS detect the fall and release GLUCAGON into the bloodstream.\n\nGlucagon travels to the LIVER and causes it to:\nBreak down stored GLYCOGEN back into glucose — this is called GLYCOGENOLYSIS.\nRelease glucose back into the blood.\n\nBlood glucose concentration RISES back to the set point.\n\nAgain this is NEGATIVE FEEDBACK — glucagon release opposes the fall in glucose."
+            },
+            {
+                "heading": "Type 1 and Type 2 Diabetes",
+                "content": "Both types of diabetes result in poorly controlled blood glucose — but for different reasons.\n\nTYPE 1 DIABETES:\nCause: The immune system attacks and destroys the BETA CELLS in the pancreas (autoimmune condition).\nResult: Little or no insulin produced — blood glucose cannot be lowered after eating.\nOnset: Usually in childhood or adolescence.\nTreatment: INSULIN INJECTIONS (or insulin pump) — insulin cannot be taken as a tablet because it is a protein and would be digested.\nPatients must monitor blood glucose and adjust insulin doses accordingly.\n\nTYPE 2 DIABETES:\nCause: Body cells become RESISTANT to insulin — they no longer respond to it properly. The pancreas may still produce insulin, but it doesn't work.\nResult: Blood glucose remains elevated after eating.\nRisk factors: Obesity, lack of exercise, poor diet (high sugar/refined carbs), family history, age.\nTreatment: Lifestyle changes — weight loss, increased exercise, healthier diet.\nMedication: Metformin (increases cell sensitivity to insulin).\nIn advanced cases: insulin injections may also be needed."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "INSULIN lowers blood glucose by promoting GLYCOGEN STORAGE (glucose → glycogen). GLUCAGON raises blood glucose by promoting GLYCOGEN BREAKDOWN (glycogen → glucose). Students constantly confuse which hormone does which. Memory trick: INsulin = INto storage. Glucagon = Get glucose out of storage.",
+        "key_note": "Glucose too high → pancreas releases INSULIN → glycogen stored → glucose falls. Glucose too low → pancreas releases GLUCAGON → glycogen broken down → glucose rises. Type 1: no insulin (autoimmune). Type 2: insulin resistance (lifestyle).",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Insulin or Glucagon?",
+            "instruction": "Match each statement to the correct hormone — insulin or glucagon.",
+            "pairs": [
+                ("Insulin", "Released when blood glucose is TOO HIGH — after eating a meal"),
+                ("Glucagon", "Released when blood glucose is TOO LOW — between meals or after exercise"),
+                ("Insulin", "Causes liver and muscle cells to convert glucose → glycogen for storage"),
+                ("Glucagon", "Causes liver cells to break down glycogen → glucose and release it into blood"),
+                ("Insulin", "Missing or ineffective in diabetes — leads to hyperglycaemia if untreated"),
+            ]
+        },
+        "fifas": [
+            {
+                "label": "Blood Glucose Negative Feedback",
+                "question": "Describe what happens to blood glucose and hormones after a person eats a meal containing a large amount of carbohydrates.",
+                "steps": [
+                    ("F", "Identify the change: carbohydrates digested → glucose absorbed → blood glucose RISES"),
+                    ("I", "Pancreas beta cells detect the rise → release INSULIN into the blood"),
+                    ("F", "Insulin travels to liver and muscles → glucose converted to glycogen (glycogenesis)"),
+                    ("A", "Blood glucose FALLS back to ~5 mmol/L — negative feedback complete")
+                ]
+            }
+        ],
+        "quiz": [
+            {
+                "q": "Blood glucose rises after eating. Which hormone is released and what does it do?",
+                "opts": [
+                    ("Insulin — released by pancreas beta cells, causes glucose to be converted to glycogen in the liver", True),
+                    ("Glucagon — released by pancreas alpha cells, causes glycogen to be broken down", False),
+                    ("Adrenaline — released by adrenal glands, increases blood glucose further", False),
+                    ("Thyroxine — released by thyroid, converts glucose to glycogen", False)
+                ],
+                "wrong_explanations": {
+                    1: "Glucagon is released when blood glucose is TOO LOW — it would make a post-meal rise even worse.",
+                    2: "Adrenaline does raise blood glucose (for fight or flight) — but is not the routine homeostatic response to eating.",
+                    3: "Thyroxine controls metabolic rate — it does not regulate blood glucose directly."
+                }
+            },
+            {
+                "q": "Why must Type 1 diabetics inject insulin rather than take it as a tablet?",
+                "opts": [
+                    ("Insulin is a protein — it would be digested and destroyed by proteases in the gut before reaching the blood", True),
+                    ("Insulin tablets haven't been invented yet", False),
+                    ("The stomach acid destroys insulin too slowly for it to work", False),
+                    ("Tablets cannot reach the pancreas where insulin needs to work", False)
+                ],
+                "wrong_explanations": {
+                    1: "Oral insulin formulations are being researched (with special protective coatings) but the traditional reason is protein digestion in the gut.",
+                    2: "It's not about speed — insulin is a large protein molecule that gets broken down into amino acids by digestive enzymes before being absorbed.",
+                    3: "Insulin doesn't work IN the pancreas — it is secreted by the pancreas and works on LIVER and MUSCLE cells. The issue is gut digestion."
+                }
+            },
+            {
+                "q": "What is the key difference between Type 1 and Type 2 diabetes?",
+                "opts": [
+                    ("Type 1: pancreas produces no insulin (autoimmune). Type 2: cells become resistant to insulin (lifestyle-related).", True),
+                    ("Type 1 is more common than Type 2", False),
+                    ("Type 2 requires insulin injections; Type 1 can be managed with diet alone", False),
+                    ("Both types are caused by the immune system destroying pancreas cells", False)
+                ],
+                "wrong_explanations": {
+                    1: "Type 2 is FAR MORE COMMON — it makes up about 90% of all diabetes cases. Type 1 is less common.",
+                    2: "This is the wrong way round. TYPE 1 requires insulin injections because the pancreas cannot make it. TYPE 2 is usually managed first with diet, exercise and tablets.",
+                    3: "Only TYPE 1 is autoimmune. TYPE 2 develops due to insulin resistance — the immune system is not the cause."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 7. HUMAN REPRODUCTION AND HORMONES
+    # ══════════════════════════════════════════════
+    {
+        "id": "human-reproduction-hormones",
+        "title": "Human Reproduction and Hormones",
+        "spec": "4.5.4",
+        "summary": "Describe puberty, the menstrual cycle and the hormones that control human reproduction.",
+        "theory": [
+            {
+                "heading": "Puberty and Sex Hormones",
+                "content": "PUBERTY is the period of physical and hormonal development that prepares the body for reproduction.\n\nIn FEMALES: the pituitary gland releases FSH and LH → ovaries begin producing OESTROGEN.\nOestrogen causes female secondary sexual characteristics:\nBreast development.\nWidening of the pelvis.\nPubic and underarm hair growth.\nBeginning of the menstrual cycle.\nGrowth spurt.\n\nIn MALES: the pituitary gland releases LH → testes begin producing TESTOSTERONE.\nTestosterone causes male secondary sexual characteristics:\nEnlargement of the penis and testes.\nVoice breaking (larynx enlarges).\nFacial, pubic and body hair growth.\nMuscle mass increase.\nSperm production begins (spermatogenesis).\nGrowth spurt."
+            },
+            {
+                "heading": "The Menstrual Cycle — Overview",
+                "content": "The menstrual cycle is approximately 28 days long (varies between individuals).\n\nIt prepares the female reproductive system for potential pregnancy each month.\n\nDay 1: MENSTRUATION begins — the uterus lining (endometrium) is shed as the lining breaks down.\nDays 1–13: The uterus lining rebuilds and thickens — stimulated by oestrogen.\nDay ~14: OVULATION — a mature egg is released from one of the ovaries.\nDays 14–28: The uterus lining remains thick (prepared for implantation if fertilisation occurs) — maintained by progesterone.\n\nIf FERTILISATION occurs: the embryo implants in the uterus wall and pregnancy begins. Progesterone remains high.\nIf NO FERTILISATION: progesterone falls, the uterus lining breaks down → menstruation begins and the cycle repeats."
+            },
+            {
+                "heading": "Hormones Controlling the Menstrual Cycle",
+                "content": "Four hormones work together to control the menstrual cycle:\n\nFSH (Follicle Stimulating Hormone) — from the PITUITARY GLAND:\nCauses an egg inside a follicle to mature in the ovary.\nStimulates the ovaries to produce oestrogen.\n\nOESTROGEN — from the OVARIES:\nRepairs and thickens the uterus lining after menstruation.\nAt low levels: inhibits FSH production (prevents too many eggs maturing at once).\nAt HIGH levels (mid-cycle): triggers a surge in LH production.\n\nLH (Luteinising Hormone) — from the PITUITARY GLAND:\nThe LH surge at approximately Day 14 triggers OVULATION — the egg is released from the follicle.\n\nPROGESTERONE — from the CORPUS LUTEUM (the remains of the follicle after ovulation):\nMaintains the thickened uterus lining during the second half of the cycle.\nInhibits FSH and LH production (negative feedback).\nIf no pregnancy: corpus luteum breaks down → progesterone falls → lining breaks down → menstruation begins."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "FSH stimulates EGG MATURATION (not ovulation). LH triggers OVULATION. Oestrogen REBUILDS the uterus lining. Progesterone MAINTAINS the lining. The pituitary produces FSH and LH. The ovaries produce oestrogen and progesterone. Students often confuse which gland makes which hormone.",
+        "key_note": "FSH (pituitary) → egg matures, oestrogen produced. Oestrogen (ovary) → uterus lining rebuilds. LH surge → ovulation (Day ~14). Progesterone (corpus luteum) → maintains lining. If no pregnancy → progesterone falls → menstruation.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Reproductive Hormone",
+            "instruction": "Match each hormone to its source and main function.",
+            "pairs": [
+                ("FSH", "From pituitary — causes egg to mature in follicle, stimulates oestrogen production"),
+                ("Oestrogen", "From ovaries — repairs uterus lining, triggers LH surge at high levels"),
+                ("LH", "From pituitary — surge at Day ~14 triggers ovulation"),
+                ("Progesterone", "From corpus luteum — maintains uterus lining in second half of cycle"),
+                ("Testosterone", "From testes — causes male secondary sexual characteristics and sperm production"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Which hormone triggers ovulation?",
+                "opts": [
+                    ("LH (Luteinising Hormone) — a surge at around Day 14 releases the egg from the follicle", True),
+                    ("FSH — it stimulates the follicle to release the egg", False),
+                    ("Oestrogen — high oestrogen directly causes egg release", False),
+                    ("Progesterone — it relaxes the follicle wall to release the egg", False)
+                ],
+                "wrong_explanations": {
+                    1: "FSH stimulates EGG MATURATION — it prepares the follicle but doesn't trigger the release. The LH SURGE causes ovulation.",
+                    2: "High oestrogen causes the RELEASE OF LH from the pituitary — it's the subsequent LH surge that triggers ovulation, not oestrogen directly.",
+                    3: "Progesterone is produced AFTER ovulation by the corpus luteum — it maintains the uterus lining. It does not trigger ovulation."
+                }
+            },
+            {
+                "q": "What happens to progesterone levels if fertilisation does NOT occur?",
+                "opts": [
+                    ("Progesterone falls — the uterus lining breaks down — menstruation begins and the cycle restarts", True),
+                    ("Progesterone rises — signalling the body to prepare for pregnancy anyway", False),
+                    ("Progesterone stays the same indefinitely until the next menstrual cycle", False),
+                    ("Progesterone triggers FSH release to immediately start a new cycle", False)
+                ],
+                "wrong_explanations": {
+                    1: "Progesterone rising would signal PREGNANCY — which hasn't occurred. Without an embryo producing hormones, the corpus luteum degenerates and progesterone falls.",
+                    2: "Progesterone cannot stay elevated indefinitely — the corpus luteum degenerates after about 14 days without an embryo implanting.",
+                    3: "FSH is released at the start of a new cycle as progesterone falls — but it is oestrogen and progesterone levels, not progesterone directly stimulating FSH."
+                }
+            },
+            {
+                "q": "What is the role of oestrogen in the menstrual cycle?",
+                "opts": [
+                    ("Repairs and thickens the uterus lining after menstruation — also triggers the LH surge at high levels", True),
+                    ("Triggers ovulation directly at low concentrations", False),
+                    ("Maintains the uterus lining in the second half of the cycle", False),
+                    ("Stimulates egg maturation in the follicle", False)
+                ],
+                "wrong_explanations": {
+                    1: "Oestrogen at HIGH concentrations triggers LH release, and LH causes ovulation — but at LOW concentrations, oestrogen inhibits FSH, not triggers ovulation.",
+                    2: "Maintaining the uterus lining in the second half = PROGESTERONE. Oestrogen rebuilds it in the first half.",
+                    3: "Stimulating egg maturation = FSH. Oestrogen is produced AS A RESULT of FSH stimulation, not a cause of egg maturation."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 8. CONTRACEPTION AND FERTILITY TREATMENT
+    # ══════════════════════════════════════════════
+    {
+        "id": "contraception-fertility",
+        "title": "Contraception and Fertility Treatment",
+        "spec": "4.5.4",
+        "summary": "Describe methods of contraception and fertility treatments including IVF.",
+        "theory": [
+            {
+                "heading": "Methods of Contraception",
+                "content": "Contraception prevents pregnancy by interfering with fertilisation, ovulation or implantation.\n\nHORMONAL METHODS — prevent ovulation:\nCOMBINED PILL — contains oestrogen and progesterone. Oestrogen inhibits FSH production → no egg maturation → no ovulation. Taken daily.\nPROGESTERONE-ONLY PILL (mini-pill) — thickens cervical mucus (stops sperm reaching egg) and may also prevent ovulation.\nIMPLANT — small rod inserted under skin of upper arm, releases progesterone for up to 3 years. Prevents ovulation.\nINJECTION — progesterone injected every 8–12 weeks. Prevents ovulation.\nHORMONAL IUD (Mirena coil) — releases progesterone locally in the uterus.\n\nBARRIER METHODS — prevent sperm reaching the egg:\nMALE CONDOM — placed over the penis. ALSO protects against STIs — the only contraceptive that does this.\nFEMALE CONDOM — inserted into the vagina. Also protects against STIs.\nDIAPHRAGM — placed over the cervix before sex.\n\nNON-HORMONAL:\nCOPPER IUD (copper coil) — T-shaped device placed in the uterus. Copper ions are toxic to sperm. No hormones involved.\n\nSURGICAL (permanent):\nVASECTOMY — vas deferens cut or tied in males → sperm cannot be released.\nTUBAL LIGATION — fallopian tubes cut or tied in females → eggs cannot reach the uterus."
+            },
+            {
+                "heading": "Fertility Treatments",
+                "content": "Some couples have difficulty conceiving naturally. Medical treatments can help.\n\nFSH AND LH TREATMENT (fertility drugs):\nWomen who don't ovulate regularly are prescribed FSH (and sometimes LH) to stimulate egg maturation and ovulation.\nRisk: can cause multiple eggs to mature at once → multiple pregnancy (twins, triplets).\n\nIN VITRO FERTILISATION (IVF):\n'In vitro' means 'in glass' — fertilisation takes place in a laboratory dish, outside the body.\n\nThe IVF process:\n1. The woman is given FSH (and LH) to stimulate the ovaries to produce multiple eggs.\n2. Eggs are collected from the ovaries using a fine needle under sedation.\n3. Eggs are mixed with sperm in a laboratory dish — fertilisation occurs.\n4. Embryos develop for 2–5 days in the laboratory.\n5. One or two embryos are placed into the woman's uterus through the cervix.\n6. Progesterone is given to help maintain the uterus lining for implantation.\n7. If an embryo implants successfully, pregnancy begins.\n\nSuccess rates: approximately 30–40% per cycle for women under 35, declining with age."
+            },
+            {
+                "heading": "Ethical Considerations",
+                "content": "Both contraception and fertility treatment raise important ethical questions.\n\nCONTRACEPTION:\nSome religious groups oppose artificial contraception (e.g. the Catholic Church teaches natural family planning only).\nEmergency contraception ('morning-after pill') is controversial — some consider it preventing implantation of a fertilised egg.\nCondoms are widely supported as they also prevent spread of STIs.\n\nFERTILITY TREATMENT (IVF):\nMultiple embryos are often created — unused embryos may be frozen, destroyed or donated to research. This raises questions about the moral status of embryos.\nPre-implantation genetic diagnosis (PGD) — testing embryos for genetic conditions before implantation. Raises concerns about 'designer babies'.\nIVF is expensive — raises questions about who should have access.\nThe physical and emotional burden on women undergoing IVF is significant.\nDonor eggs or sperm raise questions about identity and donor anonymity."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "The contraceptive pill does NOT protect against STIs — only BARRIER METHODS (condoms) protect against both pregnancy AND sexually transmitted infections. The combined pill prevents OVULATION by inhibiting FSH — without ovulation, there is no egg to fertilise. In IVF, FSH is given to stimulate MULTIPLE egg production — not to help with implantation (progesterone does that).",
+        "key_note": "Hormonal contraception: prevents ovulation (pill, implant, injection). Barrier methods: prevent sperm reaching egg, ALSO prevent STIs. IVF: FSH → multiple eggs → fertilised in lab → embryo implanted. Copper IUD: no hormones, sperm toxic.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Contraceptive to its Mechanism",
+            "instruction": "Match each method to how it prevents pregnancy.",
+            "pairs": [
+                ("Combined pill", "Contains oestrogen — inhibits FSH → prevents egg maturation and ovulation"),
+                ("Male condom", "Barrier method — stops sperm reaching egg — ALSO prevents STIs"),
+                ("Copper IUD", "Copper ions are toxic to sperm — no hormones involved"),
+                ("Implant", "Releases progesterone under the skin for up to 3 years — prevents ovulation"),
+                ("Vasectomy", "Cuts the vas deferens — sperm cannot be released during ejaculation"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Which contraceptive method ALSO protects against sexually transmitted infections?",
+                "opts": [
+                    ("Condoms (male or female) — barrier methods prevent both pregnancy and STI transmission", True),
+                    ("The combined contraceptive pill", False),
+                    ("The copper IUD", False),
+                    ("The contraceptive implant", False)
+                ],
+                "wrong_explanations": {
+                    1: "The pill prevents pregnancy hormonally but does not prevent STI transmission — pathogens can still be exchanged.",
+                    2: "The copper IUD works inside the uterus — it doesn't prevent STI transmission during sexual contact.",
+                    3: "The implant prevents ovulation — it provides no barrier against pathogen transmission."
+                }
+            },
+            {
+                "q": "In IVF, why is FSH given to the woman at the start of treatment?",
+                "opts": [
+                    ("To stimulate the ovaries to produce multiple eggs so more can be collected and fertilised", True),
+                    ("To prepare the uterus lining for embryo implantation", False),
+                    ("To prevent the immune system from rejecting the embryo", False),
+                    ("To fertilise the eggs in the laboratory", False)
+                ],
+                "wrong_explanations": {
+                    1: "Preparing the uterus lining for implantation = PROGESTERONE — given later in IVF treatment. FSH specifically stimulates egg production.",
+                    2: "Immune suppression is managed separately — FSH is specifically a reproductive hormone that drives follicle development and egg production.",
+                    3: "Fertilisation is done by adding sperm to eggs in a laboratory dish — FSH is a hormone, not a fertilisation agent."
+                }
+            },
+            {
+                "q": "How does the combined contraceptive pill prevent pregnancy?",
+                "opts": [
+                    ("The oestrogen it contains inhibits FSH production — no FSH means no egg maturation and no ovulation", True),
+                    ("It thickens the cervical mucus so sperm cannot swim through", False),
+                    ("It prevents sperm from entering the vagina during sex", False),
+                    ("It causes the uterus lining to shed more frequently", False)
+                ],
+                "wrong_explanations": {
+                    1: "Thickening cervical mucus = PROGESTERONE-ONLY PILL (mini-pill). The COMBINED pill works primarily by suppressing ovulation through oestrogen inhibiting FSH.",
+                    2: "Preventing sperm entering = BARRIER METHODS (condoms, diaphragm). The pill has no physical barrier effect.",
+                    3: "The combined pill actually STABILISES the uterus lining — frequent shedding would be a side effect of other hormone imbalances, not the pill's mechanism."
+                }
+            }
         ]
     },
 ],
