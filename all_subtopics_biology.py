@@ -1,15 +1,17 @@
 #!/usr/bin/env python3
 """
 Biology subtopics — Combined Foundation
-AQA 8464 / Biology 8461
+AQA 8464 / Biology 8461  *** COMPLETE ***
 
-Cell Biology:          7 subtopics (updated)
-Organisation:         11 subtopics (updated)
-Infection & Response:  8 subtopics (updated)
-Bioenergetics:         7 subtopics (updated)
-Homeostasis:           8 subtopics (updated)
-Inheritance:          12 subtopics (updated)
-Ecology: unchanged
+Cell Biology:          7 subtopics
+Organisation:         11 subtopics
+Infection & Response:  8 subtopics
+Bioenergetics:         7 subtopics
+Homeostasis:           8 subtopics
+Inheritance:          12 subtopics
+Ecology:              11 subtopics
+
+Total: 64 subtopics
 """
 
 BIOLOGY_COLOR = "#6BCB77"
@@ -5135,110 +5137,873 @@ BIOLOGY_SUBTOPICS_ALL = {
 ],
 
 "ecology": [
+
+
+    # ══════════════════════════════════════════════
+    # 1. ECOSYSTEMS
+    # ══════════════════════════════════════════════
     {
-        "id": "ecosystems-food-webs",
-        "title": "Ecosystems, Food Webs and Population",
-        "spec": "4.7",
-        "summary": "Describe ecosystems, food chains and webs, and factors affecting population size.",
+        "id": "ecosystems",
+        "title": "Ecosystems",
+        "spec": "4.7.1",
+        "summary": "Define ecosystem, population, community and habitat, and explain how organisms depend on each other.",
         "theory": [
-            {"heading": "Ecosystems and Communities",
-             "content": "Ecosystem: all the living organisms (community) AND non-living factors (abiotic) in an area.\nPopulation: all individuals of one species in an area.\nCommunity: all populations of different species in an area.\nHabitat: the place where an organism lives."},
-            {"heading": "Abiotic and Biotic Factors",
-             "content": "Abiotic (non-living): temperature, light, water/rainfall, pH, CO₂ and O₂ levels, mineral content of soil.\nBiotic (living): food availability, predators, competition, disease, parasites.\nBoth types affect the distribution and abundance of organisms.\nIf conditions change, populations change in response."},
-            {"heading": "Food Chains and Webs",
-             "content": "Food chain: shows feeding relationships — producer → primary consumer → secondary consumer → tertiary consumer.\nProducer: green plant — makes its own food by photosynthesis.\nConsumer: animal — eats other organisms.\nPredator: hunts prey. Prey: is eaten by predator.\nFood web: many interconnected food chains — more realistic picture of ecosystem.\nRemoving one species can affect many others (cascade effect)."},
-            {"heading": "Sampling Techniques",
-             "content": "Quadrats: count organisms in a sample area — calculate population size from mean × total area.\nTransects: survey along a line through a habitat — show how organisms change with distance.\nMark-recapture: catch, mark, release, recapture — estimate population size.\nFormula: N = (first catch × second catch) ÷ number of marked individuals in second catch."}
-        ],
-        "variables": [],
-        "equations": ["N = (n₁ × n₂) ÷ m  (mark-recapture)"],
-        "common_mistake": "Energy is LOST at each stage of a food chain (as heat, movement, waste). This is why food chains rarely have more than 4-5 levels — not enough energy reaches the top. Less energy = fewer organisms that can be supported.",
-        "key_note": "Energy transfer between trophic levels is only about 10% efficient — most is lost as heat.",
-        "higher": "Efficiency of energy transfer = (energy available at next level ÷ energy available at previous level) × 100%. Pyramids of biomass always decrease upward. Pyramids of number can be inverted (e.g. one tree supports many insects).",
-        "triple_only": None,
-        "rp": "RP6 — Use quadrats to estimate population size of a species in a habitat. Calculate mean count and scale up to total area.",
-        "matching": {
-            "title": "Match the Term to its Definition",
-            "instruction": "Match each ecology term to its correct definition.",
-            "pairs": [
-                ("Population", "All individuals of one species in a given area"),
-                ("Community", "All populations of different species in an area"),
-                ("Ecosystem", "Community + all abiotic (non-living) factors"),
-                ("Producer", "An organism that makes its own food via photosynthesis"),
-                ("Primary consumer", "An organism that eats producers (herbivore)"),
-                ("Decomposer", "Breaks down dead organisms — releases nutrients back into soil"),
-            ]
-        },
-        "fifas": [
-            {"label": "Example — Mark-recapture population estimate",
-             "question": "50 woodlice are caught, marked and released. Later, 40 are caught and 8 are marked. Estimate the population.",
-             "steps": [("F","N = (n₁ × n₂) ÷ m"), ("I","N = (50 × 40) ÷ 8 = 2000 ÷ 8"), ("F","No unit conversion needed"), ("A","N = 250 woodlice")]}
-        ],
-        "quiz": [
-            {"q": "What is an abiotic factor?",
-             "opts": [("A non-living factor affecting organisms — e.g. temperature, light, water", True), ("A living factor such as predation or disease", False), ("A type of organism in the ecosystem", False), ("The physical size of an ecosystem", False)],
-             "wrong_explanations": {1: "Living factors like predation and disease are BIOTIC factors — abiotic means non-living.", 2: "Organisms are part of the community — not abiotic factors.", 3: "Ecosystem size isn't classified as abiotic or biotic — it's a spatial measurement."}},
-            {"q": "Why do food chains rarely have more than 5 levels?",
-             "opts": [("Energy is lost at each level — not enough energy remains to support more levels", True), ("Predators at the top become too large", False), ("Species at the top are too rare to form chains", False), ("Higher levels have no natural predators", False)],
-             "wrong_explanations": {1: "Size can increase with trophic level — but that's not the limiting factor for chain length.", 2: "Rarity at higher levels is a consequence of energy loss — not the primary reason.", 3: "Whether they have predators or not, energy limits the number of organisms that can survive at the top."}},
-            {"q": "30 beetles are marked and released. 20 are caught later; 6 are marked. Estimate the population.",
-             "opts": [("100", True), ("3.6", False), ("180", False), ("600", False)],
-             "wrong_explanations": {1: "You divided n₁ by m. N = (n₁ × n₂) ÷ m = (30 × 20) ÷ 6 = 100.", 2: "You added instead of multiplying. N = (30 × 20) ÷ 6 = 600 ÷ 6 = 100.", 3: "You multiplied all three numbers. N = (n₁ × n₂) ÷ m = (30 × 20) ÷ 6 = 100."}},
-            {"q": "What is a producer in a food chain?",
-             "opts": [("A photosynthetic organism that makes its own food — e.g. a plant", True), ("An animal that produces offspring", False), ("A factory that produces food", False), ("A top predator that produces the most energy", False)],
-             "wrong_explanations": {1: "In ecology, 'producer' specifically means photosynthetic organism — not an animal that reproduces.", 2: "Factories are not part of natural ecosystems!", 3: "Top predators receive the LEAST energy — they're at the far end of the food chain."}},
-            {"q": "What effect does removing a predator from an ecosystem have?",
-             "opts": [("Prey population increases, which may reduce the plants/organisms they eat — cascade effect", True), ("No effect — prey adapts quickly", False), ("Predator's prey also decreases", False), ("The ecosystem becomes more stable", False)],
-             "wrong_explanations": {1: "Prey doesn't instantly adapt — populations respond through birth/death rates, not instant evolution.", 2: "If a predator is removed, its prey population INCREASES (less predation) — not decreases.", 3: "Removing a keystone predator typically DESTABILIZES the ecosystem — it can cause population crashes further down the chain."}}
-        ]
-    },
-    {
-        "id": "nutrient-cycles",
-        "title": "Nutrient Cycles and Biodiversity",
-        "spec": "4.7.3",
-        "summary": "Describe the carbon and water cycles, and explain the importance of biodiversity.",
-        "theory": [
-            {"heading": "The Carbon Cycle",
-             "content": "Carbon moves between the atmosphere, organisms and the Earth in a continuous cycle.\nRemoved from atmosphere: photosynthesis (plants absorb CO₂).\nReturned to atmosphere: respiration (all organisms), decomposition (bacteria/fungi break down dead material), combustion (burning fossil fuels).\nFossil fuels = ancient carbon locked underground — burning releases it → increases atmospheric CO₂."},
-            {"heading": "The Water Cycle",
-             "content": "Evaporation: water evaporates from oceans, lakes and plants (transpiration).\nCondensation: water vapour cools → clouds form.\nPrecipitation: rain, snow, hail returns water to land and sea.\nRunoff: water flows into rivers → back to sea.\nAll living organisms need water — it's the solvent for all biochemical reactions."},
-            {"heading": "The Nitrogen Cycle",
-             "content": "Nitrogen makes up 78% of air — but plants can't use N₂ directly.\nNitrogen fixation: N₂ converted to ammonia/nitrates by nitrogen-fixing bacteria (in soil or root nodules of legumes).\nNitrification: ammonia converted to nitrates by nitrifying bacteria.\nDenitrification: nitrates converted back to N₂ by denitrifying bacteria.\nDecomposers: break down dead organisms → ammonia released (ammonification)."},
-            {"heading": "Biodiversity and Conservation",
-             "content": "Biodiversity = variety of species in an area AND genetic diversity within species.\nHigh biodiversity: more stable ecosystem — more connections, more resilience.\nThreats to biodiversity: habitat destruction, pollution, invasive species, climate change, overexploitation.\nConservation: protecting habitats, captive breeding programmes, seed banks, legislation.\nBenefits: ecosystem services (clean air/water, pollination, food), potential medicines, ethical responsibility."}
+            {
+                "heading": "Key Ecology Terms",
+                "content": "Ecology is the study of how organisms interact with each other and with their environment.\n\nORGANISM — an individual living thing (e.g. one robin, one oak tree, one earthworm).\n\nPOPULATION — all the individuals of ONE SPECIES living in the same area at the same time (e.g. all the robins in a woodland).\n\nCOMMUNITY — all the populations of DIFFERENT SPECIES living together in the same area (e.g. all the animals, plants, fungi and microorganisms in a woodland).\n\nHABITAT — the specific place where an organism lives within an ecosystem (e.g. the woodland floor, the canopy, a particular pond).\n\nECOSYSTEM — a community of organisms PLUS all the non-living (abiotic) factors in the same area. An ecosystem includes everything — living and non-living — in a defined area."
+            },
+            {
+                "heading": "Interdependence in Ecosystems",
+                "content": "All species within a community are INTERDEPENDENT — they depend on each other directly or indirectly for their survival.\n\nIf one species changes significantly, it affects others — sometimes the effects ripple through the whole ecosystem (called a CASCADE EFFECT).\n\nExamples of interdependence:\nPlants depend on bees for POLLINATION — without bees, many plants cannot reproduce.\nBees depend on flowering plants for NECTAR and POLLEN — their food source.\nShrews depend on earthworms for food.\nEarthworms depend on leaf litter (decomposing plant material) for food.\nDeer depend on grass and shrubs for food.\nWolves depend on deer as prey.\nIf wolves are removed → deer population explodes → vegetation is overgrazed → many plant species decline → animals that depend on those plants also decline.\n\nA STABLE COMMUNITY is one where populations remain roughly constant over time — because the various checks and balances (predation, competition, disease) keep each population within its range."
+            },
+            {
+                "heading": "Types of Ecosystem",
+                "content": "Ecosystems exist at many scales and in many environments.\n\nNATURAL ECOSYSTEMS include: tropical rainforests, coral reefs, temperate woodlands, grasslands, deserts, tundra, deep ocean.\n\nARTIFICIAL ECOSYSTEMS created by humans include: farmland (agricultural fields), fish farms, ornamental gardens, nature reserves.\n\nArtificial ecosystems tend to have LOWER BIODIVERSITY than natural ones — they are often dominated by one or a few species (monocultures).\n\nDifferent ecosystems are characterised by their specific:\nABIOTIC CONDITIONS (temperature, rainfall, light levels, soil type).\nBIOTIC FACTORS (which species live there, what eats what).\nLEVEL OF PRODUCTIVITY (how much energy is fixed by plants)."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "Decomposers are fungi and bacteria — NOT worms or woodlice (these are detritivores that break material into smaller pieces but don't chemically decompose it). Both are important — but don't confuse the terms in exams.",
-        "key_note": "Carbon cycle: photosynthesis removes CO₂; respiration, combustion, decomposition return CO₂. Fossil fuels are stored carbon.",
-        "higher": "Indicator species: lichens indicate clean air (sensitive to SO₂). Mayfly larvae indicate clean water (sensitive to pollutants). Used to measure pollution levels.",
-        "triple_only": None, "rp": None,
+        "common_mistake": "Students often confuse COMMUNITY and ECOSYSTEM. A community is all the LIVING ORGANISMS in an area. An ecosystem includes the community PLUS all the non-living (abiotic) factors. Remember: Ecosystem = Community + Abiotic environment.",
+        "key_note": "Organism → Population (one species) → Community (all species) → Ecosystem (community + abiotic factors). All species are interdependent — changes to one affect others (cascade effect). Stable community = populations roughly constant over time.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Match the Process to its Role in the Carbon Cycle",
-            "instruction": "Match each process to whether it removes carbon from or returns it to the atmosphere.",
+            "title": "Match the Ecology Term",
+            "instruction": "Match each term to its correct definition.",
             "pairs": [
-                ("Photosynthesis", "Removes CO₂ from atmosphere — locked into glucose"),
-                ("Respiration", "Returns CO₂ to atmosphere — all living organisms do this"),
-                ("Combustion", "Returns CO₂ from fossil fuels to atmosphere rapidly"),
-                ("Decomposition", "Returns CO₂ as bacteria/fungi break down dead organic matter"),
-                ("Fossilisation", "Locks carbon underground for millions of years"),
+                ("Population", "All individuals of ONE species in a given area"),
+                ("Community", "ALL populations of different species living together in the same area"),
+                ("Ecosystem", "Community PLUS all the non-living (abiotic) factors in the same area"),
+                ("Habitat", "The specific place where an organism lives"),
+                ("Interdependence", "All species in a community depend on each other directly or indirectly"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "What role do decomposers play in nutrient cycles?",
-             "opts": [("Break down dead organisms — releasing nutrients back into the soil", True), ("Convert atmospheric nitrogen into nitrates", False), ("Remove CO₂ from the atmosphere", False), ("Transfer energy between trophic levels", False)],
-             "wrong_explanations": {1: "Converting N₂ to nitrates = NITROGEN FIXATION by nitrogen-fixing bacteria.", 2: "Removing CO₂ = PHOTOSYNTHESIS by plants.", 3: "Energy transfer between trophic levels happens through feeding — not decomposers."}},
-            {"q": "Why does burning fossil fuels increase atmospheric CO₂?",
-             "opts": [("Carbon locked underground for millions of years is rapidly released as CO₂", True), ("Fossil fuels contain oxygen which becomes CO₂", False), ("Burning destroys the carbon cycle", False), ("Fire produces new carbon atoms", False)],
-             "wrong_explanations": {1: "Fossil fuels are carbon-rich — burning them combines carbon with O₂ from air to make CO₂.", 2: "Burning doesn't destroy cycles — it just adds carbon to the atmosphere faster than natural processes can remove it.", 3: "Atoms can't be created or destroyed — combustion releases pre-existing carbon as CO₂."}},
-            {"q": "Why is high biodiversity important for ecosystem stability?",
-             "opts": [("More species = more connections = more resilience if one species is lost", True), ("More species always means more food for humans", False), ("Biodiversity prevents all environmental change", False), ("High biodiversity means more CO₂ is absorbed", False)],
-             "wrong_explanations": {1: "More species doesn't automatically mean more human-edible food.", 2: "Biodiversity increases RESILIENCE to change — it doesn't prevent all change.", 3: "More plants would increase CO₂ absorption, but biodiversity includes all species — animals don't absorb CO₂."}},
-            {"q": "How do plants absorb nitrogen for making proteins?",
-             "opts": [("As nitrate ions (NO₃⁻) absorbed through roots", True), ("Directly from the atmosphere as N₂", False), ("As ammonia through their leaves", False), ("As protein from the soil", False)],
-             "wrong_explanations": {1: "Plants cannot use atmospheric N₂ directly — they need it fixed into nitrates first.", 2: "Some plants absorb small amounts of ammonia but the main route is nitrate ions through roots.", 3: "Plants can't absorb proteins from soil — they build their own from amino acids synthesised from nitrates."}}
+            {
+                "q": "What is the difference between a community and an ecosystem?",
+                "opts": [
+                    ("A community is all the living organisms in an area. An ecosystem is the community PLUS all the non-living (abiotic) factors.", True),
+                    ("A community is larger than an ecosystem — it includes several ecosystems.", False),
+                    ("They are the same thing — both describe all organisms in an area.", False),
+                    ("An ecosystem only includes animals. A community includes all living things.", False)
+                ],
+                "wrong_explanations": {
+                    1: "An ECOSYSTEM is larger — it includes the community PLUS all abiotic factors. A community is just the living part.",
+                    2: "They are NOT the same — a community is the living component only. An ecosystem adds the non-living environment.",
+                    3: "An ecosystem includes ALL living organisms (animals, plants, fungi, microorganisms) plus abiotic factors — not just animals."
+                }
+            },
+            {
+                "q": "Wolves are removed from a woodland ecosystem. What is the most likely consequence?",
+                "opts": [
+                    ("Deer population increases — deer overgraze vegetation — plant diversity declines — other animals that depend on those plants also decline", True),
+                    ("The ecosystem immediately collapses — all species die without wolves", False),
+                    ("Other predators increase in number to compensate for the wolves", False),
+                    ("Nothing changes — deer populations regulate themselves", False)
+                ],
+                "wrong_explanations": {
+                    1: "Ecosystems rarely collapse immediately — they often shift to a new, less diverse stable state. But the cascade of effects described is accurate.",
+                    2: "Some compensation by other predators may occur — but wolves are often keystone predators, so full compensation is rare.",
+                    3: "Without predators, prey populations often grow beyond what the habitat can support — leading to overgrazing and eventual population crash."
+                }
+            },
+            {
+                "q": "Why do artificial ecosystems (like farmland) tend to have lower biodiversity than natural ecosystems?",
+                "opts": [
+                    ("They are dominated by one or a few crop species — most other species are excluded or removed", True),
+                    ("Artificial ecosystems are physically smaller than natural ones", False),
+                    ("Artificial ecosystems have less sunlight because they are sheltered", False),
+                    ("Animals avoid artificial ecosystems because they can detect human presence", False)
+                ],
+                "wrong_explanations": {
+                    1: "Some farms are physically large — size is not the primary reason. MONOCULTURE (one crop species) and removal of 'weeds' and 'pests' dramatically reduces biodiversity.",
+                    2: "Farmland typically receives as much sunlight as natural ecosystems — light is not the reason for lower biodiversity.",
+                    3: "Many animals do live on farmland — but the monoculture crop structure and use of pesticides/herbicides removes habitat and food for most species."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 2. ABIOTIC AND BIOTIC FACTORS
+    # ══════════════════════════════════════════════
+    {
+        "id": "abiotic-biotic-factors",
+        "title": "Abiotic and Biotic Factors",
+        "spec": "4.7.1",
+        "summary": "Describe the abiotic and biotic factors that affect the distribution and abundance of organisms.",
+        "theory": [
+            {
+                "heading": "Abiotic Factors — Non-living",
+                "content": "ABIOTIC FACTORS are non-living physical and chemical features of the environment that affect organisms.\n\nKey abiotic factors:\n\nTEMPERATURE — affects enzyme activity and metabolic rate. Each species has a temperature range it can tolerate. Cold-blooded organisms are most affected.\n\nLIGHT INTENSITY — essential for plants (photosynthesis). Affects which plants can grow in different areas (e.g. shade-tolerant vs sun-loving species). Also affects animal behaviour (nocturnal vs diurnal).\n\nWATER AVAILABILITY (rainfall) — water is essential for all life. Desert species are adapted to low water; wetland species need abundant water.\n\nSOIL pH — affects which minerals are available and which organisms can live in the soil. Some plants prefer acidic soils (heather, rhododendrons); others prefer alkaline (nettles, ash trees).\n\nSOIL MINERAL CONTENT — nitrates, phosphates and other minerals are essential for plant growth. Poor soils support fewer plant species.\n\nWIND SPEED — affects water loss from plants and animals, wave action in marine environments, seed dispersal.\n\nCO₂ CONCENTRATION — limits photosynthesis rate. In greenhouses, elevated CO₂ increases plant growth.\n\nO₂ CONCENTRATION — affects aquatic organisms. Low oxygen in water (e.g. due to algal blooms and decomposition) kills fish and invertebrates."
+            },
+            {
+                "heading": "Biotic Factors — Living",
+                "content": "BIOTIC FACTORS are the effects of other living organisms on an individual.\n\nKey biotic factors:\n\nFOOD AVAILABILITY — if food (prey, plant material) becomes scarce, consumer populations decline.\n\nPREDATION — predators control prey populations. If predator numbers rise → prey decline. If prey decline → predator declines too (lagged response).\n\nCOMPETITION — organisms compete for limited resources:\nINTERSPECIFIC competition — between different species (e.g. red squirrels vs grey squirrels competing for food and habitat).\nINTRASPECIFIC competition — between individuals of the SAME species (most intense as they have identical needs).\n\nDISEASE — pathogens can rapidly reduce population numbers (e.g. myxomatosis in rabbits, Dutch elm disease in elm trees).\n\nPARASITISM — parasites harm the host organism (e.g. fleas, tapeworms, mistletoe on trees).\n\nPOLLINATION — many plants depend on specific pollinators (bees, butterflies). Decline of pollinators can devastate plant populations.\n\nSEED DISPERSAL — many plants depend on animals to disperse their seeds."
+            },
+            {
+                "heading": "How Factors Affect Distribution",
+                "content": "The distribution of organisms — where they live — is determined by a combination of abiotic and biotic factors.\n\nExample 1 — Zonation on a rocky shore:\nMost exposed area (top): only very hardy organisms (limpets, lichens) — extreme desiccation, wave action, temperature fluctuation.\nLower zones: progressively more species as conditions become more stable.\nAlways submerged: richest community — stable temperature and water availability.\n\nExample 2 — Effect of pH on freshwater invertebrates:\nMayfly larvae are sensitive to acid — absent from acidic streams.\nBloodsucking leeches can tolerate moderate pollution.\nRat-tailed maggots can tolerate very poor water quality.\nUsed as INDICATOR SPECIES — their presence or absence indicates environmental conditions.\n\nExample 3 — Light and woodland plant distribution:\nSunlit clearings: grasses, foxgloves, brambles (high light demand).\nDeep shade under canopy: shade-tolerant species only (ivy, mosses).\nWoodland edge: a mix — transition zone."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Students often list only one or two abiotic factors and forget others. The full list includes: temperature, light intensity, water availability, soil pH, soil mineral content, wind speed, CO₂ concentration and O₂ concentration. In exams, be specific about which factor and exactly HOW it affects the organism.",
+        "key_note": "Abiotic = non-living: temperature, light, water, pH, minerals, wind, CO₂, O₂. Biotic = living: predation, competition, disease, food availability, parasitism. Both affect distribution (where organisms live) and abundance (how many).",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Abiotic or Biotic Factor?",
+            "instruction": "Sort each factor into abiotic (non-living) or biotic (living).",
+            "pairs": [
+                ("Abiotic", "Soil pH — affects which minerals are available for plant growth"),
+                ("Biotic", "Predation — wolves hunting deer reduces deer population"),
+                ("Abiotic", "Light intensity — determines which plant species can photosynthesise in that location"),
+                ("Biotic", "Competition for food between red and grey squirrels"),
+                ("Abiotic", "O₂ concentration in a river — affects which aquatic organisms can survive"),
+                ("Biotic", "Disease — myxomatosis dramatically reduced the UK rabbit population"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "A river becomes polluted and oxygen levels fall. Which of the following is an abiotic factor that has changed?",
+                "opts": [
+                    ("O₂ concentration — a non-living chemical factor that affects aquatic organisms", True),
+                    ("Fish population — the fish that die because of low oxygen", False),
+                    ("Disease — bacteria cause the oxygen to fall", False),
+                    ("Competition — fish compete for the remaining oxygen", False)
+                ],
+                "wrong_explanations": {
+                    1: "Fish population = a BIOTIC factor — it is a living component. The O₂ level is the abiotic factor that changed.",
+                    2: "Disease is a BIOTIC factor — caused by living pathogens. O₂ concentration is abiotic (a chemical feature of the water).",
+                    3: "Competition is a BIOTIC factor between living organisms. The O₂ level itself is the abiotic factor."
+                }
+            },
+            {
+                "q": "Grey squirrels were introduced to the UK and have outcompeted red squirrels. What type of factor is this?",
+                "opts": [
+                    ("Biotic — interspecific competition between two different species for food and habitat", True),
+                    ("Abiotic — grey squirrels changed the temperature of the habitat", False),
+                    ("Biotic — intraspecific competition between individuals of the same species", False),
+                    ("Abiotic — grey squirrels are larger so they change the physical environment", False)
+                ],
+                "wrong_explanations": {
+                    1: "Grey squirrels don't change temperature — their effect is through direct competition for food and habitat, which is a biotic factor.",
+                    2: "INTRASPECIFIC competition = same species. Red vs grey = TWO DIFFERENT SPECIES = INTERSPECIFIC competition.",
+                    3: "Grey squirrels being larger is a physical trait — their impact on red squirrels is through competition for resources (a biotic factor)."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 3. ADAPTATIONS
+    # ══════════════════════════════════════════════
+    {
+        "id": "adaptations",
+        "title": "Adaptations",
+        "spec": "4.7.2",
+        "summary": "Describe structural, behavioural and functional adaptations and explain how they help survival.",
+        "theory": [
+            {
+                "heading": "What Are Adaptations?",
+                "content": "An ADAPTATION is any feature of an organism that makes it better suited to its environment — increasing its chances of survival and reproduction.\n\nAdaptations arise through NATURAL SELECTION — individuals with features better suited to their environment survive longer and reproduce more, passing those features to offspring. Over many generations, the adaptation becomes more common in the population.\n\nThere are three types of adaptation:\n1. STRUCTURAL — physical features of the organism's body.\n2. BEHAVIOURAL — things the organism does.\n3. FUNCTIONAL (physiological) — internal chemical or biological processes."
+            },
+            {
+                "heading": "Adaptations to Extreme Environments",
+                "content": "ARCTIC AND COLD ENVIRONMENTS:\nThick fur or blubber (fat layer) — STRUCTURAL — insulates against heat loss.\nWhite colouration (e.g. polar bears, Arctic foxes in winter) — STRUCTURAL — camouflage against snow.\nSmall ears and limbs relative to body size — STRUCTURAL — reduces surface area to volume ratio, minimising heat loss.\nHibernation — BEHAVIOURAL — reduces energy need during winter when food is scarce.\nAntifreeze proteins in blood of Arctic fish — FUNCTIONAL — prevents blood freezing.\n\nDESERT ENVIRONMENTS:\nLarge ears (e.g. fennec fox, jackrabbit) — STRUCTURAL — increase surface area for heat loss.\nPale colouration — STRUCTURAL — reflects sunlight, reduces heat absorption.\nNocturnal behaviour — BEHAVIOURAL — avoids the intense daytime heat, active at night when cooler.\nCactus: thick, waxy stem stores water; reduced leaves (spines) reduce water loss — STRUCTURAL.\nCamel: humps store fat (not water) as energy reserve; can tolerate significant dehydration — FUNCTIONAL.\nKangaroo rat: produces very concentrated urine to conserve water — FUNCTIONAL.\n\nDEEP SEA:\nBioluminescence — FUNCTIONAL — producing light to attract prey or communicate in total darkness.\nHigh pressure tolerance — FUNCTIONAL — specialised cell membranes and proteins.\nLarge eyes — STRUCTURAL — maximise light detection in dim conditions."
+            },
+            {
+                "heading": "Predator and Prey Adaptations",
+                "content": "The ongoing evolutionary 'arms race' between predators and prey drives many of the most striking adaptations.\n\nPREDATOR ADAPTATIONS:\nForward-facing eyes — STRUCTURAL — binocular vision allows accurate depth perception for judging distance when striking.\nSharp claws and teeth — STRUCTURAL — for catching and killing prey.\nCamouflage — STRUCTURAL — stalking prey without being seen.\nSpeed and agility — STRUCTURAL/FUNCTIONAL — for chasing prey.\nPack hunting behaviour — BEHAVIOURAL — cooperating to take down larger prey.\n\nPREY ADAPTATIONS:\nSide-facing eyes — STRUCTURAL — wide field of vision to detect approaching predators.\nCamouflage — STRUCTURAL — hiding from predators.\nWarning colours (aposematism) — STRUCTURAL — bright colours warn predators of toxicity (e.g. poison dart frogs, wasps).\nHerd behaviour — BEHAVIOURAL — safety in numbers; harder to single out individuals.\nSpeed and agility — STRUCTURAL/FUNCTIONAL — fleeing from predators.\nMimicry — STRUCTURAL — harmless species mimic toxic ones (e.g. hoverflies mimic wasps)."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Adaptations are NOT something an organism CHOOSES or deliberately develops. Organisms cannot decide to grow a thicker coat because it is cold — adaptations arise through natural selection over many generations. A single organism cannot adapt during its lifetime through genetic change.",
+        "key_note": "Adaptations: structural (physical features), behavioural (what organism does), functional (internal processes). Arise through natural selection. Cold adaptations: small surface area, insulation. Desert adaptations: water conservation, large surface area for cooling.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Structural, Behavioural or Functional?",
+            "instruction": "Match each adaptation to its correct type.",
+            "pairs": [
+                ("Structural", "Thick blubber layer in seals — insulates against cold ocean water"),
+                ("Behavioural", "Hibernation in bears — reduces energy need during cold winter months"),
+                ("Functional", "Kangaroo rat producing very concentrated urine — conserves water in desert"),
+                ("Structural", "Forward-facing eyes in owls — binocular vision for judging distance when hunting"),
+                ("Behavioural", "Wildebeest migrating in large herds — safety in numbers from predators"),
+                ("Functional", "Antifreeze proteins in the blood of Arctic fish — prevents blood from freezing"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "A polar bear has thick white fur and a layer of blubber. What type of adaptations are these?",
+                "opts": [
+                    ("Structural — physical features of the body that improve survival in cold environments", True),
+                    ("Behavioural — things the bear does to stay warm", False),
+                    ("Functional — internal processes that generate extra body heat", False),
+                    ("Environmental — the environment shaped the bear's appearance directly", False)
+                ],
+                "wrong_explanations": {
+                    1: "Behavioural adaptations are things the organism DOES — e.g. hibernating or huddling. Fur and blubber are physical STRUCTURAL features.",
+                    2: "Functional (physiological) adaptations are internal chemical processes — e.g. antifreeze proteins, concentrated urine production. Fur and blubber are physical structures.",
+                    3: "The environment selects for adaptations through natural selection — but adaptations are features OF the organism, not caused directly by the environment."
+                }
+            },
+            {
+                "q": "Why do desert animals like the fennec fox have very large ears?",
+                "opts": [
+                    ("Large ears increase the surface area for heat loss — helping the animal cool down in the hot desert", True),
+                    ("Large ears help the animal hear predators from further away in the flat desert", False),
+                    ("Large ears store water for use during droughts", False),
+                    ("Large ears are a warning signal to predators that the animal is dangerous", False)
+                ],
+                "wrong_explanations": {
+                    1: "Hearing is enhanced too — but the PRIMARY ecological reason for the fennec fox's extraordinarily large ears relative to body size is thermoregulation (heat loss). Other desert animals with large ears (jackrabbits) also use them for cooling.",
+                    2: "Ears don't store water — water is stored in fat (camels) or conserved through concentrated urine (kangaroo rats). The large ear surface area is for cooling.",
+                    3: "Warning colouration (aposematism) typically involves bright colours — large plain ears in desert animals are not a warning signal."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 4. FOOD CHAINS AND FOOD WEBS
+    # ══════════════════════════════════════════════
+    {
+        "id": "food-chains-webs",
+        "title": "Food Chains and Food Webs",
+        "spec": "4.7.1",
+        "summary": "Describe food chains and webs, trophic levels and energy transfer between them.",
+        "theory": [
+            {
+                "heading": "Food Chains",
+                "content": "A FOOD CHAIN shows the FEEDING RELATIONSHIPS between organisms — who eats whom — and the direction of energy flow.\n\nArrows in a food chain show the direction of ENERGY TRANSFER (from food to the organism eating it).\n\nRoles in a food chain:\nPRODUCER — an organism that MAKES its own food using sunlight energy via PHOTOSYNTHESIS (green plants and algae). All food chains start with a producer.\nPRIMARY CONSUMER — eats the producer (usually a herbivore).\nSECONDARY CONSUMER — eats the primary consumer.\nTERTIARY CONSUMER — eats the secondary consumer (often a top predator).\n\nExample:\nGrass → Rabbit → Fox → Eagle\n(Producer) → (Primary) → (Secondary) → (Tertiary)\n\nEach feeding level is called a TROPHIC LEVEL."
+            },
+            {
+                "heading": "Energy Transfer and Loss",
+                "content": "Energy enters food chains as SUNLIGHT — absorbed by producers during photosynthesis and stored in glucose.\n\nAt each trophic level, ENERGY IS LOST — only a fraction is transferred to the next level.\n\nEnergy is lost because:\nORGANISMS USE ENERGY for movement, keeping warm, growth and reproduction — energy used in RESPIRATION is released as HEAT and lost to the environment.\nNOT ALL OF THE ORGANISM IS EATEN — bones, roots, shells and other parts may not be consumed.\nSOME MATERIAL is excreted as faeces and not digested.\n\nTypically only about 10% of energy at one trophic level passes to the next level.\n\nThis means:\nProducers have the most energy and biomass.\nEach level up has less energy and biomass — and fewer organisms.\nFood chains are rarely more than 4–5 levels long — by the top level, so little energy remains that few organisms can survive."
+            },
+            {
+                "heading": "Food Webs",
+                "content": "A FOOD WEB shows many INTERCONNECTED food chains within an ecosystem — a more realistic picture of feeding relationships.\n\nIn reality, most organisms eat more than one thing and are eaten by more than one thing.\n\nFood webs show:\nWhich organisms are predators and which are prey.\nWhich organisms are most at risk if a species is removed.\nHow changes in one population ripple through the ecosystem.\n\nWHAT HAPPENS WHEN A SPECIES IS REMOVED:\nIf a predator is removed → its prey increase → the things the prey eat may decrease.\nIf a prey species is removed → predators that depended on it may decline → other prey species may increase.\n\nKEYSTONE SPECIES are species that have a disproportionately large effect on the ecosystem relative to their numbers — removing them causes major ecosystem changes (e.g. wolves in Yellowstone, sea otters in kelp forests)."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Arrows in food chains show the direction of ENERGY FLOW — from what is eaten to what eats it. So the arrow goes FROM prey TO predator. Students often draw arrows the wrong way, showing what the predator eats rather than which way energy flows. Also: PRODUCERS are PLANTS (photosynthetic) — not all plants in a food chain are 'prey', they are the PRODUCERS.",
+        "key_note": "Food chain: producer → primary → secondary → tertiary consumer. Arrows show direction of energy flow. Only ~10% of energy passes to each next level — rest lost as heat, waste, movement. Food web = many interconnected chains. More realistic.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Trophic Level",
+            "instruction": "Match each organism to its role in a food chain.",
+            "pairs": [
+                ("Producer", "Grass — makes its own food by photosynthesis"),
+                ("Primary consumer", "Rabbit — eats the producer (grass)"),
+                ("Secondary consumer", "Fox — eats the primary consumer (rabbit)"),
+                ("Tertiary consumer", "Eagle — eats the secondary consumer (fox)"),
+                ("Decomposer", "Bacteria and fungi — break down dead organisms at all levels"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why do food chains rarely have more than 4–5 trophic levels?",
+                "opts": [
+                    ("Energy is lost at each level — so little remains by the top level that it cannot support many organisms", True),
+                    ("Top predators are too large to find enough food in most ecosystems", False),
+                    ("Longer food chains would be too complex for organisms to navigate", False),
+                    ("Producers cannot support more than 4 levels of consumers", False)
+                ],
+                "wrong_explanations": {
+                    1: "Size can increase up a food chain, but the limiting factor is ENERGY, not size. Even small top predators need large amounts of food.",
+                    2: "Food chains are not 'navigated' by organisms — the limit is thermodynamic (energy loss), not cognitive.",
+                    3: "Producers can support more levels in principle — the limit is the progressive loss of energy at each transfer, not some fixed rule about producers."
+                }
+            },
+            {
+                "q": "In a food web, the rabbit population suddenly increases due to a disease killing foxes. What happens to the grass?",
+                "opts": [
+                    ("Grass decreases — more rabbits eat more grass", True),
+                    ("Grass increases — without foxes, more nutrients return to soil", False),
+                    ("Grass is unaffected — plants are not part of the animal food web", False),
+                    ("Grass increases — rabbits and grass have a mutualistic relationship", False)
+                ],
+                "wrong_explanations": {
+                    1: "Fox death → reduced decomposition adds some nutrients, but the dominant effect is that MORE RABBITS eat MORE GRASS → grass DECREASES.",
+                    2: "Plants ARE part of food webs — as producers. They are directly affected by herbivore (rabbit) population changes.",
+                    3: "Rabbits eat grass — this is a consumer-producer relationship (predation/herbivory), not mutualism. Rabbits benefit; grass is harmed."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 5. POPULATION AND COMPETITION
+    # ══════════════════════════════════════════════
+    {
+        "id": "population-competition",
+        "title": "Population and Competition",
+        "spec": "4.7.1",
+        "summary": "Explain what limits population size and how competition shapes communities.",
+        "theory": [
+            {
+                "heading": "Population Size and Carrying Capacity",
+                "content": "A POPULATION grows when birth rate exceeds death rate — and shrinks when death rate exceeds birth rate.\n\nIn theory, a population could grow exponentially — doubling repeatedly. In practice, growth is LIMITED by:\nFood availability.\nWater supply.\nSpace and territory.\nPredation.\nDisease.\nWaste accumulation.\n\nThe CARRYING CAPACITY is the maximum population size that a habitat can sustainably support, given the available resources.\n\nOnce a population reaches carrying capacity, birth rate and death rate roughly balance — the population stabilises (with fluctuations).\n\nPREDATOR-PREY CYCLES:\nIn a predator-prey relationship, the two populations cycle:\nPrey increase → more food for predators → predators increase → prey decrease → predators decrease (less food) → prey recover → cycle repeats.\nThe predator population changes FOLLOW the prey population changes — there is a LAG (delay) because it takes time for populations to respond."
+            },
+            {
+                "heading": "Competition",
+                "content": "COMPETITION occurs when organisms need the same limited resource and must 'fight' for it — reducing the amount available to others.\n\nINTRASPECIFIC COMPETITION (within a species):\nBetween individuals of the SAME species — most intense because they have IDENTICAL needs.\nControls population size — as populations grow, competition for resources intensifies → birth rate falls, death rate rises → population growth slows.\nExamples: robins defending territories, stags fighting for mates, oak trees competing for light.\n\nINTERSPECIFIC COMPETITION (between species):\nBetween individuals of DIFFERENT species that need the same resource.\nThe stronger competitor may drive the weaker one to local extinction.\nExample: grey squirrels outcompeting red squirrels for food and nesting sites → red squirrels now largely absent from England.\n\nRESOURCES COMPETED FOR:\nAnimals: food, water, territory, mates, shelter.\nPlants: light, water, minerals (from soil), space."
+            },
+            {
+                "heading": "Factors Limiting Population Growth",
+                "content": "DENSITY-DEPENDENT factors become more limiting as population DENSITY increases:\nFood shortages — more individuals compete for the same food supply.\nDisease — pathogens spread more easily in dense populations.\nPredation — predators focus on areas of high prey density.\nWaste accumulation — toxins from metabolic waste build up.\n\nDENSITY-INDEPENDENT factors affect populations regardless of their density:\nSevere weather — frost, drought, flood, fire.\nNatural disasters — volcanic eruption, tsunami.\nHuman activity — habitat destruction, pollution.\n\nHuman impacts on population:\nHunting and fishing can reduce populations below viable levels.\nDeforestation reduces carrying capacity for forest species.\nPollution increases death rates.\nIntroduction of invasive species can cause collapse of native species populations."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "In predator-prey cycles, the PREDATOR population FOLLOWS the prey — with a time lag. Predator numbers rise AFTER prey numbers rise (because it takes time to breed). Predator numbers fall AFTER prey decline. Students often draw them rising and falling at the same time — they should be slightly out of phase.",
+        "key_note": "Population limited by resources (food, water, space), predation and disease = carrying capacity. Predator-prey cycles are out of phase — predator follows prey with a lag. Intraspecific (same species) competition is most intense. Interspecific = between different species.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Population Ecology Concept",
+            "instruction": "Match each term to its correct description.",
+            "pairs": [
+                ("Carrying capacity", "Maximum population size that a habitat can sustainably support"),
+                ("Intraspecific competition", "Competition between individuals of the SAME species — most intense"),
+                ("Interspecific competition", "Competition between individuals of DIFFERENT species for the same resource"),
+                ("Predator-prey cycle", "Predator and prey populations fluctuate — predator follows prey with a time lag"),
+                ("Density-dependent factor", "Becomes more limiting as population density increases — e.g. food shortage, disease"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "In a predator-prey graph, the predator population peaks AFTER the prey population peaks. Why?",
+                "opts": [
+                    ("There is a time lag — it takes time for predators to reproduce in response to increased food availability", True),
+                    ("Predators eat the prey before they can reproduce, causing prey to peak first", False),
+                    ("Prey always outnumber predators — so prey peaks are automatically earlier", False),
+                    ("Predators migrate to different areas before their numbers can increase", False)
+                ],
+                "wrong_explanations": {
+                    1: "The lag is specifically about REPRODUCTION — it takes time for increased food to result in increased offspring. Predators eating prey actually reduces prey numbers.",
+                    2: "Prey outnumbering predators is normal — but the timing of peaks is about reproduction lag, not relative numbers.",
+                    3: "Migration can occur — but the time lag in predator-prey cycles is primarily a biological response time, not migration."
+                }
+            },
+            {
+                "q": "Why is intraspecific competition more intense than interspecific competition?",
+                "opts": [
+                    ("Individuals of the same species have identical needs — they compete for exactly the same resources", True),
+                    ("Individuals of the same species are physically stronger and dominate others", False),
+                    ("Intraspecific competition involves more individuals — so it is more intense by numbers", False),
+                    ("Different species never compete — they always occupy different niches", False)
+                ],
+                "wrong_explanations": {
+                    1: "Physical strength varies within a species — the intensity of competition is about OVERLAP OF RESOURCE NEEDS, not strength.",
+                    2: "Many species are common — but interspecific competition can also involve large numbers. The intensity difference is about the degree of resource overlap.",
+                    3: "Different species CAN compete — grey and red squirrels are a clear UK example. The ecological niche concept says species that overlap too much cannot coexist indefinitely."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 6. BIODIVERSITY
+    # ══════════════════════════════════════════════
+    {
+        "id": "biodiversity",
+        "title": "Biodiversity",
+        "spec": "4.7.4",
+        "summary": "Define biodiversity, explain its importance and describe threats to it and conservation measures.",
+        "theory": [
+            {
+                "heading": "What is Biodiversity?",
+                "content": "BIODIVERSITY is the variety of life on Earth.\n\nIt has two components:\nSPECIES DIVERSITY — the number of DIFFERENT SPECIES in an area AND the relative abundance of each species.\nGENETIC DIVERSITY — the variety of ALLELES (different versions of genes) within a species.\n\nHigh species diversity means many different species, each present in reasonable numbers.\nHigh genetic diversity within a species means the population has a wide range of alleles — making it adaptable.\n\nWhy genetic diversity matters:\nA genetically diverse population can cope with new diseases, climate shifts or environmental changes — some individuals will have alleles giving resistance or tolerance.\nA genetically uniform population (like a monoculture crop) is vulnerable — one disease can devastate the whole population."
+            },
+            {
+                "heading": "Why Biodiversity Matters",
+                "content": "High biodiversity provides essential ECOSYSTEM SERVICES that humans depend on:\n\nFood PRODUCTION — diverse ecosystems provide diverse foods. Wild relatives of crop plants are a genetic reservoir for future crop improvement.\n\nPOLLINATION — approximately 75% of the world's food crops depend on animal pollinators (bees, butterflies, hoverflies). Loss of pollinator diversity threatens food security.\n\nClean WATER — wetland plants and soil organisms filter pollutants from water naturally.\n\nClean AIR — forests and vegetation absorb CO₂ and other pollutants.\n\nMEDICINES — many drugs come from wild species: aspirin from willow, penicillin from a mould, cancer drugs from the Pacific yew tree. Undiscovered species may hold future cures.\n\nECOSYSTEM STABILITY — more species = more connections = more resilience. If one species declines, others can take over its role.\n\nCLIMATE REGULATION — forests absorb CO₂ and influence rainfall patterns.\n\nETHICAL RESPONSIBILITY — many argue that all species have a right to exist, regardless of utility to humans."
+            },
+            {
+                "heading": "Threats to Biodiversity and Conservation",
+                "content": "THREATS:\nHABITAT DESTRUCTION — deforestation, draining of wetlands, urbanisation, agricultural expansion → loss of living space for species.\nPOLLUTION — pesticides, plastic, oil spills, acid rain damage habitats and directly kill organisms.\nINVASIVE SPECIES — introduced species outcompete or prey on native species (e.g. grey squirrels, American mink, Japanese knotweed).\nOVEREXPLOITATION — overfishing, overhunting, illegal wildlife trade reducing populations below viable levels.\nCLIMATE CHANGE — shifting temperature ranges, sea level rise, altered rainfall patterns displace or eliminate species.\n\nCONSERVATION MEASURES:\nPROTECTED AREAS — national parks, nature reserves, marine protected areas prevent habitat destruction.\nCAPTIVE BREEDING PROGRAMMES — zoos and wildlife centres breed endangered species to prevent extinction.\nSEED BANKS — e.g. Svalbard Global Seed Vault stores seeds of thousands of plant varieties as insurance against loss.\nREINTRODUCTION PROGRAMMES — reintroducing species to habitats where they once lived (e.g. beavers in Scotland, white-tailed eagles in England).\nLEGISLATION — laws protecting endangered species and their habitats (e.g. CITES, Wildlife and Countryside Act).\nHABITAT RESTORATION — rewilding projects restore degraded habitats.\nSUSTAINABLE FISHING — quotas, minimum catch sizes, protected areas to allow fish stocks to recover."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Biodiversity is NOT just about the NUMBER of species — it also includes the RELATIVE ABUNDANCE of each species. An ecosystem with 100 species but 99% of the biomass belonging to just one species has LOW biodiversity in practice. High biodiversity means many species AND reasonable numbers of each.",
+        "key_note": "Biodiversity = species diversity + genetic diversity. Importance: ecosystem services (food, medicine, clean water, pollination), stability, ethical reasons. Threats: habitat loss, pollution, invasive species, overexploitation, climate change. Conservation: protected areas, captive breeding, seed banks, legislation.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Threat or Conservation Measure?",
+            "instruction": "Sort each example into a threat to biodiversity or a conservation measure.",
+            "pairs": [
+                ("Threat", "Deforestation — habitat destroyed for agriculture or timber"),
+                ("Conservation", "Captive breeding programmes — endangered species bred in zoos to prevent extinction"),
+                ("Threat", "Invasive species — grey squirrels outcompeting native red squirrels"),
+                ("Conservation", "Seed banks — storing seeds of thousands of plant varieties as genetic insurance"),
+                ("Threat", "Overfishing — fish populations reduced below sustainable levels"),
+                ("Conservation", "Marine protected areas — fishing banned to allow fish stocks to recover"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why is high genetic diversity within a species important?",
+                "opts": [
+                    ("A genetically diverse population is more adaptable — some individuals will have alleles giving resistance to new diseases or tolerance of changing conditions", True),
+                    ("Genetic diversity makes individuals physically larger and stronger", False),
+                    ("Genetic diversity allows a species to reproduce more rapidly", False),
+                    ("Genetic diversity means all individuals look different — making them harder for predators to target", False)
+                ],
+                "wrong_explanations": {
+                    1: "Genetic diversity doesn't directly affect physical size — size is just one trait among many.",
+                    2: "Reproductive rate is not directly linked to genetic diversity — it depends on life history traits specific to the species.",
+                    3: "Variation in appearance can help avoid predators — but the primary ecological importance of genetic diversity is ADAPTABILITY to change."
+                }
+            },
+            {
+                "q": "Why are seed banks important for biodiversity conservation?",
+                "opts": [
+                    ("They store seeds of thousands of plant varieties — preserving genetic diversity as insurance against extinction of wild populations", True),
+                    ("They grow plants for replanting in habitats where species have become locally extinct", False),
+                    ("They store seeds of food crops only — to ensure human food security", False),
+                    ("They sell seeds to farmers to encourage growing a wider variety of crops", False)
+                ],
+                "wrong_explanations": {
+                    1: "Seed banks primarily STORE seeds in long-term preservation conditions — they are not generally growing facilities or nurseries (though some seed banks do have growing programmes).",
+                    2: "Seed banks like the Svalbard Global Seed Vault store seeds of wild plant species AND crop varieties — not food crops only.",
+                    3: "Seed banks are conservation facilities — not commercial enterprises, though some seed collections are used to support farmers."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 7. THE CARBON CYCLE
+    # ══════════════════════════════════════════════
+    {
+        "id": "carbon-cycle",
+        "title": "The Carbon Cycle",
+        "spec": "4.7.3",
+        "summary": "Describe how carbon is cycled through ecosystems and the atmosphere.",
+        "theory": [
+            {
+                "heading": "Why Carbon Must Be Recycled",
+                "content": "Carbon is the backbone of ALL organic molecules — carbohydrates, proteins, fats, DNA. Life as we know it is CARBON-BASED.\n\nThe total amount of carbon on Earth is fixed — it cannot be created or destroyed.\n\nCarbon must be RECYCLED — continuously moving between living organisms, the atmosphere, oceans, soil and rocks.\n\nThe CARBON CYCLE describes how carbon atoms move through these different stores (also called reservoirs or sinks).\n\nMain carbon stores:\nATMOSPHERE — as CO₂ and methane (CH₄).\nLIVING ORGANISMS — carbon in organic molecules (glucose, proteins, fats, DNA).\nSOIL — carbon in decomposing organic matter (humus).\nOCEANS — dissolved CO₂ and carbonate in shells.\nFOSSIL FUELS — coal, oil, gas (ancient organic carbon locked underground).\nROCKS — limestone (CaCO₃) formed from shells of ancient marine organisms."
+            },
+            {
+                "heading": "Processes in the Carbon Cycle",
+                "content": "REMOVING CO₂ FROM THE ATMOSPHERE:\nPHOTOSYNTHESIS — plants and algae absorb CO₂ and convert it to glucose. Carbon is incorporated into the plant's biomass.\nDISSOLUTION IN OCEANS — CO₂ dissolves in seawater to form carbonic acid. Marine organisms use dissolved carbon to make calcium carbonate (CaCO₃) shells.\n\nRETURNING CO₂ TO THE ATMOSPHERE:\nRESPIRATION — ALL living organisms (plants, animals, fungi, bacteria) respire, releasing CO₂ as glucose is broken down.\nDECOMPOSITION — microorganisms (bacteria and fungi) break down dead organic matter, releasing CO₂ and returning carbon to the atmosphere and soil.\nCOMBUSTION — burning of organic material (wood, coal, oil, gas) releases CO₂ rapidly into the atmosphere.\nVOLCANIC ACTIVITY — releases CO₂ from underground carbon stores (lava, volcanic gases).\n\nLONG-TERM CARBON STORAGE:\nFOSSILISATION — over millions of years, the remains of organisms become compressed into fossil fuels (coal from ancient forests, oil and gas from marine organisms).\nBurning fossil fuels releases this long-term stored carbon rapidly — adding CO₂ to the atmosphere FASTER than natural processes can remove it → CLIMATE CHANGE."
+            },
+            {
+                "heading": "Human Impact on the Carbon Cycle",
+                "content": "Human activities are disrupting the carbon cycle by adding CO₂ to the atmosphere faster than it can be removed.\n\nBURNING FOSSIL FUELS — coal, oil and natural gas burn to release CO₂ that has been stored underground for millions of years.\n\nDEFORESTATION:\nFelling trees removes photosynthesising plants → less CO₂ absorbed.\nBurning or rotting felled trees releases CO₂.\nDouble negative impact on atmospheric CO₂.\n\nCEMENT PRODUCTION — manufacturing cement releases CO₂ from limestone (CaCO₃ → CaO + CO₂).\n\nRICE PADDY AGRICULTURE and LIVESTOCK — produce methane (CH₄), another greenhouse gas.\n\nCONSEQUENCES OF RISING CO₂:\nEnhanced greenhouse effect → global warming → climate change.\nOcean acidification — more CO₂ dissolves → more carbonic acid → threatens marine ecosystems (especially coral reefs and shell-forming organisms)."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "PLANTS also respire — they release CO₂ just like animals. The difference is that during the DAY, photosynthesis removes MORE CO₂ than respiration releases — so there is net CO₂ uptake. At night, only respiration occurs. Students often say 'plants absorb CO₂, they don't release it' — this is wrong.",
+        "key_note": "CO₂ removed by: photosynthesis, dissolution in oceans. CO₂ returned by: respiration (all organisms), decomposition, combustion, volcanic activity. Fossil fuels = long-term carbon store. Burning them releases ancient carbon rapidly → climate change.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Carbon Cycle — Removes or Returns CO₂?",
+            "instruction": "Sort each process into removing CO₂ from or returning CO₂ to the atmosphere.",
+            "pairs": [
+                ("Removes CO₂", "Photosynthesis — plants convert CO₂ into glucose using light energy"),
+                ("Returns CO₂", "Respiration — all living organisms release CO₂ as they break down glucose"),
+                ("Returns CO₂", "Combustion — burning wood or fossil fuels releases CO₂"),
+                ("Removes CO₂", "Dissolution in oceans — CO₂ absorbed into seawater"),
+                ("Returns CO₂", "Decomposition — bacteria and fungi release CO₂ from dead organic matter"),
+                ("Returns CO₂", "Volcanic activity — releases CO₂ from underground carbon stores"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why does burning fossil fuels increase atmospheric CO₂ more than burning wood?",
+                "opts": [
+                    ("Fossil fuels contain carbon that has been stored underground for millions of years — releasing it rapidly adds ancient carbon that had been removed from the active cycle", True),
+                    ("Fossil fuels burn hotter, so they release more CO₂ per reaction", False),
+                    ("Wood absorbs CO₂ as it burns, partially cancelling its emissions", False),
+                    ("Fossil fuels contain more hydrogen, which converts to CO₂ during combustion", False)
+                ],
+                "wrong_explanations": {
+                    1: "Combustion temperature doesn't determine CO₂ output — the amount of carbon in the fuel does.",
+                    2: "Wood does not absorb CO₂ while burning — it releases it. The difference is that wood carbon was recently absorbed from the atmosphere, while fossil fuel carbon was locked away for millions of years.",
+                    3: "Hydrogen in fuels combines with oxygen to form WATER, not CO₂. Carbon combines with oxygen to form CO₂."
+                }
+            },
+            {
+                "q": "How does deforestation affect atmospheric CO₂ levels?",
+                "opts": [
+                    ("Removes photosynthesising trees (less CO₂ absorbed) AND burning or rotting felled trees releases CO₂ — a double increase in atmospheric CO₂", True),
+                    ("Deforestation only affects CO₂ if the wood is burned — leaving it to rot has no effect", False),
+                    ("Deforestation decreases CO₂ because the dead wood is converted to fossil fuels underground", False),
+                    ("Deforestation has no effect on CO₂ — other plants regrow in the cleared areas quickly", False)
+                ],
+                "wrong_explanations": {
+                    1: "Rotting (decomposition) DOES release CO₂ — decomposers respire and return carbon to the atmosphere, just more slowly than burning.",
+                    2: "Fossil fuel formation takes millions of years under specific geological conditions — dead wood does not become fossil fuel on human timescales.",
+                    3: "Regrowth does occur — but typically much less vegetation regrows than was removed, and regeneration takes decades. The net effect is increased atmospheric CO₂."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 8. THE WATER CYCLE
+    # ══════════════════════════════════════════════
+    {
+        "id": "water-cycle",
+        "title": "The Water Cycle",
+        "spec": "4.7.3",
+        "summary": "Describe how water is cycled through the environment.",
+        "theory": [
+            {
+                "heading": "Why Water Must Be Recycled",
+                "content": "Water is essential to all life:\nIt is the SOLVENT for all biochemical reactions.\nIt is a REACTANT in photosynthesis and many other reactions.\nIt transports dissolved substances around organisms.\nIt provides structure to plant cells (turgor pressure).\nIt regulates body temperature (through sweating and evaporation).\n\nLike carbon, water is continuously RECYCLED through the environment in the WATER CYCLE (also called the HYDROLOGICAL CYCLE).\n\nThe total amount of water on Earth is effectively fixed — it moves between stores: oceans, atmosphere, freshwater lakes and rivers, ice caps, groundwater, and living organisms."
+            },
+            {
+                "heading": "Stages of the Water Cycle",
+                "content": "EVAPORATION:\nThe sun's heat energy causes water to evaporate from the surfaces of oceans, lakes, rivers and soil.\nWater changes from liquid to water vapour — rising into the atmosphere.\n\nTRANSPIRATION:\nPlants release water vapour through their stomata — a process called TRANSPIRATION.\nIn tropical rainforests, transpiration adds enormous quantities of water to the atmosphere — maintaining local rainfall patterns.\n\nCONDENSATION:\nAs water vapour rises, it cools.\nCooling causes it to CONDENSE — changing from vapour back to tiny liquid water droplets.\nThese droplets form CLOUDS and mist.\n\nPRECIPITATION:\nWhen water droplets in clouds collide and join to form larger drops, they fall as PRECIPITATION — rain, snow, sleet or hail.\n\nRUNOFF AND GROUNDWATER:\nPrecipitation that falls on land either:\nFlows across the surface as RUNOFF — into streams and rivers → back to the sea.\nSOAKS INTO the ground to form GROUNDWATER — extracted by plant roots or flowing slowly to rivers and sea."
+            },
+            {
+                "heading": "Living Organisms and the Water Cycle",
+                "content": "Living organisms play an important role in the water cycle:\n\nPLANTS:\nAbsorb water from the soil through root hair cells.\nTransport water up through xylem to leaves.\nRelease water vapour through stomata (transpiration) — returns water to the atmosphere.\nSoil absorption is helped by the structural effects of plant roots.\n\nANIMALS:\nObtain water by drinking, and from food.\nReturn water to the environment through:\nUrination and defaecation.\nExhaling water vapour.\nSweating.\n\nHUMAN IMPACTS on the water cycle:\nDEFORESTATION — removing trees reduces transpiration → less water returned to atmosphere → reduced local rainfall → increased risk of drought.\nURBANISATION — impermeable surfaces (roads, buildings) prevent water soaking into soil → increased runoff → flooding.\nIRRIGATION — withdrawing groundwater for farming can deplete underground reserves.\nCLIMATE CHANGE — warming increases evaporation → more intense rainfall events and more severe droughts."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "TRANSPIRATION is the loss of water vapour from PLANT LEAVES through stomata — it is NOT the same as evaporation from the soil or water surface. Both contribute to atmospheric water, but transpiration is specifically the biological process in plants. Also: precipitation is NOT just rain — it includes snow, sleet and hail.",
+        "key_note": "Water cycle: evaporation + transpiration → condensation (clouds) → precipitation (rain/snow) → runoff/groundwater → back to sea. Plants contribute via transpiration. Deforestation reduces transpiration → less rainfall. Key: water is continuously recycled.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Stage of the Water Cycle",
+            "instruction": "Match each stage to its correct description.",
+            "pairs": [
+                ("Evaporation", "Heat energy causes water to change from liquid to vapour from oceans, lakes and soil"),
+                ("Transpiration", "Water vapour released by plants through stomata into the atmosphere"),
+                ("Condensation", "Rising water vapour cools and forms tiny liquid droplets — creating clouds"),
+                ("Precipitation", "Water droplets in clouds fall as rain, snow, sleet or hail"),
+                ("Runoff", "Water flows across the land surface into streams, rivers and eventually back to the sea"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "How do plants contribute to the water cycle?",
+                "opts": [
+                    ("Through transpiration — water absorbed from soil is released as water vapour through leaf stomata, returning water to the atmosphere", True),
+                    ("By storing water permanently in their cells — removing it from the cycle", False),
+                    ("By producing water as a by-product of photosynthesis", False),
+                    ("By preventing precipitation by blocking clouds with their canopy", False)
+                ],
+                "wrong_explanations": {
+                    1: "Plants don't store water permanently — they continuously take it in and release it. Transpiration is the return pathway to the atmosphere.",
+                    2: "Photosynthesis USES water as a reactant — it does not produce water as a by-product. Oxygen is the gas product of photosynthesis.",
+                    3: "Forests influence local weather patterns but do not prevent precipitation — they actually INCREASE local rainfall by contributing to atmospheric water vapour."
+                }
+            },
+            {
+                "q": "Why does deforestation in tropical areas often lead to reduced local rainfall?",
+                "opts": [
+                    ("Trees release large amounts of water vapour through transpiration — removing them reduces the water returning to the atmosphere, lowering precipitation", True),
+                    ("Trees attract rain clouds — without trees, clouds move away from the area", False),
+                    ("Tree roots release chemicals that trigger condensation in the atmosphere above", False),
+                    ("Deforestation increases runoff — water leaves the area before it can evaporate", False)
+                ],
+                "wrong_explanations": {
+                    1: "Clouds are not 'attracted' to trees — the mechanism is through transpiration contributing to atmospheric moisture content.",
+                    2: "Roots do not release chemicals that trigger condensation — their role in the water cycle is absorbing water from soil, which then passes up to leaves and out through transpiration.",
+                    3: "Increased runoff does remove water quickly — but the PRIMARY reason for reduced local rainfall after deforestation is the loss of transpiration returning water to the atmosphere."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 9. THE NITROGEN CYCLE
+    # ══════════════════════════════════════════════
+    {
+        "id": "nitrogen-cycle",
+        "title": "The Nitrogen Cycle",
+        "spec": "4.7.3",
+        "summary": "Describe how nitrogen is cycled through ecosystems by bacteria and other processes.",
+        "theory": [
+            {
+                "heading": "Why Nitrogen is Essential",
+                "content": "NITROGEN is essential for life — it is a key component of:\nAMINO ACIDS — the building blocks of proteins (enzymes, structural proteins, haemoglobin).\nNUCLEOTIDES — the building blocks of DNA and RNA.\nCHLOROPHYLL — the photosynthetic pigment in plants.\n\nNitrogen makes up approximately 78% of the atmosphere — but as N₂ gas, which is EXTREMELY UNREACTIVE. Plants and animals CANNOT use N₂ directly.\n\nNitrogen must first be FIXED — converted into a usable form (ammonia or nitrates) — before organisms can use it.\n\nThe nitrogen cycle describes how nitrogen moves between the atmosphere, soil, plants, animals and decomposers."
+            },
+            {
+                "heading": "The Key Processes",
+                "content": "NITROGEN FIXATION — converting N₂ to ammonia (NH₃):\nCARRIED OUT BY: nitrogen-fixing bacteria.\nIN SOIL: free-living bacteria (e.g. Azotobacter) fix N₂ in the soil.\nIN ROOT NODULES: mutualistic bacteria (Rhizobium) live in the root nodules of LEGUMES (peas, beans, clover, soybeans). They fix N₂, providing the plant with nitrates. The plant provides the bacteria with glucose.\nLIGHTNING: very high energy lightning can also fix small amounts of N₂.\n\nNITRIFICATION — converting ammonia to nitrates:\nAmmonia (NH₃) in the soil is converted to NITRITES then NITRATES (NO₃⁻) by NITRIFYING BACTERIA.\nPlants can absorb nitrates through their roots.\n\nABSORPTION — plants absorb nitrates from soil → use them to make amino acids → proteins.\n\nCONSUMPTION — animals eat plants → nitrogen passes along food chains.\n\nDECOMPOSITION — when organisms die:\nDECOMPOSERS (bacteria and fungi) break down proteins and nucleic acids in dead organisms and waste.\nThey release nitrogen as AMMONIA (ammonification).\nAmmonia → nitrification → nitrates (cycle continues).\n\nDENITRIFICATION — converting nitrates back to N₂:\nDENITRIFYING BACTERIA convert nitrates → N₂ gas, which returns to the atmosphere.\nOccurs mainly in WATERLOGGED (anaerobic) soils — these bacteria don't need oxygen.\nReduces soil fertility."
+            },
+            {
+                "heading": "Human Impact on the Nitrogen Cycle",
+                "content": "FERTILISERS:\nFarmers add ARTIFICIAL FERTILISERS (ammonium nitrate, etc.) or ORGANIC FERTILISERS (manure, compost) to replace nitrates removed by harvesting crops.\nExcess fertiliser can be washed from fields into rivers and lakes by rain — a process called LEACHING.\n\nEUTROPHICATION — the consequence of nitrate leaching:\n1. Excess nitrates enter a river or lake.\n2. Algae grow rapidly (algal bloom) — covering the water surface.\n3. Light cannot penetrate to underwater plants — they die.\n4. Dead plants and algae are decomposed by bacteria.\n5. Decomposing bacteria use up all the OXYGEN in the water (aerobic decomposition).\n6. Oxygen concentration falls → fish and other aquatic animals suffocate and die.\n\nNITROGEN OXIDES from vehicle exhausts and power stations:\nFall as ACID RAIN — damages vegetation and acidifies rivers and lakes."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "DENITRIFYING bacteria convert NITRATES BACK TO N₂ — they REDUCE soil nitrogen and make it less fertile. NITRIFYING bacteria convert AMMONIA TO NITRATES — they INCREASE soil nitrogen availability. These are opposite processes by different bacteria. Denitrification is favoured in WATERLOGGED (anaerobic) soils.",
+        "key_note": "N₂ → ammonia: nitrogen-fixing bacteria (soil or root nodules). Ammonia → nitrates: nitrifying bacteria. Plants absorb nitrates. Decomposers release ammonia. Nitrates → N₂: denitrifying bacteria (anaerobic). Eutrophication: nitrate leaching → algal bloom → O₂ depletion → fish die.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Nitrogen Cycle Process",
+            "instruction": "Match each process to the bacteria responsible and what it converts.",
+            "pairs": [
+                ("Nitrogen fixation", "Nitrogen-fixing bacteria — convert N₂ gas to ammonia in soil or root nodules"),
+                ("Nitrification", "Nitrifying bacteria — convert ammonia to nitrites then nitrates in the soil"),
+                ("Denitrification", "Denitrifying bacteria — convert nitrates back to N₂ gas in waterlogged soil"),
+                ("Decomposition (ammonification)", "Decomposers (bacteria/fungi) — break down proteins in dead organisms, releasing ammonia"),
+                ("Absorption", "Plant roots absorb nitrate ions from the soil to make amino acids and proteins"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why can't plants use atmospheric nitrogen (N₂) directly?",
+                "opts": [
+                    ("N₂ is an extremely unreactive gas — it must be fixed into ammonia or nitrates by bacteria before plants can use it", True),
+                    ("N₂ molecules are too large to pass through root cell membranes", False),
+                    ("Nitrogen is toxic to plants in its atmospheric form", False),
+                    ("Plants already have enough nitrogen — they don't need more from the atmosphere", False)
+                ],
+                "wrong_explanations": {
+                    1: "N₂ is a small molecule — its unreactivity is due to the very strong triple bond between the nitrogen atoms, not its size.",
+                    2: "N₂ is completely non-toxic — it makes up 78% of the air we breathe. Its issue is extreme chemical stability, not toxicity.",
+                    3: "Plants are frequently nitrogen-limited in their growth — nitrogen deficiency causes yellowing leaves (chlorosis). They need nitrogen continuously."
+                }
+            },
+            {
+                "q": "What is eutrophication and what causes it?",
+                "opts": [
+                    ("Excess nitrates enter water → algal bloom → plants die → decomposers use all O₂ → fish suffocate — caused by fertiliser leaching from farmland", True),
+                    ("Acid rain lowering the pH of lakes and rivers — caused by nitrogen oxides from vehicle exhausts", False),
+                    ("Plastic pollution blocking light from reaching aquatic plants in rivers and lakes", False),
+                    ("Warming water temperatures reducing oxygen solubility — caused by climate change", False)
+                ],
+                "wrong_explanations": {
+                    1: "Acid rain from nitrogen oxides is a real environmental problem — but eutrophication specifically refers to the nitrate leaching → algal bloom → oxygen depletion sequence.",
+                    2: "Plastic pollution is a serious problem — but eutrophication is specifically caused by NUTRIENT enrichment (excess nitrates/phosphates), not plastic.",
+                    3: "Warming does reduce oxygen solubility — but eutrophication is specifically the nutrient enrichment process causing algal blooms and oxygen depletion."
+                }
+            },
+            {
+                "q": "Why do farmers rotate crops, sometimes planting legumes (e.g. clover or peas)?",
+                "opts": [
+                    ("Legumes have root nodules containing nitrogen-fixing bacteria — these add nitrates to the soil, naturally fertilising it for the next crop", True),
+                    ("Legumes have deeper roots that break up compacted soil to improve drainage", False),
+                    ("Legumes produce chemicals that kill pests and diseases in the soil", False),
+                    ("Legumes absorb excess water that would otherwise waterlog the soil", False)
+                ],
+                "wrong_explanations": {
+                    1: "Root depth is an advantage of some legumes — but the primary reason for including them in rotation is NITROGEN FIXATION by Rhizobium bacteria in root nodules.",
+                    2: "Some plants do suppress soil pests — but the specific benefit of legumes in crop rotation is nitrogen fixation, not pest control.",
+                    3: "Legumes don't have exceptional water absorption compared to other plants — the key benefit is nitrogen fixation."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 10. DECOMPOSITION
+    # ══════════════════════════════════════════════
+    {
+        "id": "decomposition",
+        "title": "Decomposition",
+        "spec": "4.7.3",
+        "summary": "Describe the role of decomposers in nutrient cycling and the factors that affect decomposition rate.",
+        "theory": [
+            {
+                "heading": "What is Decomposition?",
+                "content": "DECOMPOSITION is the breakdown of dead organic matter (dead organisms, their waste products and shed body parts) by MICROORGANISMS — primarily bacteria and fungi.\n\nDecomposers are absolutely essential for life on Earth:\nThey RECYCLE NUTRIENTS — releasing minerals (nitrates, phosphates) back into the soil where plants can reabsorb them.\nThey complete the CARBON CYCLE — breaking down organic molecules and releasing CO₂ back to the atmosphere.\nWithout decomposers, nutrients would remain locked in dead organisms → soil would rapidly run out of minerals → plants could not grow → all life would eventually fail.\n\nDECOMPOSERS vs DETRITIVORES:\nDECOMPOSERS: bacteria and fungi — chemically break down organic matter using enzymes (EXTRACELLULAR DIGESTION — secreting enzymes outside the cell).\nDETRITIVORES: earthworms, woodlice, millipedes — physically break down dead material into smaller pieces. This INCREASES SURFACE AREA for decomposers to work on, speeding up decomposition.\nBoth work together — detritivores break material up, decomposers chemically digest it."
+            },
+            {
+                "heading": "Factors Affecting Decomposition Rate",
+                "content": "Decomposers are living organisms — so decomposition rate is affected by the same factors that affect all enzyme-controlled reactions.\n\nTEMPERATURE:\nHigher temperature (up to ~40°C) → faster enzyme activity → faster decomposition.\nCold temperatures slow decomposition significantly — this is why refrigerators and freezers preserve food.\nAbove ~40°C, decomposer enzymes start to denature → rate falls.\n\nMOISTURE (WATER AVAILABILITY):\nDecomposers need water to survive and to transport dissolved nutrients.\nDry conditions → decomposition slows dramatically — this is why dried food lasts longer.\nWaterlogged conditions can slow decomposition too — if the soil becomes anaerobic (no O₂).\n\nOXYGEN AVAILABILITY:\nMost decomposers are AEROBIC — they need oxygen for respiration.\nAEROBIC conditions (well-aerated soil or compost) → faster decomposition.\nANAEROBIC conditions (waterlogged soil, sealed containers) → slower decomposition → some decomposers produce methane (CH₄) instead of CO₂.\n\npH:\nDecomposers have an optimum pH. Very acidic or very alkaline conditions slow enzyme activity → slower decomposition.\nPeat bogs are very acidic → slow decomposition → organic matter accumulates as peat (preserving bog bodies for thousands of years)."
+            },
+            {
+                "heading": "Decomposition in Human Contexts",
+                "content": "Understanding decomposition has many practical applications:\n\nCOMPOSTING:\nMixing organic waste (vegetable peelings, garden waste) in a COMPOST HEAP.\nOptimal conditions: moisture, oxygen (turn the heap regularly), warmth.\nDecomposers break down the material → releases nutrients → creates COMPOST — a rich organic fertiliser for gardens.\n\nFOOD PRESERVATION:\nMethods work by removing conditions decomposers need:\nREFRIGERATION — low temperature slows decomposition.\nFREEZING — very low temperature stops decomposition.\nDRYING — removes moisture.\nPICKLING — low pH (vinegar) inhibits decomposers.\nVACUUM PACKING — removes O₂.\nSUGARING or SALTING — draws water out of food by osmosis, dehydrating decomposers.\n\nSEWAGE TREATMENT:\nDecomposers in sewage treatment works break down organic waste in human sewage.\nAerobic decomposers process the waste, removing pollutants.\nBiogas (methane) captured from anaerobic decomposition used as a fuel."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "DECOMPOSERS are bacteria and fungi — they chemically break down organic matter using enzymes. DETRITIVORES (earthworms, woodlice) physically shred material into smaller pieces — increasing surface area for decomposers. Detritivores do NOT chemically decompose material. Both are important but they are different things.",
+        "key_note": "Decomposers = bacteria and fungi. Recycle nutrients, complete carbon cycle. Detritivores (earthworms etc.) = physically shred material, increase surface area. Decomposition faster with: higher temperature, more moisture, more O₂, neutral pH. Used in composting and food preservation.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP7 — Investigate the effect of temperature on the rate of decay. Place a food sample (e.g. bread) in different conditions. Record mould growth over time. Or: measure rate of decomposition of organic material at different temperatures using respirometers.",
+        "matching": {
+            "title": "Factors Affecting Decomposition",
+            "instruction": "Match each condition to whether it speeds up or slows down decomposition.",
+            "pairs": [
+                ("Speeds up", "Warm, moist, aerobic conditions — ideal for decomposer enzyme activity"),
+                ("Slows down", "Cold conditions — low temperature reduces enzyme activity"),
+                ("Slows down", "Dry conditions — decomposers need water to function"),
+                ("Speeds up", "Turning a compost heap regularly — adds oxygen for aerobic decomposers"),
+                ("Slows down", "Waterlogged, anaerobic soil — most decomposers need oxygen"),
+                ("Slows down", "Very acidic conditions (e.g. peat bog) — inhibits decomposer enzyme activity"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is the difference between decomposers and detritivores?",
+                "opts": [
+                    ("Decomposers (bacteria, fungi) chemically break down organic matter using enzymes. Detritivores (earthworms, woodlice) physically shred it into smaller pieces.", True),
+                    ("Decomposers are larger organisms like earthworms. Detritivores are microscopic bacteria.", False),
+                    ("They are the same thing — both terms describe organisms that break down dead material.", False),
+                    ("Decomposers work in soil only. Detritivores work above ground only.", False)
+                ],
+                "wrong_explanations": {
+                    1: "DECOMPOSERS are the MICROSCOPIC organisms (bacteria and fungi). DETRITIVORES are LARGER invertebrates like earthworms, woodlice and millipedes.",
+                    2: "They are NOT the same — the distinction is between CHEMICAL breakdown (decomposers) and PHYSICAL breakdown (detritivores). They complement each other.",
+                    3: "Both decomposers and detritivores can work in soil or in leaf litter — the distinction is not about location but about HOW they break down material."
+                }
+            },
+            {
+                "q": "Why does food last longer in a refrigerator than at room temperature?",
+                "opts": [
+                    ("Low temperature slows enzyme activity in decomposer bacteria and fungi — decomposition rate decreases significantly", True),
+                    ("The refrigerator removes oxygen from around the food — decomposers suffocate", False),
+                    ("The cold temperature kills all bacteria in the food immediately", False),
+                    ("Refrigerators produce chemicals that inhibit decomposer activity", False)
+                ],
+                "wrong_explanations": {
+                    1: "Refrigerators don't remove oxygen — they simply cool the air. The reduced decomposition rate is due to lower enzyme activity at low temperatures.",
+                    2: "Refrigeration SLOWS bacteria but doesn't kill them instantly — food still eventually spoils in the fridge. Freezing is needed to effectively stop bacteria.",
+                    3: "Refrigerators only cool — they don't produce inhibitory chemicals."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 11. SAMPLING TECHNIQUES
+    # ══════════════════════════════════════════════
+    {
+        "id": "sampling-techniques",
+        "title": "Sampling Techniques",
+        "spec": "4.7.1",
+        "summary": "Describe how to estimate population size using quadrats, transects and mark-recapture.",
+        "theory": [
+            {
+                "heading": "Why We Sample",
+                "content": "In ecology, it is usually IMPOSSIBLE to count every individual of a species in a habitat — the area is too large or the organisms too numerous.\n\nInstead, ecologists take a SAMPLE — they count organisms in a smaller, representative section of the habitat and use the results to estimate the total population.\n\nFor a sample to be valid:\nIt must be RANDOM — to avoid bias (e.g. choosing only the easiest areas to access).\nIt must be REPRESENTATIVE — reflect the full range of conditions in the habitat.\nA sufficient NUMBER of samples must be taken — to get a reliable mean.\n\nThree main sampling techniques:\n1. QUADRATS — for slow-moving or stationary organisms.\n2. TRANSECTS — to show how organisms change across a habitat.\n3. MARK-RECAPTURE — for mobile animals."
+            },
+            {
+                "heading": "Quadrats",
+                "content": "A QUADRAT is a square frame placed on the ground to define a sample area.\n\nTypically 0.5 m × 0.5 m (0.25 m²) or 1 m × 1 m for vegetation.\n\nHow to use quadrats:\n1. Place the quadrat RANDOMLY in the habitat (use random number tables or throw the quadrat over your shoulder).\n2. Count or estimate the abundance of the target species within the quadrat.\n3. Repeat many times across the habitat.\n4. Calculate the MEAN count per quadrat.\n5. SCALE UP: multiply the mean count by the total number of quadrat-sized areas in the whole habitat.\n\nFormula:\nEstimated population = (mean count per quadrat) × (total habitat area ÷ quadrat area)\n\nQUADRATS WORK BEST FOR:\nPlants, mosses, lichens.\nSlow-moving animals: limpets, snails, woodlice.\n\nNOT suitable for fast-moving animals — they escape before being counted."
+            },
+            {
+                "heading": "Transects and Mark-Recapture",
+                "content": "TRANSECTS:\nA transect is a LINE drawn across a habitat — organisms are recorded at regular intervals along the line.\n\nUsed to show how species DISTRIBUTION changes across a habitat (e.g. from sea to land on a rocky shore, or from open field to shaded woodland).\n\nBELT TRANSECT: a strip (e.g. 0.5 m wide) along the line — quadrats placed at regular intervals. Records abundance.\nLINE TRANSECT: simply records which species touch the line — presence/absence only.\n\nMARK-RECAPTURE (Lincoln Index):\nUsed for MOBILE ANIMALS that would escape quadrats.\n\nMethod:\n1. Capture a sample of the animal (n₁).\n2. Mark each individual (e.g. paint a small spot on a snail shell, attach a leg ring to a bird, clip a fin on a fish).\n3. Release marked individuals back into the habitat.\n4. Allow time for marked individuals to mix randomly with the population.\n5. Capture a second sample (n₂).\n6. Count the number of MARKED individuals in the second sample (m).\n\nFormula: N = (n₁ × n₂) ÷ m\n\nASSUMPTIONS for the formula to be valid:\nThe mark does not affect survival (does not make animals more visible to predators or less able to move).\nMarked animals mix randomly with the rest of the population.\nNo significant immigration, emigration, births or deaths between the two captures.\nAll individuals are equally likely to be captured."
+            }
+        ],
+        "variables": [
+            {"symbol": "N", "name": "Estimated population size", "unit": "individuals"},
+            {"symbol": "n₁", "name": "Number caught and marked in first sample", "unit": "individuals"},
+            {"symbol": "n₂", "name": "Total number caught in second sample", "unit": "individuals"},
+            {"symbol": "m", "name": "Number of marked individuals in second sample", "unit": "individuals"},
+        ],
+        "equations": ["N = (n₁ × n₂) ÷ m"],
+        "common_mistake": "In the mark-recapture formula N = (n₁ × n₂) ÷ m — students often confuse what n₁, n₂ and m represent. n₁ = first catch (all marked). n₂ = second catch (total number caught). m = marked individuals IN the second catch. Do NOT divide by n₂ or mix up m and n₂.",
+        "key_note": "Quadrats: random placement, count organisms, scale up. Transects: show distribution change across habitat. Mark-recapture: N = (n₁ × n₂) ÷ m — for mobile animals. Assumptions: random mixing, no population changes, mark doesn't harm animal.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP6 — Use quadrats or transects to estimate population size or distribution of a species in a habitat. Place quadrats randomly and calculate mean count. Scale up to total habitat area.",
+        "matching": {
+            "title": "Match the Sampling Technique",
+            "instruction": "Match each situation to the best sampling technique.",
+            "pairs": [
+                ("Quadrats", "Estimating the population of daisies in a field — stationary plants, random placement"),
+                ("Transect", "Showing how plant species change from an open beach to a sheltered dune"),
+                ("Mark-recapture", "Estimating the population of great crested newts in a pond — mobile animals"),
+                ("Quadrats", "Counting the abundance of limpets on different zones of a rocky shore"),
+                ("Transect", "Recording how lichen cover changes from a roadside to open countryside"),
+            ]
+        },
+        "fifas": [
+            {
+                "label": "Mark-Recapture Calculation",
+                "question": "A student catches 40 woodlice, marks them and releases them. The next day, they catch 30 woodlice and find that 6 are marked. Estimate the population.",
+                "steps": [
+                    ("F", "N = (n₁ × n₂) ÷ m"),
+                    ("I", "N = (40 × 30) ÷ 6"),
+                    ("F", "N = 1200 ÷ 6"),
+                    ("A", "N = 200 woodlice")
+                ]
+            }
+        ],
+        "quiz": [
+            {
+                "q": "A student places 10 quadrats (each 1 m²) randomly in a field (total area 500 m²). Mean dandelion count = 4 per quadrat. Estimate the dandelion population.",
+                "opts": [
+                    ("2000 — mean count (4) × (total area ÷ quadrat area) = 4 × 500 = 2000", True),
+                    ("40 — mean count × number of quadrats = 4 × 10", False),
+                    ("500 — total area of field", False),
+                    ("50 — total area ÷ number of quadrats", False)
+                ],
+                "wrong_explanations": {
+                    1: "40 gives the total counted in ALL quadrats — not the estimated population of the whole field.",
+                    2: "500 is just the field area — it has nothing to do with the dandelion count.",
+                    3: "50 is just a spatial measurement — the estimated population requires scaling the mean count up to the full habitat area."
+                }
+            },
+            {
+                "q": "In a mark-recapture study: 25 snails marked (n₁), 20 caught second time (n₂), 5 were marked (m). What is the estimated population?",
+                "opts": [
+                    ("100 — N = (25 × 20) ÷ 5 = 100", True),
+                    ("250 — N = 25 × 20 ÷ 2 (dividing by wrong number)", False),
+                    ("2500 — N = 25 × 20 × 5 (multiplying instead of dividing)", False),
+                    ("1 — N = 5 ÷ (25 × 20)", False)
+                ],
+                "wrong_explanations": {
+                    1: "N = (n₁ × n₂) ÷ m = (25 × 20) ÷ 5 = 500 ÷ 5 = 100. Make sure to divide by m (number of marked in second catch = 5), not by n₂.",
+                    2: "N = (n₁ × n₂) ÷ m = (25 × 20) ÷ 5 = 100. Multiplying gives an enormous overestimate.",
+                    3: "The formula is N = (n₁ × n₂) ÷ m — not the inverse. Dividing m by the product gives a nonsensically small number."
+                }
+            },
+            {
+                "q": "Why must quadrats be placed RANDOMLY in a habitat?",
+                "opts": [
+                    ("To avoid sampling bias — deliberately choosing areas with lots of organisms would overestimate the population", True),
+                    ("Random placement ensures all quadrats are the same size", False),
+                    ("Random placement prevents disturbing the organisms in the habitat", False),
+                    ("It is a legal requirement for ecological surveys", False)
+                ],
+                "wrong_explanations": {
+                    1: "Quadrat size is fixed by the frame — it doesn't change with placement method.",
+                    2: "Disturbance is minimised by careful technique — but the reason for random placement is specifically about statistical validity and avoiding bias.",
+                    3: "There is no legal requirement for randomness — it is a scientific requirement to ensure the sample is representative of the whole habitat."
+                }
+            }
         ]
     },
 ],
+
 }
