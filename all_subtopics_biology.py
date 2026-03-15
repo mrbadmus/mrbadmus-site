@@ -3,8 +3,9 @@
 Biology subtopics — Combined Foundation
 AQA 8464 / Biology 8461
 
-Cell Biology updated: 7 deep subtopics replacing original 3.
-All other topics unchanged from previous version.
+Cell Biology:    7 subtopics (updated)
+Organisation:    11 subtopics (updated)
+All other topics: unchanged from previous version
 """
 
 BIOLOGY_COLOR = "#6BCB77"
@@ -901,101 +902,1126 @@ BIOLOGY_SUBTOPICS_ALL = {
 ],
 
 "organisation": [
+
+
+    # ══════════════════════════════════════════════
+    # 1. PRINCIPLES OF ORGANISATION
+    # ══════════════════════════════════════════════
     {
-        "id": "enzymes-digestion",
-        "title": "Enzymes and the Digestive System",
+        "id": "principles-of-organisation",
+        "title": "Principles of Organisation",
         "spec": "4.2.1",
-        "summary": "Describe enzyme action and the role of the digestive system.",
+        "summary": "Describe the levels of organisation in living organisms from cells to organisms.",
         "theory": [
-            {"heading": "What are Enzymes?",
-             "content": "Enzymes are biological catalysts — proteins that speed up chemical reactions.\nEach enzyme has an active site — a specific shape that fits one substrate (lock and key model).\nLower activation energy → faster reaction.\nDenatured enzyme: active site shape changes permanently → no longer works.\nCaused by high temperature or extreme pH."},
-            {"heading": "Effect of Temperature on Enzymes",
-             "content": "Low temperature: slow reaction — particles have less energy, fewer successful collisions.\nOptimum temperature: maximum rate — active site and substrate fit perfectly, many collisions.\nAbove optimum: enzyme denatures — active site shape distorted permanently.\nHuman enzymes: optimum ~37°C (body temperature). Plant enzymes may differ."},
-            {"heading": "Effect of pH on Enzymes",
-             "content": "Each enzyme has an optimum pH.\npH changes the shape of the active site by affecting hydrogen bonds.\nWrong pH → active site distorted → enzyme less effective → denaturation.\nPepsin (stomach): works best at pH ~2 (acidic). Amylase (mouth): works best at pH ~7 (neutral)."},
-            {"heading": "The Digestive System",
-             "content": "Mouth: amylase digests starch → maltose.\nStomach: pepsin + HCl digests proteins → peptides. pH ~2.\nSmall intestine: lipase digests fats → fatty acids + glycerol. Protease + amylase from pancreas.\nBile (from liver, stored in gall bladder): emulsifies fats — breaks large fat droplets into smaller ones → more surface area for lipase.\nLarge intestine: absorbs water. Rectum: stores faeces."}
+            {
+                "heading": "The Hierarchy of Organisation",
+                "content": "Living organisms are built from simple parts that are organised into increasingly complex levels.\n\nThe levels in order from simplest to most complex are:\nCELL → TISSUE → ORGAN → ORGAN SYSTEM → ORGANISM\n\nThis hierarchy is the foundation of biology — understanding it helps you understand how the body works as a whole, and why problems at one level (e.g. a faulty cell) can affect the whole organism."
+            },
+            {
+                "heading": "Cells — The Basic Unit of Life",
+                "content": "A cell is the smallest unit capable of carrying out all the processes of life.\n\nEvery living organism is made of at least one cell.\n\nDifferent cell types are specialised for different jobs — a muscle cell is built to contract, a red blood cell is built to carry oxygen, a root hair cell is built to absorb water.\n\nAll cells in one organism contain the same DNA, but different genes are switched on in different cell types."
+            },
+            {
+                "heading": "Tissues",
+                "content": "A tissue is a group of similar cells working together to carry out a particular function.\n\nKey examples of animal tissues:\nMuscle tissue — cells that can contract and relax to produce movement.\nEpithelial tissue — thin cells that line surfaces (e.g. gut lining, airway lining, skin surface).\nGlandular tissue — cells that produce and release substances such as enzymes, hormones or mucus.\nNervous tissue — neurones that carry electrical impulses.\n\nKey examples of plant tissues:\nMesophyll tissue — cells in leaves packed with chloroplasts for photosynthesis.\nXylem tissue — hollow dead cells that transport water upwards.\nPhloem tissue — living cells that transport dissolved sugars."
+            },
+            {
+                "heading": "Organs",
+                "content": "An organ is a structure made of several DIFFERENT types of tissue working together to perform a specific function.\n\nKey examples:\nThe STOMACH — contains muscle tissue (churns food), epithelial tissue (lines the stomach wall), glandular tissue (secretes HCl and pepsin enzymes).\n\nThe LEAF — contains mesophyll tissue (photosynthesis), xylem (water supply), phloem (sugar transport), epidermis (protection), guard cells (gas exchange).\n\nThe HEART — contains cardiac muscle tissue (pumps blood), valves (prevent backflow), coronary blood vessels (supply oxygen to heart muscle).\n\nThe KEY DIFFERENCE between a tissue and an organ: a tissue is made of ONE type of cell. An organ contains MULTIPLE different tissue types."
+            },
+            {
+                "heading": "Organ Systems and Organisms",
+                "content": "An organ system is a group of organs that work together to perform a major function.\n\nExamples:\nDigestive system — mouth, oesophagus, stomach, small intestine, large intestine, liver, pancreas. Function: breaks down food and absorbs nutrients.\n\nCirculatory system — heart, blood vessels, blood. Function: transports oxygen, nutrients and waste products.\n\nRespiratory system — lungs, trachea, bronchi, diaphragm. Function: gas exchange (O₂ in, CO₂ out).\n\nNervous system — brain, spinal cord, nerves. Function: detects stimuli and coordinates responses.\n\nAn ORGANISM is the complete living individual — all organ systems working together to sustain life."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "Enzymes are DENATURED at high temperature — NOT killed. They are proteins whose shape changes permanently. Also — bile EMULSIFIES fats; it doesn't chemically digest them. Lipase does the actual chemical digestion.",
-        "key_note": "Lock and key model: enzyme active site (lock) + specific substrate (key) → enzyme-substrate complex → products released → enzyme reused.",
-        "higher": "Induced fit model: active site changes shape slightly to fit the substrate — more accurate than lock and key for explaining enzyme specificity.",
-        "triple_only": "Respiratory system gas exchange details. Blood clotting cascade.",
-        "rp": ["RP3 — Investigate effect of pH on amylase activity", "RP4 — Food tests: iodine (starch), Benedict's (glucose), Biuret (protein), ethanol (fat)"],
+        "common_mistake": "Students confuse tissue and organ. Remember: a tissue is ONE type of cell doing ONE job. An organ contains MULTIPLE tissue types. The stomach is an ORGAN (it has muscle tissue, glandular tissue and epithelial tissue). Muscle is a TISSUE.",
+        "key_note": "Cell → Tissue (same cells, one function) → Organ (multiple tissues) → Organ System (multiple organs) → Organism. Each level is more complex than the one before.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Match the Enzyme to its Substrate and Product",
-            "instruction": "Match each enzyme to what it breaks down and what it produces.",
+            "title": "Match the Level of Organisation",
+            "instruction": "Match each example to its correct level of organisation.",
             "pairs": [
-                ("Amylase", "Starch → maltose (sugars)"),
-                ("Protease", "Proteins → amino acids"),
-                ("Lipase", "Lipids (fats) → fatty acids + glycerol"),
-                ("Bile", "Emulsifies fats — large drops → small droplets (not digestion)"),
+                ("Cell", "A single red blood cell carrying oxygen in the blood"),
+                ("Tissue", "Muscle — a group of muscle cells that contract together"),
+                ("Organ", "The stomach — contains muscle, glandular and epithelial tissue"),
+                ("Organ system", "The digestive system — stomach, intestines, liver and pancreas"),
+                ("Organism", "A complete human being — all systems functioning together"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "An enzyme is placed in a solution at 80°C. What happens?",
-             "opts": [("It denatures — active site permanently changes shape", True), ("It works faster at higher temperature", False), ("It becomes more soluble", False), ("It breaks down into amino acids", False)],
-             "wrong_explanations": {1: "Enzyme rate does increase up to the OPTIMUM — but above optimum, denaturing occurs.", 2: "Solubility of proteins can increase with temperature slightly — but the activity is permanently lost.", 3: "Denaturation changes shape — the enzyme doesn't break into amino acids unless it's also digested."}},
-            {"q": "Which enzyme breaks down proteins?",
-             "opts": [("Protease", True), ("Amylase", False), ("Lipase", False), ("Bile salts", False)],
-             "wrong_explanations": {1: "Amylase breaks down STARCH into sugars.", 2: "Lipase breaks down FATS into fatty acids and glycerol.", 3: "Bile salts are not enzymes — they emulsify fats to give more surface area."}},
-            {"q": "What does bile do to fats?",
-             "opts": [("Emulsifies them — breaks large fat drops into smaller ones", True), ("Chemically digests fats into fatty acids", False), ("Neutralises stomach acid", False), ("Transports fats in the blood", False)],
-             "wrong_explanations": {1: "Chemical digestion of fats = LIPASE. Bile emulsifies — a physical change, not chemical.", 2: "Bile is alkaline and does neutralise stomach acid — but in the context of fat digestion, its role is emulsification.", 3: "Lipoproteins transport fats in blood — bile works in the small intestine."}},
-            {"q": "Why does enzyme activity decrease at very low pH?",
-             "opts": [("Extreme pH changes the shape of the active site — enzyme less effective or denatured", True), ("Low pH destroys the substrate", False), ("Low pH lowers the temperature", False), ("Enzymes dissolve in acid", False)],
-             "wrong_explanations": {1: "Substrates can sometimes be affected by pH but the main effect is on the ENZYME active site shape.", 2: "pH and temperature are independent factors. pH doesn't lower temperature.", 3: "Enzymes don't simply dissolve — their 3D structure is altered by pH changes affecting hydrogen bonds."}},
-            {"q": "Where is bile produced and where is it stored?",
-             "opts": [("Produced in the liver, stored in the gall bladder", True), ("Produced in the pancreas, stored in the stomach", False), ("Produced in the stomach, stored in the liver", False), ("Produced and stored in the small intestine", False)],
-             "wrong_explanations": {1: "Pancreas produces digestive enzymes — bile is from the liver.", 2: "Stomach produces HCl and pepsin — bile comes from the liver.", 3: "Bile is released INTO the small intestine — it's not made there."}}
+            {
+                "q": "What is the correct order of organisation from simplest to most complex?",
+                "opts": [
+                    ("Cell → Tissue → Organ → Organ system → Organism", True),
+                    ("Tissue → Cell → Organ → Organ system → Organism", False),
+                    ("Cell → Organ → Tissue → Organism → Organ system", False),
+                    ("Organism → Organ system → Organ → Tissue → Cell", False)
+                ],
+                "wrong_explanations": {
+                    1: "Tissues are made of cells — cells always come before tissues in the hierarchy.",
+                    2: "Organs contain tissues, not the other way round — tissue must come before organ.",
+                    3: "This is the correct order in reverse — from most complex down to simplest."
+                }
+            },
+            {
+                "q": "What is a tissue?",
+                "opts": [
+                    ("A group of similar cells working together to perform a specific function", True),
+                    ("A group of different organs working together", False),
+                    ("A single highly specialised cell", False),
+                    ("Another name for an organ", False)
+                ],
+                "wrong_explanations": {
+                    1: "A group of different organs = an ORGAN SYSTEM. Tissues are made of similar cells, not organs.",
+                    2: "A single specialised cell is just a cell — not a tissue. A tissue is a GROUP of cells.",
+                    3: "Tissues and organs are different levels. An organ is made of SEVERAL tissue types."
+                }
+            },
+            {
+                "q": "The stomach contains muscle tissue, glandular tissue and epithelial tissue. What level of organisation is the stomach?",
+                "opts": [
+                    ("Organ", True),
+                    ("Tissue", False),
+                    ("Organ system", False),
+                    ("Organism", False)
+                ],
+                "wrong_explanations": {
+                    1: "A tissue is made of ONE type of cell — the stomach has multiple tissue types, so it is an organ.",
+                    2: "An organ system is a GROUP of organs — the stomach is just one organ within the digestive system.",
+                    3: "An organism is the complete living thing — a human, plant or bacterium."
+                }
+            },
+            {
+                "q": "Which of these is an example of an organ system?",
+                "opts": [
+                    ("The digestive system — stomach, intestines, liver and pancreas working together", True),
+                    ("Muscle tissue — cells that contract to produce movement", False),
+                    ("The heart — contains cardiac muscle and valves", False),
+                    ("A liver cell — specialised to carry out chemical reactions", False)
+                ],
+                "wrong_explanations": {
+                    1: "Muscle tissue = a TISSUE (one cell type). Organ systems are made of multiple organs.",
+                    2: "The heart = an ORGAN (contains multiple tissue types). An organ system requires multiple organs.",
+                    3: "A liver cell = a CELL — the simplest level of organisation."
+                }
+            }
         ]
     },
+
+    # ══════════════════════════════════════════════
+    # 2. THE DIGESTIVE SYSTEM
+    # ══════════════════════════════════════════════
     {
-        "id": "heart-circulation",
-        "title": "The Heart and Circulatory System",
-        "spec": "4.2.3",
-        "summary": "Describe the structure of the heart and the role of blood vessels.",
+        "id": "digestive-system",
+        "title": "The Digestive System",
+        "spec": "4.2.2.1",
+        "summary": "Describe the organs of the digestive system and what happens to food at each stage.",
         "theory": [
-            {"heading": "The Double Circulatory System",
-             "content": "Humans have a DOUBLE circulatory system — two loops.\nLoop 1: heart → lungs → heart (picks up O₂, drops off CO₂).\nLoop 2: heart → body → heart (delivers O₂, collects CO₂).\nDouble system maintains high pressure for efficient delivery to all body tissues."},
-            {"heading": "Structure of the Heart",
-             "content": "Four chambers: right atrium, right ventricle, left atrium, left ventricle.\nRight side: pumps deoxygenated blood to lungs.\nLeft side: pumps oxygenated blood to body — thicker walls (higher pressure needed).\nValves prevent backflow: atrioventricular valves between atria and ventricles, semilunar valves in arteries.\nNatural pacemaker (SA node) controls heart rate."},
-            {"heading": "Blood Vessels",
-             "content": "Arteries: carry blood AWAY from heart. Thick muscular walls, small lumen, no valves. High pressure.\nVeins: carry blood TOWARDS heart. Thin walls, large lumen, VALVES to prevent backflow. Low pressure.\nCapillaries: one cell thick — allow exchange of O₂, CO₂, glucose, waste between blood and tissues."},
-            {"heading": "Blood Components",
-             "content": "Red blood cells: carry O₂ using haemoglobin. Biconcave, no nucleus.\nWhite blood cells: immune response — phagocytes engulf pathogens, lymphocytes produce antibodies.\nPlatelets: small fragments — involved in blood clotting.\nPlasma: liquid — transports glucose, CO₂, urea, hormones, heat."}
+            {
+                "heading": "Why We Need to Digest Food",
+                "content": "Food is made up of large, insoluble molecules — starch, proteins and fats — that are too big to pass through the wall of the small intestine into the blood.\n\nDigestion breaks these large molecules into small, soluble ones that CAN be absorbed.\n\nThere are two types of digestion:\nMECHANICAL DIGESTION — physical breakdown (chewing, churning). Increases surface area for enzymes.\nCHEMICAL DIGESTION — enzymes break chemical bonds to produce smaller molecules."
+            },
+            {
+                "heading": "The Mouth",
+                "content": "Digestion begins in the mouth.\n\nTeeth physically grind food into smaller pieces — increasing surface area for enzymes to work on.\n\nSalivary glands produce SALIVA, which contains:\nAmylase — begins the chemical digestion of starch → maltose (a sugar).\nMucus — lubricates food to make swallowing easier.\n\nThe tongue shapes food into a BOLUS (a soft ball) that is swallowed.\n\nThe OESOPHAGUS is a muscular tube that carries food from the mouth to the stomach using waves of muscle contractions called PERISTALSIS."
+            },
+            {
+                "heading": "The Stomach",
+                "content": "The stomach is a muscular bag that churns food (mechanical digestion) and carries out chemical digestion.\n\nGlandular tissue in the stomach wall produces GASTRIC JUICE, which contains:\nHydrochloric acid (HCl) — makes the stomach very acidic (pH ~2). This KILLS most bacteria in food and provides the optimum pH for the enzyme pepsin.\nPepsin (a PROTEASE enzyme) — breaks proteins into shorter chains of amino acids.\n\nFood stays in the stomach for several hours, slowly being mixed into a liquid called CHYME.\n\nChyme is released in small amounts into the small intestine through the pyloric sphincter."
+            },
+            {
+                "heading": "The Small Intestine — Digestion and Absorption",
+                "content": "The small intestine is the main site of both DIGESTION and ABSORPTION.\n\nThe PANCREAS produces digestive enzymes that are released into the small intestine:\nPancreatic AMYLASE — continues starch → maltose digestion.\nPancreatic PROTEASES — continue breaking proteins → amino acids.\nPancreatic LIPASE — breaks fats → fatty acids + glycerol.\n\nThe LIVER produces BILE, which is stored in the GALL BLADDER and released into the small intestine. Bile:\nEmulsifies fats — breaks large fat droplets into many small ones, increasing surface area for lipase.\nIs alkaline — neutralises the stomach acid, creating the correct pH (neutral/alkaline) for pancreatic enzymes to work.\n\nABSORPTION — digested molecules (glucose, amino acids, fatty acids, glycerol) pass through the wall of the small intestine into the blood.\n\nThe small intestine is adapted for absorption with VILLI — finger-like folds that massively increase surface area. Villi have:\nA large surface area for fast absorption.\nThin walls — only one cell thick — so the diffusion distance is very short.\nA rich blood supply — maintains the concentration gradient by constantly removing absorbed molecules."
+            },
+            {
+                "heading": "The Large Intestine, Rectum and Anus",
+                "content": "By the time food reaches the large intestine, most nutrients have already been absorbed.\n\nThe LARGE INTESTINE absorbs water from the remaining undigested material.\n\nToo little water absorbed → diarrhoea (watery faeces).\nToo much water absorbed → constipation (hard, dry faeces).\n\nThe RECTUM stores faeces (made of undigested fibre, dead cells, bacteria and bile pigments which give it the brown colour).\n\nFaeces are expelled through the ANUS."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "The LEFT ventricle has thicker walls than the right — it pumps to the WHOLE BODY (further distance, higher pressure needed). The right pumps only to the lungs (nearby). Students often get this backwards.",
-        "key_note": "Arteries = Away from heart. Veins = towards heart. Capillaries = exchange sites.",
-        "higher": "Coronary heart disease: fatty deposits (atherosclerosis) narrow coronary arteries → reduced blood flow to heart muscle → angina or heart attack. Treatments: statins, stents, bypass surgery.",
-        "triple_only": None, "rp": None,
+        "common_mistake": "Bile is NOT an enzyme and does NOT chemically digest fats. It EMULSIFIES them — a physical process that breaks large fat droplets into smaller ones to give lipase more surface area to work on. Students often say 'bile digests fat' — it does not. LIPASE chemically digests fat.",
+        "key_note": "Mouth: amylase digests starch. Stomach: pepsin digests proteins, HCl creates pH 2. Small intestine: all three enzymes from pancreas + bile from liver. Large intestine: absorbs water.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP4 — Food tests: iodine solution tests for starch (blue-black = positive), Benedict's solution tests for glucose (brick red = positive), Biuret reagent tests for protein (purple = positive), ethanol emulsion test for fat (cloudy white = positive).",
         "matching": {
-            "title": "Match the Blood Vessel to its Properties",
-            "instruction": "Match each vessel type to its correct properties.",
+            "title": "Match the Organ to its Role in Digestion",
+            "instruction": "Match each organ to what it does.",
             "pairs": [
-                ("Artery", "Thick muscular walls, small lumen, carries blood away from heart, high pressure"),
-                ("Vein", "Thin walls, large lumen, has valves, carries blood toward heart, low pressure"),
-                ("Capillary", "One cell thick, allows exchange of O₂/CO₂/glucose between blood and tissues"),
+                ("Mouth", "Amylase begins starch digestion — teeth grind food — bolus formed"),
+                ("Stomach", "HCl + pepsin — proteins digested — chyme produced"),
+                ("Pancreas", "Produces amylase, protease and lipase — released into small intestine"),
+                ("Liver", "Produces bile — stored in gall bladder — emulsifies fats in small intestine"),
+                ("Small intestine", "Main site of digestion and absorption — villi absorb nutrients"),
+                ("Large intestine", "Absorbs water from undigested material — faeces formed"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "Why does the left ventricle have thicker walls than the right?",
-             "opts": [("It pumps blood to the whole body — needs higher pressure than the right ventricle (pumps only to lungs)", True), ("It receives blood from the lungs", False), ("It is larger so needs more muscle", False), ("The left side works harder because humans are right-handed", False)],
-             "wrong_explanations": {1: "The atria receive blood — the ventricles pump it out. Left ventricle sends blood body-wide.", 2: "Size and wall thickness are both due to pressure requirements — the left pumps further.", 3: "Handedness has nothing to do with heart anatomy."}},
-            {"q": "Which blood vessel carries oxygenated blood away from the heart to the body?",
-             "opts": [("Aorta (an artery)", True), ("Vena cava (a vein)", False), ("Pulmonary artery", False), ("Pulmonary vein", False)],
-             "wrong_explanations": {1: "Vena cava returns deoxygenated blood FROM the body TO the right side of the heart.", 2: "Pulmonary artery carries DEoxygenated blood TO the lungs — not to the body.", 3: "Pulmonary vein carries oxygenated blood FROM the lungs back TO the heart (left side)."}},
-            {"q": "What do capillaries do?",
-             "opts": [("Allow exchange of substances between blood and body tissues — walls are one cell thick", True), ("Carry blood at high pressure away from the heart", False), ("Prevent backflow of blood", False), ("Store blood when pressure drops", False)],
-             "wrong_explanations": {1: "Arteries carry blood at high pressure — capillaries are for exchange, not high-pressure flow.", 2: "Valves prevent backflow — capillaries are too small for significant backflow.", 3: "Veins act as blood reservoirs — capillaries are exchange surfaces."}},
-            {"q": "What is the function of white blood cells?",
-             "opts": [("Immune response — phagocytes engulf pathogens, lymphocytes produce antibodies", True), ("Carry oxygen using haemoglobin", False), ("Clot blood at wound sites", False), ("Transport glucose and CO₂ in plasma", False)],
-             "wrong_explanations": {1: "Oxygen is carried by RED blood cells using haemoglobin.", 2: "Blood clotting involves PLATELETS — not white blood cells.", 3: "Glucose and CO₂ are dissolved in PLASMA — not in white blood cells."}}
+            {
+                "q": "What is the role of bile in digestion?",
+                "opts": [
+                    ("Emulsifies fats — breaks large droplets into smaller ones to increase surface area for lipase", True),
+                    ("Chemically digests fats into fatty acids and glycerol", False),
+                    ("Kills bacteria in the small intestine using its acidity", False),
+                    ("Digests proteins into amino acids in the small intestine", False)
+                ],
+                "wrong_explanations": {
+                    1: "Chemical digestion of fats = LIPASE. Bile only emulsifies — a physical process.",
+                    2: "Bile is ALKALINE, not acidic. HCl in the stomach kills bacteria. Bile actually neutralises the stomach acid.",
+                    3: "Protein digestion = PROTEASES (pepsin in the stomach, pancreatic proteases in the small intestine). Bile is not a protease."
+                }
+            },
+            {
+                "q": "Why does the small intestine have villi?",
+                "opts": [
+                    ("To provide a large surface area for absorbing digested nutrients into the blood", True),
+                    ("To produce digestive enzymes for breaking down food", False),
+                    ("To neutralise the acid from the stomach", False),
+                    ("To store bile before it is released onto food", False)
+                ],
+                "wrong_explanations": {
+                    1: "Digestive enzymes in the small intestine come from the PANCREAS — the villi are for absorption, not enzyme production.",
+                    2: "Bile neutralises stomach acid — villi are surface-area adaptations for absorption.",
+                    3: "Bile is stored in the GALL BLADDER, not in villi."
+                }
+            },
+            {
+                "q": "Where are proteins first chemically digested?",
+                "opts": [
+                    ("The stomach — by the enzyme pepsin in the presence of HCl", True),
+                    ("The mouth — by salivary amylase", False),
+                    ("The large intestine — by bacteria", False),
+                    ("The liver — by bile salts", False)
+                ],
+                "wrong_explanations": {
+                    1: "Salivary amylase in the mouth digests STARCH, not proteins. Amylase has no effect on protein.",
+                    2: "Bacteria in the large intestine help break down some fibre but are not the main site of protein digestion.",
+                    3: "The liver produces bile which emulsifies FATS — bile has no protein-digesting function."
+                }
+            },
+            {
+                "q": "What does the large intestine absorb?",
+                "opts": [
+                    ("Water — from the remaining undigested material", True),
+                    ("Glucose — the final stage of carbohydrate absorption", False),
+                    ("Amino acids — the final stage of protein absorption", False),
+                    ("Fatty acids — the final stage of fat absorption", False)
+                ],
+                "wrong_explanations": {
+                    1: "Glucose is absorbed in the SMALL INTESTINE — by the time food reaches the large intestine, glucose has already been absorbed.",
+                    2: "Amino acids are absorbed in the SMALL INTESTINE — through the villi walls into the blood.",
+                    3: "Fatty acids and glycerol are absorbed in the SMALL INTESTINE into the lacteals (lymph vessels in villi)."
+                }
+            },
+            {
+                "q": "Which enzyme is produced by the salivary glands?",
+                "opts": [
+                    ("Amylase — breaks down starch into maltose", True),
+                    ("Pepsin — breaks down proteins", False),
+                    ("Lipase — breaks down fats", False),
+                    ("Bile — emulsifies fats", False)
+                ],
+                "wrong_explanations": {
+                    1: "Pepsin is produced by glandular tissue in the STOMACH WALL — not the salivary glands.",
+                    2: "Lipase is produced by the PANCREAS — not the salivary glands.",
+                    3: "Bile is not an enzyme — it is produced by the LIVER and stored in the gall bladder."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 3. ENZYMES
+    # ══════════════════════════════════════════════
+    {
+        "id": "enzymes",
+        "title": "Enzymes",
+        "spec": "4.2.2.2",
+        "summary": "Explain how enzymes work, how temperature and pH affect them, and describe the lock and key model.",
+        "theory": [
+            {
+                "heading": "What Are Enzymes?",
+                "content": "Enzymes are biological catalysts — proteins that speed up chemical reactions in living organisms without being used up in the reaction.\n\nWithout enzymes, many reactions in the body would happen too slowly to sustain life.\n\nEvery enzyme is a protein with a specific 3D shape. Part of this shape forms the ACTIVE SITE — a region with a very specific shape that fits only ONE type of molecule (the SUBSTRATE).\n\nThis specificity (one enzyme = one substrate) is explained by the LOCK AND KEY MODEL."
+            },
+            {
+                "heading": "The Lock and Key Model",
+                "content": "The lock and key model explains enzyme specificity.\n\nThe ENZYME is the lock — its active site has a unique shape.\nThe SUBSTRATE is the key — only the correctly shaped substrate fits into the active site.\n\nWhat happens:\n1. The substrate collides with the enzyme's active site.\n2. The substrate binds to form an ENZYME-SUBSTRATE COMPLEX.\n3. The enzyme catalyses the reaction — substrate is converted into PRODUCTS.\n4. Products are released from the active site.\n5. The enzyme is UNCHANGED and ready to bind another substrate molecule.\n\nThis is why enzymes are NOT used up — they can be used over and over again.\n\nReal-life example: amylase (enzyme) has an active site that ONLY fits starch molecules (substrate). It will not break down proteins or fats — their shape is different."
+            },
+            {
+                "heading": "Effect of Temperature on Enzyme Activity",
+                "content": "Temperature has a huge effect on how fast enzymes work.\n\nLOW TEMPERATURE (e.g. 10°C):\nParticles have less kinetic energy.\nFewer enzyme-substrate collisions per second.\nReaction rate is slow.\n\nRISING TEMPERATURE:\nMore kinetic energy → more collisions → more enzyme-substrate complexes formed → faster reaction rate.\n\nOPTIMUM TEMPERATURE:\nThe temperature at which the enzyme works fastest.\nFor most human enzymes: approximately 37°C (body temperature).\n\nABOVE OPTIMUM TEMPERATURE:\nVibrations in the enzyme become too violent.\nThe shape of the active site is permanently changed — DENATURATION.\nSubstrate can no longer fit into the denatured active site.\nReaction rate falls rapidly to zero.\n\nIMPORTANT: denaturation is PERMANENT. Cooling the enzyme back down does NOT restore its activity."
+            },
+            {
+                "heading": "Effect of pH on Enzyme Activity",
+                "content": "Each enzyme also has an OPTIMUM pH — the pH at which it works best.\n\nPH AWAY FROM THE OPTIMUM:\nChanges in pH alter the charges on the amino acids that form the active site.\nHydrogen bonds in the enzyme are disrupted.\nThe shape of the active site changes.\nThe substrate no longer fits — enzyme activity decreases.\nAt extreme pH values, the enzyme DENATURES permanently.\n\nDifferent enzymes have different optimum pH values depending on where they work:\nSalivary amylase — optimum pH ~7 (neutral — the mouth).\nPepsin — optimum pH ~2 (acidic — the stomach, where HCl is present).\nPancreatic enzymes — optimum pH ~7–8 (neutral to slightly alkaline — small intestine, where bile has neutralised the acid).\n\nThis is WHY the body produces acid in the stomach and bile to neutralise it — creating the right pH for each enzyme in each location."
+            },
+            {
+                "heading": "Factors That Affect Enzyme Rate — Summary",
+                "content": "Three key factors affect the rate of enzyme-catalysed reactions:\n\n1. TEMPERATURE — increases rate up to optimum (~37°C for human enzymes), then denaturation causes rate to fall sharply.\n\n2. pH — each enzyme has an optimum pH. Too acidic or too alkaline = active site changes shape = slower reaction or denaturation.\n\n3. SUBSTRATE CONCENTRATION — more substrate molecules = more collisions with enzyme = faster rate (up to a point). Once all enzyme active sites are occupied, adding more substrate has no effect — the enzyme is saturated."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Enzymes are DENATURED at high temperatures — NOT killed. They are proteins, not living things. You cannot kill a protein. Denaturation means the active site shape is permanently changed. Cooling the enzyme down afterwards will NOT bring it back to life — the damage is permanent.",
+        "key_note": "Lock and key: enzyme active site + specific substrate → enzyme-substrate complex → products released → enzyme reused. Denaturation is permanent — caused by high temperature or extreme pH.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP3 — Investigate the effect of pH on the rate of amylase activity. Use iodine solution to test for starch at regular intervals. Compare time taken to digest starch at different pH values.",
+        "matching": {
+            "title": "Match the Enzyme Concept",
+            "instruction": "Match each term to its correct description.",
+            "pairs": [
+                ("Active site", "The specific region of an enzyme where the substrate binds"),
+                ("Substrate", "The specific molecule that fits into an enzyme's active site"),
+                ("Enzyme-substrate complex", "Formed when the substrate binds to the enzyme's active site"),
+                ("Denaturation", "Permanent change in the shape of an enzyme's active site — caused by high temperature or extreme pH"),
+                ("Optimum temperature", "The temperature at which an enzyme works at its maximum rate"),
+                ("Lock and key model", "Explains why each enzyme only works with one specific substrate"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "An enzyme is heated to 80°C. What happens to it?",
+                "opts": [
+                    ("It denatures — the active site shape permanently changes and the substrate can no longer bind", True),
+                    ("It works faster because higher temperature gives more energy", False),
+                    ("It is killed by the heat", False),
+                    ("It becomes temporarily inactive but recovers when cooled", False)
+                ],
+                "wrong_explanations": {
+                    1: "Above the optimum (~37°C for human enzymes), the rate does increase — but 80°C is far above optimum, causing denaturation, not faster activity.",
+                    2: "Enzymes are proteins, not living organisms — they cannot be 'killed'. Denaturation is the correct term.",
+                    3: "Denaturation is PERMANENT. Once the active site shape is changed, cooling does NOT restore it."
+                }
+            },
+            {
+                "q": "Why does pepsin work best at pH 2?",
+                "opts": [
+                    ("Pepsin works in the stomach where HCl creates pH 2 — the active site shape is optimal at this pH", True),
+                    ("All enzymes work best at pH 2 — it is the universal optimum", False),
+                    ("pH 2 provides more substrate molecules for pepsin to work on", False),
+                    ("Pepsin denatures at any pH above 2", False)
+                ],
+                "wrong_explanations": {
+                    1: "Different enzymes have different optimum pH values. Salivary amylase works best at pH 7, pancreatic enzymes at pH 7–8. Only pepsin has an optimum around pH 2.",
+                    2: "pH does not affect the number of substrate molecules — it affects the SHAPE of the active site.",
+                    3: "Pepsin can work at a range of acidic pH values — though its optimum is around pH 2. It doesn't instantly denature above pH 2."
+                }
+            },
+            {
+                "q": "According to the lock and key model, why can amylase only digest starch — not proteins?",
+                "opts": [
+                    ("Amylase's active site is shaped to fit starch molecules only — proteins have a different shape and cannot bind", True),
+                    ("Amylase is only produced in the mouth, where no proteins are found", False),
+                    ("Amylase is too small to interact with large protein molecules", False),
+                    ("Proteins repel enzymes and cannot form enzyme-substrate complexes", False)
+                ],
+                "wrong_explanations": {
+                    1: "Amylase is produced in the mouth AND pancreas — it encounters proteins, but its active site shape doesn't match protein structure.",
+                    2: "Enzyme size is not the issue — it's the shape of the ACTIVE SITE that determines which substrate can bind.",
+                    3: "Proteins don't repel enzymes — proteases bind to proteins very effectively. It's specifically amylase whose active site doesn't fit proteins."
+                }
+            },
+            {
+                "q": "What happens to the rate of an enzyme-catalysed reaction when substrate concentration increases?",
+                "opts": [
+                    ("Rate increases — more substrate molecules collide with active sites — until all active sites are occupied", True),
+                    ("Rate stays the same — substrate concentration does not affect enzyme activity", False),
+                    ("Rate decreases — more substrate molecules compete for fewer active sites", False),
+                    ("Rate immediately reaches maximum as soon as any substrate is added", False)
+                ],
+                "wrong_explanations": {
+                    1: "Substrate concentration absolutely affects rate — more substrate = more collisions = faster rate (up to a limit).",
+                    2: "Substrates don't 'compete' — each active site accepts substrate molecules one at a time. More substrate means MORE active sites occupied at any given moment.",
+                    3: "Rate only reaches maximum when ALL active sites are occupied — the enzyme is then saturated. At low substrate concentrations, many active sites are empty."
+                }
+            },
+            {
+                "q": "After an enzyme-catalysed reaction, what happens to the enzyme?",
+                "opts": [
+                    ("It is released unchanged and can catalyse another reaction — it is not used up", True),
+                    ("It is permanently bonded to the product and cannot be reused", False),
+                    ("It is broken down and must be rebuilt before working again", False),
+                    ("It loses its active site after each reaction and must reform it", False)
+                ],
+                "wrong_explanations": {
+                    1: "Enzymes form temporary enzyme-SUBSTRATE complexes — once products are released, the enzyme is free and fully intact.",
+                    2: "Enzymes are not broken down during catalysis — that's what makes them catalysts. They are reused many times.",
+                    3: "Active sites are a permanent part of the enzyme's structure — they reform automatically because the enzyme is unchanged."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 4. THE HEART AND BLOOD VESSELS
+    # ══════════════════════════════════════════════
+    {
+        "id": "heart-blood-vessels",
+        "title": "The Heart and Blood Vessels",
+        "spec": "4.2.3",
+        "summary": "Describe the structure and function of the heart, the double circulatory system and the three types of blood vessel.",
+        "theory": [
+            {
+                "heading": "The Double Circulatory System",
+                "content": "Humans have a DOUBLE circulatory system — the blood passes through the heart twice for every complete circuit of the body.\n\nCircuit 1 — PULMONARY CIRCULATION:\nRight side of heart → lungs → left side of heart.\nDeoxygenated blood is pumped to the lungs to pick up oxygen and lose carbon dioxide.\n\nCircuit 2 — SYSTEMIC CIRCULATION:\nLeft side of heart → body organs and tissues → right side of heart.\nOxygenated blood is delivered to all body tissues at high pressure.\n\nWHY DOUBLE? Having two separate circuits means oxygenated blood is always kept separate from deoxygenated blood, and the left side can pump oxygenated blood to the body at high pressure — ensuring efficient oxygen delivery to even distant organs."
+            },
+            {
+                "heading": "Structure of the Heart",
+                "content": "The heart has FOUR chambers:\nRight atrium — receives deoxygenated blood from the body via the VENA CAVA.\nRight ventricle — pumps deoxygenated blood to the lungs via the PULMONARY ARTERY.\nLeft atrium — receives oxygenated blood from the lungs via the PULMONARY VEIN.\nLeft ventricle — pumps oxygenated blood to the whole body via the AORTA.\n\nThe LEFT VENTRICLE has much thicker, more muscular walls than the right ventricle because it must pump blood to the entire body — a much greater distance and requiring much higher pressure than the right ventricle (which only pumps to the nearby lungs).\n\nVALVES prevent blood flowing backwards:\nAtrioventricular (AV) valves — between atria and ventricles.\nSemilunar valves — in the pulmonary artery and aorta.\nValves open when pressure is higher on one side and snap shut to prevent backflow — this creates the 'lub-dub' heart sound.\n\nThe heart is made of CARDIAC MUSCLE — a special type of muscle that contracts and relaxes rhythmically, never getting tired.\n\nThe CORONARY ARTERIES supply the heart muscle itself with oxygenated blood. If these are blocked, the heart muscle is deprived of oxygen — causing a heart attack."
+            },
+            {
+                "heading": "Arteries",
+                "content": "Arteries carry blood AWAY from the heart.\n\nKey features:\nThick, muscular walls — to withstand the high pressure of blood pumped directly from the heart.\nElastic fibres in the walls — stretch as blood surges through with each heartbeat, then recoil to maintain smooth blood flow.\nNarrow lumen (central channel) — helps maintain high pressure.\nNO valves — pressure is high enough to keep blood flowing in the correct direction.\n\nMost arteries carry oxygenated blood — EXCEPT the PULMONARY ARTERY, which carries deoxygenated blood from the right ventricle to the lungs.\n\nMemory tip: Arteries = Away from heart."
+            },
+            {
+                "heading": "Veins",
+                "content": "Veins carry blood TOWARDS the heart.\n\nKey features:\nThinner walls — blood pressure is much lower in veins (far from the heart).\nWider lumen — accommodates the slower, lower-pressure flow.\nVALVES — essential to prevent backflow of blood. Without valves, gravity and low pressure would allow blood to pool in the legs and flow backwards.\n\nMost veins carry deoxygenated blood — EXCEPT the PULMONARY VEIN, which carries oxygenated blood from the lungs to the left atrium.\n\nMemory tip: Veins → towards the heart. Valves in Veins."
+            },
+            {
+                "heading": "Capillaries",
+                "content": "Capillaries are the smallest blood vessels — connecting arteries to veins.\n\nKey features:\nWalls are only ONE CELL THICK — the shortest possible diffusion distance.\nVery narrow — red blood cells must squeeze through in single file.\nForm a dense network throughout all body tissues.\nVery large total surface area — maximises exchange.\n\nAt the capillaries, EXCHANGE of substances takes place:\nOxygen and glucose diffuse OUT of the blood into body cells.\nCarbon dioxide and waste products diffuse INTO the blood from cells.\n\nThis exchange happens by DIFFUSION down concentration gradients — no energy required."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Arteries do NOT always carry oxygenated blood. The PULMONARY ARTERY carries DEOXYGENATED blood from the heart to the lungs. Veins do NOT always carry deoxygenated blood — the PULMONARY VEIN carries OXYGENATED blood from the lungs to the heart. The rule is: Arteries = Away from heart. Veins = to heart. Not about oxygen content.",
+        "key_note": "Left ventricle = thickest wall (pumps to whole body). Right ventricle = pumps to lungs only. Arteries: away, thick walls, high pressure. Veins: to heart, valves, low pressure. Capillaries: one cell thick, exchange site.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Heart Structure to its Function",
+            "instruction": "Match each structure to what it does.",
+            "pairs": [
+                ("Left ventricle", "Pumps oxygenated blood to the whole body via the aorta — thickest walls"),
+                ("Right ventricle", "Pumps deoxygenated blood to the lungs via the pulmonary artery"),
+                ("Valves", "Prevent backflow of blood — open and close with pressure changes"),
+                ("Coronary arteries", "Supply the heart muscle itself with oxygenated blood"),
+                ("Pulmonary vein", "Carries oxygenated blood FROM the lungs TO the left atrium"),
+                ("Vena cava", "Carries deoxygenated blood FROM the body TO the right atrium"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why does the left ventricle have thicker walls than the right ventricle?",
+                "opts": [
+                    ("It pumps blood to the whole body — needs much higher pressure than the right ventricle which only pumps to the nearby lungs", True),
+                    ("It receives more blood than the right ventricle so needs to be stronger", False),
+                    ("The left side of the body is larger so the heart must compensate", False),
+                    ("The left ventricle contains oxygenated blood which is heavier", False)
+                ],
+                "wrong_explanations": {
+                    1: "Both ventricles receive the same volume of blood per beat — the difference is in the distance the blood must be pumped, not the volume.",
+                    2: "Body size has no relationship to heart wall thickness — it's purely about pumping distance and pressure.",
+                    3: "Oxygenated and deoxygenated blood have essentially the same density — the thickness difference is purely about pressure requirements."
+                }
+            },
+            {
+                "q": "The pulmonary artery carries blood from the heart to the lungs. What type of blood does it carry?",
+                "opts": [
+                    ("Deoxygenated blood — it has just returned from the body and needs to be reoxygenated", True),
+                    ("Oxygenated blood — all arteries carry oxygenated blood", False),
+                    ("A mixture of oxygenated and deoxygenated blood", False),
+                    ("Blood with no red blood cells — only plasma", False)
+                ],
+                "wrong_explanations": {
+                    1: "This is the most common mistake in this topic! Arteries carry blood AWAY from the heart — but the pulmonary artery specifically carries deoxygenated blood to be oxygenated in the lungs.",
+                    2: "Blood in the heart is kept completely separate — left side carries oxygenated, right side carries deoxygenated. There is no mixing.",
+                    3: "All blood contains red blood cells — plasma alone would have no oxygen-carrying capacity."
+                }
+            },
+            {
+                "q": "Why do veins have valves but arteries do not?",
+                "opts": [
+                    ("Blood pressure in veins is low — valves prevent backflow. Arterial pressure is high enough to keep blood flowing in the right direction", True),
+                    ("Arteries have thicker walls so they don't need valves", False),
+                    ("Veins carry deoxygenated blood which needs extra support to flow", False),
+                    ("Valves in arteries would slow down the high-pressure blood flow too much", False)
+                ],
+                "wrong_explanations": {
+                    1: "Wall thickness helps arteries withstand pressure — but valves are specifically about preventing BACKFLOW, which is a problem in low-pressure veins, not high-pressure arteries.",
+                    2: "The oxygen content of blood has nothing to do with the need for valves — the PRESSURE is what matters.",
+                    3: "Valves in veins do slightly slow flow, but that's acceptable — their role is to prevent dangerous backflow in low-pressure vessels."
+                }
+            },
+            {
+                "q": "What makes capillaries efficient at exchanging substances?",
+                "opts": [
+                    ("Walls are only one cell thick — very short diffusion distance. Dense network = large surface area", True),
+                    ("They have the highest blood pressure of all blood vessels", False),
+                    ("They carry both oxygenated and deoxygenated blood simultaneously", False),
+                    ("They have valves to keep substances moving in one direction", False)
+                ],
+                "wrong_explanations": {
+                    1: "Capillaries have the LOWEST blood pressure — that is why they can be one cell thick without bursting.",
+                    2: "Capillaries carry either oxygenated or deoxygenated blood depending on location — not both at once.",
+                    3: "Capillaries have no valves — substances move by DIFFUSION driven by concentration gradients."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 5. BLOOD
+    # ══════════════════════════════════════════════
+    {
+        "id": "blood",
+        "title": "Blood",
+        "spec": "4.2.3.2",
+        "summary": "Describe the four components of blood and the function of each.",
+        "theory": [
+            {
+                "heading": "Blood — A Tissue",
+                "content": "Blood is a connective tissue — a liquid tissue that flows through blood vessels.\n\nIt has four main components:\n1. Red blood cells (erythrocytes)\n2. White blood cells (leucocytes)\n3. Platelets\n4. Plasma\n\nEach component has a distinct and essential function. Together they transport substances, defend against disease and maintain the body's internal environment."
+            },
+            {
+                "heading": "Red Blood Cells",
+                "content": "Red blood cells carry OXYGEN from the lungs to all body tissues.\n\nThey are uniquely adapted for this function:\nBICONCAVE DISC SHAPE — increases surface area for oxygen absorption and releases carbon dioxide. The thin centre reduces the diffusion distance for gas exchange.\nNO NUCLEUS — the nucleus is lost as red blood cells mature. This creates more space for HAEMOGLOBIN — the protein that binds and carries oxygen.\nPacked with HAEMOGLOBIN — each red blood cell contains ~270 million haemoglobin molecules.\nFLEXIBLE — can squeeze through narrow capillaries without tearing.\n\nIn the lungs, haemoglobin binds to oxygen (forming oxyhaemoglobin) where oxygen concentration is high.\nIn body tissues, oxyhaemoglobin releases oxygen where concentration is low.\n\nRed blood cells are made in the bone marrow and last about 120 days before being broken down in the spleen."
+            },
+            {
+                "heading": "White Blood Cells",
+                "content": "White blood cells are part of the IMMUNE SYSTEM — they defend the body against pathogens.\n\nUnlike red blood cells, white blood cells have a nucleus.\n\nThere are two main types:\n\nPHAGOCYTES:\nEngulf and destroy pathogens by PHAGOCYTOSIS — the cell membrane wraps around the pathogen and pulls it inside where enzymes digest it.\nNon-specific — they attack any pathogen they encounter.\nRespond quickly — first responders at an infection site.\n\nLYMPHOCYTES:\nProduce ANTIBODIES — proteins with a specific shape that binds to ANTIGENS on the surface of a specific pathogen.\nOne lymphocyte produces ONE type of antibody for ONE specific antigen.\nAntigens are molecules on the surface of pathogens that the immune system recognises as foreign.\nAfter infection, MEMORY LYMPHOCYTES remain in the blood for years or for life — if the same pathogen invades again, a rapid, large-scale antibody response destroys it before it can cause disease. This is the basis of IMMUNITY."
+            },
+            {
+                "heading": "Platelets",
+                "content": "Platelets are tiny cell FRAGMENTS — they are not complete cells and have no nucleus.\n\nWhen a blood vessel is damaged, platelets are involved in BLOOD CLOTTING:\n1. Platelets are activated and clump together at the wound site.\n2. A series of chemical reactions produces FIBRIN — a protein that forms a mesh of fibres.\n3. Red blood cells are trapped in the fibrin mesh → a CLOT forms.\n4. The clot dries to form a SCAB — sealing the wound, preventing blood loss and stopping pathogens from entering.\n\nWithout platelets, even a small cut could lead to dangerous blood loss and open infection."
+            },
+            {
+                "heading": "Plasma",
+                "content": "Plasma is the pale yellow LIQUID component of blood — it makes up about 55% of blood volume.\n\nPlasma transports almost everything in the blood:\nDigested food molecules — glucose and amino acids from the small intestine to cells.\nCarbon dioxide — from respiring cells to the lungs.\nUrea — from the liver (where it is made) to the kidneys (where it is excreted in urine).\nHormones — from endocrine glands to their target organs.\nAntibodies — produced by lymphocytes, carried to infection sites.\nHeat — distributes warmth from active muscles to cooler parts of the body, helping regulate body temperature."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Red blood cells carry oxygen — white blood cells do NOT carry oxygen. White blood cells fight infection. Platelets are NOT cells — they are cell fragments with no nucleus. They are involved in clotting, NOT in carrying oxygen or fighting infection.",
+        "key_note": "Red blood cells: O₂ transport, haemoglobin, no nucleus, biconcave. White blood cells: immune defence — phagocytes engulf, lymphocytes make antibodies. Platelets: clotting. Plasma: liquid transport medium.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Blood Component to its Function",
+            "instruction": "Match each blood component to its primary role.",
+            "pairs": [
+                ("Red blood cells", "Carry oxygen using haemoglobin — biconcave disc, no nucleus"),
+                ("Phagocytes", "Engulf and destroy pathogens — non-specific immune defence"),
+                ("Lymphocytes", "Produce specific antibodies that match pathogen antigens"),
+                ("Platelets", "Involved in blood clotting — form a fibrin mesh to seal wounds"),
+                ("Plasma", "Liquid that transports glucose, CO₂, urea, hormones and heat"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why do red blood cells have no nucleus?",
+                "opts": [
+                    ("To create more space for haemoglobin — allowing the cell to carry more oxygen", True),
+                    ("So they can divide and replace themselves when worn out", False),
+                    ("To reduce their weight so they flow faster through blood vessels", False),
+                    ("So they can squeeze through capillaries more easily", False)
+                ],
+                "wrong_explanations": {
+                    1: "Cells without a nucleus CANNOT divide — red blood cells are produced in bone marrow and cannot reproduce themselves.",
+                    2: "Weight difference between a nucleus and haemoglobin molecules is negligible — the primary reason is space for haemoglobin.",
+                    3: "Flexibility helps red blood cells squeeze through capillaries — but this is a result of their biconcave shape and flexibility, not the absence of a nucleus."
+                }
+            },
+            {
+                "q": "A patient has very few lymphocytes. What is the most likely consequence?",
+                "opts": [
+                    ("Unable to produce specific antibodies — prolonged or repeated infections that are hard to clear", True),
+                    ("Unable to carry oxygen — severe anaemia", False),
+                    ("Blood will not clot properly — excessive bleeding from wounds", False),
+                    ("Unable to digest food properly — nutrients not absorbed", False)
+                ],
+                "wrong_explanations": {
+                    1: "Oxygen carrying = RED BLOOD CELLS using haemoglobin. Lymphocytes are white blood cells.",
+                    2: "Blood clotting = PLATELETS forming a fibrin mesh. Lymphocytes produce antibodies, not clotting factors.",
+                    3: "Food digestion = digestive enzymes in the gut. Lymphocytes are part of the immune system."
+                }
+            },
+            {
+                "q": "What is the role of platelets in the body?",
+                "opts": [
+                    ("Blood clotting — they clump at wound sites and trigger fibrin mesh formation to seal the damage", True),
+                    ("Carrying oxygen from the lungs to body tissues", False),
+                    ("Producing antibodies to fight specific pathogens", False),
+                    ("Engulfing and digesting bacteria by phagocytosis", False)
+                ],
+                "wrong_explanations": {
+                    1: "Oxygen transport = RED BLOOD CELLS using haemoglobin.",
+                    2: "Producing antibodies = LYMPHOCYTES (a type of white blood cell).",
+                    3: "Engulfing bacteria = PHAGOCYTES (a type of white blood cell)."
+                }
+            },
+            {
+                "q": "Which substance does plasma NOT transport?",
+                "opts": [
+                    ("Oxygen — this is carried by haemoglobin inside red blood cells", True),
+                    ("Glucose from the small intestine to body cells", False),
+                    ("Urea from the liver to the kidneys", False),
+                    ("Carbon dioxide from respiring cells to the lungs", False)
+                ],
+                "wrong_explanations": {
+                    1: "Glucose IS carried in plasma — after absorption from the small intestine.",
+                    2: "Urea IS carried in plasma — from the liver to the kidneys for excretion.",
+                    3: "Carbon dioxide IS dissolved in plasma — most CO₂ travels as bicarbonate ions dissolved in plasma."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 6. CORONARY HEART DISEASE
+    # ══════════════════════════════════════════════
+    {
+        "id": "coronary-heart-disease",
+        "title": "Coronary Heart Disease",
+        "spec": "4.2.3.3",
+        "summary": "Describe the causes and treatments of coronary heart disease.",
+        "theory": [
+            {
+                "heading": "What is Coronary Heart Disease?",
+                "content": "Coronary heart disease (CHD) is a condition in which the CORONARY ARTERIES — the blood vessels that supply the heart muscle itself with oxygen and glucose — become narrowed and partially or completely blocked.\n\nThe heart muscle is always active, always respiring — it needs a continuous supply of oxygen. If this supply is reduced or cut off, the heart muscle cannot function properly.\n\nCHD is one of the leading causes of death in the UK and worldwide."
+            },
+            {
+                "heading": "How CHD Develops — Atherosclerosis",
+                "content": "CHD develops through a process called ATHEROSCLEROSIS:\n\n1. Over many years, fatty substances (mainly cholesterol) build up in the walls of the coronary arteries.\n2. These fatty deposits are called PLAQUES or ATHEROMAS.\n3. The plaques harden over time, making artery walls less elastic.\n4. The lumen (central channel) of the artery becomes progressively NARROWER.\n5. Blood flow to the heart muscle is reduced.\n6. If a plaque ruptures, a BLOOD CLOT can form at that site — this can completely block the artery.\n\nComplete blockage = HEART ATTACK. The heart muscle supplied by that artery receives no oxygen and begins to die. This causes severe chest pain, shortness of breath and can be fatal."
+            },
+            {
+                "heading": "Risk Factors for CHD",
+                "content": "Several factors increase the risk of developing CHD:\n\nLIFESTYLE FACTORS (can be changed):\nSMOKING — carbon monoxide damages artery walls; nicotine increases heart rate and blood pressure.\nHIGH BLOOD CHOLESTEROL — excess cholesterol deposits in artery walls forming plaques.\nHIGH BLOOD PRESSURE — damages artery walls, making them more susceptible to plaque formation.\nPOOR DIET — high in saturated fats and salt raises cholesterol and blood pressure.\nLACK OF EXERCISE — physical activity strengthens the heart and helps control weight and cholesterol.\nOBESITY — associated with high blood pressure, high cholesterol and type 2 diabetes.\n\nNON-LIFESTYLE FACTORS (cannot be changed):\nGENETICS — family history of CHD significantly increases risk.\nAGE — risk increases with age as arteries gradually narrow.\nSEX — males tend to develop CHD at younger ages than females (though risk equalises after menopause)."
+            },
+            {
+                "heading": "Treatments for CHD",
+                "content": "Several treatments can reduce the effects of CHD:\n\nSTATINS (medication):\nDrugs that reduce the level of LDL cholesterol in the blood.\nSlows the build-up of plaques in arteries.\nTaken daily — can significantly reduce heart attack and stroke risk.\nSide effects: muscle pain in some patients.\n\nSTENTS (surgical):\nA small metal mesh tube inserted into a narrowed coronary artery.\nHolds the artery open, restoring blood flow.\nInserted during a procedure called angioplasty — a thin tube is passed through a blood vessel to the narrowed area.\nEffective but does not treat the underlying cause.\n\nBYPASS SURGERY:\nA healthy blood vessel from another part of the body (e.g. leg vein) is grafted around the blocked section of coronary artery.\nCreates a new route for blood to reach the heart muscle.\nMajor surgery with risks, but effective for severe blockages.\n\nHEART TRANSPLANT:\nReplacing the entire diseased heart with a donor heart.\nLast resort for severe heart failure.\nRisks: immune rejection, waiting time for a suitable donor.\nPatient must take immunosuppressant drugs for life to prevent rejection."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "A STENT holds a narrowed artery open — it does NOT bypass the blockage. A BYPASS SURGERY creates a new route around the blockage using a grafted blood vessel. Students often confuse these two treatments.",
+        "key_note": "CHD = narrowed coronary arteries (atherosclerosis/plaques). Risk factors: smoking, high cholesterol, high blood pressure, poor diet, lack of exercise. Treatments: statins (lower cholesterol), stents (hold artery open), bypass surgery (reroute blood).",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the CHD Treatment to How it Works",
+            "instruction": "Match each treatment to its mechanism.",
+            "pairs": [
+                ("Statins", "Drugs that lower LDL cholesterol in the blood — slow plaque formation"),
+                ("Stent", "Metal mesh tube inserted into a narrowed artery to hold it open"),
+                ("Bypass surgery", "Grafts a healthy blood vessel around the blocked coronary artery"),
+                ("Heart transplant", "Replaces the diseased heart — last resort, risk of rejection"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What causes coronary heart disease?",
+                "opts": [
+                    ("Fatty plaques (atherosclerosis) build up in the coronary arteries, narrowing them and reducing blood flow to the heart muscle", True),
+                    ("The heart muscle becomes too weak to pump blood effectively due to overuse", False),
+                    ("Blood becomes too thick and cannot flow through the coronary arteries", False),
+                    ("The coronary arteries grow too narrow naturally with age", False)
+                ],
+                "wrong_explanations": {
+                    1: "Heart muscle weakness (heart failure) is a consequence of CHD, not the cause — the cause is specifically fatty plaque build-up.",
+                    2: "Blood viscosity can affect flow, but CHD is specifically about PLAQUE build-up in artery walls, not blood thickness.",
+                    3: "Arteries don't naturally narrow with age — they narrow because of PLAQUES (fatty deposits) accumulating over time due to risk factors."
+                }
+            },
+            {
+                "q": "How does a stent treat coronary heart disease?",
+                "opts": [
+                    ("It is inserted into the narrowed artery and expands to hold it open — restoring blood flow", True),
+                    ("It dissolves the fatty plaques blocking the artery", False),
+                    ("It reroutes blood around the blocked artery using a grafted vessel", False),
+                    ("It lowers blood cholesterol levels to prevent further plaque formation", False)
+                ],
+                "wrong_explanations": {
+                    1: "Stents do not dissolve plaques — they physically hold the narrowed artery open.",
+                    2: "Rerouting blood around a blockage using a grafted vessel = BYPASS SURGERY, not a stent.",
+                    3: "Lowering cholesterol = STATINS (medication), not a stent."
+                }
+            },
+            {
+                "q": "Which of the following is a lifestyle risk factor for CHD that CAN be changed?",
+                "opts": [
+                    ("Smoking cigarettes", True),
+                    ("Family history of heart disease (genetics)", False),
+                    ("Being male", False),
+                    ("Increasing age", False)
+                ],
+                "wrong_explanations": {
+                    1: "Genetics is a risk factor — but you cannot change your DNA. It is a non-modifiable risk factor.",
+                    2: "Sex (being male) slightly increases CHD risk, particularly at younger ages — but you cannot change this.",
+                    3: "Age increases CHD risk, but everyone ages — you cannot avoid this risk factor."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 7. HEALTH, DISEASE AND RISK FACTORS
+    # ══════════════════════════════════════════════
+    {
+        "id": "health-disease",
+        "title": "Health, Disease and Risk Factors",
+        "spec": "4.2.4",
+        "summary": "Define health and disease, distinguish communicable from non-communicable diseases, and explain risk factors.",
+        "theory": [
+            {
+                "heading": "Defining Health",
+                "content": "The World Health Organisation (WHO) defines health as:\n'A state of complete physical, mental and social wellbeing — not merely the absence of disease or infirmity.'\n\nThis definition is important because it highlights that health is about more than just not being ill. A person can be free of physical disease but still be unhealthy if they have poor mental health or are isolated from society.\n\nGood health requires:\nPhysical wellbeing — the body functions properly, free from disease.\nMental wellbeing — good emotional and psychological state.\nSocial wellbeing — positive relationships and a functioning role in society."
+            },
+            {
+                "heading": "Types of Disease",
+                "content": "A disease is a condition that impairs the normal functioning of the body.\n\nCOMMUNICABLE DISEASES (infectious):\nCaused by pathogens — bacteria, viruses, fungi, protists.\nCan be spread from one organism to another.\nExamples: influenza, HIV, tuberculosis (TB), measles, malaria, salmonella food poisoning.\n\nNON-COMMUNICABLE DISEASES (non-infectious):\nCannot be spread from person to person.\nTypically caused by genetic factors, lifestyle choices or environmental exposure.\nExamples: coronary heart disease, type 2 diabetes, most cancers, asthma.\n\nInteractions between diseases: having one disease can affect the risk of developing another. For example:\nHIV weakens the immune system → patient more vulnerable to other infections.\nCancer treatment (chemotherapy) suppresses immunity → risk of other infections increases.\nDiabetes increases risk of cardiovascular disease."
+            },
+            {
+                "heading": "Risk Factors",
+                "content": "A risk factor is anything that increases the probability of developing a disease — but does NOT guarantee it.\n\nThere is an important distinction:\nCORRELATION — a statistical link between a risk factor and a disease.\nCAUSATION — evidence that the risk factor directly CAUSES the disease.\n\nMany risk factors show strong correlation with disease AND have been shown to cause disease through scientific study (e.g. smoking and lung cancer).\n\nOthers show correlation but causation is harder to prove.\n\nRisk factors can be:\nLIFESTYLE FACTORS (choices): smoking, diet, alcohol consumption, physical inactivity.\nENVIRONMENTAL FACTORS: air pollution, UV radiation, exposure to chemicals or asbestos.\nGENETIC FACTORS: inherited predispositions to certain diseases."
+            },
+            {
+                "heading": "Non-Communicable Disease and Lifestyle",
+                "content": "Non-communicable diseases are increasingly common in wealthy countries — often linked to lifestyle choices.\n\nKey links between lifestyle and non-communicable disease:\n\nSMOKING:\nStrongly linked to lung cancer, mouth cancer, throat cancer, bladder cancer.\nAlso linked to coronary heart disease and chronic obstructive pulmonary disease (COPD).\n\nALCOHOL:\nExcessive alcohol linked to liver disease (cirrhosis), liver cancer, mouth cancer, brain damage.\nIncreases risk of accidents and mental health problems.\n\nPOOR DIET:\nHigh saturated fat diet → high cholesterol → increased CHD risk.\nHigh sugar diet → type 2 diabetes, obesity.\nLow fibre diet → increased bowel cancer risk.\n\nLACK OF EXERCISE:\nIncreases risk of obesity, CHD, type 2 diabetes, some cancers.\n\nOBESITY (BMI > 30):\nStrongly linked to type 2 diabetes, CHD, high blood pressure, some cancers.\n\nUV RADIATION (from sunlight/sunbeds):\nCauses skin cancer (including melanoma — the most dangerous type)."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "A risk factor INCREASES the probability of getting a disease — it does NOT mean you WILL get it. A non-smoker can develop lung cancer; a heavy smoker might not. Risk factors change the statistical likelihood, not the certainty. Also — correlation does NOT always mean causation, though for many lifestyle risk factors, both have been established.",
+        "key_note": "Communicable = caused by pathogens, can spread. Non-communicable = cannot spread, often lifestyle-related. Risk factors: lifestyle (smoking, diet, alcohol), environmental (UV, pollution), genetic. Risk factor = increased probability, NOT certainty.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Communicable or Non-Communicable?",
+            "instruction": "Sort each disease into communicable or non-communicable.",
+            "pairs": [
+                ("Communicable", "Influenza — caused by a virus, spread by droplets"),
+                ("Non-communicable", "Coronary heart disease — caused by lifestyle factors and genetics"),
+                ("Communicable", "Tuberculosis (TB) — caused by bacteria, spread by airborne droplets"),
+                ("Non-communicable", "Type 2 diabetes — linked to obesity and diet, cannot be spread"),
+                ("Communicable", "Malaria — caused by Plasmodium protist, spread by mosquito"),
+                ("Non-communicable", "Skin cancer — caused by UV radiation, not spread between people"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is the difference between a communicable and a non-communicable disease?",
+                "opts": [
+                    ("Communicable diseases are caused by pathogens and can spread between organisms. Non-communicable diseases cannot spread.", True),
+                    ("Communicable diseases are always fatal. Non-communicable diseases are always mild.", False),
+                    ("Communicable diseases are caused by lifestyle. Non-communicable diseases are caused by pathogens.", False),
+                    ("They are the same thing — both terms describe infectious disease.", False)
+                ],
+                "wrong_explanations": {
+                    1: "Neither type is always fatal or always mild — severity varies enormously in both categories.",
+                    2: "This is exactly the wrong way round. Communicable = pathogens. Non-communicable = lifestyle, genetics, environment.",
+                    3: "They are not the same — the key difference is whether the disease can be spread from person to person."
+                }
+            },
+            {
+                "q": "A study finds that people who eat more red meat have higher rates of bowel cancer. What does this show?",
+                "opts": [
+                    ("A correlation between red meat consumption and bowel cancer — further research is needed to establish causation", True),
+                    ("Red meat DEFINITELY causes bowel cancer in everyone who eats it", False),
+                    ("Bowel cancer causes people to eat more red meat", False),
+                    ("This is meaningless data — correlations in diet studies are never reliable", False)
+                ],
+                "wrong_explanations": {
+                    1: "Correlation does not automatically mean causation — the relationship could be due to other factors (e.g. diet quality overall, exercise levels).",
+                    2: "This would be reverse causation — the data shows a link, but the disease developing before changing diet doesn't fit the timeline.",
+                    3: "Epidemiological (population-based) data is valuable scientific evidence — correlation studies are an important first step in identifying risk factors."
+                }
+            },
+            {
+                "q": "Which of the following is a LIFESTYLE risk factor for non-communicable disease?",
+                "opts": [
+                    ("Smoking cigarettes", True),
+                    ("Being 70 years old", False),
+                    ("Having a family history of heart disease", False),
+                    ("Living near a motorway (air pollution)", False)
+                ],
+                "wrong_explanations": {
+                    1: "Age is a NON-LIFESTYLE (non-modifiable) risk factor — everyone ages and it cannot be changed.",
+                    2: "Family history = GENETIC risk factor — also non-modifiable. You cannot choose your genes.",
+                    3: "Living near a motorway = ENVIRONMENTAL risk factor — though this can sometimes be changed (by moving), it is generally classified as environmental rather than lifestyle."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 8. CANCER
+    # ══════════════════════════════════════════════
+    {
+        "id": "cancer",
+        "title": "Cancer",
+        "spec": "4.2.4.1",
+        "summary": "Explain how cancer develops, the difference between benign and malignant tumours, and how cancer is treated.",
+        "theory": [
+            {
+                "heading": "What is Cancer?",
+                "content": "Cancer is a disease caused by UNCONTROLLED CELL DIVISION.\n\nNormally, cell division is carefully regulated by genes that control the cell cycle — telling cells when to divide and when to stop.\n\nCancer begins when MUTATIONS occur in these regulatory genes:\nThe 'stop dividing' signals are ignored.\nCells keep dividing repeatedly, producing more and more abnormal cells.\nA mass of cells — called a TUMOUR — accumulates.\n\nCancers can develop in almost any tissue of the body. Common types include: breast cancer, lung cancer, bowel cancer, prostate cancer, skin cancer (melanoma)."
+            },
+            {
+                "heading": "Benign vs Malignant Tumours",
+                "content": "Not all tumours are cancerous. There are two types:\n\nBENIGN TUMOUR:\nGrows slowly and stays in ONE PLACE.\nDoes not invade surrounding tissues.\nCells remain enclosed in a capsule.\nDoes not spread to other parts of the body.\nUsually not life-threatening — can often be removed by surgery.\nCan cause problems if it presses on a vital structure (e.g. a benign brain tumour pressing on important brain regions).\n\nMALIGNANT TUMOUR (CANCER):\nGrows quickly and INVADES surrounding tissues.\nCells break away from the original tumour.\nTravel through the BLOOD or LYMPH system.\nSettle in other organs and form NEW TUMOURS — this spread is called METASTASIS.\nMuch harder to treat once it has spread.\nMalignant tumours are the dangerous, life-threatening form."
+            },
+            {
+                "heading": "Risk Factors for Cancer",
+                "content": "Several factors increase the risk of developing cancer:\n\nLIFESTYLE RISK FACTORS:\nSmoking — strongly linked to lung cancer, mouth cancer, throat cancer, bladder cancer. Carcinogens in tobacco smoke damage DNA in cells.\nAlcohol — linked to liver cancer, mouth and throat cancer.\nObesity — associated with bowel cancer, breast cancer, uterine cancer.\nPoor diet — low fibre linked to bowel cancer; processed meat linked to bowel cancer.\n\nENVIRONMENTAL RISK FACTORS:\nUV radiation — sunlight and sunbeds cause skin cancer by damaging DNA in skin cells.\nIonising radiation — X-rays, gamma rays and nuclear radiation can damage DNA.\nAsbestos — fibres lodge in lung tissue and damage cells → mesothelioma (lung cancer).\nCertain chemicals — industrial carcinogens.\n\nGENETIC RISK FACTORS:\nSome people inherit mutations in tumour suppressor genes (e.g. BRCA1/2 gene mutations increase breast and ovarian cancer risk).\nHaving a family history of certain cancers increases personal risk.\n\nVIRAL RISK FACTORS:\nHPV (Human Papillomavirus) — causes most cases of cervical cancer.\nHepatitis B and C viruses — linked to liver cancer."
+            },
+            {
+                "heading": "Treatment of Cancer",
+                "content": "Cancer is treated using several approaches, often in combination:\n\nSURGERY:\nPhysical removal of the tumour.\nEffective for localised (non-metastatic) tumours.\nCannot remove cancer that has spread throughout the body.\n\nRADIOTHERAPY:\nHigh-energy radiation (gamma rays or X-rays) is directed at tumour cells.\nDamages the DNA of cancer cells → they cannot divide → they die.\nSide effects: damages healthy cells near the tumour, causing fatigue, nausea, hair loss in the treatment area.\n\nCHEMOTHERAPY:\nDrugs that target rapidly dividing cells — killing cancer cells.\nCan reach cancer cells throughout the body, useful for metastatic cancer.\nSide effects: also damages rapidly dividing HEALTHY cells (hair follicles, gut lining, bone marrow) — causing hair loss, nausea, immune suppression."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "BENIGN tumours stay in one place and are not cancer. MALIGNANT tumours spread (metastasis) and are cancer. Students often use 'tumour' and 'cancer' interchangeably — a benign tumour is NOT cancer. Also: chemotherapy targets ALL rapidly dividing cells, not just cancer cells — that's why it causes hair loss and immune suppression as side effects.",
+        "key_note": "Cancer = uncontrolled cell division caused by mutations in regulatory genes. Benign = stays put, not cancerous. Malignant = spreads via blood/lymph (metastasis) = cancer. Treatments: surgery, radiotherapy (gamma rays), chemotherapy (drugs).",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Benign or Malignant?",
+            "instruction": "Sort each description into benign tumour or malignant tumour.",
+            "pairs": [
+                ("Benign tumour", "Grows in one place — stays enclosed, does not invade surrounding tissues"),
+                ("Malignant tumour", "Cells break away and travel through blood or lymph to form new tumours — metastasis"),
+                ("Benign tumour", "Usually not life-threatening — often removed by surgery"),
+                ("Malignant tumour", "Much harder to treat once it has spread to other organs"),
+                ("Both", "Caused by uncontrolled cell division due to gene mutation"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is the key difference between a benign and a malignant tumour?",
+                "opts": [
+                    ("Benign tumours stay in one place. Malignant tumours spread to other parts of the body (metastasis).", True),
+                    ("Benign tumours grow faster than malignant tumours.", False),
+                    ("Malignant tumours are caused by lifestyle; benign tumours are genetic.", False),
+                    ("Benign tumours require chemotherapy; malignant tumours only need surgery.", False)
+                ],
+                "wrong_explanations": {
+                    1: "Malignant tumours typically grow FASTER and spread — benign tumours tend to grow more slowly and stay localised.",
+                    2: "Both types can have genetic or lifestyle causes — the distinction is about whether the tumour SPREADS, not its cause.",
+                    3: "This is the wrong way round — surgery is often used for localised (benign or early malignant) tumours. Chemotherapy is used for cancer that has spread."
+                }
+            },
+            {
+                "q": "How does UV radiation cause skin cancer?",
+                "opts": [
+                    ("UV radiation damages DNA in skin cells — causing mutations in genes that control cell division", True),
+                    ("UV radiation directly kills healthy skin cells, forcing the body to replace them rapidly", False),
+                    ("UV radiation heats skin cells above their optimum temperature, causing them to mutate", False),
+                    ("UV radiation reduces the immune system's ability to detect and destroy abnormal cells", False)
+                ],
+                "wrong_explanations": {
+                    1: "UV radiation doesn't kill healthy cells en masse — it damages DNA specifically. Rapid replacement due to damage is related to wound healing, not cancer.",
+                    2: "UV radiation doesn't work by heat — it carries photons that directly interact with and damage DNA molecules.",
+                    3: "UV radiation can slightly suppress immunity, but the primary cancer-causing mechanism is direct DNA mutation in skin cells."
+                }
+            },
+            {
+                "q": "Why does chemotherapy cause hair loss as a side effect?",
+                "opts": [
+                    ("Chemotherapy targets all rapidly dividing cells — hair follicle cells divide rapidly, so they are also damaged", True),
+                    ("Chemotherapy drugs are toxic to the scalp skin only", False),
+                    ("The immune system attacks hair follicles as a reaction to chemotherapy drugs", False),
+                    ("Chemotherapy only causes hair loss when combined with radiotherapy", False)
+                ],
+                "wrong_explanations": {
+                    1: "Chemotherapy drugs are not scalp-specific — they circulate in the blood and affect rapidly dividing cells throughout the whole body.",
+                    2: "The immune reaction to chemotherapy doesn't specifically target hair follicles — the damage is from the drugs directly targeting dividing cells.",
+                    3: "Hair loss can occur from chemotherapy alone — it is caused by the drug mechanism, not only in combination with radiotherapy."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 9. PLANT TISSUES
+    # ══════════════════════════════════════════════
+    {
+        "id": "plant-tissues",
+        "title": "Plant Tissues and Organs",
+        "spec": "4.2.5",
+        "summary": "Describe the tissues found in plant organs and how they are adapted to their functions.",
+        "theory": [
+            {
+                "heading": "Plant Organs",
+                "content": "Plants are multicellular organisms with specialised organs, just like animals.\n\nThe main plant organs are:\nLEAF — the main site of photosynthesis and gas exchange.\nSTEM — provides support and transports substances between roots and leaves.\nROOT — anchors the plant and absorbs water and mineral ions from the soil.\nFLOWER — involved in reproduction.\n\nEach organ is made of different types of TISSUE, each adapted to its specific function."
+            },
+            {
+                "heading": "Tissues in the Leaf",
+                "content": "The leaf is the most important organ for photosynthesis. It contains several specialised tissues:\n\nEPIDERMIS (upper and lower):\nA thin, transparent layer covering the leaf surface.\nProduces a WAXY CUTICLE — a waterproof coating that reduces water loss by evaporation.\n\nPALISADE MESOPHYLL:\nFound in the upper part of the leaf — closest to sunlight.\nCells are tall and column-shaped, packed with many CHLOROPLASTS.\nThis is the main site of photosynthesis — receives maximum light.\n\nSPONGY MESOPHYLL:\nBelow the palisade layer.\nCells are loosely arranged with large AIR SPACES between them.\nAir spaces allow CO₂ to diffuse easily to photosynthesising cells.\nAlso allows O₂ produced by photosynthesis to diffuse out.\n\nGUARD CELLS and STOMATA:\nGuard cells are pairs of cells surrounding tiny pores called STOMATA (singular: stoma) on the lower leaf surface.\nStomata open to allow CO₂ in for photosynthesis and O₂ out — also allow water vapour to escape (transpiration).\nGuard cells control stomata opening: in the light, guard cells absorb water and become turgid → stomata OPEN. In the dark or when dehydrated, guard cells lose water → stomata CLOSE.\n\nXYLEM and PHLOEM:\nRun through the leaf as vascular bundles (veins).\nXylem brings water to the leaf. Phloem takes away sugars made by photosynthesis."
+            },
+            {
+                "heading": "Xylem Tissue",
+                "content": "Xylem is a tissue that transports WATER and dissolved MINERAL IONS from the roots upwards to the leaves.\n\nKey features of xylem cells:\nDEAD cells — no cytoplasm or nucleus, forming a completely hollow tube.\nNo end walls — cells are stacked end-to-end to form one continuous open column.\nWalls strengthened with LIGNIN — a hard, waterproof material that makes xylem very strong and prevents the tubes from collapsing.\nWater moves through xylem in one direction only — upwards.\n\nThe movement of water through xylem is driven by the TRANSPIRATION STREAM — water evaporating from leaves creates a pulling force that draws water up from the roots."
+            },
+            {
+                "heading": "Phloem Tissue",
+                "content": "Phloem is a tissue that transports dissolved SUGARS (mainly sucrose) from leaves to other parts of the plant. This process is called TRANSLOCATION.\n\nKey features of phloem cells:\nLIVING cells — unlike xylem, phloem cells are alive.\nSIEVE TUBES — cells with perforated end walls (sieve plates) that allow sugar solution to flow through.\nCOMPANION CELLS — next to each sieve tube cell, providing energy (ATP) for the active loading of sugars into the phloem.\n\nSugars travel in BOTH DIRECTIONS in phloem — from leaves (source) to roots, growing tips, fruits and other areas where sugar is needed (sinks)."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Xylem transports WATER and MINERALS. Phloem transports SUGARS. Students regularly mix these up. A good memory trick: Xylem = water (X for H2O is a stretch, but think: Xylem goes up like water). Phloem = food (sugars). Also: xylem cells are DEAD; phloem cells are LIVING.",
+        "key_note": "Xylem: water + minerals, upwards only, dead cells, lignified walls. Phloem: sugars (translocation), both directions, living cells. Stomata: CO₂ in, O₂ and water vapour out. Controlled by guard cells.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Plant Tissue to its Function",
+            "instruction": "Match each tissue to its role in the plant.",
+            "pairs": [
+                ("Xylem", "Transports water and mineral ions from roots to leaves — dead, hollow, lignified"),
+                ("Phloem", "Transports dissolved sugars from leaves to the rest of the plant — translocation"),
+                ("Palisade mesophyll", "Packed with chloroplasts near leaf surface — main site of photosynthesis"),
+                ("Spongy mesophyll", "Air spaces between cells — allows CO₂ and O₂ to diffuse easily"),
+                ("Guard cells", "Control opening and closing of stomata — regulate gas exchange and water loss"),
+                ("Waxy cuticle", "Waterproof covering on epidermis — reduces water loss from the leaf"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is transported in xylem?",
+                "opts": [
+                    ("Water and dissolved mineral ions — upwards from roots to leaves", True),
+                    ("Dissolved sugars from leaves to other parts of the plant", False),
+                    ("Oxygen produced by photosynthesis", False),
+                    ("Carbon dioxide for use in photosynthesis", False)
+                ],
+                "wrong_explanations": {
+                    1: "Dissolved sugars = PHLOEM (translocation). Xylem carries water and minerals only.",
+                    2: "Oxygen diffuses through air spaces in the spongy mesophyll and out through stomata — it doesn't travel in xylem.",
+                    3: "CO₂ diffuses through stomata into air spaces — it doesn't travel in xylem."
+                }
+            },
+            {
+                "q": "Why are xylem cells dead?",
+                "opts": [
+                    ("Dead cells have no contents — forming a completely hollow tube for water to flow through without obstruction", True),
+                    ("Xylem cells die because the lignin in their walls is toxic", False),
+                    ("Dead cells are lighter, helping water move upwards against gravity", False),
+                    ("Xylem cells die when the plant is no longer growing", False)
+                ],
+                "wrong_explanations": {
+                    1: "Lignin is not toxic — it strengthens the walls. The cells die as part of their normal development, leaving behind a hollow lignified tube.",
+                    2: "Dead cell content doesn't significantly change the weight of xylem — water moves upward due to the transpiration pull, not because of weight.",
+                    3: "Xylem cells die as they mature during normal development, regardless of whether the plant is actively growing — this is a programmed developmental process."
+                }
+            },
+            {
+                "q": "What is the role of stomata in leaves?",
+                "opts": [
+                    ("Allow CO₂ in for photosynthesis and O₂ out — also allow water vapour to escape during transpiration", True),
+                    ("Absorb water directly from the air into the leaf", False),
+                    ("Produce the waxy cuticle to reduce water loss", False),
+                    ("Store glucose produced by photosynthesis", False)
+                ],
+                "wrong_explanations": {
+                    1: "Stomata can absorb some water vapour in humid conditions, but their primary function is gas EXCHANGE, not water absorption.",
+                    2: "The waxy cuticle is produced by the EPIDERMIS cells — it is a secreted layer, not produced by stomata.",
+                    3: "Glucose storage as starch happens in chloroplasts and other cells — stomata are pores for gas exchange."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 10. TRANSPIRATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "transpiration",
+        "title": "Transpiration",
+        "spec": "4.2.5.2",
+        "summary": "Describe transpiration and the factors that affect its rate.",
+        "theory": [
+            {
+                "heading": "What is Transpiration?",
+                "content": "Transpiration is the evaporation of water from the leaves (and other aerial parts) of a plant.\n\nWater is absorbed by roots → travels up the stem through xylem → reaches the leaves → evaporates through stomata as water vapour into the atmosphere.\n\nThis continuous movement of water from roots to leaves through the xylem is called the TRANSPIRATION STREAM.\n\nHow it works: as water evaporates from leaf cells into the air spaces and out through stomata, the cells become slightly drier → they absorb water from neighbouring cells by osmosis → this creates a pulling force that draws water up through the xylem all the way from the roots.\n\nThis pull is called TRANSPIRATION PULL — it works because water molecules are attracted to each other (cohesion) and to the xylem walls (adhesion), forming a continuous column of water."
+            },
+            {
+                "heading": "Why Transpiration Matters",
+                "content": "Transpiration serves several important functions:\n\nWATER SUPPLY — transports water from roots to leaves where it is needed for photosynthesis.\n\nMINERAL TRANSPORT — mineral ions dissolved in water are carried up from the roots to the leaves.\n\nCOOLING — evaporation of water from leaf surfaces has a cooling effect — similar to sweating in humans.\n\nHowever, too much transpiration is a problem — excessive water loss can cause wilting and ultimately death. Plants have several adaptations to reduce water loss (waxy cuticle, closing stomata, reduced leaf surface area in dry environments)."
+            },
+            {
+                "heading": "Factors That Increase the Rate of Transpiration",
+                "content": "Four main factors affect how fast water evaporates from leaves:\n\n1. TEMPERATURE:\nHigher temperature → more kinetic energy → water molecules evaporate faster from leaf surface → steeper concentration gradient between leaf and air → faster transpiration.\n\n2. LIGHT INTENSITY:\nBrighter light → stomata open WIDER to allow more CO₂ in for photosynthesis → more water vapour can escape → faster transpiration.\nIn the dark, stomata close → transpiration almost stops.\n\n3. HUMIDITY:\nLow humidity (dry air) → large difference in water vapour concentration between inside the leaf and outside → steep diffusion gradient → faster transpiration.\nHigh humidity (moist air) → gradient is smaller → slower transpiration.\n\n4. AIR MOVEMENT / WIND:\nWind blows away water vapour that has accumulated near the stomata → prevents the air near the leaf becoming saturated → maintains a steep diffusion gradient → faster transpiration.\nIn still air, a layer of moist air builds up around the leaf → reduces the gradient → slows transpiration."
+            },
+            {
+                "heading": "Measuring Transpiration — The Potometer",
+                "content": "A POTOMETER is an apparatus used to measure the rate of water uptake by a plant shoot — used as an indicator of transpiration rate.\n\nHow it works:\nA leafy shoot is placed in a sealed tube of water with a capillary tube attached.\nAs the plant transpires and takes up water, an air bubble in the capillary tube moves towards the plant.\nThe DISTANCE the bubble moves per unit time = rate of water uptake.\n\nThe potometer measures water UPTAKE, not transpiration directly — but the two are closely related.\n\nYou can investigate the effect of each environmental factor by:\nChanging temperature (place near heater or in cold room).\nChanging light intensity (move lamp closer/further).\nChanging humidity (blow dry air at the plant or enclose in moist environment).\nChanging air movement (use a fan)."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Transpiration is fastest in HOT, BRIGHT, DRY and WINDY conditions. Students often get humidity wrong — LOW humidity means DRY air which INCREASES transpiration rate (bigger concentration gradient for water vapour). HIGH humidity SLOWS transpiration. Think of it like this: dry air 'pulls' the water out of the leaf faster.",
+        "key_note": "Transpiration: water evaporates from stomata → transpiration pull draws water up xylem from roots. Fastest in: high temperature, high light intensity, low humidity, high wind. Measured with a potometer.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Does this Speed Up or Slow Down Transpiration?",
+            "instruction": "Sort each condition — does it increase or decrease the rate of transpiration?",
+            "pairs": [
+                ("Increases transpiration", "High temperature — more kinetic energy, faster evaporation"),
+                ("Increases transpiration", "Bright light — stomata open wider, more water vapour escapes"),
+                ("Increases transpiration", "Low humidity (dry air) — steep concentration gradient for water vapour"),
+                ("Increases transpiration", "Wind — blows away moist air near stomata, maintains steep gradient"),
+                ("Decreases transpiration", "High humidity — gradient between leaf and air is reduced"),
+                ("Decreases transpiration", "Darkness — stomata close, water vapour cannot escape"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is transpiration?",
+                "opts": [
+                    ("The evaporation of water from the leaves of a plant through the stomata", True),
+                    ("The transport of dissolved sugars from leaves to the rest of the plant", False),
+                    ("The absorption of water by root hair cells from the soil", False),
+                    ("The process of photosynthesis producing water as a product", False)
+                ],
+                "wrong_explanations": {
+                    1: "Transport of dissolved sugars = TRANSLOCATION (in phloem). Transpiration is specifically water evaporation from leaves.",
+                    2: "Water absorption by roots = OSMOSIS through root hair cells. Transpiration is what happens at the LEAVES end.",
+                    3: "Photosynthesis produces OXYGEN, not water — water is a REACTANT of photosynthesis (6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂)."
+                }
+            },
+            {
+                "q": "A plant is moved from a humid greenhouse to a dry, windy environment. What happens to its transpiration rate?",
+                "opts": [
+                    ("Transpiration increases significantly — lower humidity and wind both increase the rate", True),
+                    ("Transpiration decreases — the plant closes its stomata to conserve water", False),
+                    ("Transpiration stays the same — the two factors cancel each other out", False),
+                    ("Transpiration increases due to humidity but decreases due to wind — net effect is zero", False)
+                ],
+                "wrong_explanations": {
+                    1: "The plant may eventually close stomata if it loses too much water — but the immediate effect of moving to dry, windy conditions is faster transpiration. Stomata closing is a response to stress, not an immediate automatic reaction.",
+                    2: "The two factors don't cancel out — both low humidity AND wind INCREASE transpiration rate. They act in the same direction.",
+                    3: "Both low humidity and wind INCREASE transpiration — humidity and wind both affect the concentration gradient for water vapour in the same way (they both maintain a steep gradient)."
+                }
+            },
+            {
+                "q": "Why do plants transpire faster in brighter light?",
+                "opts": [
+                    ("Brighter light causes stomata to open wider — allowing more water vapour to escape", True),
+                    ("Brighter light increases the temperature of the leaf, causing faster evaporation", False),
+                    ("Brighter light increases the rate of photosynthesis, which produces more water", False),
+                    ("Brighter light makes chlorophyll absorb water directly from the air", False)
+                ],
+                "wrong_explanations": {
+                    1: "Brighter light does warm leaves slightly — but the PRIMARY mechanism is guard cells responding to light by opening stomata wider.",
+                    2: "Photosynthesis uses water as a REACTANT — it consumes water, not produces it. Oxygen is the gas product.",
+                    3: "Chlorophyll absorbs LIGHT energy — it does not absorb water from the air."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 11. TRANSLOCATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "translocation",
+        "title": "Translocation",
+        "spec": "4.2.5.3",
+        "summary": "Describe translocation and how it differs from transpiration.",
+        "theory": [
+            {
+                "heading": "What is Translocation?",
+                "content": "Translocation is the transport of dissolved SUGARS (mainly SUCROSE) through the PHLOEM from where they are produced to where they are needed or stored.\n\nSource → Sink:\nSOURCE — the place where sugars are made or released (mainly the LEAVES, where photosynthesis takes place).\nSINK — any place where sugars are used or stored:\nGrowing shoot tips — sugars needed for cell division and growth.\nRoots — sugars needed for respiration and converted to starch for storage.\nFruits and seeds — sugars needed for development.\nFlowers — sugars needed for reproduction.\n\nUnlike the transpiration stream, translocation can move sugars in BOTH DIRECTIONS in the phloem — up to growing tips AND down to roots and storage organs."
+            },
+            {
+                "heading": "How Translocation Works",
+                "content": "Sucrose is ACTIVELY LOADED into phloem sieve tubes at the source (leaves) using energy (ATP) from companion cells.\n\nThis creates a high concentration of sucrose in the phloem at the source end.\n\nWater enters the phloem by osmosis (moving from xylem, where it's more dilute) → increases pressure at the source end.\n\nThis pressure drives the flow of sugar solution THROUGH the phloem towards the sink.\n\nAt the sink, sucrose is actively UNLOADED from the phloem and used or converted to starch for storage.\n\nThis reduces the concentration at the sink end, maintaining the pressure difference and keeping the flow going."
+            },
+            {
+                "heading": "Transpiration vs Translocation — Key Differences",
+                "content": "Students often confuse these two transport processes. Here is a clear comparison:\n\nTRANSPIRATION:\nSubstance moved: WATER (and dissolved minerals)\nVessel: XYLEM\nDirection: UPWARDS ONLY (roots → leaves)\nCells: DEAD cells\nDriving force: evaporation from leaves creating transpiration pull\nEnergy: PASSIVE (no ATP needed)\n\nTRANSLOCATION:\nSubstance moved: SUGARS (sucrose)\nVessel: PHLOEM\nDirection: BOTH DIRECTIONS (source → sink)\nCells: LIVING cells\nDriving force: active loading of sucrose creates pressure\nEnergy: ACTIVE (ATP required to load/unload sucrose)"
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Translocation = SUGARS in PHLOEM. Transpiration = WATER in XYLEM. These are the two most commonly confused terms in plant biology. Translocation moves in BOTH directions — transpiration only goes UPWARDS. Phloem cells are LIVING — xylem cells are DEAD.",
+        "key_note": "Translocation: sucrose in phloem, source (leaves) to sink (roots, fruits, tips), both directions, living cells, uses ATP. NOT the same as transpiration (water in xylem, upwards only, dead cells, passive).",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Transpiration or Translocation?",
+            "instruction": "Sort each statement into transpiration or translocation.",
+            "pairs": [
+                ("Transpiration", "Water moves up through xylem from roots to leaves — pulled by evaporation"),
+                ("Translocation", "Sucrose moves through phloem from leaves to growing roots and fruits"),
+                ("Transpiration", "Involves dead, hollow, lignified cells"),
+                ("Translocation", "Can move substances both upwards and downwards in the plant"),
+                ("Transpiration", "Rate increases in hot, bright, dry and windy conditions"),
+                ("Translocation", "Requires ATP energy — companion cells supply energy to sieve tubes"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is the main substance transported in phloem?",
+                "opts": [
+                    ("Sucrose (dissolved sugar) — from leaves to other parts of the plant", True),
+                    ("Water and dissolved mineral ions — from roots to leaves", False),
+                    ("Oxygen produced by photosynthesis", False),
+                    ("Carbon dioxide for use in photosynthesis", False)
+                ],
+                "wrong_explanations": {
+                    1: "Water and minerals = XYLEM transport (transpiration stream). Phloem carries sugars.",
+                    2: "Oxygen diffuses through air spaces and out through stomata — it is not transported in phloem.",
+                    3: "CO₂ diffuses through stomata into the leaf — it is not transported in phloem."
+                }
+            },
+            {
+                "q": "In which direction does translocation move?",
+                "opts": [
+                    ("Both upwards and downwards — from source (leaves) to any sink where sugar is needed", True),
+                    ("Upwards only — like the transpiration stream in xylem", False),
+                    ("Downwards only — gravity pulls the sugar solution down to the roots", False),
+                    ("Outwards only — from the centre of the stem to the leaf surfaces", False)
+                ],
+                "wrong_explanations": {
+                    1: "Upwards only = TRANSPIRATION in XYLEM. Translocation in phloem moves in both directions depending on where the sink is.",
+                    2: "If translocation were downwards only, growing shoot tips at the top of the plant could never receive sugars — but they clearly do.",
+                    3: "Translocation moves along the length of the plant (up and down), not outwards from centre to leaf surface."
+                }
+            },
+            {
+                "q": "What is a 'sink' in the context of translocation?",
+                "opts": [
+                    ("Any part of the plant where sugars are used or stored — e.g. roots, fruits, growing tips", True),
+                    ("The leaves — where sugars are produced by photosynthesis", False),
+                    ("The phloem vessels that transport sugars through the plant", False),
+                    ("The stomata — where water and gases are exchanged", False)
+                ],
+                "wrong_explanations": {
+                    1: "The leaves are the SOURCE — where sugars are MADE. A sink is the DESTINATION where sugars are used or stored.",
+                    2: "The phloem is the VESSEL — not the destination. Sinks are the organs that USE or STORE the sugars.",
+                    3: "Stomata are gas exchange pores — they have no role in the source-sink relationship of translocation."
+                }
+            }
         ]
     },
 ],
