@@ -8,7 +8,8 @@ Organisation:         11 subtopics (updated)
 Infection & Response:  8 subtopics (updated)
 Bioenergetics:         7 subtopics (updated)
 Homeostasis:           8 subtopics (updated)
-All other topics: unchanged
+Inheritance:          12 subtopics (updated)
+Ecology: unchanged
 """
 
 BIOLOGY_COLOR = "#6BCB77"
@@ -4141,104 +4142,994 @@ BIOLOGY_SUBTOPICS_ALL = {
 ],
 
 "inheritance": [
+
+
+    # ══════════════════════════════════════════════
+    # 1. SEXUAL AND ASEXUAL REPRODUCTION
+    # ══════════════════════════════════════════════
     {
-        "id": "dna-genetics",
-        "title": "DNA, Inheritance and Genetic Crosses",
-        "spec": "4.6",
-        "summary": "Describe DNA structure, inheritance patterns and construct Punnett squares.",
+        "id": "sexual-asexual-reproduction",
+        "title": "Sexual and Asexual Reproduction",
+        "spec": "4.6.1",
+        "summary": "Compare sexual and asexual reproduction and explain the role of meiosis in sexual reproduction.",
         "theory": [
-            {"heading": "DNA and Genes",
-             "content": "DNA (deoxyribonucleic acid) is a double helix polymer of nucleotides.\nLocated in chromosomes in the nucleus.\nA gene = a section of DNA that codes for a specific protein.\nHumans have 46 chromosomes (23 pairs).\nAlleles = different versions of the same gene (e.g. blue eye allele vs brown eye allele)."},
-            {"heading": "Dominant and Recessive Alleles",
-             "content": "Dominant allele (written as capital letter, e.g. B): expressed even if only one copy is present.\nRecessive allele (lower case, e.g. b): only expressed if TWO copies are present.\nGenotype: the alleles present (e.g. BB, Bb, bb).\nPhenotype: the observable characteristic (e.g. brown eyes, blue eyes).\nHomozygous: both alleles the same (BB or bb). Heterozygous: different alleles (Bb)."},
-            {"heading": "Punnett Squares",
-             "content": "A grid used to predict offspring ratios.\nExample: Bb × Bb (both parents heterozygous):\nOffspring: BB (1), Bb (2), bb (1) → 3:1 ratio of dominant:recessive phenotype.\n75% show dominant phenotype. 25% show recessive.\nBb is a 'carrier' — has the recessive allele but doesn't show it."},
-            {"heading": "Inherited Diseases",
-             "content": "Cystic fibrosis: caused by recessive allele (f). Affects cell membranes → thick mucus in lungs/gut.\nPolydactyly: caused by dominant allele (P). Extra fingers/toes.\nSickle cell anaemia: recessive. Abnormal haemoglobin → sickle-shaped red blood cells.\nGenetic testing can identify carriers — ethical considerations around privacy and insurance."}
+            {
+                "heading": "Asexual Reproduction",
+                "content": "ASEXUAL REPRODUCTION involves only ONE parent organism — no gametes (sex cells) are involved.\n\nNew offspring are produced by MITOSIS — cell division that creates genetically IDENTICAL copies of the parent.\n\nOffspring from asexual reproduction are called CLONES — they are genetically identical to the parent and to each other.\n\nADVANTAGES:\nFast — large numbers of offspring can be produced very quickly.\nNo mate needed — energy efficient.\nAll offspring are well-adapted if the parent is well-adapted to its environment.\nUseful in stable environments where the parent's traits are advantageous.\n\nDISADVANTAGES:\nNo genetic variation — all offspring identical.\nIf the environment changes or a new disease emerges, ALL offspring are equally vulnerable.\nCannot adapt to new conditions.\n\nEXAMPLES: Bacteria (binary fission), plants via runners (strawberries), bulbs (daffodils), tubers (potatoes), budding (hydra), some fungi."
+            },
+            {
+                "heading": "Sexual Reproduction",
+                "content": "SEXUAL REPRODUCTION involves TWO parent organisms — each contributes a GAMETE (sex cell).\n\nGametes are produced by MEIOSIS — a special type of cell division that HALVES the chromosome number.\n\nFERTILISATION: a male gamete and female gamete FUSE to form a ZYGOTE (fertilised egg), restoring the full chromosome number.\n\nBecause DNA from TWO different individuals is combined, offspring are genetically DIFFERENT from both parents and from each other.\n\nADVANTAGES:\nCreates genetic VARIATION — offspring differ from parents and from each other.\nVariation means some offspring may be better adapted if the environment changes.\nDrives EVOLUTION — natural selection can act on the variation produced.\n\nDISADVANTAGES:\nRequires two parents — time and energy needed to find a mate.\nSlower — fewer offspring produced.\nSome offspring may inherit unfavourable gene combinations."
+            },
+            {
+                "heading": "Meiosis — Producing Gametes",
+                "content": "MEIOSIS is the type of cell division used to produce gametes (sperm, eggs, pollen).\n\nStarting cell: a body cell with 46 chromosomes (23 pairs).\n\nIn meiosis:\nThe chromosome number is HALVED — each gamete receives 23 chromosomes (one from each pair).\nFOUR daughter cells are produced.\nEach daughter cell is GENETICALLY DIFFERENT from the others.\n\nWHY halve the chromosome number? When two gametes fuse at fertilisation, 23 + 23 = 46 — restoring the correct number. If gametes had 46 chromosomes each, the offspring would have 92 — doubling every generation.\n\nGenetic variation in meiosis arises because:\nChromosomes are shuffled before dividing (independent assortment).\nSections of chromosomes can be exchanged between homologous pairs (crossing over).\nThis means every gamete has a unique combination of alleles."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "A carrier of a recessive condition (Ff) has the allele but does NOT show the disease — they appear normal but can pass it on. Two carriers have a 25% chance of an affected child. Students often say carriers 'have the disease mildly' — wrong!",
-        "key_note": "Dominant (capital) = shown if even one copy. Recessive (lowercase) = only shown if two copies present.",
-        "higher": "Sex determination: females = XX, males = XY. Sperm determine sex — 50% carry X, 50% carry Y. X-linked inheritance: recessive alleles on the X chromosome affect males more (only one X).",
-        "triple_only": None, "rp": None,
+        "common_mistake": "MITOSIS produces IDENTICAL cells (used for growth and repair). MEIOSIS produces GAMETES with HALF the chromosome number — and they are genetically different from each other. Students often confuse these two. Remember: MEiosis → gamEtes. Mitosis → most body cells.",
+        "key_note": "Asexual: 1 parent, mitosis, clones, fast, no variation. Sexual: 2 parents, meiosis + fertilisation, variation, drives evolution. Meiosis halves chromosome number: 46 → 23. Fertilisation restores: 23 + 23 = 46.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Genetics Vocabulary Match",
-            "instruction": "Match each term to its correct definition.",
+            "title": "Sexual or Asexual Reproduction?",
+            "instruction": "Sort each feature into sexual or asexual reproduction.",
             "pairs": [
-                ("Genotype", "The alleles present in an organism (e.g. Bb)"),
-                ("Phenotype", "The observable characteristic expressed (e.g. brown eyes)"),
-                ("Homozygous", "Both alleles are the same (BB or bb)"),
-                ("Heterozygous", "Alleles are different (Bb)"),
-                ("Dominant allele", "Expressed even if only one copy is present"),
-                ("Recessive allele", "Only expressed if two copies are present"),
-                ("Carrier", "Has one recessive allele but doesn't show the condition"),
+                ("Asexual", "Offspring are genetically identical clones of the parent — produced by mitosis"),
+                ("Sexual", "Involves fusion of gametes — offspring are genetically different from both parents"),
+                ("Asexual", "Only one parent needed — fast, energy efficient"),
+                ("Sexual", "Creates genetic variation — allows populations to adapt and evolve"),
+                ("Sexual", "Gametes produced by meiosis — chromosome number halved"),
+                ("Asexual", "Strawberry plants reproducing via runners — all offspring identical"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "In the cross Bb × Bb, what fraction of offspring will show the recessive phenotype (bb)?",
-             "opts": [("1/4 (25%)", True), ("1/2 (50%)", False), ("3/4 (75%)", False), ("0% — recessive can't appear if parents are heterozygous", False)],
-             "wrong_explanations": {1: "50% would be the chance if one parent was homozygous recessive. Bb × Bb gives 1 BB : 2 Bb : 1 bb = 25% bb.", 2: "75% show the DOMINANT phenotype (BB and Bb). Only 25% are bb.", 3: "Two carriers can absolutely produce a recessive child — 25% chance (bb)."}},
-            {"q": "Cystic fibrosis is caused by a recessive allele (f). Two carriers (Ff × Ff) have a child. What are the chances of the child being affected?",
-             "opts": [("25%", True), ("50%", False), ("75%", False), ("0% — carriers can't have affected children", False)],
-             "wrong_explanations": {1: "50% would mean the trait is dominant or one parent is homozygous — Ff × Ff gives 25% ff (affected).", 2: "75% is the UNAFFECTED proportion. Only 25% (ff) will be affected.", 3: "Carriers absolutely CAN have affected children — 25% chance with two carriers."}},
-            {"q": "What is a dominant allele?",
-             "opts": [("Expressed in the phenotype even if only one copy is present", True), ("Only expressed when two copies are present", False), ("A stronger, better version of a gene", False), ("An allele that causes disease", False)],
-             "wrong_explanations": {1: "Only expressed when two copies = RECESSIVE allele.", 2: "Dominant and recessive don't imply 'better' or 'stronger' — they're just expression patterns.", 3: "Dominant alleles can cause disease (polydactyly) or be normal — 'dominant' refers to expression pattern."}},
-            {"q": "What is the sex chromosome combination in a human male?",
-             "opts": [("XY", True), ("XX", False), ("YY", False), ("X only", False)],
-             "wrong_explanations": {1: "XX = FEMALE. Males have one X and one Y chromosome.", 2: "YY is not viable — sperm carry either X or Y, but the egg always contributes X.", 3: "X only = Turner syndrome (a condition) — normal males are XY."}},
-            {"q": "A child inherits cystic fibrosis. Both parents appear healthy. What are the parents' genotypes?",
-             "opts": [("Both parents are carriers — Ff × Ff", True), ("One parent is FF, one is ff", False), ("Both parents are FF", False), ("One parent has CF — Ff × ff", False)],
-             "wrong_explanations": {1: "If one parent is ff, they would HAVE cystic fibrosis and appear unwell — the question says both parents are healthy.", 2: "If both parents are FF, all children would be FF — impossible to have an ff child.", 3: "Both parents appear healthy but have the condition — only Ff × Ff allows healthy parents to have an ff child."}}
+            {
+                "q": "What is the main genetic advantage of sexual reproduction over asexual reproduction?",
+                "opts": [
+                    ("It creates genetic variation — offspring differ from parents, allowing adaptation to changing environments", True),
+                    ("It is faster — more offspring are produced in less time", False),
+                    ("Only one parent is needed — saving time and energy", False),
+                    ("All offspring are perfectly adapted — no risk of poor survival", False)
+                ],
+                "wrong_explanations": {
+                    1: "ASEXUAL reproduction is faster — producing large numbers of identical offspring quickly. Sexual reproduction is slower but creates variation.",
+                    2: "Requiring only ONE parent = ASEXUAL reproduction. Sexual reproduction needs two parents.",
+                    3: "It is ASEXUAL reproduction where all offspring are identical clones of a well-adapted parent. Sexual reproduction means offspring vary."
+                }
+            },
+            {
+                "q": "Why does meiosis halve the chromosome number?",
+                "opts": [
+                    ("So that when two gametes fuse at fertilisation, the offspring has the correct number (46) and not double (92)", True),
+                    ("To create more genetic variation by reducing the number of genes", False),
+                    ("Because cells with fewer chromosomes divide more easily", False),
+                    ("Meiosis does not halve chromosome number — it doubles it", False)
+                ],
+                "wrong_explanations": {
+                    1: "Fewer chromosomes do allow more combinations, but the PRIMARY reason for halving is to prevent the chromosome number doubling each generation.",
+                    2: "Cell division speed is not the biological reason — the function is specifically to allow fertilisation to restore the correct diploid number.",
+                    3: "Meiosis HALVES chromosome number (46 → 23). Doubling occurs at fertilisation when two haploid gametes combine to make a diploid zygote."
+                }
+            },
+            {
+                "q": "Bacteria reproduce by binary fission — splitting into two identical cells. What type of reproduction is this?",
+                "opts": [
+                    ("Asexual reproduction — one parent, offspring are genetically identical clones", True),
+                    ("Sexual reproduction — two bacteria combine to share genetic material", False),
+                    ("Meiosis — the chromosome number is halved in each new bacterium", False),
+                    ("Fertilisation — two gametes fuse to form a new bacterium", False)
+                ],
+                "wrong_explanations": {
+                    1: "Some bacteria do exchange genetic material (conjugation) — but binary fission specifically produces identical copies from one parent. It is asexual.",
+                    2: "Binary fission produces identical cells from ONE parent — it does not involve halving chromosome numbers. Bacteria are haploid anyway.",
+                    3: "Gametes are specialised sex cells — bacteria don't produce gametes in binary fission."
+                }
+            }
         ]
     },
+
+    # ══════════════════════════════════════════════
+    # 2. DNA AND THE GENOME
+    # ══════════════════════════════════════════════
     {
-        "id": "evolution-classification",
-        "title": "Evolution, Natural Selection and Classification",
-        "spec": "4.6.4",
-        "summary": "Describe natural selection, evidence for evolution and modern classification.",
+        "id": "dna-genome",
+        "title": "DNA and the Genome",
+        "spec": "4.6.2",
+        "summary": "Describe the structure of DNA, what genes are, and what the human genome project achieved.",
         "theory": [
-            {"heading": "Darwin's Theory of Natural Selection",
-             "content": "1. All organisms show variation (differences in characteristics).\n2. All populations overproduce offspring — struggle for survival.\n3. Some variants are better adapted to the environment — greater chance of survival.\n4. Better-adapted individuals survive and reproduce — passing on favourable alleles.\n5. Over many generations, advantageous traits become more common in the population."},
-            {"heading": "Evidence for Evolution",
-             "content": "Fossil record: shows gradual changes in organisms over time.\nAntibiotic resistance: bacteria evolve resistance rapidly — direct observation of natural selection.\nHomologous structures: similar bone structure in different organisms (e.g. human arm, whale flipper, bat wing) suggest common ancestor.\nDNA comparisons: closely related species have more similar DNA sequences."},
-            {"heading": "Classification",
-             "content": "Traditional classification: based on physical characteristics (Linnaeus, 1700s).\nModern classification: based on evolutionary relationships and DNA evidence.\nThe five kingdoms (simplified): animals, plants, fungi, prokaryotes, protists.\nBinomial nomenclature: two-part Latin name — genus + species (e.g. Homo sapiens).\nPhylogenetic trees show evolutionary relationships between species."},
-            {"heading": "Selective Breeding and Genetic Engineering",
-             "content": "Selective breeding: humans choose organisms with desired traits to breed together.\nOver generations: traits enhanced (e.g. large wheat seeds, docile cattle, fast racehorses).\nGenetic engineering: inserting a specific gene into an organism's DNA.\nExamples: insulin-producing bacteria (human insulin gene inserted), GM crops (herbicide resistant, higher yield).\nBoth have ethical considerations — reducing genetic diversity, unknown long-term effects."}
+            {
+                "heading": "DNA Structure",
+                "content": "DNA (Deoxyribonucleic Acid) is the molecule that carries genetic information in all living organisms.\n\nDNA is a POLYMER made of repeating units called NUCLEOTIDES.\n\nEach nucleotide contains:\nA deoxyribose SUGAR.\nA PHOSPHATE group.\nOne of four BASES: Adenine (A), Thymine (T), Cytosine (C) or Guanine (G).\n\nTwo strands of nucleotides wind around each other to form the famous DOUBLE HELIX — like a twisted ladder.\n\nThe strands are held together by hydrogen bonds between complementary BASE PAIRS:\nA always pairs with T (adenine — thymine).\nC always pairs with G (cytosine — guanine).\n\nThis base pairing rule (A-T, C-G) is fundamental — it allows DNA to be replicated accurately before cell division."
+            },
+            {
+                "heading": "Genes and Chromosomes",
+                "content": "A GENE is a specific sequence of DNA bases that codes for the production of a specific PROTEIN.\n\nThe sequence of bases in a gene determines the sequence of AMINO ACIDS in a protein — different base sequences produce different proteins with different functions.\n\nGenes are located on CHROMOSOMES — long, tightly coiled DNA molecules.\n\nHumans have 46 chromosomes arranged as 23 PAIRS. One chromosome in each pair came from the mother; one from the father.\n\nEach chromosome contains thousands of genes — there are approximately 20,000–25,000 protein-coding genes in the human genome.\n\nALLELES are different versions of the same gene, caused by slightly different base sequences at the same position on homologous chromosomes."
+            },
+            {
+                "heading": "The Human Genome",
+                "content": "The GENOME is the complete set of genetic information in an organism — every gene in every chromosome.\n\nThe HUMAN GENOME PROJECT was an international scientific collaboration that:\nRan from 1990 to 2003.\nMapped and sequenced all approximately 3 BILLION base pairs of the human genome.\nIdentified the location and sequence of all human genes.\n\nWhy it matters:\nIdentifying genes linked to INHERITED DISEASES — e.g. BRCA1/2 (breast cancer risk), cystic fibrosis gene.\nDeveloping PERSONALISED MEDICINE — treatments tailored to an individual's genetic make-up.\nUnderstanding HUMAN EVOLUTION and our relationship to other species.\nForensic science — DNA profiling to identify individuals.\nUnderstanding gene function in health and disease."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "Natural selection acts on VARIATION that already EXISTS in a population — it does NOT cause mutations. Evolution is the change in allele frequency over many generations. Individuals don't evolve; populations do.",
-        "key_note": "Natural selection: variation → selection pressure → survival of the fittest → reproduction → allele frequency changes over generations.",
-        "higher": "Speciation: populations become reproductively isolated (geographic barrier etc) → different selection pressures → allele frequencies diverge → can no longer interbreed = new species.",
-        "triple_only": None, "rp": None,
+        "common_mistake": "A GENE is not the same as a CHROMOSOME. A chromosome contains THOUSANDS of genes. The GENOME is the COMPLETE set of ALL genetic information — all genes on all chromosomes. Base pairing: A pairs with T only. C pairs with G only. Never A-G or C-T.",
+        "key_note": "DNA = double helix. A-T and C-G base pairs. Gene = section of DNA coding for a protein. Chromosome = contains thousands of genes. Genome = complete genetic information of an organism. Human genome: ~20,000 genes, ~3 billion base pairs.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Match the Evidence to what it Supports",
-            "instruction": "Match each piece of evidence to what it demonstrates about evolution.",
+            "title": "DNA and Genome Vocabulary",
+            "instruction": "Match each term to its correct definition.",
             "pairs": [
-                ("Fossil record", "Shows gradual changes in organisms over millions of years"),
-                ("Antibiotic resistance in bacteria", "Direct observation of natural selection happening rapidly"),
-                ("Homologous structures (e.g. limb bones)", "Similar bone structure in different species suggests common ancestor"),
-                ("DNA sequence comparisons", "More similar DNA = more closely related species"),
+                ("Nucleotide", "The monomer unit of DNA — contains a sugar, phosphate and one base"),
+                ("Gene", "A specific sequence of DNA bases that codes for a particular protein"),
+                ("Chromosome", "A long coiled DNA molecule — contains thousands of genes"),
+                ("Allele", "A different version of the same gene — slightly different base sequence"),
+                ("Genome", "The complete set of genetic information in an organism"),
+                ("Base pairing", "A always pairs with T; C always pairs with G — holds DNA strands together"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "What provides the variation in a population that natural selection acts on?",
-             "opts": [("Mutations and sexual reproduction", True), ("Natural selection itself creates variation", False), ("All members of a species are identical", False), ("The environment creates new traits directly", False)],
-             "wrong_explanations": {1: "Natural selection SELECTS from existing variation — it doesn't create it.", 2: "Members of a species show variation in traits — that's what makes selection possible.", 3: "The environment selects for or against traits — it doesn't directly change DNA to create new traits."}},
-            {"q": "Bacteria develop antibiotic resistance. How does this happen through natural selection?",
-             "opts": [("Resistant mutations already existed — antibiotic kills non-resistant bacteria, resistant ones survive and reproduce", True), ("Bacteria learn to resist antibiotics over time", False), ("Antibiotics cause bacteria to mutate into resistant forms", False), ("All bacteria become resistant at the same time", False)],
-             "wrong_explanations": {1: "Bacteria don't 'learn' — they can't choose. Natural selection: pre-existing resistant variants survive.", 2: "Antibiotics don't cause mutations — they select FROM pre-existing mutations.", 3: "Resistance spreads through the population as resistant bacteria have more offspring — not all at once."}},
-            {"q": "What is binomial nomenclature?",
-             "opts": [("A two-part Latin naming system — genus + species (e.g. Homo sapiens)", True), ("A system based on counting chromosomes", False), ("Classification into five kingdoms", False), ("A method of measuring biodiversity", False)],
-             "wrong_explanations": {1: "Chromosome counting is a technique in genetics — not the naming system.", 2: "Five kingdoms is a classification SYSTEM — binomial nomenclature is specifically about the two-part name.", 3: "Biodiversity indices measure variety of species — binomial nomenclature is the naming convention."}},
-            {"q": "Human arms, whale flippers and bat wings have similar bone structures. What does this suggest?",
-             "opts": [("They share a common ancestor — the bones evolved differently for different functions", True), ("All species developed the same bones independently", False), ("The bones are made of the same material", False), ("These species all live in similar environments", False)],
-             "wrong_explanations": {1: "Convergent evolution can produce similar structures independently — but homologous structures (same bones, different functions) specifically suggest common ancestry.", 2: "All bones are made of similar materials (calcium phosphate) — but structure is what matters here.", 3: "Bats fly, humans walk, whales swim — very different environments. The shared bone structure points to ancestry, not environment."}}
+            {
+                "q": "In DNA, which bases pair together?",
+                "opts": [
+                    ("A with T, and C with G", True),
+                    ("A with G, and C with T", False),
+                    ("A with C, and G with T", False),
+                    ("All four bases pair randomly", False)
+                ],
+                "wrong_explanations": {
+                    1: "Wrong pairing — A pairs with T (2 hydrogen bonds) and C pairs with G (3 hydrogen bonds). A-G pairings do not occur.",
+                    2: "Wrong pairing — A-C and G-T pairings do not occur in DNA. Base pairing is strictly A-T and C-G.",
+                    3: "Base pairing in DNA is NOT random — it is strictly determined by molecular structure. A-T and C-G only."
+                }
+            },
+            {
+                "q": "What is a gene?",
+                "opts": [
+                    ("A specific sequence of DNA bases that codes for a particular protein", True),
+                    ("A complete chromosome containing all the genetic information", False),
+                    ("A unit of heredity that controls physical appearance only", False),
+                    ("Any section of DNA — all DNA constitutes genes", False)
+                ],
+                "wrong_explanations": {
+                    1: "A complete chromosome contains thousands of genes — it is not itself a gene.",
+                    2: "Genes code for proteins, which then influence characteristics — but genes control far more than physical appearance (e.g. enzyme production, cell signalling).",
+                    3: "Not all DNA codes for proteins — a significant portion of the genome is non-coding DNA. Genes are specifically the protein-coding sequences."
+                }
+            },
+            {
+                "q": "What was the Human Genome Project?",
+                "opts": [
+                    ("An international project that sequenced all ~3 billion base pairs of human DNA and mapped all human genes", True),
+                    ("A project to create genetically modified humans with improved characteristics", False),
+                    ("A database of all known genetic diseases and their cures", False),
+                    ("A study comparing the DNA of humans to chimpanzees", False)
+                ],
+                "wrong_explanations": {
+                    1: "The Human Genome Project was about SEQUENCING and MAPPING the genome — not about genetically modifying humans.",
+                    2: "While comparisons with other species were made using genome data, the primary goal was mapping and sequencing the HUMAN genome itself.",
+                    3: "While the HGP has helped identify disease genes, it was a mapping and sequencing project — not a medical treatment database."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 3. GENETIC INHERITANCE
+    # ══════════════════════════════════════════════
+    {
+        "id": "genetic-inheritance",
+        "title": "Genetic Inheritance",
+        "spec": "4.6.3",
+        "summary": "Explain dominant and recessive inheritance and use Punnett squares to predict offspring ratios.",
+        "theory": [
+            {
+                "heading": "Alleles — Dominant and Recessive",
+                "content": "Each individual has TWO copies of most genes — one on each chromosome of a homologous pair. These copies may be the same allele or different alleles.\n\nDOMINANT allele:\nExpressed in the phenotype (physical characteristic) even if ONLY ONE COPY is present.\nWritten as a CAPITAL letter (e.g. B for brown eyes).\n\nRECESSIVE allele:\nOnly expressed if TWO COPIES are present — hidden by dominant allele if only one copy exists.\nWritten as a LOWERCASE letter (e.g. b for blue eyes).\n\nGENOTYPE — the alleles an organism has (e.g. BB, Bb, bb).\nPHENOTYPE — the observable characteristic expressed (e.g. brown eyes, blue eyes).\n\nHOMOZYGOUS — both alleles are the same (BB or bb).\nHETEROZYGOUS — alleles are different (Bb).\n\nCARRIER — an individual with one recessive allele that is not expressed (Bb). They appear normal but can pass the recessive allele to offspring."
+            },
+            {
+                "heading": "Using Punnett Squares",
+                "content": "A PUNNETT SQUARE is a grid used to predict the probability of offspring genotypes and phenotypes from a genetic cross.\n\nHow to draw one:\n1. Write the alleles of one parent across the top.\n2. Write the alleles of the other parent down the side.\n3. Fill in each box by combining the alleles from the row and column.\n4. The boxes show all possible offspring genotypes.\n\nEXAMPLE — Heterozygous cross (Bb × Bb):\n\nParents: Bb × Bb\nOffspring genotypes: BB, Bb, Bb, bb\nRatio: 1 BB : 2 Bb : 1 bb\nPhenotype ratio: 3 dominant (BB and Bb) : 1 recessive (bb)\nSo 75% show dominant phenotype, 25% show recessive phenotype.\n\nEXAMPLE — Carrier × Normal (Bb × BB):\nOffspring: BB, BB, Bb, Bb\nAll offspring show dominant phenotype — but 50% are carriers (Bb)."
+            },
+            {
+                "heading": "Probability in Genetics",
+                "content": "Punnett squares give us PROBABILITIES — the likelihood of each outcome, not a guarantee.\n\nIf a cross gives a 1 in 4 (25%) chance of an affected offspring, this means:\nEach pregnancy independently has a 25% chance.\nIt does NOT mean that exactly 1 in every 4 children will be affected.\nSmall sample sizes may not reflect the expected ratio.\n\nProbability can be expressed as:\nA fraction: 1/4.\nA percentage: 25%.\nA ratio: 1 in 4.\n\nGenetic counsellors use Punnett squares to advise couples on the risk of inherited conditions in their children."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "A CARRIER (Bb) has the recessive allele but does NOT show the condition — they appear completely normal. Students often say carriers 'have the disease mildly' — this is WRONG. A carrier is phenotypically normal but genotypically heterozygous. Two carriers (Bb × Bb) have a 25% chance of an affected (bb) child.",
+        "key_note": "Dominant (capital) = expressed with one copy. Recessive (lowercase) = needs two copies. Genotype = alleles present. Phenotype = observable trait. Homozygous = both same. Heterozygous = different. Carrier = Bb, appears normal.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Genetics Vocabulary",
+            "instruction": "Match each genetics term to its correct definition.",
+            "pairs": [
+                ("Genotype", "The alleles present in an organism — e.g. Bb"),
+                ("Phenotype", "The observable characteristic — e.g. brown eyes"),
+                ("Homozygous", "Both alleles are the same — e.g. BB or bb"),
+                ("Heterozygous", "Alleles are different — e.g. Bb"),
+                ("Dominant allele", "Expressed in the phenotype even if only one copy is present"),
+                ("Carrier", "Heterozygous individual with one recessive allele — appears normal but can pass it on"),
+            ]
+        },
+        "fifas": [
+            {
+                "label": "Punnett Square — Heterozygous Cross",
+                "question": "Two parents are both heterozygous for brown eyes (Bb). Brown (B) is dominant over blue (b). Calculate the probability of a child having blue eyes.",
+                "steps": [
+                    ("F", "Draw a Punnett square: Bb × Bb"),
+                    ("I", "Offspring: BB, Bb, Bb, bb → genotype ratio 1:2:1"),
+                    ("F", "Only bb gives blue eyes (recessive phenotype) = 1 out of 4"),
+                    ("A", "Probability of blue eyes = 1/4 = 25%")
+                ]
+            }
+        ],
+        "quiz": [
+            {
+                "q": "In a Bb × Bb cross, what fraction of offspring will show the RECESSIVE phenotype?",
+                "opts": [
+                    ("1/4 (25%)", True),
+                    ("1/2 (50%)", False),
+                    ("3/4 (75%)", False),
+                    ("0 — recessive cannot appear from two heterozygous parents", False)
+                ],
+                "wrong_explanations": {
+                    1: "50% occurs when one parent is homozygous recessive (bb × Bb). Two heterozygotes give 1 BB : 2 Bb : 1 bb → 25% recessive.",
+                    2: "3/4 is the proportion showing the DOMINANT phenotype (BB and Bb). Only 25% (bb) show recessive.",
+                    3: "Two heterozygous parents (Bb × Bb) absolutely CAN produce a recessive child — 25% chance (bb)."
+                }
+            },
+            {
+                "q": "A person is described as a 'carrier' of cystic fibrosis. What does this mean?",
+                "opts": [
+                    ("They have one recessive allele (Ff) — they appear healthy but can pass the allele to offspring", True),
+                    ("They have the disease mildly — they have some symptoms but not severe ones", False),
+                    ("They are homozygous recessive (ff) — they have the full condition", False),
+                    ("They have been exposed to cystic fibrosis but their immune system fought it off", False)
+                ],
+                "wrong_explanations": {
+                    1: "A carrier appears COMPLETELY NORMAL — there are no mild symptoms. Having one recessive allele (Ff) is masked by the dominant allele.",
+                    2: "Homozygous recessive (ff) = HAS the condition. A carrier is HETEROZYGOUS (Ff) and does NOT have the condition.",
+                    3: "Cystic fibrosis is a GENETIC condition — it is not an infection that can be 'fought off' by the immune system."
+                }
+            },
+            {
+                "q": "If a Punnett square shows a 1 in 4 chance of having an affected child, what does this mean for a couple?",
+                "opts": [
+                    ("Each pregnancy independently has a 25% chance of being affected — it does not mean exactly 1 in 4 children will be affected", True),
+                    ("Exactly one child out of every four they have will be affected", False),
+                    ("If their first three children are unaffected, the fourth will definitely be affected", False),
+                    ("The chance reduces after each unaffected child — the probability changes", False)
+                ],
+                "wrong_explanations": {
+                    1: "Probability is not a guarantee of exact outcomes — with only 4 children, you might have 0, 1, 2, 3 or even 4 affected children.",
+                    2: "Each pregnancy is INDEPENDENT — the outcome of previous pregnancies does not affect future ones. This is like flipping a coin.",
+                    3: "Probability doesn't 'accumulate' — each pregnancy always has the same 25% chance regardless of previous outcomes."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 4. INHERITED DISORDERS
+    # ══════════════════════════════════════════════
+    {
+        "id": "inherited-disorders",
+        "title": "Inherited Disorders",
+        "spec": "4.6.3.2",
+        "summary": "Describe cystic fibrosis and polydactyly as examples of inherited genetic disorders.",
+        "theory": [
+            {
+                "heading": "Cystic Fibrosis",
+                "content": "Cystic fibrosis (CF) is caused by a RECESSIVE allele — written as 'f' (faulty) while 'F' is the normal allele.\n\nGENOTYPES:\nFF — unaffected, not a carrier.\nFf — carrier — appears healthy but carries one copy of the faulty allele.\nff — affected — has cystic fibrosis.\n\nFor a child to have CF, they must inherit TWO recessive alleles — one from each parent.\nTwo carriers (Ff × Ff) have a 25% chance of an affected child per pregnancy.\n\nEFFECTS OF CYSTIC FIBROSIS:\nThe faulty allele affects a protein that controls the movement of salt and water across cell membranes.\nThis causes a build-up of THICK, STICKY MUCUS in:\nThe LUNGS — makes breathing difficult, blocks airways, traps bacteria → repeated chest infections → lung damage.\nThe DIGESTIVE SYSTEM — blocks ducts from the pancreas → digestive enzymes cannot reach the gut → poor absorption of nutrients.\n\nTREATMENT: physiotherapy to loosen mucus, antibiotics for infections, enzyme supplements with food. No cure (though gene therapy is in development).\n\nCF is the most common serious inherited disorder in the UK — approximately 1 in 25 people carry the allele."
+            },
+            {
+                "heading": "Polydactyly",
+                "content": "Polydactyly is caused by a DOMINANT allele — written as 'D' while 'd' is the normal allele.\n\nGENOTYPES:\nDD — affected (rare — very few people have two copies of the dominant allele).\nDd — affected — only ONE copy needed to show the condition.\ndd — unaffected.\n\nA person with polydactyly has one or more EXTRA FINGERS OR TOES.\n\nBecause the allele is DOMINANT:\nOnly ONE copy is needed — so an affected parent (Dd) has a 50% chance of passing the condition to each child.\nThe condition appears in EVERY GENERATION that carries the allele.\nAn affected person has at least one affected parent (unless it arose from a new mutation).\n\nPolydactyly is not life-threatening and can be surgically corrected.\n\nKEY CONTRAST with cystic fibrosis:\nCF = recessive — can skip generations (carriers appear normal).\nPolydactyly = dominant — appears in every generation that carries it."
+            },
+            {
+                "heading": "Genetic Testing and Ethical Issues",
+                "content": "GENETIC TESTING can identify whether a person carries alleles for inherited conditions.\n\nTypes of testing:\nPRE-CONCEPTION testing — couples who have a family history of a genetic condition can be tested to find out if they are carriers before having children.\nPRE-NATAL testing — testing the embryo or foetus during pregnancy. Methods: amniocentesis (sampling amniotic fluid), chorionic villus sampling (CVS — sampling placental tissue).\nNEWBORN SCREENING — blood spot test (heel prick) shortly after birth screens for several conditions including CF.\n\nETHICAL CONSIDERATIONS:\nPrivacy — who has access to genetic information? Could affect insurance or employment.\nDecision-making — if a foetus tests positive, should the pregnancy continue? Raises difficult ethical questions.\nPsychological impact — knowing you carry an allele for a serious condition causes anxiety.\nSocial stigma — discrimination against those known to have certain genetic profiles.\nThese are genuine ethical debates with no single correct answer — the key is to consider multiple perspectives."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Cystic fibrosis is RECESSIVE — both parents can be unaffected carriers. Polydactyly is DOMINANT — at least one parent will always be affected (unless it arose from a new mutation). Students often apply these rules the wrong way round. Remember: recessive conditions can SKIP GENERATIONS (via carriers). Dominant conditions CANNOT skip generations.",
+        "key_note": "CF: recessive (ff), thick mucus in lungs and gut, 1 in 25 carriers in UK. Polydactyly: dominant (Dd), extra digits, appears every generation. Recessive can skip generations. Dominant cannot (unless new mutation).",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Cystic Fibrosis or Polydactyly?",
+            "instruction": "Match each feature to the correct inherited disorder.",
+            "pairs": [
+                ("Cystic fibrosis", "Caused by a recessive allele — both copies needed for the condition to show"),
+                ("Polydactyly", "Caused by a dominant allele — only one copy needed to show the condition"),
+                ("Cystic fibrosis", "Causes thick sticky mucus in lungs and digestive system"),
+                ("Polydactyly", "Causes extra fingers or toes — not life-threatening"),
+                ("Cystic fibrosis", "Can skip generations — carriers appear healthy"),
+                ("Polydactyly", "Appears in every generation — an affected person always has at least one affected parent"),
+            ]
+        },
+        "fifas": [
+            {
+                "label": "CF Inheritance Cross",
+                "question": "Two carriers for cystic fibrosis (Ff × Ff) are expecting a child. What is the probability the child will have CF?",
+                "steps": [
+                    ("F", "Draw Punnett square: Ff × Ff. CF allele = f (recessive). Normal = F"),
+                    ("I", "Offspring: FF, Ff, Ff, ff → ratio 1:2:1"),
+                    ("F", "Only ff has cystic fibrosis = 1 out of 4 boxes"),
+                    ("A", "Probability of CF = 1/4 = 25%")
+                ]
+            }
+        ],
+        "quiz": [
+            {
+                "q": "Both parents appear healthy but have a child with cystic fibrosis. What must be true of the parents?",
+                "opts": [
+                    ("Both parents are carriers — genotype Ff — they have one copy of the recessive allele each", True),
+                    ("One parent must have cystic fibrosis but is hiding it", False),
+                    ("The child developed CF through a random environmental mutation", False),
+                    ("The parents must be closely related — CF only occurs in related families", False)
+                ],
+                "wrong_explanations": {
+                    1: "CF is a genetic condition — you cannot 'hide' it. If a parent had CF (ff) they would have serious symptoms.",
+                    2: "CF is caused by inheriting TWO recessive alleles — both alleles must come from parents. The parents must both be carriers (Ff).",
+                    3: "While CF is more common in some populations, it is not caused by family relatedness — it requires two carriers regardless of family relationship."
+                }
+            },
+            {
+                "q": "Why does polydactyly appear in every generation, while cystic fibrosis can skip generations?",
+                "opts": [
+                    ("Polydactyly is dominant — one copy is enough to show it. CF is recessive — carriers (Ff) appear normal and don't show it.", True),
+                    ("Polydactyly is caused by a different chromosome than cystic fibrosis", False),
+                    ("Cystic fibrosis is more severe so the body suppresses it in some generations", False),
+                    ("Polydactyly affects more people so it appears more often", False)
+                ],
+                "wrong_explanations": {
+                    1: "The chromosomal location of a gene is irrelevant to whether the condition skips generations — it's the dominant/recessive nature that matters.",
+                    2: "The body doesn't suppress genetic conditions — whether a condition shows depends entirely on genotype and allele dominance.",
+                    3: "Prevalence doesn't determine whether a condition skips generations — dominance/recessiveness does."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 5. SEX DETERMINATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "sex-determination",
+        "title": "Sex Determination",
+        "spec": "4.6.3.3",
+        "summary": "Explain how biological sex is determined by the X and Y chromosomes.",
+        "theory": [
+            {
+                "heading": "Sex Chromosomes",
+                "content": "In humans, biological sex is determined by a pair of SEX CHROMOSOMES — one of the 23 pairs of chromosomes.\n\nFEMALES: XX — two X chromosomes.\nMALES: XY — one X chromosome and one Y chromosome.\n\nThe Y chromosome is smaller than the X chromosome and contains fewer genes. It carries the genes responsible for male development, including the SRY gene which triggers the development of testes.\n\nAll other 22 chromosome pairs are called AUTOSOMES — they are the same in males and females."
+            },
+            {
+                "heading": "How Sex is Determined at Fertilisation",
+                "content": "All eggs produced by a female contain ONE X chromosome (since females are XX).\n\nSperm produced by a male contain EITHER:\nan X chromosome (approximately 50% of sperm), OR\na Y chromosome (approximately 50% of sperm).\n\nAt fertilisation:\nIf an X-bearing sperm fertilises the egg: XX → FEMALE.\nIf a Y-bearing sperm fertilises the egg: XY → MALE.\n\nTherefore: the SPERM determines the biological sex of the offspring — not the egg.\n\nProbability: 50% chance of a female child, 50% chance of a male child in each pregnancy."
+            },
+            {
+                "heading": "Punnett Square for Sex Determination",
+                "content": "We can use a Punnett square to show sex determination:\n\nMother (XX) × Father (XY)\n\nSperm: X or Y (50/50)\nEggs: X only (100%)\n\nOffspring:\nXX = female (50%)\nXY = male (50%)\n\nThis shows why the sex ratio in human populations is approximately 50:50.\n\nKey point: the sex of a child is determined RANDOMLY at fertilisation — it cannot be predicted in advance for a specific pregnancy. The 50:50 ratio is the probability, not a guarantee for any given family."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "It is the SPERM that determines the sex of the child — not the egg. All eggs contain an X chromosome. Sperm can contain either X or Y. If a Y-carrying sperm fertilises the egg, the child is male (XY). Historically, women were sometimes blamed for not producing sons — this is biologically incorrect.",
+        "key_note": "Female = XX. Male = XY. All eggs carry X. Sperm carry X or Y (50/50). Y-sperm → male (XY). X-sperm → female (XX). Sex determined at fertilisation by which sperm fertilises the egg. 50% probability each time.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Sex Determination Match",
+            "instruction": "Match each statement to the correct sex chromosome fact.",
+            "pairs": [
+                ("Female", "Has sex chromosomes XX — both are X chromosomes"),
+                ("Male", "Has sex chromosomes XY — one X and one smaller Y chromosome"),
+                ("All eggs", "Contain one X chromosome — females are XX so can only pass on X"),
+                ("Sperm", "Contain either X or Y — determines the sex of the offspring"),
+                ("50%", "Probability of a male offspring — same as probability of female offspring"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What determines the biological sex of a human offspring?",
+                "opts": [
+                    ("Which type of sperm (X or Y) fertilises the egg — Y-sperm → male, X-sperm → female", True),
+                    ("The egg — females produce X and Y eggs, one type producing a boy and the other a girl", False),
+                    ("The environment during pregnancy — temperature affects sex", False),
+                    ("The age of the parents — older parents are more likely to have girls", False)
+                ],
+                "wrong_explanations": {
+                    1: "Females (XX) can only produce X-bearing eggs — all eggs contain X. It is the SPERM that carries either X or Y.",
+                    2: "Temperature does affect sex determination in some reptiles — but in humans, sex is determined genetically by which sperm fertilises the egg.",
+                    3: "Parental age can affect fertility and some genetic risks — but does not determine sex."
+                }
+            },
+            {
+                "q": "A couple have three daughters. What is the probability their next child will be a son?",
+                "opts": [
+                    ("50% — each pregnancy is independent, the sex ratio is always 50:50", True),
+                    ("Higher than 50% — after three girls they are 'due' a boy", False),
+                    ("Lower than 50% — this couple clearly produce more girls than boys", False),
+                    ("0% — if they have had three girls their sperm cannot produce Y chromosomes", False)
+                ],
+                "wrong_explanations": {
+                    1: "Each pregnancy is INDEPENDENT — like flipping a coin, the outcomes of previous pregnancies have no effect. This is a common misconception known as the gambler's fallacy.",
+                    2: "Having three girls does not indicate a bias — small sample sizes often show runs of one outcome by chance. Males produce X and Y sperm equally.",
+                    3: "Males always produce roughly 50% X-bearing and 50% Y-bearing sperm — three daughters doesn't change this."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 6. VARIATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "variation",
+        "title": "Variation",
+        "spec": "4.6.4",
+        "summary": "Describe the causes of variation and distinguish between genetic, environmental and combination variation.",
+        "theory": [
+            {
+                "heading": "What is Variation?",
+                "content": "VARIATION refers to the differences in characteristics between individuals of the same species.\n\nVariation is absolutely essential for life on Earth:\nIt is the raw material on which NATURAL SELECTION acts.\nWithout variation, all individuals would be identical and no evolutionary change would be possible.\nVariation allows populations to adapt to changing environments.\n\nVariation can be:\nCONTINUOUS — characteristics that show a range of values with no distinct categories (e.g. height, weight, skin colour).\nDISCONTINUOUS — characteristics that fall into distinct categories with no in-between values (e.g. blood group A, B, AB or O; tongue rolling ability; ability to taste PTC)."
+            },
+            {
+                "heading": "Causes of Variation",
+                "content": "Variation arises from three main sources:\n\n1. GENETIC VARIATION:\nDifferences in DNA sequences between individuals.\nArises through: MUTATIONS (random changes in DNA sequence), MEIOSIS (shuffling of chromosomes and crossing over), SEXUAL REPRODUCTION (combining DNA from two parents).\nGenetic variation is INHERITED — passed from parents to offspring.\n\n2. ENVIRONMENTAL VARIATION:\nDifferences caused by conditions an organism experiences during its lifetime.\nExamples: height (affected by nutrition during childhood), skin colour (affected by sun exposure), language spoken (learned from environment), scars and injuries.\nEnvironmental variation is NOT inherited — you cannot pass on a learned language or a scar to your offspring.\n\n3. COMBINATION OF BOTH:\nMany characteristics are influenced by BOTH genes AND environment.\nExamples: height (genes set the potential maximum; nutrition determines whether that potential is reached), body weight (genes influence metabolism; diet and exercise are environmental), skin colour (genes determine base colour; UV exposure adds a tan)."
+            },
+            {
+                "heading": "Mutations",
+                "content": "A MUTATION is a change in the sequence of DNA bases in a gene or chromosome.\n\nMutations can be:\nSpontaneous — occurring randomly during DNA replication (copying errors).\nInduced — caused by MUTAGENS: chemicals (e.g. carcinogens in tobacco smoke), radiation (UV, gamma rays, X-rays), certain viruses.\n\nEffects of mutations:\nMost mutations are NEUTRAL — they occur in non-coding DNA or don't change the protein significantly.\nSome mutations are HARMFUL — they alter a protein so it cannot function properly (e.g. mutations causing cystic fibrosis, sickle cell disease).\nVery occasionally, a mutation is BENEFICIAL — it improves the function of a protein or produces a new useful function (e.g. mutations that gave early humans more efficient enzymes or better immune responses).\n\nBeneficial mutations are the ultimate source of all new variation in a species — they are the raw material on which natural selection acts."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Environmental variation is NOT inherited — you cannot pass your experiences, injuries or learned skills to your children through DNA. Genetic variation IS inherited. Most mutations are neutral — not harmful. Students often assume all mutations are dangerous, but the vast majority have no detectable effect.",
+        "key_note": "Variation: continuous (range of values) or discontinuous (distinct categories). Causes: genetic (mutation, meiosis, sexual reproduction), environmental (nutrition, sun, learned). Many traits = combination of both. Mutations: neutral, harmful or rarely beneficial.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Genetic, Environmental or Both?",
+            "instruction": "Match each example to the cause of variation.",
+            "pairs": [
+                ("Genetic", "Blood group — determined entirely by inherited alleles"),
+                ("Environmental", "A scar from a childhood accident — not passed to offspring"),
+                ("Both", "Height — genes set the maximum potential; nutrition determines if it is reached"),
+                ("Environmental", "Language spoken — entirely learned from the surrounding environment"),
+                ("Genetic", "Cystic fibrosis — caused by inheriting two copies of the recessive allele"),
+                ("Both", "Body weight — metabolic rate is genetic; diet and exercise are environmental"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "A child is taller than expected given their parents' heights. What is the most likely cause?",
+                "opts": [
+                    ("A combination of genetic potential and favourable environmental factors — e.g. excellent nutrition during childhood", True),
+                    ("A mutation that occurred during development, making the child taller", False),
+                    ("The child inherited more height genes from distant ancestors than from parents", False),
+                    ("Environmental factors alone — height is entirely determined by diet", False)
+                ],
+                "wrong_explanations": {
+                    1: "A random mutation could theoretically increase height, but this is rare. The more likely explanation is that parents didn't reach their own genetic potential due to environmental factors.",
+                    2: "Genes don't skip generations in this simple way — the child can only inherit alleles from their parents.",
+                    3: "Height is strongly influenced by genetics — children of tall parents tend to be taller. But environmental factors (particularly nutrition) also play a significant role."
+                }
+            },
+            {
+                "q": "Which of the following is an example of DISCONTINUOUS variation?",
+                "opts": [
+                    ("Blood group — a person is type A, B, AB or O with no intermediate values", True),
+                    ("Height — people range from very short to very tall with all values in between", False),
+                    ("Body weight — a continuous range from very light to very heavy", False),
+                    ("Skin colour — a continuous range from very light to very dark", False)
+                ],
+                "wrong_explanations": {
+                    1: "Height is a classic example of CONTINUOUS variation — there is a smooth range from shortest to tallest with all intermediate heights present.",
+                    2: "Body weight is CONTINUOUS — it forms a normal distribution curve across the population.",
+                    3: "Skin colour is CONTINUOUS — determined by multiple genes and environmental factors (sun exposure), producing a smooth range of values."
+                }
+            },
+            {
+                "q": "What is a mutation?",
+                "opts": [
+                    ("A change in the sequence of DNA bases — can be neutral, harmful or rarely beneficial", True),
+                    ("A change in an organism's body caused by the environment during its lifetime", False),
+                    ("The process of chromosomes being shuffled during meiosis", False),
+                    ("A genetic disease inherited from parents", False)
+                ],
+                "wrong_explanations": {
+                    1: "Environmental changes to the body (like a tan or muscle growth) are not mutations — they are phenotypic responses that are not passed on through DNA.",
+                    2: "Chromosome shuffling during meiosis = INDEPENDENT ASSORTMENT and CROSSING OVER — these create variation but are not mutations.",
+                    3: "Inherited diseases are caused by specific alleles — mutations can create new alleles, but the inherited disease itself is not a mutation."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 7. EVOLUTION AND NATURAL SELECTION
+    # ══════════════════════════════════════════════
+    {
+        "id": "evolution-natural-selection",
+        "title": "Evolution and Natural Selection",
+        "spec": "4.6.5",
+        "summary": "Describe Darwin's theory of evolution by natural selection and explain how populations change over time.",
+        "theory": [
+            {
+                "heading": "What is Evolution?",
+                "content": "EVOLUTION is the change in the inherited characteristics of a population over many generations.\n\nIt is driven by natural selection — the process by which individuals with characteristics better suited to their environment are more likely to survive and reproduce.\n\nEvolution explains:\nWhy species change over time.\nWhy there are so many different species on Earth.\nWhy species share features with each other (common ancestry).\nWhy organisms are so well adapted to their environments.\n\nEvolution is the central organising principle of modern biology — it is one of the most well-supported theories in all of science, supported by evidence from fossils, genetics, anatomy and direct observation."
+            },
+            {
+                "heading": "Darwin's Theory of Natural Selection",
+                "content": "Charles DARWIN (1809–1882) developed the theory of natural selection after extensive observation of wildlife, particularly during his voyage on HMS Beagle (1831–1836).\n\nDarwin's theory in five steps:\n1. VARIATION — individuals within a population show differences in their characteristics.\n2. OVERPRODUCTION — populations produce more offspring than the environment can support.\n3. STRUGGLE FOR SURVIVAL — competition for resources (food, water, mates, territory). Not all offspring survive.\n4. SURVIVAL OF THE FITTEST — individuals with characteristics best adapted to the environment are more likely to SURVIVE and REPRODUCE.\n5. INHERITANCE — surviving individuals pass on their ALLELES to offspring. The next generation has more individuals with the advantageous characteristics.\n\nOver many generations → advantageous alleles become MORE COMMON in the population → the population changes → EVOLUTION has occurred."
+            },
+            {
+                "heading": "Why Darwin's Theory Took Time to be Accepted",
+                "content": "Darwin published his theory in 'On the Origin of Species' in 1859.\n\nIt was NOT immediately accepted — reasons include:\nReligious opposition — contradicted the biblical account of creation and the idea that species were fixed and created by God.\nLack of a mechanism — Darwin did not know HOW inheritance worked (DNA and genetics were not yet understood). He could not fully explain HOW traits were passed on.\nInsufficient evidence at the time — the fossil record had many gaps.\nDifficulty of the concept — evolution over millions of years is hard to observe directly.\n\nOver time, as genetics was discovered (first Mendel, then Watson and Crick with DNA structure), and as more fossil evidence accumulated, Darwin's theory gained overwhelming scientific support.\n\nToday, evolution by natural selection is the scientific consensus — one of the most strongly evidenced theories in science."
+            },
+            {
+                "heading": "Alfred Russel Wallace",
+                "content": "ALFRED RUSSEL WALLACE (1823–1913) independently developed a theory of evolution by natural selection at approximately the same time as Darwin.\n\nWallace sent his ideas to Darwin in 1858 — this prompted Darwin to publish his own work.\n\nBoth men's papers were presented to the Linnean Society of London in 1858.\n\nWallace made important contributions to biogeography — the study of how species are distributed across the Earth — and the patterns of species distribution supported the theory of evolution.\n\nHis work in Southeast Asia led to him identifying what is now called 'Wallace's line' — a boundary between Asian and Australian species distributions."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Natural selection does NOT cause mutations — mutations happen randomly. Natural selection SELECTS from variation that already exists. Also: individuals do NOT evolve — POPULATIONS evolve over many generations. And: 'survival of the fittest' does not mean 'strongest' — it means best adapted to the environment.",
+        "key_note": "Evolution = change in inherited characteristics over generations. Darwin's steps: variation → overproduction → struggle for survival → survival of the fittest → inheritance. Natural selection acts on existing variation — it does not cause mutations.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Step of Natural Selection",
+            "instruction": "Match each step of natural selection to its correct description.",
+            "pairs": [
+                ("Variation", "Individuals in a population show differences in their characteristics"),
+                ("Overproduction", "More offspring are produced than the environment can support"),
+                ("Struggle for survival", "Competition for resources — not all offspring survive"),
+                ("Survival of the fittest", "Individuals best adapted to the environment are more likely to survive and reproduce"),
+                ("Inheritance", "Surviving individuals pass on advantageous alleles to offspring"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "A population of mice lives on dark soil. Over many generations, the population becomes predominantly dark-coloured. What explains this?",
+                "opts": [
+                    ("Natural selection — dark mice are better camouflaged, survive predation better and reproduce more, passing on dark colour alleles", True),
+                    ("The mice deliberately changed colour to match their environment", False),
+                    ("Dark soil contains minerals that cause mice to become darker", False),
+                    ("Dark-coloured mice migrated from elsewhere and replaced the lighter mice", False)
+                ],
+                "wrong_explanations": {
+                    1: "Animals cannot deliberately change their genetic traits — they cannot 'choose' to become better adapted.",
+                    2: "Environmental exposure doesn't directly change DNA — this would be Lamarckian evolution, which has been disproved. Colour is a genetic trait, not caused by soil minerals.",
+                    3: "While migration is possible, natural selection is the primary explanation — lighter mice are more visible to predators and are caught more often."
+                }
+            },
+            {
+                "q": "Why was Darwin's theory of natural selection initially controversial?",
+                "opts": [
+                    ("It contradicted religious beliefs about creation, and Darwin lacked knowledge of the mechanism of inheritance", True),
+                    ("It was based on observations from only one location and no experiments were done", False),
+                    ("Darwin published it before collecting sufficient evidence, making it speculative", False),
+                    ("The theory was too simple — scientists thought evolution must be more complicated", False)
+                ],
+                "wrong_explanations": {
+                    1: "Darwin travelled extensively (including the Galapagos, South America, Australia) and collected extensive evidence over many years.",
+                    2: "Darwin actually delayed publication for over 20 years while gathering more evidence — he published when he felt the evidence was compelling.",
+                    3: "The theory was considered TOO radical and COMPLICATED for many — particularly the idea of species changing over millions of years."
+                }
+            },
+            {
+                "q": "What does 'survival of the fittest' mean in evolution?",
+                "opts": [
+                    ("Individuals best adapted to their environment are most likely to survive and reproduce — not necessarily the strongest", True),
+                    ("The physically strongest and fastest individuals always survive", False),
+                    ("Only the largest organisms in a population will reproduce", False),
+                    ("Individuals that are most intelligent always out-compete others", False)
+                ],
+                "wrong_explanations": {
+                    1: "Strength is one possible advantage in some environments — but 'fittest' specifically means best suited to the environment. A slow, toxic frog is 'fitter' than a fast but tasty one in a predator-rich environment.",
+                    2: "Size can be a disadvantage — larger organisms often need more food and may be more visible to predators.",
+                    3: "Intelligence is advantageous in some contexts — but many highly successful organisms (bacteria, insects) have no intelligence."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 8. SELECTIVE BREEDING
+    # ══════════════════════════════════════════════
+    {
+        "id": "selective-breeding",
+        "title": "Selective Breeding",
+        "spec": "4.6.6",
+        "summary": "Describe how selective breeding works and its applications and disadvantages.",
+        "theory": [
+            {
+                "heading": "What is Selective Breeding?",
+                "content": "SELECTIVE BREEDING (also called artificial selection) is the process by which HUMANS choose organisms with DESIRED CHARACTERISTICS to breed together, over many generations, in order to enhance those characteristics.\n\nHumans have been selectively breeding animals and plants for approximately 10,000 years — since the beginning of agriculture.\n\nThe process:\n1. Identify individuals in a population that show the desired characteristic most strongly.\n2. Breed these selected individuals together.\n3. From the offspring, select those that best show the desired characteristic.\n4. Repeat over many generations.\n5. After many generations, the desired trait becomes strongly established in the population."
+            },
+            {
+                "heading": "Examples of Selective Breeding",
+                "content": "ANIMALS:\nDOGS — bred for specific behaviours and appearances: border collies (herding instinct), greyhounds (speed), St. Bernards (size and rescue ability), bulldogs (appearance — though controversial due to health issues).\nCATTLE — bred for high milk yield (dairy breeds like Holstein) or high meat yield (beef breeds like Angus).\nCHICKENS — bred for rapid growth, high egg production, or both.\nSHEEP — bred for high wool production, high meat yield or specific fleece qualities.\n\nPLANTS:\nWHEAT — bred for disease resistance, high yield, drought tolerance, shorter stems (reduces lodging in wind).\nCORN (MAIZE) — from a small, wild grass (teosinte) to modern maize with large cobs over thousands of years.\nSTRAWBERRIES — bred for larger fruit, sweeter taste, disease resistance.\nROSES — bred for specific colours, petal arrangements and scent.\nBROCCOLI, CABBAGE, KALE, CAULIFLOWER — all bred from the same wild plant (Brassica oleracea) by selecting for different features."
+            },
+            {
+                "heading": "Advantages and Disadvantages of Selective Breeding",
+                "content": "ADVANTAGES:\nProduces organisms with highly desirable characteristics — increased yield, disease resistance, better flavour.\nHas dramatically increased food production — helping feed a growing global population.\nCan produce animals better suited to human purposes — working dogs, guide dogs, therapy animals.\n\nDISADVANTAGES:\nREDUCED GENETIC DIVERSITY — by continually selecting the same traits, populations become genetically very similar (inbreeding).\nINBREEDING problems — reduced variation means if a new disease or environmental change occurs, the entire population may be vulnerable.\nHEALTH PROBLEMS — selection for extreme traits can cause welfare issues. Examples: bulldogs have such flat faces they struggle to breathe; some large dog breeds have hip problems; high-yield dairy cows often suffer from mastitis.\nINHERITED DISEASES — concentrated in small gene pool over generations.\nThe process is slow — takes many generations to achieve significant change."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Selective breeding is NOT genetic engineering. Selective breeding uses natural reproduction — choosing which organisms breed. Genetic engineering directly inserts, removes or modifies specific genes. Selective breeding also does NOT create new genes — it selects and concentrates alleles that already exist in the population.",
+        "key_note": "Selective breeding: humans choose organisms with desired traits to breed. Takes many generations. Increases desired characteristics. Disadvantages: reduced genetic diversity, inbreeding, health problems in extreme cases.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Selective Breeding Example",
+            "instruction": "Match each organism to the characteristic that has been selectively bred.",
+            "pairs": [
+                ("Dairy cattle", "Selectively bred for increased milk yield — e.g. Holstein Friesian"),
+                ("Wheat", "Selectively bred for disease resistance and high grain yield"),
+                ("Dogs (greyhounds)", "Selectively bred for speed in racing"),
+                ("Chickens", "Selectively bred for rapid growth and/or high egg production"),
+                ("Maize (corn)", "Selectively bred from a small wild grass to produce large cobs over thousands of years"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is the main disadvantage of selective breeding over many generations?",
+                "opts": [
+                    ("Reduced genetic diversity — the gene pool narrows, making populations vulnerable to new diseases or environmental changes", True),
+                    ("Selective breeding always produces weaker offspring than wild populations", False),
+                    ("It produces organisms that cannot survive outside captivity or cultivation", False),
+                    ("The desired traits always disappear after a few generations", False)
+                ],
+                "wrong_explanations": {
+                    1: "Selectively bred organisms are often very productive — but reduced genetic diversity is the key long-term risk.",
+                    2: "Many selectively bred organisms can survive in natural conditions — though some extreme examples (like bulldogs) do have welfare issues.",
+                    3: "Selective breeding fixes desired traits into the genome — they don't disappear unless the selection pressure is removed and interbreeding with different varieties occurs."
+                }
+            },
+            {
+                "q": "How is selective breeding different from genetic engineering?",
+                "opts": [
+                    ("Selective breeding uses natural reproduction to concentrate existing alleles. Genetic engineering directly inserts, modifies or removes specific genes.", True),
+                    ("Selective breeding is faster than genetic engineering", False),
+                    ("Selective breeding creates entirely new genes. Genetic engineering uses existing ones.", False),
+                    ("They are essentially the same process — both involve deliberately changing an organism's DNA", False)
+                ],
+                "wrong_explanations": {
+                    1: "Selective breeding is SLOW — it takes many generations. Genetic engineering can produce results in one generation.",
+                    2: "Selective breeding works with EXISTING genetic variation — it cannot create new genes. Genetic engineering can introduce genes from completely different species.",
+                    3: "Selective breeding does NOT directly change DNA sequences — it selects which individuals reproduce. Genetic engineering directly manipulates DNA."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 9. GENETIC ENGINEERING
+    # ══════════════════════════════════════════════
+    {
+        "id": "genetic-engineering",
+        "title": "Genetic Engineering",
+        "spec": "4.6.7",
+        "summary": "Describe genetic engineering — how it works, examples and ethical considerations.",
+        "theory": [
+            {
+                "heading": "What is Genetic Engineering?",
+                "content": "GENETIC ENGINEERING (also called recombinant DNA technology or genetic modification) is the direct manipulation of an organism's DNA — inserting, removing or modifying specific genes.\n\nUnlike selective breeding, genetic engineering:\nCan introduce genes from COMPLETELY DIFFERENT SPECIES — e.g. human genes into bacteria.\nWorks in a single generation — no need to wait many generations.\nIs extremely precise — targets a specific gene.\n\nThe basic process:\n1. The desired gene is CUT from the source organism's DNA using restriction enzymes (molecular scissors).\n2. The gene is INSERTED into a VECTOR — usually a bacterial PLASMID (a small circular piece of DNA).\n3. The vector is introduced into the target organism's cells.\n4. The target organism's cells now EXPRESS the new gene — producing the desired protein."
+            },
+            {
+                "heading": "Examples of Genetic Engineering",
+                "content": "INSULIN PRODUCTION:\nHuman insulin gene inserted into BACTERIA.\nBacteria grow rapidly in large vats → produce large quantities of human insulin.\nUsed to treat Type 1 diabetes.\nBefore this (before ~1982), diabetics used insulin extracted from pig or cattle pancreases — which caused immune reactions in some patients.\nHuman insulin from GM bacteria is identical to natural human insulin → fewer side effects.\n\nGM CROPS (Genetically Modified crops):\nHERBICIDE RESISTANCE — a gene for herbicide resistance inserted into crop plants (e.g. GM soybean). Farmers can spray the field to kill weeds without harming the crop.\nPEST RESISTANCE — Bt crops: a gene from the bacterium Bacillus thuringiensis produces a natural insecticide within the plant. Reduces need for chemical pesticides.\nGOLDEN RICE — a gene from daffodils (and a bacterium) inserted into rice to produce beta-carotene (precursor to vitamin A). Addresses vitamin A deficiency in developing countries.\nDROUGHT TOLERANCE — genes that increase water efficiency inserted into crops for use in dry regions."
+            },
+            {
+                "heading": "Ethical Considerations of Genetic Engineering",
+                "content": "Genetic engineering raises significant ethical debates:\n\nARGUMENTS FOR:\nCan save lives — GM insulin prevents deaths from diabetes.\nCan increase food security — GM crops produce higher yields, resist disease and pests.\nCan address nutritional deficiencies — e.g. Golden Rice.\nMay reduce environmental impact — pest-resistant crops need fewer chemical pesticides.\n\nARGUMENTS AGAINST:\nUNCERTAINTY about long-term effects — what happens when GM organisms interact with wild ecosystems?\nBIODIVERSITY risks — modified genes could spread to wild relatives ('gene escape').\nMONOCULTURES — large-scale GM crop production may reduce genetic diversity.\nCORPORATE CONTROL — major biotechnology companies own patents on GM seeds, preventing farmers from saving seeds.\nANIMAL WELFARE — concerns about use of genetically modified animals in research.\nCONSUMER CONCERNS — some people don't want to eat GM food, regardless of scientific evidence of safety.\nReligious/ethical objections — interfering with 'nature' or 'playing God'."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Genetic engineering is NOT the same as selective breeding. Genetic engineering can transfer genes between completely different species (e.g. human genes into bacteria). Selective breeding can only work with organisms that can naturally reproduce together. Also: eating GM food does not alter the consumer's own DNA.",
+        "key_note": "Genetic engineering: cut gene with restriction enzymes → insert into vector (plasmid) → introduce to target organism. Examples: human insulin from GM bacteria, herbicide-resistant crops, Golden Rice. Ethical debate: benefits vs risks to biodiversity and ecosystems.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Genetic Engineering Example",
+            "instruction": "Match each application to how genetic engineering is used.",
+            "pairs": [
+                ("GM bacteria → insulin", "Human insulin gene inserted into bacteria — bacteria produce insulin for diabetics"),
+                ("Herbicide-resistant crops", "Gene for herbicide resistance inserted into crop plants — farmer can spray without harming the crop"),
+                ("Bt crops", "Gene from Bacillus thuringiensis inserted — crop produces natural insecticide to repel pests"),
+                ("Golden Rice", "Gene inserted to produce beta-carotene — addresses vitamin A deficiency in developing countries"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why is GM bacterial insulin better for diabetics than insulin extracted from pigs or cattle?",
+                "opts": [
+                    ("GM bacterial insulin is identical to human insulin — fewer immune reactions and side effects", True),
+                    ("Bacterial insulin is cheaper to produce so more people can afford it", False),
+                    ("Animal-derived insulin is no longer available — GM insulin is the only option", False),
+                    ("GM bacteria produce insulin faster so it acts more quickly in the body", False)
+                ],
+                "wrong_explanations": {
+                    1: "Cost is an advantage, but the primary medical reason is that human sequence insulin causes fewer immune problems than animal sequence insulin.",
+                    2: "Animal-derived insulin still exists in some countries — GM insulin has largely replaced it due to superior compatibility.",
+                    3: "The speed of action is determined by the formulation (how the insulin is prepared), not where it came from."
+                }
+            },
+            {
+                "q": "What is the basic process of introducing a new gene into an organism?",
+                "opts": [
+                    ("Cut the desired gene using restriction enzymes → insert into a plasmid vector → introduce the vector into the target cell", True),
+                    ("Inject the desired gene directly into the cell nucleus using a syringe", False),
+                    ("Breed the organism with another species that carries the desired gene", False),
+                    ("Expose the organism to radiation to trigger the mutation needed", False)
+                ],
+                "wrong_explanations": {
+                    1: "While microinjection into cells is a real technique used in some contexts, the standard recombinant DNA approach uses restriction enzymes and plasmid vectors.",
+                    2: "Breeding between different species = selective breeding (and only works between related species). Genetic engineering specifically allows cross-species gene transfer.",
+                    3: "Radiation causes RANDOM mutations — not the specific targeted change needed for genetic engineering."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 10. EVIDENCE FOR EVOLUTION
+    # ══════════════════════════════════════════════
+    {
+        "id": "evidence-for-evolution",
+        "title": "Evidence for Evolution",
+        "spec": "4.6.5",
+        "summary": "Describe the main types of evidence that support the theory of evolution.",
+        "theory": [
+            {
+                "heading": "The Fossil Record",
+                "content": "FOSSILS are the preserved remains or traces of organisms from the past.\n\nFossils form when an organism's hard parts (bones, shells, teeth) are buried and slowly replaced by minerals over millions of years. Soft tissue rarely fossilises — so the fossil record is incomplete.\n\nOther types of fossil: trace fossils (footprints, burrows), preserved organisms in amber, ice or tar pits.\n\nHow fossils support evolution:\nOlder rock layers (deeper in the ground) contain simpler, more primitive organisms.\nYounger rocks (closer to the surface) contain more complex, more modern-looking organisms.\nTransitional fossils show intermediate forms between ancient and modern species — e.g. Tiktaalik (fish-tetrapod transition), Archaeopteryx (dinosaur-bird transition).\nGradual changes in fossil series show how species changed over millions of years.\n\nLimitation: the fossil record is incomplete — most organisms never fossilise, and many fossils are yet to be discovered."
+            },
+            {
+                "heading": "Homologous Structures",
+                "content": "HOMOLOGOUS STRUCTURES are body parts that have the SAME UNDERLYING STRUCTURE but are adapted for DIFFERENT FUNCTIONS in different species.\n\nThe classic example is the PENTADACTYL LIMB (five-digit limb):\nHuman arm — for grasping and manipulating objects.\nWhale flipper — for swimming.\nBat wing — for flying.\nHorse leg — for running.\nFrog limb — for swimming and jumping.\n\nAll of these limbs have the same arrangement of bones (humerus, radius, ulna, carpals, metacarpals, phalanges) — just modified in shape and proportion for different uses.\n\nThis shared fundamental structure strongly suggests they all evolved from a COMMON ANCESTOR that had a basic five-digit limb — the limbs diverged as each lineage adapted to different environments.\n\nIf these structures had evolved independently, there would be no reason for them to share the same underlying bone arrangement."
+            },
+            {
+                "heading": "DNA and Molecular Evidence",
+                "content": "Modern molecular biology provides some of the strongest evidence for evolution.\n\nDNA COMPARISONS:\nAll living organisms use the same genetic code (the same triplet of bases codes for the same amino acid, in virtually all species).\nThis UNIVERSAL GENETIC CODE strongly suggests all life descended from a common ancestor.\nThe more closely related two species are, the MORE SIMILAR their DNA sequences are.\nExample: humans and chimpanzees share approximately 98.7% of their DNA — reflecting our recent common ancestor.\nHumans and yeast share about 25% of their genes — both are eukaryotes descended from the same original eukaryotic ancestor.\n\nPROTEIN COMPARISONS:\nSimilarly, closely related species share more similar protein structures.\nHaemoglobin (the oxygen-carrying protein in blood) has a very similar structure in all vertebrates — with differences reflecting evolutionary distance.\n\nVIRUSES and BACTERIA evolving in real time:\nAntibiotic resistance in bacteria.\nNew influenza strains each year.\nCOVID-19 variants (Alpha, Delta, Omicron).\nAll demonstrate evolution by natural selection occurring today — observable directly."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "The fossil record is INCOMPLETE — most organisms never fossilise. This means gaps in the fossil record are EXPECTED and do not disprove evolution. Students often say 'if there are gaps in the fossil record, evolution can't be proven' — but the overall pattern of fossils strongly supports evolution, even with gaps.",
+        "key_note": "Evidence: fossils (older = simpler, gradual change), homologous structures (pentadactyl limb — common ancestor), DNA comparisons (similar species = similar DNA), direct observation (antibiotic resistance, flu evolution). All support evolution.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Evidence to What it Shows",
+            "instruction": "Match each piece of evidence to what it demonstrates about evolution.",
+            "pairs": [
+                ("Fossil record", "Shows gradual changes in organisms over millions of years — older fossils are simpler"),
+                ("Pentadactyl limb", "Same bone structure in human, whale, bat and horse limbs — suggests common ancestor"),
+                ("DNA comparisons", "Closely related species have more similar DNA sequences — reflects evolutionary distance"),
+                ("Antibiotic resistance", "Bacteria evolving resistance in real time — direct observation of natural selection"),
+                ("Universal genetic code", "All life uses the same DNA code — suggests all organisms descended from a common ancestor"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why do the pentadactyl (five-digit) limbs of humans, whales and bats support evolution?",
+                "opts": [
+                    ("They share the same underlying bone structure despite very different functions — suggesting a common ancestor whose limb adapted differently in each lineage", True),
+                    ("They show that all vertebrates use their limbs in the same way — a universal design", False),
+                    ("Five-digit limbs are the most efficient design, so evolution always produces them independently", False),
+                    ("It shows that whales were once land animals that walked on five-toed feet", False)
+                ],
+                "wrong_explanations": {
+                    1: "Vertebrate limbs are used very differently — for flying, swimming, running and grasping. The similarity in structure, despite different functions, is precisely what makes it evidence of common ancestry.",
+                    2: "If five digits were universally optimal, we'd expect to see it in insects and fish too — but they don't have this arrangement. The pattern is phylogenetic (family-tree based), not design-based.",
+                    3: "While it's true whales evolved from land mammals, the pentadactyl limb evidence is specifically about STRUCTURAL SIMILARITY across multiple species, not specifically about whale evolution."
+                }
+            },
+            {
+                "q": "Why does antibiotic resistance in bacteria provide evidence for evolution?",
+                "opts": [
+                    ("It demonstrates natural selection occurring in real time — resistant variants survive and reproduce, changing the population", True),
+                    ("It shows that bacteria can deliberately change their DNA in response to threats", False),
+                    ("It proves that antibiotics cause mutations in bacteria", False),
+                    ("It shows that evolution only happens in very simple organisms like bacteria", False)
+                ],
+                "wrong_explanations": {
+                    1: "Bacteria cannot choose or deliberately change their DNA — resistance arises from RANDOM mutations that existed before antibiotic exposure.",
+                    2: "Antibiotics SELECT resistant variants — they don't cause the mutations. The mutations existed before the antibiotic was used.",
+                    3: "Evolution occurs in all organisms — bacteria just evolve faster because they reproduce rapidly (millions of generations in days). Natural selection has been directly observed in larger organisms too."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 11. FOSSILS AND EXTINCTION
+    # ══════════════════════════════════════════════
+    {
+        "id": "fossils-extinction",
+        "title": "Fossils and Extinction",
+        "spec": "4.6.5",
+        "summary": "Describe how fossils form and explain why species become extinct.",
+        "theory": [
+            {
+                "heading": "How Fossils Form",
+                "content": "A FOSSIL is the preserved remains or traces of an organism from the geological past.\n\nFossils form in several ways:\n\nMINERALISATION:\nAn organism dies and is quickly buried by sediment (mud, sand).\nSoft tissue decays, but hard parts (bones, teeth, shells) remain.\nOver millions of years, minerals from the surrounding rock slowly replace the original material.\nEventually all original material is replaced by rock → a fossil.\n\nPRESERVATION in extreme conditions:\nAMBER — tree resin traps small organisms (insects, spiders) which are perfectly preserved.\nICE — frozen conditions preserve soft tissue (woolly mammoths found almost intact in Siberia).\nTAR PITS — organisms become trapped in natural asphalt and are preserved.\nPEAT BOGS — acidic, anaerobic conditions preserve soft tissue (bog bodies found in northern Europe).\n\nTRACE FOSSILS:\nFootprints, burrows, bite marks or droppings preserved in rock.\nProvide evidence of behaviour as well as body structure."
+            },
+            {
+                "heading": "Why the Fossil Record is Incomplete",
+                "content": "The fossil record does not contain every organism that ever lived — it is significantly INCOMPLETE.\n\nReasons:\nSOFT TISSUE rarely fossilises — decay is usually faster than mineralisation.\nSMALL OR FRAGILE organisms are less likely to leave fossils.\nCONDITIONS must be exactly right — rapid burial, appropriate chemistry, absence of scavengers.\nFOSSILS may be DESTROYED by geological processes — volcanic activity, erosion, subduction.\nFOSSILS are simply not yet found — much of the Earth's rock has not been excavated.\n\nDespite being incomplete, the fossil record is remarkably consistent with evolution — older fossils are simpler, newer fossils are more complex, and transitional forms have been found."
+            },
+            {
+                "heading": "Extinction",
+                "content": "EXTINCTION occurs when every individual member of a species dies — the species is gone forever.\n\nExtinction is permanent — once a species is gone, it cannot return.\n\nCauses of extinction:\nCATASTROPHIC EVENTS — e.g. asteroid impact (linked to mass extinction of dinosaurs ~66 million years ago), volcanic eruptions producing climate change.\nHABITAT DESTRUCTION — deforestation, draining of wetlands, urbanisation → species lose their living space.\nNEW COMPETITORS or PREDATORS — introduced species outcompeting or preying on native species.\nNEW DISEASES — disease spreading through a population with no natural immunity.\nCLIMATE CHANGE — rapid shifts in temperature or rainfall patterns that species cannot adapt to quickly enough.\nOVERHUNTING/OVERFISHING — human hunting reducing populations below viable levels (e.g. dodo, passenger pigeon, woolly mammoth — possibly).\n\nCurrent extinction crisis:\nScientists estimate we are currently experiencing a mass extinction event caused primarily by human activity — habitat destruction, climate change, pollution and overexploitation."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Extinction is PERMANENT — a species cannot come back once all individuals are dead. The fossil record being incomplete does NOT disprove evolution — it is expected and understandable given how rare fossilisation is. Most organisms that ever lived left no fossil at all.",
+        "key_note": "Fossils form by mineralisation, preservation in amber/ice/tar, or trace fossils. Record is incomplete because soft tissue rarely fossilises and conditions must be exact. Extinction = all individuals of species die — permanent. Causes: catastrophe, habitat loss, competition, disease, climate change, human activity.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Fossil Type or Extinction Cause",
+            "instruction": "Match each term to its correct description.",
+            "pairs": [
+                ("Mineralisation", "Hard parts replaced by minerals over millions of years as the organism is buried in sediment"),
+                ("Amber preservation", "Small organisms trapped in tree resin — perfectly preserved for millions of years"),
+                ("Trace fossil", "Footprints, burrows or droppings preserved in rock — evidence of behaviour"),
+                ("Habitat destruction", "Forests cleared, wetlands drained — species lose living space — extinction risk"),
+                ("Introduced species", "New predator or competitor arrives in an ecosystem — native species may be outcompeted"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why are soft-bodied organisms rarely found as fossils?",
+                "opts": [
+                    ("Soft tissue decays quickly — it usually decomposes before mineralisation can occur", True),
+                    ("Soft-bodied organisms don't have cells, so they cannot be fossilised", False),
+                    ("Soft-bodied organisms only live in water — fossils only form on land", False),
+                    ("Soft tissue is preserved perfectly but scientists cannot identify it", False)
+                ],
+                "wrong_explanations": {
+                    1: "All living things have cells — soft-bodied organisms (jellyfish, worms etc.) are eukaryotes with normal cells.",
+                    2: "Many fossils DO form in water and marine sediments — in fact, aquatic environments are often BETTER for fossilisation because rapid burial in sediment is more likely.",
+                    3: "Soft tissue can be preserved in exceptional circumstances (amber, ice, peat bogs) — but in most cases it decays before preservation can occur."
+                }
+            },
+            {
+                "q": "The dodo became extinct in the 17th century. What caused its extinction?",
+                "opts": [
+                    ("Human hunting and introduced species (rats and pigs eating eggs) — the dodo had no natural predators and was not afraid of humans", True),
+                    ("A catastrophic volcanic eruption on Mauritius wiped out the entire population", False),
+                    ("Climate change caused the fruit the dodo ate to disappear", False),
+                    ("A deadly virus spread through the population before any could survive and develop immunity", False)
+                ],
+                "wrong_explanations": {
+                    1: "No major volcanic eruption caused the dodo's extinction — it was a combination of human hunting and the introduction of invasive species.",
+                    2: "Some habitat change occurred, but the primary drivers were hunting and invasive species, not climate-driven food loss.",
+                    3: "While disease can cause extinction, the primary documented causes for the dodo are human hunting and introduced species."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 12. RESISTANT BACTERIA
+    # ══════════════════════════════════════════════
+    {
+        "id": "resistant-bacteria",
+        "title": "Resistant Bacteria",
+        "spec": "4.6.5",
+        "summary": "Explain how antibiotic resistance develops through natural selection and why it is a global health threat.",
+        "theory": [
+            {
+                "heading": "How Antibiotic Resistance Develops",
+                "content": "Antibiotic resistance is a direct example of EVOLUTION BY NATURAL SELECTION occurring in our lifetimes.\n\nThe process:\n1. VARIATION — within a population of bacteria, individuals vary slightly due to random mutations. A very small number may have a mutation that gives RESISTANCE to a particular antibiotic.\n2. SELECTION PRESSURE — when antibiotics are used, they KILL bacteria that are NOT resistant. The resistant bacteria SURVIVE.\n3. REPRODUCTION — resistant bacteria reproduce (bacteria can double every 20 minutes). They pass on the resistance gene to offspring.\n4. SPREAD — resistant bacteria become increasingly common in the population. The antibiotic no longer works.\n\nThis is natural selection in real time — the antibiotic acts as the selection pressure. The resistant mutation existed BEFORE the antibiotic was used — the antibiotic didn't create the mutation, it selected for it."
+            },
+            {
+                "heading": "MRSA — A Serious Example",
+                "content": "MRSA (Methicillin-resistant Staphylococcus aureus) is a bacterium that has developed resistance to many commonly used antibiotics.\n\nStaphylococcus aureus is normally a relatively harmless skin bacterium found on about 30% of people.\n\nMRSA has acquired resistance through repeated exposure to antibiotics — particularly in hospital settings where antibiotics are widely used.\n\nWhy MRSA is dangerous:\nDifficult to treat — standard antibiotics don't work.\nCan cause serious infections: bloodstream infections (sepsis), pneumonia, wound infections.\nParticularly dangerous for hospital patients who are already weakened or have wounds.\nFew effective antibiotics remain — some strains are resistant to almost everything.\n\nMRSA shows what can happen when antibiotic resistance goes unchecked — a common bacterium becomes a serious, life-threatening pathogen."
+            },
+            {
+                "heading": "Why Antibiotic Resistance is a Global Crisis",
+                "content": "Antibiotic resistance is one of the greatest threats to global health, food security and development — according to the World Health Organisation.\n\nThe problem is accelerating because:\nOVER-PRESCRIPTION — antibiotics given for viral infections (where they have no effect) or 'just in case'.\nINCOMPLETE COURSES — stopping antibiotics early leaves the most resistant bacteria alive to reproduce.\nAGRICULTURAL USE — antibiotics widely used in livestock farming to prevent disease and promote growth → resistant bacteria enter food chains.\nGLOBAL SPREAD — resistant bacteria travel with people internationally.\nSLOW DEVELOPMENT of new antibiotics — pharmaceutical companies have reduced investment because new antibiotics are not as profitable as drugs for chronic diseases.\n\nWhat can be done:\nPrescribe antibiotics ONLY when necessary.\nPatients must COMPLETE FULL COURSES.\nDevelop NEW antibiotics and alternative treatments (e.g. phage therapy — using viruses that kill bacteria).\nReduce agricultural antibiotic use.\nBetter hygiene to prevent spread of resistant bacteria."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Antibiotics do NOT CAUSE mutations — they SELECT resistant bacteria that already exist. The mutation happened randomly, long before the antibiotic was used. The antibiotic is the selection pressure that determines which bacteria survive. This is a key distinction — evolution acts on existing variation, it doesn't create new variation in response to need.",
+        "key_note": "Resistance develops by natural selection: random resistance mutation exists → antibiotic kills non-resistant bacteria → resistant bacteria survive and reproduce → resistance spreads. Antibiotics select for resistance — they don't cause it. MRSA = serious hospital-acquired resistant bacterium.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Steps in Developing Antibiotic Resistance",
+            "instruction": "Put the steps of antibiotic resistance development in order by matching each step.",
+            "pairs": [
+                ("Step 1 — Variation", "A random mutation gives one bacterium resistance to an antibiotic — before any antibiotic is used"),
+                ("Step 2 — Selection pressure", "Antibiotic is used — kills all non-resistant bacteria, resistant one survives"),
+                ("Step 3 — Reproduction", "Resistant bacterium reproduces — passing resistance gene to millions of offspring"),
+                ("Step 4 — Population change", "Resistant bacteria dominate the population — the antibiotic no longer works"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "How does antibiotic resistance develop in bacteria?",
+                "opts": [
+                    ("A random mutation gives some bacteria resistance — antibiotics kill non-resistant bacteria but resistant ones survive and reproduce", True),
+                    ("Bacteria deliberately mutate themselves when exposed to antibiotics to survive", False),
+                    ("Antibiotics cause the mutation that produces resistance in bacteria", False),
+                    ("Resistant bacteria migrate from other areas after non-resistant bacteria are killed", False)
+                ],
+                "wrong_explanations": {
+                    1: "Bacteria cannot deliberately change their DNA — mutations are RANDOM and SPONTANEOUS. Bacteria cannot respond to threats by choosing to mutate.",
+                    2: "Antibiotics are the SELECTION PRESSURE — they select pre-existing resistant variants. They do not cause the mutations that produce resistance.",
+                    3: "Migration can spread resistance — but the PRIMARY mechanism of resistance developing in a population is natural selection of pre-existing resistant mutants."
+                }
+            },
+            {
+                "q": "Why is it important to complete a full course of antibiotics even if you feel better?",
+                "opts": [
+                    ("Stopping early leaves the most resistant bacteria alive — they survive to reproduce and pass on resistance genes", True),
+                    ("The remaining antibiotics are needed to prevent the infection returning to full strength", False),
+                    ("Unfinished antibiotics are wasted medicine that could have been used by others", False),
+                    ("Stopping early makes the side effects of antibiotics worse", False)
+                ],
+                "wrong_explanations": {
+                    1: "Infections can return if bacteria are not fully cleared — but the MORE IMPORTANT reason in terms of antibiotic resistance is that the survivors of partial treatment are the most resistant bacteria.",
+                    2: "While waste is a concern, the primary medical reason is resistance selection — the survivors of an incomplete course are more likely to be resistant.",
+                    3: "Side effects are not affected by course completion — the resistance argument is the primary public health reason."
+                }
+            },
+            {
+                "q": "MRSA is resistant to many antibiotics. How did this resistance arise?",
+                "opts": [
+                    ("Through natural selection — repeated antibiotic use in hospitals selected for bacteria with resistance mutations, which then multiplied", True),
+                    ("MRSA was deliberately engineered in a laboratory as a biological weapon", False),
+                    ("MRSA infected humans from animals and naturally carries more mutations than other bacteria", False),
+                    ("Hospital cleaning products cause bacteria to mutate and become resistant", False)
+                ],
+                "wrong_explanations": {
+                    1: "MRSA arose naturally through the evolutionary process of natural selection — not deliberate engineering.",
+                    2: "Staphylococcus aureus is primarily a human pathogen — while zoonotic transmission does occur, MRSA's resistance arose through natural selection in hospital environments.",
+                    3: "Cleaning products can select for resistance to disinfectants — but antibiotic resistance specifically arises from exposure to antibiotics, not cleaning agents."
+                }
+            }
         ]
     },
 ],
