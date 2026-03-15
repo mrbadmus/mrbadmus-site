@@ -1,172 +1,901 @@
 #!/usr/bin/env python3
-"""Biology subtopics — all topics"""
+"""
+Biology subtopics — Combined Foundation
+AQA 8464 / Biology 8461
+
+Cell Biology updated: 7 deep subtopics replacing original 3.
+All other topics unchanged from previous version.
+"""
 
 BIOLOGY_COLOR = "#6BCB77"
 
 BIOLOGY_SUBTOPICS_ALL = {
 
 "cell-biology": [
+
+
+    # ═══════════════════════════════════════════════
+    # 1. EUKARYOTES AND PROKARYOTES
+    # ═══════════════════════════════════════════════
     {
-        "id": "cell-structure",
-        "title": "Animal, Plant and Prokaryotic Cells",
-        "spec": "4.1.1",
-        "summary": "Describe the structure and function of animal, plant and prokaryotic cells.",
+        "id": "eukaryotes-prokaryotes",
+        "title": "Eukaryotes and Prokaryotes",
+        "spec": "4.1.1.1",
+        "summary": "Compare the key features of eukaryotic and prokaryotic cells, including scale and size.",
         "theory": [
-            {"heading": "Animal Cells — The Basics",
-             "content": "Nucleus: contains DNA — controls cell activity.\nCell membrane: controls what enters and leaves.\nCytoplasm: where most chemical reactions happen.\nMitochondria: site of aerobic respiration — produces ATP energy.\nRibosomes: where proteins are made."},
-            {"heading": "Plant Cells — Extra Components",
-             "content": "All animal cell components PLUS:\nCell wall: made of cellulose — provides support and shape.\nChloroplasts: contain chlorophyll — absorb light for photosynthesis.\nPermanent vacuole: filled with cell sap — helps maintain cell shape (turgor pressure).\nSome plant cells lack chloroplasts (e.g. root cells — no light underground)."},
-            {"heading": "Prokaryotic Cells (Bacteria)",
-             "content": "Much smaller than eukaryotic cells.\nNO nucleus — DNA is a single loop in the cytoplasm.\nNO membrane-bound organelles.\nHave: cell membrane, cell wall (not cellulose), cytoplasm, ribosomes.\nMay have: plasmids (small circular DNA loops), flagella (tail for movement), capsule (slime layer)."},
-            {"heading": "Microscopy",
-             "content": "Light microscopes: use light — max magnification ~×2000, can see cells and large organelles.\nElectron microscopes: use electrons — max magnification ~×2,000,000, can see mitochondria, ribosomes in detail.\nMagnification = image size ÷ actual size.\nResolution: ability to distinguish two close points as separate — electron microscopes have much higher resolution."}
+            {
+                "heading": "The Two Fundamental Types of Cell",
+                "content": "Every living organism on Earth is made of one of two fundamentally different types of cell: eukaryotic or prokaryotic.\nThe single most important difference between them is whether the cell has a TRUE NUCLEUS — a membrane-bound compartment containing the DNA.\nEukaryotic cells HAVE a nucleus. Prokaryotic cells DO NOT.\nThis distinction is so fundamental that it defines two of the largest groupings of life on Earth."
+            },
+            {
+                "heading": "Eukaryotic Cells",
+                "content": "Eukaryotic cells are larger, more complex cells that have:\n• A true nucleus — DNA enclosed in a nuclear membrane.\n• Membrane-bound organelles — mitochondria, endoplasmic reticulum, Golgi apparatus etc.\n• A cytoskeleton — internal protein framework.\nAll animals, plants, fungi and protists are made of eukaryotic cells.\nTypical size: 10–100 micrometres (µm).\nThe nucleus protects DNA and allows its activity to be carefully regulated."
+            },
+            {
+                "heading": "Prokaryotic Cells — Bacteria",
+                "content": "Prokaryotic cells are smaller and simpler. All bacteria are prokaryotes.\nKey features:\n• NO nucleus — DNA is a SINGLE CIRCULAR LOOP floating free in the cytoplasm.\n• NO membrane-bound organelles — no mitochondria, no chloroplasts.\n• DO have: cytoplasm, a cell membrane, a cell wall (made of peptidoglycan — not cellulose), and ribosomes (smaller than eukaryotic ribosomes).\n• May also have: PLASMIDS (small extra circular loops of DNA, not essential for survival), a FLAGELLUM (rotating tail for movement), and a CAPSULE (slimy outer layer for protection and attachment).\nTypical size: 1–10 µm — roughly 10× smaller than a typical animal cell."
+            },
+            {
+                "heading": "Why Size Matters — Surface Area to Volume Ratio",
+                "content": "The small size of prokaryotic cells gives them a very HIGH surface area to volume ratio (SA:V).\nThis means that relative to their volume, bacteria have a lot of membrane surface available for absorbing nutrients and removing waste.\nThis is one reason bacteria can grow and reproduce extremely fast — every 20 minutes under ideal conditions.\nLarger eukaryotic cells have a lower SA:V ratio — they need specialised exchange surfaces and transport systems (e.g. lungs, circulatory system) to move substances efficiently."
+            },
+            {
+                "heading": "Units and Scale",
+                "content": "Working with cells requires understanding very small units:\n• 1 metre (m) = 1,000 millimetres (mm)\n• 1 mm = 1,000 micrometres (µm)\n• 1 µm = 1,000 nanometres (nm)\nSo: 1 m = 1,000,000 µm = 1,000,000,000 nm\nTypical sizes to remember:\n• Animal cell: ~20 µm\n• Plant cell: ~40–80 µm\n• Bacterium: ~1–5 µm\n• Virus: ~0.1 µm (100 nm)\n• Ribosome: ~20 nm\nYou need to be able to convert between these units and use them in magnification calculations."
+            }
         ],
         "variables": [
             ("M", "Magnification", "no unit", "×"),
-            ("I", "Image size", "millimetres or micrometres", "mm / µm"),
-            ("A", "Actual size", "millimetres or micrometres", "mm / µm"),
+            ("I", "Image size", "mm or µm", "mm / µm"),
+            ("A", "Actual size", "mm or µm", "mm / µm"),
         ],
-        "equations": ["Magnification = image size ÷ actual size"],
-        "common_mistake": "Plant cells don't ALL have chloroplasts — only cells that are exposed to light. Root cells and storage cells don't have them. Also — prokaryotic cells have NO nucleus and NO membrane-bound organelles.",
-        "key_note": "1 mm = 1000 µm. 1 µm = 1000 nm. Scale bars on micrographs are your friend — use them to calculate actual size.",
-        "higher": "Culturing bacteria: aseptic technique — sterilise equipment, work near Bunsen, seal petri dishes. Inhibition zones show antibiotic effectiveness.",
-        "triple_only": None, "rp": "RP1 — Use a light microscope to observe and draw plant or animal cells. Calculate magnification.",
+        "equations": ["Magnification (M) = Image size (I) ÷ Actual size (A)"],
+        "common_mistake": "Prokaryotic cells have NO nucleus and NO membrane-bound organelles. Students often write 'bacteria have a nucleus' — they do not. The DNA is a single circular loop loose in the cytoplasm. Also: the bacterial cell wall is made of PEPTIDOGLYCAN, not cellulose (cellulose = plant cell walls).",
+        "key_note": "Eukaryote = nucleus present. Prokaryote = no nucleus, DNA floats free. Size: bacterium ~1–5 µm; animal cell ~20 µm; plant cell ~40–80 µm. Units: 1 mm = 1000 µm.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
         "matching": {
-            "title": "Match the Organelle to its Function",
-            "instruction": "Match each cell component to its correct function.",
+            "title": "Eukaryote or Prokaryote?",
+            "instruction": "Sort each feature — does it belong to eukaryotic cells, prokaryotic cells, or both?",
             "pairs": [
-                ("Nucleus", "Contains DNA — controls cell activity"),
-                ("Mitochondria", "Site of aerobic respiration — releases energy (ATP)"),
-                ("Ribosomes", "Where proteins are synthesised"),
-                ("Chloroplasts", "Absorb light energy for photosynthesis"),
-                ("Cell wall", "Provides structural support (plant cells only)"),
-                ("Vacuole", "Stores cell sap, helps maintain turgor pressure"),
+                ("Eukaryote only", "Has a true membrane-bound nucleus containing DNA"),
+                ("Prokaryote only", "DNA is a single circular loop floating in cytoplasm"),
+                ("Prokaryote only", "May have plasmids — small extra circular DNA rings"),
+                ("Eukaryote only", "Contains mitochondria for aerobic respiration"),
+                ("Both", "Has a cell membrane and cytoplasm"),
+                ("Both", "Contains ribosomes for protein synthesis"),
             ]
         },
         "fifas": [
-            {"label": "Example — Magnification calculation",
-             "question": "A cell appears 30 mm in a drawing. The actual cell is 0.03 mm. Calculate the magnification.",
-             "steps": [("F","Magnification = image size ÷ actual size"), ("I","Magnification = 30 ÷ 0.03"), ("F","Both measurements in same units (mm)"), ("A","Magnification = ×1000")]}
+            {
+                "label": "Magnification Calculation",
+                "question": "A bacterium is drawn 30 mm long in a diagram. Its actual length is 0.003 mm. Calculate the magnification.",
+                "steps": [
+                    ("F", "Magnification = Image size ÷ Actual size"),
+                    ("I", "M = 30 ÷ 0.003"),
+                    ("F", "Both values already in mm — no conversion needed"),
+                    ("A", "Magnification = ×10,000")
+                ]
+            },
+            {
+                "label": "Finding Actual Size",
+                "question": "A cell is shown at ×500 magnification and measures 10 mm in the image. Calculate the actual size in µm.",
+                "steps": [
+                    ("F", "Actual size = Image size ÷ Magnification"),
+                    ("I", "A = 10 mm ÷ 500 = 0.02 mm"),
+                    ("F", "Convert to µm: 0.02 mm × 1000 = 20 µm"),
+                    ("A", "Actual size = 20 µm")
+                ]
+            }
         ],
         "quiz": [
-            {"q": "Which organelle is the site of aerobic respiration?",
-             "opts": [("Mitochondria", True), ("Nucleus", False), ("Ribosome", False), ("Chloroplast", False)],
-             "wrong_explanations": {1: "The nucleus contains DNA — it controls the cell but doesn't do respiration.", 2: "Ribosomes make proteins — not involved in energy release.", 3: "Chloroplasts do photosynthesis — they capture energy, not release it via respiration."}},
-            {"q": "Which feature is present in plant cells but NOT animal cells?",
-             "opts": [("Cell wall", True), ("Cell membrane", False), ("Mitochondria", False), ("Nucleus", False)],
-             "wrong_explanations": {1: "Animal cells have a cell membrane — but no cell wall.", 2: "Both animal and plant cells have mitochondria for respiration.", 3: "Both have a nucleus containing DNA."}},
-            {"q": "What is the key difference between prokaryotic and eukaryotic cells?",
-             "opts": [("Prokaryotes have no nucleus — DNA floats free in cytoplasm", True), ("Prokaryotes are larger", False), ("Prokaryotes have more mitochondria", False), ("Prokaryotes have no cell membrane", False)],
-             "wrong_explanations": {1: "Prokaryotes are SMALLER than eukaryotic cells.", 2: "Prokaryotes have NO membrane-bound organelles including mitochondria.", 3: "Prokaryotes DO have a cell membrane — it's the nucleus they lack."}},
-            {"q": "A cell appears 15 mm under a microscope. Actual size = 0.015 mm. What is the magnification?",
-             "opts": [("×1000", True), ("×100", False), ("×10", False), ("×0.001", False)],
-             "wrong_explanations": {1: "You divided by a wrong value. M = image ÷ actual = 15 ÷ 0.015 = 1000.", 2: "Check your division: 15 ÷ 0.015 = 1000, not 10.", 3: "You divided actual by image. M = IMAGE ÷ actual = 15 ÷ 0.015 = 1000."}},
-            {"q": "Why don't root cells have chloroplasts?",
-             "opts": [("They are underground — no light for photosynthesis", True), ("Roots don't need energy", False), ("Root cells are prokaryotic", False), ("Chloroplasts only form in summer", False)],
-             "wrong_explanations": {1: "Roots absolutely need energy — they get it from respiration, not photosynthesis.", 2: "All cells are eukaryotic in plants — root cells are plant eukaryotic cells.", 3: "Chloroplasts are permanent organelles — they don't appear seasonally."}}
+            {
+                "q": "What is the key structural difference between eukaryotic and prokaryotic cells?",
+                "opts": [
+                    ("Eukaryotes have a membrane-bound nucleus; prokaryotes do not", True),
+                    ("Prokaryotes are larger and more complex than eukaryotes", False),
+                    ("Eukaryotes have no cell membrane", False),
+                    ("Prokaryotes have mitochondria but eukaryotes do not", False)
+                ],
+                "wrong_explanations": {
+                    1: "Prokaryotes are SMALLER and SIMPLER — roughly 10× smaller than a typical animal cell.",
+                    2: "ALL cells have a cell membrane — it is the universal feature of all living cells.",
+                    3: "It is the OPPOSITE — eukaryotes have mitochondria. Prokaryotes have NO membrane-bound organelles at all."
+                }
+            },
+            {
+                "q": "A bacterium is approximately 2 µm in length. How does this compare to a typical animal cell?",
+                "opts": [
+                    ("The animal cell is roughly 10× larger — approximately 20 µm", True),
+                    ("They are about the same size", False),
+                    ("The bacterium is larger — bacteria are bigger than animal cells", False),
+                    ("The animal cell is 1000× larger than the bacterium", False)
+                ],
+                "wrong_explanations": {
+                    1: "They are definitely not the same size — a bacterium at 2 µm vs an animal cell at ~20 µm is a clear 10× size difference.",
+                    2: "Bacteria are SMALLER — roughly 10× smaller than animal cells, not larger.",
+                    3: "1000× larger would make the animal cell 2000 µm — about 2 mm! Animal cells are only ~10× larger, not 1000×."
+                }
+            },
+            {
+                "q": "Which of the following is found in a bacterial cell but NOT in a typical animal cell?",
+                "opts": [
+                    ("Plasmids", True),
+                    ("Mitochondria", False),
+                    ("A nucleus", False),
+                    ("A cell membrane", False)
+                ],
+                "wrong_explanations": {
+                    1: "Animal cells have mitochondria for aerobic respiration — bacteria do not have mitochondria.",
+                    2: "Animal cells HAVE a nucleus — bacteria do not. The question asks what bacteria have that animal cells don't.",
+                    3: "Both animal cells AND bacteria have a cell membrane — it is a universal feature."
+                }
+            },
+            {
+                "q": "1 mm is equal to how many micrometres (µm)?",
+                "opts": [
+                    ("1,000 µm", True),
+                    ("100 µm", False),
+                    ("1,000,000 µm", False),
+                    ("10 µm", False)
+                ],
+                "wrong_explanations": {
+                    1: "100 µm = 0.1 mm. The conversion is 1 mm = 1000 µm.",
+                    2: "1,000,000 µm = 1 metre. The conversion you need is: 1 mm = 1000 µm.",
+                    3: "10 µm = 0.01 mm. Remember: milli means one thousandth, so 1 mm = 1000 µm."
+                }
+            },
+            {
+                "q": "What is a flagellum in a bacterial cell?",
+                "opts": [
+                    ("A rotating tail-like structure used for movement", True),
+                    ("A small ring of extra DNA used for genetic transfer", False),
+                    ("A thick outer layer that protects the bacterium", False),
+                    ("The region of cytoplasm where the DNA is stored", False)
+                ],
+                "wrong_explanations": {
+                    1: "A small ring of extra DNA = a PLASMID, not a flagellum.",
+                    2: "A thick outer protective layer = the CAPSULE (or cell wall). The flagellum is the structure for movement.",
+                    3: "The region where DNA sits loosely in the cytoplasm is called the nucleoid region — the flagellum is an external motor structure."
+                }
+            }
         ]
     },
+
+    # ═══════════════════════════════════════════════
+    # 2. ANIMAL AND PLANT CELLS
+    # ═══════════════════════════════════════════════
+    {
+        "id": "animal-plant-cells",
+        "title": "Animal and Plant Cells",
+        "spec": "4.1.1.2",
+        "summary": "Describe the sub-cellular structures of animal and plant cells and relate structure to function.",
+        "theory": [
+            {
+                "heading": "Animal Cell Structures and Functions",
+                "content": "All animal cells contain these five essential structures:\n\nNUCLEUS: contains the cell's DNA, organised into chromosomes. The nucleus controls all cell activity by determining which proteins are made. It has a double membrane called the nuclear envelope with pores that allow molecules to pass in and out.\n\nCELL MEMBRANE: a thin, flexible layer made of phospholipids and proteins. It controls what enters and leaves the cell — it is selectively permeable. It also plays a role in communication between cells.\n\nCYTOPLASM: a watery, gel-like substance that fills the cell. Most chemical reactions happen here. It contains dissolved enzymes, salts, sugars and other molecules, as well as all the organelles.\n\nMITOCHONDRIA: oval-shaped organelles with a folded inner membrane (cristae). This is where aerobic respiration occurs — glucose is broken down using oxygen to release energy as ATP. Cells that are very active (muscle cells, sperm cells, liver cells) have many more mitochondria than less active cells.\n\nRIBOSOMES: tiny structures found either floating in the cytoplasm or attached to the endoplasmic reticulum. This is where PROTEIN SYNTHESIS takes place — amino acids are joined in a specific sequence to build proteins. Every cell needs proteins, so all cells have ribosomes."
+            },
+            {
+                "heading": "Plant Cells — What's Extra",
+                "content": "Plant cells have all five animal cell structures PLUS up to three additional ones:\n\nCELL WALL: a rigid outer layer made of cellulose fibres. It surrounds the cell membrane and gives the cell a fixed shape. It prevents the cell from bursting when it absorbs water by osmosis — the wall resists the pressure. This is what makes plants structurally rigid (along with turgor pressure).\n\nCHLOROPLASTS: oval-shaped organelles containing the green pigment chlorophyll. Chlorophyll absorbs light energy, which is used to drive photosynthesis — converting CO₂ and water into glucose. IMPORTANT: only cells that are exposed to light have chloroplasts. Root cells, storage cells (e.g. in potato tubers) and cells deep inside stems do NOT have chloroplasts.\n\nPERMANENT VACUOLE: a large central compartment in mature plant cells, filled with cell sap (a solution of sugars, salts and pigments). The vacuole pushes against the cell wall and contributes to TURGOR PRESSURE — the pressure that keeps plant cells firm and gives the plant structural support. Without water in the vacuole, the plant wilts."
+            },
+            {
+                "heading": "Why Structure Matches Function",
+                "content": "The key principle to understand is that every structural feature exists because it serves a specific function.\n\nMore mitochondria = more aerobic respiration = more ATP energy. Cells with high energy demands (muscle, sperm, liver) have the most mitochondria.\n\nMore chloroplasts = more photosynthesis. Palisade mesophyll cells in leaves have up to 70 chloroplasts — they are the main photosynthetic cells of the plant.\n\nLarge vacuole = more turgor pressure = firmer cell. This is why plants wilt when they lose water — the vacuoles deflate and cells lose their rigidity.\n\nCell wall + vacuole together = turgid plant cell that holds its shape and provides structural support to the whole plant."
+            },
+            {
+                "heading": "Using a Light Microscope to Observe Cells",
+                "content": "To observe cells under a light microscope:\n1. Prepare a thin section of tissue (e.g. onion epidermis, cheek cells).\n2. Place on a glass slide with a drop of water or mounting fluid.\n3. Add a coverslip carefully to avoid air bubbles.\n4. Apply a stain if needed — iodine solution stains starch and nuclei blue/purple; methylene blue stains nuclei of animal cells.\n5. Focus using the coarse adjustment knob first, then the fine adjustment.\nYou can observe with a light microscope: nucleus, cytoplasm, cell wall, vacuole, chloroplasts.\nYou CANNOT see clearly: individual ribosomes (too small), cell membrane detail, internal mitochondria structure."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "NOT all plant cells have chloroplasts — ONLY cells exposed to light. Root cells are underground so never receive light and have NO chloroplasts. Students also often forget that plant cells have a cell wall AND a cell membrane — both are present. The cell wall is outside, the cell membrane is inside it.",
+        "key_note": "Animal cells: nucleus, cell membrane, cytoplasm, mitochondria, ribosomes. Plant cells: all of the above PLUS cell wall (cellulose), chloroplasts (light-exposed cells only), permanent vacuole.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP1 — Use a light microscope to observe, draw and label plant and animal cells. Include a scale bar and calculate magnification.",
+        "matching": {
+            "title": "Match the Organelle to its Function",
+            "instruction": "Drag each function to match the correct organelle.",
+            "pairs": [
+                ("Nucleus", "Contains DNA in chromosomes — controls all cell activity"),
+                ("Cell membrane", "Selectively permeable barrier — controls what enters and leaves"),
+                ("Mitochondria", "Site of aerobic respiration — releases energy as ATP"),
+                ("Ribosomes", "Site of protein synthesis — builds proteins from amino acids"),
+                ("Cell wall", "Made of cellulose — rigid support, prevents cell bursting"),
+                ("Chloroplasts", "Contain chlorophyll — absorb light energy for photosynthesis"),
+                ("Permanent vacuole", "Filled with cell sap — contributes to turgor pressure"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Which organelle is responsible for protein synthesis?",
+                "opts": [
+                    ("Ribosomes", True),
+                    ("Mitochondria", False),
+                    ("Nucleus", False),
+                    ("Chloroplasts", False)
+                ],
+                "wrong_explanations": {
+                    1: "Mitochondria are the site of aerobic RESPIRATION — they release energy from glucose, they don't make proteins.",
+                    2: "The nucleus contains the DNA instructions for making proteins, but the actual assembly of amino acids into proteins happens at RIBOSOMES.",
+                    3: "Chloroplasts carry out PHOTOSYNTHESIS — capturing light energy to make glucose. Not involved in protein synthesis."
+                }
+            },
+            {
+                "q": "A student looks at a plant cell from a root. They expect to see chloroplasts but find none. Why?",
+                "opts": [
+                    ("Root cells are underground — no light reaches them, so chloroplasts are not present", True),
+                    ("Root cells are too small to contain chloroplasts", False),
+                    ("Root cells are prokaryotic and cannot have chloroplasts", False),
+                    ("Chloroplasts are only present in animal cells", False)
+                ],
+                "wrong_explanations": {
+                    1: "Root cells are eukaryotic plant cells — size is not the reason. Palisade cells are similar in size and have many chloroplasts.",
+                    2: "ALL plant cells are eukaryotic. Root cells are plant cells — they are eukaryotic. Only bacteria (and other prokaryotes) lack membrane-bound organelles.",
+                    3: "Chloroplasts are found in PLANT cells — not animal cells. Animal cells never have chloroplasts."
+                }
+            },
+            {
+                "q": "What is the function of the permanent vacuole in a plant cell?",
+                "opts": [
+                    ("Filled with cell sap — contributes to turgor pressure, keeping the cell firm", True),
+                    ("Stores chlorophyll for photosynthesis", False),
+                    ("Acts as the site of aerobic respiration", False),
+                    ("Controls what enters and leaves the cell", False)
+                ],
+                "wrong_explanations": {
+                    1: "Chlorophyll is stored in CHLOROPLASTS — not the vacuole. The vacuole contains cell sap (sugars and salts).",
+                    2: "Aerobic respiration occurs in MITOCHONDRIA. The vacuole is a storage compartment.",
+                    3: "Controlling what enters and leaves = the CELL MEMBRANE. The vacuole is a storage structure filled with cell sap."
+                }
+            },
+            {
+                "q": "Which of the following is present in both animal and plant cells?",
+                "opts": [
+                    ("Mitochondria", True),
+                    ("Cell wall", False),
+                    ("Chloroplasts", False),
+                    ("Permanent vacuole", False)
+                ],
+                "wrong_explanations": {
+                    1: "Cell walls are only found in plant cells (and bacteria, fungi) — NOT in animal cells.",
+                    2: "Chloroplasts are found only in plant cells that are exposed to light. Animal cells never have chloroplasts.",
+                    3: "The permanent vacuole is a plant cell feature — animal cells do not have a large permanent vacuole (though they may have small temporary vacuoles)."
+                }
+            },
+            {
+                "q": "Why do very active muscle cells contain many more mitochondria than skin cells?",
+                "opts": [
+                    ("Muscle cells need much more ATP energy for contraction — more mitochondria produce more ATP", True),
+                    ("Muscle cells are larger, so they need more organelles to fill the space", False),
+                    ("Mitochondria help muscle cells to absorb oxygen from the blood", False),
+                    ("Skin cells don't respire — they don't need mitochondria at all", False)
+                ],
+                "wrong_explanations": {
+                    1: "Cell size doesn't directly dictate organelle number — it is energy demand that determines mitochondria count.",
+                    2: "Oxygen is absorbed by diffusion through the cell membrane — mitochondria USE oxygen in respiration, they don't absorb it.",
+                    3: "All living cells respire all the time — skin cells do have mitochondria. Active cells simply have FAR MORE."
+                }
+            }
+        ]
+    },
+
+    # ═══════════════════════════════════════════════
+    # 3. CELL SPECIALISATION
+    # ═══════════════════════════════════════════════
+    {
+        "id": "cell-specialisation",
+        "title": "Cell Specialisation and Differentiation",
+        "spec": "4.1.1.3",
+        "summary": "Explain how and why cells become specialised, with examples from animals and plants.",
+        "theory": [
+            {
+                "heading": "What is Cell Differentiation?",
+                "content": "All multicellular organisms begin life as a single fertilised egg cell (zygote). This one cell divides repeatedly by mitosis to produce all the billions of cells in the organism.\nAs cells divide, they become progressively more specialised — this process is called DIFFERENTIATION.\nDifferentiation means a cell switches on certain genes and switches off others, causing it to develop a specific structure suited to a specific function.\nThe result: specialised cells that are experts at one job, making the whole organism far more efficient.\nIn ANIMALS: most differentiation occurs early during embryonic development. Once differentiated, most animal cells lose the ability to become a different type — they are committed.\nIn PLANTS: differentiation can continue throughout the plant's life. Meristem cells (at root and shoot tips) remain undifferentiated and can keep producing new specialised cells."
+            },
+            {
+                "heading": "Specialised Animal Cells",
+                "content": "SPERM CELL — function: swim to and fertilise an egg.\nAdaptations:\n• Streamlined head — reduces drag when swimming.\n• Flagellum (tail) — rotates to propel the sperm through fluid.\n• Many mitochondria in the midpiece — aerobic respiration provides ATP energy for swimming.\n• Acrosome (cap on the head) — contains enzymes that digest through the egg's outer membrane.\n• Haploid nucleus — contains only 23 chromosomes (half the normal number) so that after fertilisation the normal 46 is restored.\n\nRED BLOOD CELL (erythrocyte) — function: carry oxygen from lungs to tissues.\nAdaptations:\n• Biconcave disc shape — large surface area for oxygen absorption; thin centre = short diffusion distance for O₂.\n• No nucleus — creates more space for HAEMOGLOBIN, the oxygen-carrying protein.\n• Flexible — can squeeze through narrow capillaries without tearing.\n• Packed with haemoglobin — each cell contains ~270 million haemoglobin molecules.\n\nNEURONE (nerve cell) — function: transmit electrical impulses rapidly over long distances.\nAdaptations:\n• Very long axon — can be over a metre long (e.g. sciatic nerve), allowing signals to travel from brain to toe without interruption.\n• Myelin sheath — fatty insulating layer that speeds up impulse conduction (signals jump between gaps called nodes of Ranvier).\n• Dendrites — short branching fibres that receive signals from other neurones.\n• Synaptic terminals — the axon ends in bulb-like structures that release neurotransmitters to communicate with the next cell.\n\nMUSCLE CELL — function: contract to produce movement.\nAdaptations:\n• Contains contractile proteins (actin and myosin) that slide past each other to shorten the cell.\n• Many mitochondria — large energy demand for constant contraction.\n• Can store glycogen as an energy reserve."
+            },
+            {
+                "heading": "Specialised Plant Cells",
+                "content": "ROOT HAIR CELL — function: absorb water and mineral ions from soil.\nAdaptations:\n• Long, thin hair-like projection extending from the cell — massively increases the surface area in contact with soil water.\n• No chloroplasts — underground, no light available for photosynthesis.\n• Thin cell wall — short diffusion distance for water and minerals.\n• Large permanent vacuole — maintains a low water potential inside the cell to draw water in by osmosis.\n\nXYLEM CELL — function: transport water and dissolved minerals from roots up to leaves.\nAdaptations:\n• Dead cells — no cytoplasm or nucleus (no living contents obstructing flow).\n• Hollow lumen — forms a continuous open tube for water to flow through.\n• Walls thickened with LIGNIN — a hard, waterproof substance that prevents collapse under pressure and makes xylem very strong.\n• No end walls — cells are stacked end-to-end to form an uninterrupted column.\n\nPHLOEM CELL — function: transport dissolved sugars (sucrose) from leaves to the rest of the plant.\nAdaptations:\n• Living cells with little cytoplasm.\n• Sieve plates — porous plates at the end walls that allow sugar solution to flow between cells.\n• Companion cells alongside each sieve tube cell — provide energy (ATP) for active loading of sugars.\n\nPALISADE MESOPHYLL CELL — function: photosynthesis.\nAdaptations:\n• Packed with many chloroplasts.\n• Found at the top of the leaf — closest to sunlight.\n• Tall, column shape — allows maximum chloroplasts to be stacked near the leaf surface."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Students often say 'root hair cells absorb water by active transport' — this is WRONG. Water enters by OSMOSIS (passive). Mineral IONS are absorbed by active transport. These are two different processes happening in the same cell. Don't mix them up.",
+        "key_note": "Differentiation = cells becoming specialised by switching genes on/off. Animals: mostly at embryo stage. Plants: meristems continue throughout life. Every adaptation has a specific reason — always link structure to function.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Specialised Cell to its Key Adaptation",
+            "instruction": "Match each cell type to the adaptation that makes it suited to its function.",
+            "pairs": [
+                ("Sperm cell", "Flagellum and many mitochondria — to swim to the egg"),
+                ("Red blood cell", "Biconcave disc, no nucleus — maximises haemoglobin space"),
+                ("Neurone", "Long axon with myelin sheath — fast impulse transmission"),
+                ("Root hair cell", "Long projection, no chloroplasts — absorbs water and minerals from soil"),
+                ("Xylem", "Hollow, dead, lignified walls — forms a tube for water transport"),
+                ("Palisade cell", "Packed with chloroplasts near leaf surface — photosynthesis"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why does a sperm cell contain many mitochondria?",
+                "opts": [
+                    ("It needs large amounts of ATP energy to power its flagellum and swim to the egg", True),
+                    ("Mitochondria help the sperm digest through the egg membrane", False),
+                    ("More mitochondria make the sperm cell larger and more visible", False),
+                    ("Mitochondria store the sperm's genetic material", False)
+                ],
+                "wrong_explanations": {
+                    1: "Digesting the egg membrane is the function of the ACROSOME — an enzyme-filled cap at the tip of the sperm head. Mitochondria provide energy.",
+                    2: "Sperm cells are actually very small and streamlined to reduce drag — larger would mean slower swimming. Mitochondria provide energy, not bulk.",
+                    3: "Genetic material (DNA) is stored in the NUCLEUS, not in mitochondria. Mitochondria have their own small amount of DNA but this is not what carries genetic information to the egg."
+                }
+            },
+            {
+                "q": "A red blood cell has no nucleus. How does this benefit its function?",
+                "opts": [
+                    ("More internal space for haemoglobin, allowing the cell to carry more oxygen", True),
+                    ("Without a nucleus it cannot be destroyed by white blood cells", False),
+                    ("It can reproduce more quickly without a nucleus getting in the way", False),
+                    ("The absence of a nucleus reduces the cell's oxygen needs", False)
+                ],
+                "wrong_explanations": {
+                    1: "White blood cells do patrol for pathogens, but red blood cell lifespan (~120 days) is determined by membrane wear — not by whether they have a nucleus.",
+                    2: "Cells without a nucleus CANNOT reproduce — red blood cells are made in bone marrow and released as mature, non-dividing cells.",
+                    3: "Cells don't 'need' oxygen for the nucleus — they need it for respiration in mitochondria. Red blood cells actually have very few mitochondria and mainly use anaerobic respiration."
+                }
+            },
+            {
+                "q": "Why does a root hair cell have no chloroplasts?",
+                "opts": [
+                    ("Root hair cells are underground — there is no light available for photosynthesis", True),
+                    ("Root hair cells are too small to fit chloroplasts inside", False),
+                    ("Chloroplasts would prevent water absorption from the soil", False),
+                    ("Root hair cells are a type of prokaryotic cell and cannot have organelles", False)
+                ],
+                "wrong_explanations": {
+                    1: "Root hair cells are of similar size to leaf cells — size is not the limiting factor. The absence of light is the reason.",
+                    2: "Chloroplasts don't block water entry — they are simply absent because they would serve no purpose underground where there is no light.",
+                    3: "All plant cells are EUKARYOTIC. Root hair cells are eukaryotic plant cells — they could have organelles, but chloroplasts specifically are not present due to the lack of light."
+                }
+            },
+            {
+                "q": "What structural feature of xylem cells makes them well-suited for water transport?",
+                "opts": [
+                    ("They are dead and hollow — no cell contents blocking the continuous water column", True),
+                    ("They contain many chloroplasts to produce energy for pumping water upwards", False),
+                    ("They have a large vacuole to store water temporarily", False),
+                    ("They have very thin walls to allow water to pass through easily", False)
+                ],
+                "wrong_explanations": {
+                    1: "Chloroplasts would only be present if the xylem cell was exposed to light — and the purpose of xylem is water transport, not photosynthesis. The hollow dead cells are the key feature.",
+                    2: "Xylem cells don't store water — they are a continuous flow pipe. Vacuoles are a feature of living plant cells for support.",
+                    3: "Xylem walls are actually THICK and reinforced with lignin — this gives them strength to withstand the tension created as water is pulled upwards, preventing the xylem from collapsing."
+                }
+            }
+        ]
+    },
+
+    # ═══════════════════════════════════════════════
+    # 4. MICROSCOPY
+    # ═══════════════════════════════════════════════
+    {
+        "id": "microscopy",
+        "title": "Microscopy",
+        "spec": "4.1.1.5",
+        "summary": "Compare light and electron microscopes, and carry out magnification calculations.",
+        "theory": [
+            {
+                "heading": "Light Microscopes",
+                "content": "Light microscopes use VISIBLE LIGHT focused by glass lenses to produce a magnified image of a specimen.\nKey facts:\n• Maximum magnification: approximately ×2,000\n• Maximum resolution: approximately 200 nm — cannot distinguish two points closer than this\n• Can view living specimens — no special preparation needed\n• Relatively cheap — used in schools and hospitals worldwide\n• Images are in colour (natural or stained)\nWhat you CAN see: cells, nucleus, cell wall, vacuole, chloroplasts, large organelles at high magnification\nWhat you CANNOT see clearly: ribosomes (~20 nm), internal membrane detail, individual proteins\nSTAINING: many specimens are colourless, so dyes are used:\n• Iodine solution: stains starch blue/black; stains nuclei light brown\n• Methylene blue: stains cell nuclei dark blue — great for animal cells\n• Toluidine blue: stains plant cell walls\nStaining kills cells — so stained specimens cannot be living."
+            },
+            {
+                "heading": "Electron Microscopes",
+                "content": "Electron microscopes use a BEAM OF ELECTRONS instead of light.\nBecause electrons have a much shorter wavelength than visible light, they can produce far more detailed images.\nKey facts:\n• Maximum magnification: approximately ×2,000,000\n• Maximum resolution: approximately 0.1 nm — 2000× better than light microscopes\n• Specimens must be dead — the electron beam operates in a vacuum (no air, so no living cells)\n• Very expensive — found in universities and research centres\n• Images are black and white (false colour can be added digitally afterwards)\nTwo main types:\n• Transmission electron microscope (TEM): beam passes THROUGH a very thin slice of specimen — shows internal detail of organelles\n• Scanning electron microscope (SEM): beam scans the SURFACE of a specimen — produces a 3D-looking image of the external structure\nElectron microscopes revealed: the detailed internal structure of mitochondria, ribosomes, the nuclear envelope, endoplasmic reticulum and many more previously unknown structures — transforming our understanding of cell biology."
+            },
+            {
+                "heading": "Resolution vs Magnification",
+                "content": "These two terms are often confused:\nMAGNIFICATION: how many times bigger the image is compared to the actual object. A ×1000 magnification makes things appear 1000× bigger.\nRESOLUTION: the ability to see fine detail — how clearly two close-together points can be distinguished as SEPARATE objects rather than blurring into one.\nYou can have high magnification but low resolution — like zooming in on a pixelated photo. The image is big but blurry.\nElectron microscopes gave scientists BOTH very high magnification AND very high resolution — this is what made them revolutionary.\nAnalogy: imagine trying to read a book from across a room. You could use a magnifying glass (high magnification) but if the lens is poor quality, the words are still blurry (low resolution). A high-quality telescope gives you both magnification and resolution."
+            },
+            {
+                "heading": "The Magnification Formula",
+                "content": "The formula: Magnification = Image size ÷ Actual size\nRearranged:\n• Actual size = Image size ÷ Magnification\n• Image size = Actual size × Magnification\nCRUCIAL RULE: both measurements must be in the SAME UNITS before you calculate.\nIf image size is in mm and actual size is in µm → convert before calculating.\nUnit conversions:\n• mm to µm: multiply by 1000 (1 mm = 1000 µm)\n• µm to mm: divide by 1000\nTip: use the formula triangle — write M at the top, I bottom-left, A bottom-right. Cover the one you want to find."
+            }
+        ],
+        "variables": [
+            ("M", "Magnification", "no unit", "×"),
+            ("I", "Image size", "mm or µm", "mm / µm"),
+            ("A", "Actual size", "mm or µm", "mm / µm"),
+        ],
+        "equations": ["M = I ÷ A", "A = I ÷ M", "I = A × M"],
+        "common_mistake": "Units must be the same before calculating. If image size is in mm and actual size is in µm, you MUST convert first or your answer will be wrong by a factor of 1000. Always write out the units in your working — this forces you to spot when they don't match.",
+        "key_note": "Light microscope: max ×2000, resolution 200 nm, can view living cells. Electron microscope: max ×2,000,000, resolution 0.1 nm, specimens must be dead. Resolution = sharpness. Magnification = size increase.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP1 — Use a light microscope to observe, draw and label plant and animal cells. Include a scale bar. Calculate the magnification of your drawing.",
+        "matching": {
+            "title": "Light Microscope or Electron Microscope?",
+            "instruction": "Sort each statement to the correct type of microscope.",
+            "pairs": [
+                ("Electron microscope", "Resolution of 0.1 nm — can distinguish structures 2000× finer than a light microscope"),
+                ("Light microscope", "Can be used to view living cells without any special preparation"),
+                ("Electron microscope", "First revealed the detailed internal structure of mitochondria and ribosomes"),
+                ("Light microscope", "Maximum magnification of approximately ×2,000"),
+                ("Electron microscope", "Specimens must be dead — the beam operates in a vacuum"),
+                ("Both", "Used to calculate magnification using M = I ÷ A"),
+            ]
+        },
+        "fifas": [
+            {
+                "label": "Example 1 — Find magnification",
+                "question": "A cell appears 54 mm wide in a diagram. Its actual width is 0.018 mm. Calculate the magnification.",
+                "steps": [
+                    ("F", "M = Image size ÷ Actual size"),
+                    ("I", "M = 54 ÷ 0.018"),
+                    ("F", "Both values are in mm — no unit conversion needed"),
+                    ("A", "M = ×3000")
+                ]
+            },
+            {
+                "label": "Example 2 — Find actual size",
+                "question": "A mitochondrion appears 12 mm long in an electron micrograph at ×80,000 magnification. Calculate its actual length in µm.",
+                "steps": [
+                    ("F", "Actual size = Image size ÷ Magnification"),
+                    ("I", "A = 12 mm ÷ 80,000 = 0.00015 mm"),
+                    ("F", "Convert mm to µm: 0.00015 × 1000 = 0.15 µm"),
+                    ("A", "Actual length = 0.15 µm")
+                ]
+            },
+            {
+                "label": "Example 3 — Find image size",
+                "question": "A bacterium has an actual diameter of 2 µm. It is drawn at ×2000 magnification. How large should the drawing be in mm?",
+                "steps": [
+                    ("F", "Image size = Actual size × Magnification"),
+                    ("I", "I = 2 µm × 2000 = 4000 µm"),
+                    ("F", "Convert µm to mm: 4000 ÷ 1000 = 4 mm"),
+                    ("A", "Drawing should be 4 mm wide")
+                ]
+            }
+        ],
+        "quiz": [
+            {
+                "q": "What is the maximum magnification of a light microscope?",
+                "opts": [
+                    ("Approximately ×2,000", True),
+                    ("Approximately ×2,000,000", False),
+                    ("Approximately ×200", False),
+                    ("Approximately ×20,000", False)
+                ],
+                "wrong_explanations": {
+                    1: "×2,000,000 is the maximum for an ELECTRON microscope — far more powerful than a light microscope.",
+                    2: "×200 is a common low-power objective on a school microscope — but the total maximum for light microscopes is around ×2,000.",
+                    3: "×20,000 doesn't correspond to either type — light microscopes reach ~×2,000 and electron microscopes ~×2,000,000."
+                }
+            },
+            {
+                "q": "An image is 45 mm wide. The actual size is 0.009 mm. What is the magnification?",
+                "opts": [
+                    ("×5,000", True),
+                    ("×500", False),
+                    ("×50,000", False),
+                    ("×4,500", False)
+                ],
+                "wrong_explanations": {
+                    1: "Check: 45 ÷ 0.09 = 500, but actual size is 0.009 (not 0.09). 45 ÷ 0.009 = 5000.",
+                    2: "45 ÷ 0.009 = 5000 not 50,000. Check you moved the decimal correctly.",
+                    3: "45 minus 0.009 is not how you calculate magnification! Use M = I ÷ A = 45 ÷ 0.009 = 5000."
+                }
+            },
+            {
+                "q": "Why were ribosomes not discovered until electron microscopes became available?",
+                "opts": [
+                    ("Ribosomes (~20 nm) are far below the resolution limit of light microscopes (~200 nm)", True),
+                    ("Ribosomes are only visible in living cells and electron microscopes can see living cells", True),
+                    ("Ribosomes are colourless and no stain existed until recently", False),
+                    ("Ribosomes only appear in plant cells which were studied less", False)
+                ],
+                "wrong_explanations": {
+                    1: "Electron microscopes cannot view LIVING specimens — they require dead specimens in a vacuum. The key advantage is RESOLUTION, not viewing live cells.",
+                    2: "Staining could make ribosomes coloured — but even stained, they are too small to be resolved by a light microscope.",
+                    3: "Ribosomes are found in ALL cells — animal, plant and bacterial. They were not limited to plant cells."
+                }
+            },
+            {
+                "q": "What is the difference between magnification and resolution?",
+                "opts": [
+                    ("Magnification = how much bigger the image appears; resolution = how clearly fine detail can be distinguished", True),
+                    ("They are the same thing — both refer to how large the image looks", False),
+                    ("Magnification refers to electron microscopes only; resolution applies to light microscopes", False),
+                    ("Resolution is measured in × and magnification is measured in nm", False)
+                ],
+                "wrong_explanations": {
+                    1: "They are NOT the same. You can have a highly magnified but blurry image — that is high magnification but low resolution.",
+                    2: "Both types of microscope have both magnification and resolution — the terms apply to all microscopes.",
+                    3: "Magnification has no unit (×) — it is a ratio. Resolution is measured in nm (nanometres). You have these exactly the wrong way around."
+                }
+            },
+            {
+                "q": "A cell has an actual diameter of 50 µm. At ×400 magnification, how large will the image appear in µm?",
+                "opts": [
+                    ("20,000 µm", True),
+                    ("0.125 µm", False),
+                    ("450 µm", False),
+                    ("2,000 µm", False)
+                ],
+                "wrong_explanations": {
+                    1: "You divided instead of multiplying. Image = Actual × Magnification = 50 × 400 = 20,000 µm.",
+                    2: "You added the magnification to the actual size. Image = Actual × Magnification = 50 × 400 = 20,000 µm.",
+                    3: "You used the wrong magnification value. Image = 50 × 400 = 20,000 µm — not 2000 µm."
+                }
+            }
+        ]
+    },
+
+    # ═══════════════════════════════════════════════
+    # 5. CHROMOSOMES, THE CELL CYCLE AND MITOSIS
+    # ═══════════════════════════════════════════════
+    {
+        "id": "chromosomes-mitosis",
+        "title": "Chromosomes, the Cell Cycle and Mitosis",
+        "spec": "4.1.2.1",
+        "summary": "Describe chromosomes, the stages of the cell cycle and the process and purpose of mitosis.",
+        "theory": [
+            {
+                "heading": "Chromosomes",
+                "content": "The nucleus of every body cell contains chromosomes — long, tightly coiled molecules of DNA.\nEach chromosome is one very long DNA molecule associated with proteins called histones that help package it.\nEach chromosome carries many GENES — a gene is a specific section of DNA coding for one protein.\nHumans have 46 chromosomes in most body cells, arranged as 23 PAIRS of homologous chromosomes.\n'Homologous' means matching — each pair carries genes for the same characteristics, but may carry different alleles (versions) of those genes.\nOne chromosome in each pair came from the mother (via the egg) and one from the father (via the sperm).\nBODY CELLS: 46 chromosomes (diploid — 2n). All cells in your body except gametes.\nGAMETES (sperm and eggs): 23 chromosomes (haploid — n). When two gametes fuse at fertilisation: 23 + 23 = 46 — the full number is restored."
+            },
+            {
+                "heading": "The Cell Cycle",
+                "content": "The cell cycle is the ordered series of events that a cell goes through from its formation to its division into two new cells.\nThe cycle has three main phases:\n\nPHASE 1 — INTERPHASE (growth and preparation):\nThis is the longest phase — the cell spends most of its life here.\n• G1 phase: cell grows in size. Proteins are synthesised. Number of organelles increases (more ribosomes, mitochondria etc).\n• S phase (DNA synthesis): each chromosome is REPLICATED — a new copy of every DNA molecule is made. The cell now has 92 chromatids (2 copies of each of the 46 chromosomes, held together).\n• G2 phase: further growth. Cell checks that DNA has been copied accurately.\n\nPHASE 2 — MITOSIS (nuclear division):\nThe duplicated chromosomes are separated into two identical sets, each with 46 chromosomes.\n\nPHASE 3 — CYTOKINESIS (cytoplasm division):\nThe cytoplasm divides to form two separate daughter cells, each containing a complete nucleus with 46 chromosomes."
+            },
+            {
+                "heading": "Mitosis — What Happens",
+                "content": "Mitosis is the type of nuclear division that produces two genetically IDENTICAL nuclei.\nYou do NOT need to know the names of the specific phases (prophase, metaphase, anaphase, telophase) for Foundation GCSE.\nWhat you DO need to know is the overall process:\n1. Chromosomes condense and become visible (they have already been duplicated during interphase)\n2. The duplicated chromosomes line up along the middle of the cell\n3. The two copies of each chromosome are pulled to OPPOSITE ENDS of the cell\n4. The nuclear membrane reforms around each set — two new nuclei form\n5. The cytoplasm divides (cytokinesis) → two daughter cells, each with 46 chromosomes\nRESULT: two cells genetically identical to each other AND to the original parent cell."
+            },
+            {
+                "heading": "Why Mitosis is Important",
+                "content": "Mitosis is used for:\n• GROWTH: from a single fertilised egg, all the trillions of body cells are produced by repeated mitosis.\n• REPAIR: damaged tissues are repaired by producing new identical cells — e.g. healing a cut skin wound.\n• REPLACEMENT: some cells wear out quickly and must be continuously replaced — red blood cells (~120 days), gut lining cells (~5 days), skin cells (~2–4 weeks).\n• ASEXUAL REPRODUCTION: some organisms reproduce entirely through mitosis — all offspring are clones of the parent.\n\nCANCER — when the cell cycle goes wrong:\nNormally, the cell cycle is tightly controlled by regulatory genes.\nIf a MUTATION occurs in these regulatory genes, the control is lost and cells divide uncontrollably.\nThis produces a mass of cells called a TUMOUR.\nBenign tumour: grows in one place, does not invade surrounding tissue, usually not life-threatening.\nMalignant tumour (cancer): cells break away, travel through blood or lymph, and form NEW tumours elsewhere in the body — this spreading is called METASTASIS.\nTreatments: surgery (remove the tumour), radiotherapy (gamma rays damage tumour cell DNA), chemotherapy (drugs that kill rapidly dividing cells)."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Mitosis produces TWO daughter cells that are genetically IDENTICAL to each other and to the parent — same number of chromosomes (46 in humans). Do NOT confuse with meiosis (not required at Foundation but you will hear the word). Meiosis produces FOUR cells each with HALF the chromosomes — used only for making gametes. Mitosis = for the BODY. Meiosis = for GAMETES.",
+        "key_note": "Mitosis: growth, repair, replacement. Two identical daughter cells. 46 → 46. DNA replicates BEFORE division. Cancer = uncontrolled mitosis caused by mutation in regulatory genes.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Cell Cycle — Match the Phase to What Happens",
+            "instruction": "Match each description to the correct phase of the cell cycle.",
+            "pairs": [
+                ("Interphase — growth (G1)", "Cell grows in size and produces more organelles and proteins"),
+                ("Interphase — DNA replication (S phase)", "Every chromosome is copied — cell now has double the DNA"),
+                ("Mitosis", "Duplicated chromosomes separate to opposite ends of the cell — two new nuclei form"),
+                ("Cytokinesis", "Cytoplasm divides — two genetically identical daughter cells produced"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "A human body cell has 46 chromosomes. How many chromosomes will each daughter cell have after mitosis?",
+                "opts": [
+                    ("46", True),
+                    ("23", False),
+                    ("92", False),
+                    ("12", False)
+                ],
+                "wrong_explanations": {
+                    1: "23 chromosomes = the haploid number found in GAMETES after meiosis. Mitosis maintains the FULL chromosome number.",
+                    2: "92 is the number of chromatids DURING DNA replication — before the cell divides. After mitosis, each daughter cell has 46.",
+                    3: "12 has no biological relevance here. The answer is always the same as the parent cell — mitosis maintains chromosome number."
+                }
+            },
+            {
+                "q": "What must happen to DNA before a cell can divide by mitosis?",
+                "opts": [
+                    ("It must be replicated — each chromosome is copied so the cell has double the DNA", True),
+                    ("The DNA must be destroyed and completely rebuilt from scratch", False),
+                    ("The chromosome number must be halved by meiosis first", False),
+                    ("Nothing — the DNA divides automatically with no prior preparation", False)
+                ],
+                "wrong_explanations": {
+                    1: "DNA is never destroyed during the cell cycle — it is carefully replicated and preserved. Destroying it would kill the cell.",
+                    2: "Halving chromosomes = MEIOSIS. Mitosis MAINTAINS chromosome number. You cannot prepare for mitosis by halving DNA.",
+                    3: "DNA replication MUST occur before division. Each daughter cell needs a complete set of chromosomes — if DNA wasn't replicated, one cell would get half and the other cell would get the other half."
+                }
+            },
+            {
+                "q": "What is the difference between a benign and a malignant tumour?",
+                "opts": [
+                    ("Benign stays in one place; malignant spreads to other parts of the body (metastasis)", True),
+                    ("Benign is caused by genetics; malignant is caused by lifestyle only", False),
+                    ("Malignant tumours are always fatal; benign tumours always disappear on their own", False),
+                    ("Benign tumours are larger than malignant tumours", False)
+                ],
+                "wrong_explanations": {
+                    1: "Both benign and malignant tumours can have genetic causes and both can be influenced by lifestyle. The defining difference is whether the tumour SPREADS.",
+                    2: "Malignant tumours vary hugely in outlook — many can be treated successfully. And benign tumours don't always disappear — they may need surgical removal.",
+                    3: "Tumour size does not define whether it is benign or malignant. Malignant tumours are defined by their ability to invade and spread."
+                }
+            },
+            {
+                "q": "Which of the following best describes the purpose of mitosis?",
+                "opts": [
+                    ("Growth, repair and replacement of body cells — producing genetically identical daughter cells", True),
+                    ("Producing gametes (sperm and eggs) with half the chromosome number", False),
+                    ("Creating genetic variation in the offspring of an organism", False),
+                    ("Repairing damaged DNA before it can be copied", False)
+                ],
+                "wrong_explanations": {
+                    1: "Producing gametes = MEIOSIS. Gametes need half the chromosome number — mitosis would give them the full 46.",
+                    2: "Mitosis produces IDENTICAL cells — there is no genetic variation. Genetic variation comes from meiosis and mutation.",
+                    3: "DNA repair mechanisms exist but are separate from mitosis. Mitosis is the division process, not the repair process."
+                }
+            },
+            {
+                "q": "Cancer is caused by...",
+                "opts": [
+                    ("Mutations in genes that control the cell cycle — causing uncontrolled cell division", True),
+                    ("Too many mitochondria in a cell causing overproduction of ATP", False),
+                    ("Cells reversing their differentiation and becoming stem cells again", False),
+                    ("The immune system attacking healthy body cells", False)
+                ],
+                "wrong_explanations": {
+                    1: "Mitochondria number has nothing to do with cancer. Cancer is caused by loss of cell cycle regulation due to gene mutation.",
+                    2: "Some cancer cells do share characteristics with stem cells (undifferentiation), but cancer is specifically caused by mutations in regulatory genes — not by a deliberate reversal of differentiation.",
+                    3: "The immune system attacking healthy cells = autoimmune disease (e.g. Type 1 diabetes, rheumatoid arthritis). Cancer is caused by mutated regulatory genes."
+                }
+            }
+        ]
+    },
+
+    # ═══════════════════════════════════════════════
+    # 6. STEM CELLS
+    # ═══════════════════════════════════════════════
+    {
+        "id": "stem-cells",
+        "title": "Stem Cells",
+        "spec": "4.1.2.3",
+        "summary": "Describe the properties and uses of stem cells, including embryonic, adult and plant meristem cells.",
+        "theory": [
+            {
+                "heading": "What Are Stem Cells?",
+                "content": "A stem cell is an undifferentiated cell — a cell that has not yet specialised.\nAll stem cells share two key properties:\n1. SELF-RENEWAL: they can divide by mitosis to produce more copies of themselves indefinitely.\n2. POTENCY: they can differentiate into one or more types of specialised cell.\nStem cells are essential during development — they provide the source from which all specialised cells of the body are produced.\nThey also play a role in maintenance and repair throughout life — replacing worn-out or damaged cells in certain tissues."
+            },
+            {
+                "heading": "Embryonic Stem Cells",
+                "content": "EMBRYONIC STEM CELLS are found in the inner cell mass of a human embryo at 3–5 days old (called a blastocyst).\nThey are TOTIPOTENT — they can differentiate into ANY of the more than 200 cell types in the human body.\nThis makes them the most versatile type of stem cell.\nHow they are obtained: the embryo is destroyed to extract the stem cells. This is usually done using embryos left over from IVF (in vitro fertilisation) treatment that would otherwise be discarded.\nPotential uses:\n• Replacing insulin-producing beta cells in the pancreas → treating Type 1 diabetes\n• Growing new neurones → treating Parkinson's disease or spinal cord injuries\n• Producing heart muscle cells → repairing damage after a heart attack\n• Growing skin for burns victims\nChallenges: immune rejection (the patient's immune system may attack the transplanted cells), and the risk of tumour formation if undifferentiated cells remain."
+            },
+            {
+                "heading": "Adult Stem Cells",
+                "content": "ADULT STEM CELLS are found in specific tissues throughout the body — even in fully-grown adults.\nThey are MULTIPOTENT — they can only differentiate into the cell types found in the tissue where they live.\nBone marrow stem cells are the most well-known and well-used:\n• Haematopoietic (blood-forming) stem cells in bone marrow produce ALL types of blood cell: red blood cells, white blood cells, platelets.\nClinical use — bone marrow transplant:\n• Used to treat leukaemia (cancer of blood cells).\n• The patient's cancerous bone marrow is destroyed by high-dose chemotherapy/radiotherapy.\n• Healthy donor bone marrow (containing stem cells) is transplanted → new, healthy blood cells are produced.\nAdvantages of adult over embryonic stem cells: no ethical controversy, the patient can be their own donor (if using their own stem cells — autologous transplant).\nDisadvantages: more limited range of cell types, harder to grow in large numbers."
+            },
+            {
+                "heading": "Plant Meristem Cells",
+                "content": "Plants have their own form of stem cells — MERISTEM CELLS, found in regions of the plant called MERISTEMS.\nMeristems are located:\n• At the tips of roots and shoots (apical meristems) — responsible for lengthening\n• Along the sides of stems (lateral meristems) — responsible for thickening\nUnlike most animal adult stem cells, plant meristem cells are essentially TOTIPOTENT — they can differentiate into ANY type of plant cell.\nThis is why plants can keep growing throughout their entire lives — a new leaf, root or flower can always be produced from meristem cells.\nApplications:\n• CLONING: a single meristem cell or small section of tissue can be grown into an entirely new, genetically identical plant (tissue culture / micropropagation).\n• Conserving rare or endangered plant species.\n• Mass-producing disease-resistant crop plants.\n• Creating large numbers of identical, high-quality plants quickly."
+            },
+            {
+                "heading": "Ethical Issues around Stem Cell Research",
+                "content": "Stem cell research — particularly using embryonic stem cells — raises significant ethical questions:\nARGUMENTS FOR:\n• Could cure debilitating diseases that currently have no treatment\n• Embryos used are from IVF treatment and would be destroyed anyway\n• Early embryos (blastocysts) are just a ball of ~100 cells — not yet a person\nARGUMENTS AGAINST:\n• Destroying an embryo destroys a potential human life — many religious groups hold this view\n• The embryo cannot consent to being used for research\n• Concerns that this could lead to cloning of humans ('slippery slope' argument)\n• Risk of exploitation — women may be pressured to donate eggs\nIn the UK, embryonic stem cell research is strictly regulated by the Human Fertilisation and Embryology Authority (HFEA) — research is permitted up to 14 days of embryo development."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Students often say stem cells 'replace organs' — they don't. They differentiate into SPECIFIC CELL TYPES that can be used to repair or replace damaged cells within an organ. Also: embryonic stem cells are TOTIPOTENT (any cell type). Adult stem cells are MULTIPOTENT (limited range). Don't mix these terms up.",
+        "key_note": "Embryonic stem cells: totipotent (any cell type), ethically controversial, from IVF embryos. Adult stem cells: multipotent (limited types), bone marrow → all blood cells, used for leukaemia. Plant meristems: totipotent for plants, found at root/shoot tips, used for cloning.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Stem Cell Type to its Features",
+            "instruction": "Match each description to the correct type of stem cell.",
+            "pairs": [
+                ("Embryonic stem cell", "Totipotent — can become any of the 200+ cell types in the body"),
+                ("Adult stem cell (bone marrow)", "Produces all types of blood cell — used in bone marrow transplants for leukaemia"),
+                ("Plant meristem cell", "Found at root and shoot tips — can differentiate into any plant cell type"),
+                ("Embryonic stem cell", "Obtained from early embryos — raises ethical concerns about destroying potential life"),
+                ("Adult stem cell", "Multipotent — more limited range of cell types than embryonic"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What does 'totipotent' mean when describing stem cells?",
+                "opts": [
+                    ("The cell can differentiate into any type of cell in the organism", True),
+                    ("The cell can only differentiate into cells of one specific tissue type", False),
+                    ("The cell can divide indefinitely without ever differentiating", False),
+                    ("The cell has already partially specialised and cannot reverse", False)
+                ],
+                "wrong_explanations": {
+                    1: "Differentiating into cells of one tissue type = MULTIPOTENT (e.g. bone marrow stem cells → blood cells only). Totipotent = ANY cell type.",
+                    2: "The ability to divide indefinitely is SELF-RENEWAL — a separate property of stem cells. Totipotency refers to differentiation potential.",
+                    3: "Partially specialised cells that cannot reverse are already differentiated cells — not stem cells at all."
+                }
+            },
+            {
+                "q": "How are stem cells used to treat leukaemia?",
+                "opts": [
+                    ("A bone marrow transplant: cancerous blood cells destroyed, then donor stem cells replace them and produce healthy blood cells", True),
+                    ("Embryonic stem cells are injected into the blood to replace cancer cells", False),
+                    ("Stem cells are used to make antibodies that kill cancer cells directly", False),
+                    ("Stem cells repair the damaged DNA in leukaemia cells, reversing the cancer", False)
+                ],
+                "wrong_explanations": {
+                    1: "Embryonic stem cells are not used for leukaemia treatment — adult bone marrow stem cells are used. They are donated or sometimes the patient's own (after treatment).",
+                    2: "Antibodies that target cancer cells are a different therapy (monoclonal antibodies) — not how stem cells work in leukaemia treatment.",
+                    3: "Stem cells don't repair cancer cell DNA — the cancer cells are destroyed by chemotherapy/radiotherapy first, then NEW healthy cells are produced from transplanted stem cells."
+                }
+            },
+            {
+                "q": "Why are embryonic stem cells ethically controversial?",
+                "opts": [
+                    ("Obtaining them requires destroying an embryo — which some consider to be destroying a potential human life", True),
+                    ("They cause cancer in patients who receive them", False),
+                    ("They are ineffective at treating disease", False),
+                    ("They are too expensive to collect and store", False)
+                ],
+                "wrong_explanations": {
+                    1: "Cancer risk is a technical concern — the main ETHICAL controversy is about the moral status of the embryo that is destroyed.",
+                    2: "Embryonic stem cells are actually MORE effective than adult stem cells because they are totipotent — the concern is ethical, not about effectiveness.",
+                    3: "Cost and practicality are challenges — but the defining controversy is ethical: is it acceptable to destroy a potential human life for medical research?"
+                }
+            },
+            {
+                "q": "What is special about plant meristem cells compared to adult animal stem cells?",
+                "opts": [
+                    ("Plant meristem cells are totipotent — they can form any plant cell type; adult animal stem cells are only multipotent", True),
+                    ("Plant meristem cells can only form root cells; animal stem cells are more versatile", False),
+                    ("Plant meristem cells are found throughout all plant tissues; animal stem cells are only in bone marrow", False),
+                    ("There is no difference — both types have the same level of potency", False)
+                ],
+                "wrong_explanations": {
+                    1: "It is almost the opposite — plant meristems are MORE versatile (totipotent), not less.",
+                    2: "Meristems are found in specific regions (root tips, shoot tips, cambium) — not throughout all tissues. And they can form any plant cell type, not just root cells.",
+                    3: "There is a significant difference in potency — plant meristem cells are essentially totipotent while most adult animal stem cells are multipotent."
+                }
+            }
+        ]
+    },
+
+    # ═══════════════════════════════════════════════
+    # 7. DIFFUSION, OSMOSIS AND ACTIVE TRANSPORT
+    # ═══════════════════════════════════════════════
     {
         "id": "transport-in-cells",
         "title": "Diffusion, Osmosis and Active Transport",
         "spec": "4.1.3",
-        "summary": "Describe and compare diffusion, osmosis and active transport across cell membranes.",
+        "summary": "Describe and compare the three ways substances move into and out of cells.",
         "theory": [
-            {"heading": "Diffusion",
-             "content": "Diffusion = net movement of particles from HIGH concentration to LOW concentration.\nDown the concentration gradient — no energy required (passive).\nFaster if: higher concentration gradient, higher temperature, shorter distance, larger surface area.\nExamples: O₂ into cells, CO₂ out of cells, glucose into cells from gut."},
-            {"heading": "Osmosis",
-             "content": "Osmosis = diffusion of WATER molecules across a partially permeable membrane.\nWater moves from dilute solution (high water potential) to concentrated solution (low water potential).\nDown the water potential gradient — passive, no energy needed.\nPlant cells in dilute solution → swell → turgor (firm).\nPlant cells in concentrated solution → shrink → plasmolysis."},
-            {"heading": "Active Transport",
-             "content": "Movement of substances from LOW to HIGH concentration — against the gradient.\nRequires ENERGY (ATP from respiration) and carrier proteins.\nExamples: mineral ions from soil into root hair cells; glucose from gut into blood.\nIf respiration is inhibited, active transport stops — unlike diffusion and osmosis."},
-            {"heading": "Exchange Surfaces",
-             "content": "Efficient exchange surfaces have:\nLarge surface area (many folds/villi).\nThin membrane (short diffusion distance).\nConcentration gradient maintained (good blood supply, ventilation).\nExamples: alveoli in lungs, villi in small intestine, root hair cells in plants."}
+            {
+                "heading": "Diffusion",
+                "content": "DIFFUSION is the net movement of particles (molecules or ions) from a region of HIGHER concentration to a region of LOWER concentration — down the concentration gradient.\nIt is a PASSIVE process — no energy (ATP) is required. Particles move due to their own random kinetic energy.\nDiffusion continues until concentrations are equal on both sides — this is called EQUILIBRIUM. Even at equilibrium, particles are still moving randomly — there's just no NET movement.\n\nFactors that increase the rate of diffusion:\n• STEEPER concentration gradient — bigger difference in concentration = faster net movement\n• HIGHER temperature — more kinetic energy → particles move faster\n• LARGER surface area — more space available for diffusion to occur across\n• SHORTER diffusion distance — thinner membrane → particles cross faster\n\nExamples in biology:\n• O₂ diffuses from alveoli (high [O₂]) → into blood (lower [O₂]) → into muscle cells (even lower [O₂])\n• CO₂ diffuses from respiring cells (high [CO₂]) → into blood → into alveoli (low [CO₂])\n• Glucose diffuses from the small intestine (high [glucose] after digestion) → into blood\n• Urea diffuses from liver cells (where it is made) → into blood → into kidney tubules → excreted in urine"
+            },
+            {
+                "heading": "Osmosis",
+                "content": "OSMOSIS is a special type of diffusion — it is the net movement of WATER MOLECULES ONLY across a PARTIALLY PERMEABLE MEMBRANE, from a DILUTE solution (more water molecules, high water potential) to a MORE CONCENTRATED solution (fewer water molecules, low water potential).\nA partially permeable membrane has tiny pores that allow small water molecules through but block larger solute molecules.\nOsmosis is also PASSIVE — no ATP energy is required.\n\nIn PLANT CELLS:\n• Cell placed in DILUTE solution: water enters by osmosis → vacuole swells → cell membrane pushes against rigid cell wall → cell becomes TURGID (firm). Turgid cells provide structural support to the plant.\n• Cell placed in CONCENTRATED solution: water leaves by osmosis → vacuole and cytoplasm shrink → cell membrane pulls away from cell wall → PLASMOLYSIS. Plant wilts.\n\nIn ANIMAL CELLS (no cell wall to limit swelling):\n• Cell in DILUTE solution: water enters by osmosis → cell SWELLS → may BURST (LYSIS) if too much water enters — e.g. red blood cells burst in pure water\n• Cell in CONCENTRATED solution: water leaves by osmosis → cell SHRINKS (CRENATION)\nThis is why the body carefully controls the concentration of blood and body fluids — deviations cause serious damage to cells."
+            },
+            {
+                "heading": "Active Transport",
+                "content": "ACTIVE TRANSPORT is the movement of substances from a region of LOWER concentration to a region of HIGHER concentration — AGAINST the concentration gradient.\nThis requires:\n1. ENERGY from ATP (produced by aerobic respiration)\n2. CARRIER PROTEINS embedded in the cell membrane\nBecause it requires ATP, active transport STOPS immediately if respiration is blocked (e.g. by cyanide, which blocks aerobic respiration, or by removing oxygen).\n\nExamples in biology:\n• ROOTS absorbing minerals: the concentration of mineral ions (e.g. nitrates, magnesium) inside root hair cells is ALREADY HIGHER than in the soil water. Yet plants need even more. Active transport pumps them in against the gradient.\n• SMALL INTESTINE absorbing glucose: once most glucose has been absorbed by diffusion, the remaining glucose must be moved from the gut (low [glucose]) into the blood (higher [glucose]) by active transport — ensuring all available glucose is absorbed."
+            },
+            {
+                "heading": "Exchange Surfaces in Multicellular Organisms",
+                "content": "Single-celled organisms have a high surface area to volume ratio — simple diffusion is sufficient.\nLarge multicellular organisms have a much LOWER surface area to volume ratio — the distance from surface to interior cells is too great for diffusion alone.\nThey need SPECIALISED EXCHANGE SURFACES and TRANSPORT SYSTEMS.\n\nFeatures of an efficient exchange surface:\n• LARGE SURFACE AREA: more area for particles to cross per unit time\n• THIN MEMBRANE: short diffusion path\n• STEEP CONCENTRATION GRADIENT: maintained by good blood supply (or ventilation for gas exchange)\n\nExamples:\n• ALVEOLI (lungs): surrounded by dense capillary network, one cell thick, highly folded — for O₂/CO₂ exchange\n• VILLI (small intestine): finger-like projections with microvilli (brush border), rich blood supply, one cell thick walls — for nutrient absorption\n• ROOT HAIR CELLS: long projections increase surface area enormously — for water and mineral absorption from soil"
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "Osmosis is a SPECIAL TYPE of diffusion — only water molecules, across a partially permeable membrane. Active transport goes AGAINST the gradient and needs ENERGY. Diffusion and osmosis are both passive (no energy needed).",
-        "key_note": "Diffusion and osmosis: passive (no ATP). Active transport: needs ATP from respiration.",
-        "higher": "Water potential: more solute = lower water potential. Osmosis moves water from high to low water potential. Turgor pressure: plant cell wall resists swelling — provides firmness.",
-        "triple_only": None, "rp": "RP2 — Investigate osmosis in plant tissue (e.g. potato cylinders in different concentrations of sugar solution).",
+        "common_mistake": "Osmosis involves WATER ONLY — through a PARTIALLY PERMEABLE MEMBRANE. Glucose, ions and other molecules do NOT move by osmosis. Active transport goes AGAINST the gradient and requires ATP energy — without ATP (no respiration) it stops. Diffusion and osmosis are both PASSIVE — no ATP needed. Never say 'diffusion requires energy'.",
+        "key_note": "Diffusion: particles, high → low, passive. Osmosis: water only, dilute → concentrated, partially permeable membrane, passive. Active transport: low → high, against gradient, requires ATP + carrier proteins.",
+        "higher": None,
+        "triple_only": None,
+        "rp": "RP2 — Investigate osmosis: place potato cylinders in different concentrations of sucrose solution. Measure mass before and after. Calculate % change in mass.",
         "matching": {
-            "title": "Match the Process to its Description",
-            "instruction": "Match diffusion, osmosis or active transport to each description.",
+            "title": "Match the Transport Process",
+            "instruction": "Match each description to diffusion, osmosis or active transport.",
             "pairs": [
-                ("Diffusion", "Movement of particles from high to low concentration — passive"),
-                ("Osmosis", "Movement of water from dilute to concentrated solution across a membrane — passive"),
-                ("Active transport", "Movement against concentration gradient — requires ATP energy"),
-                ("Diffusion", "CO₂ moving out of a respiring cell"),
-                ("Osmosis", "Water entering a plant root hair cell from the soil"),
-                ("Active transport", "Mineral ions absorbed from soil into root cells against a gradient"),
+                ("Diffusion", "Net movement of particles from high to low concentration — no energy needed"),
+                ("Osmosis", "Movement of water molecules only across a partially permeable membrane — passive"),
+                ("Active transport", "Movement against the concentration gradient — requires ATP and carrier proteins"),
+                ("Diffusion", "Oxygen moving from alveoli into the blood — no ATP required"),
+                ("Osmosis", "Water entering a root hair cell from the soil — the soil water is more dilute than cell contents"),
+                ("Active transport", "Mineral ions absorbed into root hair cells from dilute soil water — against the gradient"),
             ]
         },
-        "fifas": [],
-        "quiz": [
-            {"q": "Which process requires energy (ATP) to move substances?",
-             "opts": [("Active transport", True), ("Diffusion", False), ("Osmosis", False), ("Both diffusion and osmosis", False)],
-             "wrong_explanations": {1: "Diffusion is passive — it moves down the concentration gradient without energy.", 2: "Osmosis is a type of diffusion — also passive, no ATP needed.", 3: "Both are passive processes — active transport is the only one needing ATP."}},
-            {"q": "A potato chip is placed in a very concentrated salt solution. What happens?",
-             "opts": [("It shrinks — water leaves by osmosis", True), ("It swells — water enters by osmosis", False), ("It gains mass — salt enters by diffusion", False), ("Nothing happens", False)],
-             "wrong_explanations": {1: "Water moves from the DILUTE side (inside the potato, more water) to the CONCENTRATED side (salt solution). Potato shrinks.", 2: "Salt ions can't easily enter through the partially permeable membrane. The mass change is due to water leaving.", 3: "The concentration difference is a strong driving force — osmosis definitely occurs."}},
-            {"q": "Why must active transport stop if respiration is inhibited?",
-             "opts": [("Active transport requires ATP from respiration — no respiration = no ATP = no active transport", True), ("Inhibiting respiration changes the concentration gradient", False), ("Respiration controls cell membrane permeability", False), ("Active transport and respiration share the same proteins", False)],
-             "wrong_explanations": {1: "Inhibiting respiration doesn't directly change concentration gradients — it removes the energy supply.", 2: "Membrane permeability is relatively constant — active transport stops because it has no fuel.", 3: "They have separate proteins — the shared requirement is ATP, which respiration produces."}},
-            {"q": "What makes the small intestine efficient at absorbing nutrients?",
-             "opts": [("Villi give a large surface area; thin walls give short diffusion distance; blood supply maintains gradient", True), ("It is very long only", False), ("It contains acid to break down food", False), ("It is very wide", False)],
-             "wrong_explanations": {1: "Length helps but alone isn't the key — villi increase surface area and blood supply maintains the gradient.", 2: "Acid is in the STOMACH — the small intestine is alkaline to allow enzyme activity.", 3: "Width would help slightly but the crucial adaptations are villi, thin walls and blood supply."}},
-            {"q": "What happens to a plant cell placed in pure water?",
-             "opts": [("It becomes turgid — water enters by osmosis, cell wall prevents bursting", True), ("It bursts", False), ("It shrinks", False), ("Nothing changes", False)],
-             "wrong_explanations": {1: "Animal cells can burst (lyse) in pure water — plant cells have a rigid cell wall that prevents this.", 2: "Shrinking = plasmolysis — that happens in concentrated solutions. In pure water, water ENTERS.", 3: "The concentration gradient between cell cytoplasm and pure water drives osmosis — water definitely enters."}}
-        ]
-    },
-    {
-        "id": "cell-division",
-        "title": "Cell Division — Mitosis and Stem Cells",
-        "spec": "4.1.4",
-        "summary": "Describe mitosis, the cell cycle and the role of stem cells.",
-        "theory": [
-            {"heading": "The Cell Cycle and Mitosis",
-             "content": "Mitosis = cell division producing two genetically identical daughter cells.\nUsed for: growth, repair of tissues, replacement of worn-out cells.\nBefore division: DNA is replicated (copied) — so each new cell gets a full set.\nStages: interphase (growth + DNA replication) → mitosis (division) → two daughter cells.\nEach daughter cell has the same chromosome number as the parent cell."},
-            {"heading": "Cancer — Uncontrolled Cell Division",
-             "content": "Cancer occurs when cells divide uncontrollably.\nMutation in genes that control the cell cycle → cells keep dividing → tumour.\nBenign tumour: doesn't spread. Malignant tumour: spreads to other tissues (metastasis).\nTreatment: surgery, radiotherapy (gamma rays), chemotherapy (drugs)."},
-            {"heading": "Stem Cells",
-             "content": "Stem cells are undifferentiated cells that can divide and specialise.\nEmbryonic stem cells: found in early embryos — can become any cell type (totipotent).\nAdult stem cells: found in bone marrow etc — more limited range of cell types.\nTherapeutic use: treating leukaemia, type 1 diabetes, Parkinson's disease.\nEthical issues: embryonic stem cell use destroys embryos — significant debate."},
-            {"heading": "Cell Differentiation",
-             "content": "As organisms develop, cells differentiate — become specialised for specific functions.\nRed blood cells: no nucleus, biconcave disc — maximises oxygen carrying.\nNeurone: long axon with myelin sheath — fast signal transmission.\nRoot hair cell: long projection — large surface area for water and mineral absorption.\nSperm cell: streamlined, lots of mitochondria, acrosome — adapted to reach and fertilise egg."}
+        "fifas": [
+            {
+                "label": "Osmosis — Percentage Change in Mass",
+                "question": "A potato cylinder has a mass of 4.0 g before being placed in a concentrated sugar solution. After 30 minutes it has a mass of 3.4 g. Calculate the percentage change in mass.",
+                "steps": [
+                    ("F", "% change = (final mass − initial mass) ÷ initial mass × 100"),
+                    ("I", "% change = (3.4 − 4.0) ÷ 4.0 × 100"),
+                    ("F", "= (−0.6) ÷ 4.0 × 100 = −15%"),
+                    ("A", "% change = −15% (a decrease — water left by osmosis into the concentrated solution)")
+                ]
+            }
         ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "Mitosis produces TWO identical daughter cells with the SAME chromosome number as the parent. Meiosis (Higher) produces FOUR genetically different cells with HALF the chromosome number. Don't confuse them!",
-        "key_note": "Mitosis = growth and repair (genetically identical). Used for asexual reproduction too.",
-        "higher": "Meiosis: produces gametes (sperm and eggs) — four cells, each with half the chromosome number. Creates genetic variation through independent assortment and crossing over.",
-        "triple_only": None, "rp": None,
-        "matching": {
-            "title": "Match the Specialised Cell to its Adaptation",
-            "instruction": "Match each cell to the adaptation that makes it suited to its function.",
-            "pairs": [
-                ("Red blood cell", "Biconcave shape, no nucleus — maximum surface area for haemoglobin"),
-                ("Neurone (nerve cell)", "Long axon with myelin sheath — fast electrical signal transmission"),
-                ("Root hair cell", "Long extension — large surface area for absorbing water and minerals"),
-                ("Sperm cell", "Flagellum (tail), many mitochondria, acrosome — swim to and fertilise egg"),
-                ("Palisade leaf cell", "Many chloroplasts, near surface — maximum light absorption for photosynthesis"),
-            ]
-        },
-        "fifas": [],
         "quiz": [
-            {"q": "What is the purpose of mitosis?",
-             "opts": [("Growth, repair and replacement of cells — produces identical daughter cells", True), ("Producing gametes (sex cells)", False), ("Increasing genetic variation", False), ("Reducing chromosome number", False)],
-             "wrong_explanations": {1: "Gamete production = MEIOSIS — not mitosis.", 2: "Mitosis produces genetically IDENTICAL cells. Genetic variation comes from meiosis and mutation.", 3: "Mitosis MAINTAINS chromosome number — meiosis HALVES it."}},
-            {"q": "What makes embryonic stem cells more useful for therapy than adult stem cells?",
-             "opts": [("They can become any cell type (totipotent)", True), ("They are easier to obtain", False), ("They cause less immune rejection", False), ("They divide faster", False)],
-             "wrong_explanations": {1: "Embryonic stem cells are actually HARDER and more ethically controversial to obtain — their advantage is versatility.", 2: "Rejection depends on genetic match — embryonic stem cells can still be rejected.", 3: "Division rate isn't the key advantage — it's the ability to become any cell type."}},
-            {"q": "Before mitosis, what must happen to the cell's DNA?",
-             "opts": [("It must be replicated (copied)", True), ("It must be halved", False), ("It must be destroyed", False), ("Nothing — DNA stays the same", False)],
-             "wrong_explanations": {1: "Halving DNA happens in MEIOSIS — mitosis needs a FULL copy for each daughter cell.", 2: "DNA is preserved — it's the basis of heredity and cell function.", 3: "DNA must be copied before division — each daughter cell must receive a complete set of chromosomes."}},
-            {"q": "A red blood cell has no nucleus. How does this help its function?",
-             "opts": [("More space for haemoglobin — carries more oxygen", True), ("It divides faster", False), ("It can destroy bacteria more easily", False), ("It lives longer without a nucleus", False)],
-             "wrong_explanations": {1: "Cells without nuclei can't divide — they have a fixed lifespan.", 2: "Bacteria destruction = white blood cells. Red blood cells carry oxygen.", 3: "Without a nucleus, red blood cells can't repair themselves — they actually last only ~120 days before being replaced."}},
-            {"q": "What is a malignant tumour?",
-             "opts": [("A cancerous tumour that can spread to other tissues (metastasize)", True), ("A benign tumour that stays in one place", False), ("A tumour caused by a virus", False), ("Any lump or swelling", False)],
-             "wrong_explanations": {1: "Benign tumour = stays in one place, doesn't spread.", 2: "Some cancers can be triggered by viruses (e.g. HPV and cervical cancer) — but malignant refers to spreading behaviour.", 3: "Not all lumps are malignant — benign tumours also cause lumps."}}
+            {
+                "q": "Which process requires ATP energy to move substances across a cell membrane?",
+                "opts": [
+                    ("Active transport", True),
+                    ("Diffusion", False),
+                    ("Osmosis", False),
+                    ("Both diffusion and osmosis", False)
+                ],
+                "wrong_explanations": {
+                    1: "Diffusion is PASSIVE — particles move due to their own random kinetic energy, not ATP.",
+                    2: "Osmosis is also PASSIVE — water moves down its own concentration gradient without energy input.",
+                    3: "NEITHER diffusion nor osmosis requires ATP. Only active transport requires energy — that is what distinguishes it from the other two."
+                }
+            },
+            {
+                "q": "A potato cylinder is placed in pure water. What happens and why?",
+                "opts": [
+                    ("It gains mass — water enters by osmosis from the dilute water into the more concentrated cell contents", True),
+                    ("It loses mass — salt leaves the potato into the water by diffusion", False),
+                    ("Nothing — the potato is not permeable to water", False),
+                    ("It gains mass because water enters by active transport", False)
+                ],
+                "wrong_explanations": {
+                    1: "Salt does diffuse slightly — but the dominant effect is water moving by OSMOSIS into the cells, increasing mass.",
+                    2: "Cell membranes are selectively permeable — water moves freely across them by osmosis. The potato is very much permeable to water.",
+                    3: "Osmosis is PASSIVE — it requires no energy input. Water moves down its concentration gradient automatically."
+                }
+            },
+            {
+                "q": "Why does active transport stop if oxygen is removed from the environment of a cell?",
+                "opts": [
+                    ("No oxygen → aerobic respiration stops → no ATP produced → no energy for active transport", True),
+                    ("Oxygen is a carrier protein that directly powers active transport", False),
+                    ("Without oxygen, the cell membrane becomes impermeable to all substances", False),
+                    ("Removing oxygen changes the concentration gradient, making active transport unnecessary", False)
+                ],
+                "wrong_explanations": {
+                    1: "Oxygen doesn't directly power carrier proteins — it is needed for aerobic respiration to produce ATP, which then powers the carriers.",
+                    2: "Membranes remain structurally intact without oxygen — it is the ATP supply that is lost, not membrane structure.",
+                    3: "Removing oxygen doesn't change concentration gradients. It removes the ATP supply needed to pump substances against those gradients."
+                }
+            },
+            {
+                "q": "A plant cell is placed in a very concentrated salt solution. What will happen?",
+                "opts": [
+                    ("Water leaves by osmosis → the cell becomes flaccid → the cell membrane pulls away from the cell wall (plasmolysis)", True),
+                    ("Water enters by osmosis → the cell becomes turgid and very firm", False),
+                    ("Salt enters by active transport → the cell becomes denser", False),
+                    ("The cell bursts because it cannot handle the osmotic pressure", False)
+                ],
+                "wrong_explanations": {
+                    1: "Water enters when the EXTERNAL solution is MORE DILUTE than the cell contents. In concentrated salt solution, it is the other way round — water leaves.",
+                    2: "Salt ions may slowly diffuse in, but the dominant effect is OSMOSIS — water moves to the MORE CONCENTRATED solution (the salt solution outside), not into the cell.",
+                    3: "Plant cells have a rigid CELL WALL that prevents bursting — unlike animal cells. A plant cell can become flaccid or plasmolyse, but it won't burst."
+                }
+            },
+            {
+                "q": "What is the definition of osmosis?",
+                "opts": [
+                    ("The net movement of water molecules across a partially permeable membrane from a dilute solution to a more concentrated solution", True),
+                    ("The movement of any particles from high to low concentration — passive", False),
+                    ("The movement of water molecules against a concentration gradient using ATP", False),
+                    ("The diffusion of water molecules through any membrane in any direction", False)
+                ],
+                "wrong_explanations": {
+                    1: "The movement of ANY particles from high to low = DIFFUSION. Osmosis is specifically about WATER ONLY through a PARTIALLY PERMEABLE membrane.",
+                    2: "Movement against a gradient using ATP = ACTIVE TRANSPORT. Osmosis is passive — water moves DOWN its concentration gradient.",
+                    3: "Osmosis only occurs through a PARTIALLY PERMEABLE membrane, not any membrane. And it only moves water in ONE net direction — from dilute to concentrated."
+                }
+            }
         ]
     },
 ],
