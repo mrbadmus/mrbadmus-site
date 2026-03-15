@@ -3,9 +3,10 @@
 Biology subtopics — Combined Foundation
 AQA 8464 / Biology 8461
 
-Cell Biology:    7 subtopics (updated)
-Organisation:    11 subtopics (updated)
-All other topics: unchanged from previous version
+Cell Biology:        7 subtopics (updated)
+Organisation:       11 subtopics (updated)
+Infection & Response: 8 subtopics (updated)
+All other topics: unchanged
 """
 
 BIOLOGY_COLOR = "#6BCB77"
@@ -2027,57 +2028,695 @@ BIOLOGY_SUBTOPICS_ALL = {
 ],
 
 "infection-response": [
+
+
+    # ══════════════════════════════════════════════
+    # 1. COMMUNICABLE DISEASES AND HUMAN DEFENCE
+    # ══════════════════════════════════════════════
     {
-        "id": "pathogens-immunity",
-        "title": "Pathogens, Disease and the Immune System",
-        "spec": "4.3",
-        "summary": "Describe types of pathogens, how diseases spread and how the immune system responds.",
+        "id": "communicable-diseases-defence",
+        "title": "Communicable Diseases and Human Defence Systems",
+        "spec": "4.3.1",
+        "summary": "Describe what communicable diseases are, how pathogens spread and how the body defends itself.",
         "theory": [
-            {"heading": "Types of Pathogen",
-             "content": "Bacteria: single-celled prokaryotes — reproduce rapidly inside body, produce toxins.\nViruses: not living cells — inject genetic material into host cells, replicate using host machinery.\nFungi: e.g. athlete's foot — grow on/in host tissue.\nProtists: single-celled eukaryotes — e.g. Plasmodium causes malaria (spread by mosquito)."},
-            {"heading": "How Pathogens Spread",
-             "content": "Water: cholera — contaminated drinking water.\nAir: influenza, COVID-19 — droplets from coughs/sneezes.\nDirect contact: rose black spot fungus on roses — direct touch.\nVectors: malaria — Plasmodium transmitted by Anopheles mosquito bite.\nSexual contact: HIV — transmitted in bodily fluids."},
-            {"heading": "The Immune System",
-             "content": "Physical barriers: skin, mucus in nose/airways, cilia.\nPhagocytosis: white blood cells (phagocytes) engulf and digest pathogens.\nAntibody production: lymphocytes produce specific antibodies that match pathogen antigens.\nMemory cells: remain after infection — rapid response if same pathogen returns → immunity."},
-            {"heading": "Vaccination",
-             "content": "Vaccine contains dead/weakened/parts of pathogen → triggers immune response without disease.\nMemory cells produced → rapid antibody response if real pathogen encountered.\nHerd immunity: if enough people are vaccinated, pathogen can't spread easily — even unvaccinated people protected.\nExamples: MMR, flu, COVID-19, HPV vaccines."}
+            {
+                "heading": "What is a Communicable Disease?",
+                "content": "A communicable disease (also called an infectious disease) is one caused by a PATHOGEN — a microorganism that infects and harms the host.\n\nCommunicable diseases can be SPREAD from one organism to another — either directly or through a vector (a carrier organism like a mosquito).\n\nThere are four main types of pathogen:\nBACTERIA — single-celled prokaryotes. Reproduce rapidly by binary fission inside the body. Cause disease mainly by producing TOXINS. Examples: Salmonella, Gonorrhoea, Tuberculosis.\nVIRUSES — not true cells. Much smaller than bacteria. Enter host cells and use the cell's machinery to replicate, destroying the host cell in the process. Examples: Measles, HIV, Influenza, TMV.\nFUNGI — eukaryotic organisms. Grow on or in host tissue. Examples: Athlete's foot, Rose black spot.\nPROTISTS — single-celled eukaryotes. Examples: Plasmodium (causes malaria)."
+            },
+            {
+                "heading": "How Pathogens Spread",
+                "content": "Pathogens use different routes to move from one host to another:\n\nAIRBORNE DROPLETS — coughing, sneezing, talking release tiny droplets containing pathogens. Examples: influenza, measles, COVID-19, tuberculosis.\n\nCONTAMINATED WATER — drinking or bathing in water containing pathogens. Example: cholera (bacteria), typhoid.\n\nDIRECT CONTACT — skin contact, sexual contact, touching contaminated surfaces. Examples: athlete's foot (skin contact), gonorrhoea (sexual contact), rose black spot (plant contact).\n\nVECTORS — an organism that carries the pathogen but doesn't cause the disease itself. Example: Anopheles mosquito carries Plasmodium (malaria) and injects it when it bites.\n\nCONTAMINATED FOOD — eating food containing pathogens. Example: Salmonella in undercooked poultry.\n\nBLOOD CONTACT — sharing needles, transfusions. Example: HIV, Hepatitis B."
+            },
+            {
+                "heading": "The Body's Physical and Chemical Barriers",
+                "content": "The body has several lines of defence against pathogens — the first line stops pathogens from entering at all.\n\nSKIN — a tough, continuous physical barrier. As long as the skin is unbroken, most pathogens cannot pass through it. The skin also produces slightly acidic secretions that inhibit bacterial growth.\n\nMUCUS — goblet cells in the lining of the airways, nose and throat produce sticky mucus. Pathogens and particles breathed in get trapped in this mucus before they can reach the lungs.\n\nCILIA — tiny hair-like structures on the cells lining the trachea and bronchi. They beat rhythmically, sweeping the mucus (with trapped pathogens) upwards towards the throat where it is swallowed. The stomach acid then kills any pathogens.\n\nSTOMACH ACID — hydrochloric acid (HCl) in the stomach is very acidic (pH ~2). Most pathogens that are swallowed are killed here before they can cause infection."
+            },
+            {
+                "heading": "The Immune System — White Blood Cells",
+                "content": "If pathogens get past the physical barriers, the IMMUNE SYSTEM takes over.\n\nPHAGOCYTES:\nThese are white blood cells that carry out PHAGOCYTOSIS — they identify and engulf (eat) pathogens.\nThe cell membrane wraps around the pathogen and pulls it inside the cell.\nEnzymes inside the phagocyte then digest and destroy it.\nPhagocytes are NON-SPECIFIC — they attack any pathogen they encounter without needing to learn its identity first.\n\nLYMPHOCYTES:\nThese white blood cells produce ANTIBODIES — proteins with a specific shape that binds to ANTIGENS on the surface of a particular pathogen.\nEach lymphocyte makes ONE type of antibody for ONE specific antigen.\nAntigens are molecules on the surface of pathogens that the immune system identifies as foreign.\nAntibodies can neutralise pathogens, mark them for destruction, or cause them to clump together.\nAfter an infection, MEMORY CELLS remain in the blood for years or for life.\nIf the same pathogen invades again, memory cells rapidly produce large quantities of antibodies — destroying the pathogen before it causes disease. This is IMMUNITY."
+            }
         ],
         "variables": [],
         "equations": [],
-        "common_mistake": "Antibiotics kill BACTERIA — they have NO effect on viruses. Students often say 'take antibiotics for flu' — this is wrong! Flu is caused by a virus. Antivirals are needed for viral infections (and are much harder to develop).",
-        "key_note": "Bacteria: reproduce independently, treated with antibiotics. Viruses: use host cell machinery, NOT treated with antibiotics.",
-        "higher": "Monoclonal antibodies: produced from a single B-lymphocyte clone. Used in pregnancy tests, cancer treatment (target tumour cells), COVID lateral flow tests.",
+        "common_mistake": "Antibiotics kill BACTERIA only — they have absolutely NO effect on viruses. Never say 'take antibiotics for a virus'. Flu is caused by a virus — antibiotics will not help. Also: phagocytes ENGULF pathogens. Lymphocytes PRODUCE ANTIBODIES. These are different white blood cells with different jobs.",
+        "key_note": "Physical barriers: skin, mucus, cilia, stomach acid — first line of defence. Phagocytes: engulf and destroy (non-specific). Lymphocytes: make specific antibodies. Memory cells: rapid response on re-infection = immunity.",
+        "higher": None,
         "triple_only": None,
         "rp": None,
         "matching": {
-            "title": "Match the Disease to its Pathogen and Transmission",
-            "instruction": "Match each disease to the correct pathogen type and how it spreads.",
+            "title": "Match the Defence to How it Works",
+            "instruction": "Match each defence mechanism to its correct description.",
             "pairs": [
-                ("Measles", "Virus — spread by airborne droplets"),
-                ("Salmonella", "Bacteria — spread through contaminated food"),
-                ("Malaria", "Protist (Plasmodium) — spread by Anopheles mosquito vector"),
-                ("Athlete's foot", "Fungus — direct contact"),
-                ("HIV/AIDS", "Virus — spread through bodily fluids"),
-                ("Rose black spot", "Fungus — direct contact, spreads in water"),
+                ("Skin", "Physical barrier — prevents pathogens entering the body as long as it is unbroken"),
+                ("Cilia", "Sweep mucus with trapped pathogens upwards towards the throat"),
+                ("Stomach acid", "pH ~2 — kills most pathogens that are swallowed"),
+                ("Phagocytes", "Engulf and digest pathogens — non-specific immune defence"),
+                ("Lymphocytes", "Produce specific antibodies that bind to pathogen antigens"),
+                ("Memory cells", "Remain after infection — allow rapid antibody response if same pathogen returns"),
             ]
         },
         "fifas": [],
         "quiz": [
-            {"q": "A patient has a viral infection. Should they take antibiotics?",
-             "opts": [("No — antibiotics only kill bacteria, not viruses", True), ("Yes — antibiotics kill all pathogens", False), ("Yes — antibiotics boost the immune system", False), ("Only if the infection is severe", False)],
-             "wrong_explanations": {1: "Antibiotics kill ALL pathogens — this is wrong and a dangerous misconception. Antibiotics only target bacteria.", 2: "Antibiotics have no effect on the immune system — they don't boost it.", 3: "Even severe viral infections shouldn't be treated with antibiotics — antivirals or immune support are needed."}},
-            {"q": "How does a vaccine protect against future infection?",
-             "opts": [("Stimulates immune response and creates memory cells for rapid future response", True), ("Kills pathogens directly", False), ("Makes the body stronger by giving it a mild disease", False), ("Prevents the pathogen from ever entering the body", False)],
-             "wrong_explanations": {1: "Vaccines don't contain active killing agents — they stimulate YOUR immune system.", 2: "The key mechanism is MEMORY CELLS — not just a mild disease. Memory cells give rapid response on re-exposure.", 3: "Pathogens can still enter — the vaccine means your immune system responds so fast the infection is cleared quickly."}},
-            {"q": "How is malaria transmitted?",
-             "opts": [("By Anopheles mosquito bites — mosquito is the vector for Plasmodium", True), ("By contaminated water", False), ("By breathing in droplets", False), ("By touching an infected person", False)],
-             "wrong_explanations": {1: "Contaminated water transmits cholera and typhoid — not malaria.", 2: "Droplets transmit respiratory diseases like flu, COVID, measles — not malaria.", 3: "Malaria can't be caught by touch — it needs the mosquito to inject Plasmodium into the bloodstream."}},
-            {"q": "What is herd immunity?",
-             "opts": [("When enough people are vaccinated that the pathogen can't spread, protecting unvaccinated people too", True), ("When the whole herd of animals is vaccinated", False), ("When everyone has had the disease and recovered", False), ("When only children are vaccinated", False)],
-             "wrong_explanations": {1: "Herd immunity applies to any population — not just animals.", 2: "Natural immunity from infection also contributes to herd immunity — but vaccination is safer.", 3: "Childhood vaccination is important — but herd immunity applies to the whole population."}},
-            {"q": "Which white blood cell type produces antibodies?",
-             "opts": [("Lymphocytes", True), ("Phagocytes", False), ("Red blood cells", False), ("Platelets", False)],
-             "wrong_explanations": {1: "Phagocytes ENGULF and digest pathogens — they don't produce antibodies.", 2: "Red blood cells carry oxygen — they have no immune function.", 3: "Platelets are involved in blood clotting — not antibody production."}}
+            {
+                "q": "What is the difference between a phagocyte and a lymphocyte?",
+                "opts": [
+                    ("Phagocytes engulf pathogens non-specifically. Lymphocytes produce specific antibodies.", True),
+                    ("Phagocytes produce antibodies. Lymphocytes engulf pathogens.", False),
+                    ("Both engulf pathogens — they are the same type of white blood cell.", False),
+                    ("Phagocytes fight bacterial infections only. Lymphocytes fight viral infections only.", False)
+                ],
+                "wrong_explanations": {
+                    1: "This is exactly the wrong way around. Phagocytes = engulf. Lymphocytes = antibodies.",
+                    2: "Both are white blood cells but they have completely different functions — phagocytes engulf, lymphocytes make antibodies.",
+                    3: "Both types of white blood cell work against a wide range of pathogens — they are not limited to one type of infection."
+                }
+            },
+            {
+                "q": "Why are memory cells important for immunity?",
+                "opts": [
+                    ("They remain in the blood after infection and allow a rapid, large antibody response if the same pathogen is encountered again", True),
+                    ("They physically block pathogens from entering the bloodstream", False),
+                    ("They produce antibiotics to destroy bacterial infections", False),
+                    ("They replace damaged body cells after an infection has passed", False)
+                ],
+                "wrong_explanations": {
+                    1: "Memory cells are immune cells — they don't form physical barriers. That role belongs to skin, mucus and cilia.",
+                    2: "Antibiotics are medicines — they are not produced by any body cells. Memory cells produce antibodies, not antibiotics.",
+                    3: "Cell replacement is done by stem cells and normal cell division — memory cells specifically remember and respond to specific pathogens."
+                }
+            },
+            {
+                "q": "How does the Anopheles mosquito spread malaria?",
+                "opts": [
+                    ("It is a vector — it carries the Plasmodium protist and injects it into humans when it bites", True),
+                    ("The mosquito itself causes malaria — it is the pathogen", False),
+                    ("Mosquito bites break the skin, allowing malaria bacteria from the air to enter", False),
+                    ("The mosquito contaminates water sources with Plasmodium", False)
+                ],
+                "wrong_explanations": {
+                    1: "The MOSQUITO is the vector — Plasmodium is the pathogen. The mosquito carries and transmits Plasmodium but does not cause the disease itself.",
+                    2: "Malaria is caused by a PROTIST (Plasmodium) — not bacteria. And it is injected through the bite, not from the air.",
+                    3: "Malaria is transmitted through bites — not through water. Cholera spreads through contaminated water."
+                }
+            },
+            {
+                "q": "Why does the body produce mucus in the airways?",
+                "opts": [
+                    ("To trap inhaled pathogens and particles before they reach the lungs — cilia then sweep the mucus up to be swallowed", True),
+                    ("To provide a moist surface for gas exchange in the lungs", False),
+                    ("To produce antibodies that neutralise pathogens in the airways", False),
+                    ("To prevent the airways from drying out in cold weather", False)
+                ],
+                "wrong_explanations": {
+                    1: "Gas exchange occurs in the ALVEOLI — the main function of mucus in the airways is trapping pathogens, not gas exchange.",
+                    2: "Antibodies are produced by LYMPHOCYTES in the blood — not by mucus. Mucus is a physical/chemical barrier.",
+                    3: "Moisture in the airways is a secondary benefit — the PRIMARY function of mucus is trapping pathogens and particles."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 2. VIRAL DISEASES
+    # ══════════════════════════════════════════════
+    {
+        "id": "viral-diseases",
+        "title": "Viral Diseases",
+        "spec": "4.3.1.2",
+        "summary": "Describe the main viral diseases — measles, HIV/AIDS and tobacco mosaic virus.",
+        "theory": [
+            {
+                "heading": "How Viruses Cause Disease",
+                "content": "Viruses are not living cells — they are particles of genetic material (DNA or RNA) surrounded by a protein coat.\n\nThey cannot reproduce on their own — they must invade a HOST CELL and use the cell's own machinery to make copies of themselves.\n\nThis process destroys the host cell when new virus particles burst out.\n\nViruses cause disease by:\nDestroying cells as they replicate.\nTriggering an immune response (the fever, aches and fatigue you feel are largely your immune system fighting the virus).\nDisrupting normal organ function."
+            },
+            {
+                "heading": "Measles",
+                "content": "CAUSE: Measles virus (a paramyxovirus).\n\nTRANSMISSION: Airborne droplets — spread very easily through coughing, sneezing and close contact.\n\nSYMPTOMS:\nHigh fever.\nRed, blotchy skin rash spreading from face to body.\nRunny nose, cough, sore red eyes.\nWhite spots inside the mouth (Koplik's spots — a diagnostic sign).\n\nCOMPLICATIONS: Measles can be very serious — can lead to pneumonia (lung infection), encephalitis (brain inflammation) and death, particularly in malnourished children or immunocompromised individuals.\n\nPREVENTION: The MMR vaccine (measles, mumps, rubella) — given in two doses in childhood. Highly effective.\n\nTREATMENT: No specific antiviral drug — rest, fluids, paracetamol for fever. The immune system clears the infection."
+            },
+            {
+                "heading": "HIV and AIDS",
+                "content": "CAUSE: HIV (Human Immunodeficiency Virus) — a retrovirus.\n\nTRANSMISSION: Through bodily fluids — unprotected sexual contact, sharing needles, blood transfusions (in countries without screening), mother to baby (during pregnancy, birth or breastfeeding).\n\nWHAT HIV DOES: HIV specifically targets and destroys CD4+ T-helper lymphocytes — the very cells that coordinate the immune response. Over time, the immune system is progressively weakened.\n\nAIDS: AIDS (Acquired Immune Deficiency Syndrome) develops when HIV has destroyed so many lymphocytes that the immune system can no longer function. The patient becomes vulnerable to OPPORTUNISTIC INFECTIONS — infections that a healthy immune system would easily fight off (e.g. rare pneumonias, certain cancers).\n\nPREVENTION: Condoms, clean needles, screening blood supplies, antiretroviral drugs for pregnant women with HIV.\n\nTREATMENT: ANTIRETROVIRAL DRUGS (ARVs) — prevent HIV from replicating. Cannot cure HIV but allow patients to live near-normal lives. Must be taken for life."
+            },
+            {
+                "heading": "Tobacco Mosaic Virus (TMV)",
+                "content": "CAUSE: Tobacco mosaic virus — affects a wide range of plants including tobacco, tomatoes, peppers and cucumbers.\n\nTRANSMISSION: Direct contact between plants, contaminated tools, insects feeding on plants, and handling by humans.\n\nSYMPTOMS: A distinctive MOSAIC PATTERN of light and dark green or yellow patches on leaves. Leaves may also be distorted or stunted.\n\nWHY IT'S HARMFUL: Infected cells cannot produce chlorophyll properly. The mosaic-patterned leaves have LESS CHLOROPHYLL than healthy leaves → reduced rate of photosynthesis → plant grows poorly and produces less fruit/yield.\n\nPREVENTION: Removing and destroying infected plants, cleaning tools, using virus-free seeds, controlling insect vectors."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "HIV and AIDS are NOT the same thing. HIV is the VIRUS. AIDS is the CONDITION that develops when HIV has destroyed enough lymphocytes that the immune system collapses. You can have HIV for many years without having AIDS if treated with ARVs. Also: antibiotics DO NOT treat viral infections — not measles, not HIV, not flu.",
+        "key_note": "Measles: droplets, rash + fever, MMR vaccine prevents it. HIV: bodily fluids, destroys lymphocytes → AIDS, managed with ARVs. TMV: plant virus, mosaic leaf pattern, reduced photosynthesis.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Viral Disease to its Key Features",
+            "instruction": "Match each disease to its transmission route and key symptom.",
+            "pairs": [
+                ("Measles", "Airborne droplets — red skin rash and high fever — prevented by MMR vaccine"),
+                ("HIV", "Bodily fluids — destroys T-lymphocytes — eventually causes AIDS"),
+                ("Tobacco mosaic virus", "Contact/tools — mosaic discolouration of leaves — reduced photosynthesis"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why does HIV lead to AIDS?",
+                "opts": [
+                    ("HIV destroys T-lymphocytes — the immune system becomes too weak to fight off infections", True),
+                    ("HIV produces toxins that directly damage all organs simultaneously", False),
+                    ("HIV causes the body to overproduce white blood cells, overwhelming the system", False),
+                    ("HIV converts into the AIDS virus after several years in the body", False)
+                ],
+                "wrong_explanations": {
+                    1: "HIV specifically targets immune cells — it doesn't produce toxins that damage other organs directly.",
+                    2: "HIV destroys white blood cells (lymphocytes) — it does not cause overproduction.",
+                    3: "HIV doesn't 'convert' into AIDS — AIDS is the CONDITION resulting from immune system collapse caused by HIV destroying lymphocytes."
+                }
+            },
+            {
+                "q": "How does tobacco mosaic virus affect plant growth?",
+                "opts": [
+                    ("It disrupts chlorophyll production — leaves develop mosaic discolouration and photosynthesise less efficiently", True),
+                    ("It blocks the xylem, preventing water reaching the leaves", False),
+                    ("It causes root cells to die, so the plant cannot absorb minerals", False),
+                    ("It produces toxins that kill plant cells directly", False)
+                ],
+                "wrong_explanations": {
+                    1: "TMV affects leaf cells and chlorophyll — not the xylem. The reduced photosynthesis from less chlorophyll is the key effect.",
+                    2: "TMV infects leaf cells, not root cells. Mineral absorption is unaffected directly.",
+                    3: "TMV disrupts chlorophyll production in leaf cells — it doesn't produce toxins that kill cells outright."
+                }
+            },
+            {
+                "q": "A measles patient is told to rest and take paracetamol. Why are they not given antibiotics?",
+                "opts": [
+                    ("Measles is caused by a virus — antibiotics only kill bacteria and have no effect on viruses", True),
+                    ("Antibiotics would make the rash worse", False),
+                    ("The patient is too young for antibiotics", False),
+                    ("Paracetamol is stronger than antibiotics", False)
+                ],
+                "wrong_explanations": {
+                    1: "Rash worsening from antibiotics is not a reason — the fundamental reason is that antibiotics target bacterial cell walls and structures that viruses simply don't have.",
+                    2: "Age is not the deciding factor — the pathogen type is. Antibiotics don't work on viruses regardless of patient age.",
+                    3: "Paracetamol relieves symptoms — it does not treat the infection. Antibiotics treat bacterial infections — but measles is viral."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 3. BACTERIAL DISEASES
+    # ══════════════════════════════════════════════
+    {
+        "id": "bacterial-diseases",
+        "title": "Bacterial Diseases",
+        "spec": "4.3.1.3",
+        "summary": "Describe Salmonella food poisoning and Gonorrhoea as examples of bacterial diseases.",
+        "theory": [
+            {
+                "heading": "How Bacteria Cause Disease",
+                "content": "Bacteria are single-celled prokaryotes. They can reproduce very rapidly — doubling every 20 minutes under ideal conditions.\n\nBacteria cause disease in two main ways:\nPRODUCING TOXINS — many bacteria secrete chemicals (toxins) that damage cells and tissues. It is often the toxins, not the bacteria themselves, that cause the symptoms of disease.\nDIRECT CELL DAMAGE — some bacteria invade and destroy body cells directly.\n\nUnlike viruses, bacteria CAN be treated with ANTIBIOTICS — drugs that specifically target bacterial structures (e.g. cell walls) that human cells don't have."
+            },
+            {
+                "heading": "Salmonella Food Poisoning",
+                "content": "CAUSE: Salmonella bacteria (various species).\n\nTRANSMISSION: Eating food contaminated with Salmonella — most commonly undercooked poultry, raw or undercooked eggs, unpasteurised milk. Also spread through poor kitchen hygiene (cross-contamination from raw to cooked food) and unwashed hands.\n\nSYMPTOMS: Begin 12–72 hours after eating contaminated food:\nFever.\nStomach cramps and abdominal pain.\nVomiting.\nDiarrhoea (which can be severe and bloody).\nSymptoms usually last 4–7 days.\n\nMECHANISM: Salmonella bacteria survive cooking if the food isn't heated properly. They reach the small intestine, colonise the gut lining and produce toxins — causing the symptoms.\n\nPREVENTION: Thorough cooking (bacteria are killed by heat), good hygiene (wash hands, clean surfaces), refrigeration (slows bacterial growth), pasteurisation of dairy products, vaccination of poultry flocks.\n\nTREATMENT: Most cases resolve without antibiotics — rest and plenty of fluids. Severe cases may need antibiotics and hospital treatment."
+            },
+            {
+                "heading": "Gonorrhoea",
+                "content": "CAUSE: Neisseria gonorrhoeae bacteria.\n\nTRANSMISSION: Sexual contact — a sexually transmitted infection (STI). Passed during vaginal, anal or oral sex without barrier contraception.\n\nSYMPTOMS:\nIN FEMALES: Often NO symptoms (asymptomatic) — this makes it particularly dangerous as it can spread unknowingly. When symptoms occur: thick yellow/green vaginal discharge, pain when urinating.\nIN MALES: Thick yellow/green discharge from the penis, burning pain when urinating.\n\nCOMPLICATIONS: If untreated:\nPelvic inflammatory disease (PID) in females → can cause infertility.\nIncreased risk of HIV infection.\nCan be passed from mother to baby during birth → eye infection in newborn.\n\nPREVENTION: Using condoms (barrier contraception), reducing number of sexual partners, regular STI testing.\n\nTREATMENT: Antibiotics — however, ANTIBIOTIC-RESISTANT strains have emerged, making gonorrhoea increasingly difficult to treat. This is a serious and growing public health problem.\n\nANTIBIOTIC RESISTANCE in gonorrhoea happens through natural selection:\nRandom mutations in bacteria can produce resistance.\nAntibiotics kill non-resistant bacteria but resistant ones survive.\nResistant bacteria reproduce, passing on resistance genes.\nOver time, the population becomes resistant."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Gonorrhoea IS treatable with antibiotics — but antibiotic-resistant strains are emerging. Do not say 'gonorrhoea cannot be treated'. Say instead: 'it can be treated, but resistance is a growing problem'. Also: Salmonella causes disease primarily through TOXINS — not just by the bacteria damaging cells directly.",
+        "key_note": "Salmonella: bacteria, contaminated food, symptoms = fever/vomiting/diarrhoea, prevented by cooking thoroughly. Gonorrhoea: bacteria, STI, discharge and pain, treated by antibiotics (resistance growing).",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Bacterial Disease to its Features",
+            "instruction": "Match each feature to Salmonella or Gonorrhoea.",
+            "pairs": [
+                ("Salmonella", "Spread through undercooked food — prevented by thorough cooking and hygiene"),
+                ("Gonorrhoea", "Sexually transmitted — thick discharge and pain when urinating"),
+                ("Salmonella", "Bacteria produce toxins in the gut — causing vomiting and diarrhoea"),
+                ("Gonorrhoea", "Antibiotic-resistant strains have emerged — major public health concern"),
+                ("Salmonella", "Often resolves without antibiotics — rest and fluids usually sufficient"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "How is Salmonella food poisoning prevented?",
+                "opts": [
+                    ("Thorough cooking to kill bacteria, good food hygiene, refrigeration and hand washing", True),
+                    ("Taking antibiotics before eating suspected food", False),
+                    ("Avoiding all animal products entirely", False),
+                    ("Vaccinating all humans against Salmonella", False)
+                ],
+                "wrong_explanations": {
+                    1: "Taking antibiotics preventatively is dangerous — it promotes antibiotic resistance without benefit.",
+                    2: "Thorough cooking makes animal products safe — you don't need to avoid them entirely.",
+                    3: "Human Salmonella vaccines are not routinely used — poultry vaccination is used in the UK to reduce the source."
+                }
+            },
+            {
+                "q": "Why is gonorrhoea becoming harder to treat?",
+                "opts": [
+                    ("Antibiotic-resistant strains have evolved — bacteria with resistance mutations survive antibiotic treatment and pass on resistance genes", True),
+                    ("Gonorrhoea has mutated into a virus, which antibiotics cannot target", False),
+                    ("New strains produce proteins that destroy antibiotic molecules before they can work", False),
+                    ("People have developed immunity to the antibiotics used to treat it", False)
+                ],
+                "wrong_explanations": {
+                    1: "Gonorrhoea remains a bacterium — bacteria cannot evolve into viruses. The issue is antibiotic resistance in bacterial populations.",
+                    2: "Some resistant bacteria do produce enzymes (like beta-lactamases) that break down antibiotics — this is one mechanism of resistance, but the question is about the broader process of natural selection producing resistant strains.",
+                    3: "People develop immunity to pathogens, not to medicines. Antibiotic resistance is a property of the BACTERIA, not of human patients."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 4. FUNGAL AND PROTIST DISEASES
+    # ══════════════════════════════════════════════
+    {
+        "id": "fungal-protist-diseases",
+        "title": "Fungal and Protist Diseases",
+        "spec": "4.3.1.4",
+        "summary": "Describe rose black spot (fungal) and malaria (protist) as examples of these disease types.",
+        "theory": [
+            {
+                "heading": "Fungal Diseases — Rose Black Spot",
+                "content": "CAUSE: Diplocarpon rosae — a fungal pathogen that infects rose plants.\n\nTRANSMISSION: Fungal spores spread through WATER (rain splashing from leaf to leaf) and by WIND. Spores land on leaves and germinate when conditions are warm and wet.\n\nSYMPTOMS:\nPurple or black spots appearing on rose leaves.\nLeaves turn yellow around the spots.\nAffected leaves drop off the plant prematurely — DEFOLIATION.\n\nWHY IT MATTERS: The loss of leaves is the key problem. Fewer leaves → less surface area for photosynthesis → the plant grows poorly, produces fewer flowers and is weakened overall. Severely infected plants may die.\n\nPREVENTION AND TREATMENT:\nRemove and destroy infected leaves immediately — do NOT compost them (spores can survive).\nApply FUNGICIDE sprays to remaining leaves — kills fungal growth.\nChoose disease-resistant rose varieties.\nAvoid overhead watering — wet leaves encourage fungal growth."
+            },
+            {
+                "heading": "Protist Diseases — Malaria",
+                "content": "CAUSE: Plasmodium — a protist (single-celled eukaryote). Several species cause malaria; Plasmodium falciparum is the most deadly.\n\nVECTOR: The female Anopheles mosquito — she bites infected humans, picks up Plasmodium, and injects it into the next person she bites. The mosquito is the VECTOR, not the pathogen.\n\nLIFE CYCLE IN BRIEF:\nPlasmodium is injected into the human bloodstream during a mosquito bite.\nIt travels to the liver and multiplies.\nIt then infects and DESTROYS red blood cells in cycles.\nThe destruction of red blood cells causes the characteristic RECURRING FEVER.\n\nSYMPTOMS: High fever (cyclical — comes and goes in waves), headache, vomiting, muscle pain and fatigue. Severe malaria can cause: anaemia (from red blood cell destruction), kidney failure, cerebral malaria (affecting the brain), coma and death.\n\nPREVENTION (breaking the transmission cycle):\nMosquito nets (especially insecticide-treated bed nets — ITNs).\nInsecticide sprays to kill mosquitoes.\nDraining standing water where mosquitoes breed.\nAnti-malarial drugs taken before and during travel to high-risk areas.\n\nTREATMENT: Anti-malarial drugs (e.g. artemisinin-based combination therapies). Resistance to some anti-malarials is also emerging."
+            },
+            {
+                "heading": "Comparing Fungal and Protist Diseases",
+                "content": "It helps to compare these two types side by side:\n\nROSE BLACK SPOT:\nPathogen type: FUNGUS.\nHost: Rose plants.\nSpread: Water and wind carrying spores.\nDamage: Leaf spots and defoliation → reduced photosynthesis.\nTreatment: Fungicide, removing infected leaves.\n\nMALARIA:\nPathogen type: PROTIST (Plasmodium).\nHost: Humans (and other primates).\nSpread: Via the Anopheles mosquito VECTOR.\nDamage: Destroys red blood cells → recurring fever, anaemia, can be fatal.\nTreatment: Anti-malarial drugs."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "The MOSQUITO is the VECTOR for malaria — not the pathogen. Plasmodium (the protist) is the pathogen that causes disease. The mosquito carries and transmits it. This distinction is a very common exam question. Also: rose black spot is caused by a FUNGUS — not bacteria, not a virus.",
+        "key_note": "Rose black spot: fungus, water/wind spread, leaf spots → defoliation → less photosynthesis. Malaria: Plasmodium protist, Anopheles mosquito = vector, destroys red blood cells, recurring fever.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Rose Black Spot or Malaria?",
+            "instruction": "Sort each feature to the correct disease.",
+            "pairs": [
+                ("Rose black spot", "Caused by a fungus — spreads via water and wind"),
+                ("Malaria", "Caused by a protist — transmitted by Anopheles mosquito bites"),
+                ("Rose black spot", "Black spots on leaves — causes defoliation and reduced photosynthesis"),
+                ("Malaria", "Destroys red blood cells — causes cyclical fever and can be fatal"),
+                ("Rose black spot", "Treated with fungicide — infected leaves removed and destroyed"),
+                ("Malaria", "Prevented with mosquito nets and insecticides — anti-malarial drugs for treatment"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why does rose black spot cause poor plant growth?",
+                "opts": [
+                    ("Infected leaves develop spots and fall off — less leaf area means less photosynthesis and less glucose for growth", True),
+                    ("The fungus blocks the xylem, preventing water reaching the leaves", False),
+                    ("The fungus produces toxins that directly kill root cells", False),
+                    ("Spores block stomata, preventing CO₂ from entering the leaf", False)
+                ],
+                "wrong_explanations": {
+                    1: "Rose black spot infects LEAF CELLS — it doesn't block xylem. The impact is through reduced photosynthetic capacity.",
+                    2: "Rose black spot is a leaf disease — it doesn't specifically target roots.",
+                    3: "Blocking stomata is not the primary mechanism — the main effect is leaf loss through defoliation reducing total photosynthesis."
+                }
+            },
+            {
+                "q": "What is the role of the Anopheles mosquito in malaria?",
+                "opts": [
+                    ("It is the vector — it carries Plasmodium from one human to another when it bites", True),
+                    ("It is the pathogen — the mosquito itself causes the disease", False),
+                    ("It injects its own saliva which contains the fever-causing toxin", False),
+                    ("It is only involved in spreading malaria in tropical countries — not elsewhere", False)
+                ],
+                "wrong_explanations": {
+                    1: "The PATHOGEN is Plasmodium (the protist). The mosquito is the VECTOR — it carries and transmits the pathogen without being the cause of disease itself.",
+                    2: "Mosquito saliva can cause local irritation — but the disease malaria is caused specifically by Plasmodium being injected, not by the saliva itself.",
+                    3: "Malaria is predominantly tropical because Anopheles mosquitoes thrive in warm, wet environments — but the mosquito's role as vector is the same wherever it lives."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 5. VACCINATION
+    # ══════════════════════════════════════════════
+    {
+        "id": "vaccination",
+        "title": "Vaccination",
+        "spec": "4.3.2",
+        "summary": "Explain how vaccines work, why they protect populations and what herd immunity means.",
+        "theory": [
+            {
+                "heading": "How Vaccines Work",
+                "content": "A vaccine introduces a small, harmless amount of a pathogen (or part of one) into the body to stimulate an immune response WITHOUT causing the actual disease.\n\nVaccines can contain:\nDead or inactivated pathogens — can't cause disease but still have antigens.\nWeakened (attenuated) live pathogens — cause only a very mild or no illness.\nAntigens only (fragments of the pathogen surface) — the pathogen itself is never introduced.\nmRNA coding for a pathogen antigen (e.g. COVID-19 mRNA vaccines).\n\nWhat happens after vaccination:\n1. Phagocytes engulf the vaccine material.\n2. Lymphocytes recognise the pathogen antigens and produce specific antibodies.\n3. MEMORY CELLS are produced — these remain in the blood for many years or for life.\n4. If the real pathogen later invades, memory cells respond RAPIDLY and MASSIVELY — producing antibodies so fast that the pathogen is destroyed before it causes symptoms.\n\nThe KEY POINT: vaccines work by training the immune system in advance, so it is ready to respond instantly if the real pathogen ever arrives."
+            },
+            {
+                "heading": "Herd Immunity",
+                "content": "HERD IMMUNITY is achieved when enough of a population is immune (through vaccination or past infection) that the pathogen cannot spread efficiently — even unvaccinated individuals are protected.\n\nHow it works:\nIf most people are immune, a newly infected person encounters mostly immune individuals.\nThe pathogen cannot find enough new hosts to continue spreading.\nThe chain of transmission is broken.\n\nWhy it matters:\nSome people CANNOT be vaccinated — newborn babies (too young), immunocompromised patients (e.g. on chemotherapy), people with certain allergies.\nHerd immunity protects these vulnerable individuals indirectly.\n\nThe percentage of the population needed for herd immunity varies by disease:\nMeasles requires ~95% vaccination coverage (because it spreads very easily).\nPolio requires ~80–85%.\n\nWhen vaccination rates drop below the threshold, outbreaks occur — as happened with measles in some countries after false concerns about the MMR vaccine."
+            },
+            {
+                "heading": "Examples of Successful Vaccination",
+                "content": "MMR vaccine: protects against measles, mumps and rubella. Given at 12–15 months and again at 3–5 years. Highly effective.\n\nSMALLPOX: The only human disease to be completely ERADICATED (wiped out globally) — achieved entirely through worldwide vaccination. The last natural case was in 1977.\n\nPOLIO: Nearly eradicated through global vaccination campaigns — still circulating in a small number of countries.\n\nFLU VACCINE: Updated each year because influenza virus mutates rapidly — last year's vaccine may not protect against this year's strains.\n\nCOVID-19: mRNA vaccines developed and deployed at record speed (2020–21), demonstrating new vaccine technology.\n\nHPV VACCINE: Protects against Human Papillomavirus — which causes most cervical cancers. Given to teenagers before sexual activity begins."
+            },
+            {
+                "heading": "Are Vaccines Safe?",
+                "content": "Vaccines are among the most extensively tested and monitored medicines in existence.\n\nAll vaccines undergo rigorous testing before approval:\nLaboratory and animal testing.\nPhase 1, 2 and 3 clinical trials (see Drug Development subtopic).\nRegulatory review by agencies like the MHRA (UK) or FDA (USA).\n\nCommon side effects are mild and temporary:\nSoreness at injection site.\nLow-grade fever for 1–2 days.\nFatigue.\n\nSERIOUS side effects are extremely rare — and the risk of serious illness from the actual disease is far greater than any risk from the vaccine.\n\nMisinformation about vaccine safety has caused vaccination rates to drop in some communities, leading to preventable outbreaks of serious diseases."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Vaccines do NOT give you the disease. They contain harmless forms of the pathogen (dead, weakened or just antigens) — they cannot cause the actual disease. The immune response to the vaccine (mild fever, soreness) is your body's NORMAL reaction to stimulation — not the disease itself.",
+        "key_note": "Vaccine → harmless antigen → immune response → memory cells → rapid response on real infection. Herd immunity: enough vaccinated → pathogen can't spread → vulnerable people protected. Smallpox = only disease fully eradicated by vaccination.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Vaccination Concept",
+            "instruction": "Match each concept to its correct description.",
+            "pairs": [
+                ("Memory cells", "Produced during vaccination — allow rapid antibody production if real pathogen is later encountered"),
+                ("Herd immunity", "When enough of the population is immune that the pathogen cannot spread — protects unvaccinated individuals"),
+                ("MMR vaccine", "Protects against measles, mumps and rubella — given in two doses in childhood"),
+                ("Smallpox", "The only human disease ever fully eradicated — achieved through global vaccination"),
+                ("Flu vaccine", "Updated annually because the influenza virus mutates its surface antigens each year"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "How does a vaccine protect against future infection?",
+                "opts": [
+                    ("It stimulates an immune response and produces memory cells — so the body responds rapidly if the real pathogen invades", True),
+                    ("It kills any pathogen that enters the body for the rest of your life", False),
+                    ("It strengthens all aspects of the immune system permanently", False),
+                    ("It prevents the pathogen from ever entering the body", False)
+                ],
+                "wrong_explanations": {
+                    1: "Vaccines don't provide a permanent killing effect — they prepare MEMORY CELLS that respond quickly if the pathogen arrives.",
+                    2: "Vaccines provide SPECIFIC immunity to one pathogen — they don't generally boost the whole immune system.",
+                    3: "Pathogens can still enter the body after vaccination — the vaccine means the immune system destroys them so quickly they don't cause disease."
+                }
+            },
+            {
+                "q": "What is herd immunity?",
+                "opts": [
+                    ("When enough of a population is immune that the pathogen cannot spread effectively — protecting even unvaccinated individuals", True),
+                    ("When every single person in a population has been vaccinated", False),
+                    ("When an entire herd of animals is vaccinated against a disease", False),
+                    ("When a person becomes naturally immune after recovering from a disease", False)
+                ],
+                "wrong_explanations": {
+                    1: "Herd immunity doesn't require 100% vaccination — it just needs enough people to be immune to break the chain of transmission.",
+                    2: "'Herd' refers to any population — not just animal herds. Herd immunity applies to human populations too.",
+                    3: "Natural immunity after infection DOES contribute to herd immunity — but vaccination is the safer way to achieve it without suffering the disease."
+                }
+            },
+            {
+                "q": "Why is the flu vaccine updated every year?",
+                "opts": [
+                    ("The influenza virus mutates rapidly — its surface antigens change, so last year's vaccine may no longer match this year's strains", True),
+                    ("Memory cells from flu vaccines only last one year before disappearing", False),
+                    ("Flu vaccines contain live viruses that must be freshly prepared each season", False),
+                    ("The government changes the vaccine composition each year as a precaution", False)
+                ],
+                "wrong_explanations": {
+                    1: "Memory cells from vaccines can last many years or a lifetime — the issue is not memory cell lifespan but viral mutation.",
+                    2: "Many flu vaccines use inactivated (killed) viruses — not live ones. The reason for annual updates is viral mutation.",
+                    3: "The composition is updated based on scientific surveillance of which influenza strains are circulating — it's not an arbitrary precaution."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 6. ANTIBIOTICS AND PAINKILLERS
+    # ══════════════════════════════════════════════
+    {
+        "id": "antibiotics-painkillers",
+        "title": "Antibiotics and Painkillers",
+        "spec": "4.3.3",
+        "summary": "Explain how antibiotics work, why antibiotic resistance is a threat, and the role of painkillers.",
+        "theory": [
+            {
+                "heading": "Antibiotics",
+                "content": "Antibiotics are drugs that kill bacteria or prevent them from reproducing — they are used to treat BACTERIAL infections.\n\nHow they work: Antibiotics target specific structures in bacteria that are NOT present in human cells — for example:\nPENICILLIN (and similar antibiotics) disrupts bacterial CELL WALL synthesis. Human cells have no cell wall, so penicillin doesn't harm them.\nOther antibiotics target bacterial ribosomes or DNA replication.\n\nDifferent antibiotics work on different bacteria:\nBROAD SPECTRUM antibiotics work against many different bacterial species.\nNARROW SPECTRUM antibiotics target specific types of bacteria.\n\nAntibiotics CANNOT treat viral infections because:\nViruses have no cell walls, no bacterial ribosomes and no bacterial DNA replication machinery — there is nothing for antibiotics to target.\nViruses live INSIDE host cells — drugs that killed them would also damage the host cell.\n\nAntibiotics were discovered by Alexander Fleming in 1928 — he noticed Penicillium mould was killing bacteria on a petri dish."
+            },
+            {
+                "heading": "Antibiotic Resistance — A Global Crisis",
+                "content": "Antibiotic resistance is one of the greatest threats to global health.\n\nHow it develops through NATURAL SELECTION:\n1. Within a population of bacteria, random MUTATIONS occur naturally during reproduction.\n2. Occasionally, a mutation gives a bacterium resistance to an antibiotic.\n3. When antibiotics are used, non-resistant bacteria are killed.\n4. Resistant bacteria SURVIVE and REPRODUCE — passing on the resistance gene to offspring.\n5. Over time, the entire population becomes resistant — the antibiotic no longer works.\n\nWhy resistance is spreading:\nOVER-PRESCRIBING — doctors prescribing antibiotics for viral infections or 'just in case'.\nNOT COMPLETING COURSES — stopping early leaves some bacteria alive; the survivors are more likely to be partially resistant.\nAGRICULTURE — antibiotics used to promote growth in livestock, creating resistant bacteria in food chains.\n\nConsequences: Infections once easily treated (e.g. tuberculosis, some pneumonias) are becoming dangerous again. MRSA (methicillin-resistant Staphylococcus aureus) is an example of a serious antibiotic-resistant bacterium.\n\nHow to slow resistance:\nOnly use antibiotics when genuinely necessary.\nAlways complete the full course.\nNever share or save antibiotics for later.\nReduce agricultural antibiotic use."
+            },
+            {
+                "heading": "Painkillers",
+                "content": "Painkillers (analgesics) relieve pain and reduce fever — but they do NOT kill pathogens or treat the cause of infection.\n\nCommon painkillers: paracetamol, ibuprofen, aspirin.\n\nThey treat SYMPTOMS — making the patient feel more comfortable — but the immune system still needs to fight the infection.\n\nA patient with a bacterial infection may take BOTH:\nAntibiotics — to kill the bacteria (treating the cause).\nPainkillers — to manage fever, pain and discomfort (treating the symptoms).\n\nANTIVIRAL DRUGS are medicines that do treat viral infections — but they are much harder to develop than antibiotics because viruses use the host cell's own machinery.\nExamples: oseltamivir (Tamiflu) for influenza, antiretroviral drugs (ARVs) for HIV.\nAntivirals don't kill viruses outright — they usually prevent replication."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Painkillers do NOT treat infections — they only relieve symptoms. A patient taking only paracetamol for a bacterial infection is NOT treating the infection. Also: always complete antibiotic courses — stopping early is a major driver of resistance because the bacteria that survive are likely to be the more resistant ones.",
+        "key_note": "Antibiotics: kill bacteria, NO effect on viruses, target bacterial cell walls/ribosomes. Antibiotic resistance: natural selection of resistant mutants — avoid misuse. Painkillers: treat symptoms only, don't kill pathogens.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Antibiotic, Painkiller or Antiviral?",
+            "instruction": "Sort each statement to the correct type of drug.",
+            "pairs": [
+                ("Antibiotic", "Kills bacteria — works by targeting bacterial cell walls or ribosomes"),
+                ("Painkiller", "Relieves fever and pain — does not kill any pathogens"),
+                ("Antiviral", "Prevents viral replication — used for HIV and influenza"),
+                ("Antibiotic", "Has no effect on viral infections — useless against flu or measles"),
+                ("Painkiller", "Examples: paracetamol, ibuprofen, aspirin"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "Why can't antibiotics treat viral infections?",
+                "opts": [
+                    ("Viruses don't have cell walls or bacterial ribosomes — the structures antibiotics target don't exist in viruses", True),
+                    ("Viruses are too small for antibiotics to reach", False),
+                    ("Antibiotics are absorbed too slowly to reach viruses in the bloodstream", False),
+                    ("Viruses produce enzymes that destroy antibiotics", False)
+                ],
+                "wrong_explanations": {
+                    1: "Viruses are smaller than bacteria — but size is not why antibiotics don't work. Antibiotics target specific bacterial structures that viruses simply don't have.",
+                    2: "Antibiotics are absorbed into the bloodstream — but they have no biological target in virus particles, so reaching them makes no difference.",
+                    3: "Some resistant bacteria do produce enzymes that destroy antibiotics — but this is a bacterial resistance mechanism, not a general viral property."
+                }
+            },
+            {
+                "q": "Why is it important to always complete a full course of antibiotics?",
+                "opts": [
+                    ("Stopping early leaves the most resistant bacteria alive — they survive and reproduce, increasing resistance", True),
+                    ("Stopping early means the antibiotics already taken are wasted and have no effect", False),
+                    ("Partial courses make the bacteria grow faster as a response", False),
+                    ("It doesn't matter — stopping early is fine if symptoms improve", False)
+                ],
+                "wrong_explanations": {
+                    1: "The antibiotics already taken do have effect — they kill susceptible bacteria. The problem is that the resistant survivors are left to reproduce.",
+                    2: "Bacteria don't 'grow faster' in response to antibiotics stopping — the issue is selective survival of resistant variants.",
+                    3: "This is a dangerous misconception — symptoms improving means the immune system and antibiotics are working, but bacteria may still be present. Stopping early increases resistance risk."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 7. DRUG DISCOVERY AND DEVELOPMENT
+    # ══════════════════════════════════════════════
+    {
+        "id": "drug-discovery-development",
+        "title": "Drug Discovery and Development",
+        "spec": "4.3.4",
+        "summary": "Describe how new drugs are discovered, tested and approved before being used on patients.",
+        "theory": [
+            {
+                "heading": "Where New Drugs Come From",
+                "content": "Throughout history, many important drugs were discovered from NATURAL SOURCES:\n\nPENICILLIN — discovered by Alexander Fleming (1928) from the Penicillium mould. He noticed bacteria on a petri dish were being killed near a mould contamination.\n\nASPIRIN — derived from salicylic acid found in willow bark. Used as a pain reliever for centuries before the active compound was isolated.\n\nMORPHINE — derived from opium poppies — a powerful painkiller still used today.\n\nQUININE — extracted from cinchona tree bark — historically the main treatment for malaria.\n\nModern drug discovery also uses:\nSynthetic chemistry — designing molecules in the laboratory.\nComputer modelling — predicting how molecules interact with biological targets.\nBiotechnology — using genetically modified organisms to produce medicines (e.g. human insulin produced by GM bacteria)."
+            },
+            {
+                "heading": "Pre-Clinical Testing",
+                "content": "Before any new drug is tested on humans, it must undergo PRE-CLINICAL TESTING:\n\nCELL CULTURES — the drug is tested on cells grown in the laboratory. Checks basic toxicity and whether the drug has any biological effect.\n\nCOMPUTER MODELS — simulate the drug's behaviour and interactions in the body before any living organism is used.\n\nANIMAL TESTING — the drug is tested on animals (usually mice or rats) to check:\nWhether it is safe in a living organism.\nHow it is absorbed, distributed and broken down.\nWhat side effects occur.\nWhether it has any effect on the target disease.\n\nMany potential drugs fail at this stage and are abandoned. Only those that show promise and acceptable safety proceed to human trials."
+            },
+            {
+                "heading": "Clinical Trials — Testing on Humans",
+                "content": "Drugs that pass pre-clinical testing move to CLINICAL TRIALS — testing in human volunteers. This happens in three phases:\n\nPHASE 1 — Safety:\nSmall group of healthy volunteers.\nVery low doses given initially, then gradually increased.\nAim: check the drug is safe in humans and identify any side effects.\n\nPHASE 2 — Efficacy:\nLarger group of patients who have the condition the drug treats.\nAim: check the drug actually works and find the optimal dose.\n\nPHASE 3 — Large-scale comparison:\nHundreds or thousands of patients.\nThe drug is compared to either an EXISTING TREATMENT or a PLACEBO.\nDOUBLE-BLIND TRIALS are used — neither the patients nor the doctors administering the trial know who is receiving the real drug or the placebo. This eliminates bias.\nA PLACEBO is an inactive dummy treatment (e.g. a sugar pill) that looks identical to the real drug. Used to control for the PLACEBO EFFECT — where patients improve simply because they believe they are receiving treatment.\n\nIf Phase 3 is successful, the drug is submitted for regulatory approval. In the UK this is the MHRA (Medicines and Healthcare products Regulatory Agency)."
+            },
+            {
+                "heading": "Thalidomide — A Cautionary Tale",
+                "content": "Thalidomide was developed in the 1950s as a sedative and treatment for morning sickness in pregnancy.\n\nIt had not been adequately tested for effects on developing embryos.\n\nWhen taken by pregnant women, it caused severe birth defects — particularly abnormal limb development (phocomelia — very short or absent limbs).\n\nAn estimated 10,000 babies were affected worldwide before the drug was withdrawn in 1961.\n\nThis case led directly to much stricter drug testing requirements worldwide — particularly the requirement to test drugs on pregnant animals before use in humans.\n\nThalidomide's lesson: drugs must be tested thoroughly for ALL potential uses and ALL population groups, including pregnant women.\n\nInterestingly, thalidomide is now used again under very strict controls to treat some cancers (multiple myeloma) and leprosy — illustrating that even a harmful drug can have safe medical uses in the right context."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "A DOUBLE-BLIND trial means NEITHER the patient NOR the doctor knows who is getting the real drug. A SINGLE-BLIND trial means only the patient doesn't know. Double-blind removes bias from both sides. A PLACEBO is a dummy treatment — not a low dose of the real drug.",
+        "key_note": "Drug testing: pre-clinical (cells → computer → animals) → Phase 1 (safety, healthy volunteers) → Phase 2 (efficacy, patients) → Phase 3 (large comparison, double-blind, placebo) → regulatory approval.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Match the Stage of Drug Development",
+            "instruction": "Match each description to the correct stage of drug testing.",
+            "pairs": [
+                ("Pre-clinical — cells and animals", "Drug tested in lab on cells and then animals — checks basic safety before human trials"),
+                ("Phase 1 clinical trial", "Small group of healthy volunteers — checks the drug is safe in humans"),
+                ("Phase 2 clinical trial", "Patients with the condition — checks the drug actually works at the right dose"),
+                ("Phase 3 clinical trial", "Large-scale, double-blind, placebo-controlled — compares to existing treatment"),
+                ("Double-blind trial", "Neither patient nor doctor knows who is receiving the real drug — eliminates bias"),
+                ("Placebo", "Inactive dummy treatment — controls for the psychological placebo effect"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "What is a double-blind clinical trial?",
+                "opts": [
+                    ("Neither the patients nor the doctors know who is receiving the real drug or the placebo — eliminates bias from both sides", True),
+                    ("Only the patients don't know which treatment they are receiving", False),
+                    ("The trial uses two different drugs tested simultaneously against each other", False),
+                    ("The trial is conducted in the dark to prevent visual identification of the drug", False)
+                ],
+                "wrong_explanations": {
+                    1: "If only the PATIENT doesn't know = single-blind. Double-blind means BOTH patient AND doctor are unaware — this prevents the doctor's expectations influencing how they assess patient progress.",
+                    2: "A trial testing two real drugs against each other is a comparative trial — double-blind refers to who knows about treatment allocation, not how many drugs are tested.",
+                    3: "'Blind' in a clinical context means 'unaware of treatment allocation' — it has nothing to do with actual darkness."
+                }
+            },
+            {
+                "q": "Why is a placebo used in clinical trials?",
+                "opts": [
+                    ("To control for the placebo effect — some patients improve just because they believe they are being treated", True),
+                    ("To give patients a low starting dose before they receive the real drug", False),
+                    ("To ensure every patient receives some form of medical benefit during the trial", False),
+                    ("To test the side effects of inactive substances", False)
+                ],
+                "wrong_explanations": {
+                    1: "A placebo is not a low dose — it is INACTIVE and contains no active ingredient.",
+                    2: "Patients in the placebo group receive no active treatment — this is ethically managed carefully and only used when ethically appropriate.",
+                    3: "Placebos by definition have no pharmacological activity — any side effects are psychological or coincidental."
+                }
+            },
+            {
+                "q": "What was the key lesson from the thalidomide tragedy?",
+                "opts": [
+                    ("Drugs must be rigorously tested for all potential effects including effects on embryos — testing requirements were significantly strengthened", True),
+                    ("Natural drugs are always safer than synthetic ones", False),
+                    ("Sedatives should never be prescribed during pregnancy", False),
+                    ("Clinical trials are unnecessary if a drug has been shown to be safe in adults", False)
+                ],
+                "wrong_explanations": {
+                    1: "Thalidomide was a synthetic drug — but many synthetic drugs are completely safe. The lesson was specifically about testing for effects on ALL groups, especially embryos.",
+                    2: "The lesson was specifically about testing for ALL effects in ALL populations — not a blanket ban on sedatives in pregnancy.",
+                    3: "The thalidomide case showed exactly WHY clinical trials must be thorough — an adult-safe drug was devastating to embryos."
+                }
+            }
+        ]
+    },
+
+    # ══════════════════════════════════════════════
+    # 8. PLANT DISEASE DETECTION AND DEFENCE
+    # ══════════════════════════════════════════════
+    {
+        "id": "plant-disease-detection-defence",
+        "title": "Plant Disease Detection and Defence",
+        "spec": "4.3.5",
+        "summary": "Describe how plant diseases are identified and how plants defend themselves against pathogens and pests.",
+        "theory": [
+            {
+                "heading": "Identifying Plant Disease",
+                "content": "Plants can be infected by bacteria, viruses, fungi and other parasites — just like animals. Recognising disease symptoms is important for farmers, gardeners and conservationists.\n\nCommon symptoms of plant disease:\nSTUNTED GROWTH — plant is smaller or grows more slowly than expected for its age and growing conditions.\nSPOTS ON LEAVES — discoloured patches, often black, brown or orange.\nAREAS OF DECAY (ROT) — brown, soft, collapsing tissue in stems, roots or fruit.\nABNORMAL GROWTHS — unusual swellings, galls or distorted structures.\nMALFORMED LEAVES OR STEMS — twisted, curled or distorted plant parts.\nDISCOLOURATION — yellowing (chlorosis), bleaching, mosaic patterns.\n\nHow to identify the specific cause:\nLook up symptoms in a plant disease identification guide or database.\nSend a sample to a laboratory for microscopic examination.\nTest using specific diagnostic kits (e.g. lateral flow tests for specific pathogens).\nObserve when and where the disease appears — conditions often give clues (e.g. fungal diseases favour wet, warm weather)."
+            },
+            {
+                "heading": "Physical Defences in Plants",
+                "content": "Plants have evolved a range of physical defences that act as barriers to prevent pathogens and pests from entering:\n\nCELL WALLS made of cellulose — provide a rigid physical barrier around each cell. Much harder for pathogens to penetrate than a soft cell membrane alone.\n\nWAXY CUTICLE on leaves and stems — a waterproof, waxy layer secreted by epidermal cells. Prevents pathogens from landing and colonising the leaf surface. Also reduces water loss.\n\nBARK on woody stems — tough outer layers protect living tissue (phloem and cambium) underneath from physical damage and pathogen entry.\n\nTHORNS and SPINES — physical deterrents to herbivores, reducing the chances of wounds through which pathogens can enter.\n\nCLOSING OF STOMATA — when plants detect pathogen attack, they can close stomata to prevent pathogen entry through these openings."
+            },
+            {
+                "heading": "Chemical Defences in Plants",
+                "content": "Plants also produce a wide range of chemicals that deter herbivores and fight pathogens:\n\nANTIBACTERIAL COMPOUNDS — some plants produce substances with antimicrobial properties:\nAllicin in garlic — shown to have antibacterial and antifungal activity.\nTannins in oak bark and tea leaves — bitter astringent compounds that deter herbivores and have some antimicrobial properties.\n\nPOISONS (ALKALOIDS) — plants produce toxic secondary metabolites to deter animals from eating them:\nNicotine in tobacco plants — highly toxic to insects (used as an insecticide).\nCaffeine in coffee and tea plants — deters insects from feeding.\nQuinine in cinchona trees — bitter taste deters herbivores; also has antimicrobial properties.\nDigitalis (foxglove) — toxic to vertebrates including humans if eaten in large quantities.\n\nINSECT-REPELLING COMPOUNDS — volatile chemicals released from leaves deter insects from landing and laying eggs.\n\nSTICKY RESINS and LATEX — trap insects on the surface or clog their mouthparts if they try to feed."
+            },
+            {
+                "heading": "Responding to Attack",
+                "content": "Plants can also mount active responses when they detect pathogen invasion:\n\nHYPERSENSITIVE RESPONSE — when a pathogen is detected, the plant rapidly KILLS the cells immediately surrounding the infection site, creating a zone of dead cells.\nThis dead zone acts as a firebreak — the pathogen cannot spread through dead cells, containing the infection.\n\nSYSTEMIC ACQUIRED RESISTANCE (SAR) — after a localised infection, the whole plant can become more resistant to future attacks.\nThe plant produces signalling molecules (like salicylic acid) that travel to uninfected parts of the plant, 'warning' them to prepare chemical defences.\n\nMany of the chemicals plants produce for defence have also been used by humans:\nAspirin derived from salicylic acid.\nQuinine — antimalarial drug.\nMorphine and codeine — painkillers from poppies.\nMany modern medicines originated as plant defence chemicals."
+            }
+        ],
+        "variables": [],
+        "equations": [],
+        "common_mistake": "Plants do NOT have an immune system like animals — no antibodies, no lymphocytes, no phagocytes. Their defences are physical (walls, wax, bark) and chemical (poisons, antimicrobials). They are passive or triggered responses, not a learned adaptive immune system.",
+        "key_note": "Plant physical defences: cell walls, waxy cuticle, bark, thorns, closing stomata. Chemical defences: antibacterial compounds (e.g. allicin), poisons/alkaloids (e.g. nicotine, caffeine, quinine). Active responses: hypersensitive response (kills cells around infection), systemic acquired resistance.",
+        "higher": None,
+        "triple_only": None,
+        "rp": None,
+        "matching": {
+            "title": "Physical or Chemical Plant Defence?",
+            "instruction": "Sort each plant defence into physical or chemical.",
+            "pairs": [
+                ("Physical", "Cell walls — rigid cellulose barrier around each cell"),
+                ("Physical", "Waxy cuticle — waterproof surface layer prevents colonisation"),
+                ("Chemical", "Nicotine in tobacco — highly toxic to insects, deters feeding"),
+                ("Physical", "Thorns — deter herbivores from eating the plant"),
+                ("Chemical", "Allicin in garlic — antibacterial and antifungal compound"),
+                ("Chemical", "Tannins in oak bark — bitter taste deters herbivores"),
+            ]
+        },
+        "fifas": [],
+        "quiz": [
+            {
+                "q": "A gardener notices black spots on their rose leaves and the leaves are turning yellow. What is most likely causing this?",
+                "opts": [
+                    ("Rose black spot — a fungal disease caused by Diplocarpon rosae", True),
+                    ("Tobacco mosaic virus — a viral disease causing discolouration", False),
+                    ("Salmonella — a bacterial infection from contaminated soil", False),
+                    ("The plant is simply overwatered and needs less water", False)
+                ],
+                "wrong_explanations": {
+                    1: "TMV causes a mosaic pattern of light and dark green/yellow patches — not specific black spots with yellowing leaves around them.",
+                    2: "Salmonella affects animals, not plants — it does not cause leaf spots in roses.",
+                    3: "Overwatering can cause some yellowing, but the distinctive BLACK SPOTS specifically indicate rose black spot fungal infection."
+                }
+            },
+            {
+                "q": "Why does the waxy cuticle on leaves help protect the plant from disease?",
+                "opts": [
+                    ("It provides a waterproof physical barrier that prevents pathogens from landing and colonising the leaf surface", True),
+                    ("It contains antibiotics that kill any bacteria landing on the leaf", False),
+                    ("It absorbs UV radiation to prevent DNA damage in leaf cells", False),
+                    ("It makes leaves slippery so insects cannot grip and feed on them", False)
+                ],
+                "wrong_explanations": {
+                    1: "The cuticle does not contain antibiotics — it is a physical, waterproof barrier. Plant chemical defences (like tannins or allicin) are separate from the cuticle.",
+                    2: "UV protection is a secondary function in some plants — but the PRIMARY defensive role of the cuticle is as a physical barrier to pathogens and water loss.",
+                    3: "Waxiness can make leaves slippery, but the main function is waterproofing — creating an inhospitable surface for pathogen growth."
+                }
+            },
+            {
+                "q": "What is the hypersensitive response in plants?",
+                "opts": [
+                    ("The plant rapidly kills cells around an infection site, creating a dead zone that contains the pathogen and prevents it spreading", True),
+                    ("The plant produces excess antibodies to destroy the invading pathogen", False),
+                    ("The plant overreacts to harmless stimuli and closes all its stomata", False),
+                    ("The plant produces spores to spread its own genetic material before dying", False)
+                ],
+                "wrong_explanations": {
+                    1: "Plants don't produce antibodies — that is an animal immune system response. Plants' active responses involve chemical signalling and cell death.",
+                    2: "Closing stomata IS a response to pathogens — but the 'hypersensitive response' specifically refers to deliberately killing cells around the infection site as a containment strategy.",
+                    3: "Sporulation is a reproductive or survival strategy in some fungi and bacteria — not part of the plant hypersensitive response."
+                }
+            }
         ]
     },
 ],
