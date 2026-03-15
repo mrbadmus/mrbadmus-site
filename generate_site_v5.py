@@ -1726,13 +1726,9 @@ def make_landing():
     {t:'Electrolysis',s:'Chemistry',url:'/combined/higher/chemistry/chemical-changes/electrolysis.html',c:'#FF6B6B'},
     {t:'Rates of Reaction and Collision Theory',s:'Chemistry',url:'/combined/higher/chemistry/rates-equilibrium/rate-collision-theory.html',c:'#FF6B6B'},
     {t:'Atmosphere and Climate Change',s:'Chemistry',url:'/combined/higher/chemistry/atmosphere/atmosphere-climate.html',c:'#FF6B6B'},
-    {t:'Eukaryotes and Prokaryotes',s:'Biology',url:'/combined/higher/biology/cell-biology/eukaryotes-prokaryotes.html',c:'#6BCB77'},
-    {t:'Animal and Plant Cells',s:'Biology',url:'/combined/higher/biology/cell-biology/animal-plant-cells.html',c:'#6BCB77'},
-    {t:'Cell Specialisation',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-specialisation.html',c:'#6BCB77'},
-    {t:'Microscopy',s:'Biology',url:'/combined/higher/biology/cell-biology/microscopy.html',c:'#6BCB77'},
-    {t:'Chromosomes and Mitosis',s:'Biology',url:'/combined/higher/biology/cell-biology/chromosomes-mitosis.html',c:'#6BCB77'},
-    {t:'Stem Cells',s:'Biology',url:'/combined/higher/biology/cell-biology/stem-cells.html',c:'#6BCB77'},
-    {t:'Diffusion, Osmosis and Active Transport',s:'Biology',url:'/combined/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
+    {t:'Cell Structure',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-structure.html',c:'#6BCB77'},
+    {t:'Transport in Cells (Diffusion, Osmosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
+    {t:'Cell Division (Mitosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-division.html',c:'#6BCB77'},
     {t:'Enzymes and Digestion',s:'Biology',url:'/combined/higher/biology/organisation/enzymes-digestion.html',c:'#6BCB77'},
     {t:'Heart and Circulation',s:'Biology',url:'/combined/higher/biology/organisation/heart-circulation.html',c:'#6BCB77'},
     {t:'Pathogens and Immunity',s:'Biology',url:'/combined/higher/biology/infection-response/pathogens-immunity.html',c:'#6BCB77'},
@@ -3940,7 +3936,12 @@ def make_new_subtopic_page(st, color):
     for section in st["theory"]:
         # Split content by \n for short lines
         lines = section["content"].split("\n")
-        lines_html = "".join(f"<p style='font-size:0.9rem;line-height:1.8;margin:4px 0;'>{line}</p>" for line in lines if line.strip())
+        lines_html = ""
+        for line in lines:
+            if line.strip():
+                lines_html += f"<p style='font-size:0.93rem;line-height:1.75;margin:0 0 8px 0;'>{line}</p>"
+            else:
+                lines_html += "<div style='height:6px;'></div>"
         theory_html += f"""<div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">{section['heading']}</h4>
   {lines_html}
@@ -4439,7 +4440,12 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
     theory_html = ""
     for section in st["theory"]:
         lines = section["content"].split("\n")
-        lines_html = "".join(f"<p style='font-size:0.9rem;line-height:1.8;margin:4px 0;'>{line}</p>" for line in lines if line.strip())
+        lines_html = ""
+        for line in lines:
+            if line.strip():
+                lines_html += f"<p style='font-size:0.93rem;line-height:1.75;margin:0 0 8px 0;'>{line}</p>"
+            else:
+                lines_html += "<div style='height:6px;'></div>"
         theory_html += f"""<div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">{section['heading']}</h4>
   {lines_html}
