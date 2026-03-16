@@ -150,15 +150,15 @@
   <div class="match-drop" data-accepts="8">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-forces-scalars-vectors"><div class="match-def" data-index="6" draggable="true">Force</div>
-<div class="match-def" data-index="5" draggable="true">Displacement</div>
-<div class="match-def" data-index="8" draggable="true">Momentum</div>
-<div class="match-def" data-index="4" draggable="true">Velocity</div>
+      <div class="match-defs" id="defPool-forces-scalars-vectors"><div class="match-def" data-index="7" draggable="true">Acceleration</div>
 <div class="match-def" data-index="3" draggable="true">Temperature</div>
-<div class="match-def" data-index="1" draggable="true">Distance</div>
 <div class="match-def" data-index="0" draggable="true">Speed</div>
+<div class="match-def" data-index="6" draggable="true">Force</div>
 <div class="match-def" data-index="2" draggable="true">Mass</div>
-<div class="match-def" data-index="7" draggable="true">Acceleration</div>
+<div class="match-def" data-index="4" draggable="true">Velocity</div>
+<div class="match-def" data-index="5" draggable="true">Displacement</div>
+<div class="match-def" data-index="1" draggable="true">Distance</div>
+<div class="match-def" data-index="8" draggable="true">Momentum</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -175,42 +175,42 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 5</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Temperature is scalar — it has no direction.",1: "Mass is scalar — it\'s just an amount of matter, no direction involved.",2: "Speed is scalar — it tells you how fast but not which direction.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Speed is scalar — it tells you how fast but not which direction.",2: "Mass is scalar — it\'s just an amount of matter, no direction involved.",3: "Temperature is scalar — it has no direction.",}'>
   <div class="q-text">1. Which of these is a vector quantity?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Temperature</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Mass</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Speed</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Velocity</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Velocity</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Speed</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Mass</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Temperature</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Direction alone isn\'t velocity — you need the magnitude (speed) too.",1: "10 m/s without direction is SPEED — velocity needs a direction too.",3: "10 m is a distance — velocity is speed with direction.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "10 m is a distance — velocity is speed with direction.",1: "10 m/s without direction is SPEED — velocity needs a direction too.",3: "Direction alone isn\'t velocity — you need the magnitude (speed) too.",}'>
   <div class="q-text">2. A car moves east at 10 m/s. What is its velocity?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">East</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">10 m</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">10 m/s</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">10 m/s east</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">10 m</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">East</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="1" data-wrong-exp='{0: "Adding gives 23 N in the direction of the larger force — but opposite forces cancel, so it\'s 15−8 = 7 N.",2: "7 N left would require the left force to be bigger — but 15 N > 8 N, so resultant is to the right.",3: "You added instead of subtracting. Opposite directions → subtract: 15 − 8 = 7 N. The larger force (right) wins.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="2" data-wrong-exp='{0: "You added instead of subtracting. Opposite directions → subtract: 15 − 8 = 7 N. The larger force (right) wins.",1: "7 N left would require the left force to be bigger — but 15 N > 8 N, so resultant is to the right.",3: "Adding gives 23 N in the direction of the larger force — but opposite forces cancel, so it\'s 15−8 = 7 N.",}'>
   <div class="q-text">3. Two forces act on an object: 15 N right and 8 N left. What is the resultant?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">23 N left</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">7 N right</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">7 N left</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">23 N right</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">23 N right</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">7 N left</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">7 N right</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">23 N left</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="2" data-wrong-exp='{0: "Circular motion requires constant acceleration toward the centre (centripetal). The object is always accelerating.",1: "Speed being constant doesn\'t mean velocity is constant. Velocity is a vector — direction change = velocity change = acceleration.",3: "Acceleration = rate of change of velocity. Changing direction at constant speed is still acceleration.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Circular motion requires constant acceleration toward the centre (centripetal). The object is always accelerating.",1: "Speed being constant doesn\'t mean velocity is constant. Velocity is a vector — direction change = velocity change = acceleration.",2: "Acceleration = rate of change of velocity. Changing direction at constant speed is still acceleration.",}'>
   <div class="q-text">4. A car travels round a circular track at constant speed. Is it accelerating?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">No — the car is in circular motion not linear</button>
 <button class="quiz-opt" data-qi="3" data-oi="1">No — speed is constant</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">Yes — velocity changes because direction changes</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">Only if it speeds up</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">Only if it speeds up</button>
+<button class="quiz-opt" data-qi="3" data-oi="3">Yes — velocity changes because direction changes</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="1" data-wrong-exp='{0: "Displacement is a vector — it includes direction. Distance is the scalar version (just how far).",2: "Force is a vector — it has magnitude and direction (e.g. 10 N downward).",3: "Momentum (p = mv) is a vector — it inherits direction from velocity.",}'>
+</div><div class="quiz-card" id="qcard-4" data-answer="0" data-wrong-exp='{1: "Displacement is a vector — it includes direction. Distance is the scalar version (just how far).",2: "Force is a vector — it has magnitude and direction (e.g. 10 N downward).",3: "Momentum (p = mv) is a vector — it inherits direction from velocity.",}'>
   <div class="q-text">5. Which of these is a scalar quantity?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Displacement</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">Distance</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Distance</button>
+<button class="quiz-opt" data-qi="4" data-oi="1">Displacement</button>
 <button class="quiz-opt" data-qi="4" data-oi="2">Force</button>
 <button class="quiz-opt" data-qi="4" data-oi="3">Momentum</button>
 </div>
