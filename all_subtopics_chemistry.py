@@ -1,775 +1,1360 @@
 #!/usr/bin/env python3
-"""Chemistry subtopics — all topics"""
+"""
+Chemistry subtopics — Combined Foundation
+AQA 8464 Chemistry spec 5.0
+
+Atomic Structure and Periodic Table: 12 subtopics (complete)
+All other topics: stubs (to be built topic by topic)
+"""
 
 CHEMISTRY_COLOR = "#FF6B6B"
 
 CHEMISTRY_SUBTOPICS_ALL = {
 
-"atomic-structure": [
-    {
-        "id": "chem-atomic-structure",
-        "title": "Atomic Structure and the Periodic Table",
-        "spec": "4.1.1",
-        "summary": "Describe atomic structure, electron shells and the layout of the periodic table.",
-        "theory": [
-            {"heading": "Inside Every Atom",
-             "content": "Every atom has a nucleus containing protons (+) and neutrons (no charge).\nElectrons (−) orbit the nucleus in shells.\nIn a neutral atom: number of protons = number of electrons.\nThe atom is mostly empty space — the nucleus is tiny compared to the whole atom."},
-            {"heading": "The Three Subatomic Particles",
-             "content": "Proton: relative mass = 1, relative charge = +1, in nucleus.\nNeutron: relative mass = 1, relative charge = 0, in nucleus.\nElectron: relative mass ≈ 0, relative charge = −1, in shells.\nAtomic number (Z) = number of protons.\nMass number (A) = protons + neutrons.\nNeutrons = A − Z."},
-            {"heading": "Electronic Structure",
-             "content": "Electrons fill shells from inside out.\nShell 1: maximum 2 electrons.\nShell 2: maximum 8 electrons.\nShell 3: maximum 8 electrons (GCSE level).\nExample: Sodium (Z=11) → 2, 8, 1.\nOuter shell electrons determine chemical properties."},
-            {"heading": "The Periodic Table",
-             "content": "Elements arranged in order of atomic number.\nPeriod (row) = number of electron shells.\nGroup (column) = number of outer shell electrons.\nGroup 1: 1 outer electron — very reactive metals.\nGroup 7: 7 outer electrons — reactive non-metals.\nGroup 0: full outer shell — very unreactive noble gases."}
-        ],
-        "variables": [],
-        "equations": ["Neutrons = mass number − atomic number"],
-        "common_mistake": "Mass number = protons + neutrons (not protons + electrons — electrons have negligible mass). Also: Group 0 noble gases have a FULL outer shell, not zero electrons.",
-        "key_note": "Period = number of shells. Group = number of outer electrons.",
-        "higher": None, "triple_only": None, "rp": None,
-        "matching": {
-            "title": "Match the Element to its Electronic Structure",
-            "instruction": "Match each element to its electron arrangement.",
-            "pairs": [
-                ("Hydrogen (H, Z=1)", "1"),
-                ("Carbon (C, Z=6)", "2, 4"),
-                ("Oxygen (O, Z=8)", "2, 6"),
-                ("Sodium (Na, Z=11)", "2, 8, 1"),
-                ("Chlorine (Cl, Z=17)", "2, 8, 7"),
-                ("Argon (Ar, Z=18)", "2, 8, 8"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "An element has atomic number 11, mass number 23. How many neutrons does it have?",
-             "opts": [("12", True), ("23", False), ("11", False), ("34", False)],
-             "wrong_explanations": {1: "That's just the mass number. Neutrons = A − Z = 23 − 11 = 12.", 2: "That's the atomic number (protons). Neutrons = 23 − 11 = 12.", 3: "You added them. Neutrons = mass number − atomic number = 12."}},
-            {"q": "Chlorine is in Group 7. How many outer shell electrons does it have?",
-             "opts": [("7", True), ("2", False), ("17", False), ("8", False)],
-             "wrong_explanations": {1: "2 is electrons in the FIRST shell. Group number = outer shell electrons = 7.", 2: "17 is chlorine's atomic number — the outer shell specifically has 7 electrons.", 3: "8 is a full outer shell (Group 0). Chlorine in Group 7 has 7."}},
-            {"q": "An element is in Period 3. How many electron shells does it have?",
-             "opts": [("3", True), ("1", False), ("8", False), ("2", False)],
-             "wrong_explanations": {1: "Period 1 = 1 shell. Each period adds one shell. Period 3 = 3 shells.", 2: "8 is max electrons in outer shell — not the number of shells.", 3: "Period 2 = 2 shells. Period 3 = 3 shells."}},
-            {"q": "What are isotopes?",
-             "opts": [("Same element, same proton number, different neutron number", True), ("Same element, same neutron number, different proton number", False), ("Different elements with the same mass number", False), ("Atoms with equal protons and neutrons", False)],
-             "wrong_explanations": {1: "Changing the proton number changes the ELEMENT — isotopes are the same element.", 2: "Different elements with the same mass number are called isobars — not isotopes.", 3: "Many atoms have equal protons and neutrons (like carbon-12) but that's not what defines an isotope."}},
-            {"q": "In a neutral atom, what is always true?",
-             "opts": [("Protons = electrons", True), ("Protons = neutrons", False), ("Electrons = neutrons", False), ("Mass number = atomic number", False)],
-             "wrong_explanations": {1: "Protons = neutrons only in certain isotopes (e.g. carbon-12). Not always.", 2: "Electrons = neutrons is a coincidence in some atoms — not a rule.", 3: "Mass number = atomic number only if there are no neutrons — only true for hydrogen-1."}}
-        ]
-    },
-    {
-        "id": "periodic-table-groups",
-        "title": "Groups in the Periodic Table",
-        "spec": "4.1.2",
-        "summary": "Describe trends and reactions of Group 1, Group 7 and Group 0 elements.",
-        "theory": [
-            {"heading": "Group 1 — The Alkali Metals",
-             "content": "Li, Na, K, Rb, Cs — all have 1 outer electron.\nReact with water → metal hydroxide + hydrogen gas.\nReactivity INCREASES going down (outer electron further from nucleus, easier to lose).\nSoft metals, low melting points, float on water.\nK catches fire on water. Cs explodes!"},
-            {"heading": "Group 7 — The Halogens",
-             "content": "F, Cl, Br, I — all have 7 outer electrons, need 1 more for full shell.\nReactivity DECREASES going down (harder to attract an extra electron as atomic radius increases).\nMore reactive halogen displaces less reactive one from solution.\nAppearance: Cl₂ = green gas, Br₂ = brown liquid, I₂ = grey-black solid."},
-            {"heading": "Group 0 — Noble Gases",
-             "content": "He, Ne, Ar, Kr — full outer shells, extremely unreactive.\nMonatomic (single atoms, not molecules).\nBoiling points increase going down the group.\nUses: He in balloons (non-flammable), Ar in light bulbs (inert), Ne in neon signs."},
-            {"heading": "Transition Metals",
-             "content": "Central block — Fe, Cu, Ni, Cr etc.\nHigh melting points, hard and dense.\nForm coloured compounds (unlike Group 1).\nCan have variable oxidation states: Fe²⁺ and Fe³⁺, Cu⁺ and Cu²⁺.\nGood catalysts: Fe in Haber process, Pt in catalytic converters."}
-        ],
-        "variables": [],
-        "equations": ["2Na + 2H₂O → 2NaOH + H₂", "Cl₂ + 2KBr → 2KCl + Br₂"],
-        "common_mistake": "Group 1 reactivity INCREASES down the group. Group 7 reactivity DECREASES down the group. These are opposite trends and always mixed up in exams!",
-        "key_note": "Halogen displacement: more reactive halogen displaces less reactive one. Cl > Br > I in reactivity.",
-        "higher": None, "triple_only": None, "rp": None,
-        "matching": {
-            "title": "Match the Group to its Key Properties",
-            "instruction": "Match each group to its trend and properties.",
-            "pairs": [
-                ("Group 1", "Reactivity increases down — react with water to give H₂"),
-                ("Group 7", "Reactivity decreases down — displace less reactive halogens"),
-                ("Group 0", "Full outer shell — very unreactive, monatomic"),
-                ("Transition metals", "Coloured compounds, variable oxidation states, good catalysts"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "Which Group 1 metal reacts most vigorously with water?",
-             "opts": [("Caesium (Cs)", True), ("Lithium (Li)", False), ("Sodium (Na)", False), ("They are equally reactive", False)],
-             "wrong_explanations": {1: "Li is least reactive — it floats and fizzes gently. Reactivity increases down Group 1.", 2: "Na is more reactive than Li but less than K, Rb and Cs.", 3: "Reactivity clearly increases down the group — Cs is most reactive."}},
-            {"q": "Chlorine water is added to potassium iodide solution. What happens?",
-             "opts": [("Iodine is displaced — solution turns brown", True), ("Nothing happens", False), ("Chlorine is displaced", False), ("Hydrogen gas is produced", False)],
-             "wrong_explanations": {1: "Cl₂ is MORE reactive than I₂ — it would not be displaced.", 2: "A more reactive halogen always displaces a less reactive one from solution.", 3: "Hydrogen comes from metal + acid or Group 1 + water — not halogen displacement."}},
-            {"q": "Why are noble gases unreactive?",
-             "opts": [("They have a full outer electron shell", True), ("They have no electrons at all", False), ("They are radioactive", False), ("They have too many protons", False)],
-             "wrong_explanations": {1: "Noble gases definitely have electrons — helium has 2, neon has 10.", 2: "Noble gases are extremely stable — not radioactive.", 3: "Proton number doesn't determine reactivity — outer shell electrons do."}},
-            {"q": "What gas is produced when potassium reacts with water?",
-             "opts": [("Hydrogen", True), ("Oxygen", False), ("Carbon dioxide", False), ("Potassium gas", False)],
-             "wrong_explanations": {1: "Oxygen would need electrolysis of water to produce.", 2: "CO₂ needs a carbon source — water and potassium contain no carbon.", 3: "Potassium is a solid metal — it doesn't vaporise in this reaction."}},
-            {"q": "Which transition metal is used as a catalyst in the Haber process?",
-             "opts": [("Iron (Fe)", True), ("Copper (Cu)", False), ("Gold (Au)", False), ("Platinum (Pt)", False)],
-             "wrong_explanations": {1: "Copper is used in the Contact process for SO₃ production, not Haber.", 2: "Gold is too expensive and not particularly catalytic for this reaction.", 3: "Platinum is used in catalytic converters in cars — not the Haber process."}}
-        ]
-    },
-],
+"atomic-structure": [{'common_mistake': 'A COMPOUND is NOT a mixture. In a compound, elements are CHEMICALLY BONDED — you need a chemical '
+                    'reaction to separate them (e.g. electrolysis to split water into hydrogen and oxygen). In a '
+                    'MIXTURE, substances are just mixed — physical methods separate them. Water is a compound. '
+                    'Saltwater is a mixture.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'atoms-elements-compounds',
+  'key_note': 'Element: one type of atom. Compound: two or more elements chemically bonded — new properties, chemical '
+              'separation only. Mixture: not bonded — keeps own properties, physical separation possible. Equations '
+              'must be balanced — atoms conserved.',
+  'matching': {'instruction': 'Sort each substance into the correct category.',
+               'pairs': [('Element', 'Copper (Cu) — made of only copper atoms'),
+                         ('Compound', 'Water (H₂O) — hydrogen and oxygen chemically bonded'),
+                         ('Mixture', 'Air — nitrogen, oxygen and argon not chemically combined'),
+                         ('Compound', 'Carbon dioxide (CO₂) — carbon and oxygen chemically bonded'),
+                         ('Mixture', 'Crude oil — many different hydrocarbons mixed together'),
+                         ('Element', 'Gold (Au) — one type of atom, listed on the periodic table')],
+               'title': 'Element, Compound or Mixture?'},
+  'quiz': [{'opts': [('In a compound, elements are chemically bonded in fixed proportions — a mixture is not bonded '
+                      'and can be separated physically.',
+                      True),
+                     ('A compound contains only one type of atom. A mixture contains two or more types.', False),
+                     ('A mixture is always a liquid. A compound is always a solid.', False),
+                     ('They are the same — both describe combinations of different substances.', False)],
+            'q': 'What is the key difference between a compound and a mixture?',
+            'wrong_explanations': {1: 'One type of atom = ELEMENT. Compounds contain two or more elements chemically '
+                                      'bonded.',
+                                   2: 'Mixtures and compounds can be solids, liquids or gases — state does not define '
+                                      'them.',
+                                   3: 'Compounds and mixtures are fundamentally different — chemical bonding is the '
+                                      'key distinction.'}},
+           {'opts': [('A compound — iron sulfide — formed by chemical bonding between iron and sulfur', True),
+                     ('A mixture — the iron and sulfur have blended more thoroughly', False),
+                     ('An element — the sulfur has been destroyed leaving only iron', False),
+                     ('A solution — the sulfur has dissolved into the iron', False)],
+            'q': 'A student heats a mixture of iron filings and sulfur. A grey solid forms that cannot be separated '
+                 'using a magnet. What has formed?',
+            'wrong_explanations': {1: 'If it were still a mixture, the iron could be separated magnetically. Since it '
+                                      'cannot, a chemical reaction has occurred.',
+                                   2: 'Elements cannot be destroyed by chemical reactions — only rearranged into '
+                                      'compounds.',
+                                   3: 'Sulfur is a solid at these temperatures — it does not dissolve into iron.'}},
+           {'opts': [('2H₂ + O₂ → 2H₂O', True),
+                     ('H₂ + O₂ → H₂O', False),
+                     ('H₂ + O₂ → H₂O₂', False),
+                     ('2H₂ + 2O₂ → 2H₂O', False)],
+            'q': 'Which equation is correctly balanced?',
+            'wrong_explanations': {1: 'H₂ + O₂ → H₂O: left has 2 O atoms, right has only 1 O atom — not balanced.',
+                                   2: 'H₂ + O₂ → H₂O₂: this equation is balanced (2H and 2O each side) but produces '
+                                      'hydrogen peroxide (H₂O₂), not water. The question asks about water formation.',
+                                   3: '2H₂ + 2O₂ → 2H₂O: left has 4 O atoms, right has only 2 O atoms — not '
+                                      'balanced.'}},
+           {'opts': [('Bronze — copper and tin metals mixed together, not chemically bonded', True),
+                     ('Water — hydrogen and oxygen in a fixed 2:1 ratio', False),
+                     ('Sodium chloride — sodium and chlorine in ionic bonds', False),
+                     ('Carbon dioxide — carbon and oxygen in covalent bonds', False)],
+            'q': 'Which of these is a mixture?',
+            'wrong_explanations': {1: 'Water is a COMPOUND — hydrogen and oxygen are chemically bonded. Electrolysis '
+                                      'is needed to separate them.',
+                                   2: 'Sodium chloride is a COMPOUND — ionic bonds between Na⁺ and Cl⁻ ions.',
+                                   3: 'Carbon dioxide is a COMPOUND — covalent bonds between C and O atoms.'}}],
+  'rp': None,
+  'spec': '5.1.1.1',
+  'summary': 'Define atoms, elements and compounds and explain the differences between them.',
+  'theory': [{'content': 'All substances are made of ATOMS — the smallest particles that cannot be broken down by '
+                         'chemical means.\n'
+                         '\n'
+                         'An ELEMENT is a substance made of only ONE type of atom. Elements cannot be broken down into '
+                         'simpler substances by chemical reactions.\n'
+                         'There are 118 known elements — each has a unique symbol (e.g. C = carbon, O = oxygen, Fe = '
+                         'iron, Na = sodium).\n'
+                         'Elements are arranged in the PERIODIC TABLE in order of atomic number.\n'
+                         '\n'
+                         'A COMPOUND is a substance formed when two or more DIFFERENT elements are CHEMICALLY BONDED '
+                         'together.\n'
+                         'The properties of a compound are completely different from the properties of its elements.\n'
+                         'Example: sodium (reactive metal) + chlorine (toxic green gas) → sodium chloride (table salt '
+                         '— safe to eat).\n'
+                         'Compounds can only be separated by chemical reactions — not physical methods.\n'
+                         '\n'
+                         'A MIXTURE contains two or more substances that are NOT chemically bonded — each keeps its '
+                         'own properties.\n'
+                         'Mixtures can be separated by physical methods (filtering, distillation, chromatography).\n'
+                         'The proportions of substances in a mixture can vary.',
+              'heading': 'Atoms — The Building Blocks of Matter'},
+             {'content': 'Every compound has a CHEMICAL FORMULA showing which atoms are present and in what ratio.\n'
+                         '\n'
+                         'Examples:\n'
+                         'H₂O — water: 2 hydrogen + 1 oxygen.\n'
+                         'CO₂ — carbon dioxide: 1 carbon + 2 oxygen.\n'
+                         'NaCl — sodium chloride: 1 sodium + 1 chlorine.\n'
+                         'H₂SO₄ — sulfuric acid: 2 hydrogen + 1 sulfur + 4 oxygen.\n'
+                         '\n'
+                         'The small SUBSCRIPT numbers tell you how many atoms of each element are present.\n'
+                         '\n'
+                         'CHEMICAL EQUATIONS show what happens in a reaction:\n'
+                         'Reactants → Products\n'
+                         '\n'
+                         'Equations must be BALANCED — the same number of each type of atom on both sides.\n'
+                         'Atoms cannot be created or destroyed in a chemical reaction (law of conservation of mass).\n'
+                         '\n'
+                         'Balancing example:\n'
+                         'Hydrogen + oxygen → water\n'
+                         '2H₂ + O₂ → 2H₂O  ✓ (4 H and 2 O on each side)\n'
+                         'H₂ + O₂ → H₂O  ✗ (unbalanced — 2 O on left, 1 O on right)',
+              'heading': 'Chemical Formulae and Equations'},
+             {'content': 'Here is a clear comparison of the three:\n'
+                         '\n'
+                         'ELEMENT:\n'
+                         'One type of atom only.\n'
+                         'Cannot be broken down chemically.\n'
+                         'Has fixed properties.\n'
+                         'Examples: iron (Fe), oxygen (O₂), gold (Au), sulfur (S).\n'
+                         '\n'
+                         'COMPOUND:\n'
+                         'Two or more elements CHEMICALLY bonded in fixed proportions.\n'
+                         'Has new, different properties from its elements.\n'
+                         'Can only be separated by chemical reactions.\n'
+                         'Examples: water (H₂O), carbon dioxide (CO₂), magnesium oxide (MgO).\n'
+                         '\n'
+                         'MIXTURE:\n'
+                         'Two or more substances NOT chemically bonded.\n'
+                         'Each component keeps its own properties.\n'
+                         'Can be mixed in any proportions.\n'
+                         'Separated by physical methods.\n'
+                         'Examples: air, seawater, crude oil, bronze (copper + tin), ink.',
+              'heading': 'Comparing Elements, Compounds and Mixtures'}],
+  'title': 'Atoms, Elements and Compounds',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Filtration only removes INSOLUBLE solids. You CANNOT filter salt from water — salt is dissolved '
+                    '(soluble). Use evaporation or distillation instead. Also: in distillation you collect the VAPOUR '
+                    'that condenses — the liquid. Crystallisation collects the SOLID that forms as the solution cools.',
+  'equations': ['Rf = distance moved by substance ÷ distance moved by solvent front'],
+  'fifas': [{'label': 'Rf Value Calculation',
+             'question': 'In a chromatography experiment, a dye spot moves 6.0 cm. The solvent front moves 9.0 cm. '
+                         'Calculate the Rf value.',
+             'steps': [('F', 'Rf = distance moved by substance ÷ distance moved by solvent'),
+                       ('I', 'Rf = 6.0 ÷ 9.0'),
+                       ('F', 'No unit conversion needed — Rf has no units'),
+                       ('A', 'Rf = 0.67')]}],
+  'higher': None,
+  'id': 'mixtures',
+  'key_note': 'Filtration: insoluble solid from liquid. Crystallisation: dissolved solid from solution (cool slowly). '
+              'Simple distillation: liquid from solution. Fractional distillation: liquids with different boiling '
+              'points. Chromatography: dissolved substances — Rf = substance distance ÷ solvent distance.',
+  'matching': {'instruction': 'Match each mixture to the best separation technique.',
+               'pairs': [('Filtration',
+                          'Sand mixed with water — sand is insoluble and too large to pass through filter paper'),
+                         ('Crystallisation',
+                          'Salt dissolved in water — heat to saturate, cool slowly to form pure crystals'),
+                         ('Simple distillation', 'Pure water from seawater — boil off and condense the water vapour'),
+                         ('Fractional distillation', 'Crude oil — separate into fractions by different boiling points'),
+                         ('Chromatography', 'Ink dyes — different dyes travel different distances in the solvent')],
+               'title': 'Match the Separation Technique'},
+  'quiz': [{'opts': [('Simple distillation — heat the seawater and condense the steam', True),
+                     ('Filtration — filter through paper to remove the salt', False),
+                     ('Chromatography — water travels faster than dissolved salts', False),
+                     ('Crystallisation — cool the seawater to crystallise the water', False)],
+            'q': 'A student wants to obtain pure water from seawater. Which technique should they use?',
+            'wrong_explanations': {1: 'Filtration only removes INSOLUBLE solids — salt is dissolved in seawater so '
+                                      'passes straight through filter paper.',
+                                   2: 'Chromatography separates dissolved substances by their travel speed — it does '
+                                      'not separate water from dissolved salts.',
+                                   3: 'Crystallisation removes water to leave the SALT — the opposite of what is '
+                                      'needed here.'}},
+           {'opts': [('0.50 — Rf = 4.5 ÷ 9.0', True),
+                     ('2.0 — Rf = 9.0 ÷ 4.5', False),
+                     ('13.5 — adding the two distances', False),
+                     ('4.5 — using just the distance the spot moved', False)],
+            'q': 'In a chromatography experiment, a spot travels 4.5 cm and the solvent front travels 9.0 cm. What is '
+                 'the Rf value?',
+            'wrong_explanations': {1: 'Rf = 9.0 ÷ 4.5 = 2.0 — this is dividing the WRONG WAY. Rf is always substance ÷ '
+                                      'solvent, and must be between 0 and 1.',
+                                   2: 'Adding distances has no meaning. Rf = substance distance ÷ solvent distance = '
+                                      '4.5 ÷ 9.0 = 0.50.',
+                                   3: 'Just the distance alone gives no useful information — Rf is a ratio, which is '
+                                      'why it has no units.'}},
+           {'opts': [('Crude oil contains many liquids with different boiling points — fractional distillation '
+                      'separates them into different fractions',
+                      True),
+                     ('Crude oil is a solid — simple distillation cannot be used on solids', False),
+                     ('The fractions in crude oil are insoluble in each other — filtration would work just as well',
+                      False),
+                     ('Simple distillation uses too much energy for industrial use', False)],
+            'q': 'Why is fractional distillation used to separate crude oil rather than simple distillation?',
+            'wrong_explanations': {1: 'Crude oil is a LIQUID mixture — simple distillation collects one fraction at a '
+                                      'time but cannot separate all components simultaneously.',
+                                   2: 'The fractions IN crude oil mix readily — filtration only works for insoluble '
+                                      'particles, not dissolved or miscible liquids.',
+                                   3: 'Energy cost is relevant industrially, but the primary reason is that crude oil '
+                                      'has many components with DIFFERENT boiling points that need to be separated '
+                                      'simultaneously.'}}],
+  'rp': 'RP1 — Investigate paper chromatography to separate and identify colours in inks or food dyes. Measure Rf '
+        'values and compare to known standards.',
+  'spec': '5.1.1.2',
+  'summary': 'Describe physical methods for separating mixtures and the principles behind each.',
+  'theory': [{'content': 'Many useful substances occur naturally as mixtures and must be separated to obtain pure '
+                         'components.\n'
+                         '\n'
+                         'Examples:\n'
+                         'Drinking water is purified from seawater or river water.\n'
+                         'Crude oil (a mixture of hydrocarbons) is separated into petrol, diesel, jet fuel etc.\n'
+                         'Ink contains different dyes that can be separated.\n'
+                         '\n'
+                         'The separation method depends on the PHYSICAL PROPERTIES of the substances:\n'
+                         'Size of particles (filtration).\n'
+                         'Boiling point (distillation).\n'
+                         'Solubility in a solvent (chromatography).\n'
+                         'Magnetic properties (magnetism).',
+              'heading': 'Why Separate Mixtures?'},
+             {'content': 'FILTRATION:\n'
+                         'Separates an INSOLUBLE SOLID from a LIQUID.\n'
+                         'Mixture is poured through filter paper in a funnel.\n'
+                         'Liquid (filtrate) passes through the tiny pores.\n'
+                         'Solid (residue) is too large to pass through — trapped in filter.\n'
+                         'Example: separating sand from water; collecting a precipitate.\n'
+                         '\n'
+                         'EVAPORATION:\n'
+                         'Removes a LIQUID (usually water) from a solution, leaving the dissolved solid.\n'
+                         'The solution is heated — water evaporates.\n'
+                         'The solid crystallises out as the solvent is removed.\n'
+                         'Example: recovering salt from salt solution.\n'
+                         '\n'
+                         'CRYSTALLISATION:\n'
+                         'More controlled than simple evaporation.\n'
+                         'Heat solution to saturate it, then allow to COOL SLOWLY.\n'
+                         'As temperature falls, solubility decreases — pure crystals form.\n'
+                         'Better for producing large, regular, pure crystals.\n'
+                         'Example: growing copper sulfate crystals from solution.',
+              'heading': 'Filtration and Crystallisation'},
+             {'content': 'SIMPLE DISTILLATION:\n'
+                         'Separates a SOLUBLE SOLID from a LIQUID (or separates two liquids with very different '
+                         'boiling points).\n'
+                         'Liquid is heated → evaporates → vapour travels through condenser → cools → condenses as pure '
+                         'liquid (distillate).\n'
+                         'Solid or less volatile substance remains in flask.\n'
+                         'Example: obtaining pure water from seawater.\n'
+                         '\n'
+                         'FRACTIONAL DISTILLATION:\n'
+                         'Separates a MIXTURE OF LIQUIDS with different boiling points.\n'
+                         'A fractionating column (tall, cooler at top) allows separation: lower boiling point '
+                         'substances rise higher and condense at the top; higher boiling point substances condense '
+                         'lower down.\n'
+                         'Different fractions collected at different heights.\n'
+                         'Example: separating crude oil; separating air into nitrogen, oxygen and argon.\n'
+                         '\n'
+                         'CHROMATOGRAPHY:\n'
+                         'Separates DISSOLVED SUBSTANCES based on how far they travel through a medium in a solvent.\n'
+                         'A spot is placed on chromatography paper and placed in a solvent (mobile phase).\n'
+                         'The solvent travels up, carrying dissolved substances with it.\n'
+                         'Different substances travel at different rates — they separate into distinct spots.\n'
+                         'Used for: separating ink dyes, identifying food colourings, forensic analysis.\n'
+                         '\n'
+                         'Rf VALUE — identifies each substance:\n'
+                         'Rf = distance moved by substance ÷ distance moved by solvent front\n'
+                         'Each substance has a characteristic Rf value in a given solvent.',
+              'heading': 'Distillation and Chromatography'}],
+  'title': 'Mixtures and Separation Techniques',
+  'triple_only': None,
+  'variables': [('Rf', 'Retention factor (chromatography)', '', '')]},
+ {'common_mistake': "In Rutherford's experiment, MOST particles passed STRAIGHT THROUGH — this is what shows atoms are "
+                    'mostly empty space. Only a FEW bounced back. Students often get this backwards and say most '
+                    'particles bounced back. The few that did bounce back were what proved the nucleus exists.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'model-of-the-atom',
+  'key_note': 'Dalton: solid sphere. Thomson: plum pudding (electrons in positive mass). Rutherford: nuclear model — '
+              'most particles pass through (empty space), a few bounce back (dense positive nucleus). Bohr: electrons '
+              'in fixed shells. Each model revised due to new experimental evidence.',
+  'matching': {'instruction': 'Match each atomic model to the scientist and what evidence led to it.',
+               'pairs': [('Dalton', 'Solid indivisible sphere — no subatomic particles known at this time'),
+                         ('Thomson', 'Plum pudding — discovery of the electron showed atoms had internal structure'),
+                         ('Rutherford', 'Nuclear model — gold foil experiment showed a tiny dense positive nucleus'),
+                         ('Bohr', 'Shell model — electrons orbit in fixed energy levels around the nucleus')],
+               'title': 'Match the Model to its Scientist and Evidence'},
+  'quiz': [{'opts': [('Atoms are mostly empty space — most particles found no matter to deflect them', True),
+                     ('Gold atoms are very large — the particles passed through the gaps between atoms', False),
+                     ('Alpha particles are too fast to be deflected', False),
+                     ('The plum pudding model was correct — the positive charge is spread out', False)],
+            'q': "In Rutherford's gold foil experiment, most alpha particles passed straight through the foil. What "
+                 'does this tell us?',
+            'wrong_explanations': {1: 'Atomic SIZE explains why particles might miss atoms, not why they pass THROUGH '
+                                      'them. The key conclusion is that the atom is mostly empty space internally.',
+                                   2: 'Alpha particles can be deflected — some WERE deflected at large angles, showing '
+                                      'the nucleus exists.',
+                                   3: 'The plum pudding model predicted only SMALL deflections. The large angle '
+                                      'deflections and back-scattering DISPROVED the plum pudding model.'}},
+           {'opts': [('The gold foil experiment produced results that could not be explained by the plum pudding model '
+                      '— the new model fitted the evidence',
+                      True),
+                     ('Rutherford was more famous than Thomson, so his model was believed', False),
+                     ('The plum pudding model was proposed before electrons were discovered', False),
+                     ('Both models are still equally accepted today', False)],
+            'q': "Why did the scientific community accept Rutherford's nuclear model over Thomson's plum pudding "
+                 'model?',
+            'wrong_explanations': {1: 'Scientific acceptance is based on EVIDENCE, not reputation — the gold foil '
+                                      'results clearly contradicted the plum pudding model.',
+                                   2: "Thomson's plum pudding model was specifically based on and designed to explain "
+                                      'the discovery of electrons.',
+                                   3: "Rutherford's nuclear model replaced the plum pudding model — it is not still "
+                                      'equally accepted, though both are discussed historically.'}}],
+  'rp': None,
+  'spec': '5.1.1.3',
+  'summary': 'Describe how the model of the atom developed as new evidence was discovered.',
+  'theory': [{'content': 'Scientific models are the best current explanation of how something works — but they must '
+                         'change when new experimental evidence cannot be explained by the existing model.\n'
+                         '\n'
+                         'The history of atomic models is a perfect example of how science works:\n'
+                         'A model is proposed → experiments are done → if results conflict with the model, the model '
+                         'is revised.\n'
+                         '\n'
+                         'The key models in chronological order:\n'
+                         "1. Dalton's solid sphere (1803)\n"
+                         "2. Thomson's plum pudding model (1897)\n"
+                         "3. Rutherford's nuclear model (1911)\n"
+                         "4. Bohr's shell model (1913)",
+              'heading': 'Why Scientific Models Change'},
+             {'content': "DALTON'S MODEL (1803):\n"
+                         'Atoms are solid, indivisible spheres.\n'
+                         'Different elements have differently sized spheres.\n'
+                         'Atoms cannot be split, created or destroyed.\n'
+                         'Revised when electrons were discovered.\n'
+                         '\n'
+                         "THOMSON'S PLUM PUDDING MODEL (1897):\n"
+                         'Discovery of the ELECTRON — a tiny negatively charged particle inside atoms — proved atoms '
+                         'were not solid or indivisible.\n'
+                         'Thomson proposed: an atom is a ball of POSITIVE CHARGE with ELECTRONS dotted throughout — '
+                         'like plums in a pudding (or currants in a bun).\n'
+                         "Revised after Rutherford's gold foil experiment.\n"
+                         '\n'
+                         "RUTHERFORD'S NUCLEAR MODEL (1911):\n"
+                         'Rutherford fired positively charged ALPHA PARTICLES at a very thin sheet of gold foil.\n'
+                         'Expected (plum pudding): all particles would pass through with small deflections.\n'
+                         'Observed:\n'
+                         'MOST particles passed STRAIGHT THROUGH — atoms are mostly empty space.\n'
+                         'SOME were deflected at large angles — something positive inside repelled them.\n'
+                         'A FEW bounced STRAIGHT BACK — hit something very dense and concentrated.\n'
+                         'Conclusion: atoms have a tiny, dense, positively charged NUCLEUS at the centre, surrounded '
+                         'by mostly empty space with electrons.\n'
+                         '\n'
+                         "BOHR'S MODEL (1913):\n"
+                         'Bohr proposed electrons orbit in fixed SHELLS (energy levels) at specific distances from the '
+                         'nucleus.\n'
+                         'Each shell has a fixed energy — electrons can jump between shells by absorbing or emitting '
+                         'energy.',
+              'heading': 'From Solid Sphere to Nuclear Model'},
+             {'content': "After Bohr's model, further work led to the modern understanding:\n"
+                         '\n'
+                         'Protons and neutrons were later identified in the nucleus.\n'
+                         'NEUTRON discovery (Chadwick, 1932) explained why atomic mass was not just the number of '
+                         'protons.\n'
+                         '\n'
+                         'Why each model was better:\n'
+                         'Dalton → Thomson: discovery of the electron showed atoms had internal structure.\n'
+                         'Thomson → Rutherford: gold foil experiment showed positive charge was concentrated in a tiny '
+                         'nucleus, not spread throughout.\n'
+                         'Rutherford → Bohr: observed line spectra of hydrogen showed electrons could only occupy '
+                         'specific energy levels.\n'
+                         '\n'
+                         'This chain of model improvements shows the power of the scientific method — each experiment '
+                         'built on previous knowledge and revealed new detail about atomic structure.',
+              'heading': 'The Modern Understanding'}],
+  'title': 'Development of the Model of the Atom',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'The number of PROTONS never changes in a chemical reaction — only electrons are gained or lost to '
+                    'form ions. Also: electrons have negligible mass — almost all atomic mass is in the nucleus '
+                    '(protons + neutrons both have relative mass 1). The atom is MOSTLY EMPTY SPACE — the nucleus is '
+                    '10,000 times smaller than the atom.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'subatomic-particles',
+  'key_note': 'Proton: +1, mass 1, nucleus. Neutron: 0, mass 1, nucleus. Electron: −1, mass ~0, shells. Neutral atom: '
+              'protons = electrons. Atom loses electrons → positive ion. Atom gains electrons → negative ion. Atom '
+              'mostly empty space — nucleus is tiny.',
+  'matching': {'instruction': 'Match each particle to its charge, mass and location.',
+               'pairs': [('Proton', 'Relative charge +1, mass 1 — in the nucleus'),
+                         ('Neutron', 'Relative charge 0, mass 1 — in the nucleus'),
+                         ('Electron', 'Relative charge −1, mass ~0 — in shells around the nucleus'),
+                         ('Na⁺ ion', 'Sodium atom that has LOST one electron — 11 protons, 10 electrons'),
+                         ('Cl⁻ ion', 'Chlorine atom that has GAINED one electron — 17 protons, 18 electrons')],
+               'title': 'Match the Subatomic Particle'},
+  'quiz': [{'opts': [('10 — magnesium loses 2 electrons from its original 12', True),
+                     ('14 — magnesium gains 2 electrons to form a +2 ion', False),
+                     ('12 — the number of electrons stays the same', False),
+                     ('2 — only the outermost electrons remain', False)],
+            'q': 'A magnesium atom (Mg, atomic number 12) forms a Mg²⁺ ion. How many electrons does the ion have?',
+            'wrong_explanations': {1: 'Gaining electrons gives a NEGATIVE charge. Mg²⁺ is POSITIVE, so electrons were '
+                                      'LOST.',
+                                   2: 'Mg²⁺ is formed by losing 2 electrons. Original: 12 electrons. After loss: 12 − '
+                                      '2 = 10 electrons.',
+                                   3: 'Only the 2 outermost electrons are lost — but the ion still has all 10 '
+                                      'remaining electrons, not just 2.'}},
+           {'opts': [('The number of protons (+1 each) equals the number of electrons (−1 each) — the charges cancel',
+                      True),
+                     ('Protons and neutrons have equal and opposite charges that cancel', False),
+                     ('Electrons are on the outside and shield the positive nucleus', False),
+                     ('The atom vibrates too fast for any charge to accumulate', False)],
+            'q': 'Why does an atom have no overall electrical charge?',
+            'wrong_explanations': {1: 'Neutrons have ZERO charge — they cannot cancel proton charges. Charge '
+                                      'neutrality comes from protons balancing electrons.',
+                                   2: 'Shielding describes how inner electrons reduce the attractive force on outer '
+                                      'electrons — it does not explain why atoms are electrically neutral.',
+                                   3: 'Vibration does not affect electrical charge — the neutrality is a consequence '
+                                      'of proton and electron numbers being equal.'}}],
+  'rp': None,
+  'spec': '5.1.1.4–5.1.1.5',
+  'summary': 'Describe the relative charges and masses of protons, neutrons and electrons and the scale of atoms.',
+  'theory': [{'content': 'Every atom contains three types of subatomic particle:\n'
+                         '\n'
+                         'PROTON:\n'
+                         'Found in the NUCLEUS.\n'
+                         'Relative charge: +1.\n'
+                         'Relative mass: 1.\n'
+                         '\n'
+                         'NEUTRON:\n'
+                         'Found in the NUCLEUS.\n'
+                         'Relative charge: 0 (neutral).\n'
+                         'Relative mass: 1.\n'
+                         '\n'
+                         'ELECTRON:\n'
+                         'Found in SHELLS (energy levels) around the nucleus.\n'
+                         'Relative charge: −1.\n'
+                         'Relative mass: approximately 1/1836 — effectively 0 in relative terms.\n'
+                         '\n'
+                         'Atoms are electrically NEUTRAL because the number of protons = number of electrons (positive '
+                         'and negative charges cancel).\n'
+                         '\n'
+                         "The NUCLEUS contains protons and neutrons — almost all of the atom's mass is concentrated "
+                         'here.\n'
+                         'Electrons contribute negligible mass.',
+              'heading': 'The Three Subatomic Particles'},
+             {'content': 'An ION is a charged particle formed when an atom gains or loses electrons.\n'
+                         '\n'
+                         'ATOM LOSES ELECTRONS → positive ion (cation)\n'
+                         'Example: Na → Na⁺ + e⁻ (sodium loses 1 electron → +1 charge)\n'
+                         'Example: Mg → Mg²⁺ + 2e⁻ (magnesium loses 2 electrons → +2 charge)\n'
+                         '\n'
+                         'ATOM GAINS ELECTRONS → negative ion (anion)\n'
+                         'Example: Cl + e⁻ → Cl⁻ (chlorine gains 1 electron → −1 charge)\n'
+                         'Example: O + 2e⁻ → O²⁻ (oxygen gains 2 electrons → −2 charge)\n'
+                         '\n'
+                         'The charge on an ion tells you how many electrons were gained or lost.\n'
+                         'The NUMBER OF PROTONS never changes in a chemical reaction — only electron numbers change.',
+              'heading': 'Ions — When Atoms Gain or Lose Electrons'},
+             {'content': 'Atoms are incredibly small — they cannot be seen with a light microscope.\n'
+                         '\n'
+                         'A typical atomic radius ≈ 1 × 10⁻¹⁰ m (0.1 nanometres).\n'
+                         'A human hair is about 1 million atoms wide.\n'
+                         'A grain of sand contains approximately 10¹⁸ atoms.\n'
+                         '\n'
+                         'The NUCLEUS is even smaller — about 10,000 times smaller than the whole atom:\n'
+                         'Nuclear radius ≈ 1 × 10⁻¹⁴ m\n'
+                         '\n'
+                         'This means the atom is almost entirely EMPTY SPACE — the nucleus is tiny compared to the '
+                         'overall size of the atom, with electrons in the vast space around it.\n'
+                         '\n'
+                         'This is consistent with what Rutherford found — most alpha particles passing straight '
+                         'through gold foil without hitting anything.',
+              'heading': 'Size and Scale of Atoms'}],
+  'title': 'Subatomic Particles',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Ar is a WEIGHTED average — not a simple average. Chlorine has Ar 35.5 because ~75% is Cl-35 and '
+                    'only ~25% is Cl-37. If both were 50/50, Ar would be 36. The heavier isotope has LESS influence '
+                    "because it's less abundant. Also: isotopes have SAME chemical properties (same electrons) but "
+                    'DIFFERENT physical properties (different mass).',
+  'equations': ['Mass number = protons + neutrons',
+                'Neutrons = mass number − atomic number',
+                'Ar = Σ(% abundance × mass number) ÷ 100'],
+  'fifas': [{'label': 'Relative Atomic Mass Calculation',
+             'question': 'Boron has two isotopes: 20% boron-10 and 80% boron-11. Calculate the relative atomic mass of '
+                         'boron.',
+             'steps': [('F', 'Ar = Σ(% abundance × mass number) ÷ 100'),
+                       ('I', 'Ar = (20 × 10) + (80 × 11) ÷ 100'),
+                       ('F', 'Ar = (200 + 880) ÷ 100 = 1080 ÷ 100'),
+                       ('A', 'Ar = 10.8')]}],
+  'higher': None,
+  'id': 'relative-atomic-mass',
+  'key_note': 'Atomic number = protons. Mass number = protons + neutrons. Neutrons = mass number − atomic number. '
+              'Isotopes: same element, same protons, different neutrons — same chemical, different physical '
+              'properties. Ar = weighted average of isotope masses.',
+  'matching': {'instruction': 'Match each term to its correct definition.',
+               'pairs': [('Atomic number', 'Number of protons — unique to each element'),
+                         ('Mass number', 'Total protons + neutrons in the nucleus'),
+                         ('Isotopes', 'Same element, same protons, different number of neutrons'),
+                         ('Relative atomic mass', 'Weighted average of all isotope masses — often not a whole number'),
+                         ('Number of neutrons', 'Mass number minus atomic number')],
+               'title': 'Atomic Number, Mass Number and Isotopes'},
+  'quiz': [{'opts': [('Same: atomic number (17 protons and 17 electrons). Different: mass number — Cl-35 has 18 '
+                      'neutrons, Cl-37 has 20 neutrons.',
+                      True),
+                     ('Same: mass number. Different: atomic number and proton count.', False),
+                     ('Same: everything — isotopes are identical atoms.', False),
+                     ('Same: neutron number. Different: proton number.', False)],
+            'q': 'Chlorine-35 and chlorine-37 are isotopes. What is the same and what differs between them?',
+            'wrong_explanations': {1: 'If mass numbers were the same they would be identical — isotopes are DEFINED by '
+                                      'having different mass numbers.',
+                                   2: 'Isotopes DO have the same chemical properties — but they are NOT identical. '
+                                      'They differ in neutron count and mass.',
+                                   3: 'If neutron numbers were the same but proton numbers differed, they would be '
+                                      'different ELEMENTS — not isotopes.'}},
+           {'opts': [('63.8 — Ar = (60 × 63 + 40 × 65) ÷ 100 = 6380 ÷ 100', True),
+                     ('64.0 — simple average of 63 and 65', False),
+                     ('128 — total of both mass numbers added together', False),
+                     ('63 — just the most abundant isotope mass', False)],
+            'q': 'An element has two isotopes: 60% at mass 63 and 40% at mass 65. What is its Ar?',
+            'wrong_explanations': {1: 'Simple average gives 64 only if BOTH isotopes are 50/50 abundant. Since there '
+                                      'is more of the lighter isotope (60% at mass 63), the weighted average is pulled '
+                                      'below 64.',
+                                   2: 'Adding mass numbers has no physical meaning — Ar is a weighted average, not a '
+                                      'sum.',
+                                   3: 'Using only the most abundant isotope ignores the 40% contribution from mass 65 '
+                                      '— the true Ar is pulled above 63 by the heavier isotope.'}}],
+  'rp': None,
+  'spec': '5.1.1.6',
+  'summary': 'Define atomic number, mass number, isotopes and relative atomic mass — and calculate Ar from isotope '
+             'abundances.',
+  'theory': [{'content': 'Every element is defined by its ATOMIC NUMBER (proton number):\n'
+                         '\n'
+                         'ATOMIC NUMBER (Z) = number of PROTONS in the nucleus.\n'
+                         'This is unique to each element — all carbon atoms have 6 protons, all iron atoms have 26.\n'
+                         'In a neutral atom: protons = electrons.\n'
+                         '\n'
+                         'MASS NUMBER (A) = total number of PROTONS + NEUTRONS in the nucleus.\n'
+                         '\n'
+                         'From these two numbers:\n'
+                         'Neutrons = mass number − atomic number\n'
+                         '\n'
+                         'Example — sodium-23:\n'
+                         'Mass number = 23, atomic number = 11.\n'
+                         'Protons = 11, electrons = 11 (neutral), neutrons = 23 − 11 = 12.\n'
+                         '\n'
+                         'In the periodic table, the ATOMIC NUMBER is the SMALLER number (it cannot exceed the mass '
+                         'number as you cannot have negative neutrons).',
+              'heading': 'Atomic Number and Mass Number'},
+             {'content': 'ISOTOPES are atoms of the SAME ELEMENT with the SAME ATOMIC NUMBER but DIFFERENT MASS '
+                         'NUMBERS.\n'
+                         '\n'
+                         'Same protons → same element → same chemical properties.\n'
+                         'Different neutrons → different mass → different physical properties (e.g. density, rate of '
+                         'diffusion).\n'
+                         '\n'
+                         'Isotopes have IDENTICAL CHEMICAL behaviour — because chemical reactions depend on electron '
+                         'configuration (determined by proton number, which is the same).\n'
+                         '\n'
+                         'Examples:\n'
+                         'CARBON ISOTOPES:\n'
+                         'Carbon-12 (¹²C): 6p + 6n — the standard (98.9% of carbon)\n'
+                         'Carbon-13 (¹³C): 6p + 7n — stable, ~1.1%\n'
+                         'Carbon-14 (¹⁴C): 6p + 8n — radioactive, used in carbon dating\n'
+                         '\n'
+                         'CHLORINE ISOTOPES:\n'
+                         'Chlorine-35 (³⁵Cl): 17p + 18n — ~75% of chlorine\n'
+                         'Chlorine-37 (³⁷Cl): 17p + 20n — ~25% of chlorine\n'
+                         'Because of this mixture, the Ar of chlorine ≈ 35.5 — between the two isotope masses.',
+              'heading': 'Isotopes'},
+             {'content': 'The RELATIVE ATOMIC MASS (Ar) is the WEIGHTED AVERAGE mass of all atoms of an element '
+                         'compared to 1/12 of the mass of a carbon-12 atom.\n'
+                         '\n'
+                         'Because most elements have multiple isotopes in different abundances, Ar is NOT a whole '
+                         'number.\n'
+                         '\n'
+                         'Formula:\n'
+                         'Ar = Σ (% abundance × mass number) ÷ 100\n'
+                         '\n'
+                         'Example — chlorine:\n'
+                         'Ar = (75 × 35 + 25 × 37) ÷ 100\n'
+                         'Ar = (2625 + 925) ÷ 100\n'
+                         'Ar = 3550 ÷ 100 = 35.5\n'
+                         '\n'
+                         'This explains why periodic table Ar values are often not whole numbers — they are weighted '
+                         'averages across all naturally occurring isotopes.',
+              'heading': 'Relative Atomic Mass'}],
+  'title': 'Relative Atomic Mass, Atomic Number and Isotopes',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Always fill shells in ORDER — 2 in the first, then 8 in the second, then continue. The 3rd shell '
+                    'fills to 8 before the 4th shell starts. Students sometimes try to put more than 8 in the 3rd '
+                    'shell for early elements — for the first 20, the 3rd shell only goes up to 8.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'electronic-structure',
+  'key_note': 'Shells fill innermost first: 2, 8, 8. Electronic configuration written as numbers separated by dots '
+              '(e.g. 2.8.3 for Al). Same group = same outer electrons = similar chemistry. Full outer shell = stable '
+              '(noble gas configuration).',
+  'matching': {'instruction': 'Match each element to its correct electronic configuration.',
+               'pairs': [('Sodium (Na, 11)', '2.8.1 — 11 electrons: 2 in shell 1, 8 in shell 2, 1 in shell 3'),
+                         ('Chlorine (Cl, 17)', '2.8.7 — 17 electrons: 2 in shell 1, 8 in shell 2, 7 in shell 3'),
+                         ('Calcium (Ca, 20)', '2.8.8.2 — 20 electrons across four shells'),
+                         ('Neon (Ne, 10)', '2.8 — full outer shell, noble gas, very unreactive'),
+                         ('Magnesium (Mg, 12)', '2.8.2 — 2 outer electrons, Group 2 element')],
+               'title': 'Match the Element to its Electronic Configuration'},
+  'quiz': [{'opts': [('Group 6 — it has 6 electrons in its outermost shell', True),
+                     ('Group 2 — there are 2 complete shells below the outer shell', False),
+                     ('Group 16 — add all the electrons together', False),
+                     ('Period 3 — it has 3 shells', False)],
+            'q': 'An element has the electronic configuration 2.8.6. Which group of the periodic table is it in?',
+            'wrong_explanations': {1: 'The number of complete inner shells tells you the PERIOD — 2 inner shells means '
+                                      'Period 3. Groups are determined by OUTER electrons.',
+                                   2: '16 is the total number of electrons (2+8+6) — this tells you the atomic number, '
+                                      'not the group.',
+                                   3: 'The NUMBER OF SHELLS tells you the PERIOD (3 shells = Period 3). The GROUP is '
+                                      'determined by the number of OUTER electrons (6).'}},
+           {'opts': [('Both have 1 electron in their outer shell — they react in similar ways to achieve a full outer '
+                      'shell',
+                      True),
+                     ('Both have the same total number of electrons', False),
+                     ('Both are in the same period of the periodic table', False),
+                     ('Both have the same mass number', False)],
+            'q': 'Why do lithium (2.1) and sodium (2.8.1) have similar chemical properties?',
+            'wrong_explanations': {1: 'Li has 3 electrons total, Na has 11 — very different totals, but the same outer '
+                                      'shell count (1) is what matters for reactivity.',
+                                   2: 'Li is Period 2, Na is Period 3 — they are in different periods. Same GROUP, '
+                                      'different periods.',
+                                   3: 'Li has mass number 7, Na has mass number 23 — different mass numbers. Chemical '
+                                      'similarity comes from electron configuration.'}}],
+  'rp': None,
+  'spec': '5.1.1.7',
+  'summary': 'Describe how electrons fill shells and write electronic configurations for the first 20 elements.',
+  'theory': [{'content': 'Electrons occupy SHELLS (energy levels) around the nucleus. They always fill from the '
+                         'INNERMOST (lowest energy) shell outward.\n'
+                         '\n'
+                         'SHELL CAPACITIES (for first 20 elements):\n'
+                         '1st shell: maximum 2 electrons.\n'
+                         '2nd shell: maximum 8 electrons.\n'
+                         '3rd shell: maximum 8 electrons.\n'
+                         '\n'
+                         'Electrons are only added to the next shell when the current one is FULL.\n'
+                         '\n'
+                         'Example — Sodium (Na, atomic number 11):\n'
+                         '11 electrons to distribute.\n'
+                         '1st shell: 2 (full) → 2nd shell: 8 (full) → 3rd shell: 1 remaining.\n'
+                         'Electronic configuration written as: 2.8.1',
+              'heading': 'Electron Shells'},
+             {'content': 'H  (1):  1\n'
+                         'He (2):  2\n'
+                         'Li (3):  2.1\n'
+                         'Be (4):  2.2\n'
+                         'B  (5):  2.3\n'
+                         'C  (6):  2.4\n'
+                         'N  (7):  2.5\n'
+                         'O  (8):  2.6\n'
+                         'F  (9):  2.7\n'
+                         'Ne (10): 2.8\n'
+                         'Na (11): 2.8.1\n'
+                         'Mg (12): 2.8.2\n'
+                         'Al (13): 2.8.3\n'
+                         'Si (14): 2.8.4\n'
+                         'P  (15): 2.8.5\n'
+                         'S  (16): 2.8.6\n'
+                         'Cl (17): 2.8.7\n'
+                         'Ar (18): 2.8.8\n'
+                         'K  (19): 2.8.8.1\n'
+                         'Ca (20): 2.8.8.2\n'
+                         '\n'
+                         'Note: the 4th shell starts filling at potassium (K) and calcium (Ca) because the 3rd shell '
+                         'fills to 8 before the 4th begins (for these lighter elements).',
+              'heading': 'Electronic Configurations of the First 20 Elements'},
+             {'content': "The NUMBER OF ELECTRONS IN THE OUTERMOST SHELL (valence electrons) determines an element's "
+                         'chemical properties.\n'
+                         '\n'
+                         'Elements in the SAME GROUP of the periodic table have the SAME NUMBER of outer electrons:\n'
+                         'Group 1: 1 outer electron (Li: 2.1, Na: 2.8.1, K: 2.8.8.1)\n'
+                         'Group 7: 7 outer electrons (F: 2.7, Cl: 2.8.7)\n'
+                         'Group 0: 8 outer electrons (full shell) — He: 2, Ne: 2.8, Ar: 2.8.8\n'
+                         '\n'
+                         'This is why elements in the same group have similar chemical properties — they react in '
+                         'similar ways to achieve a full outer shell.\n'
+                         '\n'
+                         'ATOMS REACT TO ACHIEVE A FULL OUTER SHELL:\n'
+                         'METALS lose electrons → form positive ions (cations).\n'
+                         'NON-METALS gain electrons (or share) → form negative ions (anions) or covalent bonds.\n'
+                         'NOBLE GASES already have full outer shells → very unreactive.',
+              'heading': 'Electronic Structure and Chemical Properties'}],
+  'title': 'Electronic Structure',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'The GROUP NUMBER tells you the number of OUTER ELECTRONS — not the total electrons or the period. '
+                    'The PERIOD NUMBER tells you how many shells. So an element in Period 3, Group 2 has 3 shells and '
+                    "2 outer electrons — electronic configuration 2.8.2 (magnesium). Don't confuse groups and periods.",
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'periodic-table',
+  'key_note': 'Periodic table arranged by atomic number. Period = row = number of shells. Group = column = number of '
+              'outer electrons. Same group = same outer electrons = similar properties. Metals: left and centre. '
+              'Non-metals: top right. Noble gases: Group 0 (right edge).',
+  'matching': {'instruction': 'Match each feature to its correct description.',
+               'pairs': [('Period', 'A horizontal row — each new period means another electron shell'),
+                         ('Group', 'A vertical column — elements share the same number of outer electrons'),
+                         ('Group 0', 'Noble gases — full outer shells, very unreactive'),
+                         ('Transition metals',
+                          'Hard, dense metals with high melting points — form coloured compounds, act as catalysts'),
+                         ('Group 1', 'Alkali metals — 1 outer electron, very reactive, soft, low density')],
+               'title': 'Match the Periodic Table Feature'},
+  'quiz': [{'opts': [('2.8.2 — 3 shells (Period 3) and 2 outer electrons (Group 2)', True),
+                     ('3.2 — period number first, then group number', False),
+                     ('2.2 — two shells and two outer electrons', False),
+                     ('2.8.3 — Period 3 means 3 electrons in the outer shell', False)],
+            'q': 'An element is in Period 3 and Group 2. What is its electronic configuration?',
+            'wrong_explanations': {1: "The periodic table doesn't give configurations directly — the group number is "
+                                      'the outer electrons, but you must fill the inner shells first.',
+                                   2: 'Period 3 means 3 SHELLS, not 3 electrons in the outer shell. The shells fill as '
+                                      '2.8.2 — inner shells full, outer shell has 2.',
+                                   3: 'Period 3 means 3 SHELLS — not 3 electrons in the outermost shell. The Group '
+                                      'number (2) gives the outer electron count.'}},
+           {'opts': [('They all have 7 electrons in their outer shell — they react similarly by gaining one electron '
+                      'to achieve a full shell',
+                      True),
+                     ('They are all gases at room temperature', False),
+                     ('They all have the same number of electrons', False),
+                     ('They are all in the same period of the periodic table', False)],
+            'q': 'Why do all Group 7 elements have similar chemical properties?',
+            'wrong_explanations': {1: 'Fluorine is a gas but iodine is a solid at room temperature — physical state '
+                                      'varies within Group 7.',
+                                   2: 'Different Group 7 elements have different numbers of electrons (F:9, Cl:17, '
+                                      "Br:35) — the OUTER electron count (7) is what's the same.",
+                                   3: 'Elements in the same group are in DIFFERENT periods — they share the same outer '
+                                      'electron count, not the same period.'}}],
+  'rp': None,
+  'spec': '5.1.2.1',
+  'summary': 'Describe the structure of the periodic table and explain how it is organised.',
+  'theory': [{'content': 'The PERIODIC TABLE arranges all known elements in order of increasing ATOMIC NUMBER.\n'
+                         '\n'
+                         'Key features:\n'
+                         'ROWS are called PERIODS — each period represents a new electron shell being filled.\n'
+                         'COLUMNS are called GROUPS — elements in the same group have the same number of OUTER '
+                         'ELECTRONS and similar chemical properties.\n'
+                         '\n'
+                         'Period numbers tell you how many electron shells the element has:\n'
+                         'Period 1: 1 shell (H and He)\n'
+                         'Period 2: 2 shells (Li to Ne)\n'
+                         'Period 3: 3 shells (Na to Ar)\n'
+                         '\n'
+                         'Group numbers (1–7 and 0) tell you how many OUTER electrons:\n'
+                         'Group 1: 1 outer electron\n'
+                         'Group 7: 7 outer electrons\n'
+                         'Group 0: full outer shell (8 electrons, or 2 for helium)\n'
+                         '\n'
+                         'The periodic table is divided into:\n'
+                         'METALS — left and centre (most elements are metals).\n'
+                         'NON-METALS — top right.\n'
+                         'METALLOIDS/SEMI-METALS — along the dividing line (e.g. silicon, germanium).',
+              'heading': 'Structure of the Periodic Table'},
+             {'content': 'ACROSS A PERIOD (left to right):\n'
+                         'Atomic number increases.\n'
+                         'Number of electrons in outer shell increases (1 to 8).\n'
+                         'Metallic properties decrease — non-metallic properties increase.\n'
+                         'From metal (Group 1) to non-metal (Group 7) to noble gas (Group 0).\n'
+                         '\n'
+                         'DOWN A GROUP:\n'
+                         'Another electron shell is added.\n'
+                         'Atoms get LARGER (more shells = bigger atom).\n'
+                         'OUTER ELECTRONS are further from the nucleus — less strongly attracted.\n'
+                         'METALS become MORE REACTIVE going down (easier to lose outer electron).\n'
+                         'NON-METALS become LESS REACTIVE going down (harder to gain another electron — outer '
+                         'electrons are further away).\n'
+                         '\n'
+                         'These trends allow chemists to PREDICT the properties of elements from their position in the '
+                         'periodic table.',
+              'heading': 'Trends Across Periods and Down Groups'},
+             {'content': 'Between Groups 2 and 3 lies the TRANSITION METALS block (the long middle section).\n'
+                         '\n'
+                         'Transition metals are harder and have higher melting points than Group 1 metals.\n'
+                         'They are typically dense, strong, shiny metals.\n'
+                         'Examples: iron (Fe), copper (Cu), zinc (Zn), titanium (Ti), nickel (Ni), gold (Au), silver '
+                         '(Ag).\n'
+                         '\n'
+                         'Key properties of transition metals:\n'
+                         'Form COLOURED COMPOUNDS — e.g. copper sulfate is blue; iron(II) compounds are pale green; '
+                         'iron(III) compounds are orange.\n'
+                         'Can act as CATALYSTS — e.g. iron catalyst in the Haber process; nickel in hydrogenation.\n'
+                         'Can have MULTIPLE OXIDATION STATES — e.g. iron can be Fe²⁺ or Fe³⁺.\n'
+                         '\n'
+                         'Compare with Group 1 metals: transition metals are less reactive, harder, have higher '
+                         'melting points and form coloured compounds. Group 1 metals are soft, very reactive and their '
+                         'compounds are usually white.',
+              'heading': 'Transition Metals'}],
+  'title': 'The Periodic Table',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Mendeleev arranged elements by RELATIVE ATOMIC MASS — the MODERN table is arranged by ATOMIC '
+                    "NUMBER. Mendeleev's arrangement had a few inconsistencies because Ar and atomic number don't "
+                    'always match perfectly (e.g. argon and potassium). The modern arrangement by atomic number '
+                    'resolves all these problems.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'development-periodic-table',
+  'key_note': "Newlands: octaves — every 8th element similar — rejected (didn't work for all elements, no gaps). "
+              'Mendeleev: arranged by Ar, left gaps, predicted missing elements — accepted when predictions proved '
+              'correct. Modern table: arranged by atomic number (Moseley, 1913).',
+  'matching': {'instruction': 'Match each scientist to their contribution to the periodic table.',
+               'pairs': [('Newlands',
+                          'Law of Octaves — every 8th element similar — not accepted by scientists at the time'),
+                         ('Mendeleev',
+                          'Left gaps for undiscovered elements, predicted their properties — table accepted when '
+                          'predictions proved correct'),
+                         ('Moseley',
+                          "Arranged elements by atomic number (protons) — resolved inconsistencies in Mendeleev's "
+                          'Ar-based table')],
+               'title': 'Match the Scientist to their Contribution'},
+  'quiz': [{'opts': [('It only worked for the first 16 elements and forced elements into groups regardless of whether '
+                      'properties matched',
+                      True),
+                     ('Newlands arranged elements by atomic number rather than relative atomic mass', False),
+                     ("The law of octaves was never published so other scientists couldn't evaluate it", False),
+                     ('Newlands did not leave gaps for undiscovered elements — but neither did he need to', False)],
+            'q': "Why did the scientific community initially reject Newlands' Law of Octaves?",
+            'wrong_explanations': {1: 'Newlands arranged by RELATIVE ATOMIC MASS — atomic numbers were not yet known.',
+                                   2: 'Newlands did publish his work — it was presented to the Chemical Society in '
+                                      '1866.',
+                                   3: 'Not leaving gaps was a problem for Mendeleev too initially — but the bigger '
+                                      'issue for Newlands was that his pattern broke down after the first 16 '
+                                      'elements.'}},
+           {'opts': [('He predicted properties of undiscovered elements — and when they were found, the predictions '
+                      'were accurate',
+                      True),
+                     ('He was the first to arrange elements in order of atomic mass', False),
+                     ('He discovered all the noble gases and added them to the table', False),
+                     ('His table was the simplest and easiest to remember', False)],
+            'q': "What was the key reason Mendeleev's periodic table was eventually accepted by scientists?",
+            'wrong_explanations': {1: "Newlands had also arranged by atomic mass — Mendeleev's key advance was leaving "
+                                      'gaps and making testable predictions.',
+                                   2: 'Noble gases were discovered by other scientists (Ramsay and others) after '
+                                      "Mendeleev's original table — they were later added as Group 0.",
+                                   3: 'Science accepts models based on EVIDENCE and PREDICTIVE POWER, not simplicity '
+                                      'alone.'}}],
+  'rp': None,
+  'spec': '5.1.2.2',
+  'summary': "Describe how the periodic table developed, including Newlands and Mendeleev's contributions.",
+  'theory': [{'content': 'Before atomic numbers were understood, scientists tried to classify elements based on '
+                         'RELATIVE ATOMIC MASS.\n'
+                         '\n'
+                         'JOHN NEWLANDS — Law of Octaves (1864):\n'
+                         'Arranged elements by increasing Ar.\n'
+                         "Noticed that every 8th element had similar properties — called it the 'Law of Octaves' (like "
+                         'musical notes).\n'
+                         'Limitations:\n'
+                         'Only worked for the first 16 elements.\n'
+                         "Forced elements into groups even when properties didn't match.\n"
+                         'Left no gaps for undiscovered elements.\n'
+                         'The scientific community did not accept his work.\n'
+                         '\n'
+                         'DMITRI MENDELEEV — first successful periodic table (1869):\n'
+                         'Also arranged elements by increasing Ar.\n'
+                         'Key improvements over Newlands:\n'
+                         'Left GAPS for undiscovered elements — predicted their properties.\n'
+                         'Rearranged some elements to make groups match better (putting chemical properties above '
+                         'strict Ar order).\n'
+                         'Predicted EKA-SILICON (now known as germanium) — when it was discovered in 1886, its '
+                         "properties closely matched Mendeleev's prediction.\n"
+                         'This predictive power convinced the scientific community to accept the table.',
+              'heading': 'Early Attempts at Classification'},
+             {'content': 'The modern periodic table was only possible after the discovery of subatomic particles.\n'
+                         '\n'
+                         'HENRY MOSELEY (1913):\n'
+                         'Used X-ray experiments to determine ATOMIC NUMBERS of elements.\n'
+                         'Realised elements should be arranged by ATOMIC NUMBER (protons), not atomic mass.\n'
+                         "This resolved several inconsistencies in Mendeleev's table where some elements seemed in the "
+                         'wrong order when arranged by Ar.\n'
+                         '\n'
+                         'Key improvement: arranging by atomic number places elements in the correct groups without '
+                         'exception — it is the atomic number (protons = electrons) that determines chemical '
+                         'properties, not mass.\n'
+                         '\n'
+                         'DISCOVERY OF NOBLE GASES:\n'
+                         "Argon (1894) and other noble gases were discovered AFTER Mendeleev's table — but they fit "
+                         'perfectly as a new Group 0.\n'
+                         'This was further evidence for the validity of the periodic table structure.',
+              'heading': 'The Modern Periodic Table'},
+             {'content': "Mendeleev's table was eventually accepted by the scientific community for three main "
+                         'reasons:\n'
+                         '\n'
+                         '1. PREDICTIVE POWER: He predicted properties of undiscovered elements (eka-aluminium = '
+                         'gallium, eka-silicon = germanium, eka-boron = scandium). When discovered, they matched his '
+                         'predictions closely.\n'
+                         '\n'
+                         '2. GAPS: Leaving gaps was a bold scientific decision — it showed the table was a genuine '
+                         'model of underlying patterns, not just a classification of known elements.\n'
+                         '\n'
+                         '3. EXPLAINING PATTERNS: The table explained why elements in the same group reacted similarly '
+                         '— it made chemistry more systematic and predictable.\n'
+                         '\n'
+                         "Science accepts models when they successfully PREDICT new observations — Mendeleev's table "
+                         'did exactly this.',
+              'heading': "Why Mendeleev's Table was Accepted"}],
+  'title': 'Development of the Periodic Table',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Graphite and graphene are non-metals that conduct electricity — they are exceptions. Most '
+                    "non-metals do not conduct, but graphite has delocalised electrons between its layers. Don't say "
+                    "'all non-metals don't conduct' — say 'non-metals generally don't conduct, except graphite and "
+                    "graphene'.",
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'metals-non-metals',
+  'key_note': 'Metals: good conductors, high melting points, malleable, ductile, form positive ions, basic oxides. '
+              'Non-metals: poor conductors (except graphite), low melting points, brittle, form negative ions, acidic '
+              'oxides. Metallic character decreases across a period and increases down a group.',
+  'matching': {'instruction': 'Sort each property into metals or non-metals.',
+               'pairs': [('Metal', 'Good conductor of electricity — delocalised electrons carry charge'),
+                         ('Non-metal', 'Poor conductor of electricity — no free electrons (except graphite)'),
+                         ('Metal', 'Malleable — can be hammered into sheets without shattering'),
+                         ('Non-metal', 'Brittle solid — shatters when struck'),
+                         ('Metal', 'Forms positive ions by losing electrons in reactions'),
+                         ('Non-metal', 'Forms acidic oxides — e.g. CO₂ dissolves in water to form carbonic acid')],
+               'title': 'Metal or Non-metal Property?'},
+  'quiz': [{'opts': [('Metals have delocalised (free) electrons that can move through the structure and carry charge',
+                      True),
+                     ('Metal atoms are larger, so electrons move more easily', False),
+                     ('Metals have more protons than non-metals, creating stronger positive charge', False),
+                     ('Metal compounds dissolve in water to release ions that carry charge', False)],
+            'q': 'Why are metals good conductors of electricity?',
+            'wrong_explanations': {1: 'Atomic size does not determine conductivity — it is the presence of FREE '
+                                      'electrons, not large atoms, that allows charge to flow.',
+                                   2: 'Proton count determines the element, not conductivity. Non-metals also have '
+                                      'many protons but are poor conductors.',
+                                   3: 'Solid metals conduct electricity — not dissolved ions. Ionic conductivity in '
+                                      'solution is different from metallic conductivity in a solid.'}},
+           {'opts': [('Non-metal — non-metal oxides form acidic solutions when dissolved in water', True),
+                     ('Metal — metal oxides are always basic', False),
+                     ('Metalloid — SO₂ is both acidic and basic', False),
+                     ("It could be either — the acidity of its oxide doesn't indicate the type of element", False)],
+            'q': 'Sulfur dioxide (SO₂) dissolves in water to form an acidic solution. Is sulfur a metal or non-metal?',
+            'wrong_explanations': {1: 'Metal oxides are BASIC — they neutralise acids. SO₂ forms an acidic solution, '
+                                      'which is the behaviour of NON-METAL oxides.',
+                                   2: 'SO₂ is not amphoteric (both acidic and basic) — it is distinctly acidic. Sulfur '
+                                      'is clearly a non-metal.',
+                                   3: 'The type of oxide (acidic or basic) is a reliable indicator of whether the '
+                                      'element is a metal or non-metal.'}}],
+  'rp': None,
+  'spec': '5.1.2.3',
+  'summary': 'Compare the properties of metals and non-metals and explain them in terms of structure and bonding.',
+  'theory': [{'content': 'Most elements are METALS — they are found on the left and in the centre of the periodic '
+                         'table.\n'
+                         '\n'
+                         'Typical physical properties of metals:\n'
+                         'GOOD CONDUCTORS of electricity and heat — delocalised electrons carry charge and energy.\n'
+                         'HIGH MELTING AND BOILING POINTS — strong metallic bonds.\n'
+                         'SHINY (lustrous) appearance when cut or polished.\n'
+                         'MALLEABLE — can be hammered into sheets without breaking.\n'
+                         'DUCTILE — can be drawn into wires.\n'
+                         'SOLID at room temperature — except mercury (Hg), which is a liquid.\n'
+                         'HIGH DENSITY in most cases.\n'
+                         '\n'
+                         'Chemical properties of metals:\n'
+                         'FORM POSITIVE IONS — lose outer electrons in reactions.\n'
+                         'REACT with oxygen to form METAL OXIDES (these are BASIC — they neutralise acids).\n'
+                         'Many react with water and acids to produce hydrogen gas.',
+              'heading': 'Properties of Metals'},
+             {'content': 'NON-METALS are found on the right side of the periodic table.\n'
+                         '\n'
+                         'Typical physical properties of non-metals:\n'
+                         'POOR CONDUCTORS of electricity (except graphite and graphene).\n'
+                         'LOW MELTING AND BOILING POINTS — weak forces between molecules.\n'
+                         'BRITTLE when solid — cannot be bent or drawn into wires.\n'
+                         'Low density generally.\n'
+                         'Many are GASES at room temperature (O₂, N₂, Cl₂, H₂, etc.).\n'
+                         'Some are SOLIDS (carbon, sulfur, phosphorus, iodine).\n'
+                         'Bromine (Br₂) is a liquid at room temperature.\n'
+                         '\n'
+                         'Chemical properties of non-metals:\n'
+                         'FORM NEGATIVE IONS — gain electrons (or share in covalent bonds).\n'
+                         'REACT with oxygen to form NON-METAL OXIDES (these are ACIDIC — they dissolve in water to '
+                         'form acids).',
+              'heading': 'Properties of Non-metals'},
+             {'content': 'A useful comparison table:\n'
+                         '\n'
+                         'Electrical conductivity:\n'
+                         'METAL: Good conductor (delocalised electrons).\n'
+                         'NON-METAL: Poor conductor (no free electrons) — EXCEPT graphite.\n'
+                         '\n'
+                         'Melting/boiling point:\n'
+                         'METAL: Generally high — strong metallic bonds.\n'
+                         'NON-METAL: Generally low — weak intermolecular forces.\n'
+                         '\n'
+                         'Malleability/ductility:\n'
+                         'METAL: Malleable and ductile.\n'
+                         'NON-METAL: Brittle.\n'
+                         '\n'
+                         'Ion formation:\n'
+                         'METAL: Forms POSITIVE ions (loses electrons).\n'
+                         'NON-METAL: Forms NEGATIVE ions (gains electrons).\n'
+                         '\n'
+                         'Oxide type:\n'
+                         'METAL: Basic oxides (e.g. MgO, Fe₂O₃).\n'
+                         'NON-METAL: Acidic oxides (e.g. CO₂, SO₂, NO₂).\n'
+                         '\n'
+                         'Some elements (like silicon) are METALLOIDS — they have properties between metals and '
+                         'non-metals. Silicon conducts electricity but is brittle — it is a semiconductor, used in '
+                         'electronics.',
+              'heading': 'Key Differences — Metals vs Non-metals'}],
+  'title': 'Metals and Non-metals',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Noble gases are MONATOMIC — they exist as single atoms (He, Ne, Ar) — NOT as molecules (not He₂ '
+                    'or Ne₂). This is because they are already stable with full outer shells and have no reason to '
+                    'form bonds. Other non-metals like oxygen (O₂) and nitrogen (N₂) exist as diatomic molecules '
+                    'because they share electrons to achieve full outer shells.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'group-0',
+  'key_note': 'Noble gases: Group 0, full outer shells, extremely unreactive, monatomic. Boiling point increases down '
+              'group (bigger atoms, stronger London dispersion forces). Helium: 2 outer electrons (full 1st shell). '
+              'All others: 8 outer electrons (full outer shell).',
+  'matching': {'instruction': 'Match each property to noble gases and explain why.',
+               'pairs': [('Very unreactive',
+                          'Full outer electron shells — no tendency to gain, lose or share electrons'),
+                         ('Monatomic', 'Exist as single atoms — already stable, no need to bond with other atoms'),
+                         ('Boiling point increases down group',
+                          'Larger atoms have stronger London dispersion forces — more electrons, larger temporary '
+                          'dipoles'),
+                         ('Colourless gases', 'All noble gases are transparent and gaseous at room temperature'),
+                         ('Helium — lighter than air',
+                          'Helium has only 2 electrons and 2 protons — very low density, used in balloons')],
+               'title': 'Match the Noble Gas Property'},
+  'quiz': [{'opts': [('They have full outer electron shells — no tendency to gain, lose or share electrons to become '
+                      'more stable',
+                      True),
+                     ('They are gases — gases cannot react with solid or liquid substances', False),
+                     ('They have no electrons in their outer shell — so they cannot form bonds', False),
+                     ('They are too small to collide effectively with other atoms', False)],
+            'q': 'Why are noble gases so unreactive?',
+            'wrong_explanations': {1: 'Many gases are highly reactive — chlorine gas (Cl₂), oxygen gas (O₂) etc. Being '
+                                      "a gas doesn't make something unreactive.",
+                                   2: 'Noble gases have FULL outer shells, not empty ones. Helium has 2 electrons '
+                                      '(full 1st shell), others have 8 outer electrons.',
+                                   3: 'Atomic size affects reactivity in some cases, but noble gases are unreactive '
+                                      'because of electron configuration, not size.'}},
+           {'opts': [('Argon is a larger atom with more electrons — stronger London dispersion forces between atoms '
+                      'need more energy to overcome',
+                      True),
+                     ('Argon has a higher atomic number, so its electrons are more strongly attracted to the nucleus',
+                      False),
+                     ('Argon forms molecules (Ar₂) while neon is monatomic — more bonds to break', False),
+                     ('Argon is radioactive, releasing energy that raises its boiling point', False)],
+            'q': 'Argon has a higher boiling point than neon. Why?',
+            'wrong_explanations': {1: "Stronger nuclear attraction would make electrons harder to remove but doesn't "
+                                      'directly raise boiling point — the intermolecular forces between atoms are what '
+                                      'matter.',
+                                   2: 'Noble gases are ALL monatomic — they never form Ar₂ or Ne₂ molecules under '
+                                      'normal conditions.',
+                                   3: 'Argon is stable and not radioactive. Radon is the radioactive noble gas.'}}],
+  'rp': None,
+  'spec': '5.1.2.4',
+  'summary': 'Describe the properties of noble gases and explain why they are so unreactive.',
+  'theory': [{'content': 'GROUP 0 (also called Group 18) contains the NOBLE GASES:\n'
+                         'Helium (He) — atomic number 2.\n'
+                         'Neon (Ne) — atomic number 10.\n'
+                         'Argon (Ar) — atomic number 18.\n'
+                         'Krypton (Kr) — atomic number 36.\n'
+                         'Xenon (Xe) — atomic number 54.\n'
+                         'Radon (Rn) — atomic number 86.\n'
+                         '\n'
+                         'All noble gases are:\n'
+                         'COLOURLESS gases at room temperature.\n'
+                         'MONATOMIC — they exist as single atoms, not molecules (unlike O₂, N₂, Cl₂).\n'
+                         'EXTREMELY UNREACTIVE — they do not form compounds under normal conditions.\n'
+                         'DENSER than air as you go down the group.\n'
+                         'Have very LOW BOILING POINTS — they remain gases until very cold.',
+              'heading': 'Properties of the Noble Gases'},
+             {'content': 'Noble gases are unreactive because they have FULL OUTER ELECTRON SHELLS:\n'
+                         'Helium: 2 electrons (full 1st shell).\n'
+                         'Neon: 2.8 (full 1st and 2nd shells).\n'
+                         'Argon: 2.8.8 (full 1st, 2nd and 3rd shells).\n'
+                         '\n'
+                         'A full outer shell is the most STABLE electron configuration — the atom has no tendency to '
+                         'gain, lose or share electrons.\n'
+                         '\n'
+                         'This is why other elements react — they are trying to ACHIEVE the stable full outer shell '
+                         'configuration of a noble gas:\n'
+                         'Group 1 metals lose 1 electron → achieve noble gas configuration.\n'
+                         'Group 7 non-metals gain 1 electron → achieve noble gas configuration.\n'
+                         'Non-metals share electrons (covalent bonds) to achieve full outer shells.',
+              'heading': 'Why Noble Gases Are Unreactive'},
+             {'content': 'Going DOWN Group 0 (from He to Rn):\n'
+                         '\n'
+                         'ATOMIC RADIUS increases — more electron shells are added.\n'
+                         '\n'
+                         'BOILING POINT INCREASES:\n'
+                         'He: −269°C, Ne: −246°C, Ar: −186°C, Kr: −153°C, Xe: −108°C.\n'
+                         'Larger atoms have stronger LONDON DISPERSION FORCES between them (a type of intermolecular '
+                         'force caused by temporary dipoles in electron clouds).\n'
+                         'More electrons → greater temporary dipoles → stronger forces → higher boiling point.\n'
+                         '\n'
+                         'DENSITY increases down the group.\n'
+                         '\n'
+                         'The reactivity stays VERY LOW throughout — all noble gases are essentially inert under '
+                         'normal conditions.',
+              'heading': 'Trends Down Group 0'}],
+  'title': 'Group 0 — Noble Gases',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Reactivity INCREASES down Group 1 (opposite to Group 7). This is because the outer electron gets '
+                    'further from the nucleus and is more easily lost. Going down Group 1: more shells → outer '
+                    'electron further away → weaker attraction → MORE reactive. Going down Group 7: non-metals get '
+                    'LESS reactive (harder to attract an extra electron).',
+  'equations': ['2M + 2H₂O → 2MOH + H₂', '2Li + 2H₂O → 2LiOH + H₂', '2Na + 2H₂O → 2NaOH + H₂', '2K + 2H₂O → 2KOH + H₂'],
+  'fifas': [],
+  'higher': None,
+  'id': 'group-1',
+  'key_note': 'Group 1: alkali metals, 1 outer electron, form +1 ions. Soft, low density, low melting point. React '
+              'with water → metal hydroxide + hydrogen. Reactivity INCREASES down group (outer electron further from '
+              'nucleus, less attracted, more easily lost).',
+  'matching': {'instruction': 'Match each alkali metal to its reaction description with water.',
+               'pairs': [('Lithium', 'Fizzes gently, moves around on water surface — less vigorous than others'),
+                         ('Sodium', 'Fizzes vigorously, moves rapidly, may ignite — more reactive than lithium'),
+                         ('Potassium',
+                          'Reacts very vigorously, hydrogen ignites immediately with a lilac/purple flame'),
+                         ('All Group 1 metals',
+                          'React with water to produce a metal hydroxide (alkali) and hydrogen gas'),
+                         ('Reactivity trend',
+                          'Increases down Group 1 — outer electron is further from nucleus, less strongly attracted')],
+               'title': 'Match the Group 1 Reaction'},
+  'quiz': [{'opts': [('Sodium hydroxide (NaOH) and hydrogen gas (H₂)', True),
+                     ('Sodium oxide (Na₂O) and water', False),
+                     ('Sodium chloride (NaCl) and hydrogen', False),
+                     ('Sodium hydroxide and oxygen gas', False)],
+            'q': 'What are the products when sodium reacts with water?',
+            'wrong_explanations': {1: 'Sodium reacts with oxygen to form sodium OXIDE — but when it reacts with water '
+                                      'specifically, the products are hydroxide and hydrogen.',
+                                   2: 'NaCl is the product of sodium reacting with CHLORINE or hydrochloric acid — not '
+                                      'water.',
+                                   3: 'Oxygen is not released when metals react with water. The equation is: 2Na + '
+                                      '2H₂O → 2NaOH + H₂.'}},
+           {'opts': [('Potassium has more electron shells — its outer electron is further from the nucleus and more '
+                      'easily lost',
+                      True),
+                     ('Potassium has more protons — so it has a stronger positive charge making it more reactive',
+                      False),
+                     ('Potassium is a larger atom so it reacts with a larger surface area', False),
+                     ("Potassium's outer electron has a higher charge than lithium's outer electron", False)],
+            'q': 'Why is potassium more reactive than lithium?',
+            'wrong_explanations': {1: 'More protons means stronger nuclear charge — this would actually make it HARDER '
+                                      'to lose the electron, not easier. But the extra shells and increased distance '
+                                      'outweigh the effect of more protons.',
+                                   2: 'Surface area affects reaction rate but not inherent reactivity — the question '
+                                      'is about why K is more reactive than Li in terms of properties.',
+                                   3: "All electrons have the same charge (−1 each) — the 'ease of losing' them "
+                                      'depends on how strongly they are attracted to the nucleus.'}}],
+  'rp': None,
+  'spec': '5.1.2.5',
+  'summary': 'Describe the properties of Group 1 metals and explain trends in reactivity down the group.',
+  'theory': [{'content': 'GROUP 1 contains the ALKALI METALS:\n'
+                         'Lithium (Li) — atomic number 3.\n'
+                         'Sodium (Na) — atomic number 11.\n'
+                         'Potassium (K) — atomic number 19.\n'
+                         'Rubidium (Rb), Caesium (Cs), Francium (Fr) — increasingly reactive and rare.\n'
+                         '\n'
+                         'All Group 1 metals share these properties:\n'
+                         '1 OUTER ELECTRON — they lose this electron easily to form +1 ions.\n'
+                         'SOFT — can be cut with a knife.\n'
+                         'LOW DENSITY — lithium, sodium and potassium all float on water.\n'
+                         'LOW MELTING AND BOILING POINTS compared to other metals.\n'
+                         'Shiny when freshly cut — but quickly tarnish in air (react with oxygen).\n'
+                         'Stored under OIL to prevent reaction with air and water.\n'
+                         'React vigorously with WATER to produce hydrogen gas and metal hydroxide (an alkali — hence '
+                         "'alkali metals').",
+              'heading': 'Properties of the Alkali Metals'},
+             {'content': 'All Group 1 metals react with water to produce a METAL HYDROXIDE and HYDROGEN GAS:\n'
+                         '\n'
+                         'General equation:\n'
+                         'Metal + water → metal hydroxide + hydrogen\n'
+                         '2M + 2H₂O → 2MOH + H₂\n'
+                         '\n'
+                         'Specific reactions:\n'
+                         '2Li + 2H₂O → 2LiOH + H₂\n'
+                         '(Lithium: fizzes gently, moves around on the surface)\n'
+                         '\n'
+                         '2Na + 2H₂O → 2NaOH + H₂\n'
+                         '(Sodium: fizzes vigorously, moves rapidly, may catch fire)\n'
+                         '\n'
+                         '2K + 2H₂O → 2KOH + H₂\n'
+                         '(Potassium: reacts very vigorously, the hydrogen gas ignites immediately with a lilac '
+                         'flame)\n'
+                         '\n'
+                         'The resulting solution is ALKALINE — the metal hydroxide (LiOH, NaOH, KOH) is a strong '
+                         'alkali. Adding universal indicator to the solution turns it PURPLE.\n'
+                         '\n'
+                         'As you go DOWN the group, reactions become MORE vigorous — potassium is more reactive than '
+                         'sodium, which is more reactive than lithium.',
+              'heading': 'Reactions with Water'},
+             {'content': 'Reactivity INCREASES going DOWN Group 1 — this is explained by atomic structure.\n'
+                         '\n'
+                         'Going down the group:\n'
+                         'ATOMS GET LARGER — more electron shells are added.\n'
+                         'OUTER ELECTRON is in a higher shell — further from the nucleus.\n'
+                         'Electrostatic attraction from nucleus to outer electron DECREASES (greater distance AND more '
+                         'shielding from inner electrons).\n'
+                         'Outer electron is MORE EASILY LOST.\n'
+                         'More reactive → more easily loses the outer electron.\n'
+                         '\n'
+                         'Memory aid: further = weaker pull = easier to lose = more reactive.\n'
+                         '\n'
+                         'This is why rubidium and caesium (further down) are so reactive they must be handled with '
+                         'extreme care — they can ignite explosively in water or air.',
+              'heading': 'Why Reactivity Increases Down Group 1'}],
+  'title': 'Group 1 — Alkali Metals',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Reactivity DECREASES down Group 7 — the OPPOSITE of Group 1. In Group 1, going down makes metals '
+                    'MORE reactive (outer electron easier to LOSE). In Group 7, going down makes non-metals LESS '
+                    'reactive (harder to GAIN an extra electron when the outer shell is further away).',
+  'equations': ['Cl₂ + 2NaBr → 2NaCl + Br₂', 'Cl₂ + 2KI → 2KCl + I₂', 'Br₂ + 2KI → 2KBr + I₂'],
+  'fifas': [],
+  'higher': None,
+  'id': 'group-7',
+  'key_note': 'Group 7: halogens, 7 outer electrons, form −1 ions, diatomic molecules (X₂). Boiling point increases '
+              'down group. Reactivity DECREASES down group (outer shell further away, weaker pull on incoming '
+              'electron). More reactive halogen displaces less reactive from solution.',
+  'matching': {'instruction': 'Predict whether a reaction occurs and match to the correct outcome.',
+               'pairs': [('Reaction occurs',
+                          'Cl₂ + NaBr solution — chlorine displaces bromine (Cl more reactive than Br)'),
+                         ('Reaction occurs', 'Br₂ + KI solution — bromine displaces iodine (Br more reactive than I)'),
+                         ('No reaction',
+                          'Br₂ + NaCl solution — bromine cannot displace chlorine (Cl is MORE reactive)'),
+                         ('Reaction occurs', 'Cl₂ + KI solution — chlorine displaces iodine (Cl more reactive than I)'),
+                         ('No reaction',
+                          'I₂ + NaCl solution — iodine cannot displace chlorine (Cl is much more reactive)')],
+               'title': 'Match the Halogen Displacement Reaction'},
+  'quiz': [{'opts': [('The solution turns orange/brown — chlorine displaces bromide ions, releasing bromine', True),
+                     ('No change — chlorine cannot react with bromide ions', False),
+                     ('The solution turns pale green — chlorine is absorbed by the solution', False),
+                     ('A white precipitate forms — chlorine reacts with potassium ions', False)],
+            'q': 'Chlorine water is added to a solution of potassium bromide. What is observed?',
+            'wrong_explanations': {1: 'Chlorine IS more reactive than bromine and CAN displace bromide — so a reaction '
+                                      'does occur.',
+                                   2: 'Chlorine water has a yellow-green colour but when it reacts with bromide, the '
+                                      'BROWN colour of bromine is what appears in the solution.',
+                                   3: 'Chlorine does not react with potassium ions — it displaces bromide ions. No '
+                                      'precipitate forms.'}},
+           {'opts': [('Fluorine is a smaller atom — its outer shell is closer to the nucleus, so it attracts an '
+                      'incoming electron more strongly',
+                      True),
+                     ('Fluorine has fewer electrons, making it less stable and more reactive', False),
+                     ('Fluorine has more protons, making its positive charge stronger', False),
+                     ('Fluorine is a gas, making it react more easily than other states of matter', False)],
+            'q': 'Why is fluorine more reactive than chlorine?',
+            'wrong_explanations': {1: 'Fewer electrons in an outer shell means the atom needs to GAIN electrons — but '
+                                      "that doesn't directly explain why fluorine attracts electrons more strongly. "
+                                      'The distance from the nucleus is the key factor.',
+                                   2: 'Fluorine does have fewer protons (9) than chlorine (17) — but its outer shell '
+                                      'is MUCH closer to those protons. The closeness wins over the fewer-proton '
+                                      'effect.',
+                                   3: 'Chlorine is also a gas — being a gas is not the reason fluorine is more '
+                                      'reactive.'}},
+           {'opts': [('No reaction — iodine is less reactive than chlorine and cannot displace it', True),
+                     ('Chlorine gas is released — iodine displaces chloride ions', False),
+                     ('A brown precipitate forms — iodine reacts with sodium ions', False),
+                     ('The solution turns pale yellow — iodine bleaches the solution', False)],
+            'q': 'Iodine solution is added to sodium chloride solution. What happens?',
+            'wrong_explanations': {1: 'A more reactive halogen displaces a less reactive one. Iodine is LESS reactive '
+                                      'than chlorine — so iodine cannot displace chloride ions.',
+                                   2: 'Iodine does not react with sodium ions — and even if it tried to displace '
+                                      "chloride, it couldn't because iodine is less reactive than chlorine.",
+                                   3: "Iodine actually turns starch blue-black — it doesn't bleach. Chlorine is the "
+                                      'halogen with bleaching properties.'}}],
+  'rp': None,
+  'spec': '5.1.2.6',
+  'summary': 'Describe the properties of halogens and explain trends in reactivity down Group 7.',
+  'theory': [{'content': 'GROUP 7 contains the HALOGENS:\n'
+                         'Fluorine (F) — pale yellow gas.\n'
+                         'Chlorine (Cl) — yellow-green gas.\n'
+                         'Bromine (Br) — red-brown liquid.\n'
+                         'Iodine (I) — grey-black solid (purple vapour).\n'
+                         'Astatine (At) — radioactive, very rare.\n'
+                         '\n'
+                         'All Group 7 elements:\n'
+                         'Have 7 OUTER ELECTRONS — they gain ONE electron to form −1 ions (halide ions: F⁻, Cl⁻, Br⁻, '
+                         'I⁻).\n'
+                         'Exist as DIATOMIC MOLECULES — F₂, Cl₂, Br₂, I₂ (each molecule is two atoms bonded '
+                         'together).\n'
+                         'Are NON-METALS — poor conductors, low melting/boiling points (except iodine which is a '
+                         'solid).\n'
+                         "React with metals to form SALTS (compounds containing halide ions) — hence 'halogens' means "
+                         "'salt-forming'.\n"
+                         'Are TOXIC — they are all poisonous in varying degrees.',
+              'heading': 'Properties of the Halogens'},
+             {'content': 'Going DOWN Group 7 (F → Cl → Br → I):\n'
+                         '\n'
+                         'PHYSICAL TRENDS:\n'
+                         'MELTING AND BOILING POINT INCREASE:\n'
+                         'F₂: −188°C, Cl₂: −101°C, Br₂: 59°C, I₂: 184°C.\n'
+                         'Larger molecules → stronger London dispersion forces → higher boiling point.\n'
+                         '\n'
+                         'COLOUR BECOMES DARKER:\n'
+                         'Fluorine: pale yellow, Chlorine: yellow-green, Bromine: red-brown, Iodine: grey-black.\n'
+                         '\n'
+                         'CHEMICAL TREND:\n'
+                         'REACTIVITY DECREASES going down — OPPOSITE to Group 1.\n'
+                         '\n'
+                         'Fluorine is the MOST REACTIVE non-metal known.\n'
+                         'Iodine is much less reactive.\n'
+                         '\n'
+                         'Why reactivity decreases:\n'
+                         'Going down, atoms get LARGER — more electron shells.\n'
+                         'The outer shell (where the incoming electron goes) is further from the nucleus.\n'
+                         'Weaker attraction for an incoming electron → less easily gained → less reactive.',
+              'heading': 'Physical and Chemical Trends Down Group 7'},
+             {'content': 'A MORE REACTIVE halogen will DISPLACE a LESS REACTIVE halogen from its salt solution.\n'
+                         '\n'
+                         'This demonstrates the reactivity order: F > Cl > Br > I.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Chlorine water + sodium bromide solution:\n'
+                         'Cl₂ + 2NaBr → 2NaCl + Br₂\n'
+                         'Colour change: colourless → orange/brown (bromine appears).\n'
+                         'Chlorine DISPLACES bromine because Cl is more reactive than Br.\n'
+                         '\n'
+                         'Chlorine water + potassium iodide solution:\n'
+                         'Cl₂ + 2KI → 2KCl + I₂\n'
+                         'Colour change: colourless → brown (iodine appears).\n'
+                         '\n'
+                         'Bromine water + potassium iodide solution:\n'
+                         'Br₂ + 2KI → 2KBr + I₂\n'
+                         'Bromine displaces iodine — bromine is more reactive than iodine.\n'
+                         '\n'
+                         'NO REACTION: bromine water + sodium chloride — bromine CANNOT displace chlorine as Cl is '
+                         'more reactive.\n'
+                         '\n'
+                         'OIL LAYER TRICK: Add a non-polar solvent (e.g. cyclohexane) which forms a separate layer — '
+                         'iodine in the oil layer turns VIOLET/PURPLE, bromine turns ORANGE.',
+              'heading': 'Displacement Reactions of Halogens'}],
+  'title': 'Group 7 — Halogens',
+  'triple_only': None,
+  'variables': []}],
 
-"bonding": [
-    {
-        "id": "ionic-bonding",
-        "title": "Ionic Bonding and Ionic Compounds",
-        "spec": "4.2.1",
-        "summary": "Explain ionic bonding and describe the properties of ionic compounds.",
-        "theory": [
-            {"heading": "What is Ionic Bonding?",
-             "content": "Ionic bonding happens between a metal and a non-metal.\nThe metal LOSES electrons → positive ion (cation).\nThe non-metal GAINS electrons → negative ion (anion).\nOpposite charges attract → strong electrostatic force = the ionic bond.\nBoth ions achieve a full outer electron shell."},
-            {"heading": "The Giant Ionic Lattice",
-             "content": "Ions arrange in a regular 3D structure: the giant ionic lattice.\nEach positive ion surrounded by negative ions and vice versa.\nThousands of ions in a repeating pattern.\nExample: NaCl — each Na⁺ surrounded by 6 Cl⁻ ions."},
-            {"heading": "Properties of Ionic Compounds",
-             "content": "High melting/boiling points — strong electrostatic forces need lots of energy to break.\nConduct electricity when MOLTEN or DISSOLVED — ions free to move.\nDo NOT conduct when SOLID — ions locked in lattice.\nBrittle — layers shift under stress, like charges align and repel → shatters.\nMany are soluble in water."},
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "Ionic compounds conduct electricity ONLY when molten or dissolved in water — NOT as solids. In solids, ions are fixed in the lattice. This is the number one exam mistake on ionic bonding.",
-        "key_note": None, "higher": "Dot-and-cross diagrams show electron transfer. Draw each ion in brackets with charge outside.", "triple_only": None, "rp": None, "matching": None,
-        "fifas": [],
-        "quiz": [
-            {"q": "When can an ionic compound conduct electricity?",
-             "opts": [("When molten or dissolved in water", True), ("When solid", False), ("Never", False), ("Always, in any state", False)],
-             "wrong_explanations": {1: "Solid ionic compounds CANNOT conduct — ions are fixed.", 2: "Ionic compounds definitely CAN conduct — when ions are free to move.", 3: "They conduct when liquid or dissolved — just not solid."}},
-            {"q": "Why do ionic compounds have high melting points?",
-             "opts": [("Strong electrostatic forces between oppositely charged ions require lots of energy to break", True), ("They are made of metals", False), ("They are large molecules", False), ("They contain covalent bonds", False)],
-             "wrong_explanations": {1: "Not all metals have high melting points — Group 1 metals actually melt quite easily.", 2: "Ionic compounds are NOT molecules — they are giant lattice structures.", 3: "Ionic compounds have ionic bonds — not covalent bonds."}},
-            {"q": "Sodium (2,8,1) reacts with chlorine (2,8,7). What ions form?",
-             "opts": [("Na⁺ and Cl⁻", True), ("Na⁻ and Cl⁺", False), ("Na²⁺ and Cl²⁻", False), ("No ions — they share electrons", False)],
-             "wrong_explanations": {1: "Metals LOSE electrons to become positive. Na losing an electron would become negative — backwards!", 2: "Sodium needs to lose 1 electron (giving Na⁺) and chlorine gains 1 (giving Cl⁻).", 3: "Sharing electrons = covalent bonding. Metal + non-metal = ionic (transfer of electrons)."}},
-            {"q": "Why is sodium chloride brittle?",
-             "opts": [("Layers shift and like charges align, causing repulsion and shattering", True), ("The bonds are weak", False), ("It contains no covalent bonds", False), ("Ions are too small", False)],
-             "wrong_explanations": {1: "Ionic bonds are VERY strong — high melting point proves this. Brittleness is about what happens when layers shift.", 2: "The absence of covalent bonds doesn't explain brittleness.", 3: "Ion size isn't the reason — it's the layer-shift mechanism."}},
-            {"q": "What type of structure do ionic compounds form?",
-             "opts": [("Giant ionic lattice", True), ("Simple molecular", False), ("Giant covalent", False), ("Metallic", False)],
-             "wrong_explanations": {1: "Simple molecular = small discrete molecules like H₂O, CO₂. Not ionic.", 2: "Giant covalent = diamond, graphite, SiO₂. Made of covalent bonds.", 3: "Metallic = pure metals. Ionic is a different structure entirely."}}
-        ]
-    },
-    {
-        "id": "covalent-bonding",
-        "title": "Covalent Bonding and Structures",
-        "spec": "4.2.2",
-        "summary": "Explain covalent bonding and compare simple molecular and giant covalent structures.",
-        "theory": [
-            {"heading": "What is Covalent Bonding?",
-             "content": "Covalent bonding occurs between non-metal atoms.\nAtoms SHARE pairs of electrons to achieve full outer shells.\nEach shared pair = one covalent bond.\nDouble bond = 2 shared pairs (e.g. O=O, C=O in CO₂).\nCovalent bonds within molecules are very strong."},
-            {"heading": "Simple Molecular Substances",
-             "content": "Small molecules: H₂, O₂, H₂O, CO₂, CH₄, NH₃, Cl₂.\nStrong covalent bonds WITHIN molecules.\nWeak intermolecular forces BETWEEN molecules.\nLow melting/boiling points — weak between-molecule forces easy to overcome.\nDo NOT conduct electricity — no free ions or electrons."},
-            {"heading": "Giant Covalent Structures",
-             "content": "Diamond: each C bonded to 4 others → 3D network → extremely hard, very high mp, doesn't conduct.\nGraphite: each C bonded to 3 others in flat layers → slippery, DOES conduct (delocalised electrons between layers).\nSilicon dioxide (SiO₂, sand): giant structure, very high mp, doesn't conduct."},
-            {"heading": "Metallic Bonding",
-             "content": "Metal atoms lose outer electrons → positive ions in a sea of delocalised electrons.\nThe electrostatic attraction between ions and electrons = metallic bond.\nProperties: conducts electricity (free electrons), malleable (layers slide), high melting points (strong bonds), shiny.\nAlloys: mixing metals distorts the lattice → harder, stronger than pure metals."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "NOT all covalent substances have low melting points! Simple molecular compounds do — but giant covalent structures (diamond, SiO₂) have VERY high melting points. The key question is always: simple molecular or giant covalent?",
-        "key_note": "Graphite conducts electricity — it has delocalised electrons between layers. Diamond does not conduct — no free electrons.",
-        "higher": "Intermolecular forces increase with molecular size → larger molecules have higher boiling points (e.g. pentane boils higher than methane).",
-        "triple_only": None, "rp": None,
-        "matching": {
-            "title": "Match the Structure to its Properties",
-            "instruction": "Match each structure type to its key properties.",
-            "pairs": [
-                ("Simple molecular", "Low mp, doesn't conduct, weak forces between molecules"),
-                ("Giant ionic lattice", "High mp, conducts when molten/dissolved, brittle"),
-                ("Giant covalent (diamond)", "Very high mp, extremely hard, doesn't conduct"),
-                ("Giant covalent (graphite)", "High mp, conducts electricity, soft and slippery"),
-                ("Metallic", "Conducts always, malleable, high mp"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "Why do simple molecular substances have low melting points?",
-             "opts": [("Weak intermolecular forces between molecules require little energy to overcome", True), ("Covalent bonds within the molecules are weak", False), ("They have no electrons", False), ("They are ionic", False)],
-             "wrong_explanations": {1: "Covalent bonds WITHIN molecules are strong — it's the BETWEEN-molecule forces that are weak.", 2: "All molecules have electrons — the key is intermolecular force strength.", 3: "If they were ionic they'd have high melting points."}},
-            {"q": "Why does graphite conduct electricity but diamond doesn't?",
-             "opts": [("Graphite has delocalised electrons between layers; diamond has no free electrons", True), ("Diamond is denser", False), ("Graphite has ionic bonds", False), ("Diamond is a larger structure", False)],
-             "wrong_explanations": {1: "Density doesn't determine conductivity — it's the presence of free charge carriers.", 2: "Graphite is pure carbon — all covalent bonds, no ionic bonds.", 3: "Both are giant covalent structures. The difference is delocalised electrons in graphite."}},
-            {"q": "What is an alloy?",
-             "opts": [("A mixture of metals (or metal + non-metal) that is harder than pure metals", True), ("A pure metal with no impurities", False), ("A type of ionic compound", False), ("A metal that has been electrolysed", False)],
-             "wrong_explanations": {1: "Pure metals with no impurities are weaker — regular layers slide easily. Alloys disrupt this.", 2: "Alloys are MIXTURES not pure substances — they contain two or more elements.", 3: "Electrolysis is used to extract or plate metals — not related to what an alloy is."}},
-            {"q": "Which property do all metals share due to metallic bonding?",
-             "opts": [("Good electrical conductors", True), ("Low melting points", False), ("Brittle", False), ("Transparent", False)],
-             "wrong_explanations": {1: "Most metals have HIGH melting points — Group 1 metals (Na, K) are exceptions but most metals melt at high temps.", 2: "Metals are MALLEABLE (they bend and deform) — the opposite of brittle.", 3: "Metals are opaque and shiny — transparency is a property of some ionic and covalent substances."}},
-            {"q": "Silicon dioxide (sand) has a very high melting point. Why?",
-             "opts": [("It has a giant covalent structure — many strong covalent bonds to break", True), ("It is an ionic compound", False), ("It is a metal", False), ("It has strong intermolecular forces", False)],
-             "wrong_explanations": {1: "SiO₂ is not ionic — it's a giant covalent structure with Si-O covalent bonds throughout.", 2: "Silicon and oxygen are both non-metals — they form covalent bonds, not ionic.", 3: "Intermolecular forces are for SIMPLE molecular substances. SiO₂ is giant covalent — it has covalent bonds throughout."}}
-        ]
-    },
-],
+"bonding": [],
+"quantitative": [],
+"chemical-changes": [],
+"energy-changes": [],
+"rates-equilibrium": [],
+"organic": [],
+"analysis": [],
+"atmosphere": [],
+"using-resources": [],
 
-"quantitative": [
-    {
-        "id": "moles-calculations",
-        "title": "Moles, Mass and Relative Formula Mass",
-        "spec": "4.3.1",
-        "summary": "Calculate moles, mass and Mr, and use balanced equations for reacting quantities.",
-        "theory": [
-            {"heading": "Relative Formula Mass (Mr)",
-             "content": "Mr = sum of all relative atomic masses (Ar) in the formula.\nH₂O: (2×1) + 16 = 18.\nCO₂: 12 + (2×16) = 44.\nNaCl: 23 + 35.5 = 58.5.\nMr has NO UNITS — it's a ratio."},
-            {"heading": "The Mole",
-             "content": "One mole = 6.02 × 10²³ particles (Avogadro's number).\n1 mole of any element weighs its Ar in grams.\n1 mole of any compound weighs its Mr in grams.\nFormula: moles = mass ÷ Mr."},
-            {"heading": "Using Moles in Reactions",
-             "content": "A balanced equation tells you the mole ratio of reactants and products.\nExample: 2H₂ + O₂ → 2H₂O means 2 mol H₂ reacts with 1 mol O₂ to give 2 mol H₂O.\nScale up or down using the ratio.\nHigher: limiting reactant = the one that runs out first and determines yield."},
-            {"heading": "Conservation of Mass",
-             "content": "Total mass of reactants = total mass of products.\nIf mass appears to decrease: a gas was produced and escaped.\nIf mass appears to increase: a gas from the atmosphere was absorbed (e.g. burning magnesium takes O₂ from air).\nAlways account for all products, including gases."}
-        ],
-        "variables": [
-            ("n", "Amount of substance", "Moles", "mol"),
-            ("m", "Mass", "Grams", "g"),
-            ("Mr", "Relative formula mass", "no unit", ""),
-        ],
-        "equations": ["n = m ÷ Mr"],
-        "common_mistake": "Mr has NO UNITS. Mass must be in GRAMS before using n = m ÷ Mr. If given in kg, convert first (×1000).",
-        "key_note": "1 mole of any substance weighs Mr grams and contains 6.02 × 10²³ particles.",
-        "higher": "Moles of gas at RTP: n = volume (dm³) ÷ 24. One mole of any gas = 24 dm³ at room temperature and pressure.",
-        "triple_only": None, "rp": None, "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Calculate moles",
-             "question": "Calculate the moles in 44 g of CO₂. (C=12, O=16)",
-             "steps": [("F","n = m ÷ Mr"), ("I","Mr(CO₂) = 12 + 32 = 44. n = 44 ÷ 44"), ("F","Mass already in grams"), ("A","n = 1 mol")]},
-            {"label": "Example 2 — Calculate mass",
-             "question": "What mass of NaCl (Mr=58.5) is in 0.5 mol?",
-             "steps": [("F","m = n × Mr"), ("I","m = 0.5 × 58.5"), ("F","No conversion needed"), ("A","m = 29.25 g")]}
-        ],
-        "quiz": [
-            {"q": "What is the Mr of H₂SO₄? (H=1, S=32, O=16)",
-             "opts": [("98", True), ("66", False), ("50", False), ("81", False)],
-             "wrong_explanations": {1: "Count carefully: 2H + S + 4O = 2 + 32 + 64 = 98. You may have used only 3 oxygens.", 2: "Mr = 2+32+64 = 98. You might have halved somewhere.", 3: "There are 4 oxygens in H₂SO₄. Mr = 2+32+(4×16) = 98."}},
-            {"q": "How many moles are in 36 g of water? (Mr=18)",
-             "opts": [("2 mol", True), ("18 mol", False), ("0.5 mol", False), ("36 mol", False)],
-             "wrong_explanations": {1: "You used mass as moles directly. n = m ÷ Mr = 36 ÷ 18 = 2 mol.", 2: "You divided Mr by mass. n = m ÷ Mr = 36 ÷ 18 = 2 mol.", 3: "You used just the mass. n = 36 ÷ 18 = 2 mol."}},
-            {"q": "What mass of CaCO₃ (Mr=100) contains 0.25 mol?",
-             "opts": [("25 g", True), ("400 g", False), ("100 g", False), ("2.5 g", False)],
-             "wrong_explanations": {1: "You divided Mr by mol. m = n × Mr = 0.25 × 100 = 25 g.", 2: "You used Mr alone without multiplying by 0.25. m = n × Mr = 0.25 × 100 = 25 g.", 3: "You divided by 10 instead of multiplying. m = 0.25 × 100 = 25 g."}},
-            {"q": "A reaction produces 8 g of solid but the mass of the container decreased by 2 g. Why?",
-             "opts": [("A gas was produced and escaped from the container", True), ("Energy was lost as heat", False), ("Mass was destroyed", False), ("The reactants were impure", False)],
-             "wrong_explanations": {1: "Energy loss doesn't affect mass readings on a balance.", 2: "Mass is always conserved — it doesn't get destroyed.", 3: "Impurities might give a slightly different product mass but don't explain mass decrease."}},
-            {"q": "What does conservation of mass mean in chemistry?",
-             "opts": [("Total mass of reactants = total mass of products", True), ("Number of molecules stays the same", False), ("Number of atoms of each element stays the same", False), ("No energy is released", False)],
-             "wrong_explanations": {1: "Molecule count can change — 2H₂ + O₂ → 2H₂O goes from 3 molecules to 2. Mass is what's conserved.", 2: "Conservation of mass is specifically about MASS — but the underlying reason is that atoms are rearranged, not created or destroyed.", 3: "Reactions always involve energy changes — conservation of mass and energy are separate."}}
-        ]
-    },
-    {
-        "id": "yield-atom-economy",
-        "title": "Percentage Yield and Atom Economy",
-        "spec": "4.3.3",
-        "summary": "Calculate percentage yield and atom economy and explain their importance.",
-        "theory": [
-            {"heading": "Percentage Yield",
-             "content": "Theoretical yield = maximum mass you should get from the balanced equation.\nActual yield = what you actually collect in the lab.\nYield is always less than 100% — some is always lost.\nReasons: reversible reactions, product lost in filtering/transferring, impurities, side reactions."},
-            {"heading": "Atom Economy",
-             "content": "Atom economy = what fraction of reactant atoms end up in the DESIRED product.\nCalculated from the balanced equation using Mr values — not actual masses.\n100% atom economy = no waste at all (all atoms go into useful product).\nIndustry prefers high atom economy → less waste, lower cost, more sustainable."},
-            {"heading": "Green Chemistry",
-             "content": "Green chemistry aims to make reactions more sustainable.\nHigh atom economy, renewable feedstocks, catalysts (lower energy), room temp reactions.\nHaber process has 100% atom economy (N₂ + 3H₂ → 2NH₃ — only one product).\nBut only ~15% yield per pass — recycled gases improve overall efficiency."}
-        ],
-        "variables": [],
-        "equations": [
-            "% yield = (actual yield ÷ theoretical yield) × 100",
-            "Atom economy = (Mr of desired product ÷ sum of Mr of ALL products) × 100"
-        ],
-        "common_mistake": "Atom economy uses Mr from the EQUATION — not actual experimental masses. Percentage yield uses ACTUAL masses from the experiment. These are two completely different calculations.",
-        "key_note": None, "higher": "Limiting reactant: calculate moles of each reactant and use ratio from equation to find which runs out first.", "triple_only": None, "rp": None, "matching": None,
-        "fifas": [
-            {"label": "Example — Percentage yield",
-             "question": "Theoretical yield = 80 g. Actual yield collected = 60 g. Calculate percentage yield.",
-             "steps": [("F","% yield = (actual ÷ theoretical) × 100"), ("I","% yield = (60 ÷ 80) × 100"), ("F","No conversion needed"), ("A","% yield = 75%")]}
-        ],
-        "quiz": [
-            {"q": "Theoretical yield = 50 g, actual = 40 g. What is the % yield?",
-             "opts": [("80%", True), ("125%", False), ("10%", False), ("40%", False)],
-             "wrong_explanations": {1: "You divided theoretical by actual. Always: (actual ÷ theoretical) × 100 = (40÷50) × 100 = 80%.", 2: "You subtracted instead of dividing. % yield = (40÷50) × 100 = 80%.", 3: "You used actual yield as the answer. % yield = (actual ÷ theoretical) × 100 = 80%."}},
-            {"q": "A reaction has 100% atom economy. What does this mean?",
-             "opts": [("All reactant atoms end up in the desired product — no waste", True), ("All the product is collected (100% yield)", False), ("The reaction is very fast", False), ("No energy is needed", False)],
-             "wrong_explanations": {1: "100% yield means all product is collected — separate from atom economy.", 2: "Atom economy is about waste products in the EQUATION — not about how much product you collect.", 3: "Atom economy says nothing about energy requirements."}},
-            {"q": "Which formula is used to calculate atom economy?",
-             "opts": [("(Mr of desired product ÷ sum of Mr of all products) × 100", True), ("(actual yield ÷ theoretical yield) × 100", False), ("(mass of product ÷ mass of reactant) × 100", False), ("(moles of product ÷ moles of reactant) × 100", False)],
-             "wrong_explanations": {1: "That's % yield — not atom economy. Atom economy uses Mr values from the balanced equation.", 2: "That uses actual experimental masses — atom economy uses Mr values from the equation only.", 3: "Atom economy uses Mr values, not moles directly."}},
-            {"q": "Why is a high atom economy desirable?",
-             "opts": [("Less waste, lower costs, more sustainable", True), ("The reaction goes faster", False), ("It guarantees 100% yield", False), ("It reduces activation energy", False)],
-             "wrong_explanations": {1: "Atom economy says nothing about reaction rate.", 2: "High atom economy and high yield are independent — a reaction can have 100% atom economy but only 20% yield.", 3: "Activation energy is affected by catalysts — not by atom economy."}}
-        ]
-    },
-],
-
-"chemical-changes": [
-    {
-        "id": "acids-reactions",
-        "title": "Acids, Bases and Making Salts",
-        "spec": "4.4.1",
-        "summary": "Describe reactions of acids and explain how to make pure salts.",
-        "theory": [
-            {"heading": "The pH Scale",
-             "content": "pH 0–6: acidic. pH 7: neutral. pH 8–14: alkaline.\nAcids produce H⁺ ions in solution.\nAlkalis produce OH⁻ ions in solution.\nNeutralisation: H⁺ + OH⁻ → H₂O.\nStrong acids fully dissociate (HCl, H₂SO₄, HNO₃).\nWeak acids partially dissociate (ethanoic acid, citric acid)."},
-            {"heading": "Reactions of Acids",
-             "content": "Acid + metal → salt + hydrogen.\nAcid + metal oxide/hydroxide (base) → salt + water.\nAcid + carbonate → salt + water + carbon dioxide.\nAcid + alkali → salt + water (neutralisation).\nTest H₂: burning splint → squeaky pop.\nTest CO₂: limewater → turns cloudy."},
-            {"heading": "Naming Salts",
-             "content": "Hydrochloric acid → chloride salts (e.g. NaCl = sodium chloride).\nSulfuric acid → sulfate salts (e.g. CuSO₄ = copper sulfate).\nNitric acid → nitrate salts (e.g. KNO₃ = potassium nitrate).\nSalt name = metal name + acid-derived name."},
-            {"heading": "Making Pure Salt Crystals",
-             "content": "Add excess solid (metal/carbonate/oxide) to acid — ensures all acid reacts.\nFilter off excess solid.\nEvaporate water gently → salt crystals form.\nDry the crystals.\nFor soluble salts: titration method — accurate volumes, no excess.\nFor insoluble salts: mix two soluble solutions → precipitate forms → filter and dry."}
-        ],
-        "variables": [],
-        "equations": [
-            "Acid + metal → salt + H₂",
-            "Acid + base → salt + H₂O",
-            "Acid + carbonate → salt + H₂O + CO₂",
-            "H⁺ + OH⁻ → H₂O"
-        ],
-        "common_mistake": "Acid + metal oxide gives salt + WATER (not hydrogen!). Hydrogen only comes from acid + reactive metal. Students confuse products all the time — learn each reaction type separately.",
-        "key_note": "Squeaky pop = H₂. Limewater cloudy = CO₂. Damp blue litmus turns red = acidic gas.",
-        "higher": "pH = −log[H⁺]. pH change of 1 unit = ×10 change in H⁺ concentration.",
-        "triple_only": None, "rp": "RP1 — Prepare a pure dry sample of a soluble salt (e.g. copper sulfate from copper oxide and sulfuric acid).",
-        "matching": {
-            "title": "Match the Acid Reaction to its Products",
-            "instruction": "Match each reaction type to the correct products.",
-            "pairs": [
-                ("Acid + metal", "Salt + hydrogen gas"),
-                ("Acid + metal oxide", "Salt + water"),
-                ("Acid + carbonate", "Salt + water + carbon dioxide"),
-                ("Acid + alkali", "Salt + water (neutralisation)"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "What gas is produced when zinc reacts with hydrochloric acid?",
-             "opts": [("Hydrogen", True), ("Carbon dioxide", False), ("Oxygen", False), ("Chlorine", False)],
-             "wrong_explanations": {1: "CO₂ comes from acid + CARBONATE reactions — not acid + metal.", 2: "Oxygen comes from electrolysis or decomposition of water — not this reaction.", 3: "Chlorine would require oxidation of Cl⁻ ions — not a simple acid + metal reaction."}},
-            {"q": "What products form when sulfuric acid reacts with copper oxide?",
-             "opts": [("Copper sulfate + water", True), ("Copper sulfate + hydrogen", False), ("Copper chloride + water", False), ("Copper + sulfur dioxide", False)],
-             "wrong_explanations": {1: "Hydrogen comes from acid + METAL — copper oxide is a base/metal oxide, not a metal.", 2: "The acid here is SULFuric — it gives sulfate salts. Chloride would come from hydrochloric acid.", 3: "Copper oxide is the reactant — the copper becomes part of the salt product, not released as metal."}},
-            {"q": "Marble chips (CaCO₃) react with HCl. What gas is produced?",
-             "opts": [("Carbon dioxide", True), ("Hydrogen", False), ("Oxygen", False), ("Chlorine", False)],
-             "wrong_explanations": {1: "Hydrogen comes from acid + METAL. CaCO₃ is a carbonate → CO₂ is produced.", 2: "No oxygen source in this reaction — oxygen needs electrolysis or decomposition.", 3: "Chlorine from this reaction would need the Cl⁻ to be oxidised — doesn't happen here."}},
-            {"q": "What is the test for hydrogen gas?",
-             "opts": [("Burning splint — squeaky pop", True), ("Glowing splint — relights", False), ("Limewater — turns cloudy", False), ("Damp litmus — bleaches", False)],
-             "wrong_explanations": {1: "Glowing splint relights = OXYGEN test.", 2: "Limewater turning cloudy = CO₂ test.", 3: "Damp litmus bleaching = CHLORINE test."}},
-            {"q": "What is the difference between a strong and weak acid at the same concentration?",
-             "opts": [("Strong acid fully dissociates — more H⁺ ions, lower pH", True), ("Strong acid has more molecules", False), ("Weak acid has more H atoms per molecule", False), ("They are identical at the same concentration", False)],
-             "wrong_explanations": {1: "Concentration = how much acid is present. Strength = how much dissociates. Different concentrations can have same pH if one is strong and one weak.", 2: "H atom count per molecule doesn't determine strength. HCl has 1 H, H₂SO₄ has 2, but both are strong acids.", 3: "They are definitely different — strong acid has lower pH at same concentration because more H⁺ ions."}}
-        ]
-    },
-    {
-        "id": "electrolysis",
-        "title": "Electrolysis",
-        "spec": "4.4.3",
-        "summary": "Explain electrolysis and predict products at each electrode.",
-        "theory": [
-            {"heading": "What is Electrolysis?",
-             "content": "Electrical energy decomposes an ionic compound.\nNeeds: electrolyte (free-moving ions) + electrodes + power supply.\nCathode (−): attracts positive ions → reduction (gain of electrons).\nAnode (+): attracts negative ions → oxidation (loss of electrons).\nOil Rig: Oxidation Is Loss, Reduction Is Gain."},
-            {"heading": "Molten Compounds",
-             "content": "Simple rule: positive metal ion → cathode → reduced to metal element.\nNegative non-metal ion → anode → oxidised to element.\nExample: molten PbBr₂:\nCathode: Pb²⁺ + 2e⁻ → Pb (lead metal deposited).\nAnode: 2Br⁻ → Br₂ + 2e⁻ (bromine gas)."},
-            {"heading": "Aqueous Solutions",
-             "content": "Water provides H⁺ and OH⁻ ions that compete with the dissolved ions.\nCathode: H₂ produced if metal is more reactive than hydrogen (H⁺ discharged instead of metal ion).\nAnode: O₂ produced if no halide present (OH⁻ discharged). Halogen gas produced if halide present.\nExample: brine (NaCl aq): cathode → H₂, anode → Cl₂, remaining solution → NaOH."},
-            {"heading": "Electroplating and Industrial Uses",
-             "content": "Electroplating: coat object in thin metal layer (protection/appearance).\nObject = cathode. Plating metal = anode. Solution = salt of plating metal.\nExtract reactive metals (Al from molten aluminium oxide).\nPurify copper: impure Cu anode dissolves, pure Cu deposits at cathode."}
-        ],
-        "variables": [],
-        "equations": [
-            "Cathode: positive ions + electrons → reduced to element",
-            "Anode: negative ions − electrons → oxidised to element"
-        ],
-        "common_mistake": "Anode is POSITIVE and attracts NEGATIVE ions. Cathode is NEGATIVE and attracts POSITIVE ions. Students often mix these up — remember: CAThode = CATions (positive ions go there).",
-        "key_note": "Oil Rig: Oxidation Is Loss (of electrons), Reduction Is Gain (of electrons). Anode = oxidation. Cathode = reduction.",
-        "higher": "Half equations: Cu²⁺ + 2e⁻ → Cu (cathode). 2Cl⁻ → Cl₂ + 2e⁻ (anode).",
-        "triple_only": None, "rp": "RP2 — Electrolysis of copper sulfate solution: observe copper depositing at cathode.",
-        "matching": {
-            "title": "Match the Electrode to What Happens",
-            "instruction": "Match each scenario to the correct electrode product.",
-            "pairs": [
-                ("Cathode — molten PbBr₂", "Lead metal deposited"),
-                ("Anode — molten PbBr₂", "Bromine gas produced"),
-                ("Cathode — brine (NaCl aq)", "Hydrogen gas produced"),
-                ("Anode — brine (NaCl aq)", "Chlorine gas produced"),
-                ("Cathode — CuSO₄ aq", "Copper deposited"),
-                ("Anode — CuSO₄ aq", "Oxygen gas produced"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "At which electrode does reduction occur?",
-             "opts": [("Cathode (−)", True), ("Anode (+)", False), ("Both", False), ("Neither", False)],
-             "wrong_explanations": {1: "Anode = OXIDATION (anions lose electrons). Cathode = REDUCTION (cations gain electrons).", 2: "Each electrode has a different process — not both.", 3: "Reduction definitely happens — at the cathode."}},
-            {"q": "Lead bromide is electrolysed when molten. What forms at the anode?",
-             "opts": [("Bromine gas", True), ("Lead metal", False), ("Oxygen gas", False), ("Lead bromide gas", False)],
-             "wrong_explanations": {1: "Lead deposits at the CATHODE — Pb²⁺ ions go to the negative electrode.", 2: "Oxygen would form from OH⁻ in water — molten PbBr₂ has no water.", 3: "Lead bromide is the electrolyte — it doesn't reform as a gas."}},
-            {"q": "Brine (sodium chloride solution) is electrolysed. What is produced at the cathode?",
-             "opts": [("Hydrogen gas", True), ("Chlorine gas", False), ("Sodium metal", False), ("Oxygen gas", False)],
-             "wrong_explanations": {1: "Chlorine is produced at the ANODE (Cl⁻ ions → Cl₂ + e⁻).", 2: "In aqueous solution, H⁺ from water is discharged instead of Na⁺ (sodium is too reactive).", 3: "Oxygen comes from OH⁻ ions — but in brine, Cl⁻ is preferentially discharged at the anode."}},
-            {"q": "What does Oil Rig stand for?",
-             "opts": [("Oxidation Is Loss of electrons, Reduction Is Gain of electrons", True), ("Oxidation Is Large, Reduction Is Gentle", False), ("Only In Lab, Reactions Improve Growth", False), ("It's just a made-up memory trick with no meaning", False)],
-             "wrong_explanations": {1: "These don't match the actual electrochemistry.", 2: "Definitely not! Oil Rig is a real memory aid: Oxidation Is Loss, Reduction Is Gain — of electrons.", 3: "Oil Rig is a genuine scientific memory aid used worldwide for remembering electron transfer."}},
-            {"q": "What is electroplating used for?",
-             "opts": [("Depositing a thin metal layer onto an object for protection or appearance", True), ("Extracting metals from their ores", False), ("Purifying water", False), ("Measuring pH", False)],
-             "wrong_explanations": {1: "Extracting metals uses electrolysis of MOLTEN ores — electroplating is about coating an existing object.", 2: "Water purification uses filtration, chlorination etc — not electroplating.", 3: "pH meters use electrical sensors — completely unrelated to electroplating."}}
-        ]
-    },
-],
-
-"rates-equilibrium": [
-    {
-        "id": "rate-collision-theory",
-        "title": "Rate of Reaction and Collision Theory",
-        "spec": "4.6.1",
-        "summary": "Explain rate of reaction using collision theory and identify factors affecting it.",
-        "theory": [
-            {"heading": "Rate of Reaction",
-             "content": "Rate = how quickly reactants become products.\nMeasured as: amount of product formed per unit time, or amount of reactant used per unit time.\nFaster rate = steeper graph at the start.\nRate = quantity ÷ time (e.g. g/s, cm³/s)."},
-            {"heading": "Collision Theory",
-             "content": "Reactions happen when particles collide with SUFFICIENT ENERGY.\nActivation energy = minimum energy needed for a successful collision.\nMore frequent collisions + more energetic collisions = faster rate.\nAny factor increasing collision frequency or energy speeds up the reaction."},
-            {"heading": "Factors Affecting Rate",
-             "content": "Temperature ↑ → particles move faster → more collisions AND more exceed activation energy → big rate increase.\nConcentration ↑ → more particles per volume → more frequent collisions → faster rate.\nSurface area ↑ → more exposed reactant surface → more contact → faster rate.\nCatalyst → lowers activation energy → more particles can react → faster rate."},
-            {"heading": "Catalysts",
-             "content": "Speed up reactions without being consumed.\nProvide an alternative pathway with lower activation energy.\nEnzymes = biological catalysts (proteins).\nIndustrial: iron (Haber), platinum (catalytic converter), vanadium pentoxide (Contact process).\nCatalysts allow lower operating temperatures → saves energy → cheaper."}
-        ],
-        "variables": [],
-        "equations": ["Rate = quantity ÷ time"],
-        "common_mistake": "A catalyst is NOT used up — it's unchanged at the end. Also, temperature affects rate much MORE dramatically than concentration because it affects BOTH collision frequency AND the proportion of particles above activation energy.",
-        "key_note": None,
-        "higher": "Maxwell-Boltzmann distribution: at higher temperatures, more particles exceed activation energy. Catalyst lowers the activation energy line — same distribution, more particles qualify.",
-        "triple_only": None,
-        "rp": ["RP4 — sodium thiosulfate + HCl: measure time for solution to turn cloudy (X disappears)", "RP5 — marble chips + HCl: measure mass loss over time"],
-        "matching": {
-            "title": "Match the Factor to its Effect on Rate",
-            "instruction": "Match each factor to how it increases the rate of reaction.",
-            "pairs": [
-                ("Temperature increase", "Particles move faster — more and higher-energy collisions"),
-                ("Concentration increase", "More particles per unit volume — more frequent collisions"),
-                ("Surface area increase", "More reactant exposed — more collisions possible"),
-                ("Catalyst added", "Lowers activation energy — more particles have enough energy"),
-            ]
-        },
-        "fifas": [
-            {"label": "Example — Rate calculation",
-             "question": "24 cm³ of gas is produced in 40 seconds. Calculate the average rate.",
-             "steps": [("F","Rate = quantity ÷ time"), ("I","Rate = 24 ÷ 40"), ("F","No unit conversion needed"), ("A","Rate = 0.6 cm³/s")]}
-        ],
-        "quiz": [
-            {"q": "What is activation energy?",
-             "opts": [("Minimum energy needed for a collision to cause a reaction", True), ("Total energy released in the reaction", False), ("Energy stored in chemical bonds", False), ("Energy of the catalyst", False)],
-             "wrong_explanations": {1: "Total energy released = enthalpy change (ΔH) — not activation energy.", 2: "Bond energy is energy to break bonds — activation energy is the reaction energy barrier.", 3: "Catalysts don't store energy — they lower the activation energy."}},
-            {"q": "How does increasing temperature increase rate?",
-             "opts": [("Particles move faster — more frequent and more energetic collisions", True), ("It adds more reactant particles", False), ("It melts the reactants", False), ("It raises the activation energy", False)],
-             "wrong_explanations": {1: "Temperature doesn't add particles — it gives energy to existing ones.", 2: "Melting only applies to solids. The mechanism is increased particle speed.", 3: "Catalysts LOWER activation energy — temperature doesn't change it."}},
-            {"q": "Marble chips are replaced with marble powder (same mass). What happens to the rate?",
-             "opts": [("Rate increases — more surface area exposed to acid", True), ("Rate decreases — smaller pieces have less mass", False), ("Rate stays the same — same number of moles", False), ("Rate increases — powder dissolves better", False)],
-             "wrong_explanations": {1: "Same mass = same moles. Rate is affected by SURFACE AREA, not by mass alone.", 2: "Same moles means same total amount — but surface area is much greater for powder, giving faster collisions.", 3: "CaCO₃ doesn't dissolve — it reacts. Surface area determines how quickly acid can reach the solid."}},
-            {"q": "What is the correct definition of rate of reaction?",
-             "opts": [("The change in quantity of reactant or product per unit time", True), ("The total energy released", False), ("The temperature change during reaction", False), ("The time taken for the reaction to complete", False)],
-             "wrong_explanations": {1: "Total energy released = enthalpy change — not rate.", 2: "Temperature change is measured in calorimetry — it's related to energy, not rate.", 3: "Time to complete is inversely related to rate — but rate itself is change per unit time, not total time."}},
-            {"q": "20 cm³ of gas produced in 50 s. What is the rate?",
-             "opts": [("0.4 cm³/s", True), ("1000 cm³/s", False), ("30 cm³/s", False), ("0.0025 cm³/s", False)],
-             "wrong_explanations": {1: "You multiplied: 20 × 50 = 1000. Rate = quantity ÷ time = 20 ÷ 50 = 0.4 cm³/s.", 2: "You added quantity and time. Rate = 20 ÷ 50 = 0.4 cm³/s.", 3: "You divided time by quantity. Rate = quantity ÷ time = 20 ÷ 50 = 0.4 cm³/s."}}
-        ]
-    },
-    {
-        "id": "equilibrium-le-chatelier",
-        "title": "Equilibrium and Le Chatelier's Principle",
-        "spec": "4.6.2",
-        "summary": "Describe dynamic equilibrium and apply Le Chatelier's principle to predict shifts.",
-        "theory": [
-            {"heading": "Reversible Reactions",
-             "content": "A reversible reaction can go both forward and backward: A + B ⇌ C + D.\nIn a closed system, both directions happen simultaneously.\nAt equilibrium: rate forward = rate reverse → concentrations stay constant.\nEquilibrium is dynamic — reactions are still happening, just at equal rates."},
-            {"heading": "Le Chatelier's Principle",
-             "content": "If conditions change, equilibrium shifts to OPPOSE the change.\nIncrease reactant concentration → shifts right (makes more product).\nIncrease temperature → shifts in the ENDOTHERMIC direction.\nIncrease pressure (gases) → shifts to FEWER moles of gas side."},
-            {"heading": "The Haber Process",
-             "content": "N₂ + 3H₂ ⇌ 2NH₃  (forward reaction is exothermic, ΔH = −92 kJ/mol)\nTemperature: ~450°C — compromise between rate (needs heat) and yield (lower temp favours NH₃).\nPressure: ~200 atm — favours NH₃ side (4 mol gas → 2 mol gas) but is expensive.\nCatalyst: iron — speeds equilibrium without shifting position.\nYield: ~15% — unreacted N₂ and H₂ recycled."},
-            {"heading": "Why Not Change Conditions to Maximise Yield?",
-             "content": "Lower temperature → more NH₃ at equilibrium BUT too slow to be economical.\nHigher pressure → more NH₃ BUT very expensive equipment, safety risk.\n450°C and 200 atm are the industrial compromise.\nThe catalyst is essential — without it, equilibrium would be reached too slowly at 450°C."}
-        ],
-        "variables": [],
-        "equations": ["N₂ + 3H₂ ⇌ 2NH₃"],
-        "common_mistake": "A catalyst does NOT change equilibrium position — it speeds up reaching equilibrium but the final ratio of products to reactants is the same. Only temperature and pressure change the equilibrium POSITION.",
-        "key_note": "Le Chatelier: changes are opposed. Endothermic forward → increase temp = more product. Fewer gas moles → increase pressure = more product.",
-        "higher": "Equilibrium constant (Kc): concentration of products over reactants. Temperature is the ONLY thing that changes Kc.",
-        "triple_only": None, "rp": None, "matching": None,
-        "fifas": [],
-        "quiz": [
-            {"q": "The Haber process forward reaction is exothermic. Increasing temperature shifts equilibrium — which way?",
-             "opts": [("Left — less ammonia produced", True), ("Right — more ammonia produced", False), ("No effect", False), ("Depends on pressure", False)],
-             "wrong_explanations": {1: "Increasing temperature favours the ENDOTHERMIC direction. The forward (exothermic) reaction is disfavoured — equilibrium shifts LEFT.", 2: "Temperature always affects equilibrium — it shifts in the endothermic direction.", 3: "Temperature and pressure both independently affect equilibrium."}},
-            {"q": "What does a catalyst do to a reaction at equilibrium?",
-             "opts": [("Speeds up reaching equilibrium — doesn't change equilibrium position", True), ("Shifts equilibrium to the right", False), ("Increases the yield of product", False), ("Prevents the reverse reaction", False)],
-             "wrong_explanations": {1: "Only temperature and pressure shift equilibrium position — not catalysts.", 2: "A catalyst can't create more product — it just helps reach the same equilibrium faster.", 3: "The reverse reaction still happens — catalysts speed up BOTH directions equally."}},
-            {"q": "In the Haber process, why is 200 atm pressure used instead of 1000 atm?",
-             "opts": [("1000 atm would be very expensive and dangerous — 200 atm is a practical compromise", True), ("1000 atm shifts equilibrium left", False), ("1000 atm would melt the iron catalyst", False), ("Higher pressure decreases yield in this reaction", False)],
-             "wrong_explanations": {1: "Increasing pressure in the Haber process shifts equilibrium RIGHT (towards fewer moles of gas) — it would increase yield.", 2: "The iron catalyst melts at ~1538°C — pressure doesn't melt it.", 3: "Higher pressure increases yield (favours 2 moles NH₃ over 4 moles N₂+H₂). The issue is cost and safety."}},
-            {"q": "What is meant by dynamic equilibrium?",
-             "opts": [("Forward and reverse reactions occur at equal rates — concentrations are constant but not zero", True), ("The reaction has stopped completely", False), ("Only the forward reaction is occurring", False), ("Reactant and product concentrations are equal", False)],
-             "wrong_explanations": {1: "Equilibrium means both reactions are STILL happening — not that they've stopped.", 2: "Only one direction = not equilibrium. At equilibrium both forward and reverse occur simultaneously.", 3: "Concentrations are CONSTANT at equilibrium but not necessarily equal — the ratio depends on the specific equilibrium."}}
-        ]
-    },
-],
-
-"organic": [
-    {
-        "id": "hydrocarbons",
-        "title": "Hydrocarbons — Alkanes and Alkenes",
-        "spec": "4.7.1",
-        "summary": "Describe the structure and reactions of alkanes and alkenes.",
-        "theory": [
-            {"heading": "Crude Oil and Hydrocarbons",
-             "content": "Crude oil = mixture of hydrocarbons (C and H only).\nSeparated by fractional distillation — different fractions condense at different temperatures.\nShorter chains: lower bp, more flammable, less viscous, more useful as fuels.\nLonger chains: higher bp, more viscous, less flammable, used in tarmac and lubricants."},
-            {"heading": "Alkanes — Saturated Hydrocarbons",
-             "content": "General formula: CₙH₂ₙ₊₂. Single bonds only — SATURATED.\nMethane (CH₄), ethane (C₂H₆), propane (C₃H₈), butane (C₄H₁₀).\nComplete combustion: CₙH₂ₙ₊₂ + O₂ → CO₂ + H₂O.\nIncomplete combustion (limited O₂): produces CO (toxic) + carbon soot."},
-            {"heading": "Alkenes — Unsaturated Hydrocarbons",
-             "content": "General formula: CₙH₂ₙ. Contains a C=C double bond — UNSATURATED.\nEthene (C₂H₄), propene (C₃H₆).\nMore reactive than alkanes — double bond available for addition reactions.\nTest: bromine water — decolourised by alkenes (orange → colourless). Alkanes: no reaction."},
-            {"heading": "Cracking",
-             "content": "Long-chain alkanes cracked → shorter alkanes + alkenes.\nThermal cracking: 700–1200°C, no catalyst.\nCatalytic cracking: ~500°C, aluminium oxide catalyst.\nImportant because demand for short-chain fuels (petrol) exceeds supply from distillation.\nAlkenes produced are used for making polymers (plastics)."}
-        ],
-        "variables": [],
-        "equations": ["Alkanes: CₙH₂ₙ₊₂", "Alkenes: CₙH₂ₙ"],
-        "common_mistake": "Alkanes are SATURATED (single bonds only). Alkenes are UNSATURATED (C=C double bond). The bromine water test distinguishes them: alkenes decolourise it, alkanes don't.",
-        "key_note": "Bromine water: decolourised = alkene (unsaturated). Stays orange = alkane (saturated).",
-        "higher": "Addition reactions of alkenes: add H₂ (hydrogenation), HBr, or H₂O (hydration) across the double bond.",
-        "triple_only": "Amino acids: H₂N-CHR-COOH. Condensation polymerisation forms proteins (peptide bonds) and polyesters/polyamides.",
-        "rp": None,
-        "matching": {
-            "title": "Alkane or Alkene?",
-            "instruction": "Sort each property into alkane or alkene.",
-            "pairs": [
-                ("Alkane", "General formula CₙH₂ₙ₊₂, saturated"),
-                ("Alkene", "General formula CₙH₂ₙ, unsaturated"),
-                ("Alkene", "Decolourises bromine water"),
-                ("Alkane", "Doesn't react with bromine water"),
-                ("Both", "Combust in oxygen to produce CO₂ and H₂O"),
-                ("Alkene", "Used to make addition polymers"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "What is the general formula for alkenes?",
-             "opts": [("CₙH₂ₙ", True), ("CₙH₂ₙ₊₂", False), ("CₙH₂ₙ₋₂", False), ("CₙHₙ", False)],
-             "wrong_explanations": {1: "CₙH₂ₙ₊₂ is for ALKANES — saturated, single bonds only.", 2: "CₙH₂ₙ₋₂ is for alkynes (triple bond) — not on GCSE spec.", 3: "CₙHₙ isn't a real GCSE homologous series."}},
-            {"q": "Bromine water stays orange when added to an unknown gas. What does this tell you?",
-             "opts": [("The gas is an alkane — saturated, no double bond", True), ("The gas is an alkene", False), ("The gas is hydrogen", False), ("The gas is carbon dioxide", False)],
-             "wrong_explanations": {1: "Alkenes DECOLOURISE bromine water — if it stays orange, there's no C=C double bond.", 2: "Hydrogen doesn't react with bromine water at room temperature in this way.", 3: "CO₂ doesn't decolourise bromine water — it turns limewater cloudy."}},
-            {"q": "What is produced in incomplete combustion of a hydrocarbon?",
-             "opts": [("Carbon monoxide and soot (carbon)", True), ("Carbon dioxide and water", False), ("Oxygen and carbon", False), ("Hydrogen and carbon dioxide", False)],
-             "wrong_explanations": {1: "CO₂ + H₂O = COMPLETE combustion (excess oxygen). Incomplete = limited O₂ → CO + soot.", 2: "Oxygen is a reactant — it's not produced. Limited O₂ → CO + carbon soot.", 3: "Hydrogen stays bonded as H₂O — incomplete combustion produces CO, not H₂."}},
-            {"q": "Why is cracking important in the oil industry?",
-             "opts": [("Converts less useful long-chain hydrocarbons into more useful shorter ones", True), ("Removes sulfur from crude oil", False), ("Converts alkenes into alkanes", False), ("Purifies crude oil by removing water", False)],
-             "wrong_explanations": {1: "Desulfurisation removes sulfur — cracking changes chain length.", 2: "Cracking breaks long chains into short ones — producing alkenes, not converting them to alkanes.", 3: "Fractional distillation separates crude oil — cracking modifies the hydrocarbons."}},
-            {"q": "Ethene (C₂H₄) reacts with bromine (Br₂). What type of reaction is this?",
-             "opts": [("Addition reaction — bromine adds across the C=C double bond", True), ("Substitution reaction", False), ("Combustion", False), ("Cracking", False)],
-             "wrong_explanations": {1: "Substitution is for alkanes reacting with halogens in UV light — not alkenes with bromine water.", 2: "Combustion requires oxygen and produces CO₂ and H₂O — not what happens here.", 3: "Cracking breaks long chains — this reaction is a small molecule adding across a double bond."}}
-        ]
-    },
-],
-
-"analysis": [
-    {
-        "id": "chemical-tests",
-        "title": "Chemical Analysis and Identifying Substances",
-        "spec": "4.8",
-        "summary": "Use chromatography, flame tests and chemical tests to identify unknown substances.",
-        "theory": [
-            {"heading": "Pure Substances and Chromatography",
-             "content": "A pure substance has a sharp, single melting point.\nA mixture melts over a range — or shows multiple spots on chromatography.\nRf = distance moved by spot ÷ distance moved by solvent front.\nRf is always between 0 and 1.\nSame Rf in same solvent = same substance."},
-            {"heading": "Flame Tests",
-             "content": "Li⁺: crimson red. Na⁺: yellow/orange. K⁺: lilac/violet.\nCa²⁺: orange-red. Cu²⁺: blue-green. Ba²⁺: green.\nMethod: clean platinum wire → dip in sample → blue Bunsen flame.\nSodium is very easy to see — even tiny traces give bright yellow."},
-            {"heading": "Testing for Gases",
-             "content": "H₂: burning splint → squeaky pop.\nO₂: glowing splint → relights.\nCO₂: limewater → turns milky/cloudy.\nCl₂: damp blue litmus → turns red then bleaches white."},
-            {"heading": "Testing for Ions",
-             "content": "Carbonate (CO₃²⁻): add dilute acid → fizzes, CO₂ produced → limewater test confirms.\nHalides (Cl⁻, Br⁻, I⁻): add dilute HNO₃ then silver nitrate → white (Cl⁻), cream (Br⁻), yellow (I⁻) precipitate.\nSulfate (SO₄²⁻): add dilute HCl then barium chloride → white precipitate (BaSO₄).\nAmmonium (NH₄⁺): add NaOH and warm → ammonia gas (turns damp red litmus blue)."}
-        ],
-        "variables": [],
-        "equations": ["Rf = distance moved by spot ÷ distance moved by solvent"],
-        "common_mistake": "Rf values CANNOT be greater than 1. If yours is above 1, check your measurements. Also — sodium gives YELLOW/ORANGE flame, not yellow-green. Barium gives green. Don't mix them up!",
-        "key_note": None,
-        "higher": "Mass spectrometry: molecular ion peak = Mr of compound. IR spectroscopy: identifies functional groups from absorption pattern.",
-        "triple_only": None,
-        "rp": ["RP6 — Paper chromatography to identify food dyes", "RP7 — Identify ions using flame tests and precipitation reactions"],
-        "matching": {
-            "title": "Match the Metal Ion to its Flame Colour",
-            "instruction": "Match each ion to the correct flame test result.",
-            "pairs": [
-                ("Lithium Li⁺", "Crimson red"),
-                ("Sodium Na⁺", "Yellow / orange"),
-                ("Potassium K⁺", "Lilac / violet"),
-                ("Calcium Ca²⁺", "Orange-red"),
-                ("Copper Cu²⁺", "Blue-green"),
-                ("Barium Ba²⁺", "Green"),
-            ]
-        },
-        "fifas": [
-            {"label": "Example — Rf calculation",
-             "question": "A spot travels 3.6 cm. The solvent front travels 9.0 cm. Calculate Rf.",
-             "steps": [("F","Rf = distance by spot ÷ distance by solvent"), ("I","Rf = 3.6 ÷ 9.0"), ("F","Check: must be between 0 and 1"), ("A","Rf = 0.4")]}
-        ],
-        "quiz": [
-            {"q": "What colour flame does potassium produce?",
-             "opts": [("Lilac/violet", True), ("Yellow/orange", False), ("Crimson red", False), ("Blue-green", False)],
-             "wrong_explanations": {1: "Yellow/orange = SODIUM. Very common mix-up — potassium gives lilac/violet.", 2: "Crimson red = LITHIUM. Li is red like a ruby.", 3: "Blue-green = COPPER. Distinctive for copper compounds."}},
-            {"q": "How do you test for hydrogen gas?",
-             "opts": [("Burning splint — gives a squeaky pop", True), ("Glowing splint — relights", False), ("Limewater — turns cloudy", False), ("Damp litmus — bleaches", False)],
-             "wrong_explanations": {1: "Glowing splint relighting = OXYGEN.", 2: "Limewater cloudy = CARBON DIOXIDE.", 3: "Litmus bleaching = CHLORINE."}},
-            {"q": "A sample gives two spots on chromatography. What does this mean?",
-             "opts": [("The sample is a mixture of at least two substances", True), ("The sample is very pure", False), ("The Rf is greater than 1", False), ("The solvent was too hot", False)],
-             "wrong_explanations": {1: "One spot = pure substance. Two spots = mixture (two components with different Rf values).", 2: "Rf cannot be greater than 1 — the spot cannot travel further than the solvent.", 3: "Solvent temperature can affect separation but doesn't explain why two spots appear for a mixture."}},
-            {"q": "Silver nitrate solution gives a yellow precipitate with an unknown solution. Which ion is present?",
-             "opts": [("Iodide (I⁻)", True), ("Chloride (Cl⁻)", False), ("Bromide (Br⁻)", False), ("Sulfate (SO₄²⁻)", False)],
-             "wrong_explanations": {1: "Chloride gives a WHITE precipitate (AgCl).", 2: "Bromide gives a CREAM precipitate (AgBr). Yellow = iodide.", 3: "Sulfate is tested with barium chloride — not silver nitrate."}},
-            {"q": "What is the maximum Rf value possible?",
-             "opts": [("1.0", True), ("Greater than 1 if substance is very soluble", False), ("10", False), ("It varies with temperature", False)],
-             "wrong_explanations": {1: "Rf CANNOT exceed 1 — the spot can never travel further than the solvent front. If yours is >1, you measured wrong.", 2: "Rf scale is 0 to 1, not 0 to 10.", 3: "Temperature affects separation speed but Rf is always a ratio between 0 and 1."}}
-        ]
-    },
-],
-
-"atmosphere": [
-    {
-        "id": "atmosphere-climate",
-        "title": "The Atmosphere and Climate Change",
-        "spec": "4.9",
-        "summary": "Describe the composition of the atmosphere, the greenhouse effect and human impact.",
-        "theory": [
-            {"heading": "Current Composition",
-             "content": "Nitrogen (N₂): ~78%. Oxygen (O₂): ~21%. Argon (Ar): ~1%.\nCarbon dioxide (CO₂): ~0.04% (increasing due to human activity).\nPlus water vapour and trace gases.\nProportions have been roughly stable for ~200 million years."},
-            {"heading": "Evolution of the Atmosphere",
-             "content": "Early Earth: volcanoes released CO₂, water vapour, N₂. Very little or no oxygen.\nOceans formed as water vapour condensed.\nPhotosynthesis (early algae/plants): consumed CO₂, released O₂ → oxygen levels rose.\nCarbon locked in fossil fuels (dead organisms compressed over millions of years)."},
-            {"heading": "The Greenhouse Effect",
-             "content": "Greenhouse gases (CO₂, methane CH₄, water vapour H₂O) absorb outgoing infrared radiation.\nNatural greenhouse effect: keeps Earth warm enough for life (~+33°C above no-atmosphere temperature).\nEnhanced greenhouse effect: burning fossil fuels, deforestation, farming → more CO₂ and CH₄.\nMore greenhouse gas → more IR absorbed → Earth warms further → climate change."},
-            {"heading": "Consequences and Solutions",
-             "content": "Rising temperatures → melting ice → rising sea levels → flooding of low-lying land.\nMore extreme weather events. Disruption to ecosystems.\nSolutions: renewable energy, electric vehicles, reforestation, carbon capture, nuclear power, reduce meat consumption.\nCarbon footprint = total CO₂ equivalent produced by an activity or person."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "The greenhouse effect is NOT inherently bad — without it Earth would be about −18°C. It's the ENHANCED greenhouse effect from human activities that causes climate change. Also: water vapour is actually the most abundant greenhouse gas — not CO₂.",
-        "key_note": "Atmosphere: 78% N₂, 21% O₂, 1% Ar, 0.04% CO₂. Greenhouse gases: CO₂, CH₄, H₂O vapour.",
-        "higher": "Evaluating climate change evidence: ice cores show CO₂ and temperature correlation over 800,000 years. Scientific consensus overwhelmingly supports human-caused warming.",
-        "triple_only": None, "rp": None,
-        "matching": {
-            "title": "Match the Gas to its Role",
-            "instruction": "Match each gas to its significance.",
-            "pairs": [
-                ("Nitrogen (N₂)", "~78% — mostly unreactive, used for making fertilisers"),
-                ("Oxygen (O₂)", "~21% — essential for combustion and aerobic respiration"),
-                ("Carbon dioxide (CO₂)", "Greenhouse gas — absorbed by plants in photosynthesis"),
-                ("Methane (CH₄)", "Potent greenhouse gas — from cattle and landfill"),
-                ("Argon (Ar)", "~1% — noble gas, completely inert"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "What percentage of the atmosphere is nitrogen?",
-             "opts": [("~78%", True), ("~21%", False), ("~1%", False), ("~0.04%", False)],
-             "wrong_explanations": {1: "~21% is OXYGEN — the second most abundant gas.", 2: "~1% is ARGON.", 3: "~0.04% is CO₂ — tiny but crucial."}},
-            {"q": "What process increased oxygen in the early atmosphere?",
-             "opts": [("Photosynthesis by early plants and algae", True), ("Volcanic eruptions", False), ("Decomposition", False), ("Evaporation of water", False)],
-             "wrong_explanations": {1: "Volcanoes released CO₂ and water vapour — not oxygen.", 2: "Aerobic decomposition USES oxygen — doesn't produce it.", 3: "Evaporation forms clouds and rain — it doesn't produce oxygen."}},
-            {"q": "Which gas is most associated with cattle farming as a greenhouse gas?",
-             "opts": [("Methane (CH₄)", True), ("Carbon dioxide (CO₂)", False), ("Nitrogen (N₂)", False), ("Argon (Ar)", False)],
-             "wrong_explanations": {1: "CO₂ is mainly from burning fossil fuels and deforestation.", 2: "Nitrogen is unreactive at room temperature — not a greenhouse gas.", 3: "Argon is a noble gas — completely inert and not a greenhouse gas."}},
-            {"q": "What is a carbon footprint?",
-             "opts": [("Total CO₂ equivalent greenhouse gas emissions from an activity", True), ("The amount of carbon in a substance", False), ("A carbon stain left on equipment", False), ("The mass of coal burned per year", False)],
-             "wrong_explanations": {1: "Carbon content of a substance is nothing to do with carbon footprint.", 2: "Carbon footprint is a measure of environmental impact — not a physical mark.", 3: "Carbon footprint covers ALL activities, not just coal burning."}},
-            {"q": "How does deforestation contribute to climate change?",
-             "opts": [("Trees absorb CO₂ — removing them reduces uptake and releases stored carbon", True), ("Trees produce methane when they decompose", False), ("Forests cool the air — removing them warms it", False), ("Roots lock CO₂ underground", False)],
-             "wrong_explanations": {1: "Decomposing trees do release some CO₂ (and small amounts of methane) but the main issue is loss of photosynthetic CO₂ absorption.", 2: "Forests do have a cooling microclimate effect, but the main climate issue is CO₂ balance.", 3: "It's LEAVES that absorb CO₂ through photosynthesis — not roots locking it underground."}}
-        ]
-    },
-],
-
-"resources": [
-    {
-        "id": "haber-resources",
-        "title": "The Haber Process, Fertilisers and Using Resources",
-        "spec": "4.10",
-        "summary": "Explain the Haber process, NPK fertilisers, and evaluate sustainable use of resources.",
-        "theory": [
-            {"heading": "The Haber Process",
-             "content": "Reaction: N₂ + 3H₂ ⇌ 2NH₃ (exothermic forward reaction).\nRaw materials: N₂ from fractional distillation of air; H₂ from natural gas + steam.\nConditions: ~450°C, ~200 atm, iron catalyst.\nYield: ~15% per pass — unreacted gases are recycled."},
-            {"heading": "NPK Fertilisers",
-             "content": "Plants need N (nitrogen for protein/growth), P (phosphorus for DNA/roots), K (potassium for enzymes).\nNPK fertilisers contain compounds supplying all three.\nExcessive use causes eutrophication: fertilisers wash into rivers → algal bloom → O₂ depleted → fish die.\nAmmonia → nitric acid + ammonia → ammonium nitrate (N-rich fertiliser)."},
-            {"heading": "Life Cycle Assessment (LCA)",
-             "content": "LCA evaluates the environmental impact of a product throughout its entire life.\nStages: obtaining raw materials → manufacturing → use → disposal.\nAll stages considered: energy use, water use, waste produced, CO₂ emissions.\nHelps compare products — e.g. is a reusable bag better than disposable?"},
-            {"heading": "Water Treatment",
-             "content": "Drinking water must be safe.\nSteps: sedimentation → filtration (sand/gravel) → chlorination (kills bacteria).\nDistilled water (pure): used in labs — but too expensive for drinking water at scale.\nFluoridation: some areas add fluoride to prevent tooth decay (controversial)."}
-        ],
-        "variables": [],
-        "equations": ["N₂ + 3H₂ ⇌ 2NH₃"],
-        "common_mistake": "Higher temperature reduces ammonia yield (exothermic forward reaction disfavoured at high temp). Lower temperature increases yield but slows rate. 450°C is the compromise.",
-        "key_note": "Haber conditions: 450°C, 200 atm, iron catalyst, recycled unreacted gases.",
-        "higher": "Atom economy of Haber process = 100% (only one product — NH₃). % yield is low (~15%) because equilibrium favours reactants at these conditions.",
-        "triple_only": None, "rp": None, "matching": None,
-        "fifas": [],
-        "quiz": [
-            {"q": "What are the conditions for the Haber process?",
-             "opts": [("~450°C, ~200 atm, iron catalyst", True), ("~100°C, ~1 atm, platinum catalyst", False), ("~1000°C, ~500 atm, no catalyst", False), ("Room temperature, ~200 atm, iron catalyst", False)],
-             "wrong_explanations": {1: "100°C and 1 atm would give very low yield and negligible rate.", 2: "1000°C shifts equilibrium strongly left (exothermic reaction) — almost no ammonia would form.", 3: "Room temperature is far too slow — the iron catalyst needs heat to work effectively."}},
-            {"q": "Why does high temperature reduce ammonia yield in the Haber process?",
-             "opts": [("The forward reaction is exothermic — high temp favours the endothermic reverse reaction", True), ("Iron catalyst doesn't work at high temperatures", False), ("High temperature increases pressure too much", False), ("Nitrogen and hydrogen don't react at high temperatures", False)],
-             "wrong_explanations": {1: "Iron works fine at 450°C — the equilibrium shift is the real reason for lower yield.", 2: "Temperature and pressure are independent variables in the Haber process.", 3: "N₂ and H₂ DO react at high temperatures — the issue is that equilibrium favours the reverse reaction."}},
-            {"q": "What causes eutrophication?",
-             "opts": [("Excess fertiliser washes into water — algae bloom uses up all the oxygen", True), ("Burning fuels releases CO₂ into lakes", False), ("Industrial waste heats up rivers", False), ("Plastic waste blocks river flow", False)],
-             "wrong_explanations": {1: "CO₂ from burning fuels contributes to acidification of oceans — not directly eutrophication.", 2: "Thermal pollution is different — it reduces dissolved oxygen but not through algal blooms.", 3: "Plastic causes habitat damage and wildlife harm — not eutrophication (nutrient excess)."}},
-            {"q": "What is a Life Cycle Assessment (LCA)?",
-             "opts": [("An evaluation of the environmental impact of a product from raw material to disposal", True), ("A test to see how long a product lasts", False), ("A calculation of profit over a product's lifetime", False), ("An assessment of worker safety during manufacturing", False)],
-             "wrong_explanations": {1: "Product lifetime/durability is separate — LCA is about ENVIRONMENTAL impact at every stage.", 2: "LCA is environmental, not financial.", 3: "Worker safety is health and safety — LCA is about environmental sustainability."}},
-            {"q": "Why are unreacted gases recycled in the Haber process?",
-             "opts": [("Only ~15% converts per pass — recycling improves overall yield and efficiency", True), ("The gases are toxic and can't be released", False), ("Recycling lowers the temperature needed", False), ("It prevents the catalyst from being damaged", False)],
-             "wrong_explanations": {1: "N₂ and H₂ are safe gases — they're recycled for economic reasons, not safety.", 2: "Recycling doesn't change the reaction temperature.", 3: "Gas recycling and catalyst maintenance are separate concerns."}}
-        ]
-    },
-],
-
-"energy-changes": [
-    {
-        "id": "exo-endo-reactions",
-        "title": "Exothermic, Endothermic and Bond Energies",
-        "spec": "4.5",
-        "summary": "Classify reactions and calculate energy changes using bond energies.",
-        "theory": [
-            {"heading": "Exothermic Reactions",
-             "content": "Release energy to surroundings — temperature of surroundings RISES.\nProducts have less energy than reactants.\nΔH is NEGATIVE.\nExamples: combustion, neutralisation, oxidation, respiration, hand warmers, displacement."},
-            {"heading": "Endothermic Reactions",
-             "content": "Absorb energy from surroundings — temperature of surroundings FALLS.\nProducts have more energy than reactants.\nΔH is POSITIVE.\nExamples: photosynthesis, thermal decomposition, dissolving ammonium nitrate, cold packs."},
-            {"heading": "Bond Energies",
-             "content": "Bond BREAKING absorbs energy (endothermic).\nBond FORMING releases energy (exothermic).\nΔH = energy absorbed (breaking bonds in reactants) − energy released (forming bonds in products).\nNegative ΔH = more energy released in forming bonds than absorbed breaking them = exothermic."},
-            {"heading": "Reaction Profiles",
-             "content": "Shows energy of reactants and products on a diagram.\nExothermic: products at lower energy than reactants.\nEndothermic: products at higher energy than reactants.\nActivation energy = energy from reactants to peak (transition state).\nCatalyst: lowers the peak — doesn't change reactant or product energy levels."}
-        ],
-        "variables": [],
-        "equations": ["ΔH = energy in (bond breaking) − energy out (bond forming)"],
-        "common_mistake": "Bond BREAKING absorbs energy. Bond FORMING releases energy. Students always get these backwards. Think: you have to put energy IN to break a bond apart, like pulling something apart.",
-        "key_note": "ΔH negative = exothermic (releases heat). ΔH positive = endothermic (absorbs heat).",
-        "higher": "Bond energy calculation: list every bond broken and formed, calculate total energy in and total energy out, then ΔH = in − out.",
-        "triple_only": None,
-        "rp": "RP3 — Measure temperature changes in neutralisation and displacement reactions using a polystyrene cup calorimeter.",
-        "matching": {
-            "title": "Exothermic or Endothermic?",
-            "instruction": "Sort each reaction correctly.",
-            "pairs": [
-                ("Exothermic", "Combustion of methane"),
-                ("Exothermic", "Neutralisation of HCl and NaOH"),
-                ("Exothermic", "Respiration"),
-                ("Endothermic", "Photosynthesis"),
-                ("Endothermic", "Thermal decomposition of CaCO₃"),
-                ("Endothermic", "Dissolving ammonium nitrate in water"),
-            ]
-        },
-        "fifas": [
-            {"label": "Example — Bond energy calculation",
-             "question": "H₂ + Cl₂ → 2HCl. Bond energies: H−H = 436, Cl−Cl = 242, H−Cl = 431 kJ/mol. Calculate ΔH.",
-             "steps": [("F","ΔH = energy in (bonds broken) − energy out (bonds formed)"), ("I","Energy in: 436 + 242 = 678 kJ. Energy out: 2 × 431 = 862 kJ"), ("F","ΔH = 678 − 862"), ("A","ΔH = −184 kJ/mol (exothermic — more energy released than absorbed)")]}
-        ],
-        "quiz": [
-            {"q": "Which process RELEASES energy?",
-             "opts": [("Bond forming", True), ("Bond breaking", False), ("Both equally", False), ("Neither", False)],
-             "wrong_explanations": {1: "Bond BREAKING absorbs energy — you must PUT IN energy to pull bonds apart.", 2: "Both can't release equally — breaking absorbs, forming releases.", 3: "Both definitely involve energy transfer — just in opposite directions."}},
-            {"q": "ΔH = −350 kJ/mol. What type of reaction?",
-             "opts": [("Exothermic", True), ("Endothermic", False), ("Neutral", False), ("Reversible", False)],
-             "wrong_explanations": {1: "Endothermic has POSITIVE ΔH. Negative ΔH = exothermic.", 2: "Neutral would mean ΔH = 0. −350 kJ/mol is clearly exothermic.", 3: "Reversibility is separate from ΔH sign. Many reversible reactions are exothermic in the forward direction."}},
-            {"q": "On a reaction profile, what does a catalyst change?",
-             "opts": [("It lowers the activation energy peak", True), ("It lowers the energy of the products", False), ("It raises the energy of the reactants", False), ("It changes the overall ΔH", False)],
-             "wrong_explanations": {1: "A catalyst doesn't affect product energy — just the energy barrier (activation energy).", 2: "Reactant energy is unchanged — the catalyst just provides a lower-energy pathway.", 3: "ΔH = energy difference between reactants and products. A catalyst doesn't change either — only the peak."}},
-            {"q": "Which of these is an endothermic process?",
-             "opts": [("Thermal decomposition of calcium carbonate", True), ("Combustion of petrol", False), ("Neutralisation of HCl with NaOH", False), ("Rusting of iron", False)],
-             "wrong_explanations": {1: "Combustion releases energy — exothermic.", 2: "Neutralisation releases heat — exothermic (temperature rises).", 3: "Rusting is oxidation — exothermic (though very slow)."}},
-            {"q": "In a bond energy calculation: energy in = 600 kJ, energy out = 800 kJ. What is ΔH?",
-             "opts": [("−200 kJ (exothermic)", True), ("+200 kJ (endothermic)", False), ("+1400 kJ", False), ("−1400 kJ", False)],
-             "wrong_explanations": {1: "ΔH = in − out = 600 − 800 = −200 kJ. Positive because out > in means more energy released.", 2: "You subtracted the wrong way: ΔH = in − out = 600 − 800 = −200 kJ (negative = exothermic).", 3: "You added in + out = 1400. ΔH = in − out = 600 − 800 = −200 kJ."}}
-        ]
-    },
-],
 }

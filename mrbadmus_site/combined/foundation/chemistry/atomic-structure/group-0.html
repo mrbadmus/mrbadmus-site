@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Group 0 — Noble Gases | Chemistry | MrBadmusAI</title>
+  <link rel="stylesheet" href="/shared/styles.css"/>
+  
+<style>
+:root { --subject: #FF6B6B; }
+.section-title { color: var(--subject); }
+.var-table { display:flex;flex-direction:column;gap:8px; }
+.var-row { display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #FF6B6B; }
+.var-sym { font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:#FF6B6B;min-width:28px; }
+.var-desc { font-size:0.9rem;color:var(--text); }
+.keynote-box { background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.3);border-radius:10px;padding:16px 20px; }
+.mistake-box { background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:16px 20px;margin:16px 0; }
+.mistake-title { font-weight:800;color:#FF6B6B;margin-bottom:8px; }
+.higher-box { background:rgba(255,217,61,0.08);border-left:4px solid #FFD93D;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
+.triple-box { background:rgba(78,205,196,0.08);border-left:4px solid #4ECDC4;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
+.star-rating-card { padding:24px; }
+.stars-row { display:flex;gap:8px;margin:12px 0; }
+.star-btn { background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:0.4;transition:opacity 0.2s,transform 0.1s; }
+.star-btn:hover,.star-btn.star-active { opacity:1; }
+.star-btn.star-active { transform:scale(1.15); }
+.star-labels { display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:8px; }
+.star-feedback { display:none;margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:0.88rem; }
+.quiz-progress { background:rgba(255,255,255,0.05);border-radius:8px;padding:8px 14px;font-size:0.82rem;color:var(--muted);margin-bottom:16px; }
+.quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
+.q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
+.quiz-options { display:flex;flex-direction:column;gap:8px; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt:hover { background:rgba(255,255,255,0.1); }
+.quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
+.quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
+.quiz-fb { display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem;line-height:1.6; }
+.quiz-fb.show { display:block; }
+.quiz-fb.correct-fb { background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:#6BCB77; }
+.quiz-fb.wrong-fb { background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#FF8888; }
+.match-layout { display:flex;gap:20px;flex-wrap:wrap; }
+.match-targets { display:flex;flex-direction:column;gap:10px;flex:1;min-width:200px; }
+.match-target { display:flex;flex-direction:column;gap:6px; }
+.match-term { font-weight:700;font-size:0.9rem; }
+.match-drop { border:2px dashed rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;min-height:40px;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.15s; }
+.match-drop.drag-over { border-color:#FF6B6B;background:rgba(78,205,196,0.08); }
+.match-drop.has-item { color:var(--text);border-style:solid;border-color:rgba(255,255,255,0.2); }
+.match-drop.match-correct { border-color:#6BCB77;background:rgba(107,203,119,0.1); }
+.match-drop.match-wrong { border-color:#FF6B6B;background:rgba(255,107,107,0.1); }
+.match-defs { display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px; }
+.match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
+.match-def:hover { background:rgba(255,255,255,0.12); }
+.match-def.dragging { opacity:0.5; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn { background:#FF6B6B;color:#0F0F1A; }
+.match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
+.match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
+.match-result-win { background:rgba(107,203,119,0.15);color:#6BCB77; }
+.match-result-partial { background:rgba(255,107,107,0.12);color:#FF8888; }
+.fifa-label { font-size:0.75rem;font-weight:800;color:#FF6B6B;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px; }
+</style>
+</head>
+<body>
+  <nav class="nav">
+  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
+    <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    
+    <span style="color:var(--muted)">›</span>
+    <a href="/combined/index.html" style="color:#4ECDC4;font-weight:700;">Combined Science</a>
+    <span style="color:var(--muted)">›</span>
+    <a href="/combined/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
+    <span style="color:var(--muted)">›</span>
+    <a href="/combined/foundation/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+  </div>
+</nav>
+  
+<div class="topic-header">
+  <a class="back-link" href="/combined/foundation/chemistry/atomic-structure.html">← Back to Atomic Structure and the Periodic Table</a>
+  <h1 style="color:#FF6B6B">🧪 Group 0 — Noble Gases</h1>
+  <span class="spec-pill">Spec 5.1.2.4</span>
+  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
+</div>
+
+<div class="content-area">
+
+  <div class="section">
+    <div class="section-title">📖 In-Depth Theory</div>
+    <div class="card" style="margin-bottom:14px;">
+  <h4 style="margin-bottom:10px;font-size:1rem;">Properties of the Noble Gases</h4>
+  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>GROUP 0 (also called Group 18) contains the NOBLE GASES:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Helium (He) — atomic number 2.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Neon (Ne) — atomic number 10.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Argon (Ar) — atomic number 18.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Krypton (Kr) — atomic number 36.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Xenon (Xe) — atomic number 54.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Radon (Rn) — atomic number 86.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>All noble gases are:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>COLOURLESS gases at room temperature.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>MONATOMIC — they exist as single atoms, not molecules (unlike O₂, N₂, Cl₂).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>EXTREMELY UNREACTIVE — they do not form compounds under normal conditions.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>DENSER than air as you go down the group.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Have very LOW BOILING POINTS — they remain gases until very cold.</div>
+</div><div class="card" style="margin-bottom:14px;">
+  <h4 style="margin-bottom:10px;font-size:1rem;">Why Noble Gases Are Unreactive</h4>
+  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Noble gases are unreactive because they have FULL OUTER ELECTRON SHELLS:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Helium: 2 electrons (full 1st shell).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Neon: 2.8 (full 1st and 2nd shells).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Argon: 2.8.8 (full 1st, 2nd and 3rd shells).</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>A full outer shell is the most STABLE electron configuration — the atom has no tendency to gain, lose or share electrons.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>This is why other elements react — they are trying to ACHIEVE the stable full outer shell configuration of a noble gas:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Group 1 metals lose 1 electron → achieve noble gas configuration.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Group 7 non-metals gain 1 electron → achieve noble gas configuration.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Non-metals share electrons (covalent bonds) to achieve full outer shells.</div>
+</div><div class="card" style="margin-bottom:14px;">
+  <h4 style="margin-bottom:10px;font-size:1rem;">Trends Down Group 0</h4>
+  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Going DOWN Group 0 (from He to Rn):</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>ATOMIC RADIUS increases — more electron shells are added.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>BOILING POINT INCREASES:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>He: −269°C, Ne: −246°C, Ar: −186°C, Kr: −153°C, Xe: −108°C.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Larger atoms have stronger LONDON DISPERSION FORCES between them (a type of intermolecular force caused by temporary dipoles in electron clouds).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>More electrons → greater temporary dipoles → stronger forces → higher boiling point.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>DENSITY increases down the group.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The reactivity stays VERY LOW throughout — all noble gases are essentially inert under normal conditions.</div>
+</div>
+    <div class="mistake-box">
+  <div class="mistake-title">⚠️ Common Mistake</div>
+  <p style="font-size:0.9rem;line-height:1.7;">Noble gases are MONATOMIC — they exist as single atoms (He, Ne, Ar) — NOT as molecules (not He₂ or Ne₂). This is because they are already stable with full outer shells and have no reason to form bonds. Other non-metals like oxygen (O₂) and nitrogen (N₂) exist as diatomic molecules because they share electrons to achieve full outer shells.</p>
+</div>
+  </div>
+
+  
+  
+  <div class="section">
+  <div class="section-title">📌 Key Note</div>
+  <div class="keynote-box"><p>Noble gases: Group 0, full outer shells, extremely unreactive, monatomic. Boiling point increases down group (bigger atoms, stronger London dispersion forces). Helium: 2 outer electrons (full 1st shell). All others: 8 outer electrons (full outer shell).</p></div>
+</div>
+  <div class="section">
+  <div class="section-title">🎯 Matching Activity — Match the Noble Gas Property</div>
+  <div class="card">
+    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">Match each property to noble gases and explain why. — drag the symbols on the right to match the component names on the left.</p>
+    <div class="match-layout">
+      <div class="match-targets"><div class="match-target" data-index="0">
+  <div class="match-term">Very unreactive</div>
+  <div class="match-drop" data-accepts="0">Drop here</div>
+</div>
+<div class="match-target" data-index="1">
+  <div class="match-term">Monatomic</div>
+  <div class="match-drop" data-accepts="1">Drop here</div>
+</div>
+<div class="match-target" data-index="2">
+  <div class="match-term">Boiling point increases down group</div>
+  <div class="match-drop" data-accepts="2">Drop here</div>
+</div>
+<div class="match-target" data-index="3">
+  <div class="match-term">Colourless gases</div>
+  <div class="match-drop" data-accepts="3">Drop here</div>
+</div>
+<div class="match-target" data-index="4">
+  <div class="match-term">Helium — lighter than air</div>
+  <div class="match-drop" data-accepts="4">Drop here</div>
+</div>
+</div>
+      <div class="match-defs" id="defPool-group-0"><div class="match-def" data-index="3" draggable="true">All noble gases are transparent and gaseous at room temperature</div>
+<div class="match-def" data-index="2" draggable="true">Larger atoms have stronger London dispersion forces — more electrons, larger temporary dipoles</div>
+<div class="match-def" data-index="4" draggable="true">Helium has only 2 electrons and 2 protons — very low density, used in balloons</div>
+<div class="match-def" data-index="1" draggable="true">Exist as single atoms — already stable, no need to bond with other atoms</div>
+<div class="match-def" data-index="0" draggable="true">Full outer electron shells — no tendency to gain, lose or share electrons</div>
+</div>
+    </div>
+    <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+      <button class="match-check-btn" onclick="checkMatching('group-0', 5)">✅ Check Answers</button>
+      <button class="match-reset-btn" onclick="resetMatching('group-0', 5)">🔄 Reset</button>
+    </div>
+    <div class="match-result" id="matchResult-group-0"></div>
+  </div>
+</div>
+  
+  
+  
+  
+  <div class="section">
+  <div class="section-title">🎯 Test Yourself</div>
+  <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Atomic size affects reactivity in some cases, but noble gases are unreactive because of electron configuration, not size.",1: "Noble gases have FULL outer shells, not empty ones. Helium has 2 electrons (full 1st shell), others have 8 outer electrons.",2: "Many gases are highly reactive — chlorine gas (Cl₂), oxygen gas (O₂) etc. Being a gas doesn\'t make something unreactive.",}'>
+  <div class="q-text">1. Why are noble gases so unreactive?</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">They are too small to collide effectively with other atoms</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">They have no electrons in their outer shell — so they cannot form bonds</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">They are gases — gases cannot react with solid or liquid substances</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">They have full outer electron shells — no tendency to gain, lose or share electrons to become more stable</button>
+</div>
+  <div class="quiz-fb" id="qfb-0"></div>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Noble gases are ALL monatomic — they never form Ar₂ or Ne₂ molecules under normal conditions.",1: "Argon is stable and not radioactive. Radon is the radioactive noble gas.",2: "Stronger nuclear attraction would make electrons harder to remove but doesn\'t directly raise boiling point — the intermolecular forces between atoms are what matter.",}'>
+  <div class="q-text">2. Argon has a higher boiling point than neon. Why?</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Argon forms molecules (Ar₂) while neon is monatomic — more bonds to break</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Argon is radioactive, releasing energy that raises its boiling point</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Argon has a higher atomic number, so its electrons are more strongly attracted to the nucleus</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Argon is a larger atom with more electrons — stronger London dispersion forces between atoms need more energy to overcome</button>
+</div>
+  <div class="quiz-fb" id="qfb-1"></div>
+</div>
+  <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
+</div>
+<script>
+(function(){
+  const scoreMessages = ["Keep going — re-read the theory and try again. You"ll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you"ll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You"ve really got this topic down. 🏆"];
+  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{});
+  // handled by global quiz JS below
+})();
+</script>
+  <div class="section">
+  <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
+  <div class="card star-rating-card">
+    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Be honest with yourself — this helps you know what to revise!</p>
+    <div class="stars-row" id="stars-group-0">
+      <button class="star-btn" data-rating="1" onclick="rateTopic('group-0', 1)" title="I don't understand this at all">⭐</button>
+      <button class="star-btn" data-rating="2" onclick="rateTopic('group-0', 2)" title="I understand a little">⭐</button>
+      <button class="star-btn" data-rating="3" onclick="rateTopic('group-0', 3)" title="I understand about half of it">⭐</button>
+      <button class="star-btn" data-rating="4" onclick="rateTopic('group-0', 4)" title="I mostly understand it">⭐</button>
+      <button class="star-btn" data-rating="5" onclick="rateTopic('group-0', 5)" title="I understand it perfectly">⭐</button>
+    </div>
+    <div class="star-labels">
+      <span>Don't get it</span>
+      <span>Getting there</span>
+      <span>Nailed it!</span>
+    </div>
+    <div class="star-feedback" id="starfb-group-0"></div>
+  </div>
+</div>
+  <div class="section">
+  <div class="section-title">🤖 Ask Mr Badmus AI</div>
+  <div class="card" style="text-align:center;padding:32px;">
+    <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
+    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+  </div>
+</div>
+  <div class="subtopic-nav">
+  <a class="nav-arrow prev" href="/combined/foundation/chemistry/atomic-structure/metals-non-metals.html"><span><div class="nav-arrow-label">Previous</div><div class="nav-arrow-title">Metals and Non-metals</div></span></a>
+  <a href="/combined/foundation/chemistry/atomic-structure.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;">📋 All Atomic Structure and the Periodic Table subtopics</a>
+  <a class="nav-arrow next" href="/combined/foundation/chemistry/atomic-structure/group-1.html"><span><div class="nav-arrow-label">Next</div><div class="nav-arrow-title">Group 1 — Alkali Metals</div></span></a>
+</div>
+
+</div>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI">🤖</button>
+
+<div class="chat-overlay" id="chatOverlay">
+  <div class="chat-modal">
+    <div class="chat-head">
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p>GCSE Science Tutor</p>
+      </div>
+      <button class="close-btn">✕</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="img-preview-row" id="imgPreviewRow">
+      <img id="imgPreview" src="" alt="preview"/>
+      <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
+    </div>
+    <div class="chat-input-row">
+      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <input type="file" id="imgInput" accept="image/*" style="display:none"/>
+      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <button class="chat-send-btn">➤</button>
+    </div>
+  </div>
+</div>
+  <script src="/shared/mrbadmus.js"></script>
+  <script>MrBadmus.init({subject:'chemistry',topic:'Group 0 — Noble Gases (5.1.2.4)'});</script>
+  <script>
+const SCORE_MESSAGES = [
+  "Keep going — re-read the theory and try again. You'll get there! 📖",
+  "Not bad — review the sections you missed and have another go. 💪",
+  "Decent effort! A bit more revision and you'll nail it. 🔄",
+  "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+  "Excellent! You've really got this topic down. 🏆",
+];
+
+document.querySelectorAll('.quiz-opt').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const card = this.closest('.quiz-card');
+    if (card.dataset.answered) return;
+    const correctIdx = parseInt(card.dataset.answer);
+    const clickedIdx = parseInt(this.dataset.oi);
+    const isCorrect = clickedIdx === correctIdx;
+
+    // Store whether student got THIS card right
+    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
+
+    const fb = document.getElementById('qfb-' + this.dataset.qi);
+
+    card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
+      if (idx === correctIdx) o.classList.add('correct');
+      else if (o === this && !isCorrect) o.classList.add('wrong');
+      o.disabled = true;
+    });
+
+    let wrongExp = {};
+    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
+
+    if (isCorrect) {
+      fb.className = 'quiz-fb correct-fb show';
+      fb.innerHTML = '✅ Correct! Well done!';
+    } else {
+      const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
+      fb.className = 'quiz-fb wrong-fb show';
+      fb.innerHTML = '❌ Incorrect. ' + explanation;
+    }
+
+    const allCards = document.querySelectorAll('.quiz-card');
+    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
+    const total = allCards.length;
+    const answered = answeredCards.length;
+    const prog = document.getElementById('quizProgress');
+
+    if (answered === total) {
+      // Count only cards where student clicked correct
+      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
+      if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+
+      const endMsg = document.getElementById('quizEndMsg');
+      if (endMsg) {
+        const ratio = correctCount / total;
+        const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+        endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+        endMsg.style.display = 'block';
+        endMsg.style.background = ratio === 1 ? 'rgba(107,203,119,0.15)' : ratio >= 0.6 ? 'rgba(255,217,61,0.12)' : 'rgba(255,107,107,0.12)';
+        endMsg.style.color = ratio === 1 ? '#6BCB77' : ratio >= 0.6 ? '#FFD93D' : '#FF8888';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(107,203,119,0.3)' : ratio >= 0.6 ? 'rgba(255,217,61,0.3)' : 'rgba(255,107,107,0.3)');
+      }
+    } else {
+      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
+    }
+  });
+});
+</script>
+  <script>
+function checkMatching(stId, pairs) {
+  const targets = document.querySelectorAll('.match-target');
+  let correct = 0;
+  targets.forEach(target => {
+    const drop = target.querySelector('.match-drop');
+    const accepts = parseInt(drop.dataset.accepts);
+    const placed = drop.querySelector('.match-def');
+    if (placed && parseInt(placed.dataset.index) === accepts) {
+      drop.classList.add('match-correct'); drop.classList.remove('match-wrong'); correct++;
+    } else if (placed) {
+      drop.classList.add('match-wrong'); drop.classList.remove('match-correct');
+    }
+  });
+  const result = document.getElementById('matchResult-' + stId);
+  const total = pairs;
+  if (correct === total) {
+    result.innerHTML = '🎉 Perfect! All ' + total + ' matched correctly!';
+    result.className = 'match-result match-result-win';
+  } else {
+    result.innerHTML = correct + '/' + total + ' correct — keep trying!';
+    result.className = 'match-result match-result-partial';
+  }
+}
+function resetMatching(stId, pairs) {
+  const pool = document.getElementById('defPool-' + stId);
+  document.querySelectorAll('.match-drop').forEach(drop => {
+    const placed = drop.querySelector('.match-def');
+    if (placed) pool.appendChild(placed);
+    drop.innerHTML = 'Drop here';
+    drop.classList.remove('match-correct', 'match-wrong', 'has-item');
+  });
+  const result = document.getElementById('matchResult-' + stId);
+  if (result) { result.innerHTML = ''; result.className = 'match-result'; }
+}
+document.querySelectorAll('.match-def').forEach(def => {
+  def.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', def.dataset.index); def.classList.add('dragging'); });
+  def.addEventListener('dragend', () => def.classList.remove('dragging'));
+});
+document.querySelectorAll('.match-drop').forEach(drop => {
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
+  drop.addEventListener('drop', e => {
+    e.preventDefault(); drop.classList.remove('drag-over');
+    const idx = e.dataTransfer.getData('text/plain');
+    const def = document.querySelector('.match-def[data-index="' + idx + '"]');
+    if (!def) return;
+    const existing = drop.querySelector('.match-def');
+    if (existing) document.getElementById('defPool-group-0').appendChild(existing);
+    drop.innerHTML = ''; drop.appendChild(def);
+    drop.classList.add('has-item'); drop.classList.remove('match-correct', 'match-wrong');
+  });
+});
+</script>
+  <script>
+const STAR_MESSAGES_group_0 = ["No worries \u2014 that's what Mr Badmus AI is here for! Hit the chat button below and ask me to explain it from scratch. \ud83d\udcac", "Good start! Read through the theory again, then try the quiz once more. You'll get there! \ud83d\udcd6", "Solid \u2014 you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. \ud83d\udde3\ufe0f", "Great work! Just review the parts you found tricky and you'll be flying. \ud83d\ude80", "PERFECT! You've nailed this topic. Move on \u2014 you're ready! \ud83c\udfc6"];
+function rateTopic(stId, rating) {
+  document.querySelectorAll('#stars-' + stId + ' .star-btn').forEach((s, i) => s.classList.toggle('star-active', i < rating));
+  const fb = document.getElementById('starfb-' + stId);
+  fb.innerHTML = STAR_MESSAGES_group_0[rating - 1];
+  fb.style.display = 'block';
+  try { localStorage.setItem('star_' + stId, rating); } catch(e) {}
+}
+try {
+  const saved = localStorage.getItem('star_group-0');
+  if (saved) rateTopic('group-0', parseInt(saved));
+} catch(e) {}
+</script>
+</body>
+</html>
