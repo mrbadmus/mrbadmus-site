@@ -3,10 +3,11 @@
 Chemistry subtopics — Combined Foundation
 AQA 8464 Chemistry spec 5.0
 
-Atomic Structure:  12 subtopics (complete)
-Bonding:           12 subtopics (complete)
-Quantitative:       5 subtopics (complete)
-All other topics:  stubs
+Atomic Structure:   12 subtopics
+Bonding:            12 subtopics
+Quantitative:        5 subtopics
+Chemical Changes:   10 subtopics
+All other topics:   stubs
 """
 
 CHEMISTRY_COLOR = "#FF6B6B"
@@ -3221,7 +3222,1109 @@ CHEMISTRY_SUBTOPICS_ALL = {
                 ('m', 'Mass of solute', 'grams', 'g'),
                 ('V', 'Volume of solution', 'dm³', 'dm³')]}],
 
-"chemical-changes": [],
+"chemical-changes": [{'common_mistake': 'A metal can only displace another metal that is BELOW it in the reactivity series. Copper cannot '
+                    'displace iron from iron sulfate — copper is less reactive than iron. The more reactive metal '
+                    'always displaces the less reactive one, not the other way around.',
+  'equations': ['Fe + CuSO₄ → FeSO₄ + Cu  (displacement)',
+                'Metal + oxygen → metal oxide',
+                'Metal + water → metal hydroxide + hydrogen',
+                'Metal + acid → salt + hydrogen'],
+  'fifas': [],
+  'higher': None,
+  'id': 'reactivity-series',
+  'key_note': 'Reactivity series: K, Na, Li, Ca, Mg, Al, (C), Zn, Fe, Sn, Pb, (H), Cu, Ag, Au, Pt. More reactive metal '
+              'displaces less reactive from solution or oxide. Evidence from reactions with water, acid and '
+              'displacement reactions.',
+  'matching': {'instruction': 'Predict whether each displacement reaction occurs.',
+               'pairs': [('Reaction occurs',
+                          'Zinc + copper sulfate → zinc sulfate + copper (Zn more reactive than Cu)'),
+                         ('No reaction', 'Copper + zinc sulfate — copper is LESS reactive than zinc'),
+                         ('Reaction occurs',
+                          'Magnesium + iron sulfate → magnesium sulfate + iron (Mg more reactive than Fe)'),
+                         ('No reaction', 'Iron + magnesium sulfate — iron is LESS reactive than magnesium'),
+                         ('Reaction occurs',
+                          'Iron + copper sulfate → iron sulfate + copper (Fe more reactive than Cu)')],
+               'title': 'Displacement — Reaction or No Reaction?'},
+  'quiz': [{'opts': [('The blue solution fades and copper metal deposits on the zinc — zinc displaces copper', True),
+                     ('No change — zinc and copper have similar reactivity', False),
+                     ('The zinc dissolves and the solution turns orange', False),
+                     ('Zinc sulfate crystals form in the blue solution', False)],
+            'q': 'A strip of zinc is placed in copper sulfate solution. What is observed?',
+            'wrong_explanations': {1: 'Zinc IS more reactive than copper — a reaction occurs. The solution changes '
+                                      'from blue (Cu²⁺) to colourless/pale (Zn²⁺).',
+                                   2: 'The solution turns pale/colourless as Cu²⁺ ions are replaced by Zn²⁺ — orange '
+                                      'is not the colour of any of these solutions.',
+                                   3: "Zinc sulfate is formed in solution (dissolved) — it doesn't crystallise out "
+                                      'immediately under these conditions.'}},
+           {'opts': [('Copper is BELOW hydrogen in the reactivity series — it cannot displace hydrogen from the acid',
+                      True),
+                     ('Copper is too dense to react with liquids', False),
+                     ('Hydrochloric acid is not strong enough to react with any metals', False),
+                     ('Copper reacts with acid but the product is insoluble', False)],
+            'q': 'Why does copper not react with dilute hydrochloric acid?',
+            'wrong_explanations': {1: "Density doesn't determine reactivity — gold is denser than magnesium but far "
+                                      'less reactive.',
+                                   2: 'HCl reacts with many metals — magnesium, zinc, iron all react vigorously with '
+                                      "HCl. Only metals BELOW hydrogen in the series don't react.",
+                                   3: "Copper doesn't react with dilute HCl at all — it doesn't produce any "
+                                      'product.'}}],
+  'rp': None,
+  'spec': '5.4.1.1–5.4.1.2',
+  'summary': 'Describe the reactivity series of metals and use it to predict reactions.',
+  'theory': [{'content': 'The REACTIVITY SERIES is a list of metals in order of their reactivity — from most reactive '
+                         'to least reactive.\n'
+                         '\n'
+                         'Most reactive (top) to least reactive (bottom):\n'
+                         'Potassium (K)\n'
+                         'Sodium (Na)\n'
+                         'Lithium (Li)\n'
+                         'Calcium (Ca)\n'
+                         'Magnesium (Mg)\n'
+                         'Aluminium (Al)\n'
+                         'Carbon (C)* — not a metal, included as reference\n'
+                         'Zinc (Zn)\n'
+                         'Iron (Fe)\n'
+                         'Tin (Sn)\n'
+                         'Lead (Pb)\n'
+                         'Hydrogen (H)* — not a metal, included as reference\n'
+                         'Copper (Cu)\n'
+                         'Silver (Ag)\n'
+                         'Gold (Au)\n'
+                         'Platinum (Pt)\n'
+                         '\n'
+                         'Memory aid: Potassium Sodium Lithium Calcium Magnesium Aluminium Carbon Zinc Iron Tin Lead '
+                         'Hydrogen Copper Silver Gold Platinum\n'
+                         "→ 'Please Stop Letting Clumsy Miners Accidentally Cut Zinc Into Tiny Little Holes — Copper "
+                         "Stands Guarding Platinum'",
+              'heading': 'The Reactivity Series'},
+             {'content': 'The reactivity series is established by observing how vigorously metals react:\n'
+                         '\n'
+                         'REACTIONS WITH WATER:\n'
+                         'Potassium: explosive, ignites hydrogen gas (lilac flame).\n'
+                         'Sodium: vigorous fizzing, melts into a ball, may ignite.\n'
+                         'Lithium: steady fizzing.\n'
+                         'Calcium: steady bubbling, solution turns cloudy (Ca(OH)₂).\n'
+                         'Magnesium: barely reacts with cold water; reacts well with steam.\n'
+                         'Iron: reacts very slowly with steam to form iron oxide and hydrogen.\n'
+                         'Copper, silver, gold: no reaction with water.\n'
+                         '\n'
+                         'REACTIONS WITH DILUTE ACID:\n'
+                         'More reactive metals react faster and more vigorously with dilute acids.\n'
+                         'Magnesium: vigorous fizzing — reacts quickly.\n'
+                         'Zinc: steady bubbling.\n'
+                         'Iron: slow bubbling.\n'
+                         'Copper: no reaction — below hydrogen in reactivity series.\n'
+                         'Gold, platinum: no reaction with dilute acid.',
+              'heading': 'Metal Reactions — Evidence for Reactivity Order'},
+             {'content': 'A MORE REACTIVE metal will DISPLACE a LESS REACTIVE metal from its compound (salt or '
+                         'oxide).\n'
+                         '\n'
+                         'DISPLACEMENT FROM SALT SOLUTIONS:\n'
+                         'If iron is added to copper sulfate solution:\n'
+                         'Fe + CuSO₄ → FeSO₄ + Cu\n'
+                         'Iron is more reactive than copper → iron displaces copper.\n'
+                         'Observation: blue solution turns pale green; copper metal deposits on the iron.\n'
+                         '\n'
+                         'If copper is added to iron sulfate solution:\n'
+                         'No reaction — copper is LESS reactive than iron.\n'
+                         '\n'
+                         'DISPLACEMENT FROM METAL OXIDES:\n'
+                         'Hydrogen can displace metals BELOW it in the series from their oxides.\n'
+                         'Carbon can reduce (displace) metals below it in the series.\n'
+                         'Copper oxide + hydrogen:\n'
+                         'CuO + H₂ → Cu + H₂O (copper extracted from its oxide)\n'
+                         '\n'
+                         'METAL OXIDES:\n'
+                         'Metal oxides are BASIC — they neutralise acids.\n'
+                         'The more reactive the metal, the more stable its oxide — harder to decompose or reduce.',
+              'heading': 'Metal Oxides and Displacement Reactions'}],
+  'title': 'Reactivity of Metals and Metal Oxides',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Aluminium is above carbon in the reactivity series — carbon CANNOT reduce aluminium oxide. '
+                    'Students often try to apply carbon reduction to all metals. Only metals BELOW carbon in the '
+                    'reactivity series can be extracted by carbon reduction. Metals above carbon (including aluminium) '
+                    'require electrolysis.',
+  'equations': ['Fe₂O₃ + 3CO → 2Fe + 3CO₂  (iron extraction)',
+                'ZnO + C → Zn + CO₂',
+                '2Al₂O₃ → 4Al + 3O₂  (electrolysis of aluminium oxide)'],
+  'fifas': [],
+  'higher': None,
+  'id': 'extraction-of-metals',
+  'key_note': 'Extraction method depends on reactivity. Above carbon in series → electrolysis (Al, Mg, Na etc.). Below '
+              'carbon → reduction with carbon/CO (Fe, Zn etc.). Unreactive metals → found native or simple reduction. '
+              'Iron: blast furnace with CO. Aluminium: electrolysis of molten Al₂O₃ in cryolite.',
+  'matching': {'instruction': 'Match each metal to how it is extracted from its ore.',
+               'pairs': [('Iron',
+                          'Reduced with carbon monoxide in a blast furnace — below carbon in reactivity series'),
+                         ('Aluminium', 'Electrolysis of molten Al₂O₃ in cryolite — above carbon in reactivity series'),
+                         ('Gold', 'Found as the pure element — too unreactive to form stable compounds'),
+                         ('Zinc', 'Heated with carbon/coke — ZnO + C → Zn + CO₂'),
+                         ('Sodium', 'Electrolysis of molten NaCl — far too reactive for carbon reduction')],
+               'title': 'Match the Metal to its Extraction Method'},
+  'quiz': [{'opts': [('Aluminium is more reactive than carbon — carbon cannot displace it from aluminium oxide', True),
+                     ("Aluminium oxide doesn't contain enough oxygen for the carbon to react with", False),
+                     ('Carbon would contaminate the aluminium, making it too brittle to use', False),
+                     ('Electrolysis is cheaper than heating with carbon for all metals', False)],
+            'q': 'Why is aluminium extracted by electrolysis rather than by reduction with carbon?',
+            'wrong_explanations': {1: 'Aluminium oxide has plenty of oxygen — but carbon can only REDUCE metal oxides '
+                                      'when the metal is LESS reactive than carbon.',
+                                   2: 'Carbon and aluminium do not form harmful alloys under these conditions — purity '
+                                      'concerns are a separate issue.',
+                                   3: 'Electrolysis is actually VERY EXPENSIVE — it requires huge amounts of '
+                                      'electrical energy. The reason is purely reactivity-based.'}},
+           {'opts': [('Reduction — the iron oxide loses oxygen; the carbon monoxide gains oxygen (and is oxidised)',
+                      True),
+                     ('Oxidation — the iron oxide gains electrons from the carbon monoxide', False),
+                     ('Neutralisation — the acid iron oxide is neutralised by the basic carbon', False),
+                     ('Electrolysis — electrical energy breaks apart the iron oxide', False)],
+            'q': 'Carbon monoxide reduces iron oxide in the blast furnace. What type of reaction is this?',
+            'wrong_explanations': {1: 'The IRON OXIDE loses oxygen (is REDUCED). The CO gains oxygen (is OXIDISED). '
+                                      'These are simultaneous — the reaction is both a reduction AND an oxidation.',
+                                   2: 'Neutralisation involves an acid and a base — iron oxide and carbon monoxide are '
+                                      'not an acid-base pair.',
+                                   3: 'The blast furnace uses heat (combustion), not electricity. Electrolysis is used '
+                                      'for reactive metals like aluminium.'}}],
+  'rp': None,
+  'spec': '5.4.1.3',
+  'summary': 'Explain how metals are extracted from their ores and how the method depends on reactivity.',
+  'theory': [{'content': 'Most metals are found in nature as ORES — rocks containing metal compounds (usually oxides, '
+                         'sulfides or carbonates) rather than pure metals.\n'
+                         '\n'
+                         'Only very UNREACTIVE metals (gold, platinum, silver) are found as pure elements in nature — '
+                         'they are too unreactive to form compounds with oxygen or sulfur.\n'
+                         '\n'
+                         'All other metals must be EXTRACTED from their ores — the metal compound must be converted '
+                         'back to a pure metal.\n'
+                         '\n'
+                         'The REACTIVITY of the metal determines the EXTRACTION METHOD:\n'
+                         'VERY REACTIVE metals (K, Na, Ca, Mg, Al) — cannot be extracted by carbon reduction because '
+                         'they are more reactive than carbon. Must use ELECTROLYSIS of molten compounds.\n'
+                         '\n'
+                         'MODERATELY REACTIVE metals BELOW carbon in the series (Zn, Fe, Sn, Pb) — can be extracted by '
+                         'heating their oxide with CARBON (reduction).\n'
+                         '\n'
+                         'UNREACTIVE metals (Cu, Ag, Au) — found native (as pure elements) or can be extracted by '
+                         'simple reduction or displacement.',
+              'heading': 'Why Metals Need to be Extracted'},
+             {'content': 'REDUCTION WITH CARBON (also called SMELTING) works for metals below carbon in the reactivity '
+                         'series.\n'
+                         '\n'
+                         'Carbon displaces these metals from their oxides because carbon is MORE REACTIVE than these '
+                         'metals.\n'
+                         '\n'
+                         'IRON FROM IRON OXIDE (Blast Furnace):\n'
+                         'Iron ore (mainly haematite: Fe₂O₃) is heated with coke (carbon) and limestone in a blast '
+                         'furnace.\n'
+                         'Carbon reacts with oxygen to form carbon dioxide:\n'
+                         'C + O₂ → CO₂\n'
+                         'CO₂ then reacts with more carbon to form carbon monoxide:\n'
+                         'CO₂ + C → 2CO\n'
+                         'Carbon monoxide REDUCES iron oxide to iron:\n'
+                         'Fe₂O₃ + 3CO → 2Fe + 3CO₂\n'
+                         'Molten iron sinks to the bottom of the furnace and is tapped off.\n'
+                         '\n'
+                         'ZINC EXTRACTION:\n'
+                         'ZnO + C → Zn + CO₂\n'
+                         '\n'
+                         'ALUMINIUM CANNOT be extracted this way — it is above carbon in the reactivity series and '
+                         'must use electrolysis.',
+              'heading': 'Reduction with Carbon — Blast Furnace'},
+             {'content': 'ELECTROLYSIS is used for metals that are MORE REACTIVE than carbon (K, Na, Li, Ca, Mg, Al).\n'
+                         '\n'
+                         'These metals form very stable compounds — carbon cannot reduce them.\n'
+                         'Instead, electrical energy is used to decompose the molten compound.\n'
+                         '\n'
+                         'ALUMINIUM EXTRACTION (Hall-Héroult process):\n'
+                         'Aluminium oxide (Al₂O₃) — also called alumina — is dissolved in molten cryolite (to lower '
+                         'the melting point from ~2000°C to ~950°C).\n'
+                         'Electrolysis takes place:\n'
+                         'At CATHODE (negative): Al³⁺ + 3e⁻ → Al (aluminium deposited)\n'
+                         'At ANODE (positive): O²⁻ → O₂ (oxygen gas produced)\n'
+                         'Molten aluminium sinks to the bottom and is tapped off.\n'
+                         '\n'
+                         'Why electrolysis is expensive:\n'
+                         'Huge amounts of ELECTRICAL ENERGY needed.\n'
+                         'The process must run continuously at high temperatures.\n'
+                         'The carbon anodes react with oxygen and must be REPLACED regularly.\n'
+                         '\n'
+                         'This is why aluminium was once more expensive than gold — before cheap electricity, it was '
+                         'extremely difficult to extract.',
+              'heading': 'Electrolysis for Reactive Metals'}],
+  'title': 'Extraction of Metals and Reduction',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'In a redox reaction, the REDUCING AGENT is OXIDISED (it gives away electrons/oxygen). The '
+                    'OXIDISING AGENT is REDUCED (it receives electrons/gains oxygen). This is counterintuitive — an '
+                    "oxidising agent doesn't stay oxidised, it gets reduced. Remember: agents do the opposite of what "
+                    "they're called.",
+  'equations': ['Oxidation = gain of oxygen / loss of electrons',
+                'Reduction = loss of oxygen / gain of electrons',
+                'OIL RIG: Oxidation Is Loss, Reduction Is Gain (electrons)'],
+  'fifas': [],
+  'higher': None,
+  'id': 'oxidation-reduction',
+  'key_note': 'Oxidation: gain O / lose electrons. Reduction: lose O / gain electrons. OIL RIG. Always happen together '
+              '(redox). Reducing agent: donates electrons → gets oxidised. Oxidising agent: accepts electrons → gets '
+              'reduced. Carbon and hydrogen are common reducing agents.',
+  'matching': {'instruction': 'Identify whether each substance is oxidised or reduced in the reaction.',
+               'pairs': [('Oxidised', 'Mg in Mg + O₂ → MgO — magnesium gains oxygen'),
+                         ('Reduced', 'CuO in CuO + H₂ → Cu + H₂O — copper oxide loses oxygen'),
+                         ('Oxidised', 'H₂ in CuO + H₂ → Cu + H₂O — hydrogen gains oxygen'),
+                         ('Reduced', 'Fe₂O₃ in Fe₂O₃ + 3CO → 2Fe + 3CO₂ — iron oxide loses oxygen'),
+                         ('Oxidised', 'Na in Na → Na⁺ + e⁻ — sodium loses an electron (OIL RIG)')],
+               'title': 'Oxidised or Reduced?'},
+  'quiz': [{'opts': [('Hydrogen (H₂) — it reduces the copper oxide by removing its oxygen, and is itself oxidised to '
+                      'water',
+                      True),
+                     ('Copper oxide — it causes the hydrogen to become water', False),
+                     ('Copper — it is the product of reduction', False),
+                     ('Water — it is formed when hydrogen is reduced', False)],
+            'q': 'In the reaction CuO + H₂ → Cu + H₂O, what is the reducing agent?',
+            'wrong_explanations': {1: 'Copper oxide is the OXIDISING AGENT — it provides the oxygen that oxidises '
+                                      'hydrogen. It is itself reduced.',
+                                   2: 'Copper is the PRODUCT of the reduction of CuO — it is not a reducing agent.',
+                                   3: 'Water is a PRODUCT — reducing agents are reactants that cause reduction of '
+                                      'another substance.'}},
+           {'opts': [('Oxidation Is Loss (of electrons), Reduction Is Gain (of electrons)', True),
+                     ('Oxidation Involves Losing Reactants, Reduction Involves Gaining', False),
+                     ('Oxygen In Liquid, Reactions In Gas', False),
+                     ('Only In Liquids Reactions Involve Gases', False)],
+            'q': 'What does OIL RIG stand for?',
+            'wrong_explanations': {1: 'OIL RIG specifically refers to ELECTRONS — Oxidation Is Loss of electrons, '
+                                      "Reduction Is Gain of electrons. The words 'reactants' and 'gaining' are "
+                                      'incorrect.',
+                                   2: 'OIL RIG is a memory aid specifically about electron transfer in redox reactions '
+                                      '— not about phases or states of matter.',
+                                   3: 'OIL RIG is entirely about electrons in redox reactions — not about the physical '
+                                      'state of substances.'}}],
+  'rp': None,
+  'spec': '5.4.1.4',
+  'summary': 'Define oxidation and reduction in terms of oxygen gain/loss and use OIL RIG.',
+  'theory': [{'content': 'OXIDATION and REDUCTION always occur TOGETHER in the same reaction — called a REDOX '
+                         'reaction.\n'
+                         '\n'
+                         'In terms of OXYGEN:\n'
+                         'OXIDATION = GAIN of oxygen.\n'
+                         'REDUCTION = LOSS of oxygen.\n'
+                         '\n'
+                         'Examples:\n'
+                         'Mg + O₂ → MgO\n'
+                         'Magnesium is OXIDISED — it gains oxygen.\n'
+                         '\n'
+                         'CuO + H₂ → Cu + H₂O\n'
+                         'Copper oxide is REDUCED — it loses oxygen.\n'
+                         'Hydrogen is OXIDISED — it gains oxygen.\n'
+                         '\n'
+                         'Fe₂O₃ + 3CO → 2Fe + 3CO₂\n'
+                         'Iron oxide (Fe₂O₃) is REDUCED — iron loses its oxygen.\n'
+                         'Carbon monoxide (CO) is OXIDISED — it gains oxygen to become CO₂.',
+              'heading': 'Oxidation and Reduction — Oxygen Definitions'},
+             {'content': 'At a more advanced level, oxidation and reduction are defined in terms of ELECTRONS:\n'
+                         '\n'
+                         'OIL RIG:\n'
+                         'Oxidation Is Loss (of electrons)\n'
+                         'Reduction Is Gain (of electrons)\n'
+                         '\n'
+                         'Think of OIL RIG as a memory device — it only works when you remember what each letter '
+                         'means.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Na → Na⁺ + e⁻ — sodium LOSES an electron → sodium is OXIDISED.\n'
+                         'Cl + e⁻ → Cl⁻ — chlorine GAINS an electron → chlorine is REDUCED.\n'
+                         '\n'
+                         'In the reaction: Na + Cl → Na⁺ + Cl⁻\n'
+                         'Sodium is OXIDISED (loses e⁻). Chlorine is REDUCED (gains e⁻).\n'
+                         'This is a REDOX reaction — both happen simultaneously.\n'
+                         '\n'
+                         'The substance that causes oxidation is the OXIDISING AGENT.\n'
+                         'The substance that causes reduction is the REDUCING AGENT.\n'
+                         '\n'
+                         'Note: the oxidising agent is itself REDUCED (it gains electrons). The reducing agent is '
+                         'itself OXIDISED (it loses electrons).',
+              'heading': 'OIL RIG — Electron Definitions (Overview)'},
+             {'content': 'REDUCING AGENT — causes reduction of another substance by donating electrons (it is itself '
+                         'OXIDISED):\n'
+                         'Carbon in the blast furnace: reduces iron oxide — carbon is the REDUCING AGENT (it gets '
+                         'oxidised to CO₂).\n'
+                         'Hydrogen: reduces copper oxide — hydrogen is the REDUCING AGENT (gets oxidised to H₂O).\n'
+                         '\n'
+                         'OXIDISING AGENT — causes oxidation of another substance by accepting electrons (it is itself '
+                         'REDUCED):\n'
+                         'Oxygen: oxidises metals (is itself reduced to O²⁻).\n'
+                         'Copper oxide: oxidises hydrogen (is itself reduced to Cu).\n'
+                         '\n'
+                         'Common reducing agents: hydrogen, carbon, carbon monoxide, more reactive metals.\n'
+                         'Common oxidising agents: oxygen, chlorine, hydrogen peroxide, potassium manganate(VII).\n'
+                         '\n'
+                         'REDOX in everyday contexts:\n'
+                         'Rusting — iron is OXIDISED by oxygen and water.\n'
+                         'Combustion — fuels are OXIDISED by oxygen.\n'
+                         'Metabolic respiration — glucose is OXIDISED.\n'
+                         'Photosynthesis — CO₂ is REDUCED to glucose.',
+              'heading': 'Oxidising and Reducing Agents'}],
+  'title': 'Oxidation and Reduction',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Acid + metal carbonate produces THREE products: salt + water + carbon DIOXIDE. Students often '
+                    'forget the water or forget the CO₂. Also: the SALT name comes from the METAL and the ACID — '
+                    'sulfuric acid always gives sulfate salts, hydrochloric acid gives chloride salts, nitric acid '
+                    'gives nitrate salts.',
+  'equations': ['Acid + metal → salt + hydrogen',
+                'Acid + metal oxide → salt + water',
+                'Acid + metal hydroxide → salt + water',
+                'Acid + metal carbonate → salt + water + carbon dioxide',
+                'Mg + 2HCl → MgCl₂ + H₂',
+                'CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂'],
+  'fifas': [],
+  'higher': None,
+  'id': 'reactions-of-acids',
+  'key_note': 'Acid + metal → salt + H₂ (metals above H only). Acid + metal oxide → salt + H₂O. Acid + metal hydroxide '
+              '→ salt + H₂O (neutralisation). Acid + carbonate → salt + H₂O + CO₂. H₂: squeaky pop. CO₂: turns '
+              'limewater milky. Salt name = metal + acid anion.',
+  'matching': {'instruction': 'Match each type of reaction to the products formed.',
+               'pairs': [('Acid + metal', 'Salt + hydrogen gas — test with lit splint gives squeaky pop'),
+                         ('Acid + metal oxide', 'Salt + water only — no gas produced'),
+                         ('Acid + metal hydroxide', 'Salt + water — neutralisation reaction'),
+                         ('Acid + metal carbonate', 'Salt + water + carbon dioxide — CO₂ turns limewater milky')],
+               'title': 'Match the Acid Reaction to its Products'},
+  'quiz': [{'opts': [('Zinc sulfate + water + carbon dioxide', True),
+                     ('Zinc sulfate + hydrogen', False),
+                     ('Zinc oxide + water + carbon dioxide', False),
+                     ('Zinc sulfate + water only', False)],
+            'q': 'What are the products when zinc carbonate reacts with sulfuric acid?',
+            'wrong_explanations': {1: 'Zinc + sulfuric acid → zinc sulfate + hydrogen. Carbonates produce CO₂, not H₂.',
+                                   2: 'Zinc carbonate is a CARBONATE — the products of acid + carbonate are salt + '
+                                      'water + CO₂, not zinc oxide.',
+                                   3: 'Carbonates produce salt + water + CO₂ — not just salt + water. The CO₂ is '
+                                      'essential.'}},
+           {'opts': [('Magnesium chloride (MgCl₂) — HCl produces chloride salts', True),
+                     ('Magnesium sulfate — all acids produce sulfate salts', False),
+                     ('Magnesium oxide — magnesium reacts with hydrogen to form the oxide', False),
+                     ('Magnesium hydroxide — the hydrogen from HCl bonds to the magnesium', False)],
+            'q': 'Magnesium reacts with hydrochloric acid. What salt is produced?',
+            'wrong_explanations': {1: 'Sulfuric acid (H₂SO₄) produces SULFATE salts. Hydrochloric acid (HCl) always '
+                                      'produces CHLORIDE salts.',
+                                   2: 'The acid does NOT supply oxygen — magnesium oxide would form from Mg reacting '
+                                      'with O₂. The reaction with HCl gives a chloride salt.',
+                                   3: 'The acid produces H⁺ ions which react to form H₂ gas — they do NOT combine with '
+                                      'the metal to form a hydroxide.'}}],
+  'rp': None,
+  'spec': '5.4.2.1–5.4.2.2',
+  'summary': 'Describe reactions of acids with metals, metal oxides, metal hydroxides and carbonates.',
+  'theory': [{'content': 'An ACID is a substance that produces H⁺ ions (hydrogen ions) when dissolved in water.\n'
+                         'Common acids: hydrochloric acid (HCl), sulfuric acid (H₂SO₄), nitric acid (HNO₃).\n'
+                         '\n'
+                         'A BASE is a substance that neutralises an acid. Bases are metal oxides or metal hydroxides.\n'
+                         'An ALKALI is a base that dissolves in water — it produces OH⁻ ions in solution.\n'
+                         'Common alkalis: sodium hydroxide (NaOH), potassium hydroxide (KOH), calcium hydroxide '
+                         '(Ca(OH)₂).\n'
+                         '\n'
+                         'All acid reactions produce a SALT — formed from the positive metal ion and the negative ion '
+                         'from the acid:\n'
+                         'Hydrochloric acid → CHLORIDE salts (e.g. NaCl, MgCl₂)\n'
+                         'Sulfuric acid → SULFATE salts (e.g. ZnSO₄, CuSO₄)\n'
+                         'Nitric acid → NITRATE salts (e.g. Ca(NO₃)₂, KNO₃)',
+              'heading': 'What Are Acids and Bases?'},
+             {'content': 'ACID + METAL → SALT + HYDROGEN:\n'
+                         'Mg + 2HCl → MgCl₂ + H₂\n'
+                         'Zn + H₂SO₄ → ZnSO₄ + H₂\n'
+                         'Fe + 2HCl → FeCl₂ + H₂\n'
+                         '\n'
+                         'Test for hydrogen: lit splint → squeaky pop.\n'
+                         'Only metals ABOVE hydrogen in reactivity series react with dilute acids.\n'
+                         'Copper, silver, gold — NO reaction.\n'
+                         '\n'
+                         'ACID + METAL OXIDE → SALT + WATER:\n'
+                         'Metal oxides are BASES — they neutralise acids.\n'
+                         'CuO + 2HCl → CuCl₂ + H₂O\n'
+                         'ZnO + H₂SO₄ → ZnSO₄ + H₂O\n'
+                         'Fe₂O₃ + 3H₂SO₄ → Fe₂(SO₄)₃ + 3H₂O\n'
+                         '\n'
+                         'Observation: the metal oxide powder DISSOLVES in the acid as the reaction proceeds. The '
+                         'solution often changes colour as the metal salt forms (e.g. blue for copper sulfate).',
+              'heading': 'Reactions with Metals and Metal Oxides'},
+             {'content': 'ACID + METAL HYDROXIDE → SALT + WATER (neutralisation):\n'
+                         'NaOH + HCl → NaCl + H₂O\n'
+                         '2KOH + H₂SO₄ → K₂SO₄ + 2H₂O\n'
+                         'Ca(OH)₂ + 2HCl → CaCl₂ + 2H₂O\n'
+                         '\n'
+                         'This is a NEUTRALISATION reaction — H⁺ from acid combines with OH⁻ from alkali to form '
+                         'water.\n'
+                         '\n'
+                         'ACID + METAL CARBONATE → SALT + WATER + CARBON DIOXIDE:\n'
+                         'CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂\n'
+                         'Na₂CO₃ + H₂SO₄ → Na₂SO₄ + H₂O + CO₂\n'
+                         'ZnCO₃ + 2HCl → ZnCl₂ + H₂O + CO₂\n'
+                         '\n'
+                         'Test for CO₂: bubble through limewater → turns milky/cloudy.\n'
+                         '\n'
+                         'Observation: fizzing/effervescence as CO₂ gas is produced. The solid carbonate dissolves as '
+                         'the reaction proceeds.\n'
+                         '\n'
+                         'Summary of products:\n'
+                         'Acid + metal → salt + hydrogen\n'
+                         'Acid + metal oxide → salt + water\n'
+                         'Acid + metal hydroxide → salt + water\n'
+                         'Acid + metal carbonate → salt + water + carbon dioxide',
+              'heading': 'Reactions with Hydroxides and Carbonates'}],
+  'title': 'Reactions of Acids with Metals and Bases',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'When making a salt by adding excess solid to acid — you MUST use EXCESS solid to ensure ALL the '
+                    "acid reacts. If you don't use excess, some acid remains and the final product will be "
+                    'contaminated with acid. Then filter off the excess unreacted solid — the salt is in the filtrate.',
+  'equations': ['H⁺(aq) + OH⁻(aq) → H₂O(l)  (ionic equation for neutralisation)',
+                'Acid + alkali → salt + water',
+                'BaCl₂(aq) + Na₂SO₄(aq) → BaSO₄(s) + 2NaCl(aq)'],
+  'fifas': [],
+  'higher': None,
+  'id': 'salts-neutralisation',
+  'key_note': 'Soluble salt from acid + solid: add excess solid, filter off excess, evaporate/crystallise. Soluble '
+              'salt from two soluble reactants: titration to find volumes, then repeat without indicator. Insoluble '
+              'salt: mix two solutions, precipitate forms, filter/wash/dry. Neutralisation: H⁺ + OH⁻ → H₂O.',
+  'matching': {'instruction': 'Match each salt to the best method for making it.',
+               'pairs': [('Copper sulfate (CuSO₄)',
+                          'Add excess CuO to H₂SO₄ — filter off excess CuO — evaporate to crystallise'),
+                         ('Sodium chloride (NaCl)',
+                          'Titration — NaOH + HCl — find exact volume needed, then evaporate'),
+                         ('Barium sulfate (BaSO₄)', 'Precipitation — mix BaCl₂(aq) + Na₂SO₄(aq) — filter and dry'),
+                         ('Zinc chloride (ZnCl₂)', 'Add excess zinc carbonate to HCl — filter off excess — evaporate')],
+               'title': 'Method for Making Each Salt'},
+  'quiz': [{'opts': [('To ensure all the acid reacts — any remaining acid would contaminate the final salt', True),
+                     ('To speed up the reaction — more solid increases the rate', False),
+                     ('To increase the yield of salt — more reactant gives more product', False),
+                     ('The excess solid acts as a catalyst', False)],
+            'q': 'Why must excess solid be added when making a salt by reacting a metal oxide with an acid?',
+            'wrong_explanations': {1: 'Excess solid does increase the surface area and reaction rate — but the MAIN '
+                                      'reason is to guarantee complete neutralisation of all the acid.',
+                                   2: 'You cannot add more solid than the acid can react with — excess produces the '
+                                      'same yield. The reason is to ensure complete reaction.',
+                                   3: "The excess solid is REMOVED by filtration — it doesn't catalyse the reaction."}},
+           {'opts': [('H⁺(aq) + OH⁻(aq) → H₂O(l)', True),
+                     ('Acid + alkali → salt + water', False),
+                     ('Na⁺(aq) + Cl⁻(aq) → NaCl(s)', False),
+                     ('H₂ + O₂ → H₂O', False)],
+            'q': 'What is the ionic equation for neutralisation?',
+            'wrong_explanations': {1: 'This is the WORD equation — an ionic equation uses symbols and charges. The '
+                                      'ionic equation H⁺ + OH⁻ → H₂O shows the actual ions involved.',
+                                   2: 'This is a precipitation ionic equation — it describes salt formation, not '
+                                      'neutralisation.',
+                                   3: 'This is the equation for burning hydrogen in oxygen — not neutralisation.'}}],
+  'rp': 'RP3 (Chemistry) — Prepare a sample of a pure, dry hydrated copper sulfate salt starting from copper oxide and '
+        'sulfuric acid using add-excess-solid method.',
+  'spec': '5.4.2.2–5.4.2.3',
+  'summary': 'Describe methods for making pure dry salts from acids and how neutralisation works.',
+  'theory': [{'content': 'The method for making a salt depends on whether it is SOLUBLE or INSOLUBLE.\n'
+                         '\n'
+                         'METHOD 1 — Acid + excess metal/metal oxide/carbonate (for soluble salts):\n'
+                         '1. Add excess solid (metal, metal oxide or carbonate) to the acid — ensures all acid is used '
+                         'up.\n'
+                         '2. FILTER off the excess unreacted solid (the salt remains in solution).\n'
+                         '3. EVAPORATE the filtrate to crystallise the salt, or leave to crystallise slowly.\n'
+                         '4. Filter and dry the crystals.\n'
+                         '\n'
+                         'Example — copper sulfate from copper oxide:\n'
+                         'CuO + H₂SO₄ → CuSO₄ + H₂O\n'
+                         'Add excess black CuO powder to warm sulfuric acid → blue solution forms.\n'
+                         'Filter → blue CuSO₄ solution passes through.\n'
+                         'Evaporate → blue CuSO₄ crystals form.\n'
+                         '\n'
+                         'METHOD 2 — Titration (for soluble salts from soluble starting materials):\n'
+                         'Used when both reactants are soluble (e.g. NaOH + HCl → NaCl + H₂O).\n'
+                         'Cannot use Method 1 — cannot filter off excess solid.\n'
+                         'Instead, use a TITRATION to find the exact volume of acid needed to neutralise the alkali.\n'
+                         'Then repeat without indicator → evaporate to get pure salt crystals.',
+              'heading': 'Methods of Making Salts'},
+             {'content': 'INSOLUBLE SALTS cannot be made from evaporation — they would never crystallise from '
+                         'solution.\n'
+                         '\n'
+                         'They are made by MIXING two solutions that each contain one of the ions needed.\n'
+                         'The insoluble salt PRECIPITATES immediately.\n'
+                         '\n'
+                         'Example — making barium sulfate (BaSO₄):\n'
+                         'BaCl₂(aq) + Na₂SO₄(aq) → BaSO₄(s) + 2NaCl(aq)\n'
+                         'Mix barium chloride solution + sodium sulfate solution.\n'
+                         'BaSO₄ precipitates as a white solid immediately.\n'
+                         'FILTER to collect the precipitate.\n'
+                         'WASH with distilled water to remove soluble impurities.\n'
+                         'DRY in an oven.\n'
+                         '\n'
+                         'Precipitation reactions are also used to:\n'
+                         'Remove unwanted ions from solution (e.g. water treatment).\n'
+                         'Test for specific ions (e.g. adding AgNO₃ to test for chloride ions — white AgCl precipitate '
+                         'forms).',
+              'heading': 'Making Insoluble Salts — Precipitation'},
+             {'content': 'NEUTRALISATION is the reaction between an ACID and a BASE (or alkali) to form a SALT and '
+                         'WATER.\n'
+                         '\n'
+                         'The IONIC EQUATION for neutralisation is always the same:\n'
+                         'H⁺(aq) + OH⁻(aq) → H₂O(l)\n'
+                         '\n'
+                         'This shows the ESSENTIAL reaction — a hydrogen ion from the acid combines with a hydroxide '
+                         'ion from the alkali to form water.\n'
+                         '\n'
+                         'TITRATION is the technique for precisely determining how much acid neutralises a given '
+                         'volume of alkali:\n'
+                         '1. Pipette a known volume (e.g. 25.00 cm³) of alkali into a conical flask.\n'
+                         '2. Add a few drops of INDICATOR (e.g. phenolphthalein — pink in alkali, colourless in '
+                         'acid).\n'
+                         '3. Slowly add acid from a BURETTE until the indicator just changes colour (the END POINT).\n'
+                         '4. Record the volume of acid used (the TITRE).\n'
+                         '5. Repeat to get concordant (consistent) results.\n'
+                         '6. Calculate mean titre from concordant results.\n'
+                         '\n'
+                         'To make a PURE SALT by titration:\n'
+                         'Repeat without indicator — the indicator would contaminate the salt.\n'
+                         'Use the known volume from the titration.',
+              'heading': 'Neutralisation in Detail'}],
+  'title': 'Making Salts and Neutralisation',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Lower pH = MORE ACIDIC = MORE H⁺ ions. Higher pH = MORE ALKALINE = FEWER H⁺ ions (more OH⁻). '
+                    'Students often confuse pH 2 and pH 12 — pH 2 is strongly acidic, pH 12 is strongly alkaline. pH 7 '
+                    'is neutral — pure water. NOT all solutions at pH 7 are water.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'ph-scale',
+  'key_note': 'pH 0–6: acidic. pH 7: neutral. pH 8–14: alkaline. Lower pH = more H⁺ ions. pH scale is logarithmic — '
+              'each unit = 10× change in H⁺. Universal indicator: shows range of colours. Phenolphthalein: colourless '
+              'in acid, pink in alkali. pH meter: most accurate.',
+  'matching': {'instruction': 'Match each pH value to the correct description.',
+               'pairs': [('pH 1', 'Strongly acidic — high concentration of H⁺ ions'),
+                         ('pH 7', 'Neutral — equal H⁺ and OH⁻ ions — pure water at 25°C'),
+                         ('pH 13', 'Strongly alkaline — high concentration of OH⁻ ions'),
+                         ('pH 4', 'Weakly acidic — e.g. black coffee or tomato juice'),
+                         ('pH 10', 'Weakly alkaline — e.g. baking soda solution')],
+               'title': 'Match the pH to the Description'},
+  'quiz': [{'opts': [('pH 2 has 100 times more H⁺ than pH 4 — each unit on the log scale is 10×', True),
+                     ('pH 2 has twice as many H⁺ ions as pH 4', False),
+                     ('pH 4 has more H⁺ ions — higher pH means more hydrogen', False),
+                     ('They have the same H⁺ concentration — both are acidic', False)],
+            'q': 'A solution has a pH of 2. Another has a pH of 4. How do their H⁺ ion concentrations compare?',
+            'wrong_explanations': {1: 'The pH scale is LOGARITHMIC — each unit represents a 10× change, not a 2× '
+                                      'change. pH 2 vs pH 4 = 10² = 100× difference.',
+                                   2: 'LOWER pH means MORE H⁺ ions — pH 2 is more acidic than pH 4, not less.',
+                                   3: 'Both are acidic (below 7) but have very different H⁺ concentrations — pH 2 is '
+                                      'much more acidic.'}},
+           {'opts': [('The pH increases towards 7 — dilution reduces H⁺ concentration, making it less acidic', True),
+                     ('The pH decreases — water is neutral so it makes the acid stronger', False),
+                     ("The pH stays the same — water doesn't affect the acid", False),
+                     ('The pH jumps immediately to 7 — water always neutralises acids', False)],
+            'q': 'An acid is diluted by adding water. What happens to its pH?',
+            'wrong_explanations': {1: 'Water does not make acid stronger — adding water DILUTES the acid, reducing H⁺ '
+                                      'concentration and raising pH.',
+                                   2: 'Water does affect the acid — it reduces the concentration of H⁺ ions (dilutes '
+                                      'them). The pH INCREASES.',
+                                   3: 'Unless you add enormous amounts of water, the pH approaches 7 gradually but '
+                                      'never quite reaches it — you are diluting, not neutralising.'}}],
+  'rp': None,
+  'spec': '5.4.2.4',
+  'summary': 'Describe the pH scale, what it measures and how indicators are used.',
+  'theory': [{'content': 'The pH SCALE measures the CONCENTRATION of hydrogen ions (H⁺) in a solution — it indicates '
+                         'how acidic or alkaline a solution is.\n'
+                         '\n'
+                         'Scale range: 0 to 14 (though values slightly outside this range are possible).\n'
+                         '\n'
+                         'pH 0–6: ACIDIC (more H⁺ ions than OH⁻ ions)\n'
+                         'pH 7: NEUTRAL (equal H⁺ and OH⁻ — pure water at 25°C)\n'
+                         'pH 8–14: ALKALINE (more OH⁻ ions than H⁺ ions)\n'
+                         '\n'
+                         'The pH scale is LOGARITHMIC — each unit change represents a 10× change in H⁺ concentration:\n'
+                         'pH 3 has 10× more H⁺ than pH 4.\n'
+                         'pH 3 has 100× more H⁺ than pH 5.\n'
+                         '\n'
+                         'Typical pH values:\n'
+                         'Hydrochloric acid (conc.): pH ~0–1\n'
+                         'Vinegar (ethanoic acid): pH ~3\n'
+                         'Coffee: pH ~5\n'
+                         'Pure water: pH 7\n'
+                         'Baking soda solution: pH ~9\n'
+                         'Sodium hydroxide solution: pH ~13–14',
+              'heading': 'The pH Scale'},
+             {'content': 'An INDICATOR is a substance that changes colour depending on the pH of a solution.\n'
+                         '\n'
+                         'UNIVERSAL INDICATOR:\n'
+                         'A mixture of indicators that shows a range of colours across the pH scale.\n'
+                         'Red → orange → yellow → green → blue → purple as pH increases from 0 to 14.\n'
+                         'Gives an APPROXIMATE pH — tells you the pH range.\n'
+                         '\n'
+                         'LITMUS:\n'
+                         'Red in ACID, blue in ALKALI, purple in neutral.\n'
+                         'Simple test — tells you acid or alkali, not the pH number.\n'
+                         '\n'
+                         'PHENOLPHTHALEIN:\n'
+                         'Colourless in acid, PINK in alkali.\n'
+                         'Used in titrations — clear colour change at the end point.\n'
+                         '\n'
+                         'pH PROBE / METER:\n'
+                         'Gives a PRECISE numerical pH reading — more accurate than indicators.\n'
+                         'Used in industry and for accurate laboratory measurements.\n'
+                         '\n'
+                         'THE RELATIONSHIP BETWEEN pH AND CONCENTRATION:\n'
+                         'The MORE H⁺ ions in solution → LOWER pH (more acidic).\n'
+                         'The MORE OH⁻ ions in solution → HIGHER pH (more alkaline).\n'
+                         'Adding water DILUTES the solution → concentration of H⁺ decreases → pH INCREASES towards 7.',
+              'heading': 'Indicators and Measuring pH'},
+             {'content': 'Adding a BASE to an ACID gradually increases the pH (makes it less acidic).\n'
+                         'Adding an ACID to an ALKALI gradually decreases the pH (makes it less alkaline).\n'
+                         '\n'
+                         'A TITRATION CURVE shows how pH changes as acid is added to alkali:\n'
+                         'At the START: pH high (~13) — the solution is strongly alkaline.\n'
+                         'As acid is added: pH falls slowly at first.\n'
+                         'Near the END POINT: pH drops RAPIDLY — a large pH change for a small addition.\n'
+                         'At the END POINT: pH = 7 (if strong acid + strong alkali).\n'
+                         'After the end point: pH continues to fall as excess acid is added.\n'
+                         '\n'
+                         'WHY SUCH A SHARP CHANGE NEAR THE END POINT:\n'
+                         'Near the equivalence point, there is very little OH⁻ left to absorb the H⁺ from the added '
+                         'acid.\n'
+                         'So each small addition of acid produces a large change in H⁺ concentration → large pH '
+                         'change.',
+              'heading': 'Effect of Neutralisation on pH'}],
+  'title': 'The pH Scale and Neutralisation',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'CATHODE is NEGATIVE — positive ions are attracted to it and gain electrons (reduced). ANODE is '
+                    'POSITIVE — negative ions are attracted to it and lose electrons (oxidised). Students often '
+                    'confuse these. Remember: AN OX (Anode Oxidation) and RED CAT (Reduction at Cathode).',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'electrolysis-principles',
+  'key_note': 'Electrolysis: decomposition using electrical energy. Electrolyte: ionic compound that is molten or in '
+              'solution. Cathode (−): cations attracted, gain electrons, REDUCED. Anode (+): anions attracted, lose '
+              'electrons, OXIDISED. AN OX, RED CAT. Inert electrodes: graphite or platinum.',
+  'matching': {'instruction': 'Match each term to its correct definition.',
+               'pairs': [('Cathode', 'Negative electrode — positive ions attracted here — reduction occurs'),
+                         ('Anode', 'Positive electrode — negative ions attracted here — oxidation occurs'),
+                         ('Electrolyte',
+                          'Ionic compound that is molten or dissolved — conducts electricity and is decomposed'),
+                         ('Reduction (at cathode)', 'Cations gain electrons — metal deposited or H₂ gas produced'),
+                         ('Oxidation (at anode)', 'Anions lose electrons — non-metal gas produced (O₂, Cl₂)')],
+               'title': 'Electrolysis Key Terms'},
+  'quiz': [{'opts': [('In the solid, ions are fixed in the lattice — they cannot move to carry charge. Molten NaCl has '
+                      'free-moving ions.',
+                      True),
+                     ("Solid NaCl doesn't contain ions — they only form when the compound melts.", False),
+                     ('Solid NaCl is too hard for electricity to pass through.', False),
+                     ('Electrolysis only works on liquids — all solids resist decomposition.', False)],
+            'q': 'Why can solid sodium chloride not be electrolysed, but molten sodium chloride can?',
+            'wrong_explanations': {1: 'NaCl is always ionic — Na⁺ and Cl⁻ ions exist in both solid and molten states. '
+                                      'The issue is whether they can MOVE.',
+                                   2: 'Hardness affects mechanical properties, not ionic conductivity — the issue is '
+                                      'ion mobility, not physical hardness.',
+                                   3: 'Some solids are electrolysed — e.g. electrolysis of a metal anode in '
+                                      'electroplating. The issue specifically with NaCl solid is fixed ions.'}},
+           {'opts': [('At the anode — negative ions lose electrons here (OIL: Oxidation Is Loss)', True),
+                     ('At the cathode — positive ions gain electrons here', False),
+                     ('In the electrolyte — ions are oxidised as they move through the solution', False),
+                     ('At both electrodes simultaneously', False)],
+            'q': 'During electrolysis, where does oxidation take place?',
+            'wrong_explanations': {1: 'The CATHODE is where REDUCTION occurs (positive ions GAIN electrons). Remember: '
+                                      'RED CAT (Reduction at Cathode).',
+                                   2: 'Ions move through the solution but are not oxidised or reduced until they reach '
+                                      'an electrode.',
+                                   3: 'Oxidation (at anode) and reduction (at cathode) occur at DIFFERENT electrodes — '
+                                      'at the same time, but not at the same place.'}}],
+  'rp': None,
+  'spec': '5.4.3.1',
+  'summary': 'Describe what electrolysis is, how it works and the key terms used.',
+  'theory': [{'content': 'ELECTROLYSIS is the decomposition of a substance using ELECTRICAL ENERGY.\n'
+                         '\n'
+                         'For electrolysis to occur, the substance must be an ELECTROLYTE — a substance that can '
+                         'conduct electricity AND be decomposed by it.\n'
+                         '\n'
+                         'Electrolytes are ionic compounds that are either:\n'
+                         'MOLTEN (melted) — ions are free to move through the liquid.\n'
+                         'DISSOLVED in water (aqueous solution) — ions are free to move through the solution.\n'
+                         '\n'
+                         'Solid ionic compounds CANNOT be electrolysed — their ions are fixed in the lattice.\n'
+                         '\n'
+                         'Electrolysis is used to:\n'
+                         'Extract reactive metals from their ores (aluminium, sodium).\n'
+                         'Electroplate metals (coating objects with a metal layer).\n'
+                         'Purify metals (e.g. copper refining).\n'
+                         'Manufacture chemicals (e.g. chlorine and sodium hydroxide from brine).',
+              'heading': 'What is Electrolysis?'},
+             {'content': 'ELECTRODES: the conductors that dip into the electrolyte.\n'
+                         'Connected to a DIRECT CURRENT (DC) power supply.\n'
+                         '\n'
+                         'CATHODE: the NEGATIVE electrode (connected to the negative terminal).\n'
+                         'ANODE: the POSITIVE electrode (connected to the positive terminal).\n'
+                         'Memory: CATHode = CATs are negative (they scratch!) or: An-ODE is pOsitivE.\n'
+                         '\n'
+                         'How it works:\n'
+                         'Positive ions (CATIONS) move TOWARDS the negative cathode.\n'
+                         'At the cathode: cations GAIN electrons → REDUCED → solid metal or hydrogen gas deposited.\n'
+                         '\n'
+                         'Negative ions (ANIONS) move TOWARDS the positive anode.\n'
+                         'At the anode: anions LOSE electrons → OXIDISED → gas or element released.\n'
+                         '\n'
+                         'OVERALL:\n'
+                         'Oxidation at the Anode (OA).\n'
+                         'Reduction at the Cathode (RC).\n'
+                         'Memory: AN OX, A RED CAT (ANode OXidation; REDuction at CAThode).',
+              'heading': 'Key Terms and the Apparatus'},
+             {'content': 'INERT ELECTRODES (e.g. graphite or platinum):\n'
+                         'Do not react with the electrolyte or products.\n'
+                         'Simply provide a surface for ions to discharge.\n'
+                         'Graphite is most commonly used — cheap and conducts electricity.\n'
+                         '\n'
+                         'REACTIVE ELECTRODES (e.g. copper in electroplating):\n'
+                         'The anode dissolves into the solution as copper ions.\n'
+                         'The cathode grows as copper deposits onto it.\n'
+                         'Used in electroplating and copper purification.\n'
+                         '\n'
+                         'WHY INERT ELECTRODES ARE IMPORTANT:\n'
+                         'If the anode reacted with the products or electrolyte, it would change the composition of '
+                         'the solution.\n'
+                         'Using inert electrodes (graphite or platinum) gives consistent, predictable products.\n'
+                         '\n'
+                         'NB — In aluminium extraction, the CARBON ANODES slowly BURN in the oxygen produced and must '
+                         'be regularly replaced. This is one reason aluminium extraction is expensive.',
+              'heading': 'Electrodes — Inert vs Reactive'}],
+  'title': 'The Process of Electrolysis',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'In molten ionic compounds, the METAL is always produced at the CATHODE (the negative electrode). '
+                    'This is reduction — metal ions GAIN electrons. The NON-METAL is always produced at the ANODE '
+                    '(positive electrode). This is oxidation — non-metal ions LOSE electrons.',
+  'equations': ['2NaCl(l) → 2Na(l) + Cl₂(g)  (electrolysis of molten NaCl)',
+                'PbBr₂(l) → Pb(l) + Br₂(g)  (electrolysis of molten lead bromide)',
+                'Cathode: Na⁺ + e⁻ → Na',
+                'Anode: 2Cl⁻ → Cl₂ + 2e⁻'],
+  'fifas': [],
+  'higher': None,
+  'id': 'electrolysis-molten',
+  'key_note': 'Molten ionic compound → only those ions present. Cathode: metal ion + electrons → metal. Anode: '
+              'non-metal ions lose electrons → non-metal (gas or liquid). Molten NaCl → Na metal + Cl₂ gas. Molten '
+              "PbBr₂ → Pb metal + Br₂. Solid won't conduct — ions must be mobile.",
+  'matching': {'instruction': 'Match each electrode product to the correct electrolysis of a molten compound.',
+               'pairs': [('Cathode — molten NaCl', 'Sodium metal (liquid) — Na⁺ ions gain electrons'),
+                         ('Anode — molten NaCl', 'Chlorine gas (yellow-green) — Cl⁻ ions lose electrons'),
+                         ('Cathode — molten PbBr₂', 'Lead metal (liquid) — Pb²⁺ ions gain 2 electrons each'),
+                         ('Anode — molten PbBr₂', 'Bromine liquid/vapour (brown) — Br⁻ ions lose electrons')],
+               'title': 'Products at Each Electrode'},
+  'quiz': [{'opts': [('Calcium metal — Ca²⁺ ions are reduced at the negative cathode', True),
+                     ('Chlorine gas — Cl⁻ ions are discharged at the cathode', False),
+                     ('Calcium chloride — no decomposition occurs at the cathode', False),
+                     ('Calcium oxide — the calcium combines with oxygen from the air', False)],
+            'q': 'Molten calcium chloride (CaCl₂) is electrolysed. What is produced at the cathode?',
+            'wrong_explanations': {1: 'Cl⁻ is NEGATIVE — it moves to the POSITIVE ANODE, not the cathode. The cathode '
+                                      'attracts positive Ca²⁺ ions.',
+                                   2: 'Electrolysis DOES decompose the compound — that is its purpose.',
+                                   3: "Electrolysis is done in an enclosed container — calcium doesn't react with air "
+                                      'at this stage. The product is pure calcium metal.'}},
+           {'opts': [('In the solid, Pb²⁺ and Br⁻ ions are fixed — they cannot move to carry charge. Melting gives the '
+                      'ions freedom to move.',
+                      True),
+                     ('Melting changes the chemical formula of lead bromide, making electrolysis possible.', False),
+                     ('The electrodes cannot penetrate a solid — they need a liquid to make contact.', False),
+                     ("Solid lead bromide doesn't contain ions — they form when it melts.", False)],
+            'q': 'Why must lead bromide be melted before it can be electrolysed?',
+            'wrong_explanations': {1: 'Melting does NOT change the chemical formula — PbBr₂ is still PbBr₂ whether '
+                                      'solid or molten.',
+                                   2: "In a proper setup, electrodes can contact a solid — but the solid still won't "
+                                      "conduct electricity because the ions can't move.",
+                                   3: 'Lead bromide is ionic in BOTH solid and molten states — Na⁺ and Cl⁻ (or Pb²⁺ '
+                                      "and Br⁻) ions exist in the solid too. They just can't move."}}],
+  'rp': 'RP4 (Chemistry) — Carry out electrolysis of lead(II) bromide. Observe products at each electrode. Safety: '
+        'work in fume cupboard — bromine is toxic.',
+  'spec': '5.4.3.2',
+  'summary': 'Predict and explain the products of electrolysing molten ionic compounds.',
+  'theory': [{'content': 'When a MOLTEN ionic compound is electrolysed, the ONLY ions present are those from the '
+                         'compound itself.\n'
+                         '\n'
+                         'This makes prediction simple:\n'
+                         'At the CATHODE (negative): the POSITIVE METAL ION is discharged → metal is deposited.\n'
+                         'At the ANODE (positive): the NEGATIVE NON-METAL ION is discharged → non-metal element (often '
+                         'a gas) is produced.\n'
+                         '\n'
+                         'Example — electrolysis of molten sodium chloride (NaCl):\n'
+                         'Ions present: Na⁺ and Cl⁻ only.\n'
+                         'Cathode: Na⁺ + e⁻ → Na (sodium metal produced — liquid, very reactive)\n'
+                         'Anode: 2Cl⁻ → Cl₂ + 2e⁻ (chlorine gas produced — yellow-green, toxic)\n'
+                         '\n'
+                         'Example — electrolysis of molten lead bromide (PbBr₂):\n'
+                         'Ions present: Pb²⁺ and Br⁻ only.\n'
+                         'Cathode: Pb²⁺ + 2e⁻ → Pb (lead metal deposited)\n'
+                         'Anode: 2Br⁻ → Br₂ + 2e⁻ (bromine liquid/vapour produced — brown)',
+              'heading': 'Products from Molten Ionic Compounds'},
+             {'content': 'SOLID ionic compounds have ions FIXED in the lattice — they cannot move → no electrolysis '
+                         'possible.\n'
+                         'MOLTEN ionic compounds have ions FREE TO MOVE → electrolysis can occur.\n'
+                         '\n'
+                         'Practical considerations:\n'
+                         'Melting ionic compounds often requires very high temperatures.\n'
+                         'NaCl melts at 801°C — very high energy input needed.\n'
+                         'Special equipment and safety measures required.\n'
+                         'This is why electrolysis is expensive for very reactive metal production.\n'
+                         '\n'
+                         'For ALUMINIUM: the compound is DISSOLVED in molten cryolite (not just melted on its own) to '
+                         'lower the operating temperature from ~2050°C to ~950°C — still very high, but more '
+                         'practically manageable.',
+              'heading': 'Why Molten Rather Than Solid?'},
+             {'content': 'Lead bromide is commonly used in school demonstrations:\n'
+                         '\n'
+                         'Before melting: no conductivity — ions fixed in solid.\n'
+                         'After melting: circuit completes — ions free to move.\n'
+                         '\n'
+                         'CATHODE observations:\n'
+                         'Grey metallic liquid appears at the negative electrode.\n'
+                         'Lead forms as liquid (above its melting point at these temperatures).\n'
+                         '\n'
+                         'ANODE observations:\n'
+                         'Reddish-brown bromine vapour produced at positive electrode.\n'
+                         'Bromine is a brown liquid/red-brown vapour.\n'
+                         '\n'
+                         'OVERALL: PbBr₂(l) → Pb(l) + Br₂(g)\n'
+                         '\n'
+                         'Note: the solid lead bromide MUST be melted before any electrolysis occurs — a clear '
+                         'observation of why ions must be mobile.',
+              'heading': 'Observations During Electrolysis of Lead Bromide'}],
+  'title': 'Electrolysis of Molten Ionic Compounds',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'In copper purification, the IMPURE copper is the ANODE (it dissolves). The PURE copper builds up '
+                    'on the CATHODE. Students often get these the wrong way round. The anions in the electrolyte '
+                    '(SO₄²⁻) do not move to either electrode in copper purification — only copper ions are discharged.',
+  'equations': ['Al³⁺ + 3e⁻ → Al  (cathode — aluminium extraction)',
+                '2O²⁻ → O₂ + 4e⁻  (anode — aluminium extraction)',
+                'Cu → Cu²⁺ + 2e⁻  (anode — copper purification)',
+                'Cu²⁺ + 2e⁻ → Cu  (cathode — copper purification)'],
+  'fifas': [],
+  'higher': None,
+  'id': 'electrolysis-extraction',
+  'key_note': 'Aluminium extraction: molten Al₂O₃ in cryolite (lowers MP to ~950°C), graphite electrodes, Al deposited '
+              'at cathode, O₂ at anode burns graphite anodes. Copper purification: impure Cu anode dissolves, pure Cu '
+              'deposits at cathode, anode sludge contains precious metals. Electroplating: coat object (cathode) with '
+              'thin metal layer.',
+  'matching': {'instruction': 'Match each industrial use to the correct electrode behaviour.',
+               'pairs': [('Aluminium extraction — cathode',
+                          'Al³⁺ ions reduced → molten aluminium deposited and tapped off'),
+                         ('Aluminium extraction — anode',
+                          'O²⁻ ions oxidised → O₂ gas produced — burns graphite anodes'),
+                         ('Copper purification — anode', 'Impure copper dissolves — Cu → Cu²⁺ + 2e⁻'),
+                         ('Copper purification — cathode', 'Pure copper deposits — Cu²⁺ + 2e⁻ → Cu'),
+                         ('Electroplating — cathode', 'Object being plated — metal ions deposit onto its surface')],
+               'title': 'Match the Electrolysis Application'},
+  'quiz': [{'opts': [('Oxygen produced at the anode reacts with the hot graphite: C + O₂ → CO₂ — the anode burns away',
+                      True),
+                     ('The anode dissolves into the aluminium oxide melt', False),
+                     ('The high temperature melts and destroys the graphite', False),
+                     ('Aluminium deposits on the anode, blocking it', False)],
+            'q': 'Why does the graphite anode in aluminium extraction need to be replaced regularly?',
+            'wrong_explanations': {1: 'Graphite does not dissolve ionically — it reacts CHEMICALLY with the oxygen '
+                                      'produced at the anode.',
+                                   2: 'Graphite melts at ~3600°C — well above the operating temperature of ~950°C. '
+                                      'Physical melting is not the issue.',
+                                   3: 'Aluminium is produced at the CATHODE (the graphite lining at the bottom) — it '
+                                      "doesn't deposit on the anode."}},
+           {'opts': [('Pure copper deposits — Cu²⁺ ions from solution gain electrons and form solid copper', True),
+                     ('Impure copper dissolves — copper atoms lose electrons and enter solution', False),
+                     ('Oxygen gas is produced — water is oxidised at the cathode', False),
+                     ('Gold and silver from the anode deposit at the cathode', False)],
+            'q': 'In copper purification by electrolysis, what happens at the cathode?',
+            'wrong_explanations': {1: 'Impure copper DISSOLVING is what happens at the ANODE — Cu → Cu²⁺ + 2e⁻. The '
+                                      'cathode is where Cu DEPOSITS.',
+                                   2: 'Oxygen is produced at anodes when water is oxidised — in copper purification '
+                                      'the anode reaction is Cu dissolving, not water oxidation.',
+                                   3: 'Less reactive metals (Au, Ag) from the anode do NOT dissolve into solution — '
+                                      'they fall as anode sludge. Only copper enters solution.'}}],
+  'rp': None,
+  'spec': '5.4.3.3',
+  'summary': 'Describe how electrolysis is used to extract aluminium and purify copper.',
+  'theory': [{'content': "Aluminium is the most abundant metal in the Earth's crust — but it is very reactive, making "
+                         'it difficult to extract.\n'
+                         '\n'
+                         'Aluminium cannot be extracted by carbon reduction (it is above carbon in the reactivity '
+                         'series).\n'
+                         'Instead, electrolysis of MOLTEN ALUMINIUM OXIDE (Al₂O₃) is used.\n'
+                         '\n'
+                         'CHALLENGE: aluminium oxide melts at about 2050°C — impractically high.\n'
+                         'SOLUTION: dissolve aluminium oxide in MOLTEN CRYOLITE (Na₃AlF₆).\n'
+                         'Cryolite lowers the operating temperature to about 950°C.\n'
+                         'Cryolite does not react and is recovered — it just acts as a solvent.\n'
+                         '\n'
+                         'ELECTROLYSIS PROCESS (Hall-Héroult process):\n'
+                         'Molten Al₂O₃ in cryolite is placed in a large steel tank lined with graphite (acts as the '
+                         'cathode).\n'
+                         'Graphite anodes dip into the melt from above.\n'
+                         '\n'
+                         'At CATHODE (graphite lining):\n'
+                         'Al³⁺ + 3e⁻ → Al (aluminium ions reduced to molten aluminium)\n'
+                         'Molten aluminium sinks to the bottom and is tapped off.\n'
+                         '\n'
+                         'At ANODE (graphite rods):\n'
+                         '2O²⁻ → O₂ + 4e⁻ (oxide ions oxidised to oxygen gas)\n'
+                         '\n'
+                         'PROBLEM WITH CARBON ANODES:\n'
+                         'The oxygen produced at the anode reacts with the hot graphite anodes:\n'
+                         'C + O₂ → CO₂\n'
+                         'Anodes burn away and must be replaced regularly — an ongoing operational cost.',
+              'heading': 'Extracting Aluminium by Electrolysis'},
+             {'content': 'CRUDE COPPER from smelting contains impurities (zinc, iron, silver, gold) — too impure for '
+                         'electrical wiring.\n'
+                         'Electrolysis purifies it to 99.99% pure copper.\n'
+                         '\n'
+                         'SETUP:\n'
+                         'ELECTROLYTE: copper sulfate solution (CuSO₄(aq)).\n'
+                         'ANODE: impure copper — REACTIVE anode (dissolves).\n'
+                         'CATHODE: pure copper or stainless steel — grows as copper deposits.\n'
+                         '\n'
+                         'AT THE ANODE (impure copper dissolves):\n'
+                         'Cu → Cu²⁺ + 2e⁻ (copper atoms from impure anode dissolve into solution)\n'
+                         'Less reactive impurities (gold, silver, platinum) do NOT dissolve — they fall as ANODE '
+                         'SLUDGE at the bottom.\n'
+                         '\n'
+                         'AT THE CATHODE (pure copper deposits):\n'
+                         'Cu²⁺ + 2e⁻ → Cu (copper ions from solution deposit as pure copper)\n'
+                         '\n'
+                         'RESULT:\n'
+                         'The impure anode gradually dissolves.\n'
+                         'Pure copper builds up on the cathode.\n'
+                         'The concentration of Cu²⁺ in the CuSO₄ solution stays approximately constant.\n'
+                         'The anode sludge is collected — it may contain valuable metals (gold, silver) that offset '
+                         'costs.',
+              'heading': 'Copper Purification by Electrolysis'},
+             {'content': 'ELECTROPLATING uses electrolysis to coat an object with a thin layer of metal.\n'
+                         '\n'
+                         'Applications:\n'
+                         'Decorative: gold or silver plating of jewellery, trophies.\n'
+                         'Protective: chromium plating of car parts, zinc plating of steel (galvanising).\n'
+                         'Functional: nickel plating for wear resistance.\n'
+                         '\n'
+                         'SETUP for silver plating a copper spoon:\n'
+                         'ELECTROLYTE: silver nitrate solution (AgNO₃).\n'
+                         'ANODE: silver (dissolves to replenish Ag⁺ ions in solution).\n'
+                         'CATHODE: the copper spoon (coated with silver).\n'
+                         '\n'
+                         'AT CATHODE:\n'
+                         'Ag⁺ + e⁻ → Ag (silver deposits on the spoon)\n'
+                         '\n'
+                         'AT ANODE:\n'
+                         'Ag → Ag⁺ + e⁻ (silver anode dissolves, maintaining Ag⁺ concentration)\n'
+                         '\n'
+                         'The anode mass decreases and the cathode mass increases by the same amount.',
+              'heading': 'Electroplating'}],
+  'title': 'Using Electrolysis to Extract Metals',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'In aqueous solutions, WATER provides H⁺ and OH⁻ ions that compete with the ions from the '
+                    'dissolved salt. At the cathode: metals above hydrogen → H₂ is produced (not the metal). At the '
+                    'anode: if no halide ions present → O₂ is produced (from OH⁻). Students often predict the wrong '
+                    'product for Na⁺ at the cathode — sodium is so reactive it is NEVER deposited from aqueous '
+                    'solution; hydrogen is produced instead.',
+  'equations': ['Cathode: 2H⁺ + 2e⁻ → H₂  (hydrogen from water/dilute acid)',
+                'Anode: 4OH⁻ → O₂ + 2H₂O + 4e⁻  (oxygen from water)',
+                'Anode: 2Cl⁻ → Cl₂ + 2e⁻  (chlorine from brine)',
+                'Cathode: Cu²⁺ + 2e⁻ → Cu  (copper from CuSO₄)'],
+  'fifas': [],
+  'higher': None,
+  'id': 'electrolysis-aqueous',
+  'key_note': 'Aqueous solutions: ions from salt AND H⁺/OH⁻ from water compete. Cathode: metal below H → metal '
+              'deposited; metal above H → H₂. Anode: Cl⁻ in high conc → Cl₂; otherwise → O₂. Brine (NaCl) → H₂ '
+              '(cathode) + Cl₂ (anode) + NaOH (solution) — chlor-alkali process.',
+  'matching': {'instruction': 'Match each aqueous solution to its products at cathode and anode.',
+               'pairs': [('Dilute H₂SO₄', 'Cathode: H₂ gas. Anode: O₂ gas. (No metal ions below H, no halide ions)'),
+                         ('CuSO₄ solution', 'Cathode: Cu metal deposited. Anode: O₂ gas. (Cu below H; no halide)'),
+                         ('Concentrated NaCl (brine)', 'Cathode: H₂ gas. Anode: Cl₂ gas. (Na above H; high Cl⁻ conc)'),
+                         ('Dilute NaCl', 'Cathode: H₂ gas. Anode: O₂ gas. (Na above H; low Cl⁻ conc → O₂ preferred)')],
+               'title': 'Predict the Electrolysis Products'},
+  'quiz': [{'opts': [('Copper metal — Cu²⁺ ions are below hydrogen in the reactivity series and are preferentially '
+                      'discharged',
+                      True),
+                     ('Hydrogen gas — water provides H⁺ ions which are always discharged at the cathode', False),
+                     ('Sulfur dioxide — SO₄²⁻ ions are discharged at the cathode', False),
+                     ('Oxygen — OH⁻ ions from water are discharged at the cathode', False)],
+            'q': 'Copper sulfate solution is electrolysed with inert electrodes. What is produced at the cathode?',
+            'wrong_explanations': {1: 'H⁺ ions ARE present — but Cu²⁺ is LESS REACTIVE than H⁺ (copper is below '
+                                      'hydrogen in the series), so Cu²⁺ is preferentially discharged.',
+                                   2: 'SO₄²⁻ is a very stable ion — it is NOT discharged at the cathode or anode under '
+                                      'normal conditions.',
+                                   3: 'O₂ is produced at the ANODE (from OH⁻ oxidation), not the cathode.'}},
+           {'opts': [('Chlorine gas — high concentration of Cl⁻ ions means they are preferentially discharged over OH⁻',
+                      True),
+                     ('Oxygen gas — OH⁻ ions from water are always discharged at the anode', False),
+                     ('Sodium metal — Na⁺ ions are discharged at the anode', False),
+                     ('Hydrogen gas — H⁺ ions from water are discharged at the anode', False)],
+            'q': 'Concentrated brine (sodium chloride solution) is electrolysed. What is produced at the anode?',
+            'wrong_explanations': {1: 'O₂ IS produced if the Cl⁻ concentration is LOW — but in CONCENTRATED brine, the '
+                                      'high Cl⁻ concentration favours Cl₂ production.',
+                                   2: 'Na⁺ is a positive ion — it moves to the CATHODE (negative electrode), not the '
+                                      'anode.',
+                                   3: 'H⁺ is discharged at the CATHODE (negative) — positive ions always move to the '
+                                      'cathode.'}}],
+  'rp': 'RP4 (Chemistry) — Investigate the electrolysis of aqueous solutions. Test products: H₂ with lit splint '
+        '(squeaky pop), O₂ with glowing splint (relights), Cl₂ with damp litmus (bleaches it).',
+  'spec': '5.4.3.4',
+  'summary': 'Predict products of electrolysing aqueous solutions and explain why water adds complexity.',
+  'theory': [{'content': 'When an ionic compound is DISSOLVED in water, the solution contains:\n'
+                         'Ions from the ionic compound, AND\n'
+                         'H⁺ and OH⁻ ions from water (water partially ionises: H₂O ⇌ H⁺ + OH⁻).\n'
+                         '\n'
+                         'At each electrode, there are COMPETING IONS — more than one type of ion that could be '
+                         'discharged.\n'
+                         '\n'
+                         'The ion that is actually discharged depends on:\n'
+                         '1. POSITION IN THE REACTIVITY SERIES — less reactive ions are discharged preferentially.\n'
+                         '2. CONCENTRATION — a high concentration of an ion favours its discharge.\n'
+                         '\n'
+                         'At the CATHODE (reduction):\n'
+                         'If the metal is BELOW hydrogen in the series → metal is deposited.\n'
+                         'If the metal is ABOVE hydrogen in the series → hydrogen gas (H₂) is produced (from H⁺ '
+                         'ions).\n'
+                         '\n'
+                         'At the ANODE (oxidation):\n'
+                         'If Cl⁻ ions are present in HIGH concentration → chlorine gas (Cl₂) produced.\n'
+                         'If no Cl⁻ (or low concentration) → oxygen gas (O₂) produced (from OH⁻ ions from water).',
+              'heading': 'Why Aqueous Solutions Are More Complex'},
+             {'content': 'DILUTE SULFURIC ACID (H₂SO₄(aq)) with inert electrodes:\n'
+                         'Ions: H⁺, OH⁻, SO₄²⁻.\n'
+                         'Cathode: H⁺ + e⁻ → H₂ (hydrogen produced — SO₄²⁻ not discharged, too stable)\n'
+                         'Anode: 4OH⁻ → O₂ + 2H₂O (oxygen produced)\n'
+                         'Ratio: 2 volumes H₂ for every 1 volume O₂ (2:1 ratio)\n'
+                         '\n'
+                         'CUPROUS SULFATE SOLUTION (CuSO₄(aq)) with inert electrodes:\n'
+                         'Ions: Cu²⁺, SO₄²⁻, H⁺, OH⁻.\n'
+                         'Cathode: Cu²⁺ preferred over H⁺ (copper is below hydrogen, less reactive) → copper '
+                         'deposited.\n'
+                         'Anode: OH⁻ discharged → oxygen gas.\n'
+                         '\n'
+                         'CONCENTRATED SODIUM CHLORIDE (brine: NaCl(aq)) with inert electrodes:\n'
+                         'Ions: Na⁺, Cl⁻, H⁺, OH⁻.\n'
+                         'Cathode: H⁺ preferred over Na⁺ (Na is far above hydrogen, very reactive) → hydrogen gas '
+                         'produced.\n'
+                         'Anode: Cl⁻ in high concentration → CHLORINE gas produced (not O₂ — Cl⁻ concentration '
+                         'effect).\n'
+                         'Remaining solution: Na⁺ and OH⁻ → sodium hydroxide (NaOH) — important industrial product.\n'
+                         '\n'
+                         'This is the CHLOR-ALKALI process — produces chlorine, hydrogen and sodium hydroxide — all '
+                         'valuable chemicals.',
+              'heading': 'Electrolysis of Key Aqueous Solutions'},
+             {'content': "CATHODE RULE (what's produced at the negative electrode):\n"
+                         'Metal ions below hydrogen in series (Cu²⁺, Ag⁺, Au³⁺) → METAL deposited.\n'
+                         'Metal ions above hydrogen in series (Na⁺, K⁺, Ca²⁺, Mg²⁺, Al³⁺, Zn²⁺, Fe²⁺) → HYDROGEN gas '
+                         '(H₂) produced.\n'
+                         '\n'
+                         "ANODE RULE (what's produced at the positive electrode):\n"
+                         'If halide ions present (Cl⁻, Br⁻, I⁻) AND in high concentration → HALOGEN gas (Cl₂, Br₂, '
+                         'I₂).\n'
+                         'Otherwise → OXYGEN gas (O₂) from OH⁻ ions in water.\n'
+                         '\n'
+                         'IMPORTANT INDUSTRIAL PRODUCTS from electrolysis:\n'
+                         'CHLORINE — from brine (NaCl solution). Used in PVC, disinfectants, bleach.\n'
+                         'HYDROGEN — from brine. Used in Haber process, fuel cells.\n'
+                         'SODIUM HYDROXIDE — from brine. Used in paper making, soap, cleaning products.\n'
+                         'ALUMINIUM — from molten Al₂O₃ in cryolite.\n'
+                         'OXYGEN — from water/dilute sulfuric acid.',
+              'heading': 'Products Summary and Rules'}],
+  'title': 'Electrolysis of Aqueous Solutions',
+  'triple_only': None,
+  'variables': []}],
+
 "energy-changes": [],
 "rates-equilibrium": [],
 "organic": [],
