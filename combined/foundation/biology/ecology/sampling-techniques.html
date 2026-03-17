@@ -144,11 +144,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-sampling-techniques"><div class="match-def" data-index="0" draggable="true">Estimating the population of daisies in a field — stationary plants, random placement</div>
-<div class="match-def" data-index="3" draggable="true">Counting the abundance of limpets on different zones of a rocky shore</div>
+      <div class="match-defs" id="defPool-sampling-techniques"><div class="match-def" data-index="4" draggable="true">Recording how lichen cover changes from a roadside to open countryside</div>
 <div class="match-def" data-index="2" draggable="true">Estimating the population of great crested newts in a pond — mobile animals</div>
+<div class="match-def" data-index="0" draggable="true">Estimating the population of daisies in a field — stationary plants, random placement</div>
 <div class="match-def" data-index="1" draggable="true">Showing how plant species change from an open beach to a sheltered dune</div>
-<div class="match-def" data-index="4" draggable="true">Recording how lichen cover changes from a roadside to open countryside</div>
+<div class="match-def" data-index="3" draggable="true">Counting the abundance of limpets on different zones of a rocky shore</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -189,27 +189,27 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 3</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "500 is just the field area — it has nothing to do with the dandelion count.",2: "50 is just a spatial measurement — the estimated population requires scaling the mean count up to the full habitat area.",3: "40 gives the total counted in ALL quadrats — not the estimated population of the whole field.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "50 is just a spatial measurement — the estimated population requires scaling the mean count up to the full habitat area.",2: "40 gives the total counted in ALL quadrats — not the estimated population of the whole field.",3: "500 is just the field area — it has nothing to do with the dandelion count.",}'>
   <div class="q-text">1. A student places 10 quadrats (each 1 m²) randomly in a field (total area 500 m²). Mean dandelion count = 4 per quadrat. Estimate the dandelion population.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">500 — total area of field</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">50 — total area ÷ number of quadrats</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">2000 — mean count (4) × (total area ÷ quadrat area) = 4 × 500 = 2000</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">50 — total area ÷ number of quadrats</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">40 — mean count × number of quadrats = 4 × 10</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">40 — mean count × number of quadrats = 4 × 10</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">500 — total area of field</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "N = (n₁ × n₂) ÷ m = (25 × 20) ÷ 5 = 100. Multiplying gives an enormous overestimate.",2: "The formula is N = (n₁ × n₂) ÷ m — not the inverse. Dividing m by the product gives a nonsensically small number.",3: "N = (n₁ × n₂) ÷ m = (25 × 20) ÷ 5 = 500 ÷ 5 = 100. Make sure to divide by m (number of marked in second catch = 5), not by n₂.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "The formula is N = (n₁ × n₂) ÷ m — not the inverse. Dividing m by the product gives a nonsensically small number.",1: "N = (n₁ × n₂) ÷ m = (25 × 20) ÷ 5 = 100. Multiplying gives an enormous overestimate.",2: "N = (n₁ × n₂) ÷ m = (25 × 20) ÷ 5 = 500 ÷ 5 = 100. Make sure to divide by m (number of marked in second catch = 5), not by n₂.",}'>
   <div class="q-text">2. In a mark-recapture study: 25 snails marked (n₁), 20 caught second time (n₂), 5 were marked (m). What is the estimated population?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">100 — N = (25 × 20) ÷ 5 = 100</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">1 — N = 5 ÷ (25 × 20)</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">2500 — N = 25 × 20 × 5 (multiplying instead of dividing)</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">1 — N = 5 ÷ (25 × 20)</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">250 — N = 25 × 20 ÷ 2 (dividing by wrong number)</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">250 — N = 25 × 20 ÷ 2 (dividing by wrong number)</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">100 — N = (25 × 20) ÷ 5 = 100</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Quadrat size is fixed by the frame — it doesn\'t change with placement method.",1: "Disturbance is minimised by careful technique — but the reason for random placement is specifically about statistical validity and avoiding bias.",2: "There is no legal requirement for randomness — it is a scientific requirement to ensure the sample is representative of the whole habitat.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Disturbance is minimised by careful technique — but the reason for random placement is specifically about statistical validity and avoiding bias.",1: "There is no legal requirement for randomness — it is a scientific requirement to ensure the sample is representative of the whole habitat.",2: "Quadrat size is fixed by the frame — it doesn\'t change with placement method.",}'>
   <div class="q-text">3. Why must quadrats be placed RANDOMLY in a habitat?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Random placement ensures all quadrats are the same size</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Random placement prevents disturbing the organisms in the habitat</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">It is a legal requirement for ecological surveys</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Random placement prevents disturbing the organisms in the habitat</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">It is a legal requirement for ecological surveys</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">Random placement ensures all quadrats are the same size</button>
 <button class="quiz-opt" data-qi="2" data-oi="3">To avoid sampling bias — deliberately choosing areas with lots of organisms would overestimate the population</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>

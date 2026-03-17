@@ -4,14 +4,13 @@ Physics subtopics — Combined Foundation
 AQA 8464 Physics spec 6.0
 IN PROGRESS
 
-Topics complete:
-  6.1 Energy           7  ✅
-  6.2 Electricity     10  ✅
-  6.3 Particle Model   (pending)
-  6.4 Atomic Structure (pending)
-  6.5 Forces           (pending)
-  6.6 Waves            (pending)
-  6.7 Magnetism        (pending)
+  6.1 Energy            7  ✅
+  6.2 Electricity      10  ✅
+  6.3 Particle Model    6  ✅
+  6.4 Atomic Structure  (pending)
+  6.5 Forces            (pending)
+  6.6 Waves             (pending)
+  6.7 Magnetism         (pending)
 """
 
 PHYSICS_COLOR = "#4ECDC4"
@@ -1695,5 +1694,725 @@ PHYSICS_SUBTOPICS_ALL = {
                 ('ns', 'Secondary turns', '', ''),
                 ('I', 'Current', 'amperes', 'A'),
                 ('P', 'Power', 'watts', 'W')]}],
+
+"particle-model": [{'common_mistake': 'Units for density are kg/m³ (SI) or g/cm³ (also common). Do NOT mix — if mass is in grams and '
+                    'volume in cm³, density comes out in g/cm³. Convert to kg/m³ by multiplying by 1000. Also: 1 cm³ = '
+                    '1 × 10⁻⁶ m³.',
+  'equations': ['ρ = m ÷ V'],
+  'fifas': [{'label': 'Density Calculation',
+             'question': 'A block has mass 540 g and volume 200 cm³. Calculate its density in g/cm³.',
+             'steps': [('F', 'ρ = m ÷ V'),
+                       ('I', 'm = 540 g, V = 200 cm³'),
+                       ('F', 'ρ = 540 ÷ 200'),
+                       ('A', 'ρ = 2.7 g/cm³ (aluminium)')]}],
+  'higher': None,
+  'id': 'density-of-materials',
+  'key_note': 'ρ = m/V. Units: kg/m³. Denser = more mass per volume. Solids > liquids > gases (usually). Ice less '
+              'dense than water (exception). Float if ρ_object < ρ_fluid. RP17: regular solids — measure dimensions; '
+              'irregular solids — displacement method.',
+  'matching': {'instruction': 'Match each scenario to the correct density or mass value.',
+               'pairs': [('2700 kg/m³',
+                          'Aluminium block: mass = 270 g, volume = 100 cm³ (in consistent units: 0.27 kg ÷ 1×10⁻⁴ m³)'),
+                         ('Floats', 'Object with density 800 kg/m³ placed in water (density 1000 kg/m³)'),
+                         ('Sinks', 'Object with density 8000 kg/m³ placed in water (density 1000 kg/m³)'),
+                         ('Displacement method', 'Used to find the volume of an irregularly shaped solid')],
+               'title': 'Density Calculations'},
+  'quiz': [{'opts': [('0.8 g/cm³ — ρ = m ÷ V = 800 ÷ 1000 = 0.8 g/cm³', True),
+                     ('1.25 g/cm³ — ρ = V ÷ m = 1000 ÷ 800', False),
+                     ('800,000 g/cm³ — multiplied instead of divided', False),
+                     ('1.0 g/cm³ — density of all liquids is always 1 g/cm³', False)],
+            'q': 'A liquid has mass 800 g and volume 1000 cm³. What is its density in g/cm³?',
+            'wrong_explanations': {1: 'ρ = V ÷ m inverts the formula — it gives cm³/g, not g/cm³. Always divide MASS '
+                                      'by VOLUME.',
+                                   2: 'Multiplying mass × volume gives g·cm³ — not a density unit.',
+                                   3: 'Only WATER has density 1 g/cm³ — other liquids vary. This liquid (0.8 g/cm³) '
+                                      'would float on water.'}},
+           {'opts': [('Ice is less dense than liquid water — its particles are arranged in a more open lattice '
+                      'structure, giving lower density (917 kg/m³ vs 1000 kg/m³)',
+                      True),
+                     ('Ice is lighter than water because it is frozen — freezing reduces mass', False),
+                     ('Ice floats because it is a solid — all solids float on their liquid form', False),
+                     ('Ice has more volume than the same mass of water — it sinks if enough weight is added', False)],
+            'q': 'Why does ice float on water?',
+            'wrong_explanations': {1: "Freezing doesn't change mass — the same molecules are present. Ice floats "
+                                      'because of LOWER DENSITY, not lower mass.',
+                                   2: 'Most solids are DENSER than their liquid form (e.g. solid iron sinks in liquid '
+                                      'iron). Water/ice is a special exception.',
+                                   3: 'Ice is less dense because its crystal structure spreads particles further apart '
+                                      "— and because it's less dense, it floats. The last part of the option is "
+                                      'correct (adding weight to ice can sink it) but irrelevant to why ice naturally '
+                                      'floats.'}}],
+  'rp': 'RP17 (Physics) — Determine densities of regular solids (measure dimensions), irregular solids (displacement), '
+        'and liquids (measure cylinder with balance). ρ = m/V.',
+  'spec': '6.3.1.1',
+  'summary': 'Define density and calculate it from mass and volume for solids and liquids.',
+  'theory': [{'content': "DENSITY is a measure of how much mass is packed into a given volume — how 'compact' a "
+                         'material is.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'ρ = m ÷ V\n'
+                         '\n'
+                         'ρ = density (kg/m³)\n'
+                         'm = mass (kg)\n'
+                         'V = volume (m³)\n'
+                         '\n'
+                         'Rearranging:\n'
+                         'm = ρ × V\n'
+                         'V = m ÷ ρ\n'
+                         '\n'
+                         'Common density values:\n'
+                         'Water: 1000 kg/m³\n'
+                         'Aluminium: 2700 kg/m³\n'
+                         'Iron/steel: 7800 kg/m³\n'
+                         'Air: ~1.2 kg/m³\n'
+                         'Gold: 19,300 kg/m³\n'
+                         'Ice: 917 kg/m³ (less dense than liquid water — why ice floats)\n'
+                         '\n'
+                         'DENSITY AND FLOATING:\n'
+                         'Objects FLOAT in a fluid if their density is LESS than the fluid.\n'
+                         'Objects SINK if their density is GREATER than the fluid.',
+              'heading': 'What Is Density?'},
+             {'content': 'The particle model explains density differences between states and materials:\n'
+                         '\n'
+                         'SOLIDS:\n'
+                         'Particles tightly packed in a regular lattice.\n'
+                         'High density — many particles in a small volume.\n'
+                         '\n'
+                         'LIQUIDS:\n'
+                         'Particles close together but able to flow.\n'
+                         'Slightly lower density than solids (usually) — particles slightly further apart.\n'
+                         'Exceptions: water is denser than ice (ice has a more open lattice structure).\n'
+                         '\n'
+                         'GASES:\n'
+                         'Particles far apart — mostly empty space.\n'
+                         'Very low density — much lower than solids or liquids.\n'
+                         'Example: air is ~800× less dense than water.\n'
+                         '\n'
+                         'DIFFERENT MATERIALS:\n'
+                         'Denser materials have either heavier atoms (higher atomic mass) or more tightly packed '
+                         'atomic structures.\n'
+                         'Gold (dense): heavy atoms + tightly packed.\n'
+                         'Aluminium (less dense): lighter atoms.\n'
+                         'Polystyrene (very low density): mostly air — open foam structure.',
+              'heading': 'Particle Model Explanation of Density'},
+             {'content': 'REQUIRED PRACTICAL (RP17) — Determine densities of regular and irregular solids and '
+                         'liquids.\n'
+                         '\n'
+                         'REGULAR SOLID (e.g. a cuboid or cylinder):\n'
+                         'Measure dimensions with a RULER, MICROMETER or VERNIER CALLIPERS.\n'
+                         'Calculate volume: V = l × w × h (cuboid) or V = πr²h (cylinder).\n'
+                         'Measure mass with a BALANCE.\n'
+                         'Calculate: ρ = m ÷ V\n'
+                         '\n'
+                         'IRREGULAR SOLID (e.g. a stone):\n'
+                         'Measure mass with a BALANCE.\n'
+                         'Fill a measuring cylinder with water, note initial volume.\n'
+                         'LOWER the solid into the water using a thread.\n'
+                         'Note the new volume — the rise = volume of the solid (DISPLACEMENT METHOD).\n'
+                         'Calculate: ρ = m ÷ ΔV\n'
+                         '\n'
+                         'LIQUID:\n'
+                         'Place an empty measuring cylinder on a balance and zero it (tare).\n'
+                         'Pour a known volume of liquid in.\n'
+                         'Read the mass.\n'
+                         'Calculate: ρ = m ÷ V\n'
+                         '\n'
+                         'SOURCES OF ERROR:\n'
+                         'Air bubbles trapped under the object in displacement.\n'
+                         'Parallax error reading the meniscus in a measuring cylinder.\n'
+                         'Not drying the solid before measuring mass after displacement.',
+              'heading': 'Measuring Density — Required Practical'}],
+  'title': 'Density of Materials',
+  'triple_only': None,
+  'variables': [('ρ', 'Density', 'kg/m³', 'kg/m³'), ('m', 'Mass', 'kilograms', 'kg'), ('V', 'Volume', 'm³', 'm³')]},
+ {'common_mistake': 'Changes of state are PHYSICAL changes — not chemical. The substance remains the same chemical '
+                    'compound throughout. Mass is ALWAYS conserved in a change of state — the number of particles '
+                    "doesn't change, only their arrangement.",
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'changes-of-state',
+  'key_note': 'Solid → liquid: melting. Liquid → gas: boiling/evaporation. Reverse: freezing, condensation. '
+              'Sublimation: solid → gas directly. All are physical changes — reversible, mass conserved. Particles '
+              'rearrange but are not created or destroyed.',
+  'matching': {'instruction': 'Match each change of state to its name and direction.',
+               'pairs': [('Melting',
+                          'Solid → liquid — energy supplied, particles gain enough energy to break from lattice'),
+                         ('Freezing', 'Liquid → solid — energy removed, particles slow down and form fixed lattice'),
+                         ('Evaporation/Boiling',
+                          'Liquid → gas — energy supplied, particles escape intermolecular forces'),
+                         ('Condensation',
+                          'Gas → liquid — energy removed, particles slow and intermolecular forces pull them together'),
+                         ('Sublimation', 'Solid → gas directly — e.g. dry ice (solid CO₂) at room temperature')],
+               'title': 'Change of State Match'},
+  'quiz': [{'opts': [('200 g — mass is conserved during changes of state; no particles are created or destroyed', True),
+                     ('Less than 200 g — some water evaporates as it cools', False),
+                     ('More than 200 g — ice is larger in volume so it must be heavier', False),
+                     ('Depends on temperature — colder freezers produce heavier ice', False)],
+            'q': '200 g of water is placed in a freezer and completely freezes. What is the mass of the ice formed?',
+            'wrong_explanations': {1: 'In a sealed container with no evaporation, mass is perfectly conserved — but '
+                                      'even with some evaporation, the PRINCIPLE is conservation of mass in a change '
+                                      'of state.',
+                                   2: 'Ice IS larger in volume than liquid water — but volume and mass are different. '
+                                      'The MASS is the same; ice is simply less dense.',
+                                   3: 'Temperature affects rate of freezing and final temperature, not the mass of ice '
+                                      'formed.'}},
+           {'opts': [("No new substances are formed — the material's chemical identity is preserved and the change is "
+                      'reversible',
+                      True),
+                     ('Melting only affects the surface of the solid — the inside remains chemically unchanged', False),
+                     ('Physical changes always involve energy, while chemical changes do not', False),
+                     ('Melting is chemical because the structure of the material is permanently altered', False)],
+            'q': 'Why is melting a physical change rather than a chemical change?',
+            'wrong_explanations': {1: 'Melting is a bulk process — the entire solid changes state, not just the '
+                                      'surface.',
+                                   2: 'Both chemical and physical changes can involve energy. The distinction is '
+                                      'whether new chemical substances are formed.',
+                                   3: 'The ARRANGEMENT of particles changes (structure), but the CHEMICAL IDENTITY '
+                                      "doesn't — it's still the same compound. Chemical changes produce new "
+                                      'substances.'}}],
+  'rp': None,
+  'spec': '6.3.1.2',
+  'summary': 'Describe changes of state in terms of particles and explain why mass is conserved.',
+  'theory': [{'content': 'Matter exists in three main states: SOLID, LIQUID and GAS.\n'
+                         '\n'
+                         'Changes of state occur when enough energy is supplied or removed:\n'
+                         '\n'
+                         'SOLID → LIQUID: MELTING (energy supplied)\n'
+                         'LIQUID → SOLID: FREEZING (energy removed)\n'
+                         'LIQUID → GAS: EVAPORATION/BOILING (energy supplied)\n'
+                         'GAS → LIQUID: CONDENSATION (energy removed)\n'
+                         'SOLID → GAS (directly): SUBLIMATION (energy supplied)\n'
+                         'GAS → SOLID (directly): DEPOSITION (energy removed)\n'
+                         '\n'
+                         'MASS IS CONSERVED:\n'
+                         'When a substance changes state, no particles are created or destroyed — they simply '
+                         'rearrange.\n'
+                         'The total mass before = total mass after.\n'
+                         'Example: 100 g of ice melts to give exactly 100 g of liquid water.',
+              'heading': 'The States of Matter and Changes of State'},
+             {'content': 'Changes of state are PHYSICAL CHANGES — NOT chemical changes.\n'
+                         '\n'
+                         'Key difference:\n'
+                         'PHYSICAL change: the substance keeps its chemical identity — REVERSIBLE.\n'
+                         'CHEMICAL change: new substances are formed — usually irreversible.\n'
+                         '\n'
+                         'Why changes of state are physical:\n'
+                         'No new chemical bonds are formed or broken between different types of molecule.\n'
+                         'Water freezing: H₂O molecules are still H₂O — just rearranged in a lattice.\n'
+                         'Water evaporating: H₂O molecules still exist as individual molecules in the gas.\n'
+                         '\n'
+                         'The change can be REVERSED:\n'
+                         'Ice melts → water → refreezes → ice again. Same substance throughout.\n'
+                         '\n'
+                         'Contrast with chemical change:\n'
+                         'Burning wood: wood + oxygen → CO₂ + water. Original material cannot be recovered.',
+              'heading': 'Physical vs Chemical Changes'},
+             {'content': 'SOLID:\n'
+                         'Particles in fixed positions in a regular lattice.\n'
+                         'Vibrate in place — cannot flow.\n'
+                         'Strong intermolecular forces hold them together.\n'
+                         '\n'
+                         'LIQUID:\n'
+                         'Particles close together but able to move past each other.\n'
+                         'No fixed arrangement — can flow and take the shape of the container.\n'
+                         'Weaker intermolecular forces than solid.\n'
+                         '\n'
+                         'GAS:\n'
+                         'Particles far apart — mostly empty space.\n'
+                         'Move rapidly in all directions — random motion.\n'
+                         'Very weak intermolecular forces (effectively none).\n'
+                         'Fill any container.\n'
+                         '\n'
+                         'DURING MELTING:\n'
+                         'Energy supplied → particles vibrate more → forces between particles overcome → lattice '
+                         'breaks down → particles begin to flow.\n'
+                         '\n'
+                         'DURING BOILING:\n'
+                         'Energy supplied → particles gain enough energy to completely overcome intermolecular forces '
+                         '→ escape from liquid surface into gas phase.',
+              'heading': 'Particle Explanation of Changes of State'}],
+  'title': 'Changes of State',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'During a CHANGE OF STATE, temperature stays CONSTANT — energy goes into potential energy '
+                    '(breaking bonds), not kinetic energy. Students often think heating always raises temperature — '
+                    'but at melting/boiling point, temperature is flat on the heating curve until the change is '
+                    'complete.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'internal-energy',
+  'key_note': 'Internal energy = KE + PE of all particles. Heating → increases internal energy → either raises '
+              'temperature (KE) or causes change of state (PE). Temperature = average KE per particle. During change '
+              'of state: temperature constant, PE increasing. Heating curve: slopes = temperature rise; flat sections '
+              '= changes of state.',
+  'matching': {'instruction': 'Match each statement to the correct concept.',
+               'pairs': [('Internal energy', 'Total kinetic + potential energy of ALL particles in the system'),
+                         ('Temperature', 'Measure of AVERAGE kinetic energy per particle'),
+                         ('Flat section on heating curve',
+                          'Change of state — temperature constant, energy increasing PE (breaking bonds)'),
+                         ('Sloping section on heating curve',
+                          'Temperature rising — energy increasing KE of particles')],
+               'title': 'Internal Energy Concepts'},
+  'quiz': [{'opts': [('A change of state — energy is increasing potential energy to break intermolecular bonds, not '
+                      'raising temperature',
+                      True),
+                     ('The heater has broken — no energy is being supplied', False),
+                     ('The substance has reached its maximum possible temperature', False),
+                     ('The substance is losing heat to the surroundings at exactly the same rate as energy is supplied',
+                      False)],
+            'q': 'A substance is heated at constant power. Its temperature stays constant for several minutes. What is '
+                 'happening?',
+            'wrong_explanations': {1: 'If no energy were being supplied, temperature would fall (cool to room '
+                                      'temperature) — a constant temperature at the melting/boiling point specifically '
+                                      'indicates a change of state.',
+                                   2: 'There is no maximum temperature concept for most substances in normal '
+                                      'conditions — temperature can always rise further if energy is supplied.',
+                                   3: 'While heat loss to surroundings can cause apparent temperature plateaus, in '
+                                      'exam context a flat section on a heating curve always indicates a change of '
+                                      'state — the temperature is pinned at the melting or boiling point.'}},
+           {'opts': [('The swimming pool — despite lower temperature, it has vastly more particles so its total KE + '
+                      'PE is much greater',
+                      True),
+                     ('The cup of tea — higher temperature means more internal energy', False),
+                     ('They have the same — internal energy depends only on temperature', False),
+                     ('Cannot compare — internal energy requires knowing density as well', False)],
+            'q': 'A large cool swimming pool and a small hot cup of tea — which has greater internal energy?',
+            'wrong_explanations': {1: 'Higher temperature means higher AVERAGE KE per particle — but internal energy '
+                                      'is the TOTAL for all particles. The pool has far more particles, so total '
+                                      'internal energy is greater.',
+                                   2: 'Internal energy depends on temperature, mass AND specific heat capacity — not '
+                                      'temperature alone.',
+                                   3: 'Density is relevant to calculating particle numbers but the main point is that '
+                                      'internal energy is an EXTENSIVE property — it scales with the amount of '
+                                      'matter.'}}],
+  'rp': None,
+  'spec': '6.3.2.1',
+  'summary': 'Define internal energy and explain how heating affects a system.',
+  'theory': [{'content': 'INTERNAL ENERGY is the total kinetic energy and potential energy of all the particles in a '
+                         'system.\n'
+                         '\n'
+                         'INTERNAL ENERGY = sum of:\n'
+                         'KINETIC ENERGY of particles — from their random motion (vibration, translation, rotation).\n'
+                         'POTENTIAL ENERGY of particles — stored in the bonds and intermolecular forces between them.\n'
+                         '\n'
+                         'When a substance is heated, the energy supplied goes into the internal energy of the '
+                         'system.\n'
+                         '\n'
+                         'This increased internal energy can produce TWO EFFECTS:\n'
+                         '1. TEMPERATURE RISE — particles move faster (higher average KE).\n'
+                         '2. CHANGE OF STATE — particles gain enough PE to overcome intermolecular forces (bonds '
+                         'break/form).\n'
+                         '\n'
+                         'NOTE: Both effects cannot happen simultaneously for a pure substance at its melting or '
+                         'boiling point — during a change of state, temperature stays constant even as energy is '
+                         'supplied.',
+              'heading': 'What Is Internal Energy?'},
+             {'content': 'TEMPERATURE is a measure of the AVERAGE KINETIC ENERGY of the particles.\n'
+                         '\n'
+                         'Higher temperature = faster-moving particles = higher average KE.\n'
+                         'Lower temperature = slower-moving particles = lower average KE.\n'
+                         '\n'
+                         'At the same temperature:\n'
+                         'Different materials have different internal energies because they have different numbers of '
+                         'particles and different potential energy arrangements.\n'
+                         '\n'
+                         'IMPORTANT DISTINCTION:\n'
+                         'TEMPERATURE (°C or K) — measures average KE per particle.\n'
+                         'THERMAL ENERGY (J) — total energy transferred — depends on temperature difference AND mass '
+                         'AND specific heat capacity.\n'
+                         '\n'
+                         'Example:\n'
+                         'A large cool lake and a small hot cup of tea:\n'
+                         'The tea is hotter (higher temperature = higher average KE per particle).\n'
+                         'But the lake has far greater total internal energy (more particles, more total KE + PE).',
+              'heading': 'Temperature and Kinetic Energy'},
+             {'content': 'When energy is SUPPLIED to a substance:\n'
+                         'EFFECT 1 — TEMPERATURE RISES:\n'
+                         'Particles move faster (KE increases).\n'
+                         'This happens when no change of state is occurring.\n'
+                         'Calculated using ΔE = mcΔθ.\n'
+                         '\n'
+                         'EFFECT 2 — CHANGE OF STATE:\n'
+                         'Temperature stays CONSTANT while state changes.\n'
+                         'Energy goes into increasing POTENTIAL ENERGY — breaking intermolecular bonds.\n'
+                         'Calculated using E = mL (latent heat equation).\n'
+                         '\n'
+                         'On a HEATING CURVE (temperature vs time for constant energy input):\n'
+                         'Sloping sections: temperature rising (KE increasing).\n'
+                         'FLAT sections: change of state occurring (temperature constant, PE increasing).\n'
+                         'Flat section during melting = melting point.\n'
+                         'Flat section during boiling = boiling point.\n'
+                         '\n'
+                         'On a COOLING CURVE: the reverse — flat sections at condensation and freezing points.',
+              'heading': 'Heating and Cooling — Two Effects'}],
+  'title': 'Internal Energy',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Δθ is FINAL minus INITIAL temperature — not the final temperature alone. Heating from 20°C to '
+                    '60°C gives Δθ = 40°C, not 60°C. Also convert mass to kg (not grams) before substituting.',
+  'equations': ['ΔE = m × c × Δθ'],
+  'fifas': [{'label': 'SHC Calculation',
+             'question': 'How much energy heats 0.5 kg of water from 20°C to 100°C? (c = 4200 J/kg°C)',
+             'steps': [('F', 'ΔE = m × c × Δθ'),
+                       ('I', 'm = 0.5 kg, c = 4200, Δθ = 100 − 20 = 80°C'),
+                       ('F', 'ΔE = 0.5 × 4200 × 80 = 0.5 × 336,000'),
+                       ('A', 'ΔE = 168,000 J (168 kJ)')]}],
+  'higher': None,
+  'id': 'temperature-changes-shc',
+  'key_note': 'SHC (c): J per kg per °C. ΔE = mcΔθ. Water c = 4200 J/kg°C (highest common). Δθ = final − initial. '
+              'Rearrange for any unknown. RP14: electric heater method. High SHC of water → radiators, cooling '
+              'systems, climate moderation.',
+  'matching': {'instruction': 'Match each scenario to the correct energy or temperature change.',
+               'pairs': [('504,000 J', '2 kg water, Δθ = 60°C, c = 4200 — ΔE = 2 × 4200 × 60'),
+                         ('20°C rise', '54,000 J into 3 kg aluminium (c = 900) — Δθ = 54,000 ÷ 2700'),
+                         ('High SHC benefit',
+                          'Water used in central heating — carries more thermal energy per kg per °C'),
+                         ('Δθ = final − initial', 'Temperature CHANGE — not the final temperature alone')],
+               'title': 'SHC Calculations'},
+  'quiz': [{'opts': [('135,000 J — ΔE = 2 × 450 × 150 = 135,000 J (Δθ = 200 − 50 = 150°C)', True),
+                     ('45,000 J — used final temperature (50°C) not temperature change (150°C)', False),
+                     ('180,000 J — used initial temperature (200°C) not temperature change', False),
+                     ('900 J — ΔE = c × Δθ (forgot mass)', False)],
+            'q': 'A 2 kg iron block (c = 450 J/kg°C) cools from 200°C to 50°C. How much energy is released?',
+            'wrong_explanations': {1: 'Δθ = 200 − 50 = 150°C (change, not final). Using 50°C: 2 × 450 × 50 = 45,000 J '
+                                      '— wrong Δθ.',
+                                   2: 'Using 200°C: 2 × 450 × 200 = 180,000 J — using initial temp, not the change.',
+                                   3: 'Must include mass: ΔE = m × c × Δθ = 2 × 450 × 150 = 135,000 J.'}},
+           {'opts': [("Water's high SHC (4200 J/kg°C) means it absorbs large amounts of thermal energy per kg per °C — "
+                      'effective at cooling without a large temperature rise',
+                      True),
+                     ('Water has a low SHC — it heats up quickly so it removes heat from the engine faster', False),
+                     ('Water is electrically insulating — it prevents short circuits in the engine', False),
+                     ('Water has the highest density of any liquid — it flows faster through the cooling system',
+                      False)],
+            'q': 'Why is water used as the coolant in car engines rather than a cheaper fluid?',
+            'wrong_explanations': {1: 'A LOW SHC would mean water heats up quickly and saturates with heat — '
+                                      'counterproductive for cooling. HIGH SHC means it can absorb lots of heat before '
+                                      'its temperature rises much.',
+                                   2: 'Water is a conductor (especially tap water with dissolved ions) — electrical '
+                                      'insulation is not the reason.',
+                                   3: 'Water is not the densest liquid — mercury is far denser. Flow rate is '
+                                      'determined by pump design, not density alone.'}}],
+  'rp': 'RP14 (Physics) — Determine SHC of a material: electric heater (E = Pt), thermometer, balance. Rearrange ΔE = '
+        'mcΔθ for c. Insulate to reduce heat loss errors.',
+  'spec': '6.3.2.2',
+  'summary': 'Use ΔE = mcΔθ to calculate energy changes when substances are heated or cooled.',
+  'theory': [{'content': 'SPECIFIC HEAT CAPACITY (c) is the amount of energy needed to raise the temperature of 1 kg '
+                         'of a substance by 1°C.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'ΔE = m × c × Δθ\n'
+                         '\n'
+                         'ΔE = change in thermal energy (J)\n'
+                         'm = mass (kg)\n'
+                         'c = specific heat capacity (J/kg°C)\n'
+                         'Δθ = temperature change (°C)\n'
+                         '\n'
+                         'Common values:\n'
+                         'Water: 4200 J/kg°C — very high\n'
+                         'Aluminium: 900 J/kg°C\n'
+                         'Iron/steel: 450 J/kg°C\n'
+                         'Copper: 385 J/kg°C\n'
+                         'Air: ~1000 J/kg°C\n'
+                         '\n'
+                         'Higher SHC = more energy needed per kg per °C = heats up and cools down more slowly.',
+              'heading': 'Specific Heat Capacity'},
+             {'content': 'Rearrangements:\n'
+                         'Δθ = ΔE ÷ (m × c)\n'
+                         'm = ΔE ÷ (c × Δθ)\n'
+                         'c = ΔE ÷ (m × Δθ)\n'
+                         '\n'
+                         'EXAMPLE 1:\n'
+                         'Heat 2 kg of water from 20°C to 80°C (c = 4200 J/kg°C):\n'
+                         'Δθ = 80 − 20 = 60°C\n'
+                         'ΔE = 2 × 4200 × 60 = 504,000 J\n'
+                         '\n'
+                         'EXAMPLE 2:\n'
+                         '54,000 J heats a 3 kg aluminium block (c = 900):\n'
+                         'Δθ = 54,000 ÷ (3 × 900) = 54,000 ÷ 2700 = 20°C\n'
+                         '\n'
+                         'REQUIRED PRACTICAL (RP14):\n'
+                         'Heat a known mass using an electric heater.\n'
+                         'E = P × t (energy in from heater).\n'
+                         'Measure Δθ with a thermometer.\n'
+                         'Rearrange ΔE = mcΔθ to find c.\n'
+                         'Insulate to reduce heat loss.',
+              'heading': 'Using the SHC Equation'},
+             {'content': 'WHY WATER IS USED IN HEATING SYSTEMS:\n'
+                         'Water has one of the highest SHC values of any common liquid.\n'
+                         'Can carry large amounts of thermal energy per kg per °C — efficient heat transfer.\n'
+                         'Used in: central heating radiators, car cooling systems, industrial heat exchangers.\n'
+                         '\n'
+                         'OCEANIC CLIMATE REGULATION:\n'
+                         'Oceans have enormous mass of water with high SHC.\n'
+                         'Absorb and store huge amounts of solar energy → release slowly.\n'
+                         'Coastal areas have milder, more stable temperatures than inland areas.\n'
+                         '\n'
+                         'COOKING:\n'
+                         'Cast iron pans (low SHC ≈ 450 J/kg°C): heat up quickly — responsive.\n'
+                         'Ceramic dishes (higher SHC): heat up more slowly but retain heat longer.\n'
+                         '\n'
+                         'CONSERVATION OF ENERGY IN MIXING:\n'
+                         'm₁c₁Δθ₁ = m₂c₂Δθ₂ (energy lost by hot = energy gained by cold, in an insulated system)',
+              'heading': 'Applications of Specific Heat Capacity'}],
+  'title': 'Temperature Changes and Specific Heat Capacity',
+  'triple_only': None,
+  'variables': [('ΔE', 'Change in thermal energy', 'joules', 'J'),
+                ('m', 'Mass', 'kilograms', 'kg'),
+                ('c', 'Specific heat capacity', 'J/kg°C', 'J/kg°C'),
+                ('Δθ', 'Temperature change', '°C', '°C')]},
+ {'common_mistake': 'During a change of state, temperature does NOT change — the flat sections on a heating curve. E = '
+                    'mL has NO temperature change term — unlike ΔE = mcΔθ. Students often confuse the two equations. '
+                    'If temperature is changing, use ΔE = mcΔθ. If state is changing (temperature constant), use E = '
+                    'mL.',
+  'equations': ['E = m × L'],
+  'fifas': [{'label': 'Latent Heat — Melting',
+             'question': 'Calculate the energy needed to melt 2 kg of ice. (Lf = 334,000 J/kg)',
+             'steps': [('F', 'E = m × L'),
+                       ('I', 'm = 2 kg, L = 334,000 J/kg'),
+                       ('F', 'E = 2 × 334,000'),
+                       ('A', 'E = 668,000 J (668 kJ)')]}],
+  'higher': None,
+  'id': 'specific-latent-heat',
+  'key_note': 'E = mL. No temperature change during state change — energy goes into PE (breaking bonds). Fusion: solid '
+              '↔ liquid. Vaporisation: liquid ↔ gas. Lv > Lf (more energy to boil than melt). Water Lf = 334 kJ/kg; Lv '
+              '= 2260 kJ/kg. Steam burns worse than boiling water — releases latent heat on condensing.',
+  'matching': {'instruction': 'Match each term to its correct description.',
+               'pairs': [('Latent heat of fusion', 'Energy to change 1 kg solid ↔ liquid with NO temperature change'),
+                         ('Latent heat of vaporisation',
+                          'Energy to change 1 kg liquid ↔ gas with NO temperature change — larger than fusion'),
+                         ('E = mL', 'Equation for energy in a change of state — no Δθ term'),
+                         ('Why steam burns worse',
+                          'Steam releases latent heat of vaporisation on condensing — extra energy on top of cooling'),
+                         ('Flat section on heating curve',
+                          'Temperature constant during change of state — energy increasing PE, not KE')],
+               'title': 'Latent Heat Concepts'},
+  'quiz': [{'opts': [('1,130,000 J — E = 0.5 × 2,260,000 = 1,130,000 J', True),
+                     ('4,520,000 J — E = 2 × 2,260,000 (used L as mass)', False),
+                     ('0 J — no energy change because temperature stays at 100°C', False),
+                     ('168,000 J — used SHC equation instead of latent heat', False)],
+            'q': 'How much energy is released when 0.5 kg of steam at 100°C condenses to water at 100°C? (Lv = '
+                 '2,260,000 J/kg)',
+            'wrong_explanations': {1: "E = m × L = 0.5 × 2,260,000. Using 2 for mass gives E = 4,520,000 J — that's "
+                                      'for 2 kg, not 0.5 kg.',
+                                   2: 'Temperature staying constant does NOT mean no energy change. Energy is released '
+                                      'as bonds FORM during condensation — latent heat is released, not absorbed.',
+                                   3: 'For a change of state, use E = mL. The SHC equation (ΔE = mcΔθ) applies when '
+                                      'TEMPERATURE CHANGES — here temperature is constant.'}},
+           {'opts': [('Sweat evaporating absorbs latent heat of vaporisation from the skin — the energy taken from the '
+                      'skin during evaporation lowers its temperature',
+                      True),
+                     ('Sweat is cold — it cools the skin by conduction when applied', False),
+                     ('Sweat reflects sunlight — reducing energy absorbed by the skin', False),
+                     ('Sweat increases skin density — denser skin conducts heat away faster', False)],
+            'q': 'Why does sweating cool the body?',
+            'wrong_explanations': {1: 'Sweat is at body temperature (37°C) — it is not cold. The cooling comes from '
+                                      'EVAPORATION absorbing latent heat.',
+                                   2: "Sweat is transparent — it doesn't reflect significant sunlight.",
+                                   3: "Skin density doesn't change meaningfully due to sweat — cooling is entirely an "
+                                      'evaporative latent heat effect.'}}],
+  'rp': None,
+  'spec': '6.3.2.3',
+  'summary': 'Define specific latent heat and calculate energy for changes of state using E = mL.',
+  'theory': [{'content': 'LATENT HEAT is the energy required to change the state of a substance WITHOUT changing its '
+                         'temperature.\n'
+                         '\n'
+                         'When a substance changes state:\n'
+                         'Energy is supplied BUT temperature stays constant.\n'
+                         'The energy goes into POTENTIAL ENERGY — breaking or forming intermolecular bonds.\n'
+                         'Kinetic energy of particles stays the same → temperature stays the same.\n'
+                         '\n'
+                         "'Latent' means 'hidden' — the energy is 'hidden' because it doesn't show up as a temperature "
+                         'change.\n'
+                         '\n'
+                         'There are TWO types:\n'
+                         'SPECIFIC LATENT HEAT OF FUSION (Lf): energy to change 1 kg of solid → liquid (melting) or '
+                         'liquid → solid (freezing).\n'
+                         'SPECIFIC LATENT HEAT OF VAPORISATION (Lv): energy to change 1 kg of liquid → gas (boiling) '
+                         'or gas → liquid (condensing).\n'
+                         '\n'
+                         'Lv > Lf for most substances — it takes more energy to fully separate particles (boiling) '
+                         'than to just disrupt the lattice (melting).',
+              'heading': 'What Is Latent Heat?'},
+             {'content': 'EQUATION:\n'
+                         'E = m × L\n'
+                         '\n'
+                         'E = energy for the change of state (J)\n'
+                         'm = mass (kg)\n'
+                         'L = specific latent heat (J/kg)\n'
+                         '\n'
+                         'Rearranging:\n'
+                         'm = E ÷ L\n'
+                         'L = E ÷ m\n'
+                         '\n'
+                         'Some values:\n'
+                         'Water — latent heat of fusion: 334,000 J/kg (334 kJ/kg)\n'
+                         'Water — latent heat of vaporisation: 2,260,000 J/kg (2260 kJ/kg)\n'
+                         '\n'
+                         'Note: vaporisation needs ~7× more energy than fusion for water.\n'
+                         '\n'
+                         'EXAMPLE 1 — melting:\n'
+                         'Energy to melt 0.5 kg of ice (Lf = 334,000 J/kg):\n'
+                         'E = 0.5 × 334,000 = 167,000 J\n'
+                         '\n'
+                         'EXAMPLE 2 — boiling:\n'
+                         'Energy to boil away 2 kg of water at 100°C (Lv = 2,260,000 J/kg):\n'
+                         'E = 2 × 2,260,000 = 4,520,000 J = 4.52 MJ',
+              'heading': 'The Specific Latent Heat Equation'},
+             {'content': 'WHY STEAM CAUSES WORSE BURNS THAN BOILING WATER:\n'
+                         'Boiling water (100°C) and steam (100°C) are at the same temperature.\n'
+                         'But when steam CONDENSES on skin, it releases the latent heat of vaporisation (2,260,000 '
+                         'J/kg) IN ADDITION to the heat from cooling.\n'
+                         'Steam releases much more energy per kg than liquid water at the same temperature.\n'
+                         '\n'
+                         'SWEATING AND EVAPORATIVE COOLING:\n'
+                         'When sweat evaporates, it absorbs latent heat of vaporisation from the skin.\n'
+                         'This cools the body — the energy taken from the skin during evaporation lowers skin '
+                         'temperature.\n'
+                         'High latent heat of vaporisation of water makes this very effective.\n'
+                         '\n'
+                         'FREEZING PONDS:\n'
+                         'Water releases latent heat of fusion when it freezes → water surrounding fish slowly '
+                         'releases energy → pond cools slowly.\n'
+                         'This is why ponds freeze from the surface DOWN — the surface loses heat to the cold air '
+                         'above.\n'
+                         '\n'
+                         'HEATING CURVE — FLAT SECTIONS:\n'
+                         'Flat at 0°C during melting (fusion). Flat at 100°C during boiling (vaporisation).\n'
+                         'Slopes in between = temperature rising using ΔE = mcΔθ.',
+              'heading': 'Latent Heat in Context'}],
+  'title': 'Changes of State and Specific Latent Heat',
+  'triple_only': None,
+  'variables': [('E', 'Energy for change of state', 'joules', 'J'),
+                ('m', 'Mass', 'kilograms', 'kg'),
+                ('L', 'Specific latent heat', 'J/kg', 'J/kg')]},
+ {'common_mistake': 'Temperature in gas law calculations MUST be in KELVIN — not Celsius. Add 273 to convert. 0°C = '
+                    '273 K, NOT 0 K. Pressure is caused by COLLISIONS of molecules with the walls — not by the weight '
+                    'or speed alone, but by the RATE and FORCE of collisions.',
+  'equations': ["p × V = constant  (Boyle's Law, constant temperature)",
+                'p ÷ T = constant  (constant volume, T in kelvin)',
+                'T (K) = T (°C) + 273'],
+  'fifas': [{'label': "Boyle's Law",
+             'question': 'A gas at 200 kPa occupies 3 m³. The gas is compressed to 1 m³ at constant temperature. '
+                         'Calculate the new pressure.',
+             'steps': [('F', "p₁V₁ = p₂V₂ (Boyle's Law — constant temperature)"),
+                       ('I', 'p₁ = 200 kPa, V₁ = 3 m³, V₂ = 1 m³'),
+                       ('F', 'p₂ = p₁V₁ ÷ V₂ = 200 × 3 ÷ 1 = 600'),
+                       ('A', 'p₂ = 600 kPa')]}],
+  'higher': None,
+  'id': 'particle-motion-pressure',
+  'key_note': 'Gas pressure: caused by molecular collisions with container walls. Higher T → faster molecules → more '
+              'frequent, harder collisions → higher pressure. Smaller V → more frequent collisions → higher pressure. '
+              "Boyle's Law: pV = constant. T in kelvin: K = °C + 273. Absolute zero = 0 K = −273°C.",
+  'matching': {'instruction': 'Match each change to its effect on gas pressure (assuming everything else stays '
+                              'constant).',
+               'pairs': [('Pressure increases',
+                          'Temperature of gas increases at constant volume — faster molecules, more forceful '
+                          'collisions'),
+                         ('Pressure increases',
+                          'Volume of container decreases at constant temperature — more frequent collisions with '
+                          'walls'),
+                         ('Pressure decreases',
+                          'Temperature of gas decreases at constant volume — slower molecules, less frequent '
+                          'collisions'),
+                         ('Pressure decreases',
+                          'Volume of container increases at constant temperature — molecules travel further between '
+                          'collisions')],
+               'title': 'Pressure and Particle Motion'},
+  'quiz': [{'opts': [('The tyre gets hotter — higher temperature means faster-moving air molecules, more frequent and '
+                      'harder collisions with the tyre walls',
+                      True),
+                     ('Air leaks into the tyre from outside — more molecules means higher pressure', False),
+                     ('The tyre volume decreases as the car is driven — smaller volume means higher pressure', False),
+                     ('The tyre heats up and the air molecules get larger — more molecules hit the walls', False)],
+            'q': 'Why does the pressure inside a tyre increase when a car has been driven for a while?',
+            'wrong_explanations': {1: "Air doesn't leak IN to a sealed tyre — if anything, slow leaks go OUT. The "
+                                      'pressure rises due to TEMPERATURE increase.',
+                                   2: "Tyre volume stays approximately constant while driving (unless there's a "
+                                      'puncture). The pressure rises due to TEMPERATURE increase at constant volume.',
+                                   3: "Gas molecules don't change size with temperature — they just move FASTER, "
+                                      'increasing collision frequency and force.'}},
+           {'opts': [('200 kPa — T₁ = 300 K, T₂ = 600 K; pressure doubles as temperature doubles', True),
+                     ('1200 kPa — used Celsius values: 327 ÷ 27 × 100', False),
+                     ('50 kPa — temperature increased so pressure decreases', False),
+                     ("100 kPa — pressure doesn't change with temperature", False)],
+            'q': 'A gas is at 27°C and 100 kPa. It is heated to 327°C at constant volume. What is the new pressure?',
+            'wrong_explanations': {1: 'Must convert to KELVIN: 27°C = 300 K, 327°C = 600 K. Ratio = 600/300 = 2. Using '
+                                      'Celsius: 327/27 ≈ 12 — completely wrong ratio.',
+                                   2: 'Pressure INCREASES when temperature increases at constant volume — more '
+                                      'energetic collisions, higher pressure.',
+                                   3: 'Pressure and temperature (in kelvin) are directly proportional at constant '
+                                      'volume — higher temperature = higher pressure.'}}],
+  'rp': None,
+  'spec': '6.3.3.1',
+  'summary': 'Explain gas pressure in terms of particle motion and describe how temperature and volume affect '
+             'pressure.',
+  'theory': [{'content': 'Gas molecules are in CONSTANT, RANDOM MOTION — moving in all directions at high speeds.\n'
+                         '\n'
+                         'TEMPERATURE AND KINETIC ENERGY:\n'
+                         'The TEMPERATURE of a gas is related to the AVERAGE KINETIC ENERGY of its molecules.\n'
+                         'Higher temperature → molecules move FASTER → higher average KE.\n'
+                         'Lower temperature → molecules move SLOWER → lower average KE.\n'
+                         '\n'
+                         'At ABSOLUTE ZERO (0 K = −273°C):\n'
+                         'Particles have minimum possible energy — minimum motion.\n'
+                         'Kelvin (K) scale: K = °C + 273\n'
+                         '\n'
+                         'Examples:\n'
+                         '0°C = 273 K (freezing point of water)\n'
+                         '100°C = 373 K (boiling point of water)\n'
+                         '−273°C = 0 K (absolute zero — theoretical minimum)\n'
+                         '\n'
+                         'The Kelvin scale is the absolute temperature scale — used in gas law calculations.',
+              'heading': 'Particle Motion in Gases'},
+             {'content': 'GAS PRESSURE is caused by the COLLISIONS of gas molecules with the WALLS of the container.\n'
+                         '\n'
+                         'Each collision exerts a tiny force on the wall — the total of billions of collisions per '
+                         'second creates the measurable pressure.\n'
+                         '\n'
+                         'Pressure is measured in PASCALS (Pa) or N/m².\n'
+                         '1 Pa = 1 N/m².\n'
+                         '\n'
+                         'FACTORS AFFECTING PRESSURE:\n'
+                         '\n'
+                         'TEMPERATURE (constant volume):\n'
+                         'Higher temperature → molecules move FASTER → MORE FREQUENT collisions with walls → HIGHER '
+                         'PRESSURE → MORE FORCEFUL collisions.\n'
+                         'At constant volume: pressure is proportional to absolute temperature (Kelvin).\n'
+                         '\n'
+                         'VOLUME (constant temperature):\n'
+                         'Smaller volume → molecules travel LESS DISTANCE between collisions → MORE FREQUENT '
+                         'collisions with walls → HIGHER PRESSURE.\n'
+                         "At constant temperature: pressure increases when volume decreases (Boyle's Law).",
+              'heading': 'Gas Pressure'},
+             {'content': "BOYLE'S LAW (constant temperature):\n"
+                         'Pressure × Volume = constant\n'
+                         'pV = constant\n'
+                         'Doubling volume → halves pressure. Halving volume → doubles pressure.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Gas at 100 kPa occupies 2 m³. What pressure when compressed to 0.5 m³?\n'
+                         'p₁V₁ = p₂V₂\n'
+                         '100 × 2 = p₂ × 0.5\n'
+                         'p₂ = 200 ÷ 0.5 = 400 kPa\n'
+                         '\n'
+                         'PRESSURE–TEMPERATURE LAW (constant volume):\n'
+                         'p ÷ T = constant (T in kelvin)\n'
+                         'Double absolute temperature → double pressure.\n'
+                         '\n'
+                         'APPLICATIONS:\n'
+                         'TYRES: pressurised air — less volume of air compressed inside → high pressure.\n'
+                         'SYRINGES: pushing plunger → smaller volume → higher pressure → liquid/gas pushed out.\n'
+                         'AEROSOLS: gas under high pressure pushes liquid out when valve opened.\n'
+                         'BIKE PUMP: compressing air into small volume → high pressure → inflates tyre.',
+              'heading': 'Pressure, Volume and Temperature Relationships'}],
+  'title': 'Particle Motion in Gases',
+  'triple_only': None,
+  'variables': [('p', 'Pressure', 'pascals', 'Pa'),
+                ('V', 'Volume', 'm³', 'm³'),
+                ('T', 'Temperature', 'kelvin', 'K'),
+                ('Ek', 'Average kinetic energy', 'joules', 'J')]}],
 
 }
