@@ -2,16 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Electricity | Physics | Higher | MrBadmusAI | MrBadmusAI</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-    :root { --subject: #4ECDC4; }
-    .topic-card { border-left-color: var(--subject); }
-    .section-title { color: var(--subject); }
-    .go-btn { background: var(--subject); }
-    .spec-pill { border-color: var(--subject); }
-  </style>
+:root { --subject: #4ECDC4; }
+.section-title { color: var(--subject); }
+.subtopic-list-new { display:flex;flex-direction:column; }
+.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
+.subtopic-row:last-child { border-bottom:none; }
+.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
+.subtopic-main:hover { background:rgba(255,255,255,0.03); }
+.subtopic-link { display:flex;align-items:center;gap:12px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
+.subtopic-link:hover .subtopic-title { color:#4ECDC4;text-decoration:underline; }
+.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#4ECDC4;width:28px;height:28px;border-radius:6px;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
+.expand-btn:hover { background:#4ECDC4;color:#0F0F1A; }
+</style>
 </head>
 <body>
   <nav class="nav">
@@ -40,135 +46,129 @@
 <div class="content-area">
 
   <div class="section">
-    <div class="section-title">📋 What You Need to Know</div>
-    <div class="card">
-      <ul class="subtopic-list">
-        <li><span style="color:#4ECDC4">●</span> Circuit symbols and diagrams</li>
-<li><span style="color:#4ECDC4">●</span> Charge, current and time — Q = It</li>
-<li><span style="color:#4ECDC4">●</span> Potential difference, current and resistance — V = IR</li>
-<li><span style="color:#4ECDC4">●</span> Resistance — ohmic conductors, filament lamp, diode, thermistor, LDR</li>
-<li><span style="color:#4ECDC4">●</span> Series and parallel circuits</li>
-<li><span style="color:#4ECDC4">●</span> Mains electricity — AC, DC, live/neutral/earth</li>
-<li><span style="color:#4ECDC4">●</span> Power — P = VI, P = I²R</li>
-<li><span style="color:#4ECDC4">●</span> Energy — E = Pt, E = QV</li>
-<li><span style="color:#4ECDC4">●</span> National Grid</li>
-
-      </ul>
+    <div class="section-title">📋 Subtopics — click any to open full notes</div>
+    <div class="card" style="padding:0;overflow:hidden;">
+      <div class="subtopic-list-new">
+<div class="subtopic-row" id="row-circuit-symbols">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/circuit-symbols.html">
+      <span class="subtopic-title">Standard Circuit Diagram Symbols</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.1.1</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/circuit-symbols.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-electrical-charge-current">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/electrical-charge-current.html">
+      <span class="subtopic-title">Electrical Charge and Current</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.1.2</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/electrical-charge-current.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-current-resistance-pd">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/current-resistance-pd.html">
+      <span class="subtopic-title">Current, Resistance and Potential Difference</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.1.3</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/current-resistance-pd.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-resistors">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/resistors.html">
+      <span class="subtopic-title">Resistors</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.1.4</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/resistors.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-series-parallel-circuits">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/series-parallel-circuits.html">
+      <span class="subtopic-title">Series and Parallel Circuits</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.2</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/series-parallel-circuits.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-direct-alternating-pd">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/direct-alternating-pd.html">
+      <span class="subtopic-title">Direct and Alternating Potential Difference</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.3.1</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/direct-alternating-pd.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-mains-electricity">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/mains-electricity.html">
+      <span class="subtopic-title">Mains Electricity</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.3.2</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/mains-electricity.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-power-electricity">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/power-electricity.html">
+      <span class="subtopic-title">Power</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.4.1</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/power-electricity.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-energy-transfers-appliances">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/energy-transfers-appliances.html">
+      <span class="subtopic-title">Energy Transfers in Everyday Appliances</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.4.2</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/energy-transfers-appliances.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div>
+<div class="subtopic-row" id="row-national-grid">
+  <div class="subtopic-main">
+    <a class="subtopic-link" href="/triple/higher/physics/electricity/national-grid.html">
+      <span class="subtopic-title">The National Grid</span>
+      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.2.4.3</span>
+    </a>
+    <a href="/triple/higher/physics/electricity/national-grid.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
+  </div>
+</div></div>
     </div>
+    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a subtopic title or the <strong>+</strong> button to open the full notes, quiz and examples.</p>
   </div>
 
   <div class="section">
     <div class="section-title">📐 Key Equations</div>
-    <div class="formula-grid">
-      <div class="formula-pill">Q = It</div>
+    <div class="formula-grid"><div class="formula-pill">Q = It</div>
 <div class="formula-pill">V = IR</div>
 <div class="formula-pill">P = VI</div>
 <div class="formula-pill">P = I²R</div>
 <div class="formula-pill">E = Pt</div>
 <div class="formula-pill">E = QV</div>
-
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">⚽ FIFA Worked Example</div>
-    <div class="fifa-box">
-  <div class="fifa-title">⚽ FIFA Example</div>
-  <p style="margin-bottom:14px;font-size:0.95rem;font-style:italic;color:#ccc;">A resistor has a potential difference of 12 V across it and a current of 3 A flowing through it. Calculate its resistance.</p>
-  
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>R = V ÷ I</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">I</div>
-  <p>R = 12 ÷ 3</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">F</div>
-  <p>No conversion needed</p>
-</div>
-<div class="fifa-step">
-  <div class="fifa-letter">A</div>
-  <p>R = <strong>4 Ω</strong></p>
-</div>
 </div>
   </div>
 
-  <div class="section">
-  <div class="section-title">⭐ Higher Tier Content</div>
-  <div class="higher-box"><p>Potential divider circuits</p></div><div class="higher-box"><p>Vout = Vin × R2/(R1+R2)</p></div>
-</div>
-  <div class="section">
-  <div class="section-title">🔬 Triple Science Extensions</div>
-  <div class="triple-box"><p>Static electricity</p></div><div class="triple-box"><p>Electric fields</p></div>
-</div>
-
-  <div class="section">
-    <div class="section-title">🧪 Required Practicals</div>
-    <div class="rp-card">
-  <h4>🔬 RP3 — Resistance of a wire (length)</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Required Practical — know the method, variables and analysis.</p>
-</div><div class="rp-card">
-  <h4>🔬 RP4 — I–V characteristics</h4>
-  <p style="font-size:0.88rem;color:var(--muted);">Required Practical — know the method, variables and analysis.</p>
-</div>
-  </div>
-
-  <div class="section">
-    <div class="section-title">🎯 Quick Quiz</div>
-    
-<div class="quiz-card" data-answer="opt0_0">
-  <div class="q-text">1. A charge of 30 C flows past a point in 6 seconds. What is the current?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt0_0">5 A</button>
-<button class="quiz-opt" data-val="opt0_1">180 A</button>
-<button class="quiz-opt" data-val="opt0_2">0.2 A</button>
-<button class="quiz-opt" data-val="opt0_3">36 A</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! I = Q ÷ t = 30 ÷ 6 = 5 A ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. Use I = Q ÷ t → I = 30 ÷ 6 = 5 A</div>
-</div>
-<div class="quiz-card" data-answer="opt1_0">
-  <div class="q-text">2. Which component has a resistance that DECREASES as temperature increases?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt1_0">Thermistor</button>
-<button class="quiz-opt" data-val="opt1_1">Filament lamp</button>
-<button class="quiz-opt" data-val="opt1_2">Diode</button>
-<button class="quiz-opt" data-val="opt1_3">Fixed resistor</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! A thermistor (NTC) has lower resistance at higher temperatures ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. A thermistor decreases in resistance as temperature rises — used in thermostats.</div>
-</div>
-<div class="quiz-card" data-answer="opt2_0">
-  <div class="q-text">3. In a parallel circuit, what is the same across every branch?</div>
-  <div class="quiz-options">
-    <button class="quiz-opt" data-val="opt2_0">Potential difference</button>
-<button class="quiz-opt" data-val="opt2_1">Current</button>
-<button class="quiz-opt" data-val="opt2_2">Resistance</button>
-<button class="quiz-opt" data-val="opt2_3">Charge</button>
-
-  </div>
-  <div class="quiz-feedback correct-fb">Correct! P.D. is the same across all parallel branches ✅</div>
-  <div class="quiz-feedback wrong-fb">Not quite. In a parallel circuit, the potential difference (p.d.) is the same across every branch.</div>
-</div>
-  </div>
+  <div class="section"><div class="section-title">⭐ Higher Tier Content</div><div class="higher-box"><p>Potential divider circuits</p></div><div class="higher-box"><p>Vout = Vin × R2/(R1+R2)</p></div></div>
+  <div class="section"><div class="section-title">🔬 Triple Science Extensions</div><div class="triple-box"><p>Static electricity</p></div><div class="triple-box"><p>Electric fields</p></div></div>
 
   <div class="section">
     <div class="section-title">🤖 Ask Mr Badmus AI</div>
     <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:8px;">Stuck on <strong>Electricity</strong>? Ask me anything!</p>
-      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Electricity? 💬</p>
       <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 
-  <div class="subtopic-nav">
-  <a class="nav-arrow prev" href="/triple/higher/physics/energy.html"><span><div class="nav-arrow-label">Previous</div><div class="nav-arrow-title">Energy</div></span></a>
+  <div class="subtopic-nav" style="margin-top:32px;">
+  <a class="nav-arrow prev" href="/triple/higher/physics/energy.html"><span><div class="nav-arrow-label">Previous Topic</div><div class="nav-arrow-title">Energy</div></span></a>
   <a href="/triple/higher/physics/index.html" style="font-size:0.8rem;color:var(--muted);text-decoration:none;">📋 All Physics Topics</a>
-  <a class="nav-arrow next" href="/triple/higher/physics/particle-model.html"><span><div class="nav-arrow-label">Next</div><div class="nav-arrow-title">Particle Model of Matter</div></span></a>
+  <a class="nav-arrow next" href="/triple/higher/physics/particle-model.html"><span><div class="nav-arrow-label">Next Topic</div><div class="nav-arrow-title">Particle Model of Matter</div></span></a>
 </div>
 
 </div>
@@ -197,33 +197,6 @@
   </div>
 </div>
   <script src="/shared/mrbadmus.js"></script>
-  <script>
-    MrBadmus.init({
-      subject: 'physics',
-      topic: 'Electricity'
-    });
-  </script>
-  <script>
-  // Quiz logic
-  document.querySelectorAll('.quiz-opt').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const card = this.closest('.quiz-card');
-      if (card.dataset.answered) return;
-      card.dataset.answered = '1';
-      const correct = card.dataset.answer;
-      const allOpts = card.querySelectorAll('.quiz-opt');
-      allOpts.forEach(o => {
-        if (o.dataset.val === correct) o.classList.add('correct');
-        else if (o === this) o.classList.add('wrong');
-      });
-      const fb = card.querySelector('.quiz-feedback');
-      if (fb) {
-        fb.classList.add('show');
-        if (this.dataset.val === correct) fb.classList.add('correct-fb');
-        else fb.classList.add('wrong-fb');
-      }
-    });
-  });
-  </script>
+  <script>MrBadmus.init({subject:'physics',topic:'Electricity (4.2)'});</script>
 </body>
 </html>
