@@ -1781,6 +1781,14 @@ def make_landing():
     {t:'Potable Water and Water Treatment',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/potable-water.html',c:'#FF6B6B'},
     {t:'Life Cycle Assessment',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/life-cycle-assessment.html',c:'#FF6B6B'},
     {t:'Reducing Use of Resources',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/reducing-use-of-resources.html',c:'#FF6B6B'},
+    {t:'Moles',s:'Chemistry',url:'/combined/higher/chemistry/quantitative/moles.html',c:'#FF6B6B'},
+    {t:'Amounts of Substances in Equations',s:'Chemistry',url:'/combined/higher/chemistry/quantitative/amounts-in-equations.html',c:'#FF6B6B'},
+    {t:'Using Moles — Limiting Reactants',s:'Chemistry',url:'/combined/higher/chemistry/quantitative/using-moles-calculations.html',c:'#FF6B6B'},
+    {t:'Strong and Weak Acids',s:'Chemistry',url:'/combined/higher/chemistry/chemical-changes/strong-weak-acids.html',c:'#FF6B6B'},
+    {t:'Half Equations for Electrode Reactions',s:'Chemistry',url:'/combined/higher/chemistry/chemical-changes/half-equations.html',c:'#FF6B6B'},
+    {t:'Bond Energy Calculations',s:'Chemistry',url:'/combined/higher/chemistry/energy-changes/bond-energy-calculations.html',c:'#FF6B6B'},
+    {t:'Effect of Conditions on Equilibrium',s:'Chemistry',url:'/combined/higher/chemistry/rates-equilibrium/effect-of-conditions-equilibrium.html',c:'#FF6B6B'},
+    {t:'Alternative Methods of Extracting Metals',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/alternative-metal-extraction.html',c:'#FF6B6B'},
     {t:'Cell Structure',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-structure.html',c:'#6BCB77'},
     {t:'Transport in Cells (Diffusion, Osmosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
     {t:'Cell Division (Mitosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-division.html',c:'#6BCB77'},
@@ -5054,17 +5062,19 @@ def build_site(output_dir="mrbadmus_site"):
 
     # Import subtopic data
     try:
-        from all_subtopics_physics        import PHYSICS_SUBTOPICS_ALL
-        from all_subtopics_chemistry      import CHEMISTRY_SUBTOPICS_ALL
-        from all_subtopics_biology        import BIOLOGY_SUBTOPICS_ALL
-        from all_subtopics_biology_higher import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_HIGHER
+        from all_subtopics_physics           import PHYSICS_SUBTOPICS_ALL
+        from all_subtopics_chemistry         import CHEMISTRY_SUBTOPICS_ALL
+        from all_subtopics_chemistry_higher  import CHEMISTRY_SUBTOPICS_ALL as CHEMISTRY_SUBTOPICS_HIGHER
+        from all_subtopics_biology           import BIOLOGY_SUBTOPICS_ALL
+        from all_subtopics_biology_higher    import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_HIGHER
         print("  ✅ Loaded subtopic modules")
     except ImportError as e:
         print(f"  ⚠️  Could not load subtopics: {e}")
-        PHYSICS_SUBTOPICS_ALL      = {}
-        CHEMISTRY_SUBTOPICS_ALL    = {}
-        BIOLOGY_SUBTOPICS_ALL      = {}
-        BIOLOGY_SUBTOPICS_HIGHER   = {}
+        PHYSICS_SUBTOPICS_ALL        = {}
+        CHEMISTRY_SUBTOPICS_ALL      = {}
+        CHEMISTRY_SUBTOPICS_HIGHER   = {}
+        BIOLOGY_SUBTOPICS_ALL        = {}
+        BIOLOGY_SUBTOPICS_HIGHER     = {}
 
     SUBTOPICS_ALL = {
         "physics":   PHYSICS_SUBTOPICS_ALL,
@@ -5149,9 +5159,11 @@ def build_site(output_dir="mrbadmus_site"):
                 # ── Topic pages ──
                 topic_ids = PATHWAY_TOPIC_MAP[(pathway, tier)][subject]
                 subj_data = SITE_DATA[subject]
-                # Use Higher biology data for Higher tier biology pages
+                # Use Higher data for Higher tier pages
                 if subject == "biology" and tier == "higher":
                     subj_subtopics = BIOLOGY_SUBTOPICS_HIGHER
+                elif subject == "chemistry" and tier == "higher":
+                    subj_subtopics = CHEMISTRY_SUBTOPICS_HIGHER
                 else:
                     subj_subtopics = SUBTOPICS_ALL[subject]
                 color = subj_data["color"]
