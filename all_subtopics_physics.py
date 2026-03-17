@@ -1,1225 +1,762 @@
 #!/usr/bin/env python3
-"""Physics subtopics — all topics except electricity (already done)"""
+"""
+Physics subtopics — Combined Foundation
+AQA 8464 Physics spec 6.0
+IN PROGRESS — Energy complete (7 subtopics)
+
+Topics:
+  6.1 Energy                        7  ✅
+  6.2 Electricity                   (pending)
+  6.3 Particle Model of Matter      (pending)
+  6.4 Atomic Structure              (pending)
+  6.5 Forces                        (pending)
+  6.6 Waves                         (pending)
+  6.7 Magnetism & Electromagnetism  (pending)
+"""
+
+PHYSICS_COLOR = "#4ECDC4"
 
 PHYSICS_SUBTOPICS_ALL = {
 
-# ═══════════════════════════════════════════════
-# ENERGY
-# ═══════════════════════════════════════════════
-"energy": [
-    {
-        "id": "energy-stores-systems",
-        "title": "Energy Stores and Systems",
-        "spec": "4.1.1",
-        "summary": "Describe the different energy stores and how energy is transferred between them.",
-        "theory": [
-            {"heading": "What is an energy store?",
-             "content": "Energy is always stored somewhere before it moves.\nThink of energy stores like different types of bank accounts — each holds energy in a different way.\nEnergy can never be created or destroyed — it just moves between stores."},
-            {"heading": "The 8 Energy Stores",
-             "content": "Kinetic — energy of moving objects (a rolling ball, a speeding car).\nGravitational potential — energy due to height (a book on a shelf, a skydiver before jumping).\nElastic potential — energy stored in a stretched or squashed object (a spring, a rubber band).\nChemical — energy stored in bonds (food, fuel, batteries).\nThermal — energy stored due to temperature (a hot cup of tea).\nNuclear — energy stored in the nucleus of atoms (used in power stations).\nElectromagnetic — energy carried by light and radiation.\nElectrostatic — energy stored between charged objects."},
-            {"heading": "How energy transfers between stores",
-             "content": "Energy moves between stores by four pathways:\nMechanically — a force moving an object (pushing, pulling).\nElectrically — charge moving through a circuit.\nBy heating — thermal energy flowing from hot to cold.\nBy radiation — light or sound waves carrying energy."},
-            {"heading": "A real example — the bouncing ball",
-             "content": "Ball held still at height → gravitational potential store is full.\nBall drops → gravitational potential transfers to kinetic store.\nBall hits floor → kinetic transfers to elastic potential (squash) then back to kinetic.\nBall rises → kinetic transfers back to gravitational potential.\nEach bounce loses a little to thermal store (heat) — that's why it doesn't bounce as high!"}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "Students say 'energy is lost' — energy is NEVER lost. It's transferred to the thermal store (heat) and spreads out into the surroundings. Always say 'energy is dissipated as heat' not 'energy is lost'.",
-        "key_note": None,
-        "higher": None,
-        "triple_only": None,
-        "rp": None,
-        "matching": {
-            "title": "Match the Situation to its Energy Store",
-            "instruction": "Match each scenario to the energy store it mainly uses.",
-            "pairs": [
-                ("Kinetic", "A car travelling at 60 mph"),
-                ("Gravitational potential", "A climber at the top of a mountain"),
-                ("Elastic potential", "A compressed spring in a toy"),
-                ("Chemical", "A charged battery"),
-                ("Thermal", "A hot radiator"),
-                ("Nuclear", "Uranium fuel in a power station"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "A ball is dropped from a height. Which energy transfer occurs?",
-             "opts": [("Gravitational potential → kinetic", True), ("Kinetic → gravitational potential", False), ("Chemical → kinetic", False), ("Thermal → kinetic", False)],
-             "wrong_explanations": {1: "That's what happens when a ball goes UP — it gains GPE as it slows down. Dropping = GPE to kinetic.", 2: "Chemical energy is from fuels or food — not relevant to a falling ball.", 3: "Thermal energy would heat the ball up — that's not what makes it fall."}},
-            {"q": "Which word describes energy that spreads out uselessly into the surroundings?",
-             "opts": [("Dissipated", True), ("Lost", False), ("Destroyed", False), ("Transferred", False)],
-             "wrong_explanations": {1: "Energy cannot be lost — it always goes somewhere. The correct term is dissipated.", 2: "Energy can never be destroyed — this is the law of conservation of energy.", 3: "Transferred is too vague — it doesn't capture the idea that it spreads uselessly."}},
-            {"q": "What type of energy store does a stretched elastic band have?",
-             "opts": [("Elastic potential", True), ("Kinetic", False), ("Chemical", False), ("Gravitational potential", False)],
-             "wrong_explanations": {1: "Kinetic is for moving objects — a stretched band is still. The energy is stored as elastic potential.", 2: "Chemical energy is in bonds between atoms in fuels or food — not in a stretched material.", 3: "Gravitational potential needs height — a stretched band on a table has no extra height."}},
-            {"q": "By which pathway does a light bulb transfer energy?",
-             "opts": [("Electrically and by radiation (light)", True), ("Mechanically", False), ("By heating only", False), ("By nuclear energy", False)],
-             "wrong_explanations": {1: "Mechanically means a force moving an object — a bulb doesn't push anything.", 2: "A bulb does get warm too, but it primarily transfers energy by radiation (light). Heating only misses the radiation part.", 3: "Nuclear energy is in atomic nuclei — light bulbs use electrical energy, not nuclear."}},
-            {"q": "A book sits on a shelf 2 m above the floor. Which store has the most energy?",
-             "opts": [("Gravitational potential", True), ("Elastic potential", False), ("Kinetic", False), ("Chemical", False)],
-             "wrong_explanations": {1: "Elastic potential needs stretching or squashing — a book on a shelf isn't deformed.", 2: "Kinetic energy requires movement — the book is stationary.", 3: "Chemical energy is in fuels or food — a book doesn't store chemical energy in a useful way here."}}
-        ]
-    },
-    {
-        "id": "changes-in-energy",
-        "title": "Calculating Changes in Energy",
-        "spec": "4.1.1",
-        "summary": "Calculate kinetic energy, gravitational potential energy and elastic potential energy.",
-        "theory": [
-            {"heading": "Kinetic Energy — The Energy of Motion",
-             "content": "Every moving object has kinetic energy.\nThe faster it moves, the more KE it has.\nDouble the speed → FOUR times the KE (because speed is squared).\nDouble the mass → double the KE (directly proportional)."},
-            {"heading": "Gravitational Potential Energy — The Energy of Height",
-             "content": "Any object above the ground has GPE.\nThe higher it is, the more GPE it has.\nGPE depends on mass, gravitational field strength (g = 10 N/kg on Earth) and height.\nThis is why a heavy book falling from a high shelf does more damage than the same book from a low shelf!"},
-            {"heading": "Elastic Potential Energy — The Energy of Springs",
-             "content": "When you stretch or squash a spring beyond its natural length, it stores elastic potential energy.\nThe more you extend it, the more energy is stored.\nBut only works if the spring hasn't been stretched past its elastic limit — after that it won't spring back!"},
-            {"heading": "The Specific Heat Capacity Link",
-             "content": "When energy is transferred to a substance by heating, the temperature rises.\nThe equation E = mcΔθ tells us how much energy is needed.\nA higher specific heat capacity (c) means more energy to change temperature by 1°C.\nWater has a very high specific heat capacity (4200 J/kg/°C) — that's why oceans warm up slowly!"}
-        ],
-        "variables": [
-            ("KE", "Kinetic Energy", "Joules", "J"),
-            ("m", "Mass", "Kilograms", "kg"),
-            ("v", "Speed", "Metres per second", "m/s"),
-            ("GPE", "Gravitational Potential Energy", "Joules", "J"),
-            ("g", "Gravitational field strength", "Newtons per kg", "N/kg"),
-            ("h", "Height", "Metres", "m"),
-            ("E", "Energy", "Joules", "J"),
-            ("c", "Specific heat capacity", "J/kg/°C", "J/kg/°C"),
-            ("Δθ", "Temperature change", "Degrees Celsius", "°C"),
-        ],
-        "equations": ["KE = ½mv²", "GPE = mgh", "E = mcΔθ"],
-        "common_mistake": "In KE = ½mv², students forget to square the velocity FIRST, then multiply. Write it as KE = ½ × m × (v × v). Also — g = 10 N/kg on Earth (sometimes 9.8 N/kg — use whatever the question gives you).",
-        "key_note": "g = 10 N/kg on Earth (use this unless the question states otherwise)",
-        "higher": "Elastic potential energy: E = ½ke² where k = spring constant (N/m) and e = extension (m). Doubling extension quadruples elastic PE.",
-        "triple_only": None,
-        "rp": "RP1 — Specific heat capacity: measure energy input (E = VIt) and temperature rise to find c = E ÷ (m × Δθ)",
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Kinetic Energy",
-             "question": "A car of mass 1200 kg travels at 20 m/s. Calculate its kinetic energy.",
-             "steps": [("F","KE = ½ × m × v²"), ("I","KE = ½ × 1200 × 20²"), ("F","20² = 400. KE = ½ × 1200 × 400 = 0.5 × 480,000"), ("A","KE = 240,000 J = 240 kJ")]},
-            {"label": "Example 2 — Gravitational Potential Energy",
-             "question": "A 5 kg ball is lifted to a height of 8 m. Calculate the gain in GPE. (g = 10 N/kg)",
-             "steps": [("F","GPE = m × g × h"), ("I","GPE = 5 × 10 × 8"), ("F","No unit conversion needed"), ("A","GPE = 400 J")]},
-            {"label": "Example 3 — Specific Heat Capacity",
-             "question": "2 kg of water is heated from 20°C to 70°C. c = 4200 J/kg/°C. Calculate the energy transferred.",
-             "steps": [("F","E = m × c × Δθ"), ("I","Δθ = 70 − 20 = 50°C. E = 2 × 4200 × 50"), ("F","No unit conversion needed"), ("A","E = 420,000 J = 420 kJ")]}
-        ],
-        "quiz": [
-            {"q": "A 2 kg ball moves at 3 m/s. What is its kinetic energy?",
-             "opts": [("9 J", True), ("6 J", False), ("18 J", False), ("3 J", False)],
-             "wrong_explanations": {1: "You forgot the ½! KE = ½ × 2 × 3² = ½ × 2 × 9 = 9 J.", 2: "You didn't square the velocity. KE = ½ × m × v² = ½ × 2 × 9 = 9 J.", 3: "You divided by 2 instead of multiplying by ½. Same thing — but you also need to square v first: KE = ½ × 2 × 9 = 9 J."}},
-            {"q": "A 3 kg object is 5 m high. g = 10 N/kg. What is its GPE?",
-             "opts": [("150 J", True), ("15 J", False), ("50 J", False), ("300 J", False)],
-             "wrong_explanations": {1: "You forgot g! GPE = m × g × h = 3 × 10 × 5 = 150 J.", 2: "You used m + h instead of multiplying all three. GPE = m × g × h = 3 × 10 × 5 = 150 J.", 3: "You doubled instead of using the full formula. GPE = 3 × 10 × 5 = 150 J."}},
-            {"q": "If a car doubles its speed, what happens to its kinetic energy?",
-             "opts": [("It quadruples (×4)", True), ("It doubles (×2)", False), ("It stays the same", False), ("It halves (÷2)", False)],
-             "wrong_explanations": {1: "Speed doubles means v² becomes 4 times bigger — so KE doubles only if you ignore the square. But KE = ½mv², so doubling v means ×4.", 2: "Speed has no effect on KE? That can't be right — a faster object definitely has more energy.", 3: "Halving makes no sense when speed increases. KE = ½mv² — more speed = more KE."}},
-            {"q": "1 kg of water (c = 4200 J/kg/°C) is heated by 10°C. How much energy is needed?",
-             "opts": [("42,000 J", True), ("420 J", False), ("4200 J", False), ("100 J", False)],
-             "wrong_explanations": {1: "You forgot to multiply by Δθ. E = m × c × Δθ = 1 × 4200 × 10 = 42,000 J.", 2: "You used c alone without multiplying by m and Δθ. E = 1 × 4200 × 10 = 42,000 J.", 3: "You divided by temperature instead of multiplying. E = m × c × Δθ = 42,000 J."}},
-            {"q": "What does a high specific heat capacity mean for a substance?",
-             "opts": [("It needs a lot of energy to change temperature by 1°C", True), ("It heats up very quickly", False), ("It has a low density", False), ("It stores very little energy", False)],
-             "wrong_explanations": {1: "A high c means it heats up SLOWLY — needs lots of energy per degree. Not quickly.", 2: "Specific heat capacity is about energy per degree — nothing to do with density.", 3: "A high specific heat capacity means it stores A LOT of energy per degree — the opposite."}}
-        ]
-    },
-    {
-        "id": "conservation-energy",
-        "title": "Conservation and Dissipation of Energy",
-        "spec": "4.1.2",
-        "summary": "Apply the law of conservation of energy and calculate efficiency.",
-        "theory": [
-            {"heading": "The Law of Conservation of Energy",
-             "content": "Energy cannot be created or destroyed.\nIt can only be transferred from one store to another.\nThe total energy in a closed system always stays the same.\nThis is one of the most fundamental laws in all of science — nothing breaks it."},
-            {"heading": "Useful and Wasted Energy",
-             "content": "In any energy transfer, some energy goes where we want it (useful) and some spreads out (wasted).\nWasted energy usually ends up as thermal energy in the surroundings.\nExample: a light bulb transfers electrical energy → light (useful) + heat (wasted).\nThe wasted energy isn't gone — it's just spread out and no longer useful."},
-            {"heading": "Efficiency",
-             "content": "Efficiency tells us what fraction of energy is actually useful.\nA 100% efficient machine puts ALL its energy into the useful output — impossible in reality!\nA 75% efficient motor wastes 25% as heat.\nThe closer to 1 (or 100%), the better."},
-            {"heading": "Reducing Energy Waste",
-             "content": "Lubrication reduces friction between moving parts — less heat wasted.\nInsulation reduces heat loss from homes and appliances.\nStreamlining reduces air resistance — less energy wasted overcoming drag.\nLED bulbs are more efficient than old filament bulbs — less heat wasted."}
-        ],
-        "variables": [
-            ("efficiency", "Efficiency", "no unit (or %)", ""),
-            ("useful output", "Useful energy output", "Joules", "J"),
-            ("total input", "Total energy input", "Joules", "J"),
-        ],
-        "equations": ["Efficiency = useful output energy ÷ total input energy"],
-        "common_mistake": "Efficiency has NO UNITS if expressed as a decimal (0.75) or as a percentage (75%). Students often write 'J' or 'W' after efficiency — don't! Also — efficiency can NEVER be greater than 1 (or 100%). If your answer is over 1, you've made an error.",
-        "key_note": "To convert efficiency to percentage: multiply by 100. E.g. efficiency = 0.6 → 60%",
-        "higher": "Power efficiency: useful power output ÷ total power input. Same formula, same rules — just using watts instead of joules.",
-        "triple_only": None,
-        "rp": "RP2 — Thermal insulation: investigate how different materials reduce the rate of heat loss from a beaker of hot water.",
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Calculate efficiency",
-             "question": "A motor takes in 500 J of electrical energy and produces 350 J of useful kinetic energy. Calculate the efficiency.",
-             "steps": [("F","Efficiency = useful output ÷ total input"), ("I","Efficiency = 350 ÷ 500"), ("F","No unit conversion needed"), ("A","Efficiency = 0.7 = 70%")]},
-            {"label": "Example 2 — Find wasted energy",
-             "question": "A 200 W bulb is 15% efficient as a light source. How much power is wasted as heat?",
-             "steps": [("F","Useful power = efficiency × total input. Wasted = total − useful"), ("I","Useful = 0.15 × 200 = 30 W. Wasted = 200 − 30"), ("F","No conversion needed"), ("A","Wasted = 170 W as heat")]}
-        ],
-        "quiz": [
-            {"q": "A machine uses 800 J and outputs 600 J of useful energy. What is its efficiency?",
-             "opts": [("0.75 (75%)", True), ("1.33", False), ("200 J", False), ("0.25 (25%)", False)],
-             "wrong_explanations": {1: "You divided input by output (800÷600). Always do useful OUTPUT ÷ INPUT = 600÷800 = 0.75.", 2: "Joules is the unit for energy, not efficiency. Efficiency = useful output ÷ total input = 0.75.", 3: "0.25 is the wasted fraction (200÷800), not the efficiency. Efficiency = 600÷800 = 0.75."}},
-            {"q": "What is the maximum possible efficiency of any real machine?",
-             "opts": [("Less than 1 (less than 100%)", True), ("Exactly 1 (100%)", False), ("Greater than 1 (over 100%)", False), ("0.5 (50%)", False)],
-             "wrong_explanations": {1: "100% efficiency is theoretically possible but never achieved in reality — friction always wastes some energy.", 2: "Over 100% would mean creating energy from nothing — impossible! That breaks conservation of energy.", 3: "There's no rule that limits efficiency to exactly 50% — it varies by machine and design."}},
-            {"q": "A motor is 80% efficient and uses 1000 J. How much useful energy is produced?",
-             "opts": [("800 J", True), ("200 J", False), ("1250 J", False), ("80 J", False)],
-             "wrong_explanations": {1: "200 J is the WASTED energy (20% of 1000). Useful = 80% × 1000 = 800 J.", 2: "1250 would require more output than input — impossible! Useful = 0.8 × 1000 = 800 J.", 3: "You just used the percentage number without calculating. Useful = 0.80 × 1000 J = 800 J."}},
-            {"q": "Which method reduces energy loss due to friction in machines?",
-             "opts": [("Lubrication", True), ("Insulation", False), ("Streamlining", False), ("Using heavier components", False)],
-             "wrong_explanations": {1: "Insulation reduces heat loss through walls/materials — not friction between moving parts.", 2: "Streamlining reduces air resistance drag — not friction between machine parts.", 3: "Heavier components would increase friction — making things worse, not better."}},
-            {"q": "Energy is always conserved. What does this mean?",
-             "opts": [("The total energy in a closed system stays the same", True), ("No energy is ever wasted", False), ("All energy transfers are 100% efficient", False), ("Energy can be created if needed", False)],
-             "wrong_explanations": {1: "Energy is wasted all the time — it just gets transferred to less useful stores, not destroyed.", 2: "Conservation means the total doesn't change — but transfers can still be inefficient.", 3: "Energy can never be created or destroyed — conservation of energy is one of the most fundamental laws in physics."}}
-        ]
-    },
-    {
-        "id": "energy-resources",
-        "title": "Energy Resources",
-        "spec": "4.1.4",
-        "summary": "Compare renewable and non-renewable energy resources and evaluate their use.",
-        "theory": [
-            {"heading": "Non-Renewable Resources — Running Out",
-             "content": "Fossil fuels (coal, oil, natural gas) formed over millions of years — they will run out.\nNuclear fuel (uranium) is also non-renewable but lasts much longer.\nFossil fuels release CO₂ when burned → contributes to climate change.\nBut they are reliable — they generate power on demand, day or night."},
-            {"heading": "Renewable Resources — Never Run Out",
-             "content": "Solar — uses light from the Sun. No fuel, no emissions. But unreliable (night, clouds).\nWind — turbines generate electricity from wind. No emissions. But unreliable.\nHydroelectric — water flow drives turbines. Reliable but damages ecosystems.\nTidal — sea tide movement drives turbines. Predictable but expensive to build.\nGeothermal — heat from the Earth's interior. Reliable but only viable in certain locations.\nBiomass — burning organic material. Carbon neutral in theory. Still releases CO₂."},
-            {"heading": "Reliability vs Sustainability",
-             "content": "The big trade-off in energy: reliable vs sustainable.\nFossil fuels are very reliable (burn when needed) but unsustainable (will run out, cause pollution).\nSolar and wind are sustainable but unreliable (can't control the weather).\nA smart grid combines multiple sources to cover gaps."},
-            {"heading": "Environmental Impacts",
-             "content": "Coal power station: CO₂, SO₂ (acid rain), NOₓ, ash, thermal pollution of water.\nNuclear: no CO₂ but radioactive waste lasts thousands of years.\nWind farm: visual impact, noise, bird deaths — but no emissions in operation.\nHydroelectric: floods land, destroys habitats upstream."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "Biomass is NOT zero-carbon in practice — burning it releases CO₂ immediately, even if replanting absorbs it over years. Also — nuclear is NOT renewable (uranium is finite) but it is low-carbon. Don't confuse renewable with low-carbon.",
-        "key_note": "Renewable = will not run out. Low-carbon ≠ renewable. Nuclear is low-carbon but non-renewable.",
-        "higher": "Evaluating energy mix: consider reliability, cost, environmental impact, energy density and public acceptability. No single source is perfect — all have trade-offs.",
-        "triple_only": None,
-        "rp": None,
-        "matching": {
-            "title": "Renewable or Non-Renewable?",
-            "instruction": "Sort each energy source correctly.",
-            "pairs": [
-                ("Non-renewable", "Coal"),
-                ("Non-renewable", "Natural gas"),
-                ("Non-renewable", "Nuclear (uranium)"),
-                ("Renewable", "Solar"),
-                ("Renewable", "Wind"),
-                ("Renewable", "Hydroelectric"),
-                ("Renewable", "Tidal"),
-                ("Renewable", "Geothermal"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "Which energy source releases CO₂ when used?",
-             "opts": [("Coal", True), ("Nuclear", False), ("Wind", False), ("Solar", False)],
-             "wrong_explanations": {1: "Nuclear produces NO CO₂ during operation — it splits atoms, not burns fuel.", 2: "Wind turbines produce no CO₂ during operation — only during manufacture.", 3: "Solar panels produce no CO₂ during operation — only during manufacture."}},
-            {"q": "Which of these is a renewable energy source?",
-             "opts": [("Tidal", True), ("Nuclear", False), ("Coal", False), ("Oil", False)],
-             "wrong_explanations": {1: "Nuclear uses uranium — a finite resource. It's low-carbon but NOT renewable.", 2: "Coal is a fossil fuel — it took millions of years to form and will eventually run out.", 3: "Oil is a fossil fuel — finite and non-renewable."}},
-            {"q": "What is the main environmental problem with fossil fuels?",
-             "opts": [("They release CO₂, contributing to climate change", True), ("They produce radioactive waste", False), ("They are too expensive", False), ("They only work during the day", False)],
-             "wrong_explanations": {1: "Radioactive waste is the problem with NUCLEAR power, not fossil fuels.", 2: "Cost varies — some fossil fuels are relatively cheap. The environmental problem is CO₂ emissions.", 3: "Fossil fuels work 24/7 — it's solar power that only works during the day."}},
-            {"q": "Why might a country use a mix of energy sources?",
-             "opts": [("To ensure reliable supply when some sources are unavailable", True), ("Because no single source can ever generate enough electricity", False), ("Because using one source is illegal", False), ("To keep costs as high as possible", False)],
-             "wrong_explanations": {1: "Some individual sources (like nuclear or large hydro) could theoretically supply a lot — the real reason for mixing is reliability and reducing environmental impact.", 2: "There's no law about using multiple sources — it's about practical reliability and sustainability.", 3: "Countries use mixed sources to keep costs DOWN and reliability UP — not to increase costs."}},
-            {"q": "Geothermal energy comes from — what?",
-             "opts": [("Heat from inside the Earth", True), ("The Sun's heat absorbed by the ground", False), ("Burning underground biomass", False), ("Tidal movement of underground water", False)],
-             "wrong_explanations": {1: "Solar thermal absorbs sunlight — geothermal specifically comes from the Earth's interior heat (radioactive decay in the core).", 2: "Geothermal doesn't involve burning — it uses natural heat flow from the Earth's core.", 3: "Tidal is a completely different source — movement of sea tides. Geothermal is Earth's own heat."}}
-        ]
-    },
-],
+"energy": [{'common_mistake': 'STORES are where energy is held (kinetic, chemical, thermal etc.). PATHWAYS are how it moves '
+                    "(heating, mechanical work, electrical work, radiation). 'Heat' is a transfer pathway — not a "
+                    "store. You store THERMAL energy, not 'heat'.",
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'energy-stores-systems',
+  'key_note': '8 energy stores: kinetic, thermal, chemical, gravitational PE, elastic PE, magnetic, electrostatic, '
+              'nuclear. 4 pathways: mechanical work, electrical work, heating, radiation. Law of conservation of '
+              'energy: energy cannot be created or destroyed.',
+  'matching': {'instruction': 'Sort each into an energy store or a transfer pathway.',
+               'pairs': [('Energy store',
+                          "Gravitational potential — energy held due to an object's height above ground"),
+                         ('Energy store', 'Chemical — energy held in the bonds of fuels, food and batteries'),
+                         ('Energy store', 'Elastic potential — energy held in a stretched spring or compressed gas'),
+                         ('Transfer pathway', 'Heating — thermal energy transferred from hot to cold objects'),
+                         ('Transfer pathway', 'Electrical work — charge moving through a potential difference'),
+                         ('Transfer pathway', 'Radiation — energy transferred by light, infrared or sound waves')],
+               'title': 'Store or Pathway?'},
+  'quiz': [{'opts': [('Kinetic store → gravitational potential store — the ball slows as it gains height', True),
+                     ('Gravitational potential store → kinetic store — the ball is losing height', False),
+                     ('Chemical store → kinetic store — energy from muscles is still being converted', False),
+                     ('Thermal store → kinetic store — air warms the ball and pushes it up', False)],
+            'q': 'A ball is thrown upwards and slows down. Which energy transfer is occurring?',
+            'wrong_explanations': {1: 'Gravitational PE → kinetic occurs when the ball FALLS. While RISING, the ball '
+                                      'slows (losing KE) and gains height (gaining GPE): kinetic → GPE.',
+                                   2: 'Once released from the hand, the chemical energy of muscles is no longer '
+                                      'involved — the transfer is purely kinetic → gravitational PE while rising.',
+                                   3: 'Air resistance transfers some KE to thermal, but the dominant transfer while '
+                                      'rising is kinetic → gravitational PE.'}},
+           {'opts': [('Heating — the process of thermal energy flowing from a hot to a cold object', True),
+                     ('Thermal energy — energy stored in the random motion of particles', False),
+                     ('Chemical energy — energy stored in chemical bonds of fuel', False),
+                     ('Nuclear energy — energy stored in atomic nuclei', False)],
+            'q': 'Which of the following is an energy TRANSFER PATHWAY, not an energy store?',
+            'wrong_explanations': {1: 'Thermal energy IS an energy store — energy held in the random kinetic and '
+                                      'potential energy of particles. Heating is the PATHWAY by which thermal energy '
+                                      'moves.',
+                                   2: 'Chemical energy is a store — energy held in molecular bonds, released when '
+                                      'bonds break in reactions.',
+                                   3: 'Nuclear energy is a store — energy held in atomic nuclei, released in fission '
+                                      'or fusion.'}}],
+  'rp': None,
+  'spec': '6.1.1.1',
+  'summary': 'Describe energy stores and identify how energy is transferred between stores in different systems.',
+  'theory': [{'content': 'A SYSTEM is an object or group of objects being studied.\n'
+                         '\n'
+                         'When a system changes, energy is TRANSFERRED between different energy stores — but the TOTAL '
+                         'energy always stays the same.\n'
+                         '\n'
+                         'Examples of systems changing:\n'
+                         'A ball thrown upwards: kinetic store → gravitational potential store.\n'
+                         'A falling object: gravitational potential store → kinetic store.\n'
+                         'A battery powering a bulb: chemical store → thermal store + light radiation.\n'
+                         'A stretched spring released: elastic potential store → kinetic store.',
+              'heading': 'What Is a System?'},
+             {'content': 'Energy can be held in eight different STORES:\n'
+                         '\n'
+                         '1. KINETIC — energy stored in any moving object. Cars, wind, flowing water.\n'
+                         '2. THERMAL (INTERNAL) — energy stored in the random movement of particles. Hot water, warm '
+                         'air.\n'
+                         '3. CHEMICAL — energy stored in chemical bonds. Food, fuel, batteries.\n'
+                         '4. GRAVITATIONAL POTENTIAL — energy stored in an object due to its height. A book on a '
+                         'shelf, a raised hammer.\n'
+                         '5. ELASTIC POTENTIAL — energy stored in a stretched or compressed object. A stretched '
+                         'spring, a drawn bow.\n'
+                         '6. MAGNETIC — energy stored in magnetic fields.\n'
+                         '7. ELECTROSTATIC — energy stored between charged objects.\n'
+                         '8. NUCLEAR — energy stored in atomic nuclei. Released in nuclear reactions.\n'
+                         '\n'
+                         'Think of energy stores like BANK ACCOUNTS — energy moves between accounts but you can never '
+                         'create money from nowhere. The total always stays the same.',
+              'heading': 'The Eight Energy Stores'},
+             {'content': 'Energy is transferred between stores via PATHWAYS:\n'
+                         '\n'
+                         'MECHANICAL WORK — a force acting through a distance. Pushing, lifting, stretching.\n'
+                         'ELECTRICAL WORK — charge moving through a potential difference. Current in a circuit.\n'
+                         'HEATING — thermal energy transferred by conduction, convection or radiation.\n'
+                         'RADIATION — energy transferred by waves (light, infrared, sound etc.).\n'
+                         '\n'
+                         'EXAMPLES of complete energy transfers:\n'
+                         'Kettle: chemical store → thermal store (water + surroundings) via heating and electrical '
+                         'work.\n'
+                         'Dropped ball: gravitational PE store → kinetic store → thermal store (on impact) via '
+                         'mechanical work.\n'
+                         'Car: chemical store → kinetic store + thermal store (engine heat, friction, air '
+                         'resistance).\n'
+                         '\n'
+                         'The LAW OF CONSERVATION OF ENERGY: energy cannot be created or destroyed — only transferred '
+                         'between stores or dissipated.',
+              'heading': 'Energy Pathways'}],
+  'title': 'Energy Stores and Systems',
+  'triple_only': None,
+  'variables': [('E', 'Energy', 'joules', 'J')]},
+ {'common_mistake': 'In Ek = ½mv², SQUARE THE SPEED FIRST before multiplying. Write out v² before doing anything else. '
+                    'Also: mass in kg, speed in m/s. Convert 500 g → 0.5 kg and 72 km/h → 20 m/s before substituting.',
+  'equations': ['Ek = ½ × m × v²', 'Ep = m × g × h', 'Ee = ½ × k × e²'],
+  'fifas': [{'label': 'Kinetic Energy',
+             'question': 'A 70 kg cyclist travels at 6 m/s. Calculate the kinetic energy.',
+             'steps': [('F', 'Ek = ½ × m × v²'),
+                       ('I', 'm = 70 kg, v = 6 m/s'),
+                       ('F', 'v² = 6² = 36; Ek = ½ × 70 × 36 = ½ × 2520'),
+                       ('A', 'Ek = 1260 J')]},
+            {'label': 'Gravitational PE',
+             'question': 'A 5 kg box is lifted 3 m. Calculate the GPE gained. (g = 9.8 N/kg)',
+             'steps': [('F', 'Ep = m × g × h'),
+                       ('I', 'm = 5 kg, g = 9.8 N/kg, h = 3 m'),
+                       ('F', 'Ep = 5 × 9.8 × 3 = 5 × 29.4'),
+                       ('A', 'Ep = 147 J')]}],
+  'higher': None,
+  'id': 'changes-in-energy',
+  'key_note': 'Ek = ½mv² (kinetic). Ep = mgh (gravitational PE, g = 9.8 N/kg Earth). Ee = ½ke² (elastic PE). Doubling '
+              'speed → ×4 kinetic energy. Doubling extension → ×4 elastic PE. All three equations need mass in kg and '
+              'distance in m.',
+  'matching': {'instruction': 'Match each energy type to its equation.',
+               'pairs': [('Kinetic energy', 'Ek = ½mv² — depends on mass and speed squared'),
+                         ('Gravitational PE', 'Ep = mgh — depends on mass, gravitational field strength, and height'),
+                         ('Elastic PE', 'Ee = ½ke² — depends on spring constant and extension squared'),
+                         ('g on Earth', '9.8 N/kg — or 10 N/kg used for estimates')],
+               'title': 'Energy Equation Match'},
+  'quiz': [{'opts': [('160,000 J — Ek = ½ × 800 × 20² = ½ × 800 × 400 = 160,000 J', True),
+                     ('8000 J — forgot to square the speed: ½ × 800 × 20 = 8000', False),
+                     ('320,000 J — forgot the ½: 800 × 400 = 320,000', False),
+                     ('16,000 J — used speed not speed squared: ½ × 800 × 40', False)],
+            'q': 'An 800 kg car travels at 20 m/s. What is its kinetic energy?',
+            'wrong_explanations': {1: 'Must square the speed first: 20² = 400. Then ½ × 800 × 20 = 8000 — missing the '
+                                      'squared step.',
+                                   2: 'The ½ is essential in the kinetic energy formula — without it the answer '
+                                      'doubles.',
+                                   3: '16,000 comes from ½ × 800 × 40 — this would be the answer if v = √40, not v = '
+                                      '20.'}},
+           {'opts': [('2 J — Ee = ½ × 400 × 0.1² = ½ × 400 × 0.01 = 2 J', True),
+                     ('4 J — forgot the ½: 400 × 0.01 = 4 J', False),
+                     ('20 J — forgot to square the extension: ½ × 400 × 0.1 = 20', False),
+                     ('40 J — forgot both ½ and to square: 400 × 0.1 = 40', False)],
+            'q': 'A spring with k = 400 N/m is compressed 0.1 m. What elastic PE is stored?',
+            'wrong_explanations': {1: 'The ½ is part of the formula: Ee = ½ke². Without ½: 400 × 0.01 = 4 J.',
+                                   2: 'Extension must be squared first: 0.1² = 0.01. ½ × 400 × 0.1 = 20 is missing the '
+                                      'squaring.',
+                                   3: 'Both the ½ AND the squaring are missing: must be Ee = ½ × k × e².'}}],
+  'rp': None,
+  'spec': '6.1.1.2',
+  'summary': 'Calculate kinetic energy, gravitational potential energy and elastic potential energy.',
+  'theory': [{'content': 'KINETIC ENERGY (Ek) is the energy stored in any moving object.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'Ek = ½ × m × v²\n'
+                         '\n'
+                         'Ek = kinetic energy (J)\n'
+                         'm = mass (kg)\n'
+                         'v = speed (m/s)\n'
+                         '\n'
+                         'Key points:\n'
+                         'Kinetic energy depends on the SQUARE of speed — doubling speed QUADRUPLES kinetic energy.\n'
+                         'Any moving object has kinetic energy: cars, wind, flowing water, planets.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         '1000 kg car at 20 m/s:\n'
+                         'Ek = ½ × 1000 × 20² = ½ × 1000 × 400 = 200,000 J = 200 kJ',
+              'heading': 'Kinetic Energy'},
+             {'content': 'GRAVITATIONAL POTENTIAL ENERGY (Ep) is the energy stored in an object due to its HEIGHT '
+                         'above the ground.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'Ep = m × g × h\n'
+                         '\n'
+                         'Ep = gravitational potential energy (J)\n'
+                         'm = mass (kg)\n'
+                         'g = gravitational field strength (N/kg) — on Earth: g = 9.8 N/kg\n'
+                         'h = height above ground (m)\n'
+                         '\n'
+                         'Key points:\n'
+                         'GPE increases as height increases.\n'
+                         'GPE depends on mass — heavier objects store more GPE at the same height.\n'
+                         'g = 9.8 N/kg on Earth; use g = 10 N/kg for estimates.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         '2 kg book on a shelf 1.5 m above the floor:\n'
+                         'Ep = 2 × 9.8 × 1.5 = 29.4 J',
+              'heading': 'Gravitational Potential Energy'},
+             {'content': 'ELASTIC POTENTIAL ENERGY (Ee) is the energy stored in a stretched or compressed elastic '
+                         'object.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'Ee = ½ × k × e²\n'
+                         '\n'
+                         'Ee = elastic potential energy (J)\n'
+                         'k = spring constant (N/m) — stiffness of the spring\n'
+                         'e = extension or compression (m)\n'
+                         '\n'
+                         'Key points:\n'
+                         "Only valid within the ELASTIC LIMIT (Hooke's Law region).\n"
+                         'A stiffer spring (larger k) stores more energy for the same extension.\n'
+                         'Elastic PE depends on extension SQUARED — doubling extension quadruples stored energy.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Spring with k = 200 N/m stretched 0.05 m:\n'
+                         'Ee = ½ × 200 × 0.05² = ½ × 200 × 0.0025 = 0.25 J',
+              'heading': 'Elastic Potential Energy'}],
+  'title': 'Changes in Energy',
+  'triple_only': None,
+  'variables': [('Ek', 'Kinetic energy', 'joules', 'J'),
+                ('Ep', 'Gravitational potential energy', 'joules', 'J'),
+                ('Ee', 'Elastic potential energy', 'joules', 'J'),
+                ('m', 'Mass', 'kilograms', 'kg'),
+                ('v', 'Speed', 'm/s', 'm/s'),
+                ('g', 'Gravitational field strength', 'N/kg', 'N/kg'),
+                ('h', 'Height', 'metres', 'm'),
+                ('k', 'Spring constant', 'N/m', 'N/m'),
+                ('e', 'Extension', 'metres', 'm')]},
+ {'common_mistake': 'Temperature change (Δθ) is final temperature MINUS initial temperature — not the final '
+                    'temperature alone. If water heats from 20°C to 60°C, Δθ = 40°C, not 60°C. Also: mass must be in '
+                    'kg — convert grams first (÷1000).',
+  'equations': ['ΔE = m × c × Δθ'],
+  'fifas': [{'label': 'SHC Calculation',
+             'question': 'How much energy is needed to heat 0.5 kg of water from 25°C to 85°C? (c = 4200 J/kg°C)',
+             'steps': [('F', 'ΔE = m × c × Δθ'),
+                       ('I', 'm = 0.5 kg, c = 4200, Δθ = 85 − 25 = 60°C'),
+                       ('F', 'ΔE = 0.5 × 4200 × 60 = 0.5 × 252,000'),
+                       ('A', 'ΔE = 126,000 J (126 kJ)')]}],
+  'higher': None,
+  'id': 'energy-changes-in-systems',
+  'key_note': 'SHC (c): energy to raise 1 kg by 1°C. ΔE = mcΔθ. Water c = 4200 J/kg°C (very high). Δθ = final − '
+              'initial. Rearrange for any unknown. RP14: electric heater method. High SHC of water → used in heating '
+              'systems and car cooling.',
+  'matching': {'instruction': 'Match each substance and application to the correct SHC fact.',
+               'pairs': [('Water (c = 4200 J/kg°C)',
+                          'Highest common SHC — used in central heating, car cooling, moderates ocean climate'),
+                         ('Aluminium (c = 900 J/kg°C)',
+                          'Higher SHC than iron — heats more slowly for same energy input'),
+                         ('Δθ = final − initial temp', 'Temperature CHANGE — not the final temperature alone'),
+                         ('ΔE = mcΔθ', 'Calculates thermal energy change for any heating or cooling process')],
+               'title': 'SHC Application Match'},
+  'quiz': [{'opts': [('108,000 J — ΔE = 2 × 450 × 120 = 108,000 J (Δθ = 150 − 30 = 120°C)', True),
+                     ('27,000 J — used final temperature (30°C) not temperature change (120°C)', False),
+                     ('135,000 J — used initial temperature (150°C) not temperature change', False),
+                     ('1350 J — divided instead of multiplied', False)],
+            'q': 'A 2 kg iron block (c = 450 J/kg°C) cools from 150°C to 30°C. How much energy is released?',
+            'wrong_explanations': {1: 'Δθ = 150 − 30 = 120°C is the temperature CHANGE. Using 30°C gives ΔE = 2 × 450 '
+                                      '× 30 = 27,000 J — using the final temperature, not the change.',
+                                   2: 'Δθ is not the initial temperature — it is the CHANGE (150 − 30 = 120). 2 × 450 '
+                                      '× 150 = 135,000 J is too large.',
+                                   3: 'ΔE = m × c × Δθ requires multiplication — 2 × 450 × 120 = 108,000 J.'}},
+           {'opts': [('Water has a very high SHC (4200 J/kg°C) — it carries large amounts of thermal energy per kg per '
+                      '°C rise, so less water is needed',
+                      True),
+                     ('Water has a low SHC — it heats up quickly so the system responds faster', False),
+                     ('Water is denser than most liquids — it carries more energy due to its mass', False),
+                     ('Water has zero SHC at 100°C — it conducts heat perfectly at boiling point', False)],
+            'q': 'Why is water used in central heating systems rather than a cheaper liquid?',
+            'wrong_explanations': {1: "The opposite is true — water's HIGH SHC is the key property. A low SHC would "
+                                      'mean it heats quickly but also loses heat quickly and carries less energy.',
+                                   2: "Water is less dense than many metals — density is not the primary reason it's "
+                                      'used in heating systems.',
+                                   3: "SHC doesn't become zero at any temperature — SHC is a property of the material, "
+                                      'roughly constant over normal temperature ranges.'}}],
+  'rp': 'RP14 (Physics) — Determine the specific heat capacity of a material using an electric heater, thermometer and '
+        'balance. E = Pt gives energy input; rearrange ΔE = mcΔθ to find c.',
+  'spec': '6.1.1.3',
+  'summary': 'Use specific heat capacity to calculate energy changes when substances are heated or cooled.',
+  'theory': [{'content': 'Different materials need DIFFERENT amounts of energy to raise their temperature by the same '
+                         'amount. This is described by SPECIFIC HEAT CAPACITY (c).\n'
+                         '\n'
+                         'DEFINITION:\n'
+                         'The specific heat capacity of a substance is the amount of energy needed to raise the '
+                         'temperature of 1 kg of the substance by 1°C.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'ΔE = m × c × Δθ\n'
+                         '\n'
+                         'ΔE = change in thermal energy (J)\n'
+                         'm = mass (kg)\n'
+                         'c = specific heat capacity (J/kg°C)\n'
+                         'Δθ = temperature change (°C)\n'
+                         '\n'
+                         'Common SHC values:\n'
+                         'Water: 4200 J/kg°C\n'
+                         'Aluminium: 900 J/kg°C\n'
+                         'Iron/steel: 450 J/kg°C\n'
+                         'Copper: 385 J/kg°C\n'
+                         '\n'
+                         'Water has a very HIGH SHC — it takes a lot of energy to heat it. This makes it ideal for '
+                         'carrying and storing thermal energy.',
+              'heading': 'Specific Heat Capacity'},
+             {'content': 'The equation ΔE = mcΔθ can be rearranged:\n'
+                         'Δθ = ΔE ÷ (m × c)\n'
+                         'm = ΔE ÷ (c × Δθ)\n'
+                         'c = ΔE ÷ (m × Δθ)\n'
+                         '\n'
+                         'EXAMPLE 1 — Energy needed:\n'
+                         'Heat 2 kg of water from 20°C to 100°C:\n'
+                         'Δθ = 100 − 20 = 80°C\n'
+                         'ΔE = 2 × 4200 × 80 = 672,000 J = 672 kJ\n'
+                         '\n'
+                         'EXAMPLE 2 — Temperature change:\n'
+                         '27,000 J heats a 3 kg aluminium block (c = 900 J/kg°C):\n'
+                         'Δθ = 27,000 ÷ (3 × 900) = 27,000 ÷ 2700 = 10°C\n'
+                         '\n'
+                         'The same equation applies when objects COOL — ΔE is the energy released.',
+              'heading': 'Using the SHC Equation'},
+             {'content': 'WHY WATER IS USED IN RADIATORS AND COOLING SYSTEMS:\n'
+                         'High SHC = carries large amounts of thermal energy per kg per °C → less water needed to heat '
+                         'a room.\n'
+                         'Car cooling systems: water absorbs heat from the engine efficiently.\n'
+                         'Oceans: high SHC means they absorb huge amounts of solar energy → moderate coastal '
+                         'climates.\n'
+                         '\n'
+                         'REQUIRED PRACTICAL:\n'
+                         'RP14 — Determine the SHC of a material:\n'
+                         'Heat a known mass with an electric heater of known power.\n'
+                         'Record temperature change over time.\n'
+                         'Energy input: E = P × t\n'
+                         'Compare to ΔE = mcΔθ → rearrange for c.\n'
+                         '\n'
+                         'SOURCES OF ERROR in RP14:\n'
+                         'Heat loss to surroundings → measured c higher than true value.\n'
+                         'Heat not fully transferred to material → same direction of error.\n'
+                         'Minimise by lagging (insulating) the material being heated.',
+              'heading': 'Applications of Specific Heat Capacity'}],
+  'title': 'Energy Changes in Systems',
+  'triple_only': None,
+  'variables': [('ΔE', 'Change in thermal energy', 'joules', 'J'),
+                ('m', 'Mass', 'kilograms', 'kg'),
+                ('c', 'Specific heat capacity', 'J/kg°C', 'J/kg°C'),
+                ('Δθ', 'Temperature change', 'degrees Celsius', '°C')]},
+ {'common_mistake': "Time MUST be in SECONDS when using P = E/t with energy in joules. '5 minutes' = 300 s, NOT 5. "
+                    'Forgetting to convert is the most common mistake in power calculations.',
+  'equations': ['P = E ÷ t', 'P = W ÷ t', 'E = P × t'],
+  'fifas': [{'label': 'Power — Stair Climb',
+             'question': 'A 50 kg student climbs 4 m of stairs in 5 seconds. Calculate her power output. (g = 9.8 '
+                         'N/kg)',
+             'steps': [('F', 'P = W ÷ t, where W = m × g × h'),
+                       ('I', 'W = 50 × 9.8 × 4 = 1960 J; t = 5 s'),
+                       ('F', 'P = 1960 ÷ 5'),
+                       ('A', 'P = 392 W')]}],
+  'higher': None,
+  'id': 'power',
+  'key_note': 'Power = rate of energy transfer. P = E/t = W/t. Unit: watt (W) = J/s. E = Pt. Always convert time to '
+              'seconds. Higher power = same work done faster. P = mgh/t for climbing problems.',
+  'matching': {'instruction': 'Match each scenario to the correct power value.',
+               'pairs': [('100 W', 'Device transfers 1000 J in 10 s — P = 1000 ÷ 10'),
+                         ('500 W', 'Motor does 30,000 J of work in 1 minute — P = 30,000 ÷ 60'),
+                         ('200 W', 'Engine transfers 24,000 J in 2 minutes — P = 24,000 ÷ 120'),
+                         ('1 W', '1 joule transferred every second — the definition of 1 watt')],
+               'title': 'Power Values'},
+  'quiz': [{'opts': [('360,000 J — E = 2000 × (3 × 60) = 2000 × 180 = 360,000 J', True),
+                     ('6000 J — used minutes not seconds: E = 2000 × 3', False),
+                     ('11.1 J — divided instead of multiplied: 2000 ÷ 180', False),
+                     ('6,000,000 J — multiplied by 3000 instead of 180', False)],
+            'q': 'A 2000 W heater is on for 3 minutes. How much energy does it transfer?',
+            'wrong_explanations': {1: '3 minutes must be converted to seconds: 3 × 60 = 180 s. E = 2000 × 3 = 6000 J '
+                                      'uses minutes, not seconds.',
+                                   2: 'P = E/t → E = P × t, not P ÷ t.',
+                                   3: '3 minutes = 180 s, not 3000 s. E = 2000 × 180 = 360,000 J.'}},
+           {'opts': [("A has twice B's power — same work (mgh), but A does it in half the time", True),
+                     ('Both have the same power — they do the same total work', False),
+                     ('B has more power — taking longer means working harder overall', False),
+                     ('Cannot compare — they take different times so cannot use the same equation', False)],
+            'q': 'Two students both lift a 10 kg bag 5 m. Student A takes 10 s, B takes 20 s. How do their power '
+                 'outputs compare?',
+            'wrong_explanations': {1: 'Same work ÷ same time = same power — but the TIMES ARE DIFFERENT. P = W/t; A: P '
+                                      "= mgh/10; B: P = mgh/20. A's power is twice B's.",
+                                   2: 'More time for the same work = LESS power. B takes longer so B has lower power.',
+                                   3: 'The same equation P = W/t applies to both — using different times is exactly '
+                                      'how power differs between them.'}}],
+  'rp': None,
+  'spec': '6.1.1.4',
+  'summary': 'Define power as rate of energy transfer and calculate power from energy and time.',
+  'theory': [{'content': 'POWER is the RATE at which energy is transferred or work is done.\n'
+                         '\n'
+                         'Power tells us how QUICKLY energy is being used — not how much total energy.\n'
+                         '\n'
+                         'EQUATIONS:\n'
+                         'P = E ÷ t\n'
+                         'P = W ÷ t\n'
+                         '\n'
+                         'P = power (W)\n'
+                         'E = energy transferred (J)\n'
+                         'W = work done (J)\n'
+                         't = time (s)\n'
+                         '\n'
+                         'UNIT: watt (W) = 1 joule per second\n'
+                         '1 kilowatt (kW) = 1000 W\n'
+                         '1 megawatt (MW) = 1,000,000 W\n'
+                         '\n'
+                         'Rearrangements:\n'
+                         'E = P × t\n'
+                         't = E ÷ P',
+              'heading': 'What Is Power?'},
+             {'content': 'Two machines can do the SAME total work — but the more powerful one does it FASTER.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Machine A: 1000 J in 10 s → P = 100 W\n'
+                         'Machine B: 1000 J in 5 s → P = 200 W\n'
+                         'Machine B is twice as powerful — same work, half the time.\n'
+                         '\n'
+                         'Typical power values:\n'
+                         '100 W lightbulb → 100 J/s transferred\n'
+                         '2000 W kettle → 2000 J/s transferred\n'
+                         '1000 W (≈1 kW) — elite sprinter sustained output\n'
+                         '50–150 kW — typical car engine\n'
+                         '\n'
+                         'POWER AND WORK DONE IN CLIMBING:\n'
+                         'P = mgh ÷ t\n'
+                         'This combines Ep = mgh with P = W/t — useful for stair/ramp problems.',
+              'heading': 'Comparing Power'},
+             {'content': 'ALWAYS convert time to SECONDS before calculating:\n'
+                         '1 minute = 60 s\n'
+                         '1 hour = 3600 s\n'
+                         '\n'
+                         'EXAMPLE 1 — finding energy:\n'
+                         'A 60 W bulb on for 5 minutes:\n'
+                         't = 5 × 60 = 300 s\n'
+                         'E = 60 × 300 = 18,000 J\n'
+                         '\n'
+                         'EXAMPLE 2 — finding power:\n'
+                         'A motor transfers 36,000 J in 2 minutes:\n'
+                         't = 2 × 60 = 120 s\n'
+                         'P = 36,000 ÷ 120 = 300 W\n'
+                         '\n'
+                         'EXAMPLE 3 — stair climb:\n'
+                         '60 kg person climbs 3 m in 4 seconds (g = 9.8):\n'
+                         'W = mgh = 60 × 9.8 × 3 = 1764 J\n'
+                         'P = 1764 ÷ 4 = 441 W',
+              'heading': 'Energy, Power and Time Calculations'}],
+  'title': 'Power',
+  'triple_only': None,
+  'variables': [('P', 'Power', 'watts', 'W'),
+                ('E', 'Energy transferred', 'joules', 'J'),
+                ('W', 'Work done', 'joules', 'J'),
+                ('t', 'Time', 'seconds', 's')]},
+ {'common_mistake': "Energy is NEVER destroyed — it is dissipated to less useful stores. 'Lost' energy has been "
+                    'transferred to the thermal energy of the surroundings — it is still there, just spread out and '
+                    "difficult to use again. Never say energy is 'used up' or 'gone'.",
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'energy-transfers-in-a-system',
+  'key_note': 'Conservation of energy: never created or destroyed. Dissipation: energy spreads to surroundings as '
+              'thermal — less useful. Reduce by: lubrication (friction), streamlining (air resistance), insulation '
+              '(thermal loss), better conductors (electrical resistance). Wasted = total input − useful output.',
+  'matching': {'instruction': 'Match each energy dissipation cause to its solution.',
+               'pairs': [('Friction between moving parts',
+                          'Lubrication with oil — reduces surface contact, less thermal energy wasted'),
+                         ('Air resistance on moving objects',
+                          'Streamlining — aerodynamic shape lets air flow smoothly, less energy transferred to air'),
+                         ('Thermal loss from buildings',
+                          'Insulation — thick walls, double glazing, loft insulation reduce conduction rate'),
+                         ('Electrical resistance in wires',
+                          'Thicker wires or lower-resistance materials — less heat generated by current')],
+               'title': 'Reducing Dissipation'},
+  'quiz': [{'opts': [('Dissipated to thermal stores of the surrounding air and pivot through air resistance and '
+                      'friction',
+                      True),
+                     ('The energy is destroyed — the pendulum stopping proves this', False),
+                     ("Stored in the pendulum's elastic potential energy store ready to restart", False),
+                     ('Converted to sound only, which then disappears', False)],
+            'q': 'A pendulum swings and eventually stops. Where has the energy gone?',
+            'wrong_explanations': {1: 'Energy is NEVER destroyed — this violates the law of conservation of energy. '
+                                      'The pendulum slows because energy is dissipated, not destroyed.',
+                                   2: 'Once stopped, the pendulum has no stored elastic PE — it is hanging at rest and '
+                                      'any elastic PE would have been released.',
+                                   3: 'Some sound is produced, but sound also eventually dissipates to thermal energy '
+                                      'in the air. No energy disappears — all ends up as thermal energy of the '
+                                      'surroundings.'}},
+           {'opts': [('It slows the rate of thermal energy transfer from the warm house to the cold surroundings — '
+                      'less energy needed to maintain temperature',
+                      True),
+                     ('It generates heat from the solar radiation it absorbs', False),
+                     ('It stores thermal energy during the day and releases it at night', False),
+                     ('It prevents cold draughts entering through the roof — stopping convection', False)],
+            'q': 'Why does adding loft insulation reduce heating bills?',
+            'wrong_explanations': {1: 'Loft insulation works by reducing CONDUCTION through the ceiling — the fibres '
+                                      'trap air (poor thermal conductor) and slow heat loss.',
+                                   2: 'While insulation has thermal mass, this is not its primary mechanism — reducing '
+                                      'the RATE of heat loss is.',
+                                   3: 'Loft insulation does reduce some convection at the ceiling, but its primary '
+                                      'mechanism is reducing thermal CONDUCTION.'}}],
+  'rp': None,
+  'spec': '6.1.2.1',
+  'summary': 'Describe how energy is conserved, dissipated and how unwanted transfers can be reduced.',
+  'theory': [{'content': 'The LAW OF CONSERVATION OF ENERGY:\n'
+                         'Energy cannot be CREATED or DESTROYED — it can only be TRANSFERRED between stores or '
+                         'DISSIPATED.\n'
+                         '\n'
+                         'In a CLOSED SYSTEM:\n'
+                         'Total energy before = Total energy after — always.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Swinging pendulum: KE ⇌ GPE, cycling continuously (ignoring air resistance).\n'
+                         'Bouncing ball: GPE → KE → elastic PE → KE → GPE → lower each time (energy dissipated).\n'
+                         'Battery-powered torch: chemical → electrical → light + thermal.\n'
+                         '\n'
+                         'Energy is never destroyed — but it can become less USEFUL when it spreads out into the '
+                         'thermal stores of the surroundings.',
+              'heading': 'Conservation of Energy'},
+             {'content': 'DISSIPATION: energy transferred to less useful stores — typically the thermal stores of the '
+                         'surroundings.\n'
+                         '\n'
+                         'Dissipated energy is described as WASTED — not used for the intended purpose.\n'
+                         '\n'
+                         'Causes of dissipation:\n'
+                         'FRICTION — between moving parts → thermal energy.\n'
+                         'AIR RESISTANCE — object transfers energy to air.\n'
+                         'ELECTRICAL RESISTANCE — current in wires → heat.\n'
+                         'SOUND — vibrations dissipate energy to the air.\n'
+                         '\n'
+                         'Once energy is dissipated into the surroundings, it spreads out and becomes very difficult '
+                         'to use again.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Car: chemical PE → useful KE + wasted thermal (engine, brakes, air resistance).\n'
+                         'Filament bulb: electrical → useful light (10%) + wasted thermal (90%).\n'
+                         'Phone charging: electrical → chemical store + thermal (phone gets warm).',
+              'heading': 'Dissipation of Energy'},
+             {'content': 'LUBRICATION — oil between moving parts reduces friction → less thermal wasted.\n'
+                         'STREAMLINING — aerodynamic shapes reduce air resistance → less energy to air.\n'
+                         'INSULATION — reduces thermal transfer to/from surroundings:\n'
+                         'Thick walls, double glazing, loft insulation, cavity wall insulation.\n'
+                         'BETTER CONDUCTORS — lower resistance in wires → less electrical energy wasted as heat.\n'
+                         'SUPERCONDUCTORS — zero resistance at very low temperatures → zero electrical energy wasted.\n'
+                         '\n'
+                         'There is always a practical limit — beyond a certain point, the cost of further improvements '
+                         'outweighs the energy saved.',
+              'heading': 'Reducing Unwanted Energy Transfers'}],
+  'title': 'Energy Transfers in a System',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Efficiency = useful output ÷ TOTAL INPUT — not useful ÷ wasted. Result must be ≤ 1 (≤ 100%). If '
+                    'your answer exceeds 1, you have divided the wrong way. Wasted energy = total input − useful '
+                    'output (not the denominator).',
+  'equations': ['efficiency = useful output energy ÷ total input energy',
+                'efficiency = useful power output ÷ total power input',
+                'efficiency (%) = (useful output ÷ total input) × 100'],
+  'fifas': [{'label': 'Efficiency Calculation',
+             'question': 'A car engine uses 20,000 J of chemical energy and produces 7,000 J of useful kinetic energy. '
+                         'Calculate its efficiency.',
+             'steps': [('F', 'efficiency = useful output energy ÷ total input energy'),
+                       ('I', 'efficiency = 7000 ÷ 20,000'),
+                       ('F', 'efficiency = 0.35'),
+                       ('A', 'efficiency = 0.35 (35%)')]}],
+  'higher': 'Describe specific ways to increase efficiency for a given device or system and justify each: lubrication '
+            'reduces friction losses, streamlining reduces air resistance, thermal insulation reduces heat loss to '
+            'surroundings, regenerative braking captures KE. Evaluate cost vs benefit of efficiency improvements.',
+  'id': 'efficiency',
+  'key_note': 'Efficiency = useful output ÷ total input (decimal, 0–1) or × 100 for %. Wasted = total − useful. Sankey '
+              'diagrams: arrow width ∝ energy amount. Improve: reduce friction (lube), reduce air resistance '
+              '(streamline), reduce heat loss (insulation), use LEDs. Max efficiency = 100% (never exceeded).',
+  'matching': {'instruction': 'Match each device to its efficiency.',
+               'pairs': [('0.75 (75%)', 'Motor: 300 J input, 225 J useful mechanical output — 225÷300'),
+                         ('0.10 (10%)', 'Incandescent bulb: 100 J electrical, 10 J light — 10÷100'),
+                         ('0.40 (40%)', 'Engine: 500 J chemical, 200 J kinetic — 200÷500'),
+                         ('0.90 (90%)', 'LED lamp: 100 J electrical, 90 J light — 90÷100')],
+               'title': 'Efficiency Values'},
+  'quiz': [{'opts': [('200 J — useful = 0.6 × 500 = 300 J; wasted = 500 − 300 = 200 J', True),
+                     ('300 J — this is the useful output, not the wasted amount', False),
+                     ('500 J — all energy is wasted at efficiency 0.6', False),
+                     ('833 J — dividing 500 ÷ 0.6', False)],
+            'q': 'A device has efficiency 0.6 and is supplied with 500 J. How much energy is wasted?',
+            'wrong_explanations': {1: '300 J is the USEFUL output (60% of 500). WASTED = total − useful = 500 − 300 = '
+                                      '200 J.',
+                                   2: 'At efficiency 0.6, only 40% (200 J) is wasted — not all 500 J.',
+                                   3: '500 ÷ 0.6 = 833 J: this would be the input needed to get 500 J useful output, '
+                                      'not the wasted energy.'}},
+           {'opts': [('89 J/s — LED wastes 1 J/s, bulb wastes 90 J/s; difference = 89 J/s', True),
+                     ('0 J/s — both produce the same useful light so waste must be equal', False),
+                     ('10 J/s — the useful output is 10 J/s so waste is also 10 J/s', False),
+                     ('100 J/s — the bulb uses 100 J/s so wastes all of it', False)],
+            'q': 'An LED uses 11 J/s total and produces 10 J/s of light. A filament bulb produces the same 10 J/s of '
+                 'light but uses 100 J/s. How much more energy per second does the bulb waste?',
+            'wrong_explanations': {1: 'Same USEFUL output does NOT mean same waste. LED: wastes 11 − 10 = 1 J/s. Bulb: '
+                                      'wastes 100 − 10 = 90 J/s. Difference = 89 J/s.',
+                                   2: 'Wasted = total − useful. The TOTAL inputs are very different (11 vs 100 J/s).',
+                                   3: 'Bulb uses 100 J/s but 10 J/s is useful light — it wastes 90 J/s, not 100 '
+                                      'J/s.'}}],
+  'rp': None,
+  'spec': '6.1.2.2',
+  'summary': 'Calculate efficiency as a decimal or percentage and interpret Sankey diagrams.',
+  'theory': [{'content': 'EFFICIENCY measures what fraction of total input energy becomes USEFUL output.\n'
+                         '\n'
+                         'No device is 100% efficient — some energy is always dissipated as thermal energy or sound.\n'
+                         '\n'
+                         'EQUATIONS:\n'
+                         'efficiency = useful output energy ÷ total input energy\n'
+                         'efficiency = useful power output ÷ total power input\n'
+                         '\n'
+                         'Express as:\n'
+                         'DECIMAL: 0 to 1 (e.g. 0.75)\n'
+                         'PERCENTAGE: multiply decimal by 100 (e.g. 75%)\n'
+                         '\n'
+                         'Max efficiency = 1 (100%) — impossible in practice.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Motor: 200 J electrical input, 150 J useful mechanical output, 50 J wasted as heat.\n'
+                         'Efficiency = 150 ÷ 200 = 0.75 = 75%\n'
+                         'Wasted = 200 − 150 = 50 J',
+              'heading': 'Efficiency — Definition and Equations'},
+             {'content': 'A SANKEY DIAGRAM shows energy transfers visually:\n'
+                         'Arrow WIDTH is proportional to the amount of energy.\n'
+                         'Input arrow on the left. Useful output arrow goes right. Wasted outputs go downward.\n'
+                         '\n'
+                         'Reading a Sankey diagram:\n'
+                         'Efficiency = width of useful output ÷ width of input arrow.\n'
+                         'The input arrow = sum of ALL output arrows.\n'
+                         '\n'
+                         'EXAMPLE — incandescent bulb (very inefficient):\n'
+                         'Input: 100 J electrical\n'
+                         'Useful light output: 10 J (thin right arrow)\n'
+                         'Wasted heat: 90 J (wide downward arrow)\n'
+                         'Efficiency = 10 ÷ 100 = 0.10 = 10%\n'
+                         '\n'
+                         'EXAMPLE — LED bulb (efficient):\n'
+                         'Input: 100 J\n'
+                         'Useful light: 90 J\n'
+                         'Wasted heat: 10 J\n'
+                         'Efficiency = 90 ÷ 100 = 0.90 = 90%',
+              'heading': 'Sankey Diagrams'},
+             {'content': 'REDUCE FRICTION: lubricate moving parts → less thermal wasted.\n'
+                         'REDUCE AIR RESISTANCE: streamlined shapes → less energy to air.\n'
+                         'BETTER INSULATION: less thermal energy escapes hot devices.\n'
+                         'BETTER COMPONENTS: LED lights instead of filament bulbs → more light, less heat.\n'
+                         'REGENERATIVE BRAKING: hybrid/electric cars capture braking KE → stored in battery rather '
+                         'than wasted as thermal.\n'
+                         '\n'
+                         'WHY EFFICIENCY MATTERS:\n'
+                         'Higher efficiency → less fuel for same useful output → lower costs.\n'
+                         'Less fuel → less CO₂ → lower environmental impact.\n'
+                         'But: no device can exceed 100% efficiency.',
+              'heading': 'Improving Efficiency'}],
+  'title': 'Efficiency',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Bio-fuels ARE renewable — the plants regrow. Nuclear is NOT renewable — uranium is finite. '
+                    "Hydroelectric, wind, tidal and wave are all renewable. Also: 'renewable' does NOT mean 'zero "
+                    "environmental impact' — every resource has some impact.",
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'energy-resources',
+  'key_note': 'Non-renewable: fossil fuels + nuclear. Renewable: wind, solar, hydro, bio-fuel, geothermal, tidal, '
+              'wave. Most generation: turbine + generator (except solar PV). Fossil fuels: reliable, high energy '
+              'density, but CO₂ + pollution. Renewables: lower impact but often intermittent. Nuclear: no CO₂ but '
+              'radioactive waste.',
+  'matching': {'instruction': 'Match each resource to its type and main concern.',
+               'pairs': [('Non-renewable', 'Coal — CO₂ and SO₂ when burned; finite supply'),
+                         ('Non-renewable', 'Nuclear — radioactive waste; uranium is finite'),
+                         ('Renewable', 'Wind — no CO₂ during operation; intermittent; noise and visual impact'),
+                         ('Renewable', 'Hydroelectric — no CO₂; reliable; dam flooding destroys habitats'),
+                         ('Renewable', 'Bio-fuel — roughly carbon neutral; land use competes with food crops')],
+               'title': 'Energy Resource — Type and Impact'},
+  'quiz': [{'opts': [('Geothermal — heat from inside the Earth is continuously produced and will not run out on human '
+                      'timescales',
+                      True),
+                     ('Nuclear — uranium can be recycled so supplies will not run out', False),
+                     ('Coal — new coal forms continuously from organic material', False),
+                     ('Natural gas — underground reserves are replenished by geological processes', False)],
+            'q': 'Which of the following energy resources is renewable?',
+            'wrong_explanations': {1: 'Nuclear fuel is FINITE — while some can be reprocessed, uranium supplies will '
+                                      'eventually run out. It is non-renewable.',
+                                   2: 'Coal takes MILLIONS of years to form — it is not replenished on any '
+                                      'human-relevant timescale. Non-renewable.',
+                                   3: 'Natural gas reserves are being used far faster than they form — a finite, '
+                                      'non-renewable resource.'}},
+           {'opts': [('They only generate electricity when the sun shines or wind blows — output is variable and '
+                      'cannot be guaranteed on demand',
+                      True),
+                     ('They are expensive to maintain and break down frequently', False),
+                     ('They produce too much electricity at peak times, requiring regular shutdown', False),
+                     ('They can only be used in specific countries, not globally', False)],
+            'q': "Why are solar and wind described as 'intermittent' energy sources?",
+            'wrong_explanations': {1: "'Intermittent' refers specifically to VARIABLE, WEATHER-DEPENDENT output — not "
+                                      'maintenance reliability.',
+                                   2: "Overproduction is a grid-management challenge but 'intermittent' specifically "
+                                      'means UNPREDICTABLE output dependent on weather, not overproduction.',
+                                   3: "Wind and solar are used globally — 'intermittent' describes the "
+                                      'time-variability of output, not geographic limitation.'}}],
+  'rp': None,
+  'spec': '6.1.3',
+  'summary': 'Compare renewable and non-renewable energy resources, their uses and environmental impacts.',
+  'theory': [{'content': 'NON-RENEWABLE energy resources WILL RUN OUT — cannot be replenished on human timescales.\n'
+                         'FOSSIL FUELS: coal, oil, natural gas — formed from ancient organic material over millions of '
+                         'years.\n'
+                         'NUCLEAR FUEL: uranium and plutonium — finite supply.\n'
+                         '\n'
+                         'RENEWABLE energy resources are REPLENISHED naturally and will not run out.\n'
+                         'WIND — kinetic energy of moving air drives turbines.\n'
+                         'SOLAR (SUN) — photovoltaic cells convert light → electricity; solar thermal heats water.\n'
+                         'HYDROELECTRICITY — falling/flowing water drives turbines.\n'
+                         'BIO-FUEL — fuels grown from plants (wood, ethanol, biodiesel) — regrow so renewable.\n'
+                         'GEOTHERMAL — heat from inside the Earth → steam → turbines.\n'
+                         'TIDES — tidal flow drives turbines.\n'
+                         'WATER WAVES — wave energy converters.\n'
+                         '\n'
+                         'All renewables (except geothermal, tidal and nuclear) ultimately trace back to the Sun.',
+              'heading': 'Renewable and Non-Renewable Resources'},
+             {'content': 'ELECTRICITY GENERATION — most methods use TURBINES + GENERATORS:\n'
+                         'Fuel (or wind/water) → turbine spins → generator produces electricity.\n'
+                         'Exceptions: solar PV converts light directly to electricity (no turbine).\n'
+                         '\n'
+                         'HEATING:\n'
+                         'Gas central heating, geothermal hot springs, solar thermal panels.\n'
+                         '\n'
+                         'TRANSPORT:\n'
+                         'Petrol/diesel (from crude oil) currently dominant.\n'
+                         'Electric vehicles (charged from grid), hydrogen fuel cells, bio-fuels.\n'
+                         '\n'
+                         'WHY FOSSIL FUELS STILL DOMINATE:\n'
+                         'Reliable on demand — not weather-dependent.\n'
+                         'High energy density — large amount of energy per kg.\n'
+                         'Existing infrastructure in place.\n'
+                         'But: finite supply and significant environmental impact are driving a transition.',
+              'heading': 'Uses of Energy Resources'},
+             {'content': 'FOSSIL FUELS:\n'
+                         'CO₂ released → greenhouse effect → climate change. Major concern.\n'
+                         'SO₂ (from coal/oil) → acid rain.\n'
+                         'Nitrogen oxides → smog, air pollution.\n'
+                         'Oil spills → marine ecosystem damage.\n'
+                         '\n'
+                         'NUCLEAR:\n'
+                         'No CO₂ during operation — low carbon.\n'
+                         'RADIOACTIVE WASTE: hazardous, must be stored safely for thousands of years.\n'
+                         'Risk of major accidents (rare but severe: Chernobyl, Fukushima).\n'
+                         '\n'
+                         'WIND: No CO₂. Noise, visual impact, risk to birds. Intermittent.\n'
+                         'SOLAR: No CO₂. Panel manufacture uses energy and materials. Intermittent.\n'
+                         'HYDROELECTRIC: No CO₂. Reliable. Dam flooding destroys habitats.\n'
+                         'GEOTHERMAL: Low CO₂. Limited to active volcanic regions.\n'
+                         'BIO-FUEL: Roughly carbon neutral (CO₂ released = CO₂ absorbed while growing). Land use '
+                         'competes with food production.\n'
+                         'TIDES/WAVES: No CO₂. Disrupts marine ecosystems. Expensive to build.\n'
+                         '\n'
+                         'KEY TRADE-OFFS:\n'
+                         'Renewables: lower environmental impact but INTERMITTENT (wind/solar) — need storage or '
+                         'backup.\n'
+                         'Fossil fuels: RELIABLE and on-demand but CO₂ and pollution.\n'
+                         'The energy mix must balance reliability, cost and environmental impact.',
+              'heading': 'Environmental Impact of Energy Resources'}],
+  'title': 'Energy Resources',
+  'triple_only': None,
+  'variables': []}],
 
-# ═══════════════════════════════════════════════
-# PARTICLE MODEL
-# ═══════════════════════════════════════════════
-"particle-model": [
-    {
-        "id": "states-of-matter",
-        "title": "States of Matter",
-        "spec": "4.3.1",
-        "summary": "Describe the properties of solids, liquids and gases using the particle model.",
-        "theory": [
-            {"heading": "The Three States — A Particle View",
-             "content": "All matter is made of tiny particles (atoms or molecules).\nHow those particles are arranged and how they move determines the state of matter.\nThink of it like a crowd of people: standing packed tightly = solid, mingling freely = liquid, scattered across a field = gas."},
-            {"heading": "Solid",
-             "content": "Particles: closely packed in a regular, fixed arrangement.\nMovement: vibrate in fixed positions — they don't move around.\nShape: fixed — holds its own shape.\nVolume: fixed — cannot be compressed.\nExamples: ice, iron, rock."},
-            {"heading": "Liquid",
-             "content": "Particles: closely packed but in a random, irregular arrangement.\nMovement: slide and flow past each other.\nShape: takes the shape of its container.\nVolume: fixed — liquids are (virtually) incompressible.\nExamples: water, mercury, molten metal."},
-            {"heading": "Gas",
-             "content": "Particles: far apart, random arrangement, lots of empty space.\nMovement: move quickly in all directions, collide with each other and container walls.\nShape: fills the container completely.\nVolume: can be compressed significantly.\nExamples: air, steam, oxygen."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "Liquid particles are NOT far apart — they are still closely packed (similar density to solids). Only GAS has lots of space between particles. Students often draw liquid particles spread out — that's wrong!",
-        "key_note": None,
-        "higher": None,
-        "triple_only": None,
-        "rp": None,
-        "matching": {
-            "title": "Match the Property to the State",
-            "instruction": "Match each property to solid, liquid or gas.",
-            "pairs": [
-                ("Solid", "Fixed shape and volume, particles vibrate in fixed positions"),
-                ("Liquid", "Fixed volume, takes the shape of its container"),
-                ("Gas", "No fixed shape or volume, particles move quickly in all directions"),
-                ("Solid", "Particles in regular, close-packed arrangement"),
-                ("Gas", "Highly compressible"),
-                ("Liquid", "Particles close together but free to flow"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "Which state of matter has particles that vibrate in fixed positions?",
-             "opts": [("Solid", True), ("Liquid", False), ("Gas", False), ("Plasma", False)],
-             "wrong_explanations": {1: "Liquid particles can slide past each other — they're not fixed in position.", 2: "Gas particles move freely and quickly in all directions — completely the opposite.", 3: "Plasma is a fourth state of matter not required at GCSE — the answer here is solid."}},
-            {"q": "Why can gases be compressed but solids cannot?",
-             "opts": [("Gas particles have large spaces between them; solid particles are tightly packed", True), ("Gas particles are smaller than solid particles", False), ("Solid particles are heavier", False), ("Gas particles are fixed in place", False)],
-             "wrong_explanations": {1: "Particle size doesn't determine compressibility — it's the SPACE between them that matters.", 2: "Mass/density is separate from compressibility. Gold is dense but so is liquid mercury.", 3: "Gas particles are the most free-moving — completely opposite of fixed."}},
-            {"q": "A liquid is poured into a different shaped container. What happens?",
-             "opts": [("It takes the shape of the container but keeps the same volume", True), ("It takes the shape and increases in volume", False), ("It keeps its original shape", False), ("It turns into a gas", False)],
-             "wrong_explanations": {1: "Liquids are virtually incompressible — volume stays the same when shape changes.", 2: "Only solids keep their shape — liquids flow to fill the container shape.", 3: "Liquids turn to gas when heated to boiling point — not just when poured."}},
-            {"q": "Which state has the most energy in its particles?",
-             "opts": [("Gas", True), ("Liquid", False), ("Solid", False), ("All states have equal energy", False)],
-             "wrong_explanations": {1: "Liquid particles have more energy than solid (they can flow) but less than gas.", 2: "Solid particles have the least energy — they can only vibrate.", 3: "The states have different energies — that's why they're different states! Gas particles have the most."}},
-            {"q": "What holds particles together in a solid?",
-             "opts": [("Intermolecular forces (attraction between particles)", True), ("The container they are in", False), ("Gravity pulling them together", False), ("Air pressure pushing them together", False)],
-             "wrong_explanations": {1: "A solid holds its shape even without a container — the particles are held by their own intermolecular forces.", 2: "Gravity acts downward — it doesn't hold all particles together sideways. Intermolecular forces do.", 3: "Solid particles can exist in a vacuum — it's not air pressure holding them."}}
-        ]
-    },
-    {
-        "id": "density",
-        "title": "Density",
-        "spec": "4.3.1",
-        "summary": "Calculate density using ρ = m/V and describe density differences between states.",
-        "theory": [
-            {"heading": "What is Density?",
-             "content": "Density is how much mass is packed into a given volume.\nThink of a packed suitcase vs an empty one — same size, very different mass.\nA denser material has more particles crammed into the same space.\nDensity explains why iron sinks in water but wood floats — iron is denser than water, wood is less dense."},
-            {"heading": "Why Solids Are Usually Denser Than Gases",
-             "content": "In a solid, particles are tightly packed — lots of mass in a small volume = high density.\nIn a gas, particles are widely spaced — same mass spread over a huge volume = very low density.\nLiquid density is usually close to solid density (particles still close together)."},
-            {"heading": "Measuring Density in the Lab",
-             "content": "Regular shape (cube/cuboid): measure mass with balance, volume = length × width × height.\nIrregular shape: use displacement — submerge in water and measure water level rise.\nVolume displaced = volume of object.\nDensity = mass ÷ volume displaced."}
-        ],
-        "variables": [
-            ("ρ", "Density", "Kilograms per cubic metre", "kg/m³"),
-            ("m", "Mass", "Kilograms", "kg"),
-            ("V", "Volume", "Cubic metres", "m³"),
-        ],
-        "equations": ["ρ = m/V"],
-        "common_mistake": "Units! Density in kg/m³ uses kg and m³. If mass is in grams and volume in cm³, density is in g/cm³. DON'T mix units — convert first. Also watch out for converting cm³ to m³: 1 m³ = 1,000,000 cm³.",
-        "key_note": "Water has density = 1000 kg/m³ (1 g/cm³). Objects less dense than water float; denser objects sink.",
-        "higher": None,
-        "triple_only": None,
-        "rp": "RP5 — Measure density of regular and irregular solids. Regular: measure dimensions. Irregular: displacement method using eureka can.",
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Calculate density",
-             "question": "A block of metal has mass 540 g and volume 200 cm³. Calculate its density in g/cm³.",
-             "steps": [("F","ρ = m ÷ V"), ("I","ρ = 540 ÷ 200"), ("F","Both in consistent units (g and cm³)"), ("A","ρ = 2.7 g/cm³")]},
-            {"label": "Example 2 — Find volume",
-             "question": "A piece of iron has mass 7800 kg and density 7800 kg/m³. Find its volume.",
-             "steps": [("F","V = m ÷ ρ"), ("I","V = 7800 ÷ 7800"), ("F","No unit conversion needed"), ("A","V = 1 m³")]}
-        ],
-        "quiz": [
-            {"q": "A 300 g object has volume 100 cm³. What is its density?",
-             "opts": [("3 g/cm³", True), ("30,000 g/cm³", False), ("0.33 g/cm³", False), ("300 g/cm³", False)],
-             "wrong_explanations": {1: "You multiplied instead of dividing. ρ = m ÷ V = 300 ÷ 100 = 3 g/cm³.", 2: "You divided volume by mass (100÷300). Always mass ÷ volume: ρ = 300 ÷ 100 = 3 g/cm³.", 3: "You used just the mass value. ρ = m ÷ V = 300 ÷ 100 = 3 g/cm³."}},
-            {"q": "Will an object float in water (density 1 g/cm³) if its density is 0.8 g/cm³?",
-             "opts": [("Yes — it is less dense than water", True), ("No — it will sink", False), ("It depends on its shape", False), ("It depends on its mass", False)],
-             "wrong_explanations": {1: "0.8 g/cm³ is greater than 1 g/cm³? No — 0.8 is LESS than 1. Less dense = floats.", 2: "Shape affects stability, not floating. Whether it floats depends ONLY on density compared to water.", 3: "Mass alone doesn't determine floating — a massive ship floats because its average density (including air inside) is less than water."}},
-            {"q": "Which method is used to find the volume of an irregular solid?",
-             "opts": [("Displacement — submerge in water and measure the rise", True), ("Use a ruler to measure length × width × height", False), ("Weigh it on a balance", False), ("Compare it to a regular solid of similar size", False)],
-             "wrong_explanations": {1: "Length × width × height only works for regular shapes like cuboids. An irregular shape can't be measured this way accurately.", 2: "A balance gives mass, not volume. You need displacement to find volume of an irregular shape.", 3: "Comparing to similar shapes gives only an approximation — the displacement method gives an exact volume."}},
-            {"q": "A gas has much lower density than its solid form. Why?",
-             "opts": [("Gas particles are far apart — same mass spread over a much larger volume", True), ("Gas particles are lighter than solid particles", False), ("Gas particles move faster, making them lighter", False), ("Solids contain more particles than gases of the same mass", False)],
-             "wrong_explanations": {1: "Particle mass doesn't change between states — it's the spacing that changes density.", 2: "Speed doesn't affect mass. Gas particles are simply spread over a much larger volume.", 3: "Same substance = same number of particles per gram. The difference is volume, not particle count."}},
-            {"q": "The density of water is 1000 kg/m³. What volume does 500 kg of water occupy?",
-             "opts": [("0.5 m³", True), ("500,000 m³", False), ("2 m³", False), ("5 m³", False)],
-             "wrong_explanations": {1: "You multiplied m × ρ instead of dividing. V = m ÷ ρ = 500 ÷ 1000 = 0.5 m³.", 2: "You divided ρ by m. V = m ÷ ρ = 500 ÷ 1000 = 0.5 m³.", 3: "You multiplied by 10 instead of dividing by 1000. V = 500 ÷ 1000 = 0.5 m³."}}
-        ]
-    },
-    {
-        "id": "changes-of-state",
-        "title": "Changes of State and Latent Heat",
-        "spec": "4.3.2",
-        "summary": "Explain changes of state using particle theory and calculate specific latent heat.",
-        "theory": [
-            {"heading": "The Six Changes of State",
-             "content": "Melting: solid → liquid (energy absorbed).\nFreezing: liquid → solid (energy released).\nEvaporation/boiling: liquid → gas (energy absorbed).\nCondensation: gas → liquid (energy released).\nSublimation: solid → gas directly (energy absorbed).\nDeposition: gas → solid directly (energy released)."},
-            {"heading": "What is Latent Heat?",
-             "content": "During a change of state, temperature DOES NOT CHANGE.\nThe energy being added is used to break intermolecular bonds — not to increase temperature.\nThis energy is called latent heat — 'latent' means hidden.\nOn a heating curve, temperature stays flat during a change of state — this flat part is the latent heat region."},
-            {"heading": "Specific Latent Heat",
-             "content": "Specific latent heat of fusion (L_f): energy to melt/freeze 1 kg of a substance.\nSpecific latent heat of vaporisation (L_v): energy to boil/condense 1 kg.\nL_v is always much bigger than L_f — much more energy needed to turn liquid to gas than solid to liquid.\nFor water: L_f = 334,000 J/kg. L_v = 2,260,000 J/kg."},
-            {"heading": "Why Sweating Cools You Down",
-             "content": "When sweat evaporates from your skin, it needs latent heat to change from liquid to gas.\nIt takes this energy FROM YOUR SKIN — so your skin cools down.\nThe high specific latent heat of vaporisation of water makes this very effective.\nThis is also why a steam burn is worse than a boiling water burn — steam gives up massive latent heat as it condenses on skin!"}
-        ],
-        "variables": [
-            ("E", "Energy", "Joules", "J"),
-            ("m", "Mass", "Kilograms", "kg"),
-            ("L", "Specific latent heat", "Joules per kg", "J/kg"),
-        ],
-        "equations": ["E = mL"],
-        "common_mistake": "During a change of state, adding energy does NOT increase temperature — it breaks bonds. Students often think if you add heat, temperature must rise. On a graph, the FLAT section = latent heat being absorbed/released.",
-        "key_note": "Specific latent heat of fusion = melting/freezing. Specific latent heat of vaporisation = boiling/condensing.",
-        "higher": "Heating curve analysis: calculate energy for each section separately. Temperature-rise sections use E = mcΔθ. Flat sections use E = mL.",
-        "triple_only": None,
-        "rp": None,
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Energy to melt ice",
-             "question": "Calculate the energy needed to completely melt 2 kg of ice. Specific latent heat of fusion of water = 334,000 J/kg.",
-             "steps": [("F","E = m × L"), ("I","E = 2 × 334,000"), ("F","No unit conversion needed"), ("A","E = 668,000 J = 668 kJ")]},
-            {"label": "Example 2 — Energy to boil water",
-             "question": "How much energy is needed to evaporate 0.5 kg of water? L_v = 2,260,000 J/kg.",
-             "steps": [("F","E = m × L"), ("I","E = 0.5 × 2,260,000"), ("F","No unit conversion needed"), ("A","E = 1,130,000 J = 1.13 MJ")]}
-        ],
-        "quiz": [
-            {"q": "What happens to temperature during a change of state?",
-             "opts": [("It stays constant", True), ("It increases", False), ("It decreases", False), ("It fluctuates randomly", False)],
-             "wrong_explanations": {1: "Temperature rises BEFORE and AFTER a change of state — but during the change itself, energy goes into breaking bonds, not raising temperature.", 2: "Temperature doesn't fall during melting or boiling — it stays flat.", 3: "Temperature changes are smooth and predictable — not random."}},
-            {"q": "Why is the specific latent heat of vaporisation much larger than fusion?",
-             "opts": [("Turning liquid to gas requires breaking almost all intermolecular bonds", True), ("Vaporisation happens at a higher temperature", False), ("Gas particles are heavier than liquid particles", False), ("Boiling takes longer than melting", False)],
-             "wrong_explanations": {1: "Temperature of boiling vs melting doesn't explain the energy difference — it's about bond-breaking.", 2: "Particle mass doesn't change between states.", 3: "Time taken doesn't determine energy — a slow process could use less or more energy."}},
-            {"q": "0.3 kg of water is evaporated. L_v = 2,260,000 J/kg. How much energy is needed?",
-             "opts": [("678,000 J", True), ("7,533 J", False), ("2,260,300 J", False), ("6,780,000 J", False)],
-             "wrong_explanations": {1: "You divided L by m instead of multiplying. E = m × L = 0.3 × 2,260,000 = 678,000 J.", 2: "You added m and L — there's no addition in E = mL.", 3: "You multiplied by 10 instead of 0.3. E = 0.3 × 2,260,000 = 678,000 J."}},
-            {"q": "Why does sweating cool you down?",
-             "opts": [("Evaporating sweat takes latent heat from your skin", True), ("Sweat contains cold water that lowers skin temperature", False), ("Wind blows heat away from your body", False), ("Sweat absorbs heat from the air around you", False)],
-             "wrong_explanations": {1: "Sweat isn't cold — it's body temperature. The cooling comes from the energy needed to evaporate it.", 2: "Wind chill is a separate effect — sweating cools you even without wind, through evaporation.", 3: "Sweat takes heat FROM YOUR SKIN, not from the air."}},
-            {"q": "On a heating graph, what does a flat (horizontal) section represent?",
-             "opts": [("A change of state — energy used for bond-breaking, not temperature rise", True), ("No energy being added", False), ("A cooling phase", False), ("The substance reaching its maximum temperature", False)],
-             "wrong_explanations": {1: "If no energy was added, the temperature would stay flat but the heating would have stopped completely.", 2: "A cooling phase would show temperature falling on the graph — a flat section maintains temperature.", 3: "There's no maximum temperature — after the change of state, temperature rises again."}}
-        ]
-    },
-    {
-        "id": "gas-pressure",
-        "title": "Gas Pressure and Temperature",
-        "spec": "4.3.3",
-        "summary": "Explain gas pressure using particle collisions and apply pV = constant and p/T = constant.",
-        "theory": [
-            {"heading": "How Gas Pressure is Created",
-             "content": "Gas particles are constantly moving in all directions.\nThey collide with the walls of their container billions of times per second.\nEach collision exerts a tiny force on the wall.\nPressure = total force from all collisions ÷ area of the walls.\nMore collisions per second = higher pressure."},
-            {"heading": "Temperature and Pressure (constant volume)",
-             "content": "Heat a gas → particles move faster → harder, more frequent collisions with walls → higher pressure.\nCool a gas → slower particles → softer, less frequent collisions → lower pressure.\nAt absolute zero (−273°C = 0 K), particles would stop completely — no collisions, zero pressure.\nThis is why pressure is proportional to Kelvin temperature (not Celsius!)."},
-            {"heading": "Volume and Pressure (constant temperature)",
-             "content": "Compress a gas into a smaller volume → same particles, less space → more collisions per unit area → higher pressure.\nExpand a gas into a larger volume → more space → fewer collisions per unit area → lower pressure.\nBoyle's Law: pressure × volume = constant (at constant temperature)."},
-            {"heading": "The Kelvin Temperature Scale",
-             "content": "Kelvin is the absolute temperature scale — starts at absolute zero.\n0 K = −273°C. 273 K = 0°C. 373 K = 100°C.\nConvert: K = °C + 273.\nYou MUST use Kelvin (not Celsius) in gas law calculations — otherwise your maths will be wrong!"}
-        ],
-        "variables": [
-            ("p", "Pressure", "Pascals", "Pa"),
-            ("V", "Volume", "Cubic metres", "m³"),
-            ("T", "Temperature", "Kelvin", "K"),
-        ],
-        "equations": ["pV = constant (Boyle's Law)", "p₁V₁ = p₂V₂", "p/T = constant", "p₁/T₁ = p₂/T₂"],
-        "common_mistake": "ALWAYS convert temperature to Kelvin (add 273) before using p/T = constant. Using Celsius gives wrong answers. Also — Boyle's Law only applies at CONSTANT TEMPERATURE. Don't use it if temperature is changing.",
-        "key_note": "K = °C + 273. Absolute zero = 0 K = −273°C.",
-        "higher": "Full combined gas law: p₁V₁/T₁ = p₂V₂/T₂. This applies when all three variables change simultaneously.",
-        "triple_only": None,
-        "rp": None,
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Boyle's Law",
-             "question": "A gas occupies 4 m³ at 100,000 Pa. The volume is compressed to 2 m³ at constant temperature. What is the new pressure?",
-             "steps": [("F","p₁V₁ = p₂V₂"), ("I","100,000 × 4 = p₂ × 2. So p₂ = 400,000 ÷ 2"), ("F","No unit conversion needed"), ("A","p₂ = 200,000 Pa")]},
-            {"label": "Example 2 — Pressure-Temperature Law",
-             "question": "A gas at 27°C has pressure 100,000 Pa. It is heated to 127°C at constant volume. Find the new pressure.",
-             "steps": [("F","p₁/T₁ = p₂/T₂ — MUST convert to Kelvin first"), ("I","T₁ = 27 + 273 = 300 K. T₂ = 127 + 273 = 400 K. p₂ = p₁ × T₂/T₁ = 100,000 × 400/300"), ("F","p₂ = 133,333 Pa"), ("A","p₂ ≈ 133,000 Pa (133 kPa)")]}
-        ],
-        "quiz": [
-            {"q": "A gas is compressed to half its volume at constant temperature. What happens to pressure?",
-             "opts": [("It doubles", True), ("It halves", False), ("It stays the same", False), ("It quadruples", False)],
-             "wrong_explanations": {1: "Halving volume reduces pressure — but p × V = constant, so halving V DOUBLES p.", 2: "At constant temperature, p × V is constant. Halving V means p must double.", 3: "Quadrupling would require volume to decrease to a quarter — not a half."}},
-            {"q": "Why must temperature be in Kelvin for gas law calculations?",
-             "opts": [("Kelvin starts at absolute zero — proportional to actual particle energy", True), ("Kelvin is the SI unit so it's required", False), ("Celsius gives negative values which break the maths", False), ("It's just a convention — either works", False)],
-             "wrong_explanations": {1: "SI units are a good habit, but the real reason is physical: the maths only works when temperature is proportional to particle energy, which starts at absolute zero.", 2: "Celsius CAN give negative values — but more importantly, the proportionality in p/T only holds from absolute zero.", 3: "They do NOT both work — using Celsius in gas law calculations gives incorrect answers."}},
-            {"q": "What is 100°C in Kelvin?",
-             "opts": [("373 K", True), ("100 K", False), ("273 K", False), ("−173 K", False)],
-             "wrong_explanations": {1: "Don't confuse 100°C with 100 K — they are different! K = °C + 273 = 100 + 273 = 373 K.", 2: "273 K = 0°C (freezing point of water). 100°C = 273 + 100 = 373 K.", 3: "Negative Kelvin doesn't exist — absolute zero is 0 K. K = °C + 273."}},
-            {"q": "What causes gas pressure?",
-             "opts": [("Particle collisions with container walls", True), ("The weight of the gas", False), ("Particles repelling each other", False), ("The temperature of the gas alone", False)],
-             "wrong_explanations": {1: "Weight contributes to atmospheric pressure but gas pressure in a container is from collisions with walls.", 2: "Repulsion happens when particles get very close — but pressure is specifically from wall collisions.", 3: "Temperature affects particle speed and therefore pressure — but pressure is CAUSED by the collisions, not temperature directly."}},
-            {"q": "A gas at 300 K has pressure 150,000 Pa. Temperature rises to 600 K (same volume). New pressure?",
-             "opts": [("300,000 Pa", True), ("75,000 Pa", False), ("150,600 Pa", False), ("450,000 Pa", False)],
-             "wrong_explanations": {1: "You halved pressure instead of doubling. p/T = constant. T doubles → p doubles. 150,000 × 2 = 300,000 Pa.", 2: "You just added T to p — that's not how the formula works. p₂ = p₁ × T₂/T₁ = 150,000 × 600/300 = 300,000 Pa.", 3: "You multiplied by 3 instead of 2. T doubles (300→600), so p doubles too."}}
-        ]
-    },
-],
-
-# ═══════════════════════════════════════════════
-# FORCES (selection of key subtopics)
-# ═══════════════════════════════════════════════
-"forces": [
-    {
-        "id": "forces-scalars-vectors",
-        "title": "Scalar and Vector Quantities",
-        "spec": "4.5.1",
-        "summary": "Distinguish between scalar and vector quantities and add vectors.",
-        "theory": [
-            {"heading": "Scalars — Just a Size",
-             "content": "A scalar quantity has only magnitude (size) — no direction.\nExamples: speed, distance, mass, temperature, time, energy.\nYou can add scalars simply: 3 kg + 2 kg = 5 kg. Done."},
-            {"heading": "Vectors — Size AND Direction",
-             "content": "A vector quantity has both magnitude AND direction.\nExamples: velocity, displacement, force, acceleration, momentum.\nDirection matters! 10 N left + 10 N right = 0 N resultant (they cancel).\nArrows represent vectors — length = magnitude, direction = direction."},
-            {"heading": "Adding Vectors",
-             "content": "In a straight line: add or subtract depending on direction.\n→10 N + →6 N = →16 N (same direction — add).\n→10 N + ←6 N = →4 N (opposite directions — subtract).\nAt angles: draw a scale diagram (nose-to-tail) or use Pythagoras for right angles."},
-            {"heading": "Speed vs Velocity",
-             "content": "Speed = distance ÷ time — scalar (just how fast).\nVelocity = displacement ÷ time — vector (how fast AND which way).\nA car going round a roundabout at constant speed is CHANGING velocity — because direction changes!\nThis means it's accelerating — even at constant speed."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "Speed and velocity are NOT the same thing. Speed is scalar, velocity is vector. A car can have constant speed but changing velocity if it's changing direction. This is a classic exam trick!",
-        "key_note": None,
-        "higher": "Free body diagrams: arrows show all forces on an object. Length represents magnitude. Resultant force = vector sum of all forces.",
-        "triple_only": None,
-        "rp": None,
-        "matching": {
-            "title": "Scalar or Vector?",
-            "instruction": "Sort each quantity into scalar or vector.",
-            "pairs": [
-                ("Scalar", "Speed"),
-                ("Scalar", "Distance"),
-                ("Scalar", "Mass"),
-                ("Scalar", "Temperature"),
-                ("Vector", "Velocity"),
-                ("Vector", "Displacement"),
-                ("Vector", "Force"),
-                ("Vector", "Acceleration"),
-                ("Vector", "Momentum"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "Which of these is a vector quantity?",
-             "opts": [("Velocity", True), ("Speed", False), ("Mass", False), ("Temperature", False)],
-             "wrong_explanations": {1: "Speed is scalar — it tells you how fast but not which direction.", 2: "Mass is scalar — it's just an amount of matter, no direction involved.", 3: "Temperature is scalar — it has no direction."}},
-            {"q": "A car moves east at 10 m/s. What is its velocity?",
-             "opts": [("10 m/s east", True), ("10 m/s", False), ("10 m", False), ("East", False)],
-             "wrong_explanations": {1: "10 m/s without direction is SPEED — velocity needs a direction too.", 2: "10 m is a distance — velocity is speed with direction.", 3: "Direction alone isn't velocity — you need the magnitude (speed) too."}},
-            {"q": "Two forces act on an object: 15 N right and 8 N left. What is the resultant?",
-             "opts": [("7 N right", True), ("23 N right", False), ("7 N left", False), ("23 N left", False)],
-             "wrong_explanations": {1: "You added instead of subtracting. Opposite directions → subtract: 15 − 8 = 7 N. The larger force (right) wins.", 2: "7 N left would require the left force to be bigger — but 15 N > 8 N, so resultant is to the right.", 3: "Adding gives 23 N in the direction of the larger force — but opposite forces cancel, so it's 15−8 = 7 N."}},
-            {"q": "A car travels round a circular track at constant speed. Is it accelerating?",
-             "opts": [("Yes — velocity changes because direction changes", True), ("No — speed is constant", False), ("No — the car is in circular motion not linear", False), ("Only if it speeds up", False)],
-             "wrong_explanations": {1: "Speed being constant doesn't mean velocity is constant. Velocity is a vector — direction change = velocity change = acceleration.", 2: "Circular motion requires constant acceleration toward the centre (centripetal). The object is always accelerating.", 3: "Acceleration = rate of change of velocity. Changing direction at constant speed is still acceleration."}},
-            {"q": "Which of these is a scalar quantity?",
-             "opts": [("Distance", True), ("Displacement", False), ("Force", False), ("Momentum", False)],
-             "wrong_explanations": {1: "Displacement is a vector — it includes direction. Distance is the scalar version (just how far).", 2: "Force is a vector — it has magnitude and direction (e.g. 10 N downward).", 3: "Momentum (p = mv) is a vector — it inherits direction from velocity."}}
-        ]
-    },
-    {
-        "id": "weight-mass-gravity",
-        "title": "Weight, Mass and Gravity",
-        "spec": "4.5.1",
-        "summary": "Distinguish mass from weight and calculate weight using W = mg.",
-        "theory": [
-            {"heading": "Mass vs Weight — The Classic Confusion",
-             "content": "Mass is the amount of matter in an object — measured in kg.\nMass never changes, regardless of where you are (Earth, Moon, space).\nWeight is the gravitational force on an object — measured in Newtons (N).\nWeight DOES change depending on the gravitational field strength of where you are."},
-            {"heading": "Gravitational Field Strength (g)",
-             "content": "g is the pull of gravity per kilogram of mass.\nOn Earth: g ≈ 10 N/kg (sometimes given as 9.8 N/kg — use whatever the question gives).\nOn the Moon: g ≈ 1.6 N/kg — much weaker gravity.\nOn Jupiter: g ≈ 25 N/kg — much stronger gravity.\nA 70 kg person weighs 700 N on Earth, 112 N on the Moon, 1750 N on Jupiter."},
-            {"heading": "Centre of Mass",
-             "content": "The centre of mass is the single point where all of an object's weight seems to act.\nFor uniform shapes, it's the geometric centre (middle of a ruler, centre of a ball).\nAn object is stable if its centre of mass is above its base.\nLow centre of mass + wide base = very stable (why racing cars are wide and low)."}
-        ],
-        "variables": [
-            ("W", "Weight", "Newtons", "N"),
-            ("m", "Mass", "Kilograms", "kg"),
-            ("g", "Gravitational field strength", "N/kg", "N/kg"),
-        ],
-        "equations": ["W = mg"],
-        "common_mistake": "Mass and weight are NOT the same. Mass is in kg, weight is in Newtons. Never write 'my weight is 60 kg' — that's your mass! Weight = 60 × 10 = 600 N.",
-        "key_note": "g on Earth = 10 N/kg. g on Moon ≈ 1.6 N/kg. Weight (N) = Mass (kg) × g (N/kg).",
-        "higher": None,
-        "triple_only": None,
-        "rp": None,
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Calculate weight on Earth",
-             "question": "A student has a mass of 55 kg. Calculate their weight on Earth. (g = 10 N/kg)",
-             "steps": [("F","W = m × g"), ("I","W = 55 × 10"), ("F","No unit conversion needed"), ("A","W = 550 N")]},
-            {"label": "Example 2 — Weight on the Moon",
-             "question": "The same student visits the Moon where g = 1.6 N/kg. Calculate their weight on the Moon.",
-             "steps": [("F","W = m × g"), ("I","W = 55 × 1.6"), ("F","Mass stays the same — only g changes"), ("A","W = 88 N")]}
-        ],
-        "quiz": [
-            {"q": "A 20 kg object is on Earth (g = 10 N/kg). What is its weight?",
-             "opts": [("200 N", True), ("2 N", False), ("20 N", False), ("2000 N", False)],
-             "wrong_explanations": {1: "You divided instead of multiplying. W = m × g = 20 × 10 = 200 N.", 2: "You used mass alone as weight. W = m × g = 20 × 10 = 200 N.", 3: "You multiplied by 100 instead of 10. W = m × g = 20 × 10 = 200 N."}},
-            {"q": "An astronaut has mass 80 kg. On the Moon (g = 1.6 N/kg), what is their weight?",
-             "opts": [("128 N", True), ("800 N", False), ("8 N", False), ("50 N", False)],
-             "wrong_explanations": {1: "800 N is their weight on Earth (g=10). On the Moon g=1.6, so W = 80 × 1.6 = 128 N.", 2: "You divided m by g instead of multiplying. W = m × g = 80 × 1.6 = 128 N.", 3: "You divided m by g in a different way. W = m × g = 80 × 1.6 = 128 N."}},
-            {"q": "An astronaut travels from Earth to the Moon. What changes?",
-             "opts": [("Weight decreases but mass stays the same", True), ("Both mass and weight decrease", False), ("Mass decreases but weight stays the same", False), ("Neither changes", False)],
-             "wrong_explanations": {1: "Mass NEVER changes — it's the amount of matter. Only weight changes because g is different.", 2: "Weight changes because g changes, but mass stays constant.", 3: "Both definitely change on a different planet — gravity changes weight, and nothing changes mass."}},
-            {"q": "What is the difference between mass and weight?",
-             "opts": [("Mass is amount of matter (kg); weight is gravitational force (N)", True), ("They are the same thing measured in different units", False), ("Weight is fixed but mass changes with gravity", False), ("Mass is measured in Newtons; weight in kg", False)],
-             "wrong_explanations": {1: "They are completely different quantities — mass is scalar matter, weight is a force vector.", 2: "Weight changes with gravity; mass is fixed — it's weight that varies, not mass.", 3: "It's the opposite — mass in kg, weight in Newtons. Never mix these up."}},
-            {"q": "A racing car has a low centre of mass. Why does this help?",
-             "opts": [("It makes the car more stable — less likely to tip over", True), ("It makes the car faster", False), ("It reduces the car's weight", False), ("It increases grip on the road", False)],
-             "wrong_explanations": {1: "Low centre of mass doesn't directly make the car faster — aerodynamics and power do that.", 2: "Centre of mass position doesn't affect weight — weight depends on mass and g.", 3: "Grip depends on tire surface and friction — not centre of mass height."}}
-        ]
-    },
-    {
-        "id": "newtons-laws",
-        "title": "Newton's Laws of Motion",
-        "spec": "4.5.6",
-        "summary": "Apply Newton's three laws to explain and calculate the motion of objects.",
-        "theory": [
-            {"heading": "Newton's First Law — The Lazy Law",
-             "content": "An object stays at rest OR moves at constant velocity UNLESS acted on by a resultant force.\nThink of it as objects being lazy — they don't want to change what they're doing.\nNo resultant force = no change in motion. Full stop.\nThis tendency to resist change is called INERTIA."},
-            {"heading": "Newton's Second Law — F = ma",
-             "content": "The resultant force on an object equals its mass × acceleration.\nBigger force = bigger acceleration (for the same mass).\nBigger mass = smaller acceleration (for the same force).\nA heavy lorry is harder to speed up AND harder to slow down than a small car — same principle."},
-            {"heading": "Newton's Third Law — Action and Reaction",
-             "content": "Every action force has an equal and opposite reaction force.\nIf you push a wall, the wall pushes back on you with equal force.\nThese forces act on DIFFERENT objects — so they don't cancel out.\nExample: rocket engine pushes gas backward → gas pushes rocket forward (equal and opposite)."},
-            {"heading": "Inertia and Mass",
-             "content": "Inertia is the tendency of an object to resist changes in motion.\nMass is a measure of inertia — more mass = harder to accelerate or decelerate.\nThis is why a bowling ball is harder to throw and harder to stop than a tennis ball."}
-        ],
-        "variables": [
-            ("F", "Resultant Force", "Newtons", "N"),
-            ("m", "Mass", "Kilograms", "kg"),
-            ("a", "Acceleration", "Metres per second squared", "m/s²"),
-        ],
-        "equations": ["F = ma"],
-        "common_mistake": "Newton's Third Law pairs act on DIFFERENT objects. Students think balanced forces and N3 pairs are the same — they're NOT. Balanced forces act on the SAME object (no resultant). N3 pairs act on DIFFERENT objects (always equal and opposite).",
-        "key_note": None,
-        "higher": "Inertial mass = F ÷ a. Gravitational mass = W ÷ g. They are equivalent — which is why all objects fall at the same rate in a gravitational field.",
-        "triple_only": None,
-        "rp": "RP7 — Acceleration on a ramp: investigate how varying force and mass affects acceleration.",
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Find acceleration",
-             "question": "A resultant force of 600 N acts on a 1200 kg car. Calculate the acceleration.",
-             "steps": [("F","a = F ÷ m"), ("I","a = 600 ÷ 1200"), ("F","No unit conversion needed"), ("A","a = 0.5 m/s²")]},
-            {"label": "Example 2 — Find force",
-             "question": "A 70 kg person accelerates at 2 m/s². Calculate the resultant force.",
-             "steps": [("F","F = m × a"), ("I","F = 70 × 2"), ("F","No unit conversion needed"), ("A","F = 140 N")]}
-        ],
-        "quiz": [
-            {"q": "An object moves at constant velocity. What do we know about the resultant force?",
-             "opts": [("The resultant force is zero", True), ("There is a large resultant force", False), ("The force equals the object's weight", False), ("The force is increasing", False)],
-             "wrong_explanations": {1: "A large resultant force would cause acceleration — changing velocity. Constant velocity requires zero resultant.", 2: "Weight equals normal reaction for horizontal motion — but that's a specific case, not a general rule about constant velocity.", 3: "If force was increasing, velocity would be increasing too — acceleration would occur."}},
-            {"q": "A 5 kg object accelerates at 4 m/s². What resultant force acts on it?",
-             "opts": [("20 N", True), ("1.25 N", False), ("0.8 N", False), ("9 N", False)],
-             "wrong_explanations": {1: "You divided F = m ÷ a instead of multiplying. F = m × a = 5 × 4 = 20 N.", 2: "You divided mass by force. F = m × a = 5 × 4 = 20 N.", 3: "You added m and a. F = m × a = 5 × 4 = 20 N."}},
-            {"q": "A rocket fires exhaust gas downward. What happens according to Newton's Third Law?",
-             "opts": [("The rocket is pushed upward with equal force", True), ("The exhaust gas slows the rocket down", False), ("Nothing — the force cancels out", False), ("The rocket is pushed downward", False)],
-             "wrong_explanations": {1: "The exhaust gas being expelled backward causes drag on the rocket — but N3 says the rocket is pushed FORWARD (opposite to gas direction).", 2: "N3 pairs don't cancel — they act on DIFFERENT objects. The gas is pushed down, rocket is pushed up.", 3: "The rocket is pushed in the OPPOSITE direction to the exhaust — upward, not downward."}},
-            {"q": "Two forces of 200 N each act on an object in opposite directions. What is the resultant?",
-             "opts": [("0 N — balanced forces, no acceleration", True), ("400 N", False), ("200 N", False), ("100 N", False)],
-             "wrong_explanations": {1: "Adding forces in the same direction gives 400 N — but these are opposite directions.", 2: "You used just one of the forces. Opposite directions → they cancel: 200 − 200 = 0 N.", 3: "You halved one force. Opposite and equal forces cancel completely: resultant = 0 N."}},
-            {"q": "Why is a fully loaded lorry harder to stop than an empty one?",
-             "opts": [("Greater mass = greater inertia — needs more force to decelerate", True), ("It has more friction from the extra weight", False), ("The brakes work less efficiently when heavy", False), ("The lorry's engine resists braking when loaded", False)],
-             "wrong_explanations": {1: "Extra weight does increase friction slightly but the main reason is INERTIA — more mass resists changes in motion (Newton's 2nd law).", 2: "Brake efficiency depends on brake design — not directly on load in this context.", 3: "The engine doesn't resist braking — inertia (mass) does."}}
-        ]
-    },
-    {
-        "id": "momentum",
-        "title": "Momentum",
-        "spec": "4.5.7",
-        "summary": "Calculate momentum and apply conservation of momentum to collisions.",
-        "theory": [
-            {"heading": "What is Momentum?",
-             "content": "Momentum is a measure of how hard it is to stop a moving object.\nA slow, heavy lorry and a fast, light bullet can have the same momentum.\nMomentum is a vector — it has direction as well as size.\nObjects moving in opposite directions have momenta in opposite signs."},
-            {"heading": "Conservation of Momentum",
-             "content": "In a closed system (no external forces), total momentum before = total momentum after.\nThis applies in ALL collisions and explosions.\nWhen two cars collide: momentum before collision = momentum after.\nWhen a gun is fired: bullet goes forward, gun recoils backward — total momentum stays zero."},
-            {"heading": "Newton's 2nd Law — The Momentum Version",
-             "content": "Force = rate of change of momentum = (mv − mu) ÷ t.\nA larger force causes a greater rate of change of momentum.\nThis is why airbags save lives — they increase the time of impact, reducing the force on the passenger.\nSame change in momentum, longer time = smaller force."},
-            {"heading": "Crumple Zones and Safety",
-             "content": "Crumple zones increase the time taken for a car to stop in a crash.\nLonger stopping time → smaller force (same impulse spread over more time).\nAirbags, seatbelts and helmets all work on the same principle.\nImpulse = Force × time = change in momentum."}
-        ],
-        "variables": [
-            ("p", "Momentum", "Kilogram metres per second", "kg m/s"),
-            ("m", "Mass", "Kilograms", "kg"),
-            ("v", "Velocity", "Metres per second", "m/s"),
-        ],
-        "equations": ["p = mv"],
-        "common_mistake": "Momentum is a VECTOR — direction matters. If two objects move in opposite directions, one has positive momentum and one has negative. Always define a positive direction at the start of your calculation.",
-        "key_note": None,
-        "higher": "Impulse = force × time = change in momentum (Δmv). Impulse is also a vector. Units: N·s = kg·m/s.",
-        "triple_only": None,
-        "rp": None,
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Calculate momentum",
-             "question": "A 1500 kg car travels at 20 m/s. Calculate its momentum.",
-             "steps": [("F","p = m × v"), ("I","p = 1500 × 20"), ("F","No unit conversion needed"), ("A","p = 30,000 kg m/s")]},
-            {"label": "Example 2 — Conservation of momentum (collision)",
-             "question": "Car A (mass 1000 kg, velocity 15 m/s) collides with stationary Car B (mass 1500 kg). They stick together. Find their combined velocity after the collision.",
-             "steps": [("F","Total momentum before = total momentum after. p_before = m_A × v_A + m_B × 0"), ("I","p_before = 1000 × 15 = 15,000 kg m/s. After: (m_A + m_B) × v = 15,000"), ("F","v = 15,000 ÷ (1000 + 1500) = 15,000 ÷ 2500"), ("A","v = 6 m/s")]}
-        ],
-        "quiz": [
-            {"q": "A 0.5 kg ball moves at 10 m/s. What is its momentum?",
-             "opts": [("5 kg m/s", True), ("20 kg m/s", False), ("0.05 kg m/s", False), ("10.5 kg m/s", False)],
-             "wrong_explanations": {1: "You divided instead of multiplying. p = m × v = 0.5 × 10 = 5 kg m/s.", 2: "You divided m by v. p = m × v = 0.5 × 10 = 5 kg m/s.", 3: "You added m and v. p = m × v = 0.5 × 10 = 5 kg m/s."}},
-            {"q": "In a closed system, what is conserved in all collisions?",
-             "opts": [("Total momentum", True), ("Total kinetic energy", False), ("Speed of each object", False), ("Total force", False)],
-             "wrong_explanations": {1: "KE is only conserved in ELASTIC collisions. Most real collisions lose some KE to heat/sound.", 2: "Individual speeds change in collisions — only TOTAL momentum is conserved.", 3: "Forces are internal to the collision — they change during impact and are not conserved as a total."}},
-            {"q": "Why do airbags reduce injury in car crashes?",
-             "opts": [("They increase collision time, reducing the force on the passenger", True), ("They absorb all the kinetic energy", False), ("They prevent momentum from changing", False), ("They increase the passenger's mass", False)],
-             "wrong_explanations": {1: "Airbags can't absorb ALL kinetic energy — some converts to heat, sound, deformation.", 2: "Momentum DOES change — the passenger stops. Airbags reduce FORCE by increasing time.", 3: "Airbags don't change mass. They change the rate of momentum change — longer time = less force."}},
-            {"q": "A gun fires a bullet forward. What happens to the gun?",
-             "opts": [("It recoils backward — conservation of momentum", True), ("Nothing — the gun is much heavier", False), ("It moves forward with the bullet", False), ("It spins around", False)],
-             "wrong_explanations": {1: "Mass difference affects how much the gun moves (velocity), not whether it moves. The gun ALWAYS recoils.", 2: "The gun moves BACKWARD, not forward — the bullet goes forward, so the gun must go the opposite way.", 3: "Recoil is linear (straight back), not rotational — unless the gun has a special design."}},
-            {"q": "What is the unit of momentum?",
-             "opts": [("kg m/s", True), ("N", False), ("J", False), ("m/s²", False)],
-             "wrong_explanations": {1: "N (Newtons) is the unit of force — not momentum.", 2: "J (Joules) is the unit of energy — momentum = kg m/s.", 3: "m/s² is acceleration — momentum = mass × velocity = kg × m/s = kg m/s."}}
-        ]
-    },
-],
-
-# ═══════════════════════════════════════════════
-# WAVES
-# ═══════════════════════════════════════════════
-"waves": [
-    {
-        "id": "wave-types",
-        "title": "Transverse and Longitudinal Waves",
-        "spec": "4.6.1",
-        "summary": "Describe the properties of transverse and longitudinal waves.",
-        "theory": [
-            {"heading": "What is a Wave?",
-             "content": "A wave transfers energy from one place to another WITHOUT transferring matter.\nThe particles (or field) oscillate (vibrate) — but they don't travel with the wave.\nThink of a Mexican wave in a stadium — the fans move up and down, but the wave travels around the stadium."},
-            {"heading": "Transverse Waves",
-             "content": "The oscillation is PERPENDICULAR (at right angles) to the direction of wave travel.\nThink: like shaking a rope — your hand moves up and down, but the wave moves along.\nExamples: all electromagnetic waves (light, X-rays, radio), water waves, waves on a string.\nCan travel through vacuum (space) — this is how light reaches us from the Sun."},
-            {"heading": "Longitudinal Waves",
-             "content": "The oscillation is PARALLEL to the direction of wave travel.\nThink: like pushing and pulling a slinky — compressions and rarefactions.\nCompression: particles pushed together (high pressure).\nRarefaction: particles pulled apart (low pressure).\nExamples: sound waves, ultrasound, seismic P-waves.\nNeed a medium (matter) to travel through — cannot travel through vacuum."},
-            {"heading": "Wave Properties",
-             "content": "Amplitude: maximum displacement from rest position (how 'big' the wave is).\nWavelength (λ): distance from one crest to the next (or compression to compression).\nFrequency (f): number of complete waves per second — measured in Hertz (Hz).\nPeriod (T): time for one complete wave — T = 1/f.\nWave speed (v): how fast the wave travels — v = fλ."}
-        ],
-        "variables": [
-            ("v", "Wave speed", "Metres per second", "m/s"),
-            ("f", "Frequency", "Hertz", "Hz"),
-            ("λ", "Wavelength", "Metres", "m"),
-            ("T", "Period", "Seconds", "s"),
-            ("A", "Amplitude", "Metres", "m"),
-        ],
-        "equations": ["v = fλ", "T = 1/f"],
-        "common_mistake": "Longitudinal waves cannot travel through a vacuum — they need particles to compress and rarefy. ONLY transverse waves (electromagnetic) travel through space. Sound is longitudinal — that's why space is silent.",
-        "key_note": "Sound is longitudinal. Light is transverse. Sound cannot travel in a vacuum.",
-        "higher": None,
-        "triple_only": None,
-        "rp": "RP9 — Investigate waves using ripple tanks (water waves) and slinkies (longitudinal vs transverse).",
-        "matching": {
-            "title": "Transverse or Longitudinal?",
-            "instruction": "Sort each wave type correctly.",
-            "pairs": [
-                ("Transverse", "Light"),
-                ("Transverse", "Radio waves"),
-                ("Transverse", "X-rays"),
-                ("Transverse", "Water waves"),
-                ("Longitudinal", "Sound"),
-                ("Longitudinal", "Ultrasound"),
-            ]
-        },
-        "fifas": [
-            {"label": "Example 1 — Wave speed",
-             "question": "A wave has frequency 200 Hz and wavelength 0.5 m. Calculate its speed.",
-             "steps": [("F","v = f × λ"), ("I","v = 200 × 0.5"), ("F","No unit conversion needed"), ("A","v = 100 m/s")]},
-            {"label": "Example 2 — Period",
-             "question": "A wave has frequency 50 Hz. Calculate its period.",
-             "steps": [("F","T = 1 ÷ f"), ("I","T = 1 ÷ 50"), ("F","No unit conversion needed"), ("A","T = 0.02 s")]}
-        ],
-        "quiz": [
-            {"q": "In a transverse wave, how does the oscillation relate to wave travel direction?",
-             "opts": [("Perpendicular — at right angles", True), ("Parallel — in the same direction", False), ("Opposite — in reverse direction", False), ("Random — no fixed relationship", False)],
-             "wrong_explanations": {1: "Parallel oscillation = longitudinal wave (like sound). Transverse = perpendicular.", 2: "Opposite would still be parallel — longitudinal. Transverse means at 90° to travel direction.", 3: "Waves are predictable — oscillation direction is always well-defined."}},
-            {"q": "Which wave CANNOT travel through a vacuum?",
-             "opts": [("Sound", True), ("Light", False), ("X-rays", False), ("Radio waves", False)],
-             "wrong_explanations": {1: "Light travels through vacuum — it's how sunlight reaches Earth.", 2: "X-rays are electromagnetic — they travel through vacuum just like light.", 3: "Radio waves are electromagnetic — they travel through space (how satellites work)."}},
-            {"q": "A wave has frequency 10 Hz. What is its period?",
-             "opts": [("0.1 s", True), ("10 s", False), ("100 s", False), ("1 s", False)],
-             "wrong_explanations": {1: "You used T = f instead of T = 1/f. T = 1 ÷ 10 = 0.1 s.", 2: "You multiplied f × 10. T = 1/f = 1/10 = 0.1 s.", 3: "You used f directly as T. T = 1/f = 1/10 = 0.1 s."}},
-            {"q": "What property of a wave represents its 'height' from the rest position?",
-             "opts": [("Amplitude", True), ("Wavelength", False), ("Frequency", False), ("Period", False)],
-             "wrong_explanations": {1: "Wavelength is the distance from one crest to the next — not the height.", 2: "Frequency is how many waves per second — nothing to do with height.", 3: "Period is time for one complete wave — nothing to do with height."}},
-            {"q": "A wave travels at 330 m/s with wavelength 1.5 m. What is its frequency?",
-             "opts": [("220 Hz", True), ("495 Hz", False), ("0.0045 Hz", False), ("331.5 Hz", False)],
-             "wrong_explanations": {1: "You multiplied v × λ. Use f = v ÷ λ = 330 ÷ 1.5 = 220 Hz.", 2: "You divided λ by v. f = v ÷ λ = 330 ÷ 1.5 = 220 Hz.", 3: "You added v and λ — there's no addition in v = fλ. f = v ÷ λ = 220 Hz."}}
-        ]
-    },
-    {
-        "id": "em-spectrum",
-        "title": "The Electromagnetic Spectrum",
-        "spec": "4.6.2",
-        "summary": "Describe the properties, uses and hazards of the electromagnetic spectrum.",
-        "theory": [
-            {"heading": "What All EM Waves Have in Common",
-             "content": "All electromagnetic waves:\n→ Are transverse waves.\n→ Travel at 3 × 10⁸ m/s in a vacuum (the speed of light).\n→ Transfer energy.\n→ Can travel through vacuum (space).\n→ Are part of a continuous spectrum from radio waves to gamma rays."},
-            {"heading": "The Spectrum — Low to High Frequency",
-             "content": "Radio waves → Microwaves → Infrared → Visible light → Ultraviolet → X-rays → Gamma rays.\nLow frequency end: long wavelength, low energy, less dangerous.\nHigh frequency end: short wavelength, high energy, more dangerous (ionising).\nMnemonic: 'Rabbits Mate In Vast Unexplored X-ray Gardens'"},
-            {"heading": "Uses of Each Type",
-             "content": "Radio: broadcasting, communications, MRI scanners.\nMicrowaves: cooking, satellite communications, mobile phones.\nInfrared: thermal imaging, remote controls, optical fibres, grills.\nVisible: sight, photography, lasers.\nUV: sterilisation, detecting forged banknotes, tanning.\nX-rays: medical imaging, airport security, cancer treatment.\nGamma: cancer treatment (radiotherapy), sterilising medical equipment, food irradiation."},
-            {"heading": "Hazards",
-             "content": "Ionising radiation (UV, X-ray, gamma) can remove electrons from atoms → damages DNA → cancer.\nInfrared: skin burns from excessive heat.\nMicrowaves: internal heating of body tissue.\nRadio waves: generally considered safe at normal intensities.\nHigher frequency = more energy per photon = more dangerous."}
-        ],
-        "variables": [],
-        "equations": ["v = fλ (same for all EM waves)", "v = 3 × 10⁸ m/s in vacuum"],
-        "common_mistake": "Students list the spectrum in the wrong order. Remember: Radio → Micro → Infra → Visible → Ultra → X-ray → Gamma. Low to high frequency, long to short wavelength. Gamma has the SHORTEST wavelength and HIGHEST frequency.",
-        "key_note": "All EM waves travel at 3 × 10⁸ m/s in a vacuum. Higher frequency = shorter wavelength = more energy = more dangerous.",
-        "higher": "Refractive index: n = sin(i)/sin(r). Total internal reflection occurs when angle of incidence exceeds critical angle. Used in optical fibres.",
-        "triple_only": "Radio wave production and detection. X-rays in medicine. Lenses — converging and diverging, focal length, magnification.",
-        "rp": "RP10 — Investigate reflection and refraction of light using ray boxes.",
-        "matching": {
-            "title": "Match the EM Wave to its Use",
-            "instruction": "Match each type of EM radiation to one of its main uses.",
-            "pairs": [
-                ("Radio waves", "TV and radio broadcasting"),
-                ("Microwaves", "Satellite communications"),
-                ("Infrared", "TV remote controls"),
-                ("Visible light", "Photography"),
-                ("Ultraviolet", "Detecting forged banknotes"),
-                ("X-rays", "Medical bone imaging"),
-                ("Gamma rays", "Cancer radiotherapy"),
-            ]
-        },
-        "fifas": [
-            {"label": "Example — Find wavelength of radio wave",
-             "question": "A radio station broadcasts at 100 MHz. Calculate the wavelength. (speed of light = 3 × 10⁸ m/s)",
-             "steps": [("F","λ = v ÷ f"), ("I","f = 100 MHz = 100 × 10⁶ = 1 × 10⁸ Hz. λ = 3 × 10⁸ ÷ 1 × 10⁸"), ("F","Convert MHz to Hz first!"), ("A","λ = 3 m")]}
-        ],
-        "quiz": [
-            {"q": "Which EM wave has the highest frequency?",
-             "opts": [("Gamma rays", True), ("Radio waves", False), ("X-rays", False), ("Visible light", False)],
-             "wrong_explanations": {1: "Radio waves have the LOWEST frequency and longest wavelength.", 2: "X-rays have high frequency but gamma rays are higher still.", 3: "Visible light is in the middle of the spectrum — nowhere near the highest frequency."}},
-            {"q": "What is the speed of all EM waves in a vacuum?",
-             "opts": [("3 × 10⁸ m/s", True), ("340 m/s", False), ("3 × 10⁶ m/s", False), ("It varies by type", False)],
-             "wrong_explanations": {1: "340 m/s is the speed of SOUND in air — completely different. EM waves travel at the speed of light.", 2: "3 × 10⁶ is 100 times too slow. Speed of light = 3 × 10⁸ m/s.", 3: "All EM waves travel at exactly the same speed in a vacuum — 3 × 10⁸ m/s."}},
-            {"q": "Which EM radiation is used in TV remote controls?",
-             "opts": [("Infrared", True), ("Microwaves", False), ("Radio waves", False), ("Visible light", False)],
-             "wrong_explanations": {1: "Microwaves are used for cooking and satellite comms — not remote controls.", 2: "Radio waves have much longer range — remote controls use short-range infrared.", 3: "Visible light is used for photography and sight — remote controls use infrared (invisible)."}},
-            {"q": "Why are gamma rays more dangerous than radio waves?",
-             "opts": [("Higher frequency = more energy per photon = ionising radiation that can damage DNA", True), ("Gamma rays travel faster", False), ("Radio waves are absorbed by the body more", False), ("Gamma rays are louder", False)],
-             "wrong_explanations": {1: "All EM waves travel at the same speed. Danger comes from energy per photon (frequency).", 2: "Radio waves pass through the body mostly without being absorbed at normal levels.", 3: "EM waves are silent — they carry no sound. Danger is from ionisation of atoms."}},
-            {"q": "Which EM radiation is used to sterilise medical equipment?",
-             "opts": [("Gamma rays", True), ("Infrared", False), ("Visible light", False), ("Microwaves", False)],
-             "wrong_explanations": {1: "Infrared would just heat the equipment — it can't kill bacteria reliably.", 2: "Visible light doesn't have enough energy to sterilise — gamma rays ionise and kill microorganisms.", 3: "Microwaves heat food but don't kill all bacteria at medical sterilisation levels."}}
-        ]
-    },
-],
-
-# ═══════════════════════════════════════════════
-# MAGNETISM
-# ═══════════════════════════════════════════════
-"magnetism": [
-    {
-        "id": "magnetic-fields",
-        "title": "Magnetic Fields and Electromagnets",
-        "spec": "4.7.1",
-        "summary": "Describe magnetic fields and explain how electromagnets work.",
-        "theory": [
-            {"heading": "Magnetic Fields",
-             "content": "A magnetic field is a region where a magnetic force is experienced.\nField lines go from North pole to South pole outside the magnet.\nCloser field lines = stronger field.\nField lines never cross each other.\nThe Earth has a magnetic field — which is why compasses work."},
-            {"heading": "Permanent vs Induced Magnets",
-             "content": "Permanent magnet: always magnetic — made of 'hard' magnetic materials like steel.\nInduced magnet: only magnetic when placed in a magnetic field — made of 'soft' materials like iron.\nInduced magnets lose magnetism quickly when field is removed.\nExample: a paperclip near a magnet temporarily becomes a magnet."},
-            {"heading": "Electromagnets",
-             "content": "An electric current creates a magnetic field around a wire.\nWrap the wire into a coil (solenoid) — the fields combine → much stronger magnet.\nMore turns of wire = stronger field.\nMore current = stronger field.\nIron core inside the coil = much stronger field (iron concentrates field lines).\nSwitch off current → no more magnetic field (if iron core used)."},
-            {"heading": "Uses of Electromagnets",
-             "content": "Electric bell — electromagnet attracts hammer repeatedly when current flows.\nMagnetic relay — small current controls a larger circuit (transistor applications).\nMRI scanner — very powerful electromagnets create detailed body images.\nScrapyard cranes — lift and drop metal objects by switching current on/off.\nMaglev trains — levitate and propel trains using electromagnets."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "Magnetic field lines go from North to South OUTSIDE the magnet. Inside the magnet, they go from South to North (the field is continuous). Also — iron is the best core material because it magnetises easily but loses magnetism easily (soft magnetic material).",
-        "key_note": "Soft magnetic materials (iron): easy to magnetise and demagnetise. Hard magnetic materials (steel): hard to magnetise but stay magnetic.",
-        "higher": None,
-        "triple_only": None,
-        "rp": "RP11 — Investigate factors affecting the force on a current-carrying conductor in a magnetic field.",
-        "matching": {
-            "title": "Match the Device to How it Uses Electromagnetism",
-            "instruction": "Match each device to its electromagnetic principle.",
-            "pairs": [
-                ("Electric bell", "Electromagnet repeatedly attracts a hammer when AC current flows"),
-                ("Scrapyard crane", "Current switched on to attract metal; switched off to drop it"),
-                ("MRI scanner", "Very strong magnetic fields image soft tissue inside the body"),
-                ("Maglev train", "Electromagnets repel track to levitate the train"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "In which direction do magnetic field lines point outside a magnet?",
-             "opts": [("From North to South", True), ("From South to North", False), ("Randomly in all directions", False), ("Parallel to the magnet only", False)],
-             "wrong_explanations": {1: "South to North is the direction INSIDE the magnet. Outside = North to South.", 2: "Field lines follow a defined pattern — not random.", 3: "Field lines curve around the magnet in three dimensions — not just parallel."}},
-            {"q": "What makes an electromagnet different from a permanent magnet?",
-             "opts": [("It can be switched on and off using electric current", True), ("It is always stronger", False), ("It never loses its magnetism", False), ("It only attracts iron, not steel", False)],
-             "wrong_explanations": {1: "Not necessarily — a permanent magnet can be stronger. The key feature is on/off switching.", 2: "Permanent magnets can be very strong — neodymium magnets are extremely powerful.", 3: "Both types attract magnetic materials (iron, steel, nickel, cobalt)."}},
-            {"q": "How can you increase the strength of an electromagnet?",
-             "opts": [("Increase current or add more coil turns", True), ("Use a steel core instead of iron", False), ("Decrease the current", False), ("Use fewer turns of wire", False)],
-             "wrong_explanations": {1: "Steel is a HARD magnetic material — it stays magnetic even when current stops. Iron (soft) is better for electromagnets.", 2: "Decreasing current weakens the magnetic field — opposite effect.", 3: "Fewer turns = weaker field — you want MORE turns to strengthen it."}},
-            {"q": "What happens to an iron-core electromagnet when the current is switched off?",
-             "opts": [("It loses its magnetism almost immediately", True), ("It stays permanently magnetised", False), ("It becomes more strongly magnetised", False), ("The iron core melts", False)],
-             "wrong_explanations": {1: "Steel would stay magnetised — but iron is a SOFT magnetic material, it loses magnetism quickly when current stops.", 2: "The field would increase when current stops? No — no current = no electromagnetic field.", 3: "Normal currents in electromagnets don't generate enough heat to melt iron."}},
-            {"q": "Why is an iron core used inside an electromagnet coil rather than steel?",
-             "opts": [("Iron is soft magnetically — easy to magnetise and demagnetise", True), ("Iron is harder than steel", False), ("Steel would melt inside the coil", False), ("Iron conducts electricity better", False)],
-             "wrong_explanations": {1: "Actually steel is harder than iron physically — but magnetically, iron is 'softer' (easier to switch).", 2: "Steel has a much higher melting point than coil temperatures — melting isn't the issue.", 3: "Both iron and steel conduct electricity — this isn't why iron is chosen."}}
-        ]
-    },
-    {
-        "id": "motor-effect",
-        "title": "The Motor Effect and Fleming's Left Hand Rule",
-        "spec": "4.7.2",
-        "summary": "Apply F = BIL and Fleming's Left Hand Rule to the motor effect.",
-        "theory": [
-            {"heading": "The Motor Effect",
-             "content": "A current-carrying conductor in a magnetic field experiences a force.\nThis is because the current creates its own magnetic field → interacts with the external field → produces a force.\nThis is the principle behind every electric motor."},
-            {"heading": "Fleming's Left Hand Rule",
-             "content": "Hold your left hand with:\nFirst finger pointing in direction of magnetic Field (N to S).\nSecond finger pointing in direction of conventional Current (+ to -).\nThumb points in direction of thrust (Motion/Force).\nThe three are mutually perpendicular — all at 90° to each other.\nIf any two are reversed, the force reverses too."},
-            {"heading": "F = BIL — The Motor Force Equation",
-             "content": "F = force in Newtons (N).\nB = magnetic flux density (field strength) in Tesla (T).\nI = current in Amperes (A).\nL = length of conductor in the field in metres (m).\nDouble any one = double the force. Halve any one = halve the force."},
-            {"heading": "The Electric Motor",
-             "content": "A coil of wire carrying current sits in a magnetic field.\nOpposite sides of the coil experience forces in opposite directions → rotation.\nThe commutator (split ring) reverses the current every half turn → keeps rotation in the same direction.\nDC motor: powered by direct current.\nSpeed increased by: more current, stronger magnets, more turns on coil."}
-        ],
-        "variables": [
-            ("F", "Force", "Newtons", "N"),
-            ("B", "Magnetic flux density", "Tesla", "T"),
-            ("I", "Current", "Amperes", "A"),
-            ("L", "Length", "Metres", "m"),
-        ],
-        "equations": ["F = BIL"],
-        "common_mistake": "Fleming's Left Hand Rule is for MOTORS (current → force). Fleming's RIGHT Hand Rule is for GENERATORS (motion → current/voltage). Don't mix them up — left for motor effect, right for generators.",
-        "key_note": None,
-        "higher": "A current at right angles to the field gives maximum force. If current is parallel to field, force = zero. For angles between: F = BIL sin(θ).",
-        "triple_only": None,
-        "rp": "RP11 — Investigate how varying current and field strength affect the force on a conductor.",
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Motor force",
-             "question": "A wire of length 0.3 m carries a current of 4 A in a magnetic field of 0.5 T. Calculate the force on the wire.",
-             "steps": [("F","F = B × I × L"), ("I","F = 0.5 × 4 × 0.3"), ("F","No unit conversion needed"), ("A","F = 0.6 N")]},
-            {"label": "Example 2 — Find current",
-             "question": "A 0.2 m wire in a 0.8 T field experiences a force of 0.4 N. Calculate the current.",
-             "steps": [("F","I = F ÷ (B × L)"), ("I","I = 0.4 ÷ (0.8 × 0.2) = 0.4 ÷ 0.16"), ("F","No unit conversion needed"), ("A","I = 2.5 A")]}
-        ],
-        "quiz": [
-            {"q": "What does Fleming's Left Hand Rule determine?",
-             "opts": [("The direction of force on a current-carrying conductor in a field", True), ("The direction of induced current in a generator", False), ("The strength of a magnetic field", False), ("The direction of electron flow", False)],
-             "wrong_explanations": {1: "Fleming's RIGHT Hand Rule determines induced current direction in generators.", 2: "F = BIL gives the magnitude of force — Fleming's LHR gives the direction.", 3: "Electron flow is from − to + (opposite to conventional current). Fleming's LHR uses conventional current."}},
-            {"q": "A wire of 0.5 m carries 2 A in a 0.4 T field. What force acts on it?",
-             "opts": [("0.4 N", True), ("1.6 N", False), ("0.04 N", False), ("4 N", False)],
-             "wrong_explanations": {1: "You multiplied all three: 0.4 × 2 × 0.5 = 0.4 — wait, that IS correct! F = BIL = 0.4 × 2 × 0.5 = 0.4 N.", 2: "You may have done 0.4 × 2 × 2. F = B × I × L = 0.4 × 2 × 0.5 = 0.4 N.", 3: "You divided instead of multiplying. F = B × I × L = 0.4 × 2 × 0.5 = 0.4 N."}},
-            {"q": "How is the direction of the motor effect force reversed?",
-             "opts": [("Reverse the current OR reverse the magnetic field direction", True), ("Increase the current", False), ("Use a longer wire", False), ("Increase the field strength", False)],
-             "wrong_explanations": {1: "Increasing current changes the MAGNITUDE of force — not its direction.", 2: "Longer wire increases force magnitude but not direction.", 3: "Stronger field increases force magnitude but not direction."}},
-            {"q": "What happens to the force if the current is doubled?",
-             "opts": [("It doubles", True), ("It quadruples", False), ("It stays the same", False), ("It halves", False)],
-             "wrong_explanations": {1: "F = BIL — squaring only applies in KE = ½mv². Here it's a direct proportion: double I = double F.", 2: "F is directly proportional to I — no squared term here.", 3: "If current doubles, force halves? No — F = BIL means they're directly proportional."}},
-            {"q": "Which hand do you use for the motor effect rule?",
-             "opts": [("Left hand", True), ("Right hand", False), ("Either hand", False), ("Both hands together", False)],
-             "wrong_explanations": {1: "Right hand rule = GENERATOR (induced EMF). Left hand = MOTOR (force on conductor).", 2: "You must use the correct hand or the direction will be wrong!", 3: "One hand only — left for motor effect."}}
-        ]
-    },
-    {
-        "id": "transformers",
-        "title": "Electromagnetic Induction and Transformers",
-        "spec": "4.7.3",
-        "summary": "Explain electromagnetic induction and apply the transformer equation.",
-        "theory": [
-            {"heading": "Electromagnetic Induction",
-             "content": "When a conductor moves through a magnetic field (or a field changes through a conductor), an EMF (voltage) is induced.\nThis is the reverse of the motor effect — instead of current + field → force, we have motion + field → current.\nNo movement = no induction. The field must be CHANGING relative to the conductor."},
-            {"heading": "How to Increase Induced EMF",
-             "content": "Move faster (increase rate of change of field).\nUse a stronger magnet (stronger field).\nUse more turns of wire in the coil.\nMore turns = more of the field passes through more wire = bigger EMF."},
-            {"heading": "Transformers",
-             "content": "A transformer changes the voltage of an AC supply.\nPrimary coil: input voltage applied here.\nSecondary coil: output voltage taken from here.\nIron core: links the two coils magnetically (flux linkage).\nStep-UP transformer: more turns on secondary → higher output voltage.\nStep-DOWN transformer: fewer turns on secondary → lower output voltage.\nTransformers only work with AC — because AC creates a changing magnetic field in the core."},
-            {"heading": "Why AC — Not DC?",
-             "content": "DC creates a constant magnetic field in the iron core.\nA constant field does NOT induce an EMF in the secondary coil.\nAC creates a continuously changing field → continuously induced EMF in secondary.\nThis is why the mains supply is AC — so transformers can work throughout the National Grid."}
-        ],
-        "variables": [
-            ("Vp", "Primary voltage", "Volts", "V"),
-            ("Vs", "Secondary voltage", "Volts", "V"),
-            ("Np", "Primary turns", "no unit", ""),
-            ("Ns", "Secondary turns", "no unit", ""),
-            ("Ip", "Primary current", "Amperes", "A"),
-            ("Is", "Secondary current", "Amperes", "A"),
-        ],
-        "equations": ["Vp/Vs = Np/Ns", "Vp × Ip = Vs × Is (100% efficient)"],
-        "common_mistake": "Transformers only work with AC — NEVER DC. Also: a step-up transformer increases voltage but DECREASES current (power in = power out for 100% efficiency). Students often think step-up increases both voltage and current — wrong!",
-        "key_note": None,
-        "higher": "Transformer efficiency = (Vs × Is)/(Vp × Ip) × 100%. Real transformers lose some energy as heat in the coils and core due to resistance and eddy currents.",
-        "triple_only": None,
-        "rp": None,
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Find secondary voltage",
-             "question": "A transformer has 200 primary turns and 1000 secondary turns. Primary voltage = 230 V. Calculate the secondary voltage.",
-             "steps": [("F","Vp/Vs = Np/Ns → Vs = Vp × Ns/Np"), ("I","Vs = 230 × 1000/200 = 230 × 5"), ("F","No unit conversion needed"), ("A","Vs = 1150 V (step-up transformer)")]},
-            {"label": "Example 2 — Find secondary current (100% efficient)",
-             "question": "Primary: 230 V, 10 A. Secondary: 2300 V. What is the secondary current?",
-             "steps": [("F","Vp × Ip = Vs × Is → Is = (Vp × Ip)/Vs"), ("I","Is = (230 × 10)/2300 = 2300/2300"), ("F","No unit conversion needed"), ("A","Is = 1 A (higher voltage = lower current)")]}
-        ],
-        "quiz": [
-            {"q": "Why do transformers only work with AC, not DC?",
-             "opts": [("AC creates a changing magnetic field — needed to induce EMF in the secondary coil", True), ("DC has too much resistance", False), ("AC is safer than DC", False), ("DC would overheat the transformer", False)],
-             "wrong_explanations": {1: "Resistance isn't the issue — transformers work by electromagnetic induction, which needs a CHANGING field.", 2: "Safety is separate from how induction works. The key is that DC creates a constant field → no induction.", 3: "DC can handle the current fine — the issue is that it creates a static field which can't induce EMF."}},
-            {"q": "A step-up transformer increases voltage. What happens to current?",
-             "opts": [("Current decreases", True), ("Current increases", False), ("Current stays the same", False), ("Current doubles", False)],
-             "wrong_explanations": {1: "If both voltage and current increased, power output > power input — impossible! Power in = power out, so voltage up means current down.", 2: "Current stays the same would only happen if power changes — but transformers are close to 100% efficient.", 3: "Doubling current while doubling voltage would double power — energy cannot be created."}},
-            {"q": "A transformer has Np = 100, Ns = 25, Vp = 240 V. Find Vs.",
-             "opts": [("60 V", True), ("960 V", False), ("24 V", False), ("2.4 V", False)],
-             "wrong_explanations": {1: "You multiplied Np/Ns instead of dividing. Vs = Vp × Ns/Np = 240 × 25/100 = 60 V.", 2: "You divided by the wrong thing. Vs = Vp × (Ns/Np) = 240 × 0.25 = 60 V.", 3: "You divided by 100 instead of multiplying by (Ns/Np). Vs = 240 × 25/100 = 60 V."}},
-            {"q": "What is the purpose of the iron core in a transformer?",
-             "opts": [("To link the magnetic fields of the primary and secondary coils", True), ("To carry the electric current between coils", False), ("To act as a heat sink", False), ("To increase electrical resistance", False)],
-             "wrong_explanations": {1: "The current does NOT flow through the core — the coils are electrically isolated. The core links them magnetically.", 2: "The core gets warm but that's a source of energy loss — it's not designed as a heat sink.", 3: "High resistance would reduce the efficiency of field transfer — not the goal."}},
-            {"q": "What type of transformer is used before electricity enters homes?",
-             "opts": [("Step-down transformer (reduces voltage to 230 V)", True), ("Step-up transformer (increases voltage)", False), ("No transformer needed for homes", False), ("A current transformer", False)],
-             "wrong_explanations": {1: "Step-up transformers are at POWER STATIONS — they boost voltage for transmission. Homes need step-DOWN to get safe 230 V.", 2: "Without a transformer, homes would receive 400,000 V — immediately fatal!", 3: "Current transformers are measuring devices — not what delivers mains voltage."}}
-        ]
-    },
-],
-
-# ═══════════════════════════════════════════════
-# SPACE (Triple only)
-# ═══════════════════════════════════════════════
-"space": [
-    {
-        "id": "solar-system-stars",
-        "title": "The Solar System and Life Cycle of Stars",
-        "spec": "4.8.1",
-        "summary": "Describe the structure of the Solar System and the life cycle of stars.",
-        "theory": [
-            {"heading": "The Solar System",
-             "content": "The Sun is at the centre — a medium-sized star.\nEight planets orbit the Sun (plus dwarf planets like Pluto).\nOrder from Sun: Mercury, Venus, Earth, Mars, Jupiter, Saturn, Uranus, Neptune.\nMnemonic: 'My Very Educated Mother Just Served Us Nachos'.\nGravity keeps planets in orbit — centripetal force directed toward the Sun."},
-            {"heading": "Beyond the Solar System",
-             "content": "Our Solar System sits in the Milky Way galaxy.\nThe Milky Way contains around 200–400 billion stars.\nThe universe contains hundreds of billions of galaxies.\nLight-year: the distance light travels in one year ≈ 9.5 × 10¹⁵ m.\nThe observable universe is about 46 billion light-years in radius."},
-            {"heading": "Life Cycle of a Small/Medium Star (like our Sun)",
-             "content": "Nebula (gas and dust cloud) → Protostar (gravity pulls material together, heats up)\n→ Main sequence star (hydrogen fusion, stable for billions of years)\n→ Red giant (hydrogen runs out, outer layers expand)\n→ Planetary nebula (outer layers shed)\n→ White dwarf (dense core remains, cools slowly).\nOur Sun is currently a main sequence star — about halfway through its life."},
-            {"heading": "Life Cycle of a Massive Star",
-             "content": "Nebula → Protostar → Main sequence star (shorter life — burns fuel faster)\n→ Red supergiant (much larger than red giant)\n→ Supernova (catastrophic explosion — elements heavier than iron created here!)\n→ Either: Neutron star (incredibly dense — mass of Sun in city-sized ball)\n→ Or: Black hole (if mass is large enough — gravity so strong light cannot escape)."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "A white dwarf and a neutron star are NOT the same. White dwarfs come from small/medium stars (like our Sun). Neutron stars come from massive stars after a supernova. Black holes form from the MOST massive stars. Get the sequence right!",
-        "key_note": "All elements heavier than iron are formed in supernova explosions — including gold, silver and uranium on Earth.",
-        "higher": None,
-        "triple_only": "Space Physics is TRIPLE ONLY (AQA Physics 8463). Not in Combined Science Trilogy (8464).",
-        "rp": None,
-        "matching": {
-            "title": "Match the Stage to the Star Type",
-            "instruction": "Match each stage to whether it applies to small/medium stars, massive stars, or both.",
-            "pairs": [
-                ("Both", "Nebula → Protostar → Main sequence star"),
-                ("Small/medium star only", "Red giant → Planetary nebula → White dwarf"),
-                ("Massive star only", "Red supergiant → Supernova → Neutron star or Black hole"),
-                ("Massive star only", "Elements heavier than iron created here"),
-                ("Both", "Fusion of hydrogen during main sequence"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "What is the correct order for a small star like our Sun after the main sequence?",
-             "opts": [("Red giant → White dwarf", True), ("Supernova → Neutron star", False), ("Red supergiant → Black hole", False), ("Planetary nebula → Red giant", False)],
-             "wrong_explanations": {1: "Supernova → Neutron star is the path for MASSIVE stars — not small/medium stars like our Sun.", 2: "Red supergiant and black hole are for the MOST massive stars — our Sun is too small.", 3: "Planetary nebula comes AFTER the red giant — not before."}},
-            {"q": "Where are elements heavier than iron formed?",
-             "opts": [("In supernova explosions", True), ("In the cores of main sequence stars", False), ("In nebulae", False), ("In white dwarfs", False)],
-             "wrong_explanations": {1: "Main sequence stars fuse elements UP TO iron — heavier elements need a supernova's extreme energy.", 2: "Nebulae are mostly hydrogen and helium — they don't have enough energy to form heavy elements.", 3: "White dwarfs are cooling stellar remnants — no fusion occurs."}},
-            {"q": "What force keeps planets in orbit around the Sun?",
-             "opts": [("Gravity", True), ("Electromagnetic force", False), ("Nuclear force", False), ("Magnetic force", False)],
-             "wrong_explanations": {1: "Electromagnetic force acts between charges — planets and the Sun are mostly neutral overall.", 2: "Nuclear forces only act at very short ranges inside nuclei — not across solar system distances.", 3: "The Sun's magnetic field exists but is far too weak to keep planets in orbit — gravity does this."}},
-            {"q": "What is a neutron star?",
-             "opts": [("The incredibly dense core left after a supernova of a massive star", True), ("A star that only produces neutrons as fuel", False), ("A young star before hydrogen fusion begins", False), ("The remains of a small star like our Sun", False)],
-             "wrong_explanations": {1: "Stars don't 'only produce neutrons' — they fuse hydrogen, helium and heavier elements.", 2: "A young star before fusion is a protostar — not a neutron star.", 3: "Small stars leave WHITE DWARFS — not neutron stars. Neutron stars form from massive stars."}},
-            {"q": "What is a light-year?",
-             "opts": [("The distance light travels in one year", True), ("The time it takes light to reach the Moon", False), ("A measure of a star's brightness", False), ("The age of the universe in years", False)],
-             "wrong_explanations": {1: "Light takes about 1.3 seconds to reach the Moon — much less than a year.", 2: "Luminosity or magnitude measures star brightness — a light-year is a distance.", 3: "The universe is about 13.8 billion years old — a light-year is a distance, not a time."}}
-        ]
-    },
-    {
-        "id": "red-shift-big-bang",
-        "title": "Red-Shift and the Big Bang",
-        "spec": "4.8.2",
-        "summary": "Explain red-shift as evidence for an expanding universe and the Big Bang.",
-        "theory": [
-            {"heading": "What is Red-Shift?",
-             "content": "When a light source moves away from us, its light is stretched to longer wavelengths.\nLonger wavelengths = shifted toward the red end of the spectrum.\nThis is called red-shift — and it's the Doppler effect applied to light.\nIf a source moves toward us, wavelengths are compressed → blue-shift."},
-            {"heading": "Evidence from Galaxies",
-             "content": "Almost all galaxies show red-shifted light — they are all moving away from us.\nThe further away the galaxy, the greater the red-shift — it's moving away faster.\nThis means the universe is EXPANDING in all directions.\nNo matter where you are in the universe, everything else appears to be moving away."},
-            {"heading": "The Big Bang Theory",
-             "content": "If everything is moving apart now, they must have been closer together in the past.\nExtrapolating backward → all matter and energy was in a single, extremely hot, dense point.\nAbout 13.8 billion years ago, this point exploded outward — the Big Bang.\nThe universe has been expanding and cooling ever since.\nThe Big Bang is the best-supported explanation for the origin of the universe."},
-            {"heading": "Cosmic Microwave Background Radiation",
-             "content": "Shortly after the Big Bang, the universe was incredibly hot — full of radiation.\nAs it expanded and cooled, this radiation stretched to microwave wavelengths.\nThis Cosmic Microwave Background (CMB) radiation fills all of space today.\nFirst detected in 1965 by Penzias and Wilson — strong evidence for the Big Bang.\nIt is uniform in all directions — consistent with the universe expanding from a single point."}
-        ],
-        "variables": [],
-        "equations": [],
-        "common_mistake": "The Big Bang is NOT an explosion in space — it's an expansion OF space itself. There was no 'before' the Big Bang (time began with it). Also — red-shift tells us galaxies are moving AWAY from us, not toward us. Blue-shift = moving toward us (only seen in very close galaxies).",
-        "key_note": "CMB radiation = strongest observational evidence for the Big Bang theory.",
-        "higher": "Hubble's Law: recession speed = Hubble constant × distance. v = H₀d. This allows astronomers to calculate the age of the universe (≈ 1/H₀).",
-        "triple_only": "Space Physics is TRIPLE ONLY (AQA Physics 8463). Not in Combined Science Trilogy (8464).",
-        "rp": None,
-        "matching": None,
-        "fifas": [],
-        "quiz": [
-            {"q": "What does red-shift in a distant galaxy tell us?",
-             "opts": [("The galaxy is moving away from us", True), ("The galaxy is moving toward us", False), ("The galaxy is made of red stars", False), ("The galaxy is very hot", False)],
-             "wrong_explanations": {1: "Moving toward us = blue-shift (wavelengths compressed). Red-shift = moving AWAY.", 2: "Red-shift is about wavelength stretch due to motion — not the colour of the stars themselves.", 3: "Hotter stars actually appear bluer — temperature and Doppler shift are different effects."}},
-            {"q": "What does the fact that almost all galaxies are red-shifted suggest?",
-             "opts": [("The universe is expanding", True), ("The universe is contracting", False), ("Galaxies are moving toward each other", False), ("Light loses energy travelling through space", False)],
-             "wrong_explanations": {1: "Contracting universe → blue-shift. Red-shift everywhere = expansion.", 2: "Moving toward each other = blue-shift. Red-shift means moving apart.", 3: "This 'tired light' hypothesis was an alternative but is not supported — red-shift is better explained by expansion."}},
-            {"q": "What is the Cosmic Microwave Background (CMB)?",
-             "opts": [("Leftover radiation from the Big Bang, now cooled to microwave wavelengths", True), ("Radiation from the Sun at microwave frequencies", False), ("Background noise from mobile phone signals", False), ("Radiation emitted by black holes", False)],
-             "wrong_explanations": {1: "The Sun's microwave output is tiny — CMB is far more uniform and covers the whole sky.", 2: "CMB was discovered before modern mobile phones — and exists far beyond Earth.", 3: "Black holes emit Hawking radiation theoretically — CMB comes from the early universe, not black holes."}},
-            {"q": "According to the Big Bang theory, how long ago did the universe begin?",
-             "opts": [("Approximately 13.8 billion years ago", True), ("4.6 billion years ago", False), ("1 billion years ago", False), ("Exactly 6,000 years ago", False)],
-             "wrong_explanations": {1: "4.6 billion years is the age of the Earth and Solar System — the universe is much older.", 2: "1 billion years is much too young — the universe is approximately 13.8 billion years old.", 3: "This figure comes from religious texts, not scientific evidence. Scientific dating gives ~13.8 billion years."}},
-            {"q": "Why is more distant galaxy light more red-shifted?",
-             "opts": [("More distant galaxies are receding faster — the universe expands uniformly", True), ("Their light travels further so loses more energy", False), ("Distant galaxies contain older, redder stars", False), ("Gravity from other galaxies slows the light down", False)],
-             "wrong_explanations": {1: "Light does lose energy slightly over vast distances but this 'tired light' model doesn't explain the specific pattern. The real reason is that more distant galaxies move faster.", 2: "Older stars tend to be smaller and cooler — but that's stellar colour, not Doppler red-shift.", 3: "Gravity from galaxies creates gravitational red-shift, but it's tiny compared to Doppler red-shift from expansion."}}
-        ]
-    },
-],
-
-# ═══════════════════════════════════════════════
-# ATOMIC STRUCTURE
-# ═══════════════════════════════════════════════
-"atomic-structure": [
-    {
-        "id": "structure-of-atom",
-        "title": "Structure of the Atom",
-        "spec": "4.4.1",
-        "summary": "Describe atomic structure, subatomic particles and the development of the atomic model.",
-        "theory": [
-            {"heading": "What's Inside an Atom?",
-             "content": "An atom has a tiny, dense nucleus at the centre surrounded by a cloud of electrons.\nThe nucleus contains protons (+) and neutrons (no charge).\nElectrons (−) orbit the nucleus in shells.\nThe atom is mostly empty space — if the nucleus were the size of a football, the atom would be as big as a stadium!"},
-            {"heading": "The Three Subatomic Particles",
-             "content": "Proton: relative mass = 1, relative charge = +1, found in nucleus.\nNeutron: relative mass = 1, relative charge = 0, found in nucleus.\nElectron: relative mass = 1/1836 (≈ 0), relative charge = −1, found in shells.\nIn a neutral atom: number of protons = number of electrons.\nIons form when electrons are gained or lost."},
-            {"heading": "Atomic Number and Mass Number",
-             "content": "Atomic number (Z): number of protons in the nucleus. This defines the element.\nMass number (A): total number of protons + neutrons.\nNumber of neutrons = mass number − atomic number.\nIsotopes: atoms of the same element with different numbers of neutrons.\nSame atomic number, different mass number."},
-            {"heading": "Development of the Atomic Model",
-             "content": "1800s — Dalton: solid sphere model (atoms are indivisible).\n1897 — J.J. Thomson: plum pudding model (electrons embedded in positive 'dough').\n1909 — Rutherford: nuclear model (gold foil experiment — most particles pass through → mostly empty space; few deflect → tiny dense positive nucleus).\n1913 — Bohr: electrons in fixed orbits (shells) at specific distances from nucleus.\nModern: quantum model — electrons in probability 'clouds' (not exact orbits)."}
-        ],
-        "variables": [],
-        "equations": ["Neutrons = Mass number − Atomic number"],
-        "common_mistake": "Mass number = protons + neutrons (NOT protons + electrons). Electrons have negligible mass. Also — isotopes have the SAME atomic number (same element) but DIFFERENT mass numbers (different neutron count).",
-        "key_note": "Atomic number = number of protons (and electrons in neutral atom). Mass number = protons + neutrons.",
-        "higher": None,
-        "triple_only": None,
-        "rp": None,
-        "matching": {
-            "title": "Match the Scientist to their Atomic Model",
-            "instruction": "Match each scientist to what they contributed.",
-            "pairs": [
-                ("Dalton", "Solid sphere — atoms are indivisible"),
-                ("J.J. Thomson", "Plum pudding — electrons in a positive 'dough'"),
-                ("Rutherford", "Nuclear model — gold foil experiment, tiny dense nucleus"),
-                ("Bohr", "Electrons in fixed shells/orbits"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "An atom has atomic number 8 and mass number 16. How many neutrons does it have?",
-             "opts": [("8", True), ("16", False), ("24", False), ("0", False)],
-             "wrong_explanations": {1: "That's the mass number, not neutrons. Neutrons = mass number − atomic number = 16 − 8 = 8.", 2: "You added them instead. Neutrons = A − Z = 16 − 8 = 8.", 3: "Don't forget neutrons exist! Neutrons = 16 − 8 = 8."}},
-            {"q": "Which subatomic particle defines the element?",
-             "opts": [("Proton (atomic number)", True), ("Neutron", False), ("Electron", False), ("Mass number", False)],
-             "wrong_explanations": {1: "Neutrons vary in isotopes — same element can have different neutron numbers.", 2: "Electron number varies when ions form — an oxygen ion still contains oxygen.", 3: "Mass number is not the same as atomic number — it includes neutrons too."}},
-            {"q": "What did Rutherford's gold foil experiment prove?",
-             "opts": [("Atoms have a tiny, dense, positive nucleus", True), ("Electrons orbit in fixed shells", False), ("Atoms are solid spheres", False), ("Protons and neutrons are made of quarks", False)],
-             "wrong_explanations": {1: "Fixed shells was Bohr's contribution, building on Rutherford's nuclear model.", 2: "Solid sphere was Dalton's model — Rutherford replaced it with the nuclear model.", 3: "Quarks were discovered much later by Gell-Mann (1960s) — nothing to do with Rutherford's experiment."}},
-            {"q": "Two atoms are isotopes. What do they have in common?",
-             "opts": [("Same number of protons (same element)", True), ("Same number of neutrons", False), ("Same mass number", False), ("Same number of electrons and neutrons", False)],
-             "wrong_explanations": {1: "Isotopes have DIFFERENT neutron numbers — that's the whole point.", 2: "Isotopes have DIFFERENT mass numbers — same protons, different total mass.", 3: "Isotopes are the same element so have the same protons, but different neutrons and therefore different mass numbers."}},
-            {"q": "In a neutral atom, what is true about protons and electrons?",
-             "opts": [("They are equal in number", True), ("There are more protons than electrons", False), ("There are more electrons than protons", False), ("The number is unrelated", False)],
-             "wrong_explanations": {1: "More protons than electrons → positive ion. Neutral means equal numbers.", 2: "More electrons than protons → negative ion. Neutral atom = equal numbers.", 3: "In a neutral atom, proton and electron counts are exactly equal — always."}}
-        ]
-    },
-    {
-        "id": "radioactive-decay",
-        "title": "Radioactive Decay — Alpha, Beta and Gamma",
-        "spec": "4.4.2",
-        "summary": "Describe the three types of radioactive decay and write nuclear equations.",
-        "theory": [
-            {"heading": "Why Atoms Decay",
-             "content": "An unstable nucleus has too many or too few neutrons relative to protons.\nIt decays by emitting radiation to become more stable.\nDecay is random — you cannot predict when any particular nucleus will decay.\nBut with large numbers of atoms, we can predict the average rate of decay."},
-            {"heading": "Alpha (α) Decay",
-             "content": "Alpha particle = 2 protons + 2 neutrons (helium-4 nucleus).\nMass number decreases by 4, atomic number decreases by 2.\nAlpha particles are heavily ionising — very dangerous if ingested or inhaled.\nBut stopped by a few centimetres of air or a sheet of paper.\nLeast penetrating radiation."},
-            {"heading": "Beta (β) Decay",
-             "content": "A neutron turns into a proton + electron (the beta particle is ejected).\nMass number stays the same, atomic number increases by 1.\nMore penetrating than alpha — stopped by a few mm of aluminium.\nModerately ionising.\nBeta-minus is most common at GCSE."},
-            {"heading": "Gamma (γ) Radiation",
-             "content": "Not a particle — a high-energy electromagnetic wave emitted from the nucleus.\nNo change to atomic number or mass number (just releases energy).\nMost penetrating — requires several cm of lead or metres of concrete to absorb.\nLeast ionising per unit distance (but dangerous over long exposure).\nOften emitted after alpha or beta decay to release excess energy."}
-        ],
-        "variables": [],
-        "equations": ["Alpha: A decreases by 4, Z decreases by 2", "Beta: A stays same, Z increases by 1"],
-        "common_mistake": "Alpha is the MOST ionising but LEAST penetrating. Gamma is LEAST ionising per unit distance but MOST penetrating. Students always mix these up — think 'alpha is a big heavy particle, blasts everything near it but can't travel far'.",
-        "key_note": "Alpha stopped by paper. Beta stopped by aluminium. Gamma reduced by thick lead/concrete.",
-        "higher": "Nuclear equations must balance: total mass number and total atomic number are the same on both sides. Beta-plus decay emits a positron (antimatter electron).",
-        "triple_only": None,
-        "rp": "RP6 — Radioactive decay simulation using dice (each die = one atom, rolling a 6 = decay event).",
-        "matching": {
-            "title": "Match the Radiation to its Properties",
-            "instruction": "Match each type of radiation to its key properties.",
-            "pairs": [
-                ("Alpha (α)", "2 protons + 2 neutrons, stopped by paper, most ionising"),
-                ("Beta (β)", "Fast electron, stopped by aluminium, moderate ionisation"),
-                ("Gamma (γ)", "EM wave, stopped by thick lead, least ionising per cm"),
-                ("Alpha (α)", "Reduces mass number by 4 and atomic number by 2"),
-                ("Beta (β)", "Atomic number increases by 1, mass number unchanged"),
-                ("Gamma (γ)", "No change to mass number or atomic number"),
-            ]
-        },
-        "fifas": [],
-        "quiz": [
-            {"q": "An alpha particle consists of — what?",
-             "opts": [("2 protons and 2 neutrons", True), ("1 proton and 1 neutron", False), ("2 electrons", False), ("1 proton and 2 neutrons", False)],
-             "wrong_explanations": {1: "1 proton + 1 neutron = deuterium nucleus — not an alpha particle.", 2: "2 electrons would be a negative particle — alpha particles are positively charged.", 3: "1 proton + 2 neutrons = tritium nucleus — not an alpha particle."}},
-            {"q": "Which radiation is stopped by a thin sheet of paper?",
-             "opts": [("Alpha", True), ("Beta", False), ("Gamma", False), ("All of them", False)],
-             "wrong_explanations": {1: "Beta needs a few mm of aluminium to stop it — paper isn't enough.", 2: "Gamma requires thick lead or metres of concrete — paper is completely useless against it.", 3: "Only alpha is stopped by paper. Beta needs aluminium, gamma needs lead."}},
-            {"q": "During beta decay, what happens to the atomic number?",
-             "opts": [("It increases by 1", True), ("It decreases by 2", False), ("It stays the same", False), ("It decreases by 1", False)],
-             "wrong_explanations": {1: "Decreasing by 2 is what happens in ALPHA decay.", 2: "Gamma decay doesn't change the atomic number at all.", 3: "Decreasing by 1 would happen in positron (beta-plus) decay — not beta-minus."}},
-            {"q": "Which type of radiation is an electromagnetic wave?",
-             "opts": [("Gamma", True), ("Alpha", False), ("Beta", False), ("All three", False)],
-             "wrong_explanations": {1: "Alpha is a helium nucleus — a particle, not an EM wave.", 2: "Beta is a fast electron — a particle, not an EM wave.", 3: "Only gamma is EM. Alpha and beta are particles."}},
-            {"q": "Which radiation is most ionising?",
-             "opts": [("Alpha", True), ("Beta", False), ("Gamma", False), ("They are all equally ionising", False)],
-             "wrong_explanations": {1: "Beta is moderately ionising — less than alpha because it's smaller and faster.", 2: "Gamma is least ionising per unit distance — it passes through without interacting much.", 3: "They have very different ionising abilities — alpha is most ionising because it's large and slow."}}
-        ]
-    },
-    {
-        "id": "half-life",
-        "title": "Half-Life",
-        "spec": "4.4.3",
-        "summary": "Use the concept of half-life to calculate activity and count rate.",
-        "theory": [
-            {"heading": "What is Half-Life?",
-             "content": "Half-life is the time it takes for half the radioactive nuclei in a sample to decay.\nOr: the time for the activity (or count rate) to halve.\nDecay is RANDOM — you can't predict which nucleus will decay next.\nBut with millions of atoms, the statistical average gives a very precise half-life.\nHalf-life is constant for a given isotope — it never changes."},
-            {"heading": "Calculating After Multiple Half-Lives",
-             "content": "After 1 half-life: ½ of original activity remains.\nAfter 2 half-lives: ¼ remains.\nAfter 3 half-lives: ⅛ remains.\nAfter n half-lives: (½)ⁿ of original remains.\nThe count rate (or activity or number of nuclei) all halve together."},
-            {"heading": "Uses of Radioactive Isotopes",
-             "content": "Carbon-14 dating: half-life 5,730 years — used to date organic materials up to ~50,000 years old.\nIodine-131: half-life 8 days — used in thyroid cancer treatment (short half-life = less long-term radiation risk).\nCobalt-60: half-life 5.3 years — used in cancer radiotherapy.\nAm-241: half-life 432 years — used in smoke detectors."},
-            {"heading": "Background Radiation",
-             "content": "Radiation is always present in the environment — this is background radiation.\nSources: radon gas from rocks (largest source in UK), cosmic rays, food and drink, medical procedures, nuclear industry.\nBackground radiation must be subtracted from measured count rates in experiments.\nMost background radiation is natural — only a small fraction comes from human activity."}
-        ],
-        "variables": [],
-        "equations": ["Activity after n half-lives = initial activity × (½)ⁿ"],
-        "common_mistake": "Half-life is the time to halve — NOT the time to fully decay. After 10 half-lives, there's still (½)¹⁰ = about 0.1% remaining. Also — always subtract background radiation from count rate before calculating half-life.",
-        "key_note": None,
-        "higher": "Activity A = decay constant λ × N (number of undecayed nuclei). A = λN. A is measured in Becquerels (Bq) = decays per second.",
-        "triple_only": None,
-        "rp": "RP6 — Simulate radioactive decay using dice. Start with 100 dice, remove any that show a 6 each roll. Plot count remaining vs rolls — gives a decay curve.",
-        "matching": None,
-        "fifas": [
-            {"label": "Example 1 — Count rate after half-lives",
-             "question": "A radioactive source has an initial count rate of 800 Bq and a half-life of 20 minutes. What is the count rate after 1 hour?",
-             "steps": [("F","Number of half-lives = total time ÷ half-life"), ("I","60 min ÷ 20 min = 3 half-lives. Count rate = 800 × (½)³ = 800 × ⅛"), ("F","No unit conversion needed"), ("A","Count rate = 100 Bq")]},
-            {"label": "Example 2 — Find half-life from graph",
-             "question": "A sample has activity 600 Bq at t=0 and 150 Bq at t=40 minutes. Find the half-life.",
-             "steps": [("F","Find how many halvings occurred: 600 → 300 → 150 = 2 halvings"), ("I","2 half-lives occurred in 40 minutes"), ("F","Half-life = 40 ÷ 2"), ("A","Half-life = 20 minutes")]}
-        ],
-        "quiz": [
-            {"q": "A sample has 1200 Bq activity and half-life of 10 s. What is the activity after 30 s?",
-             "opts": [("150 Bq", True), ("400 Bq", False), ("600 Bq", False), ("0 Bq", False)],
-             "wrong_explanations": {1: "You subtracted 30 from 1200. Use (½)ⁿ: 30s = 3 half-lives. 1200 × (½)³ = 1200 ÷ 8 = 150 Bq.", 2: "You halved only once. 30 s / 10 s = 3 half-lives. 1200 → 600 → 300 → 150 Bq.", 3: "Activity never reaches zero! After many half-lives it gets tiny but never disappears completely."}},
-            {"q": "What is background radiation?",
-             "opts": [("Low-level radiation always present in the environment from natural sources", True), ("Radiation left over from nuclear bomb tests only", False), ("Radiation emitted by background lighting", False), ("Radiation that comes from behind an object", False)],
-             "wrong_explanations": {1: "Nuclear bomb tests contribute a tiny fraction — most background radiation is natural (radon gas, cosmic rays, food).", 2: "Light is EM radiation but not 'background radiation' in the nuclear physics sense.", 3: "'Background' here means environmental — surrounding us at all times, from all directions."}},
-            {"q": "Why is carbon-14 used for dating organic materials?",
-             "opts": [("It has a half-life of ~5730 years — useful for dating materials thousands of years old", True), ("It decays into carbon-12, which is stable", False), ("It has a very short half-life", False), ("All living things contain equal amounts of carbon-14", False)],
-             "wrong_explanations": {1: "Carbon-14 decays into nitrogen-14 — not carbon-12.", 2: "A very short half-life (like minutes) would be useless for dating ancient materials.", 3: "Living things maintain a roughly constant C-14 level (absorbing it from food/air). When they die, C-14 decays with no replacement."}},
-            {"q": "Why is a short half-life preferred for medical tracers?",
-             "opts": [("Less long-term radiation exposure to the patient", True), ("Short half-life means more radiation is emitted", False), ("It is cheaper to produce", False), ("Short half-life tracers never decay inside the body", False)],
-             "wrong_explanations": {1: "Short half-life = decays quickly = brief intense dose then gone. More radiation means longer exposure — the opposite of what we want.", 2: "Production cost depends on enrichment process — half-life isn't the determining factor.", 3: "They absolutely do decay inside the body — that's the whole point of using them! The decay is what we detect."}},
-            {"q": "After 4 half-lives, what fraction of the original activity remains?",
-             "opts": [("1/16", True), ("1/4", False), ("1/8", False), ("1/2", False)],
-             "wrong_explanations": {1: "1/4 is after 2 half-lives (½ × ½ = ¼). After 4 half-lives: (½)⁴ = 1/16.", 2: "1/8 is after 3 half-lives. After 4: (½)⁴ = 1/16.", 3: "1/2 is after just 1 half-life. After 4: (½)⁴ = 1/16."}}
-        ]
-    },
-],
 }
