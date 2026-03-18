@@ -7367,7 +7367,7 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"using-resources": [{'common_mistake': 'Sustainable development does NOT mean stopping all industrial activity — it means developing in '
+"resources": [{'common_mistake': 'Sustainable development does NOT mean stopping all industrial activity — it means developing in '
                     'ways that preserve resources and environments for future generations. It balances economic, '
                     'environmental and social needs — not just environmental protection alone.',
   'equations': [],
