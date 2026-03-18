@@ -2,15 +2,15 @@
 """
 Physics subtopics — Combined Foundation
 AQA 8464 Physics spec 6.0
-IN PROGRESS
+COMPLETE — 50 subtopics
 
-  6.1 Energy            7  ✅
-  6.2 Electricity      10  ✅
-  6.3 Particle Model    6  ✅
-  6.4 Atomic Structure  (pending)
-  6.5 Forces            (pending)
-  6.6 Waves             (pending)
-  6.7 Magnetism         (pending)
+  6.1 Energy            7   subtopics ✅
+  6.2 Electricity      10   subtopics ✅
+  6.3 Particle Model    6   subtopics ✅
+  6.4 Atomic Structure  7   subtopics ✅
+  6.5 Forces           11   subtopics ✅
+  6.6 Waves             6   subtopics ✅
+  6.7 Magnetism         3   subtopics ✅
 """
 
 PHYSICS_COLOR = "#4ECDC4"
@@ -2414,5 +2414,2906 @@ PHYSICS_SUBTOPICS_ALL = {
                 ('V', 'Volume', 'm³', 'm³'),
                 ('T', 'Temperature', 'kelvin', 'K'),
                 ('Ek', 'Average kinetic energy', 'joules', 'J')]}],
+
+"atomic-structure": [{'common_mistake': 'The nucleus contains protons AND neutrons — NOT electrons. Electrons orbit the nucleus in shells. '
+                    'The mass of an atom comes almost entirely from the nucleus (protons + neutrons) — electron mass '
+                    'is negligible.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'structure-of-atom',
+  'key_note': 'Atom: nucleus (protons + neutrons) + electrons in shells. Proton: +1, mass 1. Neutron: 0, mass 1. '
+              'Electron: −1, negligible mass. Protons = electrons in neutral atom. Nuclear radius ≈ 1/10,000 atomic '
+              'radius — mostly empty space. Shells: 2, 8, 8...',
+  'matching': {'instruction': 'Match each particle to its charge, mass and location.',
+               'pairs': [('Proton', 'Charge +1, mass 1 amu, found in the nucleus'),
+                         ('Neutron', 'Charge 0, mass 1 amu, found in the nucleus'),
+                         ('Electron', 'Charge −1, negligible mass, found in shells around the nucleus'),
+                         ('Nucleus',
+                          "Contains protons and neutrons — radius ~1/10,000 of the atom — most of atom's mass")],
+               'title': 'Subatomic Particles'},
+  'quiz': [{'opts': [('In the nucleus — protons and neutrons make up almost all the atomic mass; electrons are '
+                      'negligible',
+                      True),
+                     ('In the electron shells — electrons are the most numerous particles', False),
+                     ('Evenly spread throughout the atom — mass is uniformly distributed', False),
+                     ('On the outer electron shell — outermost electrons carry most of the mass', False)],
+            'q': 'Where is most of the mass of an atom concentrated?',
+            'wrong_explanations': {1: 'There are often as many electrons as protons, but each electron weighs ~1/1836 '
+                                      'of a proton — their combined mass is negligible.',
+                                   2: 'Mass is concentrated in the tiny nucleus — the rest of the atom is mostly empty '
+                                      'space.',
+                                   3: 'Outer electrons have even less mass than inner ones — all electron mass is '
+                                      'negligible.'}},
+           {'opts': [('8 — neutral atoms always have equal numbers of protons and electrons', True),
+                     ('16 — electrons come in pairs so there are twice as many', False),
+                     ('4 — only half the protons are balanced by electrons', False),
+                     ('0 — electrons are not part of the neutral atom', False)],
+            'q': 'A neutral atom has 8 protons. How many electrons does it have?',
+            'wrong_explanations': {1: "Electrons don't automatically pair — the number equals the number of protons "
+                                      'for charge balance.',
+                                   2: 'Only half the protons balanced would give the atom a net positive charge — '
+                                      'neutral means equal numbers.',
+                                   3: 'Electrons are an essential part of every atom — removing them creates a '
+                                      'positive ion, not a neutral atom.'}}],
+  'rp': None,
+  'spec': '6.4.1.1',
+  'summary': 'Describe the structure of an atom including the nucleus, protons, neutrons and electrons.',
+  'theory': [{'content': 'Atoms are extremely small — radius approximately 1 × 10⁻¹⁰ m (0.1 nanometres).\n'
+                         '\n'
+                         'Structure:\n'
+                         'NUCLEUS at the centre — contains PROTONS and NEUTRONS.\n'
+                         'ELECTRONS orbit the nucleus at different distances (energy levels/shells).\n'
+                         '\n'
+                         'The nucleus is tiny compared to the whole atom:\n'
+                         'Nuclear radius ≈ 1/10,000 of the atomic radius.\n'
+                         'Most of the atom is empty space.\n'
+                         '\n'
+                         'SIZE COMPARISON:\n'
+                         'Atomic radius: ~1 × 10⁻¹⁰ m\n'
+                         'Nuclear radius: ~1 × 10⁻¹⁴ m\n'
+                         'If the nucleus were the size of a football (30 cm), the atom would be ~3 km across.',
+              'heading': 'Inside the Atom'},
+             {'content': 'Three subatomic particles:\n'
+                         '\n'
+                         'PROTON:\n'
+                         'Mass: 1 atomic mass unit (amu)\n'
+                         'Charge: +1\n'
+                         'Location: nucleus\n'
+                         '\n'
+                         'NEUTRON:\n'
+                         'Mass: 1 amu\n'
+                         'Charge: 0 (neutral)\n'
+                         'Location: nucleus\n'
+                         '\n'
+                         'ELECTRON:\n'
+                         'Mass: approximately 1/1836 amu (negligible)\n'
+                         'Charge: −1\n'
+                         'Location: shells (energy levels) around the nucleus\n'
+                         '\n'
+                         'OVERALL CHARGE:\n'
+                         'Number of protons = number of electrons in a neutral atom.\n'
+                         'Positive protons balanced by negative electrons → atom has no overall charge.\n'
+                         '\n'
+                         'MASS:\n'
+                         'Almost all the mass is in the nucleus (protons + neutrons).\n'
+                         'Electron mass is negligible.',
+              'heading': 'Properties of Subatomic Particles'},
+             {'content': 'Electrons occupy SHELLS (energy levels) at different distances from the nucleus.\n'
+                         '\n'
+                         'Shells fill from the innermost outwards:\n'
+                         'Shell 1 (closest to nucleus): maximum 2 electrons\n'
+                         'Shell 2: maximum 8 electrons\n'
+                         'Shell 3: maximum 8 electrons (for elements 1–20)\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Hydrogen (1 proton, 1 electron): 1 shell — 1 electron in shell 1\n'
+                         'Carbon (6 protons, 6 electrons): 2 shells — 2 in shell 1, 4 in shell 2\n'
+                         'Sodium (11 protons, 11 electrons): 3 shells — 2, 8, 1\n'
+                         '\n'
+                         'ELECTRONS AND CHEMISTRY:\n'
+                         "The arrangement of electrons determines an element's chemical properties.\n"
+                         'Outer shell electrons are involved in chemical bonding.\n'
+                         'Elements in the same group of the periodic table have the same number of outer shell '
+                         'electrons.\n'
+                         '\n'
+                         'When an electron ABSORBS energy it moves to a higher shell (further from nucleus).\n'
+                         'When it releases energy it moves to a lower shell — emitting radiation (light or other EM '
+                         'waves).',
+              'heading': 'Electron Shells and Energy Levels'}],
+  'title': 'The Structure of an Atom',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Mass number is protons + NEUTRONS — not protons alone. To find neutrons: subtract atomic number '
+                    'FROM mass number. Isotopes have the same atomic number (same element) but different mass numbers '
+                    '(different neutron counts).',
+  'equations': ['Number of neutrons = mass number − atomic number'],
+  'fifas': [{'label': 'Particle Counts',
+             'question': 'An atom has nuclear notation ³⁵₁₇Cl. How many protons, neutrons and electrons does it have?',
+             'steps': [('F', 'Protons = atomic number (Z); Neutrons = A − Z; Electrons = protons (neutral atom)'),
+                       ('I', 'A = 35, Z = 17'),
+                       ('F', 'Protons = 17; Neutrons = 35 − 17 = 18; Electrons = 17'),
+                       ('A', '17 protons, 18 neutrons, 17 electrons')]}],
+  'higher': None,
+  'id': 'mass-number-isotopes',
+  'key_note': 'Atomic number (Z) = protons. Mass number (A) = protons + neutrons. Neutrons = A − Z. Isotopes: same Z, '
+              'different A (different neutron count). Same chemical properties, different physical. Some isotopes '
+              'radioactive. Ions: gain/lose electrons — mass number unchanged.',
+  'matching': {'instruction': 'Match each nucleus to its correct particle count.',
+               'pairs': [('¹²₆C', '6 protons, 6 neutrons, 6 electrons (neutral atom)'),
+                         ('²³₁₁Na', '11 protons, 12 neutrons, 11 electrons (neutral atom)'),
+                         ('¹⁴C (isotope of ¹²C)', '6 protons, 8 neutrons — same element, different neutron count'),
+                         ('Na⁺ ion', '11 protons, 10 electrons — lost 1 electron, charge +1')],
+               'title': 'Nuclear Notation'},
+  'quiz': [{'opts': [('18 — neutrons = mass number − atomic number = 35 − 17 = 18', True),
+                     ('35 — the mass number equals the neutron number', False),
+                     ('17 — same as the proton number', False),
+                     ('52 — neutrons = mass number + atomic number = 35 + 17', False)],
+            'q': 'An atom has 17 protons and mass number 35. How many neutrons does it have?',
+            'wrong_explanations': {1: 'Mass number = protons + neutrons. So neutrons = 35 − 17 = 18. The mass number '
+                                      'is NOT just neutrons.',
+                                   2: 'Neutrons = proton number only when A = 2Z, which is not always the case.',
+                                   3: 'Neutrons = A − Z = 35 − 17 = 18, not 35 + 17.'}},
+           {'opts': [('Isotopes — same element (same protons), different neutron count (different mass numbers)', True),
+                     ('Different elements — different mass numbers mean different elements', False),
+                     ('Ions — they have gained or lost electrons', False),
+                     ('Allotropes — different structural forms of the same element', False)],
+            'q': 'Two atoms have the same atomic number but different mass numbers. What are they?',
+            'wrong_explanations': {1: 'ATOMIC NUMBER defines the element — not mass number. Same atomic number = same '
+                                      'element = isotopes.',
+                                   2: 'Ions differ in electron count — mass number and atomic number are unchanged '
+                                      'when ions form.',
+                                   3: 'Allotropes (like diamond and graphite) are different structural arrangements of '
+                                      'atoms — not related to atomic/mass numbers.'}}],
+  'rp': None,
+  'spec': '6.4.1.2',
+  'summary': 'Define atomic number, mass number and isotopes and interpret nuclear notation.',
+  'theory': [{'content': 'ATOMIC NUMBER (Z) = number of PROTONS in the nucleus.\n'
+                         'Defines the element — all atoms of the same element have the same atomic number.\n'
+                         'In a neutral atom: atomic number = number of electrons.\n'
+                         '\n'
+                         'MASS NUMBER (A) = total number of PROTONS + NEUTRONS.\n'
+                         'Also called nucleon number.\n'
+                         'Number of neutrons = mass number − atomic number = A − Z\n'
+                         '\n'
+                         'NUCLEAR NOTATION:\n'
+                         '₍Z₎A X\n'
+                         'Where X = element symbol, A = mass number (top), Z = atomic number (bottom).\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         '¹²₆C — carbon: 6 protons, 6 neutrons, 6 electrons\n'
+                         '²³₁₁Na — sodium: 11 protons, 12 neutrons, 11 electrons\n'
+                         '²³⁵₉₂U — uranium: 92 protons, 143 neutrons, 92 electrons',
+              'heading': 'Atomic Number and Mass Number'},
+             {'content': 'ISOTOPES are atoms of the same element with the SAME atomic number but DIFFERENT mass '
+                         'numbers.\n'
+                         '\n'
+                         'Same element → same number of protons.\n'
+                         'Different mass numbers → different numbers of NEUTRONS.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Carbon isotopes:\n'
+                         '¹²C — 6 protons, 6 neutrons (most common, stable)\n'
+                         '¹³C — 6 protons, 7 neutrons (stable, rare)\n'
+                         '¹⁴C — 6 protons, 8 neutrons (radioactive — used in carbon dating)\n'
+                         '\n'
+                         'Hydrogen isotopes:\n'
+                         '¹H — 1 proton, 0 neutrons (protium — most common)\n'
+                         '²H — 1 proton, 1 neutron (deuterium)\n'
+                         '³H — 1 proton, 2 neutrons (tritium — radioactive)\n'
+                         '\n'
+                         'CHEMICAL PROPERTIES:\n'
+                         'Isotopes of the same element have the SAME chemical properties — same electron arrangement.\n'
+                         'Physical properties differ slightly (different mass → different density, melting point '
+                         'etc.).\n'
+                         '\n'
+                         'SOME ISOTOPES ARE RADIOACTIVE (unstable nucleus) — they undergo radioactive decay.',
+              'heading': 'Isotopes'},
+             {'content': 'When atoms GAIN or LOSE electrons they become IONS.\n'
+                         '\n'
+                         'POSITIVE ION (CATION): loses electrons → more protons than electrons → positive charge.\n'
+                         'NEGATIVE ION (ANION): gains electrons → more electrons than protons → negative charge.\n'
+                         '\n'
+                         'Example:\n'
+                         'Sodium atom ²³₁₁Na: 11 protons, 11 electrons — neutral.\n'
+                         'Sodium ion Na⁺: 11 protons, 10 electrons — lost 1 electron → charge +1.\n'
+                         '\n'
+                         'Fluorine atom ¹⁹₉F: 9 protons, 9 electrons — neutral.\n'
+                         'Fluoride ion F⁻: 9 protons, 10 electrons — gained 1 electron → charge −1.\n'
+                         '\n'
+                         'Note: NUCLEAR NOTATION and mass number / atomic number are NOT changed by ion formation — '
+                         'only the electron count changes.',
+              'heading': 'Ions'}],
+  'title': 'Mass Number, Atomic Number and Isotopes',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'The alpha scattering experiment DISPROVED the plum pudding model — it did NOT confirm it. The '
+                    'fact that MOST particles passed straight through shows atoms are mostly empty space. The FEW that '
+                    'bounced back showed the nucleus is small and dense.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'development-atomic-model',
+  'key_note': 'Solid sphere → plum pudding (Thomson, electrons discovered) → nuclear model (Rutherford, alpha '
+              'scattering). Alpha scattering: most pass through (empty space), few bounce back (small dense positive '
+              'nucleus). Bohr: electrons in fixed shells. Chadwick: neutron discovered 1932.',
+  'matching': {'instruction': 'Match each model or discovery to the evidence that led to it.',
+               'pairs': [('Solid sphere model abandoned',
+                          'Discovery of the electron — atoms have internal structure, can be divided'),
+                         ('Plum pudding model proposed',
+                          'Electrons discovered — atom must be positive sphere with embedded electrons'),
+                         ('Plum pudding model disproved',
+                          'Alpha particle scattering — few particles bounced back, showing small dense nucleus'),
+                         ('Nuclear model accepted',
+                          'Most particles pass through (empty space) + few bounce back (small dense positive nucleus)'),
+                         ('Electrons in fixed shells',
+                          'Bohr model — explains discrete emission spectra and stable electron orbits')],
+               'title': 'Atomic Model Timeline'},
+  'quiz': [{'opts': [('The atom is mostly empty space — alpha particles encounter nothing to deflect them', True),
+                     ('Alpha particles are too fast to be deflected — their speed carries them through', False),
+                     ('Gold atoms have no charge — nothing to repel the positive alpha particles', False),
+                     ('The gold foil was too thin — a thicker foil would have deflected all particles', False)],
+            'q': "In Rutherford's alpha scattering experiment, most alpha particles passed straight through the gold "
+                 'foil. What does this tell us?',
+            'wrong_explanations': {1: 'Speed could be reduced by using slower particles — the KEY conclusion is about '
+                                      'structure, not speed.',
+                                   2: 'The FEW particles that DID deflect show gold nuclei ARE positively charged — '
+                                      'most pass through the empty space.',
+                                   3: 'Thicker foil would increase the probability of deflection, but the fundamental '
+                                      'conclusion — mostly empty space — remains.'}},
+           {'opts': [('The plum pudding model predicted only small deflections — the large deflections and '
+                      'back-scattering showed the positive charge must be concentrated in a tiny nucleus',
+                      True),
+                     ('The plum pudding model predicted all particles would bounce back — but most passed through',
+                      False),
+                     ('The plum pudding model had no electrons — but the experiment detected electrons', False),
+                     ('The plum pudding model was proposed after the scattering experiment', False)],
+            'q': 'Why did the results of alpha scattering disprove the plum pudding model?',
+            'wrong_explanations': {1: 'The plum pudding model predicted most particles would PASS THROUGH or have '
+                                      'SMALL deflections (spread-out positive charge) — NOT that all would bounce '
+                                      'back.',
+                                   2: 'The plum pudding model DID include electrons — Thomson discovered them and '
+                                      'built them into the model.',
+                                   3: "Thomson proposed the plum pudding model in 1904 — BEFORE Rutherford's 1909 "
+                                      'scattering experiment.'}}],
+  'rp': None,
+  'spec': '6.4.1.3',
+  'summary': 'Describe how the model of the atom developed from solid sphere to nuclear model.',
+  'theory': [{'content': 'Before the late 1800s, atoms were thought to be TINY SOLID SPHERES that could not be divided '
+                         '— the smallest possible particles of matter.\n'
+                         '\n'
+                         "This model had no internal structure — atoms were indivisible 'billiard balls'.\n"
+                         '\n'
+                         'This model was replaced when ELECTRONS were discovered.\n'
+                         '\n'
+                         'DISCOVERY OF THE ELECTRON (J.J. Thomson, 1897):\n'
+                         'Thomson used cathode rays — beams of particles deflected by electric and magnetic fields.\n'
+                         'The particles (electrons) were the same regardless of the cathode material → electrons are '
+                         'part of all atoms.\n'
+                         'Electrons have negative charge and very small mass.\n'
+                         '\n'
+                         'This proved atoms CAN be divided — they have internal structure.\n'
+                         'The solid sphere model was abandoned.',
+              'heading': 'The Solid Sphere Model'},
+             {'content': "After Thomson's discovery, he proposed the PLUM PUDDING MODEL:\n"
+                         "The atom is a BALL OF POSITIVE CHARGE (the 'pudding').\n"
+                         "NEGATIVE ELECTRONS are embedded within it (the 'plums').\n"
+                         'The overall charge is neutral.\n'
+                         '\n'
+                         'This seemed reasonable — it explained that atoms have electrons but are overall neutral.\n'
+                         '\n'
+                         'However, this model was soon disproved by an important experiment.\n'
+                         '\n'
+                         "RUTHERFORD'S ALPHA PARTICLE SCATTERING EXPERIMENT (1909, Geiger and Marsden):\n"
+                         'Alpha particles fired at a very thin gold foil.\n'
+                         'Expected result (plum pudding): all alpha particles would pass straight through or deflect '
+                         'only slightly (spread-out positive charge).\n'
+                         'Actual result: MOST passed straight through; a SMALL NUMBER deflected through large angles; '
+                         'a VERY FEW bounced back almost 180°.\n'
+                         '\n'
+                         "Rutherford's famous quote: 'It was as if you fired a 15-inch shell at tissue paper and it "
+                         "came back and hit you.'",
+              'heading': 'The Plum Pudding Model'},
+             {'content': 'The scattering results led to the NUCLEAR MODEL (Rutherford, 1911):\n'
+                         '\n'
+                         'Conclusions from the experiment:\n'
+                         'MOST particles passed straight through → atom is MOSTLY EMPTY SPACE.\n'
+                         'SOME deflected through large angles → there is a concentrated region of POSITIVE CHARGE.\n'
+                         'VERY FEW bounced back → the positive charge is very SMALL and very DENSE.\n'
+                         '\n'
+                         'The NUCLEAR MODEL:\n'
+                         'Small, dense, positively charged NUCLEUS at the centre.\n'
+                         'Electrons orbit the nucleus at relatively large distances.\n'
+                         'Most of the atom is empty space.\n'
+                         '\n'
+                         'FURTHER DEVELOPMENTS:\n'
+                         "Bohr (1913): electrons orbit in fixed shells (energy levels) — explains why atoms don't "
+                         'collapse and why emission spectra have discrete lines.\n'
+                         'Chadwick (1932): discovered the NEUTRON — explained why nuclei are heavier than just protons '
+                         'alone.\n'
+                         '\n'
+                         'SCIENCE PRINCIPLE:\n'
+                         'New experimental evidence leads to models being changed or replaced.\n'
+                         'The atomic model changed as new evidence emerged — showing how science is self-correcting.',
+              'heading': 'The Nuclear Model'}],
+  'title': 'Development of the Model of the Atom',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Alpha is the MOST ionising but LEAST penetrating. Gamma is the LEAST ionising per path length but '
+                    'MOST penetrating. These are often confused. Alpha is most dangerous INSIDE the body; gamma is '
+                    'most dangerous OUTSIDE the body.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'radioactive-decay',
+  'key_note': 'α: helium nucleus (+2), stopped by paper, most ionising. β: fast electron (−1), stopped by aluminium, '
+              'moderate. γ: EM wave (0 charge), needs lead/concrete, least ionising per path. Activity in Bq. Decay is '
+              'random. Uses: smoke detectors (α), thickness gauges (β), cancer treatment/sterilisation (γ).',
+  'matching': {'instruction': 'Match each radiation type to its composition, penetration and use.',
+               'pairs': [('Alpha (α)', 'Helium nucleus — stopped by paper — used in smoke detectors'),
+                         ('Beta (β)', 'Fast electron — stopped by aluminium — used in paper thickness monitoring'),
+                         ('Gamma (γ)', 'EM wave — needs lead/concrete — used in cancer radiotherapy and sterilisation'),
+                         ('Most ionising', 'Alpha radiation — causes most ion pairs per cm of path'),
+                         ('Most penetrating',
+                          'Gamma radiation — passes through most materials, needs lead/concrete shielding')],
+               'title': 'Radiation Properties'},
+  'quiz': [{'opts': [('Alpha is highly ionising — it causes dense ionisation damage to nearby cells and cannot escape '
+                      'the body to be detected',
+                      True),
+                     ('Alpha has the highest energy of all three types — more energy means more damage', False),
+                     ('Alpha moves fastest — it collides more often with cells', False),
+                     ('Alpha is most penetrating — it reaches all organs from a single source', False)],
+            'q': 'Why is alpha radiation the most dangerous type when a source is inside the body?',
+            'wrong_explanations': {1: 'Alpha does not have the highest energy — gamma photons have very high energies '
+                                      'too. The danger is from DENSE IONISATION in a small area.',
+                                   2: 'Alpha is actually the SLOWEST of the three — and its high mass means it '
+                                      'interacts strongly with matter.',
+                                   3: "Alpha is the LEAST penetrating — stopped by a few cm of air. That's exactly why "
+                                      "it's so dangerous inside the body — all ionisation is deposited nearby."}},
+           {'opts': [('340 nuclei in the source are decaying every second, each emitting radiation', True),
+                     ('The source has 340 radioactive atoms remaining in total', False),
+                     ('The source emits 340 joules of energy every second', False),
+                     ('The source has been decaying for 340 seconds', False)],
+            'q': 'A Geiger counter measures 340 Bq from a radioactive source. What does this mean?',
+            'wrong_explanations': {1: 'Activity = total number of radioactive atoms remaining, not the rate. Bq '
+                                      'measures the RATE of decay (per second).',
+                                   2: 'Bq measures rate in decays per second — not joules. Energy per decay is '
+                                      'measured in eV or joules, not Bq.',
+                                   3: 'Bq is a rate (per second) — not a duration.'}}],
+  'rp': None,
+  'spec': '6.4.2.1',
+  'summary': 'Describe alpha, beta and gamma radiation, their properties and uses and dangers.',
+  'theory': [{'content': 'Some atomic nuclei are UNSTABLE — they spontaneously emit radiation to become more stable.\n'
+                         'This is RADIOACTIVE DECAY — a RANDOM process (cannot predict exactly when any nucleus will '
+                         'decay).\n'
+                         '\n'
+                         'ACTIVITY: the rate at which a source decays — measured in BECQUEREL (Bq).\n'
+                         '1 Bq = 1 decay per second.\n'
+                         '\n'
+                         'COUNT RATE: decays recorded per second by a detector (e.g. Geiger-Müller tube).\n'
+                         '\n'
+                         'Three main types of nuclear radiation:\n'
+                         'ALPHA (α) — helium nucleus (2 protons + 2 neutrons)\n'
+                         'BETA (β) — fast electron from the nucleus\n'
+                         'GAMMA (γ) — high-energy electromagnetic wave',
+              'heading': 'Radioactive Decay'},
+             {'content': 'ALPHA (α):\n'
+                         'Composition: 2 protons + 2 neutrons (helium-4 nucleus, ⁴₂He)\n'
+                         'Charge: +2\n'
+                         'Mass: 4 amu\n'
+                         'Range in air: a few centimetres\n'
+                         'Penetration: stopped by a few cm of air, or paper, or skin\n'
+                         'Ionisation: STRONGLY ionising — causes most damage to nearby cells\n'
+                         '\n'
+                         'BETA (β):\n'
+                         'Composition: fast-moving electron (⁰₋₁e)\n'
+                         'Charge: −1\n'
+                         'Mass: negligible\n'
+                         'Range in air: a few metres\n'
+                         'Penetration: stopped by a few mm of aluminium\n'
+                         'Ionisation: moderately ionising\n'
+                         '\n'
+                         'GAMMA (γ):\n'
+                         'Composition: high-energy electromagnetic wave (photon)\n'
+                         'Charge: 0\n'
+                         'Mass: 0\n'
+                         'Range in air: effectively unlimited\n'
+                         'Penetration: reduced by several cm of lead or metres of concrete\n'
+                         'Ionisation: weakly ionising per unit path\n'
+                         '\n'
+                         'DETECTION: Geiger-Müller tube connected to a counter.',
+              'heading': 'Properties of Alpha, Beta and Gamma'},
+             {'content': 'USES:\n'
+                         'ALPHA — smoke detectors: alpha source ionises air → current flows → alarm triggers when '
+                         'smoke absorbs alpha and current drops.\n'
+                         'BETA — paper thickness monitoring: beta passes through paper; more absorbed = thicker paper '
+                         '→ adjust rollers.\n'
+                         'GAMMA — medical imaging (gamma cameras), cancer treatment (radiotherapy), sterilising '
+                         'medical equipment, food irradiation.\n'
+                         'GAMMA/BETA — industrial thickness gauges, pipeline fault detection.\n'
+                         '\n'
+                         'DANGERS:\n'
+                         'All ionising radiation damages living cells by ionising molecules in DNA → mutations → '
+                         'cancer.\n'
+                         'HIGH DOSE → cell death → radiation sickness.\n'
+                         "ALPHA: most dangerous INSIDE the body (highly ionising, can't escape). Safe outside the body "
+                         '(stopped by skin).\n'
+                         'GAMMA: most dangerous OUTSIDE the body (penetrates to internal organs). Less ionising per '
+                         'path length.\n'
+                         'BETA: intermediate — penetrates skin, absorbed by soft tissue.\n'
+                         '\n'
+                         'PROTECTION:\n'
+                         'Distance — inverse square law applies (intensity decreases with distance).\n'
+                         'Shielding — appropriate materials (paper for alpha, aluminium for beta, lead for gamma).\n'
+                         'Time — minimise exposure duration.\n'
+                         'Monitoring — dosimeters worn by radiation workers.',
+              'heading': 'Uses and Dangers of Nuclear Radiation'}],
+  'title': 'Radioactive Decay and Nuclear Radiation',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'In beta decay, the MASS NUMBER stays the same — a neutron turns into a proton plus an electron. '
+                    'The atomic number INCREASES by 1 (one more proton). Students often think beta decay is like alpha '
+                    'and reduces mass number.',
+  'equations': ['Alpha decay: A decreases by 4, Z decreases by 2',
+                'Beta decay: A unchanged, Z increases by 1',
+                'Gamma: no change to A or Z'],
+  'fifas': [{'label': 'Alpha Decay Equation',
+             'question': 'Write the nuclear equation for alpha decay of ²²⁶₈₈Ra (radium).',
+             'steps': [('F', 'Alpha decay: A decreases by 4, Z decreases by 2. Product + ⁴₂He'),
+                       ('I', 'A = 226 − 4 = 222; Z = 88 − 2 = 86. Z=86 is radon (Rn)'),
+                       ('F', '²²⁶₈₈Ra → ²²²₈₆Rn + ⁴₂He'),
+                       ('A', '²²⁶₈₈Ra → ²²²₈₆Rn + ⁴₂He  (check: 226 = 222+4 ✓; 88 = 86+2 ✓)')]}],
+  'higher': None,
+  'id': 'nuclear-equations',
+  'key_note': 'Nuclear equations: mass numbers and atomic numbers must balance on both sides. Alpha (⁴₂He): A−4, Z−2. '
+              'Beta (⁰₋₁e): A same, Z+1. Gamma (γ): no change. New element formed in alpha and beta (different Z). '
+              'Always verify balance.',
+  'matching': {'instruction': 'Match each decay type to the change in mass number and atomic number.',
+               'pairs': [('Alpha decay', 'Mass number −4, atomic number −2 — new element two places lower'),
+                         ('Beta decay', 'Mass number unchanged, atomic number +1 — new element one place higher'),
+                         ('Gamma emission',
+                          'No change to mass number or atomic number — same element, energy released'),
+                         ('Beta particle', '⁰₋₁e — electron emitted from nucleus when neutron converts to proton')],
+               'title': 'Nuclear Equation Changes'},
+  'quiz': [{'opts': [('²³⁴₉₁Pa (protactinium) — mass number unchanged, atomic number increases by 1', True),
+                     ('²³⁰₈₈Ra (radium) — mass number decreases by 4, atomic number decreases by 2', False),
+                     ('²³⁴₈₉Ac (actinium) — atomic number decreases by 1', False),
+                     ('²³⁸₉₂U (uranium) — mass number increases', False)],
+            'q': 'Thorium-234 (²³⁴₉₀Th) undergoes beta decay. What is the daughter nucleus?',
+            'wrong_explanations': {1: 'That describes ALPHA decay (A−4, Z−2) — not beta decay.',
+                                   2: 'Beta decay INCREASES atomic number by 1 — not decreases it.',
+                                   3: "Beta decay doesn't increase mass number — it is always unchanged. Z goes from "
+                                      '90 to 91.'}},
+           {'opts': [('234 — 238 − 4 = 234 (alpha carries away mass number 4)', True),
+                     ('236 — 238 − 2 = 236 (subtracting atomic number instead of mass number)', False),
+                     ('242 — 238 + 4 = 242 (added instead of subtracted)', False),
+                     ("238 — mass number doesn't change in alpha decay", False)],
+            'q': 'In a nuclear equation, the mass numbers on both sides must balance. A nucleus of ²³⁸₉₂U emits an '
+                 'alpha particle. What is the mass number of the daughter nucleus?',
+            'wrong_explanations': {1: 'The 2 from the atomic number change is subtracted from the bottom number — '
+                                      'alpha takes away mass number 4 and atomic number 2.',
+                                   2: 'Mass number cannot increase in alpha decay — the alpha particle carries 4 units '
+                                      'of mass number away.',
+                                   3: 'Mass number DOES change in alpha decay — it decreases by 4.'}}],
+  'rp': None,
+  'spec': '6.4.2.2',
+  'summary': 'Write and balance nuclear equations for alpha and beta decay.',
+  'theory': [{'content': 'Nuclear equations show radioactive decay using nuclear notation.\n'
+                         '\n'
+                         'Rules for BALANCING nuclear equations:\n'
+                         'MASS NUMBERS must balance — top numbers sum the same on both sides.\n'
+                         'ATOMIC NUMBERS must balance — bottom numbers sum the same on both sides.\n'
+                         '\n'
+                         'ALPHA PARTICLE symbol: ⁴₂He (or ⁴₂α)\n'
+                         'BETA PARTICLE symbol: ⁰₋₁e (or ⁰₋₁β)\n'
+                         'GAMMA RAY: represented by γ — no change to mass or atomic number\n'
+                         '\n'
+                         'Alpha decay:\n'
+                         'Parent nucleus → daughter nucleus + alpha particle\n'
+                         'Mass number decreases by 4. Atomic number decreases by 2.\n'
+                         '\n'
+                         'Beta decay:\n'
+                         'Parent nucleus → daughter nucleus + beta particle\n'
+                         'A neutron becomes a proton + electron: ¹₀n → ¹₁p + ⁰₋₁e\n'
+                         'Mass number unchanged. Atomic number increases by 1.',
+              'heading': 'Writing Nuclear Equations'},
+             {'content': 'ALPHA DECAY EXAMPLE:\n'
+                         'Radium-226 decays by alpha emission:\n'
+                         '²²⁶₈₈Ra → ²²²₈₆Rn + ⁴₂He\n'
+                         'Check: mass numbers: 226 = 222 + 4 ✓\n'
+                         'Atomic numbers: 88 = 86 + 2 ✓\n'
+                         'Radium (88) → Radon (86) — atomic number decreases by 2, so element changes.\n'
+                         '\n'
+                         'BETA DECAY EXAMPLE:\n'
+                         'Carbon-14 decays by beta emission:\n'
+                         '¹⁴₆C → ¹⁴₇N + ⁰₋₁e\n'
+                         'Check: mass numbers: 14 = 14 + 0 ✓\n'
+                         'Atomic numbers: 6 = 7 + (−1) ✓\n'
+                         'Carbon (6) → Nitrogen (7) — atomic number increases by 1.\n'
+                         '\n'
+                         'GAMMA EMISSION:\n'
+                         'Often follows alpha or beta decay — nucleus releases excess energy as gamma ray.\n'
+                         'No change to mass number or atomic number.\n'
+                         'No separate nuclear equation needed — just add + γ.',
+              'heading': 'Alpha and Beta Decay Examples'},
+             {'content': 'ALPHA DECAY:\n'
+                         'Mass number: decreases by 4\n'
+                         'Atomic number: decreases by 2\n'
+                         'Result: new element (two places lower in periodic table)\n'
+                         '\n'
+                         'BETA DECAY:\n'
+                         'Mass number: unchanged (a neutron converts to a proton + electron)\n'
+                         'Atomic number: increases by 1\n'
+                         'Result: new element (one place higher in periodic table)\n'
+                         '\n'
+                         'GAMMA EMISSION:\n'
+                         'Mass number: unchanged\n'
+                         'Atomic number: unchanged\n'
+                         'Result: same element, just releases energy\n'
+                         '\n'
+                         'PATTERN TO REMEMBER:\n'
+                         'Alpha → lose 4 mass, lose 2 charge\n'
+                         'Beta → same mass, gain 1 charge\n'
+                         'Gamma → no change to nucleus\n'
+                         '\n'
+                         'EXAM STRATEGY:\n'
+                         'Always check both mass AND atomic numbers balance.\n'
+                         'Use the periodic table to identify the daughter element from its new atomic number.',
+              'heading': 'Effect on the Nucleus'}],
+  'title': 'Nuclear Equations',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'After each half-life, the activity halves AGAIN from its current value — not from the original. '
+                    'After 3 half-lives starting at 1000 Bq: 500 → 250 → 125 Bq. Also: background radiation must be '
+                    'subtracted before half-life calculations.',
+  'equations': ['After n half-lives: fraction remaining = (½)ⁿ'],
+  'fifas': [{'label': 'Half-Life Calculation',
+             'question': 'A source has initial activity 960 Bq. Its half-life is 3 hours. What is the activity after '
+                         '12 hours?',
+             'steps': [('F', 'Number of half-lives = total time ÷ half-life; remaining = initial × (½)ⁿ'),
+                       ('I', 'n = 12 ÷ 3 = 4 half-lives'),
+                       ('F', '960 × (½)⁴ = 960 × 1/16 = 960 ÷ 16'),
+                       ('A', 'Activity = 60 Bq')]}],
+  'higher': None,
+  'id': 'half-lives',
+  'key_note': 'Half-life: time for activity (or nuclei count) to halve. Constant for a given isotope. Random decay — '
+              "can't predict individual nucleus. After n half-lives: (½)ⁿ remains. Decay curve: exponential fall. "
+              'Background radiation must be subtracted. Medical tracers need short half-lives; carbon dating uses '
+              '5730-year ¹⁴C half-life.',
+  'matching': {'instruction': 'Match each scenario to the correct remaining activity.',
+               'pairs': [('400 Bq', 'Initial activity 1600 Bq, after 2 half-lives: 1600 → 800 → 400'),
+                         ('125 Bq', 'Initial activity 1000 Bq, after 3 half-lives: 1000 → 500 → 250 → 125'),
+                         ('Longer half-life needed',
+                          'Carbon dating — need isotope with half-life comparable to age of sample (thousands of '
+                          'years)'),
+                         ('Shorter half-life needed',
+                          'Medical tracer — activity must fall quickly to reduce patient radiation dose')],
+               'title': 'Half-Life Calculations'},
+  'quiz': [{'opts': [('80 Bq — 12 ÷ 4 = 3 half-lives; 640 → 320 → 160 → 80 Bq', True),
+                     ('160 Bq — only 2 half-lives calculated (8 hours, not 12)', False),
+                     ('320 Bq — only 1 half-life applied', False),
+                     ('0 Bq — the source has fully decayed after 12 hours', False)],
+            'q': 'A radioactive source has a half-life of 4 hours and initial activity 640 Bq. What is the activity '
+                 'after 12 hours?',
+            'wrong_explanations': {1: '12 ÷ 4 = 3 half-lives. After 2: 640 → 320 → 160 (only 8 hours). After 3: → 80 '
+                                      'Bq.',
+                                   2: 'After 1 half-life (4 h): 640 → 320. After 2 (8 h): → 160. After 3 (12 h): → 80.',
+                                   3: 'Radioactive sources never fully reach zero — activity halves each half-life but '
+                                      'never reaches exactly zero (exponential decay).'}},
+           {'opts': [('It always takes the same time for the activity to halve, regardless of temperature, pressure or '
+                      'how much has already decayed',
+                      True),
+                     ("It stays constant because the number of atoms in the sample doesn't change", False),
+                     ('It is constant because decay rate increases to compensate as fewer atoms remain', False),
+                     ('It is constant only at room temperature — at high temperatures the half-life changes', False)],
+            'q': "Why is the half-life of a radioactive isotope described as a 'constant'?",
+            'wrong_explanations': {1: 'The number of undecayed atoms DOES decrease — but the proportion that decay per '
+                                      'unit time stays fixed, so the time to halve is always the same.',
+                                   2: 'If rate increased to compensate, activity would stay constant — but it falls '
+                                      'exponentially, halving each half-life.',
+                                   3: 'Half-life is independent of temperature, pressure, or chemical state — this is '
+                                      'one of the key properties of radioactive decay.'}}],
+  'rp': None,
+  'spec': '6.4.2.3',
+  'summary': 'Define half-life, calculate remaining activity and explain the random nature of decay.',
+  'theory': [{'content': 'Radioactive decay is a RANDOM PROCESS:\n'
+                         'It is impossible to predict exactly WHEN any individual nucleus will decay.\n'
+                         'It is impossible to predict WHICH nucleus in a sample will decay next.\n'
+                         'Decay is spontaneous — NOT triggered by temperature, pressure or chemical state.\n'
+                         '\n'
+                         'However, for a LARGE SAMPLE:\n'
+                         'We can predict the PROPORTION that will decay in a given time.\n'
+                         'Statistical behaviour becomes predictable even though individual decays are random.\n'
+                         '\n'
+                         'This is similar to flipping a large number of coins — we cannot predict any individual flip, '
+                         'but we can confidently predict about 50% will be heads.\n'
+                         '\n'
+                         'ACTIVITY decreases over time as the number of unstable nuclei falls.',
+              'heading': 'Radioactive Decay Is Random'},
+             {'content': 'The HALF-LIFE of a radioactive isotope is the time for:\n'
+                         'The number of UNDECAYED NUCLEI to halve, OR\n'
+                         'The ACTIVITY (or count rate) of the source to halve.\n'
+                         '\n'
+                         "Half-life is CONSTANT for a given isotope — it doesn't change.\n"
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Carbon-14: half-life ~5730 years (used in carbon dating)\n'
+                         'Iodine-131: half-life ~8 days (medical uses — short enough to leave the body)\n'
+                         'Uranium-238: half-life ~4.5 billion years\n'
+                         'Radon-222: half-life ~3.8 days\n'
+                         '\n'
+                         'CALCULATING REMAINING ACTIVITY/NUCLEI:\n'
+                         'After 1 half-life: ½ remains\n'
+                         'After 2 half-lives: ¼ remains\n'
+                         'After 3 half-lives: ⅛ remains\n'
+                         'After n half-lives: (½)ⁿ remains\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Source starts at 800 Bq. Half-life = 2 hours. What is the activity after 6 hours?\n'
+                         '6 hours ÷ 2 hours = 3 half-lives\n'
+                         '800 → 400 → 200 → 100 Bq',
+              'heading': 'Half-Life'},
+             {'content': 'DECAY CURVE:\n'
+                         'Graph of activity (or count rate) against time.\n'
+                         'Curve starts high and decreases exponentially.\n'
+                         'To find half-life from graph: find initial activity, halve it, read off time → then verify '
+                         'the next halving takes the same time.\n'
+                         '\n'
+                         'PRACTICAL SELECTION of isotopes:\n'
+                         'MEDICAL TRACERS: short half-life needed — activity falls quickly so patient receives minimal '
+                         'long-term dose. Technetium-99m: 6 hours.\n'
+                         'CANCER TREATMENT: short enough to deliver dose in treatment window, then decay away.\n'
+                         'CARBON DATING: 14C half-life ~5730 years — compares ¹⁴C/¹²C ratio of living things vs '
+                         'sample.\n'
+                         'NUCLEAR WASTE: long half-life isotopes are the biggest storage problem — some remain '
+                         'dangerous for thousands of years.\n'
+                         '\n'
+                         'BACKGROUND RADIATION:\n'
+                         'All measurements of radioactive sources include BACKGROUND RADIATION — radiation from '
+                         'natural sources (rocks, cosmic rays, radon gas, food).\n'
+                         'Background must be measured and SUBTRACTED from readings.',
+              'heading': 'Uses of Half-Life and Decay Curves'}],
+  'title': 'Half-Lives and Radioactive Decay',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Contamination and irradiation are NOT the same. Contamination: radioactive material on/in you — '
+                    'source travels with you. Irradiation: external source — exposure stops when you move away. Alpha '
+                    'is most dangerous as INTERNAL contaminant (highly ionising, short range → all energy deposits '
+                    'locally).',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'radioactive-contamination',
+  'key_note': 'Contamination: source deposits on/in person — ongoing. Irradiation: external exposure — stops when away '
+              'from source. Alpha most dangerous internally. Gamma most dangerous externally. Precautions: tongs, '
+              'shielding, distance, dosimeters, sealed containers, ventilation. Benefits vs risks must be balanced.',
+  'matching': {'instruction': 'Sort each scenario into contamination or irradiation.',
+               'pairs': [('Contamination', 'Breathing in radioactive dust — source is now inside the body'),
+                         ('Contamination', 'Radioactive material spilled on skin — source remains in contact'),
+                         ('Irradiation', 'Standing near a gamma source — move away and exposure stops'),
+                         ('Irradiation', 'Medical X-ray — brief external exposure, no source deposited'),
+                         ('Most dangerous internally',
+                          'Alpha radiation — highly ionising, short range, deposits all energy nearby')],
+               'title': 'Contamination vs Irradiation'},
+  'quiz': [{'opts': [('Alpha is highly ionising — inside the body all the ionising energy is deposited in nearby lung '
+                      'tissue, causing severe local damage',
+                      True),
+                     ('Alpha travels far inside the body reaching all organs — more widespread damage', False),
+                     ('Alpha is easily exhaled — it escapes before causing harm', False),
+                     ('Alpha inside the body becomes beta radiation — which is more penetrating', False)],
+            'q': 'A worker accidentally inhales radioactive dust containing an alpha emitter. Why is this particularly '
+                 'dangerous?',
+            'wrong_explanations': {1: "Alpha has very SHORT range — it doesn't travel far. That's exactly the problem: "
+                                      'all its energy is deposited locally in lung tissue.',
+                                   2: 'Radioactive dust lodges in lung tissue and continues to emit radiation there — '
+                                      "it doesn't simply get exhaled.",
+                                   3: "Radiation types don't change — alpha always remains alpha. Different isotopes "
+                                      "emit different types, but the type doesn't transform."}},
+           {'opts': [('Leaving the room while the X-ray is taken — distance and a lead-lined wall reduces irradiation '
+                      'when not needed',
+                      True),
+                     ('Wearing a lead apron while staying in the room — lead blocks all radiation types', False),
+                     ('Taking fewer breaths during the X-ray — radiation enters through breathing', False),
+                     ('Washing hands after each X-ray — removes radiation from skin', False)],
+            'q': 'A radiographer takes X-rays of patients all day. Which precaution best reduces their radiation dose?',
+            'wrong_explanations': {1: 'A lead apron is useful protection but does not cover all body parts — leaving '
+                                      'the room is more effective for reducing total dose.',
+                                   2: 'X-rays are electromagnetic radiation — they are not inhaled. The concern is '
+                                      'external irradiation, not contamination.',
+                                   3: "X-rays from the machine don't contaminate surfaces — the radiographer's dose "
+                                      'comes from irradiation (external source), not contamination.'}}],
+  'rp': None,
+  'spec': '6.4.2.4',
+  'summary': 'Distinguish contamination from irradiation and explain the hazards and precautions for each.',
+  'theory': [{'content': 'These two terms are often confused but describe very different situations:\n'
+                         '\n'
+                         'RADIOACTIVE CONTAMINATION:\n'
+                         'Unwanted radioactive material is DEPOSITED ON or INSIDE a person or object.\n'
+                         'The contaminating material continues to emit radiation over time.\n'
+                         'The source stays with the person/object — ongoing exposure.\n'
+                         'Example: breathing in radon gas; swallowing radioactive dust; radioactive material on skin.\n'
+                         '\n'
+                         'IRRADIATION:\n'
+                         'The person or object is EXPOSED TO RADIATION from a source that is NOT attached to them.\n'
+                         'When the person moves away from the source, exposure stops.\n'
+                         'Example: standing near a radioactive source; medical X-ray; radiotherapy.\n'
+                         '\n'
+                         'KEY DIFFERENCE:\n'
+                         'Contamination = source stays with you.\n'
+                         'Irradiation = source is external, exposure ends when you move away.',
+              'heading': 'Contamination vs Irradiation'},
+             {'content': 'CONTAMINATION HAZARDS:\n'
+                         'Alpha sources are especially dangerous as INTERNAL CONTAMINANTS:\n'
+                         'Alpha particles are highly ionising but very short range.\n'
+                         'Inside the body they deposit all their energy in nearby cells → severe local tissue damage.\n'
+                         'External alpha contamination (on skin) is less dangerous — alpha cannot penetrate skin.\n'
+                         'Beta and gamma internal contamination is also serious — penetrate to internal organs.\n'
+                         '\n'
+                         'IRRADIATION HAZARDS:\n'
+                         'Depends on radiation type, dose and duration.\n'
+                         'Gamma is most dangerous external source — penetrates deeply into tissue.\n'
+                         'Alpha from external source: stopped by skin, relatively safe.\n'
+                         'Beta: penetrates skin, can damage underlying tissue.\n'
+                         '\n'
+                         'LONG-TERM EFFECTS:\n'
+                         'Ionising radiation damages DNA → mutations → increased cancer risk.\n'
+                         'High acute doses → radiation sickness, cell death.\n'
+                         'Eyes, bone marrow and gonads particularly sensitive.',
+              'heading': 'Hazards of Each Type'},
+             {'content': 'PRECAUTIONS TO PREVENT CONTAMINATION:\n'
+                         'Never touch radioactive materials directly — use TONGS or remote handling.\n'
+                         'Wear PROTECTIVE CLOTHING (gloves, lab coat) to prevent skin contact.\n'
+                         'WORK IN WELL-VENTILATED areas to prevent inhaling radioactive dust or gases.\n'
+                         'No eating, drinking or applying make-up in radioactive areas — prevents ingestion.\n'
+                         'Seal radioactive materials in appropriate containers.\n'
+                         '\n'
+                         'PRECAUTIONS TO REDUCE IRRADIATION:\n'
+                         'DISTANCE — intensity follows inverse square law; doubling distance reduces dose by ¾.\n'
+                         'SHIELDING — appropriate material (paper for alpha, aluminium for beta, lead/concrete for '
+                         'gamma).\n'
+                         'TIME — minimise exposure duration.\n'
+                         'DOSIMETERS — worn by radiation workers to monitor cumulative dose.\n'
+                         '\n'
+                         'PROFESSIONAL GUIDELINES:\n'
+                         'Radiation workers have annual dose limits.\n'
+                         'Regular monitoring of workplace radiation levels.\n'
+                         'Storage of radioactive sources in lead-lined containers when not in use.\n'
+                         '\n'
+                         'BENEFITS vs RISKS:\n'
+                         'Medical uses (X-rays, radiotherapy, tracers) involve balancing dose risk vs '
+                         'diagnostic/treatment benefit.\n'
+                         'Risk is managed, not eliminated.',
+              'heading': 'Precautions and Safe Use'}],
+  'title': 'Radioactive Contamination',
+  'triple_only': None,
+  'variables': []}],
+
+"forces": [{'common_mistake': 'SPEED is scalar, VELOCITY is vector. DISTANCE is scalar, DISPLACEMENT is vector. The most common '
+                    'error is treating velocity and speed as the same thing. A car travelling in a circle at constant '
+                    'SPEED has changing VELOCITY (direction changes).',
+  'equations': ['Resultant² = F₁² + F₂²  (for perpendicular vectors)'],
+  'fifas': [],
+  'higher': None,
+  'id': 'scalar-vector-quantities',
+  'key_note': 'Scalar: magnitude only (distance, speed, mass, energy). Vector: magnitude + direction (displacement, '
+              'velocity, force, acceleration, weight). Arrow length = magnitude; direction = vector direction. Adding '
+              'vectors: same direction = add; opposite = subtract; right angles = Pythagoras.',
+  'matching': {'instruction': 'Sort each quantity into scalar or vector.',
+               'pairs': [('Scalar', 'Speed — magnitude of motion with no direction'),
+                         ('Vector', 'Velocity — speed in a specified direction'),
+                         ('Scalar', 'Distance — total path length, no direction'),
+                         ('Vector', 'Displacement — straight-line distance from start, with direction'),
+                         ('Vector', 'Force — magnitude and direction (e.g. 10 N downward)')],
+               'title': 'Scalar or Vector?'},
+  'quiz': [{'opts': [('Distance = 400 m, displacement = 0 m — the runner returns to the starting point', True),
+                     ('Distance = 0 m, displacement = 400 m — same as the lap distance', False),
+                     ('Distance = 400 m, displacement = 400 m — both equal the lap length', False),
+                     ('Both are zero — one full lap cancels everything out', False)],
+            'q': "A runner completes one full lap of a 400 m circular track. What is the runner's distance and "
+                 'displacement?',
+            'wrong_explanations': {1: 'Displacement is the NET change in position. After a full lap the runner is back '
+                                      'at start → displacement = 0. Distance is the total path = 400 m.',
+                                   2: 'Distance = displacement only for straight-line motion in one direction — a full '
+                                      'lap gives zero displacement.',
+                                   3: 'Distance is never zero if the runner moved — it counts total path length '
+                                      'regardless of direction.'}},
+           {'opts': [('5 N to the right — 8 − 3 = 5 N; direction is that of the larger force', True),
+                     ('11 N to the right — 8 + 3 = 11 N (added without considering direction)', False),
+                     ('5 N to the left — 3 − 8 = −5 N so leftward', False),
+                     ('Zero — two forces always cancel out', False)],
+            'q': 'Two forces act on a box: 8 N to the right and 3 N to the left. What is the resultant force?',
+            'wrong_explanations': {1: 'Vectors in OPPOSITE directions SUBTRACT. Adding gives 11 N which ignores '
+                                      'direction.',
+                                   2: 'The net force is in the direction of the LARGER force — 8 N is larger than 3 N '
+                                      'so resultant is rightward.',
+                                   3: 'Forces only cancel when equal in magnitude AND opposite in direction. 8 N ≠ 3 N '
+                                      "so they don't cancel."}}],
+  'rp': None,
+  'spec': '6.5.1.1',
+  'summary': 'Distinguish scalar and vector quantities and represent vectors with arrows.',
+  'theory': [{'content': 'SCALAR quantities have MAGNITUDE (size) only.\n'
+                         'VECTOR quantities have both MAGNITUDE and DIRECTION.\n'
+                         '\n'
+                         'SCALARS:\n'
+                         'Distance, speed, mass, time, temperature, energy, power, pressure.\n'
+                         '\n'
+                         'VECTORS:\n'
+                         'Displacement, velocity, force, acceleration, momentum, weight.\n'
+                         '\n'
+                         'Why direction matters:\n'
+                         'A force of 10 N to the right and 10 N to the left cancel out — net force is zero.\n'
+                         "If force were scalar (no direction), you couldn't distinguish these.\n"
+                         '\n'
+                         'VECTOR REPRESENTATION:\n'
+                         'An arrow represents a vector.\n'
+                         'Length of arrow ∝ magnitude.\n'
+                         'Direction of arrow = direction of the quantity.',
+              'heading': 'Scalars and Vectors'},
+             {'content': 'Several pairs are commonly confused:\n'
+                         '\n'
+                         'DISTANCE vs DISPLACEMENT:\n'
+                         'Distance: total path length travelled — scalar.\n'
+                         'Displacement: straight-line distance from start to finish, with direction — vector.\n'
+                         'Example: walking 3 m east then 3 m west → distance = 6 m; displacement = 0 m.\n'
+                         '\n'
+                         'SPEED vs VELOCITY:\n'
+                         'Speed: how fast — scalar (magnitude only).\n'
+                         'Velocity: speed in a specified direction — vector.\n'
+                         'Example: car at 30 m/s — speed = 30 m/s. Velocity = 30 m/s north.\n'
+                         '\n'
+                         'MASS vs WEIGHT:\n'
+                         'Mass: amount of matter — scalar (kg).\n'
+                         'Weight: gravitational force — vector (N, acts downward).',
+              'heading': 'Distinguishing Common Pairs'},
+             {'content': 'When adding SCALAR quantities: simple arithmetic.\n'
+                         '3 kg + 5 kg = 8 kg (always).\n'
+                         '\n'
+                         'When adding VECTOR quantities: direction matters.\n'
+                         'Two forces in the SAME direction: add magnitudes.\n'
+                         '10 N + 5 N (both right) = 15 N right.\n'
+                         '\n'
+                         'Two forces in OPPOSITE directions: subtract smaller from larger.\n'
+                         '10 N right + 5 N left = 5 N right (resultant).\n'
+                         '\n'
+                         'Two forces at RIGHT ANGLES: use Pythagoras.\n'
+                         'Resultant² = F₁² + F₂²\n'
+                         '3 N up + 4 N right → resultant = √(9 + 16) = 5 N (at an angle).\n'
+                         '\n'
+                         'Scale drawings can also be used to find the resultant of vectors at any angle.',
+              'heading': 'Adding Vectors'}],
+  'title': 'Scalar and Vector Quantities',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Gravity is a NON-CONTACT force — it acts at a distance without objects touching. Weight is the '
+                    'gravitational force on an object. Normal contact force is NOT the same as weight — normal force '
+                    'is a REACTION from the surface, perpendicular to it.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'contact-noncontact-forces',
+  'key_note': 'Contact: friction, air resistance, tension, normal contact, compression, upthrust. Non-contact: gravity '
+              '(always attractive), electrostatic (attract/repel), magnetic (attract/repel). Force = vector (N). '
+              'Forces cause changes in speed, direction or shape.',
+  'matching': {'instruction': 'Sort each force into contact or non-contact.',
+               'pairs': [('Contact force', 'Friction — acts between surfaces in direct physical contact'),
+                         ('Contact force', 'Tension — pull through a rope or string physically attached to objects'),
+                         ('Contact force', 'Normal contact force — surface pushes perpendicularly on resting object'),
+                         ('Non-contact force', 'Gravity — attractive force between masses, acts without touching'),
+                         ('Non-contact force', 'Magnetic force — acts between magnets across empty space')],
+               'title': 'Contact or Non-Contact?'},
+  'quiz': [{'opts': [('Weight (gravity, non-contact, downward) and normal contact force (contact, upward) — these '
+                      'balance so the book is stationary',
+                      True),
+                     ('Weight (downward) and friction (upward) — friction stops the book from falling', False),
+                     ('Weight and tension — the table pulls the book down with tension', False),
+                     ('Only weight acts — no force is needed to keep a stationary object still', False)],
+            'q': 'A book rests on a table. Which two forces act on the book and what type are they?',
+            'wrong_explanations': {1: "Friction acts parallel to surfaces (opposing sliding) — it doesn't act "
+                                      'vertically on a stationary book sitting on a flat table.',
+                                   2: 'Tension acts through strings/ropes — not through a solid table supporting a '
+                                      'book.',
+                                   3: "Newton's First Law: a stationary object has balanced forces — weight down is "
+                                      'balanced by normal contact force up.'}},
+           {'opts': [('The gravitational pull of the Sun on the Earth — acts across empty space without touching',
+                      True),
+                     ('Air resistance on a falling skydiver — acts through contact with air molecules', False),
+                     ('Tension in a rope supporting a hanging mass — acts through physical contact along the rope',
+                      False),
+                     ('Upthrust on a submarine — acts through the water directly in contact with the hull', False)],
+            'q': 'Which of the following is a non-contact force?',
+            'wrong_explanations': {1: 'Air resistance is a CONTACT force — it acts through collisions between air '
+                                      "molecules and the skydiver's body.",
+                                   2: 'Tension is a CONTACT force — transmitted through the physical rope.',
+                                   3: 'Upthrust is a CONTACT force — it acts through direct fluid pressure on the '
+                                      'submerged surface.'}}],
+  'rp': None,
+  'spec': '6.5.1.2',
+  'summary': 'Classify forces as contact or non-contact and give examples of each.',
+  'theory': [{'content': 'A FORCE is a push or pull that acts on an object due to an interaction with another object.\n'
+                         '\n'
+                         'Forces are VECTOR quantities — they have magnitude and direction.\n'
+                         'Measured in NEWTONS (N).\n'
+                         'Forces can: change speed, change direction, change shape of an object.\n'
+                         '\n'
+                         'All forces arise from interactions between two objects:\n'
+                         'Object A exerts a force on object B.\n'
+                         "Object B exerts an equal and opposite force on object A (Newton's Third Law).",
+              'heading': 'What Is a Force?'},
+             {'content': 'CONTACT FORCES require the two objects to be PHYSICALLY TOUCHING.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'FRICTION — opposes relative motion between surfaces in contact. A book sliding along a '
+                         'table.\n'
+                         'AIR RESISTANCE (drag) — friction between an object and air/fluid. A car moving through air.\n'
+                         'TENSION — pulling force through a string, rope or cable. A hanging weight.\n'
+                         'NORMAL CONTACT FORCE — perpendicular force from a surface on an object resting on it. Book '
+                         'on a table.\n'
+                         'COMPRESSION — a pushing force through a solid. A compressed spring.\n'
+                         'UPTHRUST — upward force from a fluid on a submerged object. A boat floating.\n'
+                         '\n'
+                         'Contact forces act through direct physical interaction between surfaces.',
+              'heading': 'Contact Forces'},
+             {'content': 'NON-CONTACT FORCES act between objects that are PHYSICALLY SEPARATED — no touching '
+                         'required.\n'
+                         '\n'
+                         'Three fundamental non-contact forces at GCSE:\n'
+                         '\n'
+                         'GRAVITATION (gravity):\n'
+                         'Attractive force between any two objects with mass.\n'
+                         'The Earth attracts all objects towards its centre.\n'
+                         "Acts over very large distances — the Sun's gravity holds planets in orbit.\n"
+                         '\n'
+                         'ELECTROSTATIC FORCE:\n'
+                         'Force between charged objects.\n'
+                         'Opposite charges attract; like charges repel.\n'
+                         'Example: charged balloon sticks to a wall (different charges attract).\n'
+                         '\n'
+                         'MAGNETIC FORCE:\n'
+                         'Force between magnets or between a magnet and a magnetic material.\n'
+                         'Opposite poles attract; like poles repel.\n'
+                         'Acts through space without physical contact — a magnet picks up iron filings from a '
+                         'distance.\n'
+                         '\n'
+                         'All three non-contact forces can attract or repel (except gravity — gravity is always '
+                         'attractive).',
+              'heading': 'Non-Contact Forces'}],
+  'title': 'Contact and Non-Contact Forces',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Mass and weight are DIFFERENT things. Mass (kg) is constant everywhere. Weight (N) changes with '
+                    'gravitational field strength. On the Moon, your MASS stays the same but your WEIGHT is less. '
+                    'Weight is measured in NEWTONS — not kilograms.',
+  'equations': ['W = m × g'],
+  'fifas': [{'label': 'Weight Calculation',
+             'question': 'Calculate the weight of a 12 kg object on Earth. (g = 9.8 N/kg)',
+             'steps': [('F', 'W = m × g'),
+                       ('I', 'm = 12 kg, g = 9.8 N/kg'),
+                       ('F', 'W = 12 × 9.8'),
+                       ('A', 'W = 117.6 N')]}],
+  'higher': None,
+  'id': 'gravity',
+  'key_note': 'W = mg. Weight = gravitational force (N, vector, downward). Mass = amount of matter (kg, scalar, '
+              'constant). g = 9.8 N/kg on Earth, 1.6 N/kg on Moon. Weight changes with location; mass does not. '
+              'Gravitational field: region where masses experience force.',
+  'matching': {'instruction': 'Match each statement to mass or weight.',
+               'pairs': [('Mass', 'Measured in kilograms — stays the same on the Moon and on Earth'),
+                         ('Weight', 'Measured in newtons — changes with gravitational field strength'),
+                         ('W = 686 N', '70 kg person on Earth — W = 70 × 9.8 = 686 N'),
+                         ('W = 112 N', '70 kg person on the Moon — W = 70 × 1.6 = 112 N')],
+               'title': 'Mass vs Weight'},
+  'quiz': [{'opts': [('128 N — W = 80 × 1.6 = 128 N', True),
+                     ("784 N — W = 80 × 9.8 (used Earth's g)", False),
+                     ('50 kg — mass on the Moon is 1/6 of Earth mass', False),
+                     ('0 N — astronauts are weightless on the Moon', False)],
+            'q': 'An astronaut has mass 80 kg. What is her weight on the Moon? (g_Moon = 1.6 N/kg)',
+            'wrong_explanations': {1: "Use the Moon's gravitational field strength (1.6 N/kg), not Earth's (9.8 N/kg).",
+                                   2: 'Mass NEVER changes — it is 80 kg on the Moon, on Earth, anywhere. Only weight '
+                                      'changes.',
+                                   3: 'The Moon has significant gravity (1.6 N/kg) — astronauts are not weightless on '
+                                      'the surface. Weightlessness occurs in orbit (free fall).'}},
+           {'opts': [('Weight is measured in NEWTONS — kilograms measure MASS. Their weight is approximately 588 N (60 '
+                      '× 9.8)',
+                      True),
+                     ('Nothing is wrong — weight and mass are the same thing and can be measured in the same units',
+                      False),
+                     ('Weight should be in grams — 60,000 g', False),
+                     ('The statement is correct on the Moon but wrong on Earth', False)],
+            'q': "A student says 'my weight is 60 kg'. What is wrong with this statement?",
+            'wrong_explanations': {1: 'Weight and mass are different physical quantities — they cannot use the same '
+                                      'units.',
+                                   2: 'Grams are a unit of mass — not weight. Weight is always in newtons.',
+                                   3: 'Weight is always in newtons everywhere — the statement would still be wrong on '
+                                      'the Moon (just a different wrong value).'}}],
+  'rp': None,
+  'spec': '6.5.1.3',
+  'summary': 'Explain weight as gravitational force, distinguish mass from weight, and calculate using W = mg.',
+  'theory': [{'content': 'WEIGHT is the FORCE acting on an object due to GRAVITY — it is a vector quantity acting '
+                         'downward.\n'
+                         '\n'
+                         'WEIGHT EQUATION:\n'
+                         'W = m × g\n'
+                         '\n'
+                         'W = weight (newtons, N)\n'
+                         'm = mass (kilograms, kg)\n'
+                         'g = gravitational field strength (N/kg)\n'
+                         '\n'
+                         'On Earth: g = 9.8 N/kg (use 10 N/kg for estimates).\n'
+                         "On the Moon: g ≈ 1.6 N/kg (about 1/6 of Earth's).\n"
+                         '\n'
+                         'MEANING OF g:\n'
+                         'The gravitational field strength g tells us the weight per unit mass.\n'
+                         'On Earth: every 1 kg of mass experiences 9.8 N of gravitational force downward.',
+              'heading': 'Weight and Gravitational Field Strength'},
+             {'content': 'MASS:\n'
+                         'Amount of matter in an object.\n'
+                         'Scalar quantity — measured in kilograms (kg).\n'
+                         "Constant everywhere in the universe — doesn't change with location.\n"
+                         '\n'
+                         'WEIGHT:\n'
+                         'Gravitational force on an object.\n'
+                         'Vector quantity — measured in newtons (N).\n'
+                         'Changes with location — depends on gravitational field strength.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'A 70 kg astronaut:\n'
+                         'On Earth: W = 70 × 9.8 = 686 N\n'
+                         'On the Moon: W = 70 × 1.6 = 112 N\n'
+                         'In deep space (no gravity): W = 0 N\n'
+                         'Mass is 70 kg everywhere.\n'
+                         '\n'
+                         'MEASURING:\n'
+                         'Mass: measured with a balance (compares gravitational force on both sides — same anywhere).\n'
+                         'Weight: measured with a calibrated spring balance/newton meter (reads force directly).',
+              'heading': 'Mass vs Weight'},
+             {'content': 'A GRAVITATIONAL FIELD is a region around a mass where any other mass experiences a force.\n'
+                         '\n'
+                         'Field lines point TOWARDS the centre of mass (gravity is always attractive).\n'
+                         "On Earth's surface, field lines point vertically downward (towards Earth's centre).\n"
+                         '\n'
+                         'Gravitational field strength DECREASES with distance from the mass:\n'
+                         "At Earth's surface: g = 9.8 N/kg\n"
+                         'At altitude of 400 km (ISS orbit): g ≈ 8.7 N/kg (astronauts are still falling — not '
+                         'weightless!)\n'
+                         '\n'
+                         "WHY 'WEIGHTLESSNESS' IN SPACE:\n"
+                         'Astronauts in orbit are NOT weightless in terms of gravitational force.\n'
+                         'They are in FREE FALL — constantly falling towards Earth but moving sideways fast enough to '
+                         'miss it.\n'
+                         'The sensation of weightlessness occurs because everything around them is falling at the same '
+                         'rate.',
+              'heading': 'Gravitational Fields'}],
+  'title': 'Gravity',
+  'triple_only': None,
+  'variables': [('W', 'Weight', 'newtons', 'N'),
+                ('m', 'Mass', 'kilograms', 'kg'),
+                ('g', 'Gravitational field strength', 'N/kg', 'N/kg')]},
+ {'common_mistake': 'A resultant force of ZERO does NOT mean the object is stationary — it means CONSTANT VELOCITY '
+                    '(which includes stationary). An object moving at constant speed in a straight line also has zero '
+                    'resultant force.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'resultant-forces',
+  'key_note': 'Resultant = single force with same effect as all forces combined. Balanced (zero resultant): stationary '
+              'or constant velocity. Unbalanced: acceleration. Free body diagrams: arrows from object, length = '
+              'magnitude. Terminal velocity: air resistance = weight → zero resultant → constant speed.',
+  'matching': {'instruction': 'Match each situation to the correct description of the resultant force and motion.',
+               'pairs': [('Resultant = 0, stationary', 'Book on table — weight balanced by normal contact force'),
+                         ('Resultant = 0, moving',
+                          'Car at constant speed on motorway — driving force equals resistance'),
+                         ('Resultant forward',
+                          'Car accelerating — driving force greater than air resistance + friction'),
+                         ('Terminal velocity', 'Skydiver at constant speed — weight = air resistance, zero resultant')],
+               'title': 'Resultant Force and Motion'},
+  'quiz': [{'opts': [('The resultant force is zero — driving force equals resistive forces (friction + air resistance)',
+                      True),
+                     ('No forces act on the car — it moves freely', False),
+                     ('The driving force is greater than resistive forces — the car is accelerating', False),
+                     ('The car must be slowing down — constant speed requires deceleration', False)],
+            'q': 'A car travels at constant speed along a straight road. What does this tell us about the forces on '
+                 'the car?',
+            'wrong_explanations': {1: 'Forces always act on a moving car — gravity, normal, driving force, air '
+                                      'resistance. Constant speed means they BALANCE.',
+                                   2: 'Constant speed means balanced forces (resultant = 0) — not acceleration. '
+                                      'Acceleration requires UNBALANCED forces.',
+                                   3: 'Constant speed is neither speeding up nor slowing down — it requires balanced '
+                                      'forces.'}},
+           {'opts': [('Air resistance increases with speed until it equals weight — resultant becomes zero, so '
+                      'acceleration stops',
+                      True),
+                     ('The skydiver runs out of energy from the jump — no more acceleration', False),
+                     ('Gravity decreases with altitude — weight reduces to zero at terminal velocity', False),
+                     ('Terminal velocity means constant acceleration, not constant speed', False)],
+            'q': 'A skydiver jumps from a plane. Initially they accelerate. Later they reach terminal velocity. Why do '
+                 'they stop accelerating?',
+            'wrong_explanations': {1: "Skydivers don't 'run out of energy' — gravity continuously acts on them. "
+                                      'Acceleration stops when forces BALANCE.',
+                                   2: 'Gravity changes very little over the heights of a typical skydive — weight '
+                                      'stays approximately constant.',
+                                   3: 'Terminal velocity means CONSTANT SPEED (zero acceleration) — not constant '
+                                      'acceleration.'}}],
+  'rp': None,
+  'spec': '6.5.1.4',
+  'summary': 'Find the resultant of forces and relate it to the motion of an object.',
+  'theory': [{'content': 'When MULTIPLE FORCES act on an object, they can be replaced by a SINGLE RESULTANT FORCE that '
+                         'has the same effect.\n'
+                         '\n'
+                         'Finding the resultant:\n'
+                         'FORCES IN THE SAME DIRECTION: add magnitudes.\n'
+                         'FORCES IN OPPOSITE DIRECTIONS: subtract smaller from larger; direction = that of larger '
+                         'force.\n'
+                         'FORCES AT RIGHT ANGLES: use Pythagoras; direction from trigonometry or scale drawing.\n'
+                         '\n'
+                         'BALANCED FORCES (resultant = 0):\n'
+                         'If resultant force = 0, the object is either:\n'
+                         'Stationary (at rest), OR\n'
+                         'Moving at CONSTANT VELOCITY (constant speed in a straight line).\n'
+                         "This is Newton's First Law.\n"
+                         '\n'
+                         'UNBALANCED FORCES (resultant ≠ 0):\n'
+                         'If resultant force ≠ 0, the object ACCELERATES (changes speed or direction).',
+              'heading': 'What Is a Resultant Force?'},
+             {'content': 'A FREE BODY DIAGRAM shows all forces acting ON a single object as arrows:\n'
+                         'Length ∝ magnitude of force.\n'
+                         'Arrow points in direction of force.\n'
+                         'Object represented as a box or dot at the centre.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Stationary book on table:\n'
+                         '↑ Normal contact force (upward)\n'
+                         '↓ Weight (downward)\n'
+                         'Resultant = 0 → balanced → stationary ✓\n'
+                         '\n'
+                         'Car accelerating forward:\n'
+                         '→ Driving force (forward, larger)\n'
+                         '← Friction + air resistance (backward, smaller)\n'
+                         'Resultant = driving force − resistance → forwards → accelerates ✓\n'
+                         '\n'
+                         'Skydiver in free fall (before terminal velocity):\n'
+                         '↓ Weight (downward)\n'
+                         '↑ Air resistance (upward, smaller)\n'
+                         'Resultant = weight − air resistance → downward → accelerates downward',
+              'heading': 'Free Body Diagrams'},
+             {'content': 'An object is in EQUILIBRIUM when the resultant force is zero:\n'
+                         'All forces balance — no net force.\n'
+                         'Object stays still or moves at constant velocity.\n'
+                         '\n'
+                         'When forces are UNBALANCED:\n'
+                         'Resultant force in the direction of motion → object SPEEDS UP.\n'
+                         'Resultant force opposite to direction of motion → object SLOWS DOWN.\n'
+                         'Resultant force perpendicular to motion → object CHANGES DIRECTION.\n'
+                         '\n'
+                         'SCALE DRAWING METHOD:\n'
+                         'Draw vectors head-to-tail to scale.\n'
+                         'Resultant = vector from tail of first to head of last.\n'
+                         'Measure magnitude with ruler (× scale factor).\n'
+                         'Measure direction with protractor.\n'
+                         '\n'
+                         'TERMINAL VELOCITY:\n'
+                         'As a falling object speeds up → air resistance increases.\n'
+                         'Eventually air resistance = weight → resultant = 0 → constant velocity = terminal velocity.\n'
+                         'For skydivers: terminal velocity ≈ 55 m/s (120 mph) before parachute.',
+              'heading': 'Equilibrium and Resultant'}],
+  'title': 'Resultant Forces',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Work is only done when the object moves IN THE DIRECTION of the force. Holding a heavy weight '
+                    'stationary does NO work (no displacement) — even though it feels tiring. Also: W in this equation '
+                    'is work done (joules), NOT weight.',
+  'equations': ['W = F × s'],
+  'fifas': [{'label': 'Work Done',
+             'question': 'A 300 N force moves a crate 6 m along a floor. Calculate the work done.',
+             'steps': [('F', 'W = F × s'), ('I', 'F = 300 N, s = 6 m'), ('F', 'W = 300 × 6'), ('A', 'W = 1800 J')]}],
+  'higher': None,
+  'id': 'work-done-energy-transfer',
+  'key_note': 'W = Fs. Work done = energy transferred (J). 1 J = 1 N × 1 m. Work only done if object moves in force '
+              'direction. Lifting = GPE gained = mgh = Fs. Friction does work → thermal energy. P = Fv (force × speed '
+              'for constant motion).',
+  'matching': {'instruction': 'Match each scenario to the correct work done value.',
+               'pairs': [('2000 J', '500 N force moves object 4 m — W = 500 × 4'),
+                         ('98 J', 'Lifting 5 kg by 2 m — W = mgh = 5 × 9.8 × 2'),
+                         ('0 J', 'Holding a 100 N weight stationary — no displacement, no work done'),
+                         ('5 m', '1000 J work done by a 200 N force — s = W ÷ F = 1000 ÷ 200')],
+               'title': 'Work Done Calculations'},
+  'quiz': [{'opts': [('0 J — gravity acts downward but the box moves horizontally; no displacement in the direction of '
+                      'the gravitational force',
+                      True),
+                     ('1960 J — W = mgs = 20 × 9.8 × 10', False),
+                     ('2000 J — W = 20 × 10 × 10 (using g = 10)', False),
+                     ('196 J — W = mg = 20 × 9.8 (forgot to include distance)', False)],
+            'q': 'A person carries a 20 kg box horizontally for 10 m at constant height. How much work does gravity do '
+                 'on the box?',
+            'wrong_explanations': {1: 'W = F × s requires the displacement to be in the DIRECTION of the force. '
+                                      'Gravity acts downward; box moves horizontally → no work done by gravity.',
+                                   2: 'Same error — using horizontal distance for a vertical force.',
+                                   3: 'mg gives weight (force) not work — must multiply by distance IN THE DIRECTION '
+                                      'of the force, which is zero here.'}},
+           {'opts': [('8 m — s = W ÷ F = 3200 ÷ 400 = 8 m', True),
+                     ('1,280,000 m — s = W × F = 3200 × 400', False),
+                     ('0.125 m — s = F ÷ W = 400 ÷ 3200', False),
+                     ('3600 m — s = W + F = 3200 + 400', False)],
+            'q': 'A 400 N force does 3200 J of work. How far does the object move?',
+            'wrong_explanations': {1: 's = W × F multiplies — but W = Fs means s = W ÷ F.',
+                                   2: 's = F ÷ W inverts the rearrangement: s = W ÷ F = 3200 ÷ 400 = 8 m.',
+                                   3: 'Adding work and force gives meaningless units (J + N). Use W = Fs rearranged: s '
+                                      '= W ÷ F.'}}],
+  'rp': None,
+  'spec': '6.5.2',
+  'summary': 'Calculate work done by a force and understand it as energy transferred.',
+  'theory': [{'content': 'When a FORCE causes an object to move through a DISTANCE, WORK IS DONE.\n'
+                         '\n'
+                         'Work is an energy transfer — doing work transfers energy from one store to another.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'W = F × s\n'
+                         '\n'
+                         'W = work done (joules, J)\n'
+                         'F = force (newtons, N)\n'
+                         's = distance moved along the line of action of the force (metres, m)\n'
+                         '\n'
+                         '1 joule = 1 newton-metre (1 J = 1 N·m).\n'
+                         '\n'
+                         'KEY CONDITION:\n'
+                         'Work is only done when the object moves IN THE DIRECTION the force acts.\n'
+                         'If the force and motion are at right angles → no work done by that force.\n'
+                         'Example: carrying a heavy bag horizontally — the vertical weight does no work (no vertical '
+                         'movement).',
+              'heading': 'Work Done'},
+             {'content': 'Work done = energy transferred.\n'
+                         '\n'
+                         'ENERGY TRANSFERS THROUGH WORK:\n'
+                         'Pushing a box along the floor: work done against friction → kinetic energy of box + thermal '
+                         'energy (friction).\n'
+                         'Lifting an object: work done against gravity → gravitational PE gained.\n'
+                         'Compressing a spring: work done by force → elastic PE stored.\n'
+                         'Braking a car: friction does work → kinetic energy → thermal energy.\n'
+                         '\n'
+                         'EXAMPLE 1:\n'
+                         'A 500 N force pushes a box 4 m along the floor.\n'
+                         'W = 500 × 4 = 2000 J of energy transferred.\n'
+                         '\n'
+                         'EXAMPLE 2:\n'
+                         'How far does a 200 N force push an object if 1000 J of work is done?\n'
+                         's = W ÷ F = 1000 ÷ 200 = 5 m\n'
+                         '\n'
+                         'LINK TO POWER:\n'
+                         'P = W ÷ t = F × s ÷ t = F × v\n'
+                         'Power also equals force × speed (for constant force and velocity).',
+              'heading': 'Work and Energy'},
+             {'content': 'UNIT CHECK — understanding dimensions:\n'
+                         '1 J = 1 N × 1 m = 1 N·m\n'
+                         '\n'
+                         'This is why energy and work have the same units (joules).\n'
+                         '\n'
+                         'COMMON CONTEXTS:\n'
+                         'Lifting: W = F × h (where F = weight = mg and h = height)\n'
+                         'Combined with W = mg: W = mgh — same as GPE equation.\n'
+                         '\n'
+                         'EXAMPLE — lifting:\n'
+                         'Lift 5 kg by 2 m:\n'
+                         'Force needed = weight = 5 × 9.8 = 49 N\n'
+                         'Work done = 49 × 2 = 98 J\n'
+                         'This equals the GPE gained (Ep = mgh = 5 × 9.8 × 2 = 98 J) ✓\n'
+                         '\n'
+                         'FRICTION AND WORK:\n'
+                         'Friction always acts OPPOSITE to motion — it always does NEGATIVE work on moving objects '
+                         '(takes energy from kinetic store → thermal store).\n'
+                         'This is why machines that involve friction always need a continuous energy input to keep '
+                         'moving.',
+              'heading': 'Joules and Newtons'}],
+  'title': 'Work Done and Energy Transfer',
+  'triple_only': None,
+  'variables': [('W', 'Work done', 'joules', 'J'),
+                ('F', 'Force', 'newtons', 'N'),
+                ('s', 'Distance moved in direction of force', 'metres', 'm')]},
+ {'common_mistake': 'Extension (e) is NOT the total length of the spring — it is the INCREASE in length from the '
+                    'natural (unstretched) length. If a 10 cm spring stretches to 14 cm, e = 4 cm = 0.04 m.',
+  'equations': ['F = k × e'],
+  'fifas': [{'label': "Hooke's Law",
+             'question': 'A spring with k = 80 N/m is stretched by 0.15 m. Calculate the force applied.',
+             'steps': [('F', 'F = k × e'),
+                       ('I', 'k = 80 N/m, e = 0.15 m'),
+                       ('F', 'F = 80 × 0.15'),
+                       ('A', 'F = 12 N')]}],
+  'higher': None,
+  'id': 'forces-elasticity',
+  'key_note': "Hooke's Law: F = ke. k = spring constant (N/m), stiffness. Extension = increase in length (not total "
+              "length). Elastic limit: beyond this, Hooke's Law breaks down — graph curves. Elastic deformation: "
+              'returns to shape. Inelastic: permanent. RP18: force–extension graph, gradient = k.',
+  'matching': {'instruction': 'Match each scenario to the correct force or extension.',
+               'pairs': [('F = 10 N', 'Spring k = 50 N/m, extension = 0.2 m — F = ke = 50 × 0.2'),
+                         ('e = 0.05 m', 'Spring k = 200 N/m, force = 10 N — e = F/k = 10/200'),
+                         ('Elastic limit exceeded',
+                          "Graph of F vs e curves away from straight line — Hooke's Law no longer obeyed"),
+                         ('Inelastic deformation',
+                          'Spring stretched beyond elastic limit — does not return to original length')],
+               'title': "Hooke's Law"},
+  'quiz': [{'opts': [('50 N/m — extension = 16 − 10 = 6 cm = 0.06 m; k = F/e = 3/0.06 = 50 N/m', True),
+                     ('18.75 N/m — k = F/total length = 3/0.16', False),
+                     ('0.02 N/m — k = e/F = 0.06/3', False),
+                     ('300 N/m — k = F/e = 3/0.01 (used 1 cm extension)', False)],
+            'q': 'A spring of natural length 10 cm is stretched to 16 cm by a 3 N force. What is the spring constant?',
+            'wrong_explanations': {1: 'Extension is NOT the total length — it is the INCREASE: 16 − 10 = 6 cm. k = '
+                                      '3/0.16 uses total length incorrectly.',
+                                   2: 'k = F/e, not e/F. 0.06/3 gives m/N — not N/m.',
+                                   3: 'Extension = 6 cm = 0.06 m, not 0.01 m (1 cm). k = 3/0.06 = 50 N/m.'}},
+           {'opts': [('Applying only one force would make the rubber band accelerate — two equal opposite forces are '
+                      'needed to deform it without moving it',
+                      True),
+                     ('One force is not strong enough — two forces together provide double the stretching force',
+                      False),
+                     ('Rubber bands only deform with two forces — a single force has no effect on elastic materials',
+                      False),
+                     ('The rubber band needs forces from both sides to stay in equilibrium while stretching', False)],
+            'q': 'Why do you need to pull both ends of a rubber band to stretch it?',
+            'wrong_explanations': {1: "Two forces DON'T double the stretching — you still only apply one extension. "
+                                      "The reason is Newton's First Law — a single force would cause acceleration, not "
+                                      'deformation.',
+                                   2: 'A single force CAN stretch an elastic material if one end is fixed — but then '
+                                      "the fixed end provides the second force via Newton's Third Law.",
+                                   3: 'Equilibrium (resultant = 0) IS the right idea here — for deformation without '
+                                      'acceleration, net force on the object must be zero.'}}],
+  'rp': 'RP18 (Physics) — Investigate force–extension relationship for a spring. Add masses, measure extension. Plot F '
+        'vs e graph. Find k from gradient. Identify elastic limit.',
+  'spec': '6.5.3',
+  'summary': "Apply Hooke's Law to springs and distinguish elastic from inelastic deformation.",
+  'theory': [{'content': 'When a force is applied to a spring (or elastic material), it STRETCHES or COMPRESSES.\n'
+                         '\n'
+                         "HOOKE'S LAW:\n"
+                         'Within the ELASTIC LIMIT, extension is DIRECTLY PROPORTIONAL to the applied force.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'F = k × e\n'
+                         '\n'
+                         'F = force applied (newtons, N)\n'
+                         'k = spring constant (N/m) — stiffness of the spring\n'
+                         'e = extension (metres, m) — increase in length from natural length\n'
+                         '\n'
+                         'A STIFFER spring has a LARGER k value — more force needed per metre of extension.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'A spring with k = 50 N/m is stretched by 0.2 m:\n'
+                         'F = 50 × 0.2 = 10 N\n'
+                         '\n'
+                         'Rearranging:\n'
+                         'e = F ÷ k\n'
+                         'k = F ÷ e',
+              'heading': "Hooke's Law"},
+             {'content': 'FORCE-EXTENSION GRAPH for a spring:\n'
+                         'X-axis: extension (m). Y-axis: force (N).\n'
+                         '\n'
+                         'LINEAR (STRAIGHT) SECTION:\n'
+                         "Obeys Hooke's Law — force proportional to extension.\n"
+                         'Gradient = spring constant k = F ÷ e.\n'
+                         '\n'
+                         'BEYOND THE ELASTIC LIMIT:\n'
+                         'Graph curves — no longer proportional.\n'
+                         'Larger extension per unit force.\n'
+                         '\n'
+                         'RETURN BEHAVIOUR:\n'
+                         'ELASTIC deformation: spring returns to original length when force removed.\n'
+                         'INELASTIC deformation: spring does NOT return to original length — permanently stretched.\n'
+                         'The elastic limit is the point beyond which deformation becomes inelastic.\n'
+                         '\n'
+                         'REQUIRED PRACTICAL (RP18):\n'
+                         'Add masses to a spring. Measure extension at each mass.\n'
+                         'Plot force vs extension. Find spring constant from gradient.\n'
+                         "Identify where Hooke's Law is obeyed and where it breaks down.",
+              'heading': 'Force–Extension Graphs'},
+             {'content': 'To change the SHAPE of an object, MORE THAN ONE FORCE must be applied.\n'
+                         '\n'
+                         'Reason: if only one force is applied, the object would accelerate in that direction instead '
+                         'of deforming.\n'
+                         'Two equal and opposite forces are needed to stretch, compress or bend an object.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Stretching a rubber band: you pull both ends — two forces in opposite directions.\n'
+                         'Compressing a spring: push both ends together — two forces towards each other.\n'
+                         '\n'
+                         'STORAGE OF ELASTIC PE:\n'
+                         'A stretched spring stores elastic potential energy:\n'
+                         'Ee = ½ × k × e²\n'
+                         '\n'
+                         'All the work done stretching the spring (within elastic limit) is stored as Ee.\n'
+                         'When released, this converts to kinetic energy.\n'
+                         '\n'
+                         'APPLICATIONS:\n'
+                         'Springs in mattresses, car suspensions, watches, catapults, archery bows.\n'
+                         'Elastic bands, bungee cords, rubber in tyres.',
+              'heading': 'More Than One Force Needed'}],
+  'title': 'Forces and Elasticity',
+  'triple_only': None,
+  'variables': [('F', 'Force', 'newtons', 'N'),
+                ('k', 'Spring constant', 'N/m', 'N/m'),
+                ('e', 'Extension', 'metres', 'm')]},
+ {'common_mistake': 'Speed is scalar (magnitude only). Velocity is vector (magnitude AND direction). A car travelling '
+                    'in a circle at constant SPEED has changing VELOCITY — direction is always changing. Average speed '
+                    '= total distance ÷ total time (not displacement).',
+  'equations': ['v = d ÷ t  (average speed)'],
+  'fifas': [{'label': 'Speed Calculation',
+             'question': 'A car travels 450 m in 30 s. Calculate its average speed.',
+             'steps': [('F', 'v = d ÷ t'), ('I', 'd = 450 m, t = 30 s'), ('F', 'v = 450 ÷ 30'), ('A', 'v = 15 m/s')]}],
+  'higher': None,
+  'id': 'distance-speed-velocity',
+  'key_note': 'Distance: scalar, total path. Displacement: vector, start to finish with direction. Speed = d/t '
+              '(scalar). Velocity = displacement/t (vector). Speed = |velocity| for straight-line motion. Constant '
+              'speed in a circle = changing velocity. Average speed: total distance ÷ total time.',
+  'matching': {'instruction': 'Match each calculation or concept to the correct value or description.',
+               'pairs': [('Speed = 5 m/s', 'Travels 100 m in 20 s — v = 100 ÷ 20 = 5 m/s'),
+                         ('Velocity = 0 m/s', 'Walks 400 m around a circular track and returns to start in 200 s'),
+                         ('Distance = 7 m', 'Walks 3 m north and 4 m east — total path length = 3 + 4'),
+                         ('Changing velocity',
+                          'Car driving in a circle at constant speed — direction (and therefore velocity) changes')],
+               'title': 'Distance, Speed, Velocity'},
+  'quiz': [{'opts': [('Speed = 10 m/s, velocity = 0 m/s — total distance = 1200 m, total time = 120 s; displacement = '
+                      '0',
+                      True),
+                     ('Speed = 0 m/s, velocity = 10 m/s — velocity and speed are the same thing', False),
+                     ('Both 10 m/s — displacement equals total distance', False),
+                     ('Speed = 5 m/s, velocity = 5 m/s — average of 600 m in 60 s both ways', False)],
+            'q': 'A cyclist rides 600 m east in 60 s, then 600 m west in 60 s. What is the average speed and average '
+                 'velocity for the whole journey?',
+            'wrong_explanations': {1: 'Speed and velocity are NOT the same — speed is scalar (total distance/time), '
+                                      'velocity is vector (displacement/time).',
+                                   2: 'Displacement = net change in position = 0 (back at start). Speed uses total '
+                                      'distance (1200 m), velocity uses displacement (0 m).',
+                                   3: 'Speed = total distance / total time = 1200/120 = 10 m/s, not 5 m/s.'}},
+           {'opts': [('No — direction changes continuously around the roundabout, so velocity (which includes '
+                      'direction) is always changing',
+                      True),
+                     ('Yes — speed is constant at 10 m/s, so velocity must also be constant', False),
+                     ('Yes — velocity is always 10 m/s regardless of direction', False),
+                     ('No — the car is accelerating because it is going around a circle', False)],
+            'q': 'A car drives around a roundabout at constant speed of 10 m/s. Is its velocity constant?',
+            'wrong_explanations': {1: 'Speed is scalar and CAN be constant — velocity is vector and changes when '
+                                      'direction changes.',
+                                   2: '10 m/s is speed — velocity = 10 m/s north, then 10 m/s northeast, etc. The '
+                                      'direction changes.',
+                                   3: 'Option D is actually CORRECT (circular motion does involve acceleration) — but '
+                                      "the reason given (acceleration) is a consequence, not the answer to 'is "
+                                      "velocity constant?'. The primary answer is that direction changes."}}],
+  'rp': None,
+  'spec': '6.5.4.1.1–6.5.4.1.3',
+  'summary': 'Define and calculate distance, displacement, speed and velocity.',
+  'theory': [{'content': 'DISTANCE: total length of path travelled — scalar (no direction).\n'
+                         'DISPLACEMENT: straight-line distance from start to finish with direction — vector.\n'
+                         '\n'
+                         'Example:\n'
+                         ' Walk 3 m north then 4 m east:\n'
+                         'Distance = 3 + 4 = 7 m\n'
+                         'Displacement = √(3² + 4²) = 5 m (north-east) — Pythagoras\n'
+                         '\n'
+                         'For motion in a straight line in ONE direction:\n'
+                         'Distance = displacement (they are numerically equal).\n'
+                         'For motion that changes direction: distance > |displacement|.',
+              'heading': 'Distance and Displacement'},
+             {'content': 'SPEED is the rate of change of distance — scalar quantity.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'v = d ÷ t (for uniform/average speed)\n'
+                         '\n'
+                         'v = speed (m/s)\n'
+                         'd = distance (m)\n'
+                         't = time (s)\n'
+                         '\n'
+                         'Typical speeds:\n'
+                         'Walking: ~1.5 m/s\n'
+                         'Running: ~3 m/s\n'
+                         'Cycling: ~6 m/s\n'
+                         'Car on motorway: ~30 m/s\n'
+                         'Speed of sound in air: ~340 m/s\n'
+                         'Speed of light in vacuum: 3 × 10⁸ m/s\n'
+                         '\n'
+                         'SPEED IS NOT CONSTANT in most real motion — the equation gives AVERAGE speed.\n'
+                         '\n'
+                         'UNIT CONVERSIONS:\n'
+                         '1 m/s = 3.6 km/h\n'
+                         '30 m/s ≈ 108 km/h',
+              'heading': 'Speed'},
+             {'content': 'VELOCITY is the rate of change of displacement — vector quantity.\n'
+                         '\n'
+                         'velocity = displacement ÷ time\n'
+                         '\n'
+                         'Velocity has the SAME MAGNITUDE as speed when moving in a straight line.\n'
+                         'Velocity DIFFERS from speed when direction changes.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'A car drives 100 m north in 10 s → velocity = 10 m/s north, speed = 10 m/s.\n'
+                         'A car drives 100 m north then 100 m south in 20 s total:\n'
+                         'Speed = 200/20 = 10 m/s\n'
+                         'Velocity = 0/20 = 0 m/s (back at start → displacement = 0)\n'
+                         '\n'
+                         'CHANGING VELOCITY:\n'
+                         'Velocity changes when speed changes OR when direction changes.\n'
+                         'A car going around a bend at constant speed has CHANGING VELOCITY (direction changes).\n'
+                         'Changing velocity = acceleration.',
+              'heading': 'Velocity'}],
+  'title': 'Distance, Speed and Velocity',
+  'triple_only': None,
+  'variables': [('v', 'Speed or velocity', 'm/s', 'm/s'),
+                ('d', 'Distance', 'metres', 'm'),
+                ('s', 'Displacement', 'metres', 'm'),
+                ('t', 'Time', 'seconds', 's')]},
+ {'common_mistake': 'A FLAT (horizontal) section means the object is STATIONARY — not moving at constant speed. '
+                    'Constant speed gives a diagonal straight line. A steeper line means FASTER speed.',
+  'equations': ['Speed = gradient of distance–time graph = Δd ÷ Δt'],
+  'fifas': [{'label': 'Speed from d–t Graph',
+             'question': 'A d–t graph shows an object moving from 0 m to 60 m in the first 12 seconds. Calculate the '
+                         'speed.',
+             'steps': [('F', 'Speed = gradient = Δd ÷ Δt'),
+                       ('I', 'Δd = 60 − 0 = 60 m, Δt = 12 − 0 = 12 s'),
+                       ('F', 'Speed = 60 ÷ 12'),
+                       ('A', 'Speed = 5 m/s')]}],
+  'higher': None,
+  'id': 'distance-time-graphs',
+  'key_note': 'Gradient of d–t graph = speed. Steep straight line = fast constant speed. Flat line = stationary. Curve '
+              '= changing speed (accelerating or decelerating). Negative gradient = returning to start. Calculate '
+              'speed: pick two points, speed = Δd/Δt.',
+  'matching': {'instruction': 'Match each section of a d–t graph to the motion it represents.',
+               'pairs': [('Steep straight line upward', 'Fast constant speed away from start'),
+                         ('Horizontal flat line', 'Stationary — object has stopped'),
+                         ('Gentle straight line upward', 'Slow constant speed away from start'),
+                         ('Straight line downward', 'Constant speed returning towards starting point'),
+                         ('Upward curve (increasing steepness)', 'Accelerating — speed increasing over time')],
+               'title': 'Distance–Time Graph Sections'},
+  'quiz': [{'opts': [('The object is stationary — no change in distance means zero speed', True),
+                     ('The object is moving at constant speed — horizontal means steady motion', False),
+                     ('The object is accelerating — the line is preparing to slope upward', False),
+                     ('The object has reached maximum speed and is maintaining it', False)],
+            'q': 'A d–t graph shows a horizontal (flat) line for 5 seconds. What is the object doing?',
+            'wrong_explanations': {1: 'A horizontal line on a VELOCITY–time graph means constant velocity — but on a '
+                                      'DISTANCE–time graph it means zero speed (stationary).',
+                                   2: 'Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a '
+                                      'SLOPED straight line.',
+                                   3: 'Acceleration on a d–t graph shows as a CURVE (increasing gradient) — not a flat '
+                                      'section.'}},
+           {'opts': [('Section A — steeper gradient on a d–t graph means higher speed', True),
+                     ('Section B — less steep means the object is working harder to maintain motion', False),
+                     ('They are the same speed — both are straight lines', False),
+                     ('Section B — a gentler slope indicates faster, more efficient motion', False)],
+            'q': 'On a distance–time graph, two straight sections are drawn. Section A has gradient 8 m/s and section '
+                 'B has gradient 2 m/s. Which section shows faster motion?',
+            'wrong_explanations': {1: 'Gentler slope does not imply harder work — gradient directly equals speed on a '
+                                      'd–t graph.',
+                                   2: 'Both are straight lines (constant speed) but at DIFFERENT speeds — the gradient '
+                                      'value gives the speed.',
+                                   3: 'Gentle slope = smaller gradient = slower speed. Fast motion = steeper slope = '
+                                      'larger gradient.'}}],
+  'rp': None,
+  'spec': '6.5.4.1.4',
+  'summary': 'Interpret distance–time graphs and calculate speed from the gradient.',
+  'theory': [{'content': 'A DISTANCE–TIME GRAPH shows distance from a reference point (y-axis) against time (x-axis).\n'
+                         '\n'
+                         'GRADIENT = SPEED:\n'
+                         'Steeper gradient → faster speed.\n'
+                         'Flat (horizontal) line → stationary (speed = 0).\n'
+                         'Downward slope → returning towards start.\n'
+                         '\n'
+                         'UNIFORM MOTION (constant speed): straight line with constant gradient.\n'
+                         'NON-UNIFORM MOTION (changing speed): curved line — gradient changes.\n'
+                         '\n'
+                         'CALCULATING SPEED FROM GRADIENT:\n'
+                         'speed = Δd ÷ Δt = (change in distance) ÷ (change in time)\n'
+                         'Pick two clear points on the line and divide the vertical change by the horizontal change.',
+              'heading': 'Reading Distance–Time Graphs'},
+             {'content': "STATIONARY: horizontal straight line (distance doesn't change).\n"
+                         'CONSTANT SPEED: straight line with positive gradient.\n'
+                         'ACCELERATING: curve with increasing gradient (getting steeper).\n'
+                         'DECELERATING: curve with decreasing gradient (getting shallower).\n'
+                         'RETURNING: line going back down — distance from starting point decreasing.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Graph shows: 0–4 s: straight line to 20 m (constant speed).\n'
+                         '4–6 s: horizontal (stationary).\n'
+                         '6–10 s: straight line back to 0 m.\n'
+                         '\n'
+                         'Speed in first section: 20 m ÷ 4 s = 5 m/s\n'
+                         'Speed stationary: 0 m/s\n'
+                         'Return speed: 20 m ÷ 4 s = 5 m/s',
+              'heading': 'Different Motion Shapes'},
+             {'content': 'EXAM TECHNIQUE:\n'
+                         'Always use a large triangle when calculating gradient — minimises reading errors.\n'
+                         'Read coordinates from the axis, not from the line itself if possible.\n'
+                         'Check units — distance in metres, time in seconds → speed in m/s.\n'
+                         '\n'
+                         'TANGENT TRICK (Higher Tier):\n'
+                         'For a curved distance–time graph, draw a tangent at the point of interest.\n'
+                         'Gradient of tangent = instantaneous speed at that point.\n'
+                         '\n'
+                         'FOUNDATION LEVEL:\n'
+                         'Only need to find average speed from a straight-line section.\n'
+                         'Describe the motion from different sections of the graph.',
+              'heading': 'Using the Graph'}],
+  'title': 'Distance–Time Graphs',
+  'triple_only': None,
+  'variables': [('v', 'Speed', 'm/s', 'm/s'), ('d', 'Distance', 'metres', 'm'), ('t', 'Time', 'seconds', 's')]},
+ {'common_mistake': 'Gradient of a v–t graph = ACCELERATION (not distance or speed). Area under a v–t graph = '
+                    "DISTANCE. This is the opposite of the d–t graph where gradient = speed. Don't confuse the two "
+                    'graphs.',
+  'equations': ['a = (v − u) ÷ t', 'v² = u² + 2as'],
+  'fifas': [{'label': 'Acceleration',
+             'question': 'A train accelerates from rest to 50 m/s in 25 s. Calculate the acceleration.',
+             'steps': [('F', 'a = (v − u) ÷ t'),
+                       ('I', 'v = 50 m/s, u = 0 m/s, t = 25 s'),
+                       ('F', 'a = (50 − 0) ÷ 25 = 50 ÷ 25'),
+                       ('A', 'a = 2 m/s²')]}],
+  'higher': None,
+  'id': 'acceleration',
+  'key_note': 'a = (v−u)/t. v² = u² + 2as. Units: m/s². Positive a = speeding up; negative a = decelerating. v–t '
+              'graph: gradient = acceleration; area = distance. Horizontal v–t = constant velocity. Steep v–t = large '
+              'acceleration.',
+  'matching': {'instruction': 'Match each scenario to the correct acceleration or distance.',
+               'pairs': [('4 m/s²', 'Velocity increases from 10 m/s to 30 m/s in 5 s — a = 20÷5'),
+                         ('−2 m/s²', 'Car decelerates from 20 m/s to 0 in 10 s — a = −20÷10'),
+                         ('Area = distance', 'The area under a velocity–time graph gives distance travelled'),
+                         ('Gradient = acceleration', 'The gradient of a velocity–time graph gives acceleration')],
+               'title': 'Acceleration Calculations'},
+  'quiz': [{'opts': [('−2 m/s² — a = (6−24)÷9 = −18÷9 = −2 m/s² (negative = deceleration)', True),
+                     ('2 m/s² — ignoring the sign of deceleration', False),
+                     ('−3.3 m/s² — a = (6−24)÷(6+3) using wrong time', False),
+                     ('−18 m/s² — a = v − u without dividing by t', False)],
+            'q': 'A car decelerates from 24 m/s to 6 m/s in 9 s. What is the acceleration?',
+            'wrong_explanations': {1: 'The magnitude is correct (2 m/s²) but the SIGN matters: deceleration is '
+                                      'negative acceleration. a = (v−u)/t = (6−24)/9 = −2 m/s².',
+                                   2: 'This is not a standard calculation — t = 9 s must be used.',
+                                   3: 'a = (v−u)/t = (6−24)/9 = −18/9 = −2. Must divide by time.'}},
+           {'opts': [('72 m — area = base × height = 6 × 12 = 72 m', True),
+                     ('2 m — gradient = 12/6 = 2 m/s² (used gradient formula)', False),
+                     ('0 m — horizontal line means stationary on a v–t graph', False),
+                     ('12 m — only reading the speed value, not calculating area', False)],
+            'q': 'A v–t graph shows a straight horizontal line at 12 m/s for 6 seconds. What is the distance covered?',
+            'wrong_explanations': {1: 'Gradient of a v–t graph gives ACCELERATION — 12/6 = 2 m/s². Distance comes from '
+                                      'the AREA.',
+                                   2: 'A horizontal line on a v–t graph means CONSTANT VELOCITY (not zero) — '
+                                      'stationary would be v = 0.',
+                                   3: '12 m/s is the velocity — to get distance, multiply by time: 12 × 6 = 72 m (or '
+                                      'calculate area).'}}],
+  'rp': None,
+  'spec': '6.5.4.1.5',
+  'summary': 'Calculate acceleration and use velocity–time graphs to describe and analyse motion.',
+  'theory': [{'content': 'ACCELERATION is the rate of change of velocity.\n'
+                         '\n'
+                         'EQUATIONS:\n'
+                         'a = Δv ÷ t = (v − u) ÷ t\n'
+                         '\n'
+                         'a = acceleration (m/s²)\n'
+                         'v = final velocity (m/s)\n'
+                         'u = initial velocity (m/s)\n'
+                         't = time (s)\n'
+                         '\n'
+                         'Also: v² = u² + 2as (links velocity, acceleration and distance)\n'
+                         '\n'
+                         'a is positive → SPEEDING UP (in direction of motion).\n'
+                         'a is negative → SLOWING DOWN (deceleration).\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'Car accelerates from 10 m/s to 30 m/s in 5 s:\n'
+                         'a = (30 − 10) ÷ 5 = 20 ÷ 5 = 4 m/s²\n'
+                         '\n'
+                         'NOTE: acceleration can occur even at constant speed if DIRECTION changes (circular motion).',
+              'heading': 'Acceleration'},
+             {'content': 'A VELOCITY–TIME GRAPH shows velocity (y-axis) against time (x-axis).\n'
+                         '\n'
+                         'GRADIENT = ACCELERATION:\n'
+                         'Steep positive gradient → large acceleration.\n'
+                         'Flat (horizontal) → constant velocity (zero acceleration).\n'
+                         'Negative gradient → deceleration.\n'
+                         '\n'
+                         'AREA UNDER THE GRAPH = DISTANCE TRAVELLED:\n'
+                         'For constant acceleration (straight line): area = ½ × base × height (triangle) + rectangle.\n'
+                         'For horizontal section: area = base × height (rectangle).\n'
+                         '\n'
+                         'SHAPES:\n'
+                         'Horizontal line → constant velocity.\n'
+                         'Straight line up → constant acceleration.\n'
+                         'Straight line down → constant deceleration.\n'
+                         'Curved → changing acceleration.',
+              'heading': 'Velocity–Time Graphs'},
+             {'content': 'The equation v² = u² + 2as is useful when TIME is not given.\n'
+                         '\n'
+                         'EXAMPLE:\n'
+                         'A car starts from rest (u = 0) and accelerates at 3 m/s² over 75 m. Find the final speed.\n'
+                         'v² = 0² + 2 × 3 × 75 = 450\n'
+                         'v = √450 ≈ 21.2 m/s\n'
+                         '\n'
+                         'EXAMPLE 2:\n'
+                         'Car moving at 20 m/s decelerates at 4 m/s² to a stop. Find the braking distance.\n'
+                         'v = 0, u = 20 m/s, a = −4 m/s²\n'
+                         '0 = 400 + 2 × (−4) × s\n'
+                         '8s = 400\n'
+                         's = 50 m\n'
+                         '\n'
+                         'CALCULATING DISTANCE FROM v–t GRAPH:\n'
+                         'Distance = area under the v–t graph.\n'
+                         'Use triangle area (½bh) for constant acceleration from rest.\n'
+                         'Use trapezium area for constant acceleration with initial velocity.',
+              'heading': 'Using v² = u² + 2as'}],
+  'title': 'Acceleration',
+  'triple_only': None,
+  'variables': [('a', 'Acceleration', 'm/s²', 'm/s²'),
+                ('v', 'Final velocity', 'm/s', 'm/s'),
+                ('u', 'Initial velocity', 'm/s', 'm/s'),
+                ('t', 'Time', 'seconds', 's'),
+                ('s', 'Distance', 'metres', 'm')]},
+ {'common_mistake': "Newton's Third Law pairs act on DIFFERENT objects — they cannot cancel. When a horse pulls a cart "
+                    "(action), the cart pulls back on the horse (reaction). These don't cancel because they act on "
+                    "different things. Newton's First Law is about ONE object — don't confuse the two.",
+  'equations': ['F = m × a'],
+  'fifas': [{'label': "Newton's Second Law",
+             'question': 'A 900 kg car has a resultant forward force of 2700 N. Calculate its acceleration.',
+             'steps': [('F', 'F = m × a, so a = F ÷ m'),
+                       ('I', 'F = 2700 N, m = 900 kg'),
+                       ('F', 'a = 2700 ÷ 900'),
+                       ('A', 'a = 3 m/s²')]}],
+  'higher': None,
+  'id': 'newtons-laws',
+  'key_note': 'N1: constant velocity (or stationary) if resultant = 0. N2: F = ma. N3: equal and opposite pairs on '
+              'different objects. N2: bigger F → bigger a; bigger m → smaller a. N3 pairs: same type, same magnitude, '
+              'opposite direction, different objects.',
+  'matching': {'instruction': "Match each scenario to the Newton's Law it illustrates.",
+               'pairs': [("Newton's First Law", 'Car at constant speed — resultant force is zero, velocity unchanged'),
+                         ("Newton's Second Law",
+                          'Pushing a heavier trolley requires more force for the same acceleration'),
+                         ("Newton's Third Law", 'A swimmer pushes water backward — water pushes swimmer forward'),
+                         ("Newton's Second Law", 'F = 1200 N, m = 600 kg → a = 1200/600 = 2 m/s²')],
+               'title': "Newton's Laws"},
+  'quiz': [{'opts': [('3000 N — F = m × a = 1500 × 2 = 3000 N', True),
+                     ('750 N — F = m ÷ a = 1500 ÷ 2 = 750', False),
+                     ('1502 N — F = m + a = 1500 + 2', False),
+                     ('300 N — F = m × a ÷ 10 = 3000/10', False)],
+            'q': 'A 1500 kg car accelerates at 2 m/s². What is the resultant force?',
+            'wrong_explanations': {1: 'F = m ÷ a inverts the formula — F = m × a = 1500 × 2 = 3000 N.',
+                                   2: 'Adding mass and acceleration gives meaningless units (kg + m/s²).',
+                                   3: "There's no factor of 10 in F = ma — this confuses g with acceleration."}},
+           {'opts': [('The table pushes UP on the book with 10 N — equal, opposite, on the table (reacting on the '
+                      'book)',
+                      True),
+                     ('The normal contact force from the table pushing up on the book — this balances the weight',
+                      False),
+                     ("The Earth's gravity pulling the book down — the reaction to the normal force", False),
+                     ('The book pushes down on the Earth through the table with 10 N', False)],
+            'q': 'A book sits on a table. The book pushes down on the table with force 10 N (its weight). What is the '
+                 "Newton's Third Law reaction to this?",
+            'wrong_explanations': {1: "The normal force IS the Newton's Third Law reaction — but the question asks "
+                                      'what force it is, and the key is it acts ON THE BOOK FROM THE TABLE. Option B '
+                                      "describes it correctly but incorrectly labels it as 'balancing' — N3 pairs "
+                                      "don't balance (they're on different objects).",
+                                   2: "Earth's gravity on the book is a different force pair entirely (book pulls "
+                                      "Earth up / Earth pulls book down). It's not the reaction to the normal contact "
+                                      'force.',
+                                   3: 'The book presses on the table (not directly on Earth) — and the N3 pair to '
+                                      "'book pushes on table' is 'table pushes on book'. The chain to Earth involves "
+                                      'more steps.'}}],
+  'rp': None,
+  'spec': '6.5.4.2.1–6.5.4.2.3',
+  'summary': "State and apply Newton's three laws of motion.",
+  'theory': [{'content': "NEWTON'S FIRST LAW:\n"
+                         'An object will remain at rest or continue moving at CONSTANT VELOCITY unless acted upon by a '
+                         'RESULTANT FORCE.\n'
+                         '\n'
+                         'In other words:\n'
+                         'No resultant force → no change in motion.\n'
+                         'A resultant force is needed to START, STOP or CHANGE THE DIRECTION of motion.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'A book on a table: weight balanced by normal force → resultant = 0 → stays still.\n'
+                         'A puck on frictionless ice: no horizontal forces → moves in straight line forever.\n'
+                         'A car at constant speed: driving force = friction + air resistance → resultant = 0 → '
+                         'constant velocity.\n'
+                         '\n'
+                         'INERTIA:\n'
+                         'The tendency of an object to resist changes in its motion.\n'
+                         'Heavier (more massive) objects have more inertia — harder to accelerate or stop.',
+              'heading': "Newton's First Law"},
+             {'content': "NEWTON'S SECOND LAW:\n"
+                         'The acceleration of an object is proportional to the resultant force and inversely '
+                         'proportional to the mass.\n'
+                         '\n'
+                         'EQUATION:\n'
+                         'F = m × a\n'
+                         '\n'
+                         'F = resultant force (newtons, N)\n'
+                         'm = mass (kilograms, kg)\n'
+                         'a = acceleration (m/s²)\n'
+                         '\n'
+                         'Rearranging:\n'
+                         'a = F ÷ m\n'
+                         'm = F ÷ a\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         '1000 kg car, resultant force 3000 N:\n'
+                         'a = 3000 ÷ 1000 = 3 m/s²\n'
+                         '\n'
+                         'Greater force → greater acceleration (for same mass).\n'
+                         'Greater mass → smaller acceleration (for same force).',
+              'heading': "Newton's Second Law"},
+             {'content': "NEWTON'S THIRD LAW:\n"
+                         'Whenever object A exerts a force on object B, object B exerts an equal and opposite force on '
+                         'object A.\n'
+                         '\n'
+                         "Also called: 'action and reaction are equal and opposite'.\n"
+                         '\n'
+                         'Key features of Third Law pairs:\n'
+                         'EQUAL in magnitude.\n'
+                         'OPPOSITE in direction.\n'
+                         'ACT ON DIFFERENT OBJECTS — they cannot cancel each other.\n'
+                         'SAME TYPE of force.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Book on table: book pushes down on table (gravity transfers) → table pushes up on book '
+                         '(normal force). Equal magnitude, opposite direction.\n'
+                         'Rocket: rocket pushes exhaust gas backward → exhaust pushes rocket forward.\n'
+                         'Swimmer pushes water backward → water pushes swimmer forward.\n'
+                         'Earth pulls you down (gravity) → you pull Earth up (equally) but Earth barely moves '
+                         '(enormous mass).\n'
+                         '\n'
+                         "IMPORTANT: Newton's Third Law pairs must be the same TYPE of force between the same two "
+                         'objects.',
+              'heading': "Newton's Third Law"}],
+  'title': "Newton's Laws of Motion",
+  'triple_only': None,
+  'variables': [('F', 'Resultant force', 'newtons', 'N'),
+                ('m', 'Mass', 'kilograms', 'kg'),
+                ('a', 'Acceleration', 'm/s²', 'm/s²')]},
+ {'common_mistake': 'Braking distance ∝ v² — doubling speed QUADRUPLES braking distance (not doubles). Thinking '
+                    'distance is proportional to v (doubles when speed doubles). Students often mix up which factor '
+                    'affects which component.',
+  'equations': ['Stopping distance = thinking distance + braking distance',
+                'Thinking distance = speed × reaction time',
+                'Braking distance ∝ v²'],
+  'fifas': [{'label': 'Stopping Distance',
+             'question': 'A driver has reaction time 0.6 s and is driving at 20 m/s. The braking distance is 40 m. '
+                         'Calculate the total stopping distance.',
+             'steps': [('F',
+                        'Stopping distance = thinking distance + braking distance; thinking distance = speed × '
+                        'reaction time'),
+                       ('I', 'Speed = 20 m/s, reaction time = 0.6 s, braking distance = 40 m'),
+                       ('F', 'Thinking distance = 20 × 0.6 = 12 m'),
+                       ('A', 'Stopping distance = 12 + 40 = 52 m')]}],
+  'higher': None,
+  'id': 'stopping-distance-braking',
+  'key_note': 'Stopping distance = thinking + braking. Thinking distance affected by speed and reaction time (alcohol, '
+              'drugs, tiredness, distraction). Braking distance affected by speed (∝v²), road conditions (wet/ice), '
+              'tyre condition, brake condition, vehicle mass. Double speed → 4× braking distance.',
+  'matching': {'instruction': 'Match each factor to thinking distance or braking distance.',
+               'pairs': [('Thinking distance',
+                          'Driver is tired — reaction time increases → more distance covered before braking'),
+                         ('Thinking distance', 'Driving faster — same reaction time but higher speed → more distance'),
+                         ('Braking distance', 'Wet road — reduced friction between tyres and surface'),
+                         ('Braking distance', 'Bald tyres — less tread → reduced grip → longer distance to stop'),
+                         ('Both increase', 'Higher speed — thinking distance ∝ v AND braking distance ∝ v²')],
+               'title': 'Stopping Distance Factors'},
+  'quiz': [{'opts': [('It quadruples — braking distance is proportional to v², so (20/10)² = 4 times longer', True),
+                     ('It doubles — speed doubles so distance doubles', False),
+                     ('It increases by 10 m — simple addition', False),
+                     ('It stays the same — braking distance depends only on road conditions', False)],
+            'q': "A car's speed doubles from 10 m/s to 20 m/s. How does the braking distance change?",
+            'wrong_explanations': {1: "Braking distance ∝ v (not v²) would give doubling — but it's ∝ v², so doubling "
+                                      'speed multiplies braking distance by 4.',
+                                   2: 'Braking distance is not fixed — it depends on speed squared, road conditions '
+                                      'and braking force.',
+                                   3: 'Braking distance depends strongly on speed (∝v²) — doubling speed quadruples '
+                                      'it, not keeps it constant.'}},
+           {'opts': [('Alcohol increases reaction time — the driver takes longer to respond, so thinking distance '
+                      'increases',
+                      True),
+                     ('Alcohol weakens muscles — the driver cannot press the brakes as hard, increasing braking '
+                      'distance',
+                      False),
+                     ('Alcohol blurs vision — the driver takes longer to see the hazard and applies brakes later',
+                      False),
+                     ('Alcohol reduces vehicle mass — lighter car has less braking force available', False)],
+            'q': 'Why does alcohol increase stopping distance?',
+            'wrong_explanations': {1: 'While impaired vision and muscle weakness may play minor roles, the PRIMARY '
+                                      'effect of alcohol on stopping distance is through REACTION TIME (thinking '
+                                      'distance component).',
+                                   2: 'Vision is relevant but the primary mechanism tested at GCSE is the effect on '
+                                      'REACTION TIME specifically.',
+                                   3: "Alcohol doesn't change vehicle mass — the driver's mass is a tiny fraction of "
+                                      'the vehicle.'}}],
+  'rp': None,
+  'spec': '6.5.4.3',
+  'summary': 'Define stopping distance and explain factors affecting thinking distance and braking distance.',
+  'theory': [{'content': 'STOPPING DISTANCE = THINKING DISTANCE + BRAKING DISTANCE\n'
+                         '\n'
+                         'THINKING DISTANCE: distance travelled during the REACTION TIME of the driver (before brakes '
+                         'are applied).\n'
+                         'Thinking distance = speed × reaction time\n'
+                         '\n'
+                         'BRAKING DISTANCE: distance travelled from when brakes are APPLIED until the vehicle stops.\n'
+                         '\n'
+                         'EXAMPLE (typical values at 30 mph = 13.3 m/s):\n'
+                         'Thinking distance ≈ 9 m\n'
+                         'Braking distance ≈ 14 m\n'
+                         'Stopping distance ≈ 23 m\n'
+                         'At 60 mph: stopping distance ≈ 73 m (much more than double — braking distance increases with '
+                         'v²)',
+              'heading': 'Stopping Distance'},
+             {'content': 'Thinking distance = reaction time × speed\n'
+                         '\n'
+                         'Thinking distance INCREASES with:\n'
+                         'HIGHER SPEED — same reaction time but more distance covered.\n'
+                         'IMPAIRED REACTION TIME due to:\n'
+                         'ALCOHOL — slows nerve impulse transmission.\n'
+                         'DRUGS (including some prescription medicines) — affect concentration and reaction.\n'
+                         'TIREDNESS/FATIGUE — reduced alertness.\n'
+                         'DISTRACTION — mobile phones, eating, passengers.\n'
+                         '\n'
+                         'TYPICAL REACTION TIME: 0.2–0.9 seconds (average ~0.7 s).\n'
+                         '\n'
+                         'MEASURING REACTION TIME:\n'
+                         "Ruler drop test: drop a ruler through a person's fingers — measure how far it falls before "
+                         'they catch it.\n'
+                         'Electronic reaction time testers.\n'
+                         'Computer-based tests.',
+              'heading': 'Factors Affecting Thinking Distance'},
+             {'content': 'Braking distance INCREASES with:\n'
+                         'HIGHER SPEED — braking distance ∝ v² (doubling speed quadruples braking distance).\n'
+                         'POOR ROAD CONDITIONS:\n'
+                         'Wet road: less friction between tyres and road.\n'
+                         'Icy road: dramatically less friction.\n'
+                         'Loose gravel: tyres lose grip.\n'
+                         'DEFECTIVE TYRES:\n'
+                         'Bald tyres: little tread → reduced water dispersal → aquaplaning risk.\n'
+                         'Under-inflated tyres: reduce contact area.\n'
+                         'POOR BRAKES: worn brake pads, overheated brakes (brake fade).\n'
+                         'HEAVY VEHICLE: more mass → more kinetic energy to remove → longer braking distance (for same '
+                         'braking force).\n'
+                         '\n'
+                         'PHYSICS LINK:\n'
+                         'Braking force does WORK to remove kinetic energy:\n'
+                         'Work = F × d and Ek = ½mv²\n'
+                         'F × d = ½mv²\n'
+                         'So d = mv² ÷ (2F)\n'
+                         'Braking distance ∝ v² — doubling speed quadruples braking distance.\n'
+                         '\n'
+                         'LARGE DECELERATIONS:\n'
+                         'Hard braking → large deceleration → large forces on passengers.\n'
+                         'Could cause injuries — seat belts and crumple zones reduce risk.',
+              'heading': 'Factors Affecting Braking Distance'}],
+  'title': 'Stopping Distance and Braking',
+  'triple_only': None,
+  'variables': []}],
+
+"waves": [{'common_mistake': 'In a TRANSVERSE wave, the oscillation is PERPENDICULAR to the direction of travel — not parallel. '
+                    'In a LONGITUDINAL wave (like sound), the oscillation is PARALLEL to the direction of travel. '
+                    "Don't confuse the two.",
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'transverse-longitudinal-waves',
+  'key_note': 'Waves transfer energy, not matter. Transverse: oscillation ⊥ direction (light, water ripples, EM '
+              'waves). Longitudinal: oscillation ∥ direction (sound, ultrasound). Longitudinal shows compressions and '
+              'rarefactions. Sound needs a medium; light does not.',
+  'matching': {'instruction': 'Sort each wave into transverse or longitudinal.',
+               'pairs': [('Transverse', 'Light — electric field oscillates perpendicular to direction of travel'),
+                         ('Transverse', 'Water ripples — water surface moves up and down, wave moves horizontally'),
+                         ('Longitudinal',
+                          'Sound in air — air molecules compressed and rarefied in direction of travel'),
+                         ('Longitudinal', 'Ultrasound — pressure waves with compressions and rarefactions'),
+                         ('Transverse', 'All electromagnetic waves — can travel through a vacuum')],
+               'title': 'Wave Types'},
+  'quiz': [{'opts': [('Parallel — particles oscillate back and forth along the same direction as the wave travels',
+                      True),
+                     ('Perpendicular — particles oscillate at right angles to the wave direction', False),
+                     ('They move with the wave — carried forward as the wave progresses', False),
+                     ('They remain completely stationary — only energy travels', False)],
+            'q': 'How do particles move in a longitudinal wave compared to the direction of wave travel?',
+            'wrong_explanations': {1: 'PERPENDICULAR oscillation describes TRANSVERSE waves — in longitudinal waves, '
+                                      'oscillation is parallel.',
+                                   2: "Particles in a wave oscillate about their equilibrium position — they don't "
+                                      'travel with the wave. This is the key distinction between wave motion and '
+                                      'particle transport.',
+                                   3: "Particles do move — they oscillate back and forth. They just don't travel with "
+                                      'the wave as a whole.'}},
+           {'opts': [('Light is a transverse electromagnetic wave — needs no medium. Sound is longitudinal and needs '
+                      'particles to compress and rarefy.',
+                      True),
+                     ("Sound travels faster than light and 'uses up' the medium, leaving nothing for light", False),
+                     ('Light is brighter than sound waves — intensity allows it to travel without a medium', False),
+                     ('Sound is a transverse wave and cannot travel without a medium; light is longitudinal and can',
+                      False)],
+            'q': 'Why can light travel through a vacuum but sound cannot?',
+            'wrong_explanations': {1: 'Light travels much FASTER than sound (3×10⁸ m/s vs ~340 m/s) — speed is '
+                                      'irrelevant to whether a medium is needed.',
+                                   2: 'Wave intensity is unrelated to whether a medium is required.',
+                                   3: "It's the OPPOSITE: sound is LONGITUDINAL (needs medium); light is TRANSVERSE EM "
+                                      'wave (no medium needed).'}}],
+  'rp': 'RP19 (Physics) — Investigate the slinky spring to demonstrate transverse and longitudinal wave motion. RP20 — '
+        'Ripple tank to observe wave properties.',
+  'spec': '6.6.1.1',
+  'summary': 'Describe transverse and longitudinal waves and give examples of each.',
+  'theory': [{'content': 'A WAVE is a transfer of ENERGY from one place to another WITHOUT transferring matter.\n'
+                         '\n'
+                         "The particles (or fields) oscillate — they don't travel with the wave.\n"
+                         'The WAVE PATTERN travels; the MEDIUM stays in place.\n'
+                         '\n'
+                         'Evidence:\n'
+                         "Ripples on water: a floating cork bobs up and down but doesn't travel forward.\n"
+                         "Sound wave: air molecules vibrate back and forth but don't travel with the sound.\n"
+                         '\n'
+                         'Waves transfer energy — this is why sound can move a speaker cone, light can heat objects, '
+                         'and water waves erode cliffs.',
+              'heading': 'What Is a Wave?'},
+             {'content': 'TRANSVERSE WAVES: the oscillation (vibration) is PERPENDICULAR (at right angles) to the '
+                         'direction of wave travel.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'Light and all electromagnetic waves — electric and magnetic fields oscillate perpendicular '
+                         'to travel direction.\n'
+                         'Ripples on water surface — water moves up and down; wave travels horizontally.\n'
+                         'Waves on a string or rope — string moves up and down; wave travels along the string.\n'
+                         'Seismic S-waves.\n'
+                         '\n'
+                         'DRAWING: shows a sinusoidal wave — peaks and troughs.\n'
+                         'The DISPLACEMENT of the medium is perpendicular to the direction of energy transfer.\n'
+                         '\n'
+                         'CAN travel through vacuum — light reaches us from the Sun through empty space.',
+              'heading': 'Transverse Waves'},
+             {'content': 'LONGITUDINAL WAVES: the oscillation is PARALLEL to (along the same direction as) the '
+                         'direction of wave travel.\n'
+                         '\n'
+                         'EXAMPLES:\n'
+                         'SOUND waves in air (or any medium) — most important example.\n'
+                         'Ultrasound — longitudinal pressure waves above 20,000 Hz.\n'
+                         'Seismic P-waves.\n'
+                         'Compression waves in a spring.\n'
+                         '\n'
+                         'MECHANISM:\n'
+                         'Particles are pushed closer together (COMPRESSION) and pulled further apart (RAREFACTION) '
+                         'alternately.\n'
+                         'Compressions = high pressure regions. Rarefactions = low pressure regions.\n'
+                         'The pattern of compressions and rarefactions travels forward — the particles only vibrate '
+                         'back and forth.\n'
+                         '\n'
+                         'CANNOT travel through vacuum — sound needs a medium (particles to compress).\n'
+                         'In space, no one can hear you scream.',
+              'heading': 'Longitudinal Waves'}],
+  'title': 'Transverse and Longitudinal Waves',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Amplitude is the distance from the equilibrium (centre) to the crest — NOT from crest to trough '
+                    "(that's double the amplitude). Frequency and period are reciprocals: f = 1/T. Don't confuse "
+                    'wavelength (one full cycle length) with amplitude (height from centre).',
+  'equations': ['v = f × λ', 'T = 1 ÷ f'],
+  'fifas': [{'label': 'Wave Equation',
+             'question': 'A sound wave has frequency 500 Hz and travels at 340 m/s. Calculate its wavelength.',
+             'steps': [('F', 'v = f × λ, so λ = v ÷ f'),
+                       ('I', 'v = 340 m/s, f = 500 Hz'),
+                       ('F', 'λ = 340 ÷ 500'),
+                       ('A', 'λ = 0.68 m')]}],
+  'higher': None,
+  'id': 'properties-of-waves',
+  'key_note': 'Amplitude: equilibrium to crest (m). Wavelength (λ): crest to crest (m). Frequency (f): waves per '
+              'second (Hz). Period (T): seconds per wave. T = 1/f. v = fλ. EM waves in vacuum: 3×10⁸ m/s. Sound in '
+              'air: ~340 m/s. RP19: measure wave speed in ripple tank.',
+  'matching': {'instruction': 'Match each wave property to its definition and unit.',
+               'pairs': [('Amplitude', 'Maximum displacement from equilibrium — measured in metres'),
+                         ('Wavelength (λ)', 'Distance from one crest to the next — metres'),
+                         ('Frequency (f)', 'Number of complete waves per second — hertz (Hz)'),
+                         ('Period (T)', 'Time for one complete wave — seconds; T = 1/f'),
+                         ('Wave speed (v)', 'v = f × λ — distance travelled per second in m/s')],
+               'title': 'Wave Property Definitions'},
+  'quiz': [{'opts': [('0.005 s — T = 1 ÷ f = 1 ÷ 200 = 0.005 s', True),
+                     ('200 s — T = f = 200 s', False),
+                     ('20 s — T = f ÷ 10', False),
+                     ('0.1 s — T = 1/10 of the frequency', False)],
+            'q': 'A wave has frequency 200 Hz. What is its period?',
+            'wrong_explanations': {1: 'T is not equal to f — they are reciprocals: T = 1/f = 1/200 = 0.005 s.',
+                                   2: 'T = 1/f not f/10.',
+                                   3: 'T = 1/f only — T = 1/200 = 0.005 s.'}},
+           {'opts': [('1 × 10⁸ Hz — f = v ÷ λ = 3×10⁸ ÷ 3 = 1×10⁸ Hz', True),
+                     ('9 × 10⁸ Hz — f = v × λ = 3×10⁸ × 3', False),
+                     ('1 × 10⁻⁸ Hz — f = λ ÷ v = 3 ÷ 3×10⁸', False),
+                     ('3 × 10⁸ Hz — frequency equals wave speed for EM waves', False)],
+            'q': 'A radio wave has wavelength 3 m. What is its frequency? (speed of EM waves = 3 × 10⁸ m/s)',
+            'wrong_explanations': {1: 'f = v × λ multiplies rather than divides — must use f = v ÷ λ.',
+                                   2: 'f = λ ÷ v inverts the rearrangement. f = v ÷ λ = 3×10⁸ ÷ 3 = 1×10⁸ Hz.',
+                                   3: 'Wave speed and frequency are not the same — they are related by v = fλ.'}}],
+  'rp': 'RP19 (Physics) — Measure the speed of waves in a ripple tank using v = fλ. Measure frequency and wavelength '
+        'of waves. Also: measure speed of sound using microphones and oscilloscope.',
+  'spec': '6.6.1.2',
+  'summary': 'Define amplitude, wavelength, frequency, period and wave speed, and use v = fλ.',
+  'theory': [{'content': 'KEY WAVE PROPERTIES:\n'
+                         '\n'
+                         'AMPLITUDE (A): maximum displacement of a particle from its equilibrium (undisturbed) '
+                         'position.\n'
+                         'Measured in metres (m). Relates to energy — larger amplitude = more energy.\n'
+                         '\n'
+                         'WAVELENGTH (λ, lambda): distance from one point on a wave to the equivalent point on the '
+                         'next wave.\n'
+                         'For example: crest to crest, or trough to trough, or compression to compression.\n'
+                         'Measured in metres (m).\n'
+                         '\n'
+                         'FREQUENCY (f): number of complete waves passing a point per second.\n'
+                         'Measured in HERTZ (Hz). 1 Hz = 1 complete wave per second.\n'
+                         '\n'
+                         'PERIOD (T): time for one complete wave to pass a point.\n'
+                         'Measured in seconds (s).\n'
+                         'Relationship: T = 1 ÷ f  (or f = 1 ÷ T)',
+              'heading': 'Wave Properties'},
+             {'content': 'WAVE SPEED EQUATION:\n'
+                         'v = f × λ\n'
+                         '\n'
+                         'v = wave speed (m/s)\n'
+                         'f = frequency (Hz)\n'
+                         'λ = wavelength (m)\n'
+                         '\n'
+                         'Rearranging:\n'
+                         'f = v ÷ λ\n'
+                         'λ = v ÷ f\n'
+                         '\n'
+                         'EXAMPLE 1:\n'
+                         'Sound wave: frequency 440 Hz, speed 340 m/s:\n'
+                         'λ = 340 ÷ 440 = 0.77 m\n'
+                         '\n'
+                         'EXAMPLE 2:\n'
+                         'EM wave: wavelength 0.1 m, speed 3 × 10⁸ m/s:\n'
+                         'f = 3 × 10⁸ ÷ 0.1 = 3 × 10⁹ Hz = 3 GHz (microwave range)\n'
+                         '\n'
+                         'All EM waves travel at the SAME speed in vacuum: c = 3 × 10⁸ m/s.\n'
+                         'Sound in air: ~340 m/s at room temperature.',
+              'heading': 'The Wave Equation'},
+             {'content': 'REQUIRED PRACTICAL (RP19) — Measure wave speed:\n'
+                         '\n'
+                         'METHOD 1 — Water waves (ripple tank):\n'
+                         "Use a stroboscope to 'freeze' waves.\n"
+                         'Measure wavelength from the still image.\n'
+                         'Count frequency from the vibrating bar setting.\n'
+                         'Calculate: v = fλ.\n'
+                         '\n'
+                         'METHOD 2 — Sound waves:\n'
+                         'Connect a microphone to an oscilloscope.\n'
+                         'Display the waveform — measure period T from the trace.\n'
+                         'f = 1/T.\n'
+                         'Using two microphones and measuring time delay to find speed.\n'
+                         '\n'
+                         'EXAM SKILL — reading oscilloscope traces:\n'
+                         'Time per division (x-axis) → period T → frequency f = 1/T.\n'
+                         'Volts per division (y-axis) → amplitude.',
+              'heading': 'Measuring Wave Speed — Required Practical'}],
+  'title': 'Properties of Waves',
+  'triple_only': None,
+  'variables': [('v', 'Wave speed', 'm/s', 'm/s'),
+                ('f', 'Frequency', 'hertz', 'Hz'),
+                ('λ', 'Wavelength', 'metres', 'm'),
+                ('T', 'Period', 'seconds', 's'),
+                ('A', 'Amplitude', 'metres', 'm')]},
+ {'common_mistake': 'All EM waves travel at the SAME speed in vacuum (3 × 10⁸ m/s) — they differ only in wavelength '
+                    'and frequency. Higher frequency = shorter wavelength = more energy per photon. Gamma rays are NOT '
+                    'the same as X-rays — they come from different sources (nucleus vs electron deceleration).',
+  'equations': ['c = f × λ  (for EM waves in vacuum, c = 3 × 10⁸ m/s)'],
+  'fifas': [],
+  'higher': None,
+  'id': 'types-of-em-waves',
+  'key_note': 'EM spectrum (long→short λ): radio, microwave, infrared, visible, UV, X-ray, gamma. All travel at 3×10⁸ '
+              'm/s in vacuum. All transverse. Higher frequency = shorter λ = more energy. Visible: red (longest) to '
+              'violet (shortest). Gamma from nucleus; X-rays from electron deceleration.',
+  'matching': {'instruction': 'Match each EM wave type to its wavelength range or key property.',
+               'pairs': [('Radio waves', 'Longest wavelength — used for communication, TV and radio broadcasts'),
+                         ('Microwaves',
+                          'Wavelength ~1 mm to 0.1 m — used in mobile phones, cooking, satellite communication'),
+                         ('Infrared',
+                          'Emitted by all warm objects — detected as heat; used in night vision and remote controls'),
+                         ('Visible light',
+                          '400 nm (violet) to 700 nm (red) — only part of EM spectrum detected by human eyes'),
+                         ('Gamma rays', 'Shortest wavelength, highest energy — emitted by unstable atomic nuclei')],
+               'title': 'EM Spectrum Order'},
+  'quiz': [{'opts': [('Gamma rays — at the short-wavelength end of the spectrum; highest frequency and energy', True),
+                     ('Radio waves — longest wavelength means highest frequency', False),
+                     ('Visible light — humans evolved to see the most frequent EM radiation', False),
+                     ('Microwaves — used in microwave ovens, must have highest energy', False)],
+            'q': 'Which EM wave has the highest frequency?',
+            'wrong_explanations': {1: 'Longest wavelength = LOWEST frequency (v = fλ — for constant v, f and λ are '
+                                      'inversely proportional).',
+                                   2: 'Visible light is a narrow band in the middle of the spectrum — far from the '
+                                      'highest frequency.',
+                                   3: "Microwave ovens work by matching the frequency to water molecules' resonant "
+                                      'frequency, not because microwaves have the highest energy.'}},
+           {'opts': [('Speed — all travel at 3 × 10⁸ m/s regardless of wavelength or frequency', True),
+                     ('Wavelength — all EM waves have the same wavelength in vacuum', False),
+                     ('Frequency — the frequency is constant for all EM waves', False),
+                     ('Energy — all EM waves carry the same amount of energy', False)],
+            'q': 'All electromagnetic waves in a vacuum have the same what?',
+            'wrong_explanations': {1: 'EM waves vary enormously in wavelength — from >100 m (radio) to <0.01 nm '
+                                      '(gamma).',
+                                   2: 'Frequency varies inversely with wavelength for a given speed — radio (low f) to '
+                                      'gamma (high f).',
+                                   3: 'Energy per photon = hf — higher frequency EM waves carry more energy per '
+                                      'photon.'}}],
+  'rp': None,
+  'spec': '6.6.2.1',
+  'summary': 'Describe the electromagnetic spectrum and the properties all EM waves share.',
+  'theory': [{'content': 'ELECTROMAGNETIC (EM) WAVES are transverse waves that transfer energy from source to '
+                         'absorber.\n'
+                         '\n'
+                         'All EM waves:\n'
+                         'Travel at the SAME SPEED in vacuum: c = 3 × 10⁸ m/s.\n'
+                         'Are TRANSVERSE waves.\n'
+                         'Can travel through a VACUUM (no medium needed).\n'
+                         'Transfer ENERGY.\n'
+                         '\n'
+                         'EM waves form a CONTINUOUS SPECTRUM grouped by wavelength and frequency:\n'
+                         '(longest wavelength / lowest frequency → shortest wavelength / highest frequency)\n'
+                         '\n'
+                         'RADIO WAVES → MICROWAVES → INFRARED → VISIBLE LIGHT → ULTRAVIOLET → X-RAYS → GAMMA RAYS\n'
+                         '\n'
+                         "Memory: 'Raging Martians Invaded Venus Using X-ray Guns'\n"
+                         '\n'
+                         'As you go from radio → gamma:\n'
+                         'Wavelength DECREASES\n'
+                         'Frequency INCREASES\n'
+                         'Energy INCREASES (∝ frequency)',
+              'heading': 'The Electromagnetic Spectrum'},
+             {'content': 'Approximate ranges:\n'
+                         '\n'
+                         'RADIO WAVES: λ = 0.1 m to 10⁴ m; f = 30 MHz to 3 kHz\n'
+                         'MICROWAVES: λ = 1 mm to 0.1 m; f = 300 MHz to 300 GHz\n'
+                         'INFRARED: λ = 700 nm to 1 mm\n'
+                         'VISIBLE LIGHT: λ = 400 nm (violet) to 700 nm (red)\n'
+                         'ULTRAVIOLET: λ = 10 nm to 400 nm\n'
+                         'X-RAYS: λ = 0.01 nm to 10 nm\n'
+                         'GAMMA RAYS: λ < 0.01 nm; highest frequency and energy\n'
+                         '\n'
+                         'VISIBLE SPECTRUM (Roy G Biv):\n'
+                         'Red → Orange → Yellow → Green → Blue → Indigo → Violet\n'
+                         'Red has longest wavelength / lowest frequency in visible range.\n'
+                         'Violet has shortest wavelength / highest frequency in visible range.',
+              'heading': 'Wavelengths and Frequencies'},
+             {'content': 'RADIO WAVES: produced by oscillating electrical circuits in transmitters.\n'
+                         'MICROWAVES: produced by electronic devices; also by oscillating electrons.\n'
+                         'INFRARED: emitted by all objects with temperature above absolute zero — thermal radiation.\n'
+                         'VISIBLE LIGHT: produced by hot objects (incandescent), LEDs, fluorescent lamps.\n'
+                         'ULTRAVIOLET: produced by very hot objects (the Sun), UV lamps.\n'
+                         'X-RAYS: produced by decelerating high-energy electrons hitting a metal target.\n'
+                         'GAMMA RAYS: emitted from unstable atomic nuclei during radioactive decay.\n'
+                         '\n'
+                         'All are produced by changes in energy levels of electrons OR by oscillating charges.\n'
+                         'All travel at 3 × 10⁸ m/s in vacuum — but SLOWER in other materials.\n'
+                         'Light slows down in glass → this causes refraction.',
+              'heading': 'Sources and Properties'}],
+  'title': 'Types of Electromagnetic Waves',
+  'triple_only': None,
+  'variables': [('c', 'Speed of EM waves in vacuum', 'm/s', '3 × 10⁸ m/s'),
+                ('λ', 'Wavelength', 'metres', 'm'),
+                ('f', 'Frequency', 'hertz', 'Hz')]},
+ {'common_mistake': 'When light enters glass from air, it SLOWS DOWN and bends TOWARDS the normal (angle of refraction '
+                    '< angle of incidence). When it leaves glass into air, it SPEEDS UP and bends AWAY from the '
+                    'normal. Always identify which medium is faster/slower.',
+  'equations': [],
+  'fifas': [],
+  'higher': 'Explain refraction in terms of velocity change: when wave enters denser medium, wavefronts slow and '
+            'compress, causing a change in direction. Explain total internal reflection (TIR): when angle exceeds '
+            'critical angle in a denser medium, all light reflects internally. Applications: optical fibres, diamond '
+            'cut. Calculate critical angle: sin(c) = 1/n.',
+  'id': 'properties-em-waves-1',
+  'key_note': 'Refraction: change in direction due to change in speed at boundary. Air → glass (slower): bends towards '
+              'normal. Glass → air (faster): bends away. Frequency constant; wavelength changes. Ray diagrams: '
+              'incident ray, normal, refracted ray, angles of incidence and refraction.',
+  'matching': {'instruction': 'Match each refraction scenario to the correct description.',
+               'pairs': [('Air → glass', 'Wave slows down — bends towards the normal — angle of refraction smaller'),
+                         ('Glass → air', 'Wave speeds up — bends away from the normal — angle of refraction larger'),
+                         ('Along the normal (0°)', 'No refraction — wave passes straight through boundary unchanged'),
+                         ('Frequency during refraction', 'Stays constant — wavelength changes as speed changes')],
+               'title': 'Refraction Concepts'},
+  'quiz': [{'opts': [('It bends towards the normal — angle of refraction is less than 40°, because light slows down in '
+                      'glass',
+                      True),
+                     ('It bends away from the normal — angle of refraction is greater than 40°', False),
+                     ('It travels straight through without bending — glass has no effect on direction', False),
+                     ('It reflects back — light cannot pass from air into glass', False)],
+            'q': 'A ray of light passes from air into a glass block. The angle of incidence is 40°. What happens to '
+                 'the ray?',
+            'wrong_explanations': {1: 'Bending AWAY happens when light goes from glass to air (speeds up). Air → glass '
+                                      'means slowing down → bends TOWARDS normal.',
+                                   2: "Light is transmitted through glass — it doesn't fully reflect at normal "
+                                      'incidence.',
+                                   3: 'Total internal reflection only occurs when light travels from a denser medium '
+                                      '(glass) at an angle exceeding the critical angle — not when going from air into '
+                                      'glass.'}},
+           {'opts': [('Wavelength and speed both decrease — frequency stays constant', True),
+                     ('Frequency increases — higher frequency in a denser medium', False),
+                     ('Speed increases — denser medium speeds waves up', False),
+                     ('All properties change — wavelength, frequency and speed all change', False)],
+            'q': 'When light is refracted into a slower medium, which property changes?',
+            'wrong_explanations': {1: "Frequency is determined by the SOURCE — it doesn't change at a boundary. Speed "
+                                      'and wavelength both change (λ = v/f).',
+                                   2: 'Speed DECREASES in a denser/slower medium — waves slow down, not speed up.',
+                                   3: "Frequency is the one property that DOESN'T change during refraction — only "
+                                      'speed and wavelength change.'}}],
+  'rp': 'RP20 (Physics) — Investigate refraction of light through glass or perspex blocks. Measure angles of incidence '
+        'and refraction. Plot i vs r to find relationship.',
+  'spec': '6.6.2.2',
+  'summary': 'Describe refraction of EM waves and construct ray diagrams at boundaries.',
+  'theory': [{'content': 'REFRACTION: the change in direction of a wave when it passes from one medium to another.\n'
+                         '\n'
+                         'Caused by a CHANGE IN WAVE SPEED at the boundary.\n'
+                         'When waves move from a FAST medium to a SLOW medium → bend TOWARDS the normal.\n'
+                         'When waves move from a SLOW medium to a FAST medium → bend AWAY from the normal.\n'
+                         '\n'
+                         'FOR LIGHT:\n'
+                         'Light slows down when entering glass or water from air.\n'
+                         'Bends TOWARDS the normal when entering glass (air → glass).\n'
+                         'Bends AWAY from the normal when leaving glass (glass → air).\n'
+                         '\n'
+                         'WAVELENGTH changes during refraction — frequency stays constant.\n'
+                         'λ = v/f — if v decreases and f stays constant, λ must decrease too.',
+              'heading': 'Refraction of Waves'},
+             {'content': 'Drawing refraction ray diagrams:\n'
+                         '\n'
+                         '1. Draw the boundary between two media (horizontal line).\n'
+                         '2. Draw the NORMAL — a dashed line perpendicular to the boundary at the point of incidence.\n'
+                         '3. Draw the INCIDENT RAY approaching the boundary.\n'
+                         '4. Measure the ANGLE OF INCIDENCE (i) — between incident ray and normal.\n'
+                         '5. Draw the REFRACTED RAY on the other side of the boundary.\n'
+                         '6. Measure the ANGLE OF REFRACTION (r) — between refracted ray and normal.\n'
+                         '\n'
+                         'RULE: when going from air into glass (slower medium):\n'
+                         'Angle of refraction < angle of incidence (bends towards normal).\n'
+                         'If incident ray is along the normal (0°): no bending occurs.\n'
+                         '\n'
+                         'At 0° (along the normal): no refraction — wave passes straight through.',
+              'heading': 'Ray Diagrams for Refraction'},
+             {'content': 'When EM waves reach a boundary, several things can happen:\n'
+                         '\n'
+                         'TRANSMISSION: wave passes through the medium.\n'
+                         'ABSORPTION: wave energy transferred to the medium (heats it up or causes other effects).\n'
+                         'REFLECTION: wave bounces back from the boundary.\n'
+                         'REFRACTION: wave passes through but changes direction due to speed change.\n'
+                         '\n'
+                         'Different materials affect different wavelengths differently:\n'
+                         'Glass: transparent to visible light, opaque to ultraviolet and infrared.\n'
+                         'Sunscreen: absorbs UV, transmits visible.\n'
+                         'X-ray: transmitted by soft tissue, absorbed by bone.\n'
+                         'Microwaves: absorbed by water molecules in food (hence microwave cooking).\n'
+                         '\n'
+                         'This wavelength-dependent behaviour is why we have different detectors and uses for '
+                         'different parts of the EM spectrum.',
+              'heading': 'Absorption, Transmission and Reflection'}],
+  'title': 'Properties of Electromagnetic Waves 1',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'UV, X-rays and gamma rays are all IONISING — they can damage DNA. Infrared and visible light can '
+                    'cause burns/eye damage but are NOT ionising. The hazard from ionising radiation is cancer and '
+                    'cell damage — not just burns.',
+  'equations': [],
+  'fifas': [],
+  'higher': 'Radio waves produced by electrical oscillations — when absorbed they induce AC at the same frequency. '
+            'Explain how this is used in radio reception. Describe greenhouse effect of atmosphere in terms of IR '
+            'absorption and re-emission by greenhouse gases. Discuss how changes in climate models affect predictions.',
+  'id': 'properties-em-waves-2',
+  'key_note': 'Hazards increase with frequency. Infrared: burns. UV: sunburn, skin cancer, eye damage. X-rays: '
+              'ionising, cancer risk, medical imaging. Gamma: most ionising, cancer/radiotherapy. Radio waves: '
+              'produced by oscillating circuits, absorbed to induce same-frequency AC. Ionising radiation damages DNA '
+              '→ mutations.',
+  'matching': {'instruction': 'Match each EM wave type to its main hazard and protection.',
+               'pairs': [('Infrared', 'Thermal burns at high intensity — avoid prolonged exposure to intense sources'),
+                         ('Ultraviolet',
+                          'Sunburn and skin cancer — DNA damage in skin cells — use sunscreen and cover up'),
+                         ('X-rays', 'Ionising — DNA damage and cancer risk — minimise dose, use lead shielding'),
+                         ('Gamma rays',
+                          'Most ionising and penetrating — used in radiotherapy — needs lead/concrete shielding')],
+               'title': 'EM Wave Hazards'},
+  'quiz': [{'opts': [('X-rays are ionising — they have enough energy to remove electrons from atoms, damaging DNA. '
+                      'Infrared only heats tissue.',
+                      True),
+                     ('X-rays travel faster than infrared — more collisions with cells per second', False),
+                     ('Infrared is absorbed at the surface — X-rays penetrate deeper', False),
+                     ('X-rays have longer wavelength — this allows them to interact with more DNA molecules', False)],
+            'q': 'Why are X-rays more harmful to living tissue than infrared radiation of the same intensity?',
+            'wrong_explanations': {1: "All EM waves travel at the same speed (3×10⁸ m/s) in vacuum — speed doesn't "
+                                      'determine hazard.',
+                                   2: 'While penetration IS a factor in X-ray safety, the fundamental reason X-rays '
+                                      'are more harmful is IONISATION — they can break chemical bonds and damage DNA.',
+                                   3: 'X-rays have SHORTER wavelength than infrared. Shorter wavelength = higher '
+                                      'frequency = more energy per photon = more likely to ionise.'}},
+           {'opts': [('Ultraviolet — UV has enough energy to penetrate skin cells and damage DNA, causing mutations',
+                      True),
+                     ('Infrared — warmth from the sun causes DNA to denature', False),
+                     ('Visible light — the bright light damages cell membranes', False),
+                     ('All parts equally — sunlight causes damage through all wavelengths together', False)],
+            'q': 'A person sunbathes without sunscreen. Which part of sunlight causes the most DNA damage?',
+            'wrong_explanations': {1: 'Infrared causes thermal effects (sunburn/heat) — but DNA damage specifically '
+                                      'comes from UV ionising radiation.',
+                                   2: "Visible light at solar intensities can damage the eyes (retina) but doesn't "
+                                      'significantly damage skin DNA.',
+                                   3: 'UV is specifically responsible for DNA damage and skin cancer — this is why SPF '
+                                      'sunscreens block UV, not the whole spectrum.'}}],
+  'rp': None,
+  'spec': '6.6.2.3',
+  'summary': 'Describe hazards of EM radiation and how different waves interact with matter.',
+  'theory': [{'content': 'Not all EM radiation is harmful — hazard depends on frequency (and therefore energy per '
+                         'photon).\n'
+                         '\n'
+                         'HIGHER FREQUENCY = MORE ENERGY = MORE POTENTIALLY HARMFUL.\n'
+                         '\n'
+                         'RADIO WAVES AND MICROWAVES:\n'
+                         'Generally low risk at normal exposures.\n'
+                         'Microwaves CAN heat tissue (same mechanism as microwave oven — absorbed by water).\n'
+                         'Concerns about mobile phones (microwaves) have been studied — no confirmed harmful effects '
+                         'at normal levels.\n'
+                         '\n'
+                         'INFRARED:\n'
+                         'Absorbed by skin — can cause BURNS at high intensity.\n'
+                         'Thermal cameras detect infrared emitted by people and objects.\n'
+                         '\n'
+                         'VISIBLE LIGHT:\n'
+                         'Normally safe. Very intense visible light can damage retina (e.g. looking at solar eclipse '
+                         'or high-power laser).',
+              'heading': 'Hazards of EM Radiation'},
+             {'content': 'ULTRAVIOLET (UV):\n'
+                         'Can cause SUNBURN — damages skin cells.\n'
+                         'Increases risk of SKIN CANCER — damages DNA in skin cells.\n'
+                         "Can cause damage to EYES — cataracts, photokeratitis ('snow blindness').\n"
+                         'Protection: sunscreen (absorbs UV), sunglasses (filter UV), protective clothing.\n'
+                         '\n'
+                         'X-RAYS:\n'
+                         'Penetrate soft tissue, absorbed by denser materials (bone, metal).\n'
+                         'Used in medical imaging (X-rays, CT scans).\n'
+                         'Can IONISE cells — damage DNA → cancer risk.\n'
+                         'Dose kept minimal; radiographers leave the room; lead aprons used.\n'
+                         '\n'
+                         'GAMMA RAYS:\n'
+                         'Highest energy — most penetrating, most ionising.\n'
+                         'Emitted by radioactive materials.\n'
+                         'Can cause radiation sickness at high doses, cancer at lower doses.\n'
+                         'Used in cancer TREATMENT (radiotherapy) — beams focused on tumour.\n'
+                         '\n'
+                         'Ionising radiation (UV, X-ray, gamma): damages DNA → mutations → cancer.',
+              'heading': 'Ultraviolet, X-rays and Gamma Rays'},
+             {'content': 'RADIO WAVES are produced by OSCILLATING ELECTRICAL CIRCUITS:\n'
+                         'An alternating current at radio frequency in a transmitter aerial causes oscillating charges '
+                         '→ emit radio waves.\n'
+                         'Frequency of radio waves = frequency of electrical oscillation in the circuit.\n'
+                         '\n'
+                         'ABSORPTION OF RADIO WAVES:\n'
+                         'When radio waves are absorbed by a conducting aerial → induces an alternating current at the '
+                         'SAME FREQUENCY as the radio wave → this is how radio receivers work.\n'
+                         '\n'
+                         'DIFFERENT EM WAVES — INTERACTION WITH MATTER SUMMARY:\n'
+                         'Absorbed: energy transferred to medium (heating or other effects).\n'
+                         'Transmitted: passes through without significant interaction.\n'
+                         'Reflected: bounces off boundary.\n'
+                         'Refracted: changes direction at boundary due to speed change.\n'
+                         "The interaction depends on the wavelength and the material's properties.",
+              'heading': 'Radio Waves — Production and Uses'}],
+  'title': 'Properties of Electromagnetic Waves 2 and Hazards',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'MRI scanners use RADIO WAVES (not X-rays) — they are safe for soft tissue imaging with no '
+                    'ionising radiation. X-rays are used for imaging BONE and dense structures. Also: microwaves for '
+                    'SATELLITE communication (pass through ionosphere); radio waves for BROADCAST (reflect off '
+                    'ionosphere).',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'uses-em-waves',
+  'key_note': 'Radio: broadcast, MRI. Microwave: satellites, phones, radar, cooking. IR: heating, remote controls, '
+              'night vision, fibre optics. Visible: photography, fibre optics, photosynthesis. UV: sterilisation, '
+              'fluorescence, vitamin D. X-ray: medical imaging, airport security, CT. Gamma: radiotherapy, '
+              'sterilisation, tracers.',
+  'matching': {'instruction': 'Match each application to the EM wave type used.',
+               'pairs': [('Radio waves', 'MRI scanner — safe for soft tissue, no ionising radiation'),
+                         ('Microwaves', 'Satellite communication — passes through ionosphere to reach satellites'),
+                         ('Infrared', 'TV remote control — pulses of IR carry the signal to the TV'),
+                         ('X-rays', 'Medical imaging of bones — absorbed by dense bone, transmitted by soft tissue'),
+                         ('Gamma rays', 'Radiotherapy — focused beams kill cancer cells')],
+               'title': 'EM Wave Applications'},
+  'quiz': [{'opts': [('Microwaves pass through the ionosphere — radio waves reflect off it, preventing them from '
+                      'reaching satellites in orbit',
+                      True),
+                     ('Microwaves are more powerful — they reach greater distances than radio waves', False),
+                     ('Radio waves are dangerous at high altitude — microwaves are safer for satellite use', False),
+                     ('Satellites can only detect microwaves — their receivers are not compatible with radio waves',
+                      False)],
+            'q': 'Why are microwaves used for satellite communications rather than radio waves?',
+            'wrong_explanations': {1: 'Power determines signal strength at a given distance — but all EM waves travel '
+                                      'at the same speed. The key distinction is IONOSPHERE INTERACTION.',
+                                   2: 'Safety is not the relevant factor — the ionosphere physically reflects (most) '
+                                      'radio waves back to Earth.',
+                                   3: "This is backwards — it's the PHYSICS of ionosphere reflection, not receiver "
+                                      'incompatibility, that determines which EM type is used.'}},
+           {'opts': [('UV has enough energy to damage DNA in microorganisms — killing or inactivating bacteria and '
+                      'viruses',
+                      True),
+                     ('UV heats the equipment to high temperatures, killing microorganisms by heat', False),
+                     ('UV is absorbed by metal — heating the equipment surface to kill bacteria', False),
+                     ('UV converts oxygen to ozone, which then kills bacteria chemically', False)],
+            'q': 'UV light is used to sterilise medical equipment. Why is UV effective for this?',
+            'wrong_explanations': {1: "UV can cause some warming but it's not the primary mechanism — UV sterilisation "
+                                      'works through DNA damage (photochemical action), not significant heating.',
+                                   2: 'UV sterilisation is used for transparent surfaces, water, and air — metal '
+                                      'surfaces are typically sterilised by heat or chemicals.',
+                                   3: 'UV can produce some ozone, but the primary sterilisation mechanism is direct '
+                                      'DNA damage from UV photons — not ozone.'}}],
+  'rp': None,
+  'spec': '6.6.2.4',
+  'summary': 'Describe the uses of each type of electromagnetic wave and explain why each type is suitable.',
+  'theory': [{'content': 'RADIO WAVES:\n'
+                         'BROADCASTING: AM and FM radio, TV broadcasts — travel long distances, reflect off '
+                         'ionosphere.\n'
+                         'COMMUNICATION: aircraft, ships, emergency services.\n'
+                         'ASTRONOMY: radio telescopes detect radio waves from distant stars and galaxies.\n'
+                         'MRI SCANNERS: radio waves + magnetic field → detailed images of soft tissue (no ionising '
+                         'radiation).\n'
+                         '\n'
+                         'MICROWAVES:\n'
+                         'MOBILE PHONES AND WIFI: short-range communication.\n'
+                         'SATELLITE COMMUNICATION: microwaves pass through the atmosphere and ionosphere (radio waves '
+                         'reflect off ionosphere — limited for satellite use).\n'
+                         "MICROWAVE OVENS: microwave frequency matches water molecules' resonance → absorbed → food "
+                         'heats from inside.\n'
+                         'RADAR: detect aircraft, ships, weather systems — measure distance by timing reflection.',
+              'heading': 'Uses of Radio Waves and Microwaves'},
+             {'content': 'INFRARED (IR):\n'
+                         'HEATING: electric heaters, grills — absorbed by surfaces, converted to heat.\n'
+                         'REMOTE CONTROLS: TV, DVD players — IR pulses carry coded signals.\n'
+                         'FIBRE OPTICS: IR carried along optical fibres for high-speed internet.\n'
+                         'NIGHT VISION CAMERAS: detect IR emitted by warm bodies — useful in darkness.\n'
+                         'THERMAL IMAGING: medical, security, wildlife observation.\n'
+                         '\n'
+                         'VISIBLE LIGHT:\n'
+                         'PHOTOGRAPHY: cameras capture visible light.\n'
+                         'FIBRE OPTICS: carries data as light pulses — basis of broadband internet.\n'
+                         'PHOTOSYNTHESIS: plants absorb red and blue light.\n'
+                         'LASERS: surgery, barcode scanners, DVD reading.\n'
+                         '\n'
+                         'ULTRAVIOLET (UV):\n'
+                         'STERILISATION: UV kills bacteria and viruses — used in hospitals and water treatment.\n'
+                         'FLUORESCENCE: some materials emit visible light when absorbing UV — security markings, '
+                         'fluorescent lamps.\n'
+                         'BLACK LIGHTS: detect forged bank notes (UV-reactive ink).\n'
+                         'VITAMIN D PRODUCTION: skin produces vitamin D when exposed to UV.',
+              'heading': 'Uses of Infrared, Visible and Ultraviolet'},
+             {'content': 'X-RAYS:\n'
+                         'MEDICAL IMAGING: pass through soft tissue, absorbed by bone → shadow on film/detector.\n'
+                         'CT SCANS: multiple X-ray beams → 3D image of internal structures.\n'
+                         'AIRPORT SECURITY: luggage scanning — detect metal, explosives.\n'
+                         'MATERIAL TESTING: checking for cracks in metal castings and welds.\n'
+                         '\n'
+                         'GAMMA RAYS:\n'
+                         'CANCER TREATMENT (radiotherapy): focused beams kill tumour cells.\n'
+                         'ST ERILISATION of medical equipment: kills all microorganisms without heat.\n'
+                         'FOOD IRRADIATION: kills bacteria in food → longer shelf life.\n'
+                         'MEDICAL TRACERS: gamma-emitting radioisotopes injected → gamma camera detects distribution '
+                         'in body → reveals organ function.\n'
+                         'THICKNESS MONITORING: detect gamma penetration through materials in manufacturing.\n'
+                         '\n'
+                         'MATCHING APPLICATION TO WAVE TYPE:\n'
+                         'The wave chosen matches its properties to the application:\n'
+                         'Must penetrate enough → not be absorbed too quickly.\n'
+                         'Must interact appropriately with the target material.\n'
+                         'Hazard must be managed — ionising types minimised.',
+              'heading': 'Uses of X-rays and Gamma Rays'}],
+  'title': 'Uses and Applications of Electromagnetic Waves',
+  'triple_only': None,
+  'variables': []}],
+
+"magnetism": [{'common_mistake': 'Only IRON, STEEL, NICKEL and COBALT are magnetic materials. Aluminium and copper are NOT '
+                    'attracted to magnets. Permanent magnets (steel) retain magnetism. Induced magnets (iron) lose it '
+                    'when the field is removed.',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'poles-of-a-magnet',
+  'key_note': 'Like poles repel; opposite poles attract. Permanent magnets: retain magnetism (steel — hard). Induced '
+              'magnets: temporary, lose magnetism when external field removed (iron — soft). Magnetic materials: iron, '
+              'steel, nickel, cobalt. Domains: aligned = magnetised, random = unmagnetised.',
+  'matching': {'instruction': 'Match each statement to permanent magnet or induced magnet.',
+               'pairs': [('Permanent magnet', 'Made from steel — retains magnetism without an external field'),
+                         ('Induced magnet', 'Made from iron — temporary, loses magnetism when external field removed'),
+                         ('Both attract',
+                          'The near end always becomes the opposite pole — both are attracted to the magnet'),
+                         ('Demagnetising',
+                          'Heating above Curie temperature or using AC solenoid — randomises domain alignment')],
+               'title': 'Magnetic Properties'},
+  'quiz': [{'opts': [('The steel becomes an induced magnet — the end nearest the magnet becomes opposite in polarity, '
+                      'so they attract',
+                      True),
+                     ('Steel is made from iron which is naturally magnetic — it has its own permanent field that '
+                      'attracts',
+                      False),
+                     ('The paper clip gains an electric charge from the magnetic field — opposite charges attract',
+                      False),
+                     ('The magnetic field passes through the paper clip, pulling it forward', False)],
+            'q': 'A steel paper clip is brought near a bar magnet. Why is the paper clip attracted?',
+            'wrong_explanations': {1: 'Steel is a MAGNETIC MATERIAL (ferromagnetic) but not permanently magnetised '
+                                      'until it is magnetised. The attraction is due to INDUCED MAGNETISM from the bar '
+                                      'magnet.',
+                                   2: "Magnetism and electric charge are separate — magnetic fields don't charge "
+                                      'objects with static electricity.',
+                                   3: "Magnetic forces act on magnetic materials — they don't 'push' the clip forward. "
+                                      'The attraction is between the magnetic poles of the induced magnet and the bar '
+                                      'magnet.'}},
+           {'opts': [('Fridge magnet: permanent — retains field indefinitely. Compass: also permanent — compass needle '
+                      'must always point north reliably',
+                      True),
+                     ('Fridge magnet: temporary — it loses magnetism each day. Compass: permanent', False),
+                     ('Fridge magnet: stronger field — household magnets are more powerful than compass needles',
+                      False),
+                     ('Fridge magnet: induced. Compass: permanent — all small magnets are induced magnets', False)],
+            'q': 'A fridge magnet and a compass are both magnets. What is the key difference between them regarding '
+                 'their magnetism?',
+            'wrong_explanations': {1: 'Both ARE permanent magnets — but the question is testing understanding that '
+                                      'both fridge magnets and compass needles are permanent (made from hard magnetic '
+                                      'materials).',
+                                   2: 'Strength varies between magnets but strength is not the distinguishing feature '
+                                      'the question asks about.',
+                                   3: 'Both the fridge magnet and compass needle are PERMANENT magnets — they must '
+                                      'retain their magnetism to function.'}}],
+  'rp': None,
+  'spec': '6.7.1.1',
+  'summary': 'Describe the properties of magnets, distinguish permanent from induced magnetism, and describe magnetic '
+             'forces.',
+  'theory': [{'content': 'Every magnet has a NORTH POLE and a SOUTH POLE.\n'
+                         '\n'
+                         'RULES FOR MAGNETIC FORCES:\n'
+                         'LIKE POLES REPEL — N and N repel; S and S repel.\n'
+                         'OPPOSITE POLES ATTRACT — N and S attract.\n'
+                         '\n'
+                         'Magnetic force is a NON-CONTACT FORCE — acts at a distance without touching.\n'
+                         '\n'
+                         'MAGNETIC MATERIALS:\n'
+                         'Ferromagnetic materials are attracted to magnets.\n'
+                         'Main ferromagnetic materials at GCSE: IRON, STEEL, NICKEL, COBALT.\n'
+                         'Aluminium, copper, plastic, wood — NOT magnetic.\n'
+                         '\n'
+                         'Only iron, steel, nickel and cobalt can become magnetised or be attracted to magnets.',
+              'heading': 'Poles and Magnetic Forces'},
+             {'content': 'PERMANENT MAGNETS:\n'
+                         "Produce their own persistent magnetic field — they don't need an external field to be "
+                         'magnetic.\n'
+                         'Retain magnetism when the external field is removed.\n'
+                         'Made from HARD magnetic materials — steel, alnico alloys.\n'
+                         'Hard materials are harder to magnetise but retain magnetism better.\n'
+                         'Examples: bar magnets, horseshoe magnets, fridge magnets, compass needles.\n'
+                         '\n'
+                         'INDUCED MAGNETS:\n'
+                         'Temporarily magnetised by placing them in a magnetic field.\n'
+                         'When the external field is removed, they LOSE their magnetism quickly.\n'
+                         'Made from SOFT magnetic materials — IRON.\n'
+                         'Soft materials are easier to magnetise and demagnetise.\n'
+                         'Examples: iron nail picked up by a magnet; iron core in an electromagnet.\n'
+                         '\n'
+                         'INDUCED MAGNETISM DIRECTION:\n'
+                         "The induced pole nearest to the magnet's pole is ALWAYS OPPOSITE to that pole.\n"
+                         'This is why magnets ATTRACT ferromagnetic materials — the near end becomes the opposite '
+                         'pole.',
+              'heading': 'Permanent and Induced Magnetism'},
+             {'content': 'MAGNETISING a material:\n'
+                         'Rub with a permanent magnet always in the same direction (stroking method).\n'
+                         'Place in a SOLENOID carrying DC — the field aligns the magnetic domains.\n'
+                         "Hammer while held in the Earth's magnetic field (unreliable).\n"
+                         '\n'
+                         'DEMAGNETISING:\n'
+                         'HEAT — heating above the CURIE TEMPERATURE destroys magnetic domain alignment.\n'
+                         'HAMMERING/VIBRATION — disrupts domain alignment.\n'
+                         'ALTERNATING CURRENT (AC) in a solenoid — reverses field repeatedly, randomising domains.\n'
+                         '\n'
+                         'MAGNETIC DOMAINS:\n'
+                         'A magnet is made of tiny regions called DOMAINS — each domain acts like a mini-magnet.\n'
+                         'In an UNMAGNETISED material: domains point in random directions → overall effect cancels.\n'
+                         'In a MAGNETISED material: domains are aligned in the same direction → net magnetic field.\n'
+                         'Magnetising aligns the domains; demagnetising randomises them.',
+              'heading': 'Magnetising and Demagnetising'}],
+  'title': 'Poles of a Magnet and Permanent Magnetism',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'Field lines go from NORTH to SOUTH outside the magnet — this shows the direction a north pole '
+                    'would move. Field lines NEVER cross. Closer field lines = STRONGER field — not weaker. The '
+                    "Earth's geographic north pole is actually a magnetic SOUTH pole (that's why compass north is "
+                    'attracted to it).',
+  'equations': [],
+  'fifas': [],
+  'higher': None,
+  'id': 'magnetic-fields',
+  'key_note': 'Magnetic field: region where magnetic material experiences force. Field lines: N to S outside magnet, '
+              'never cross, closer = stronger. Plot with compass (shows direction) or iron filings (shows pattern, no '
+              "direction). Strongest field at poles. Earth's field: like a giant bar magnet.",
+  'matching': {'instruction': 'Match each field line property to its meaning.',
+               'pairs': [('Arrow direction', 'Points from north pole to south pole outside the magnet'),
+                         ('Closely spaced lines', 'Strong magnetic field — near the poles of a bar magnet'),
+                         ('Widely spaced lines', 'Weak magnetic field — far from the magnet'),
+                         ('Lines that never cross',
+                          'Field lines represent unique directions — two directions at one point is impossible')],
+               'title': 'Magnetic Field Lines'},
+  'quiz': [{'opts': [('The field is strongest near the poles — closely spaced field lines indicate greater magnetic '
+                      'force in that region',
+                      True),
+                     ('The poles have more mass — iron filings are attracted to mass, not field strength', False),
+                     ('The poles are the least magnetised parts — filings avoid the strong field regions', False),
+                     ('Iron filings cluster near poles due to gravity — the poles are at the ends', False)],
+            'q': 'A student plots a magnetic field using iron filings around a bar magnet. The filings cluster densely '
+                 'near the poles. What does this show?',
+            'wrong_explanations': {1: 'Iron filings are attracted to magnetic fields — they cluster where the field is '
+                                      'STRONGEST (at poles), not due to mass.',
+                                   2: 'Dense filings = strong field = more attraction. Less magnetised areas would '
+                                      'have fewer filings.',
+                                   3: "The magnet is horizontal in typical demonstrations — gravity doesn't explain "
+                                      'end-clustering.'}},
+           {'opts': [('From the north pole to the south pole — field lines exit the north pole and enter the south '
+                      'pole',
+                      True),
+                     ("From south to north — the south pole is the 'positive' terminal", False),
+                     ("In random directions — field lines don't have a set direction", False),
+                     ('From both poles outward — field lines never enter the magnet', False)],
+            'q': 'Which direction do magnetic field lines point outside a bar magnet?',
+            'wrong_explanations': {1: 'Convention states field lines go from N to S — the direction a free north pole '
+                                      'would move.',
+                                   2: 'Field lines have a specific direction defined by convention — from N to S.',
+                                   3: 'Field lines form closed loops — they exit the north pole, curve around, and '
+                                      're-enter at the south pole.'}}],
+  'rp': 'RP21 (Physics) — Plot the magnetic field pattern around a bar magnet using a plotting compass. Mark direction '
+        'of field lines from N to S.',
+  'spec': '6.7.1.2',
+  'summary': 'Describe magnetic fields, draw field line patterns and explain how they show force and direction.',
+  'theory': [{'content': 'A MAGNETIC FIELD is a region around a magnet (or current-carrying conductor) where a '
+                         'magnetic material experiences a force.\n'
+                         '\n'
+                         'MAGNETIC FIELD LINES:\n'
+                         'Shown as lines with arrows pointing from NORTH to SOUTH outside the magnet.\n'
+                         'Inside the magnet, arrows point from south to north (completing the loop).\n'
+                         'Closer field lines → STRONGER field.\n'
+                         'Field lines NEVER CROSS each other.\n'
+                         '\n'
+                         'The STRENGTH of a magnetic field is shown by the SPACING of field lines:\n'
+                         'Close together → strong field (near the poles).\n'
+                         'Far apart → weak field (far from the magnet).\n'
+                         '\n'
+                         'A COMPASS placed in a magnetic field aligns with the field — the north pole of the compass '
+                         'points in the direction of the field line at that point.',
+              'heading': 'Magnetic Fields and Field Lines'},
+             {'content': 'BAR MAGNET:\n'
+                         'Field lines emerge from the NORTH pole, curve around, and enter the SOUTH pole.\n'
+                         'Strongest field at the POLES (field lines closest together).\n'
+                         'Field extends in 3D around the magnet.\n'
+                         '\n'
+                         'ATTRACTING MAGNETS (opposite poles facing):\n'
+                         'Field lines go from the N pole of one magnet to the S pole of the other.\n'
+                         'In the space between — field lines go directly across → strong, attractive force.\n'
+                         '\n'
+                         'REPELLING MAGNETS (like poles facing):\n'
+                         'Field lines curve AWAY from each other.\n'
+                         'A NEUTRAL POINT exists between them — where fields cancel (no net field).\n'
+                         '\n'
+                         'HORSESHOE MAGNET:\n'
+                         'Field lines go directly between the two poles (N and S facing each other).\n'
+                         'Strong, concentrated uniform field in the gap.\n'
+                         'Useful in motors and generators.',
+              'heading': 'Field Patterns for Different Magnets'},
+             {'content': 'PLOTTING WITH A COMPASS:\n'
+                         '1. Place bar magnet on paper.\n'
+                         '2. Place a compass at a point near the magnet.\n'
+                         '3. Mark the position of the NORTH END of the compass needle with a dot.\n'
+                         '4. Move the compass so its SOUTH end is where the previous dot was.\n'
+                         '5. Mark the new position of the north end.\n'
+                         '6. Repeat to trace the field line.\n'
+                         '7. Draw a smooth curve through the dots with an arrow pointing from the original position '
+                         'towards the current one (north to south direction outside the magnet).\n'
+                         '\n'
+                         'PLOTTING WITH IRON FILINGS:\n'
+                         'Scatter iron filings around the magnet on a sheet of paper.\n'
+                         'Filing align with field lines → reveals field pattern.\n'
+                         "Faster than compass method but doesn't show direction.\n"
+                         '\n'
+                         "Earth's magnetic field:\n"
+                         'Earth has a magnetic field that acts like a giant bar magnet.\n'
+                         'Geographic north pole corresponds to a magnetic SOUTH pole (compass north points there).\n'
+                         "Compass needles align with Earth's field — used for navigation.",
+              'heading': 'Plotting Magnetic Fields'}],
+  'title': 'Magnetic Fields',
+  'triple_only': None,
+  'variables': []},
+ {'common_mistake': 'An electromagnet uses IRON (soft) — not steel (hard). Iron demagnetises when the current is '
+                    'switched off. Steel would retain magnetism. Increasing CURRENT or NUMBER OF TURNS both increase '
+                    "the strength of an electromagnet's field.",
+  'equations': [],
+  'fifas': [],
+  'higher': 'The motor effect: a current-carrying conductor in a magnetic field experiences a force. F = BIl (force = '
+            "flux density × current × length). Fleming's Left-Hand Rule: thumb = force direction, index = field, "
+            'middle finger = current. Applications: electric motors (rotating coil in field). Induced EMF (generator '
+            'effect).',
+  'id': 'electromagnetism',
+  'key_note': 'Current-carrying wire: circular field lines, stronger with more current, weaker further away. Solenoid: '
+              'uniform field inside, acts like bar magnet. Electromagnet: solenoid + iron core. Iron (soft): loses '
+              'magnetism when off. Stronger with more current, more turns, iron core. Applications: cranes, bells, '
+              'MRI, relays.',
+  'matching': {'instruction': 'Match each feature to the correct description.',
+               'pairs': [('Magnetic field around a wire',
+                          'Concentric circles — stronger near the wire, strengthens with more current'),
+                         ('Solenoid field', 'Uniform inside the coil, acts like a bar magnet with N and S poles'),
+                         ('Why iron core is used',
+                          'Iron is soft — easily demagnetised when current stops, so electromagnet switches off '
+                          'cleanly'),
+                         ('Increasing field strength', 'Increase current OR increase number of turns OR add iron core'),
+                         ('Scrapyard crane',
+                          'Electromagnet picks up ferromagnetic scrap when on, releases when current switched off')],
+               'title': 'Electromagnetism Concepts'},
+  'quiz': [{'opts': [('Iron is a soft magnetic material — it quickly loses magnetism when the current is switched off, '
+                      'so the electromagnet can be turned off easily',
+                      True),
+                     ('Iron is harder than steel — it is more durable and resists damage', False),
+                     ('Iron has higher electrical conductivity than steel — more current flows through it', False),
+                     ('Steel would make the magnet too strong — iron limits the field to a safe level', False)],
+            'q': 'Why is an iron core used in an electromagnet instead of a steel core?',
+            'wrong_explanations': {1: "Steel is harder mechanically, but in magnetism 'hard' means it RETAINS "
+                                      'magnetism — which is not wanted for a switchable electromagnet.',
+                                   2: 'The iron core is not in the electrical circuit — it is inside the coil. Current '
+                                      'flows through the wire coil, not the core.',
+                                   3: 'The goal is NOT to limit strength — electromagnets are made as strong as '
+                                      'possible. The issue is being able to switch off.'}},
+           {'opts': [('The field doubles in strength — magnetic field strength is directly proportional to current',
+                      True),
+                     ('The field halves — more current creates resistance which reduces the field', False),
+                     ('The field stays the same — only the number of turns affects field strength', False),
+                     ('The field quadruples — field strength increases with current squared', False)],
+            'q': "What happens to the strength of an electromagnet's field when the current is doubled?",
+            'wrong_explanations': {1: 'The magnetic field of an electromagnet is proportional to current (and to '
+                                      "number of turns) — it doesn't reduce when current increases.",
+                                   2: 'BOTH current and number of turns affect field strength. Doubling current '
+                                      'doubles the field.',
+                                   3: 'Field strength is directly proportional to current (not current squared). '
+                                      'Doubling current → double field.'}}],
+  'rp': 'RP21 (Physics) — Investigate the factors affecting the strength of an electromagnet (number of turns, '
+        'current). Plot field strength vs current or turns.',
+  'spec': '6.7.2.1',
+  'summary': 'Describe the magnetic field around a current-carrying wire, solenoid and electromagnet.',
+  'theory': [{'content': 'A current-carrying conductor produces a MAGNETIC FIELD around it.\n'
+                         '\n'
+                         'For a STRAIGHT WIRE:\n'
+                         'Field lines form CONCENTRIC CIRCLES around the wire.\n'
+                         'The field is in a PLANE PERPENDICULAR to the wire.\n'
+                         'DIRECTION: given by the RIGHT-HAND RULE — point thumb in direction of conventional current '
+                         '(+ to −), fingers curl in direction of field lines.\n'
+                         '\n'
+                         'STRENGTH depends on:\n'
+                         'SIZE OF CURRENT — larger current → stronger field.\n'
+                         'DISTANCE FROM WIRE — further away → weaker field.\n'
+                         '\n'
+                         'This was discovered by Oersted (1820) — a compass placed near a current-carrying wire '
+                         'deflected. First evidence that electric current and magnetism are related.',
+              'heading': 'Magnetic Field Around a Current-Carrying Wire'},
+             {'content': 'A SOLENOID is a coil of wire. When current flows, it produces a uniform magnetic field '
+                         'INSIDE the coil.\n'
+                         '\n'
+                         'FIELD PATTERN:\n'
+                         'Outside the solenoid: similar to a bar magnet — lines from N to S.\n'
+                         'Inside the solenoid: uniform, parallel field lines along the axis.\n'
+                         'The solenoid acts like a BAR MAGNET — has a definite north and south end.\n'
+                         '\n'
+                         'IDENTIFYING POLES:\n'
+                         'Right-hand rule for solenoid: curl fingers in direction of conventional current flow around '
+                         'the coil → thumb points towards NORTH pole.\n'
+                         'Alternatively: view each end — if current flows ANTICLOCKWISE = NORTH; CLOCKWISE = SOUTH.\n'
+                         '\n'
+                         "STRENGTH of solenoid's field:\n"
+                         'Increase CURRENT → stronger field.\n'
+                         'Increase NUMBER OF TURNS → stronger field.\n'
+                         'Add IRON CORE → much stronger field (core becomes an induced magnet).',
+              'heading': 'The Solenoid'},
+             {'content': 'An ELECTROMAGNET is a solenoid with an IRON CORE.\n'
+                         '\n'
+                         'Why iron (not steel)?\n'
+                         'IRON is a SOFT magnetic material — easily magnetised and demagnetised.\n'
+                         'When current is OFF → iron loses its magnetism quickly → electromagnet switches OFF.\n'
+                         'STEEL would retain magnetism even when current is off — less useful as a switch.\n'
+                         '\n'
+                         'ADVANTAGES over permanent magnets:\n'
+                         'Can be switched on and off.\n'
+                         'Strength can be controlled by changing current.\n'
+                         'Polarity can be reversed by reversing current direction.\n'
+                         '\n'
+                         'APPLICATIONS:\n'
+                         'ELECTRIC BELL: electromagnet attracts striker → bell rings → circuit broken → striker '
+                         'returns → repeat.\n'
+                         'ELECTRIC CRANE (scrapyard): picks up ferromagnetic scrap when on → releases when off.\n'
+                         'CIRCUIT BREAKER (relay): electromagnet pulls a switch to break a circuit.\n'
+                         'MAGLEV TRAINS: electromagnets in track repel magnets in train → train levitates.\n'
+                         'MRI SCANNER: powerful electromagnets (superconducting) create strong, uniform field.\n'
+                         'SPEAKERS: varying current → changing force on cone → sound.',
+              'heading': 'Electromagnets'}],
+  'title': 'Electromagnetism',
+  'triple_only': None,
+  'variables': []}],
 
 }
