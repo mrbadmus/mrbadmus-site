@@ -1821,6 +1821,9 @@ def make_landing():
     {t:'Poles of a Magnet and Permanent Magnetism',s:'Physics',url:'/combined/higher/physics/magnetism/poles-of-a-magnet.html',c:'#4ECDC4'},
     {t:'Magnetic Fields',s:'Physics',url:'/combined/higher/physics/magnetism/magnetic-fields.html',c:'#4ECDC4'},
     {t:'Electromagnetism',s:'Physics',url:'/combined/higher/physics/magnetism/electromagnetism.html',c:'#4ECDC4'},
+    {t:'Momentum',s:'Physics',url:'/combined/higher/physics/forces/momentum.html',c:'#4ECDC4'},
+    {t:"Fleming's Left-Hand Rule and the Motor Effect",s:'Physics',url:'/combined/higher/physics/magnetism/flemings-left-hand-rule.html',c:'#4ECDC4'},
+    {t:'Electric Motors',s:'Physics',url:'/combined/higher/physics/magnetism/electric-motors.html',c:'#4ECDC4'},
     {t:'Cell Structure',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-structure.html',c:'#6BCB77'},
     {t:'Transport in Cells (Diffusion, Osmosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
     {t:'Cell Division (Mitosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-division.html',c:'#6BCB77'},
@@ -5095,6 +5098,7 @@ def build_site(output_dir="mrbadmus_site"):
     # Import subtopic data
     try:
         from all_subtopics_physics           import PHYSICS_SUBTOPICS_ALL
+        from all_subtopics_physics_higher    import PHYSICS_SUBTOPICS_ALL as PHYSICS_SUBTOPICS_HIGHER
         from all_subtopics_chemistry         import CHEMISTRY_SUBTOPICS_ALL
         from all_subtopics_chemistry_higher  import CHEMISTRY_SUBTOPICS_ALL as CHEMISTRY_SUBTOPICS_HIGHER
         from all_subtopics_biology           import BIOLOGY_SUBTOPICS_ALL
@@ -5103,6 +5107,7 @@ def build_site(output_dir="mrbadmus_site"):
     except ImportError as e:
         print(f"  ⚠️  Could not load subtopics: {e}")
         PHYSICS_SUBTOPICS_ALL        = {}
+        PHYSICS_SUBTOPICS_HIGHER     = {}
         CHEMISTRY_SUBTOPICS_ALL      = {}
         CHEMISTRY_SUBTOPICS_HIGHER   = {}
         BIOLOGY_SUBTOPICS_ALL        = {}
@@ -5196,6 +5201,8 @@ def build_site(output_dir="mrbadmus_site"):
                     subj_subtopics = BIOLOGY_SUBTOPICS_HIGHER
                 elif subject == "chemistry" and tier == "higher":
                     subj_subtopics = CHEMISTRY_SUBTOPICS_HIGHER
+                elif subject == "physics" and tier == "higher":
+                    subj_subtopics = PHYSICS_SUBTOPICS_HIGHER
                 else:
                     subj_subtopics = SUBTOPICS_ALL[subject]
                 color = subj_data["color"]
