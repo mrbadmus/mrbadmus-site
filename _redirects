@@ -1,0 +1,5 @@
+# Cloudflare Pages _redirects
+# This file goes in the root of your mrbadmus-site repo
+# It proxies API calls to the Render.com backend — students never see the backend URL
+
+/api/*  https://mrbadmus-backend.onrender.com/api/:splat  200
