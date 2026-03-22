@@ -5697,6 +5697,17 @@ def build_site(output_dir="mrbadmus_site"):
         f.write(NETLIFY_TOML)
     print("  ✅ netlify config")
 
+    # ── Auth pages — copy into output if they exist in repo root ──
+    import shutil as _shutil, os as _os
+    for _auth_file in ["auth.html", "profile-setup.html"]:
+        _src = _auth_file
+        _dst = f"{output_dir}/{_auth_file}"
+        if _os.path.exists(_src):
+            _shutil.copy2(_src, _dst)
+            print(f"  ✅ {_auth_file}")
+        else:
+            print(f"  ⚠️  {_auth_file} not found — skipping")
+
     # ── Landing page ──
     with open(f"{output_dir}/index.html", "w") as f:
         f.write(make_landing())
