@@ -1,25 +1,5 @@
 #!/usr/bin/env python3
-"""
-Physics subtopics — Triple Foundation (AQA 8463)
-COMPLETE — 64 subtopics across all 8 topics
-
-  Energy                  8 subtopics ✅
-  Electricity             12 subtopics ✅
-  Particle Model          6 subtopics ✅
-  Atomic Structure        11 subtopics ✅
-  Forces                  13 subtopics ✅
-  Waves                   8 subtopics ✅
-  Magnetism               3 subtopics ✅
-  Space Physics           3 subtopics ✅  (physics-only topic)
-
-Physics-only additions vs Combined Foundation:
-  Energy:           + thermal-conductivity
-  Electricity:      + static-charge, electric-fields
-  Atomic Structure: + background-radiation, uses-of-nuclear-radiation, nuclear-fission, nuclear-fusion
-  Forces:           + moments-levers-gears, pressure-in-a-fluid
-  Waves:            + lenses, infrared-black-bodies
-  Space Physics:    entire new topic (solar-system-gravity, stellar-evolution, red-shift-big-bang)
-"""
+"""Physics subtopics — Triple Foundation (AQA 8463) — 64 subtopics"""
 
 PHYSICS_COLOR = "#4ECDC4"
 
@@ -6654,7 +6634,7 @@ PHYSICS_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"space-physics": [{'common_mistake': 'Geostationary orbits are above the EQUATOR and have a period of exactly 24 hours — they appear '
+"space": [{'common_mistake': 'Geostationary orbits are above the EQUATOR and have a period of exactly 24 hours — they appear '
                     'stationary from Earth. LEO satellites have much shorter periods (90 minutes). The Sun is NOT at '
                     'the exact centre of planetary orbits — orbits are slightly elliptical, with the Sun at one focus.',
   'equations': [],

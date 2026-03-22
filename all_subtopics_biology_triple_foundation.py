@@ -1,25 +1,5 @@
 #!/usr/bin/env python3
-"""
-Biology subtopics — Triple Foundation (AQA 8461)
-COMPLETE — 83 subtopics across all 7 topics
-
-  4.1 Cell Biology            8 subtopics ✅
-  4.2 Organisation           11 subtopics ✅
-  4.3 Infection & Response   8 subtopics ✅
-  4.4 Bioenergetics          7 subtopics ✅
-  4.5 Homeostasis            12 subtopics ✅
-  4.6 Inheritance            19 subtopics ✅
-  4.7 Ecology                18 subtopics ✅
-
-Triple-only additions vs Combined Foundation:
-  Cell Biology:   culturing-microorganisms promoted from HT → Foundation
-  Homeostasis:    reaction-time, the-brain, the-eye, defects-of-the-eye promoted HT → Foundation
-  Inheritance:    meiosis, advantages-sexual-asexual, dna-structure, cloning,
-                  theory-of-evolution, understanding-genetics, classification-living-organisms
-  Ecology:        trophic-levels, pyramids-of-biomass, transfer-of-biomass,
-                  factors-affecting-food-security, farming-techniques,
-                  sustainable-fisheries, role-of-biotechnology
-"""
+"""Biology subtopics — Triple Foundation (AQA 8461) — 83 subtopics"""
 
 BIOLOGY_COLOR = "#6BCB77"
 
@@ -518,7 +498,8 @@ BIOLOGY_SUBTOPICS_ALL = {
                                    3: '45 minus 0.009 is not how you calculate magnification! Use M = I ÷ A = 45 ÷ '
                                       '0.009 = 5000.'}},
            {'opts': [('Ribosomes (~20 nm) are far below the resolution limit of light microscopes (~200 nm)', True),
-                     ('Ribosomes are only visible in living cells and electron microscopes can see living cells', True),
+                     ('Ribosomes are only visible in living cells and electron microscopes can see living cells',
+                      False),
                      ('Ribosomes are colourless and no stain existed until recently', False),
                      ('Ribosomes only appear in plant cells which were studied less', False)],
             'q': 'Why were ribosomes not discovered until electron microscopes became available?',

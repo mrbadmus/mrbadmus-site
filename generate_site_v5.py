@@ -35,7 +35,7 @@ SITE_DATA = {
                 "equations": ["KE = ½mv²", "GPE = mgh", "E = QΔθ", "Efficiency = useful output ÷ total input"],
                 "rp": ["RP1 — Specific heat capacity", "RP2 — Thermal insulation"],
                 "higher": ["Elastic potential energy: E = ½ke²", "Derivation of KE formula"],
-                "triple_only": [],
+                "triple_only": ["Thermal conductivity and insulation (RP2)"],
             },
             {
                 "id": "electricity",
@@ -95,7 +95,7 @@ SITE_DATA = {
                 "equations": ["A = N/t (activity)", "Count rate ÷ 2 per half-life"],
                 "rp": ["RP6 — Radioactive decay simulation (dice)"],
                 "higher": ["Nuclear equations with correct notation", "Uses and hazards of radiation"],
-                "triple_only": [],
+                "triple_only": ["Background radiation", "Uses of nuclear radiation", "Nuclear fission", "Nuclear fusion"],
             },
             {
                 "id": "forces",
@@ -120,7 +120,7 @@ SITE_DATA = {
                 "equations": ["W = mg", "W = Fs", "F = ke", "Moment = Fd", "p = F/A", "s = vt", "a = Δv/t", "F = ma", "p = mv"],
                 "rp": ["RP7 — Acceleration on a ramp", "RP8 — Force and extension (spring)"],
                 "higher": ["p = F/A for fluids", "Terminal velocity", "Impulse = FΔt"],
-                "triple_only": [],
+                "triple_only": ["Moments, levers and gears", "Pressure in fluids and upthrust"],
             },
             {
                 "id": "waves",
@@ -140,7 +140,7 @@ SITE_DATA = {
                 "equations": ["v = fλ", "T = 1/f"],
                 "rp": ["RP9 — Investigating waves — ripple tank / slinky", "RP10 — Light — reflection and refraction"],
                 "higher": ["Reflection angle = incidence angle", "Refractive index n = sin i / sin r"],
-                "triple_only": ["Radio wave production and detection", "X-rays in medicine", "Lenses and magnification"],
+                "triple_only": ["Sound waves, hearing and ultrasound", "Seismic waves and SONAR", "Lenses and vision correction", "Infrared emission and black bodies"],
             },
             {
                 "id": "magnetism",
@@ -161,7 +161,7 @@ SITE_DATA = {
                 "equations": ["F = BIL", "Vp/Vs = Np/Ns", "Vp × Ip = Vs × Is (100% efficiency)"],
                 "rp": ["RP11 — Investigate the factors affecting the force on a conductor"],
                 "higher": ["Induced EMF and flux", "Transformer efficiency calculations"],
-                "triple_only": [],
+                "triple_only": ["Loudspeakers", "Induced potential", "Generator effect", "Microphones", "Transformers"],
             },
             {
                 "id": "space",
@@ -230,7 +230,7 @@ SITE_DATA = {
                 "equations": [],
                 "rp": [],
                 "higher": ["Dot and cross diagrams for covalent molecules", "Graphene and nanotubes"],
-                "triple_only": ["Intermolecular forces — van der Waals, dipole-dipole, hydrogen bonds"],
+                "triple_only": [],
             },
             {
                 "id": "quantitative",
@@ -435,7 +435,7 @@ SITE_DATA = {
                 "equations": [],
                 "rp": ["RP3 — Effect of pH on enzyme activity", "RP4 — Food tests (starch, glucose, protein, fat)"],
                 "higher": ["Coronary heart disease — treatments", "Plant transport — xylem and phloem"],
-                "triple_only": ["Respiratory system — gas exchange details", "Blood clotting"],
+                "triple_only": [],
             },
             {
                 "id": "infection-response",
@@ -2064,9 +2064,92 @@ def make_landing():
     {t:'Poles of a Magnet and Permanent Magnetism',s:'Physics',url:'/triple/foundation/physics/magnetism/poles-of-a-magnet.html',c:'#4ECDC4'},
     {t:'Magnetic Fields',s:'Physics',url:'/triple/foundation/physics/magnetism/magnetic-fields.html',c:'#4ECDC4'},
     {t:'Electromagnetism',s:'Physics',url:'/triple/foundation/physics/magnetism/electromagnetism.html',c:'#4ECDC4'},
-    {t:'Our Solar System and Gravity',s:'Physics',url:'/triple/foundation/physics/space-physics/solar-system-gravity.html',c:'#4ECDC4'},
-    {t:'The Life Cycle of a Star',s:'Physics',url:'/triple/foundation/physics/space-physics/stellar-evolution.html',c:'#4ECDC4'},
-    {t:'Red-shift and the Big Bang',s:'Physics',url:'/triple/foundation/physics/space-physics/red-shift-big-bang.html',c:'#4ECDC4'},
+    {t:'Our Solar System and Gravity',s:'Physics',url:'/triple/foundation/physics/space/solar-system-gravity.html',c:'#4ECDC4'},
+    {t:'The Life Cycle of a Star',s:'Physics',url:'/triple/foundation/physics/space/stellar-evolution.html',c:'#4ECDC4'},
+    {t:'Red-shift and the Big Bang',s:'Physics',url:'/triple/foundation/physics/space/red-shift-big-bang.html',c:'#4ECDC4'},
+    // Triple Physics Higher
+    {t:'Energy Stores and Systems',s:'Physics',url:'/triple/higher/physics/energy/energy-stores-systems.html',c:'#4ECDC4'},
+    {t:'Changes in Energy',s:'Physics',url:'/triple/higher/physics/energy/changes-in-energy.html',c:'#4ECDC4'},
+    {t:'Energy Changes in Systems',s:'Physics',url:'/triple/higher/physics/energy/energy-changes-in-systems.html',c:'#4ECDC4'},
+    {t:'Power',s:'Physics',url:'/triple/higher/physics/energy/power.html',c:'#4ECDC4'},
+    {t:'Energy Transfers in a System',s:'Physics',url:'/triple/higher/physics/energy/energy-transfers-in-a-system.html',c:'#4ECDC4'},
+    {t:'Efficiency',s:'Physics',url:'/triple/higher/physics/energy/efficiency.html',c:'#4ECDC4'},
+    {t:'Energy Resources',s:'Physics',url:'/triple/higher/physics/energy/energy-resources.html',c:'#4ECDC4'},
+    {t:'Thermal Conductivity and Reducing Unwanted Energy Transfers',s:'Physics',url:'/triple/higher/physics/energy/thermal-conductivity.html',c:'#4ECDC4'},
+    {t:'Standard Circuit Diagram Symbols',s:'Physics',url:'/triple/higher/physics/electricity/circuit-symbols.html',c:'#4ECDC4'},
+    {t:'Electrical Charge and Current',s:'Physics',url:'/triple/higher/physics/electricity/electrical-charge-current.html',c:'#4ECDC4'},
+    {t:'Current, Resistance and Potential Difference',s:'Physics',url:'/triple/higher/physics/electricity/current-resistance-pd.html',c:'#4ECDC4'},
+    {t:'Resistors',s:'Physics',url:'/triple/higher/physics/electricity/resistors.html',c:'#4ECDC4'},
+    {t:'Series and Parallel Circuits',s:'Physics',url:'/triple/higher/physics/electricity/series-parallel-circuits.html',c:'#4ECDC4'},
+    {t:'Direct and Alternating Potential Difference',s:'Physics',url:'/triple/higher/physics/electricity/direct-alternating-pd.html',c:'#4ECDC4'},
+    {t:'Mains Electricity',s:'Physics',url:'/triple/higher/physics/electricity/mains-electricity.html',c:'#4ECDC4'},
+    {t:'Power',s:'Physics',url:'/triple/higher/physics/electricity/power-electricity.html',c:'#4ECDC4'},
+    {t:'Energy Transfers in Everyday Appliances',s:'Physics',url:'/triple/higher/physics/electricity/energy-transfers-appliances.html',c:'#4ECDC4'},
+    {t:'The National Grid',s:'Physics',url:'/triple/higher/physics/electricity/national-grid.html',c:'#4ECDC4'},
+    {t:'Static Charge',s:'Physics',url:'/triple/higher/physics/electricity/static-charge.html',c:'#4ECDC4'},
+    {t:'Electric Fields',s:'Physics',url:'/triple/higher/physics/electricity/electric-fields.html',c:'#4ECDC4'},
+    {t:'Density of Materials',s:'Physics',url:'/triple/higher/physics/particle-model/density-of-materials.html',c:'#4ECDC4'},
+    {t:'Changes of State',s:'Physics',url:'/triple/higher/physics/particle-model/changes-of-state.html',c:'#4ECDC4'},
+    {t:'Internal Energy',s:'Physics',url:'/triple/higher/physics/particle-model/internal-energy.html',c:'#4ECDC4'},
+    {t:'Temperature Changes and Specific Heat Capacity',s:'Physics',url:'/triple/higher/physics/particle-model/temperature-changes-shc.html',c:'#4ECDC4'},
+    {t:'Changes of State and Specific Latent Heat',s:'Physics',url:'/triple/higher/physics/particle-model/specific-latent-heat.html',c:'#4ECDC4'},
+    {t:'Particle Motion in Gases',s:'Physics',url:'/triple/higher/physics/particle-model/particle-motion-pressure.html',c:'#4ECDC4'},
+    {t:'The Structure of an Atom',s:'Physics',url:'/triple/higher/physics/atomic-structure/structure-of-atom.html',c:'#4ECDC4'},
+    {t:'Mass Number, Atomic Number and Isotopes',s:'Physics',url:'/triple/higher/physics/atomic-structure/mass-number-isotopes.html',c:'#4ECDC4'},
+    {t:'Development of the Model of the Atom',s:'Physics',url:'/triple/higher/physics/atomic-structure/development-atomic-model.html',c:'#4ECDC4'},
+    {t:'Radioactive Decay and Nuclear Radiation',s:'Physics',url:'/triple/higher/physics/atomic-structure/radioactive-decay.html',c:'#4ECDC4'},
+    {t:'Nuclear Equations',s:'Physics',url:'/triple/higher/physics/atomic-structure/nuclear-equations.html',c:'#4ECDC4'},
+    {t:'Half-Lives and Radioactive Decay',s:'Physics',url:'/triple/higher/physics/atomic-structure/half-lives.html',c:'#4ECDC4'},
+    {t:'Radioactive Contamination',s:'Physics',url:'/triple/higher/physics/atomic-structure/radioactive-contamination.html',c:'#4ECDC4'},
+    {t:'Background Radiation',s:'Physics',url:'/triple/higher/physics/atomic-structure/background-radiation.html',c:'#4ECDC4'},
+    {t:'Uses of Nuclear Radiation',s:'Physics',url:'/triple/higher/physics/atomic-structure/uses-of-nuclear-radiation.html',c:'#4ECDC4'},
+    {t:'Nuclear Fission',s:'Physics',url:'/triple/higher/physics/atomic-structure/nuclear-fission.html',c:'#4ECDC4'},
+    {t:'Nuclear Fusion',s:'Physics',url:'/triple/higher/physics/atomic-structure/nuclear-fusion.html',c:'#4ECDC4'},
+    {t:'Scalar and Vector Quantities',s:'Physics',url:'/triple/higher/physics/forces/scalar-vector-quantities.html',c:'#4ECDC4'},
+    {t:'Contact and Non-Contact Forces',s:'Physics',url:'/triple/higher/physics/forces/contact-noncontact-forces.html',c:'#4ECDC4'},
+    {t:'Gravity',s:'Physics',url:'/triple/higher/physics/forces/gravity.html',c:'#4ECDC4'},
+    {t:'Resultant Forces',s:'Physics',url:'/triple/higher/physics/forces/resultant-forces.html',c:'#4ECDC4'},
+    {t:'Resolving Forces and Vector Diagrams',s:'Physics',url:'/triple/higher/physics/forces/resolving-forces.html',c:'#4ECDC4'},
+    {t:'Free Body Diagrams',s:'Physics',url:'/triple/higher/physics/forces/free-body-diagrams.html',c:'#4ECDC4'},
+    {t:'Work Done and Energy Transfer',s:'Physics',url:'/triple/higher/physics/forces/work-done-energy-transfer.html',c:'#4ECDC4'},
+    {t:'Forces and Elasticity',s:'Physics',url:'/triple/higher/physics/forces/forces-elasticity.html',c:'#4ECDC4'},
+    {t:'Moments, Levers and Gears',s:'Physics',url:'/triple/higher/physics/forces/moments-levers-gears.html',c:'#4ECDC4'},
+    {t:'Pressure in a Fluid',s:'Physics',url:'/triple/higher/physics/forces/pressure-in-a-fluid.html',c:'#4ECDC4'},
+    {t:'Upthrust and Floating',s:'Physics',url:'/triple/higher/physics/forces/upthrust-floating.html',c:'#4ECDC4'},
+    {t:'Distance, Speed and Velocity',s:'Physics',url:'/triple/higher/physics/forces/distance-speed-velocity.html',c:'#4ECDC4'},
+    {t:'Distance–Time Graphs',s:'Physics',url:'/triple/higher/physics/forces/distance-time-graphs.html',c:'#4ECDC4'},
+    {t:'Acceleration',s:'Physics',url:'/triple/higher/physics/forces/acceleration.html',c:'#4ECDC4'},
+    {t:'Newton\'s Laws of Motion',s:'Physics',url:'/triple/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
+    {t:'Stopping Distance and Braking',s:'Physics',url:'/triple/higher/physics/forces/stopping-distance-braking.html',c:'#4ECDC4'},
+    {t:'Motion in a Circle',s:'Physics',url:'/triple/higher/physics/forces/motion-in-a-circle.html',c:'#4ECDC4'},
+    {t:'Momentum',s:'Physics',url:'/triple/higher/physics/forces/momentum.html',c:'#4ECDC4'},
+    {t:'Transverse and Longitudinal Waves',s:'Physics',url:'/triple/higher/physics/waves/transverse-longitudinal-waves.html',c:'#4ECDC4'},
+    {t:'Sound Waves and Hearing',s:'Physics',url:'/triple/higher/physics/waves/sound-waves-hearing.html',c:'#4ECDC4'},
+    {t:'Waves for Detection and Exploration',s:'Physics',url:'/triple/higher/physics/waves/waves-detection-exploration.html',c:'#4ECDC4'},
+    {t:'Properties of Waves',s:'Physics',url:'/triple/higher/physics/waves/properties-of-waves.html',c:'#4ECDC4'},
+    {t:'Types of Electromagnetic Waves',s:'Physics',url:'/triple/higher/physics/waves/types-of-em-waves.html',c:'#4ECDC4'},
+    {t:'Properties of Electromagnetic Waves 1',s:'Physics',url:'/triple/higher/physics/waves/properties-em-waves-1.html',c:'#4ECDC4'},
+    {t:'Properties of Electromagnetic Waves 2 and Hazards',s:'Physics',url:'/triple/higher/physics/waves/properties-em-waves-2.html',c:'#4ECDC4'},
+    {t:'Uses and Applications of Electromagnetic Waves',s:'Physics',url:'/triple/higher/physics/waves/uses-em-waves.html',c:'#4ECDC4'},
+    {t:'Wave Front Diagrams and Refraction',s:'Physics',url:'/triple/higher/physics/waves/wave-front-refraction.html',c:'#4ECDC4'},
+    {t:'Lenses',s:'Physics',url:'/triple/higher/physics/waves/lenses.html',c:'#4ECDC4'},
+    {t:'Infrared Emission, Absorption and Black Bodies',s:'Physics',url:'/triple/higher/physics/waves/infrared-black-bodies.html',c:'#4ECDC4'},
+    {t:'Radiation Balance and Earth\'s Temperature',s:'Physics',url:'/triple/higher/physics/waves/radiation-balance-temperature.html',c:'#4ECDC4'},
+    {t:'Poles of a Magnet and Permanent Magnetism',s:'Physics',url:'/triple/higher/physics/magnetism/poles-of-a-magnet.html',c:'#4ECDC4'},
+    {t:'Magnetic Fields',s:'Physics',url:'/triple/higher/physics/magnetism/magnetic-fields.html',c:'#4ECDC4'},
+    {t:'Electromagnetism',s:'Physics',url:'/triple/higher/physics/magnetism/electromagnetism.html',c:'#4ECDC4'},
+    {t:'Fleming\'s Left-Hand Rule and the Motor Effect',s:'Physics',url:'/triple/higher/physics/magnetism/flemings-left-hand-rule.html',c:'#4ECDC4'},
+    {t:'Electric Motors',s:'Physics',url:'/triple/higher/physics/magnetism/electric-motors.html',c:'#4ECDC4'},
+    {t:'Loudspeakers and Headphones',s:'Physics',url:'/triple/higher/physics/magnetism/loudspeakers-headphones.html',c:'#4ECDC4'},
+    {t:'Induced Potential and the Generator Effect',s:'Physics',url:'/triple/higher/physics/magnetism/induced-potential.html',c:'#4ECDC4'},
+    {t:'Uses of the Generator Effect',s:'Physics',url:'/triple/higher/physics/magnetism/uses-generator-effect.html',c:'#4ECDC4'},
+    {t:'Microphones',s:'Physics',url:'/triple/higher/physics/magnetism/microphones.html',c:'#4ECDC4'},
+    {t:'Transformers',s:'Physics',url:'/triple/higher/physics/magnetism/transformers.html',c:'#4ECDC4'},
+    {t:'Our Solar System and Gravity',s:'Physics',url:'/triple/higher/physics/space/solar-system-gravity.html',c:'#4ECDC4'},
+    {t:'Gravity, Stable Orbits and Orbital Speed',s:'Physics',url:'/triple/higher/physics/space/gravity-stable-orbits.html',c:'#4ECDC4'},
+    {t:'The Life Cycle of a Star',s:'Physics',url:'/triple/higher/physics/space/stellar-evolution.html',c:'#4ECDC4'},
+    {t:'Red-shift and the Big Bang',s:'Physics',url:'/triple/higher/physics/space/red-shift-big-bang.html',c:'#4ECDC4'},
+    {t:'Dark Matter and Dark Energy',s:'Physics',url:'/triple/higher/physics/space/dark-matter-dark-energy.html',c:'#4ECDC4'},
     {t:'Cell Structure',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-structure.html',c:'#6BCB77'},
     {t:'Transport in Cells (Diffusion, Osmosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
     {t:'Cell Division (Mitosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-division.html',c:'#6BCB77'},
@@ -5513,6 +5596,7 @@ def build_site(output_dir="mrbadmus_site"):
         from all_subtopics_physics           import PHYSICS_SUBTOPICS_ALL
         from all_subtopics_physics_higher                     import PHYSICS_SUBTOPICS_ALL as PHYSICS_SUBTOPICS_HIGHER
         from all_subtopics_physics_triple_foundation import PHYSICS_SUBTOPICS_ALL as PHYSICS_SUBTOPICS_TRIPLE_FOUNDATION
+        from all_subtopics_physics_triple_higher    import PHYSICS_SUBTOPICS_ALL as PHYSICS_SUBTOPICS_TRIPLE_HIGHER
         from all_subtopics_chemistry         import CHEMISTRY_SUBTOPICS_ALL
         from all_subtopics_chemistry_higher              import CHEMISTRY_SUBTOPICS_ALL as CHEMISTRY_SUBTOPICS_HIGHER
         from all_subtopics_chemistry_triple_foundation import CHEMISTRY_SUBTOPICS_ALL as CHEMISTRY_SUBTOPICS_TRIPLE_FOUNDATION
@@ -5527,6 +5611,7 @@ def build_site(output_dir="mrbadmus_site"):
         PHYSICS_SUBTOPICS_ALL        = {}
         PHYSICS_SUBTOPICS_HIGHER     = {}
         PHYSICS_SUBTOPICS_TRIPLE_FOUNDATION   = {}
+        PHYSICS_SUBTOPICS_TRIPLE_HIGHER       = {}
         CHEMISTRY_SUBTOPICS_ALL      = {}
         CHEMISTRY_SUBTOPICS_HIGHER                 = {}
         CHEMISTRY_SUBTOPICS_TRIPLE_FOUNDATION    = {}
@@ -5636,6 +5721,8 @@ def build_site(output_dir="mrbadmus_site"):
                     subj_subtopics = PHYSICS_SUBTOPICS_HIGHER
                 elif subject == "physics" and tier == "foundation" and pathway == "triple":
                     subj_subtopics = PHYSICS_SUBTOPICS_TRIPLE_FOUNDATION
+                elif subject == "physics" and tier == "higher" and pathway == "triple":
+                    subj_subtopics = PHYSICS_SUBTOPICS_TRIPLE_HIGHER
                 else:
                     subj_subtopics = SUBTOPICS_ALL[subject]
                 color = subj_data["color"]

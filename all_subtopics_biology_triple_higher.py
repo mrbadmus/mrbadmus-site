@@ -1,14 +1,5 @@
 #!/usr/bin/env python3
-"""
-Biology subtopics — Triple HIGHER (AQA 8461)
-COMPLETE — 85 subtopics
-
-Includes all Triple Foundation content PLUS:
-  - Higher fields on applicable subtopics
-  - 2 new HT-only subtopics:
-      infection-response: monoclonal-antibodies
-      ecology: environmental-change
-"""
+"""Biology subtopics — Triple Higher (AQA 8461) — 85 subtopics"""
 
 BIOLOGY_COLOR = "#6BCB77"
 
@@ -512,7 +503,8 @@ BIOLOGY_SUBTOPICS_ALL = {
                                    3: '45 minus 0.009 is not how you calculate magnification! Use M = I ÷ A = 45 ÷ '
                                       '0.009 = 5000.'}},
            {'opts': [('Ribosomes (~20 nm) are far below the resolution limit of light microscopes (~200 nm)', True),
-                     ('Ribosomes are only visible in living cells and electron microscopes can see living cells', True),
+                     ('Ribosomes are only visible in living cells and electron microscopes can see living cells',
+                      False),
                      ('Ribosomes are colourless and no stain existed until recently', False),
                      ('Ribosomes only appear in plant cells which were studied less', False)],
             'q': 'Why were ribosomes not discovered until electron microscopes became available?',
