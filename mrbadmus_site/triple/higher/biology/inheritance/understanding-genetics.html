@@ -72,8 +72,30 @@
     <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/higher/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/higher/biology/inheritance.html">← Back to Inheritance, Variation and Evolution</a>
@@ -130,10 +152,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-understanding-genetics"><div class="match-def" data-index="0" draggable="true">Some traits are dominant — they mask recessive traits when both are present</div>
-<div class="match-def" data-index="3" draggable="true">Three scientists independently found the same ratios — chromosomes now known, Mendel's units explained</div>
-<div class="match-def" data-index="1" draggable="true">Crossing Tt × Tt produces a 3:1 ratio of dominant to recessive phenotype</div>
+      <div class="match-defs" id="defPool-understanding-genetics"><div class="match-def" data-index="1" draggable="true">Crossing Tt × Tt produces a 3:1 ratio of dominant to recessive phenotype</div>
 <div class="match-def" data-index="2" draggable="true">Published in obscure journal, used unusual mathematical approach, no known physical mechanism</div>
+<div class="match-def" data-index="3" draggable="true">Three scientists independently found the same ratios — chromosomes now known, Mendel's units explained</div>
+<div class="match-def" data-index="0" draggable="true">Some traits are dominant — they mask recessive traits when both are present</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -156,18 +178,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Chromosomes contain genes — they are not the same as Mendel\'s units. Chromosomes are the structures; genes are the specific sequences within them.",1: "Nucleotides are the building blocks of DNA — they make up genes but are not equivalent to Mendel\'s heritable units.",3: "Alleles are different versions of the SAME gene — Mendel\'s units are genes (not just alleles). Alleles are a type of unit, but \'genes\' is the correct modern term.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Alleles are different versions of the SAME gene — Mendel\'s units are genes (not just alleles). Alleles are a type of unit, but \'genes\' is the correct modern term.",1: "Chromosomes contain genes — they are not the same as Mendel\'s units. Chromosomes are the structures; genes are the specific sequences within them.",2: "Nucleotides are the building blocks of DNA — they make up genes but are not equivalent to Mendel\'s heritable units.",}'>
   <div class="q-text">1. What name do we now give to Mendel's 'heritable units'?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Chromosomes — the structures in the nucleus that carry genetic information</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Nucleotides — the building blocks of DNA molecules</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Genes — specific sequences of DNA on chromosomes that control characteristics</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Alleles — different versions of the same characteristic</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Alleles — different versions of the same characteristic</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Chromosomes — the structures in the nucleus that carry genetic information</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Nucleotides — the building blocks of DNA molecules</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Genes — specific sequences of DNA on chromosomes that control characteristics</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "While Mendel was a monk, there is no evidence the church banned his work — he actually carried out his research with the monastery\'s support.",2: "Mendel DID publish his data in full — the problem was that few scientists read the journal and fewer understood his mathematical approach.",3: "Mendel\'s 3:1 ratio was CORRECT and was reproduced exactly when his work was rediscovered in 1900 — the problem was communication and lack of a known mechanism.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "While Mendel was a monk, there is no evidence the church banned his work — he actually carried out his research with the monastery\'s support.",2: "Mendel DID publish his data in full — the problem was that few scientists read the journal and fewer understood his mathematical approach.",3: "Mendel\'s 3:1 ratio was CORRECT and was reproduced exactly when his work was rediscovered in 1900 — the problem was communication and lack of a known mechanism.",}'>
   <div class="q-text">2. Why was Mendel's work not accepted by the scientific community during his lifetime?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">His results were published in a little-read journal, biologists were unfamiliar with statistical approaches, and there was no known physical mechanism for his 'heritable units'</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The church banned his work — scientists feared publishing support for it</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The church banned his work — scientists feared publishing support for it</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">His results were published in a little-read journal, biologists were unfamiliar with statistical approaches, and there was no known physical mechanism for his 'heritable units'</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Mendel refused to share his data — other scientists couldn't verify his work</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">His results were wrong — the 3:1 ratio was only proven to be correct after his death</button>
 </div>

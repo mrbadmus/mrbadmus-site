@@ -72,8 +72,30 @@
     <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/higher/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/chemistry/analysis.html">← Back to Chemical Analysis</a>
@@ -134,11 +156,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-pure-substances"><div class="match-def" data-index="4" draggable="true">Has a fixed composition — contains only one type of compound</div>
-<div class="match-def" data-index="0" draggable="true">Melts at exactly one temperature — sharp melting point</div>
+      <div class="match-defs" id="defPool-pure-substances"><div class="match-def" data-index="0" draggable="true">Melts at exactly one temperature — sharp melting point</div>
 <div class="match-def" data-index="2" draggable="true">Boils at a constant temperature throughout</div>
 <div class="match-def" data-index="3" draggable="true">Boiling point higher than expected for the pure substance</div>
 <div class="match-def" data-index="1" draggable="true">Melts over a range of temperatures — starts below expected melting point</div>
+<div class="match-def" data-index="4" draggable="true">Has a fixed composition — contains only one type of compound</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -158,20 +180,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Rapid heating can cause errors, but both a lower AND a range of melting temperatures strongly suggest impurity — not just measurement error.",2: "It could be a different compound — but the wider context of the question (testing purity of a sample) suggests the most likely explanation is impurity.",3: "Standard lab conditions are at atmospheric pressure — pressure effects on melting points are negligible without extreme pressure changes.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Rapid heating can cause errors, but both a lower AND a range of melting temperatures strongly suggest impurity — not just measurement error.",1: "It could be a different compound — but the wider context of the question (testing purity of a sample) suggests the most likely explanation is impurity.",2: "Standard lab conditions are at atmospheric pressure — pressure effects on melting points are negligible without extreme pressure changes.",}'>
   <div class="q-text">1. A student heats a solid and records that it melts between 118°C and 125°C. Pure samples of this compound melt at 135°C. What does this suggest?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The sample is impure — impurities lower the melting point and cause it to melt over a range</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">The student heated it too quickly — this is a measurement error only</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The sample is a different compound with a lower melting point</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The sample is pure but at a different pressure</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The student heated it too quickly — this is a measurement error only</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The sample is a different compound with a lower melting point</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">The sample is pure but at a different pressure</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">The sample is impure — impurities lower the melting point and cause it to melt over a range</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Many pure substances change colour (e.g. copper sulfate changing from blue hydrated to white anhydrous on heating).",1: "Even \'pure\' orange juice without added preservatives contains many dissolved compounds — it is always a mixture.",2: "Distillation is one way to purify a liquid but is not the definition of purity — a single compound that has never been distilled can still be chemically pure.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Distillation is one way to purify a liquid but is not the definition of purity — a single compound that has never been distilled can still be chemically pure.",2: "Even \'pure\' orange juice without added preservatives contains many dissolved compounds — it is always a mixture.",3: "Many pure substances change colour (e.g. copper sulfate changing from blue hydrated to white anhydrous on heating).",}'>
   <div class="q-text">2. Why is 'pure orange juice' not a pure substance in the chemical sense?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Orange juice changes colour — pure substances do not change colour</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Orange juice contains preservatives — these impurities make it impure</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">It has not been distilled — only distilled liquids can be pure</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">It is a mixture of water, sugars, vitamins, acids and many other compounds — not a single element or compound</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">It is a mixture of water, sugars, vitamins, acids and many other compounds — not a single element or compound</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">It has not been distilled — only distilled liquids can be pure</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Orange juice contains preservatives — these impurities make it impure</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Orange juice changes colour — pure substances do not change colour</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

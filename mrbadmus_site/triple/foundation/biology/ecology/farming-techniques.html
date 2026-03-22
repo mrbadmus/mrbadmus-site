@@ -72,8 +72,30 @@
     <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/foundation/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/biology/ecology.html">← Back to Ecology</a>
@@ -130,9 +152,9 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-farming-techniques"><div class="match-def" data-index="1" draggable="true">Less energy spent maintaining body temperature — more energy available for growth</div>
+      <div class="match-defs" id="defPool-farming-techniques"><div class="match-def" data-index="3" draggable="true">Uses natural predators to control pests — no chemical residues, less damage to non-target species</div>
+<div class="match-def" data-index="1" draggable="true">Less energy spent maintaining body temperature — more energy available for growth</div>
 <div class="match-def" data-index="0" draggable="true">Less energy used in respiration for muscle activity — more energy retained as body mass</div>
-<div class="match-def" data-index="3" draggable="true">Uses natural predators to control pests — no chemical residues, less damage to non-target species</div>
 <div class="match-def" data-index="2" draggable="true">Adds essential minerals (NPK) to soil — improves crop growth and yield</div>
 </div>
     </div>
@@ -153,12 +175,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Greenhouse gas emissions are an environmental concern — the ethical objection specifically is about animal welfare and suffering.",1: "Water use may be a concern but is not the primary ethical objection to intensive farming.",3: "Egg quality varies by diet and conditions, but the PRIMARY ethical objection is about ANIMAL WELFARE — inability to move, spread wings or behave naturally.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Water use may be a concern but is not the primary ethical objection to intensive farming.",1: "Egg quality varies by diet and conditions, but the PRIMARY ethical objection is about ANIMAL WELFARE — inability to move, spread wings or behave naturally.",3: "Greenhouse gas emissions are an environmental concern — the ethical objection specifically is about animal welfare and suffering.",}'>
   <div class="q-text">1. Why do some people have ethical objections to intensive farming of chickens?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Battery farming produces more greenhouse gases than other methods</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Intensive farming uses more water than free-range farming — wasteful of resources</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Intensive farming uses more water than free-range farming — wasteful of resources</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Intensively farmed chickens produce lower-quality eggs — ethical concern about food standards</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Battery chickens cannot exhibit natural behaviours and are kept in conditions that cause physical and psychological suffering</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Intensively farmed chickens produce lower-quality eggs — ethical concern about food standards</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Battery farming produces more greenhouse gases than other methods</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Biological control can be expensive to develop and implement — the advantage is environmental and health benefits, not necessarily cost.",2: "Biological control reduces pest populations — it rarely eliminates them completely. Natural predator-prey relationships maintain a balance.",3: "Biological control is typically SLOWER than chemical pesticides — the advantage is specificity and no chemical residues.",}'>

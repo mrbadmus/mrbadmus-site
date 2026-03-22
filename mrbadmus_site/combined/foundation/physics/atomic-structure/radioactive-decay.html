@@ -72,8 +72,30 @@
     <a href="/combined/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/foundation/physics/index.html" style="color:#4ECDC4;font-weight:700;">⚡ Physics</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/foundation/physics/atomic-structure.html">← Back to Atomic Structure</a>
@@ -134,11 +156,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-radioactive-decay"><div class="match-def" data-index="3" draggable="true">Alpha radiation — causes most ion pairs per cm of path</div>
-<div class="match-def" data-index="1" draggable="true">Fast electron — stopped by aluminium — used in paper thickness monitoring</div>
+      <div class="match-defs" id="defPool-radioactive-decay"><div class="match-def" data-index="4" draggable="true">Gamma radiation — passes through most materials, needs lead/concrete shielding</div>
 <div class="match-def" data-index="2" draggable="true">EM wave — needs lead/concrete — used in cancer radiotherapy and sterilisation</div>
-<div class="match-def" data-index="4" draggable="true">Gamma radiation — passes through most materials, needs lead/concrete shielding</div>
+<div class="match-def" data-index="3" draggable="true">Alpha radiation — causes most ion pairs per cm of path</div>
 <div class="match-def" data-index="0" draggable="true">Helium nucleus — stopped by paper — used in smoke detectors</div>
+<div class="match-def" data-index="1" draggable="true">Fast electron — stopped by aluminium — used in paper thickness monitoring</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -155,19 +177,19 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Alpha does not have the highest energy — gamma photons have very high energies too. The danger is from DENSE IONISATION in a small area.",2: "Alpha is actually the SLOWEST of the three — and its high mass means it interacts strongly with matter.",3: "Alpha is the LEAST penetrating — stopped by a few cm of air. That\'s exactly why it\'s so dangerous inside the body — all ionisation is deposited nearby.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Alpha is the LEAST penetrating — stopped by a few cm of air. That\'s exactly why it\'s so dangerous inside the body — all ionisation is deposited nearby.",2: "Alpha does not have the highest energy — gamma photons have very high energies too. The danger is from DENSE IONISATION in a small area.",3: "Alpha is actually the SLOWEST of the three — and its high mass means it interacts strongly with matter.",}'>
   <div class="q-text">1. Why is alpha radiation the most dangerous type when a source is inside the body?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Alpha is highly ionising — it causes dense ionisation damage to nearby cells and cannot escape the body to be detected</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Alpha has the highest energy of all three types — more energy means more damage</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Alpha moves fastest — it collides more often with cells</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Alpha is most penetrating — it reaches all organs from a single source</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Alpha is most penetrating — it reaches all organs from a single source</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Alpha is highly ionising — it causes dense ionisation damage to nearby cells and cannot escape the body to be detected</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Alpha has the highest energy of all three types — more energy means more damage</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Alpha moves fastest — it collides more often with cells</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Activity = total number of radioactive atoms remaining, not the rate. Bq measures the RATE of decay (per second).",1: "Bq measures rate in decays per second — not joules. Energy per decay is measured in eV or joules, not Bq.",2: "Bq is a rate (per second) — not a duration.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Bq is a rate (per second) — not a duration.",1: "Bq measures rate in decays per second — not joules. Energy per decay is measured in eV or joules, not Bq.",2: "Activity = total number of radioactive atoms remaining, not the rate. Bq measures the RATE of decay (per second).",}'>
   <div class="q-text">2. A Geiger counter measures 340 Bq from a radioactive source. What does this mean?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The source has 340 radioactive atoms remaining in total</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The source has been decaying for 340 seconds</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">The source emits 340 joules of energy every second</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The source has been decaying for 340 seconds</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">The source has 340 radioactive atoms remaining in total</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">340 nuclei in the source are decaying every second, each emitting radiation</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>

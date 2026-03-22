@@ -72,8 +72,30 @@
     <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/higher/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/higher/chemistry/rates-equilibrium.html">← Back to Rate and Extent of Chemical Change</a>
@@ -134,11 +156,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-catalysts"><div class="match-def" data-index="2" draggable="true">Catalytic converter — converts CO and NOₓ to CO₂ and N₂</div>
-<div class="match-def" data-index="4" draggable="true">Biological catalyst — breaks down starch to sugars in digestion</div>
-<div class="match-def" data-index="1" draggable="true">Contact process — 2SO₂ + O₂ ⇌ 2SO₃ — step in making sulfuric acid</div>
-<div class="match-def" data-index="0" draggable="true">Haber process — N₂ + 3H₂ ⇌ 2NH₃ — making ammonia for fertilisers</div>
+      <div class="match-defs" id="defPool-catalysts"><div class="match-def" data-index="0" draggable="true">Haber process — N₂ + 3H₂ ⇌ 2NH₃ — making ammonia for fertilisers</div>
 <div class="match-def" data-index="3" draggable="true">Hydrogenation — converting unsaturated oils to solid fats (margarine)</div>
+<div class="match-def" data-index="1" draggable="true">Contact process — 2SO₂ + O₂ ⇌ 2SO₃ — step in making sulfuric acid</div>
+<div class="match-def" data-index="2" draggable="true">Catalytic converter — converts CO and NOₓ to CO₂ and N₂</div>
+<div class="match-def" data-index="4" draggable="true">Biological catalyst — breaks down starch to sugars in digestion</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -158,12 +180,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "A catalyst provides an ALTERNATIVE PATHWAY to the same products — it does not change what products form.",2: "A catalyst is NOT consumed in the reaction — by definition it is regenerated. A substance that is used up is a REACTANT, not a catalyst.",3: "ΔH is the difference in energy between reactants and products — the catalyst doesn\'t change what the reactants or products ARE, so ΔH stays the same.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "A catalyst is NOT consumed in the reaction — by definition it is regenerated. A substance that is used up is a REACTANT, not a catalyst.",1: "A catalyst provides an ALTERNATIVE PATHWAY to the same products — it does not change what products form.",2: "ΔH is the difference in energy between reactants and products — the catalyst doesn\'t change what the reactants or products ARE, so ΔH stays the same.",}'>
   <div class="q-text">1. A catalyst is added to a reaction. Which of the following is true?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The products change — the catalyst reacts with some reactants to form new products</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">The rate increases because the activation energy is lowered — the products and ΔH are unchanged</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The catalyst is used up proportionally to the amount of reactant that reacts</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The overall energy change (ΔH) decreases — less energy is released or absorbed</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The catalyst is used up proportionally to the amount of reactant that reacts</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The products change — the catalyst reacts with some reactants to form new products</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">The overall energy change (ΔH) decreases — less energy is released or absorbed</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">The rate increases because the activation energy is lowered — the products and ΔH are unchanged</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Catalysts don\'t generate heat — they lower the energy barrier. If they released heat, they would be acting as reactants.",1: "Product quality is not directly related to catalyst presence — the reason for lower temperature is purely kinetic (enough particles above the new lower Ea).",2: "Catalysts don\'t affect the pressure of reactant gases.",}'>

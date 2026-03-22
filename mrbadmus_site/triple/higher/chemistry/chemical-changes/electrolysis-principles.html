@@ -72,8 +72,30 @@
     <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/higher/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/higher/chemistry/chemical-changes.html">← Back to Chemical Changes</a>
@@ -134,11 +156,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-electrolysis-principles"><div class="match-def" data-index="1" draggable="true">Positive electrode — negative ions attracted here — oxidation occurs</div>
-<div class="match-def" data-index="4" draggable="true">Anions lose electrons — non-metal gas produced (O₂, Cl₂)</div>
+      <div class="match-defs" id="defPool-electrolysis-principles"><div class="match-def" data-index="0" draggable="true">Negative electrode — positive ions attracted here — reduction occurs</div>
 <div class="match-def" data-index="2" draggable="true">Ionic compound that is molten or dissolved — conducts electricity and is decomposed</div>
 <div class="match-def" data-index="3" draggable="true">Cations gain electrons — metal deposited or H₂ gas produced</div>
-<div class="match-def" data-index="0" draggable="true">Negative electrode — positive ions attracted here — reduction occurs</div>
+<div class="match-def" data-index="1" draggable="true">Positive electrode — negative ions attracted here — oxidation occurs</div>
+<div class="match-def" data-index="4" draggable="true">Anions lose electrons — non-metal gas produced (O₂, Cl₂)</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -158,20 +180,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Hardness affects mechanical properties, not ionic conductivity — the issue is ion mobility, not physical hardness.",2: "NaCl is always ionic — Na⁺ and Cl⁻ ions exist in both solid and molten states. The issue is whether they can MOVE.",3: "Some solids are electrolysed — e.g. electrolysis of a metal anode in electroplating. The issue specifically with NaCl solid is fixed ions.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Hardness affects mechanical properties, not ionic conductivity — the issue is ion mobility, not physical hardness.",1: "Some solids are electrolysed — e.g. electrolysis of a metal anode in electroplating. The issue specifically with NaCl solid is fixed ions.",2: "NaCl is always ionic — Na⁺ and Cl⁻ ions exist in both solid and molten states. The issue is whether they can MOVE.",}'>
   <div class="q-text">1. Why can solid sodium chloride not be electrolysed, but molten sodium chloride can?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">In the solid, ions are fixed in the lattice — they cannot move to carry charge. Molten NaCl has free-moving ions.</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Solid NaCl is too hard for electricity to pass through.</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Solid NaCl is too hard for electricity to pass through.</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Electrolysis only works on liquids — all solids resist decomposition.</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Solid NaCl doesn't contain ions — they only form when the compound melts.</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Electrolysis only works on liquids — all solids resist decomposition.</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">In the solid, ions are fixed in the lattice — they cannot move to carry charge. Molten NaCl has free-moving ions.</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "The CATHODE is where REDUCTION occurs (positive ions GAIN electrons). Remember: RED CAT (Reduction at Cathode).",2: "Oxidation (at anode) and reduction (at cathode) occur at DIFFERENT electrodes — at the same time, but not at the same place.",3: "Ions move through the solution but are not oxidised or reduced until they reach an electrode.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Ions move through the solution but are not oxidised or reduced until they reach an electrode.",1: "The CATHODE is where REDUCTION occurs (positive ions GAIN electrons). Remember: RED CAT (Reduction at Cathode).",3: "Oxidation (at anode) and reduction (at cathode) occur at DIFFERENT electrodes — at the same time, but not at the same place.",}'>
   <div class="q-text">2. During electrolysis, where does oxidation take place?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">At the anode — negative ions lose electrons here (OIL: Oxidation Is Loss)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">In the electrolyte — ions are oxidised as they move through the solution</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">At the cathode — positive ions gain electrons here</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">At both electrodes simultaneously</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">In the electrolyte — ions are oxidised as they move through the solution</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">At the anode — negative ions lose electrons here (OIL: Oxidation Is Loss)</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">At both electrodes simultaneously</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

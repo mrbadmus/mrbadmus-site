@@ -72,8 +72,30 @@
     <a href="/combined/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/foundation/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/foundation/chemistry/atomic-structure.html">← Back to Atomic Structure and the Periodic Table</a>
@@ -135,9 +157,9 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-subatomic-particles"><div class="match-def" data-index="3" draggable="true">Sodium atom that has LOST one electron — 11 protons, 10 electrons</div>
-<div class="match-def" data-index="1" draggable="true">Relative charge 0, mass 1 — in the nucleus</div>
-<div class="match-def" data-index="4" draggable="true">Chlorine atom that has GAINED one electron — 17 protons, 18 electrons</div>
 <div class="match-def" data-index="0" draggable="true">Relative charge +1, mass 1 — in the nucleus</div>
+<div class="match-def" data-index="4" draggable="true">Chlorine atom that has GAINED one electron — 17 protons, 18 electrons</div>
+<div class="match-def" data-index="1" draggable="true">Relative charge 0, mass 1 — in the nucleus</div>
 <div class="match-def" data-index="2" draggable="true">Relative charge −1, mass ~0 — in shells around the nucleus</div>
 </div>
     </div>
@@ -155,20 +177,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Only the 2 outermost electrons are lost — but the ion still has all 10 remaining electrons, not just 2.",2: "Mg²⁺ is formed by losing 2 electrons. Original: 12 electrons. After loss: 12 − 2 = 10 electrons.",3: "Gaining electrons gives a NEGATIVE charge. Mg²⁺ is POSITIVE, so electrons were LOST.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Only the 2 outermost electrons are lost — but the ion still has all 10 remaining electrons, not just 2.",2: "Gaining electrons gives a NEGATIVE charge. Mg²⁺ is POSITIVE, so electrons were LOST.",3: "Mg²⁺ is formed by losing 2 electrons. Original: 12 electrons. After loss: 12 − 2 = 10 electrons.",}'>
   <div class="q-text">1. A magnesium atom (Mg, atomic number 12) forms a Mg²⁺ ion. How many electrons does the ion have?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">2 — only the outermost electrons remain</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">10 — magnesium loses 2 electrons from its original 12</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">12 — the number of electrons stays the same</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">14 — magnesium gains 2 electrons to form a +2 ion</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">14 — magnesium gains 2 electrons to form a +2 ion</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">12 — the number of electrons stays the same</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Vibration does not affect electrical charge — the neutrality is a consequence of proton and electron numbers being equal.",1: "Shielding describes how inner electrons reduce the attractive force on outer electrons — it does not explain why atoms are electrically neutral.",2: "Neutrons have ZERO charge — they cannot cancel proton charges. Charge neutrality comes from protons balancing electrons.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Neutrons have ZERO charge — they cannot cancel proton charges. Charge neutrality comes from protons balancing electrons.",1: "Shielding describes how inner electrons reduce the attractive force on outer electrons — it does not explain why atoms are electrically neutral.",3: "Vibration does not affect electrical charge — the neutrality is a consequence of proton and electron numbers being equal.",}'>
   <div class="q-text">2. Why does an atom have no overall electrical charge?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The atom vibrates too fast for any charge to accumulate</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Protons and neutrons have equal and opposite charges that cancel</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">Electrons are on the outside and shield the positive nucleus</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Protons and neutrons have equal and opposite charges that cancel</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The number of protons (+1 each) equals the number of electrons (−1 each) — the charges cancel</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">The number of protons (+1 each) equals the number of electrons (−1 each) — the charges cancel</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">The atom vibrates too fast for any charge to accumulate</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

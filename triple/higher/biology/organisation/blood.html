@@ -72,8 +72,30 @@
     <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/higher/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/higher/biology/organisation.html">← Back to Organisation</a>
@@ -140,11 +162,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-blood"><div class="match-def" data-index="1" draggable="true">Engulf and destroy pathogens — non-specific immune defence</div>
-<div class="match-def" data-index="0" draggable="true">Carry oxygen using haemoglobin — biconcave disc, no nucleus</div>
-<div class="match-def" data-index="4" draggable="true">Liquid that transports glucose, CO₂, urea, hormones and heat</div>
-<div class="match-def" data-index="2" draggable="true">Produce specific antibodies that match pathogen antigens</div>
+      <div class="match-defs" id="defPool-blood"><div class="match-def" data-index="2" draggable="true">Produce specific antibodies that match pathogen antigens</div>
 <div class="match-def" data-index="3" draggable="true">Involved in blood clotting — form a fibrin mesh to seal wounds</div>
+<div class="match-def" data-index="1" draggable="true">Engulf and destroy pathogens — non-specific immune defence</div>
+<div class="match-def" data-index="4" draggable="true">Liquid that transports glucose, CO₂, urea, hormones and heat</div>
+<div class="match-def" data-index="0" draggable="true">Carry oxygen using haemoglobin — biconcave disc, no nucleus</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -161,35 +183,35 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 4</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Cells without a nucleus CANNOT divide — red blood cells are produced in bone marrow and cannot reproduce themselves.",2: "Flexibility helps red blood cells squeeze through capillaries — but this is a result of their biconcave shape and flexibility, not the absence of a nucleus.",3: "Weight difference between a nucleus and haemoglobin molecules is negligible — the primary reason is space for haemoglobin.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Flexibility helps red blood cells squeeze through capillaries — but this is a result of their biconcave shape and flexibility, not the absence of a nucleus.",1: "Cells without a nucleus CANNOT divide — red blood cells are produced in bone marrow and cannot reproduce themselves.",2: "Weight difference between a nucleus and haemoglobin molecules is negligible — the primary reason is space for haemoglobin.",}'>
   <div class="q-text">1. Why do red blood cells have no nucleus?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">So they can divide and replace themselves when worn out</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">To create more space for haemoglobin — allowing the cell to carry more oxygen</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">So they can squeeze through capillaries more easily</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">To reduce their weight so they flow faster through blood vessels</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">So they can squeeze through capillaries more easily</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">So they can divide and replace themselves when worn out</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">To reduce their weight so they flow faster through blood vessels</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">To create more space for haemoglobin — allowing the cell to carry more oxygen</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Food digestion = digestive enzymes in the gut. Lymphocytes are part of the immune system.",1: "Oxygen carrying = RED BLOOD CELLS using haemoglobin. Lymphocytes are white blood cells.",3: "Blood clotting = PLATELETS forming a fibrin mesh. Lymphocytes produce antibodies, not clotting factors.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Blood clotting = PLATELETS forming a fibrin mesh. Lymphocytes produce antibodies, not clotting factors.",2: "Food digestion = digestive enzymes in the gut. Lymphocytes are part of the immune system.",3: "Oxygen carrying = RED BLOOD CELLS using haemoglobin. Lymphocytes are white blood cells.",}'>
   <div class="q-text">2. A patient has very few lymphocytes. What is the most likely consequence?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Unable to digest food properly — nutrients not absorbed</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Unable to carry oxygen — severe anaemia</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Unable to produce specific antibodies — prolonged or repeated infections that are hard to clear</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Blood will not clot properly — excessive bleeding from wounds</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Blood will not clot properly — excessive bleeding from wounds</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Unable to produce specific antibodies — prolonged or repeated infections that are hard to clear</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Unable to digest food properly — nutrients not absorbed</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Unable to carry oxygen — severe anaemia</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="1" data-wrong-exp='{0: "Engulfing bacteria = PHAGOCYTES (a type of white blood cell).",2: "Oxygen transport = RED BLOOD CELLS using haemoglobin.",3: "Producing antibodies = LYMPHOCYTES (a type of white blood cell).",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="0" data-wrong-exp='{1: "Producing antibodies = LYMPHOCYTES (a type of white blood cell).",2: "Engulfing bacteria = PHAGOCYTES (a type of white blood cell).",3: "Oxygen transport = RED BLOOD CELLS using haemoglobin.",}'>
   <div class="q-text">3. What is the role of platelets in the body?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Engulfing and digesting bacteria by phagocytosis</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Blood clotting — they clump at wound sites and trigger fibrin mesh formation to seal the damage</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">Carrying oxygen from the lungs to body tissues</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">Producing antibodies to fight specific pathogens</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Blood clotting — they clump at wound sites and trigger fibrin mesh formation to seal the damage</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">Producing antibodies to fight specific pathogens</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">Engulfing and digesting bacteria by phagocytosis</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">Carrying oxygen from the lungs to body tissues</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="2" data-wrong-exp='{0: "Carbon dioxide IS dissolved in plasma — most CO₂ travels as bicarbonate ions dissolved in plasma.",1: "Glucose IS carried in plasma — after absorption from the small intestine.",3: "Urea IS carried in plasma — from the liver to the kidneys for excretion.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="1" data-wrong-exp='{0: "Carbon dioxide IS dissolved in plasma — most CO₂ travels as bicarbonate ions dissolved in plasma.",2: "Glucose IS carried in plasma — after absorption from the small intestine.",3: "Urea IS carried in plasma — from the liver to the kidneys for excretion.",}'>
   <div class="q-text">4. Which substance does plasma NOT transport?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Carbon dioxide from respiring cells to the lungs</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">Glucose from the small intestine to body cells</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">Oxygen — this is carried by haemoglobin inside red blood cells</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">Oxygen — this is carried by haemoglobin inside red blood cells</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">Glucose from the small intestine to body cells</button>
 <button class="quiz-opt" data-qi="3" data-oi="3">Urea from the liver to the kidneys</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>

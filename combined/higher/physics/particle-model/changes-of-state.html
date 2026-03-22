@@ -72,8 +72,30 @@
     <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/higher/physics/index.html" style="color:#4ECDC4;font-weight:700;">⚡ Physics</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/physics/particle-model.html">← Back to Particle Model of Matter</a>
@@ -134,11 +156,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-changes-of-state"><div class="match-def" data-index="2" draggable="true">Liquid → gas — energy supplied, particles escape intermolecular forces</div>
+      <div class="match-defs" id="defPool-changes-of-state"><div class="match-def" data-index="1" draggable="true">Liquid → solid — energy removed, particles slow down and form fixed lattice</div>
 <div class="match-def" data-index="3" draggable="true">Gas → liquid — energy removed, particles slow and intermolecular forces pull them together</div>
 <div class="match-def" data-index="0" draggable="true">Solid → liquid — energy supplied, particles gain enough energy to break from lattice</div>
-<div class="match-def" data-index="1" draggable="true">Liquid → solid — energy removed, particles slow down and form fixed lattice</div>
 <div class="match-def" data-index="4" draggable="true">Solid → gas directly — e.g. dry ice (solid CO₂) at room temperature</div>
+<div class="match-def" data-index="2" draggable="true">Liquid → gas — energy supplied, particles escape intermolecular forces</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -155,12 +177,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Temperature affects rate of freezing and final temperature, not the mass of ice formed.",2: "In a sealed container with no evaporation, mass is perfectly conserved — but even with some evaporation, the PRINCIPLE is conservation of mass in a change of state.",3: "Ice IS larger in volume than liquid water — but volume and mass are different. The MASS is the same; ice is simply less dense.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Ice IS larger in volume than liquid water — but volume and mass are different. The MASS is the same; ice is simply less dense.",2: "Temperature affects rate of freezing and final temperature, not the mass of ice formed.",3: "In a sealed container with no evaporation, mass is perfectly conserved — but even with some evaporation, the PRINCIPLE is conservation of mass in a change of state.",}'>
   <div class="q-text">1. 200 g of water is placed in a freezer and completely freezes. What is the mass of the ice formed?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Depends on temperature — colder freezers produce heavier ice</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">200 g — mass is conserved during changes of state; no particles are created or destroyed</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Less than 200 g — some water evaporates as it cools</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">More than 200 g — ice is larger in volume so it must be heavier</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">200 g — mass is conserved during changes of state; no particles are created or destroyed</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">More than 200 g — ice is larger in volume so it must be heavier</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Depends on temperature — colder freezers produce heavier ice</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Less than 200 g — some water evaporates as it cools</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Melting is a bulk process — the entire solid changes state, not just the surface.",2: "Both chemical and physical changes can involve energy. The distinction is whether new chemical substances are formed.",3: "The ARRANGEMENT of particles changes (structure), but the CHEMICAL IDENTITY doesn\'t — it\'s still the same compound. Chemical changes produce new substances.",}'>

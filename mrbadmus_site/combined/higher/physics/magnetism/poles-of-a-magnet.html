@@ -72,8 +72,30 @@
     <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/higher/physics/index.html" style="color:#4ECDC4;font-weight:700;">⚡ Physics</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/physics/magnetism.html">← Back to Magnetism and Electromagnetism</a>
@@ -130,9 +152,9 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-poles-of-a-magnet"><div class="match-def" data-index="3" draggable="true">Heating above Curie temperature or using AC solenoid — randomises domain alignment</div>
+      <div class="match-defs" id="defPool-poles-of-a-magnet"><div class="match-def" data-index="2" draggable="true">The near end always becomes the opposite pole — both are attracted to the magnet</div>
 <div class="match-def" data-index="0" draggable="true">Made from steel — retains magnetism without an external field</div>
-<div class="match-def" data-index="2" draggable="true">The near end always becomes the opposite pole — both are attracted to the magnet</div>
+<div class="match-def" data-index="3" draggable="true">Heating above Curie temperature or using AC solenoid — randomises domain alignment</div>
 <div class="match-def" data-index="1" draggable="true">Made from iron — temporary, loses magnetism when external field removed</div>
 </div>
     </div>
@@ -150,20 +172,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Magnetism and electric charge are separate — magnetic fields don\'t charge objects with static electricity.",1: "Magnetic forces act on magnetic materials — they don\'t \'push\' the clip forward. The attraction is between the magnetic poles of the induced magnet and the bar magnet.",3: "Steel is a MAGNETIC MATERIAL (ferromagnetic) but not permanently magnetised until it is magnetised. The attraction is due to INDUCED MAGNETISM from the bar magnet.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Magnetism and electric charge are separate — magnetic fields don\'t charge objects with static electricity.",2: "Steel is a MAGNETIC MATERIAL (ferromagnetic) but not permanently magnetised until it is magnetised. The attraction is due to INDUCED MAGNETISM from the bar magnet.",3: "Magnetic forces act on magnetic materials — they don\'t \'push\' the clip forward. The attraction is between the magnetic poles of the induced magnet and the bar magnet.",}'>
   <div class="q-text">1. A steel paper clip is brought near a bar magnet. Why is the paper clip attracted?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The paper clip gains an electric charge from the magnetic field — opposite charges attract</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">The magnetic field passes through the paper clip, pulling it forward</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The steel becomes an induced magnet — the end nearest the magnet becomes opposite in polarity, so they attract</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Steel is made from iron which is naturally magnetic — it has its own permanent field that attracts</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The steel becomes an induced magnet — the end nearest the magnet becomes opposite in polarity, so they attract</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The paper clip gains an electric charge from the magnetic field — opposite charges attract</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Steel is made from iron which is naturally magnetic — it has its own permanent field that attracts</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">The magnetic field passes through the paper clip, pulling it forward</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Strength varies between magnets but strength is not the distinguishing feature the question asks about.",2: "Both the fridge magnet and compass needle are PERMANENT magnets — they must retain their magnetism to function.",3: "Both ARE permanent magnets — but the question is testing understanding that both fridge magnets and compass needles are permanent (made from hard magnetic materials).",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Both ARE permanent magnets — but the question is testing understanding that both fridge magnets and compass needles are permanent (made from hard magnetic materials).",1: "Both the fridge magnet and compass needle are PERMANENT magnets — they must retain their magnetism to function.",2: "Strength varies between magnets but strength is not the distinguishing feature the question asks about.",}'>
   <div class="q-text">2. A fridge magnet and a compass are both magnets. What is the key difference between them regarding their magnetism?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Fridge magnet: permanent — retains field indefinitely. Compass: also permanent — compass needle must always point north reliably</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Fridge magnet: stronger field — household magnets are more powerful than compass needles</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Fridge magnet: induced. Compass: permanent — all small magnets are induced magnets</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Fridge magnet: temporary — it loses magnetism each day. Compass: permanent</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Fridge magnet: temporary — it loses magnetism each day. Compass: permanent</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Fridge magnet: induced. Compass: permanent — all small magnets are induced magnets</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Fridge magnet: stronger field — household magnets are more powerful than compass needles</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Fridge magnet: permanent — retains field indefinitely. Compass: also permanent — compass needle must always point north reliably</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

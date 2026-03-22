@@ -72,8 +72,30 @@
     <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/higher/physics/index.html" style="color:#4ECDC4;font-weight:700;">⚡ Physics</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/physics/forces.html">← Back to Forces</a>
@@ -139,10 +161,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-work-done-energy-transfer"><div class="match-def" data-index="0" draggable="true">500 N force moves object 4 m — W = 500 × 4</div>
-<div class="match-def" data-index="3" draggable="true">1000 J work done by a 200 N force — s = W ÷ F = 1000 ÷ 200</div>
-<div class="match-def" data-index="2" draggable="true">Holding a 100 N weight stationary — no displacement, no work done</div>
+      <div class="match-defs" id="defPool-work-done-energy-transfer"><div class="match-def" data-index="2" draggable="true">Holding a 100 N weight stationary — no displacement, no work done</div>
 <div class="match-def" data-index="1" draggable="true">Lifting 5 kg by 2 m — W = mgh = 5 × 9.8 × 2</div>
+<div class="match-def" data-index="0" draggable="true">500 N force moves object 4 m — W = 500 × 4</div>
+<div class="match-def" data-index="3" draggable="true">1000 J work done by a 200 N force — s = W ÷ F = 1000 ÷ 200</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -178,20 +200,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "mg gives weight (force) not work — must multiply by distance IN THE DIRECTION of the force, which is zero here.",2: "Same error — using horizontal distance for a vertical force.",3: "W = F × s requires the displacement to be in the DIRECTION of the force. Gravity acts downward; box moves horizontally → no work done by gravity.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Same error — using horizontal distance for a vertical force.",2: "W = F × s requires the displacement to be in the DIRECTION of the force. Gravity acts downward; box moves horizontally → no work done by gravity.",3: "mg gives weight (force) not work — must multiply by distance IN THE DIRECTION of the force, which is zero here.",}'>
   <div class="q-text">1. A person carries a 20 kg box horizontally for 10 m at constant height. How much work does gravity do on the box?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0 J — gravity acts downward but the box moves horizontally; no displacement in the direction of the gravitational force</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">196 J — W = mg = 20 × 9.8 (forgot to include distance)</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">2000 J — W = 20 × 10 × 10 (using g = 10)</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">1960 J — W = mgs = 20 × 9.8 × 10</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">2000 J — W = 20 × 10 × 10 (using g = 10)</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">0 J — gravity acts downward but the box moves horizontally; no displacement in the direction of the gravitational force</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">1960 J — W = mgs = 20 × 9.8 × 10</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">196 J — W = mg = 20 × 9.8 (forgot to include distance)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "s = F ÷ W inverts the rearrangement: s = W ÷ F = 3200 ÷ 400 = 8 m.",1: "Adding work and force gives meaningless units (J + N). Use W = Fs rearranged: s = W ÷ F.",2: "s = W × F multiplies — but W = Fs means s = W ÷ F.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Adding work and force gives meaningless units (J + N). Use W = Fs rearranged: s = W ÷ F.",1: "s = F ÷ W inverts the rearrangement: s = W ÷ F = 3200 ÷ 400 = 8 m.",3: "s = W × F multiplies — but W = Fs means s = W ÷ F.",}'>
   <div class="q-text">2. A 400 N force does 3200 J of work. How far does the object move?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">0.125 m — s = F ÷ W = 400 ÷ 3200</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">3600 m — s = W + F = 3200 + 400</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">1,280,000 m — s = W × F = 3200 × 400</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">8 m — s = W ÷ F = 3200 ÷ 400 = 8 m</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">3600 m — s = W + F = 3200 + 400</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">0.125 m — s = F ÷ W = 400 ÷ 3200</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">8 m — s = W ÷ F = 3200 ÷ 400 = 8 m</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">1,280,000 m — s = W × F = 3200 × 400</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

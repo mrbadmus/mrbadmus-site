@@ -72,8 +72,30 @@
     <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/foundation/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/biology/ecology.html">← Back to Ecology</a>
@@ -130,10 +152,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-role-of-biotechnology"><div class="match-def" data-index="1" draggable="true">Contain bacterial gene producing insecticide — reduces need for chemical pesticides</div>
-<div class="match-def" data-index="3" draggable="true">Fungus Fusarium grown in fermenters on glucose — efficient high-protein meat substitute</div>
-<div class="match-def" data-index="0" draggable="true">Engineered to produce beta-carotene — helps prevent Vitamin A deficiency and blindness</div>
+      <div class="match-defs" id="defPool-role-of-biotechnology"><div class="match-def" data-index="0" draggable="true">Engineered to produce beta-carotene — helps prevent Vitamin A deficiency and blindness</div>
+<div class="match-def" data-index="1" draggable="true">Contain bacterial gene producing insecticide — reduces need for chemical pesticides</div>
 <div class="match-def" data-index="2" draggable="true">Survive herbicide spraying — allows weeds to be killed without damaging the crop</div>
+<div class="match-def" data-index="3" draggable="true">Fungus Fusarium grown in fermenters on glucose — efficient high-protein meat substitute</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -161,10 +183,10 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">The fungus Fusarium — grown in industrial fermenters and processed into a high-protein meat substitute</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "GM herbicide-resistant crops do not inherently grow faster or invade habitats — the specific concern is gene flow via pollen.",1: "GM crops are developed specifically to MAINTAIN or INCREASE yield — not reduce it.",2: "GM crops are designed to withstand herbicide — they don\'t absorb more into edible tissue. The concern is about GENE FLOW to wild plants.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "GM crops are developed specifically to MAINTAIN or INCREASE yield — not reduce it.",1: "GM herbicide-resistant crops do not inherently grow faster or invade habitats — the specific concern is gene flow via pollen.",2: "GM crops are designed to withstand herbicide — they don\'t absorb more into edible tissue. The concern is about GENE FLOW to wild plants.",}'>
   <div class="q-text">2. Why are some environmentalists concerned about herbicide-resistant GM crops?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The crops grow too fast and take over natural habitats</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Herbicide-resistant crops produce less yield than normal crops</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Herbicide-resistant crops produce less yield than normal crops</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The crops grow too fast and take over natural habitats</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Herbicide-resistant crops absorb more herbicide into their tissues — making the food more toxic</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">GM herbicide-resistance genes could spread to wild plant relatives via pollen — creating herbicide-resistant 'superweeds' that are hard to control</button>
 </div>

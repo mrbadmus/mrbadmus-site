@@ -72,8 +72,30 @@
     <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/foundation/physics/index.html" style="color:#4ECDC4;font-weight:700;">⚡ Physics</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/physics/forces.html">← Back to Forces</a>
@@ -143,11 +165,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-distance-time-graphs"><div class="match-def" data-index="0" draggable="true">Fast constant speed away from start</div>
-<div class="match-def" data-index="2" draggable="true">Slow constant speed away from start</div>
-<div class="match-def" data-index="4" draggable="true">Accelerating — speed increasing over time</div>
+      <div class="match-defs" id="defPool-distance-time-graphs"><div class="match-def" data-index="3" draggable="true">Constant speed returning towards starting point</div>
 <div class="match-def" data-index="1" draggable="true">Stationary — object has stopped</div>
-<div class="match-def" data-index="3" draggable="true">Constant speed returning towards starting point</div>
+<div class="match-def" data-index="4" draggable="true">Accelerating — speed increasing over time</div>
+<div class="match-def" data-index="2" draggable="true">Slow constant speed away from start</div>
+<div class="match-def" data-index="0" draggable="true">Fast constant speed away from start</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -183,12 +205,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Acceleration on a d–t graph shows as a CURVE (increasing gradient) — not a flat section.",1: "A horizontal line on a VELOCITY–time graph means constant velocity — but on a DISTANCE–time graph it means zero speed (stationary).",3: "Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a SLOPED straight line.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a SLOPED straight line.",1: "Acceleration on a d–t graph shows as a CURVE (increasing gradient) — not a flat section.",3: "A horizontal line on a VELOCITY–time graph means constant velocity — but on a DISTANCE–time graph it means zero speed (stationary).",}'>
   <div class="q-text">1. A d–t graph shows a horizontal (flat) line for 5 seconds. What is the object doing?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The object has reached maximum speed and is maintaining it</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">The object is moving at constant speed — horizontal means steady motion</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The object is accelerating — the line is preparing to slope upward</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The object has reached maximum speed and is maintaining it</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">The object is stationary — no change in distance means zero speed</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The object is accelerating — the line is preparing to slope upward</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">The object is moving at constant speed — horizontal means steady motion</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Gentler slope does not imply harder work — gradient directly equals speed on a d–t graph.",2: "Both are straight lines (constant speed) but at DIFFERENT speeds — the gradient value gives the speed.",3: "Gentle slope = smaller gradient = slower speed. Fast motion = steeper slope = larger gradient.",}'>

@@ -72,8 +72,30 @@
     <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/higher/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/chemistry/organic.html">← Back to Organic Chemistry</a>
@@ -133,9 +155,9 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-properties-of-hydrocarbons"><div class="match-def" data-index="3" draggable="true">Volatility — longer chains have lower vapour pressure</div>
+      <div class="match-defs" id="defPool-properties-of-hydrocarbons"><div class="match-def" data-index="0" draggable="true">Boiling point — stronger intermolecular forces in longer molecules</div>
 <div class="match-def" data-index="2" draggable="true">Flammability — longer chains less volatile, harder to ignite</div>
-<div class="match-def" data-index="0" draggable="true">Boiling point — stronger intermolecular forces in longer molecules</div>
+<div class="match-def" data-index="3" draggable="true">Volatility — longer chains have lower vapour pressure</div>
 <div class="match-def" data-index="1" draggable="true">Viscosity — longer chains tangle, flow less easily</div>
 </div>
     </div>
@@ -156,18 +178,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Both petrol and diesel are mainly hydrocarbons with similar C:H ratios — hydrogen content is not the reason for different flammability.",1: "Viscosity affects flow but the primary reason for different flammability is VOLATILITY — petrol produces more vapour at room temperature.",3: "Petrol fractions are alkanes (saturated, single bonds). Alkenes do have double bonds but crude oil fractions are not alkenes — they are alkanes.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Petrol fractions are alkanes (saturated, single bonds). Alkenes do have double bonds but crude oil fractions are not alkenes — they are alkanes.",1: "Both petrol and diesel are mainly hydrocarbons with similar C:H ratios — hydrogen content is not the reason for different flammability.",2: "Viscosity affects flow but the primary reason for different flammability is VOLATILITY — petrol produces more vapour at room temperature.",}'>
   <div class="q-text">1. Why is petrol (C₅–C₁₀) more flammable than diesel (C₁₅–C₂₅)?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Petrol contains more hydrogen — hydrogen is more flammable than carbon</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Diesel is more viscous — it can't flow to the flame and doesn't ignite</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Petrol has shorter chains — more volatile, evaporates easily at room temperature, produces flammable vapour readily</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Petrol has double bonds — alkenes are more reactive and flammable than alkanes</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Petrol has double bonds — alkenes are more reactive and flammable than alkanes</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Petrol contains more hydrogen — hydrogen is more flammable than carbon</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Diesel is more viscous — it can't flow to the flame and doesn't ignite</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Petrol has shorter chains — more volatile, evaporates easily at room temperature, produces flammable vapour readily</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Hydrogen content doesn\'t determine physical state — chain length and the resulting intermolecular forces determine boiling point.",1: "Both are hydrocarbons with only covalent bonds — no ionic bonds. The difference in state is entirely due to intermolecular force strength.",3: "Buoyancy explains why lighter gases rise but doesn\'t explain why propane is a GAS rather than a liquid or solid at room temperature — that\'s about intermolecular forces.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Both are hydrocarbons with only covalent bonds — no ionic bonds. The difference in state is entirely due to intermolecular force strength.",1: "Hydrogen content doesn\'t determine physical state — chain length and the resulting intermolecular forces determine boiling point.",3: "Buoyancy explains why lighter gases rise but doesn\'t explain why propane is a GAS rather than a liquid or solid at room temperature — that\'s about intermolecular forces.",}'>
   <div class="q-text">2. Propane (C₃H₈) is a gas at room temperature but hexadecane (C₁₆H₃₄) is a solid. Why?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Hexadecane contains more hydrogen — hydrogen atoms make it solid</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Hexadecane has ionic bonds that hold it as a solid</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Hexadecane has ionic bonds that hold it as a solid</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Hexadecane contains more hydrogen — hydrogen atoms make it solid</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Hexadecane has much longer chains — stronger intermolecular forces mean its boiling point is far above room temperature</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Propane is lighter, so it exists as a gas by buoyancy</button>
 </div>

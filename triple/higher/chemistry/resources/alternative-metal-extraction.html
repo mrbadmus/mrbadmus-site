@@ -72,8 +72,30 @@
     <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/higher/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/higher/chemistry/resources.html">← Back to Using Resources</a>
@@ -137,11 +159,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-alternative-metal-extraction"><div class="match-def" data-index="2" draggable="true">Used for low-grade ores that are uneconomical to smelt by traditional methods</div>
-<div class="match-def" data-index="4" draggable="true">Also remediates contaminated land — cleans up old mining sites as a by-product</div>
+      <div class="match-defs" id="defPool-alternative-metal-extraction"><div class="match-def" data-index="0" draggable="true">Plants absorb metal ions from soil → harvested and burned → metal recovered from ash</div>
+<div class="match-def" data-index="2" draggable="true">Used for low-grade ores that are uneconomical to smelt by traditional methods</div>
 <div class="match-def" data-index="3" draggable="true">Produces acidic leachate that must be treated — risk of groundwater contamination</div>
 <div class="match-def" data-index="1" draggable="true">Bacteria oxidise metal sulfide ores → metal ions dissolve into leachate solution</div>
-<div class="match-def" data-index="0" draggable="true">Plants absorb metal ions from soil → harvested and burned → metal recovered from ash</div>
+<div class="match-def" data-index="4" draggable="true">Also remediates contaminated land — cleans up old mining sites as a by-product</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -158,12 +180,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Acid extraction from leaves is not the phytomining method — the plants are BURNED to produce concentrated ash.",2: "The whole plant (or above-ground biomass) is harvested and burned — roots are not separated.",3: "Plants REMOVE metal from soil — concentrating it in the plant. Burning the plant then concentrates it in the ash.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Acid extraction from leaves is not the phytomining method — the plants are BURNED to produce concentrated ash.",2: "Plants REMOVE metal from soil — concentrating it in the plant. Burning the plant then concentrates it in the ash.",3: "The whole plant (or above-ground biomass) is harvested and burned — roots are not separated.",}'>
   <div class="q-text">1. In phytomining, where is the metal found after the plants are harvested?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Extracted directly from the leaves using acid — dissolved out of harvested plant material</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">In the ash after burning the plants — plants are incinerated, concentrating the metal in bio-ore</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">In the roots — roots are separated and the metal is smelted from them</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">In the soil that remains — plants remove other minerals, concentrating metal in soil</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">In the soil that remains — plants remove other minerals, concentrating metal in soil</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">In the roots — roots are separated and the metal is smelted from them</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Adding NaOH would give Cu(OH)₂ precipitate (blue) — but this is copper HYDROXIDE not copper metal, and smelting a hydroxide is more expensive than displacement.",1: "Heating would just evaporate water — copper sulfate doesn\'t decompose to copper metal at normal boiling temperatures.",2: "Evaporating CuSO₄ solution gives CuSO₄ crystals (copper sulfate) — not copper metal. Electrolysis or displacement is needed to get the metal.",}'>

@@ -72,8 +72,30 @@
     <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/higher/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/biology/homeostasis.html">← Back to Homeostasis and Response</a>
@@ -135,12 +157,12 @@
   <div class="match-drop" data-accepts="5">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-the-eye"><div class="match-def" data-index="3" draggable="true">Contracts or relaxes to change lens shape via suspensory ligaments</div>
-<div class="match-def" data-index="1" draggable="true">Coloured ring of muscle — controls pupil size and light entry</div>
-<div class="match-def" data-index="5" draggable="true">Carries electrical impulses from the retina to the brain</div>
-<div class="match-def" data-index="2" draggable="true">Flexible disc — fine-tunes focus by changing shape (accommodation)</div>
+      <div class="match-defs" id="defPool-the-eye"><div class="match-def" data-index="0" draggable="true">Transparent curved surface — provides most of the eye's refraction</div>
+<div class="match-def" data-index="3" draggable="true">Contracts or relaxes to change lens shape via suspensory ligaments</div>
 <div class="match-def" data-index="4" draggable="true">Light-sensitive layer — contains rods and cones that convert light to electrical signals</div>
-<div class="match-def" data-index="0" draggable="true">Transparent curved surface — provides most of the eye's refraction</div>
+<div class="match-def" data-index="5" draggable="true">Carries electrical impulses from the retina to the brain</div>
+<div class="match-def" data-index="1" draggable="true">Coloured ring of muscle — controls pupil size and light entry</div>
+<div class="match-def" data-index="2" draggable="true">Flexible disc — fine-tunes focus by changing shape (accommodation)</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -157,20 +179,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "When ciliary muscles contract, ligaments SLACKEN (not become taut). The lens rounds up because tension is removed.",2: "Relaxing ciliary muscles = FAR vision (flat lens). For NEAR vision, ciliary muscles must CONTRACT.",3: "Relaxing ciliary muscles causes ligaments to become taut — but the lens becomes FLAT, not rounded.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Relaxing ciliary muscles = FAR vision (flat lens). For NEAR vision, ciliary muscles must CONTRACT.",2: "When ciliary muscles contract, ligaments SLACKEN (not become taut). The lens rounds up because tension is removed.",3: "Relaxing ciliary muscles causes ligaments to become taut — but the lens becomes FLAT, not rounded.",}'>
   <div class="q-text">1. A student looks from a distant window to a book close to them. What happens to the ciliary muscles and lens?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Ciliary muscles contract → suspensory ligaments slacken → lens becomes more rounded for near vision</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Ciliary muscles contract → suspensory ligaments become taut → lens becomes flatter</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Ciliary muscles relax → suspensory ligaments become taut → lens becomes flatter for near vision</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Ciliary muscles relax → suspensory ligaments become taut → lens becomes flatter for near vision</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Ciliary muscles contract → suspensory ligaments become taut → lens becomes flatter</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Ciliary muscles relax → suspensory ligaments slacken → lens becomes more rounded</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Cones work well in bright light regardless of pupil size — the pupil reflex is about PROTECTING the retina from excessive light.",1: "Constriction REDUCES light entry — pupils dilate to INCREASE light entry in dim conditions.",2: "The lens doesn\'t change size or block the pupil — accommodation changes lens shape, not size.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Constriction REDUCES light entry — pupils dilate to INCREASE light entry in dim conditions.",1: "Cones work well in bright light regardless of pupil size — the pupil reflex is about PROTECTING the retina from excessive light.",3: "The lens doesn\'t change size or block the pupil — accommodation changes lens shape, not size.",}'>
   <div class="q-text">2. Why do the pupils constrict in bright light?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">To improve colour vision — cones work better with a smaller pupil</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">To increase the amount of light entering — bright light improves vision</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The lens expands when bright and blocks more of the pupil</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">To reduce the amount of light entering the eye — preventing damage to the sensitive retina</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">To increase the amount of light entering — bright light improves vision</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">To improve colour vision — cones work better with a smaller pupil</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">To reduce the amount of light entering the eye — preventing damage to the sensitive retina</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">The lens expands when bright and blocks more of the pupil</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

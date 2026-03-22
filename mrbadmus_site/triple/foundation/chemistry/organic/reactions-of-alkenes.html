@@ -72,8 +72,30 @@
     <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
     <span style="color:var(--muted)">›</span>
     <a href="/triple/foundation/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/chemistry/organic.html">← Back to Organic Chemistry</a>
@@ -156,20 +178,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Addition of water to ethene gives ETHANOL (an alcohol), not ethane. Ethane would form by adding H₂.",2: "Ethene does react with steam — this is an important industrial process for making ethanol.",3: "Ethanoic acid (CH₃COOH) requires oxidation of ethanol — simple addition of water to ethene gives ethanol.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Addition of water to ethene gives ETHANOL (an alcohol), not ethane. Ethane would form by adding H₂.",2: "Ethanoic acid (CH₃COOH) requires oxidation of ethanol — simple addition of water to ethene gives ethanol.",3: "Ethene does react with steam — this is an important industrial process for making ethanol.",}'>
   <div class="q-text">1. What product forms when ethene reacts with steam? What are the conditions?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Ethane — ethene reacts with water to form an alkane</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">Ethanol — CH₂=CH₂ + H₂O → CH₃CH₂OH — phosphoric acid catalyst, ~300°C, high pressure</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">No reaction — alkenes do not react with water</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Ethanoic acid — addition of water to ethene gives a carboxylic acid</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Ethanoic acid — addition of water to ethene gives a carboxylic acid</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">No reaction — alkenes do not react with water</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Catalysts never appear in atom economy calculations — they are not consumed and not counted as products.",2: "100% conversion does not mean 100% atom economy — a reaction can go to completion but still produce unwanted by-products.",3: "Atom economy relates to the PRODUCTS of a reaction, not the purity of starting materials.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Catalysts never appear in atom economy calculations — they are not consumed and not counted as products.",1: "Atom economy relates to the PRODUCTS of a reaction, not the purity of starting materials.",2: "100% conversion does not mean 100% atom economy — a reaction can go to completion but still produce unwanted by-products.",}'>
   <div class="q-text">2. Why do addition reactions of alkenes have 100% atom economy?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Only one product is formed — all atoms from the reactants end up in the single product with no by-products</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The catalyst is not consumed — so no mass is lost from the system</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The catalyst is not consumed — so no mass is lost from the system</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Alkenes have 100% purity — no waste is produced during extraction</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">All addition reactions go to completion — 100% of reactants are converted</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Alkenes have 100% purity — no waste is produced during extraction</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Only one product is formed — all atoms from the reactants end up in the single product with no by-products</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

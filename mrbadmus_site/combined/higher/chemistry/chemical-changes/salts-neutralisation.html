@@ -72,8 +72,30 @@
     <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
     <span style="color:var(--muted)">›</span>
     <a href="/combined/higher/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <span id="nav-auth-area" style="margin-left:4px;">
+      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    </span>
   </div>
 </nav>
+<script>
+(function(){
+  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // Lightweight session check using localStorage (Supabase stores session here)
+  try {
+    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+    if (raw) {
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (user) {
+        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
+        const area = document.getElementById('nav-auth-area');
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+      }
+    }
+  } catch(e) {}
+})();
+</script>
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/chemistry/chemical-changes.html">← Back to Chemical Changes</a>
@@ -133,9 +155,9 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-salts-neutralisation"><div class="match-def" data-index="1" draggable="true">Titration — NaOH + HCl — find exact volume needed, then evaporate</div>
+      <div class="match-defs" id="defPool-salts-neutralisation"><div class="match-def" data-index="3" draggable="true">Add excess zinc carbonate to HCl — filter off excess — evaporate</div>
+<div class="match-def" data-index="1" draggable="true">Titration — NaOH + HCl — find exact volume needed, then evaporate</div>
 <div class="match-def" data-index="2" draggable="true">Precipitation — mix BaCl₂(aq) + Na₂SO₄(aq) — filter and dry</div>
-<div class="match-def" data-index="3" draggable="true">Add excess zinc carbonate to HCl — filter off excess — evaporate</div>
 <div class="match-def" data-index="0" draggable="true">Add excess CuO to H₂SO₄ — filter off excess CuO — evaporate to crystallise</div>
 </div>
     </div>
@@ -158,12 +180,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Excess solid does increase the surface area and reaction rate — but the MAIN reason is to guarantee complete neutralisation of all the acid.",1: "You cannot add more solid than the acid can react with — excess produces the same yield. The reason is to ensure complete reaction.",2: "The excess solid is REMOVED by filtration — it doesn\'t catalyse the reaction.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "You cannot add more solid than the acid can react with — excess produces the same yield. The reason is to ensure complete reaction.",2: "The excess solid is REMOVED by filtration — it doesn\'t catalyse the reaction.",3: "Excess solid does increase the surface area and reaction rate — but the MAIN reason is to guarantee complete neutralisation of all the acid.",}'>
   <div class="q-text">1. Why must excess solid be added when making a salt by reacting a metal oxide with an acid?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">To speed up the reaction — more solid increases the rate</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">To increase the yield of salt — more reactant gives more product</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">To increase the yield of salt — more reactant gives more product</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">To ensure all the acid reacts — any remaining acid would contaminate the final salt</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">The excess solid acts as a catalyst</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">To ensure all the acid reacts — any remaining acid would contaminate the final salt</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">To speed up the reaction — more solid increases the rate</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "This is the equation for burning hydrogen in oxygen — not neutralisation.",1: "This is a precipitation ionic equation — it describes salt formation, not neutralisation.",2: "This is the WORD equation — an ionic equation uses symbols and charges. The ionic equation H⁺ + OH⁻ → H₂O shows the actual ions involved.",}'>
