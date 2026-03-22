@@ -5704,25 +5704,25 @@ def build_site(output_dir="mrbadmus_site"):
                 # ── Topic pages ──
                 topic_ids = PATHWAY_TOPIC_MAP[(pathway, tier)][subject]
                 subj_data = SITE_DATA[subject]
-                # Use Higher data for Higher tier pages
-                if subject == "biology" and tier == "higher":
-                    subj_subtopics = BIOLOGY_SUBTOPICS_HIGHER
+                # Use correct data for pathway/tier — Triple must come before generic Higher
+                if subject == "biology" and tier == "higher" and pathway == "triple":
+                    subj_subtopics = BIOLOGY_SUBTOPICS_TRIPLE_HIGHER
                 elif subject == "biology" and tier == "foundation" and pathway == "triple":
                     subj_subtopics = BIOLOGY_SUBTOPICS_TRIPLE_FOUNDATION
-                elif subject == "biology" and tier == "higher" and pathway == "triple":
-                    subj_subtopics = BIOLOGY_SUBTOPICS_TRIPLE_HIGHER
-                elif subject == "chemistry" and tier == "higher":
-                    subj_subtopics = CHEMISTRY_SUBTOPICS_HIGHER
-                elif subject == "chemistry" and tier == "foundation" and pathway == "triple":
-                    subj_subtopics = CHEMISTRY_SUBTOPICS_TRIPLE_FOUNDATION
+                elif subject == "biology" and tier == "higher":
+                    subj_subtopics = BIOLOGY_SUBTOPICS_HIGHER
                 elif subject == "chemistry" and tier == "higher" and pathway == "triple":
                     subj_subtopics = CHEMISTRY_SUBTOPICS_TRIPLE_HIGHER
-                elif subject == "physics" and tier == "higher":
-                    subj_subtopics = PHYSICS_SUBTOPICS_HIGHER
-                elif subject == "physics" and tier == "foundation" and pathway == "triple":
-                    subj_subtopics = PHYSICS_SUBTOPICS_TRIPLE_FOUNDATION
+                elif subject == "chemistry" and tier == "foundation" and pathway == "triple":
+                    subj_subtopics = CHEMISTRY_SUBTOPICS_TRIPLE_FOUNDATION
+                elif subject == "chemistry" and tier == "higher":
+                    subj_subtopics = CHEMISTRY_SUBTOPICS_HIGHER
                 elif subject == "physics" and tier == "higher" and pathway == "triple":
                     subj_subtopics = PHYSICS_SUBTOPICS_TRIPLE_HIGHER
+                elif subject == "physics" and tier == "foundation" and pathway == "triple":
+                    subj_subtopics = PHYSICS_SUBTOPICS_TRIPLE_FOUNDATION
+                elif subject == "physics" and tier == "higher":
+                    subj_subtopics = PHYSICS_SUBTOPICS_HIGHER
                 else:
                     subj_subtopics = SUBTOPICS_ALL[subject]
                 color = subj_data["color"]
