@@ -1428,7 +1428,7 @@ def nav_html(active_subject="", pathway="", tier=""):
       if (user) {{
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
+        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
       }}
     }}
   }} catch(e) {{}}
