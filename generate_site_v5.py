@@ -1409,8 +1409,9 @@ def nav_html(active_subject="", pathway="", tier=""):
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     {pathway_links}
-    <span id="nav-auth-area" style="margin-left:4px;">
-      <a href="/auth.html" id="nav-signin-btn" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+    <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
+      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
+      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
     </span>
   </div>
 </nav>
@@ -1427,7 +1428,7 @@ def nav_html(active_subject="", pathway="", tier=""):
       if (user) {{
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${{firstName}}</a>`;
+        if (area) area.innerHTML = `<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ${firstName}</a>`;
       }}
     }}
   }} catch(e) {{}}

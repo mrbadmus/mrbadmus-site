@@ -326,6 +326,11 @@
   sb.auth.getSession().then(({ data: { session } }) => {
     if (session) redirectAfterAuth();
   });
+
+  // Auto-switch to correct tab based on URL param (?tab=signup or ?tab=signin)
+  const urlTab = new URLSearchParams(window.location.search).get('tab');
+  if (urlTab === 'signup') switchTab('signup');
+  if (urlTab === 'signin') switchTab('signin');
 </script>
 </body>
 </html>
