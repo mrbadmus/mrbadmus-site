@@ -1854,6 +1854,100 @@ def make_landing():
     {t:'Ceramics, Polymers and Composites',s:'Chemistry',url:'/triple/foundation/chemistry/resources/ceramics-polymers-composites.html',c:'#FF6B6B'},
     {t:'The Haber Process',s:'Chemistry',url:'/triple/foundation/chemistry/resources/haber-process.html',c:'#FF6B6B'},
     {t:'Production and Uses of NPK Fertilisers',s:'Chemistry',url:'/triple/foundation/chemistry/resources/npk-fertilisers.html',c:'#FF6B6B'},
+    // Triple Chemistry Higher
+    {t:'Atoms, Elements and Compounds',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/atoms-elements-compounds.html',c:'#FF6B6B'},
+    {t:'Mixtures and Separation Techniques',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/mixtures.html',c:'#FF6B6B'},
+    {t:'Development of the Model of the Atom',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/model-of-the-atom.html',c:'#FF6B6B'},
+    {t:'Subatomic Particles',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/subatomic-particles.html',c:'#FF6B6B'},
+    {t:'Relative Atomic Mass, Atomic Number and Isotopes',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/relative-atomic-mass.html',c:'#FF6B6B'},
+    {t:'Electronic Structure',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/electronic-structure.html',c:'#FF6B6B'},
+    {t:'The Periodic Table',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/periodic-table.html',c:'#FF6B6B'},
+    {t:'Development of the Periodic Table',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/development-periodic-table.html',c:'#FF6B6B'},
+    {t:'Metals and Non-metals',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/metals-non-metals.html',c:'#FF6B6B'},
+    {t:'Group 0 — Noble Gases',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/group-0.html',c:'#FF6B6B'},
+    {t:'Group 1 — Alkali Metals',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/group-1.html',c:'#FF6B6B'},
+    {t:'Group 7 — Halogens',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/group-7.html',c:'#FF6B6B'},
+    {t:'Properties of Transition Metals',s:'Chemistry',url:'/triple/higher/chemistry/atomic-structure/transition-metals.html',c:'#FF6B6B'},
+    {t:'Chemical Bonds',s:'Chemistry',url:'/triple/higher/chemistry/bonding/chemical-bonds.html',c:'#FF6B6B'},
+    {t:'Ionic Bonding',s:'Chemistry',url:'/triple/higher/chemistry/bonding/ionic-bonding.html',c:'#FF6B6B'},
+    {t:'Ionic Compounds',s:'Chemistry',url:'/triple/higher/chemistry/bonding/ionic-compounds.html',c:'#FF6B6B'},
+    {t:'Covalent Bonding',s:'Chemistry',url:'/triple/higher/chemistry/bonding/covalent-bonding.html',c:'#FF6B6B'},
+    {t:'Metallic Bonding',s:'Chemistry',url:'/triple/higher/chemistry/bonding/metallic-bonding.html',c:'#FF6B6B'},
+    {t:'States of Matter and State Symbols',s:'Chemistry',url:'/triple/higher/chemistry/bonding/states-of-matter.html',c:'#FF6B6B'},
+    {t:'Structure and Properties of Ionic Compounds',s:'Chemistry',url:'/triple/higher/chemistry/bonding/properties-ionic-compounds.html',c:'#FF6B6B'},
+    {t:'Structure and Properties of Small Molecules',s:'Chemistry',url:'/triple/higher/chemistry/bonding/properties-small-molecules.html',c:'#FF6B6B'},
+    {t:'Polymers',s:'Chemistry',url:'/triple/higher/chemistry/bonding/polymers.html',c:'#FF6B6B'},
+    {t:'Giant Covalent Structures',s:'Chemistry',url:'/triple/higher/chemistry/bonding/giant-covalent-structures.html',c:'#FF6B6B'},
+    {t:'Properties of Metals and Alloys',s:'Chemistry',url:'/triple/higher/chemistry/bonding/metals-alloys.html',c:'#FF6B6B'},
+    {t:'Nanoparticles',s:'Chemistry',url:'/triple/higher/chemistry/bonding/nanoparticles.html',c:'#FF6B6B'},
+    {t:'Conservation of Mass and Balanced Equations',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/conservation-of-mass.html',c:'#FF6B6B'},
+    {t:'Relative Formula Mass',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/relative-formula-mass.html',c:'#FF6B6B'},
+    {t:'Mass Changes in Reactions',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/mass-changes-reactions.html',c:'#FF6B6B'},
+    {t:'Chemical Measurements',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/chemical-measurements.html',c:'#FF6B6B'},
+    {t:'Percentage Yield',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/percentage-yield.html',c:'#FF6B6B'},
+    {t:'Atom Economy',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/atom-economy.html',c:'#FF6B6B'},
+    {t:'Concentration of Solutions',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/concentration-of-solutions.html',c:'#FF6B6B'},
+    {t:'Moles',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/moles.html',c:'#FF6B6B'},
+    {t:'Amounts of Substances in Equations',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/amounts-in-equations.html',c:'#FF6B6B'},
+    {t:'Using Moles — Calculations and Limiting Reactants',s:'Chemistry',url:'/triple/higher/chemistry/quantitative/using-moles-calculations.html',c:'#FF6B6B'},
+    {t:'Reactivity of Metals and Metal Oxides',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/reactivity-series.html',c:'#FF6B6B'},
+    {t:'Extraction of Metals and Reduction',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/extraction-of-metals.html',c:'#FF6B6B'},
+    {t:'Oxidation and Reduction',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/oxidation-reduction.html',c:'#FF6B6B'},
+    {t:'Reactions of Acids with Metals and Bases',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/reactions-of-acids.html',c:'#FF6B6B'},
+    {t:'Making Salts and Neutralisation',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/salts-neutralisation.html',c:'#FF6B6B'},
+    {t:'The pH Scale and Neutralisation',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/ph-scale.html',c:'#FF6B6B'},
+    {t:'Titrations',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/titrations.html',c:'#FF6B6B'},
+    {t:'The Process of Electrolysis',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/electrolysis-principles.html',c:'#FF6B6B'},
+    {t:'Electrolysis of Molten Ionic Compounds',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/electrolysis-molten.html',c:'#FF6B6B'},
+    {t:'Using Electrolysis to Extract Metals',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/electrolysis-extraction.html',c:'#FF6B6B'},
+    {t:'Electrolysis of Aqueous Solutions',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/electrolysis-aqueous.html',c:'#FF6B6B'},
+    {t:'Strong and Weak Acids',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/strong-weak-acids.html',c:'#FF6B6B'},
+    {t:'Half Equations for Electrode Reactions',s:'Chemistry',url:'/triple/higher/chemistry/chemical-changes/half-equations.html',c:'#FF6B6B'},
+    {t:'Exothermic and Endothermic Reactions',s:'Chemistry',url:'/triple/higher/chemistry/energy-changes/exothermic-endothermic.html',c:'#FF6B6B'},
+    {t:'Reaction Profiles',s:'Chemistry',url:'/triple/higher/chemistry/energy-changes/reaction-profiles.html',c:'#FF6B6B'},
+    {t:'Cells and Batteries',s:'Chemistry',url:'/triple/higher/chemistry/energy-changes/cells-and-batteries.html',c:'#FF6B6B'},
+    {t:'Fuel Cells',s:'Chemistry',url:'/triple/higher/chemistry/energy-changes/fuel-cells.html',c:'#FF6B6B'},
+    {t:'Bond Energy Calculations',s:'Chemistry',url:'/triple/higher/chemistry/energy-changes/bond-energy-calculations.html',c:'#FF6B6B'},
+    {t:'Rate of Reaction and Calculations',s:'Chemistry',url:'/triple/higher/chemistry/rates-equilibrium/calculating-rates.html',c:'#FF6B6B'},
+    {t:'Factors Affecting the Rate of Reaction',s:'Chemistry',url:'/triple/higher/chemistry/rates-equilibrium/factors-affecting-rate.html',c:'#FF6B6B'},
+    {t:'Collision Theory and Activation Energy',s:'Chemistry',url:'/triple/higher/chemistry/rates-equilibrium/collision-theory.html',c:'#FF6B6B'},
+    {t:'Catalysts',s:'Chemistry',url:'/triple/higher/chemistry/rates-equilibrium/catalysts.html',c:'#FF6B6B'},
+    {t:'Reversible Reactions and Equilibrium',s:'Chemistry',url:'/triple/higher/chemistry/rates-equilibrium/reversible-reactions-equilibrium.html',c:'#FF6B6B'},
+    {t:'Effect of Changing Conditions on Equilibrium',s:'Chemistry',url:'/triple/higher/chemistry/rates-equilibrium/effect-of-conditions-equilibrium.html',c:'#FF6B6B'},
+    {t:'Crude Oil, Hydrocarbons and Alkanes',s:'Chemistry',url:'/triple/higher/chemistry/organic/crude-oil-hydrocarbons.html',c:'#FF6B6B'},
+    {t:'Fractional Distillation of Crude Oil',s:'Chemistry',url:'/triple/higher/chemistry/organic/fractional-distillation.html',c:'#FF6B6B'},
+    {t:'Properties of Hydrocarbons',s:'Chemistry',url:'/triple/higher/chemistry/organic/properties-of-hydrocarbons.html',c:'#FF6B6B'},
+    {t:'Cracking and Alkenes',s:'Chemistry',url:'/triple/higher/chemistry/organic/cracking-alkenes.html',c:'#FF6B6B'},
+    {t:'Structure and Formulae of Alkenes',s:'Chemistry',url:'/triple/higher/chemistry/organic/structure-of-alkenes.html',c:'#FF6B6B'},
+    {t:'Reactions of Alkenes',s:'Chemistry',url:'/triple/higher/chemistry/organic/reactions-of-alkenes.html',c:'#FF6B6B'},
+    {t:'Alcohols',s:'Chemistry',url:'/triple/higher/chemistry/organic/alcohols.html',c:'#FF6B6B'},
+    {t:'Carboxylic Acids',s:'Chemistry',url:'/triple/higher/chemistry/organic/carboxylic-acids.html',c:'#FF6B6B'},
+    {t:'Addition Polymerisation',s:'Chemistry',url:'/triple/higher/chemistry/organic/addition-polymerisation.html',c:'#FF6B6B'},
+    {t:'Condensation Polymerisation',s:'Chemistry',url:'/triple/higher/chemistry/organic/condensation-polymerisation.html',c:'#FF6B6B'},
+    {t:'Amino Acids',s:'Chemistry',url:'/triple/higher/chemistry/organic/amino-acids.html',c:'#FF6B6B'},
+    {t:'DNA and Other Naturally Occurring Polymers',s:'Chemistry',url:'/triple/higher/chemistry/organic/dna-naturally-occurring-polymers.html',c:'#FF6B6B'},
+    {t:'Pure Substances',s:'Chemistry',url:'/triple/higher/chemistry/analysis/pure-substances.html',c:'#FF6B6B'},
+    {t:'Formulations',s:'Chemistry',url:'/triple/higher/chemistry/analysis/formulations.html',c:'#FF6B6B'},
+    {t:'Chromatography',s:'Chemistry',url:'/triple/higher/chemistry/analysis/chromatography.html',c:'#FF6B6B'},
+    {t:'Testing for Gases',s:'Chemistry',url:'/triple/higher/chemistry/analysis/testing-for-gases.html',c:'#FF6B6B'},
+    {t:'Flame Tests',s:'Chemistry',url:'/triple/higher/chemistry/analysis/flame-tests.html',c:'#FF6B6B'},
+    {t:'Metal Hydroxides',s:'Chemistry',url:'/triple/higher/chemistry/analysis/metal-hydroxides.html',c:'#FF6B6B'},
+    {t:'Tests for Carbonates, Halides and Sulfates',s:'Chemistry',url:'/triple/higher/chemistry/analysis/carbonates-halides-sulfates.html',c:'#FF6B6B'},
+    {t:'Instrumental Methods and Flame Emission Spectroscopy',s:'Chemistry',url:'/triple/higher/chemistry/analysis/instrumental-methods.html',c:'#FF6B6B'},
+    {t:'The Composition of the Atmosphere',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/composition-of-atmosphere.html',c:'#FF6B6B'},
+    {t:'The Earth\'s Early Atmosphere and How It Changed',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/early-atmosphere.html',c:'#FF6B6B'},
+    {t:'Greenhouse Gases and Climate Change',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/greenhouse-gases.html',c:'#FF6B6B'},
+    {t:'Atmospheric Pollutants from Fuels',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/atmospheric-pollutants.html',c:'#FF6B6B'},
+    {t:'Using the Earth\'s Resources and Sustainable Development',s:'Chemistry',url:'/triple/higher/chemistry/resources/earths-resources.html',c:'#FF6B6B'},
+    {t:'Potable Water and Water Treatment',s:'Chemistry',url:'/triple/higher/chemistry/resources/potable-water.html',c:'#FF6B6B'},
+    {t:'Life Cycle Assessment',s:'Chemistry',url:'/triple/higher/chemistry/resources/life-cycle-assessment.html',c:'#FF6B6B'},
+    {t:'Ways of Reducing the Use of Resources',s:'Chemistry',url:'/triple/higher/chemistry/resources/reducing-use-of-resources.html',c:'#FF6B6B'},
+    {t:'Corrosion and Its Prevention',s:'Chemistry',url:'/triple/higher/chemistry/resources/corrosion-prevention.html',c:'#FF6B6B'},
+    {t:'Alloys as Useful Materials',s:'Chemistry',url:'/triple/higher/chemistry/resources/alloys-useful-materials.html',c:'#FF6B6B'},
+    {t:'Ceramics, Polymers and Composites',s:'Chemistry',url:'/triple/higher/chemistry/resources/ceramics-polymers-composites.html',c:'#FF6B6B'},
+    {t:'The Haber Process',s:'Chemistry',url:'/triple/higher/chemistry/resources/haber-process.html',c:'#FF6B6B'},
+    {t:'Production and Uses of NPK Fertilisers',s:'Chemistry',url:'/triple/higher/chemistry/resources/npk-fertilisers.html',c:'#FF6B6B'},
+    {t:'Alternative Methods of Extracting Metals',s:'Chemistry',url:'/triple/higher/chemistry/resources/alternative-metal-extraction.html',c:'#FF6B6B'},
     {t:'Alternative Methods of Extracting Metals',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/alternative-metal-extraction.html',c:'#FF6B6B'},
     {t:'Energy Stores and Systems',s:'Physics',url:'/combined/higher/physics/energy/energy-stores-systems.html',c:'#4ECDC4'},
     {t:'Changes in Energy',s:'Physics',url:'/combined/higher/physics/energy/changes-in-energy.html',c:'#4ECDC4'},
@@ -5356,6 +5450,7 @@ def build_site(output_dir="mrbadmus_site"):
         from all_subtopics_chemistry         import CHEMISTRY_SUBTOPICS_ALL
         from all_subtopics_chemistry_higher              import CHEMISTRY_SUBTOPICS_ALL as CHEMISTRY_SUBTOPICS_HIGHER
         from all_subtopics_chemistry_triple_foundation import CHEMISTRY_SUBTOPICS_ALL as CHEMISTRY_SUBTOPICS_TRIPLE_FOUNDATION
+        from all_subtopics_chemistry_triple_higher    import CHEMISTRY_SUBTOPICS_ALL as CHEMISTRY_SUBTOPICS_TRIPLE_HIGHER
         from all_subtopics_biology                     import BIOLOGY_SUBTOPICS_ALL
         from all_subtopics_biology_higher            import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_HIGHER
         from all_subtopics_biology_triple_foundation import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_TRIPLE_FOUNDATION
@@ -5368,6 +5463,7 @@ def build_site(output_dir="mrbadmus_site"):
         CHEMISTRY_SUBTOPICS_ALL      = {}
         CHEMISTRY_SUBTOPICS_HIGHER                 = {}
         CHEMISTRY_SUBTOPICS_TRIPLE_FOUNDATION    = {}
+        CHEMISTRY_SUBTOPICS_TRIPLE_HIGHER        = {}
         BIOLOGY_SUBTOPICS_ALL                     = {}
         BIOLOGY_SUBTOPICS_HIGHER                 = {}
         BIOLOGY_SUBTOPICS_TRIPLE_FOUNDATION      = {}
@@ -5467,6 +5563,8 @@ def build_site(output_dir="mrbadmus_site"):
                     subj_subtopics = CHEMISTRY_SUBTOPICS_HIGHER
                 elif subject == "chemistry" and tier == "foundation" and pathway == "triple":
                     subj_subtopics = CHEMISTRY_SUBTOPICS_TRIPLE_FOUNDATION
+                elif subject == "chemistry" and tier == "higher" and pathway == "triple":
+                    subj_subtopics = CHEMISTRY_SUBTOPICS_TRIPLE_HIGHER
                 elif subject == "physics" and tier == "higher":
                     subj_subtopics = PHYSICS_SUBTOPICS_HIGHER
                 else:
