@@ -1978,6 +1978,92 @@ def make_landing():
     {t:'Farming Techniques',s:'Biology',url:'/triple/foundation/biology/ecology/farming-techniques.html',c:'#6BCB77'},
     {t:'Sustainable Fisheries',s:'Biology',url:'/triple/foundation/biology/ecology/sustainable-fisheries.html',c:'#6BCB77'},
     {t:'The Role of Biotechnology',s:'Biology',url:'/triple/foundation/biology/ecology/role-of-biotechnology.html',c:'#6BCB77'},
+    // Triple Biology Higher
+    {t:'Eukaryotes and Prokaryotes',s:'Biology',url:'/triple/higher/biology/cell-biology/eukaryotes-prokaryotes.html',c:'#6BCB77'},
+    {t:'Animal and Plant Cells',s:'Biology',url:'/triple/higher/biology/cell-biology/animal-plant-cells.html',c:'#6BCB77'},
+    {t:'Cell Specialisation and Differentiation',s:'Biology',url:'/triple/higher/biology/cell-biology/cell-specialisation.html',c:'#6BCB77'},
+    {t:'Microscopy',s:'Biology',url:'/triple/higher/biology/cell-biology/microscopy.html',c:'#6BCB77'},
+    {t:'Chromosomes, the Cell Cycle and Mitosis',s:'Biology',url:'/triple/higher/biology/cell-biology/chromosomes-mitosis.html',c:'#6BCB77'},
+    {t:'Stem Cells',s:'Biology',url:'/triple/higher/biology/cell-biology/stem-cells.html',c:'#6BCB77'},
+    {t:'Diffusion, Osmosis and Active Transport',s:'Biology',url:'/triple/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
+    {t:'Culturing Microorganisms',s:'Biology',url:'/triple/higher/biology/cell-biology/culturing-microorganisms.html',c:'#6BCB77'},
+    {t:'Principles of Organisation',s:'Biology',url:'/triple/higher/biology/organisation/principles-of-organisation.html',c:'#6BCB77'},
+    {t:'The Digestive System',s:'Biology',url:'/triple/higher/biology/organisation/digestive-system.html',c:'#6BCB77'},
+    {t:'Enzymes',s:'Biology',url:'/triple/higher/biology/organisation/enzymes.html',c:'#6BCB77'},
+    {t:'The Heart and Blood Vessels',s:'Biology',url:'/triple/higher/biology/organisation/heart-blood-vessels.html',c:'#6BCB77'},
+    {t:'Blood',s:'Biology',url:'/triple/higher/biology/organisation/blood.html',c:'#6BCB77'},
+    {t:'Coronary Heart Disease',s:'Biology',url:'/triple/higher/biology/organisation/coronary-heart-disease.html',c:'#6BCB77'},
+    {t:'Health, Disease and Risk Factors',s:'Biology',url:'/triple/higher/biology/organisation/health-disease.html',c:'#6BCB77'},
+    {t:'Cancer',s:'Biology',url:'/triple/higher/biology/organisation/cancer.html',c:'#6BCB77'},
+    {t:'Plant Tissues and Organs',s:'Biology',url:'/triple/higher/biology/organisation/plant-tissues.html',c:'#6BCB77'},
+    {t:'Transpiration',s:'Biology',url:'/triple/higher/biology/organisation/transpiration.html',c:'#6BCB77'},
+    {t:'Translocation',s:'Biology',url:'/triple/higher/biology/organisation/translocation.html',c:'#6BCB77'},
+    {t:'Communicable Diseases and Human Defence Systems',s:'Biology',url:'/triple/higher/biology/infection-response/communicable-diseases-defence.html',c:'#6BCB77'},
+    {t:'Viral Diseases',s:'Biology',url:'/triple/higher/biology/infection-response/viral-diseases.html',c:'#6BCB77'},
+    {t:'Bacterial Diseases',s:'Biology',url:'/triple/higher/biology/infection-response/bacterial-diseases.html',c:'#6BCB77'},
+    {t:'Fungal and Protist Diseases',s:'Biology',url:'/triple/higher/biology/infection-response/fungal-protist-diseases.html',c:'#6BCB77'},
+    {t:'Vaccination',s:'Biology',url:'/triple/higher/biology/infection-response/vaccination.html',c:'#6BCB77'},
+    {t:'Antibiotics and Painkillers',s:'Biology',url:'/triple/higher/biology/infection-response/antibiotics-painkillers.html',c:'#6BCB77'},
+    {t:'Drug Discovery and Development',s:'Biology',url:'/triple/higher/biology/infection-response/drug-discovery-development.html',c:'#6BCB77'},
+    {t:'Plant Disease Detection and Defence',s:'Biology',url:'/triple/higher/biology/infection-response/plant-disease-detection-defence.html',c:'#6BCB77'},
+    {t:'Monoclonal Antibodies',s:'Biology',url:'/triple/higher/biology/infection-response/monoclonal-antibodies.html',c:'#6BCB77'},
+    {t:'Photosynthesis',s:'Biology',url:'/triple/higher/biology/bioenergetics/photosynthesis.html',c:'#6BCB77'},
+    {t:'Rate of Photosynthesis',s:'Biology',url:'/triple/higher/biology/bioenergetics/rate-of-photosynthesis.html',c:'#6BCB77'},
+    {t:'Uses of Glucose from Photosynthesis',s:'Biology',url:'/triple/higher/biology/bioenergetics/uses-of-glucose.html',c:'#6BCB77'},
+    {t:'Aerobic Respiration',s:'Biology',url:'/triple/higher/biology/bioenergetics/aerobic-respiration.html',c:'#6BCB77'},
+    {t:'Anaerobic Respiration',s:'Biology',url:'/triple/higher/biology/bioenergetics/anaerobic-respiration.html',c:'#6BCB77'},
+    {t:'Response to Exercise',s:'Biology',url:'/triple/higher/biology/bioenergetics/response-to-exercise.html',c:'#6BCB77'},
+    {t:'Metabolism',s:'Biology',url:'/triple/higher/biology/bioenergetics/metabolism.html',c:'#6BCB77'},
+    {t:'Homeostasis',s:'Biology',url:'/triple/higher/biology/homeostasis/homeostasis.html',c:'#6BCB77'},
+    {t:'The Human Nervous System',s:'Biology',url:'/triple/higher/biology/homeostasis/nervous-system.html',c:'#6BCB77'},
+    {t:'Reflex Actions',s:'Biology',url:'/triple/higher/biology/homeostasis/reflex-actions.html',c:'#6BCB77'},
+    {t:'Thermoregulation',s:'Biology',url:'/triple/higher/biology/homeostasis/thermoregulation.html',c:'#6BCB77'},
+    {t:'The Endocrine System',s:'Biology',url:'/triple/higher/biology/homeostasis/endocrine-system.html',c:'#6BCB77'},
+    {t:'Blood Glucose Control and Diabetes',s:'Biology',url:'/triple/higher/biology/homeostasis/blood-glucose-diabetes.html',c:'#6BCB77'},
+    {t:'Human Reproduction and Hormones',s:'Biology',url:'/triple/higher/biology/homeostasis/human-reproduction-hormones.html',c:'#6BCB77'},
+    {t:'Contraception and Fertility Treatment',s:'Biology',url:'/triple/higher/biology/homeostasis/contraception-fertility.html',c:'#6BCB77'},
+    {t:'Reaction Time',s:'Biology',url:'/triple/higher/biology/homeostasis/reaction-time.html',c:'#6BCB77'},
+    {t:'The Brain',s:'Biology',url:'/triple/higher/biology/homeostasis/the-brain.html',c:'#6BCB77'},
+    {t:'The Eye',s:'Biology',url:'/triple/higher/biology/homeostasis/the-eye.html',c:'#6BCB77'},
+    {t:'Defects of the Eye',s:'Biology',url:'/triple/higher/biology/homeostasis/defects-of-the-eye.html',c:'#6BCB77'},
+    {t:'Sexual and Asexual Reproduction',s:'Biology',url:'/triple/higher/biology/inheritance/sexual-asexual-reproduction.html',c:'#6BCB77'},
+    {t:'Meiosis',s:'Biology',url:'/triple/higher/biology/inheritance/meiosis.html',c:'#6BCB77'},
+    {t:'Advantages and Disadvantages of Sexual and Asexual Reproduction',s:'Biology',url:'/triple/higher/biology/inheritance/advantages-sexual-asexual.html',c:'#6BCB77'},
+    {t:'DNA and the Genome',s:'Biology',url:'/triple/higher/biology/inheritance/dna-genome.html',c:'#6BCB77'},
+    {t:'DNA Structure',s:'Biology',url:'/triple/higher/biology/inheritance/dna-structure.html',c:'#6BCB77'},
+    {t:'Genetic Inheritance',s:'Biology',url:'/triple/higher/biology/inheritance/genetic-inheritance.html',c:'#6BCB77'},
+    {t:'Inherited Disorders',s:'Biology',url:'/triple/higher/biology/inheritance/inherited-disorders.html',c:'#6BCB77'},
+    {t:'Sex Determination',s:'Biology',url:'/triple/higher/biology/inheritance/sex-determination.html',c:'#6BCB77'},
+    {t:'Variation',s:'Biology',url:'/triple/higher/biology/inheritance/variation.html',c:'#6BCB77'},
+    {t:'Evolution and Natural Selection',s:'Biology',url:'/triple/higher/biology/inheritance/evolution-natural-selection.html',c:'#6BCB77'},
+    {t:'Theory of Evolution',s:'Biology',url:'/triple/higher/biology/inheritance/theory-of-evolution.html',c:'#6BCB77'},
+    {t:'Selective Breeding',s:'Biology',url:'/triple/higher/biology/inheritance/selective-breeding.html',c:'#6BCB77'},
+    {t:'Genetic Engineering',s:'Biology',url:'/triple/higher/biology/inheritance/genetic-engineering.html',c:'#6BCB77'},
+    {t:'Cloning',s:'Biology',url:'/triple/higher/biology/inheritance/cloning.html',c:'#6BCB77'},
+    {t:'Evidence for Evolution',s:'Biology',url:'/triple/higher/biology/inheritance/evidence-for-evolution.html',c:'#6BCB77'},
+    {t:'Mendel and the Development of Genetics',s:'Biology',url:'/triple/higher/biology/inheritance/understanding-genetics.html',c:'#6BCB77'},
+    {t:'Fossils and Extinction',s:'Biology',url:'/triple/higher/biology/inheritance/fossils-extinction.html',c:'#6BCB77'},
+    {t:'Resistant Bacteria',s:'Biology',url:'/triple/higher/biology/inheritance/resistant-bacteria.html',c:'#6BCB77'},
+    {t:'Classification of Living Organisms',s:'Biology',url:'/triple/higher/biology/inheritance/classification-living-organisms.html',c:'#6BCB77'},
+    {t:'Ecosystems',s:'Biology',url:'/triple/higher/biology/ecology/ecosystems.html',c:'#6BCB77'},
+    {t:'Abiotic and Biotic Factors',s:'Biology',url:'/triple/higher/biology/ecology/abiotic-biotic-factors.html',c:'#6BCB77'},
+    {t:'Adaptations',s:'Biology',url:'/triple/higher/biology/ecology/adaptations.html',c:'#6BCB77'},
+    {t:'Food Chains and Food Webs',s:'Biology',url:'/triple/higher/biology/ecology/food-chains-webs.html',c:'#6BCB77'},
+    {t:'Population and Competition',s:'Biology',url:'/triple/higher/biology/ecology/population-competition.html',c:'#6BCB77'},
+    {t:'Biodiversity',s:'Biology',url:'/triple/higher/biology/ecology/biodiversity.html',c:'#6BCB77'},
+    {t:'The Carbon Cycle',s:'Biology',url:'/triple/higher/biology/ecology/carbon-cycle.html',c:'#6BCB77'},
+    {t:'The Water Cycle',s:'Biology',url:'/triple/higher/biology/ecology/water-cycle.html',c:'#6BCB77'},
+    {t:'The Nitrogen Cycle',s:'Biology',url:'/triple/higher/biology/ecology/nitrogen-cycle.html',c:'#6BCB77'},
+    {t:'Decomposition',s:'Biology',url:'/triple/higher/biology/ecology/decomposition.html',c:'#6BCB77'},
+    {t:'Trophic Levels',s:'Biology',url:'/triple/higher/biology/ecology/trophic-levels.html',c:'#6BCB77'},
+    {t:'Pyramids of Biomass',s:'Biology',url:'/triple/higher/biology/ecology/pyramids-of-biomass.html',c:'#6BCB77'},
+    {t:'Transfer of Biomass',s:'Biology',url:'/triple/higher/biology/ecology/transfer-of-biomass.html',c:'#6BCB77'},
+    {t:'Sampling Techniques',s:'Biology',url:'/triple/higher/biology/ecology/sampling-techniques.html',c:'#6BCB77'},
+    {t:'The Impact of Environmental Change',s:'Biology',url:'/triple/higher/biology/ecology/environmental-change.html',c:'#6BCB77'},
+    {t:'Factors Affecting Food Security',s:'Biology',url:'/triple/higher/biology/ecology/factors-affecting-food-security.html',c:'#6BCB77'},
+    {t:'Farming Techniques',s:'Biology',url:'/triple/higher/biology/ecology/farming-techniques.html',c:'#6BCB77'},
+    {t:'Sustainable Fisheries',s:'Biology',url:'/triple/higher/biology/ecology/sustainable-fisheries.html',c:'#6BCB77'},
+    {t:'The Role of Biotechnology',s:'Biology',url:'/triple/higher/biology/ecology/role-of-biotechnology.html',c:'#6BCB77'},
   ];
   const input = document.getElementById('siteSearch');
   const results = document.getElementById('searchResults');
@@ -5188,6 +5274,7 @@ def build_site(output_dir="mrbadmus_site"):
         from all_subtopics_biology                     import BIOLOGY_SUBTOPICS_ALL
         from all_subtopics_biology_higher            import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_HIGHER
         from all_subtopics_biology_triple_foundation import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_TRIPLE_FOUNDATION
+        from all_subtopics_biology_triple_higher    import BIOLOGY_SUBTOPICS_ALL as BIOLOGY_SUBTOPICS_TRIPLE_HIGHER
         print("  ✅ Loaded subtopic modules")
     except ImportError as e:
         print(f"  ⚠️  Could not load subtopics: {e}")
@@ -5198,6 +5285,7 @@ def build_site(output_dir="mrbadmus_site"):
         BIOLOGY_SUBTOPICS_ALL                     = {}
         BIOLOGY_SUBTOPICS_HIGHER                 = {}
         BIOLOGY_SUBTOPICS_TRIPLE_FOUNDATION      = {}
+        BIOLOGY_SUBTOPICS_TRIPLE_HIGHER          = {}
 
     SUBTOPICS_ALL = {
         "physics":   PHYSICS_SUBTOPICS_ALL,
@@ -5287,6 +5375,8 @@ def build_site(output_dir="mrbadmus_site"):
                     subj_subtopics = BIOLOGY_SUBTOPICS_HIGHER
                 elif subject == "biology" and tier == "foundation" and pathway == "triple":
                     subj_subtopics = BIOLOGY_SUBTOPICS_TRIPLE_FOUNDATION
+                elif subject == "biology" and tier == "higher" and pathway == "triple":
+                    subj_subtopics = BIOLOGY_SUBTOPICS_TRIPLE_HIGHER
                 elif subject == "chemistry" and tier == "higher":
                     subj_subtopics = CHEMISTRY_SUBTOPICS_HIGHER
                 elif subject == "physics" and tier == "higher":
