@@ -162,10 +162,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-electric-fields"><div class="match-def" data-index="0" draggable="true">Field lines radiate OUTWARD in all directions from the charge</div>
-<div class="match-def" data-index="3" draggable="true">Uniform field — parallel equally-spaced lines between the plates</div>
+      <div class="match-defs" id="defPool-electric-fields"><div class="match-def" data-index="3" draggable="true">Uniform field — parallel equally-spaced lines between the plates</div>
 <div class="match-def" data-index="2" draggable="true">Field lines arc from positive to negative — strong attractive field between them</div>
 <div class="match-def" data-index="1" draggable="true">Field lines point INWARD toward the charge from all directions</div>
+<div class="match-def" data-index="0" draggable="true">Field lines radiate OUTWARD in all directions from the charge</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -188,20 +188,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Electric fields can point in any direction depending on the charge configuration.",2: "Field directions are fixed by convention and the geometry of the charges — not random.",3: "Field lines go from + to − (the direction of conventional current/positive charge flow) — not from − to +.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Field directions are fixed by convention and the geometry of the charges — not random.",2: "Field lines go from + to − (the direction of conventional current/positive charge flow) — not from − to +.",3: "Electric fields can point in any direction depending on the charge configuration.",}'>
   <div class="q-text">1. In which direction do electric field lines point?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Always horizontally — electric fields are always horizontal</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">In random directions depending on the shape of the charged object</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">From positive to negative — the direction a positive test charge would experience a force</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">In random directions depending on the shape of the charged object</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">From negative to positive — field lines follow electron flow direction</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">From negative to positive — field lines follow electron flow direction</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Always horizontally — electric fields are always horizontal</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Lightning conductors deliberately attract lightning (via strong local field at the point) and channel it safely to earth — they don\'t reflect it.",2: "Conductors don\'t block or absorb electric fields — they provide a preferred discharge PATH to earth.",3: "Charge goes through the conductor to earth — not into the building structure.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Charge goes through the conductor to earth — not into the building structure.",2: "Conductors don\'t block or absorb electric fields — they provide a preferred discharge PATH to earth.",3: "Lightning conductors deliberately attract lightning (via strong local field at the point) and channel it safely to earth — they don\'t reflect it.",}'>
   <div class="q-text">2. Why does a lightning conductor protect a building?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The pointed conductor creates a strong local electric field that safely channels the discharge to earth via a low-resistance conducting path</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The conductor absorbs the charge into the building's structure — distributing it safely</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The conductor reflects the lightning bolt away from the building</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The pointed conductor creates a strong local electric field that safely channels the discharge to earth via a low-resistance conducting path</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">The conductor blocks the electric field between the cloud and building — the charge disperses harmlessly</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The conductor reflects the lightning bolt away from the building</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">The conductor absorbs the charge into the building's structure — distributing it safely</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -272,7 +272,7 @@
     </div>
   </div>
 </div>
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Electric Fields (6.2.6 (physics only))'});</script>
   <script>
 const SCORE_MESSAGES = [

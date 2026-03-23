@@ -1,5 +1,5 @@
 /**
- * mrbadmus.js — Shared AI chat engine
+ * mrbadmus.v2.js — Shared AI chat engine
  * Works across Physics, Chemistry, Biology
  */
 window.MrBadmus = (function() {

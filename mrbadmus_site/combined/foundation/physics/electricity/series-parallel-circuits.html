@@ -166,11 +166,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-series-parallel-circuits"><div class="match-def" data-index="4" draggable="true">The battery provides the total pd for the whole circuit</div>
-<div class="match-def" data-index="2" draggable="true">Total resistance equals the sum of individual resistances</div>
+      <div class="match-defs" id="defPool-series-parallel-circuits"><div class="match-def" data-index="1" draggable="true">Potential difference is the same across every branch</div>
 <div class="match-def" data-index="3" draggable="true">If one component breaks, the others continue working</div>
+<div class="match-def" data-index="2" draggable="true">Total resistance equals the sum of individual resistances</div>
+<div class="match-def" data-index="4" draggable="true">The battery provides the total pd for the whole circuit</div>
 <div class="match-def" data-index="0" draggable="true">Current is identical at every point in the loop</div>
-<div class="match-def" data-index="1" draggable="true">Potential difference is the same across every branch</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -211,12 +211,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Parallel circuits never increase voltage beyond the supply.",1: "In parallel, all branches have the supply pd regardless of resistance — only the branch CURRENT changes with resistance.",2: "Pd splitting happens in SERIES. In PARALLEL, all branches have the SAME pd as the supply.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "In parallel, all branches have the supply pd regardless of resistance — only the branch CURRENT changes with resistance.",2: "Pd splitting happens in SERIES. In PARALLEL, all branches have the SAME pd as the supply.",3: "Parallel circuits never increase voltage beyond the supply.",}'>
   <div class="q-text">1. Two lamps are connected in parallel across a 6 V battery. What is the pd across each lamp?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">12 V each — parallel doubles the voltage per branch</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Depends on lamp resistance — cannot determine without values</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Depends on lamp resistance — cannot determine without values</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">6 V each — every branch in a parallel circuit has the same pd as the supply</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">3 V each — the pd splits equally between the two parallel lamps</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">6 V each — every branch in a parallel circuit has the same pd as the supply</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">12 V each — parallel doubles the voltage per branch</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Parallel draws MORE total current (I_total = sum of branches) — safety comes from fuses, not lower current.",2: "Series wiring would mean each appliance gets a reduced share of 230 V and all would stop if one broke.",3: "Cost is a secondary concern — the electrical reasons (full voltage, independent operation) are the key ones.",}'>
@@ -295,7 +295,7 @@
     </div>
   </div>
 </div>
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Series and Parallel Circuits (6.2.2)'});</script>
   <script>
 const SCORE_MESSAGES = [

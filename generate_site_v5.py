@@ -1066,11 +1066,11 @@ a { color: inherit; text-decoration: none; }
 """
 
 # ─────────────────────────────────────────────
-#  SHARED JS — from existing mrbadmus.js
+#  SHARED JS — from existing mrbadmus.v2.js
 # ─────────────────────────────────────────────
 
 SHARED_JS = r"""/**
- * mrbadmus.js — Shared AI chat engine
+ * mrbadmus.v2.js — Shared AI chat engine
  * Works across Physics, Chemistry, Biology
  */
 window.MrBadmus = (function() {
@@ -1665,7 +1665,7 @@ def page_shell(title, subject, body_html, topic_id="", topic_title="", pathway="
   {nav_html(subject, pathway, tier)}
   {body_html}
   {chat_html()}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>
     MrBadmus.init({{
       subject: '{subject or "physics"}',
@@ -2482,7 +2482,7 @@ def make_landing():
   {nav_html()}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{ subject: 'physics' }});</script>
 </body>
 </html>"""
@@ -2541,7 +2541,7 @@ def make_pathway_page(pathway):
   {nav_html(pathway=pathway)}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{ subject: 'physics' }});</script>
 </body>
 </html>"""
@@ -2593,7 +2593,7 @@ def make_tier_page(pathway, tier):
   {nav_html(pathway=pathway, tier=tier)}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{ subject: 'physics' }});</script>
 </body>
 </html>"""
@@ -4986,7 +4986,7 @@ try {{
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>
     MrBadmus.init({{ subject: 'physics', topic: '{st['title']} (AQA {st['spec']})' }});
   </script>
@@ -5092,7 +5092,7 @@ def make_updated_electricity_page():
   {nav}
   {body}
   {chat}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{subject:'physics',topic:'Electricity (AQA 4.2)'}});</script>
   <script>
   function toggleExpand(id) {{
@@ -5482,7 +5482,7 @@ try {{
   {nav_html(subject, pathway, tier)}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{subject:'{subject}',topic:'{st["title"]} ({st["spec"]})'}});</script>
   <script>{quiz_js}</script>
   <script>{matching_js}</script>
@@ -5635,7 +5635,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
   {nav_html(subject, pathway, tier)}
   {body}
   {chat_html()}
-  <script src="/shared/mrbadmus.js"></script>
+  <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{subject:'{subject}',topic:'{topic["title"]} ({topic["spec"]})'}});</script>
 </body>
 </html>"""
@@ -5722,9 +5722,9 @@ def build_site(output_dir="mrbadmus_site"):
         f.write(SHARED_CSS_PATCHED)
     print("  ✅ shared/styles.css")
 
-    with open(f"{output_dir}/shared/mrbadmus.js", "w") as f:
+    with open(f"{output_dir}/shared/mrbadmus.v2.js", "w") as f:
         f.write(SHARED_JS_PATCHED)
-    print("  ✅ shared/mrbadmus.js")
+    print("  ✅ shared/mrbadmus.v2.js")
 
     # ── Netlify ──
     with open(f"{output_dir}/netlify/functions/chat.js", "w") as f:
