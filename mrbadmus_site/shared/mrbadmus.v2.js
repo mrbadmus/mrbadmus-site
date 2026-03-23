@@ -175,12 +175,12 @@ FULL BIOLOGY SPECIFICATION TOPICS:
 
   // Keep-alive ping every 10 minutes — prevents Render cold starts
   setInterval(function() {
-    fetch('/api/health').catch(function(){});
+    fetch('https://mrbadmus-backend.onrender.com/api/health').catch(function(){});
   }, 10 * 60 * 1000);
 
   // Also ping immediately on page load to warm up Render
   setTimeout(function() {
-    fetch('/api/health').catch(function(){});
+    fetch('https://mrbadmus-backend.onrender.com/api/health').catch(function(){});
   }, 2000);
 
   function open() {
@@ -234,7 +234,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
       // Wake up Render if needed (it spins down after inactivity)
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout
-      const res = await fetch('/api/chat', {
+      const res = await fetch('https://mrbadmus-backend.onrender.com/api/chat', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body:JSON.stringify({ system:systemPrompt, messages:chatHistory }),
