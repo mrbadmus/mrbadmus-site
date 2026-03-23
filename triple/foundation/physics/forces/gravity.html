@@ -164,8 +164,8 @@
 </div>
       <div class="match-defs" id="defPool-gravity"><div class="match-def" data-index="0" draggable="true">Measured in kilograms — stays the same on the Moon and on Earth</div>
 <div class="match-def" data-index="3" draggable="true">70 kg person on the Moon — W = 70 × 1.6 = 112 N</div>
-<div class="match-def" data-index="1" draggable="true">Measured in newtons — changes with gravitational field strength</div>
 <div class="match-def" data-index="2" draggable="true">70 kg person on Earth — W = 70 × 9.8 = 686 N</div>
+<div class="match-def" data-index="1" draggable="true">Measured in newtons — changes with gravitational field strength</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -201,19 +201,19 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Use the Moon\'s gravitational field strength (1.6 N/kg), not Earth\'s (9.8 N/kg).",1: "The Moon has significant gravity (1.6 N/kg) — astronauts are not weightless on the surface. Weightlessness occurs in orbit (free fall).",2: "Mass NEVER changes — it is 80 kg on the Moon, on Earth, anywhere. Only weight changes.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "The Moon has significant gravity (1.6 N/kg) — astronauts are not weightless on the surface. Weightlessness occurs in orbit (free fall).",2: "Mass NEVER changes — it is 80 kg on the Moon, on Earth, anywhere. Only weight changes.",3: "Use the Moon\'s gravitational field strength (1.6 N/kg), not Earth\'s (9.8 N/kg).",}'>
   <div class="q-text">1. An astronaut has mass 80 kg. What is her weight on the Moon? (g_Moon = 1.6 N/kg)</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">784 N — W = 80 × 9.8 (used Earth's g)</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">0 N — astronauts are weightless on the Moon</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0 N — astronauts are weightless on the Moon</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">128 N — W = 80 × 1.6 = 128 N</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">50 kg — mass on the Moon is 1/6 of Earth mass</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">128 N — W = 80 × 1.6 = 128 N</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">784 N — W = 80 × 9.8 (used Earth's g)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Weight and mass are different physical quantities — they cannot use the same units.",1: "Grams are a unit of mass — not weight. Weight is always in newtons.",2: "Weight is always in newtons everywhere — the statement would still be wrong on the Moon (just a different wrong value).",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Grams are a unit of mass — not weight. Weight is always in newtons.",1: "Weight is always in newtons everywhere — the statement would still be wrong on the Moon (just a different wrong value).",2: "Weight and mass are different physical quantities — they cannot use the same units.",}'>
   <div class="q-text">2. A student says 'my weight is 60 kg'. What is wrong with this statement?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Nothing is wrong — weight and mass are the same thing and can be measured in the same units</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Weight should be in grams — 60,000 g</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The statement is correct on the Moon but wrong on Earth</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Weight should be in grams — 60,000 g</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The statement is correct on the Moon but wrong on Earth</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Nothing is wrong — weight and mass are the same thing and can be measured in the same units</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Weight is measured in NEWTONS — kilograms measure MASS. Their weight is approximately 588 N (60 × 9.8)</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
@@ -266,21 +266,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

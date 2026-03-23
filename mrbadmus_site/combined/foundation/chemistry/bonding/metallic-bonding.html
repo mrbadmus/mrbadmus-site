@@ -157,11 +157,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-metallic-bonding"><div class="match-def" data-index="1" draggable="true">Strong electrostatic attraction between positive ions and electron sea</div>
-<div class="match-def" data-index="4" draggable="true">Different-sized atoms disrupt the regular lattice — layers cannot slide as easily</div>
-<div class="match-def" data-index="2" draggable="true">Layers of ions can slide over each other — electron sea re-surrounds ions in new positions</div>
+      <div class="match-defs" id="defPool-metallic-bonding"><div class="match-def" data-index="4" draggable="true">Different-sized atoms disrupt the regular lattice — layers cannot slide as easily</div>
+<div class="match-def" data-index="1" draggable="true">Strong electrostatic attraction between positive ions and electron sea</div>
 <div class="match-def" data-index="3" draggable="true">Delocalised electrons transfer thermal energy rapidly through the structure</div>
 <div class="match-def" data-index="0" draggable="true">Delocalised electrons move freely through the structure, carrying charge</div>
+<div class="match-def" data-index="2" draggable="true">Layers of ions can slide over each other — electron sea re-surrounds ions in new positions</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -178,11 +178,11 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Positive ions ATTRACT electrons but do not themselves move to carry current — it is the mobile delocalised electrons that carry charge.",1: "Proton count determines the element\'s identity, not its conductivity — non-metals can also have many protons but are poor conductors.",2: "The lattice provides the structure, but conductivity comes from the FREE electrons, not from the ions themselves.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "The lattice provides the structure, but conductivity comes from the FREE electrons, not from the ions themselves.",1: "Proton count determines the element\'s identity, not its conductivity — non-metals can also have many protons but are poor conductors.",2: "Positive ions ATTRACT electrons but do not themselves move to carry current — it is the mobile delocalised electrons that carry charge.",}'>
   <div class="q-text">1. Why are metals good conductors of electricity?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Metal ions are positively charged and attract electrical current</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The regular lattice of metal ions allows electrical signals to travel between them</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">Metals have more protons than non-metals, making them better at conducting</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The regular lattice of metal ions allows electrical signals to travel between them</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Metal ions are positively charged and attract electrical current</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Delocalised electrons can move freely through the metallic lattice and carry charge</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
@@ -243,21 +243,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

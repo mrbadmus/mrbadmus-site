@@ -156,10 +156,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-electrolysis-aqueous"><div class="match-def" data-index="0" draggable="true">Cathode: H₂ gas. Anode: O₂ gas. (No metal ions below H, no halide ions)</div>
+      <div class="match-defs" id="defPool-electrolysis-aqueous"><div class="match-def" data-index="2" draggable="true">Cathode: H₂ gas. Anode: Cl₂ gas. (Na above H; high Cl⁻ conc)</div>
 <div class="match-def" data-index="1" draggable="true">Cathode: Cu metal deposited. Anode: O₂ gas. (Cu below H; no halide)</div>
 <div class="match-def" data-index="3" draggable="true">Cathode: H₂ gas. Anode: O₂ gas. (Na above H; low Cl⁻ conc → O₂ preferred)</div>
-<div class="match-def" data-index="2" draggable="true">Cathode: H₂ gas. Anode: Cl₂ gas. (Na above H; high Cl⁻ conc)</div>
+<div class="match-def" data-index="0" draggable="true">Cathode: H₂ gas. Anode: O₂ gas. (No metal ions below H, no halide ions)</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -184,20 +184,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "O₂ is produced at the ANODE (from OH⁻ oxidation), not the cathode.",2: "SO₄²⁻ is a very stable ion — it is NOT discharged at the cathode or anode under normal conditions.",3: "H⁺ ions ARE present — but Cu²⁺ is LESS REACTIVE than H⁺ (copper is below hydrogen in the series), so Cu²⁺ is preferentially discharged.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "H⁺ ions ARE present — but Cu²⁺ is LESS REACTIVE than H⁺ (copper is below hydrogen in the series), so Cu²⁺ is preferentially discharged.",2: "O₂ is produced at the ANODE (from OH⁻ oxidation), not the cathode.",3: "SO₄²⁻ is a very stable ion — it is NOT discharged at the cathode or anode under normal conditions.",}'>
   <div class="q-text">1. Copper sulfate solution is electrolysed with inert electrodes. What is produced at the cathode?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Oxygen — OH⁻ ions from water are discharged at the cathode</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Copper metal — Cu²⁺ ions are below hydrogen in the reactivity series and are preferentially discharged</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Sulfur dioxide — SO₄²⁻ ions are discharged at the cathode</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Hydrogen gas — water provides H⁺ ions which are always discharged at the cathode</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Copper metal — Cu²⁺ ions are below hydrogen in the reactivity series and are preferentially discharged</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Hydrogen gas — water provides H⁺ ions which are always discharged at the cathode</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Oxygen — OH⁻ ions from water are discharged at the cathode</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Sulfur dioxide — SO₄²⁻ ions are discharged at the cathode</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "O₂ IS produced if the Cl⁻ concentration is LOW — but in CONCENTRATED brine, the high Cl⁻ concentration favours Cl₂ production.",2: "Na⁺ is a positive ion — it moves to the CATHODE (negative electrode), not the anode.",3: "H⁺ is discharged at the CATHODE (negative) — positive ions always move to the cathode.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "O₂ IS produced if the Cl⁻ concentration is LOW — but in CONCENTRATED brine, the high Cl⁻ concentration favours Cl₂ production.",1: "H⁺ is discharged at the CATHODE (negative) — positive ions always move to the cathode.",3: "Na⁺ is a positive ion — it moves to the CATHODE (negative electrode), not the anode.",}'>
   <div class="q-text">2. Concentrated brine (sodium chloride solution) is electrolysed. What is produced at the anode?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Oxygen gas — OH⁻ ions from water are always discharged at the anode</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Chlorine gas — high concentration of Cl⁻ ions means they are preferentially discharged over OH⁻</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Sodium metal — Na⁺ ions are discharged at the anode</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Hydrogen gas — H⁺ ions from water are discharged at the anode</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Hydrogen gas — H⁺ ions from water are discharged at the anode</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Chlorine gas — high concentration of Cl⁻ ions means they are preferentially discharged over OH⁻</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Sodium metal — Na⁺ ions are discharged at the anode</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -249,21 +249,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

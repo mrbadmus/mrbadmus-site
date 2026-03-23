@@ -159,9 +159,9 @@
 </div>
       <div class="match-defs" id="defPool-changes-of-state"><div class="match-def" data-index="2" draggable="true">Liquid → gas — energy supplied, particles escape intermolecular forces</div>
 <div class="match-def" data-index="4" draggable="true">Solid → gas directly — e.g. dry ice (solid CO₂) at room temperature</div>
+<div class="match-def" data-index="1" draggable="true">Liquid → solid — energy removed, particles slow down and form fixed lattice</div>
 <div class="match-def" data-index="0" draggable="true">Solid → liquid — energy supplied, particles gain enough energy to break from lattice</div>
 <div class="match-def" data-index="3" draggable="true">Gas → liquid — energy removed, particles slow and intermolecular forces pull them together</div>
-<div class="match-def" data-index="1" draggable="true">Liquid → solid — energy removed, particles slow down and form fixed lattice</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -178,19 +178,19 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "In a sealed container with no evaporation, mass is perfectly conserved — but even with some evaporation, the PRINCIPLE is conservation of mass in a change of state.",1: "Temperature affects rate of freezing and final temperature, not the mass of ice formed.",2: "Ice IS larger in volume than liquid water — but volume and mass are different. The MASS is the same; ice is simply less dense.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "In a sealed container with no evaporation, mass is perfectly conserved — but even with some evaporation, the PRINCIPLE is conservation of mass in a change of state.",2: "Temperature affects rate of freezing and final temperature, not the mass of ice formed.",3: "Ice IS larger in volume than liquid water — but volume and mass are different. The MASS is the same; ice is simply less dense.",}'>
   <div class="q-text">1. 200 g of water is placed in a freezer and completely freezes. What is the mass of the ice formed?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Less than 200 g — some water evaporates as it cools</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Depends on temperature — colder freezers produce heavier ice</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">More than 200 g — ice is larger in volume so it must be heavier</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">200 g — mass is conserved during changes of state; no particles are created or destroyed</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">200 g — mass is conserved during changes of state; no particles are created or destroyed</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Less than 200 g — some water evaporates as it cools</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Depends on temperature — colder freezers produce heavier ice</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">More than 200 g — ice is larger in volume so it must be heavier</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Melting is a bulk process — the entire solid changes state, not just the surface.",1: "The ARRANGEMENT of particles changes (structure), but the CHEMICAL IDENTITY doesn\'t — it\'s still the same compound. Chemical changes produce new substances.",2: "Both chemical and physical changes can involve energy. The distinction is whether new chemical substances are formed.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Melting is a bulk process — the entire solid changes state, not just the surface.",1: "Both chemical and physical changes can involve energy. The distinction is whether new chemical substances are formed.",2: "The ARRANGEMENT of particles changes (structure), but the CHEMICAL IDENTITY doesn\'t — it\'s still the same compound. Chemical changes produce new substances.",}'>
   <div class="q-text">2. Why is melting a physical change rather than a chemical change?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Melting only affects the surface of the solid — the inside remains chemically unchanged</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Melting is chemical because the structure of the material is permanently altered</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Physical changes always involve energy, while chemical changes do not</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Physical changes always involve energy, while chemical changes do not</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Melting is chemical because the structure of the material is permanently altered</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">No new substances are formed — the material's chemical identity is preserved and the change is reversible</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
@@ -243,21 +243,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

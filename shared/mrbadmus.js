@@ -4,6 +4,22 @@
  */
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
+  let studentName = null, studentProfile = null;
+
+  // Load student name + profile from Supabase session (if logged in)
+  function loadStudentSession() {
+    try {
+      const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+      if (!raw) return;
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (!user) return;
+      studentName = user.user_metadata?.first_name || null;
+      // Update chat header subtitle with name
+      const subtitle = document.getElementById('chat-head-subtitle');
+      if (subtitle && studentName) subtitle.textContent = 'Hey ' + studentName + '! 👋';
+    } catch(e) {}
+  }
 
   const BASE_PROMPT = `You are Mr. Badmus AI — an expert AQA GCSE Science teacher covering Physics, Chemistry and Biology (AQA 8463 / 8462 / 8461). You are warm, encouraging, and deeply knowledgeable.
 
@@ -134,11 +150,15 @@ FULL BIOLOGY SPECIFICATION TOPICS:
   }
 
   function open() {
+    loadStudentSession();
     document.getElementById('chatOverlay')?.classList.add('open');
     if (!chatInited) {
       chatInited = true;
       const sn = {physics:'Physics ⚡',chemistry:'Chemistry 🧪',biology:'Biology 🌿'}[currentSubject];
-      addMsg('bot', `Hey! 👋 I\'m Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?`);
+      const greet = studentName
+        ? "Hey " + studentName + "! 👋 I'm Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?"
+        : "Hey! 👋 I'm Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?";
+      addMsg('bot', greet);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }

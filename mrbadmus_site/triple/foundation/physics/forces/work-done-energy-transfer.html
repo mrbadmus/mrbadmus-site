@@ -162,10 +162,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-work-done-energy-transfer"><div class="match-def" data-index="0" draggable="true">500 N force moves object 4 m — W = 500 × 4</div>
-<div class="match-def" data-index="1" draggable="true">Lifting 5 kg by 2 m — W = mgh = 5 × 9.8 × 2</div>
-<div class="match-def" data-index="2" draggable="true">Holding a 100 N weight stationary — no displacement, no work done</div>
+      <div class="match-defs" id="defPool-work-done-energy-transfer"><div class="match-def" data-index="2" draggable="true">Holding a 100 N weight stationary — no displacement, no work done</div>
 <div class="match-def" data-index="3" draggable="true">1000 J work done by a 200 N force — s = W ÷ F = 1000 ÷ 200</div>
+<div class="match-def" data-index="0" draggable="true">500 N force moves object 4 m — W = 500 × 4</div>
+<div class="match-def" data-index="1" draggable="true">Lifting 5 kg by 2 m — W = mgh = 5 × 9.8 × 2</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -201,12 +201,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "W = F × s requires the displacement to be in the DIRECTION of the force. Gravity acts downward; box moves horizontally → no work done by gravity.",2: "Same error — using horizontal distance for a vertical force.",3: "mg gives weight (force) not work — must multiply by distance IN THE DIRECTION of the force, which is zero here.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "mg gives weight (force) not work — must multiply by distance IN THE DIRECTION of the force, which is zero here.",1: "W = F × s requires the displacement to be in the DIRECTION of the force. Gravity acts downward; box moves horizontally → no work done by gravity.",2: "Same error — using horizontal distance for a vertical force.",}'>
   <div class="q-text">1. A person carries a 20 kg box horizontally for 10 m at constant height. How much work does gravity do on the box?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0 J — gravity acts downward but the box moves horizontally; no displacement in the direction of the gravitational force</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">196 J — W = mg = 20 × 9.8 (forgot to include distance)</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">1960 J — W = mgs = 20 × 9.8 × 10</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">2000 J — W = 20 × 10 × 10 (using g = 10)</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">196 J — W = mg = 20 × 9.8 (forgot to include distance)</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">0 J — gravity acts downward but the box moves horizontally; no displacement in the direction of the gravitational force</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "s = F ÷ W inverts the rearrangement: s = W ÷ F = 3200 ÷ 400 = 8 m.",2: "s = W × F multiplies — but W = Fs means s = W ÷ F.",3: "Adding work and force gives meaningless units (J + N). Use W = Fs rearranged: s = W ÷ F.",}'>
@@ -266,21 +266,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

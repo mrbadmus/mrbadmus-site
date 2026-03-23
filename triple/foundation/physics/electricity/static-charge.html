@@ -154,9 +154,9 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-static-charge"><div class="match-def" data-index="1" draggable="true">Loses electrons to the rod — left with net positive charge</div>
-<div class="match-def" data-index="2" draggable="true">Balloon induces opposite charge on wall surface — opposite charges attract</div>
 <div class="match-def" data-index="0" draggable="true">Gains electrons when rubbed with cloth — electrons transferred to rod</div>
 <div class="match-def" data-index="3" draggable="true">All hairs gain same charge — like charges repel, hairs push apart</div>
+<div class="match-def" data-index="2" draggable="true">Balloon induces opposite charge on wall surface — opposite charges attract</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -184,12 +184,12 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">Electrons were created in the rod by rubbing — friction generates new electrons</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Precipitators are electrical devices — they use electric fields, not magnetic fields.",1: "Scrubbers (wet systems) dissolve gases like SO₂ — precipitators work by electrostatic attraction to plates.",2: "Precipitators use electrostatics — not heat. They don\'t burn the soot.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Precipitators use electrostatics — not heat. They don\'t burn the soot.",2: "Scrubbers (wet systems) dissolve gases like SO₂ — precipitators work by electrostatic attraction to plates.",3: "Precipitators are electrical devices — they use electric fields, not magnetic fields.",}'>
   <div class="q-text">2. Why are electrostatic precipitators used in power station chimneys?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">They use magnetic fields to filter out metal particles from the smoke</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">They dissolve soot in water sprayed into the chimney</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">They heat the smoke so soot burns completely before leaving the chimney</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">They give soot particles an electric charge so they are attracted to oppositely charged collection plates — removing particulates from the exhaust gas</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">They heat the smoke so soot burns completely before leaving the chimney</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">They give soot particles an electric charge so they are attracted to oppositely charged collection plates — removing particulates from the exhaust gas</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">They dissolve soot in water sprayed into the chimney</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">They use magnetic fields to filter out metal particles from the smoke</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -241,21 +241,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

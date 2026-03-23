@@ -157,9 +157,9 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-structure-of-alkenes"><div class="match-def" data-index="2" draggable="true">Contains C=C double bond — fewer H atoms than the alkane with same carbon count</div>
-<div class="match-def" data-index="3" draggable="true">Alkenes decolourise orange bromine water — alkanes do not</div>
 <div class="match-def" data-index="0" draggable="true">C₂H₄ — simplest alkene, used to make poly(ethene)</div>
 <div class="match-def" data-index="1" draggable="true">C₃H₆ — used to make polypropylene</div>
+<div class="match-def" data-index="3" draggable="true">Alkenes decolourise orange bromine water — alkanes do not</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -179,20 +179,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "C₄H₁₀ is BUTANE (alkane, CₙH₂ₙ₊₂) — butene is the alkene with one C=C: C₄H₈.",2: "C₄H₆ would have two double bonds — butene has one C=C double bond, giving C₄H₈.",3: "C₄H₄ would require two double bonds or a ring — standard butene is C₄H₈.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "C₄H₄ would require two double bonds or a ring — standard butene is C₄H₈.",1: "C₄H₁₀ is BUTANE (alkane, CₙH₂ₙ₊₂) — butene is the alkene with one C=C: C₄H₈.",3: "C₄H₆ would have two double bonds — butene has one C=C double bond, giving C₄H₈.",}'>
   <div class="q-text">1. What is the molecular formula of butene?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">C₄H₈ — alkenes have general formula CₙH₂ₙ, so n=4 gives C₄H₈</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">C₄H₄ — four carbons with four fewer hydrogens</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">C₄H₁₀ — four carbons with maximum hydrogen (alkane formula)</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">C₄H₆ — four carbons with two double bonds</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">C₄H₄ — four carbons with four fewer hydrogens</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">C₄H₈ — alkenes have general formula CₙH₂ₙ, so n=4 gives C₄H₈</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">C₄H₆ — four carbons with two double bonds</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Alkanes (like ethane) are UNREACTIVE — they do not decolourise bromine water.",2: "Bromine water is the standard test for C=C double bonds — it works and is used routinely.",3: "Both alkenes AND alkanes would decolourise — but the test is specific to the C=C double bond which ONLY alkenes have.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Alkanes (like ethane) are UNREACTIVE — they do not decolourise bromine water.",1: "Bromine water is the standard test for C=C double bonds — it works and is used routinely.",2: "Both alkenes AND alkanes would decolourise — but the test is specific to the C=C double bond which ONLY alkenes have.",}'>
   <div class="q-text">2. How can you distinguish ethene from ethane using bromine water?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Ethane decolourises bromine water — ethene makes it turn darker orange</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Ethene decolourises orange bromine water to colourless — ethane has no effect on bromine water</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Neither reacts with bromine water — a different test is needed</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Both decolourise bromine water — but ethene reacts faster</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Neither reacts with bromine water — a different test is needed</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Both decolourise bromine water — but ethene reacts faster</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Ethene decolourises orange bromine water to colourless — ethane has no effect on bromine water</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -244,21 +244,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

@@ -167,10 +167,10 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-resistors"><div class="match-def" data-index="3" draggable="true">Resistance decreases as temperature increases</div>
-<div class="match-def" data-index="0" draggable="true">Resistance stays constant — straight I–V line through origin</div>
 <div class="match-def" data-index="1" draggable="true">Resistance increases as it heats up — curved I–V graph</div>
 <div class="match-def" data-index="2" draggable="true">Very low resistance in forward direction only — blocks reverse current</div>
 <div class="match-def" data-index="4" draggable="true">Resistance decreases as light intensity increases</div>
+<div class="match-def" data-index="0" draggable="true">Resistance stays constant — straight I–V line through origin</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -192,11 +192,11 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Thermistors are NOT ohmic — resistance changes significantly with temperature.",1: "Metal wires do increase resistance with temperature, but thermistors are NTC — opposite behaviour.",2: "I = V/R — if R changes, I changes too (assuming constant pd).",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "I = V/R — if R changes, I changes too (assuming constant pd).",1: "Thermistors are NOT ohmic — resistance changes significantly with temperature.",2: "Metal wires do increase resistance with temperature, but thermistors are NTC — opposite behaviour.",}'>
   <div class="q-text">1. When temperature rises, what happens to a thermistor's resistance and the current through it?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Resistance stays the same — thermistors are ohmic</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Resistance increases, current decreases — hotter means more resistance like a metal wire</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Current stays constant — current is set by the battery</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Current stays constant — current is set by the battery</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Resistance stays the same — thermistors are ohmic</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Resistance increases, current decreases — hotter means more resistance like a metal wire</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Resistance decreases, current increases — NTC thermistors have lower resistance at higher temperatures</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
@@ -257,21 +257,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

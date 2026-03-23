@@ -153,10 +153,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-understanding-genetics"><div class="match-def" data-index="3" draggable="true">Three scientists independently found the same ratios — chromosomes now known, Mendel's units explained</div>
-<div class="match-def" data-index="0" draggable="true">Some traits are dominant — they mask recessive traits when both are present</div>
-<div class="match-def" data-index="2" draggable="true">Published in obscure journal, used unusual mathematical approach, no known physical mechanism</div>
+      <div class="match-defs" id="defPool-understanding-genetics"><div class="match-def" data-index="0" draggable="true">Some traits are dominant — they mask recessive traits when both are present</div>
 <div class="match-def" data-index="1" draggable="true">Crossing Tt × Tt produces a 3:1 ratio of dominant to recessive phenotype</div>
+<div class="match-def" data-index="2" draggable="true">Published in obscure journal, used unusual mathematical approach, no known physical mechanism</div>
+<div class="match-def" data-index="3" draggable="true">Three scientists independently found the same ratios — chromosomes now known, Mendel's units explained</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -176,20 +176,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Chromosomes contain genes — they are not the same as Mendel\'s units. Chromosomes are the structures; genes are the specific sequences within them.",1: "Nucleotides are the building blocks of DNA — they make up genes but are not equivalent to Mendel\'s heritable units.",2: "Alleles are different versions of the SAME gene — Mendel\'s units are genes (not just alleles). Alleles are a type of unit, but \'genes\' is the correct modern term.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Chromosomes contain genes — they are not the same as Mendel\'s units. Chromosomes are the structures; genes are the specific sequences within them.",2: "Alleles are different versions of the SAME gene — Mendel\'s units are genes (not just alleles). Alleles are a type of unit, but \'genes\' is the correct modern term.",3: "Nucleotides are the building blocks of DNA — they make up genes but are not equivalent to Mendel\'s heritable units.",}'>
   <div class="q-text">1. What name do we now give to Mendel's 'heritable units'?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Chromosomes — the structures in the nucleus that carry genetic information</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Nucleotides — the building blocks of DNA molecules</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Genes — specific sequences of DNA on chromosomes that control characteristics</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Alleles — different versions of the same characteristic</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Genes — specific sequences of DNA on chromosomes that control characteristics</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Nucleotides — the building blocks of DNA molecules</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Mendel DID publish his data in full — the problem was that few scientists read the journal and fewer understood his mathematical approach.",1: "While Mendel was a monk, there is no evidence the church banned his work — he actually carried out his research with the monastery\'s support.",2: "Mendel\'s 3:1 ratio was CORRECT and was reproduced exactly when his work was rediscovered in 1900 — the problem was communication and lack of a known mechanism.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Mendel DID publish his data in full — the problem was that few scientists read the journal and fewer understood his mathematical approach.",2: "While Mendel was a monk, there is no evidence the church banned his work — he actually carried out his research with the monastery\'s support.",3: "Mendel\'s 3:1 ratio was CORRECT and was reproduced exactly when his work was rediscovered in 1900 — the problem was communication and lack of a known mechanism.",}'>
   <div class="q-text">2. Why was Mendel's work not accepted by the scientific community during his lifetime?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Mendel refused to share his data — other scientists couldn't verify his work</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The church banned his work — scientists feared publishing support for it</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">His results were wrong — the 3:1 ratio was only proven to be correct after his death</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">His results were published in a little-read journal, biologists were unfamiliar with statistical approaches, and there was no known physical mechanism for his 'heritable units'</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">His results were published in a little-read journal, biologists were unfamiliar with statistical approaches, and there was no known physical mechanism for his 'heritable units'</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Mendel refused to share his data — other scientists couldn't verify his work</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">The church banned his work — scientists feared publishing support for it</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">His results were wrong — the 3:1 ratio was only proven to be correct after his death</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -241,21 +241,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

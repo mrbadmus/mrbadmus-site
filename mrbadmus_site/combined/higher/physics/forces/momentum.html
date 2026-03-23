@@ -162,10 +162,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-momentum"><div class="match-def" data-index="1" draggable="true">1000 kg + 800 kg after collision (p = 10,000 kg m/s) — v = 10000/1800</div>
-<div class="match-def" data-index="0" draggable="true">1000 kg car at 20 m/s — p = 1000 × 20</div>
-<div class="match-def" data-index="3" draggable="true">Total momentum before an explosion — object was stationary</div>
+      <div class="match-defs" id="defPool-momentum"><div class="match-def" data-index="3" draggable="true">Total momentum before an explosion — object was stationary</div>
+<div class="match-def" data-index="1" draggable="true">1000 kg + 800 kg after collision (p = 10,000 kg m/s) — v = 10000/1800</div>
 <div class="match-def" data-index="2" draggable="true">Increase collision time → reduce peak force — same impulse, longer time</div>
+<div class="match-def" data-index="0" draggable="true">1000 kg car at 20 m/s — p = 1000 × 20</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -201,20 +201,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "The stationary ball doesn\'t have enough momentum to stop the moving one — momentum must balance.",1: "Velocity is NOT conserved — MOMENTUM is conserved. Speed always decreases when objects stick together.",3: "p = 4 kg m/s. After: (0.5+1.5)v = 4; 2v = 4; v = 2 m/s — not 4 (uses wrong total mass).",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "p = 4 kg m/s. After: (0.5+1.5)v = 4; 2v = 4; v = 2 m/s — not 4 (uses wrong total mass).",2: "Velocity is NOT conserved — MOMENTUM is conserved. Speed always decreases when objects stick together.",3: "The stationary ball doesn\'t have enough momentum to stop the moving one — momentum must balance.",}'>
   <div class="q-text">1. A 0.5 kg ball moving at 8 m/s collides with a stationary 1.5 kg ball. They stick together. What is their combined velocity?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0 m/s — the stationary ball stops the moving one</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">8 m/s — velocity is conserved, not momentum</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">2 m/s — p before = 0.5 × 8 = 4 kg m/s; (0.5+1.5)v = 4; v = 4/2 = 2 m/s</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">4 m/s — using only the moving ball's mass: 4/0.5 = 8... wrong rearrangement</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">4 m/s — using only the moving ball's mass: 4/0.5 = 8... wrong rearrangement</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">2 m/s — p before = 0.5 × 8 = 4 kg m/s; (0.5+1.5)v = 4; v = 4/2 = 2 m/s</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">8 m/s — velocity is conserved, not momentum</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">0 m/s — the stationary ball stops the moving one</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "The momentum change (impulse) is the same — the car still goes from moving to stationary. Crumple zones increase TIME, not reduce the impulse.",1: "Crumple zones add mass (metal structure) — the mass reduction argument is not the mechanism.",3: "Crumple zones don\'t absorb ALL kinetic energy without any force — they spread the energy absorption over a longer time to reduce peak force.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Crumple zones add mass (metal structure) — the mass reduction argument is not the mechanism.",2: "Crumple zones don\'t absorb ALL kinetic energy without any force — they spread the energy absorption over a longer time to reduce peak force.",3: "The momentum change (impulse) is the same — the car still goes from moving to stationary. Crumple zones increase TIME, not reduce the impulse.",}'>
   <div class="q-text">2. Why do modern cars have crumple zones at the front?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">They reduce the total momentum change — less deceleration occurs</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">They increase the time of the collision, reducing the peak force on passengers for the same change in momentum</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">They make the car lighter — less mass means less momentum and a gentler stop</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">They increase the time of the collision, reducing the peak force on passengers for the same change in momentum</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">They absorb all kinetic energy — no force is transmitted to the passenger compartment</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">They absorb all kinetic energy — no force is transmitted to the passenger compartment</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">They reduce the total momentum change — less deceleration occurs</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -266,21 +266,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

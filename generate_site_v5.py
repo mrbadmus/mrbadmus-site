@@ -949,32 +949,24 @@ a { color: inherit; text-decoration: none; }
 .chat-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.7);
+  background: var(--darker);
   z-index: 200;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  padding: 16px;
+  flex-direction: column;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 0.25s;
+  transition: opacity 0.2s;
 }
 .chat-overlay.open { pointer-events: all; opacity: 1; }
 .chat-modal {
-  width: 420px;
-  max-width: calc(100vw - 32px);
-  height: min(580px, calc(100vh - 100px));
-  background: var(--dark);
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.1);
+  width: 100%;
+  height: 100%;
+  background: var(--darker);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 80px rgba(0,0,0,0.8);
-  transform: translateY(20px);
-  transition: transform 0.25s;
 }
-.chat-overlay.open .chat-modal { transform: translateY(0); }
+.chat-overlay.open .chat-modal { transform: none; }
 .chat-head {
   padding: 16px 18px;
   background: linear-gradient(135deg, var(--yellow), var(--orange));
@@ -1083,6 +1075,22 @@ SHARED_JS = r"""/**
  */
 window.MrBadmus = (function() {
   let chatInited = false, pendingImg = null, chatHistory = [], currentSubject = 'physics', currentTopic = '', systemPrompt = '';
+  let studentName = null, studentProfile = null;
+
+  // Load student name + profile from Supabase session (if logged in)
+  function loadStudentSession() {
+    try {
+      const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+      if (!raw) return;
+      const session = JSON.parse(raw);
+      const user = session?.user;
+      if (!user) return;
+      studentName = user.user_metadata?.first_name || null;
+      // Update chat header subtitle with name
+      const subtitle = document.getElementById('chat-head-subtitle');
+      if (subtitle && studentName) subtitle.textContent = 'Hey ' + studentName + '! 👋';
+    } catch(e) {}
+  }
 
   const BASE_PROMPT = `You are Mr. Badmus AI — an expert AQA GCSE Science teacher covering Physics, Chemistry and Biology (AQA 8463 / 8462 / 8461). You are warm, encouraging, and deeply knowledgeable.
 
@@ -1213,11 +1221,15 @@ FULL BIOLOGY SPECIFICATION TOPICS:
   }
 
   function open() {
+    loadStudentSession();
     document.getElementById('chatOverlay')?.classList.add('open');
     if (!chatInited) {
       chatInited = true;
       const sn = {physics:'Physics ⚡',chemistry:'Chemistry 🧪',biology:'Biology 🌿'}[currentSubject];
-      addMsg('bot', `Hey! 👋 I\'m Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?`);
+      const greet = studentName
+        ? "Hey " + studentName + "! 👋 I'm Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?"
+        : "Hey! 👋 I'm Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?";
+      addMsg('bot', greet);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);
   }
@@ -1446,21 +1458,24 @@ def chat_html():
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById(\'imgPreview\').src=\'\';document.getElementById(\'imgPreviewRow\').style.display=\'none\';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

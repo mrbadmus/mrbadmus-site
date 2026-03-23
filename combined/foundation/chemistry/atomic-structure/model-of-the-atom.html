@@ -153,10 +153,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-model-of-the-atom"><div class="match-def" data-index="3" draggable="true">Shell model — electrons orbit in fixed energy levels around the nucleus</div>
-<div class="match-def" data-index="0" draggable="true">Solid indivisible sphere — no subatomic particles known at this time</div>
-<div class="match-def" data-index="2" draggable="true">Nuclear model — gold foil experiment showed a tiny dense positive nucleus</div>
+      <div class="match-defs" id="defPool-model-of-the-atom"><div class="match-def" data-index="0" draggable="true">Solid indivisible sphere — no subatomic particles known at this time</div>
 <div class="match-def" data-index="1" draggable="true">Plum pudding — discovery of the electron showed atoms had internal structure</div>
+<div class="match-def" data-index="2" draggable="true">Nuclear model — gold foil experiment showed a tiny dense positive nucleus</div>
+<div class="match-def" data-index="3" draggable="true">Shell model — electrons orbit in fixed energy levels around the nucleus</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -173,20 +173,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "The plum pudding model predicted only SMALL deflections. The large angle deflections and back-scattering DISPROVED the plum pudding model.",1: "Atomic SIZE explains why particles might miss atoms, not why they pass THROUGH them. The key conclusion is that the atom is mostly empty space internally.",2: "Alpha particles can be deflected — some WERE deflected at large angles, showing the nucleus exists.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Atomic SIZE explains why particles might miss atoms, not why they pass THROUGH them. The key conclusion is that the atom is mostly empty space internally.",1: "The plum pudding model predicted only SMALL deflections. The large angle deflections and back-scattering DISPROVED the plum pudding model.",2: "Alpha particles can be deflected — some WERE deflected at large angles, showing the nucleus exists.",}'>
   <div class="q-text">1. In Rutherford's gold foil experiment, most alpha particles passed straight through the foil. What does this tell us?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The plum pudding model was correct — the positive charge is spread out</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Gold atoms are very large — the particles passed through the gaps between atoms</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Gold atoms are very large — the particles passed through the gaps between atoms</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The plum pudding model was correct — the positive charge is spread out</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Alpha particles are too fast to be deflected</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Atoms are mostly empty space — most particles found no matter to deflect them</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Scientific acceptance is based on EVIDENCE, not reputation — the gold foil results clearly contradicted the plum pudding model.",2: "Thomson\'s plum pudding model was specifically based on and designed to explain the discovery of electrons.",3: "Rutherford\'s nuclear model replaced the plum pudding model — it is not still equally accepted, though both are discussed historically.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Rutherford\'s nuclear model replaced the plum pudding model — it is not still equally accepted, though both are discussed historically.",1: "Scientific acceptance is based on EVIDENCE, not reputation — the gold foil results clearly contradicted the plum pudding model.",2: "Thomson\'s plum pudding model was specifically based on and designed to explain the discovery of electrons.",}'>
   <div class="q-text">2. Why did the scientific community accept Rutherford's nuclear model over Thomson's plum pudding model?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The gold foil experiment produced results that could not be explained by the plum pudding model — the new model fitted the evidence</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Both models are still equally accepted today</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">Rutherford was more famous than Thomson, so his model was believed</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">The plum pudding model was proposed before electrons were discovered</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Both models are still equally accepted today</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">The gold foil experiment produced results that could not be explained by the plum pudding model — the new model fitted the evidence</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -238,21 +238,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

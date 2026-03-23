@@ -156,10 +156,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-mass-number-isotopes"><div class="match-def" data-index="2" draggable="true">6 protons, 8 neutrons — same element, different neutron count</div>
-<div class="match-def" data-index="3" draggable="true">11 protons, 10 electrons — lost 1 electron, charge +1</div>
+      <div class="match-defs" id="defPool-mass-number-isotopes"><div class="match-def" data-index="0" draggable="true">6 protons, 6 neutrons, 6 electrons (neutral atom)</div>
+<div class="match-def" data-index="2" draggable="true">6 protons, 8 neutrons — same element, different neutron count</div>
 <div class="match-def" data-index="1" draggable="true">11 protons, 12 neutrons, 11 electrons (neutral atom)</div>
-<div class="match-def" data-index="0" draggable="true">6 protons, 6 neutrons, 6 electrons (neutral atom)</div>
+<div class="match-def" data-index="3" draggable="true">11 protons, 10 electrons — lost 1 electron, charge +1</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -195,11 +195,11 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Neutrons = A − Z = 35 − 17 = 18, not 35 + 17.",2: "Neutrons = proton number only when A = 2Z, which is not always the case.",3: "Mass number = protons + neutrons. So neutrons = 35 − 17 = 18. The mass number is NOT just neutrons.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Neutrons = proton number only when A = 2Z, which is not always the case.",2: "Neutrons = A − Z = 35 − 17 = 18, not 35 + 17.",3: "Mass number = protons + neutrons. So neutrons = 35 − 17 = 18. The mass number is NOT just neutrons.",}'>
   <div class="q-text">1. An atom has 17 protons and mass number 35. How many neutrons does it have?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">52 — neutrons = mass number + atomic number = 35 + 17</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">17 — same as the proton number</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">18 — neutrons = mass number − atomic number = 35 − 17 = 18</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">17 — same as the proton number</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">52 — neutrons = mass number + atomic number = 35 + 17</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">35 — the mass number equals the neutron number</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
@@ -260,21 +260,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

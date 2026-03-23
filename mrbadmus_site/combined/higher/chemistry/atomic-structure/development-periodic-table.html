@@ -149,9 +149,9 @@
   <div class="match-drop" data-accepts="2">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-development-periodic-table"><div class="match-def" data-index="2" draggable="true">Arranged elements by atomic number (protons) — resolved inconsistencies in Mendeleev's Ar-based table</div>
+      <div class="match-defs" id="defPool-development-periodic-table"><div class="match-def" data-index="1" draggable="true">Left gaps for undiscovered elements, predicted their properties — table accepted when predictions proved correct</div>
+<div class="match-def" data-index="2" draggable="true">Arranged elements by atomic number (protons) — resolved inconsistencies in Mendeleev's Ar-based table</div>
 <div class="match-def" data-index="0" draggable="true">Law of Octaves — every 8th element similar — not accepted by scientists at the time</div>
-<div class="match-def" data-index="1" draggable="true">Left gaps for undiscovered elements, predicted their properties — table accepted when predictions proved correct</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -168,20 +168,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Newlands arranged by RELATIVE ATOMIC MASS — atomic numbers were not yet known.",2: "Newlands did publish his work — it was presented to the Chemical Society in 1866.",3: "Not leaving gaps was a problem for Mendeleev too initially — but the bigger issue for Newlands was that his pattern broke down after the first 16 elements.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Newlands did publish his work — it was presented to the Chemical Society in 1866.",2: "Newlands arranged by RELATIVE ATOMIC MASS — atomic numbers were not yet known.",3: "Not leaving gaps was a problem for Mendeleev too initially — but the bigger issue for Newlands was that his pattern broke down after the first 16 elements.",}'>
   <div class="q-text">1. Why did the scientific community initially reject Newlands' Law of Octaves?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Newlands arranged elements by atomic number rather than relative atomic mass</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The law of octaves was never published so other scientists couldn't evaluate it</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">It only worked for the first 16 elements and forced elements into groups regardless of whether properties matched</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The law of octaves was never published so other scientists couldn't evaluate it</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Newlands arranged elements by atomic number rather than relative atomic mass</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Newlands did not leave gaps for undiscovered elements — but neither did he need to</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Noble gases were discovered by other scientists (Ramsay and others) after Mendeleev\'s original table — they were later added as Group 0.",2: "Newlands had also arranged by atomic mass — Mendeleev\'s key advance was leaving gaps and making testable predictions.",3: "Science accepts models based on EVIDENCE and PREDICTIVE POWER, not simplicity alone.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Newlands had also arranged by atomic mass — Mendeleev\'s key advance was leaving gaps and making testable predictions.",1: "Science accepts models based on EVIDENCE and PREDICTIVE POWER, not simplicity alone.",2: "Noble gases were discovered by other scientists (Ramsay and others) after Mendeleev\'s original table — they were later added as Group 0.",}'>
   <div class="q-text">2. What was the key reason Mendeleev's periodic table was eventually accepted by scientists?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">He discovered all the noble gases and added them to the table</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">He predicted properties of undiscovered elements — and when they were found, the predictions were accurate</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">He was the first to arrange elements in order of atomic mass</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">His table was the simplest and easiest to remember</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">He was the first to arrange elements in order of atomic mass</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">His table was the simplest and easiest to remember</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">He discovered all the noble gases and added them to the table</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">He predicted properties of undiscovered elements — and when they were found, the predictions were accurate</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -233,21 +233,24 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-info">
-        <h3>Mr. Badmus AI</h3>
-        <p>GCSE Science Tutor</p>
+      <div class="chat-head-left">
+        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
+        <div class="chat-head-info">
+          <h3>Mr. Badmus AI</h3>
+          <p id="chat-head-subtitle">GCSE Science Tutor</p>
+        </div>
       </div>
-      <button class="close-btn">✕</button>
+      <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
     <div class="chat-msgs" id="chatMsgs"></div>
     <div class="img-preview-row" id="imgPreviewRow">
       <img id="imgPreview" src="" alt="preview"/>
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
-    <div class="chat-input-row">
+    <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
       <label for="imgInput" class="img-btn" title="Upload image">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask anything about this topic..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>
