@@ -560,7 +560,7 @@
         ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
       };
 
-      const res = await fetch(`${API_BASE}/api/profile`, {
+      const res = await fetch('https://mrbadmus-backend.onrender.com/api/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

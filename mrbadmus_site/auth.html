@@ -267,13 +267,8 @@
     }
 
     // If email confirmation required
-    if (!data.session) {
-      showMsg('Check your email to confirm your account, then sign in!', 'success');
-      switchTab('signin');
-      return;
-    }
-
-    redirectAfterAuth();
+    // Always redirect to profile setup after signup (email confirmation is off)
+    window.location.href = '/profile-setup.html';
   }
 
 
