@@ -157,10 +157,10 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-group-0"><div class="match-def" data-index="1" draggable="true">Exist as single atoms — already stable, no need to bond with other atoms</div>
-<div class="match-def" data-index="4" draggable="true">Helium has only 2 electrons and 2 protons — very low density, used in balloons</div>
-<div class="match-def" data-index="0" draggable="true">Full outer electron shells — no tendency to gain, lose or share electrons</div>
+      <div class="match-defs" id="defPool-group-0"><div class="match-def" data-index="0" draggable="true">Full outer electron shells — no tendency to gain, lose or share electrons</div>
 <div class="match-def" data-index="2" draggable="true">Larger atoms have stronger London dispersion forces — more electrons, larger temporary dipoles</div>
+<div class="match-def" data-index="1" draggable="true">Exist as single atoms — already stable, no need to bond with other atoms</div>
+<div class="match-def" data-index="4" draggable="true">Helium has only 2 electrons and 2 protons — very low density, used in balloons</div>
 <div class="match-def" data-index="3" draggable="true">All noble gases are transparent and gaseous at room temperature</div>
 </div>
     </div>
@@ -186,12 +186,12 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">They have no electrons in their outer shell — so they cannot form bonds</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Stronger nuclear attraction would make electrons harder to remove but doesn\'t directly raise boiling point — the intermolecular forces between atoms are what matter.",1: "Noble gases are ALL monatomic — they never form Ar₂ or Ne₂ molecules under normal conditions.",2: "Argon is stable and not radioactive. Radon is the radioactive noble gas.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Stronger nuclear attraction would make electrons harder to remove but doesn\'t directly raise boiling point — the intermolecular forces between atoms are what matter.",2: "Argon is stable and not radioactive. Radon is the radioactive noble gas.",3: "Noble gases are ALL monatomic — they never form Ar₂ or Ne₂ molecules under normal conditions.",}'>
   <div class="q-text">2. Argon has a higher boiling point than neon. Why?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Argon has a higher atomic number, so its electrons are more strongly attracted to the nucleus</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Argon forms molecules (Ar₂) while neon is monatomic — more bonds to break</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Argon is a larger atom with more electrons — stronger London dispersion forces between atoms need more energy to overcome</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Argon has a higher atomic number, so its electrons are more strongly attracted to the nucleus</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Argon is radioactive, releasing energy that raises its boiling point</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Argon is a larger atom with more electrons — stronger London dispersion forces between atoms need more energy to overcome</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Argon forms molecules (Ar₂) while neon is monatomic — more bonds to break</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -243,12 +243,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -258,9 +255,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

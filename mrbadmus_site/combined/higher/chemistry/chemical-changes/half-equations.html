@@ -160,11 +160,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-half-equations"><div class="match-def" data-index="0" draggable="true">Al³⁺ + 3e⁻ → Al — aluminium ions gain 3 electrons</div>
-<div class="match-def" data-index="4" draggable="true">2O²⁻ → O₂ + 4e⁻ — oxide ions lose electrons to form O₂</div>
+      <div class="match-defs" id="defPool-half-equations"><div class="match-def" data-index="4" draggable="true">2O²⁻ → O₂ + 4e⁻ — oxide ions lose electrons to form O₂</div>
 <div class="match-def" data-index="1" draggable="true">2H⁺ + 2e⁻ → H₂ — hydrogen ions gain electrons to form H₂ gas</div>
 <div class="match-def" data-index="3" draggable="true">Cu → Cu²⁺ + 2e⁻ — copper atoms lose electrons (copper anode dissolves)</div>
 <div class="match-def" data-index="2" draggable="true">2Cl⁻ → Cl₂ + 2e⁻ — chloride ions lose electrons to form Cl₂</div>
+<div class="match-def" data-index="0" draggable="true">Al³⁺ + 3e⁻ → Al — aluminium ions gain 3 electrons</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -208,12 +208,12 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">Cu²⁺ + 2e⁻ → Cu — copper ions gain 2 electrons to form copper metal</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Chlorine exists as Cl₂ molecules — not Cl atoms. The overall equation must reflect this: 2NaCl → 2Na + Cl₂.",2: "Ionisation is what happens when NaCl dissolves in water — electrolysis of MOLTEN NaCl involves discharge of ions at electrodes.",3: "Electrons don\'t appear in the overall equation — they cancel out when half equations are combined.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Chlorine exists as Cl₂ molecules — not Cl atoms. The overall equation must reflect this: 2NaCl → 2Na + Cl₂.",1: "Ionisation is what happens when NaCl dissolves in water — electrolysis of MOLTEN NaCl involves discharge of ions at electrodes.",2: "Electrons don\'t appear in the overall equation — they cancel out when half equations are combined.",}'>
   <div class="q-text">2. In electrolysis of molten NaCl, the cathode produces Na and the anode produces Cl₂. What is the overall balanced equation?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">NaCl → Na + Cl — one formula unit decomposes into atoms</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">2NaCl → 2Na + Cl₂ — combining 2×(Na⁺ + e⁻ → Na) with 2Cl⁻ → Cl₂ + 2e⁻</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">NaCl → Na⁺ + Cl⁻ — the compound ionises rather than decomposes</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">NaCl + 2e⁻ → Na + Cl⁻ — electrons are added to the compound</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">NaCl → Na⁺ + Cl⁻ — the compound ionises rather than decomposes</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">NaCl + 2e⁻ → Na + Cl⁻ — electrons are added to the compound</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">2NaCl → 2Na + Cl₂ — combining 2×(Na⁺ + e⁻ → Na) with 2Cl⁻ → Cl₂ + 2e⁻</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -265,12 +265,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -280,9 +277,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

@@ -160,11 +160,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-carbonates-halides-sulfates"><div class="match-def" data-index="3" draggable="true">Acidify (HNO₃) + AgNO₃ → yellow AgI precipitate</div>
-<div class="match-def" data-index="2" draggable="true">Acidify (HNO₃) + AgNO₃ → cream AgBr precipitate</div>
-<div class="match-def" data-index="4" draggable="true">Acidify (HCl) + BaCl₂ → white BaSO₄ precipitate</div>
-<div class="match-def" data-index="0" draggable="true">Add acid → CO₂ gas → limewater turns milky/cloudy</div>
+      <div class="match-defs" id="defPool-carbonates-halides-sulfates"><div class="match-def" data-index="0" draggable="true">Add acid → CO₂ gas → limewater turns milky/cloudy</div>
 <div class="match-def" data-index="1" draggable="true">Acidify (HNO₃) + AgNO₃ → white AgCl precipitate</div>
+<div class="match-def" data-index="4" draggable="true">Acidify (HCl) + BaCl₂ → white BaSO₄ precipitate</div>
+<div class="match-def" data-index="3" draggable="true">Acidify (HNO₃) + AgNO₃ → yellow AgI precipitate</div>
+<div class="match-def" data-index="2" draggable="true">Acidify (HNO₃) + AgNO₃ → cream AgBr precipitate</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -189,11 +189,11 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Nitric acid contains no silver — it cannot provide extra Ag⁺ ions.",2: "Acid is not a catalyst here — its role is REMOVAL OF INTERFERING IONS (carbonates, sulfates) that would also react with silver nitrate.",3: "Silver nitrate is stable in aqueous solution — acid is not needed to preserve it.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Acid is not a catalyst here — its role is REMOVAL OF INTERFERING IONS (carbonates, sulfates) that would also react with silver nitrate.",2: "Nitric acid contains no silver — it cannot provide extra Ag⁺ ions.",3: "Silver nitrate is stable in aqueous solution — acid is not needed to preserve it.",}'>
   <div class="q-text">1. Why must solutions be acidified with nitric acid before adding silver nitrate to test for halides?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">To remove carbonate and sulfate ions that would also form precipitates with silver nitrate — ensuring only halide precipitates are observed</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Nitric acid provides extra silver ions to improve the sensitivity of the test</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Nitric acid makes the silver nitrate solution work faster as a catalyst</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Nitric acid makes the silver nitrate solution work faster as a catalyst</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">To remove carbonate and sulfate ions that would also form precipitates with silver nitrate — ensuring only halide precipitates are observed</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Nitric acid provides extra silver ions to improve the sensitivity of the test</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Silver nitrate is unstable in neutral conditions — acid preserves it</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
@@ -254,12 +254,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -269,9 +266,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

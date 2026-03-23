@@ -145,6 +145,30 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     document.querySelector('.chat-send-btn')?.addEventListener('click', () => ask());
     document.getElementById('ci')?.addEventListener('keydown', e => { if(e.key==='Enter') ask(); });
     document.getElementById('imgInput')?.addEventListener('change', () => handleImg(document.getElementById('imgInput')));
+
+  // Paste image support — Ctrl+V / Cmd+V directly into chat
+  document.addEventListener('paste', function(e) {
+    const overlay = document.getElementById('chatOverlay');
+    if (!overlay || !overlay.classList.contains('open')) return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (!file) break;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          pendingImg = evt.target.result;
+          const preview = document.getElementById('imgPreview');
+          const row = document.getElementById('imgPreviewRow');
+          if (preview && row) { preview.src = pendingImg; row.style.display = 'flex'; }
+        };
+        reader.readAsDataURL(file);
+        e.preventDefault();
+        break;
+      }
+    }
+  });
     document.querySelectorAll('.quick-q').forEach(btn => btn.addEventListener('click', () => ask(btn.dataset.q)));
     document.querySelectorAll('[data-open-chat]').forEach(el => el.addEventListener('click', open));
   }

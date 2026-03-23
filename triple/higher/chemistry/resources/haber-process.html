@@ -156,8 +156,8 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-haber-process"><div class="match-def" data-index="2" draggable="true">Increases rate of reaction — allows equilibrium to be reached faster without changing the yield</div>
-<div class="match-def" data-index="1" draggable="true">Higher pressure favours more ammonia (4 mol → 2 mol gas) but very high pressure is too expensive</div>
+      <div class="match-defs" id="defPool-haber-process"><div class="match-def" data-index="1" draggable="true">Higher pressure favours more ammonia (4 mol → 2 mol gas) but very high pressure is too expensive</div>
+<div class="match-def" data-index="2" draggable="true">Increases rate of reaction — allows equilibrium to be reached faster without changing the yield</div>
 <div class="match-def" data-index="3" draggable="true">N₂ and H₂ not converted are returned to reactor — improves overall yield from ~15% to ~98%</div>
 <div class="match-def" data-index="0" draggable="true">Compromise — lower temperature gives higher yield but too slow; this temperature balances rate and yield</div>
 </div>
@@ -209,10 +209,10 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">Higher pressure would favour reactants not products — lower pressure gives more ammonia</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "If only the forward activation energy were lowered, the forward rate would increase more than the reverse — but this is not how catalysts work.",1: "Catalysts do NOT bypass equilibrium — they speed up the approach to equilibrium but cannot change where equilibrium lies.",3: "Catalysts lower activation energy for BOTH forward and reverse reactions equally — this is why equilibrium position is unchanged.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Catalysts do NOT bypass equilibrium — they speed up the approach to equilibrium but cannot change where equilibrium lies.",1: "If only the forward activation energy were lowered, the forward rate would increase more than the reverse — but this is not how catalysts work.",3: "Catalysts lower activation energy for BOTH forward and reverse reactions equally — this is why equilibrium position is unchanged.",}'>
   <div class="q-text">2. How does the iron catalyst improve the Haber process without affecting the equilibrium yield?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The catalyst lowers the activation energy only for the forward reaction — producing more products</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The catalyst converts nitrogen and hydrogen directly to ammonia — bypassing equilibrium completely</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The catalyst converts nitrogen and hydrogen directly to ammonia — bypassing equilibrium completely</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The catalyst lowers the activation energy only for the forward reaction — producing more products</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">The catalyst increases the rate of both forward and reverse reactions equally — the system reaches equilibrium faster but the equilibrium position is unchanged</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">The catalyst shifts the equilibrium to the right — producing more ammonia</button>
 </div>
@@ -266,12 +266,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -281,9 +278,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

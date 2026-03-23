@@ -153,10 +153,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-pyramids-of-biomass"><div class="match-def" data-index="0" draggable="true">Proportional to total biomass at that trophic level</div>
+      <div class="match-defs" id="defPool-pyramids-of-biomass"><div class="match-def" data-index="3" draggable="true">g/m² or kg/m² — mass per unit area</div>
 <div class="match-def" data-index="1" draggable="true">Always at the BOTTOM of the pyramid — widest bar</div>
-<div class="match-def" data-index="3" draggable="true">g/m² or kg/m² — mass per unit area</div>
 <div class="match-def" data-index="2" draggable="true">Energy lost at each level through respiration — less energy = less biomass at higher levels</div>
+<div class="match-def" data-index="0" draggable="true">Proportional to total biomass at that trophic level</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -176,11 +176,11 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Biomass is harder to measure than counting — it requires weighing all organisms. The advantage is accuracy, not ease.",2: "Biomass pyramids show total MASS at each level — not species count. Biodiversity is a separate measure.",3: "Numbers pyramids CAN be inverted (e.g. one tree: many insects) — making them misleading. Biomass pyramids are almost always true pyramids.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Biomass pyramids show total MASS at each level — not species count. Biodiversity is a separate measure.",2: "Biomass is harder to measure than counting — it requires weighing all organisms. The advantage is accuracy, not ease.",3: "Numbers pyramids CAN be inverted (e.g. one tree: many insects) — making them misleading. Biomass pyramids are almost always true pyramids.",}'>
   <div class="q-text">1. Why is a pyramid of biomass usually a more accurate representation of an ecosystem than a pyramid of numbers?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Biomass accounts for the size of organisms — one large organism may have more biomass than thousands of small ones, giving a truer picture of energy stored</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Biomass is easier to count than individual organisms in the wild</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Biomass pyramids show the number of species, which is more informative than counting individuals</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Biomass pyramids show the number of species, which is more informative than counting individuals</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Biomass is easier to count than individual organisms in the wild</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Numbers pyramids always show the same shape — they give no useful information</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
@@ -241,12 +241,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -256,9 +253,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

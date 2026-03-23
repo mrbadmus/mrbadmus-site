@@ -153,10 +153,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-thermal-conductivity"><div class="match-def" data-index="0" draggable="true">Very high thermal conductivity — free electrons transfer energy rapidly</div>
+      <div class="match-defs" id="defPool-thermal-conductivity"><div class="match-def" data-index="2" draggable="true">Fibreglass with trapped air — reduces energy loss through walls</div>
 <div class="match-def" data-index="3" draggable="true">Reduces friction between surfaces — less energy wasted as heat</div>
 <div class="match-def" data-index="1" draggable="true">Very low thermal conductivity — excellent insulator when trapped</div>
-<div class="match-def" data-index="2" draggable="true">Fibreglass with trapped air — reduces energy loss through walls</div>
+<div class="match-def" data-index="0" draggable="true">Very high thermal conductivity — free electrons transfer energy rapidly</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -181,20 +181,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Light transmission (transparency) is unrelated to thermal conductivity.",2: "Moving air molecules would increase CONVECTION — trapped air cannot convect, so only slow conduction occurs.",3: "Density affects heat capacity but not thermal conductivity directly — air\'s insulating property comes from its very low thermal conductivity.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Density affects heat capacity but not thermal conductivity directly — air\'s insulating property comes from its very low thermal conductivity.",1: "Moving air molecules would increase CONVECTION — trapped air cannot convect, so only slow conduction occurs.",2: "Light transmission (transparency) is unrelated to thermal conductivity.",}'>
   <div class="q-text">1. Why is trapped air a better insulator than glass?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Air has much lower thermal conductivity than glass — it transfers energy by conduction very slowly</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Glass transmits light which carries thermal energy — air does not</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Air molecules move randomly, transferring energy away from hot objects faster</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Air is lighter than glass — lower density means less thermal energy stored</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Air is lighter than glass — lower density means less thermal energy stored</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Air molecules move randomly, transferring energy away from hot objects faster</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Glass transmits light which carries thermal energy — air does not</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Air has much lower thermal conductivity than glass — it transfers energy by conduction very slowly</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Mass is not controlled in this way — thickness and type of material matter, not total mass.",2: "Final temperature alone doesn\'t account for starting conditions or time — rate of cooling (gradient) is a fairer comparison.",3: "Colour affects radiation absorption — relevant for infrared studies but not primary factor in conduction-based insulation tests.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Colour affects radiation absorption — relevant for infrared studies but not primary factor in conduction-based insulation tests.",1: "Mass is not controlled in this way — thickness and type of material matter, not total mass.",2: "Final temperature alone doesn\'t account for starting conditions or time — rate of cooling (gradient) is a fairer comparison.",}'>
   <div class="q-text">2. A student investigates thermal insulators by wrapping identical beakers in different materials. Which measurement gives the best comparison?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Mass of insulating material used — more mass = more insulation</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Rate of temperature decrease — steeper temperature-time graph = less effective insulator</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Colour of the insulating material — darker colours absorb more radiation</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Mass of insulating material used — more mass = more insulation</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Final temperature after 10 minutes — higher temperature = better conductor</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Colour of the insulating material — darker colours absorb more radiation</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Rate of temperature decrease — steeper temperature-time graph = less effective insulator</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -246,12 +246,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -261,9 +258,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

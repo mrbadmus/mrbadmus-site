@@ -161,10 +161,10 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-early-atmosphere"><div class="match-def" data-index="1" draggable="true">Marine organisms made CaCO₃ shells → died → shells became limestone</div>
-<div class="match-def" data-index="0" draggable="true">Earth cooled below 100°C — water vapour condensed to form oceans</div>
+<div class="match-def" data-index="3" draggable="true">Nitrogen is very unreactive — accumulated as CO₂ and H₂O were removed</div>
 <div class="match-def" data-index="2" draggable="true">Cyanobacteria evolved ~2.7 billion years ago — photosynthesis released O₂</div>
 <div class="match-def" data-index="4" draggable="true">As O₂ built up, UV converted some O₂ to O₃ — shielded Earth from UV radiation</div>
-<div class="match-def" data-index="3" draggable="true">Nitrogen is very unreactive — accumulated as CO₂ and H₂O were removed</div>
+<div class="match-def" data-index="0" draggable="true">Earth cooled below 100°C — water vapour condensed to form oceans</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -184,12 +184,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "N₂ and CO₂ do not react under atmospheric conditions to produce O₂ — this reaction doesn\'t occur in the atmosphere.",2: "UV photolysis of water is a minor contributor — the main mechanism was photosynthesis by early bacteria.",3: "Volcanoes released CO₂, H₂O vapour, SO₂ and N₂ — NOT oxygen. Early volcanic activity actually maintained a low-oxygen environment.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "UV photolysis of water is a minor contributor — the main mechanism was photosynthesis by early bacteria.",1: "N₂ and CO₂ do not react under atmospheric conditions to produce O₂ — this reaction doesn\'t occur in the atmosphere.",2: "Volcanoes released CO₂, H₂O vapour, SO₂ and N₂ — NOT oxygen. Early volcanic activity actually maintained a low-oxygen environment.",}'>
   <div class="q-text">1. What was the main source of oxygen in Earth's early atmosphere?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Photosynthesis by cyanobacteria — they evolved around 2.7 billion years ago and released O₂</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Decomposition of water vapour — UV radiation split water into hydrogen and oxygen</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">Reaction of nitrogen with carbon dioxide — produced oxygen as a by-product</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Decomposition of water vapour — UV radiation split water into hydrogen and oxygen</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Volcanic eruptions — volcanoes released oxygen along with other gases</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Volcanic eruptions — volcanoes released oxygen along with other gases</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Photosynthesis by cyanobacteria — they evolved around 2.7 billion years ago and released O₂</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Water + CO₂ → carbonic acid (H₂CO₃) — not O₂. Oxygen came from photosynthesis, not this reaction.",2: "Gases don\'t \'sink\' to ocean floors — CO₂ dissolves IN the water rather than sinking as a liquid.",3: "CO₂ doesn\'t condense and fall as liquid at atmospheric temperatures — it remains a gas but dissolves in water. Acid rain does form but that\'s CO₂ dissolved in falling water, not condensation of CO₂.",}'>
@@ -249,12 +249,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -264,9 +261,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

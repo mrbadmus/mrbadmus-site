@@ -156,10 +156,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-percentage-yield"><div class="match-def" data-index="3" draggable="true">Less waste, lower raw material cost, more sustainable process</div>
-<div class="match-def" data-index="1" draggable="true">Products re-form reactants — reaction doesn't go to completion</div>
-<div class="match-def" data-index="2" draggable="true">Product sticks to glassware or lost during filtration and transfer</div>
+      <div class="match-defs" id="defPool-percentage-yield"><div class="match-def" data-index="1" draggable="true">Products re-form reactants — reaction doesn't go to completion</div>
+<div class="match-def" data-index="3" draggable="true">Less waste, lower raw material cost, more sustainable process</div>
 <div class="match-def" data-index="0" draggable="true">Actual yield 38 g, theoretical yield 50 g — (38÷50) × 100</div>
+<div class="match-def" data-index="2" draggable="true">Product sticks to glassware or lost during filtration and transfer</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -198,10 +198,10 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Must divide actual by theoretical — not theoretical by actual. That gives a value over 100%, which is impossible for yield.",1: "% yield = actual ÷ theoretical × 100 = 14 ÷ 20 × 100 = 70%, not 43%.",3: "30% is the percentage LOSS — the question asks for the percentage YIELD, which is 70%.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "% yield = actual ÷ theoretical × 100 = 14 ÷ 20 × 100 = 70%, not 43%.",1: "Must divide actual by theoretical — not theoretical by actual. That gives a value over 100%, which is impossible for yield.",3: "30% is the percentage LOSS — the question asks for the percentage YIELD, which is 70%.",}'>
   <div class="q-text">1. A reaction has a theoretical yield of 20 g but only 14 g is obtained. What is the percentage yield?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">143% — (20 ÷ 14) × 100 = 143% (inverted the fraction)</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">43% — (14 ÷ 20) × 3 = 42%</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">43% — (14 ÷ 20) × 3 = 42%</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">143% — (20 ÷ 14) × 100 = 143% (inverted the fraction)</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">70% — (14 ÷ 20) × 100 = 70%</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">30% — 100% minus 70% (calculated the loss not the yield)</button>
 </div>
@@ -263,12 +263,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -278,9 +275,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

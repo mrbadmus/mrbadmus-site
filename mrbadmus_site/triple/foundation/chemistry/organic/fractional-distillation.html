@@ -157,10 +157,10 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-fractional-distillation"><div class="match-def" data-index="3" draggable="true">Longer chains (C₁₅–C₂₅) — fuel for lorries and trains</div>
-<div class="match-def" data-index="0" draggable="true">Shortest chains (C₁–C₄), lowest boiling point — LPG for cooking and heating</div>
-<div class="match-def" data-index="2" draggable="true">Medium chains (C₁₀–C₁₆) — jet aircraft fuel</div>
+      <div class="match-defs" id="defPool-fractional-distillation"><div class="match-def" data-index="2" draggable="true">Medium chains (C₁₀–C₁₆) — jet aircraft fuel</div>
 <div class="match-def" data-index="1" draggable="true">Short chains (C₅–C₁₀), low boiling point — fuel for cars</div>
+<div class="match-def" data-index="0" draggable="true">Shortest chains (C₁–C₄), lowest boiling point — LPG for cooking and heating</div>
+<div class="match-def" data-index="3" draggable="true">Longer chains (C₁₅–C₂₅) — fuel for lorries and trains</div>
 <div class="match-def" data-index="4" draggable="true">Longest chains, doesn't vaporise — road surfacing</div>
 </div>
     </div>
@@ -186,12 +186,12 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">Petrol collects at the very bottom with bitumen — it is a liquid at room temperature</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Density and boiling point are related but the cause of both is CHAIN LENGTH and intermolecular forces — not density itself.",2: "Alkanes (including petrol fractions) have only SINGLE bonds — no double bonds. Double bonds are found in alkenes.",3: "Crude oil fractions are HYDROCARBONS — they contain only carbon and hydrogen. Oxygen is not present.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Density and boiling point are related but the cause of both is CHAIN LENGTH and intermolecular forces — not density itself.",2: "Crude oil fractions are HYDROCARBONS — they contain only carbon and hydrogen. Oxygen is not present.",3: "Alkanes (including petrol fractions) have only SINGLE bonds — no double bonds. Double bonds are found in alkenes.",}'>
   <div class="q-text">2. Why does bitumen have a much higher boiling point than petrol?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Bitumen is denser so it needs more energy to change state</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">Bitumen molecules have much longer carbon chains — stronger intermolecular forces require more energy to overcome</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Petrol has double bonds that make it easier to boil</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Bitumen contains more oxygen atoms, making it heavier</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Bitumen contains more oxygen atoms, making it heavier</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Petrol has double bonds that make it easier to boil</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -243,12 +243,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -258,9 +255,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

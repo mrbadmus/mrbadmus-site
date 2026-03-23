@@ -1216,6 +1216,30 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     document.querySelector('.chat-send-btn')?.addEventListener('click', () => ask());
     document.getElementById('ci')?.addEventListener('keydown', e => { if(e.key==='Enter') ask(); });
     document.getElementById('imgInput')?.addEventListener('change', () => handleImg(document.getElementById('imgInput')));
+
+  // Paste image support — Ctrl+V / Cmd+V directly into chat
+  document.addEventListener('paste', function(e) {
+    const overlay = document.getElementById('chatOverlay');
+    if (!overlay || !overlay.classList.contains('open')) return;
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (!file) break;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          pendingImg = evt.target.result;
+          const preview = document.getElementById('imgPreview');
+          const row = document.getElementById('imgPreviewRow');
+          if (preview && row) { preview.src = pendingImg; row.style.display = 'flex'; }
+        };
+        reader.readAsDataURL(file);
+        e.preventDefault();
+        break;
+      }
+    }
+  });
     document.querySelectorAll('.quick-q').forEach(btn => btn.addEventListener('click', () => ask(btn.dataset.q)));
     document.querySelectorAll('[data-open-chat]').forEach(el => el.addEventListener('click', open));
   }
@@ -1458,12 +1482,9 @@ def chat_html():
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -1473,9 +1494,9 @@ def chat_html():
       <button onclick="document.getElementById(\'imgPreview\').src=\'\';document.getElementById(\'imgPreviewRow\').style.display=\'none\';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

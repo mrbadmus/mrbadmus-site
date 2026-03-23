@@ -153,9 +153,9 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-induced-potential"><div class="match-def" data-index="3" draggable="true">No change in flux → no induced pd</div>
-<div class="match-def" data-index="0" draggable="true">Increased rate of flux change → larger induced pd</div>
+      <div class="match-defs" id="defPool-induced-potential"><div class="match-def" data-index="0" draggable="true">Increased rate of flux change → larger induced pd</div>
 <div class="match-def" data-index="2" draggable="true">Greater magnetic flux → greater change → larger induced pd</div>
+<div class="match-def" data-index="3" draggable="true">No change in flux → no induced pd</div>
 <div class="match-def" data-index="1" draggable="true">Less conductor cutting field per rotation → smaller induced pd</div>
 </div>
     </div>
@@ -179,20 +179,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Friction is irrelevant — electromagnetic induction is caused by changing flux, not mechanical friction.",2: "A stationary magnet close to a coil induces NO current — the flux must be CHANGING (the magnet must be moving).",3: "A static magnetic field — however strong — induces NO current. The field must CHANGE to induce a current.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "A stationary magnet close to a coil induces NO current — the flux must be CHANGING (the magnet must be moving).",1: "A static magnetic field — however strong — induces NO current. The field must CHANGE to induce a current.",2: "Friction is irrelevant — electromagnetic induction is caused by changing flux, not mechanical friction.",}'>
   <div class="q-text">1. A bar magnet is pushed into a coil of wire. What induces a current, and how can the induced current be increased?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Friction between the magnet and coil generates the current. Push harder for more current.</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">The changing magnetic flux as the magnet moves induces the current. Push faster, use stronger magnet, or use more coil turns to increase it.</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The proximity to the coil induces current. Bring the magnet closer without moving it for maximum effect.</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The magnetic field alone induces the current. A stronger static field gives more current.</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The proximity to the coil induces current. Bring the magnet closer without moving it for maximum effect.</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The magnetic field alone induces the current. A stronger static field gives more current.</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Friction between the magnet and coil generates the current. Push harder for more current.</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">The changing magnetic flux as the magnet moves induces the current. Push faster, use stronger magnet, or use more coil turns to increase it.</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Generator magnets are permanent — they don\'t switch polarity. The AC arises from the coil\'s rotation geometry.",2: "DC CAN be produced from rotation — using a split-ring commutator instead of slip rings.",3: "Slip rings maintain continuous connection without reversal — it\'s the SPLIT-RING COMMUTATOR (not slip rings) that produces DC by swapping connections each half-turn.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Generator magnets are permanent — they don\'t switch polarity. The AC arises from the coil\'s rotation geometry.",2: "Slip rings maintain continuous connection without reversal — it\'s the SPLIT-RING COMMUTATOR (not slip rings) that produces DC by swapping connections each half-turn.",3: "DC CAN be produced from rotation — using a split-ring commutator instead of slip rings.",}'>
   <div class="q-text">2. Why does a simple AC generator produce alternating current rather than direct current?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">As the coil rotates, the rate at which it cuts field lines varies sinusoidally — the emf and current reverse direction every half-turn</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">AC generators use alternating magnets that switch polarity regularly — this produces AC</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Generators always produce AC — there is no physical way to make DC from rotation</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The slip rings swap connections every half-turn — reversing the current direction</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">The slip rings swap connections every half-turn — reversing the current direction</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Generators always produce AC — there is no physical way to make DC from rotation</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -244,12 +244,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -259,9 +256,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>

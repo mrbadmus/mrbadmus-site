@@ -165,10 +165,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-national-grid"><div class="match-def" data-index="0" draggable="true">At power stations — increases voltage to ~400 kV for efficient transmission</div>
-<div class="match-def" data-index="1" draggable="true">Carry high-voltage AC across the country on pylons or underground</div>
-<div class="match-def" data-index="2" draggable="true">At substations — reduces voltage to 230 V for homes</div>
+      <div class="match-defs" id="defPool-national-grid"><div class="match-def" data-index="1" draggable="true">Carry high-voltage AC across the country on pylons or underground</div>
+<div class="match-def" data-index="0" draggable="true">At power stations — increases voltage to ~400 kV for efficient transmission</div>
 <div class="match-def" data-index="3" draggable="true">Reduces current → reduces I²R losses — more efficient</div>
+<div class="match-def" data-index="2" draggable="true">At substations — reduces voltage to 230 V for homes</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -204,20 +204,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Cable design is for mechanical and safety reasons — efficiency is determined by current levels.",2: "Voltage has no effect on corrosion — cables are protected by materials regardless of voltage.",3: "P = IV — for same power, high V means LOW current. Lower current → I²R losses much smaller.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Cable design is for mechanical and safety reasons — efficiency is determined by current levels.",1: "P = IV — for same power, high V means LOW current. Lower current → I²R losses much smaller.",3: "Voltage has no effect on corrosion — cables are protected by materials regardless of voltage.",}'>
   <div class="q-text">1. Why is electricity transmitted at high voltage across the National Grid?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Cables are designed only for high voltage — they cannot carry low voltage</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">High voltage means lower current for the same power — lower current means far less I²R heating in cables</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">High voltage prevents cable corrosion in rain</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">High voltage means higher current — more charge carriers reduce resistance</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">High voltage means higher current — more charge carriers reduce resistance</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">High voltage means lower current for the same power — lower current means far less I²R heating in cables</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">High voltage prevents cable corrosion in rain</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Using np/ns inverts the ratio: Vs = Vp × (ns/np) = 20,000 × (200/4000) = 1000 V — not ×20.",2: "Check: ns/np = 200/4000 = 0.05. Vs = 20,000 × 0.05 = 1000 V, not 100 V.",3: "Transformers CHANGE the voltage — that is their purpose. Vs = Vp × (ns/np).",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Transformers CHANGE the voltage — that is their purpose. Vs = Vp × (ns/np).",1: "Using np/ns inverts the ratio: Vs = Vp × (ns/np) = 20,000 × (200/4000) = 1000 V — not ×20.",2: "Check: ns/np = 200/4000 = 0.05. Vs = 20,000 × 0.05 = 1000 V, not 100 V.",}'>
   <div class="q-text">2. A transformer has 4000 primary turns, 200 secondary turns, primary voltage 20,000 V. What is the secondary voltage?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">400,000 V — Vs = 20,000 × (4000 ÷ 200) (inverted ratio)</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">1000 V — Vs = 20,000 × (200 ÷ 4000) = 20,000 × 0.05 = 1000 V</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">20,000 V — voltage unchanged through transformer</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">400,000 V — Vs = 20,000 × (4000 ÷ 200) (inverted ratio)</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">100 V — incorrect ratio calculation</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">20,000 V — voltage unchanged through transformer</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">1000 V — Vs = 20,000 × (200 ÷ 4000) = 20,000 × 0.05 = 1000 V</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -269,12 +269,9 @@
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
     <div class="chat-head">
-      <div class="chat-head-left">
-        <button class="chat-head-back" onclick="MrBadmus.close()">← Back</button>
-        <div class="chat-head-info">
-          <h3>Mr. Badmus AI</h3>
-          <p id="chat-head-subtitle">GCSE Science Tutor</p>
-        </div>
+      <div class="chat-head-info">
+        <h3>Mr. Badmus AI</h3>
+        <p id="chat-head-subtitle">GCSE Science Tutor</p>
       </div>
       <button class="close-btn" onclick="MrBadmus.close()">✕</button>
     </div>
@@ -284,9 +281,9 @@
       <button onclick="document.getElementById('imgPreview').src='';document.getElementById('imgPreviewRow').style.display='none';">✕</button>
     </div>
     <div class="chat-input-row" style="max-width:860px;width:100%;margin:0 auto;padding:0 24px 20px;">
-      <label for="imgInput" class="img-btn" title="Upload image">📷</label>
+      <label for="imgInput" class="img-btn" title="Upload image or paste screenshot (Ctrl+V / Cmd+V)">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none"/>
-      <input type="text" id="ci" placeholder="Ask Mr Badmus anything..."/>
+      <input type="text" id="ci" placeholder="Ask Mr Badmus anything... (paste screenshots with Ctrl+V)"/>
       <button class="chat-send-btn">➤</button>
     </div>
   </div>
