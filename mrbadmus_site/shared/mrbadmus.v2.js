@@ -173,6 +173,16 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     document.querySelectorAll('[data-open-chat]').forEach(el => el.addEventListener('click', open));
   }
 
+  // Keep-alive ping every 10 minutes — prevents Render cold starts
+  setInterval(function() {
+    fetch('/api/health').catch(function(){});
+  }, 10 * 60 * 1000);
+
+  // Also ping immediately on page load to warm up Render
+  setTimeout(function() {
+    fetch('/api/health').catch(function(){});
+  }, 2000);
+
   function open() {
     loadStudentSession();
     document.getElementById('chatOverlay')?.classList.add('open');
@@ -221,7 +231,16 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;
     chatHistory.push({ role:'user', content:userContent });
     try {
-      const res = await fetch('/api/chat', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ system:systemPrompt, messages:chatHistory }) });
+      // Wake up Render if needed (it spins down after inactivity)
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 55000); // 55s timeout
+      const res = await fetch('/api/chat', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({ system:systemPrompt, messages:chatHistory }),
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error.message);
@@ -231,7 +250,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
       if (chatHistory.length > 20) chatHistory.splice(0,2);
     } catch(err) {
       chatHistory.pop();
-      if (t) t.querySelector('.chat-msg__bubble').innerHTML = hasImg ? '⚠️ Image analysis needs a live connection. Type your question instead!' : getFallback(q, currentSubject);
+      if (t) t.querySelector('.chat-msg__bubble').innerHTML = hasImg ? '⚠️ Sorry, couldn\'t process that image. Please try again or type your question.' : getFallback(q, currentSubject);
     }
     document.getElementById('chatMsgs').scrollTop = 99999;
   }

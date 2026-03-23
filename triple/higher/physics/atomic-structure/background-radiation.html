@@ -156,8 +156,8 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-background-radiation"><div class="match-def" data-index="3" draggable="true">Subtract background count rate from measured rate before calculating activity</div>
-<div class="match-def" data-index="2" draggable="true">~15% of total — X-rays, CT scans, nuclear medicine</div>
+      <div class="match-defs" id="defPool-background-radiation"><div class="match-def" data-index="2" draggable="true">~15% of total — X-rays, CT scans, nuclear medicine</div>
+<div class="match-def" data-index="3" draggable="true">Subtract background count rate from measured rate before calculating activity</div>
 <div class="match-def" data-index="1" draggable="true">~10% — high-energy particles from space, more at altitude</div>
 <div class="match-def" data-index="0" draggable="true">~50% of UK background — seeps from uranium in rocks into buildings</div>
 </div>
@@ -182,19 +182,19 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Background must be SUBTRACTED, not added — adding would overestimate the source activity.",2: "Dividing has no physical meaning here — background is subtracted: 320 − 20 = 300.",3: "Background should always be corrected for, however small — accurate measurements require it.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Dividing has no physical meaning here — background is subtracted: 320 − 20 = 300.",2: "Background must be SUBTRACTED, not added — adding would overestimate the source activity.",3: "Background should always be corrected for, however small — accurate measurements require it.",}'>
   <div class="q-text">1. Background count rate is 20 counts/min. With a source present, the detector reads 320 counts/min. What is the corrected activity of the source?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">340 counts/min — 320 + 20 = 340 (added instead of subtracted)</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">300 counts/min — corrected = 320 − 20 = 300 counts/min</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">16 counts/min — 320 ÷ 20 = 16</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">300 counts/min — corrected = 320 − 20 = 300 counts/min</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">16 counts/min — 320 ÷ 20 = 16</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">340 counts/min — 320 + 20 = 340 (added instead of subtracted)</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">320 counts/min — background is too small to affect the measurement</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Geiger counters don\'t need resetting to zero — they count ionisation events regardless.",1: "Background radiation has no measurable half-life — it comes from many continuously replenished sources.",3: "Checking equipment is good practice but not the specific reason for measuring background — the purpose is subtraction for accurate source measurement.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Geiger counters don\'t need resetting to zero — they count ionisation events regardless.",2: "Background radiation has no measurable half-life — it comes from many continuously replenished sources.",3: "Checking equipment is good practice but not the specific reason for measuring background — the purpose is subtraction for accurate source measurement.",}'>
   <div class="q-text">2. Why is the background count rate measured before a radioactive source is introduced in an experiment?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">To calibrate the counter to zero — resetting it before use</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">To measure the half-life of the background radiation</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">To establish the baseline radiation level so it can be subtracted from measurements — giving the true activity of the source alone</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">To establish the baseline radiation level so it can be subtracted from measurements — giving the true activity of the source alone</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">To measure the half-life of the background radiation</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">To check the Geiger counter is working correctly before the experiment begins</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
