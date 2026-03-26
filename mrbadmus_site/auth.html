@@ -261,13 +261,41 @@
 
     if (error) return showMsg(error.message);
 
-    // Update profile with first name
-    if (data.user) {
-      await sb.from('profiles').upsert({ id: data.user.id, first_name: firstName });
+    // Email confirmation is OFF — Supabase returns a session immediately,
+    // but we need to wait for the auth state to fully persist to localStorage
+    // before redirecting, otherwise profile-setup.html won't find the session.
+
+    // If signUp didn't return a session (email confirmation is ON), show message
+    if (!data.session) {
+      showMsg('Check your email to confirm your account, then sign in!', 'success');
+      switchTab('signin');
+      return;
     }
 
-    // If email confirmation required
-    // Always redirect to profile setup after signup (email confirmation is off)
+    // Session exists — wait for it to fully persist
+    // Use onAuthStateChange to detect when the session is ready
+    const waitForSession = new Promise((resolve) => {
+      const { data: { subscription } } = sb.auth.onAuthStateChange((event, session) => {
+        if (session) {
+          subscription.unsubscribe();
+          resolve(session);
+        }
+      });
+      // Safety timeout — if the event doesn't fire within 3s, resolve anyway
+      // (the session from signUp response should already be usable)
+      setTimeout(() => resolve(data.session), 3000);
+    });
+
+    const confirmedSession = await waitForSession;
+
+    // Now upsert the first name into the profiles table
+    if (confirmedSession?.user) {
+      await sb.from('profiles').upsert({
+        id: confirmedSession.user.id,
+        first_name: firstName
+      });
+    }
+
     window.location.href = '/profile-setup.html';
   }
 

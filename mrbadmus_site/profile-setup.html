@@ -423,11 +423,30 @@
     biology:   ['Cell Biology','Organisation','Infection & Response','Bioenergetics','Homeostasis','Inheritance','Ecology'],
   };
 
-  // Initialise
-  sb.auth.getSession().then(({ data: { session: s } }) => {
-    if (!s) { window.location.href = '/auth.html'; return; }
-    session = s;
-  });
+  // Initialise — wait for session with retry
+  async function initSession() {
+    // Try immediately first
+    const { data: { session: s } } = await sb.auth.getSession();
+    if (s) { session = s; return; }
+
+    // Session not ready yet — listen for auth state change (covers the signup race condition)
+    return new Promise((resolve) => {
+      const { data: { subscription } } = sb.auth.onAuthStateChange((event, s) => {
+        if (s) {
+          session = s;
+          subscription.unsubscribe();
+          resolve();
+        }
+      });
+      // If nothing fires within 4 seconds, redirect to auth
+      setTimeout(() => {
+        subscription.unsubscribe();
+        if (!session) window.location.href = '/auth.html';
+        resolve();
+      }, 4000);
+    });
+  }
+  initSession();
 
   function previewAvatar(input) {
     const file = input.files[0];
@@ -529,6 +548,12 @@
     btn.textContent = 'Saving...';
 
     try {
+      // Refresh the session to make sure we have a valid, current token
+      const { data: { session: freshSession }, error: sessionErr } = await sb.auth.getSession();
+      if (sessionErr || !freshSession) {
+        throw new Error('Session expired — please sign in again.');
+      }
+      session = freshSession;
       const token = session.access_token;
 
       // Upload avatar if provided
@@ -545,7 +570,7 @@
         }
       }
 
-      // Save profile via backend API
+      // Build profile payload
       const profilePayload = {
         first_name:       document.getElementById('first-name').value.trim(),
         school_name:      document.getElementById('school-name').value.trim(),
@@ -560,6 +585,7 @@
         ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
       };
 
+      // Save via Render backend
       const res = await fetch('https://mrbadmus-backend.onrender.com/api/profile', {
         method: 'PUT',
         headers: {
@@ -569,7 +595,22 @@
         body: JSON.stringify(profilePayload),
       });
 
-      if (!res.ok) throw new Error('Could not save profile');
+      if (!res.ok) {
+        const errBody = await res.text();
+        console.error('Profile save failed:', res.status, errBody);
+
+        // If Render fails, try saving directly to Supabase as fallback
+        console.log('Trying direct Supabase save as fallback...');
+        const { error: directErr } = await sb.from('profiles').upsert({
+          id: session.user.id,
+          ...profilePayload
+        });
+        if (directErr) {
+          console.error('Direct Supabase save also failed:', directErr);
+          throw new Error('Could not save profile');
+        }
+        console.log('Saved directly to Supabase');
+      }
 
       // Done — redirect to site
       const pathway = profileData.pathway;
@@ -579,8 +620,13 @@
     } catch (err) {
       btn.disabled = false;
       btn.textContent = "Let's Go! 🚀";
-      alert('Something went wrong saving your profile. Please try again.');
-      console.error(err);
+      console.error('Profile save error:', err);
+      if (err.message.includes('Session expired')) {
+        alert('Your session expired. Please sign in again.');
+        window.location.href = '/auth.html';
+      } else {
+        alert('Something went wrong saving your profile. Please try again.');
+      }
     }
   }
 
