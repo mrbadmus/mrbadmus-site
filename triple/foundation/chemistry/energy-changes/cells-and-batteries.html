@@ -153,10 +153,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-cells-and-batteries"><div class="match-def" data-index="1" draggable="true">Two or more cells connected in series — total voltage = sum of individual cell voltages</div>
-<div class="match-def" data-index="3" draggable="true">Secondary cell — reversible reactions, external electricity restores original reactants</div>
-<div class="match-def" data-index="0" draggable="true">Two different metals in an electrolyte — converts chemical energy to electrical energy</div>
+      <div class="match-defs" id="defPool-cells-and-batteries"><div class="match-def" data-index="0" draggable="true">Two different metals in an electrolyte — converts chemical energy to electrical energy</div>
 <div class="match-def" data-index="2" draggable="true">Primary cell — irreversible reactions, used once then discarded</div>
+<div class="match-def" data-index="1" draggable="true">Two or more cells connected in series — total voltage = sum of individual cell voltages</div>
+<div class="match-def" data-index="3" draggable="true">Secondary cell — reversible reactions, external electricity restores original reactants</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -176,19 +176,19 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "If both metals have the same reactivity, no potential difference exists — the voltage would be zero.",1: "More reactive metals react more vigorously but the key factor for voltage is the DIFFERENCE in reactivity between the two electrodes.",3: "Reactivity difference is one of the key factors affecting voltage — it cannot be ignored.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "More reactive metals react more vigorously but the key factor for voltage is the DIFFERENCE in reactivity between the two electrodes.",2: "If both metals have the same reactivity, no potential difference exists — the voltage would be zero.",3: "Reactivity difference is one of the key factors affecting voltage — it cannot be ignored.",}'>
   <div class="q-text">1. A simple cell is made from zinc and copper electrodes in sulfuric acid. How does changing to more reactive metals affect the voltage?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Using two metals with the same reactivity gives the highest voltage</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Greater difference in reactivity between the two metals → greater voltage produced</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">Using more reactive metals always reduces the voltage — reactive metals react too quickly</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Greater difference in reactivity between the two metals → greater voltage produced</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Using two metals with the same reactivity gives the highest voltage</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">The metal reactivity has no effect on voltage — only electrolyte concentration matters</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Significant chemical changes DO occur during charging — the products of discharge are converted back to reactants.",2: "Charging is an electrochemical process — it reverses the reactions, not a heat-storage process.",3: "Charging does not physically add new chemicals — the same chemicals inside are chemically restored by reversing the redox reactions.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Charging is an electrochemical process — it reverses the reactions, not a heat-storage process.",1: "Significant chemical changes DO occur during charging — the products of discharge are converted back to reactants.",3: "Charging does not physically add new chemicals — the same chemicals inside are chemically restored by reversing the redox reactions.",}'>
   <div class="q-text">2. What happens chemically when a rechargeable battery is being charged?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The battery simply resets — no chemical change occurs during charging</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The redox reactions are reversed by the external electricity supply — restoring the original reactants</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The battery temperature increases — heat energy is stored for later use</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The battery temperature increases — heat energy is stored for later use</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The battery simply resets — no chemical change occurs during charging</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">The redox reactions are reversed by the external electricity supply — restoring the original reactants</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">New chemicals are added to the battery to replace the used reactants</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
@@ -236,7 +236,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI">🤖</button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

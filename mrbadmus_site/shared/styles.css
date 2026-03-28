@@ -380,20 +380,26 @@ a { color: inherit; text-decoration: none; }
   position: fixed;
   bottom: 28px;
   right: 28px;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+  height: 56px;
+  padding: 0 20px 0 16px;
+  border-radius: 28px;
   background: linear-gradient(135deg, var(--yellow), var(--orange));
   border: none;
   cursor: pointer;
-  font-size: 1.8rem;
+  font-size: 1rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 8px;
   box-shadow: 0 6px 28px rgba(255,107,53,0.5);
   transition: transform 0.2s, box-shadow 0.2s;
   z-index: 90;
+  font-family: 'Fredoka One', cursive;
+  color: #0F0F1A;
+  white-space: nowrap;
 }
+.chat-fab .fab-emoji { font-size: 1.5rem; }
+.chat-fab .fab-text { font-size: 0.85rem; }
 .chat-fab:hover { transform: scale(1.08); box-shadow: 0 10px 40px rgba(255,107,53,0.7); }
 
 /* ── CHAT OVERLAY ── */
