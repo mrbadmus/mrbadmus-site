@@ -212,7 +212,7 @@
           '<div class="podium-medal">' + medals[i] + '</div>' +
           '<div class="podium-avatar">' + avatarContent + '</div>' +
           '<div class="podium-name">' + escHtml(p.name) + '</div>' +
-          '<div class="podium-school">' + escHtml(p.school || '') + '</div>' +
+          (p.school ? '<div class="podium-school">' + escHtml(p.school) + '</div>' : '') +
           '<div class="podium-score">' + p.score + '/' + p.max_score + '</div>' +
           (timeTxt ? '<div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">' + timeTxt + '</div>' : '') +
           '<div class="podium-base"></div>' +
@@ -232,8 +232,7 @@
             '<span class="rest-rank">' + r.rank + '</span>' +
             '<div class="rest-avatar">' + rAvatar + '</div>' +
             '<div class="rest-info">' +
-              '<div class="rest-name">' + escHtml(r.name) + '</div>' +
-              '<div class="rest-school">' + escHtml(r.school || '') + '</div>' +
+              '<div class="rest-name">' + escHtml(r.name) + (r.school ? ' <span style="color:var(--muted);font-weight:600;font-size:0.82rem;">· ' + escHtml(r.school) + '</span>' : '') + '</div>' +
             '</div>' +
             '<span class="rest-score">' + r.score + '/' + r.max_score + '</span>' +
             '</div>';
