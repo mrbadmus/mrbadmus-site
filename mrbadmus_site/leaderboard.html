@@ -80,10 +80,12 @@
 
     .podium-base {
       border-radius: 12px 12px 0 0; margin-top: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fredoka One', cursive; font-size: 1.4rem; color: rgba(255,255,255,0.15);
     }
-    .podium-slot.first .podium-base { background: rgba(255,215,0,0.15); height: 100px; width: 130px; }
-    .podium-slot.second .podium-base { background: rgba(192,192,192,0.1); height: 70px; width: 110px; }
-    .podium-slot.third .podium-base { background: rgba(205,127,50,0.1); height: 50px; width: 110px; }
+    .podium-slot.first .podium-base { background: linear-gradient(180deg, rgba(255,215,0,0.25) 0%, rgba(255,215,0,0.08) 100%); height: 100px; width: 130px; border: 1px solid rgba(255,215,0,0.2); }
+    .podium-slot.second .podium-base { background: linear-gradient(180deg, rgba(192,192,192,0.2) 0%, rgba(192,192,192,0.06) 100%); height: 70px; width: 110px; border: 1px solid rgba(192,192,192,0.15); }
+    .podium-slot.third .podium-base { background: linear-gradient(180deg, rgba(205,127,50,0.2) 0%, rgba(205,127,50,0.06) 100%); height: 50px; width: 110px; border: 1px solid rgba(205,127,50,0.15); }
 
     /* ── REST OF TOP 10 ──────────────────────────── */
     .rest-list { margin-top: 8px; }
@@ -208,6 +210,7 @@
           : '🧑‍🎓';
         var timeTxt = p.time_taken ? formatTime(p.time_taken) : '';
 
+        var rankLabel = ['1st', '2nd', '3rd'];
         podiumHtml += '<div class="podium-slot ' + podiumClasses[i + 1] + '">' +
           '<div class="podium-medal">' + medals[i] + '</div>' +
           '<div class="podium-avatar">' + avatarContent + '</div>' +
@@ -215,7 +218,7 @@
           (p.school ? '<div class="podium-school">' + escHtml(p.school) + '</div>' : '') +
           '<div class="podium-score">' + p.score + '/' + p.max_score + '</div>' +
           (timeTxt ? '<div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">' + timeTxt + '</div>' : '') +
-          '<div class="podium-base"></div>' +
+          '<div class="podium-base">' + rankLabel[i] + '</div>' +
           '</div>';
       }
       document.getElementById('podium').innerHTML = podiumHtml;
