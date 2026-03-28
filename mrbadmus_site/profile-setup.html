@@ -483,13 +483,15 @@
   <div class="step" id="step-4">
     <div class="step-header">
       <h2>💪 Strengths &amp; Weaknesses</h2>
-      <p>Tap topics you feel <strong style="color:var(--biology)">confident on</strong> or topics you <strong style="color:var(--chemistry)">find hard</strong>. Mr Badmus will adapt.</p>
+      <p>Tap topics to tell Mr Badmus how you feel about each one. He'll adapt his teaching to help you where you need it most.</p>
     </div>
 
     <div class="legend">
-      <span><div class="dot" style="background:var(--biology)"></div> I'm confident</span>
-      <span><div class="dot" style="background:var(--chemistry)"></div> I find this hard</span>
+      <span><div class="dot" style="background:#2a2a4a"></div> Not set</span>
+      <span><div class="dot" style="background:var(--biology)"></div> Confident</span>
+      <span><div class="dot" style="background:var(--chemistry)"></div> Find hard</span>
     </div>
+    <p style="color:var(--muted);font-size:0.8rem;margin-bottom:14px;">Tap once = <strong style="color:var(--biology)">I'm confident</strong> · Tap twice = <strong style="color:var(--chemistry)">I find this hard</strong> · Tap again to reset</p>
 
     <div class="topic-grid" id="topic-grid"></div>
 
@@ -657,11 +659,22 @@
     document.getElementById('wizard').style.display = 'block';
     isEditing = !!(existingProfile && existingProfile.science_pathway);
 
-    // If editing, change header
+    // If editing, change header and add Save buttons to every step
     if (isEditing) {
       document.getElementById('step1-header').innerHTML =
         '<h2 style="font-size:2rem;">✏️ Edit Your Profile</h2>' +
         '<p style="color:var(--muted);line-height:1.6;margin-top:8px;">Update your details below. Mr Badmus will adapt to any changes.</p>';
+
+      // Add a "Save & Close" button to every step's nav-btns
+      var navBtnGroups = document.querySelectorAll('#wizard .nav-btns');
+      for (var i = 0; i < navBtnGroups.length; i++) {
+        var saveBtn = document.createElement('button');
+        saveBtn.className = 'btn btn-primary';
+        saveBtn.textContent = '💾 Save';
+        saveBtn.style.background = 'linear-gradient(135deg, #6BCB77, #4a9e5a)';
+        saveBtn.onclick = finish;
+        navBtnGroups[i].appendChild(saveBtn);
+      }
     }
 
     // Pre-fill form if data exists

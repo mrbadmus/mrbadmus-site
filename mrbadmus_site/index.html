@@ -35,7 +35,20 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          // Try to load avatar from Supabase profile
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            } else {
+              area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+            }
+          }).catch(function() {
+            area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          });
+        }
       }
     }
   } catch(e) {}
