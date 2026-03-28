@@ -844,13 +844,28 @@
       var avatarUrl = null;
       if (avatarFile) {
         var ext = avatarFile.name.split('.').pop();
-        var path = session.user.id + '/avatar.' + ext;
+        var timestamp = Date.now();
+        var path = session.user.id + '/avatar-' + timestamp + '.' + ext;
+
+        // Try to delete any existing avatar first
+        try {
+          var listResult = await sb.storage.from('avatars').list(session.user.id);
+          if (listResult.data && listResult.data.length > 0) {
+            var filesToDelete = listResult.data.map(function(f) { return session.user.id + '/' + f.name; });
+            await sb.storage.from('avatars').remove(filesToDelete);
+          }
+        } catch(e) { console.log('Could not clear old avatars:', e); }
+
+        // Upload new avatar
         var uploadResult = await sb.storage
           .from('avatars')
           .upload(path, avatarFile, { upsert: true });
-        if (!uploadResult.error) {
+        if (uploadResult.error) {
+          console.error('Avatar upload failed:', uploadResult.error);
+        } else {
           var urlResult = sb.storage.from('avatars').getPublicUrl(path);
           avatarUrl = urlResult.data.publicUrl;
+          console.log('Avatar uploaded:', avatarUrl);
         }
       }
 
