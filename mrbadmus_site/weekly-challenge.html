@@ -263,6 +263,9 @@
   var subjectEmojis = { biology: '🌿', chemistry: '🧪', physics: '⚡' };
   var subjectColors = { biology: 'biology', chemistry: 'chemistry', physics: 'physics' };
 
+  // Pre-warm Render backend immediately (prevents cold start delay)
+  fetch(RENDER_URL + '/api/health').catch(function(){});
+
   async function init() {
     var result = await sb.auth.getSession();
     session = result.data.session;

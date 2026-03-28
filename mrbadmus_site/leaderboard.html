@@ -171,6 +171,9 @@
   var medals = ['🥇', '🥈', '🥉'];
   var subjectEmojis = { biology: '🌿 Biology', chemistry: '🧪 Chemistry', physics: '⚡ Physics' };
 
+  // Pre-warm Render backend
+  fetch(RENDER_URL + '/api/health').catch(function(){});
+
   async function init() {
     try {
       var res = await fetch(RENDER_URL + '/api/weekly-leaderboard');
