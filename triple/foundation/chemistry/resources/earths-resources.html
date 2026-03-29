@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -157,11 +167,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-earths-resources"><div class="match-def" data-index="4" draggable="true">Designing reactions with high atom economy — less waste produced</div>
-<div class="match-def" data-index="0" draggable="true">Recycling aluminium — uses 95% less energy than extracting from ore</div>
-<div class="match-def" data-index="2" draggable="true">Using bioplastics from plant materials — renewable feedstock</div>
+      <div class="match-defs" id="defPool-earths-resources"><div class="match-def" data-index="0" draggable="true">Recycling aluminium — uses 95% less energy than extracting from ore</div>
 <div class="match-def" data-index="3" draggable="true">Deforestation for agriculture — removes carbon sinks faster than they regrow</div>
 <div class="match-def" data-index="1" draggable="true">Burning fossil fuels at current rates — non-renewable, finite supply</div>
+<div class="match-def" data-index="2" draggable="true">Using bioplastics from plant materials — renewable feedstock</div>
+<div class="match-def" data-index="4" draggable="true">Designing reactions with high atom economy — less waste produced</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -178,20 +188,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Sustainable development explicitly does NOT mean stopping industrial activity — it means developing more responsibly.",2: "Synthetic chemicals can be part of sustainable development if produced using renewable resources and efficient processes.",3: "Sustainable development specifically requires EQUITY — all nations have the right to develop, but in sustainable ways.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Sustainable development explicitly does NOT mean stopping industrial activity — it means developing more responsibly.",1: "Sustainable development specifically requires EQUITY — all nations have the right to develop, but in sustainable ways.",2: "Synthetic chemicals can be part of sustainable development if produced using renewable resources and efficient processes.",}'>
   <div class="q-text">1. What does 'sustainable development' mean in chemistry?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Meeting present needs without preventing future generations from meeting their own needs — balancing economic, environmental and social factors</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Stopping all chemical manufacturing to protect the environment</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Stopping all chemical manufacturing to protect the environment</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Developing countries should not industrialise — only developed nations can use resources</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Using only natural chemicals — avoiding synthetic compounds</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Developing countries should not industrialise — only developed nations can use resources</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Meeting present needs without preventing future generations from meeting their own needs — balancing economic, environmental and social factors</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Bauxite reserves still exist — but they are finite, and extraction is energy-intensive. The key advantage of recycling is energy saving.",2: "Recycled and fresh aluminium have the same properties — sustainability is about energy and resource use, not material strength.",3: "Bauxite (aluminium ore) is a natural mineral found in the Earth\'s crust — it is a natural resource.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Recycled and fresh aluminium have the same properties — sustainability is about energy and resource use, not material strength.",2: "Bauxite (aluminium ore) is a natural mineral found in the Earth\'s crust — it is a natural resource.",3: "Bauxite reserves still exist — but they are finite, and extraction is energy-intensive. The key advantage of recycling is energy saving.",}'>
   <div class="q-text">2. Why is recycling aluminium more sustainable than extracting new aluminium from bauxite ore?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">There is no bauxite left — all aluminium must now be recycled</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Recycling uses about 95% less electrical energy than electrolysis of molten aluminium oxide</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Recycled aluminium is stronger than freshly extracted aluminium</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Bauxite is not a natural resource — it is produced artificially</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Recycling uses about 95% less electrical energy than electrolysis of molten aluminium oxide</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Recycled aluminium is stronger than freshly extracted aluminium</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Bauxite is not a natural resource — it is produced artificially</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">There is no bauxite left — all aluminium must now be recycled</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

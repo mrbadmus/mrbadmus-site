@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -153,10 +163,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-infrared-black-bodies"><div class="match-def" data-index="3" draggable="true">Very hot (~30,000 K) — peak emission in UV/blue visible range</div>
+      <div class="match-defs" id="defPool-infrared-black-bodies"><div class="match-def" data-index="1" draggable="true">Absorbs all incident radiation — emits maximum radiation for its temperature</div>
 <div class="match-def" data-index="2" draggable="true">Emits more radiation AND at shorter wavelengths — peak shifts towards visible/UV</div>
-<div class="match-def" data-index="1" draggable="true">Absorbs all incident radiation — emits maximum radiation for its temperature</div>
 <div class="match-def" data-index="0" draggable="true">Best emitter and absorber of infrared radiation</div>
+<div class="match-def" data-index="3" draggable="true">Very hot (~30,000 K) — peak emission in UV/blue visible range</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -179,18 +189,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "White hot means the peak has moved to visible wavelengths with broad-spectrum emission — cool objects emit IR (invisible) then progress through red, orange, yellow to white as temperature rises.",1: "Different electrons in the metal contribute to emission, but the pattern follows the temperature-dependent black body spectrum — the overall colour shift is about temperature.",2: "The colour change is due to temperature-dependent emission spectra — not chemical changes. A pure metal rod would show the same progression.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Different electrons in the metal contribute to emission, but the pattern follows the temperature-dependent black body spectrum — the overall colour shift is about temperature.",1: "The colour change is due to temperature-dependent emission spectra — not chemical changes. A pure metal rod would show the same progression.",3: "White hot means the peak has moved to visible wavelengths with broad-spectrum emission — cool objects emit IR (invisible) then progress through red, orange, yellow to white as temperature rises.",}'>
   <div class="q-text">1. A metal rod is heated in a furnace. First it glows red, then orange, then white. What does this tell us?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">White light contains all colours — the metal must be emitting all wavelengths at low temperature but only red at high temperature</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Different wavelengths of light are produced by different electrons in the metal</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The metal changes chemical composition as it gets hotter, producing different coloured oxides</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">As temperature increases, the peak emission shifts to shorter wavelengths — from infrared through red to shorter visible wavelengths approaching white</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Different wavelengths of light are produced by different electrons in the metal</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The metal changes chemical composition as it gets hotter, producing different coloured oxides</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">As temperature increases, the peak emission shifts to shorter wavelengths — from infrared through red to shorter visible wavelengths approaching white</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">White light contains all colours — the metal must be emitting all wavelengths at low temperature but only red at high temperature</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Silver doesn\'t form a significant protective oxide layer at room temperature — the silvering works by reflection of radiation.",1: "Silver is an excellent conductor — but the silvered wall is there to REDUCE radiation transfer, not to conduct heat.",3: "Visible light reflection is not the primary reason — it\'s the IR radiation reflection that reduces thermal energy transfer.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Silver is an excellent conductor — but the silvered wall is there to REDUCE radiation transfer, not to conduct heat.",1: "Silver doesn\'t form a significant protective oxide layer at room temperature — the silvering works by reflection of radiation.",3: "Visible light reflection is not the primary reason — it\'s the IR radiation reflection that reduces thermal energy transfer.",}'>
   <div class="q-text">2. Why are the walls of a thermos flask silvered?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Silver reacts with oxygen in the air — the oxide layer acts as an insulator</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Silver is a good conductor — it rapidly distributes heat evenly around the flask walls</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Silver is a good conductor — it rapidly distributes heat evenly around the flask walls</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Silver reacts with oxygen in the air — the oxide layer acts as an insulator</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Silvered walls are poor emitters and poor absorbers of infrared — they reflect radiation back, reducing thermal energy transfer by radiation</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">The bright colour of silver reflects external light, keeping the flask cool</button>
 </div>

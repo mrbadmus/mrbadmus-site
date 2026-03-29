@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -162,10 +172,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-using-moles-calculations"><div class="match-def" data-index="2" draggable="true">HCl is limiting — 0.1 mol Mg needs 0.2 mol HCl, only 0.1 available</div>
-<div class="match-def" data-index="1" draggable="true">0.5 mol — n = 2 × 0.25</div>
-<div class="match-def" data-index="0" draggable="true">0.4 mol/dm³ — c = 0.2 ÷ 0.5</div>
+      <div class="match-defs" id="defPool-using-moles-calculations"><div class="match-def" data-index="0" draggable="true">0.4 mol/dm³ — c = 0.2 ÷ 0.5</div>
 <div class="match-def" data-index="3" draggable="true">SO — n(S)=50/32=1.56, n(O)=50/16=3.12, ratio 1:2 → SO₂ wait: 1.56:3.12 = 1:2 → SO₂</div>
+<div class="match-def" data-index="2" draggable="true">HCl is limiting — 0.1 mol Mg needs 0.2 mol HCl, only 0.1 available</div>
+<div class="match-def" data-index="1" draggable="true">0.5 mol — n = 2 × 0.25</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -201,18 +211,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "This multiplies instead of divides — and uses cm³ instead of dm³.",1: "300 cm³ must be converted to dm³ first: 300 ÷ 1000 = 0.3 dm³. Then c = 0.3 ÷ 0.3 = 1 mol/dm³.",3: "Concentration requires dividing moles by VOLUME IN DM³. 0.3 mol ÷ 0.3 dm³ = 1 mol/dm³.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "300 cm³ must be converted to dm³ first: 300 ÷ 1000 = 0.3 dm³. Then c = 0.3 ÷ 0.3 = 1 mol/dm³.",1: "This multiplies instead of divides — and uses cm³ instead of dm³.",3: "Concentration requires dividing moles by VOLUME IN DM³. 0.3 mol ÷ 0.3 dm³ = 1 mol/dm³.",}'>
   <div class="q-text">1. What is the concentration of a solution made by dissolving 0.3 mol of KOH in 300 cm³ of water?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">90 mol/dm³ — c = 0.3 × 300 = 90</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">0.001 mol/dm³ — c = 0.3 ÷ 300 = 0.001</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0.001 mol/dm³ — c = 0.3 ÷ 300 = 0.001</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">90 mol/dm³ — c = 0.3 × 300 = 90</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">1 mol/dm³ — c = 0.3 ÷ 0.3 dm³ = 1 mol/dm³</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">0.3 mol/dm³ — using the moles directly as concentration</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "The raw molar amounts cannot be directly compared — they must be compared relative to the EQUATION RATIO. 0.05 mol Cl₂ is exactly the right amount for 0.1 mol Na.",2: "Moles are all that\'s needed — masses would just be converted to moles anyway.",3: "Cl₂ is not in excess — the equation ratio is 2Na:1Cl₂. So 0.1 mol Na exactly needs 0.05 mol Cl₂. Both are in exactly stoichiometric amounts — neither is limiting.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "The raw molar amounts cannot be directly compared — they must be compared relative to the EQUATION RATIO. 0.05 mol Cl₂ is exactly the right amount for 0.1 mol Na.",2: "Moles are all that\'s needed — masses would just be converted to moles anyway.",3: "Cl₂ is not in excess — the equation ratio is 2Na:1Cl₂. So 0.1 mol Na exactly needs 0.05 mol Cl₂. Both are in exactly stoichiometric amounts — neither is limiting.",}'>
   <div class="q-text">2. A student mixes 0.1 mol Na with 0.05 mol Cl₂. 2Na + Cl₂ → 2NaCl. Which is the limiting reactant?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Neither — both are present in exactly the right ratio: 0.1 mol Na needs 0.05 mol Cl₂ (2:1 ratio)</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Chlorine — there is less Cl₂ (0.05 mol) than Na (0.1 mol)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Chlorine — there is less Cl₂ (0.05 mol) than Na (0.1 mol)</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Neither — both are present in exactly the right ratio: 0.1 mol Na needs 0.05 mol Cl₂ (2:1 ratio)</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Cannot determine without knowing the masses</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Sodium — there is more Cl₂ than Na in molar terms</button>
 </div>

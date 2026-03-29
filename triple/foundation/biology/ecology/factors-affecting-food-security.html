@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -153,10 +163,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-factors-affecting-food-security"><div class="match-def" data-index="2" draggable="true">New crop diseases spread globally through trade and travel — devastating harvests</div>
+      <div class="match-defs" id="defPool-factors-affecting-food-security"><div class="match-def" data-index="0" draggable="true">World population growing — more food needed to feed more people</div>
 <div class="match-def" data-index="3" draggable="true">Changing rainfall, temperatures and extreme weather disrupt agricultural production worldwide</div>
-<div class="match-def" data-index="0" draggable="true">World population growing — more food needed to feed more people</div>
 <div class="match-def" data-index="1" draggable="true">Wealthier nations eating more meat — meat production uses far more resources than plants</div>
+<div class="match-def" data-index="2" draggable="true">New crop diseases spread globally through trade and travel — devastating harvests</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -176,20 +186,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Spoilage is an issue but the primary concern is the much greater LAND AND RESOURCE USE of meat production vs equivalent plant nutrition.",2: "Birth rate and meat consumption are not directly linked in this way — the issue is resource efficiency.",3: "Meat is nutritious — the problem is the INEFFICIENCY of producing it (much more grain and water needed per unit of food produced).",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Meat is nutritious — the problem is the INEFFICIENCY of producing it (much more grain and water needed per unit of food produced).",1: "Birth rate and meat consumption are not directly linked in this way — the issue is resource efficiency.",2: "Spoilage is an issue but the primary concern is the much greater LAND AND RESOURCE USE of meat production vs equivalent plant nutrition.",}'>
   <div class="q-text">1. Why does a shift towards more meat-based diets in developing countries threaten food security?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Producing meat is far less efficient than producing plant food — much more land, water and grain is needed to produce the same amount of nutrition</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Meat spoils faster than plant food — more waste occurs during transport</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Meat-based diets reduce birth rates — fewer people means less food is produced</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Meat contains fewer nutrients than plant food — so people still go hungry even if they eat it</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Meat contains fewer nutrients than plant food — so people still go hungry even if they eat it</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Meat-based diets reduce birth rates — fewer people means less food is produced</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Meat spoils faster than plant food — more waste occurs during transport</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Producing meat is far less efficient than producing plant food — much more land, water and grain is needed to produce the same amount of nutrition</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Fuel costs are an ECONOMIC factor — not biological.",1: "Political instability is a POLITICAL/SOCIAL factor — not biological. Biological factors include pests, pathogens, climate change effects on growth.",2: "Trade tariffs are an ECONOMIC/POLITICAL factor — not a biological one.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Political instability is a POLITICAL/SOCIAL factor — not biological. Biological factors include pests, pathogens, climate change effects on growth.",1: "Trade tariffs are an ECONOMIC/POLITICAL factor — not a biological one.",3: "Fuel costs are an ECONOMIC factor — not biological.",}'>
   <div class="q-text">2. Which of the following is a biological factor threatening food security?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Rising fuel costs making food transport more expensive</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Political instability preventing farmers from accessing markets</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">A country imposing trade tariffs on imported food</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">A new pathogen that destroys wheat crops worldwide</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Political instability preventing farmers from accessing markets</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">A country imposing trade tariffs on imported food</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">A new pathogen that destroys wheat crops worldwide</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Rising fuel costs making food transport more expensive</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

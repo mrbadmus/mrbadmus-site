@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -156,10 +166,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-addition-polymerisation"><div class="match-def" data-index="0" draggable="true">Poly(ethene) — bags, bottles, packaging</div>
+      <div class="match-defs" id="defPool-addition-polymerisation"><div class="match-def" data-index="1" draggable="true">Poly(propene) — ropes, carpets, food containers</div>
 <div class="match-def" data-index="2" draggable="true">PVC — window frames, pipes, cables</div>
+<div class="match-def" data-index="0" draggable="true">Poly(ethene) — bags, bottles, packaging</div>
 <div class="match-def" data-index="3" draggable="true">PTFE (Teflon) — non-stick coatings</div>
-<div class="match-def" data-index="1" draggable="true">Poly(propene) — ropes, carpets, food containers</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -182,12 +192,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Dividing by n gives the EMPIRICAL formula of the repeat unit, but not the monomer\'s structural formula with the double bond.",2: "The repeat unit shows all the atoms — but the monomer has a C=C double bond that is not visible in the polymer structure.",3: "Adding a C=C is the correct approach — it restores the double bond that opened up during polymerisation.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Adding a C=C is the correct approach — it restores the double bond that opened up during polymerisation.",1: "Dividing by n gives the EMPIRICAL formula of the repeat unit, but not the monomer\'s structural formula with the double bond.",2: "The repeat unit shows all the atoms — but the monomer has a C=C double bond that is not visible in the polymer structure.",}'>
   <div class="q-text">1. How do you determine the monomer from the displayed formula of an addition polymer?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Divide the polymer molecular formula by n to get the monomer formula</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Take the repeat unit and add a C=C double bond between the two backbone carbon atoms</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Remove two hydrogen atoms from the repeat unit to get the monomer</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Divide the polymer molecular formula by n to get the monomer formula</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">The monomer is identical to the repeat unit shown in the brackets</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Remove two hydrogen atoms from the repeat unit to get the monomer</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Take the repeat unit and add a C=C double bond between the two backbone carbon atoms</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Catalyst recovery relates to efficiency and cost — not atom economy.",2: "Renewable sources relate to sustainability, not atom economy.",3: "100% conversion to product is about yield, not atom economy — atom economy = no by-products, regardless of how complete the reaction is.",}'>

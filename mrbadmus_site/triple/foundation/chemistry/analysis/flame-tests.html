@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -157,11 +167,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-flame-tests"><div class="match-def" data-index="1" draggable="true">Yellow/orange flame — even trace amounts give strong colour</div>
-<div class="match-def" data-index="0" draggable="true">Crimson/red flame</div>
+      <div class="match-defs" id="defPool-flame-tests"><div class="match-def" data-index="0" draggable="true">Crimson/red flame</div>
+<div class="match-def" data-index="3" draggable="true">Orange-red flame</div>
+<div class="match-def" data-index="1" draggable="true">Yellow/orange flame — even trace amounts give strong colour</div>
 <div class="match-def" data-index="4" draggable="true">Green/blue-green flame</div>
 <div class="match-def" data-index="2" draggable="true">Lilac/purple flame</div>
-<div class="match-def" data-index="3" draggable="true">Orange-red flame</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -186,20 +196,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Potassium gives LILAC/PURPLE — not yellow. Yellow specifically indicates sodium.",2: "Calcium gives ORANGE-RED — not yellow. These colours are distinct under careful observation.",3: "Copper gives GREEN/BLUE-GREEN — not orange. Orange-red is calcium.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Copper gives GREEN/BLUE-GREEN — not orange. Orange-red is calcium.",1: "Calcium gives ORANGE-RED — not yellow. These colours are distinct under careful observation.",2: "Potassium gives LILAC/PURPLE — not yellow. Yellow specifically indicates sodium.",}'>
   <div class="q-text">1. A flame test on a solution gives a persistent yellow/orange colour. Which ion is most likely present?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Sodium (Na⁺) — sodium gives a strong persistent yellow/orange flame, even in trace amounts</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Potassium (K⁺) — potassium gives a yellow colour like sodium</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Calcium (Ca²⁺) — calcium gives a yellow flame</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Copper (Cu²⁺) — copper burns with an orange colour</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Copper (Cu²⁺) — copper burns with an orange colour</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Calcium (Ca²⁺) — calcium gives a yellow flame</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Potassium (K⁺) — potassium gives a yellow colour like sodium</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Sodium (Na⁺) — sodium gives a strong persistent yellow/orange flame, even in trace amounts</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Sodium doesn\'t change potassium\'s emission — both produce their own colours independently. The problem is that sodium\'s stronger yellow overpowers the weaker lilac.",2: "Sodium and potassium can occur separately — the point is specifically about contamination masking results.",3: "Sodium does not chemically react with potassium in a flame test — the problem is optical masking, not chemical reaction.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Sodium doesn\'t change potassium\'s emission — both produce their own colours independently. The problem is that sodium\'s stronger yellow overpowers the weaker lilac.",2: "Sodium does not chemically react with potassium in a flame test — the problem is optical masking, not chemical reaction.",3: "Sodium and potassium can occur separately — the point is specifically about contamination masking results.",}'>
   <div class="q-text">2. Why might sodium contamination cause problems during a flame test for potassium?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Sodium gives such a strong yellow/orange colour that it masks the lilac colour of potassium, making identification unreliable</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Sodium changes potassium's flame colour from lilac to yellow — giving a false reading</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Potassium and sodium always occur together — if one is present the other always is too</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Sodium reacts with potassium in the flame — destroying both ions before they can be detected</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Sodium changes potassium's flame colour from lilac to yellow — giving a false reading</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Sodium gives such a strong yellow/orange colour that it masks the lilac colour of potassium, making identification unreliable</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Sodium reacts with potassium in the flame — destroying both ions before they can be detected</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Potassium and sodium always occur together — if one is present the other always is too</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

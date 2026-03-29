@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -157,11 +167,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-population-competition"><div class="match-def" data-index="3" draggable="true">Predator and prey populations fluctuate — predator follows prey with a time lag</div>
-<div class="match-def" data-index="2" draggable="true">Competition between individuals of DIFFERENT species for the same resource</div>
-<div class="match-def" data-index="4" draggable="true">Becomes more limiting as population density increases — e.g. food shortage, disease</div>
-<div class="match-def" data-index="0" draggable="true">Maximum population size that a habitat can sustainably support</div>
+      <div class="match-defs" id="defPool-population-competition"><div class="match-def" data-index="4" draggable="true">Becomes more limiting as population density increases — e.g. food shortage, disease</div>
 <div class="match-def" data-index="1" draggable="true">Competition between individuals of the SAME species — most intense</div>
+<div class="match-def" data-index="3" draggable="true">Predator and prey populations fluctuate — predator follows prey with a time lag</div>
+<div class="match-def" data-index="2" draggable="true">Competition between individuals of DIFFERENT species for the same resource</div>
+<div class="match-def" data-index="0" draggable="true">Maximum population size that a habitat can sustainably support</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -181,18 +191,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Migration can occur — but the time lag in predator-prey cycles is primarily a biological response time, not migration.",1: "Prey outnumbering predators is normal — but the timing of peaks is about reproduction lag, not relative numbers.",2: "The lag is specifically about REPRODUCTION — it takes time for increased food to result in increased offspring. Predators eating prey actually reduces prey numbers.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "The lag is specifically about REPRODUCTION — it takes time for increased food to result in increased offspring. Predators eating prey actually reduces prey numbers.",2: "Prey outnumbering predators is normal — but the timing of peaks is about reproduction lag, not relative numbers.",3: "Migration can occur — but the time lag in predator-prey cycles is primarily a biological response time, not migration.",}'>
   <div class="q-text">1. In a predator-prey graph, the predator population peaks AFTER the prey population peaks. Why?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Predators migrate to different areas before their numbers can increase</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Prey always outnumber predators — so prey peaks are automatically earlier</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Predators eat the prey before they can reproduce, causing prey to peak first</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">There is a time lag — it takes time for predators to reproduce in response to increased food availability</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Predators eat the prey before they can reproduce, causing prey to peak first</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">There is a time lag — it takes time for predators to reproduce in response to increased food availability</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Prey always outnumber predators — so prey peaks are automatically earlier</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Predators migrate to different areas before their numbers can increase</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Many species are common — but interspecific competition can also involve large numbers. The intensity difference is about the degree of resource overlap.",2: "Different species CAN compete — grey and red squirrels are a clear UK example. The ecological niche concept says species that overlap too much cannot coexist indefinitely.",3: "Physical strength varies within a species — the intensity of competition is about OVERLAP OF RESOURCE NEEDS, not strength.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Many species are common — but interspecific competition can also involve large numbers. The intensity difference is about the degree of resource overlap.",2: "Different species CAN compete — grey and red squirrels are a clear UK example. The ecological niche concept says species that overlap too much cannot coexist indefinitely.",3: "Physical strength varies within a species — the intensity of competition is about OVERLAP OF RESOURCE NEEDS, not strength.",}'>
   <div class="q-text">2. Why is intraspecific competition more intense than interspecific competition?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Individuals of the same species have identical needs — they compete for exactly the same resources</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Intraspecific competition involves more individuals — so it is more intense by numbers</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Intraspecific competition involves more individuals — so it is more intense by numbers</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Individuals of the same species have identical needs — they compete for exactly the same resources</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Different species never compete — they always occupy different niches</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Individuals of the same species are physically stronger and dominate others</button>
 </div>

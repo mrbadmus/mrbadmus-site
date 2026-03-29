@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -163,10 +173,10 @@
 </div>
       <div class="match-defs" id="defPool-abiotic-biotic-factors"><div class="match-def" data-index="4" draggable="true">O₂ concentration in a river — affects which aquatic organisms can survive</div>
 <div class="match-def" data-index="5" draggable="true">Disease — myxomatosis dramatically reduced the UK rabbit population</div>
-<div class="match-def" data-index="2" draggable="true">Light intensity — determines which plant species can photosynthesise in that location</div>
 <div class="match-def" data-index="0" draggable="true">Soil pH — affects which minerals are available for plant growth</div>
-<div class="match-def" data-index="3" draggable="true">Competition for food between red and grey squirrels</div>
 <div class="match-def" data-index="1" draggable="true">Predation — wolves hunting deer reduces deer population</div>
+<div class="match-def" data-index="3" draggable="true">Competition for food between red and grey squirrels</div>
+<div class="match-def" data-index="2" draggable="true">Light intensity — determines which plant species can photosynthesise in that location</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -194,11 +204,11 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">Fish population — the fish that die because of low oxygen</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "INTRASPECIFIC competition = same species. Red vs grey = TWO DIFFERENT SPECIES = INTERSPECIFIC competition.",1: "Grey squirrels don\'t change temperature — their effect is through direct competition for food and habitat, which is a biotic factor.",2: "Grey squirrels being larger is a physical trait — their impact on red squirrels is through competition for resources (a biotic factor).",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "INTRASPECIFIC competition = same species. Red vs grey = TWO DIFFERENT SPECIES = INTERSPECIFIC competition.",1: "Grey squirrels being larger is a physical trait — their impact on red squirrels is through competition for resources (a biotic factor).",2: "Grey squirrels don\'t change temperature — their effect is through direct competition for food and habitat, which is a biotic factor.",}'>
   <div class="q-text">2. Grey squirrels were introduced to the UK and have outcompeted red squirrels. What type of factor is this?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Biotic — intraspecific competition between individuals of the same species</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Abiotic — grey squirrels changed the temperature of the habitat</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Abiotic — grey squirrels are larger so they change the physical environment</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Abiotic — grey squirrels are larger so they change the physical environment</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Abiotic — grey squirrels changed the temperature of the habitat</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Biotic — interspecific competition between two different species for food and habitat</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>

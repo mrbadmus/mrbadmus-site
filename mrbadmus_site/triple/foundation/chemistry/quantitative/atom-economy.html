@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -156,10 +166,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-atom-economy"><div class="match-def" data-index="3" draggable="true">Atom economy: efficiency of the equation. % yield: how much product is actually collected.</div>
-<div class="match-def" data-index="0" draggable="true">Addition polymerisation — only one product formed, all atoms go into the polymer</div>
+      <div class="match-defs" id="defPool-atom-economy"><div class="match-def" data-index="2" draggable="true">Less waste, lower disposal costs, more sustainable use of raw materials</div>
+<div class="match-def" data-index="3" draggable="true">Atom economy: efficiency of the equation. % yield: how much product is actually collected.</div>
 <div class="match-def" data-index="1" draggable="true">Decomposition of CaCO₃ → CaO + CO₂ — 44% of mass becomes CO₂ waste</div>
-<div class="match-def" data-index="2" draggable="true">Less waste, lower disposal costs, more sustainable use of raw materials</div>
+<div class="match-def" data-index="0" draggable="true">Addition polymerisation — only one product formed, all atoms go into the polymer</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -198,20 +208,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "No standard formula gives 75% here — atom economy = (80 ÷ 100) × 100 = 80%.",1: "Must divide desired by TOTAL (desired + waste) — not by waste alone.",2: "20% is the proportion of WASTE — atom economy = desired ÷ total = 80 ÷ 100 = 80%.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Must divide desired by TOTAL (desired + waste) — not by waste alone.",2: "No standard formula gives 75% here — atom economy = (80 ÷ 100) × 100 = 80%.",3: "20% is the proportion of WASTE — atom economy = desired ÷ total = 80 ÷ 100 = 80%.",}'>
   <div class="q-text">1. A reaction produces 80 g of desired product and 20 g of waste product. What is the atom economy?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">75% — calculated incorrectly</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">80% — desired product Mr = 80, total products = 80 + 20 = 100; (80 ÷ 100) × 100 = 80%</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">400% — (80 ÷ 20) × 100 (divided desired by waste)</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">20% — (20 ÷ 100) × 100 (calculated waste not yield)</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">80% — desired product Mr = 80, total products = 80 + 20 = 100; (80 ÷ 100) × 100 = 80%</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">75% — calculated incorrectly</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">20% — (20 ÷ 100) × 100 (calculated waste not yield)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "100% atom economy relates to NO by-products — not to whether the reaction is complete. A complete reaction with by-products still has less than 100% atom economy.",1: "In addition reactions the product Mr equals the sum of reactant Mr exactly — but the key reason is that ALL atoms go into the ONE product.",2: "Energy is not counted as a chemical product in atom economy calculations.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "In addition reactions the product Mr equals the sum of reactant Mr exactly — but the key reason is that ALL atoms go into the ONE product.",2: "100% atom economy relates to NO by-products — not to whether the reaction is complete. A complete reaction with by-products still has less than 100% atom economy.",3: "Energy is not counted as a chemical product in atom economy calculations.",}'>
   <div class="q-text">2. Why do addition reactions always have an atom economy of 100%?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Addition reactions are always complete — 100% of reactants are converted to products</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The reactants have the same Mr as the products — so the ratio is always 1</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Addition reactions release energy — energy counts as a product increasing the total</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Only one product is formed — all atoms from the reactants end up in the single product with no by-products</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The reactants have the same Mr as the products — so the ratio is always 1</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Only one product is formed — all atoms from the reactants end up in the single product with no by-products</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Addition reactions are always complete — 100% of reactants are converted to products</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Addition reactions release energy — energy counts as a product increasing the total</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

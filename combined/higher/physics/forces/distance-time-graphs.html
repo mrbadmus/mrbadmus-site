@@ -64,6 +64,8 @@
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -82,7 +84,6 @@
 (function(){
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {
@@ -91,7 +92,16 @@
       if (user) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          }).then(r => r.ok ? r.json() : null).then(function(profile) {
+            if (profile && profile.avatar_url) {
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }
+          }).catch(function() {});
+        }
       }
     }
   } catch(e) {}
@@ -166,11 +176,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-distance-time-graphs"><div class="match-def" data-index="0" draggable="true">Fast constant speed away from start</div>
+      <div class="match-defs" id="defPool-distance-time-graphs"><div class="match-def" data-index="3" draggable="true">Constant speed returning towards starting point</div>
+<div class="match-def" data-index="0" draggable="true">Fast constant speed away from start</div>
+<div class="match-def" data-index="4" draggable="true">Accelerating — speed increasing over time</div>
 <div class="match-def" data-index="1" draggable="true">Stationary — object has stopped</div>
 <div class="match-def" data-index="2" draggable="true">Slow constant speed away from start</div>
-<div class="match-def" data-index="3" draggable="true">Constant speed returning towards starting point</div>
-<div class="match-def" data-index="4" draggable="true">Accelerating — speed increasing over time</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -209,20 +219,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a SLOPED straight line.",1: "A horizontal line on a VELOCITY–time graph means constant velocity — but on a DISTANCE–time graph it means zero speed (stationary).",2: "Acceleration on a d–t graph shows as a CURVE (increasing gradient) — not a flat section.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Acceleration on a d–t graph shows as a CURVE (increasing gradient) — not a flat section.",2: "A horizontal line on a VELOCITY–time graph means constant velocity — but on a DISTANCE–time graph it means zero speed (stationary).",3: "Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a SLOPED straight line.",}'>
   <div class="q-text">1. A d–t graph shows a horizontal (flat) line for 5 seconds. What is the object doing?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The object is accelerating — the line is preparing to slope upward</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">The object is moving at constant speed — horizontal means steady motion</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The object has reached maximum speed and is maintaining it</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The object is stationary — no change in distance means zero speed</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The object has reached maximum speed and is maintaining it</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The object is stationary — no change in distance means zero speed</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">The object is moving at constant speed — horizontal means steady motion</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">The object is accelerating — the line is preparing to slope upward</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Gentle slope = smaller gradient = slower speed. Fast motion = steeper slope = larger gradient.",2: "Both are straight lines (constant speed) but at DIFFERENT speeds — the gradient value gives the speed.",3: "Gentler slope does not imply harder work — gradient directly equals speed on a d–t graph.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Gentle slope = smaller gradient = slower speed. Fast motion = steeper slope = larger gradient.",2: "Gentler slope does not imply harder work — gradient directly equals speed on a d–t graph.",3: "Both are straight lines (constant speed) but at DIFFERENT speeds — the gradient value gives the speed.",}'>
   <div class="q-text">2. On a distance–time graph, two straight sections are drawn. Section A has gradient 8 m/s and section B has gradient 2 m/s. Which section shows faster motion?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Section B — a gentler slope indicates faster, more efficient motion</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Section A — steeper gradient on a d–t graph means higher speed</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">They are the same speed — both are straight lines</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Section B — less steep means the object is working harder to maintain motion</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Section A — steeper gradient on a d–t graph means higher speed</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Section B — a gentler slope indicates faster, more efficient motion</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Section B — less steep means the object is working harder to maintain motion</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">They are the same speed — both are straight lines</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

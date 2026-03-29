@@ -1468,6 +1468,8 @@ def nav_html(active_subject="", pathway="", tier=""):
   <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
+    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
+    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     {pathway_links}
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
@@ -1480,7 +1482,6 @@ def nav_html(active_subject="", pathway="", tier=""):
 (function(){{
   const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  // Lightweight session check using localStorage (Supabase stores session here)
   try {{
     const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
     if (raw) {{
@@ -1489,7 +1490,16 @@ def nav_html(active_subject="", pathway="", tier=""):
       if (user) {{
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
-        if (area) area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+        if (area) {{
+          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch('https://mrbadmus-backend.onrender.com/api/profile', {{
+            headers: {{ 'Authorization': 'Bearer ' + session.access_token }}
+          }}).then(r => r.ok ? r.json() : null).then(function(profile) {{
+            if (profile && profile.avatar_url) {{
+              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+            }}
+          }}).catch(function() {{}});
+        }}
       }}
     }}
   }} catch(e) {{}}
@@ -1737,6 +1747,19 @@ def make_landing():
     <div id="searchResults" class="search-results"></div>
   </div>
 </section>
+
+<a href="/weekly-challenge.html" style="display:block;max-width:800px;margin:0 auto 32px;padding:20px 28px;background:linear-gradient(135deg,#16213E 0%,#1a2744 100%);border:2px solid #2a2a4a;border-radius:18px;text-decoration:none;transition:all 0.2s;position:relative;overflow:hidden;" onmouseover="this.style.borderColor='#FFD93D';this.style.transform='translateY(-2px)'" onmouseout="this.style.borderColor='#2a2a4a';this.style.transform='none'">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div style="display:flex;align-items:center;gap:14px;">
+      <span style="font-size:2.2rem;">⚡</span>
+      <div>
+        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.15rem;color:#E8E8F0;">Weekly Challenge</div>
+        <div style="color:#888;font-size:0.85rem;font-weight:700;">15 questions. One attempt. Can you make the top 10?</div>
+      </div>
+    </div>
+    <span style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:10px 22px;border-radius:14px;font-family:'Sora',sans-serif;font-weight:800;font-size:0.9rem;white-space:nowrap;">Take the Challenge →</span>
+  </div>
+</a>
 
 <div class="pathway-grid">
 
@@ -5760,7 +5783,7 @@ def build_site(output_dir="mrbadmus_site"):
 
     # ── Auth pages — copy into output if they exist in repo root ──
     import shutil as _shutil, os as _os
-    for _auth_file in ["auth.html", "profile-setup.html"]:
+    for _auth_file in ["auth.html", "profile-setup.html", "weekly-challenge.html", "leaderboard.html"]:
         _src = _auth_file
         _dst = f"{output_dir}/{_auth_file}"
         if _os.path.exists(_src):
