@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#4ECDC4;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -153,10 +153,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-uses-of-nuclear-radiation"><div class="match-def" data-index="0" draggable="true">Alpha — ionises air between electrodes; smoke absorbs alpha → current drops → alarm</div>
+      <div class="match-defs" id="defPool-uses-of-nuclear-radiation"><div class="match-def" data-index="3" draggable="true">Gamma — penetrates to deep tumour; multiple beams cross at tumour to concentrate dose</div>
 <div class="match-def" data-index="1" draggable="true">Beta — absorbed proportional to thickness; gamma too penetrating; alpha too weak</div>
-<div class="match-def" data-index="3" draggable="true">Gamma — penetrates to deep tumour; multiple beams cross at tumour to concentrate dose</div>
 <div class="match-def" data-index="2" draggable="true">Gamma — penetrates body to reach detector outside; short half-life minimises dose</div>
+<div class="match-def" data-index="0" draggable="true">Alpha — ionises air between electrodes; smoke absorbs alpha → current drops → alarm</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -179,20 +179,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Safety is part of it — but the specific reasons are HIGH IONISATION (needed to create the ion current) and SHORT RANGE (safe containment). Simply being \'less dangerous\' isn\'t precise enough.",2: "Gamma CAN ionise air — all types of ionising radiation can ionise air, but alpha is much MORE efficient per unit path.",3: "Half-life of Am-241 is ~432 years — it does last well in detectors, but the primary reason for alpha selection is ionisation efficiency and range, not half-life.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Gamma CAN ionise air — all types of ionising radiation can ionise air, but alpha is much MORE efficient per unit path.",1: "Half-life of Am-241 is ~432 years — it does last well in detectors, but the primary reason for alpha selection is ionisation efficiency and range, not half-life.",2: "Safety is part of it — but the specific reasons are HIGH IONISATION (needed to create the ion current) and SHORT RANGE (safe containment). Simply being \'less dangerous\' isn\'t precise enough.",}'>
   <div class="q-text">1. Why is americium-241 (an alpha emitter) used in smoke detectors rather than a gamma emitter?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Alpha is less dangerous than gamma — so it is safer for household use in general</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Alpha ionises air very effectively between the electrodes AND has short range — it stays safely inside the casing without penetrating the housing</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Gamma cannot ionise air — only alpha radiation can ionise gases</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Alpha has a longer half-life than gamma emitters — so the detector lasts longer</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Gamma cannot ionise air — only alpha radiation can ionise gases</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Alpha has a longer half-life than gamma emitters — so the detector lasts longer</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Alpha is less dangerous than gamma — so it is safer for household use in general</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Alpha ionises air very effectively between the electrodes AND has short range — it stays safely inside the casing without penetrating the housing</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Gamma penetrates body safely — but \'safest\' oversimplifies. The combination of penetration (for imaging) AND short half-life (for low dose) is the key.",1: "Short half-life means the tracer DECAYS QUICKLY — activity falls rapidly, reducing the patient\'s radiation dose.",3: "Gamma is LEAST ionising per path — less immediate local tissue damage. High ionisation would cause cell damage, not contrast.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Gamma is LEAST ionising per path — less immediate local tissue damage. High ionisation would cause cell damage, not contrast.",2: "Gamma penetrates body safely — but \'safest\' oversimplifies. The combination of penetration (for imaging) AND short half-life (for low dose) is the key.",3: "Short half-life means the tracer DECAYS QUICKLY — activity falls rapidly, reducing the patient\'s radiation dose.",}'>
   <div class="q-text">2. A medical tracer needs to emit gamma radiation and have a short half-life. Why?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Gamma is the safest radiation type, so combining with any half-life gives safe imaging</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Short half-life means the tracer stays in the body longer before decaying</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Gamma penetrates the body to reach an external detector, and short half-life means patient dose is minimal — activity falls quickly after the procedure</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Gamma is most ionising — causes maximum contrast in the image, and short half-life means it works faster</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Gamma is most ionising — causes maximum contrast in the image, and short half-life means it works faster</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Gamma penetrates the body to reach an external detector, and short half-life means patient dose is minimal — activity falls quickly after the procedure</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Gamma is the safest radiation type, so combining with any half-life gives safe imaging</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Short half-life means the tracer stays in the body longer before decaying</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -229,7 +229,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

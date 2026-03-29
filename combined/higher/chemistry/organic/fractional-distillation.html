@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#FF6B6B;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -157,8 +157,8 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-fractional-distillation"><div class="match-def" data-index="0" draggable="true">Shortest chains (C₁–C₄), lowest boiling point — LPG for cooking and heating</div>
-<div class="match-def" data-index="1" draggable="true">Short chains (C₅–C₁₀), low boiling point — fuel for cars</div>
+      <div class="match-defs" id="defPool-fractional-distillation"><div class="match-def" data-index="1" draggable="true">Short chains (C₅–C₁₀), low boiling point — fuel for cars</div>
+<div class="match-def" data-index="0" draggable="true">Shortest chains (C₁–C₄), lowest boiling point — LPG for cooking and heating</div>
 <div class="match-def" data-index="2" draggable="true">Medium chains (C₁₀–C₁₆) — jet aircraft fuel</div>
 <div class="match-def" data-index="3" draggable="true">Longer chains (C₁₅–C₂₅) — fuel for lorries and trains</div>
 <div class="match-def" data-index="4" draggable="true">Longest chains, doesn't vaporise — road surfacing</div>
@@ -181,20 +181,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Petrol (C₅–C₁₀) and diesel (C₁₅–C₂₅) have very different chain lengths — they condense at different levels.",1: "Density does affect placement somewhat, but the key factor is BOILING POINT. Petrol has lower BP → condenses higher up.",2: "Bitumen is at the BOTTOM because it doesn\'t vaporise — it has the longest chains and highest boiling point. Petrol is much lighter and collects high up the column.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Petrol (C₅–C₁₀) and diesel (C₁₅–C₂₅) have very different chain lengths — they condense at different levels.",1: "Density does affect placement somewhat, but the key factor is BOILING POINT. Petrol has lower BP → condenses higher up.",3: "Bitumen is at the BOTTOM because it doesn\'t vaporise — it has the longest chains and highest boiling point. Petrol is much lighter and collects high up the column.",}'>
   <div class="q-text">1. Where in the fractionating column does petrol collect compared to diesel?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Both collect at the same level — they have similar chain lengths</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">Petrol collects lower down — it is more dense than diesel</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Petrol collects at the very bottom with bitumen — it is a liquid at room temperature</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Petrol collects higher up — it has shorter chains and a lower boiling point than diesel</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Petrol collects higher up — it has shorter chains and a lower boiling point than diesel</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Petrol collects at the very bottom with bitumen — it is a liquid at room temperature</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Crude oil fractions are HYDROCARBONS — they contain only carbon and hydrogen. Oxygen is not present.",2: "Alkanes (including petrol fractions) have only SINGLE bonds — no double bonds. Double bonds are found in alkenes.",3: "Density and boiling point are related but the cause of both is CHAIN LENGTH and intermolecular forces — not density itself.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Crude oil fractions are HYDROCARBONS — they contain only carbon and hydrogen. Oxygen is not present.",1: "Density and boiling point are related but the cause of both is CHAIN LENGTH and intermolecular forces — not density itself.",3: "Alkanes (including petrol fractions) have only SINGLE bonds — no double bonds. Double bonds are found in alkenes.",}'>
   <div class="q-text">2. Why does bitumen have a much higher boiling point than petrol?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Bitumen contains more oxygen atoms, making it heavier</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Bitumen molecules have much longer carbon chains — stronger intermolecular forces require more energy to overcome</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Petrol has double bonds that make it easier to boil</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Bitumen is denser so it needs more energy to change state</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Bitumen is denser so it needs more energy to change state</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Bitumen molecules have much longer carbon chains — stronger intermolecular forces require more energy to overcome</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Petrol has double bonds that make it easier to boil</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -231,7 +231,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

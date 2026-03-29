@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#6BCB77;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -167,11 +167,11 @@
   <div class="match-drop" data-accepts="5">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-heart-blood-vessels"><div class="match-def" data-index="3" draggable="true">Supply the heart muscle itself with oxygenated blood</div>
-<div class="match-def" data-index="5" draggable="true">Carries deoxygenated blood FROM the body TO the right atrium</div>
+      <div class="match-defs" id="defPool-heart-blood-vessels"><div class="match-def" data-index="2" draggable="true">Prevent backflow of blood — open and close with pressure changes</div>
 <div class="match-def" data-index="1" draggable="true">Pumps deoxygenated blood to the lungs via the pulmonary artery</div>
-<div class="match-def" data-index="2" draggable="true">Prevent backflow of blood — open and close with pressure changes</div>
+<div class="match-def" data-index="3" draggable="true">Supply the heart muscle itself with oxygenated blood</div>
 <div class="match-def" data-index="4" draggable="true">Carries oxygenated blood FROM the lungs TO the left atrium</div>
+<div class="match-def" data-index="5" draggable="true">Carries deoxygenated blood FROM the body TO the right atrium</div>
 <div class="match-def" data-index="0" draggable="true">Pumps oxygenated blood to the whole body via the aorta — thickest walls</div>
 </div>
     </div>
@@ -192,35 +192,35 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 4</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Both ventricles receive the same volume of blood per beat — the difference is in the distance the blood must be pumped, not the volume.",1: "Oxygenated and deoxygenated blood have essentially the same density — the thickness difference is purely about pressure requirements.",2: "Body size has no relationship to heart wall thickness — it\'s purely about pumping distance and pressure.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Both ventricles receive the same volume of blood per beat — the difference is in the distance the blood must be pumped, not the volume.",1: "Body size has no relationship to heart wall thickness — it\'s purely about pumping distance and pressure.",2: "Oxygenated and deoxygenated blood have essentially the same density — the thickness difference is purely about pressure requirements.",}'>
   <div class="q-text">1. Why does the left ventricle have thicker walls than the right ventricle?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">It receives more blood than the right ventricle so needs to be stronger</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">The left ventricle contains oxygenated blood which is heavier</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The left side of the body is larger so the heart must compensate</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The left side of the body is larger so the heart must compensate</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">The left ventricle contains oxygenated blood which is heavier</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">It pumps blood to the whole body — needs much higher pressure than the right ventricle which only pumps to the nearby lungs</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Blood in the heart is kept completely separate — left side carries oxygenated, right side carries deoxygenated. There is no mixing.",2: "All blood contains red blood cells — plasma alone would have no oxygen-carrying capacity.",3: "This is the most common mistake in this topic! Arteries carry blood AWAY from the heart — but the pulmonary artery specifically carries deoxygenated blood to be oxygenated in the lungs.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "This is the most common mistake in this topic! Arteries carry blood AWAY from the heart — but the pulmonary artery specifically carries deoxygenated blood to be oxygenated in the lungs.",1: "All blood contains red blood cells — plasma alone would have no oxygen-carrying capacity.",3: "Blood in the heart is kept completely separate — left side carries oxygenated, right side carries deoxygenated. There is no mixing.",}'>
   <div class="q-text">2. The pulmonary artery carries blood from the heart to the lungs. What type of blood does it carry?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">A mixture of oxygenated and deoxygenated blood</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Deoxygenated blood — it has just returned from the body and needs to be reoxygenated</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Blood with no red blood cells — only plasma</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Oxygenated blood — all arteries carry oxygenated blood</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Oxygenated blood — all arteries carry oxygenated blood</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Blood with no red blood cells — only plasma</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Deoxygenated blood — it has just returned from the body and needs to be reoxygenated</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">A mixture of oxygenated and deoxygenated blood</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="2" data-wrong-exp='{0: "The oxygen content of blood has nothing to do with the need for valves — the PRESSURE is what matters.",1: "Wall thickness helps arteries withstand pressure — but valves are specifically about preventing BACKFLOW, which is a problem in low-pressure veins, not high-pressure arteries.",3: "Valves in veins do slightly slow flow, but that\'s acceptable — their role is to prevent dangerous backflow in low-pressure vessels.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="1" data-wrong-exp='{0: "The oxygen content of blood has nothing to do with the need for valves — the PRESSURE is what matters.",2: "Wall thickness helps arteries withstand pressure — but valves are specifically about preventing BACKFLOW, which is a problem in low-pressure veins, not high-pressure arteries.",3: "Valves in veins do slightly slow flow, but that\'s acceptable — their role is to prevent dangerous backflow in low-pressure vessels.",}'>
   <div class="q-text">3. Why do veins have valves but arteries do not?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Veins carry deoxygenated blood which needs extra support to flow</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Arteries have thicker walls so they don't need valves</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">Blood pressure in veins is low — valves prevent backflow. Arterial pressure is high enough to keep blood flowing in the right direction</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">Blood pressure in veins is low — valves prevent backflow. Arterial pressure is high enough to keep blood flowing in the right direction</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">Arteries have thicker walls so they don't need valves</button>
 <button class="quiz-opt" data-qi="2" data-oi="3">Valves in arteries would slow down the high-pressure blood flow too much</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Capillaries have no valves — substances move by DIFFUSION driven by concentration gradients.",1: "Capillaries have the LOWEST blood pressure — that is why they can be one cell thick without bursting.",2: "Capillaries carry either oxygenated or deoxygenated blood depending on location — not both at once.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Capillaries carry either oxygenated or deoxygenated blood depending on location — not both at once.",1: "Capillaries have no valves — substances move by DIFFUSION driven by concentration gradients.",2: "Capillaries have the LOWEST blood pressure — that is why they can be one cell thick without bursting.",}'>
   <div class="q-text">4. What makes capillaries efficient at exchanging substances?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">They have valves to keep substances moving in one direction</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">They have the highest blood pressure of all blood vessels</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">They carry both oxygenated and deoxygenated blood simultaneously</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">They carry both oxygenated and deoxygenated blood simultaneously</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">They have valves to keep substances moving in one direction</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">They have the highest blood pressure of all blood vessels</button>
 <button class="quiz-opt" data-qi="3" data-oi="3">Walls are only one cell thick — very short diffusion distance. Dense network = large surface area</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
@@ -258,7 +258,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

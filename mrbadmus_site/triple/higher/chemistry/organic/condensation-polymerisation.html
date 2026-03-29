@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#FF6B6B;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -160,10 +160,10 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-condensation-polymerisation"><div class="match-def" data-index="3" draggable="true">Ester or amide links form between monomers</div>
+      <div class="match-defs" id="defPool-condensation-polymerisation"><div class="match-def" data-index="2" draggable="true">100% atom economy — all atoms end up in the polymer</div>
 <div class="match-def" data-index="1" draggable="true">A small molecule (usually water) is released at each monomer junction</div>
-<div class="match-def" data-index="2" draggable="true">100% atom economy — all atoms end up in the polymer</div>
 <div class="match-def" data-index="4" draggable="true">Many monomers join to form a very large polymer molecule</div>
+<div class="match-def" data-index="3" draggable="true">Ester or amide links form between monomers</div>
 <div class="match-def" data-index="0" draggable="true">Monomers must contain a C=C double bond</div>
 </div>
     </div>
@@ -187,18 +187,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Amide links (–CONH–) form POLYAMIDES (like nylon) — not polyesters.",1: "Ether links are possible in some condensation polymers but not the standard polyester — diol + diacid gives ester links.",3: "C–C links from C=C monomers describe ADDITION polymerisation — not condensation.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "C–C links from C=C monomers describe ADDITION polymerisation — not condensation.",1: "Amide links (–CONH–) form POLYAMIDES (like nylon) — not polyesters.",2: "Ether links are possible in some condensation polymers but not the standard polyester — diol + diacid gives ester links.",}'>
   <div class="q-text">1. What type of link forms in a polyester and what are the two monomers needed?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Amide link (–CONH–) forms from a diamine and a dicarboxylic acid</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Ether link (–O–) forms from two alcohol monomers reacting together</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Ester link (–COO–) forms from a diol (two –OH groups) and a dicarboxylic acid (two –COOH groups)</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Carbon–carbon link forms from two alkene monomers with C=C bonds</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Carbon–carbon link forms from two alkene monomers with C=C bonds</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Amide link (–CONH–) forms from a diamine and a dicarboxylic acid</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Ether link (–O–) forms from two alcohol monomers reacting together</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Ester link (–COO–) forms from a diol (two –OH groups) and a dicarboxylic acid (two –COOH groups)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Catalysts are not counted in atom economy calculations — they are neither reactants nor products.",1: "Condensation polymers can be very large — molecular mass doesn\'t determine atom economy.",3: "Energy loss doesn\'t reduce atom economy — atom economy is about where atoms go, not energy.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Condensation polymers can be very large — molecular mass doesn\'t determine atom economy.",1: "Catalysts are not counted in atom economy calculations — they are neither reactants nor products.",3: "Energy loss doesn\'t reduce atom economy — atom economy is about where atoms go, not energy.",}'>
   <div class="q-text">2. Why does condensation polymerisation have a lower atom economy than addition polymerisation?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The catalyst is consumed in condensation polymerisation — reducing the atom economy</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Condensation polymers have lower molecular mass — fewer atoms incorporated overall</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Condensation polymers have lower molecular mass — fewer atoms incorporated overall</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The catalyst is consumed in condensation polymerisation — reducing the atom economy</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">A small molecule (usually water) is released at each monomer junction — these atoms are not incorporated into the polymer chain</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Condensation polymerisation uses more energy — some mass is lost as heat</button>
 </div>
@@ -237,7 +237,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

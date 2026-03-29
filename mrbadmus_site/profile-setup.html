@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Profile | MrBadmusAI</title>
+  <title>Set Up Your Profile | MrBadmusAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
@@ -20,198 +20,117 @@
       padding: 20px;
     }
 
-    /* ── NAV BAR ─────────────────────────────────────────── */
-    .nav {
-      position: fixed; top: 0; left: 0; right: 0;
-      padding: 12px 24px;
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(15,15,26,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #2a2a4a;
-      z-index: 10;
-    }
-    .nav-brand {
-      font-family: 'Fredoka One', cursive; font-size: 1.3rem;
-      text-decoration: none;
-      background: linear-gradient(135deg, #4ECDC4, #6BCB77);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .nav-links { display: flex; align-items: center; gap: 12px; font-size: 0.88rem; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-weight: 700; }
-    .nav-links a:hover { color: var(--text); }
-
-    /* ── LOADING STATE ───────────────────────────────────── */
-    .loading-screen {
-      display: flex; align-items: center; justify-content: center;
-      min-height: 60vh; padding-top: 60px;
-    }
-    .spinner {
-      width: 40px; height: 40px;
-      border: 4px solid #2a2a4a; border-top-color: var(--physics);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── DASHBOARD ────────────────────────────────────────── */
-    .dashboard {
-      max-width: 600px; margin: 0 auto;
-      padding-top: 70px; display: none;
-    }
-    .dash-header {
-      text-align: center; margin-bottom: 32px;
-    }
-    .dash-avatar {
-      width: 90px; height: 90px;
-      border-radius: 50%;
-      border: 3px solid var(--physics);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; margin: 0 auto 14px;
-      font-size: 2.5rem;
-      background: var(--dark);
-    }
-    .dash-avatar img {
-      width: 100%; height: 100%; object-fit: cover;
-    }
-    .dash-name {
-      font-family: 'Fredoka One', cursive; font-size: 1.8rem;
-    }
-    .dash-email {
-      color: var(--muted); font-size: 0.85rem; margin-top: 2px;
-    }
-    .dash-section {
-      background: var(--card);
-      border: 1px solid #2a2a4a;
-      border-radius: 16px;
-      padding: 22px 24px;
-      margin-bottom: 16px;
-    }
-    .dash-section-title {
-      font-family: 'Fredoka One', cursive;
-      font-size: 1rem;
-      color: var(--physics);
-      margin-bottom: 14px;
-    }
-    .dash-row {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid #1e2d4a;
-    }
-    .dash-row:last-child { border-bottom: none; }
-    .dash-label { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
-    .dash-value { font-weight: 800; font-size: 0.92rem; }
-
-    .dash-tag {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 0.78rem;
-      font-weight: 800;
-    }
-    .tag-combined { background: rgba(78,205,196,0.15); color: var(--physics); }
-    .tag-triple { background: rgba(255,107,107,0.15); color: var(--chemistry); }
-    .tag-foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
-    .tag-higher { background: rgba(255,217,61,0.15); color: var(--yellow); }
-
-    .dash-chips {
-      display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end;
-      max-width: 65%;
-    }
-    .chip-strong {
-      background: rgba(107,203,119,0.15); color: var(--biology);
-      padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
-    }
-    .chip-weak {
-      background: rgba(255,107,107,0.15); color: var(--chemistry);
-      padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
-    }
-
-    .dash-note {
-      background: var(--dark);
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: var(--muted);
-      font-size: 0.88rem;
-      line-height: 1.5;
-      font-style: italic;
-    }
-
-    .dash-actions {
-      display: flex; gap: 12px; margin-top: 24px;
-    }
-    .btn {
-      flex: 1; padding: 14px;
-      border-radius: 14px; border: none;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.05rem; cursor: pointer;
-      transition: all 0.2s; text-align: center;
-      text-decoration: none;
-    }
-    .btn-primary { background: linear-gradient(135deg, var(--physics), #38a89d); color: #0F0F1A; }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-secondary { background: #2a2a4a; color: var(--muted); }
-    .btn-secondary:hover { background: #3a3a5a; color: var(--text); }
-    .btn-danger { background: rgba(255,107,107,0.15); color: var(--chemistry); }
-    .btn-danger:hover { background: rgba(255,107,107,0.25); }
-
-    /* ── WIZARD (for new users / editing) ─────────────────── */
     .wizard {
-      max-width: 560px; margin: 0 auto;
-      padding-top: 20px; display: none;
+      max-width: 560px;
+      margin: 0 auto;
+      padding-top: 20px;
     }
-    .progress-bar { display: flex; gap: 6px; margin-bottom: 32px; }
+
+    .progress-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 32px;
+    }
     .progress-step {
-      flex: 1; height: 4px; border-radius: 4px;
-      background: #2a2a4a; transition: background 0.3s;
+      flex: 1;
+      height: 4px;
+      border-radius: 4px;
+      background: #2a2a4a;
+      transition: background 0.3s;
     }
     .progress-step.done { background: var(--physics); }
     .progress-step.active { background: var(--yellow); }
 
     .step { display: none; }
     .step.active { display: block; }
-    .step-header { margin-bottom: 28px; }
+
+    .step-header {
+      margin-bottom: 28px;
+    }
     .step-header h2 {
-      font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 6px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
     }
     .step-header p { color: var(--muted); line-height: 1.5; }
 
-    .avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 28px; }
-    .avatar-ring {
-      width: 100px; height: 100px; border-radius: 50%;
-      border: 3px solid var(--physics);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden; cursor: pointer; position: relative; margin-bottom: 10px;
+    /* Avatar upload */
+    .avatar-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 28px;
     }
-    .avatar-ring img { width: 100%; height: 100%; object-fit: cover; }
-    .avatar-ring .placeholder { font-size: 2.5rem; }
+    .avatar-ring {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid var(--physics);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      margin-bottom: 10px;
+    }
+    .avatar-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .avatar-ring .placeholder {
+      font-size: 2.5rem;
+    }
     .avatar-ring .overlay {
-      position: absolute; inset: 0;
+      position: absolute;
+      inset: 0;
       background: rgba(0,0,0,0.5);
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.2s; font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+      font-size: 1.5rem;
     }
     .avatar-ring:hover .overlay { opacity: 1; }
     #avatar-input { display: none; }
     .avatar-hint { font-size: 0.8rem; color: var(--muted); }
 
+    /* Form elements */
     .form-group { margin-bottom: 20px; }
     label { display: block; font-weight: 700; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
     input, select, textarea {
-      width: 100%; background: var(--dark);
-      border: 2px solid #2a2a4a; border-radius: 12px;
-      padding: 13px 16px; color: var(--text);
-      font-family: 'Nunito', sans-serif; font-size: 0.95rem;
-      outline: none; transition: border-color 0.2s;
+      width: 100%;
+      background: var(--dark);
+      border: 2px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 13px 16px;
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
     }
     input:focus, select:focus, textarea:focus { border-color: var(--physics); }
     select option { background: var(--dark); }
     textarea { resize: vertical; min-height: 80px; }
 
-    .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+    /* Choice grid — pathway/tier/exam board */
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 8px;
+    }
     .choice-card {
-      background: var(--dark); border: 2px solid #2a2a4a;
-      border-radius: 14px; padding: 16px; cursor: pointer;
-      transition: all 0.2s; text-align: center;
+      background: var(--dark);
+      border: 2px solid #2a2a4a;
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
     }
     .choice-card:hover { border-color: var(--physics); }
     .choice-card.selected { border-color: var(--physics); background: #0d2a2a; }
@@ -219,129 +138,99 @@
     .choice-card .title { font-weight: 800; font-size: 0.95rem; }
     .choice-card .sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
 
-    .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    /* Topic checkboxes for strengths/weaknesses */
+    .topic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
     .topic-chip {
-      background: var(--dark); border: 2px solid #2a2a4a;
-      border-radius: 10px; padding: 10px 12px; cursor: pointer;
-      transition: all 0.2s; font-size: 0.85rem; font-weight: 700;
-      display: flex; align-items: center; gap: 8px;
+      background: var(--dark);
+      border: 2px solid #2a2a4a;
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.85rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .topic-chip .dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: #2a2a4a; flex-shrink: 0; transition: background 0.2s;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #2a2a4a;
+      flex-shrink: 0;
+      transition: background 0.2s;
     }
     .topic-chip.strong { border-color: var(--biology); }
     .topic-chip.strong .dot { background: var(--biology); }
     .topic-chip.weak { border-color: var(--chemistry); }
     .topic-chip.weak .dot { background: var(--chemistry); }
 
-    .legend { display: flex; gap: 16px; margin-bottom: 12px; font-size: 0.82rem; }
+    .legend {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 12px;
+      font-size: 0.82rem;
+    }
     .legend span { display: flex; align-items: center; gap: 6px; color: var(--muted); }
     .legend .dot { width: 10px; height: 10px; border-radius: 50%; }
 
-    .grade-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    /* Grade selector */
+    .grade-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
     .grade-btn {
-      width: 48px; height: 48px; border-radius: 12px;
-      border: 2px solid #2a2a4a; background: var(--dark);
-      color: var(--text); font-family: 'Fredoka One', cursive;
-      font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      border: 2px solid #2a2a4a;
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s;
     }
     .grade-btn:hover { border-color: var(--yellow); }
     .grade-btn.selected { border-color: var(--yellow); background: #2a2a0d; color: var(--yellow); }
 
-    .nav-btns { display: flex; gap: 12px; margin-top: 32px; }
+    /* Navigation buttons */
+    .nav-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 32px;
+    }
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: linear-gradient(135deg, var(--physics), #38a89d); color: #0F0F1A; }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-secondary { background: #2a2a4a; color: var(--muted); }
+    .btn-secondary:hover { background: #3a3a5a; color: var(--text); }
 
     .skip { text-align: center; margin-top: 12px; }
-    .skip a { color: var(--muted); font-size: 0.85rem; cursor: pointer; text-decoration: none; }
+    .skip a { color: var(--muted); font-size: 0.85rem; cursor: pointer; }
     .skip a:hover { color: var(--text); }
   </style>
 </head>
 <body>
 
-<!-- ── NAV BAR ────────────────────────────────────────────── -->
-<nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
-  <div class="nav-links">
-    <a href="/index.html">Home</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(function(){var e=document.getElementById('siteSearch');if(e)e.focus();},100)" style="font-size:1.1rem;">🔍</a>
-  </div>
-</nav>
-
-<!-- ── LOADING ────────────────────────────────────────────── -->
-<div class="loading-screen" id="loading">
-  <div class="spinner"></div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════
-     DASHBOARD — shown when profile is complete
-     ══════════════════════════════════════════════════════════ -->
-<div class="dashboard" id="dashboard">
-  <div class="dash-header">
-    <div class="dash-avatar" id="dash-avatar">🧑‍🎓</div>
-    <div class="dash-name" id="dash-name"></div>
-    <div class="dash-email" id="dash-email"></div>
-  </div>
-
-  <div class="dash-section">
-    <div class="dash-section-title">📚 My Course</div>
-    <div class="dash-row">
-      <span class="dash-label">Pathway</span>
-      <span class="dash-value" id="dash-pathway"></span>
-    </div>
-    <div class="dash-row">
-      <span class="dash-label">Tier</span>
-      <span class="dash-value" id="dash-tier"></span>
-    </div>
-    <div class="dash-row">
-      <span class="dash-label">Exam board</span>
-      <span class="dash-value" id="dash-board"></span>
-    </div>
-    <div class="dash-row">
-      <span class="dash-label">Target grade</span>
-      <span class="dash-value" id="dash-grade"></span>
-    </div>
-    <div class="dash-row">
-      <span class="dash-label">School</span>
-      <span class="dash-value" id="dash-school"></span>
-    </div>
-    <div class="dash-row">
-      <span class="dash-label">Year group</span>
-      <span class="dash-value" id="dash-year"></span>
-    </div>
-  </div>
-
-  <div class="dash-section" id="dash-sw-section" style="display:none;">
-    <div class="dash-section-title">💪 Strengths &amp; Weaknesses</div>
-    <div id="dash-strengths-row" class="dash-row" style="display:none;">
-      <span class="dash-label">Confident</span>
-      <div class="dash-chips" id="dash-strengths"></div>
-    </div>
-    <div id="dash-weaknesses-row" class="dash-row" style="display:none;">
-      <span class="dash-label">Find hard</span>
-      <div class="dash-chips" id="dash-weaknesses"></div>
-    </div>
-  </div>
-
-  <div class="dash-section" id="dash-note-section" style="display:none;">
-    <div class="dash-section-title">📝 Note to Mr Badmus</div>
-    <div class="dash-note" id="dash-note"></div>
-  </div>
-
-  <div class="dash-actions">
-    <button class="btn btn-primary" onclick="editProfile()">✏️ Edit Profile</button>
-    <button class="btn btn-danger" onclick="signOut()">Sign Out</button>
-  </div>
-
-  <div style="text-align:center;margin-top:16px;">
-    <a href="/index.html" style="color:var(--muted);font-size:0.85rem;text-decoration:none;">← Back to revision</a>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════
-     WIZARD — shown for new users or when editing
-     ══════════════════════════════════════════════════════════ -->
-<div class="wizard" id="wizard">
+<div class="wizard">
+  <!-- Progress bar -->
   <div class="progress-bar">
     <div class="progress-step active"  id="ps-1"></div>
     <div class="progress-step"         id="ps-2"></div>
@@ -349,12 +238,11 @@
     <div class="progress-step"         id="ps-4"></div>
   </div>
 
+  <!-- ── STEP 1: Photo + Name ────────────────────────────── -->
   <div class="step active" id="step-1">
-    <div class="step-header" id="step1-header" style="text-align:center;padding:20px 0 10px;">
-      <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
-      <h2 style="font-size:2rem;background:linear-gradient(135deg,#4ECDC4,#6BCB77);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">You're in!</h2>
-      <p style="font-size:1.1rem;color:var(--text);font-weight:700;margin:8px 0 4px;">Welcome to MrBadmusAI</p>
-      <p style="color:var(--muted);line-height:1.6;">I'm Mr Badmus — your personal GCSE Science tutor. Let me get to know you so I can help you properly. Takes 2 minutes.</p>
+    <div class="step-header">
+      <h2>👋 Welcome to MrBadmusAI!</h2>
+      <p>Let's set up your profile so Mr Badmus knows who he's teaching. It only takes 2 minutes.</p>
     </div>
 
     <div class="avatar-section">
@@ -392,6 +280,7 @@
     <div class="skip"><a onclick="skipAll()">Skip for now — I'll set this up later</a></div>
   </div>
 
+  <!-- ── STEP 2: Pathway + Tier ─────────────────────────── -->
   <div class="step" id="step-2">
     <div class="step-header">
       <h2>📚 Your Science Course</h2>
@@ -451,6 +340,7 @@
     </div>
   </div>
 
+  <!-- ── STEP 3: Target Grade ───────────────────────────── -->
   <div class="step" id="step-3">
     <div class="step-header">
       <h2>🎯 Your Target Grade</h2>
@@ -480,41 +370,43 @@
     </div>
   </div>
 
+  <!-- ── STEP 4: Strengths + Weaknesses ────────────────── -->
   <div class="step" id="step-4">
     <div class="step-header">
       <h2>💪 Strengths &amp; Weaknesses</h2>
-      <p>Tap topics to tell Mr Badmus how you feel about each one. He'll adapt his teaching to help you where you need it most.</p>
+      <p>Tap topics you feel <strong style="color:var(--biology)">confident on</strong> or topics you <strong style="color:var(--chemistry)">find hard</strong>. Mr Badmus will adapt.</p>
     </div>
 
     <div class="legend">
-      <span><div class="dot" style="background:#2a2a4a"></div> Not set</span>
-      <span><div class="dot" style="background:var(--biology)"></div> Confident</span>
-      <span><div class="dot" style="background:var(--chemistry)"></div> Find hard</span>
+      <span><div class="dot" style="background:var(--biology)"></div> I'm confident</span>
+      <span><div class="dot" style="background:var(--chemistry)"></div> I find this hard</span>
     </div>
-    <p style="color:var(--muted);font-size:0.8rem;margin-bottom:14px;">Tap once = <strong style="color:var(--biology)">I'm confident</strong> · Tap twice = <strong style="color:var(--chemistry)">I find this hard</strong> · Tap again to reset</p>
 
-    <div class="topic-grid" id="topic-grid"></div>
+    <div class="topic-grid" id="topic-grid">
+      <!-- Populated by JS based on pathway -->
+    </div>
 
     <div class="nav-btns" style="margin-top:24px">
       <button class="btn btn-secondary" onclick="prevStep(4)">← Back</button>
       <button class="btn btn-primary" id="btn-finish" onclick="finish()">Let's Go! 🚀</button>
     </div>
   </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  var SUPABASE_URL      = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  const SUPABASE_URL      = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  const API_BASE          = 'https://mrbadmus-backend.onrender.com';  // e.g. https://api.mrbadmus.com
 
-  var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  var currentStep = 1;
-  var session     = null;
-  var avatarFile  = null;
-  var isEditing   = false;
+  let currentStep = 1;
+  let session     = null;
+  let avatarFile  = null;
 
-  var profileData = {
+  const profileData = {
     pathway: 'combined',
     tier: 'higher',
     board: 'AQA',
@@ -523,231 +415,26 @@
     weaknesses: [],
   };
 
-  var ALL_TOPICS = {
+  const ALL_TOPICS = {
     physics:   ['Energy','Electricity','Particle Model','Atomic Structure','Forces','Waves','Magnetism','Space Physics'],
     chemistry: ['Atomic Structure','Bonding','Quantitative Chemistry','Chemical Changes','Energy Changes','Rates & Equilibrium','Organic Chemistry','Chemical Analysis','Atmosphere','Using Resources'],
     biology:   ['Cell Biology','Organisation','Infection & Response','Bioenergetics','Homeostasis','Inheritance','Ecology'],
   };
 
-  // Build topic label lookup
-  var TOPIC_LABELS = {};
-  ['physics','chemistry','biology'].forEach(function(subj) {
-    ALL_TOPICS[subj].forEach(function(t) {
-      TOPIC_LABELS[t.toLowerCase().replace(/[\s&]+/g, '-')] = t;
-    });
+  // Initialise
+  sb.auth.getSession().then(({ data: { session: s } }) => {
+    if (!s) { window.location.href = '/auth.html'; return; }
+    session = s;
   });
 
-  // ══════════════════════════════════════════════════════════
-  // INIT
-  // ══════════════════════════════════════════════════════════
-  async function init() {
-    // Get session (with retry for post-signup race condition)
-    var result = await sb.auth.getSession();
-    if (result.data.session) {
-      session = result.data.session;
-    } else {
-      await new Promise(function(resolve) {
-        var sub = sb.auth.onAuthStateChange(function(event, s) {
-          if (s) { session = s; sub.data.subscription.unsubscribe(); resolve(); }
-        });
-        setTimeout(function() { if (sub.data) sub.data.subscription.unsubscribe(); resolve(); }, 4000);
-      });
-    }
-
-    if (!session) {
-      window.location.href = '/auth.html';
-      return;
-    }
-
-    // Check URL param
-    var forceEdit = new URLSearchParams(window.location.search).get('edit') === '1';
-
-    // Load profile from Supabase
-    var profileResult = await sb.from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single();
-
-    var profile = profileResult.data;
-
-    // Hide loading
-    document.getElementById('loading').style.display = 'none';
-
-    // Decide: dashboard or wizard
-    if (profile && profile.science_pathway && !forceEdit) {
-      showDashboard(profile);
-    } else {
-      showWizard(profile);
-    }
-  }
-  init();
-
-  // ══════════════════════════════════════════════════════════
-  // DASHBOARD VIEW
-  // ══════════════════════════════════════════════════════════
-  function showDashboard(p) {
-    document.getElementById('dashboard').style.display = 'block';
-
-    // Avatar
-    var avatarEl = document.getElementById('dash-avatar');
-    if (p.avatar_url) {
-      avatarEl.innerHTML = '<img src="' + p.avatar_url + '" alt="avatar"/>';
-    }
-
-    // Name + email
-    var fullName = (p.first_name || '') + (p.last_name ? ' ' + p.last_name : '');
-    document.getElementById('dash-name').textContent = fullName || 'Student';
-    document.getElementById('dash-email').textContent = session.user.email;
-
-    // Course info
-    var pathwayEl = document.getElementById('dash-pathway');
-    if (p.science_pathway === 'combined') {
-      pathwayEl.innerHTML = '<span class="dash-tag tag-combined">🔬 Combined Science</span>';
-    } else {
-      pathwayEl.innerHTML = '<span class="dash-tag tag-triple">⚗️ Triple Science</span>';
-    }
-
-    var tierEl = document.getElementById('dash-tier');
-    if (p.tier === 'foundation') {
-      tierEl.innerHTML = '<span class="dash-tag tag-foundation">🌱 Foundation</span>';
-    } else {
-      tierEl.innerHTML = '<span class="dash-tag tag-higher">⭐ Higher</span>';
-    }
-
-    document.getElementById('dash-board').textContent = p.exam_board || 'AQA';
-    document.getElementById('dash-grade').textContent = p.target_grade ? 'Grade ' + p.target_grade : '—';
-    document.getElementById('dash-school').textContent = p.school_name || '—';
-    document.getElementById('dash-year').textContent = p.year_group || '—';
-
-    // Strengths & weaknesses
-    var strengths = p.strengths || [];
-    var weaknesses = p.weaknesses || [];
-    if (strengths.length > 0 || weaknesses.length > 0) {
-      document.getElementById('dash-sw-section').style.display = 'block';
-      if (strengths.length > 0) {
-        document.getElementById('dash-strengths-row').style.display = 'flex';
-        document.getElementById('dash-strengths').innerHTML = strengths
-          .map(function(s) { return '<span class="chip-strong">' + (TOPIC_LABELS[s] || s) + '</span>'; }).join('');
-      }
-      if (weaknesses.length > 0) {
-        document.getElementById('dash-weaknesses-row').style.display = 'flex';
-        document.getElementById('dash-weaknesses').innerHTML = weaknesses
-          .map(function(w) { return '<span class="chip-weak">' + (TOPIC_LABELS[w] || w) + '</span>'; }).join('');
-      }
-    }
-
-    // Personal note
-    if (p.personal_note) {
-      document.getElementById('dash-note-section').style.display = 'block';
-      document.getElementById('dash-note').textContent = p.personal_note;
-    }
-  }
-
-  function editProfile() {
-    window.location.href = '/profile-setup.html?edit=1';
-  }
-
-  async function signOut() {
-    await sb.auth.signOut();
-    window.location.href = '/index.html';
-  }
-
-  // ══════════════════════════════════════════════════════════
-  // WIZARD VIEW
-  // ══════════════════════════════════════════════════════════
-  function showWizard(existingProfile) {
-    document.getElementById('wizard').style.display = 'block';
-    isEditing = !!(existingProfile && existingProfile.science_pathway);
-
-    // If editing, change header and add Save buttons to every step
-    if (isEditing) {
-      document.getElementById('step1-header').innerHTML =
-        '<h2 style="font-size:2rem;">✏️ Edit Your Profile</h2>' +
-        '<p style="color:var(--muted);line-height:1.6;margin-top:8px;">Update your details below. Mr Badmus will adapt to any changes.</p>';
-
-      // Add a "Save & Close" button to every step's nav-btns
-      var navBtnGroups = document.querySelectorAll('#wizard .nav-btns');
-      for (var i = 0; i < navBtnGroups.length; i++) {
-        var saveBtn = document.createElement('button');
-        saveBtn.className = 'btn btn-primary';
-        saveBtn.textContent = '💾 Save';
-        saveBtn.style.background = 'linear-gradient(135deg, #6BCB77, #4a9e5a)';
-        saveBtn.onclick = finish;
-        navBtnGroups[i].appendChild(saveBtn);
-      }
-    }
-
-    // Pre-fill form if data exists
-    if (existingProfile) {
-      if (existingProfile.first_name)
-        document.getElementById('first-name').value = existingProfile.first_name;
-      if (existingProfile.school_name)
-        document.getElementById('school-name').value = existingProfile.school_name;
-      if (existingProfile.year_group)
-        document.getElementById('year-group').value = existingProfile.year_group;
-      if (existingProfile.personal_note)
-        document.getElementById('personal-note').value = existingProfile.personal_note;
-
-      if (existingProfile.science_pathway) {
-        profileData.pathway = existingProfile.science_pathway;
-        document.querySelectorAll('#pathway-grid .choice-card').forEach(function(c) {
-          c.classList.remove('selected');
-          if ((existingProfile.science_pathway === 'combined' && c.textContent.indexOf('Combined') !== -1) ||
-              (existingProfile.science_pathway === 'triple' && c.textContent.indexOf('Triple') !== -1)) {
-            c.classList.add('selected');
-          }
-        });
-      }
-
-      if (existingProfile.tier) {
-        profileData.tier = existingProfile.tier;
-        document.querySelectorAll('#tier-grid .choice-card').forEach(function(c) {
-          c.classList.remove('selected');
-          if ((existingProfile.tier === 'foundation' && c.textContent.indexOf('Foundation') !== -1) ||
-              (existingProfile.tier === 'higher' && c.textContent.indexOf('Higher') !== -1)) {
-            c.classList.add('selected');
-          }
-        });
-      }
-
-      if (existingProfile.exam_board) {
-        profileData.board = existingProfile.exam_board;
-        document.querySelectorAll('#board-grid .choice-card').forEach(function(c) {
-          c.classList.remove('selected');
-          if (c.textContent.trim() === existingProfile.exam_board) c.classList.add('selected');
-        });
-      }
-
-      if (existingProfile.target_grade) {
-        profileData.grade = existingProfile.target_grade;
-        document.querySelectorAll('.grade-btn').forEach(function(b) {
-          if (parseInt(b.textContent) === existingProfile.target_grade) b.classList.add('selected');
-        });
-      }
-
-      if (existingProfile.strengths) profileData.strengths = existingProfile.strengths;
-      if (existingProfile.weaknesses) profileData.weaknesses = existingProfile.weaknesses;
-
-      if (existingProfile.avatar_url) {
-        document.getElementById('avatar-placeholder').style.display = 'none';
-        var img = document.getElementById('avatar-preview');
-        img.src = existingProfile.avatar_url;
-        img.style.display = 'block';
-      }
-    }
-  }
-
-  // ══════════════════════════════════════════════════════════
-  // WIZARD FUNCTIONS
-  // ══════════════════════════════════════════════════════════
   function previewAvatar(input) {
-    var file = input.files[0];
+    const file = input.files[0];
     if (!file) return;
     avatarFile = file;
-    var reader = new FileReader();
-    reader.onload = function(e) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
       document.getElementById('avatar-placeholder').style.display = 'none';
-      var img = document.getElementById('avatar-preview');
+      const img = document.getElementById('avatar-preview');
       img.src = e.target.result;
       img.style.display = 'block';
     };
@@ -755,57 +442,66 @@
   }
 
   function selectChoice(type, value, el) {
-    var gridId = type === 'pathway' ? 'pathway-grid' : type === 'tier' ? 'tier-grid' : 'board-grid';
-    document.querySelectorAll('#' + gridId + ' .choice-card').forEach(function(c) { c.classList.remove('selected'); });
+    const gridId = type === 'pathway' ? 'pathway-grid' : type === 'tier' ? 'tier-grid' : 'board-grid';
+    document.querySelectorAll(`#${gridId} .choice-card`).forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     profileData[type] = value;
+
+    // Rebuild topic grid if pathway changes
     if (type === 'pathway') buildTopicGrid();
   }
 
   function selectGrade(g, el) {
-    document.querySelectorAll('.grade-btn').forEach(function(b) { b.classList.remove('selected'); });
+    document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('selected'));
     el.classList.add('selected');
     profileData.grade = g;
   }
 
   function buildTopicGrid() {
-    var grid = document.getElementById('topic-grid');
-    var allTopics = [];
-    ['physics','chemistry','biology'].forEach(function(subj) {
-      ALL_TOPICS[subj].forEach(function(t) {
-        allTopics.push({ label: t, id: t.toLowerCase().replace(/[\s&]+/g,'-'), subject: subj });
-      });
-    });
+    const grid = document.getElementById('topic-grid');
+    const subjects = profileData.pathway === 'triple'
+      ? ['Physics','Chemistry','Biology']
+      : ['Physics (Combined)','Chemistry (Combined)','Biology (Combined)'];
 
-    grid.innerHTML = allTopics.map(function(t) {
-      var isStrong = profileData.strengths.indexOf(t.id) !== -1;
-      var isWeak = profileData.weaknesses.indexOf(t.id) !== -1;
-      var cls = isStrong ? ' strong' : isWeak ? ' weak' : '';
-      return '<div class="topic-chip' + cls + '" id="chip-' + t.id + '" onclick="toggleTopic(\'' + t.id + '\', this)">' +
-        '<div class="dot"></div>' + t.label + '</div>';
-    }).join('');
+    const allTopics = [
+      ...ALL_TOPICS.physics.map(t => ({ label: t, id: t.toLowerCase().replace(/\s+/g,'-'), subject: 'physics' })),
+      ...ALL_TOPICS.chemistry.map(t => ({ label: t, id: t.toLowerCase().replace(/[\s&]+/g,'-'), subject: 'chemistry' })),
+      ...ALL_TOPICS.biology.map(t => ({ label: t, id: t.toLowerCase().replace(/\s+/g,'-'), subject: 'biology' })),
+    ];
+
+    grid.innerHTML = allTopics.map(t => `
+      <div class="topic-chip" id="chip-${t.id}" onclick="toggleTopic('${t.id}', this)">
+        <div class="dot"></div>
+        ${t.label}
+      </div>
+    `).join('');
+
+    profileData.strengths = [];
+    profileData.weaknesses = [];
   }
 
   function toggleTopic(id, el) {
-    var isStrong = el.classList.contains('strong');
-    var isWeak   = el.classList.contains('weak');
+    const isStrong = el.classList.contains('strong');
+    const isWeak   = el.classList.contains('weak');
+
+    // Cycle: neutral → strong → weak → neutral
     if (!isStrong && !isWeak) {
       el.classList.add('strong');
       profileData.strengths.push(id);
     } else if (isStrong) {
       el.classList.remove('strong');
       el.classList.add('weak');
-      profileData.strengths = profileData.strengths.filter(function(s) { return s !== id; });
+      profileData.strengths = profileData.strengths.filter(s => s !== id);
       profileData.weaknesses.push(id);
     } else {
       el.classList.remove('weak');
-      profileData.weaknesses = profileData.weaknesses.filter(function(s) { return s !== id; });
+      profileData.weaknesses = profileData.weaknesses.filter(s => s !== id);
     }
   }
 
   function nextStep(from) {
     if (from === 1) {
-      var firstName = document.getElementById('first-name').value.trim();
+      const firstName = document.getElementById('first-name').value.trim();
       if (!firstName) { alert('Please enter your name so Mr Badmus knows who you are!'); return; }
     }
     goToStep(from + 1);
@@ -815,11 +511,10 @@
   function prevStep(from) { goToStep(from - 1); }
 
   function goToStep(n) {
-    var active = document.querySelector('.step.active');
-    if (active) active.classList.remove('active');
-    document.getElementById('step-' + n).classList.add('active');
-    for (var i = 1; i <= 4; i++) {
-      var ps = document.getElementById('ps-' + i);
+    document.querySelector(`.step.active`)?.classList.remove('active');
+    document.getElementById(`step-${n}`).classList.add('active');
+    for (let i = 1; i <= 4; i++) {
+      const ps = document.getElementById(`ps-${i}`);
       ps.className = 'progress-step' + (i < n ? ' done' : i === n ? ' active' : '');
     }
     currentStep = n;
@@ -827,50 +522,29 @@
   }
 
   async function finish() {
-    var btn = document.getElementById('btn-finish');
+    const btn = document.getElementById('btn-finish');
     btn.disabled = true;
     btn.textContent = 'Saving...';
 
     try {
-      // Refresh session
-      var sessResult = await sb.auth.getSession();
-      if (sessResult.error || !sessResult.data.session) {
-        throw new Error('Session expired');
-      }
-      session = sessResult.data.session;
-      var token = session.access_token;
+      const token = session.access_token;
 
-      // Upload avatar if new file
-      var avatarUrl = null;
+      // Upload avatar if provided
+      let avatarUrl = null;
       if (avatarFile) {
-        var ext = avatarFile.name.split('.').pop();
-        var timestamp = Date.now();
-        var path = session.user.id + '/avatar-' + timestamp + '.' + ext;
-
-        // Try to delete any existing avatar first
-        try {
-          var listResult = await sb.storage.from('avatars').list(session.user.id);
-          if (listResult.data && listResult.data.length > 0) {
-            var filesToDelete = listResult.data.map(function(f) { return session.user.id + '/' + f.name; });
-            await sb.storage.from('avatars').remove(filesToDelete);
-          }
-        } catch(e) { console.log('Could not clear old avatars:', e); }
-
-        // Upload new avatar
-        var uploadResult = await sb.storage
+        const ext = avatarFile.name.split('.').pop();
+        const path = `${session.user.id}/avatar.${ext}`;
+        const { error: uploadErr } = await sb.storage
           .from('avatars')
           .upload(path, avatarFile, { upsert: true });
-        if (uploadResult.error) {
-          console.error('Avatar upload failed:', uploadResult.error);
-        } else {
-          var urlResult = sb.storage.from('avatars').getPublicUrl(path);
-          avatarUrl = urlResult.data.publicUrl;
-          console.log('Avatar uploaded:', avatarUrl);
+        if (!uploadErr) {
+          const { data: { publicUrl } } = sb.storage.from('avatars').getPublicUrl(path);
+          avatarUrl = publicUrl;
         }
       }
 
-      // Build payload
-      var payload = {
+      // Save profile via backend API
+      const profilePayload = {
         first_name:       document.getElementById('first-name').value.trim(),
         school_name:      document.getElementById('school-name').value.trim(),
         year_group:       document.getElementById('year-group').value,
@@ -881,61 +555,34 @@
         personal_note:    document.getElementById('personal-note').value.trim(),
         strengths:        profileData.strengths,
         weaknesses:       profileData.weaknesses,
+        ...(avatarUrl ? { avatar_url: avatarUrl } : {}),
       };
-      if (avatarUrl) payload.avatar_url = avatarUrl;
 
-      // Try Render backend first
-      var saved = false;
-      try {
-        var res = await fetch('https://mrbadmus-backend.onrender.com/api/profile', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-          body: JSON.stringify(payload),
-        });
-        if (res.ok) saved = true;
-        else console.error('Render save failed:', res.status);
-      } catch (fetchErr) {
-        console.error('Render fetch failed:', fetchErr);
-      }
+      const res = await fetch(`${API_BASE}/api/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(profilePayload),
+      });
 
-      // Fallback: save directly to Supabase
-      if (!saved) {
-        console.log('Falling back to direct Supabase save...');
-        var directResult = await sb.from('profiles').upsert({
-          id: session.user.id,
-          ...payload,
-          updated_at: new Date().toISOString(),
-        });
-        if (directResult.error) {
-          console.error('Supabase save failed:', directResult.error);
-          throw new Error('Could not save profile');
-        }
-      }
+      if (!res.ok) throw new Error('Could not save profile');
 
-      // Update user metadata for nav bar
-      await sb.auth.updateUser({ data: { first_name: payload.first_name } });
-
-      // Redirect
-      if (isEditing) {
-        window.location.href = '/profile-setup.html';
-      } else {
-        window.location.href = '/' + profileData.pathway + '/' + profileData.tier + '/index.html';
-      }
+      // Done — redirect to site
+      const pathway = profileData.pathway;
+      const tier    = profileData.tier;
+      window.location.href = `/${pathway}/${tier}/index.html`;
 
     } catch (err) {
       btn.disabled = false;
       btn.textContent = "Let's Go! 🚀";
-      console.error('Profile save error:', err);
-      if (err.message.indexOf('Session expired') !== -1) {
-        alert('Your session expired. Please sign in again.');
-        window.location.href = '/auth.html';
-      } else {
-        alert('Something went wrong saving your profile. Please try again.');
-      }
+      alert('Something went wrong saving your profile. Please try again.');
+      console.error(err);
     }
   }
 
-  function skipAll() {
+  async function skipAll() {
     window.location.href = '/index.html';
   }
 </script>

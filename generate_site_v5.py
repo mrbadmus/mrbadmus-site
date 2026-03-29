@@ -548,7 +548,7 @@ SITE_DATA = {
 
 # v5 structural additions below
 SHARED_CSS = r"""/* MrBadmusAI — Global Design System */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
 
 :root {
   --physics: #4ECDC4;
@@ -571,14 +571,14 @@ SHARED_CSS = r"""/* MrBadmusAI — Global Design System */
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   background: var(--darker);
   color: var(--text);
   min-height: 100vh;
   line-height: 1.6;
 }
 
-h1, h2, h3, .brand { font-family: 'Fredoka One', cursive; }
+h1, h2, h3, .brand { font-family: 'Sora', sans-serif; }
 
 a { color: inherit; text-decoration: none; }
 
@@ -596,7 +596,7 @@ a { color: inherit; text-decoration: none; }
   z-index: 100;
 }
 .nav-brand {
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Sora', sans-serif;
   font-size: 1.4rem;
   background: linear-gradient(135deg, var(--yellow), var(--orange));
   -webkit-background-clip: text;
@@ -766,7 +766,7 @@ a { color: inherit; text-decoration: none; }
 
 .section { margin-bottom: 40px; }
 .section-title {
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Sora', sans-serif;
   font-size: 1.3rem;
   margin-bottom: 16px;
   display: flex;
@@ -813,7 +813,7 @@ a { color: inherit; text-decoration: none; }
   margin-bottom: 16px;
 }
 .fifa-box .fifa-title {
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Sora', sans-serif;
   font-size: 1rem;
   color: #4CAF50;
   margin-bottom: 14px;
@@ -823,7 +823,7 @@ a { color: inherit; text-decoration: none; }
 }
 .fifa-step { display: flex; gap: 14px; margin-bottom: 10px; align-items: flex-start; }
 .fifa-letter {
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Sora', sans-serif;
   font-size: 1.1rem;
   width: 28px;
   height: 28px;
@@ -943,7 +943,7 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 6px 28px rgba(255,107,53,0.5);
   transition: transform 0.2s, box-shadow 0.2s;
   z-index: 90;
-  font-family: 'Fredoka One', cursive;
+  font-family: 'Sora', sans-serif;
   color: #0F0F1A;
   white-space: nowrap;
 }
@@ -980,7 +980,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: space-between;
 }
-.chat-head-info h3 { font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--darker); }
+.chat-head-info h3 { font-family: 'Sora', sans-serif; font-size: 1.1rem; color: var(--darker); }
 .chat-head-info p { font-size: 0.75rem; color: rgba(15,15,26,0.7); }
 .close-btn { background: none; border: none; cursor: pointer; font-size: 1.4rem; color: var(--darker); line-height: 1; padding: 4px; }
 .chat-msgs {
@@ -1040,7 +1040,7 @@ a { color: inherit; text-decoration: none; }
   border-radius: 10px;
   padding: 10px 14px;
   color: var(--text);
-  font-family: 'Nunito', sans-serif;
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 0.9rem;
   outline: none;
   transition: border-color 0.2s;
@@ -1770,7 +1770,7 @@ def make_landing():
 
 <style>
 .hero-search { max-width:560px;margin:24px auto 0;position:relative; }
-.hero-search input { width:100%;padding:14px 20px;border-radius:50px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:var(--text);font-family:'Nunito',sans-serif;font-size:1rem;outline:none;transition:border-color 0.2s; }
+.hero-search input { width:100%;padding:14px 20px;border-radius:50px;border:2px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.07);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:1rem;outline:none;transition:border-color 0.2s; }
 .hero-search input:focus { border-color:#4ECDC4; }
 .search-results { position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card);border:1px solid rgba(255,255,255,0.12);border-radius:14px;max-height:320px;overflow-y:auto;z-index:200;display:none; }
 .search-results.open { display:block; }
@@ -2813,7 +2813,7 @@ def make_pathway_topic_page(pathway, tier, subject, topic):
     <div class="card" style="text-align:center;padding:32px;">
       <p style="font-size:1.1rem;margin-bottom:8px;">Stuck on <strong>{topic['title']}</strong>? Ask me anything!</p>
       <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 
@@ -4759,7 +4759,7 @@ def make_new_subtopic_page(st, color):
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for all calculations and flag Higher Tier and Triple content clearly.</p>
-    <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>"""
 
@@ -4972,7 +4972,7 @@ try {{
 .match-def {{ background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;font-size:0.85rem;cursor:grab;transition:all 0.15s; }}
 .match-def:hover {{ background:rgba(255,255,255,0.1);border-color:{color}; }}
 .match-def.dragging {{ opacity:0.5; }}
-.match-check-btn,.match-reset-btn {{ border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.88rem;font-family:'Nunito',sans-serif; }}
+.match-check-btn,.match-reset-btn {{ border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.88rem;font-family:'Plus Jakarta Sans',sans-serif; }}
 .match-check-btn {{ background:{color};color:#0F0F1A; }}
 .match-reset-btn {{ background:rgba(255,255,255,0.08);color:var(--text); }}
 .match-result {{ margin-top:12px;font-weight:700;font-size:0.9rem;padding:10px 16px;border-radius:8px;display:none; }}
@@ -5097,7 +5097,7 @@ def make_updated_electricity_page():
     <div class="section-title">🤖 Ask Mr Badmus AI</div>
     <div class="card" style="text-align:center;padding:32px;">
       <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Electricity? 💬</p>
-      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 </div>"""
@@ -5260,7 +5260,7 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>"""
 
@@ -5464,7 +5464,7 @@ try {{
 .quiz-card {{ background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }}
 .q-text {{ font-weight:700;margin-bottom:14px;line-height:1.5; }}
 .quiz-options {{ display:flex;flex-direction:column;gap:8px; }}
-.quiz-opt {{ background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }}
+.quiz-opt {{ background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }}
 .quiz-opt:hover {{ background:rgba(255,255,255,0.1); }}
 .quiz-opt.correct {{ background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }}
 .quiz-opt.wrong {{ background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }}
@@ -5485,7 +5485,7 @@ try {{
 .match-def {{ background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }}
 .match-def:hover {{ background:rgba(255,255,255,0.12); }}
 .match-def.dragging {{ opacity:0.5; }}
-.match-check-btn,.match-reset-btn {{ padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }}
+.match-check-btn,.match-reset-btn {{ padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }}
 .match-check-btn {{ background:{color};color:#0F0F1A; }}
 .match-reset-btn {{ background:rgba(255,255,255,0.08);color:var(--text); }}
 .match-result {{ margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }}
@@ -5639,7 +5639,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
     <div class="section-title">🤖 Ask Mr Badmus AI</div>
     <div class="card" style="text-align:center;padding:32px;">
       <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about {topic['title']}? 💬</p>
-      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+      <button data-open-chat style="background:{color};color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 

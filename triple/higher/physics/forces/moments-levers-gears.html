@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#4ECDC4;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -162,8 +162,8 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-moments-levers-gears"><div class="match-def" data-index="0" draggable="true">50 N force applied 0.4 m from pivot — M = 50 × 0.4</div>
-<div class="match-def" data-index="1" draggable="true">Total clockwise moments = total anticlockwise moments</div>
+      <div class="match-defs" id="defPool-moments-levers-gears"><div class="match-def" data-index="1" draggable="true">Total clockwise moments = total anticlockwise moments</div>
+<div class="match-def" data-index="0" draggable="true">50 N force applied 0.4 m from pivot — M = 50 × 0.4</div>
 <div class="match-def" data-index="2" draggable="true">Small input force × long distance = large output force × short distance</div>
 <div class="match-def" data-index="3" draggable="true">Output rotates slower but with more turning force (torque)</div>
 </div>
@@ -207,18 +207,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "M = d ÷ F inverts the relationship — M = F × d = 40 × 0.5 = 20 N·m.",1: "Adding force and distance gives meaningless units — M = F × d = 40 × 0.5 = 20 N·m.",2: "M = F ÷ d gives the force needed to produce a given moment at that distance — not the moment itself.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Adding force and distance gives meaningless units — M = F × d = 40 × 0.5 = 20 N·m.",2: "M = F ÷ d gives the force needed to produce a given moment at that distance — not the moment itself.",3: "M = d ÷ F inverts the relationship — M = F × d = 40 × 0.5 = 20 N·m.",}'>
   <div class="q-text">1. A force of 40 N is applied 0.5 m from a pivot. What is the moment?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0.0125 N·m — M = d ÷ F = 0.5 ÷ 40</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">40.5 N·m — M = F + d = 40 + 0.5</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">40.5 N·m — M = F + d = 40 + 0.5</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">20 N·m — M = F × d = 40 × 0.5 = 20 N·m</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">80 N·m — M = F ÷ d = 40 ÷ 0.5 = 80</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">20 N·m — M = F × d = 40 × 0.5 = 20 N·m</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">0.0125 N·m — M = d ÷ F = 0.5 ÷ 40</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Gears CAN either trade force for speed OR speed for force — it depends on which gear is driving which.",1: "Small driving → large driven gear gives MORE SPEED not more force. Low gear = large driving sprocket (at pedals) → small sprocket (at wheel) in cycling, OR equivalently small driving → large driven output.",3: "Equal speeds = gear ratio of 1 — this is only when gears are identical.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Small driving → large driven gear gives MORE SPEED not more force. Low gear = large driving sprocket (at pedals) → small sprocket (at wheel) in cycling, OR equivalently small driving → large driven output.",1: "Gears CAN either trade force for speed OR speed for force — it depends on which gear is driving which.",3: "Equal speeds = gear ratio of 1 — this is only when gears are identical.",}'>
   <div class="q-text">2. A bicycle is in a low gear — a small driving gear meshes with a large driven gear. What is the effect?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The force decreases and speed increases — gears always trade force for speed</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The back wheel turns faster than the pedals — useful for high speeds</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The back wheel turns faster than the pedals — useful for high speeds</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The force decreases and speed increases — gears always trade force for speed</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">The back wheel turns slowly but with more turning force — useful for climbing hills</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">The wheel and pedals turn at the same speed — no mechanical advantage</button>
 </div>
@@ -257,7 +257,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#4ECDC4;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -163,9 +163,9 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-work-done-energy-transfer"><div class="match-def" data-index="1" draggable="true">Lifting 5 kg by 2 m — W = mgh = 5 × 9.8 × 2</div>
-<div class="match-def" data-index="0" draggable="true">500 N force moves object 4 m — W = 500 × 4</div>
-<div class="match-def" data-index="2" draggable="true">Holding a 100 N weight stationary — no displacement, no work done</div>
 <div class="match-def" data-index="3" draggable="true">1000 J work done by a 200 N force — s = W ÷ F = 1000 ÷ 200</div>
+<div class="match-def" data-index="2" draggable="true">Holding a 100 N weight stationary — no displacement, no work done</div>
+<div class="match-def" data-index="0" draggable="true">500 N force moves object 4 m — W = 500 × 4</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -201,18 +201,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "mg gives weight (force) not work — must multiply by distance IN THE DIRECTION of the force, which is zero here.",1: "W = F × s requires the displacement to be in the DIRECTION of the force. Gravity acts downward; box moves horizontally → no work done by gravity.",2: "Same error — using horizontal distance for a vertical force.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Same error — using horizontal distance for a vertical force.",2: "W = F × s requires the displacement to be in the DIRECTION of the force. Gravity acts downward; box moves horizontally → no work done by gravity.",3: "mg gives weight (force) not work — must multiply by distance IN THE DIRECTION of the force, which is zero here.",}'>
   <div class="q-text">1. A person carries a 20 kg box horizontally for 10 m at constant height. How much work does gravity do on the box?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">196 J — W = mg = 20 × 9.8 (forgot to include distance)</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">1960 J — W = mgs = 20 × 9.8 × 10</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">2000 J — W = 20 × 10 × 10 (using g = 10)</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">0 J — gravity acts downward but the box moves horizontally; no displacement in the direction of the gravitational force</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">0 J — gravity acts downward but the box moves horizontally; no displacement in the direction of the gravitational force</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">2000 J — W = 20 × 10 × 10 (using g = 10)</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">1960 J — W = mgs = 20 × 9.8 × 10</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">196 J — W = mg = 20 × 9.8 (forgot to include distance)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "s = F ÷ W inverts the rearrangement: s = W ÷ F = 3200 ÷ 400 = 8 m.",2: "s = W × F multiplies — but W = Fs means s = W ÷ F.",3: "Adding work and force gives meaningless units (J + N). Use W = Fs rearranged: s = W ÷ F.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "s = F ÷ W inverts the rearrangement: s = W ÷ F = 3200 ÷ 400 = 8 m.",2: "s = W × F multiplies — but W = Fs means s = W ÷ F.",3: "Adding work and force gives meaningless units (J + N). Use W = Fs rearranged: s = W ÷ F.",}'>
   <div class="q-text">2. A 400 N force does 3200 J of work. How far does the object move?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">8 m — s = W ÷ F = 3200 ÷ 400 = 8 m</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">0.125 m — s = F ÷ W = 400 ÷ 3200</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">0.125 m — s = F ÷ W = 400 ÷ 3200</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">8 m — s = W ÷ F = 3200 ÷ 400 = 8 m</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">1,280,000 m — s = W × F = 3200 × 400</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">3600 m — s = W + F = 3200 + 400</button>
 </div>
@@ -251,7 +251,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#FF6B6B;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -153,10 +153,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-cells-and-batteries"><div class="match-def" data-index="0" draggable="true">Two different metals in an electrolyte — converts chemical energy to electrical energy</div>
+      <div class="match-defs" id="defPool-cells-and-batteries"><div class="match-def" data-index="3" draggable="true">Secondary cell — reversible reactions, external electricity restores original reactants</div>
 <div class="match-def" data-index="2" draggable="true">Primary cell — irreversible reactions, used once then discarded</div>
 <div class="match-def" data-index="1" draggable="true">Two or more cells connected in series — total voltage = sum of individual cell voltages</div>
-<div class="match-def" data-index="3" draggable="true">Secondary cell — reversible reactions, external electricity restores original reactants</div>
+<div class="match-def" data-index="0" draggable="true">Two different metals in an electrolyte — converts chemical energy to electrical energy</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -176,12 +176,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "More reactive metals react more vigorously but the key factor for voltage is the DIFFERENCE in reactivity between the two electrodes.",2: "If both metals have the same reactivity, no potential difference exists — the voltage would be zero.",3: "Reactivity difference is one of the key factors affecting voltage — it cannot be ignored.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "More reactive metals react more vigorously but the key factor for voltage is the DIFFERENCE in reactivity between the two electrodes.",1: "Reactivity difference is one of the key factors affecting voltage — it cannot be ignored.",2: "If both metals have the same reactivity, no potential difference exists — the voltage would be zero.",}'>
   <div class="q-text">1. A simple cell is made from zinc and copper electrodes in sulfuric acid. How does changing to more reactive metals affect the voltage?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Greater difference in reactivity between the two metals → greater voltage produced</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Using more reactive metals always reduces the voltage — reactive metals react too quickly</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Using more reactive metals always reduces the voltage — reactive metals react too quickly</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The metal reactivity has no effect on voltage — only electrolyte concentration matters</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Using two metals with the same reactivity gives the highest voltage</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The metal reactivity has no effect on voltage — only electrolyte concentration matters</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Greater difference in reactivity between the two metals → greater voltage produced</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Charging is an electrochemical process — it reverses the reactions, not a heat-storage process.",1: "Significant chemical changes DO occur during charging — the products of discharge are converted back to reactants.",3: "Charging does not physically add new chemicals — the same chemicals inside are chemically restored by reversing the redox reactions.",}'>
@@ -226,7 +226,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

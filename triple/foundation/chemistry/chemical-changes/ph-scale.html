@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#FF6B6B;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -157,11 +157,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-ph-scale"><div class="match-def" data-index="3" draggable="true">Weakly acidic — e.g. black coffee or tomato juice</div>
-<div class="match-def" data-index="4" draggable="true">Weakly alkaline — e.g. baking soda solution</div>
+      <div class="match-defs" id="defPool-ph-scale"><div class="match-def" data-index="2" draggable="true">Strongly alkaline — high concentration of OH⁻ ions</div>
 <div class="match-def" data-index="1" draggable="true">Neutral — equal H⁺ and OH⁻ ions — pure water at 25°C</div>
-<div class="match-def" data-index="2" draggable="true">Strongly alkaline — high concentration of OH⁻ ions</div>
+<div class="match-def" data-index="3" draggable="true">Weakly acidic — e.g. black coffee or tomato juice</div>
 <div class="match-def" data-index="0" draggable="true">Strongly acidic — high concentration of H⁺ ions</div>
+<div class="match-def" data-index="4" draggable="true">Weakly alkaline — e.g. baking soda solution</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -178,20 +178,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Both are acidic (below 7) but have very different H⁺ concentrations — pH 2 is much more acidic.",2: "LOWER pH means MORE H⁺ ions — pH 2 is more acidic than pH 4, not less.",3: "The pH scale is LOGARITHMIC — each unit represents a 10× change, not a 2× change. pH 2 vs pH 4 = 10² = 100× difference.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Both are acidic (below 7) but have very different H⁺ concentrations — pH 2 is much more acidic.",1: "The pH scale is LOGARITHMIC — each unit represents a 10× change, not a 2× change. pH 2 vs pH 4 = 10² = 100× difference.",3: "LOWER pH means MORE H⁺ ions — pH 2 is more acidic than pH 4, not less.",}'>
   <div class="q-text">1. A solution has a pH of 2. Another has a pH of 4. How do their H⁺ ion concentrations compare?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">They have the same H⁺ concentration — both are acidic</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">pH 2 has 100 times more H⁺ than pH 4 — each unit on the log scale is 10×</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">pH 4 has more H⁺ ions — higher pH means more hydrogen</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">pH 2 has twice as many H⁺ ions as pH 4</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">pH 2 has twice as many H⁺ ions as pH 4</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">pH 2 has 100 times more H⁺ than pH 4 — each unit on the log scale is 10×</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">pH 4 has more H⁺ ions — higher pH means more hydrogen</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Water does affect the acid — it reduces the concentration of H⁺ ions (dilutes them). The pH INCREASES.",2: "Unless you add enormous amounts of water, the pH approaches 7 gradually but never quite reaches it — you are diluting, not neutralising.",3: "Water does not make acid stronger — adding water DILUTES the acid, reducing H⁺ concentration and raising pH.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Water does not make acid stronger — adding water DILUTES the acid, reducing H⁺ concentration and raising pH.",1: "Unless you add enormous amounts of water, the pH approaches 7 gradually but never quite reaches it — you are diluting, not neutralising.",3: "Water does affect the acid — it reduces the concentration of H⁺ ions (dilutes them). The pH INCREASES.",}'>
   <div class="q-text">2. An acid is diluted by adding water. What happens to its pH?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The pH stays the same — water doesn't affect the acid</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The pH increases towards 7 — dilution reduces H⁺ concentration, making it less acidic</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The pH jumps immediately to 7 — water always neutralises acids</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The pH decreases — water is neutral so it makes the acid stronger</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The pH decreases — water is neutral so it makes the acid stronger</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The pH jumps immediately to 7 — water always neutralises acids</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">The pH increases towards 7 — dilution reduces H⁺ concentration, making it less acidic</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">The pH stays the same — water doesn't affect the acid</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -228,7 +228,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#FF6B6B;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -156,10 +156,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-percentage-yield"><div class="match-def" data-index="3" draggable="true">Less waste, lower raw material cost, more sustainable process</div>
-<div class="match-def" data-index="1" draggable="true">Products re-form reactants — reaction doesn't go to completion</div>
+      <div class="match-defs" id="defPool-percentage-yield"><div class="match-def" data-index="0" draggable="true">Actual yield 38 g, theoretical yield 50 g — (38÷50) × 100</div>
 <div class="match-def" data-index="2" draggable="true">Product sticks to glassware or lost during filtration and transfer</div>
-<div class="match-def" data-index="0" draggable="true">Actual yield 38 g, theoretical yield 50 g — (38÷50) × 100</div>
+<div class="match-def" data-index="1" draggable="true">Products re-form reactants — reaction doesn't go to completion</div>
+<div class="match-def" data-index="3" draggable="true">Less waste, lower raw material cost, more sustainable process</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -201,12 +201,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "30% is the percentage LOSS — the question asks for the percentage YIELD, which is 70%.",2: "% yield = actual ÷ theoretical × 100 = 14 ÷ 20 × 100 = 70%, not 43%.",3: "Must divide actual by theoretical — not theoretical by actual. That gives a value over 100%, which is impossible for yield.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "% yield = actual ÷ theoretical × 100 = 14 ÷ 20 × 100 = 70%, not 43%.",2: "Must divide actual by theoretical — not theoretical by actual. That gives a value over 100%, which is impossible for yield.",3: "30% is the percentage LOSS — the question asks for the percentage YIELD, which is 70%.",}'>
   <div class="q-text">1. A reaction has a theoretical yield of 20 g but only 14 g is obtained. What is the percentage yield?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">70% — (14 ÷ 20) × 100 = 70%</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">30% — 100% minus 70% (calculated the loss not the yield)</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">43% — (14 ÷ 20) × 3 = 42%</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">143% — (20 ÷ 14) × 100 = 143% (inverted the fraction)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">43% — (14 ÷ 20) × 3 = 42%</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">70% — (14 ÷ 20) × 100 = 70%</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">143% — (20 ÷ 14) × 100 = 143% (inverted the fraction)</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">30% — 100% minus 70% (calculated the loss not the yield)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Conservation of mass means total mass is conserved — but some mass ends up as by-products, waste or losses, not the desired product.",1: "Theoretical yield calculations are based on exact stoichiometry — they don\'t systematically overestimate.",2: "Not all products decompose — the reasons are specific: losses, incomplete reactions, reversibility, side reactions.",}'>
@@ -251,7 +251,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">

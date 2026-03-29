@@ -29,7 +29,7 @@
 .quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
 .q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
 .quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Nunito',sans-serif;font-size:0.9rem;transition:all 0.15s; }
+.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
 .quiz-opt:hover { background:rgba(255,255,255,0.1); }
 .quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
 .quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
@@ -50,7 +50,7 @@
 .match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:700;font-size:0.85rem; }
+.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
 .match-check-btn { background:#FF6B6B;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
@@ -156,10 +156,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-alcohols"><div class="match-def" data-index="1" draggable="true">Ethanoic acid — how wine turns to vinegar</div>
-<div class="match-def" data-index="2" draggable="true">Ethanol + CO₂ — yeast, ~30°C, anaerobic conditions</div>
-<div class="match-def" data-index="3" draggable="true">Ethanol — H₃PO₄ catalyst, ~300°C, high pressure</div>
+      <div class="match-defs" id="defPool-alcohols"><div class="match-def" data-index="2" draggable="true">Ethanol + CO₂ — yeast, ~30°C, anaerobic conditions</div>
 <div class="match-def" data-index="0" draggable="true">CO₂ and water — complete combustion like other organic molecules</div>
+<div class="match-def" data-index="3" draggable="true">Ethanol — H₃PO₄ catalyst, ~300°C, high pressure</div>
+<div class="match-def" data-index="1" draggable="true">Ethanoic acid — how wine turns to vinegar</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -179,20 +179,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Those conditions (H₃PO₄, 300°C, high pressure) describe HYDRATION OF ETHENE — not fermentation.",2: "Nickel catalyst and H₂ describe HYDROGENATION of alkenes — not ethanol production.",3: "High temperature kills yeast — fermentation requires mild conditions (~30°C) for yeast enzymes to function.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Those conditions (H₃PO₄, 300°C, high pressure) describe HYDRATION OF ETHENE — not fermentation.",2: "Nickel catalyst and H₂ describe HYDROGENATION of alkenes — not ethanol production.",3: "High temperature kills yeast — fermentation requires mild conditions (~30°C) for yeast enzymes to function.",}'>
   <div class="q-text">1. What are the conditions needed for fermentation of glucose to produce ethanol?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Phosphoric acid catalyst, 300°C, high pressure</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Yeast, approximately 30°C, anaerobic conditions (no oxygen)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Yeast, approximately 30°C, anaerobic conditions (no oxygen)</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Phosphoric acid catalyst, 300°C, high pressure</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Nickel catalyst, 200°C, hydrogen gas</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">High temperature, acidic conditions, no catalyst needed</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Fermentation is SLOWER than hydration — but uses renewable feedstock, which is its key advantage.",2: "Fermentation is a BATCH process — hydration is the continuous process. Continuous is generally more efficient.",3: "Fermentation actually produces DILUTE ethanol requiring distillation — purity is an advantage of hydration, not fermentation.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Fermentation actually produces DILUTE ethanol requiring distillation — purity is an advantage of hydration, not fermentation.",1: "Fermentation is SLOWER than hydration — but uses renewable feedstock, which is its key advantage.",2: "Fermentation is a BATCH process — hydration is the continuous process. Continuous is generally more efficient.",}'>
   <div class="q-text">2. What is the advantage of fermentation over hydration for ethanol production?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Fermentation uses renewable plant sugars (sustainable); hydration uses ethene from crude oil (non-renewable)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Fermentation produces purer ethanol — no need for further purification</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">Fermentation is faster — produces more ethanol per hour than hydration</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Fermentation is a continuous process — more efficient than batch fermentation</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Fermentation produces purer ethanol — no need for further purification</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Fermentation uses renewable plant sugars (sustainable); hydration uses ethene from crude oil (non-renewable)</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -229,7 +229,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">
