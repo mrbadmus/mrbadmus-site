@@ -26,8 +26,9 @@
       font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.4rem; text-decoration: none;
       background: linear-gradient(135deg, #FFD93D, #FF6B35);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-      flex-shrink: 0;
+      display: flex; align-items: center; gap: 8px; flex-shrink: 0;
     }
+    .brand-logo { flex-shrink: 0; }
     .nav-links { display: flex; align-items: center; gap: 8px; font-size: 0.88rem; flex-shrink: 0; }
     .nav-links a { color: var(--muted); text-decoration: none; font-weight: 700; white-space: nowrap; padding: 6px 14px; border-radius: 20px; transition: background 0.2s; opacity: 0.8; }
     .nav-links a:hover { background: rgba(255,255,255,0.1); opacity: 1; }
@@ -38,10 +39,7 @@
     .page-header h1 { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 2.2rem; margin-bottom: 8px; }
     .page-header p { color: var(--muted); font-size: 0.95rem; max-width: 600px; margin: 0 auto; line-height: 1.6; }
 
-    /* Qualification tabs */
-    .qual-tabs {
-      display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center;
-    }
+    .qual-tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; justify-content: center; }
     .qual-tab {
       padding: 10px 22px; border-radius: 12px; border: 2px solid #2a2a4a;
       background: var(--card); color: var(--text); font-family: 'Sora', sans-serif;
@@ -51,10 +49,7 @@
     .qual-tab.active { border-color: var(--physics); background: rgba(78,205,196,0.1); }
     .qual-tab .qual-code { font-size: 0.72rem; color: var(--muted); display: block; margin-top: 2px; }
 
-    /* Filters row */
-    .filters-row {
-      display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 32px;
-    }
+    .filters-row { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 32px; }
     .filter-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .filter-label { font-size: 0.78rem; color: var(--muted); font-weight: 700; margin-right: 2px; }
     .filter-btn {
@@ -71,24 +66,19 @@
       font-size: 0.85rem; font-weight: 700; cursor: pointer; outline: none;
       appearance: none; -webkit-appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 14px center;
-      padding-right: 36px;
+      background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
     }
     .year-select:focus { border-color: var(--physics); }
 
     .divider { width: 1px; height: 24px; background: #2a2a4a; margin: 0 4px; }
 
-    /* Year sections */
     .year-section { margin-bottom: 28px; }
     .year-title {
       font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.1rem;
       margin-bottom: 14px; display: flex; align-items: center; gap: 10px;
     }
-    .year-title::after {
-      content: ''; flex: 1; height: 2px; background: rgba(255,255,255,0.08); border-radius: 2px;
-    }
+    .year-title::after { content: ''; flex: 1; height: 2px; background: rgba(255,255,255,0.08); border-radius: 2px; }
 
-    /* Paper card */
     .paper-card {
       display: flex; align-items: center; justify-content: space-between;
       padding: 16px 20px; background: var(--card); border: 1px solid rgba(255,255,255,0.06);
@@ -99,19 +89,19 @@
     .paper-info { flex: 1; min-width: 200px; }
     .paper-name { font-weight: 700; font-size: 0.92rem; margin-bottom: 2px; }
     .paper-meta { font-size: 0.78rem; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-    .paper-tag {
-      padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700;
-    }
+    .paper-tag { padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
     .tag-f { background: rgba(107,203,119,0.15); color: var(--biology); }
     .tag-h { background: rgba(255,217,61,0.15); color: var(--yellow); }
 
-    .paper-link-btn {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 10px 22px; border-radius: 12px; font-size: 0.85rem; font-weight: 700;
-      text-decoration: none; transition: all 0.2s;
-      background: rgba(78,205,196,0.15); color: var(--physics);
+    .paper-links { display: flex; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+    .paper-link {
+      padding: 8px 16px; border-radius: 10px; font-size: 0.8rem; font-weight: 700;
+      text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; gap: 4px;
     }
-    .paper-link-btn:hover { background: rgba(78,205,196,0.25); transform: translateY(-1px); }
+    .link-paper { background: rgba(78,205,196,0.15); color: var(--physics); }
+    .link-paper:hover { background: rgba(78,205,196,0.25); }
+    .link-ms { background: rgba(255,217,61,0.15); color: var(--yellow); }
+    .link-ms:hover { background: rgba(255,217,61,0.25); }
 
     .empty-state {
       text-align: center; padding: 50px 20px; color: var(--muted); font-size: 0.95rem;
@@ -135,18 +125,20 @@
       .qual-tab { padding: 8px 14px; font-size: 0.82rem; }
       .filters-row { gap: 8px; }
       .divider { display: none; }
+      .paper-links { width: 100%; }
+      .paper-link { flex: 1; justify-content: center; }
     }
   </style>
 </head>
 <body>
 
 <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
     <a href="/index.html">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html">🏆</a>
-    <a href="/past-papers.html" style="color:var(--physics);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--physics);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(function(){var el=document.getElementById('siteSearch');if(el)el.focus();},100)" style="font-size:1.1rem;">🔍</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
       <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
@@ -186,7 +178,6 @@
     <p>Find AQA GCSE Science past papers by qualification, year and tier. Click to browse and download papers directly from the AQA website.</p>
   </div>
 
-  <!-- Qualification tabs -->
   <div class="qual-tabs">
     <button class="qual-tab active" onclick="showQual('combined', this)">Combined Science<span class="qual-code">8464</span></button>
     <button class="qual-tab" onclick="showQual('biology', this)">Biology<span class="qual-code">8461</span></button>
@@ -194,7 +185,6 @@
     <button class="qual-tab" onclick="showQual('physics', this)">Physics<span class="qual-code">8463</span></button>
   </div>
 
-  <!-- Filters: tier + year -->
   <div class="filters-row">
     <div class="filter-group">
       <span class="filter-label">Tier:</span>
@@ -210,6 +200,12 @@
         <option value="2024">2024</option>
         <option value="2023">2023</option>
         <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <option value="2020">2020</option>
+        <option value="2019">2019</option>
+        <option value="2018">2018</option>
+        <option value="2017">2017</option>
+        <option value="2016">2016</option>
       </select>
     </div>
   </div>
@@ -221,7 +217,6 @@
   </div>
 </div>
 
-<!-- Pre-warm Render backend -->
 <script>fetch('https://mrbadmus-backend.onrender.com/api/health').catch(function(){});</script>
 
 <script>
@@ -229,7 +224,6 @@ var currentQual = 'combined';
 var currentTier = 'all';
 var currentYear = 'all';
 
-// Direct AQA assessment page links per qualification
 var AQA_LINKS = {
   combined: 'https://www.aqa.org.uk/find-past-papers-and-mark-schemes?subject=Science',
   biology:  'https://www.aqa.org.uk/find-past-papers-and-mark-schemes?subject=Biology',
@@ -237,76 +231,78 @@ var AQA_LINKS = {
   physics:  'https://www.aqa.org.uk/find-past-papers-and-mark-schemes?subject=Physics'
 };
 
-// Paper listings per qualification — what's available per year
+/* Paper data — Combined Science has 6 papers per year (B1,B2,C1,C2,P1,P2).
+   Triple subjects have 2 papers each. 2020/2021 had modified papers due to COVID.
+   2016 was the first year of the new 9-1 spec (specimen papers). */
 var PAPERS = {
   combined: {
     years: [
       { year: '2024', session: 'June 2024', papers: [
-        { name: 'Biology Paper 1' },
-        { name: 'Biology Paper 2' },
-        { name: 'Chemistry Paper 1' },
-        { name: 'Chemistry Paper 2' },
-        { name: 'Physics Paper 1' },
-        { name: 'Physics Paper 2' }
+        'Biology Paper 1','Biology Paper 2','Chemistry Paper 1','Chemistry Paper 2','Physics Paper 1','Physics Paper 2'
       ]},
       { year: '2023', session: 'June 2023', papers: [
-        { name: 'Biology Paper 1' },
-        { name: 'Biology Paper 2' },
-        { name: 'Chemistry Paper 1' },
-        { name: 'Chemistry Paper 2' },
-        { name: 'Physics Paper 1' },
-        { name: 'Physics Paper 2' }
+        'Biology Paper 1','Biology Paper 2','Chemistry Paper 1','Chemistry Paper 2','Physics Paper 1','Physics Paper 2'
       ]},
       { year: '2022', session: 'June 2022', papers: [
-        { name: 'Biology Paper 1' },
-        { name: 'Chemistry Paper 1' },
-        { name: 'Physics Paper 1' }
+        'Biology Paper 1','Chemistry Paper 1','Physics Paper 1'
+      ]},
+      { year: '2021', session: 'November 2021', papers: [
+        'Biology Paper 1','Chemistry Paper 1','Physics Paper 1'
+      ]},
+      { year: '2020', session: 'November 2020', papers: [
+        'Biology Paper 1','Chemistry Paper 1','Physics Paper 1'
+      ]},
+      { year: '2019', session: 'June 2019', papers: [
+        'Biology Paper 1','Biology Paper 2','Chemistry Paper 1','Chemistry Paper 2','Physics Paper 1','Physics Paper 2'
+      ]},
+      { year: '2018', session: 'June 2018', papers: [
+        'Biology Paper 1','Biology Paper 2','Chemistry Paper 1','Chemistry Paper 2','Physics Paper 1','Physics Paper 2'
+      ]},
+      { year: '2017', session: 'Specimen', papers: [
+        'Biology Paper 1','Biology Paper 2','Chemistry Paper 1','Chemistry Paper 2','Physics Paper 1','Physics Paper 2'
+      ]},
+      { year: '2016', session: 'Specimen', papers: [
+        'Biology Paper 1','Chemistry Paper 1','Physics Paper 1'
       ]}
     ]
   },
   biology: {
     years: [
-      { year: '2024', session: 'June 2024', papers: [
-        { name: 'Paper 1' },
-        { name: 'Paper 2' }
-      ]},
-      { year: '2023', session: 'June 2023', papers: [
-        { name: 'Paper 1' },
-        { name: 'Paper 2' }
-      ]},
-      { year: '2022', session: 'June 2022', papers: [
-        { name: 'Paper 1' }
-      ]}
+      { year: '2024', session: 'June 2024', papers: ['Paper 1','Paper 2'] },
+      { year: '2023', session: 'June 2023', papers: ['Paper 1','Paper 2'] },
+      { year: '2022', session: 'June 2022', papers: ['Paper 1'] },
+      { year: '2021', session: 'November 2021', papers: ['Paper 1'] },
+      { year: '2020', session: 'November 2020', papers: ['Paper 1'] },
+      { year: '2019', session: 'June 2019', papers: ['Paper 1','Paper 2'] },
+      { year: '2018', session: 'June 2018', papers: ['Paper 1','Paper 2'] },
+      { year: '2017', session: 'Specimen', papers: ['Paper 1','Paper 2'] },
+      { year: '2016', session: 'Specimen', papers: ['Paper 1'] }
     ]
   },
   chemistry: {
     years: [
-      { year: '2024', session: 'June 2024', papers: [
-        { name: 'Paper 1' },
-        { name: 'Paper 2' }
-      ]},
-      { year: '2023', session: 'June 2023', papers: [
-        { name: 'Paper 1' },
-        { name: 'Paper 2' }
-      ]},
-      { year: '2022', session: 'June 2022', papers: [
-        { name: 'Paper 1' }
-      ]}
+      { year: '2024', session: 'June 2024', papers: ['Paper 1','Paper 2'] },
+      { year: '2023', session: 'June 2023', papers: ['Paper 1','Paper 2'] },
+      { year: '2022', session: 'June 2022', papers: ['Paper 1'] },
+      { year: '2021', session: 'November 2021', papers: ['Paper 1'] },
+      { year: '2020', session: 'November 2020', papers: ['Paper 1'] },
+      { year: '2019', session: 'June 2019', papers: ['Paper 1','Paper 2'] },
+      { year: '2018', session: 'June 2018', papers: ['Paper 1','Paper 2'] },
+      { year: '2017', session: 'Specimen', papers: ['Paper 1','Paper 2'] },
+      { year: '2016', session: 'Specimen', papers: ['Paper 1'] }
     ]
   },
   physics: {
     years: [
-      { year: '2024', session: 'June 2024', papers: [
-        { name: 'Paper 1' },
-        { name: 'Paper 2' }
-      ]},
-      { year: '2023', session: 'June 2023', papers: [
-        { name: 'Paper 1' },
-        { name: 'Paper 2' }
-      ]},
-      { year: '2022', session: 'June 2022', papers: [
-        { name: 'Paper 1' }
-      ]}
+      { year: '2024', session: 'June 2024', papers: ['Paper 1','Paper 2'] },
+      { year: '2023', session: 'June 2023', papers: ['Paper 1','Paper 2'] },
+      { year: '2022', session: 'June 2022', papers: ['Paper 1'] },
+      { year: '2021', session: 'November 2021', papers: ['Paper 1'] },
+      { year: '2020', session: 'November 2020', papers: ['Paper 1'] },
+      { year: '2019', session: 'June 2019', papers: ['Paper 1','Paper 2'] },
+      { year: '2018', session: 'June 2018', papers: ['Paper 1','Paper 2'] },
+      { year: '2017', session: 'Specimen', papers: ['Paper 1','Paper 2'] },
+      { year: '2016', session: 'Specimen', papers: ['Paper 1'] }
     ]
   }
 };
@@ -317,14 +313,12 @@ function showQual(qual, el) {
   el.classList.add('active');
   render();
 }
-
 function filterTier(tier, el) {
   currentTier = tier;
   document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
   el.classList.add('active');
   render();
 }
-
 function filterYear(year) {
   currentYear = year;
   render();
@@ -334,31 +328,23 @@ function render() {
   var data = PAPERS[currentQual];
   var link = AQA_LINKS[currentQual];
   if (!data) return;
-
   var container = document.getElementById('papers-container');
   var html = '';
   var hasAny = false;
 
   for (var y = 0; y < data.years.length; y++) {
     var yearData = data.years[y];
-
-    // Year filter
     if (currentYear !== 'all' && yearData.year !== currentYear) continue;
 
-    var papers = yearData.papers;
-    if (papers.length === 0) continue;
-
-    // Build rows — each paper shows Foundation + Higher unless tier-filtered
     var rows = [];
-    for (var p = 0; p < papers.length; p++) {
+    for (var p = 0; p < yearData.papers.length; p++) {
       if (currentTier === 'all' || currentTier === 'foundation') {
-        rows.push({ name: papers[p].name, tier: 'foundation' });
+        rows.push({ name: yearData.papers[p], tier: 'foundation' });
       }
       if (currentTier === 'all' || currentTier === 'higher') {
-        rows.push({ name: papers[p].name, tier: 'higher' });
+        rows.push({ name: yearData.papers[p], tier: 'higher' });
       }
     }
-
     if (rows.length === 0) continue;
     hasAny = true;
 
@@ -374,7 +360,10 @@ function render() {
           '<div class="paper-name">' + row.name + '</div>' +
           '<div class="paper-meta">' + tierTag + '</div>' +
         '</div>' +
-        '<a class="paper-link-btn" href="' + link + '" target="_blank" rel="noopener">View on AQA →</a>' +
+        '<div class="paper-links">' +
+          '<a class="paper-link link-paper" href="' + link + '" target="_blank" rel="noopener">📄 Past Paper</a>' +
+          '<a class="paper-link link-ms" href="' + link + '" target="_blank" rel="noopener">✅ Mark Scheme</a>' +
+        '</div>' +
       '</div>';
     }
     html += '</div>';
@@ -383,7 +372,6 @@ function render() {
   if (!hasAny) {
     html = '<div class="empty-state">No papers found for this filter combination. Try changing the tier or year.</div>';
   }
-
   container.innerHTML = html;
 }
 

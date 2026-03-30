@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -168,11 +168,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-group-0"><div class="match-def" data-index="1" draggable="true">Exist as single atoms — already stable, no need to bond with other atoms</div>
-<div class="match-def" data-index="3" draggable="true">All noble gases are transparent and gaseous at room temperature</div>
-<div class="match-def" data-index="4" draggable="true">Helium has only 2 electrons and 2 protons — very low density, used in balloons</div>
-<div class="match-def" data-index="0" draggable="true">Full outer electron shells — no tendency to gain, lose or share electrons</div>
+      <div class="match-defs" id="defPool-group-0"><div class="match-def" data-index="0" draggable="true">Full outer electron shells — no tendency to gain, lose or share electrons</div>
 <div class="match-def" data-index="2" draggable="true">Larger atoms have stronger London dispersion forces — more electrons, larger temporary dipoles</div>
+<div class="match-def" data-index="4" draggable="true">Helium has only 2 electrons and 2 protons — very low density, used in balloons</div>
+<div class="match-def" data-index="1" draggable="true">Exist as single atoms — already stable, no need to bond with other atoms</div>
+<div class="match-def" data-index="3" draggable="true">All noble gases are transparent and gaseous at room temperature</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -189,20 +189,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Many gases are highly reactive — chlorine gas (Cl₂), oxygen gas (O₂) etc. Being a gas doesn\'t make something unreactive.",1: "Atomic size affects reactivity in some cases, but noble gases are unreactive because of electron configuration, not size.",2: "Noble gases have FULL outer shells, not empty ones. Helium has 2 electrons (full 1st shell), others have 8 outer electrons.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Atomic size affects reactivity in some cases, but noble gases are unreactive because of electron configuration, not size.",2: "Noble gases have FULL outer shells, not empty ones. Helium has 2 electrons (full 1st shell), others have 8 outer electrons.",3: "Many gases are highly reactive — chlorine gas (Cl₂), oxygen gas (O₂) etc. Being a gas doesn\'t make something unreactive.",}'>
   <div class="q-text">1. Why are noble gases so unreactive?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">They are gases — gases cannot react with solid or liquid substances</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">They have full outer electron shells — no tendency to gain, lose or share electrons to become more stable</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">They are too small to collide effectively with other atoms</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">They have no electrons in their outer shell — so they cannot form bonds</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">They have full outer electron shells — no tendency to gain, lose or share electrons to become more stable</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">They are gases — gases cannot react with solid or liquid substances</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Argon is stable and not radioactive. Radon is the radioactive noble gas.",1: "Stronger nuclear attraction would make electrons harder to remove but doesn\'t directly raise boiling point — the intermolecular forces between atoms are what matter.",2: "Noble gases are ALL monatomic — they never form Ar₂ or Ne₂ molecules under normal conditions.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Argon is stable and not radioactive. Radon is the radioactive noble gas.",2: "Stronger nuclear attraction would make electrons harder to remove but doesn\'t directly raise boiling point — the intermolecular forces between atoms are what matter.",3: "Noble gases are ALL monatomic — they never form Ar₂ or Ne₂ molecules under normal conditions.",}'>
   <div class="q-text">2. Argon has a higher boiling point than neon. Why?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Argon is radioactive, releasing energy that raises its boiling point</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Argon has a higher atomic number, so its electrons are more strongly attracted to the nucleus</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Argon forms molecules (Ar₂) while neon is monatomic — more bonds to break</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Argon is a larger atom with more electrons — stronger London dispersion forces between atoms need more energy to overcome</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Argon is a larger atom with more electrons — stronger London dispersion forces between atoms need more energy to overcome</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Argon has a higher atomic number, so its electrons are more strongly attracted to the nucleus</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Argon forms molecules (Ar₂) while neon is monatomic — more bonds to break</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -249,7 +249,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -175,10 +175,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-pressure-in-a-fluid"><div class="match-def" data-index="0" draggable="true">Pressure at depth h in a fluid of density ρ under gravity g</div>
-<div class="match-def" data-index="3" draggable="true">Density of object < density of fluid — upthrust equals weight</div>
+      <div class="match-defs" id="defPool-pressure-in-a-fluid"><div class="match-def" data-index="3" draggable="true">Density of object < density of fluid — upthrust equals weight</div>
 <div class="match-def" data-index="2" draggable="true">Upward force = weight of fluid displaced (Archimedes' principle)</div>
 <div class="match-def" data-index="1" draggable="true">~100 kPa at sea level — weight of air column above unit area</div>
+<div class="match-def" data-index="0" draggable="true">Pressure at depth h in a fluid of density ρ under gravity g</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -225,10 +225,10 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">Fluid becomes denser at greater depth — denser fluid has higher pressure</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Hull shape does affect stability but ships primarily float due to Archimedes\' principle — the hollow volume displaces water equal to the ship\'s weight.",1: "Engines produce forward thrust, not downward thrust — the ship floats due to displacement, not engine force.",3: "Steel is denser than salt water — the hull doesn\'t float because the water is denser than the hull material.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Engines produce forward thrust, not downward thrust — the ship floats due to displacement, not engine force.",1: "Hull shape does affect stability but ships primarily float due to Archimedes\' principle — the hollow volume displaces water equal to the ship\'s weight.",3: "Steel is denser than salt water — the hull doesn\'t float because the water is denser than the hull material.",}'>
   <div class="q-text">2. A steel ship floats in water even though steel is denser than water. Why?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The shape of the hull creates lift, like an aeroplane wing in reverse</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The ship's engine produces a downward thrust that reduces the net weight</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The ship's engine produces a downward thrust that reduces the net weight</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">The shape of the hull creates lift, like an aeroplane wing in reverse</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">The hollow ship displaces a large volume of water — the upthrust (weight of displaced water) equals the ship's weight</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Salt water is denser than the steel in the hull — the extra density provides more upthrust</button>
 </div>
@@ -277,7 +277,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

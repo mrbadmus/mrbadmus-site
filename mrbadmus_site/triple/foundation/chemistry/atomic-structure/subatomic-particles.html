@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -168,11 +168,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-subatomic-particles"><div class="match-def" data-index="0" draggable="true">Relative charge +1, mass 1 — in the nucleus</div>
-<div class="match-def" data-index="4" draggable="true">Chlorine atom that has GAINED one electron — 17 protons, 18 electrons</div>
-<div class="match-def" data-index="3" draggable="true">Sodium atom that has LOST one electron — 11 protons, 10 electrons</div>
+      <div class="match-defs" id="defPool-subatomic-particles"><div class="match-def" data-index="3" draggable="true">Sodium atom that has LOST one electron — 11 protons, 10 electrons</div>
 <div class="match-def" data-index="2" draggable="true">Relative charge −1, mass ~0 — in shells around the nucleus</div>
+<div class="match-def" data-index="4" draggable="true">Chlorine atom that has GAINED one electron — 17 protons, 18 electrons</div>
 <div class="match-def" data-index="1" draggable="true">Relative charge 0, mass 1 — in the nucleus</div>
+<div class="match-def" data-index="0" draggable="true">Relative charge +1, mass 1 — in the nucleus</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -189,12 +189,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Mg²⁺ is formed by losing 2 electrons. Original: 12 electrons. After loss: 12 − 2 = 10 electrons.",1: "Only the 2 outermost electrons are lost — but the ion still has all 10 remaining electrons, not just 2.",2: "Gaining electrons gives a NEGATIVE charge. Mg²⁺ is POSITIVE, so electrons were LOST.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Only the 2 outermost electrons are lost — but the ion still has all 10 remaining electrons, not just 2.",1: "Gaining electrons gives a NEGATIVE charge. Mg²⁺ is POSITIVE, so electrons were LOST.",3: "Mg²⁺ is formed by losing 2 electrons. Original: 12 electrons. After loss: 12 − 2 = 10 electrons.",}'>
   <div class="q-text">1. A magnesium atom (Mg, atomic number 12) forms a Mg²⁺ ion. How many electrons does the ion have?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">12 — the number of electrons stays the same</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">2 — only the outermost electrons remain</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">14 — magnesium gains 2 electrons to form a +2 ion</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">10 — magnesium loses 2 electrons from its original 12</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">2 — only the outermost electrons remain</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">14 — magnesium gains 2 electrons to form a +2 ion</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">10 — magnesium loses 2 electrons from its original 12</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">12 — the number of electrons stays the same</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Neutrons have ZERO charge — they cannot cancel proton charges. Charge neutrality comes from protons balancing electrons.",1: "Vibration does not affect electrical charge — the neutrality is a consequence of proton and electron numbers being equal.",2: "Shielding describes how inner electrons reduce the attractive force on outer electrons — it does not explain why atoms are electrically neutral.",}'>
@@ -249,7 +249,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -164,10 +164,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-monoclonal-antibodies"><div class="match-def" data-index="2" draggable="true">Antibodies detect specific viral antigens — rapid diagnostic result</div>
-<div class="match-def" data-index="3" draggable="true">Fused B-lymphocyte + tumour cell — divides indefinitely and produces specific antibodies</div>
+      <div class="match-defs" id="defPool-monoclonal-antibodies"><div class="match-def" data-index="1" draggable="true">Antibodies bind to specific proteins on cancer cell surfaces — blocking growth or delivering drugs</div>
 <div class="match-def" data-index="0" draggable="true">Detects hCG hormone — monoclonal antibodies bind to hCG in urine, producing a colour change</div>
-<div class="match-def" data-index="1" draggable="true">Antibodies bind to specific proteins on cancer cell surfaces — blocking growth or delivering drugs</div>
+<div class="match-def" data-index="3" draggable="true">Fused B-lymphocyte + tumour cell — divides indefinitely and produces specific antibodies</div>
+<div class="match-def" data-index="2" draggable="true">Antibodies detect specific viral antigens — rapid diagnostic result</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -184,11 +184,11 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 3</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Stem cells differentiate into specialised cells — hybridomas are a specific fusion product for antibody production.",2: "Cancer cells don\'t produce antibodies naturally — they are fused with lymphocytes to give them this ability.",3: "A virus-infected lymphocyte would produce antibodies against the virus — not a hybridoma.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Cancer cells don\'t produce antibodies naturally — they are fused with lymphocytes to give them this ability.",2: "Stem cells differentiate into specialised cells — hybridomas are a specific fusion product for antibody production.",3: "A virus-infected lymphocyte would produce antibodies against the virus — not a hybridoma.",}'>
   <div class="q-text">1. What is a hybridoma cell and why is it useful?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">A cell formed by fusing a lymphocyte with a tumour cell — it divides indefinitely AND produces specific antibodies</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">A stem cell that can differentiate into any type of immune cell</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">A cancer cell that has been trained to produce antibodies by injecting it with antigens</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">A cancer cell that has been trained to produce antibodies by injecting it with antigens</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">A cell formed by fusing a lymphocyte with a tumour cell — it divides indefinitely AND produces specific antibodies</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">A stem cell that can differentiate into any type of immune cell</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">A lymphocyte that has been infected by a virus — producing antibodies to fight it</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
@@ -200,12 +200,12 @@
 <button class="quiz-opt" data-qi="1" data-oi="3">They are made from the patient's own cells — so they know which cells are cancerous</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="1" data-wrong-exp='{0: "Pregnancy tests use MONOCLONAL antibodies — specific to hCG only. This specificity prevents false positives from other hormones.",2: "The antibodies come from hybridoma cells cultured in a laboratory — not from a pregnant woman.",3: "Monoclonal antibodies are highly specific to ONE antigen — detecting any hormone would require polyclonal antibodies or a panel of specific tests.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Pregnancy tests use MONOCLONAL antibodies — specific to hCG only. This specificity prevents false positives from other hormones.",1: "Monoclonal antibodies are highly specific to ONE antigen — detecting any hormone would require polyclonal antibodies or a panel of specific tests.",2: "The antibodies come from hybridoma cells cultured in a laboratory — not from a pregnant woman.",}'>
   <div class="q-text">3. A pregnancy test uses monoclonal antibodies specific to hCG. What does this mean?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">The test uses polyclonal antibodies for a broad detection range</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">The antibodies bind ONLY to hCG molecules — not to other hormones or substances in urine</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">The antibodies can detect any hormone in the body</button>
 <button class="quiz-opt" data-qi="2" data-oi="2">The antibodies were taken from a pregnant woman's blood</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">The antibodies can detect any hormone in the body</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">The antibodies bind ONLY to hCG molecules — not to other hormones or substances in urine</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
 </div>
@@ -252,7 +252,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

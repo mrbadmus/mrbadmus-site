@@ -9,12 +9,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
@@ -261,10 +261,10 @@
     {t:'Tests for Carbonates, Halides and Sulfates',s:'Chemistry',url:'/triple/foundation/chemistry/analysis/carbonates-halides-sulfates.html',c:'#FF6B6B'},
     {t:'Instrumental Methods and Flame Emission Spectroscopy',s:'Chemistry',url:'/triple/foundation/chemistry/analysis/instrumental-methods.html',c:'#FF6B6B'},
     {t:'The Composition of the Atmosphere',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/composition-of-atmosphere.html',c:'#FF6B6B'},
-    {t:'The Earth's Early Atmosphere and How It Changed',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/early-atmosphere.html',c:'#FF6B6B'},
+    {t:'The Earth\'s Early Atmosphere and How It Changed',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/early-atmosphere.html',c:'#FF6B6B'},
     {t:'Greenhouse Gases and Climate Change',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/greenhouse-gases.html',c:'#FF6B6B'},
     {t:'Atmospheric Pollutants from Fuels',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/atmospheric-pollutants.html',c:'#FF6B6B'},
-    {t:'Using the Earth's Resources and Sustainable Development',s:'Chemistry',url:'/triple/foundation/chemistry/resources/earths-resources.html',c:'#FF6B6B'},
+    {t:'Using the Earth\'s Resources and Sustainable Development',s:'Chemistry',url:'/triple/foundation/chemistry/resources/earths-resources.html',c:'#FF6B6B'},
     {t:'Potable Water and Water Treatment',s:'Chemistry',url:'/triple/foundation/chemistry/resources/potable-water.html',c:'#FF6B6B'},
     {t:'Life Cycle Assessment',s:'Chemistry',url:'/triple/foundation/chemistry/resources/life-cycle-assessment.html',c:'#FF6B6B'},
     {t:'Ways of Reducing the Use of Resources',s:'Chemistry',url:'/triple/foundation/chemistry/resources/reducing-use-of-resources.html',c:'#FF6B6B'},
@@ -407,7 +407,7 @@
     {t:'Distance, Speed and Velocity',s:'Physics',url:'/combined/higher/physics/forces/distance-speed-velocity.html',c:'#4ECDC4'},
     {t:'Distance–Time Graphs',s:'Physics',url:'/combined/higher/physics/forces/distance-time-graphs.html',c:'#4ECDC4'},
     {t:'Acceleration',s:'Physics',url:'/combined/higher/physics/forces/acceleration.html',c:'#4ECDC4'},
-    {t:'Newton's Laws of Motion',s:'Physics',url:'/combined/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
+    {t:'Newton\'s Laws of Motion',s:'Physics',url:'/combined/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
     {t:'Stopping Distance and Braking',s:'Physics',url:'/combined/higher/physics/forces/stopping-distance-braking.html',c:'#4ECDC4'},
     {t:'Transverse and Longitudinal Waves',s:'Physics',url:'/combined/higher/physics/waves/transverse-longitudinal-waves.html',c:'#4ECDC4'},
     {t:'Properties of Waves',s:'Physics',url:'/combined/higher/physics/waves/properties-of-waves.html',c:'#4ECDC4'},
@@ -828,7 +828,7 @@
   document.addEventListener('click', e => { if (!e.target.closest('.hero-search')) results.classList.remove('open'); });
 })();
 </script>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

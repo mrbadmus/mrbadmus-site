@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -172,10 +172,10 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-group-1"><div class="match-def" data-index="0" draggable="true">Fizzes gently, moves around on water surface — less vigorous than others</div>
-<div class="match-def" data-index="3" draggable="true">React with water to produce a metal hydroxide (alkali) and hydrogen gas</div>
-<div class="match-def" data-index="2" draggable="true">Reacts very vigorously, hydrogen ignites immediately with a lilac/purple flame</div>
-<div class="match-def" data-index="1" draggable="true">Fizzes vigorously, moves rapidly, may ignite — more reactive than lithium</div>
 <div class="match-def" data-index="4" draggable="true">Increases down Group 1 — outer electron is further from nucleus, less strongly attracted</div>
+<div class="match-def" data-index="3" draggable="true">React with water to produce a metal hydroxide (alkali) and hydrogen gas</div>
+<div class="match-def" data-index="1" draggable="true">Fizzes vigorously, moves rapidly, may ignite — more reactive than lithium</div>
+<div class="match-def" data-index="2" draggable="true">Reacts very vigorously, hydrogen ignites immediately with a lilac/purple flame</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -192,12 +192,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Sodium reacts with oxygen to form sodium OXIDE — but when it reacts with water specifically, the products are hydroxide and hydrogen.",2: "Oxygen is not released when metals react with water. The equation is: 2Na + 2H₂O → 2NaOH + H₂.",3: "NaCl is the product of sodium reacting with CHLORINE or hydrochloric acid — not water.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "NaCl is the product of sodium reacting with CHLORINE or hydrochloric acid — not water.",1: "Oxygen is not released when metals react with water. The equation is: 2Na + 2H₂O → 2NaOH + H₂.",2: "Sodium reacts with oxygen to form sodium OXIDE — but when it reacts with water specifically, the products are hydroxide and hydrogen.",}'>
   <div class="q-text">1. What are the products when sodium reacts with water?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Sodium hydroxide (NaOH) and hydrogen gas (H₂)</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Sodium oxide (Na₂O) and water</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Sodium hydroxide and oxygen gas</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Sodium chloride (NaCl) and hydrogen</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Sodium chloride (NaCl) and hydrogen</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Sodium hydroxide and oxygen gas</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Sodium oxide (Na₂O) and water</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Sodium hydroxide (NaOH) and hydrogen gas (H₂)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "More protons means stronger nuclear charge — this would actually make it HARDER to lose the electron, not easier. But the extra shells and increased distance outweigh the effect of more protons.",1: "All electrons have the same charge (−1 each) — the \'ease of losing\' them depends on how strongly they are attracted to the nucleus.",2: "Surface area affects reaction rate but not inherent reactivity — the question is about why K is more reactive than Li in terms of properties.",}'>
@@ -252,7 +252,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

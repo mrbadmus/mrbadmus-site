@@ -598,11 +598,17 @@ a { color: inherit; text-decoration: none; }
 .nav-brand {
   font-family: 'Sora', sans-serif;
   font-size: 1.4rem;
+  font-weight: 800;
   background: linear-gradient(135deg, var(--yellow), var(--orange));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
 }
+.brand-logo { flex-shrink: 0; }
 .nav-links { display: flex; gap: 20px; align-items: center; }
 .nav-links a {
   font-size: 0.85rem;
@@ -930,7 +936,7 @@ a { color: inherit; text-decoration: none; }
   bottom: 28px;
   right: 28px;
   height: 56px;
-  padding: 0 20px 0 16px;
+  padding: 0 24px 0 18px;
   border-radius: 28px;
   background: linear-gradient(135deg, var(--yellow), var(--orange));
   border: none;
@@ -939,7 +945,7 @@ a { color: inherit; text-decoration: none; }
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
   box-shadow: 0 6px 28px rgba(255,107,53,0.5);
   transition: transform 0.2s, box-shadow 0.2s;
   z-index: 90;
@@ -947,8 +953,8 @@ a { color: inherit; text-decoration: none; }
   color: #0F0F1A;
   white-space: nowrap;
 }
-.chat-fab .fab-emoji { font-size: 1.5rem; }
-.chat-fab .fab-text { font-size: 0.85rem; }
+.chat-fab .fab-logo { display: flex; align-items: center; }
+.chat-fab .fab-text { font-size: 0.85rem; font-weight: 800; letter-spacing: -0.01em; }
 .chat-fab:hover { transform: scale(1.08); box-shadow: 0 10px 40px rgba(255,107,53,0.7); }
 
 /* ── CHAT OVERLAY ── */
@@ -1302,7 +1308,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     const hasImg = !!pendingImg;
     if (!q && !hasImg) return;
     if (input) input.value = '';
-    addMsg('user', (q||'Please answer this question:') + (hasImg ? `<br><img src="${pendingImg}" style="max-width:100%;border-radius:6px;margin-top:6px;display:block;" alt="question"/>` : ''));
+    addMsg('user', (q||'Please answer this question:') + (hasImg ? `<br><img src="${pendingImg}" style="max-width:150px;border-radius:6px;margin-top:6px;display:block;" alt="question"/>` : ''));
     const imgData = pendingImg; clearImg();
     const t = addMsg('bot', '<div class="typing"><span></span><span></span><span></span></div>');
     let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;
@@ -1465,12 +1471,12 @@ def nav_html(active_subject="", pathway="", tier=""):
     <a href="/{pathway}/index.html" style="color:{pc};font-weight:700;">{pathway.title()} Science</a>"""
 
     return f"""<nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     {pathway_links}
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
@@ -1513,7 +1519,7 @@ def nav_html(active_subject="", pathway="", tier=""):
 # ─────────────────────────────────────────────
 
 def chat_html():
-    return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+    return """<button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
@@ -1950,10 +1956,10 @@ def make_landing():
     {t:'Tests for Carbonates, Halides and Sulfates',s:'Chemistry',url:'/triple/foundation/chemistry/analysis/carbonates-halides-sulfates.html',c:'#FF6B6B'},
     {t:'Instrumental Methods and Flame Emission Spectroscopy',s:'Chemistry',url:'/triple/foundation/chemistry/analysis/instrumental-methods.html',c:'#FF6B6B'},
     {t:'The Composition of the Atmosphere',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/composition-of-atmosphere.html',c:'#FF6B6B'},
-    {t:'The Earth's Early Atmosphere and How It Changed',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/early-atmosphere.html',c:'#FF6B6B'},
+    {t:'The Earth\\'s Early Atmosphere and How It Changed',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/early-atmosphere.html',c:'#FF6B6B'},
     {t:'Greenhouse Gases and Climate Change',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/greenhouse-gases.html',c:'#FF6B6B'},
     {t:'Atmospheric Pollutants from Fuels',s:'Chemistry',url:'/triple/foundation/chemistry/atmosphere/atmospheric-pollutants.html',c:'#FF6B6B'},
-    {t:'Using the Earth's Resources and Sustainable Development',s:'Chemistry',url:'/triple/foundation/chemistry/resources/earths-resources.html',c:'#FF6B6B'},
+    {t:'Using the Earth\\'s Resources and Sustainable Development',s:'Chemistry',url:'/triple/foundation/chemistry/resources/earths-resources.html',c:'#FF6B6B'},
     {t:'Potable Water and Water Treatment',s:'Chemistry',url:'/triple/foundation/chemistry/resources/potable-water.html',c:'#FF6B6B'},
     {t:'Life Cycle Assessment',s:'Chemistry',url:'/triple/foundation/chemistry/resources/life-cycle-assessment.html',c:'#FF6B6B'},
     {t:'Ways of Reducing the Use of Resources',s:'Chemistry',url:'/triple/foundation/chemistry/resources/reducing-use-of-resources.html',c:'#FF6B6B'},
@@ -2096,7 +2102,7 @@ def make_landing():
     {t:'Distance, Speed and Velocity',s:'Physics',url:'/combined/higher/physics/forces/distance-speed-velocity.html',c:'#4ECDC4'},
     {t:'Distance–Time Graphs',s:'Physics',url:'/combined/higher/physics/forces/distance-time-graphs.html',c:'#4ECDC4'},
     {t:'Acceleration',s:'Physics',url:'/combined/higher/physics/forces/acceleration.html',c:'#4ECDC4'},
-    {t:'Newton's Laws of Motion',s:'Physics',url:'/combined/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
+    {t:'Newton\\'s Laws of Motion',s:'Physics',url:'/combined/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
     {t:'Stopping Distance and Braking',s:'Physics',url:'/combined/higher/physics/forces/stopping-distance-braking.html',c:'#4ECDC4'},
     {t:'Transverse and Longitudinal Waves',s:'Physics',url:'/combined/higher/physics/waves/transverse-longitudinal-waves.html',c:'#4ECDC4'},
     {t:'Properties of Waves',s:'Physics',url:'/combined/higher/physics/waves/properties-of-waves.html',c:'#4ECDC4'},
@@ -2693,7 +2699,7 @@ def make_pathway_hub(pathway, tier, subject):
   {cards}
 </div>"""
 
-    return page_shell(f"{label} | {tier.title()} | {pathway_label} | MrBadmusAI",
+    return page_shell(f"{label} | {tier.title()} | {pathway_label}",
                       subject, body, pathway=pathway, tier=tier)
 
 
@@ -2845,7 +2851,7 @@ def make_pathway_topic_page(pathway, tier, subject, topic):
 
 </div>"""
 
-    return page_shell(f"{topic['title']} | {data['label']} | {tier.title()} | MrBadmusAI",
+    return page_shell(f"{topic['title']} | {data['label']} | {tier.title()}",
                       subject, body, topic["id"], topic["title"], pathway, tier)
 
 def make_fifa_example(subject, topic):

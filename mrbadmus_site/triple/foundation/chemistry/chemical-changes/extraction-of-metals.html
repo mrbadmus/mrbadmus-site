@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -172,10 +172,10 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-extraction-of-metals"><div class="match-def" data-index="0" draggable="true">Reduced with carbon monoxide in a blast furnace — below carbon in reactivity series</div>
-<div class="match-def" data-index="1" draggable="true">Electrolysis of molten Al₂O₃ in cryolite — above carbon in reactivity series</div>
-<div class="match-def" data-index="2" draggable="true">Found as the pure element — too unreactive to form stable compounds</div>
-<div class="match-def" data-index="4" draggable="true">Electrolysis of molten NaCl — far too reactive for carbon reduction</div>
 <div class="match-def" data-index="3" draggable="true">Heated with carbon/coke — ZnO + C → Zn + CO₂</div>
+<div class="match-def" data-index="1" draggable="true">Electrolysis of molten Al₂O₃ in cryolite — above carbon in reactivity series</div>
+<div class="match-def" data-index="4" draggable="true">Electrolysis of molten NaCl — far too reactive for carbon reduction</div>
+<div class="match-def" data-index="2" draggable="true">Found as the pure element — too unreactive to form stable compounds</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -192,20 +192,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Aluminium oxide has plenty of oxygen — but carbon can only REDUCE metal oxides when the metal is LESS reactive than carbon.",1: "Electrolysis is actually VERY EXPENSIVE — it requires huge amounts of electrical energy. The reason is purely reactivity-based.",3: "Carbon and aluminium do not form harmful alloys under these conditions — purity concerns are a separate issue.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Aluminium oxide has plenty of oxygen — but carbon can only REDUCE metal oxides when the metal is LESS reactive than carbon.",2: "Electrolysis is actually VERY EXPENSIVE — it requires huge amounts of electrical energy. The reason is purely reactivity-based.",3: "Carbon and aluminium do not form harmful alloys under these conditions — purity concerns are a separate issue.",}'>
   <div class="q-text">1. Why is aluminium extracted by electrolysis rather than by reduction with carbon?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Aluminium oxide doesn't contain enough oxygen for the carbon to react with</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Electrolysis is cheaper than heating with carbon for all metals</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Aluminium is more reactive than carbon — carbon cannot displace it from aluminium oxide</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Aluminium is more reactive than carbon — carbon cannot displace it from aluminium oxide</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Aluminium oxide doesn't contain enough oxygen for the carbon to react with</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Electrolysis is cheaper than heating with carbon for all metals</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Carbon would contaminate the aluminium, making it too brittle to use</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "The IRON OXIDE loses oxygen (is REDUCED). The CO gains oxygen (is OXIDISED). These are simultaneous — the reaction is both a reduction AND an oxidation.",1: "Neutralisation involves an acid and a base — iron oxide and carbon monoxide are not an acid-base pair.",2: "The blast furnace uses heat (combustion), not electricity. Electrolysis is used for reactive metals like aluminium.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "The IRON OXIDE loses oxygen (is REDUCED). The CO gains oxygen (is OXIDISED). These are simultaneous — the reaction is both a reduction AND an oxidation.",2: "The blast furnace uses heat (combustion), not electricity. Electrolysis is used for reactive metals like aluminium.",3: "Neutralisation involves an acid and a base — iron oxide and carbon monoxide are not an acid-base pair.",}'>
   <div class="q-text">2. Carbon monoxide reduces iron oxide in the blast furnace. What type of reaction is this?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Oxidation — the iron oxide gains electrons from the carbon monoxide</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Neutralisation — the acid iron oxide is neutralised by the basic carbon</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Reduction — the iron oxide loses oxygen; the carbon monoxide gains oxygen (and is oxidised)</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Electrolysis — electrical energy breaks apart the iron oxide</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Reduction — the iron oxide loses oxygen; the carbon monoxide gains oxygen (and is oxidised)</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Neutralisation — the acid iron oxide is neutralised by the basic carbon</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -252,7 +252,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

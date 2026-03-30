@@ -225,7 +225,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     const hasImg = !!pendingImg;
     if (!q && !hasImg) return;
     if (input) input.value = '';
-    addMsg('user', (q||'Please answer this question:') + (hasImg ? `<br><img src="${pendingImg}" style="max-width:100%;border-radius:6px;margin-top:6px;display:block;" alt="question"/>` : ''));
+    addMsg('user', (q||'Please answer this question:') + (hasImg ? `<br><img src="${pendingImg}" style="max-width:150px;border-radius:6px;margin-top:6px;display:block;" alt="question"/>` : ''));
     const imgData = pendingImg; clearImg();
     const t = addMsg('bot', '<div class="typing"><span></span><span></span><span></span></div>');
     let userContent = hasImg ? [{ type:'image', source:{ type:'base64', media_type:imgData.split(';')[0].split(':')[1], data:imgData.split(',')[1] }}, { type:'text', text:q||'Answer this GCSE Science question fully using FIFA for any calculations.' }] : q;

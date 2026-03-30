@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -165,9 +165,9 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-pyramids-of-biomass"><div class="match-def" data-index="2" draggable="true">Energy lost at each level through respiration — less energy = less biomass at higher levels</div>
-<div class="match-def" data-index="0" draggable="true">Proportional to total biomass at that trophic level</div>
-<div class="match-def" data-index="3" draggable="true">g/m² or kg/m² — mass per unit area</div>
 <div class="match-def" data-index="1" draggable="true">Always at the BOTTOM of the pyramid — widest bar</div>
+<div class="match-def" data-index="3" draggable="true">g/m² or kg/m² — mass per unit area</div>
+<div class="match-def" data-index="0" draggable="true">Proportional to total biomass at that trophic level</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -190,20 +190,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Biomass is harder to measure than counting — it requires weighing all organisms. The advantage is accuracy, not ease.",1: "Numbers pyramids CAN be inverted (e.g. one tree: many insects) — making them misleading. Biomass pyramids are almost always true pyramids.",2: "Biomass pyramids show total MASS at each level — not species count. Biodiversity is a separate measure.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Numbers pyramids CAN be inverted (e.g. one tree: many insects) — making them misleading. Biomass pyramids are almost always true pyramids.",1: "Biomass pyramids show total MASS at each level — not species count. Biodiversity is a separate measure.",2: "Biomass is harder to measure than counting — it requires weighing all organisms. The advantage is accuracy, not ease.",}'>
   <div class="q-text">1. Why is a pyramid of biomass usually a more accurate representation of an ecosystem than a pyramid of numbers?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Biomass is easier to count than individual organisms in the wild</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Numbers pyramids always show the same shape — they give no useful information</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Biomass pyramids show the number of species, which is more informative than counting individuals</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Numbers pyramids always show the same shape — they give no useful information</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Biomass pyramids show the number of species, which is more informative than counting individuals</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Biomass is easier to count than individual organisms in the wild</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Biomass accounts for the size of organisms — one large organism may have more biomass than thousands of small ones, giving a truer picture of energy stored</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Scale is 1 cm = 50 g, not 1 cm = 1 g. Must divide by the scale factor.",1: "Scale is 1 cm = 50 g, not 1 cm = 10 g. So 50 ÷ 50 = 1 cm.",2: "Scale is 1 cm = 50 g, not 1 cm = 5 g. So 50 g ÷ 50 = 1 cm, not 10 cm.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Scale is 1 cm = 50 g, not 1 cm = 1 g. Must divide by the scale factor.",2: "Scale is 1 cm = 50 g, not 1 cm = 10 g. So 50 ÷ 50 = 1 cm.",3: "Scale is 1 cm = 50 g, not 1 cm = 5 g. So 50 g ÷ 50 = 1 cm, not 10 cm.",}'>
   <div class="q-text">2. In 1 m² of grassland, grass biomass is 500 g, grasshoppers 50 g, frogs 5 g. Using a scale of 1 cm = 50 g/m², how wide should the grasshopper bar be?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">50 cm — each gram = 1 cm, so 50 g = 50 cm</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">5 cm — grasshopper biomass = 50 g; 50 ÷ 10 = 5 cm</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">10 cm — grasshopper biomass = 50 g; 50 ÷ 5 = 10 cm</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">1 cm — grasshopper biomass = 50 g; 50 ÷ 50 = 1 cm</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">1 cm — grasshopper biomass = 50 g; 50 ÷ 50 = 1 cm</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">50 cm — each gram = 1 cm, so 50 g = 50 cm</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">5 cm — grasshopper biomass = 50 g; 50 ÷ 10 = 5 cm</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">10 cm — grasshopper biomass = 50 g; 50 ÷ 5 = 10 cm</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -250,7 +250,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -165,8 +165,8 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-magnetic-fields"><div class="match-def" data-index="3" draggable="true">Field lines represent unique directions — two directions at one point is impossible</div>
-<div class="match-def" data-index="0" draggable="true">Points from north pole to south pole outside the magnet</div>
 <div class="match-def" data-index="2" draggable="true">Weak magnetic field — far from the magnet</div>
+<div class="match-def" data-index="0" draggable="true">Points from north pole to south pole outside the magnet</div>
 <div class="match-def" data-index="1" draggable="true">Strong magnetic field — near the poles of a bar magnet</div>
 </div>
     </div>
@@ -189,18 +189,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Iron filings are attracted to magnetic fields — they cluster where the field is STRONGEST (at poles), not due to mass.",2: "The magnet is horizontal in typical demonstrations — gravity doesn\'t explain end-clustering.",3: "Dense filings = strong field = more attraction. Less magnetised areas would have fewer filings.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "The magnet is horizontal in typical demonstrations — gravity doesn\'t explain end-clustering.",1: "Iron filings are attracted to magnetic fields — they cluster where the field is STRONGEST (at poles), not due to mass.",2: "Dense filings = strong field = more attraction. Less magnetised areas would have fewer filings.",}'>
   <div class="q-text">1. A student plots a magnetic field using iron filings around a bar magnet. The filings cluster densely near the poles. What does this show?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The field is strongest near the poles — closely spaced field lines indicate greater magnetic force in that region</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Iron filings cluster near poles due to gravity — the poles are at the ends</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">The poles have more mass — iron filings are attracted to mass, not field strength</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Iron filings cluster near poles due to gravity — the poles are at the ends</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The poles are the least magnetised parts — filings avoid the strong field regions</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">The poles are the least magnetised parts — filings avoid the strong field regions</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">The field is strongest near the poles — closely spaced field lines indicate greater magnetic force in that region</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Field lines form closed loops — they exit the north pole, curve around, and re-enter at the south pole.",1: "Convention states field lines go from N to S — the direction a free north pole would move.",3: "Field lines have a specific direction defined by convention — from N to S.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Convention states field lines go from N to S — the direction a free north pole would move.",1: "Field lines form closed loops — they exit the north pole, curve around, and re-enter at the south pole.",3: "Field lines have a specific direction defined by convention — from N to S.",}'>
   <div class="q-text">2. Which direction do magnetic field lines point outside a bar magnet?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">From both poles outward — field lines never enter the magnet</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">From south to north — the south pole is the 'positive' terminal</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">From south to north — the south pole is the 'positive' terminal</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">From both poles outward — field lines never enter the magnet</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">From the north pole to the south pole — field lines exit the north pole and enter the south pole</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">In random directions — field lines don't have a set direction</button>
 </div>
@@ -249,7 +249,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

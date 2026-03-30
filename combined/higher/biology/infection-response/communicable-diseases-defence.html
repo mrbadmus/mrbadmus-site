@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -175,11 +175,11 @@
   <div class="match-drop" data-accepts="5">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-communicable-diseases-defence"><div class="match-def" data-index="3" draggable="true">Engulf and digest pathogens — non-specific immune defence</div>
+      <div class="match-defs" id="defPool-communicable-diseases-defence"><div class="match-def" data-index="5" draggable="true">Remain after infection — allow rapid antibody response if same pathogen returns</div>
 <div class="match-def" data-index="4" draggable="true">Produce specific antibodies that bind to pathogen antigens</div>
-<div class="match-def" data-index="2" draggable="true">pH ~2 — kills most pathogens that are swallowed</div>
 <div class="match-def" data-index="1" draggable="true">Sweep mucus with trapped pathogens upwards towards the throat</div>
-<div class="match-def" data-index="5" draggable="true">Remain after infection — allow rapid antibody response if same pathogen returns</div>
+<div class="match-def" data-index="2" draggable="true">pH ~2 — kills most pathogens that are swallowed</div>
+<div class="match-def" data-index="3" draggable="true">Engulf and digest pathogens — non-specific immune defence</div>
 <div class="match-def" data-index="0" draggable="true">Physical barrier — prevents pathogens entering the body as long as it is unbroken</div>
 </div>
     </div>
@@ -200,35 +200,35 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 4</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Both types of white blood cell work against a wide range of pathogens — they are not limited to one type of infection.",2: "Both are white blood cells but they have completely different functions — phagocytes engulf, lymphocytes make antibodies.",3: "This is exactly the wrong way around. Phagocytes = engulf. Lymphocytes = antibodies.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "This is exactly the wrong way around. Phagocytes = engulf. Lymphocytes = antibodies.",2: "Both are white blood cells but they have completely different functions — phagocytes engulf, lymphocytes make antibodies.",3: "Both types of white blood cell work against a wide range of pathogens — they are not limited to one type of infection.",}'>
   <div class="q-text">1. What is the difference between a phagocyte and a lymphocyte?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Phagocytes engulf pathogens non-specifically. Lymphocytes produce specific antibodies.</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Phagocytes fight bacterial infections only. Lymphocytes fight viral infections only.</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Phagocytes produce antibodies. Lymphocytes engulf pathogens.</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Both engulf pathogens — they are the same type of white blood cell.</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Phagocytes produce antibodies. Lymphocytes engulf pathogens.</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Phagocytes fight bacterial infections only. Lymphocytes fight viral infections only.</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Memory cells are immune cells — they don\'t form physical barriers. That role belongs to skin, mucus and cilia.",1: "Cell replacement is done by stem cells and normal cell division — memory cells specifically remember and respond to specific pathogens.",3: "Antibiotics are medicines — they are not produced by any body cells. Memory cells produce antibodies, not antibiotics.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Memory cells are immune cells — they don\'t form physical barriers. That role belongs to skin, mucus and cilia.",1: "Cell replacement is done by stem cells and normal cell division — memory cells specifically remember and respond to specific pathogens.",2: "Antibiotics are medicines — they are not produced by any body cells. Memory cells produce antibodies, not antibiotics.",}'>
   <div class="q-text">2. Why are memory cells important for immunity?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">They physically block pathogens from entering the bloodstream</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">They replace damaged body cells after an infection has passed</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">They remain in the blood after infection and allow a rapid, large antibody response if the same pathogen is encountered again</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">They produce antibiotics to destroy bacterial infections</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">They produce antibiotics to destroy bacterial infections</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">They remain in the blood after infection and allow a rapid, large antibody response if the same pathogen is encountered again</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="0" data-wrong-exp='{1: "Malaria is caused by a PROTIST (Plasmodium) — not bacteria. And it is injected through the bite, not from the air.",2: "Malaria is transmitted through bites — not through water. Cholera spreads through contaminated water.",3: "The MOSQUITO is the vector — Plasmodium is the pathogen. The mosquito carries and transmits Plasmodium but does not cause the disease itself.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="0" data-wrong-exp='{1: "The MOSQUITO is the vector — Plasmodium is the pathogen. The mosquito carries and transmits Plasmodium but does not cause the disease itself.",2: "Malaria is transmitted through bites — not through water. Cholera spreads through contaminated water.",3: "Malaria is caused by a PROTIST (Plasmodium) — not bacteria. And it is injected through the bite, not from the air.",}'>
   <div class="q-text">3. How does the Anopheles mosquito spread malaria?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">It is a vector — it carries the Plasmodium protist and injects it into humans when it bites</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Mosquito bites break the skin, allowing malaria bacteria from the air to enter</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">The mosquito itself causes malaria — it is the pathogen</button>
 <button class="quiz-opt" data-qi="2" data-oi="2">The mosquito contaminates water sources with Plasmodium</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">The mosquito itself causes malaria — it is the pathogen</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">Mosquito bites break the skin, allowing malaria bacteria from the air to enter</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Gas exchange occurs in the ALVEOLI — the main function of mucus in the airways is trapping pathogens, not gas exchange.",1: "Moisture in the airways is a secondary benefit — the PRIMARY function of mucus is trapping pathogens and particles.",2: "Antibodies are produced by LYMPHOCYTES in the blood — not by mucus. Mucus is a physical/chemical barrier.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Gas exchange occurs in the ALVEOLI — the main function of mucus in the airways is trapping pathogens, not gas exchange.",1: "Antibodies are produced by LYMPHOCYTES in the blood — not by mucus. Mucus is a physical/chemical barrier.",2: "Moisture in the airways is a secondary benefit — the PRIMARY function of mucus is trapping pathogens and particles.",}'>
   <div class="q-text">4. Why does the body produce mucus in the airways?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">To provide a moist surface for gas exchange in the lungs</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">To prevent the airways from drying out in cold weather</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">To produce antibodies that neutralise pathogens in the airways</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">To produce antibodies that neutralise pathogens in the airways</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">To prevent the airways from drying out in cold weather</button>
 <button class="quiz-opt" data-qi="3" data-oi="3">To trap inhaled pathogens and particles before they reach the lungs — cilia then sweep the mucus up to be swallowed</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
@@ -276,7 +276,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -168,8 +168,8 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-antibiotics-painkillers"><div class="match-def" data-index="3" draggable="true">Has no effect on viral infections — useless against flu or measles</div>
-<div class="match-def" data-index="2" draggable="true">Prevents viral replication — used for HIV and influenza</div>
+      <div class="match-defs" id="defPool-antibiotics-painkillers"><div class="match-def" data-index="2" draggable="true">Prevents viral replication — used for HIV and influenza</div>
+<div class="match-def" data-index="3" draggable="true">Has no effect on viral infections — useless against flu or measles</div>
 <div class="match-def" data-index="1" draggable="true">Relieves fever and pain — does not kill any pathogens</div>
 <div class="match-def" data-index="0" draggable="true">Kills bacteria — works by targeting bacterial cell walls or ribosomes</div>
 <div class="match-def" data-index="4" draggable="true">Examples: paracetamol, ibuprofen, aspirin</div>
@@ -189,18 +189,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Some resistant bacteria do produce enzymes that destroy antibiotics — but this is a bacterial resistance mechanism, not a general viral property.",1: "Antibiotics are absorbed into the bloodstream — but they have no biological target in virus particles, so reaching them makes no difference.",3: "Viruses are smaller than bacteria — but size is not why antibiotics don\'t work. Antibiotics target specific bacterial structures that viruses simply don\'t have.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Some resistant bacteria do produce enzymes that destroy antibiotics — but this is a bacterial resistance mechanism, not a general viral property.",2: "Antibiotics are absorbed into the bloodstream — but they have no biological target in virus particles, so reaching them makes no difference.",3: "Viruses are smaller than bacteria — but size is not why antibiotics don\'t work. Antibiotics target specific bacterial structures that viruses simply don\'t have.",}'>
   <div class="q-text">1. Why can't antibiotics treat viral infections?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Viruses produce enzymes that destroy antibiotics</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Antibiotics are absorbed too slowly to reach viruses in the bloodstream</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Viruses don't have cell walls or bacterial ribosomes — the structures antibiotics target don't exist in viruses</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Viruses don't have cell walls or bacterial ribosomes — the structures antibiotics target don't exist in viruses</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Antibiotics are absorbed too slowly to reach viruses in the bloodstream</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Viruses are too small for antibiotics to reach</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "The antibiotics already taken do have effect — they kill susceptible bacteria. The problem is that the resistant survivors are left to reproduce.",2: "This is a dangerous misconception — symptoms improving means the immune system and antibiotics are working, but bacteria may still be present. Stopping early increases resistance risk.",3: "Bacteria don\'t \'grow faster\' in response to antibiotics stopping — the issue is selective survival of resistant variants.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "The antibiotics already taken do have effect — they kill susceptible bacteria. The problem is that the resistant survivors are left to reproduce.",2: "This is a dangerous misconception — symptoms improving means the immune system and antibiotics are working, but bacteria may still be present. Stopping early increases resistance risk.",3: "Bacteria don\'t \'grow faster\' in response to antibiotics stopping — the issue is selective survival of resistant variants.",}'>
   <div class="q-text">2. Why is it important to always complete a full course of antibiotics?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Stopping early leaves the most resistant bacteria alive — they survive and reproduce, increasing resistance</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Stopping early means the antibiotics already taken are wasted and have no effect</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Stopping early means the antibiotics already taken are wasted and have no effect</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Stopping early leaves the most resistant bacteria alive — they survive and reproduce, increasing resistance</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">It doesn't matter — stopping early is fine if symptoms improve</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Partial courses make the bacteria grow faster as a response</button>
 </div>
@@ -249,7 +249,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

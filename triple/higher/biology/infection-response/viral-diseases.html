@@ -61,12 +61,12 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -163,9 +163,9 @@
   <div class="match-drop" data-accepts="2">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-viral-diseases"><div class="match-def" data-index="2" draggable="true">Contact/tools — mosaic discolouration of leaves — reduced photosynthesis</div>
-<div class="match-def" data-index="1" draggable="true">Bodily fluids — destroys T-lymphocytes — eventually causes AIDS</div>
+      <div class="match-defs" id="defPool-viral-diseases"><div class="match-def" data-index="1" draggable="true">Bodily fluids — destroys T-lymphocytes — eventually causes AIDS</div>
 <div class="match-def" data-index="0" draggable="true">Airborne droplets — red skin rash and high fever — prevented by MMR vaccine</div>
+<div class="match-def" data-index="2" draggable="true">Contact/tools — mosaic discolouration of leaves — reduced photosynthesis</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -182,26 +182,26 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 3</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "HIV destroys white blood cells (lymphocytes) — it does not cause overproduction.",2: "HIV doesn\'t \'convert\' into AIDS — AIDS is the CONDITION resulting from immune system collapse caused by HIV destroying lymphocytes.",3: "HIV specifically targets immune cells — it doesn\'t produce toxins that damage other organs directly.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "HIV destroys white blood cells (lymphocytes) — it does not cause overproduction.",1: "HIV specifically targets immune cells — it doesn\'t produce toxins that damage other organs directly.",2: "HIV doesn\'t \'convert\' into AIDS — AIDS is the CONDITION resulting from immune system collapse caused by HIV destroying lymphocytes.",}'>
   <div class="q-text">1. Why does HIV lead to AIDS?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">HIV destroys T-lymphocytes — the immune system becomes too weak to fight off infections</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">HIV causes the body to overproduce white blood cells, overwhelming the system</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">HIV causes the body to overproduce white blood cells, overwhelming the system</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">HIV produces toxins that directly damage all organs simultaneously</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">HIV converts into the AIDS virus after several years in the body</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">HIV produces toxins that directly damage all organs simultaneously</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">HIV destroys T-lymphocytes — the immune system becomes too weak to fight off infections</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "TMV disrupts chlorophyll production in leaf cells — it doesn\'t produce toxins that kill cells outright.",1: "TMV affects leaf cells and chlorophyll — not the xylem. The reduced photosynthesis from less chlorophyll is the key effect.",2: "TMV infects leaf cells, not root cells. Mineral absorption is unaffected directly.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "TMV affects leaf cells and chlorophyll — not the xylem. The reduced photosynthesis from less chlorophyll is the key effect.",1: "TMV disrupts chlorophyll production in leaf cells — it doesn\'t produce toxins that kill cells outright.",2: "TMV infects leaf cells, not root cells. Mineral absorption is unaffected directly.",}'>
   <div class="q-text">2. How does tobacco mosaic virus affect plant growth?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">It produces toxins that kill plant cells directly</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">It blocks the xylem, preventing water reaching the leaves</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">It blocks the xylem, preventing water reaching the leaves</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">It produces toxins that kill plant cells directly</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">It causes root cells to die, so the plant cannot absorb minerals</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">It disrupts chlorophyll production — leaves develop mosaic discolouration and photosynthesise less efficiently</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Paracetamol relieves symptoms — it does not treat the infection. Antibiotics treat bacterial infections — but measles is viral.",1: "Age is not the deciding factor — the pathogen type is. Antibiotics don\'t work on viruses regardless of patient age.",2: "Rash worsening from antibiotics is not a reason — the fundamental reason is that antibiotics target bacterial cell walls and structures that viruses simply don\'t have.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Age is not the deciding factor — the pathogen type is. Antibiotics don\'t work on viruses regardless of patient age.",1: "Paracetamol relieves symptoms — it does not treat the infection. Antibiotics treat bacterial infections — but measles is viral.",2: "Rash worsening from antibiotics is not a reason — the fundamental reason is that antibiotics target bacterial cell walls and structures that viruses simply don\'t have.",}'>
   <div class="q-text">3. A measles patient is told to rest and take paracetamol. Why are they not given antibiotics?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Paracetamol is stronger than antibiotics</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">The patient is too young for antibiotics</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">The patient is too young for antibiotics</button>
+<button class="quiz-opt" data-qi="2" data-oi="1">Paracetamol is stronger than antibiotics</button>
 <button class="quiz-opt" data-qi="2" data-oi="2">Antibiotics would make the rash worse</button>
 <button class="quiz-opt" data-qi="2" data-oi="3">Measles is caused by a virus — antibiotics only kill bacteria and have no effect on viruses</button>
 </div>
@@ -250,7 +250,7 @@
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask Mr Badmus AI"><span class="fab-emoji">🤖</span><span class="fab-text">Ask AI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
