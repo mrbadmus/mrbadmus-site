@@ -1470,6 +1470,7 @@ def nav_html(active_subject="", pathway="", tier=""):
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     {pathway_links}
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
@@ -5783,7 +5784,7 @@ def build_site(output_dir="mrbadmus_site"):
 
     # ── Auth pages — copy into output if they exist in repo root ──
     import shutil as _shutil, os as _os
-    for _auth_file in ["auth.html", "profile-setup.html", "weekly-challenge.html", "leaderboard.html"]:
+    for _auth_file in ["auth.html", "profile-setup.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html"]:
         _src = _auth_file
         _dst = f"{output_dir}/{_auth_file}"
         if _os.path.exists(_src):

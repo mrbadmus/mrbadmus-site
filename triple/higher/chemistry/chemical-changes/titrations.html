@@ -66,6 +66,7 @@
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
+    <a href="/past-papers.html" style="color:var(--muted);">📄 Papers</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     
     <span style="color:var(--muted)">›</span>
@@ -166,10 +167,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-titrations"><div class="match-def" data-index="2" draggable="true">Changes colour at the endpoint — shows when the acid has exactly neutralised the alkali</div>
-<div class="match-def" data-index="0" draggable="true">Holds the acid — accurate to ±0.05 cm³, allows precise measurement of volume added</div>
+      <div class="match-defs" id="defPool-titrations"><div class="match-def" data-index="0" draggable="true">Holds the acid — accurate to ±0.05 cm³, allows precise measurement of volume added</div>
 <div class="match-def" data-index="1" draggable="true">Measures a fixed volume of alkali (e.g. 25.00 cm³) into the conical flask</div>
 <div class="match-def" data-index="3" draggable="true">Two or more titres that agree within 0.10 cm³ — used to calculate the mean</div>
+<div class="match-def" data-index="2" draggable="true">Changes colour at the endpoint — shows when the acid has exactly neutralised the alkali</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -216,20 +217,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Using just the two highest values ignores the majority of concordant data — there is no basis for this selection.",1: "Including outliers makes the mean less accurate — 25.10 is 0.50 cm³ away from the other three and should be discarded.",3: "The mean should use all concordant results, not just the middle value.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Including outliers makes the mean less accurate — 25.10 is 0.50 cm³ away from the other three and should be discarded.",2: "The mean should use all concordant results, not just the middle value.",3: "Using just the two highest values ignores the majority of concordant data — there is no basis for this selection.",}'>
   <div class="q-text">1. A student records titres of 24.60, 24.55, 24.65 and 25.10 cm³. Which results should be used to calculate the mean?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">25.10 and 24.65 — the two highest values are the most accurate</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">All four — average all results for the most reliable mean</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">24.60, 24.55 and 24.65 — these are concordant (within 0.10 cm³); 25.10 is an outlier and should be discarded</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Only 24.60 — the middle value is the most representative</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">All four — average all results for the most reliable mean</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">24.60, 24.55 and 24.65 — these are concordant (within 0.10 cm³); 25.10 is an outlier and should be discarded</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Only 24.60 — the middle value is the most representative</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">25.10 and 24.65 — the two highest values are the most accurate</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Safety is a concern throughout the titration — dropwise addition near the endpoint is specifically for precision, not primarily for safety.",1: "Acid-base neutralisation releases some heat but not enough to boil aqueous solutions at these concentrations.",2: "Modern indicators (methyl orange, phenolphthalein) respond very quickly — the reason for dropwise addition is precision.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Safety is a concern throughout the titration — dropwise addition near the endpoint is specifically for precision, not primarily for safety.",2: "Modern indicators (methyl orange, phenolphthalein) respond very quickly — the reason for dropwise addition is precision.",3: "Acid-base neutralisation releases some heat but not enough to boil aqueous solutions at these concentrations.",}'>
   <div class="q-text">2. In a titration, why is the acid added dropwise near the endpoint?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Acid is corrosive — adding it slowly is a safety precaution</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Rapid addition would cause the solution to heat up and boil</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">To avoid overshooting — one extra drop past the endpoint gives an inaccurate titre that is too large</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Acid is corrosive — adding it slowly is a safety precaution</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Slow addition gives the indicator time to change colour properly</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">To avoid overshooting — one extra drop past the endpoint gives an inaccurate titre that is too large</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Rapid addition would cause the solution to heat up and boil</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
