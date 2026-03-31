@@ -61,7 +61,7 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 14l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="navGrad" x1="4" y1="6" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
@@ -177,11 +177,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-distance-time-graphs"><div class="match-def" data-index="0" draggable="true">Fast constant speed away from start</div>
+      <div class="match-defs" id="defPool-distance-time-graphs"><div class="match-def" data-index="3" draggable="true">Constant speed returning towards starting point</div>
 <div class="match-def" data-index="1" draggable="true">Stationary — object has stopped</div>
-<div class="match-def" data-index="3" draggable="true">Constant speed returning towards starting point</div>
 <div class="match-def" data-index="2" draggable="true">Slow constant speed away from start</div>
 <div class="match-def" data-index="4" draggable="true">Accelerating — speed increasing over time</div>
+<div class="match-def" data-index="0" draggable="true">Fast constant speed away from start</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -220,20 +220,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Acceleration on a d–t graph shows as a CURVE (increasing gradient) — not a flat section.",2: "A horizontal line on a VELOCITY–time graph means constant velocity — but on a DISTANCE–time graph it means zero speed (stationary).",3: "Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a SLOPED straight line.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "A horizontal line on a VELOCITY–time graph means constant velocity — but on a DISTANCE–time graph it means zero speed (stationary).",1: "Acceleration on a d–t graph shows as a CURVE (increasing gradient) — not a flat section.",3: "Flat line = zero gradient = zero speed. Constant speed on a d–t graph is a SLOPED straight line.",}'>
   <div class="q-text">1. A d–t graph shows a horizontal (flat) line for 5 seconds. What is the object doing?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The object is stationary — no change in distance means zero speed</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The object is moving at constant speed — horizontal means steady motion</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">The object has reached maximum speed and is maintaining it</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The object is moving at constant speed — horizontal means steady motion</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">The object is stationary — no change in distance means zero speed</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">The object is accelerating — the line is preparing to slope upward</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Gentler slope does not imply harder work — gradient directly equals speed on a d–t graph.",1: "Gentle slope = smaller gradient = slower speed. Fast motion = steeper slope = larger gradient.",3: "Both are straight lines (constant speed) but at DIFFERENT speeds — the gradient value gives the speed.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Gentler slope does not imply harder work — gradient directly equals speed on a d–t graph.",2: "Both are straight lines (constant speed) but at DIFFERENT speeds — the gradient value gives the speed.",3: "Gentle slope = smaller gradient = slower speed. Fast motion = steeper slope = larger gradient.",}'>
   <div class="q-text">2. On a distance–time graph, two straight sections are drawn. Section A has gradient 8 m/s and section B has gradient 2 m/s. Which section shows faster motion?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Section B — less steep means the object is working harder to maintain motion</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Section B — a gentler slope indicates faster, more efficient motion</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Section A — steeper gradient on a d–t graph means higher speed</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">They are the same speed — both are straight lines</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Section A — steeper gradient on a d–t graph means higher speed</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">They are the same speed — both are straight lines</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Section B — a gentler slope indicates faster, more efficient motion</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

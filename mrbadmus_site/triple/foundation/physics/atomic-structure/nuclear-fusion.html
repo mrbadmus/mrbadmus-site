@@ -61,7 +61,7 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 14l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="navGrad" x1="4" y1="6" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
@@ -171,11 +171,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-nuclear-fusion"><div class="match-def" data-index="3" draggable="true">Requires ~100 million °C plasma — not yet achieved at practical scale</div>
+      <div class="match-defs" id="defPool-nuclear-fusion"><div class="match-def" data-index="1" draggable="true">Large nucleus absorbs neutron and splits — used in nuclear reactors today</div>
 <div class="match-def" data-index="4" draggable="true">Produces long-lived radioactive waste — difficult disposal</div>
-<div class="match-def" data-index="1" draggable="true">Large nucleus absorbs neutron and splits — used in nuclear reactors today</div>
-<div class="match-def" data-index="2" draggable="true">Energy released comes from a mass defect — E = mc²</div>
 <div class="match-def" data-index="0" draggable="true">Small nuclei join together — releases energy from mass defect</div>
+<div class="match-def" data-index="2" draggable="true">Energy released comes from a mass defect — E = mc²</div>
+<div class="match-def" data-index="3" draggable="true">Requires ~100 million °C plasma — not yet achieved at practical scale</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -195,20 +195,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Plasma formation IS needed for magnetic confinement — but the fundamental reason for high temperature is overcoming electrostatic repulsion, not simply creating plasma.",1: "The energy comes FROM the fusion — high temperature is the REQUIREMENT to START fusion, not a result of it.",3: "The materials don\'t need to be radioactive for fusion — deuterium and tritium are simply isotopes of hydrogen.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "The energy comes FROM the fusion — high temperature is the REQUIREMENT to START fusion, not a result of it.",2: "Plasma formation IS needed for magnetic confinement — but the fundamental reason for high temperature is overcoming electrostatic repulsion, not simply creating plasma.",3: "The materials don\'t need to be radioactive for fusion — deuterium and tritium are simply isotopes of hydrogen.",}'>
   <div class="q-text">1. Why does nuclear fusion require temperatures of around 100 million degrees Celsius?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">High temperature converts hydrogen to plasma, which is the only state in which fusion can occur in a magnetic field</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Fusion produces so much energy that the reaction must start at high temperature to release it</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Nuclei need enough kinetic energy to overcome the electrostatic repulsion between their positive charges and get close enough for the strong nuclear force to cause fusion</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Fusion produces so much energy that the reaction must start at high temperature to release it</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Nuclei need enough kinetic energy to overcome the electrostatic repulsion between their positive charges and get close enough for the strong nuclear force to cause fusion</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">High temperature converts hydrogen to plasma, which is the only state in which fusion can occur in a magnetic field</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Radioactive materials only become fusible at extreme temperatures — below this they are too stable</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Fusion requires extreme temperature and pressure confinement — one of the biggest engineering challenges.",1: "Individual fusion reactions do release large amounts of energy, but individual fission reactions also release large amounts — the comparison isn\'t straightforward per reaction.",2: "Fusion is NOT yet used commercially — it is still under development. ITER and other projects are research reactors.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Fusion is NOT yet used commercially — it is still under development. ITER and other projects are research reactors.",2: "Fusion requires extreme temperature and pressure confinement — one of the biggest engineering challenges.",3: "Individual fusion reactions do release large amounts of energy, but individual fission reactions also release large amounts — the comparison isn\'t straightforward per reaction.",}'>
   <div class="q-text">2. What is the main advantage of nuclear fusion over nuclear fission as an energy source?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Fusion does not require any confinement — it operates safely at room temperature</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Fusion produces more energy per reaction than fission — so fewer reactions are needed</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Fusion is already used commercially — it is cheaper and more reliable than fission</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Fusion uses virtually unlimited fuel from seawater, produces no long-lived radioactive waste and is inherently safe — the reaction cannot run away</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Fusion uses virtually unlimited fuel from seawater, produces no long-lived radioactive waste and is inherently safe — the reaction cannot run away</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Fusion is already used commercially — it is cheaper and more reliable than fission</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Fusion does not require any confinement — it operates safely at room temperature</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Fusion produces more energy per reaction than fission — so fewer reactions are needed</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

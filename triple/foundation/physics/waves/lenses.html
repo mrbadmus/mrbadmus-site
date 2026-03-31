@@ -61,7 +61,7 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 14l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="navGrad" x1="4" y1="6" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
@@ -172,10 +172,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-lenses"><div class="match-def" data-index="3" draggable="true">Diverging lens — diverges light before it reaches the eye</div>
-<div class="match-def" data-index="1" draggable="true">Virtual, upright, magnified image — same side as object (magnifying glass)</div>
+      <div class="match-defs" id="defPool-lenses"><div class="match-def" data-index="2" draggable="true">Virtual, upright, diminished image — always, regardless of object position</div>
 <div class="match-def" data-index="0" draggable="true">Real, inverted, diminished image — between f and 2f on other side</div>
-<div class="match-def" data-index="2" draggable="true">Virtual, upright, diminished image — always, regardless of object position</div>
+<div class="match-def" data-index="1" draggable="true">Virtual, upright, magnified image — same side as object (magnifying glass)</div>
+<div class="match-def" data-index="3" draggable="true">Diverging lens — diverges light before it reaches the eye</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -195,20 +195,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "More than 20 cm gives a real, DIMINISHED image — not useful as a magnifying glass.",1: "At exactly the focal point, rays emerge parallel — no image is formed.",3: "Between f and 2f gives a real, MAGNIFIED image — but it\'s inverted and appears on the other side, not a magnifying glass use.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "At exactly the focal point, rays emerge parallel — no image is formed.",1: "Between f and 2f gives a real, MAGNIFIED image — but it\'s inverted and appears on the other side, not a magnifying glass use.",3: "More than 20 cm gives a real, DIMINISHED image — not useful as a magnifying glass.",}'>
   <div class="q-text">1. A converging lens has focal length 10 cm. Where should an object be placed to use it as a magnifying glass?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">More than 20 cm away — large objects need to be far from the lens</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Exactly at 10 cm — the focal point gives maximum magnification</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Exactly at 10 cm — the focal point gives maximum magnification</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Between 10 cm and 20 cm — real magnified images are produced here</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Less than 10 cm from the lens — the object must be inside the focal length to produce a virtual, magnified image</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Between 10 cm and 20 cm — real magnified images are produced here</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">More than 20 cm away — large objects need to be far from the lens</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "A converging lens would make the eye MORE powerful, causing the image to form even FURTHER in front of the retina — making myopia worse.",1: "Myopia is a structural issue that doesn\'t self-correct — it typically worsens over time.",3: "Vision correction is specific — the wrong type of lens makes things worse.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "A converging lens would make the eye MORE powerful, causing the image to form even FURTHER in front of the retina — making myopia worse.",2: "Vision correction is specific — the wrong type of lens makes things worse.",3: "Myopia is a structural issue that doesn\'t self-correct — it typically worsens over time.",}'>
   <div class="q-text">2. A person is short-sighted (myopic). What type of lens corrects this and why?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">A converging (convex) lens — it focuses the light more, moving the image onto the retina</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">No lens needed — short-sightedness corrects itself over time</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">A diverging (concave) lens — it spreads the light before it enters the eye, so the image forms further back on the retina rather than in front of it</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Either type works — the brain adjusts to either correction</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">A diverging (concave) lens — it spreads the light before it enters the eye, so the image forms further back on the retina rather than in front of it</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">A converging (convex) lens — it focuses the light more, moving the image onto the retina</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Either type works — the brain adjusts to either correction</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">No lens needed — short-sightedness corrects itself over time</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>

@@ -133,7 +133,7 @@
 <body>
 
 <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 14l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="navGrad" x1="4" y1="6" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
     <a href="/index.html">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
@@ -337,11 +337,14 @@ function render() {
     if (currentYear !== 'all' && yearData.year !== currentYear) continue;
 
     var rows = [];
-    for (var p = 0; p < yearData.papers.length; p++) {
-      if (currentTier === 'all' || currentTier === 'foundation') {
+    // Group by tier: all Foundation first, then all Higher
+    if (currentTier === 'all' || currentTier === 'foundation') {
+      for (var p = 0; p < yearData.papers.length; p++) {
         rows.push({ name: yearData.papers[p], tier: 'foundation' });
       }
-      if (currentTier === 'all' || currentTier === 'higher') {
+    }
+    if (currentTier === 'all' || currentTier === 'higher') {
+      for (var p = 0; p < yearData.papers.length; p++) {
         rows.push({ name: yearData.papers[p], tier: 'higher' });
       }
     }

@@ -61,7 +61,7 @@
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 22L14 14L6 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 22L24 14L16 6" stroke="url(#brandGrad)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="brandGrad" x1="6" y1="6" x2="24" y2="22" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 14l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20l8-8 8 8" stroke="url(#navGrad)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="navGrad" x1="4" y1="6" x2="20" y2="20" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
@@ -167,10 +167,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-transfer-of-biomass"><div class="match-def" data-index="0" draggable="true">Energy used for life processes released as heat — not passed to next trophic level</div>
+      <div class="match-defs" id="defPool-transfer-of-biomass"><div class="match-def" data-index="2" draggable="true">Waste metabolic products (urine) removed — energy in these compounds is lost</div>
 <div class="match-def" data-index="3" draggable="true">Only about 1/10 of biomass at each level is transferred to the next</div>
-<div class="match-def" data-index="2" draggable="true">Waste metabolic products (urine) removed — energy in these compounds is lost</div>
 <div class="match-def" data-index="1" draggable="true">Indigestible material leaves as faeces — energy goes to decomposers not predators</div>
+<div class="match-def" data-index="0" draggable="true">Energy used for life processes released as heat — not passed to next trophic level</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -209,18 +209,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "(50 ÷ 5000) × 100 = 1% — but the biomass at the next level is 500, not 50.",2: "Must divide NEXT LEVEL by CURRENT LEVEL — not current by next. (5000 ÷ 500) × 100 = 1000% which is impossible.",3: "90% is the proportion LOST — not transferred. Efficiency = transferred ÷ available = 500 ÷ 5000 = 10%.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "90% is the proportion LOST — not transferred. Efficiency = transferred ÷ available = 500 ÷ 5000 = 10%.",1: "Must divide NEXT LEVEL by CURRENT LEVEL — not current by next. (5000 ÷ 500) × 100 = 1000% which is impossible.",2: "(50 ÷ 5000) × 100 = 1% — but the biomass at the next level is 500, not 50.",}'>
   <div class="q-text">1. Producers have biomass 5000 g/m². Primary consumers have biomass 500 g/m². What is the efficiency of transfer?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">1% — efficiency = (50 ÷ 5000) × 100</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">10% — efficiency = (500 ÷ 5000) × 100 = 10%</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">500% — efficiency = (5000 ÷ 500) × 100</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">90% — the percentage NOT transferred = 90%</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">90% — the percentage NOT transferred = 90%</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">500% — efficiency = (5000 ÷ 500) × 100</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">1% — efficiency = (50 ÷ 5000) × 100</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">10% — efficiency = (500 ÷ 5000) × 100 = 10%</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Disease prevention may be a concern but is not the reason for restricting movement in the context of energy efficiency.",2: "Animals that move less may eat slightly less, but the key reason is that energy from food is retained as BIOMASS rather than used in movement.",3: "Body mass increase is due to biomass accumulation — not water retention. The mechanism is reduced respiration for movement.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Disease prevention may be a concern but is not the reason for restricting movement in the context of energy efficiency.",2: "Animals that move less may eat slightly less, but the key reason is that energy from food is retained as BIOMASS rather than used in movement.",3: "Body mass increase is due to biomass accumulation — not water retention. The mechanism is reduced respiration for movement.",}'>
   <div class="q-text">2. Why do intensive farming methods restrict farm animals' movement to improve food production efficiency?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Restricted movement prevents disease spreading between animals</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Less movement means less energy used in respiration for muscle activity — more energy retained as body mass (biomass for humans to eat)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Less movement means less energy used in respiration for muscle activity — more energy retained as body mass (biomass for humans to eat)</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Restricted movement prevents disease spreading between animals</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Animals that move less eat less food — reducing farming costs</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Restricted movement makes animals heavier due to water retention</button>
 </div>
