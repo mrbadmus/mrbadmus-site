@@ -174,10 +174,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-transformers"><div class="match-def" data-index="0" draggable="true">Ns > Np → output voltage greater than input voltage</div>
+      <div class="match-defs" id="defPool-transformers"><div class="match-def" data-index="1" draggable="true">Ns < Np → output voltage less than input voltage</div>
 <div class="match-def" data-index="2" draggable="true">Step-up to ~400 kV → low current → low I²R losses in cables</div>
-<div class="match-def" data-index="1" draggable="true">Ns < Np → output voltage less than input voltage</div>
 <div class="match-def" data-index="3" draggable="true">Vp × Ip = Vs × Is — higher voltage means lower current</div>
+<div class="match-def" data-index="0" draggable="true">Ns > Np → output voltage greater than input voltage</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -219,12 +219,12 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "DC flows through coils perfectly well — it\'s the absence of CHANGE that prevents transformer action.",2: "Technically DC frequency = 0 Hz, and transformers are designed for 50 Hz — but the fundamental reason is CONSTANT FLUX, not calibration.",3: "DC can flow through transformer coils and would create a magnetic field — but a CONSTANT field causes no induction.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "DC flows through coils perfectly well — it\'s the absence of CHANGE that prevents transformer action.",1: "Technically DC frequency = 0 Hz, and transformers are designed for 50 Hz — but the fundamental reason is CONSTANT FLUX, not calibration.",2: "DC can flow through transformer coils and would create a magnetic field — but a CONSTANT field causes no induction.",}'>
   <div class="q-text">1. Why can't transformers work with direct current (DC)?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">DC produces a constant magnetic flux — no change in flux means no induced emf in the secondary coil (Faraday's law requires changing flux)</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">DC cannot flow through coils of wire — coils require AC to function</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">DC has a frequency of zero — transformers are calibrated for 50 Hz only</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">DC is too powerful for the iron core — it would overheat and be destroyed</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">DC cannot flow through coils of wire — coils require AC to function</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">DC has a frequency of zero — transformers are calibrated for 50 Hz only</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">DC is too powerful for the iron core — it would overheat and be destroyed</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">DC produces a constant magnetic flux — no change in flux means no induced emf in the secondary coil (Faraday's law requires changing flux)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
 </div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "While there is some electromagnetic radiation from power lines, this is not the reason for high voltage — P_loss = I²R is the key formula.",1: "Transformers work at any voltage — the reason for high voltage is specifically to reduce current and therefore reduce I²R heating losses.",2: "Electrical signals travel at nearly the speed of light regardless of voltage — voltage doesn\'t affect transmission speed.",}'>
