@@ -4,121 +4,126 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Leaderboard | MrBadmusAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
       --physics: #4ECDC4; --chemistry: #FF6B6B; --biology: #6BCB77;
-      --text: #E8E8F0; --muted: #888; --yellow: #FFD93D;
+      --text: #E8E8F0; --muted: #888; --yellow: #FFD93D; --orange: #FF6B35;
       --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--darker); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; }
+    body { background: var(--darker); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
 
     .nav {
-      position: fixed; top: 0; left: 0; right: 0; padding: 12px 24px;
+      position: sticky; top: 0; left: 0; right: 0; padding: 0 24px; height: 60px;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(15,15,26,0.95); backdrop-filter: blur(10px);
-      border-bottom: 1px solid #2a2a4a; z-index: 10;
+      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 100;
     }
     .nav-brand {
-      font-family: 'Fredoka One', cursive; font-size: 1.3rem; text-decoration: none;
-      background: linear-gradient(135deg, #4ECDC4, #6BCB77);
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.4rem; text-decoration: none;
+      background: linear-gradient(135deg, var(--yellow), var(--orange));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: flex; align-items: center; gap: 8px;
     }
-    .nav a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.88rem; }
+    .brand-logo { flex-shrink: 0; }
+    .nav-links { display: flex; gap: 10px; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.88rem; padding: 6px 14px; border-radius: 20px; }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); }
 
-    .container { max-width: 680px; margin: 0 auto; padding: 80px 20px 40px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 28px 20px 40px; }
 
-    .header { text-align: center; margin-bottom: 32px; }
-    .header h1 { font-family: 'Fredoka One', cursive; font-size: 2.2rem; margin-bottom: 6px; }
+    .header { text-align: center; margin-bottom: 24px; }
+    .header h1 { font-family: 'Sora', sans-serif; font-size: 2rem; margin-bottom: 4px; }
+
+    /* ── TABS ────────────────────────────────────── */
+    .tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .tab {
+      padding: 8px 18px; border-radius: 20px; border: 2px solid #2a2a4a;
+      background: transparent; color: var(--muted); font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
+    }
+    .tab:hover { border-color: #4a4a6a; }
+    .tab.active { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
+    .tab.active.bio { background: rgba(107,203,119,0.15); border-color: var(--biology); color: var(--biology); }
+    .tab.active.chem { background: rgba(255,107,107,0.15); border-color: var(--chemistry); color: var(--chemistry); }
+    .tab.active.phys { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
+    .tab.active.overall { background: rgba(255,217,61,0.15); border-color: var(--yellow); color: var(--yellow); }
+
+    .tier-toggle { display: flex; gap: 6px; justify-content: center; margin-bottom: 24px; }
+    .tier-btn {
+      padding: 6px 16px; border-radius: 16px; border: 2px solid #2a2a4a;
+      background: transparent; color: var(--muted); font-weight: 700; font-size: 0.82rem;
+      cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .tier-btn:hover { border-color: #4a4a6a; }
+    .tier-btn.active { border-color: var(--physics); background: rgba(78,205,196,0.1); color: var(--physics); }
+
     .week-info {
-      display: inline-block; padding: 6px 18px; border-radius: 20px;
-      font-weight: 800; font-size: 0.85rem; margin-top: 8px;
+      text-align: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; font-weight: 700;
     }
-    .week-info.biology { background: rgba(107,203,119,0.2); color: var(--biology); }
-    .week-info.chemistry { background: rgba(255,107,107,0.2); color: var(--chemistry); }
-    .week-info.physics { background: rgba(78,205,196,0.2); color: var(--physics); }
 
     /* ── PODIUM ──────────────────────────────────── */
-    .podium {
-      display: flex; align-items: flex-end; justify-content: center;
-      gap: 12px; margin: 32px 0 40px; min-height: 280px;
-    }
+    .podium { display: flex; align-items: flex-end; justify-content: center; gap: 12px; margin: 24px 0 36px; min-height: 260px; }
     .podium-slot { text-align: center; flex-shrink: 0; }
     .podium-slot.first { order: 2; }
     .podium-slot.second { order: 1; }
     .podium-slot.third { order: 3; }
-
     .podium-avatar {
       border-radius: 50%; overflow: hidden; margin: 0 auto 8px;
       display: flex; align-items: center; justify-content: center;
       font-size: 1.5rem; background: var(--dark);
     }
     .podium-avatar img { width: 100%; height: 100%; object-fit: cover; }
-
-    .podium-slot.first .podium-avatar { width: 100px; height: 100px; border: 4px solid var(--gold); }
-    .podium-slot.second .podium-avatar { width: 80px; height: 80px; border: 3px solid var(--silver); }
-    .podium-slot.third .podium-avatar { width: 70px; height: 70px; border: 3px solid var(--bronze); }
-
+    .podium-slot.first .podium-avatar { width: 96px; height: 96px; border: 4px solid var(--gold); }
+    .podium-slot.second .podium-avatar { width: 76px; height: 76px; border: 3px solid var(--silver); }
+    .podium-slot.third .podium-avatar { width: 68px; height: 68px; border: 3px solid var(--bronze); }
     .podium-medal { font-size: 1.8rem; margin-bottom: 4px; }
     .podium-slot.first .podium-medal { font-size: 2.2rem; }
-
-    .podium-name {
-      font-family: 'Fredoka One', cursive; font-size: 0.95rem;
-      max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-    }
-    .podium-slot.first .podium-name { font-size: 1.1rem; max-width: 140px; }
-
-    .podium-school { color: var(--muted); font-size: 0.75rem; font-weight: 700; }
-    .podium-score {
-      font-family: 'Fredoka One', cursive; font-size: 1.2rem; margin-top: 4px;
-    }
-    .podium-slot.first .podium-score { font-size: 1.4rem; color: var(--gold); }
+    .podium-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.9rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .podium-slot.first .podium-name { font-size: 1.05rem; max-width: 140px; }
+    .podium-school { color: var(--muted); font-size: 0.72rem; font-weight: 700; }
+    .podium-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.15rem; margin-top: 4px; }
+    .podium-slot.first .podium-score { font-size: 1.3rem; color: var(--gold); }
     .podium-slot.second .podium-score { color: var(--silver); }
     .podium-slot.third .podium-score { color: var(--bronze); }
-
+    .podium-extra { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
     .podium-base {
       border-radius: 12px 12px 0 0; margin-top: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Fredoka One', cursive; font-size: 1.4rem; color: rgba(255,255,255,0.15);
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.3rem; color: rgba(255,255,255,0.12);
     }
-    .podium-slot.first .podium-base { background: linear-gradient(180deg, rgba(255,215,0,0.25) 0%, rgba(255,215,0,0.08) 100%); height: 100px; width: 130px; border: 1px solid rgba(255,215,0,0.2); }
-    .podium-slot.second .podium-base { background: linear-gradient(180deg, rgba(192,192,192,0.2) 0%, rgba(192,192,192,0.06) 100%); height: 70px; width: 110px; border: 1px solid rgba(192,192,192,0.15); }
-    .podium-slot.third .podium-base { background: linear-gradient(180deg, rgba(205,127,50,0.2) 0%, rgba(205,127,50,0.06) 100%); height: 50px; width: 110px; border: 1px solid rgba(205,127,50,0.15); }
+    .podium-slot.first .podium-base { background: linear-gradient(180deg, rgba(255,215,0,0.22) 0%, rgba(255,215,0,0.06) 100%); height: 96px; width: 126px; border: 1px solid rgba(255,215,0,0.18); }
+    .podium-slot.second .podium-base { background: linear-gradient(180deg, rgba(192,192,192,0.18) 0%, rgba(192,192,192,0.05) 100%); height: 66px; width: 106px; border: 1px solid rgba(192,192,192,0.12); }
+    .podium-slot.third .podium-base { background: linear-gradient(180deg, rgba(205,127,50,0.18) 0%, rgba(205,127,50,0.05) 100%); height: 46px; width: 106px; border: 1px solid rgba(205,127,50,0.12); }
 
-    /* ── REST OF TOP 10 ──────────────────────────── */
+    /* ── REST LIST ────────────────────────────────── */
     .rest-list { margin-top: 8px; }
     .rest-item {
       display: flex; align-items: center; gap: 14px;
       padding: 14px 16px; background: var(--card); border: 1px solid #2a2a4a;
-      border-radius: 14px; margin-bottom: 8px; transition: all 0.2s;
+      border-radius: 14px; margin-bottom: 8px;
     }
-    .rest-item:hover { border-color: #3a3a5a; }
-    .rest-rank {
-      font-family: 'Fredoka One', cursive; font-size: 1.1rem; color: var(--muted);
-      width: 28px; text-align: center; flex-shrink: 0;
-    }
+    .rest-rank { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--muted); width: 28px; text-align: center; flex-shrink: 0; }
     .rest-avatar {
-      width: 44px; height: 44px; border-radius: 50%; overflow: hidden;
+      width: 42px; height: 42px; border-radius: 50%; overflow: hidden;
       border: 2px solid #2a2a4a; display: flex; align-items: center;
-      justify-content: center; font-size: 1.2rem; background: var(--dark); flex-shrink: 0;
+      justify-content: center; font-size: 1.1rem; background: var(--dark); flex-shrink: 0;
     }
     .rest-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .rest-info { flex: 1; min-width: 0; }
-    .rest-name { font-weight: 800; font-size: 0.95rem; }
-    .rest-school { color: var(--muted); font-size: 0.78rem; }
-    .rest-score { font-family: 'Fredoka One', cursive; font-size: 1.1rem; flex-shrink: 0; }
+    .rest-name { font-weight: 800; font-size: 0.92rem; }
+    .rest-school { color: var(--muted); font-size: 0.75rem; }
+    .rest-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; flex-shrink: 0; }
 
-    /* ── EMPTY STATE ─────────────────────────────── */
     .empty {
-      text-align: center; padding: 60px 20px;
+      text-align: center; padding: 50px 20px;
       background: var(--card); border: 1px solid #2a2a4a; border-radius: 18px;
     }
-    .empty h3 { font-family: 'Fredoka One', cursive; margin: 16px 0 8px; }
+    .empty h3 { font-family: 'Sora', sans-serif; margin: 16px 0 8px; }
     .empty p { color: var(--muted); }
 
-    .loading { text-align: center; padding-top: 120px; }
+    .loading { text-align: center; padding-top: 100px; }
     .spinner {
       width: 40px; height: 40px; border: 4px solid #2a2a4a; border-top-color: var(--physics);
       border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px;
@@ -128,17 +133,29 @@
     .cta-challenge {
       display: block; text-align: center; margin-top: 28px; padding: 16px;
       border-radius: 16px; background: linear-gradient(135deg, var(--physics), #38a89d);
-      color: #0F0F1A; font-family: 'Fredoka One', cursive; font-size: 1.1rem;
+      color: #0F0F1A; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem;
       text-decoration: none; transition: all 0.2s;
     }
     .cta-challenge:hover { opacity: 0.9; transform: translateY(-2px); }
+
+    @media (max-width: 600px) {
+      .tabs { gap: 4px; }
+      .tab { padding: 6px 12px; font-size: 0.78rem; }
+      .podium { gap: 8px; min-height: 220px; }
+      .podium-slot.first .podium-avatar { width: 76px; height: 76px; }
+      .podium-slot.second .podium-avatar { width: 60px; height: 60px; }
+      .podium-slot.third .podium-avatar { width: 54px; height: 54px; }
+      .podium-slot.first .podium-base { width: 100px; height: 76px; }
+      .podium-slot.second .podium-base { width: 86px; height: 52px; }
+      .podium-slot.third .podium-base { width: 86px; height: 38px; }
+    }
   </style>
 </head>
 <body>
 
 <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
-  <div style="display:flex;gap:12px;align-items:center;">
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <div class="nav-links">
     <a href="/weekly-challenge.html">⚡ Challenge</a>
     <a href="/index.html">Home</a>
   </div>
@@ -152,74 +169,108 @@
 
   <div id="content" style="display:none;">
     <div class="header">
-      <h1>🏆 Weekly Leaderboard</h1>
-      <div class="week-info" id="week-info">Loading...</div>
+      <h1>🏆 Leaderboard</h1>
     </div>
+
+    <div class="tabs" id="subject-tabs">
+      <button class="tab overall active" onclick="switchTab('overall', this)">🏅 Overall</button>
+      <button class="tab bio" onclick="switchTab('biology', this)">🌿 Biology</button>
+      <button class="tab chem" onclick="switchTab('chemistry', this)">🧪 Chemistry</button>
+      <button class="tab phys" onclick="switchTab('physics', this)">⚡ Physics</button>
+    </div>
+
+    <div class="tier-toggle">
+      <button class="tier-btn active" onclick="switchTier('foundation', this)">🌱 Foundation</button>
+      <button class="tier-btn" onclick="switchTier('higher', this)">⭐ Higher</button>
+    </div>
+
+    <div class="week-info" id="week-info"></div>
 
     <div class="podium" id="podium"></div>
     <div class="rest-list" id="rest-list"></div>
     <div class="empty" id="empty" style="display:none;">
       <div style="font-size:3rem;">🏟️</div>
-      <h3>No scores yet this week!</h3>
+      <h3>No scores yet!</h3>
       <p>Be the first to complete the challenge and claim the top spot.</p>
     </div>
 
-    <a href="/weekly-challenge.html" class="cta-challenge">Take This Week's Challenge ⚡</a>
+    <a href="/weekly-challenge.html" class="cta-challenge">Take the Weekly Challenge ⚡</a>
   </div>
 </div>
 
 <script>
   var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
   var medals = ['🥇', '🥈', '🥉'];
-  var subjectEmojis = { biology: '🌿 Biology', chemistry: '🧪 Chemistry', physics: '⚡ Physics' };
+  var currentSubject = 'overall';
+  var currentTier = 'foundation';
 
-  // Pre-warm Render backend
   fetch(RENDER_URL + '/api/health').catch(function(){});
 
-  async function init() {
+  function switchTab(subject, el) {
+    currentSubject = subject;
+    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+    el.classList.add('active');
+    loadLeaderboard();
+  }
+
+  function switchTier(tier, el) {
+    currentTier = tier;
+    document.querySelectorAll('.tier-btn').forEach(function(b) { b.classList.remove('active'); });
+    el.classList.add('active');
+    loadLeaderboard();
+  }
+
+  async function loadLeaderboard() {
+    document.getElementById('podium').innerHTML = '';
+    document.getElementById('rest-list').innerHTML = '';
+    document.getElementById('empty').style.display = 'none';
+
+    var url;
+    if (currentSubject === 'overall') {
+      url = RENDER_URL + '/api/weekly-leaderboard?overall=true&tier=' + currentTier;
+    } else {
+      url = RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&tier=' + currentTier;
+    }
+
     try {
-      var res = await fetch(RENDER_URL + '/api/weekly-leaderboard');
+      var res = await fetch(url);
       var data = await res.json();
 
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
-
-      // Week info
       var infoEl = document.getElementById('week-info');
-      if (data.subject) {
-        infoEl.textContent = (subjectEmojis[data.subject] || data.subject) + ' — Week of ' + formatDate(data.week_start);
-        infoEl.className = 'week-info ' + data.subject;
+      if (currentSubject === 'overall') {
+        infoEl.textContent = '🏅 Overall ' + currentTier.charAt(0).toUpperCase() + currentTier.slice(1) + ' — Week of ' + formatDate(data.week_start);
       } else {
-        infoEl.textContent = 'Week of ' + formatDate(data.week_start);
+        var subjectLabels = { biology: '🌿 Biology', chemistry: '🧪 Chemistry', physics: '⚡ Physics' };
+        infoEl.textContent = (subjectLabels[currentSubject] || currentSubject) + ' ' + currentTier.charAt(0).toUpperCase() + currentTier.slice(1) + ' — Week of ' + formatDate(data.week_start);
       }
 
       var lb = data.leaderboard || [];
-
       if (lb.length === 0) {
         document.getElementById('empty').style.display = 'block';
         return;
       }
 
-      // Podium (top 3)
+      // Podium
       var podiumHtml = '';
       var podiumClasses = ['', 'first', 'second', 'third'];
+      var rankLabels = ['1st', '2nd', '3rd'];
       for (var i = 0; i < Math.min(3, lb.length); i++) {
         var p = lb[i];
-        var avatarContent = p.avatar_url
-          ? '<img src="' + p.avatar_url + '" alt=""/>'
-          : '🧑‍🎓';
+        var avatarContent = p.avatar_url ? '<img src="' + p.avatar_url + '" alt=""/>' : '🧑‍🎓';
         var timeTxt = p.time_taken ? formatTime(p.time_taken) : '';
-
-        var rankLabel = ['1st', '2nd', '3rd'];
+        var extraInfo = '';
+        if (currentSubject === 'overall' && p.subjects_done) {
+          extraInfo = '<div class="podium-extra">' + p.subjects_done + '/3 subjects</div>';
+        }
         podiumHtml += '<div class="podium-slot ' + podiumClasses[i + 1] + '">' +
           '<div class="podium-medal">' + medals[i] + '</div>' +
           '<div class="podium-avatar">' + avatarContent + '</div>' +
-          '<div class="podium-name">' + escHtml(p.name) + '</div>' +
-          (p.school ? '<div class="podium-school">' + escHtml(p.school) + '</div>' : '') +
+          '<div class="podium-name">' + esc(p.name) + '</div>' +
+          (p.school ? '<div class="podium-school">' + esc(p.school) + '</div>' : '') +
           '<div class="podium-score">' + p.score + '/' + p.max_score + '</div>' +
-          (timeTxt ? '<div style="font-size:0.7rem;color:var(--muted);margin-top:2px;">' + timeTxt + '</div>' : '') +
-          '<div class="podium-base">' + rankLabel[i] + '</div>' +
-          '</div>';
+          (timeTxt ? '<div class="podium-extra">' + timeTxt + '</div>' : '') +
+          extraInfo +
+          '<div class="podium-base">' + rankLabels[i] + '</div></div>';
       }
       document.getElementById('podium').innerHTML = podiumHtml;
 
@@ -228,23 +279,36 @@
         var restHtml = '';
         for (var j = 3; j < lb.length; j++) {
           var r = lb[j];
-          var rAvatar = r.avatar_url
-            ? '<img src="' + r.avatar_url + '" alt=""/>'
-            : '🧑‍🎓';
+          var rAvatar = r.avatar_url ? '<img src="' + r.avatar_url + '" alt=""/>' : '🧑‍🎓';
+          var rExtra = '';
+          if (currentSubject === 'overall' && r.subjects_done) {
+            rExtra = ' <span style="color:var(--muted);font-size:0.72rem;">(' + r.subjects_done + '/3)</span>';
+          }
           restHtml += '<div class="rest-item">' +
             '<span class="rest-rank">' + r.rank + '</span>' +
             '<div class="rest-avatar">' + rAvatar + '</div>' +
             '<div class="rest-info">' +
-              '<div class="rest-name">' + escHtml(r.name) + (r.school ? ' <span style="color:var(--muted);font-weight:600;font-size:0.82rem;">· ' + escHtml(r.school) + '</span>' : '') + '</div>' +
+              '<div class="rest-name">' + esc(r.name) + (r.school ? ' <span style="color:var(--muted);font-weight:600;font-size:0.78rem;">· ' + esc(r.school) + '</span>' : '') + '</div>' +
             '</div>' +
-            '<span class="rest-score">' + r.score + '/' + r.max_score + '</span>' +
-            '</div>';
+            '<span class="rest-score">' + r.score + '/' + r.max_score + rExtra + '</span></div>';
         }
         document.getElementById('rest-list').innerHTML = restHtml;
       }
 
     } catch (err) {
       console.error(err);
+      document.getElementById('empty').style.display = 'block';
+      document.querySelector('#empty h3').textContent = 'Could not load leaderboard';
+      document.querySelector('#empty p').textContent = 'Try refreshing the page.';
+    }
+  }
+
+  async function init() {
+    try {
+      await loadLeaderboard();
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+    } catch (err) {
       document.getElementById('loading').innerHTML = '<p style="color:var(--chemistry);">Could not load leaderboard. Try refreshing.</p>';
     }
   }
@@ -256,17 +320,12 @@
     var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   }
-
   function formatTime(secs) {
-    var m = Math.floor(secs / 60);
-    var s = secs % 60;
+    var m = Math.floor(secs / 60); var s = secs % 60;
     return m + 'm ' + s + 's';
   }
-
-  function escHtml(str) {
-    var div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
+  function esc(str) {
+    var div = document.createElement('div'); div.textContent = str; return div.innerHTML;
   }
 </script>
 </body>
