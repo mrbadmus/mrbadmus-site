@@ -4,66 +4,88 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Weekly Challenge | MrBadmusAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root {
       --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
       --physics: #4ECDC4; --chemistry: #FF6B6B; --biology: #6BCB77;
-      --text: #E8E8F0; --muted: #888; --yellow: #FFD93D;
+      --text: #E8E8F0; --muted: #888; --yellow: #FFD93D; --orange: #FF6B35;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--darker); color: var(--text); font-family: 'Nunito', sans-serif; min-height: 100vh; }
+    body { background: var(--darker); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
 
     .nav {
-      position: fixed; top: 0; left: 0; right: 0; padding: 12px 24px;
+      position: sticky; top: 0; left: 0; right: 0; padding: 0 24px; height: 60px;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(15,15,26,0.95); backdrop-filter: blur(10px);
-      border-bottom: 1px solid #2a2a4a; z-index: 10;
+      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 100;
     }
     .nav-brand {
-      font-family: 'Fredoka One', cursive; font-size: 1.3rem; text-decoration: none;
-      background: linear-gradient(135deg, #4ECDC4, #6BCB77);
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.4rem; text-decoration: none;
+      background: linear-gradient(135deg, var(--yellow), var(--orange));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: flex; align-items: center; gap: 8px;
     }
-    .nav a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.88rem; }
+    .brand-logo { flex-shrink: 0; }
+    .nav-links { display: flex; gap: 10px; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.88rem; padding: 6px 14px; border-radius: 20px; }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); }
 
-    .container { max-width: 680px; margin: 0 auto; padding: 80px 20px 40px; }
+    .container { max-width: 720px; margin: 0 auto; padding: 32px 20px 40px; }
 
-    /* ── INTRO SCREEN ──────────────────────────────── */
-    .intro { text-align: center; }
-    .intro-emoji { font-size: 4rem; margin-bottom: 16px; }
-    .intro h1 {
-      font-family: 'Fredoka One', cursive; font-size: 2.2rem; margin-bottom: 8px;
-    }
-    .intro-subject {
-      display: inline-block; padding: 6px 18px; border-radius: 20px;
-      font-weight: 800; font-size: 0.9rem; margin: 12px 0 20px;
-    }
-    .intro-subject.biology { background: rgba(107,203,119,0.2); color: var(--biology); }
-    .intro-subject.chemistry { background: rgba(255,107,107,0.2); color: var(--chemistry); }
-    .intro-subject.physics { background: rgba(78,205,196,0.2); color: var(--physics); }
+    /* ── SUBJECT PICKER ─────────────────────────── */
+    .picker { text-align: center; }
+    .picker h1 { font-family: 'Sora', sans-serif; font-size: 2rem; margin-bottom: 6px; }
+    .picker p { color: var(--muted); margin-bottom: 28px; font-size: 0.95rem; }
+    .picker-label { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; margin-bottom: 16px; color: var(--muted); }
 
-    .intro-rules {
-      background: var(--card); border: 1px solid #2a2a4a; border-radius: 16px;
-      padding: 24px; margin: 20px 0; text-align: left;
+    .subject-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 28px; }
+    .subject-card {
+      background: var(--card); border: 2px solid #2a2a4a; border-radius: 18px;
+      padding: 28px 16px; text-align: center; cursor: pointer; transition: all 0.2s;
     }
-    .intro-rules h3 { font-family: 'Fredoka One', cursive; color: var(--yellow); margin-bottom: 12px; }
-    .intro-rules p { color: var(--muted); line-height: 1.7; margin-bottom: 8px; font-size: 0.92rem; }
-    .intro-rules strong { color: var(--text); }
+    .subject-card:hover { transform: translateY(-3px); }
+    .subject-card.selected { transform: translateY(-3px); }
+    .subject-card.bio.selected { border-color: var(--biology); box-shadow: 0 8px 30px rgba(107,203,119,0.2); }
+    .subject-card.chem.selected { border-color: var(--chemistry); box-shadow: 0 8px 30px rgba(255,107,107,0.2); }
+    .subject-card.phys.selected { border-color: var(--physics); box-shadow: 0 8px 30px rgba(78,205,196,0.2); }
+    .subject-card .sc-emoji { font-size: 2.5rem; margin-bottom: 10px; display: block; }
+    .subject-card .sc-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; }
+    .subject-card .sc-done { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
+    .subject-card .sc-done.completed { color: var(--biology); }
 
-    .countdown {
-      background: var(--dark); border-radius: 12px; padding: 14px; margin: 16px 0;
-      font-weight: 800; font-size: 0.9rem; color: var(--yellow);
+    .tier-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .tier-card {
+      background: var(--card); border: 2px solid #2a2a4a; border-radius: 16px;
+      padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.2s;
     }
+    .tier-card:hover { border-color: #4a4a6a; }
+    .tier-card.selected.foundation { border-color: var(--biology); box-shadow: 0 6px 24px rgba(107,203,119,0.15); }
+    .tier-card.selected.higher { border-color: var(--yellow); box-shadow: 0 6px 24px rgba(255,217,61,0.15); }
+    .tier-card .tc-emoji { font-size: 2rem; margin-bottom: 8px; display: block; }
+    .tier-card .tc-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; }
+    .tier-card .tc-desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
 
     .btn-start {
       display: inline-block; padding: 16px 48px; border-radius: 16px; border: none;
-      font-family: 'Fredoka One', cursive; font-size: 1.2rem; cursor: pointer;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.1rem; cursor: pointer;
       background: linear-gradient(135deg, var(--physics), #38a89d); color: #0F0F1A;
-      transition: all 0.2s; margin-top: 12px;
+      transition: all 0.2s; margin-top: 8px;
     }
     .btn-start:hover { opacity: 0.9; transform: translateY(-2px); }
-    .btn-start:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-start:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+
+    .countdown {
+      background: var(--dark); border-radius: 12px; padding: 14px; margin: 16px auto;
+      font-weight: 800; font-size: 0.88rem; color: var(--yellow); max-width: 480px;
+    }
+
+    .intro-rules {
+      background: var(--card); border: 1px solid #2a2a4a; border-radius: 16px;
+      padding: 22px; margin: 20px auto; text-align: left; max-width: 480px;
+    }
+    .intro-rules h3 { font-family: 'Sora', sans-serif; color: var(--yellow); margin-bottom: 10px; font-size: 0.95rem; }
+    .intro-rules p { color: var(--muted); line-height: 1.7; margin-bottom: 6px; font-size: 0.88rem; }
+    .intro-rules strong { color: var(--text); }
 
     /* ── QUIZ SCREEN ───────────────────────────────── */
     .quiz { display: none; }
@@ -74,23 +96,20 @@
     }
     .quiz-progress-bar { flex: 1; height: 6px; background: #2a2a4a; border-radius: 6px; margin: 0 16px; }
     .quiz-progress-fill { height: 100%; background: var(--physics); border-radius: 6px; transition: width 0.3s; }
-    .quiz-counter { font-family: 'Fredoka One', cursive; font-size: 0.95rem; white-space: nowrap; }
-    .quiz-timer { font-family: 'Fredoka One', cursive; font-size: 0.95rem; color: var(--yellow); white-space: nowrap; }
+    .quiz-counter { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.95rem; white-space: nowrap; }
+    .quiz-timer { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.95rem; color: var(--yellow); white-space: nowrap; }
 
     .question-card {
-      background: var(--card); border: 1px solid #2a2a4a; border-radius: 18px;
-      padding: 28px 24px;
+      background: var(--card); border: 1px solid #2a2a4a; border-radius: 18px; padding: 28px 24px;
     }
     .q-difficulty {
       display: inline-block; padding: 3px 10px; border-radius: 20px;
       font-size: 0.72rem; font-weight: 800; margin-bottom: 12px;
     }
-    .q-difficulty.foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
-    .q-difficulty.mid { background: rgba(255,217,61,0.15); color: var(--yellow); }
-    .q-difficulty.higher { background: rgba(255,107,107,0.15); color: var(--chemistry); }
-
+    .q-difficulty.easy { background: rgba(107,203,119,0.15); color: var(--biology); }
+    .q-difficulty.medium { background: rgba(255,217,61,0.15); color: var(--yellow); }
+    .q-difficulty.hard { background: rgba(255,107,107,0.15); color: var(--chemistry); }
     .q-text { font-size: 1.1rem; font-weight: 700; line-height: 1.6; margin-bottom: 20px; }
-
     .q-options { display: flex; flex-direction: column; gap: 10px; }
     .q-option {
       background: var(--dark); border: 2px solid #2a2a4a; border-radius: 12px;
@@ -102,14 +121,14 @@
     .q-option .letter {
       width: 32px; height: 32px; border-radius: 8px; background: #2a2a4a;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Fredoka One', cursive; font-size: 0.9rem; flex-shrink: 0;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.9rem; flex-shrink: 0;
     }
     .q-option.selected .letter { background: var(--physics); color: #0F0F1A; }
 
     .q-nav { display: flex; gap: 12px; margin-top: 24px; }
     .btn {
       flex: 1; padding: 14px; border-radius: 14px; border: none;
-      font-family: 'Fredoka One', cursive; font-size: 1.05rem; cursor: pointer; transition: all 0.2s;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; transition: all 0.2s;
     }
     .btn-primary { background: linear-gradient(135deg, var(--physics), #38a89d); color: #0F0F1A; }
     .btn-primary:hover { opacity: 0.9; }
@@ -117,122 +136,149 @@
     .btn-secondary { background: #2a2a4a; color: var(--muted); }
     .btn-secondary:hover { background: #3a3a5a; color: var(--text); }
 
-    /* ── RESULTS SCREEN ────────────────────────────── */
+    /* ── RESULTS ────────────────────────────────────── */
     .results { display: none; text-align: center; }
-    .results-score {
-      font-family: 'Fredoka One', cursive; font-size: 4rem; margin: 20px 0 8px;
-    }
-    .results-message { font-size: 1.1rem; color: var(--muted); margin-bottom: 24px; }
+    .results-score { font-family: 'Sora', sans-serif; font-size: 3.5rem; font-weight: 800; margin: 20px 0 8px; }
+    .results-message { font-size: 1rem; color: var(--muted); margin-bottom: 24px; }
     .results-breakdown {
       background: var(--card); border: 1px solid #2a2a4a; border-radius: 16px;
       padding: 20px; margin: 20px 0; text-align: left;
     }
-    .result-item {
-      padding: 12px 0; border-bottom: 1px solid #1e2d4a;
-    }
+    .result-item { padding: 12px 0; border-bottom: 1px solid #1e2d4a; }
     .result-item:last-child { border-bottom: none; }
     .result-q { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
     .result-correct { color: var(--biology); font-weight: 800; font-size: 0.85rem; }
     .result-wrong { color: var(--chemistry); font-weight: 800; font-size: 0.85rem; }
     .result-explanation { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
-
     .results-actions { display: flex; gap: 12px; margin-top: 24px; }
     .results-actions a {
       flex: 1; padding: 14px; border-radius: 14px; text-align: center;
-      font-family: 'Fredoka One', cursive; font-size: 1rem; text-decoration: none;
-      transition: all 0.2s;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.95rem; text-decoration: none;
     }
 
-    /* ── ALREADY DONE / LOADING ────────────────────── */
-    .loading { text-align: center; padding-top: 120px; }
+    /* ── LOADING / STATES ──────────────────────────── */
+    .loading { text-align: center; padding-top: 100px; }
     .spinner {
       width: 40px; height: 40px; border: 4px solid #2a2a4a; border-top-color: var(--physics);
       border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .already-done { text-align: center; padding-top: 60px; }
+    .already-done h2 { font-family: 'Sora', sans-serif; font-size: 1.5rem; margin: 16px 0 8px; }
 
-    .already-done { text-align: center; padding-top: 80px; }
-    .already-done h2 { font-family: 'Fredoka One', cursive; font-size: 1.6rem; margin: 16px 0 8px; }
-    .already-done p { color: var(--muted); }
+    @media (max-width: 600px) {
+      .subject-cards { grid-template-columns: 1fr; gap: 10px; }
+      .subject-card { padding: 18px 14px; display: flex; align-items: center; gap: 14px; text-align: left; }
+      .subject-card .sc-emoji { font-size: 2rem; margin-bottom: 0; }
+      .tier-cards { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 
 <nav class="nav">
-  <a class="nav-brand" href="/index.html">⚗️ MrBadmusAI</a>
-  <div style="display:flex;gap:12px;align-items:center;">
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <div class="nav-links">
     <a href="/leaderboard.html">🏆 Leaderboard</a>
     <a href="/index.html">Home</a>
   </div>
 </nav>
 
 <div class="container">
-  <!-- Loading -->
   <div class="loading" id="loading">
     <div class="spinner"></div>
-    <p style="color:var(--muted);">Loading this week's challenge...</p>
+    <p style="color:var(--muted);">Loading...</p>
   </div>
 
-  <!-- Already completed -->
-  <div class="already-done" id="already-done" style="display:none;">
-    <div style="font-size:3rem;">✅</div>
-    <h2>You've already done this week's challenge!</h2>
-    <p>Your score: <strong id="prev-score"></strong></p>
-    <p style="margin-top:20px;">New challenge drops Monday. Check the leaderboard to see where you rank!</p>
-    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;">
-      <a href="/leaderboard.html" style="padding:12px 24px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Fredoka One',cursive;text-decoration:none;">🏆 Leaderboard</a>
-      <a href="/index.html" style="padding:12px 24px;border-radius:14px;background:#2a2a4a;color:var(--muted);font-family:'Fredoka One',cursive;text-decoration:none;">← Back</a>
-    </div>
-  </div>
-
-  <!-- Not logged in -->
-  <div id="not-logged-in" style="display:none;text-align:center;padding-top:80px;">
+  <div id="not-logged-in" style="display:none;text-align:center;padding-top:60px;">
     <div style="font-size:3rem;">🔒</div>
-    <h2 style="font-family:'Fredoka One',cursive;font-size:1.6rem;margin:16px 0 8px;">Sign in to take the challenge</h2>
+    <h2 style="font-family:'Sora',sans-serif;font-size:1.5rem;margin:16px 0 8px;">Sign in to take the challenge</h2>
     <p style="color:var(--muted);margin-bottom:20px;">You need a free MrBadmusAI account to compete.</p>
-    <a href="/auth.html?tab=signup" style="padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Fredoka One',cursive;text-decoration:none;display:inline-block;">Create Account</a>
+    <a href="/auth.html?tab=signup" style="padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Sora',sans-serif;font-weight:800;text-decoration:none;display:inline-block;">Create Account</a>
   </div>
 
-  <!-- Intro -->
-  <div class="intro" id="intro" style="display:none;">
-    <div class="intro-emoji" id="intro-emoji">🌿</div>
-    <h1>Weekly Challenge</h1>
-    <div class="intro-subject" id="intro-subject">Biology</div>
+  <!-- STEP 1: Pick subject -->
+  <div class="picker" id="picker" style="display:none;">
+    <h1>⚡ Weekly Challenge</h1>
+    <p>Choose a subject and tier, then test yourself with 15 questions.</p>
+
+    <div class="picker-label">Pick your subject</div>
+    <div class="subject-cards">
+      <div class="subject-card bio" onclick="pickSubject('biology', this)" id="sc-biology">
+        <span class="sc-emoji">🌿</span>
+        <span class="sc-name">Biology</span>
+        <span class="sc-done" id="done-biology"></span>
+      </div>
+      <div class="subject-card chem" onclick="pickSubject('chemistry', this)" id="sc-chemistry">
+        <span class="sc-emoji">🧪</span>
+        <span class="sc-name">Chemistry</span>
+        <span class="sc-done" id="done-chemistry"></span>
+      </div>
+      <div class="subject-card phys" onclick="pickSubject('physics', this)" id="sc-physics">
+        <span class="sc-emoji">⚡</span>
+        <span class="sc-name">Physics</span>
+        <span class="sc-done" id="done-physics"></span>
+      </div>
+    </div>
+
+    <div class="picker-label">Pick your tier</div>
+    <div class="tier-cards">
+      <div class="tier-card foundation" onclick="pickTier('foundation', this)" id="tc-foundation">
+        <span class="tc-emoji">🌱</span>
+        <span class="tc-name">Foundation</span>
+        <span class="tc-desc">Grades 1–5</span>
+      </div>
+      <div class="tier-card higher" onclick="pickTier('higher', this)" id="tc-higher">
+        <span class="tc-emoji">⭐</span>
+        <span class="tc-name">Higher</span>
+        <span class="tc-desc">Grades 4–9</span>
+      </div>
+    </div>
 
     <div class="intro-rules">
       <h3>⚡ Rules</h3>
-      <p><strong>15 questions</strong> — from Foundation to Higher difficulty</p>
-      <p><strong>One attempt only</strong> — no retakes, choose carefully</p>
-      <p><strong>Timed</strong> — your time is recorded (faster = higher rank on ties)</p>
+      <p><strong>15 questions</strong> — matched to your tier level</p>
+      <p><strong>One attempt per subject</strong> — do all 3 to top the overall leaderboard</p>
+      <p><strong>Timed</strong> — faster = higher rank on ties</p>
       <p><strong>Top 10</strong> make the leaderboard with name, school and picture</p>
     </div>
 
-    <div class="countdown" id="countdown">Challenge closes Sunday midnight</div>
+    <div class="countdown" id="countdown">New challenges drop Friday 10:15 AM</div>
 
-    <button class="btn-start" id="btn-start" onclick="startQuiz()">Start Challenge ⚡</button>
+    <button class="btn-start" id="btn-start" onclick="startChallenge()" disabled>Select a subject and tier ⚡</button>
   </div>
 
-  <!-- Quiz -->
+  <!-- QUIZ -->
   <div class="quiz" id="quiz">
     <div class="quiz-progress">
       <span class="quiz-counter" id="q-counter">1 / 15</span>
       <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="q-bar" style="width:6.67%"></div></div>
       <span class="quiz-timer" id="q-timer">0:00</span>
     </div>
-
     <div class="question-card">
-      <span class="q-difficulty" id="q-difficulty">Foundation</span>
+      <span class="q-difficulty" id="q-difficulty">Easy</span>
       <div class="q-text" id="q-text"></div>
       <div class="q-options" id="q-options"></div>
     </div>
-
     <div class="q-nav">
       <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()" disabled>← Back</button>
       <button class="btn btn-primary" id="btn-next" onclick="nextQuestion()">Next →</button>
     </div>
   </div>
 
-  <!-- Results -->
+  <!-- ALREADY DONE for selected combo -->
+  <div class="already-done" id="already-done" style="display:none;">
+    <div style="font-size:3rem;">✅</div>
+    <h2>You've already done this challenge!</h2>
+    <p>Your score: <strong id="prev-score"></strong></p>
+    <p style="margin-top:16px;color:var(--muted);">Try another subject or check the leaderboard!</p>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+      <a href="#" onclick="goBack()" style="padding:12px 24px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Sora',sans-serif;font-weight:800;text-decoration:none;">← Pick another subject</a>
+      <a href="/leaderboard.html" style="padding:12px 24px;border-radius:14px;background:#2a2a4a;color:var(--muted);font-family:'Sora',sans-serif;font-weight:800;text-decoration:none;">🏆 Leaderboard</a>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
   <div class="results" id="results">
     <div style="font-size:3rem;" id="results-emoji">🎉</div>
     <div class="results-score" id="results-score">0 / 15</div>
@@ -240,7 +286,7 @@
     <div class="results-breakdown" id="results-breakdown"></div>
     <div class="results-actions">
       <a href="/leaderboard.html" style="background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;">🏆 Leaderboard</a>
-      <a href="/index.html" style="background:#2a2a4a;color:var(--muted);">← Back to revision</a>
+      <a href="#" onclick="goBack()" style="background:#2a2a4a;color:var(--muted);">← Try another subject</a>
     </div>
   </div>
 </div>
@@ -253,18 +299,64 @@
   var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   var session = null;
+  var selectedSubject = null;
+  var selectedTier = null;
   var challenge = null;
   var questions = [];
   var currentQ = 0;
   var answers = [];
   var timerInterval = null;
   var startTime = null;
+  var completedChallenges = {}; // track which combos are done
 
-  var subjectEmojis = { biology: '🌿', chemistry: '🧪', physics: '⚡' };
-  var subjectColors = { biology: 'biology', chemistry: 'chemistry', physics: 'physics' };
-
-  // Pre-warm Render backend immediately (prevents cold start delay)
   fetch(RENDER_URL + '/api/health').catch(function(){});
+
+  function goBack() {
+    document.getElementById('already-done').style.display = 'none';
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('quiz').style.display = 'none';
+    document.getElementById('picker').style.display = 'block';
+    selectedSubject = null;
+    selectedTier = null;
+    document.querySelectorAll('.subject-card').forEach(function(c) { c.classList.remove('selected'); });
+    document.querySelectorAll('.tier-card').forEach(function(c) { c.classList.remove('selected'); });
+    updateStartButton();
+    window.scrollTo(0, 0);
+    return false;
+  }
+
+  function pickSubject(subj, el) {
+    selectedSubject = subj;
+    document.querySelectorAll('.subject-card').forEach(function(c) { c.classList.remove('selected'); });
+    el.classList.add('selected');
+    updateStartButton();
+  }
+
+  function pickTier(tier, el) {
+    selectedTier = tier;
+    document.querySelectorAll('.tier-card').forEach(function(c) { c.classList.remove('selected'); });
+    el.classList.add('selected');
+    updateStartButton();
+  }
+
+  function updateStartButton() {
+    var btn = document.getElementById('btn-start');
+    if (selectedSubject && selectedTier) {
+      var key = selectedSubject + '_' + selectedTier;
+      if (completedChallenges[key]) {
+        btn.textContent = 'Already completed ✅';
+        btn.disabled = true;
+      } else {
+        var subName = selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1);
+        var tierName = selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
+        btn.textContent = 'Start ' + subName + ' ' + tierName + ' ⚡';
+        btn.disabled = false;
+      }
+    } else {
+      btn.textContent = 'Select a subject and tier ⚡';
+      btn.disabled = true;
+    }
+  }
 
   async function init() {
     var result = await sb.auth.getSession();
@@ -276,18 +368,68 @@
       return;
     }
 
-    // Fetch this week's challenge
+    // Check which challenges are already completed this week
+    var subjects = ['biology', 'chemistry', 'physics'];
+    var tiers = ['foundation', 'higher'];
+    for (var s = 0; s < subjects.length; s++) {
+      for (var t = 0; t < tiers.length; t++) {
+        try {
+          var res = await fetch(RENDER_URL + '/api/weekly-challenge?subject=' + subjects[s] + '&tier=' + tiers[t], {
+            headers: { 'Authorization': 'Bearer ' + session.access_token }
+          });
+          if (res.ok) {
+            var data = await res.json();
+            if (data.already_attempted) {
+              completedChallenges[subjects[s] + '_' + tiers[t]] = data.previous_score;
+            }
+          }
+        } catch(e) {}
+      }
+    }
+
+    // Show completion status on subject cards
+    for (var s = 0; s < subjects.length; s++) {
+      var fDone = !!completedChallenges[subjects[s] + '_foundation'];
+      var hDone = !!completedChallenges[subjects[s] + '_higher'];
+      var el = document.getElementById('done-' + subjects[s]);
+      if (fDone && hDone) {
+        el.textContent = '✅ Both tiers done';
+        el.className = 'sc-done completed';
+      } else if (fDone) {
+        el.textContent = '✅ Foundation done';
+        el.className = 'sc-done completed';
+      } else if (hDone) {
+        el.textContent = '✅ Higher done';
+        el.className = 'sc-done completed';
+      }
+    }
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('picker').style.display = 'block';
+    updateCountdown();
+  }
+  init();
+
+  async function startChallenge() {
+    if (!selectedSubject || !selectedTier) return;
+
+    document.getElementById('picker').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject + ' ' + selectedTier + ' challenge...';
+
     try {
-      var res = await fetch(RENDER_URL + '/api/weekly-challenge', {
-        headers: { 'Authorization': 'Bearer ' + session.access_token }
+      var sessResult = await sb.auth.getSession();
+      var token = sessResult.data.session ? sessResult.data.session.access_token : session.access_token;
+
+      var res = await fetch(RENDER_URL + '/api/weekly-challenge?subject=' + selectedSubject + '&tier=' + selectedTier, {
+        headers: { 'Authorization': 'Bearer ' + token }
       });
 
       if (!res.ok) {
         var err = await res.json();
+        alert(err.error || 'Could not load challenge.');
         document.getElementById('loading').style.display = 'none';
-        document.getElementById('intro').style.display = 'block';
-        document.querySelector('.intro-rules').innerHTML = '<h3>⏳ Coming Soon</h3><p>' + (err.error || 'No challenge available this week.') + '</p>';
-        document.getElementById('btn-start').style.display = 'none';
+        document.getElementById('picker').style.display = 'block';
         return;
       }
 
@@ -303,61 +445,40 @@
         return;
       }
 
-      // Show intro
-      document.getElementById('intro').style.display = 'block';
-      document.getElementById('intro-emoji').textContent = subjectEmojis[challenge.subject] || '📝';
-      var subjectTag = document.getElementById('intro-subject');
-      subjectTag.textContent = challenge.subject.charAt(0).toUpperCase() + challenge.subject.slice(1);
-      subjectTag.className = 'intro-subject ' + (subjectColors[challenge.subject] || '');
-
-      // Countdown to Sunday midnight
-      updateCountdown();
+      // Start quiz
+      document.getElementById('quiz').style.display = 'block';
+      answers = new Array(questions.length).fill(null);
+      currentQ = 0;
+      startTime = Date.now();
+      renderQuestion();
+      timerInterval = setInterval(updateTimer, 1000);
 
     } catch (err) {
       console.error(err);
       document.getElementById('loading').style.display = 'none';
-      document.getElementById('intro').style.display = 'block';
-      document.querySelector('.intro-rules').innerHTML = '<h3>⚠️ Connection Error</h3><p>Could not load this week\'s challenge. Try refreshing the page.</p>';
-      document.getElementById('btn-start').style.display = 'none';
+      document.getElementById('picker').style.display = 'block';
+      alert('Connection error. Try again.');
     }
   }
-  init();
 
   function updateCountdown() {
     var now = new Date();
-    // Find next Friday 10:15 UK time
     var target = new Date(now);
     var day = target.getDay();
     var daysUntilFriday;
     if (day === 5) {
-      // It's Friday — if before 10:15, countdown to today 10:15; otherwise next Friday
       if (target.getHours() < 10 || (target.getHours() === 10 && target.getMinutes() < 15)) {
         daysUntilFriday = 0;
-      } else {
-        daysUntilFriday = 7;
-      }
-    } else if (day < 5) {
-      daysUntilFriday = 5 - day;
-    } else {
-      daysUntilFriday = 5 + (7 - day);
-    }
+      } else { daysUntilFriday = 7; }
+    } else if (day < 5) { daysUntilFriday = 5 - day; }
+    else { daysUntilFriday = 5 + (7 - day); }
     target.setDate(target.getDate() + daysUntilFriday);
     target.setHours(10, 15, 0, 0);
     var diff = target - now;
     if (diff < 0) diff = 0;
     var days = Math.floor(diff / 86400000);
     var hours = Math.floor((diff % 86400000) / 3600000);
-    document.getElementById('countdown').textContent = 'New challenge drops in ' + days + 'd ' + hours + 'h — Friday 10:15 AM';
-  }
-
-  function startQuiz() {
-    document.getElementById('intro').style.display = 'none';
-    document.getElementById('quiz').style.display = 'block';
-    answers = new Array(questions.length).fill(null);
-    currentQ = 0;
-    startTime = Date.now();
-    renderQuestion();
-    timerInterval = setInterval(updateTimer, 1000);
+    document.getElementById('countdown').textContent = 'New challenges in ' + days + 'd ' + hours + 'h — Friday 10:15 AM';
   }
 
   function updateTimer() {
@@ -371,27 +492,22 @@
     var q = questions[currentQ];
     document.getElementById('q-counter').textContent = (currentQ + 1) + ' / ' + questions.length;
     document.getElementById('q-bar').style.width = (((currentQ + 1) / questions.length) * 100) + '%';
-
     var diffEl = document.getElementById('q-difficulty');
-    diffEl.textContent = q.difficulty === 'foundation' ? '🌱 Foundation' : q.difficulty === 'higher' ? '⭐ Higher' : '📘 Mid-range';
-    diffEl.className = 'q-difficulty ' + (q.difficulty || 'mid');
-
+    var diffLabels = { easy: '🌱 Easy', medium: '📘 Medium', hard: '⭐ Hard', foundation: '🌱 Foundation', mid: '📘 Mid-range', higher: '⭐ Higher' };
+    diffEl.textContent = diffLabels[q.difficulty] || q.difficulty;
+    diffEl.className = 'q-difficulty ' + (q.difficulty || 'medium');
     document.getElementById('q-text').textContent = q.question;
-
     var optHtml = '';
     var letters = ['A', 'B', 'C', 'D'];
     for (var i = 0; i < letters.length; i++) {
       var letter = letters[i];
       var selected = answers[currentQ] === letter ? ' selected' : '';
       optHtml += '<div class="q-option' + selected + '" onclick="selectAnswer(\'' + letter + '\', this)">' +
-        '<span class="letter">' + letter + '</span>' +
-        '<span>' + q.options[letter] + '</span></div>';
+        '<span class="letter">' + letter + '</span><span>' + q.options[letter] + '</span></div>';
     }
     document.getElementById('q-options').innerHTML = optHtml;
-
     document.getElementById('btn-prev').disabled = currentQ === 0;
-    var isLast = currentQ === questions.length - 1;
-    document.getElementById('btn-next').textContent = isLast ? 'Submit ✅' : 'Next →';
+    document.getElementById('btn-next').textContent = currentQ === questions.length - 1 ? 'Submit ✅' : 'Next →';
   }
 
   function selectAnswer(letter, el) {
@@ -399,108 +515,55 @@
     document.querySelectorAll('.q-option').forEach(function(o) { o.classList.remove('selected'); });
     el.classList.add('selected');
   }
-
-  function prevQuestion() {
-    if (currentQ > 0) { currentQ--; renderQuestion(); }
-  }
-
+  function prevQuestion() { if (currentQ > 0) { currentQ--; renderQuestion(); } }
   function nextQuestion() {
-    if (answers[currentQ] === null) {
-      alert('Please select an answer before continuing.');
-      return;
-    }
-    if (currentQ < questions.length - 1) {
-      currentQ++;
-      renderQuestion();
-      window.scrollTo(0, 0);
-    } else {
-      submitQuiz();
-    }
+    if (answers[currentQ] === null) { alert('Please select an answer.'); return; }
+    if (currentQ < questions.length - 1) { currentQ++; renderQuestion(); window.scrollTo(0, 0); }
+    else { submitQuiz(); }
   }
 
   async function submitQuiz() {
     clearInterval(timerInterval);
     var timeTaken = Math.floor((Date.now() - startTime) / 1000);
-
     document.getElementById('quiz').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
     document.querySelector('#loading p').textContent = 'Submitting your answers...';
-
     try {
-      // Refresh session
       var sessResult = await sb.auth.getSession();
       var token = sessResult.data.session ? sessResult.data.session.access_token : session.access_token;
-
       var res = await fetch(RENDER_URL + '/api/weekly-challenge/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + token,
-        },
-        body: JSON.stringify({
-          challenge_id: challenge.id,
-          answers: answers,
-          time_taken: timeTaken,
-        }),
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+        body: JSON.stringify({ challenge_id: challenge.id, answers: answers, time_taken: timeTaken }),
       });
-
       var data = await res.json();
       document.getElementById('loading').style.display = 'none';
-
-      if (!res.ok) {
-        alert(data.error || 'Something went wrong submitting your answers.');
-        return;
-      }
-
+      if (!res.ok) { alert(data.error || 'Something went wrong.'); return; }
       showResults(data, timeTaken);
-
     } catch (err) {
       console.error(err);
       document.getElementById('loading').style.display = 'none';
-      alert('Connection error. Your answers may not have been saved.');
+      alert('Connection error.');
     }
   }
 
   function showResults(data, timeTaken) {
     document.getElementById('results').style.display = 'block';
     var pct = data.percentage;
-    var score = data.score;
-    var max = data.max_score;
-
-    document.getElementById('results-score').textContent = score + ' / ' + max;
+    document.getElementById('results-score').textContent = data.score + ' / ' + data.max_score;
     document.getElementById('results-score').style.color = pct >= 80 ? 'var(--biology)' : pct >= 50 ? 'var(--yellow)' : 'var(--chemistry)';
-
-    var emoji = pct >= 90 ? '🏆' : pct >= 70 ? '🔥' : pct >= 50 ? '💪' : '📚';
-    document.getElementById('results-emoji').textContent = emoji;
-
-    var messages = {
-      90: 'Outstanding! You crushed it!',
-      70: 'Great work — solid performance!',
-      50: 'Good effort — keep revising and you\'ll improve!',
-      0: 'Tough one — but now you know what to revise!'
-    };
-    var msg = pct >= 90 ? messages[90] : pct >= 70 ? messages[70] : pct >= 50 ? messages[50] : messages[0];
-    var mins = Math.floor(timeTaken / 60);
-    var secs = timeTaken % 60;
-    document.getElementById('results-message').textContent = msg + ' (Completed in ' + mins + 'm ' + secs + 's)';
-
-    // Build breakdown
+    document.getElementById('results-emoji').textContent = pct >= 90 ? '🏆' : pct >= 70 ? '🔥' : pct >= 50 ? '💪' : '📚';
+    var msgs = { 90: 'Outstanding!', 70: 'Great work!', 50: 'Good effort — keep revising!', 0: 'Tough one — now you know what to revise!' };
+    var msg = pct >= 90 ? msgs[90] : pct >= 70 ? msgs[70] : pct >= 50 ? msgs[50] : msgs[0];
+    var mins = Math.floor(timeTaken / 60); var secs = timeTaken % 60;
+    document.getElementById('results-message').textContent = msg + ' (' + mins + 'm ' + secs + 's)';
     var html = '';
     for (var i = 0; i < data.marked_answers.length; i++) {
-      var ma = data.marked_answers[i];
-      var q = questions[i];
-      var icon = ma.correct ? '✅' : '❌';
-      var cls = ma.correct ? 'result-correct' : 'result-wrong';
-      html += '<div class="result-item">';
-      html += '<div class="result-q">' + icon + ' Q' + (i + 1) + ': ' + q.question + '</div>';
-      if (!ma.correct) {
-        html += '<div class="result-wrong">Your answer: ' + ma.student_answer + ' — Correct: ' + ma.correct_answer + '</div>';
-      } else {
-        html += '<div class="result-correct">Correct!</div>';
-      }
-      if (q.explanation) {
-        html += '<div class="result-explanation">' + q.explanation + '</div>';
-      }
+      var ma = data.marked_answers[i]; var q = questions[i];
+      html += '<div class="result-item"><div class="result-q">' + (ma.correct ? '✅' : '❌') + ' Q' + (i+1) + ': ' + q.question + '</div>';
+      if (!ma.correct) html += '<div class="result-wrong">Your answer: ' + ma.student_answer + ' — Correct: ' + ma.correct_answer + '</div>';
+      else html += '<div class="result-correct">Correct!</div>';
+      if (q.explanation) html += '<div class="result-explanation">' + q.explanation + '</div>';
       html += '</div>';
     }
     document.getElementById('results-breakdown').innerHTML = html;
