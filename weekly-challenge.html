@@ -368,41 +368,35 @@
       return;
     }
 
-    // Check which challenges are already completed this week
-    var subjects = ['biology', 'chemistry', 'physics'];
-    var tiers = ['foundation', 'higher'];
-    for (var s = 0; s < subjects.length; s++) {
-      for (var t = 0; t < tiers.length; t++) {
-        try {
-          var res = await fetch(RENDER_URL + '/api/weekly-challenge?subject=' + subjects[s] + '&tier=' + tiers[t], {
-            headers: { 'Authorization': 'Bearer ' + session.access_token }
-          });
-          if (res.ok) {
-            var data = await res.json();
-            if (data.already_attempted) {
-              completedChallenges[subjects[s] + '_' + tiers[t]] = data.previous_score;
+    // ONE bulk call instead of 6 sequential calls
+    try {
+      var res = await fetch(RENDER_URL + '/api/weekly-challenge/status', {
+        headers: { 'Authorization': 'Bearer ' + session.access_token }
+      });
+      if (res.ok) {
+        var data = await res.json();
+        var subjects = ['biology', 'chemistry', 'physics'];
+        var tiers = ['foundation', 'higher'];
+        for (var s = 0; s < subjects.length; s++) {
+          for (var t = 0; t < tiers.length; t++) {
+            var key = subjects[s] + '_' + tiers[t];
+            var stat = data.status[key];
+            if (stat && stat.attempted) {
+              completedChallenges[key] = { score: stat.score, max_score: stat.max_score };
             }
           }
-        } catch(e) {}
+        }
+        // Show completion status on subject cards
+        for (var s = 0; s < subjects.length; s++) {
+          var fDone = !!completedChallenges[subjects[s] + '_foundation'];
+          var hDone = !!completedChallenges[subjects[s] + '_higher'];
+          var el = document.getElementById('done-' + subjects[s]);
+          if (fDone && hDone) { el.textContent = '✅ Both tiers done'; el.className = 'sc-done completed'; }
+          else if (fDone) { el.textContent = '✅ Foundation done'; el.className = 'sc-done completed'; }
+          else if (hDone) { el.textContent = '✅ Higher done'; el.className = 'sc-done completed'; }
+        }
       }
-    }
-
-    // Show completion status on subject cards
-    for (var s = 0; s < subjects.length; s++) {
-      var fDone = !!completedChallenges[subjects[s] + '_foundation'];
-      var hDone = !!completedChallenges[subjects[s] + '_higher'];
-      var el = document.getElementById('done-' + subjects[s]);
-      if (fDone && hDone) {
-        el.textContent = '✅ Both tiers done';
-        el.className = 'sc-done completed';
-      } else if (fDone) {
-        el.textContent = '✅ Foundation done';
-        el.className = 'sc-done completed';
-      } else if (hDone) {
-        el.textContent = '✅ Higher done';
-        el.className = 'sc-done completed';
-      }
-    }
+    } catch(e) { console.error('Status fetch error:', e); }
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('picker').style.display = 'block';

@@ -1477,6 +1477,7 @@ def nav_html(active_subject="", pathway="", tier=""):
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
     <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
+    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
     {pathway_links}
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
@@ -1767,6 +1768,109 @@ def make_landing():
     <span style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:10px 22px;border-radius:14px;font-family:'Sora',sans-serif;font-weight:800;font-size:0.9rem;white-space:nowrap;">Take the Challenge →</span>
   </div>
 </a>
+
+<!-- ── TOP STARS OF THE WEEK ───────────────────────────── -->
+<div id="top-stars" style="max-width:800px;margin:0 auto 32px;display:none;">
+  <div style="text-align:center;margin-bottom:18px;">
+    <h2 style="font-family:'Sora',sans-serif;font-size:1.4rem;background:linear-gradient(135deg,#FFD93D,#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;display:inline-block;">⭐ Top Stars of the Week</h2>
+  </div>
+
+  <!-- Student of the Week -->
+  <div id="sotw-card" style="display:none;background:linear-gradient(135deg,rgba(255,217,61,0.08),rgba(255,107,53,0.08));border:2px solid rgba(255,217,61,0.3);border-radius:18px;padding:20px 24px;margin-bottom:20px;">
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div style="font-size:2.2rem;flex-shrink:0;">👑</div>
+      <div style="flex:1;min-width:180px;">
+        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:0.78rem;color:#FFD93D;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Student of the Week</div>
+        <div id="sotw-name" style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.2rem;color:#E8E8F0;"></div>
+        <div id="sotw-school" style="color:#888;font-size:0.82rem;font-weight:700;"></div>
+      </div>
+      <div id="sotw-avatar" style="width:64px;height:64px;border-radius:50%;border:3px solid #FFD93D;overflow:hidden;background:#1A1A2E;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;"></div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div id="sotw-score" style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.8rem;color:#FFD93D;"></div>
+        <div id="sotw-subjects" style="color:#888;font-size:0.72rem;font-weight:700;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top 3 Foundation + Top 3 Higher -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;">
+    <!-- Foundation -->
+    <div style="background:var(--card);border:1px solid rgba(107,203,119,0.25);border-radius:16px;padding:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <span style="font-size:1.2rem;">🌱</span>
+        <h3 style="font-family:'Sora',sans-serif;font-weight:800;font-size:0.92rem;color:#6BCB77;text-transform:uppercase;letter-spacing:0.03em;">Foundation Stars</h3>
+      </div>
+      <div id="foundation-stars"></div>
+    </div>
+    <!-- Higher -->
+    <div style="background:var(--card);border:1px solid rgba(255,217,61,0.25);border-radius:16px;padding:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <span style="font-size:1.2rem;">⭐</span>
+        <h3 style="font-family:'Sora',sans-serif;font-weight:800;font-size:0.92rem;color:#FFD93D;text-transform:uppercase;letter-spacing:0.03em;">Higher Stars</h3>
+      </div>
+      <div id="higher-stars"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+.star-row { display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05); }
+.star-row:last-child { border-bottom:none; }
+.star-medal { font-size:1.1rem;width:24px;text-align:center;flex-shrink:0; }
+.star-avatar { width:34px;height:34px;border-radius:50%;overflow:hidden;background:#1A1A2E;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;border:1.5px solid #2a2a4a; }
+.star-avatar img { width:100%;height:100%;object-fit:cover; }
+.star-info { flex:1;min-width:0; }
+.star-name { font-family:'Sora',sans-serif;font-weight:800;font-size:0.85rem;color:#E8E8F0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.star-school { color:#888;font-size:0.72rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+.star-score { font-family:'Sora',sans-serif;font-weight:800;font-size:0.95rem;flex-shrink:0; }
+.star-empty { color:#888;font-size:0.85rem;font-style:italic;text-align:center;padding:12px 0; }
+</style>
+
+<script>
+(function() {
+  var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
+  var medals = ['🥇','🥈','🥉'];
+  function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+  function renderStars(entries, tier) {
+    if (!entries || entries.length === 0) {
+      return '<div class="star-empty">No stars yet — be the first!</div>';
+    }
+    var color = tier === 'foundation' ? '#6BCB77' : '#FFD93D';
+    var html = '';
+    for (var i = 0; i < entries.length; i++) {
+      var e = entries[i];
+      var avatar = e.avatar_url ? '<img src="'+e.avatar_url+'" alt=""/>' : '🧑‍🎓';
+      html += '<div class="star-row">'+
+        '<span class="star-medal">'+medals[i]+'</span>'+
+        '<div class="star-avatar">'+avatar+'</div>'+
+        '<div class="star-info">'+
+          '<div class="star-name">'+esc(e.name)+'</div>'+
+          (e.school?'<div class="star-school">'+esc(e.school)+'</div>':'')+
+        '</div>'+
+        '<span class="star-score" style="color:'+color+'">'+e.score+'/'+e.max_score+'</span>'+
+      '</div>';
+    }
+    return html;
+  }
+  fetch(RENDER_URL + '/api/weekly-leaderboard/landing').then(function(r){return r.ok?r.json():null;}).then(function(data){
+    if (!data) return;
+    var hasAny = (data.foundation_top && data.foundation_top.length) || (data.higher_top && data.higher_top.length) || data.student_of_the_week;
+    if (!hasAny) return;
+    document.getElementById('top-stars').style.display = 'block';
+    document.getElementById('foundation-stars').innerHTML = renderStars(data.foundation_top, 'foundation');
+    document.getElementById('higher-stars').innerHTML = renderStars(data.higher_top, 'higher');
+    if (data.student_of_the_week) {
+      var s = data.student_of_the_week;
+      document.getElementById('sotw-card').style.display = 'block';
+      document.getElementById('sotw-name').textContent = s.name;
+      document.getElementById('sotw-school').textContent = s.school || '';
+      document.getElementById('sotw-score').textContent = s.score + '/' + s.max_score;
+      document.getElementById('sotw-subjects').textContent = (s.subjects_done || 0) + '/6 challenges done';
+      document.getElementById('sotw-avatar').innerHTML = s.avatar_url ? '<img src="'+s.avatar_url+'" style="width:100%;height:100%;object-fit:cover;" alt=""/>' : '👑';
+    }
+  }).catch(function(){});
+})();
+</script>
 
 <div class="pathway-grid">
 
@@ -5790,7 +5894,7 @@ def build_site(output_dir="mrbadmus_site"):
 
     # ── Auth pages — copy into output if they exist in repo root ──
     import shutil as _shutil, os as _os
-    for _auth_file in ["auth.html", "profile-setup.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html"]:
+    for _auth_file in ["auth.html", "profile-setup.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html", "my-challenges.html"]:
         _src = _auth_file
         _dst = f"{output_dir}/{_auth_file}"
         if _os.path.exists(_src):

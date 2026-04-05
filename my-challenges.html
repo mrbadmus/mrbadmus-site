@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Challenges | MrBadmusAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
+      --physics: #4ECDC4; --chemistry: #FF6B6B; --biology: #6BCB77;
+      --text: #E8E8F0; --muted: #888; --yellow: #FFD93D; --orange: #FF6B35;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--darker); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+
+    .nav {
+      position: sticky; top: 0; left: 0; right: 0; padding: 0 24px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 100;
+    }
+    .nav-brand {
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.4rem; text-decoration: none;
+      background: linear-gradient(135deg, var(--yellow), var(--orange));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .brand-logo { flex-shrink: 0; }
+    .nav-links { display: flex; gap: 10px; align-items: center; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.88rem; padding: 6px 14px; border-radius: 20px; }
+    .nav-links a:hover { background: rgba(255,255,255,0.1); }
+
+    .container { max-width: 820px; margin: 0 auto; padding: 28px 20px 40px; }
+    .header { text-align: center; margin-bottom: 28px; }
+    .header h1 { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 2rem; margin-bottom: 6px; }
+    .header p { color: var(--muted); font-size: 0.95rem; }
+
+    .attempt {
+      background: var(--card); border: 1px solid #2a2a4a; border-radius: 16px;
+      margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s;
+    }
+    .attempt:hover { border-color: #3a3a5a; }
+    .attempt-head {
+      display: flex; align-items: center; gap: 16px; padding: 16px 20px;
+      cursor: pointer; user-select: none;
+    }
+    .attempt-icon { font-size: 1.8rem; flex-shrink: 0; }
+    .attempt-info { flex: 1; min-width: 0; }
+    .attempt-title { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; margin-bottom: 2px; }
+    .attempt-meta { font-size: 0.8rem; color: var(--muted); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .attempt-tier { padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
+    .tier-foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
+    .tier-higher { background: rgba(255,217,61,0.15); color: var(--yellow); }
+    .attempt-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.3rem; flex-shrink: 0; }
+    .score-good { color: var(--biology); }
+    .score-ok { color: var(--yellow); }
+    .score-low { color: var(--chemistry); }
+    .chevron { font-size: 0.9rem; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
+    .attempt.open .chevron { transform: rotate(180deg); }
+
+    .attempt-body { display: none; padding: 0 20px 20px; border-top: 1px solid #1e2d4a; }
+    .attempt.open .attempt-body { display: block; }
+
+    .q-item { padding: 14px 0; border-bottom: 1px solid #1e2d4a; }
+    .q-item:last-child { border-bottom: none; }
+    .q-header { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .q-icon { font-size: 1.1rem; flex-shrink: 0; line-height: 1.4; }
+    .q-text { font-weight: 700; font-size: 0.92rem; line-height: 1.5; flex: 1; }
+    .q-options { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; margin-left: 26px; }
+    .q-option-row {
+      display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 8px;
+      font-size: 0.84rem; background: var(--dark); border: 1px solid transparent;
+    }
+    .q-option-row.correct { border-color: rgba(107,203,119,0.4); background: rgba(107,203,119,0.08); }
+    .q-option-row.student-wrong { border-color: rgba(255,107,107,0.4); background: rgba(255,107,107,0.08); }
+    .q-option-letter {
+      width: 22px; height: 22px; border-radius: 5px; background: #2a2a4a;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.72rem; flex-shrink: 0;
+    }
+    .q-option-row.correct .q-option-letter { background: var(--biology); color: #0F0F1A; }
+    .q-option-row.student-wrong .q-option-letter { background: var(--chemistry); color: #fff; }
+
+    .q-explanation {
+      margin-top: 10px; margin-left: 26px; padding: 10px 12px;
+      background: rgba(255,217,61,0.06); border-left: 3px solid var(--yellow); border-radius: 6px;
+      font-size: 0.82rem; color: var(--muted); line-height: 1.6;
+    }
+    .q-explanation strong { color: var(--yellow); }
+    .q-topic {
+      display: inline-block; margin-top: 8px; margin-left: 26px;
+      font-size: 0.7rem; color: var(--muted); font-style: italic;
+    }
+
+    .empty {
+      text-align: center; padding: 60px 20px;
+      background: var(--card); border: 1px dashed #2a2a4a; border-radius: 18px;
+    }
+    .empty h3 { font-family: 'Sora', sans-serif; margin: 16px 0 8px; }
+    .empty p { color: var(--muted); margin-bottom: 20px; }
+
+    .loading { text-align: center; padding-top: 100px; }
+    .spinner {
+      width: 40px; height: 40px; border: 4px solid #2a2a4a; border-top-color: var(--physics);
+      border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .cta-challenge {
+      display: inline-block; padding: 14px 28px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--physics), #38a89d);
+      color: #0F0F1A; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.95rem;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .cta-challenge:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    @media (max-width: 600px) {
+      .q-options { grid-template-columns: 1fr; }
+      .attempt-score { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <div class="nav-links">
+    <a href="/weekly-challenge.html">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆 Leaderboard</a>
+    <a href="/index.html">Home</a>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="color:var(--muted);">Loading your challenge history...</p>
+  </div>
+
+  <div id="content" style="display:none;">
+    <div class="header">
+      <h1>📝 My Challenges</h1>
+      <p>Review your past weekly challenges and see where you went wrong</p>
+    </div>
+    <div id="history-list"></div>
+    <div class="empty" id="empty" style="display:none;">
+      <div style="font-size:3rem;">📚</div>
+      <h3>No challenges yet!</h3>
+      <p>Take your first weekly challenge to see your results here.</p>
+      <a href="/weekly-challenge.html" class="cta-challenge">Take the Challenge ⚡</a>
+    </div>
+  </div>
+
+  <div id="not-logged-in" style="display:none;text-align:center;padding-top:60px;">
+    <div style="font-size:3rem;">🔒</div>
+    <h2 style="font-family:'Sora',sans-serif;font-size:1.5rem;margin:16px 0 8px;">Sign in to see your history</h2>
+    <p style="color:var(--muted);margin-bottom:20px;">You need a free account to view your past challenges.</p>
+    <a href="/auth.html?tab=signin" class="cta-challenge">Sign In</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  var SUPABASE_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
+  var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  var subjectEmojis = { biology: '🌿', chemistry: '🧪', physics: '⚡' };
+  var subjectLabels = { biology: 'Biology', chemistry: 'Chemistry', physics: 'Physics' };
+
+  fetch(RENDER_URL + '/api/health').catch(function(){});
+
+  async function init() {
+    var result = await sb.auth.getSession();
+    var session = result.data.session;
+
+    if (!session) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('not-logged-in').style.display = 'block';
+      return;
+    }
+
+    try {
+      var res = await fetch(RENDER_URL + '/api/weekly-scores/history', {
+        headers: { 'Authorization': 'Bearer ' + session.access_token }
+      });
+      if (!res.ok) throw new Error('Could not load history');
+      var data = await res.json();
+      var history = data.history || [];
+
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+
+      if (history.length === 0) {
+        document.getElementById('empty').style.display = 'block';
+        return;
+      }
+      renderHistory(history);
+    } catch (err) {
+      console.error(err);
+      document.getElementById('loading').innerHTML = '<p style="color:var(--chemistry);">Could not load your history. Try refreshing.</p>';
+    }
+  }
+
+  function renderHistory(history) {
+    var html = '';
+    for (var i = 0; i < history.length; i++) {
+      var h = history[i];
+      var pct = Math.round((h.score / h.max_score) * 100);
+      var scoreClass = pct >= 80 ? 'score-good' : pct >= 50 ? 'score-ok' : 'score-low';
+      var emoji = subjectEmojis[h.subject] || '📝';
+      var subjLabel = subjectLabels[h.subject] || h.subject;
+      var tierClass = 'tier-' + h.tier;
+      var tierLabel = h.tier.charAt(0).toUpperCase() + h.tier.slice(1);
+      var mins = Math.floor((h.time_taken || 0) / 60);
+      var secs = (h.time_taken || 0) % 60;
+      var timeStr = h.time_taken ? (mins + 'm ' + secs + 's') : '';
+      var weekStr = formatDate(h.week_start);
+
+      html += '<div class="attempt" id="att-' + i + '">' +
+        '<div class="attempt-head" onclick="toggleAttempt(' + i + ')">' +
+          '<span class="attempt-icon">' + emoji + '</span>' +
+          '<div class="attempt-info">' +
+            '<div class="attempt-title">' + subjLabel + ' Challenge</div>' +
+            '<div class="attempt-meta">' +
+              '<span class="attempt-tier ' + tierClass + '">' + tierLabel + '</span>' +
+              '<span>Week of ' + weekStr + '</span>' +
+              (timeStr ? '<span>⏱ ' + timeStr + '</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<span class="attempt-score ' + scoreClass + '">' + h.score + '/' + h.max_score + '</span>' +
+          '<span class="chevron">▼</span>' +
+        '</div>' +
+        '<div class="attempt-body">' + renderBreakdown(h.breakdown) + '</div>' +
+      '</div>';
+    }
+    document.getElementById('history-list').innerHTML = html;
+  }
+
+  function renderBreakdown(breakdown) {
+    if (!breakdown || breakdown.length === 0) return '<p style="color:var(--muted);padding:16px 0;">No question breakdown available.</p>';
+    var html = '';
+    for (var i = 0; i < breakdown.length; i++) {
+      var q = breakdown[i];
+      var icon = q.correct ? '✅' : '❌';
+      var letters = ['A', 'B', 'C', 'D'];
+      var optsHtml = '';
+      for (var j = 0; j < letters.length; j++) {
+        var letter = letters[j];
+        var optText = q.options && q.options[letter] ? q.options[letter] : '';
+        var cls = '';
+        if (letter === q.correct_answer) cls = 'correct';
+        else if (letter === q.student_answer && !q.correct) cls = 'student-wrong';
+        optsHtml += '<div class="q-option-row ' + cls + '">' +
+          '<span class="q-option-letter">' + letter + '</span>' +
+          '<span>' + esc(optText) + '</span>' +
+        '</div>';
+      }
+      html += '<div class="q-item">' +
+        '<div class="q-header">' +
+          '<span class="q-icon">' + icon + '</span>' +
+          '<span class="q-text">Q' + (i+1) + '. ' + esc(q.question) + '</span>' +
+        '</div>' +
+        '<div class="q-options">' + optsHtml + '</div>' +
+        (q.explanation ? '<div class="q-explanation"><strong>Why ' + q.correct_answer + ' is correct:</strong> ' + esc(q.explanation) + '</div>' : '') +
+        (q.topic ? '<div class="q-topic">Topic: ' + esc(q.topic) + '</div>' : '') +
+      '</div>';
+    }
+    return html;
+  }
+
+  function toggleAttempt(i) {
+    var el = document.getElementById('att-' + i);
+    if (el) el.classList.toggle('open');
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    var d = new Date(dateStr + 'T00:00:00');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+  function esc(str) {
+    if (str == null) return '';
+    var div = document.createElement('div'); div.textContent = str; return div.innerHTML;
+  }
+
+  init();
+</script>
+</body>
+</html>
