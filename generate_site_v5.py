@@ -1780,7 +1780,7 @@ def make_landing():
     <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
       <div style="font-size:2.2rem;flex-shrink:0;">👑</div>
       <div style="flex:1;min-width:180px;">
-        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:0.78rem;color:#FFD93D;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Star of the Week</div>
+        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:0.78rem;color:#FFD93D;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Champion of the Week</div>
         <div id="sotw-name" style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.2rem;color:#E8E8F0;"></div>
         <div id="sotw-school" style="color:#888;font-size:0.82rem;font-weight:700;"></div>
       </div>
