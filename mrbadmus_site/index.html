@@ -85,7 +85,7 @@
     <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
       <div style="font-size:2.2rem;flex-shrink:0;">👑</div>
       <div style="flex:1;min-width:180px;">
-        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:0.78rem;color:#FFD93D;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Student of the Week</div>
+        <div style="font-family:'Sora',sans-serif;font-weight:800;font-size:0.78rem;color:#FFD93D;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">Star of the Week</div>
         <div id="sotw-name" style="font-family:'Sora',sans-serif;font-weight:800;font-size:1.2rem;color:#E8E8F0;"></div>
         <div id="sotw-school" style="color:#888;font-size:0.82rem;font-weight:700;"></div>
       </div>
@@ -159,18 +159,18 @@
   }
   fetch(RENDER_URL + '/api/weekly-leaderboard/landing').then(function(r){return r.ok?r.json():null;}).then(function(data){
     if (!data) return;
-    var hasAny = (data.foundation_top && data.foundation_top.length) || (data.higher_top && data.higher_top.length) || data.student_of_the_week;
+    var hasAny = (data.foundation_top3 && data.foundation_top3.length) || (data.higher_top3 && data.higher_top3.length) || data.champion;
     if (!hasAny) return;
     document.getElementById('top-stars').style.display = 'block';
-    document.getElementById('foundation-stars').innerHTML = renderStars(data.foundation_top, 'foundation');
-    document.getElementById('higher-stars').innerHTML = renderStars(data.higher_top, 'higher');
-    if (data.student_of_the_week) {
-      var s = data.student_of_the_week;
+    document.getElementById('foundation-stars').innerHTML = renderStars(data.foundation_top3, 'foundation');
+    document.getElementById('higher-stars').innerHTML = renderStars(data.higher_top3, 'higher');
+    if (data.champion) {
+      var s = data.champion;
       document.getElementById('sotw-card').style.display = 'block';
       document.getElementById('sotw-name').textContent = s.name;
       document.getElementById('sotw-school').textContent = s.school || '';
-      document.getElementById('sotw-score').textContent = s.score + '/' + s.max_score;
-      document.getElementById('sotw-subjects').textContent = (s.subjects_done || 0) + '/6 challenges done';
+      document.getElementById('sotw-score').textContent = s.percentage + '%';
+      document.getElementById('sotw-subjects').textContent = s.score + '/' + s.max_score + ' across all 3 subjects';
       document.getElementById('sotw-avatar').innerHTML = s.avatar_url ? '<img src="'+s.avatar_url+'" style="width:100%;height:100%;object-fit:cover;" alt=""/>' : '👑';
     }
   }).catch(function(){});
