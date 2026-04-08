@@ -177,10 +177,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-power-electricity"><div class="match-def" data-index="1" draggable="true">I = 10 A, R = 1 Ω — P = 10² × 1</div>
-<div class="match-def" data-index="0" draggable="true">V = 12 V, I = 2 A — P = 12 × 2</div>
-<div class="match-def" data-index="2" draggable="true">690 W appliance on 230 V — I = 3 A</div>
+      <div class="match-defs" id="defPool-power-electricity"><div class="match-def" data-index="0" draggable="true">V = 12 V, I = 2 A — P = 12 × 2</div>
 <div class="match-def" data-index="3" draggable="true">2300 W kettle on 230 V — I = 10 A</div>
+<div class="match-def" data-index="2" draggable="true">690 W appliance on 230 V — I = 3 A</div>
+<div class="match-def" data-index="1" draggable="true">I = 10 A, R = 1 Ω — P = 10² × 1</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -216,19 +216,19 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "R ÷ I gives Ω/A — not watts. P = I²R.",1: "P = I × R gives volts (A × Ω = V) — not watts. Must square the current.",2: "Only CURRENT is squared: P = I²R = 9 × 8 = 72 W.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "P = I × R gives volts (A × Ω = V) — not watts. Must square the current.",2: "R ÷ I gives Ω/A — not watts. P = I²R.",3: "Only CURRENT is squared: P = I²R = 9 × 8 = 72 W.",}'>
   <div class="q-text">1. A resistor (R = 8 Ω) carries 3 A. What is the power dissipated?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">2.67 W — P = R ÷ I</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">24 W — P = I × R = 3 × 8 (forgot to square I)</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">576 W — P = I² × R² = 9 × 64 (squared both)</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">72 W — P = I² × R = 9 × 8 = 72 W</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">24 W — P = I × R = 3 × 8 (forgot to square I)</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">72 W — P = I² × R = 9 × 8 = 72 W</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">2.67 W — P = R ÷ I</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">576 W — P = I² × R² = 9 × 64 (squared both)</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "5 A is BELOW the 6 A operating current — it would blow under normal use.",2: "A 3 A fuse would blow immediately — the iron draws ~6 A.",3: "1 A is far below operating current — would blow immediately.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "A 3 A fuse would blow immediately — the iron draws ~6 A.",2: "5 A is BELOW the 6 A operating current — it would blow under normal use.",3: "1 A is far below operating current — would blow immediately.",}'>
   <div class="q-text">2. A 1380 W iron on 230 V mains. Which fuse?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">5 A — just below 6 A so it will work</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">3 A — safest choice for any appliance</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">13 A — I = 1380 ÷ 230 = 6 A; next rating above 6 A is 13 A</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">3 A — safest choice for any appliance</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">5 A — just below 6 A so it will work</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">1 A — smallest fuse is always safest</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>

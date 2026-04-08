@@ -134,6 +134,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
   }
 
   function init(config) {
+    loadStudentSession();
     currentSubject = config.subject || 'physics';
     currentTopic = config.topic || '';
     systemPrompt = SUBJECT_PROMPTS[currentSubject] || SUBJECT_PROMPTS.physics;
