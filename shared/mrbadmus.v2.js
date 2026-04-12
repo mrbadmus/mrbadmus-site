@@ -258,3 +258,43 @@ FULL BIOLOGY SPECIFICATION TOPICS:
 
   return { init, open, close, ask };
 })();
+
+/* ── MOBILE NAV HAMBURGER ── */
+try {
+  document.addEventListener('DOMContentLoaded', function () {
+    var nav = document.querySelector('.nav');
+    if (!nav || nav.querySelector('.nav-toggle')) return;
+
+    var links = nav.querySelector('.nav-links');
+    if (!links) return;
+
+    var btn = document.createElement('button');
+    btn.className = 'nav-toggle';
+    btn.setAttribute('aria-label', 'Menu');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.textContent = '☰';
+    nav.appendChild(btn);
+
+    btn.addEventListener('click', function () {
+      var open = links.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.textContent = open ? '✕' : '☰';
+    });
+
+    links.addEventListener('click', function (e) {
+      if (e.target.tagName === 'A') {
+        links.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '☰';
+      }
+    });
+
+    document.addEventListener('click', function (e) {
+      if (!nav.contains(e.target)) {
+        links.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        btn.textContent = '☰';
+      }
+    });
+  });
+} catch (e) {}
