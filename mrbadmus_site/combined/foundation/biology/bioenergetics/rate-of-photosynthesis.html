@@ -62,7 +62,7 @@
 <body>
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
+  <div class="nav-links">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
@@ -175,11 +175,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-rate-of-photosynthesis"><div class="match-def" data-index="2" draggable="true">Enzymes have less kinetic energy — fewer successful collisions, slow rate</div>
-<div class="match-def" data-index="3" draggable="true">Enzymes denature permanently — rate falls sharply to zero</div>
-<div class="match-def" data-index="4" draggable="true">Another factor has become limiting — not that the plant ran out of chlorophyll</div>
-<div class="match-def" data-index="1" draggable="true">Not enough raw material to build glucose — rate is slow</div>
+      <div class="match-defs" id="defPool-rate-of-photosynthesis"><div class="match-def" data-index="3" draggable="true">Enzymes denature permanently — rate falls sharply to zero</div>
 <div class="match-def" data-index="0" draggable="true">Not enough energy — rate is slow even if CO₂ and temperature are optimal</div>
+<div class="match-def" data-index="2" draggable="true">Enzymes have less kinetic energy — fewer successful collisions, slow rate</div>
+<div class="match-def" data-index="1" draggable="true">Not enough raw material to build glucose — rate is slow</div>
+<div class="match-def" data-index="4" draggable="true">Another factor has become limiting — not that the plant ran out of chlorophyll</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -201,28 +201,28 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 3</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Light is already very bright — it is NOT the limiting factor.",1: "CO₂ is already high — it is NOT the limiting factor.",2: "Chlorophyll is not used up — it is a pigment that absorbs light and is not consumed. Another factor is now limiting the rate.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Light is already very bright — it is NOT the limiting factor.",1: "Chlorophyll is not used up — it is a pigment that absorbs light and is not consumed. Another factor is now limiting the rate.",3: "CO₂ is already high — it is NOT the limiting factor.",}'>
   <div class="q-text">1. A plant is given very bright light and high CO₂. The rate of photosynthesis stops increasing. What is now the most likely limiting factor?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Light intensity — the plant needs even more light</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Carbon dioxide — the plant needs more CO₂</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">The plant has used up all its chlorophyll</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Temperature — enzyme activity is now the bottleneck</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">The plant has used up all its chlorophyll</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Temperature — enzyme activity is now the bottleneck</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Carbon dioxide — the plant needs more CO₂</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Plants don\'t have a stress response in the same way animals do — the reduced bubble rate is a direct physical consequence of reduced light energy.",2: "Moving a lamp doesn\'t change CO₂ levels — CO₂ comes from the water/air around the plant.",3: "The lamp produces light, not heat — the water bath controls temperature.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "The lamp produces light, not heat — the water bath controls temperature.",1: "Plants don\'t have a stress response in the same way animals do — the reduced bubble rate is a direct physical consequence of reduced light energy.",3: "Moving a lamp doesn\'t change CO₂ levels — CO₂ comes from the water/air around the plant.",}'>
   <div class="q-text">2. In an experiment, moving a lamp further from an aquatic plant reduces the bubble count. What does this show?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Light intensity is the limiting factor at that distance — reducing it reduces the rate of photosynthesis</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The plant needs to be closer to warm water</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">The plant becomes stressed when the lamp moves</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">CO₂ levels decrease as the lamp moves further away</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The plant needs to be closer to warm water</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Light intensity is the limiting factor at that distance — reducing it reduces the rate of photosynthesis</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">CO₂ levels decrease as the lamp moves further away</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Chlorophyll can be affected by extreme heat, but at typical above-optimum temperatures (e.g. 45–50°C) the main limiting effect is enzyme denaturation.",1: "Stomata closing reduces CO₂ entry — but the primary reason for rate decrease above optimum temperature is ENZYME DENATURATION.",2: "CO₂ is a gas that dissolves in water — it doesn\'t \'evaporate from the leaf\'. The CO₂ supply issue is about stomata and diffusion rates.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="0" data-wrong-exp='{1: "Stomata closing reduces CO₂ entry — but the primary reason for rate decrease above optimum temperature is ENZYME DENATURATION.",2: "CO₂ is a gas that dissolves in water — it doesn\'t \'evaporate from the leaf\'. The CO₂ supply issue is about stomata and diffusion rates.",3: "Chlorophyll can be affected by extreme heat, but at typical above-optimum temperatures (e.g. 45–50°C) the main limiting effect is enzyme denaturation.",}'>
   <div class="q-text">3. Why does photosynthesis rate decrease at temperatures above the optimum?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">High temperatures cause chlorophyll to break down permanently</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Enzymes in the chloroplast denature — their active sites change shape permanently and can no longer function</button>
 <button class="quiz-opt" data-qi="2" data-oi="1">The plant closes its stomata to prevent water loss in the heat</button>
 <button class="quiz-opt" data-qi="2" data-oi="2">More CO₂ evaporates from the leaf at higher temperatures</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">Enzymes in the chloroplast denature — their active sites change shape permanently and can no longer function</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">High temperatures cause chlorophyll to break down permanently</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
 </div>

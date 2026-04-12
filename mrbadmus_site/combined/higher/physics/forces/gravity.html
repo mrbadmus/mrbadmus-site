@@ -62,7 +62,7 @@
 <body>
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
+  <div class="nav-links">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
@@ -174,10 +174,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-gravity"><div class="match-def" data-index="0" draggable="true">Measured in kilograms — stays the same on the Moon and on Earth</div>
-<div class="match-def" data-index="1" draggable="true">Measured in newtons — changes with gravitational field strength</div>
+      <div class="match-defs" id="defPool-gravity"><div class="match-def" data-index="2" draggable="true">70 kg person on Earth — W = 70 × 9.8 = 686 N</div>
+<div class="match-def" data-index="0" draggable="true">Measured in kilograms — stays the same on the Moon and on Earth</div>
 <div class="match-def" data-index="3" draggable="true">70 kg person on the Moon — W = 70 × 1.6 = 112 N</div>
-<div class="match-def" data-index="2" draggable="true">70 kg person on Earth — W = 70 × 9.8 = 686 N</div>
+<div class="match-def" data-index="1" draggable="true">Measured in newtons — changes with gravitational field strength</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -221,10 +221,10 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">50 kg — mass on the Moon is 1/6 of Earth mass</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Grams are a unit of mass — not weight. Weight is always in newtons.",2: "Weight is always in newtons everywhere — the statement would still be wrong on the Moon (just a different wrong value).",3: "Weight and mass are different physical quantities — they cannot use the same units.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Grams are a unit of mass — not weight. Weight is always in newtons.",2: "Weight is always in newtons everywhere — the statement would still be wrong on the Moon (just a different wrong value).",3: "Weight and mass are different physical quantities — they cannot use the same units.",}'>
   <div class="q-text">2. A student says 'my weight is 60 kg'. What is wrong with this statement?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Weight should be in grams — 60,000 g</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Weight is measured in NEWTONS — kilograms measure MASS. Their weight is approximately 588 N (60 × 9.8)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Weight is measured in NEWTONS — kilograms measure MASS. Their weight is approximately 588 N (60 × 9.8)</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Weight should be in grams — 60,000 g</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">The statement is correct on the Moon but wrong on Earth</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Nothing is wrong — weight and mass are the same thing and can be measured in the same units</button>
 </div>

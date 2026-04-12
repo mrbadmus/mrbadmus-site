@@ -62,7 +62,7 @@
 <body>
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-links" style="display:flex;align-items:center;gap:8px;font-size:0.88rem;">
+  <div class="nav-links">
     <a href="/index.html" style="color:var(--muted);">Home</a>
     <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
     <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
@@ -175,11 +175,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-blood"><div class="match-def" data-index="0" draggable="true">Carry oxygen using haemoglobin — biconcave disc, no nucleus</div>
-<div class="match-def" data-index="1" draggable="true">Engulf and destroy pathogens — non-specific immune defence</div>
-<div class="match-def" data-index="4" draggable="true">Liquid that transports glucose, CO₂, urea, hormones and heat</div>
+      <div class="match-defs" id="defPool-blood"><div class="match-def" data-index="3" draggable="true">Involved in blood clotting — form a fibrin mesh to seal wounds</div>
 <div class="match-def" data-index="2" draggable="true">Produce specific antibodies that match pathogen antigens</div>
-<div class="match-def" data-index="3" draggable="true">Involved in blood clotting — form a fibrin mesh to seal wounds</div>
+<div class="match-def" data-index="0" draggable="true">Carry oxygen using haemoglobin — biconcave disc, no nucleus</div>
+<div class="match-def" data-index="4" draggable="true">Liquid that transports glucose, CO₂, urea, hormones and heat</div>
+<div class="match-def" data-index="1" draggable="true">Engulf and destroy pathogens — non-specific immune defence</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -204,12 +204,12 @@
 <button class="quiz-opt" data-qi="0" data-oi="3">So they can squeeze through capillaries more easily</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Food digestion = digestive enzymes in the gut. Lymphocytes are part of the immune system.",1: "Blood clotting = PLATELETS forming a fibrin mesh. Lymphocytes produce antibodies, not clotting factors.",2: "Oxygen carrying = RED BLOOD CELLS using haemoglobin. Lymphocytes are white blood cells.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Blood clotting = PLATELETS forming a fibrin mesh. Lymphocytes produce antibodies, not clotting factors.",2: "Food digestion = digestive enzymes in the gut. Lymphocytes are part of the immune system.",3: "Oxygen carrying = RED BLOOD CELLS using haemoglobin. Lymphocytes are white blood cells.",}'>
   <div class="q-text">2. A patient has very few lymphocytes. What is the most likely consequence?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Unable to digest food properly — nutrients not absorbed</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Unable to produce specific antibodies — prolonged or repeated infections that are hard to clear</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">Blood will not clot properly — excessive bleeding from wounds</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Unable to carry oxygen — severe anaemia</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Unable to produce specific antibodies — prolonged or repeated infections that are hard to clear</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Unable to digest food properly — nutrients not absorbed</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Unable to carry oxygen — severe anaemia</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "Oxygen transport = RED BLOOD CELLS using haemoglobin.",1: "Producing antibodies = LYMPHOCYTES (a type of white blood cell).",2: "Engulfing bacteria = PHAGOCYTES (a type of white blood cell).",}'>
@@ -220,12 +220,12 @@
 <button class="quiz-opt" data-qi="2" data-oi="3">Blood clotting — they clump at wound sites and trigger fibrin mesh formation to seal the damage</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="2" data-wrong-exp='{0: "Urea IS carried in plasma — from the liver to the kidneys for excretion.",1: "Carbon dioxide IS dissolved in plasma — most CO₂ travels as bicarbonate ions dissolved in plasma.",3: "Glucose IS carried in plasma — after absorption from the small intestine.",}'>
+</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Glucose IS carried in plasma — after absorption from the small intestine.",1: "Urea IS carried in plasma — from the liver to the kidneys for excretion.",2: "Carbon dioxide IS dissolved in plasma — most CO₂ travels as bicarbonate ions dissolved in plasma.",}'>
   <div class="q-text">4. Which substance does plasma NOT transport?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Urea from the liver to the kidneys</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">Carbon dioxide from respiring cells to the lungs</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">Oxygen — this is carried by haemoglobin inside red blood cells</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">Glucose from the small intestine to body cells</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Glucose from the small intestine to body cells</button>
+<button class="quiz-opt" data-qi="3" data-oi="1">Urea from the liver to the kidneys</button>
+<button class="quiz-opt" data-qi="3" data-oi="2">Carbon dioxide from respiring cells to the lungs</button>
+<button class="quiz-opt" data-qi="3" data-oi="3">Oxygen — this is carried by haemoglobin inside red blood cells</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
 </div>
