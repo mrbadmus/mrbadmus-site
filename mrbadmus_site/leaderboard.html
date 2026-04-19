@@ -50,14 +50,31 @@
     .tab.active.phys { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
     .tab.active.overall { background: rgba(255,217,61,0.15); border-color: var(--yellow); color: var(--yellow); }
 
-    .tier-toggle { display: flex; gap: 6px; justify-content: center; margin-bottom: 24px; }
-    .tier-btn {
-      padding: 6px 16px; border-radius: 16px; border: 2px solid #2a2a4a;
+    /* ── CHAMPION HERO ──────────────────────────────── */
+    .champion-hero {
+      background: linear-gradient(135deg, rgba(255,215,0,0.07), rgba(255,107,53,0.04));
+      border: 1px solid rgba(255,215,0,0.2); border-radius: 20px;
+      padding: 28px 20px 20px; margin-bottom: 28px; text-align: center;
+    }
+    .champion-title {
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.8rem;
+      color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;
+    }
+    .champion-hero .podium { margin: 0; min-height: auto; }
+
+    /* ── TOGGLE ROW ─────────────────────────────────── */
+    .toggle-row { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .pathway-toggle, .tier-toggle { display: flex; gap: 6px; }
+    .pathway-btn, .tier-btn {
+      padding: 7px 18px; border-radius: 16px; border: 2px solid #2a2a4a;
       background: transparent; color: var(--muted); font-weight: 700; font-size: 0.82rem;
       cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .tier-btn:hover { border-color: #4a4a6a; }
-    .tier-btn.active { border-color: var(--physics); background: rgba(78,205,196,0.1); color: var(--physics); }
+    .pathway-btn:hover, .tier-btn:hover { border-color: #4a4a6a; }
+    .pathway-btn.active.combined { border-color: var(--physics); background: rgba(78,205,196,0.12); color: var(--physics); }
+    .pathway-btn.active.triple   { border-color: var(--chemistry); background: rgba(255,107,107,0.12); color: var(--chemistry); }
+    .tier-btn.active.foundation  { border-color: var(--biology); background: rgba(107,203,119,0.12); color: var(--biology); }
+    .tier-btn.active.higher      { border-color: var(--yellow); background: rgba(255,217,61,0.12); color: var(--yellow); }
 
     .week-info {
       text-align: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; font-weight: 700;
@@ -148,6 +165,9 @@
       .podium-slot.first .podium-base { width: 100px; height: 76px; }
       .podium-slot.second .podium-base { width: 86px; height: 52px; }
       .podium-slot.third .podium-base { width: 86px; height: 38px; }
+      .toggle-row { gap: 8px; }
+      .champion-hero { padding: 20px 14px 16px; }
+      .pathway-btn, .tier-btn { padding: 6px 13px; font-size: 0.78rem; }
     }
   </style>
 </head>
@@ -172,16 +192,30 @@
       <h1>🏆 Leaderboard</h1>
     </div>
 
+    <!-- CHAMPION OF THE WEEK HERO -->
+    <div class="champion-hero" id="champion-hero" style="display:none;">
+      <div class="champion-title">Champion of the Week</div>
+      <div class="podium" id="champion-podium"></div>
+    </div>
+
+    <!-- PATHWAY + TIER TOGGLES -->
+    <div class="toggle-row">
+      <div class="pathway-toggle">
+        <button class="pathway-btn combined active" id="btn-combined" onclick="switchPathway('combined', this)">Combined</button>
+        <button class="pathway-btn triple" id="btn-triple" onclick="switchPathway('triple', this)">Triple</button>
+      </div>
+      <div class="tier-toggle">
+        <button class="tier-btn foundation active" id="btn-foundation" onclick="switchTier('foundation', this)">🌱 Foundation</button>
+        <button class="tier-btn higher" id="btn-higher" onclick="switchTier('higher', this)">⭐ Higher</button>
+      </div>
+    </div>
+
+    <!-- SUBJECT TABS -->
     <div class="tabs" id="subject-tabs">
       <button class="tab overall active" onclick="switchTab('overall', this)">🏅 Overall</button>
       <button class="tab bio" onclick="switchTab('biology', this)">🌿 Biology</button>
       <button class="tab chem" onclick="switchTab('chemistry', this)">🧪 Chemistry</button>
       <button class="tab phys" onclick="switchTab('physics', this)">⚡ Physics</button>
-    </div>
-
-    <div class="tier-toggle">
-      <button class="tier-btn active" onclick="switchTier('foundation', this)">🌱 Foundation</button>
-      <button class="tier-btn" onclick="switchTier('higher', this)">⭐ Higher</button>
     </div>
 
     <div class="week-info" id="week-info"></div>
@@ -198,10 +232,14 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
+  var SUPABASE_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
   var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
   var medals = ['🥇', '🥈', '🥉'];
   var currentSubject = 'overall';
+  var currentPathway = 'combined';
   var currentTier = 'foundation';
 
   fetch(RENDER_URL + '/api/health').catch(function(){});
@@ -213,11 +251,41 @@
     loadLeaderboard();
   }
 
+  function switchPathway(pathway, el) {
+    currentPathway = pathway;
+    document.querySelectorAll('.pathway-btn').forEach(function(b) { b.classList.remove('active'); });
+    el.classList.add('active');
+    loadLeaderboard();
+  }
+
   function switchTier(tier, el) {
     currentTier = tier;
     document.querySelectorAll('.tier-btn').forEach(function(b) { b.classList.remove('active'); });
     el.classList.add('active');
     loadLeaderboard();
+  }
+
+  async function loadChampion() {
+    try {
+      var res = await fetch(RENDER_URL + '/api/weekly-leaderboard/champion');
+      if (!res.ok) return;
+      var data = await res.json();
+      if (!data.champion) return;
+      var c = data.champion;
+      var avatarContent = c.avatar_url ? '<img src="' + c.avatar_url + '" alt=""/>' : '🧑‍🎓';
+      var subsTxt = c.subjects_done ? c.subjects_done + '/3 subjects · ' + c.percentage + '%' : c.percentage + '%';
+      document.getElementById('champion-podium').innerHTML =
+        '<div class="podium-slot first">' +
+          '<div class="podium-medal" style="font-size:2.6rem;">🏆</div>' +
+          '<div class="podium-avatar">' + avatarContent + '</div>' +
+          '<div class="podium-name">' + esc(c.name) + '</div>' +
+          (c.school ? '<div class="podium-school">' + esc(c.school) + '</div>' : '') +
+          '<div class="podium-score">' + c.score + '/' + c.max_score + '</div>' +
+          '<div class="podium-extra">' + subsTxt + '</div>' +
+          (c.time_taken ? '<div class="podium-extra">' + formatTime(c.time_taken) + '</div>' : '') +
+        '</div>';
+      document.getElementById('champion-hero').style.display = 'block';
+    } catch(e) { /* champion section stays hidden */ }
   }
 
   async function loadLeaderboard() {
@@ -227,21 +295,23 @@
 
     var url;
     if (currentSubject === 'overall') {
-      url = RENDER_URL + '/api/weekly-leaderboard?overall=true&tier=' + currentTier;
+      url = RENDER_URL + '/api/weekly-leaderboard?overall=true&pathway=' + currentPathway + '&tier=' + currentTier;
     } else {
-      url = RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&tier=' + currentTier;
+      url = RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&pathway=' + currentPathway + '&tier=' + currentTier;
     }
 
     try {
       var res = await fetch(url);
       var data = await res.json();
 
+      var pathLabel = currentPathway.charAt(0).toUpperCase() + currentPathway.slice(1);
+      var tierLabel = currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
       var infoEl = document.getElementById('week-info');
       if (currentSubject === 'overall') {
-        infoEl.textContent = '🏅 Overall ' + currentTier.charAt(0).toUpperCase() + currentTier.slice(1) + ' — Week of ' + formatDate(data.week_start);
+        infoEl.textContent = '🏅 Overall · ' + pathLabel + ' ' + tierLabel + ' — Week of ' + formatDate(data.week_start);
       } else {
         var subjectLabels = { biology: '🌿 Biology', chemistry: '🧪 Chemistry', physics: '⚡ Physics' };
-        infoEl.textContent = (subjectLabels[currentSubject] || currentSubject) + ' ' + currentTier.charAt(0).toUpperCase() + currentTier.slice(1) + ' — Week of ' + formatDate(data.week_start);
+        infoEl.textContent = (subjectLabels[currentSubject] || currentSubject) + ' · ' + pathLabel + ' ' + tierLabel + ' — Week of ' + formatDate(data.week_start);
       }
 
       var lb = data.leaderboard || [];
@@ -250,7 +320,6 @@
         return;
       }
 
-      // Podium
       var podiumHtml = '';
       var podiumClasses = ['', 'first', 'second', 'third'];
       var rankLabels = ['1st', '2nd', '3rd'];
@@ -258,10 +327,8 @@
         var p = lb[i];
         var avatarContent = p.avatar_url ? '<img src="' + p.avatar_url + '" alt=""/>' : '🧑‍🎓';
         var timeTxt = p.time_taken ? formatTime(p.time_taken) : '';
-        var extraInfo = '';
-        if (currentSubject === 'overall' && p.subjects_done) {
-          extraInfo = '<div class="podium-extra">' + p.subjects_done + '/3 subjects</div>';
-        }
+        var extraInfo = (currentSubject === 'overall' && p.subjects_done) ?
+          '<div class="podium-extra">' + p.subjects_done + '/3 subjects</div>' : '';
         podiumHtml += '<div class="podium-slot ' + podiumClasses[i + 1] + '">' +
           '<div class="podium-medal">' + medals[i] + '</div>' +
           '<div class="podium-avatar">' + avatarContent + '</div>' +
@@ -274,22 +341,19 @@
       }
       document.getElementById('podium').innerHTML = podiumHtml;
 
-      // Rest (4th–10th)
       if (lb.length > 3) {
         var restHtml = '';
         for (var j = 3; j < lb.length; j++) {
           var r = lb[j];
           var rAvatar = r.avatar_url ? '<img src="' + r.avatar_url + '" alt=""/>' : '🧑‍🎓';
-          var rExtra = '';
-          if (currentSubject === 'overall' && r.subjects_done) {
-            rExtra = ' <span style="color:var(--muted);font-size:0.72rem;">(' + r.subjects_done + '/3)</span>';
-          }
+          var rExtra = (currentSubject === 'overall' && r.subjects_done) ?
+            ' <span style="color:var(--muted);font-size:0.72rem;">(' + r.subjects_done + '/3)</span>' : '';
           restHtml += '<div class="rest-item">' +
             '<span class="rest-rank">' + r.rank + '</span>' +
             '<div class="rest-avatar">' + rAvatar + '</div>' +
-            '<div class="rest-info">' +
-              '<div class="rest-name">' + esc(r.name) + (r.school ? ' <span style="color:var(--muted);font-weight:600;font-size:0.78rem;">· ' + esc(r.school) + '</span>' : '') + '</div>' +
-            '</div>' +
+            '<div class="rest-info"><div class="rest-name">' + esc(r.name) +
+            (r.school ? ' <span style="color:var(--muted);font-weight:600;font-size:0.78rem;">· ' + esc(r.school) + '</span>' : '') +
+            '</div></div>' +
             '<span class="rest-score">' + r.score + '/' + r.max_score + rExtra + '</span></div>';
         }
         document.getElementById('rest-list').innerHTML = restHtml;
@@ -304,7 +368,32 @@
   }
 
   async function init() {
+    // Try to read profile to auto-land on student's own pathway+tier
     try {
+      var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      var result = await sb.auth.getSession();
+      if (result.data.session) {
+        var uid = result.data.session.user.id;
+        var profileRes = await sb.from('profiles').select('science_pathway, tier').eq('id', uid).single();
+        if (profileRes.data) {
+          if (profileRes.data.science_pathway) {
+            currentPathway = profileRes.data.science_pathway;
+            document.querySelectorAll('.pathway-btn').forEach(function(b) { b.classList.remove('active'); });
+            var pb = document.getElementById('btn-' + currentPathway);
+            if (pb) pb.classList.add('active');
+          }
+          if (profileRes.data.tier) {
+            currentTier = profileRes.data.tier;
+            document.querySelectorAll('.tier-btn').forEach(function(b) { b.classList.remove('active'); });
+            var tb = document.getElementById('btn-' + currentTier);
+            if (tb) tb.classList.add('active');
+          }
+        }
+      }
+    } catch(e) { /* non-logged-in visitors use defaults — fine */ }
+
+    try {
+      await loadChampion();
       await loadLeaderboard();
       document.getElementById('loading').style.display = 'none';
       document.getElementById('content').style.display = 'block';

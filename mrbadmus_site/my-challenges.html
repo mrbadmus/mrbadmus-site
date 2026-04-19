@@ -51,6 +51,8 @@
     .attempt-tier { padding: 2px 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; }
     .tier-foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
     .tier-higher { background: rgba(255,217,61,0.15); color: var(--yellow); }
+    .pathway-combined { background: rgba(78,205,196,0.15); color: var(--physics); }
+    .pathway-triple   { background: rgba(255,107,107,0.15); color: var(--chemistry); }
     .attempt-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.3rem; flex-shrink: 0; }
     .score-good { color: var(--biology); }
     .score-ok { color: var(--yellow); }
@@ -213,6 +215,8 @@
       var subjLabel = subjectLabels[h.subject] || h.subject;
       var tierClass = 'tier-' + h.tier;
       var tierLabel = h.tier.charAt(0).toUpperCase() + h.tier.slice(1);
+      var pathwayClass = 'pathway-' + (h.pathway || 'combined');
+      var pathwayLabel = h.pathway ? (h.pathway.charAt(0).toUpperCase() + h.pathway.slice(1)) : '';
       var mins = Math.floor((h.time_taken || 0) / 60);
       var secs = (h.time_taken || 0) % 60;
       var timeStr = h.time_taken ? (mins + 'm ' + secs + 's') : '';
@@ -224,6 +228,7 @@
           '<div class="attempt-info">' +
             '<div class="attempt-title">' + subjLabel + ' Challenge</div>' +
             '<div class="attempt-meta">' +
+              (pathwayLabel ? '<span class="attempt-tier ' + pathwayClass + '">' + pathwayLabel + '</span>' : '') +
               '<span class="attempt-tier ' + tierClass + '">' + tierLabel + '</span>' +
               '<span>Week of ' + weekStr + '</span>' +
               (timeStr ? '<span>⏱ ' + timeStr + '</span>' : '') +

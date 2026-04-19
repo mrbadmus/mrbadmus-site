@@ -53,17 +53,12 @@
     .subject-card .sc-done { font-size: 0.75rem; color: var(--muted); margin-top: 6px; }
     .subject-card .sc-done.completed { color: var(--biology); }
 
-    .tier-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; max-width: 480px; margin-left: auto; margin-right: auto; }
-    .tier-card {
-      background: var(--card); border: 2px solid #2a2a4a; border-radius: 16px;
-      padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.2s;
+    .profile-track {
+      display: inline-block; margin: 0 auto 20px; padding: 7px 18px;
+      background: var(--card); border: 1px solid #2a2a4a; border-radius: 20px;
+      font-size: 0.82rem; color: var(--muted); font-weight: 600;
     }
-    .tier-card:hover { border-color: #4a4a6a; }
-    .tier-card.selected.foundation { border-color: var(--biology); box-shadow: 0 6px 24px rgba(107,203,119,0.15); }
-    .tier-card.selected.higher { border-color: var(--yellow); box-shadow: 0 6px 24px rgba(255,217,61,0.15); }
-    .tier-card .tc-emoji { font-size: 2rem; margin-bottom: 8px; display: block; }
-    .tier-card .tc-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; }
-    .tier-card .tc-desc { font-size: 0.8rem; color: var(--muted); margin-top: 4px; }
+    .profile-track strong { color: var(--text); }
 
     .btn-start {
       display: inline-block; padding: 16px 48px; border-radius: 16px; border: none;
@@ -170,7 +165,6 @@
       .subject-cards { grid-template-columns: 1fr; gap: 10px; }
       .subject-card { padding: 18px 14px; display: flex; align-items: center; gap: 14px; text-align: left; }
       .subject-card .sc-emoji { font-size: 2rem; margin-bottom: 0; }
-      .tier-cards { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -200,7 +194,7 @@
   <!-- STEP 1: Pick subject -->
   <div class="picker" id="picker" style="display:none;">
     <h1>⚡ Weekly Challenge</h1>
-    <p>Choose a subject and tier, then test yourself with 15 questions.</p>
+    <p>Pick a subject and test yourself with 15 questions matched to your course.</p>
 
     <div class="picker-label">Pick your subject</div>
     <div class="subject-cards">
@@ -221,23 +215,13 @@
       </div>
     </div>
 
-    <div class="picker-label">Pick your tier</div>
-    <div class="tier-cards">
-      <div class="tier-card foundation" onclick="pickTier('foundation', this)" id="tc-foundation">
-        <span class="tc-emoji">🌱</span>
-        <span class="tc-name">Foundation</span>
-        <span class="tc-desc">Grades 1–5</span>
-      </div>
-      <div class="tier-card higher" onclick="pickTier('higher', this)" id="tc-higher">
-        <span class="tc-emoji">⭐</span>
-        <span class="tc-name">Higher</span>
-        <span class="tc-desc">Grades 4–9</span>
-      </div>
+    <div class="profile-track" id="profile-track" style="display:none;">
+      You're taking: <strong id="track-label"></strong>
     </div>
 
     <div class="intro-rules">
       <h3>⚡ Rules</h3>
-      <p><strong>15 questions</strong> — matched to your tier level</p>
+      <p><strong>15 questions</strong> — matched to your course pathway and tier</p>
       <p><strong>One attempt per subject</strong> — do all 3 to top the overall leaderboard</p>
       <p><strong>Timed</strong> — faster = higher rank on ties</p>
       <p><strong>Top 10</strong> make the leaderboard with name, school and picture</p>
@@ -245,7 +229,7 @@
 
     <div class="countdown" id="countdown">New challenges drop Friday 10:15 AM</div>
 
-    <button class="btn-start" id="btn-start" onclick="startChallenge()" disabled>Select a subject and tier ⚡</button>
+    <button class="btn-start" id="btn-start" onclick="startChallenge()" disabled>Select a subject ⚡</button>
   </div>
 
   <!-- QUIZ -->
@@ -300,14 +284,15 @@
 
   var session = null;
   var selectedSubject = null;
-  var selectedTier = null;
+  var studentPathway = null;
+  var studentTier = null;
   var challenge = null;
   var questions = [];
   var currentQ = 0;
   var answers = [];
   var timerInterval = null;
   var startTime = null;
-  var completedChallenges = {}; // track which combos are done
+  var completedChallenges = {};
 
   fetch(RENDER_URL + '/api/health').catch(function(){});
 
@@ -317,9 +302,7 @@
     document.getElementById('quiz').style.display = 'none';
     document.getElementById('picker').style.display = 'block';
     selectedSubject = null;
-    selectedTier = null;
     document.querySelectorAll('.subject-card').forEach(function(c) { c.classList.remove('selected'); });
-    document.querySelectorAll('.tier-card').forEach(function(c) { c.classList.remove('selected'); });
     updateStartButton();
     window.scrollTo(0, 0);
     return false;
@@ -332,28 +315,19 @@
     updateStartButton();
   }
 
-  function pickTier(tier, el) {
-    selectedTier = tier;
-    document.querySelectorAll('.tier-card').forEach(function(c) { c.classList.remove('selected'); });
-    el.classList.add('selected');
-    updateStartButton();
-  }
-
   function updateStartButton() {
     var btn = document.getElementById('btn-start');
-    if (selectedSubject && selectedTier) {
-      var key = selectedSubject + '_' + selectedTier;
-      if (completedChallenges[key]) {
+    if (selectedSubject) {
+      if (completedChallenges[selectedSubject]) {
         btn.textContent = 'Already completed ✅';
         btn.disabled = true;
       } else {
         var subName = selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1);
-        var tierName = selectedTier.charAt(0).toUpperCase() + selectedTier.slice(1);
-        btn.textContent = 'Start ' + subName + ' ' + tierName + ' ⚡';
+        btn.textContent = 'Start ' + subName + ' ⚡';
         btn.disabled = false;
       }
     } else {
-      btn.textContent = 'Select a subject and tier ⚡';
+      btn.textContent = 'Select a subject ⚡';
       btn.disabled = true;
     }
   }
@@ -368,32 +342,42 @@
       return;
     }
 
-    // ONE bulk call instead of 6 sequential calls
+    // Fetch profile to learn student's pathway + tier for badge and status key lookup
+    try {
+      var profileRes = await sb.from('profiles')
+        .select('science_pathway, tier')
+        .eq('id', session.user.id)
+        .single();
+      if (profileRes.data) {
+        studentPathway = profileRes.data.science_pathway;
+        studentTier = profileRes.data.tier;
+        if (studentPathway && studentTier) {
+          var pathLabel = studentPathway.charAt(0).toUpperCase() + studentPathway.slice(1);
+          var tierLabel = studentTier.charAt(0).toUpperCase() + studentTier.slice(1);
+          document.getElementById('track-label').textContent = pathLabel + ' ' + tierLabel;
+          document.getElementById('profile-track').style.display = 'block';
+        }
+      }
+    } catch(e) { /* badge stays hidden — backend will return 400 if profile is incomplete */ }
+
+    // Fetch status — 12-key map, read only the 3 keys for this student's track
     try {
       var res = await fetch(RENDER_URL + '/api/weekly-challenge/status', {
         headers: { 'Authorization': 'Bearer ' + session.access_token }
       });
-      if (res.ok) {
+      if (res.ok && studentPathway && studentTier) {
         var data = await res.json();
         var subjects = ['biology', 'chemistry', 'physics'];
-        var tiers = ['foundation', 'higher'];
         for (var s = 0; s < subjects.length; s++) {
-          for (var t = 0; t < tiers.length; t++) {
-            var key = subjects[s] + '_' + tiers[t];
-            var stat = data.status[key];
-            if (stat && stat.attempted) {
-              completedChallenges[key] = { score: stat.score, max_score: stat.max_score };
-            }
+          var key = subjects[s] + '_' + studentPathway + '_' + studentTier;
+          var stat = data.status[key];
+          if (stat && stat.attempted) {
+            completedChallenges[subjects[s]] = { score: stat.score, max_score: stat.max_score };
           }
-        }
-        // Show completion status on subject cards
-        for (var s = 0; s < subjects.length; s++) {
-          var fDone = !!completedChallenges[subjects[s] + '_foundation'];
-          var hDone = !!completedChallenges[subjects[s] + '_higher'];
-          var el = document.getElementById('done-' + subjects[s]);
-          if (fDone && hDone) { el.textContent = '✅ Both tiers done'; el.className = 'sc-done completed'; }
-          else if (fDone) { el.textContent = '✅ Foundation done'; el.className = 'sc-done completed'; }
-          else if (hDone) { el.textContent = '✅ Higher done'; el.className = 'sc-done completed'; }
+          var doneEl = document.getElementById('done-' + subjects[s]);
+          if (completedChallenges[subjects[s]]) {
+            doneEl.textContent = '✅ Done'; doneEl.className = 'sc-done completed';
+          }
         }
       }
     } catch(e) { console.error('Status fetch error:', e); }
@@ -405,25 +389,37 @@
   init();
 
   async function startChallenge() {
-    if (!selectedSubject || !selectedTier) return;
+    if (!selectedSubject) return;
 
     document.getElementById('picker').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
-    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject + ' ' + selectedTier + ' challenge...';
+    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject + ' challenge...';
 
     try {
       var sessResult = await sb.auth.getSession();
       var token = sessResult.data.session ? sessResult.data.session.access_token : session.access_token;
 
-      var res = await fetch(RENDER_URL + '/api/weekly-challenge?subject=' + selectedSubject + '&tier=' + selectedTier, {
+      var res = await fetch(RENDER_URL + '/api/weekly-challenge?subject=' + selectedSubject, {
         headers: { 'Authorization': 'Bearer ' + token }
       });
 
-      if (!res.ok) {
+      if (res.status === 400) {
         var err = await res.json();
-        alert(err.error || 'Could not load challenge.');
+        if (err.error && err.error.toLowerCase().includes('profile')) {
+          window.location.href = '/profile-setup.html';
+          return;
+        }
         document.getElementById('loading').style.display = 'none';
         document.getElementById('picker').style.display = 'block';
+        alert(err.error || 'Could not load challenge.');
+        return;
+      }
+
+      if (!res.ok) {
+        var err = await res.json();
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('picker').style.display = 'block';
+        alert(err.error || 'Could not load challenge.');
         return;
       }
 

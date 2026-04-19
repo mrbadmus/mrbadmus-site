@@ -515,8 +515,8 @@
   var isEditing   = false;
 
   var profileData = {
-    pathway: 'combined',
-    tier: 'higher',
+    pathway: null,
+    tier: null,
     board: 'AQA',
     grade: null,
     strengths: [],
@@ -808,6 +808,10 @@
       var firstName = document.getElementById('first-name').value.trim();
       if (!firstName) { alert('Please enter your name so Mr Badmus knows who you are!'); return; }
     }
+    if (from === 2) {
+      if (!profileData.pathway) { alert('Please pick your science pathway (Combined or Triple) before continuing.'); return; }
+      if (!profileData.tier) { alert('Please pick your tier (Foundation or Higher) before continuing.'); return; }
+    }
     goToStep(from + 1);
     if (from + 1 === 4) buildTopicGrid();
   }
@@ -919,7 +923,7 @@
       if (isEditing) {
         window.location.href = '/profile-setup.html';
       } else {
-        window.location.href = '/' + profileData.pathway + '/' + profileData.tier + '/index.html';
+        window.location.href = '/' + (profileData.pathway || 'combined') + '/' + (profileData.tier || 'higher') + '/index.html';
       }
 
     } catch (err) {
