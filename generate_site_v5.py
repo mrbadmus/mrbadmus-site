@@ -761,7 +761,8 @@ def chat_html():
       <button class="chat-send-btn">➤</button>
     </div>
   </div>
-</div>"""
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>"""
 
 
 
