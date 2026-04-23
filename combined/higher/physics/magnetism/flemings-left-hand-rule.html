@@ -175,10 +175,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-flemings-left-hand-rule"><div class="match-def" data-index="1" draggable="true">Direction of conventional CURRENT — points from + to −</div>
+      <div class="match-defs" id="defPool-flemings-left-hand-rule"><div class="match-def" data-index="3" draggable="true">Force increases with stronger field, larger current, longer conductor</div>
 <div class="match-def" data-index="2" draggable="true">Direction of FORCE (motion) on the conductor</div>
-<div class="match-def" data-index="3" draggable="true">Force increases with stronger field, larger current, longer conductor</div>
 <div class="match-def" data-index="0" draggable="true">Direction of MAGNETIC FIELD — points from N to S</div>
+<div class="match-def" data-index="1" draggable="true">Direction of conventional CURRENT — points from + to −</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -214,20 +214,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Force is perpendicular to current, not opposite to it — F = BIl gives a force at right angles to both.",2: "Apply the rule carefully: first finger DOWN (field), second finger RIGHT (current), thumb points OUT OF PAGE — not into.",3: "Force is perpendicular to BOTH the field and current — not opposite to either individually.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "Force is perpendicular to BOTH the field and current — not opposite to either individually.",2: "Apply the rule carefully: first finger DOWN (field), second finger RIGHT (current), thumb points OUT OF PAGE — not into.",3: "Force is perpendicular to current, not opposite to it — F = BIl gives a force at right angles to both.",}'>
   <div class="q-text">1. A horizontal wire carries current to the right in a downward magnetic field. Using Fleming's Left-Hand Rule, in which direction is the force on the wire?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Out of the page (towards the observer) — field down, current right, force out</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">To the left — force is opposite to current direction</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Upward — force is opposite to the field direction</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Out of the page (towards the observer) — field down, current right, force out</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Into the page — field down, current right, force in</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Upward — force is opposite to the field direction</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">To the left — force is opposite to current direction</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Reducing B to zero means no force — increasing it again gives the same direction as before.",2: "Changing the MAGNITUDE of current changes the FORCE SIZE — not its direction.",3: "A conductor parallel to the field experiences ZERO force — not reversed force.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "A conductor parallel to the field experiences ZERO force — not reversed force.",2: "Reducing B to zero means no force — increasing it again gives the same direction as before.",3: "Changing the MAGNITUDE of current changes the FORCE SIZE — not its direction.",}'>
   <div class="q-text">2. How can the direction of force on a current-carrying conductor in a magnetic field be reversed?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Reverse the current direction OR reverse the magnetic field direction — either change reverses the force</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Reduce the magnetic flux density to zero then increase it again</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Increase the current magnitude — larger current reverses the force direction</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Move the conductor parallel to the field — this reverses the force</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Move the conductor parallel to the field — this reverses the force</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Reverse the current direction OR reverse the magnetic field direction — either change reverses the force</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Reduce the magnetic flux density to zero then increase it again</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Increase the current magnitude — larger current reverses the force direction</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -298,6 +298,7 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Fleming's Left-Hand Rule and the Motor Effect (6.7.2.2)'});</script>
   <script>

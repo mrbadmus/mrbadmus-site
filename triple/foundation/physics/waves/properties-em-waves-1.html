@@ -165,10 +165,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-properties-em-waves-1"><div class="match-def" data-index="2" draggable="true">No refraction — wave passes straight through boundary unchanged</div>
-<div class="match-def" data-index="3" draggable="true">Stays constant — wavelength changes as speed changes</div>
+      <div class="match-defs" id="defPool-properties-em-waves-1"><div class="match-def" data-index="1" draggable="true">Wave speeds up — bends away from the normal — angle of refraction larger</div>
+<div class="match-def" data-index="2" draggable="true">No refraction — wave passes straight through boundary unchanged</div>
 <div class="match-def" data-index="0" draggable="true">Wave slows down — bends towards the normal — angle of refraction smaller</div>
-<div class="match-def" data-index="1" draggable="true">Wave speeds up — bends away from the normal — angle of refraction larger</div>
+<div class="match-def" data-index="3" draggable="true">Stays constant — wavelength changes as speed changes</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -190,18 +190,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Total internal reflection only occurs when light travels from a denser medium (glass) at an angle exceeding the critical angle — not when going from air into glass.",1: "Bending AWAY happens when light goes from glass to air (speeds up). Air → glass means slowing down → bends TOWARDS normal.",2: "Light is transmitted through glass — it doesn\'t fully reflect at normal incidence.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Total internal reflection only occurs when light travels from a denser medium (glass) at an angle exceeding the critical angle — not when going from air into glass.",2: "Bending AWAY happens when light goes from glass to air (speeds up). Air → glass means slowing down → bends TOWARDS normal.",3: "Light is transmitted through glass — it doesn\'t fully reflect at normal incidence.",}'>
   <div class="q-text">1. A ray of light passes from air into a glass block. The angle of incidence is 40°. What happens to the ray?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">It reflects back — light cannot pass from air into glass</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">It bends away from the normal — angle of refraction is greater than 40°</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">It travels straight through without bending — glass has no effect on direction</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">It bends towards the normal — angle of refraction is less than 40°, because light slows down in glass</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">It bends towards the normal — angle of refraction is less than 40°, because light slows down in glass</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">It reflects back — light cannot pass from air into glass</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">It bends away from the normal — angle of refraction is greater than 40°</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">It travels straight through without bending — glass has no effect on direction</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Speed DECREASES in a denser/slower medium — waves slow down, not speed up.",2: "Frequency is determined by the SOURCE — it doesn\'t change at a boundary. Speed and wavelength both change (λ = v/f).",3: "Frequency is the one property that DOESN\'T change during refraction — only speed and wavelength change.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Speed DECREASES in a denser/slower medium — waves slow down, not speed up.",2: "Frequency is determined by the SOURCE — it doesn\'t change at a boundary. Speed and wavelength both change (λ = v/f).",3: "Frequency is the one property that DOESN\'T change during refraction — only speed and wavelength change.",}'>
   <div class="q-text">2. When light is refracted into a slower medium, which property changes?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Wavelength and speed both decrease — frequency stays constant</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Speed increases — denser medium speeds waves up</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Speed increases — denser medium speeds waves up</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Wavelength and speed both decrease — frequency stays constant</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Frequency increases — higher frequency in a denser medium</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">All properties change — wavelength, frequency and speed all change</button>
 </div>
@@ -274,6 +274,7 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Properties of Electromagnetic Waves 1 (6.6.2.2)'});</script>
   <script>
