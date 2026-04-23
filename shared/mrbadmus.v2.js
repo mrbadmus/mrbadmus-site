@@ -7,7 +7,7 @@ window.MrBadmus = (function() {
   let studentName = null, studentProfile = null;
 
   // Load student name + profile from Supabase session (if logged in)
-  function loadStudentSession() {
+  async function loadStudentSession() {
     try {
       const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
       if (!raw) return;
@@ -18,6 +18,17 @@ window.MrBadmus = (function() {
       // Update chat header subtitle with name
       const subtitle = document.getElementById('chat-head-subtitle');
       if (subtitle && studentName) subtitle.textContent = 'Hey ' + studentName + '! 👋';
+      try {
+        const sb = supabase.createClient(
+          'https://urklkrwevjtlfbwnipjn.supabase.co',
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg'
+        );
+        const profileRes = await sb.from('profiles')
+          .select('science_pathway, tier')
+          .eq('id', user.id)
+          .single();
+        if (profileRes.data) studentProfile = profileRes.data;
+      } catch(pe) { console.warn('MrBadmus profile fetch failed:', pe); }
     } catch(e) {}
   }
 
@@ -148,12 +159,20 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/`(.*?)`/g,'<code>$1</code>').replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
   }
 
-  function init(config) {
-    loadStudentSession();
+  async function init(config) {
+    await loadStudentSession();
     currentSubject = config.subject || 'physics';
     currentTopic = config.topic || '';
     systemPrompt = SUBJECT_PROMPTS[currentSubject] || SUBJECT_PROMPTS.physics;
     if (studentName) systemPrompt += `\n\nThe student you are speaking with is named ${studentName}. Use their name naturally and warmly in your replies — like a teacher who knows their student well — but never overuse it (don't start every sentence with their name).`;
+    if (studentProfile?.tier) {
+      const tierLabel = studentProfile.tier.charAt(0).toUpperCase() + studentProfile.tier.slice(1);
+      systemPrompt += `\n\nThe student is on the ${tierLabel} tier.`;
+    }
+    if (studentProfile?.science_pathway) {
+      const pathLabel = studentProfile.science_pathway.charAt(0).toUpperCase() + studentProfile.science_pathway.slice(1);
+      systemPrompt += `\n\nThe student is studying ${pathLabel} Science.`;
+    }
     if (currentTopic) systemPrompt += `\n\nThe student is currently studying: ${currentTopic}. Focus on this topic when possible.`;
 
     document.getElementById('chatOverlay')?.addEventListener('click', e => { if(e.target===document.getElementById('chatOverlay')) close(); });
