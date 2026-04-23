@@ -194,20 +194,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "P-waves ARE detected on the opposite side — so \'too far\' doesn\'t apply. The distinction between P and S wave shadows points to the liquid core explanation.",1: "S-waves do attenuate, but the pattern of shadow zones is specifically consistent with a liquid outer core, not general distance attenuation.",2: "S-waves lose energy over distance, but can still be detected across Earth if the path is clear — the specific S-wave shadow zones indicate a LIQUID barrier.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "P-waves ARE detected on the opposite side — so \'too far\' doesn\'t apply. The distinction between P and S wave shadows points to the liquid core explanation.",2: "S-waves lose energy over distance, but can still be detected across Earth if the path is clear — the specific S-wave shadow zones indicate a LIQUID barrier.",3: "S-waves do attenuate, but the pattern of shadow zones is specifically consistent with a liquid outer core, not general distance attenuation.",}'>
   <div class="q-text">1. After a distant earthquake, S-waves are not detected on the opposite side of Earth. What does this indicate?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">The opposite side of the Earth is too far — all wave types have a maximum range</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">S-waves are absorbed by the mantle before reaching the outer core</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Earth has a liquid outer core — S-waves cannot travel through liquids, so they are blocked</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">S-waves are too weak to travel to the opposite side of the Earth</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Earth has a liquid outer core — S-waves cannot travel through liquids, so they are blocked</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">S-waves are absorbed by the mantle before reaching the outer core</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "There\'s no physical reason to divide by 4 — divide by 2 for the two-way journey.",2: "Speed divided by time gives a rate of change of speed, not distance — use d = v × t / 2.",3: "600 m doesn\'t account for the return journey — the pulse travels TO the seabed AND back, so divide total time by 2.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "600 m doesn\'t account for the return journey — the pulse travels TO the seabed AND back, so divide total time by 2.",2: "Speed divided by time gives a rate of change of speed, not distance — use d = v × t / 2.",3: "There\'s no physical reason to divide by 4 — divide by 2 for the two-way journey.",}'>
   <div class="q-text">2. A ship sends a sonar pulse and receives the echo 0.4 s later. Speed of sound in water = 1500 m/s. What is the water depth?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">300 m — d = 1500 × 0.4 / 2 = 600 / 2 = 300 m</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">150 m — d = 1500 × 0.4 / 4 = 150 m</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">600 m — d = 1500 × 0.4 = 600 m (forgot to divide by 2)</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">300 m — d = 1500 × 0.4 / 2 = 600 / 2 = 300 m</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">3750 m — d = 1500 / 0.4 = 3750 m (divided instead of multiplied)</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">600 m — d = 1500 × 0.4 = 600 m (forgot to divide by 2)</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">150 m — d = 1500 × 0.4 / 4 = 150 m</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -278,6 +278,7 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Waves for Detection and Exploration (6.6.1.5 (HT only, physics only))'});</script>
   <script>

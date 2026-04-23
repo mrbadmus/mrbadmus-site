@@ -165,10 +165,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-motion-in-a-circle"><div class="match-def" data-index="2" draggable="true">Tension in the string, directed towards the centre</div>
-<div class="match-def" data-index="3" draggable="true">Gravity pulling satellite towards Earth — no engine needed for stable orbit</div>
+      <div class="match-defs" id="defPool-motion-in-a-circle"><div class="match-def" data-index="1" draggable="true">Friction between tyres and road surface, directed inward</div>
 <div class="match-def" data-index="0" draggable="true">Gravitational attraction of the Sun towards the centre</div>
-<div class="match-def" data-index="1" draggable="true">Friction between tyres and road surface, directed inward</div>
+<div class="match-def" data-index="2" draggable="true">Tension in the string, directed towards the centre</div>
+<div class="match-def" data-index="3" draggable="true">Gravity pulling satellite towards Earth — no engine needed for stable orbit</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -191,20 +191,20 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "The satellite accelerates TOWARDS Earth, not away from it — gravity provides the centripetal (inward) force.",1: "Acceleration requires change in VELOCITY — this includes change in direction, not just change in speed.",2: "Constant SPEED ≠ constant VELOCITY. Acceleration is rate of change of VELOCITY (a vector) — changing direction changes velocity even at constant speed.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "The satellite accelerates TOWARDS Earth, not away from it — gravity provides the centripetal (inward) force.",1: "Acceleration requires change in VELOCITY — this includes change in direction, not just change in speed.",3: "Constant SPEED ≠ constant VELOCITY. Acceleration is rate of change of VELOCITY (a vector) — changing direction changes velocity even at constant speed.",}'>
   <div class="q-text">1. A satellite orbits Earth at constant speed. Is it accelerating? Explain.</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Yes — it accelerates away from Earth to maintain altitude</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">No — acceleration requires a change in speed, which doesn't occur</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">No — constant speed means no acceleration by definition</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Yes — its direction continuously changes, so velocity changes, meaning it accelerates towards Earth's centre</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Yes — its direction continuously changes, so velocity changes, meaning it accelerates towards Earth's centre</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">No — constant speed means no acceleration by definition</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Orbital stability absolutely depends on the balance between gravitational force and required centripetal force for the given speed.",2: "Higher orbital radius at higher speed would mean the gravitational force is insufficient — lower orbits (smaller radius) are needed for faster speeds.",3: "Stable circular orbits are maintained by gravity alone — no engines needed for a circular orbit.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Higher orbital radius at higher speed would mean the gravitational force is insufficient — lower orbits (smaller radius) are needed for faster speeds.",2: "Stable circular orbits are maintained by gravity alone — no engines needed for a circular orbit.",3: "Orbital stability absolutely depends on the balance between gravitational force and required centripetal force for the given speed.",}'>
   <div class="q-text">2. A satellite's orbital speed is increased. What must happen for it to remain in a stable orbit?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Nothing changes — orbital stability doesn't depend on speed</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The orbital radius must increase — faster satellites need larger orbits</button>
 <button class="quiz-opt" data-qi="1" data-oi="1">The orbital radius must decrease — a smaller orbit requires less centripetal force at higher speed</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The orbital radius must increase — faster satellites need larger orbits</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">The satellite must fire engines continuously to maintain the orbit</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">The satellite must fire engines continuously to maintain the orbit</button>
+<button class="quiz-opt" data-qi="1" data-oi="3">Nothing changes — orbital stability doesn't depend on speed</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
 </div>
@@ -275,6 +275,7 @@
     </div>
   </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'physics',topic:'Motion in a Circle (6.5.6 (HT only))'});</script>
   <script>
