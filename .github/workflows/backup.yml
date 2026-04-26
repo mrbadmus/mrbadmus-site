@@ -24,7 +24,10 @@ jobs:
           curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
           sudo apt-get update
           sudo apt-get install -y postgresql-client-17
-          pg_dump --version
+          # Use the explicit versioned binary path — Ubuntu runners have an older
+          # pg_dump on PATH from a pre-installed PG 16 package, which would otherwise
+          # take precedence and cause a server-version-mismatch error.
+          /usr/lib/postgresql/17/bin/pg_dump --version
 
       - name: Set backup filename
         id: filename
@@ -39,7 +42,7 @@ jobs:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
           set -euo pipefail
-          pg_dump "$SUPABASE_DB_URL" --no-owner --no-acl --quote-all-identifiers \
+          /usr/lib/postgresql/17/bin/pg_dump "$SUPABASE_DB_URL" --no-owner --no-acl --quote-all-identifiers \
             | gzip -9 > "${{ steps.filename.outputs.name }}"
           ls -lh "${{ steps.filename.outputs.name }}"
 
