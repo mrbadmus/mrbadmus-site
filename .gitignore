@@ -33,3 +33,6 @@ node_modules/
 # Generator output we never want to track if accidentally created
 *.tmp
 *.bak
+
+# Lane 3 secrets scan output (local only, never commit)
+SECRETS_SCAN_RESULT.md
