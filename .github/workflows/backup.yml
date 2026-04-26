@@ -12,18 +12,24 @@ jobs:
     name: Backup Supabase database to R2
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
 
     steps:
-      - name: Install PostgreSQL 16 client
+      - name: Install PostgreSQL 17 client
         run: |
+          set -euo pipefail
           sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
           curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
           sudo apt-get update
-          sudo apt-get install -y postgresql-client-16
+          sudo apt-get install -y postgresql-client-17
+          pg_dump --version
 
       - name: Set backup filename
         id: filename
         run: |
+          set -euo pipefail
           DATE=$(date -u +'%Y-%m-%d')
           echo "name=backup-${DATE}.sql.gz" >> $GITHUB_OUTPUT
           echo "Backup filename will be: backup-${DATE}.sql.gz"
@@ -32,15 +38,30 @@ jobs:
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
+          set -euo pipefail
           pg_dump "$SUPABASE_DB_URL" --no-owner --no-acl --quote-all-identifiers \
             | gzip -9 > "${{ steps.filename.outputs.name }}"
           ls -lh "${{ steps.filename.outputs.name }}"
+
+      - name: Sanity-check backup file size
+        run: |
+          set -euo pipefail
+          FILE="${{ steps.filename.outputs.name }}"
+          SIZE=$(stat -c%s "$FILE")
+          echo "Backup file size: ${SIZE} bytes"
+          if [ "$SIZE" -lt 1024 ]; then
+            echo "❌ Backup file suspiciously small (${SIZE} bytes, threshold 1024)."
+            echo "This usually means pg_dump silently failed. Check the previous step's logs."
+            exit 1
+          fi
+          echo "✅ Backup file size OK"
 
       - name: Configure AWS CLI for R2
         env:
           R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
           R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
         run: |
+          set -euo pipefail
           aws configure set aws_access_key_id "$R2_ACCESS_KEY_ID"
           aws configure set aws_secret_access_key "$R2_SECRET_ACCESS_KEY"
           aws configure set region auto
@@ -50,6 +71,7 @@ jobs:
         env:
           R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
         run: |
+          set -euo pipefail
           aws s3 cp "${{ steps.filename.outputs.name }}" \
             "s3://mrbadmus-supabase-backups/${{ steps.filename.outputs.name }}" \
             --endpoint-url "$R2_ENDPOINT_URL"
@@ -58,6 +80,7 @@ jobs:
         env:
           R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
         run: |
+          set -euo pipefail
           aws s3 ls "s3://mrbadmus-supabase-backups/${{ steps.filename.outputs.name }}" \
             --endpoint-url "$R2_ENDPOINT_URL"
           echo "✅ Backup verified in R2"
@@ -66,16 +89,24 @@ jobs:
         env:
           R2_ENDPOINT_URL: ${{ secrets.R2_ENDPOINT_URL }}
         run: |
+          set -euo pipefail
+          # Note: 'date -u -d "30 days ago"' uses GNU date (Ubuntu).
+          # On macOS this syntax differs — only run this in CI.
           CUTOFF=$(date -u -d '30 days ago' +'%Y-%m-%d')
           echo "Deleting backups dated before ${CUTOFF}..."
-          aws s3 ls "s3://mrbadmus-supabase-backups/" --endpoint-url "$R2_ENDPOINT_URL" \
+          # Build the list of backup files (empty list is fine — no work to do).
+          BACKUP_FILES=$(aws s3 ls "s3://mrbadmus-supabase-backups/" --endpoint-url "$R2_ENDPOINT_URL" \
             | awk '{print $4}' \
-            | grep -E '^backup-[0-9]{4}-[0-9]{2}-[0-9]{2}\.sql\.gz$' \
-            | while read FILE; do
-                FILE_DATE=$(echo "$FILE" | sed 's/backup-//;s/.sql.gz//')
-                if [[ "$FILE_DATE" < "$CUTOFF" ]]; then
-                  echo "Deleting old backup: $FILE"
-                  aws s3 rm "s3://mrbadmus-supabase-backups/$FILE" --endpoint-url "$R2_ENDPOINT_URL"
-                fi
-              done
+            | { grep -E '^backup-[0-9]{4}-[0-9]{2}-[0-9]{2}\.sql\.gz$' || true; })
+          if [ -z "$BACKUP_FILES" ]; then
+            echo "No matching backup files found. Nothing to clean up."
+          else
+            echo "$BACKUP_FILES" | while read FILE; do
+              FILE_DATE=$(echo "$FILE" | sed 's/backup-//;s/.sql.gz//')
+              if [[ "$FILE_DATE" < "$CUTOFF" ]]; then
+                echo "Deleting old backup: $FILE"
+                aws s3 rm "s3://mrbadmus-supabase-backups/$FILE" --endpoint-url "$R2_ENDPOINT_URL"
+              fi
+            done
+          fi
           echo "✅ Retention cleanup complete"
