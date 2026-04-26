@@ -2,7 +2,7 @@
 """
 MrBadmusAI — Full Site Generator
 Run: python3 generate_site.py
-Output: ./mrbadmus_site/ (ready to deploy on Netlify)
+Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 """
 
 import os, shutil, json
@@ -560,48 +560,6 @@ _js_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "shared", "m
 with open(_js_path, "r", encoding="utf-8") as f:
     SHARED_JS = f.read()
 
-# ─────────────────────────────────────────────
-#  NETLIFY FUNCTION
-# ─────────────────────────────────────────────
-
-NETLIFY_FUNCTION = """exports.handler = async function(event) {
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
-  }
-  const headers = {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  };
-  try {
-    const body = JSON.parse(event.body || '{}');
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: body.system || '',
-        messages: body.messages || [],
-      }),
-    });
-    const data = await response.json();
-    return { statusCode: 200, headers, body: JSON.stringify(data) };
-  } catch (err) {
-    return { statusCode: 500, headers, body: JSON.stringify({ error: { message: err.message } }) };
-  }
-};
-"""
-
-NETLIFY_TOML = """[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-"""
 
 
 # ─────────────────────────────────────────────
@@ -4949,7 +4907,6 @@ def build_site(output_dir="mrbadmus_site"):
     dirs = [
         output_dir,
         f"{output_dir}/shared",
-        f"{output_dir}/netlify/functions",
         f"{output_dir}/combined",
         f"{output_dir}/combined/foundation",
         f"{output_dir}/combined/higher",
@@ -4980,12 +4937,6 @@ def build_site(output_dir="mrbadmus_site"):
         f.write(SHARED_JS_PATCHED)
     print("  ✅ shared/mrbadmus.v2.js")
 
-    # ── Netlify ──
-    with open(f"{output_dir}/netlify/functions/chat.js", "w") as f:
-        f.write(NETLIFY_FUNCTION)
-    with open(f"{output_dir}/netlify.toml", "w") as f:
-        f.write(NETLIFY_TOML)
-    print("  ✅ netlify config")
 
     # ── Auth pages — copy into output if they exist in repo root ──
     import shutil as _shutil, os as _os
@@ -5104,7 +5055,7 @@ def build_site(output_dir="mrbadmus_site"):
     print(f"\nNext steps:")
     print(f"  1. python3 generate_site_v5.py")
     print(f"  2. Check output in {output_dir}/")
-    print(f"  3. Push to GitHub → Netlify auto-deploys")
+    print(f"  3. Push to GitHub → Cloudflare auto-deploys")
 
 
 if __name__ == "__main__":
