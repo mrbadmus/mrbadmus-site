@@ -4949,6 +4949,30 @@ def build_site(output_dir="mrbadmus_site"):
         else:
             print(f"  ⚠️  {_auth_file} not found — skipping")
 
+    # ── Stage 2A shared files (config.js + teacher-guard.js) ──
+    # Plain copies, no patching. These are loaded directly by /teacher/* pages.
+    for _shared_file in ["config.js", "teacher-guard.js"]:
+        _src = f"shared/{_shared_file}"
+        _dst = f"{output_dir}/shared/{_shared_file}"
+        if _os.path.exists(_src):
+            _shutil.copy2(_src, _dst)
+            print(f"  ✅ shared/{_shared_file}")
+        else:
+            print(f"  ⚠️  shared/{_shared_file} not found — skipping")
+
+    # ── Stage 2A teacher pages tree ──
+    # Whole teacher/ directory copied so /teacher/classes.html (and future
+    # /teacher/* pages from MRB-20 onwards) get emitted into mrbadmus_site/.
+    _teacher_src = "teacher"
+    _teacher_dst = f"{output_dir}/teacher"
+    if _os.path.exists(_teacher_src):
+        if _os.path.exists(_teacher_dst):
+            _shutil.rmtree(_teacher_dst)
+        _shutil.copytree(_teacher_src, _teacher_dst)
+        print(f"  ✅ teacher/ (directory tree)")
+    else:
+        print(f"  ⚠️  teacher/ directory not found — skipping")
+
     # ── Landing page ──
     with open(f"{output_dir}/index.html", "w") as f:
         f.write(make_landing())

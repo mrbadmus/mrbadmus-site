@@ -204,10 +204,11 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js"></script>
 <script>
-  // ── Config — will be injected by the generator ──────────────────
-  const SUPABASE_URL     = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  // ── Config sourced from /shared/config.js (prod by default,
+  //    test on localhost or ?env=test). See MRB-19 D1.
+  const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.MrBadmusConfig;
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   function switchTab(tab) {
@@ -279,14 +280,23 @@
 
 
   function redirectAfterAuth() {
-    // New users go to profile setup, returning users go home
+    // Where to land after a successful sign-in.
+    // Students with no science_pathway go to /profile-setup (the existing
+    // student-onboarding wizard). Staff (teacher/hod/admin) skip the
+    // student profile-setup gate — they don't have a science_pathway by
+    // design, and profile-setup is a student-shaped form that doesn't
+    // apply to them. Stage 6 (MRB-10) will introduce a teacher-shaped
+    // onboarding flow.
     const returnUrl = new URLSearchParams(window.location.search).get('return') || '/index.html';
-    // Check if profile is complete
     sb.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
-      sb.from('profiles').select('first_name, science_pathway').eq('id', session.user.id).single()
+      sb.from('profiles').select('first_name, science_pathway, role').eq('id', session.user.id).single()
         .then(({ data: p }) => {
-          if (!p?.science_pathway) {
+          const isStaff = p && ['teacher', 'hod', 'admin'].includes(p.role);
+          if (isStaff) {
+            // Honour ?return= if explicitly set, otherwise default to teacher home.
+            window.location.href = returnUrl !== '/index.html' ? returnUrl : '/teacher/classes.html';
+          } else if (!p?.science_pathway) {
             window.location.href = '/profile-setup.html';
           } else {
             window.location.href = returnUrl;

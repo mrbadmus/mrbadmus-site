@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Classes | MrBadmusAI Teacher</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
+      --physics: #4ECDC4; --chemistry: #FF6B6B; --biology: #6BCB77;
+      --text: #E8E8F0; --muted: #888;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--darker);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      padding: 80px 20px 40px;
+      /* Hidden until requireTeacherRole's onAllowed callback fires.
+         Fail-closed: if the guard bounces or JS fails, the page never
+         reveals teacher content. */
+      display: none;
+    }
+    .container { max-width: 760px; margin: 0 auto; }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.role {
+      background: rgba(78, 205, 196, 0.12);
+      color: var(--physics);
+      margin-bottom: 14px;
+    }
+    .pill.env-test { background: rgba(255,217,61,0.18); color: #FFD93D; }
+    .pill.env-prod { background: rgba(136,136,136,0.18); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--chemistry); color: var(--chemistry); }
+    .welcome-card {
+      background: var(--card);
+      border: 1px solid #2a2a4a;
+      border-radius: 18px;
+      padding: 32px 28px;
+      margin-bottom: 24px;
+    }
+    .welcome-card h1 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, var(--physics), var(--biology));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .verification {
+      background: linear-gradient(135deg, rgba(107,203,119,0.10), rgba(107,203,119,0.04));
+      border: 1px solid rgba(107,203,119,0.4);
+      border-radius: 14px;
+      padding: 18px 20px;
+      margin-bottom: 16px;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    .verification strong { color: var(--biology); }
+    .verification code {
+      background: rgba(0,0,0,0.25);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.88em;
+    }
+    .stub-card {
+      background: var(--card);
+      border: 1px dashed #2a2a4a;
+      border-radius: 14px;
+      padding: 22px 20px;
+      color: var(--muted);
+    }
+    .stub-card h2 {
+      font-family: 'Fredoka One', cursive;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<nav style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,15,26,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #2a2a4a;z-index:10;">
+  <a href="/index.html" style="font-family:'Fredoka One',cursive;font-size:1.3rem;text-decoration:none;background:linear-gradient(135deg,#4ECDC4,#6BCB77);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">⚗️ MrBadmusAI</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="env-pill" class="pill env-prod" title=""></span>
+    <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="welcome-card">
+    <span class="pill role" id="role-badge">role: …</span>
+    <h1>Welcome, <span id="welcome-name">teacher</span> 👋</h1>
+    <p style="color:var(--muted);font-size:0.95rem;line-height:1.55;">
+      This is your teacher dashboard for MrBadmusAI. You'll see your classes,
+      assignments, and student progress here.
+    </p>
+  </div>
+
+  <div class="verification">
+    <strong>✅ Auth gate is working.</strong>
+    You reached <code>/teacher/classes</code> because your role is
+    <code id="verification-role">teacher</code>. The page render itself is the
+    verification — if you can see this, the full chain (session → profile →
+    role check) is working end-to-end.
+  </div>
+
+  <div class="stub-card">
+    <h2>📝 Your classes will appear here</h2>
+    <p>This dashboard is being built. The class list (10X1 Biology with
+       student counts, recent submissions, mean scores) will replace this
+       card once <strong>MRB-20</strong> lands. For now, the page exists
+       to prove the auth gate is working.</p>
+  </div>
+</div>
+
+<!-- ── Bootstrap: SDK → config → guard → render ─────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/teacher-guard.js"></script>
+<script>
+  MrBadmusTeacherGuard.requireTeacherRole({
+    onAllowed: function (ctx) {
+      var name = ctx.profile.first_name || 'teacher';
+      var role = ctx.profile.role;
+      var env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
+
+      document.getElementById('welcome-name').textContent = name;
+      document.getElementById('role-badge').textContent = 'role: ' + role;
+      document.getElementById('verification-role').textContent = role;
+      document.getElementById('nav-user-area').textContent = '👤 ' + name;
+
+      var envEl = document.getElementById('env-pill');
+      envEl.textContent = env.toUpperCase();
+      envEl.className = 'pill env-' + env;
+      envEl.title = env === 'test'
+        ? 'Test sandbox — fake data only'
+        : 'Production — live student data';
+
+      // Reveal the page only after the guard approved AND we've populated data.
+      document.body.style.display = 'block';
+    },
+  });
+</script>
+
+</body>
+</html>

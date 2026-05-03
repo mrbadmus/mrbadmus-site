@@ -68,20 +68,31 @@ END $$;
 -- =====================================================================
 -- profiles.id has a hard FK to auth.users.id, so users must come first.
 -- Form matches 0000_recreate_prod_baseline.sql (full Supabase auth shape).
+--
+-- All seven GoTrue text columns (confirmation_token, recovery_token,
+-- email_change_token_new, email_change_token_current, email_change,
+-- phone_change_token, reauthentication_token) are set to '' explicitly.
+-- NULL on any of these breaks signin: GoTrue's User struct types them
+-- as non-nullable Go strings and sql.Scan errors with "converting NULL
+-- to string is unsupported". Real Supabase signups always insert these
+-- as ''; direct SQL inserts must too. See MRB-37 for the incident
+-- that surfaced this.
 -- =====================================================================
 
 INSERT INTO auth.users (
   id, email, raw_user_meta_data, aud, role,
-  email_confirmed_at, created_at, updated_at, instance_id
+  email_confirmed_at, created_at, updated_at, instance_id,
+  confirmation_token, recovery_token, email_change_token_new, email_change_token_current,
+  email_change, phone_change_token, reauthentication_token
 ) VALUES
-  ('20000000-0000-0000-0000-000000000001', 'teacher@test-rainford.local',  '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000'),
-  ('21000000-0000-0000-0000-000000000001', 'student1@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000'),
-  ('21000000-0000-0000-0000-000000000002', 'student2@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000'),
-  ('21000000-0000-0000-0000-000000000003', 'student3@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000'),
-  ('21000000-0000-0000-0000-000000000004', 'student4@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000'),
-  ('21000000-0000-0000-0000-000000000005', 'student5@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000'),
-  ('21000000-0000-0000-0000-000000000006', 'student6@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000'),
-  ('21000000-0000-0000-0000-000000000007', 'student7@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000')
+  ('20000000-0000-0000-0000-000000000001', 'teacher@test-rainford.local',  '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', ''),
+  ('21000000-0000-0000-0000-000000000001', 'student1@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', ''),
+  ('21000000-0000-0000-0000-000000000002', 'student2@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', ''),
+  ('21000000-0000-0000-0000-000000000003', 'student3@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', ''),
+  ('21000000-0000-0000-0000-000000000004', 'student4@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', ''),
+  ('21000000-0000-0000-0000-000000000005', 'student5@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', ''),
+  ('21000000-0000-0000-0000-000000000006', 'student6@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', ''),
+  ('21000000-0000-0000-0000-000000000007', 'student7@test-rainford.local', '{}'::jsonb, 'authenticated', 'authenticated', now(), now(), now(), '00000000-0000-0000-0000-000000000000', '', '', '', '', '', '', '')
 ON CONFLICT (id) DO NOTHING;
 
 
