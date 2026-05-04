@@ -4949,9 +4949,9 @@ def build_site(output_dir="mrbadmus_site"):
         else:
             print(f"  ⚠️  {_auth_file} not found — skipping")
 
-    # ── Stage 2A shared files (config.js + teacher-guard.js) ──
+    # ── Stage 2A shared files (config.js + teacher-guard.js + teacher-data.js) ──
     # Plain copies, no patching. These are loaded directly by /teacher/* pages.
-    for _shared_file in ["config.js", "teacher-guard.js"]:
+    for _shared_file in ["config.js", "teacher-guard.js", "teacher-data.js"]:
         _src = f"shared/{_shared_file}"
         _dst = f"{output_dir}/shared/{_shared_file}"
         if _os.path.exists(_src):

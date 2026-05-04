@@ -125,5 +125,5 @@ window.MrBadmusTeacherGuard = (function () {
     window.location.replace('/auth.html');
   }
 
-  return { requireTeacherRole, signOut, ALLOWED_ROLES };
+  return { requireTeacherRole, signOut, getClient, ALLOWED_ROLES };
 })();
