@@ -224,6 +224,61 @@ Mide is a teacher and creative founder, not a developer. Keep this in mind at al
 
 ---
 
+## Working pattern (how Mide and Claude operate)
+
+Captured 12 May 2026 mid-way through MRB-38 build. This is how Mide
+and chat-Claude have been operating across the schools layer rollout.
+Future-Mide and future-Claude (and any new collaborator) should keep
+to this.
+
+**1. Three-way workflow with clear lanes.** Mide directs (product,
+scope, priorities). Chat-Claude architects (plans, writes prompts,
+gates between phases, plain-English translator). Claude Code executes
+(queries, code, file edits, Linear writes). Each lane does what it's
+best at. None of us tries to do the others' jobs.
+
+**2. Investigate before editing.** Read the current state first. No
+"I'll just change this" without recon. Diffs shown before approval.
+The work moves faster long-term because we don't waste time undoing
+wrong assumptions.
+
+**3. Gate-driven phases.** Big tasks split into sub-phases. Each
+phase has an explicit gate where chat-Claude pauses for Mide's
+approval. No barrelling through. Catches divergence early when it's
+cheap to fix.
+
+**4. "What could go wrong?" before structural changes.** Standard
+pre-flight check before any migration, refactor, or scope change.
+Catches edge cases that would otherwise become Phase 6 bugs.
+
+**5. "Are you sure that's everything?" before approving multi-file
+changes.** Specifically catches scope-creep in batches.
+
+**6. Linear is source of truth.** Every decision, gotcha, deferred
+item gets pinned. No "remind me why we did this" 6 weeks later.
+Comments on the right ticket so context lives with the work.
+
+**7. New scope goes in new tickets or comments, never folded silently
+into the current ticket.** Avatar bank → MRB-55. Multi-attempts →
+comment on Stage 4 ticket. Brand drift → MRB-54. The thing in front
+of us stays the thing in front of us.
+
+**8. Production-touching work uses the MCP swap dance.** Both
+Supabase MCPs (prod + test) are never live simultaneously.
+`claude mcp remove supabase-test` before any prod step, re-add after.
+
+**9. Never `git push` from terminal.** GitHub Desktop only. Always.
+
+**10. Mide manages his own schedule.** Chat-Claude does not project
+fatigue or advise breaks unless Mide explicitly raises it. Speed of
+ideation→execution is the priority.
+
+Mide's stated principle: "Slow and thorough beats fast and patchy" —
+applied to *correctness*, not pace. Ideation cycles stay short;
+verification stays rigorous.
+
+---
+
 ## Known Deferred Items
 
 Small things to tighten when you're next in the relevant area — not urgent, not blockers:
