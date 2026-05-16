@@ -462,9 +462,9 @@
       '<div class="card-activity">' + escapeHtml(activity) + '</div>';
 
     btn.addEventListener('click', function () {
-      // MRB-38 will replace this with:
-      //   window.location.href = '/teacher/class-detail.html?class=' + klass.id;
-      showToast('Class detail coming soon');
+      const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test'
+        ? '&env=test' : '';
+      window.location.href = '/teacher/class-detail.html?class=' + encodeURIComponent(klass.id) + env;
     });
 
     return btn;

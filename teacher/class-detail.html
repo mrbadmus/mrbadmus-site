@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Class detail — Mr Badmus AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --darker:    #0F0F1A;
+      --dark:      #1A1A2E;
+      --card:      #16213E;
+      --card2:     #1A2545;
+      --text:      #E8F4FD;
+      --muted:     #8892A4;
+      --physics:   #4ECDC4;
+      --chemistry: #FF6B6B;
+      --biology:   #6BCB77;
+      --science:   #A78BD0;
+      --warning:   #FFA94D;
+      --radius:    12px;
+      --shadow:    0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--darker);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      padding: 80px 20px 60px;
+      /* Hidden until requireTeacherRole's onAllowed callback fires.
+         Fail-closed: if the guard bounces or JS fails, the page never
+         reveals teacher content. */
+      display: none;
+    }
+
+    /* ── NAV (matches teacher/classes.html exactly) ── */
+    nav.top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15,15,26,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2a2a4a;
+      z-index: 10;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: rgba(255,217,61,0.18); color: #FFD93D; }
+    .pill.env-prod { background: rgba(136,136,136,0.18); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--chemistry); color: var(--chemistry); }
+
+    /* ── PAGE LAYOUT ── */
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--text); }
+
+    /* ── CLASS HEADER ── */
+    .class-header {
+      margin-bottom: 28px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .class-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+    .class-header-name {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+    .class-header-pill {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--darker);
+      white-space: nowrap;
+    }
+    .class-header-meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .class-header-stats {
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 600;
+      opacity: 0.85;
+    }
+
+    /* ── PLACEHOLDER SECTIONS (filled in Phases 4c/4d) ── */
+    .placeholder-section {
+      margin-top: 24px;
+      padding: 36px 20px;
+      border: 1px dashed rgba(255,255,255,0.12);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* ── SECTION (heading + content block — shared across roster/etc.) ── */
+    .section-block { margin-top: 32px; }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+    .section-count {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    /* ── ROSTER TABLE ── */
+    .table-wrap {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .table-scroll { overflow-x: auto; }
+    .roster-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    .roster-table thead th {
+      background: var(--card2);
+      color: var(--muted);
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 14px 18px;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .roster-table thead th.sortable {
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .roster-table thead th.sortable:hover { color: var(--text); }
+    .roster-table thead th.active { color: var(--text); }
+    .sort-arrow {
+      display: inline-block;
+      margin-left: 6px;
+      font-size: 0.7rem;
+      opacity: 0.85;
+    }
+    .roster-table tbody td {
+      padding: 14px 18px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .roster-table tbody tr {
+      transition: background-color 0.15s;
+    }
+    .roster-table tbody tr:hover td {
+      background: rgba(255,255,255,0.03);
+    }
+    .roster-table .cell-muted { color: var(--muted); }
+
+    .cell-name {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .student-avatar {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--darker);
+      object-fit: cover;
+    }
+    .student-name {
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── ROSTER · "This Week" column ── */
+    .cell-thisweek {
+      min-width: 200px;
+    }
+    .thisweek-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 5px;
+    }
+    .thisweek-bar-track {
+      flex: 1;
+      height: 8px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .thisweek-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.4s ease;
+    }
+    .thisweek-bar-fill.green { background: var(--biology); }
+    .thisweek-bar-fill.amber { background: var(--warning); }
+    .thisweek-bar-fill.red   { background: var(--chemistry); }
+    .thisweek-pct {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--text);
+      min-width: 40px;
+      text-align: right;
+    }
+    .thisweek-microcopy {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .thisweek-microcopy.red   { color: var(--chemistry); }
+    .thisweek-microcopy.amber { color: var(--warning); }
+    .thisweek-noweek {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 0.88rem;
+    }
+
+    .roster-empty {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 36px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* ── ASSIGNMENTS TABLE ── */
+    /* Separate class from .roster-table so the two can diverge later
+       without one's tweaks bleeding into the other. */
+    .assignments-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    .assignments-table thead th {
+      background: var(--card2);
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 18px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .assignments-table tbody td {
+      padding: 14px 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      vertical-align: middle;
+    }
+    .assignments-table tbody tr:hover td {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    /* Low-mean highlight: red row tint + chemistry-coloured mean cell.
+       Triggered when class_mean_pct < 50 in renderAssignments. */
+    .assignments-table tbody tr.row-low-mean td {
+      background: rgba(255, 107, 107, 0.06);
+    }
+    .assignments-table tbody tr.row-low-mean:hover td {
+      background: rgba(255, 107, 107, 0.10);
+    }
+    .assignments-table tbody tr.row-low-mean .cell-mean {
+      color: var(--chemistry);
+      font-weight: 700;
+    }
+
+    /* Subject pill — table-row variant of .class-header-pill, smaller. */
+    .subject-pill-sm {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--darker);
+      white-space: nowrap;
+    }
+
+    /* Due-date tone variants — chosen by formatDueDate's tone value. */
+    .due-tone-overdue { color: var(--chemistry); font-weight: 600; }
+    .due-tone-today   { color: var(--warning);   font-weight: 600; }
+    .due-tone-soon    { color: var(--text); }
+    .due-tone-normal  { color: var(--muted); }
+    .due-tone-muted   { color: var(--muted); font-style: italic; }
+
+    /* Em-dash placeholder for null class_mean_pct. */
+    .cell-mean-empty { color: var(--muted); }
+
+    /* Section-level empty state for 0-assignment classes (e.g. 9Y1). */
+    .assignments-empty {
+      padding: 40px 24px;
+      text-align: center;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    /* ── STARS LEADERBOARD (podium — Phase 4d rebuild #2, 16 May 2026) ──
+       Visual language matched against /_design-reference/public-leaderboard.png
+       (the existing public-site podium). Three hero elements carry the
+       celebration: (1) ribboned metal medals above each avatar, (2)
+       glowing gold ring on the 1st-place avatar, (3) medal-toned score
+       lines. The plinths intentionally RECEDE — dark tinted blocks with
+       coloured "1st/2nd/3rd" labels in the medal tone, no bright gradient
+       slabs. The reference sits on near-black; this podium sits on
+       --card (#16213E navy), so tints/alphas are retuned for that
+       surface. Medal colours stay scoped as --medal-gold/-silver/-bronze. */
+    .stars-podium {
+      --medal-gold:   #FFD93D;
+      --medal-silver: #C7CDD6;
+      --medal-bronze: #CD8E5C;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 18px;
+      padding: 44px 20px 0;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .podium-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+      max-width: 200px;
+    }
+    .podium-standee {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 14px;
+      /* No flex gap — the medal wrap uses a negative margin-bottom to
+         overlap the avatar cleanly. */
+    }
+
+    /* ── Medal: ribbon + metallic disc ─────────────────────────────
+       Two-part medal matching the reference. Tricolour ribbon
+       (trapezoid clip-path) sits above the disc; the disc itself has
+       a radial-gradient metallic fill + inset top highlight + drop
+       shadow for the metal-coin feel. The whole medal wrap uses a
+       negative margin-bottom so it overlaps the avatar below. */
+    .podium-medal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: -16px;
+      position: relative;
+      z-index: 2;
+    }
+    .podium-medal-ribbon {
+      width: 24px;
+      height: 13px;
+      background: linear-gradient(90deg,
+        #C8102E 0%, #C8102E 33.33%,
+        #F2F2F2 33.33%, #F2F2F2 66.66%,
+        #1F4FA8 66.66%, #1F4FA8 100%);
+      clip-path: polygon(0 0, 100% 0, 75% 100%, 25% 100%);
+      margin-bottom: -3px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+    }
+    .podium-medallion {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--darker);
+      position: relative;
+      z-index: 2;
+      box-shadow:
+        inset 0 2px 2px rgba(255, 255, 255, 0.55),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.22),
+        0 3px 6px rgba(0, 0, 0, 0.5);
+    }
+    .podium-medallion--gold {
+      background: radial-gradient(circle at 32% 30%, #FFE875 0%, #FFD93D 55%, #C9A82E 100%);
+    }
+    .podium-medallion--silver {
+      background: radial-gradient(circle at 32% 30%, #F0F2F5 0%, #C7CDD6 55%, #8E939C 100%);
+    }
+    .podium-medallion--bronze {
+      background: radial-gradient(circle at 32% 30%, #E0B488 0%, #CD8E5C 55%, #8B5A35 100%);
+    }
+    /* Ghost medal — no ribbon (no award) + dashed disc + muted number. */
+    .podium-medallion--ghost {
+      background: transparent;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      box-shadow: none;
+      color: var(--muted);
+    }
+
+    /* ── Avatar with medal-coloured ring ───────────────────────────
+       Per-medal class sets size + ring (box-shadow so the avatar's
+       intrinsic w/h is unchanged) + glow halo. Gold is largest with
+       the strongest halo — this is what makes the winner read as
+       elevated and celebratory against the now-quiet plinth. */
+    .podium-avatar {
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      color: var(--darker);
+      object-fit: cover;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .podium-avatar--gold {
+      width: 84px;
+      height: 84px;
+      font-size: 2rem;
+      box-shadow:
+        0 0 0 4px var(--medal-gold),
+        0 0 32px rgba(255, 217, 61, 0.50);
+    }
+    .podium-avatar--silver {
+      width: 60px;
+      height: 60px;
+      font-size: 1.45rem;
+      box-shadow:
+        0 0 0 3px var(--medal-silver),
+        0 0 14px rgba(216, 222, 229, 0.18);
+    }
+    .podium-avatar--bronze {
+      width: 60px;
+      height: 60px;
+      font-size: 1.45rem;
+      box-shadow:
+        0 0 0 3px var(--medal-bronze),
+        0 0 12px rgba(205, 142, 92, 0.20);
+    }
+    /* Ghost ordered AFTER medal classes — wins on box-shadow:none, keeps
+       the per-medal size already applied above. */
+    .podium-avatar--ghost {
+      background: transparent;
+      border: 2px dashed rgba(255, 255, 255, 0.18);
+      box-shadow: none;
+    }
+
+    .podium-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: var(--text);
+      text-align: center;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-top: 12px;
+    }
+    .podium-name--empty {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.82rem;
+      font-style: italic;
+    }
+
+    /* Score line in the plinth's medal tone — earned-score signal. */
+    .podium-score {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-top: 2px;
+    }
+    .podium-score--gold   { color: var(--medal-gold);   }
+    .podium-score--silver { color: var(--medal-silver); }
+    .podium-score--bronze { color: var(--medal-bronze); }
+
+    /* ── Plinths: dark recessed, medal-tinted, coloured label ──────
+       Per the reference: plinths are quiet scaffolding, NOT the loud
+       gradient slabs of the prior build. A near-black background with
+       a very low-alpha medal-coloured top-down tint, plus the
+       "1st/2nd/3rd" label rendered in the medal colour (bold). Gold
+       gets a faint outer glow to harmonise with the avatar's halo.
+       Heights still tiered: 1st tallest centre. Empty plinths use the
+       same treatment (medal-coloured label remains the focal point). */
+    .podium-plinth {
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 16px;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: 0.02em;
+      background-color: rgba(0, 0, 0, 0.32);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 4px 10px -2px rgba(0, 0, 0, 0.5);
+    }
+    .podium-plinth--gold {
+      background-image: linear-gradient(180deg,
+        rgba(255, 217, 61, 0.22) 0%,
+        rgba(255, 217, 61, 0.04) 100%);
+      height: 110px;
+      color: var(--medal-gold);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 217, 61, 0.30),
+        0 0 24px rgba(255, 217, 61, 0.10),
+        0 4px 10px -2px rgba(0, 0, 0, 0.5);
+    }
+    .podium-plinth--silver {
+      background-image: linear-gradient(180deg,
+        rgba(216, 222, 229, 0.16) 0%,
+        rgba(216, 222, 229, 0.03) 100%);
+      height: 80px;
+      color: var(--medal-silver);
+    }
+    .podium-plinth--bronze {
+      background-image: linear-gradient(180deg,
+        rgba(205, 142, 92, 0.18) 0%,
+        rgba(205, 142, 92, 0.03) 100%);
+      height: 60px;
+      color: var(--medal-bronze);
+    }
+
+    /* "Also earned Stars" overflow row for eligible[3..]. Uses .student-avatar
+       (36px) so identity treatment matches the roster. */
+    .stars-alsoran {
+      margin-top: 20px;
+      padding: 18px 20px;
+      background: var(--card2);
+      border-radius: var(--radius);
+    }
+    .stars-alsoran-heading {
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stars-alsoran-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+    }
+    .stars-alsoran-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Section-level empty / defensive state for the leaderboard. */
+    .stars-empty-msg {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    /* Graceful shrink on narrow viewports — don't break < 520px.
+       All new elements (ribbon, medallion, avatar+ring, plinth) shrink
+       in concert. */
+    @media (max-width: 520px) {
+      .stars-podium { gap: 6px; padding: 32px 8px 0; }
+      .podium-medal { margin-bottom: -13px; }
+      .podium-medal-ribbon { width: 19px; height: 11px; }
+      .podium-medallion {
+        width: 30px;
+        height: 30px;
+        font-size: 0.88rem;
+      }
+      .podium-avatar--gold {
+        width: 64px; height: 64px; font-size: 1.5rem;
+        box-shadow:
+          0 0 0 3px var(--medal-gold),
+          0 0 20px rgba(255, 217, 61, 0.40);
+      }
+      .podium-avatar--silver {
+        width: 48px; height: 48px; font-size: 1.15rem;
+        box-shadow:
+          0 0 0 2px var(--medal-silver),
+          0 0 10px rgba(216, 222, 229, 0.16);
+      }
+      .podium-avatar--bronze {
+        width: 48px; height: 48px; font-size: 1.15rem;
+        box-shadow:
+          0 0 0 2px var(--medal-bronze),
+          0 0 10px rgba(205, 142, 92, 0.18);
+      }
+      .podium-name  { font-size: 0.82rem; margin-top: 10px; }
+      .podium-score { font-size: 0.88rem; }
+      .podium-plinth { font-size: 1rem; padding-top: 12px; }
+      .podium-plinth--gold   { height: 75px; }
+      .podium-plinth--silver { height: 58px; }
+      .podium-plinth--bronze { height: 44px; }
+    }
+
+    /* ── STATES (loading / not-found / not-authorised / error) ── */
+    .state-block { display: none; padding: 60px 20px; text-align: center; }
+    .state-block.show { display: block; }
+    .state-block h2 {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .state-block p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin: 0 auto 20px;
+      line-height: 1.55;
+    }
+    .state-btn {
+      display: inline-block;
+      padding: 10px 22px;
+      border-radius: 22px;
+      background: var(--physics);
+      color: var(--darker);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .state-btn:hover { opacity: 0.85; }
+    .state-loading .dots { display: inline-flex; gap: 6px; margin-top: 10px; }
+    .state-loading .dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+    .state-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .state-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="env-pill" class="pill env-prod" title=""></span>
+    <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<main class="container">
+  <a id="back-link" class="back-link" href="/teacher/classes.html">← Back to my classes</a>
+
+  <div id="state-loading" class="state-block state-loading show">
+    <p>Loading class detail</p>
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <div id="state-loaded" style="display:none;">
+    <section id="class-header" class="class-header"></section>
+    <section id="roster-section"></section>
+    <section id="assignments-section"></section>
+    <section id="leaderboard-section"></section>
+  </div>
+
+  <div id="state-not-found" class="state-block">
+    <h2>Class not found</h2>
+    <p>That class doesn't exist or the link is malformed. Head back to your classes.</p>
+    <a class="state-btn back-to-classes" href="/teacher/classes.html">Back to my classes</a>
+  </div>
+
+  <div id="state-not-authorised" class="state-block">
+    <h2>Not your class — yet</h2>
+    <p>Your school admin will add you to this class soon. Check back later or head back to your classes list.</p>
+    <a class="state-btn back-to-classes" href="/teacher/classes.html">Back to my classes</a>
+  </div>
+
+  <div id="state-error" class="state-block">
+    <h2>Couldn't load class</h2>
+    <p>Something went wrong. Please refresh the page.</p>
+    <button class="state-btn" onclick="window.location.reload()">Refresh</button>
+  </div>
+</main>
+
+<!-- ── Bootstrap: SDK → config → guard → data → render ─────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/teacher-guard.js"></script>
+<script src="/shared/teacher-data.js"></script>
+<script>
+(function () {
+  const STATES = {
+    loading:       document.getElementById('state-loading'),
+    loaded:        document.getElementById('state-loaded'),
+    notFound:      document.getElementById('state-not-found'),
+    notAuthorised: document.getElementById('state-not-authorised'),
+    error:         document.getElementById('state-error'),
+  };
+  // Reveal exactly one state at a time. The .loaded container uses
+  // display:block; the others toggle the .show class on .state-block.
+  function showState(name) {
+    Object.keys(STATES).forEach(function (k) {
+      const el = STATES[k];
+      if (k === 'loaded') {
+        el.style.display = name === 'loaded' ? 'block' : 'none';
+      } else {
+        el.classList.toggle('show', k === name);
+      }
+    });
+  }
+
+  // Class names come from school admins, not validated student input, but
+  // anything reaching innerHTML gets escaped — defence in depth.
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function capitalise(str) {
+    if (!str) return '';
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  function buildMetaLine(klass) {
+    const parts = [];
+    if (klass.year_group != null) parts.push('Year ' + klass.year_group);
+    if (klass.tier)               parts.push(capitalise(klass.tier));
+    if (klass.science_pathway)    parts.push(capitalise(klass.science_pathway));
+    return parts.join(' · ');
+  }
+
+  // Preserve ?env=test on back-link and state-page buttons. ?env=prod
+  // doesn't need preservation — that's the default.
+  function buildClassesUrl() {
+    const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test'
+      ? '?env=test' : '';
+    return '/teacher/classes.html' + env;
+  }
+
+  // ── Formatters ─────────────────────────────────────────────────────
+  function formatScore(pct) {
+    if (pct == null) return '—';
+    return Math.round(pct) + '%';
+  }
+  // Floored so "59 minutes ago", not "1 hour ago". Past ~30 days falls back
+  // to a localised "DD MMM" (adds year if not the current calendar year).
+  function formatRelativeTime(iso) {
+    if (!iso) return '—';
+    const then = new Date(iso).getTime();
+    if (isNaN(then)) return '—';
+    const sec = Math.floor((Date.now() - then) / 1000);
+    if (sec < 60) return 'just now';
+    const min = Math.floor(sec / 60);
+    if (min < 60) return min + ' minute' + (min === 1 ? '' : 's') + ' ago';
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return hr + ' hour' + (hr === 1 ? '' : 's') + ' ago';
+    const day = Math.floor(hr / 24);
+    if (day < 7) return day + ' day' + (day === 1 ? '' : 's') + ' ago';
+    if (day < 30) {
+      const wk = Math.floor(day / 7);
+      return wk + ' week' + (wk === 1 ? '' : 's') + ' ago';
+    }
+    const d = new Date(iso);
+    const sameYear = d.getFullYear() === new Date().getFullYear();
+    return d.toLocaleDateString('en-GB', sameYear
+      ? { day: 'numeric', month: 'short' }
+      : { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  // Due-date formatter for the assignments list (Phase 4c). Unlike
+  // formatRelativeTime — which assumes a past timestamp — due_at is
+  // usually FUTURE, occasionally past (overdue), occasionally null
+  // (assignment with no deadline set).
+  //
+  // Returns { text, tone } so the caller can pick a colour from tone:
+  //   - 'muted'   (null/invalid)
+  //   - 'overdue' (chemistry red)
+  //   - 'today'   (warning amber)
+  //   - 'soon'    (text, plain prominence)
+  //   - 'normal'  (muted, lower visual weight)
+  //
+  // Year is appended when the due date falls outside the current
+  // calendar year, regardless of diffDays. Both midnights are computed
+  // in BROWSER-LOCAL time (matches computeWeekWindow's TZ stance).
+  function formatDueDate(iso) {
+    if (!iso) return { text: 'No due date', tone: 'muted' };
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return { text: 'No due date', tone: 'muted' };
+
+    const now = new Date();
+    const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dueMidnight   = new Date(d.getFullYear(),  d.getMonth(),  d.getDate());
+    const diffDays = Math.floor((dueMidnight.getTime() - todayMidnight.getTime()) / 86400000);
+    const crossYear = d.getFullYear() !== now.getFullYear();
+
+    if (diffDays < 0) {
+      const n = Math.abs(diffDays);
+      return { text: 'Overdue by ' + n + ' day' + (n === 1 ? '' : 's'), tone: 'overdue' };
+    }
+    if (diffDays === 0) return { text: 'Due today',    tone: 'today' };
+    if (diffDays === 1) return { text: 'Due tomorrow', tone: 'soon'  };
+    // 2-6 days: full weekday name. Year is still appended if cross-year
+    // (rare: today late December → next-week mid-January).
+    if (diffDays <= 6) {
+      const weekday = d.toLocaleDateString('en-GB', { weekday: 'long' });
+      const suffix = crossYear ? ' ' + d.getFullYear() : '';
+      return { text: 'Due ' + weekday + suffix, tone: 'soon' };
+    }
+    // 7+ days OR cross-year: short weekday + day + short month, with year
+    // when it differs from today's calendar year.
+    const short = d.toLocaleDateString('en-GB', crossYear
+      ? { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }
+      : { weekday: 'short', day: 'numeric', month: 'short' });
+    return { text: 'Due ' + short, tone: 'normal' };
+  }
+
+  // ── Avatar ─────────────────────────────────────────────────────────
+  const AVATAR_COLOUR_VARS = [
+    'var(--physics)', 'var(--chemistry)', 'var(--biology)', 'var(--science)',
+  ];
+  // Deterministic per studentId — same student gets the same colour every
+  // render. Simple sum-of-charcodes is good enough for visual variety; we
+  // don't need cryptographic quality here.
+  function getStudentColour(studentId) {
+    const s = String(studentId || '');
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h + s.charCodeAt(i)) % AVATAR_COLOUR_VARS.length;
+    return AVATAR_COLOUR_VARS[h];
+  }
+  function buildInitialsHtml(student) {
+    const colour = getStudentColour(student.id);
+    const initial = (student.first_name || '').charAt(0).toUpperCase() || '?';
+    return '<span class="student-avatar" style="background:' + colour + ';">' +
+      escapeHtml(initial) + '</span>';
+  }
+  // Render <img> when avatar_url is present; embed the initials-span HTML
+  // in data-fallback so onerror can swap to it without re-running JS.
+  // No current test-seed student has avatar_url, but the data layer allows
+  // it, so render defensively.
+  function buildAvatarHtml(student) {
+    if (!student.avatar_url) return buildInitialsHtml(student);
+    const fallback = buildInitialsHtml(student);
+    return '<img class="student-avatar" src="' + escapeHtml(student.avatar_url) +
+      '" alt="" referrerpolicy="no-referrer" data-fallback="' + escapeHtml(fallback) +
+      '" onerror="this.outerHTML=this.getAttribute(\'data-fallback\')"/>';
+  }
+
+  // ── Roster table ───────────────────────────────────────────────────
+  // "This Week" is the primary lens (Phase 4b.5, Mide 12 May 2026):
+  // Monday-morning question is "who do I praise / have a word with for
+  // this week?" Avg Score is the all-time secondary signal.
+  const ROSTER_COLUMNS = [
+    { key: 'name',       label: 'Student' },
+    { key: 'thisWeek',   label: 'This week' },
+    { key: 'score',      label: 'Avg score' },
+    { key: 'lastActive', label: 'Last active' },
+  ];
+  // Default: this-week completion DESC — top of page = students who got
+  // everything in on time. Sort state is page-local (no URL state v1).
+  let rosterSortKey = 'thisWeek';
+  let rosterSortDir = 'desc';
+
+  // ── Bar colour rule (Phase 4b.5 fix-pass, 15 May 2026) ─────────
+  //   green = 100% of this week's assignments submitted
+  //   amber = 70-99% submitted   (inclusive at 70)
+  //   red   = below 70% submitted
+  // Lateness does NOT affect bar colour. Question-grain bar (where
+  // amber emerges at finer detail) is deferred to MRB-56.
+  //
+  // ── Bar right-side label (Phase 4b.5 micro-fix, 15 May 2026) ───
+  // Shows "X/N done" where X = on_time + late this week and N =
+  // week_total_count. Was "75%" previously, but that competed
+  // visually with the "Avg Score" column and forced the reader to
+  // mentally cross-reference the microcopy denominator (Mide noted
+  // this in screenshot review). "X/N done" restates the same
+  // denominator as the microcopy so the gap is immediately legible.
+  // Falls back to "—" when there are no this-week assignments.
+  //
+  // ── Microcopy (ALL-TIME consistency, not this-week) ────────────
+  //   total_assignments === 0   → italic "No assignments yet" (9Y1)
+  //   X === N AND K === 0       → muted "X/N on time"  (consistent student)
+  //   any other case            → amber "X/N on time"
+  // where X = on_time_count, N = total_assignments, K = late_count (all-time).
+  // The ", K late" clause was dropped (Phase 4b.5 micro-fix, 15 May
+  // 2026) — it was redundant alongside "X/N on time" and the new
+  // "X/N done" label already shows the submission gap. late_count
+  // is still tracked on the roster data for future use.
+  //
+  // ── Cell anatomy ───────────────────────────────────────────────
+  // The two halves of the cell measure different windows on purpose:
+  //   - Bar fill + "X/N done" render only when week_completion_pct
+  //     != null (THIS-WEEK has assignments). Otherwise: neutral
+  //     track + "—".
+  //   - Microcopy says "No assignments yet" ONLY when total_assignments
+  //     === 0 (ALL-TIME is empty). Otherwise: "X/N on time" line.
+  // A holiday-week class with all-time history therefore shows: neutral
+  // bar, "—" label, AND a normal all-time microcopy line.
+  function buildThisWeekCellHtml(s) {
+    // ── Bar fill + "X/N done" label (keys off THIS-WEEK) ─────────
+    let barFillHtml = '';
+    let doneLabel = '—';
+    if (s.week_completion_pct != null) {
+      const pct = s.week_completion_pct;
+      let barClass;
+      if (pct === 100)    barClass = 'green';
+      else if (pct >= 70) barClass = 'amber';
+      else                barClass = 'red';
+      barFillHtml = '<div class="thisweek-bar-fill ' + barClass +
+        '" style="width:' + pct + '%;"></div>';
+      const submitted = s.week_on_time_count + s.week_late_count;
+      doneLabel = submitted + '/' + s.week_total_count + ' done';
+    }
+
+    // ── Microcopy (keys off ALL-TIME) ────────────────────────────
+    let microcopyHtml;
+    if (s.total_assignments === 0) {
+      microcopyHtml = '<div class="thisweek-noweek">No assignments yet</div>';
+    } else {
+      const onTime = s.on_time_count;
+      const total  = s.total_assignments;
+      const late   = s.late_count;
+      const text   = onTime + '/' + total + ' on time';
+      // Muted only for the consistent student: completed all on time, ever.
+      const colour = (onTime === total && late === 0) ? '' : 'amber';
+      const cls    = 'thisweek-microcopy' + (colour ? ' ' + colour : '');
+      microcopyHtml = '<div class="' + cls + '">' + escapeHtml(text) + '</div>';
+    }
+
+    return '<td class="cell-thisweek">' +
+      '<div class="thisweek-bar-row">' +
+        '<div class="thisweek-bar-track">' + barFillHtml + '</div>' +
+        '<span class="thisweek-pct">' + escapeHtml(doneLabel) + '</span>' +
+      '</div>' +
+      microcopyHtml +
+    '</td>';
+  }
+
+  function sortStudents(students, key, dir) {
+    function cmp(a, b) {
+      // Name is alphabetic ASC/DESC; numeric/timestamp keys push nulls to
+      // the bottom regardless of direction. ThisWeek is the multi-key chain.
+      if (key === 'name') {
+        const va = (a.first_name || '').toLowerCase();
+        const vb = (b.first_name || '').toLowerCase();
+        if (va < vb) return dir === 'asc' ? -1 : 1;
+        if (va > vb) return dir === 'asc' ? 1 : -1;
+        return 0;
+      }
+      if (key === 'thisWeek') {
+        // Phase 4b.5 multi-key chain:
+        //   1. week_completion_pct (direction-sensitive)
+        //   2. week_on_time_count DESC (more on-time wins, ALWAYS)
+        //   3. week_late_count ASC (fewer late wins, ALWAYS)
+        //   4. first_name ASC (handled by outer tiebreak)
+        // Nulls (no assignments this week → week_completion_pct === null)
+        // always sort to the bottom regardless of direction.
+        const aPct = a.week_completion_pct;
+        const bPct = b.week_completion_pct;
+        if (aPct == null && bPct == null) return 0;
+        if (aPct == null) return 1;
+        if (bPct == null) return -1;
+        if (aPct !== bPct) return dir === 'asc' ? (aPct - bPct) : (bPct - aPct);
+        if (a.week_on_time_count !== b.week_on_time_count) {
+          return b.week_on_time_count - a.week_on_time_count;
+        }
+        if (a.week_late_count !== b.week_late_count) {
+          return a.week_late_count - b.week_late_count;
+        }
+        return 0;
+      }
+      let va, vb;
+      if (key === 'score')          { va = a.average_score_pct; vb = b.average_score_pct; }
+      else if (key === 'lastActive') {
+        va = a.last_active_at ? new Date(a.last_active_at).getTime() : null;
+        vb = b.last_active_at ? new Date(b.last_active_at).getTime() : null;
+      } else return 0;
+      // Nulls always last.
+      if (va == null && vb == null) return 0;
+      if (va == null) return 1;
+      if (vb == null) return -1;
+      return dir === 'asc' ? (va - vb) : (vb - va);
+    }
+    // Stable sort with first_name tiebreak so the order is fully predictable.
+    return students.slice().sort(function (a, b) {
+      const primary = cmp(a, b);
+      if (primary !== 0) return primary;
+      return (a.first_name || '').localeCompare(b.first_name || '');
+    });
+  }
+
+  function renderRoster(students) {
+    const section = document.getElementById('roster-section');
+    section.className = 'section-block';
+
+    if (!students || students.length === 0) {
+      section.innerHTML =
+        '<div class="section-header">' +
+          '<h2 class="section-title">Students</h2>' +
+        '</div>' +
+        '<div class="roster-empty">No active students in this class yet.</div>';
+      return;
+    }
+
+    const count = students.length;
+    const countLabel = count === 1 ? '1 active member' : count + ' active members';
+
+    const headersHtml = ROSTER_COLUMNS.map(function (col) {
+      const isActive = rosterSortKey === col.key;
+      const arrow = isActive
+        ? '<span class="sort-arrow">' + (rosterSortDir === 'desc' ? '▼' : '▲') + '</span>'
+        : '';
+      const cls = 'sortable' + (isActive ? ' active' : '');
+      return '<th class="' + cls + '" data-sort-key="' + col.key + '" scope="col">' +
+        escapeHtml(col.label) + arrow +
+      '</th>';
+    }).join('');
+
+    const rowsHtml = sortStudents(students, rosterSortKey, rosterSortDir).map(function (s) {
+      const fullName = ((s.first_name || '') + ' ' + (s.last_name || '')).trim();
+      return '<tr>' +
+        '<td><div class="cell-name">' +
+          buildAvatarHtml(s) +
+          '<span class="student-name">' + escapeHtml(fullName || '—') + '</span>' +
+        '</div></td>' +
+        buildThisWeekCellHtml(s) +
+        '<td>' + escapeHtml(formatScore(s.average_score_pct)) + '</td>' +
+        '<td class="cell-muted">' + escapeHtml(formatRelativeTime(s.last_active_at)) + '</td>' +
+      '</tr>';
+    }).join('');
+
+    section.innerHTML =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Students</h2>' +
+        '<span class="section-count">' + escapeHtml(countLabel) + '</span>' +
+      '</div>' +
+      '<div class="table-wrap"><div class="table-scroll">' +
+        '<table class="roster-table">' +
+          '<thead><tr>' + headersHtml + '</tr></thead>' +
+          '<tbody>' + rowsHtml + '</tbody>' +
+        '</table>' +
+      '</div></div>';
+
+    // Wire sort: re-rendering the same students array preserves identity
+    // (we pass through the closure) and keeps event handlers attached freshly.
+    section.querySelectorAll('th[data-sort-key]').forEach(function (th) {
+      th.addEventListener('click', function () {
+        const key = th.getAttribute('data-sort-key');
+        if (rosterSortKey === key) {
+          rosterSortDir = (rosterSortDir === 'desc') ? 'asc' : 'desc';
+        } else {
+          rosterSortKey = key;
+          // Default direction per column: alphabetical ASC for names,
+          // highest-first DESC for everything else.
+          rosterSortDir = (key === 'name') ? 'asc' : 'desc';
+        }
+        renderRoster(students);
+      });
+    });
+  }
+
+  // ── Assignments section (Phase 4c) ──────────────────────────────────
+  // Renders the assignments list under the roster. Reads detail.assignments,
+  // which the data layer already sorts due_at DESC NULLS LAST. No client-side
+  // sort, no pagination — Mide's classes max out at ~12 rows so a full table
+  // is comfortable to scan.
+  //
+  // Row highlight: class_mean_pct < 50 → row gets .row-low-mean (red tint +
+  // chemistry-coloured mean cell). NULL class_mean (e.g. zero-submission
+  // assignments) does NOT count as low — the row stays neutral, mean cell
+  // shows an em-dash.
+  const ASSIGNMENT_SUBJECT_COLOUR_VARS = {
+    'Biology':   'var(--biology)',
+    'Chemistry': 'var(--chemistry)',
+    'Physics':   'var(--physics)',
+  };
+  // KS3 ('Science') and KS4 Combined ('Combined Science') fall through here
+  // — they don't surface as per-assignment subjects, but the fallback colour
+  // exists for defensive rendering if subject_name is unexpected.
+  function getAssignmentSubjectColourVar(subjectName) {
+    if (subjectName && ASSIGNMENT_SUBJECT_COLOUR_VARS[subjectName]) {
+      return ASSIGNMENT_SUBJECT_COLOUR_VARS[subjectName];
+    }
+    return 'var(--science)';
+  }
+
+  function renderAssignments(assignments) {
+    const section = document.getElementById('assignments-section');
+    section.className = 'section-block';
+
+    const list = assignments || [];
+    const n = list.length;
+    const countLabel = n === 0
+      ? 'No assignments yet'
+      : (n === 1 ? '1 assignment' : n + ' assignments');
+
+    const headerHtml =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Assignments</h2>' +
+        '<span class="section-count">' + escapeHtml(countLabel) + '</span>' +
+      '</div>';
+
+    if (n === 0) {
+      section.innerHTML = headerHtml +
+        '<div class="assignments-empty">No assignments yet.</div>';
+      return;
+    }
+
+    // Subject column hides when every assignment in the class shares the
+    // same subject (Phase 4c micro-pass, 15 May 2026). KS3 (8X1, 8X2) +
+    // KS4 Triple single-subject classes (10Z, 10X1) get a tighter
+    // 4-column table. KS4 Combined (10A — 3 distinct subjects) keeps
+    // the 5-column layout with the subject pill.
+    const distinctSubjects = new Set(
+      list.map(function (a) { return a.subject_name; })
+    );
+    const showSubjectColumn = distinctSubjects.size > 1;
+
+    const rowsHtml = list.map(function (a) {
+      const due = formatDueDate(a.due_at);
+
+      let subjectCellHtml = '';
+      if (showSubjectColumn) {
+        const subjectColour = getAssignmentSubjectColourVar(a.subject_name);
+        const subjectInner = a.subject_name
+          ? '<span class="subject-pill-sm" style="background:' + subjectColour + ';">' +
+              escapeHtml(a.subject_name) +
+            '</span>'
+          : '';
+        subjectCellHtml = '<td>' + subjectInner + '</td>';
+      }
+
+      const meanCell = (a.class_mean_pct == null)
+        ? '<span class="cell-mean cell-mean-empty">—</span>'
+        : '<span class="cell-mean">' + escapeHtml(Math.round(a.class_mean_pct) + '%') + '</span>';
+
+      const rowClass = (a.class_mean_pct != null && a.class_mean_pct < 50)
+        ? ' class="row-low-mean"'
+        : '';
+
+      return '<tr' + rowClass + '>' +
+        '<td>' + escapeHtml(a.title || '—') + '</td>' +
+        subjectCellHtml +
+        '<td><span class="due-tone-' + escapeHtml(due.tone) + '">' +
+          escapeHtml(due.text) +
+        '</span></td>' +
+        '<td>' + escapeHtml(a.submissions_count + '/' + a.total_students) + '</td>' +
+        '<td>' + meanCell + '</td>' +
+      '</tr>';
+    }).join('');
+
+    const subjectTh = showSubjectColumn ? '<th scope="col">Subject</th>' : '';
+    section.innerHTML = headerHtml +
+      '<div class="table-wrap"><div class="table-scroll">' +
+        '<table class="assignments-table">' +
+          '<thead><tr>' +
+            '<th scope="col">Title</th>' +
+            subjectTh +
+            '<th scope="col">Due</th>' +
+            '<th scope="col">Submitted</th>' +
+            '<th scope="col">Class Mean</th>' +
+          '</tr></thead>' +
+          '<tbody>' + rowsHtml + '</tbody>' +
+        '</table>' +
+      '</div></div>';
+  }
+
+  // ── Stars leaderboard (Phase 4d) ───────────────────────────────────
+  // Consumes loadClassDetail's leaderboard object — the data layer has
+  // already filtered by the two-gate eligibility and applied the sort
+  // (score_pct DESC → total_time_sec ASC → first_name ASC). UI renders
+  // in array order, no re-sort, no slicing. Three plinths always —
+  // unfilled ranks render a ghosted standee + "Claim this spot" so the
+  // shape stays honest.
+  //
+  // Visual L→R order: silver (rank 2) · GOLD (rank 1, centre) · bronze
+  // (rank 3) — the universal podium reading.
+  //
+  // Five render states (decided off is_empty + empty_reason FIRST):
+  //   1. is_empty + no_assignments_this_week → "No assignments set this week"
+  //   2. is_empty + no_eligibles_yet         → "No Stars yet this week"
+  //   3. eligible.length >= 1                → podium (filled to length, rest ghosted)
+  //   4. eligible.length > 3                 → podium + also-ran row for eligible[3..]
+  //   5. malformed/missing leaderboard       → "Stars unavailable" (fail soft, mirror roster/assignments)
+
+  function formatPodiumName(student) {
+    const first = (student.first_name || '').trim();
+    const last  = (student.last_name  || '').trim();
+    const initial = last ? last.charAt(0).toUpperCase() + '.' : '';
+    return (first + (initial ? ' ' + initial : '')).trim() || '—';
+  }
+
+  // Larger podium avatar — separate from the 36px .student-avatar used by
+  // roster/also-ran. Same colour-hash so identity is consistent across
+  // sections (Aiden's roster colour === Aiden's podium colour).
+  // Phase 4d rebuild: per-medal sizing + ring/glow lives on the avatar
+  // element itself via .podium-avatar--{medal}. Same shape for img and
+  // initials path so the onerror fallback inherits the medal class too.
+  function buildPodiumAvatarHtml(student, medal) {
+    const colour = getStudentColour(student.student_id);
+    const initial = (student.first_name || '').charAt(0).toUpperCase() || '?';
+    const cls = 'podium-avatar podium-avatar--' + medal;
+    if (student.avatar_url) {
+      const fallback = '<span class="' + cls + '" style="background:' + colour + ';">' +
+        escapeHtml(initial) + '</span>';
+      return '<img class="' + cls + '" src="' + escapeHtml(student.avatar_url) +
+        '" alt="" referrerpolicy="no-referrer" data-fallback="' + escapeHtml(fallback) +
+        '" onerror="this.outerHTML=this.getAttribute(\'data-fallback\')"/>';
+    }
+    return '<span class="' + cls + '" style="background:' + colour + ';">' +
+      escapeHtml(initial) + '</span>';
+  }
+
+  function buildAlsoranAvatarHtml(student) {
+    const colour = getStudentColour(student.student_id);
+    const initial = (student.first_name || '').charAt(0).toUpperCase() || '?';
+    if (student.avatar_url) {
+      const fallback = '<span class="student-avatar" style="background:' + colour + ';">' +
+        escapeHtml(initial) + '</span>';
+      return '<img class="student-avatar" src="' + escapeHtml(student.avatar_url) +
+        '" alt="" referrerpolicy="no-referrer" data-fallback="' + escapeHtml(fallback) +
+        '" onerror="this.outerHTML=this.getAttribute(\'data-fallback\')"/>';
+    }
+    return '<span class="student-avatar" style="background:' + colour + ';">' +
+      escapeHtml(initial) + '</span>';
+  }
+
+  // Phase 4d rebuild #2: filled column = ribboned metallic medal +
+  // medal-ringed avatar + name + medal-toned score + dark tinted plinth
+  // with medal-coloured "1st/2nd/3rd" label. Empty column = ghost medal
+  // (no ribbon — it's an unawarded spot) + ghost avatar + "Claim this
+  // spot" + same plinth treatment. The plinth's medal-tone label stays
+  // even when empty so the spot reads as identifiable, not broken.
+  function buildPodiumColumn(student, rankNumber, medal) {
+    const RANK_LABELS = { 1: '1st', 2: '2nd', 3: '3rd' };
+    const rankLabel = RANK_LABELS[rankNumber] || (rankNumber + 'th');
+
+    if (student) {
+      // Defensive: 75% gate guarantees a number for any eligible entry,
+      // but omit the line rather than render "null%" if it ever isn't.
+      const pct = student.score_pct;
+      const scoreHtml = (pct == null)
+        ? ''
+        : '<div class="podium-score podium-score--' + medal + '">' +
+            escapeHtml(Math.round(pct) + '%') +
+          '</div>';
+      return '<div class="podium-column">' +
+        '<div class="podium-standee">' +
+          '<div class="podium-medal">' +
+            '<div class="podium-medal-ribbon"></div>' +
+            '<div class="podium-medallion podium-medallion--' + medal + '">' +
+              rankNumber +
+            '</div>' +
+          '</div>' +
+          buildPodiumAvatarHtml(student, medal) +
+          '<div class="podium-name">' + escapeHtml(formatPodiumName(student)) + '</div>' +
+          scoreHtml +
+        '</div>' +
+        '<div class="podium-plinth podium-plinth--' + medal + '">' +
+          escapeHtml(rankLabel) +
+        '</div>' +
+      '</div>';
+    }
+    // Empty column — ghost medal (NO ribbon — unawarded), ghost avatar
+    // (sized by medal class, ring removed by ghost class), "Claim this
+    // spot". Plinth keeps its dark/tinted treatment with medal-tone label.
+    return '<div class="podium-column">' +
+      '<div class="podium-standee">' +
+        '<div class="podium-medal">' +
+          '<div class="podium-medallion podium-medallion--' + medal + ' podium-medallion--ghost">' +
+            rankNumber +
+          '</div>' +
+        '</div>' +
+        '<span class="podium-avatar podium-avatar--' + medal + ' podium-avatar--ghost"></span>' +
+        '<div class="podium-name podium-name--empty">Claim this spot</div>' +
+      '</div>' +
+      '<div class="podium-plinth podium-plinth--' + medal + '">' +
+        escapeHtml(rankLabel) +
+      '</div>' +
+    '</div>';
+  }
+
+  function buildAlsoranHtml(students) {
+    const items = students.map(function (s) {
+      return '<div class="stars-alsoran-item">' +
+        buildAlsoranAvatarHtml(s) +
+        '<span>' + escapeHtml(formatPodiumName(s)) + '</span>' +
+      '</div>';
+    }).join('');
+    return '<div class="stars-alsoran">' +
+      '<div class="stars-alsoran-heading">Also earned Stars this week</div>' +
+      '<div class="stars-alsoran-list">' + items + '</div>' +
+    '</div>';
+  }
+
+  function renderStarsLeaderboard(leaderboard) {
+    const section = document.getElementById('leaderboard-section');
+    section.className = 'section-block';
+
+    const headerHtml =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Stars Leaderboard</h2>' +
+        '<span class="section-count">This week</span>' +
+      '</div>';
+
+    // STATE 5 — defensive: malformed/missing object. Mirror the
+    // fail-soft pattern used by renderRoster / renderAssignments.
+    if (!leaderboard || typeof leaderboard !== 'object') {
+      section.innerHTML = headerHtml +
+        '<div class="stars-empty-msg">Stars unavailable</div>';
+      return;
+    }
+
+    // STATES 1 + 2 — empty branches by reason.
+    if (leaderboard.is_empty) {
+      let msg;
+      if (leaderboard.empty_reason === 'no_assignments_this_week') {
+        msg = 'No assignments set this week';
+      } else if (leaderboard.empty_reason === 'no_eligibles_yet') {
+        msg = 'No Stars yet this week';
+      } else {
+        msg = 'Stars unavailable';   // unknown empty_reason — defensive
+      }
+      section.innerHTML = headerHtml +
+        '<div class="stars-empty-msg">' + escapeHtml(msg) + '</div>';
+      return;
+    }
+
+    const eligible = Array.isArray(leaderboard.eligible) ? leaderboard.eligible : [];
+    if (eligible.length === 0) {
+      // is_empty was false but the array is empty — shouldn't happen
+      // given the data layer's contract, but fail soft if it does.
+      section.innerHTML = headerHtml +
+        '<div class="stars-empty-msg">Stars unavailable</div>';
+      return;
+    }
+
+    // STATES 3 + 4 — podium always renders 3 plinths; ranks 4+ go in
+    // the "also earned" overflow row.
+    const podiumHtml =
+      '<div class="stars-podium">' +
+        buildPodiumColumn(eligible[1], 2, 'silver') +
+        buildPodiumColumn(eligible[0], 1, 'gold') +
+        buildPodiumColumn(eligible[2], 3, 'bronze') +
+      '</div>';
+    const alsoranHtml = eligible.length > 3 ? buildAlsoranHtml(eligible.slice(3)) : '';
+    section.innerHTML = headerHtml + podiumHtml + alsoranHtml;
+  }
+
+  function renderClassHeader(klass) {
+    const pillHtml = klass.pill_label
+      ? '<span class="class-header-pill" style="background:' +
+          escapeHtml(klass.pill_colour_var) + ';">' +
+          escapeHtml(klass.pill_label) +
+        '</span>'
+      : '';
+
+    const meta = buildMetaLine(klass);
+    const metaHtml = meta
+      ? '<div class="class-header-meta">' + escapeHtml(meta) + '</div>'
+      : '';
+
+    const studentStr = klass.student_count === 1
+      ? '1 student'
+      : klass.student_count + ' students';
+    const assignStr  = klass.assignment_count === 1
+      ? '1 assignment'
+      : klass.assignment_count + ' assignments';
+
+    document.getElementById('class-header').innerHTML =
+      '<div class="class-header-top">' +
+        '<h1 class="class-header-name">' + escapeHtml(klass.name) + '</h1>' +
+        pillHtml +
+      '</div>' +
+      metaHtml +
+      '<div class="class-header-stats">' + escapeHtml(studentStr + ' · ' + assignStr) + '</div>';
+
+    document.title = klass.name + ' — Mr Badmus AI';
+  }
+
+  MrBadmusTeacherGuard.requireTeacherRole({
+    onAllowed: async function (ctx) {
+      const firstName = ctx.profile.first_name || 'teacher';
+      const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
+
+      document.getElementById('nav-user-area').textContent = '👤 ' + firstName;
+
+      const envEl = document.getElementById('env-pill');
+      envEl.textContent = env.toUpperCase();
+      envEl.className = 'pill env-' + env;
+      envEl.title = env === 'test'
+        ? 'Test sandbox — fake data only'
+        : 'Production — live student data';
+
+      // Preserve ?env=test on the back link + state-page "Back to my classes"
+      // buttons. Done once here, not inside each state-block.
+      const classesUrl = buildClassesUrl();
+      document.getElementById('back-link').href = classesUrl;
+      document.querySelectorAll('.back-to-classes').forEach(function (a) {
+        a.href = classesUrl;
+      });
+
+      // Reveal the page — guard approved, profile populated. The loading
+      // state is already visible inside the body wrapper.
+      document.body.style.display = 'block';
+
+      // Read classId from URL. Missing param is treated the same as an
+      // invalid UUID: friendly "Class not found" state.
+      const classId = new URLSearchParams(window.location.search).get('class');
+      if (!classId) {
+        showState('notFound');
+        return;
+      }
+
+      try {
+        const detail = await MrBadmusTeacherData.loadClassDetail(classId);
+        renderClassHeader(detail.class);
+        renderRoster(detail.students);
+        renderAssignments(detail.assignments);
+        renderStarsLeaderboard(detail.leaderboard);
+        showState('loaded');
+      } catch (e) {
+        console.error('[class-detail.html] loadClassDetail failed', e);
+        if (e.code === 'invalid_class_id') {
+          showState('notFound');
+        } else if (e.code === 'not_authorised') {
+          showState('notAuthorised');
+        } else {
+          showState('error');
+        }
+      }
+    },
+  });
+})();
+</script>
+
+</body>
+</html>
