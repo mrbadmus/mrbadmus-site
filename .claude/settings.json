@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__linear__get_issue",
+      "mcp__linear__list_comments",
+      "mcp__supabase-test__get_project_url",
+      "mcp__supabase-test__execute_sql",
+      "mcp__supabase-test__apply_migration"
+    ]
+  }
+}
