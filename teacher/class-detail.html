@@ -1404,18 +1404,16 @@
       return;
     }
 
-    // STATES 1 + 2 — empty branches by reason.
+    // STATES 1 + 2 — empty branches. Spec (MRB-38, hide-leaderboard-
+    // entirely; spec-violation found Phase 4e Part 1) is to HIDE the
+    // whole Stars section on either empty_reason — no header, no
+    // placeholder copy. display:none removes the element from layout
+    // entirely so the .section-block top margin doesn't contribute
+    // either, and the previous section (assignments) sits at the
+    // bottom of the page cleanly.
     if (leaderboard.is_empty) {
-      let msg;
-      if (leaderboard.empty_reason === 'no_assignments_this_week') {
-        msg = 'No assignments set this week';
-      } else if (leaderboard.empty_reason === 'no_eligibles_yet') {
-        msg = 'No Stars yet this week';
-      } else {
-        msg = 'Stars unavailable';   // unknown empty_reason — defensive
-      }
-      section.innerHTML = headerHtml +
-        '<div class="stars-empty-msg">' + escapeHtml(msg) + '</div>';
+      section.innerHTML = '';
+      section.style.display = 'none';
       return;
     }
 
