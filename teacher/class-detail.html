@@ -215,6 +215,13 @@
     .roster-table tbody tr {
       transition: background-color 0.15s;
     }
+    /* Whole-row affordance (MRB-34 Stage 2B): each roster row links to
+       the per-student detail page. cursor:pointer + keyboard focus ring
+       on the row signal interactivity; the student-name anchor inside
+       carries semantic-link a11y so Tab/Enter still work.
+       Existing :hover treatment is preserved verbatim. */
+    .roster-table tbody tr[data-student-url] { cursor: pointer; }
+    .roster-table tbody tr[data-student-url]:focus { outline: 2px solid var(--physics); outline-offset: -2px; }
     .roster-table tbody tr:hover td {
       background: rgba(255,255,255,0.03);
     }
@@ -225,6 +232,13 @@
       align-items: center;
       gap: 12px;
     }
+    /* student-name was a <span>; now an <a> for keyboard a11y on the row.
+       Strip default link styling — visual identity is unchanged. */
+    a.student-name {
+      text-decoration: none;
+      color: inherit;
+    }
+    a.student-name:hover { text-decoration: underline; }
     .student-avatar {
       flex-shrink: 0;
       width: 36px;
@@ -831,6 +845,15 @@
       ? '?env=test' : '';
     return '/teacher/classes.html' + env;
   }
+  // Roster rows link here (MRB-34 Stage 2B). Captures the closure's
+  // classId once it's set in onAllowed below; called per row at render.
+  let currentClassId = null;
+  function buildStudentDetailUrl(studentId) {
+    const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test'
+      ? '&env=test' : '';
+    return '/teacher/student-detail.html?student=' + encodeURIComponent(studentId) +
+      '&class=' + encodeURIComponent(currentClassId) + env;
+  }
 
   // ── Formatters ─────────────────────────────────────────────────────
   function formatScore(pct) {
@@ -1111,10 +1134,17 @@
 
     const rowsHtml = sortStudents(students, rosterSortKey, rosterSortDir).map(function (s) {
       const fullName = ((s.first_name || '') + ' ' + (s.last_name || '')).trim();
-      return '<tr>' +
+      const studentUrl = buildStudentDetailUrl(s.id);
+      // Row carries the link target + a11y attributes; name cell is a real
+      // <a> so the focus ring lives on the link by default. Row click +
+      // Enter/Space keydown navigate too (see wiring after innerHTML).
+      return '<tr data-student-url="' + escapeHtml(studentUrl) +
+        '" tabindex="0" role="link" aria-label="View ' + escapeHtml(fullName || 'student') + '">' +
         '<td><div class="cell-name">' +
           buildAvatarHtml(s) +
-          '<span class="student-name">' + escapeHtml(fullName || '—') + '</span>' +
+          '<a class="student-name" href="' + escapeHtml(studentUrl) + '">' +
+            escapeHtml(fullName || '—') +
+          '</a>' +
         '</div></td>' +
         buildThisWeekCellHtml(s) +
         '<td>' + escapeHtml(formatScore(s.average_score_pct)) + '</td>' +
@@ -1148,6 +1178,25 @@
           rosterSortDir = (key === 'name') ? 'asc' : 'desc';
         }
         renderRoster(students);
+      });
+    });
+
+    // Wire whole-row navigation (MRB-34 Stage 2B). Click anywhere on the
+    // row → student-detail. The student-name <a> handles its own click
+    // (browser default), so we short-circuit if the event originated
+    // inside it to avoid double-navigation. Enter/Space on the row work
+    // because the <tr> is tabindex=0 + role=link.
+    section.querySelectorAll('tr[data-student-url]').forEach(function (tr) {
+      const url = tr.getAttribute('data-student-url');
+      tr.addEventListener('click', function (e) {
+        if (e.target.closest('a.student-name')) return;
+        window.location.href = url;
+      });
+      tr.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          window.location.href = url;
+        }
       });
     });
   }
@@ -1505,6 +1554,11 @@
 
       try {
         const detail = await MrBadmusTeacherData.loadClassDetail(classId);
+        // Capture the canonical class id (post-auth) for roster-row
+        // student-detail links. Using detail.class.id (what the DB
+        // returned) rather than the raw URL param means we never emit
+        // a link with an id we haven't actually verified.
+        currentClassId = detail.class.id;
         renderClassHeader(detail.class);
         renderRoster(detail.students);
         renderAssignments(detail.assignments);

@@ -838,5 +838,288 @@ window.MrBadmusTeacherData = (function () {
     };
   }
 
-  return { loadTeacherClasses, loadClassDetail };
+  /**
+   * loadStudentDetail(studentId, classId) — data for the MRB-34 Stage 2B
+   * per-student detail page. Scoped to the (student, class) pair the URL
+   * provides; reuses pickFirstAttempts + derivePill so first-attempt and
+   * pill rules can't drift from loadClassDetail.
+   *
+   * Two args, both required. Both shape-validated; bad input throws an
+   * invalid_* error code → page renders the notFound state.
+   *
+   * Returned shape:
+   *   {
+   *     class: {
+   *       id, name, key_stage, year_group, tier, science_pathway,
+   *       pill_label, pill_colour_var                  // MRB-20 rule
+   *     },
+   *     student: {
+   *       id, first_name, last_name, avatar_url,
+   *       science_pathway, tier, year_group            // for header meta
+   *     },
+   *     stats: {
+   *       submissions_completed,                       // ALL-TIME, first-attempt, in-this-class
+   *       on_time_count,                               // ALL-TIME on-time in-this-class
+   *       average_score_pct,                           // null if 0 graded subs
+   *       last_active_at                               // ISO; null if no subs
+   *     },
+   *     submission_history: [                          // first-attempt rows, submitted_at NOT NULL
+   *       {
+   *         id, assignment_id, title,
+   *         subject_id, subject_name,
+   *         due_at, submitted_at,
+   *         score, max_score, score_pct,
+   *         on_time                                    // bool; null when due_at null (uncategorised)
+   *       }
+   *     ],                                             // sort: submitted_at DESC
+   *     class_has_multiple_subjects                    // drives subject-pill column visibility
+   *   }
+   *
+   * Auth model — two checks, both must pass; the UI never differentiates
+   * the two failure modes ("class you don't teach" vs "student not in
+   * this class"), to avoid leaking class-membership info:
+   *   (1) class_teachers — RLS scopes to the teacher; 0 rows → not_authorised
+   *   (2) class_members — student must be a current member of THIS class
+   *       (left_at IS NULL); 0 rows → not_authorised
+   *   (3) profile fetch — RLS profiles_teacher_read_students enforces
+   *       the same boundary at the DB layer; missing profile after both
+   *       checks above is treated as not_authorised too (defensive — the
+   *       UI never sees it under normal conditions).
+   *
+   * Error codes:
+   *   - invalid_student_id           — studentId failed UUID shape check
+   *   - invalid_class_id             — classId failed UUID shape check
+   *   - not_authorised               — any auth check failed
+   *   - query_failed_class_teachers  — Q1 errored
+   *   - query_failed_class_members   — Q2 errored
+   *   - query_failed_assignments     — Q3 errored
+   *   - query_failed_student_profile — Q4 errored
+   *   - query_failed_submissions     — Q5 errored
+   */
+  async function loadStudentDetail(studentId, classId) {
+    if (!isUuid(studentId)) {
+      const e = new Error('[teacher-data] invalid student id: ' + studentId);
+      e.code = 'invalid_student_id';
+      throw e;
+    }
+    if (!isUuid(classId)) {
+      const e = new Error('[teacher-data] invalid class id: ' + classId);
+      e.code = 'invalid_class_id';
+      throw e;
+    }
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    // ── Stage A — four parallel queries ──────────────────────────────
+    // Q1: class_teachers (driver). Same shape as loadClassDetail; gives
+    //     us the class + teacher-subject rows for derivePill.
+    // Q2: class_members. Filters to the (student, class) pair AND
+    //     left_at IS NULL. 0 rows = student isn't currently in this class.
+    // Q3: assignments — for this class; feeds submission stitching.
+    // Q4: profile — RLS already scopes; we still .eq('id', studentId).
+    const [q1, q2, q3, q4] = await Promise.all([
+      sb.from('class_teachers')
+        .select(
+          'subject_id, ' +
+          'subject:subject_id ( id, name ), ' +
+          'class:class_id ( id, name, key_stage, year_group, tier, science_pathway, deleted_at )'
+        )
+        .eq('class_id', classId)
+        .is('deleted_at', null)
+        .is('ended_at', null),
+      sb.from('class_members')
+        .select('id, student_id, left_at')
+        .eq('class_id', classId)
+        .eq('student_id', studentId)
+        .is('left_at', null)
+        .is('deleted_at', null),
+      sb.from('assignments')
+        .select(
+          'id, title, due_at, subject_id, ' +
+          'subject:subject_id ( id, name )'
+        )
+        .eq('class_id', classId)
+        .is('deleted_at', null),
+      sb.from('profiles')
+        .select('id, first_name, last_name, avatar_url, science_pathway, tier, year_group, deleted_at')
+        .eq('id', studentId)
+        .limit(1),
+    ]);
+
+    if (q1.error) {
+      const e = new Error('[teacher-data] class_teachers query failed: ' + q1.error.message);
+      e.code = 'query_failed_class_teachers';
+      e.cause = q1.error;
+      throw e;
+    }
+    const teacherRows = (q1.data || []).filter(function (r) {
+      return r.class && !r.class.deleted_at;
+    });
+    if (teacherRows.length === 0) {
+      const e = new Error('[teacher-data] not a teacher of class ' + classId);
+      e.code = 'not_authorised';
+      throw e;
+    }
+
+    if (q2.error) {
+      const e = new Error('[teacher-data] class_members query failed: ' + q2.error.message);
+      e.code = 'query_failed_class_members';
+      e.cause = q2.error;
+      throw e;
+    }
+    if ((q2.data || []).length === 0) {
+      // Student isn't a current member of this class. Same error as the
+      // "not your class" path so we don't leak membership info.
+      const e = new Error('[teacher-data] student ' + studentId + ' not in class ' + classId);
+      e.code = 'not_authorised';
+      throw e;
+    }
+
+    if (q3.error) {
+      const e = new Error('[teacher-data] assignments query failed: ' + q3.error.message);
+      e.code = 'query_failed_assignments';
+      e.cause = q3.error;
+      throw e;
+    }
+
+    if (q4.error) {
+      const e = new Error('[teacher-data] profile query failed: ' + q4.error.message);
+      e.code = 'query_failed_student_profile';
+      e.cause = q4.error;
+      throw e;
+    }
+    const studentRow = (q4.data || []).find(function (p) { return !p.deleted_at; });
+    if (!studentRow) {
+      // RLS withheld the profile OR it's soft-deleted. After Q1+Q2 passed
+      // this is very unlikely, but treat as not_authorised (undifferentiated)
+      // rather than surface a confusing error state.
+      const e = new Error('[teacher-data] profile unavailable for student ' + studentId);
+      e.code = 'not_authorised';
+      throw e;
+    }
+
+    const klass = teacherRows[0].class;
+    const assignments = q3.data || [];
+    const assignmentIds = assignments.map(function (a) { return a.id; });
+
+    // ── Stage B — Q5: this student's submissions (skip round-trip if
+    // the class has no assignments — same pattern as loadClassDetail).
+    let submissions = [];
+    if (assignmentIds.length > 0) {
+      const q5 = await sb.from('assignment_submissions')
+        .select('id, assignment_id, student_id, score, max_score, total_time_seconds, submitted_at, attempts')
+        .in('assignment_id', assignmentIds)
+        .eq('student_id', studentId)
+        .is('deleted_at', null);
+
+      if (q5.error) {
+        const e = new Error('[teacher-data] assignment_submissions query failed: ' + q5.error.message);
+        e.code = 'query_failed_submissions';
+        e.cause = q5.error;
+        throw e;
+      }
+      submissions = q5.data || [];
+    }
+
+    // ── Aggregate ─────────────────────────────────────────────────────
+    const firstAttemptByKey = pickFirstAttempts(submissions);
+    const pill = derivePill(klass, teacherRows);
+    const assignmentById = {};
+    assignments.forEach(function (a) { assignmentById[a.id] = a; });
+
+    // Build submission_history. Filter to submitted_at NOT NULL — a row
+    // with no submitted_at is "in progress, not yet submitted" and has
+    // no Submitted/Score/On-time semantics to render.
+    const submission_history = [];
+    firstAttemptByKey.forEach(function (sub) {
+      if (!sub.submitted_at) return;
+      const a = assignmentById[sub.assignment_id];
+      if (!a) return;
+      const pct = (sub.score != null && sub.max_score != null && sub.max_score > 0)
+        ? Math.round((sub.score / sub.max_score) * 100)
+        : null;
+      // on_time tri-state: true | false (when due_at present) | null (no due_at → uncategorised)
+      let on_time = null;
+      if (a.due_at) on_time = sub.submitted_at <= a.due_at;
+      submission_history.push({
+        id: sub.id,
+        assignment_id: a.id,
+        title: a.title,
+        subject_id: a.subject_id,
+        subject_name: a.subject ? a.subject.name : null,
+        due_at: a.due_at,
+        submitted_at: sub.submitted_at,
+        score: sub.score,
+        max_score: sub.max_score,
+        score_pct: pct,
+        on_time: on_time,
+      });
+    });
+    // Sort submitted_at DESC. (No NULLS LAST tier: nulls already filtered above.)
+    submission_history.sort(function (a, b) {
+      if (a.submitted_at !== b.submitted_at) return a.submitted_at < b.submitted_at ? 1 : -1;
+      return (a.title || '').localeCompare(b.title || '');
+    });
+
+    // At-a-glance stats — derived from submission_history so the page
+    // and the stats can never disagree about what counts as a submission.
+    let submissions_completed = 0;
+    let on_time_count = 0;
+    let total_score = 0;
+    let total_max = 0;
+    let last_active_at = null;
+    submission_history.forEach(function (r) {
+      submissions_completed += 1;
+      if (r.on_time === true) on_time_count += 1;
+      if (r.score != null && r.max_score != null && r.max_score > 0) {
+        total_score += r.score;
+        total_max += r.max_score;
+      }
+      if (last_active_at == null || r.submitted_at > last_active_at) {
+        last_active_at = r.submitted_at;
+      }
+    });
+
+    // Subject-pill column only when the class has >1 distinct subject
+    // across its assignments. Mirrors class-detail.html's logic.
+    const distinctSubjects = new Set(
+      assignments.map(function (a) { return a.subject_id; }).filter(Boolean)
+    );
+
+    return {
+      class: {
+        id: klass.id,
+        name: klass.name,
+        key_stage: klass.key_stage,
+        year_group: klass.year_group,
+        tier: klass.tier,
+        science_pathway: klass.science_pathway,
+        pill_label: pill.pill_label,
+        pill_colour_var: pill.pill_colour_var,
+      },
+      student: {
+        id: studentRow.id,
+        first_name: studentRow.first_name,
+        last_name: studentRow.last_name,
+        avatar_url: studentRow.avatar_url,
+        science_pathway: studentRow.science_pathway,
+        tier: studentRow.tier,
+        year_group: studentRow.year_group,
+      },
+      stats: {
+        submissions_completed: submissions_completed,
+        on_time_count: on_time_count,
+        average_score_pct: total_max === 0 ? null : Math.round((total_score / total_max) * 100),
+        last_active_at: last_active_at,
+      },
+      submission_history: submission_history,
+      class_has_multiple_subjects: distinctSubjects.size > 1,
+    };
+  }
+
+  return { loadTeacherClasses, loadClassDetail, loadStudentDetail };
 })();
