@@ -307,6 +307,17 @@ ideation→execution is the priority.
   eu-west-1. During this window, expect intermittent failures via the
   session pooler (`aws-0-eu-west-1.pooler.supabase.com:5432`). Avoid
   migration apply or verification work in this window.
+- **RLS soft-delete gotcha.** If a SELECT policy filters by a column
+  the UPDATE will set (e.g. `deleted_at IS NULL`), the UPDATE fails
+  with `42501: new row violates row-level security policy` even when
+  the UPDATE policy passes. Postgres applies SELECT USING to the
+  post-update row state to prevent information-leak via update-into-
+  invisibility. Fix: widen the SELECT policy to cover the legitimate
+  post-update state (e.g. allow author to see their own deleted rows),
+  or use a SECURITY DEFINER function. The frontend can continue
+  filtering defensively — UX stays the same. Discovered in MRB-46
+  Phase 2 when wiring author-only soft-delete on `class_shoutouts`;
+  fix lives in migration `20260524195500_fix_class_shoutouts_soft_delete.sql`.
 
 Mide's stated principle: "Slow and thorough beats fast and patchy" —
 applied to *correctness*, not pace. Ideation cycles stay short;
