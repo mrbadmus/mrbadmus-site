@@ -1121,5 +1121,190 @@ window.MrBadmusTeacherData = (function () {
     };
   }
 
-  return { loadTeacherClasses, loadClassDetail, loadStudentDetail };
+  // ────────────────────────────────────────────────────────────────────
+  // CLASS SHOUTOUTS (MRB-46 Phase 2)
+  // ────────────────────────────────────────────────────────────────────
+  // Three thin wrappers over Supabase JS for the teacher-side compose UI
+  // (and the Phase 3 student-side read-only view, when it ships).
+  //
+  // RLS is the security boundary on all three calls — these just shape
+  // the queries. See supabase/migrations/0009_class_shoutouts.sql for
+  // the policy definitions (or post-MRB-84:
+  // 20260524104500_class_shoutouts.sql).
+  //
+  // Profile joins disambiguate the two FKs on profiles via the explicit
+  // constraint-name syntax: `profiles!<fk_name>(cols)`.
+
+  /**
+   * loadClassShoutouts(classId, opts)
+   *
+   * Page through shoutouts for a class, newest first, excluding soft-
+   * deleted. Cursor-based on `created_at` so pagination is stable across
+   * inserts (a new shoutout posted after the first page-fetch doesn't
+   * shift the "next 20" window).
+   *
+   * Returns { shoutouts: [...], hasMore: boolean }.
+   *
+   * Each shoutout row carries:
+   *   id, template_key, message, created_at, author_id, recipient_id,
+   *   author:  { first_name, last_name, avatar_url } | null,
+   *   recipient: { first_name, last_name, avatar_url } | null
+   *
+   * RLS gates the SELECT — teachers see only classes they teach;
+   * students see only classes they're a member of. Soft-deleted rows
+   * are also gated by the policy, but we add `.is('deleted_at', null)`
+   * defensively so the client never relies on policy-only filtering.
+   *
+   * Throws on driver error. Caller renders the feed's error state.
+   */
+  async function loadClassShoutouts(classId, opts) {
+    const limit            = (opts && opts.limit)            != null ? opts.limit            : 20;
+    const beforeCreatedAt  = (opts && opts.beforeCreatedAt)  != null ? opts.beforeCreatedAt  : null;
+
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    let q = sb
+      .from('class_shoutouts')
+      .select(
+        'id, template_key, message, created_at, author_id, recipient_id, ' +
+        'author:profiles!class_shoutouts_author_id_fkey ( first_name, last_name, avatar_url ), ' +
+        'recipient:profiles!class_shoutouts_recipient_id_fkey ( first_name, last_name, avatar_url )'
+      )
+      .eq('class_id', classId)
+      .is('deleted_at', null)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+
+    if (beforeCreatedAt) {
+      q = q.lt('created_at', beforeCreatedAt);
+    }
+
+    const { data, error } = await q;
+    if (error) {
+      console.error('[teacher-data] loadClassShoutouts failed', error);
+      throw error;
+    }
+
+    const shoutouts = data || [];
+    return {
+      shoutouts: shoutouts,
+      hasMore: shoutouts.length === limit,
+    };
+  }
+
+  /**
+   * insertClassShoutout({ classId, authorId, recipientId, templateKey, message })
+   *
+   * Single INSERT. RLS enforces:
+   *   - caller must teach this class
+   *   - author_id must equal auth.uid()  (caller passes ctx.user.id)
+   *   - recipient must be an active member of this class
+   *   - school-scoped (defence-in-depth)
+   *
+   * Caller validates UI-side that at least one of templateKey/message is
+   * non-null; the DB CHECK is the belt.
+   *
+   * Returns the inserted row (single object), with the same shape as a
+   * loadClassShoutouts row (profile joins included), so the caller can
+   * prepend it to the feed without a re-fetch if desired. We currently
+   * re-fetch the feed on success — keeps the flow simple and avoids
+   * cursor drift.
+   *
+   * Throws on driver/RLS error. Caller surfaces an inline error message.
+   */
+  async function insertClassShoutout(args) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    const row = {
+      class_id:     args.classId,
+      author_id:    args.authorId,
+      recipient_id: args.recipientId,
+      template_key: args.templateKey || null,
+      message:      args.message || null,
+    };
+
+    const { data, error } = await sb
+      .from('class_shoutouts')
+      .insert(row)
+      .select(
+        'id, template_key, message, created_at, author_id, recipient_id, ' +
+        'author:profiles!class_shoutouts_author_id_fkey ( first_name, last_name, avatar_url ), ' +
+        'recipient:profiles!class_shoutouts_recipient_id_fkey ( first_name, last_name, avatar_url )'
+      )
+      .single();
+
+    if (error) {
+      console.error('[teacher-data] insertClassShoutout failed', error);
+      throw error;
+    }
+    return data;
+  }
+
+  /**
+   * softDeleteClassShoutout(shoutoutId)
+   *
+   * Sets `deleted_at` on the row. RLS gates: only the author (and only
+   * while they still teach the class) can UPDATE — see the
+   * class_shoutouts_update policy.
+   *
+   * `deleted_at` is set client-side as an ISO timestamp. The actual
+   * value isn't load-bearing — the SELECT policy and the partial index
+   * both only check `IS NULL`. Server-side now() would be marginally
+   * preferable but would require an RPC; not worth the indirection here.
+   *
+   * Throws on driver/RLS error.
+   */
+  async function softDeleteClassShoutout(shoutoutId) {
+    const guard = window.MrBadmusTeacherGuard;
+    const sb = guard && guard.getClient ? guard.getClient() : null;
+    if (!sb) {
+      throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
+    }
+
+    // `.select('id')` forces RETURNING so we can detect silent RLS-USING
+    // blocks. Without it, an UPDATE matched by USING=false returns
+    // { data: null, error: null } — no error — and the caller has no
+    // way to know the row didn't actually persist. Phase 2 discovery
+    // (MRB-46): the soft-delete UPDATE could no-op without surfacing
+    // anything to the user. Frontend would optimistically remove the
+    // card and the teacher would only notice on refresh.
+    //
+    // Post-RETURNING, the author CAN see their own soft-deleted row
+    // (per the 20260524195500_fix_class_shoutouts_soft_delete migration
+    // — author-only visibility on deleted rows), so RETURNING works
+    // for the legitimate caller and 0 rows reliably means a real block.
+    const { data, error } = await sb
+      .from('class_shoutouts')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', shoutoutId)
+      .select('id');
+
+    if (error) {
+      console.error('[teacher-data] softDeleteClassShoutout failed', error);
+      throw error;
+    }
+    if (!data || data.length === 0) {
+      const e = new Error('No rows updated — RLS blocked the soft-delete (caller may not be the author, or no longer teaches this class).');
+      e.code = 'no_rows_affected';
+      console.error('[teacher-data] softDeleteClassShoutout silent no-op', { shoutoutId });
+      throw e;
+    }
+  }
+
+  return {
+    loadTeacherClasses,
+    loadClassDetail,
+    loadStudentDetail,
+    loadClassShoutouts,
+    insertClassShoutout,
+    softDeleteClassShoutout,
+  };
 })();

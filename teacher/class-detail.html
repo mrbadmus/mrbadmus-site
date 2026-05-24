@@ -741,6 +741,308 @@
     .state-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
     .state-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* ── SHOUTOUTS (MRB-46 Phase 2) ──────────────────────────────────
+       Compose form (card) sits above a list of shoutout cards. Both
+       follow the existing class-detail visual language: var(--card)
+       background, var(--radius) corners, shared shadow. Submit button
+       borrows the .state-btn shape (rounded pill, --physics fill). */
+
+    .shoutouts-compose {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 22px 18px;
+      margin-bottom: 22px;
+    }
+    .compose-row { margin-bottom: 16px; }
+    .compose-row:last-child { margin-bottom: 0; }
+    .compose-label {
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .compose-select {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .compose-select:focus { outline: none; border-color: var(--physics); }
+
+    .template-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+    .template-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--card2);
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .template-btn:hover { background: rgba(255,255,255,0.06); }
+    .template-btn.selected {
+      border-color: var(--physics);
+      background: rgba(78, 205, 196, 0.12);
+    }
+    .template-btn-emoji { font-size: 1.25rem; flex-shrink: 0; }
+
+    .compose-textarea {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      padding: 10px 12px;
+      resize: vertical;
+      min-height: 70px;
+      transition: border-color 0.15s;
+    }
+    .compose-textarea:focus { outline: none; border-color: var(--physics); }
+    .compose-counter {
+      margin-top: 6px;
+      text-align: right;
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .compose-counter.warn  { color: var(--warning); }
+    .compose-counter.error { color: var(--chemistry); }
+
+    .compose-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 16px;
+      margin-top: 4px;
+    }
+    .compose-error {
+      flex: 1;
+      color: var(--chemistry);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .compose-submit {
+      background: var(--physics);
+      color: var(--darker);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 22px;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .compose-submit:hover:not(:disabled) { opacity: 0.85; }
+    .compose-submit:disabled {
+      background: var(--card2);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+
+    /* ── Feed cards ─────────────────────────────────────────────── */
+    .shoutouts-feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .shoutout-card {
+      position: relative;
+      display: flex;
+      gap: 16px;
+      padding: 16px 18px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .shoutout-recipient-block {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 160px;
+    }
+    .shoutout-recipient-name {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .shoutout-meta {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .shoutout-body {
+      flex: 1;
+      min-width: 0;
+      padding-right: 32px;
+    }
+    .shoutout-template {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--text);
+    }
+    .shoutout-template-emoji { font-size: 1.2rem; }
+    .shoutout-message {
+      color: var(--text);
+      font-size: 0.92rem;
+      line-height: 1.45;
+      font-style: italic;
+      opacity: 0.92;
+    }
+    /* When BOTH template AND message are present, the message renders as
+       a quoted sub-note below the template headline. */
+    .shoutout-template + .shoutout-message {
+      font-size: 0.88rem;
+      border-left: 2px solid #2a2a4a;
+      padding-left: 10px;
+      margin-top: 8px;
+    }
+
+    /* ── Author-only delete affordance (X-on-hover + inline confirm) ── */
+    .shoutout-delete-wrap {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+    /* Always visible while confirm dialog is open OR an error pill is
+       showing so the user can see their choice / dismiss the error;
+       otherwise reveal on card hover. */
+    .shoutout-card:hover .shoutout-delete-wrap,
+    .shoutout-delete-wrap.confirming,
+    .shoutout-delete-wrap.errored { opacity: 1; }
+    .shoutout-delete-btn {
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 700;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      transition: all 0.15s;
+      padding: 0;
+    }
+    .shoutout-delete-btn:hover { border-color: var(--chemistry); color: var(--chemistry); }
+    .shoutout-confirm {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card2);
+      padding: 5px 10px;
+      border-radius: 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .shoutout-confirm-yes,
+    .shoutout-confirm-cancel {
+      background: transparent;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+    .shoutout-confirm-yes { color: var(--chemistry); }
+    .shoutout-confirm-yes:hover { background: rgba(255,107,107,0.12); }
+    .shoutout-confirm-cancel { color: var(--muted); }
+    .shoutout-confirm-cancel:hover { color: var(--text); }
+    /* Visible failure pill after a soft-delete error. Click dismisses
+       and reverts to the X for retry. */
+    .shoutout-delete-error {
+      background: rgba(255, 107, 107, 0.12);
+      border: 1px solid var(--chemistry);
+      color: var(--chemistry);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 5px 11px;
+      border-radius: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .shoutout-delete-error:hover { background: rgba(255, 107, 107, 0.20); }
+
+    /* ── Feed states ─────────────────────────────────────────────── */
+    .shoutouts-empty {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 36px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+    .shoutouts-loading,
+    .shoutouts-error {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .shoutouts-loadmore {
+      margin-top: 12px;
+      display: block;
+      width: 100%;
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 10px 16px;
+      border-radius: 22px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .shoutouts-loadmore:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
+    .shoutouts-loadmore:disabled { opacity: 0.5; cursor: not-allowed; }
   </style>
 </head>
 <body>
@@ -767,6 +1069,7 @@
     <section id="roster-section"></section>
     <section id="assignments-section"></section>
     <section id="leaderboard-section"></section>
+    <section id="shoutouts-section"></section>
   </div>
 
   <div id="state-not-found" class="state-block">
@@ -1518,10 +1821,500 @@
     document.title = klass.name + ' — Mr Badmus AI';
   }
 
+  // ── Shoutouts section (MRB-46 Phase 2) ────────────────────────────
+  // Compose form (top) + paginated feed (bottom). Six locked template
+  // keys mirror the DB CHECK (supabase/migrations/0009_class_shoutouts.sql);
+  // adding a 7th = new migration + new entry here.
+  //
+  // RLS is the security gate; the UI suppresses affordances the
+  // policies would block anyway (e.g. delete X only on own shoutouts).
+  const SHOUTOUT_TEMPLATES = [
+    { key: 'top_of_class',             emoji: '🌟', label: 'Top of the class this week' },
+    { key: 'brilliant_improvement',    emoji: '📈', label: 'Brilliant improvement' },
+    { key: 'every_assignment_on_time', emoji: '⏰', label: 'Every assignment on time' },
+    { key: 'smashed_tough_topic',      emoji: '🎯', label: 'Smashed a tough topic' },
+    { key: 'bounced_back_strong',      emoji: '💪', label: 'Bounced back strong' },
+    { key: 'helped_classmate',         emoji: '🤝', label: 'Helped a classmate' },
+  ];
+  function templateByKey(key) {
+    if (!key) return null;
+    for (let i = 0; i < SHOUTOUT_TEMPLATES.length; i++) {
+      if (SHOUTOUT_TEMPLATES[i].key === key) return SHOUTOUT_TEMPLATES[i];
+    }
+    return null;
+  }
+
+  const MAX_MESSAGE_LEN = 500;
+  const COUNTER_WARN_AT = 480;
+  const PAGE_SIZE = 20;
+
+  let currentUserId = null;       // ctx.user.id, captured in onAllowed
+  let shoutoutsClassStudents = []; // detail.students reused for picker
+
+  const composeState = {
+    recipientId: null,
+    templateKey: null,
+    message: '',
+    submitting: false,
+  };
+  const feedState = {
+    shoutouts: [],
+    hasMore: false,
+    loading: false,
+    initialLoaded: false,
+    error: null,
+  };
+
+  function initShoutoutsSection(detail) {
+    shoutoutsClassStudents = detail.students || [];
+    const section = document.getElementById('shoutouts-section');
+    section.className = 'section-block';
+    section.style.display = '';
+
+    // Reset state on every init (defensive — section is only initialised once
+    // per page load today, but resetting makes future "switch class without
+    // reload" cleaner if it ever lands).
+    composeState.recipientId = null;
+    composeState.templateKey = null;
+    composeState.message = '';
+    composeState.submitting = false;
+    feedState.shoutouts = [];
+    feedState.hasMore = false;
+    feedState.loading = false;
+    feedState.initialLoaded = false;
+    feedState.error = null;
+
+    section.innerHTML =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Shoutouts</h2>' +
+        '<span class="section-count" id="shoutouts-count"></span>' +
+      '</div>' +
+      buildComposeHtml(shoutoutsClassStudents) +
+      '<div class="shoutouts-feed" id="shoutouts-feed">' +
+        '<div class="shoutouts-loading">Loading shoutouts</div>' +
+      '</div>';
+
+    wireComposeHandlers();
+    loadAndRenderFeedFirstPage();
+  }
+
+  function buildComposeHtml(students) {
+    // Picker options: alphabetical by first name, last name (same as roster
+    // tiebreak). Skip students without an id (defensive).
+    const sorted = students.slice().sort(function (a, b) {
+      const aKey = ((a.first_name || '') + ' ' + (a.last_name || '')).toLowerCase();
+      const bKey = ((b.first_name || '') + ' ' + (b.last_name || '')).toLowerCase();
+      return aKey.localeCompare(bKey);
+    });
+    const optionsHtml = sorted.map(function (s) {
+      if (!s.id) return '';
+      const name = ((s.first_name || '') + ' ' + (s.last_name || '')).trim() || '—';
+      return '<option value="' + escapeHtml(s.id) + '">' + escapeHtml(name) + '</option>';
+    }).join('');
+
+    const templateBtnsHtml = SHOUTOUT_TEMPLATES.map(function (t) {
+      return '<button type="button" class="template-btn" data-template-key="' +
+        escapeHtml(t.key) + '">' +
+        '<span class="template-btn-emoji">' + t.emoji + '</span>' +
+        '<span>' + escapeHtml(t.label) + '</span>' +
+      '</button>';
+    }).join('');
+
+    return '<div class="shoutouts-compose">' +
+      '<div class="compose-row">' +
+        '<label class="compose-label" for="compose-recipient">Send a shoutout to</label>' +
+        '<select id="compose-recipient" class="compose-select">' +
+          '<option value="">Select a student…</option>' +
+          optionsHtml +
+        '</select>' +
+      '</div>' +
+      '<div class="compose-row">' +
+        '<label class="compose-label">Pick a template</label>' +
+        '<div class="template-buttons" id="compose-templates">' +
+          templateBtnsHtml +
+        '</div>' +
+      '</div>' +
+      '<div class="compose-row">' +
+        '<label class="compose-label" for="compose-message">Or write a custom message</label>' +
+        '<textarea id="compose-message" class="compose-textarea" ' +
+          'placeholder="Something specific you want to recognise…"></textarea>' +
+        '<div class="compose-counter" id="compose-counter">0 / ' + MAX_MESSAGE_LEN + '</div>' +
+      '</div>' +
+      '<div class="compose-actions">' +
+        '<div class="compose-error" id="compose-error" hidden></div>' +
+        '<button id="compose-submit" class="compose-submit" disabled>Send shoutout</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function wireComposeHandlers() {
+    const recipientEl = document.getElementById('compose-recipient');
+    const templatesEl = document.getElementById('compose-templates');
+    const messageEl   = document.getElementById('compose-message');
+    const submitEl    = document.getElementById('compose-submit');
+
+    recipientEl.addEventListener('change', function () {
+      composeState.recipientId = recipientEl.value || null;
+      updateComposeSubmitState();
+    });
+
+    templatesEl.addEventListener('click', function (e) {
+      const btn = e.target.closest('.template-btn');
+      if (!btn) return;
+      const key = btn.getAttribute('data-template-key');
+      // Radio behaviour with click-to-deselect.
+      if (composeState.templateKey === key) {
+        composeState.templateKey = null;
+      } else {
+        composeState.templateKey = key;
+      }
+      templatesEl.querySelectorAll('.template-btn').forEach(function (b) {
+        b.classList.toggle('selected', b.getAttribute('data-template-key') === composeState.templateKey);
+      });
+      updateComposeSubmitState();
+    });
+
+    messageEl.addEventListener('input', function () {
+      composeState.message = messageEl.value;
+      updateComposeCounter();
+      updateComposeSubmitState();
+    });
+
+    submitEl.addEventListener('click', function () {
+      submitShoutout();
+    });
+  }
+
+  function updateComposeCounter() {
+    const counter = document.getElementById('compose-counter');
+    const len = composeState.message.length;
+    counter.textContent = len + ' / ' + MAX_MESSAGE_LEN;
+    counter.classList.toggle('warn',  len >= COUNTER_WARN_AT && len <= MAX_MESSAGE_LEN);
+    counter.classList.toggle('error', len > MAX_MESSAGE_LEN);
+  }
+
+  function updateComposeSubmitState() {
+    const submitEl = document.getElementById('compose-submit');
+    const errorEl  = document.getElementById('compose-error');
+    const msg = composeState.message;
+    const trimmedMsg = msg.trim();
+    const hasRecipient = !!composeState.recipientId;
+    const hasContent   = !!composeState.templateKey || trimmedMsg.length > 0;
+    const overLimit    = msg.length > MAX_MESSAGE_LEN;
+
+    if (overLimit) {
+      errorEl.hidden = false;
+      errorEl.textContent = 'Message too long — max ' + MAX_MESSAGE_LEN + ' characters.';
+    } else {
+      errorEl.hidden = true;
+      errorEl.textContent = '';
+    }
+
+    submitEl.disabled = composeState.submitting || !hasRecipient || !hasContent || overLimit;
+  }
+
+  function setComposeSubmitting(submitting) {
+    composeState.submitting = submitting;
+    const submitEl = document.getElementById('compose-submit');
+    submitEl.textContent = submitting ? 'Sending…' : 'Send shoutout';
+    updateComposeSubmitState();
+  }
+
+  function resetComposeForm() {
+    composeState.recipientId = null;
+    composeState.templateKey = null;
+    composeState.message = '';
+    document.getElementById('compose-recipient').value = '';
+    document.getElementById('compose-message').value = '';
+    document.querySelectorAll('#compose-templates .template-btn.selected').forEach(function (b) {
+      b.classList.remove('selected');
+    });
+    updateComposeCounter();
+    updateComposeSubmitState();
+  }
+
+  async function submitShoutout() {
+    if (composeState.submitting) return;
+    const trimmedMsg = composeState.message.trim();
+    if (!composeState.recipientId) return;
+    if (!composeState.templateKey && !trimmedMsg) return;
+    if (composeState.message.length > MAX_MESSAGE_LEN) return;
+
+    setComposeSubmitting(true);
+    try {
+      await MrBadmusTeacherData.insertClassShoutout({
+        classId:     currentClassId,
+        authorId:    currentUserId,
+        recipientId: composeState.recipientId,
+        templateKey: composeState.templateKey,
+        message:     trimmedMsg || null,
+      });
+      resetComposeForm();
+      // Reload feed page 1 so the new shoutout appears at the top and the
+      // cursor for "load more" resets to the newest item.
+      await loadAndRenderFeedFirstPage();
+    } catch (e) {
+      console.error('[class-detail.html] insertClassShoutout failed', e);
+      const errorEl = document.getElementById('compose-error');
+      errorEl.hidden = false;
+      // Supabase returns "new row violates row-level security policy" for
+      // RLS rejections — surface a friendlier message instead of leaking
+      // internals to the teacher.
+      const msg = (e && e.message) || '';
+      if (/row-level security/i.test(msg)) {
+        errorEl.textContent = "Couldn't send shoutout — you may have lost access to this class.";
+      } else if (/check constraint/i.test(msg)) {
+        errorEl.textContent = "Couldn't send shoutout — message is too long or template is invalid.";
+      } else {
+        errorEl.textContent = "Couldn't send shoutout. Try again.";
+      }
+    } finally {
+      setComposeSubmitting(false);
+    }
+  }
+
+  // ── Feed ──────────────────────────────────────────────────────────
+  async function loadAndRenderFeedFirstPage() {
+    feedState.loading = true;
+    feedState.error = null;
+    feedState.shoutouts = [];
+    feedState.hasMore = false;
+    feedState.initialLoaded = false;
+    renderFeed();
+
+    try {
+      const result = await MrBadmusTeacherData.loadClassShoutouts(currentClassId, {
+        limit: PAGE_SIZE,
+      });
+      feedState.shoutouts = result.shoutouts;
+      feedState.hasMore = result.hasMore;
+      feedState.initialLoaded = true;
+    } catch (e) {
+      console.error('[class-detail.html] loadClassShoutouts failed (first page)', e);
+      feedState.error = e;
+    } finally {
+      feedState.loading = false;
+      renderFeed();
+    }
+  }
+
+  async function loadMoreShoutouts() {
+    if (feedState.loading || !feedState.hasMore) return;
+    const oldest = feedState.shoutouts[feedState.shoutouts.length - 1];
+    if (!oldest) return;
+
+    feedState.loading = true;
+    // Don't blank existing rows — just disable load-more button while in-flight.
+    const moreBtn = document.getElementById('shoutouts-loadmore');
+    if (moreBtn) {
+      moreBtn.disabled = true;
+      moreBtn.textContent = 'Loading…';
+    }
+
+    try {
+      const result = await MrBadmusTeacherData.loadClassShoutouts(currentClassId, {
+        limit: PAGE_SIZE,
+        beforeCreatedAt: oldest.created_at,
+      });
+      feedState.shoutouts = feedState.shoutouts.concat(result.shoutouts);
+      feedState.hasMore = result.hasMore;
+    } catch (e) {
+      console.error('[class-detail.html] loadClassShoutouts failed (load more)', e);
+      // Keep what we've got loaded; surface a one-line error inline.
+      feedState.error = e;
+    } finally {
+      feedState.loading = false;
+      renderFeed();
+    }
+  }
+
+  function renderFeed() {
+    const feedEl = document.getElementById('shoutouts-feed');
+    const countEl = document.getElementById('shoutouts-count');
+    if (!feedEl) return;
+
+    // Count label is "N shoutouts" once loaded; blank during initial load.
+    if (countEl) {
+      if (!feedState.initialLoaded) {
+        countEl.textContent = '';
+      } else {
+        const n = feedState.shoutouts.length;
+        if (n === 0) {
+          countEl.textContent = '';
+        } else {
+          countEl.textContent = feedState.hasMore
+            ? n + '+ shown'
+            : (n === 1 ? '1 shoutout' : n + ' shoutouts');
+        }
+      }
+    }
+
+    if (feedState.loading && !feedState.initialLoaded) {
+      feedEl.innerHTML = '<div class="shoutouts-loading">Loading shoutouts</div>';
+      return;
+    }
+    if (feedState.error && !feedState.initialLoaded) {
+      feedEl.innerHTML =
+        '<div class="shoutouts-error">' +
+          "Couldn't load shoutouts. Refresh the page to try again." +
+        '</div>';
+      return;
+    }
+    if (feedState.shoutouts.length === 0) {
+      feedEl.innerHTML =
+        '<div class="shoutouts-empty">' +
+          'No shoutouts yet — be the first to celebrate a student.' +
+        '</div>';
+      return;
+    }
+
+    const cardsHtml = feedState.shoutouts.map(function (s) {
+      return buildShoutoutCardHtml(s, s.author_id === currentUserId);
+    }).join('');
+
+    const loadMoreHtml = feedState.hasMore
+      ? '<button class="shoutouts-loadmore" id="shoutouts-loadmore">Load more</button>'
+      : '';
+
+    feedEl.innerHTML =
+      '<div class="shoutouts-feed-list">' + cardsHtml + '</div>' +
+      loadMoreHtml;
+
+    // Wire delete + load-more handlers on the freshly-rendered DOM.
+    feedEl.querySelectorAll('.shoutout-card').forEach(function (cardEl) {
+      const shoutoutId = cardEl.getAttribute('data-shoutout-id');
+      const isOwn = cardEl.getAttribute('data-is-own') === '1';
+      if (isOwn) wireDeleteAffordance(cardEl, shoutoutId);
+    });
+    const moreBtn = document.getElementById('shoutouts-loadmore');
+    if (moreBtn) {
+      moreBtn.addEventListener('click', loadMoreShoutouts);
+    }
+  }
+
+  function buildShoutoutCardHtml(s, isOwn) {
+    const recipient = s.recipient || {};
+    const author    = s.author    || {};
+    const recipientName = ((recipient.first_name || '') + ' ' + (recipient.last_name || '')).trim() || '—';
+    const authorName    = ((author.first_name    || '') + ' ' + (author.last_name    || '')).trim() || '—';
+
+    // Build avatar for the recipient (visual focus is on who got celebrated).
+    // Falls back to initial+colour if no avatar_url. Reuses the existing
+    // getStudentColour/buildInitialsHtml pattern by inlining what we need.
+    const recipientColour = getStudentColour(s.recipient_id);
+    const recipientInitial = (recipient.first_name || '').charAt(0).toUpperCase() || '?';
+    const avatarHtml = recipient.avatar_url
+      ? '<img class="student-avatar" src="' + escapeHtml(recipient.avatar_url) +
+          '" alt="" referrerpolicy="no-referrer" data-fallback="' +
+          escapeHtml('<span class="student-avatar" style="background:' + recipientColour + ';">' +
+            escapeHtml(recipientInitial) + '</span>') +
+          '" onerror="this.outerHTML=this.getAttribute(\'data-fallback\')"/>'
+      : '<span class="student-avatar" style="background:' + recipientColour + ';">' +
+          escapeHtml(recipientInitial) + '</span>';
+
+    const tpl = templateByKey(s.template_key);
+    let bodyHtml = '';
+    if (tpl) {
+      bodyHtml += '<div class="shoutout-template">' +
+        '<span class="shoutout-template-emoji">' + tpl.emoji + '</span>' +
+        '<span>' + escapeHtml(tpl.label) + '</span>' +
+      '</div>';
+    }
+    if (s.message) {
+      bodyHtml += '<div class="shoutout-message">' + escapeHtml(s.message) + '</div>';
+    }
+
+    const deleteHtml = isOwn
+      ? '<div class="shoutout-delete-wrap">' +
+          '<button class="shoutout-delete-btn" type="button" aria-label="Remove shoutout">×</button>' +
+        '</div>'
+      : '';
+
+    return '<div class="shoutout-card" data-shoutout-id="' + escapeHtml(s.id) +
+        '" data-is-own="' + (isOwn ? '1' : '0') + '">' +
+      '<div class="shoutout-recipient-block">' +
+        avatarHtml +
+        '<div>' +
+          '<div class="shoutout-recipient-name">' + escapeHtml(recipientName) + '</div>' +
+          '<div class="shoutout-meta">by ' + escapeHtml(authorName) + ' · ' +
+            escapeHtml(formatRelativeTime(s.created_at)) +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="shoutout-body">' + bodyHtml + '</div>' +
+      deleteHtml +
+    '</div>';
+  }
+
+  function wireDeleteAffordance(cardEl, shoutoutId) {
+    const wrap = cardEl.querySelector('.shoutout-delete-wrap');
+    if (!wrap) return;
+    const btn = wrap.querySelector('.shoutout-delete-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      // Replace the X with an inline "Remove? Yes / Cancel" confirm.
+      wrap.classList.add('confirming');
+      wrap.innerHTML =
+        '<span class="shoutout-confirm">' +
+          '<span>Remove?</span>' +
+          '<button type="button" class="shoutout-confirm-yes">Yes</button>' +
+          '<button type="button" class="shoutout-confirm-cancel">Cancel</button>' +
+        '</span>';
+      const yesBtn    = wrap.querySelector('.shoutout-confirm-yes');
+      const cancelBtn = wrap.querySelector('.shoutout-confirm-cancel');
+      cancelBtn.addEventListener('click', function () {
+        // Revert to the X button.
+        wrap.classList.remove('confirming');
+        wrap.innerHTML =
+          '<button class="shoutout-delete-btn" type="button" aria-label="Remove shoutout">×</button>';
+        wireDeleteAffordance(cardEl, shoutoutId);
+      });
+      yesBtn.addEventListener('click', async function () {
+        yesBtn.disabled = true;
+        cancelBtn.disabled = true;
+        yesBtn.textContent = 'Removing…';
+        try {
+          await MrBadmusTeacherData.softDeleteClassShoutout(shoutoutId);
+          // Drop from local state + re-render. Avoid mutating the array in
+          // place while iterating elsewhere — replace with a filtered copy.
+          feedState.shoutouts = feedState.shoutouts.filter(function (s) {
+            return s.id !== shoutoutId;
+          });
+          renderFeed();
+        } catch (e) {
+          console.error('[class-detail.html] softDeleteClassShoutout failed', e);
+          // Surface a visible error pill so the teacher knows the
+          // soft-delete didn't take. Clicking the pill reverts to the X
+          // for a retry. The `.errored` class on the wrap keeps the pill
+          // visible (not hidden by the default opacity-0).
+          wrap.classList.remove('confirming');
+          wrap.classList.add('errored');
+          wrap.innerHTML =
+            '<button class="shoutout-delete-error" type="button" ' +
+              'title="Click to dismiss and try again">' +
+              '⚠ Couldn&rsquo;t remove' +
+            '</button>';
+          const errBtn = wrap.querySelector('.shoutout-delete-error');
+          errBtn.addEventListener('click', function () {
+            wrap.classList.remove('errored');
+            wrap.innerHTML =
+              '<button class="shoutout-delete-btn" type="button" aria-label="Remove shoutout">×</button>';
+            wireDeleteAffordance(cardEl, shoutoutId);
+          });
+        }
+      });
+    });
+  }
+
   MrBadmusTeacherGuard.requireTeacherRole({
     onAllowed: async function (ctx) {
       const firstName = ctx.profile.first_name || 'teacher';
       const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
+
+      // Capture the authenticated user id for the shoutouts compose flow
+      // (becomes author_id on INSERT) and for the author-only delete
+      // affordance on feed cards.
+      currentUserId = ctx.user.id;
 
       document.getElementById('nav-user-area').textContent = '👤 ' + firstName;
 
@@ -1564,6 +2357,11 @@
         renderAssignments(detail.assignments);
         renderStarsLeaderboard(detail.leaderboard);
         showState('loaded');
+        // Shoutouts section (MRB-46 Phase 2) — initialises after the
+        // page is revealed so the compose form + feed don't fight the
+        // initial paint. Loads the first feed page asynchronously
+        // inside; failures render inline without breaking the page.
+        initShoutoutsSection(detail);
       } catch (e) {
         console.error('[class-detail.html] loadClassDetail failed', e);
         if (e.code === 'invalid_class_id') {
