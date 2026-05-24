@@ -207,6 +207,55 @@ If the backend is unreachable, the chat falls back to a static message.
 
 ---
 
+## Supabase migrations toolchain
+
+Established by MRB-84 (2026-05-24). Future migration work follows this pattern.
+
+### Folder taxonomy
+
+Three sibling folders under `supabase/`, each with a `README.md`. The Supabase CLI only reads `migrations/`; the other two are invisible to `supabase db push` and `supabase migration list`.
+
+- **`supabase/migrations/`** — forward migrations. Files named `YYYYMMDDHHMMSS_description.sql` where the timestamp matches the `schema_migrations.version` they register as. CLI parses the version from the filename.
+- **`supabase/rollbacks/`** — manual undo SQL for specific migrations. Apply manually only. Files keep the original `NNNN_` sequence prefix (CLI never reads them).
+- **`supabase/baselines/`** — bootstrap/recovery SQL (recreate from scratch, disaster recovery). Apply manually only.
+
+### Apply path
+
+- **Primary:** `supabase db push` against a linked project. Faster and more durable than the MCP, and produces a clean local migration file as part of the workflow. Use this for all routine forward migrations from MRB-46 Phase 2 onward.
+- **Fallback:** MCP `apply_migration` for one-off ad-hoc SQL where a checked-in migration file isn't warranted (e.g. emergency hotfix). MCP auth is fragile — tokens expire, `remove` + `add` cycles wipe the token. Use sparingly.
+
+### Auth setup for the CLI
+
+The CLI's OAuth flow stores its token in macOS Keychain, which isn't accessible to Claude Code's Bash tool (non-interactive shell can't unlock the keychain). Use a Personal Access Token instead, stashed in a tmp file:
+
+```bash
+read -rs SUPABASE_ACCESS_TOKEN
+printf '%s' "$SUPABASE_ACCESS_TOKEN" > /tmp/sb_token && chmod 600 /tmp/sb_token
+unset SUPABASE_ACCESS_TOKEN
+```
+
+Then prefix CLI commands with `SUPABASE_ACCESS_TOKEN="$(cat /tmp/sb_token)"`. DB password follows the same pattern (`/tmp/sb_pw`). Clean both up at end of session. Generate the PAT from `supabase.com/dashboard/account/tokens`.
+
+### ⚠️ Caveat — MRB-85 pending
+
+5 test-only seed migrations currently sit in `supabase/migrations/`:
+
+- `20260503091243_stage2_test_seeds.sql`
+- `20260503112332_stage2_test_passwords.sql`
+- `20260503120702_stage2_test_seeds_fix_auth_columns.sql`
+- `20260503125202_stage2_test_seeds_fix_email_change.sql`
+- `20260503221955_stage2_test_seeds_expanded.sql`
+
+If `supabase db push` is run after re-linking to prod (project ref `urklkrwevjtlfbwnipjn`), these would attempt to apply against prod — best case errors on conflicts, worst case leaks fake users + known passwords into production. **Always verify the linked project ref before `db push` until MRB-85 lands** and moves these to `supabase/seeds/` with explicit-target tooling.
+
+### Other Supabase-related operational notes
+
+- `supabase-test` MCP stays permanently write-enabled. Never swap its `read_only` URL flag — project-scope (`project_ref=qeppkiswvclkkwbxmlok`) is the actual safeguard; toggling `read_only` costs an OAuth re-auth per swap.
+- Production project ref: `urklkrwevjtlfbwnipjn`. Test project ref: `qeppkiswvclkkwbxmlok`. Never confuse them; the test project is the safe sandbox.
+- Pooler maintenance for `eu-west-1` on 2026-06-01 14:00 UTC. Test DB is in this region. During the window, expect intermittent failures via the session pooler (`aws-0-eu-west-1.pooler.supabase.com:5432`). Avoid migration apply or DB verification work during the window.
+
+---
+
 ## Working with Mide
 
 Mide is a teacher and creative founder, not a developer. Keep this in mind at all times:
