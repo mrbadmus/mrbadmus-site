@@ -273,6 +273,41 @@ Supabase MCPs (prod + test) are never live simultaneously.
 fatigue or advise breaks unless Mide explicitly raises it. Speed of
 ideation→execution is the priority.
 
+**11. Supabase tooling discipline.** Hard-won from MRB-46 Phase 1
+(24 May 2026) after ~2 hours of MCP auth churn.
+
+- **supabase-test MCP stays write-enabled permanently.** Never swap
+  the `read_only` flag. Project-scope (`project_ref=qeppkiswvclkkwbxmlok`
+  in the URL) is the real safeguard; the `read_only=true` URL param
+  was historical belt-on-belt and toggling it costs an OAuth re-auth
+  per swap (the `remove` + `add` cycle wipes the token). The swap-
+  dance in item 8 above applies only when explicitly switching to
+  prod, not for read/write toggles within test.
+- **Supabase CLI auth uses a PAT in a tmp file, not `supabase login`.**
+  The CLI's OAuth flow stores its token in macOS Keychain, which
+  isn't accessible to Claude Code's Bash tool (non-interactive shell
+  can't unlock the keychain). Generate a PAT from
+  `supabase.com/dashboard/account/tokens` and stash it:
+  ```bash
+  read -rs SUPABASE_ACCESS_TOKEN
+  printf '%s' "$SUPABASE_ACCESS_TOKEN" > /tmp/sb_token && chmod 600 /tmp/sb_token
+  unset SUPABASE_ACCESS_TOKEN
+  ```
+  Then prefix CLI commands with
+  `SUPABASE_ACCESS_TOKEN="$(cat /tmp/sb_token)"`. DB password follows
+  the same pattern (`/tmp/sb_pw`). Clean both up at end of session.
+- **MCP auth is fragile; CLI is the durable apply path — but only
+  after MRB-84 lands.** Today, MCP `apply_migration` is the primary;
+  CLI `db push` is blocked by naming-format drift (local `NNNN_`
+  files vs remote `YYYYMMDDHHMMSS` versions, see MRB-84). When
+  MRB-84 lands, swap them: CLI primary, MCP fallback for one-off
+  ad-hoc SQL.
+- **Scheduled disruption: pooler maintenance for eu-west-1 on
+  2026-06-01 14:00 UTC.** Test DB (`qeppkiswvclkkwbxmlok`) is in
+  eu-west-1. During this window, expect intermittent failures via the
+  session pooler (`aws-0-eu-west-1.pooler.supabase.com:5432`). Avoid
+  migration apply or verification work in this window.
+
 Mide's stated principle: "Slow and thorough beats fast and patchy" —
 applied to *correctness*, not pace. Ideation cycles stay short;
 verification stays rigorous.
