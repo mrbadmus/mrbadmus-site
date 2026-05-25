@@ -198,8 +198,19 @@ If the backend is unreachable, the chat falls back to a static message.
 - **Shared JS via `window.MrBadmus`.** The chat engine exposes itself as a global so any page can call `MrBadmus.init(...)`.
 - **Supabase auth is client-side.** Sessions in `localStorage` under `sb-urklkrwevjtlfbwnipjn-auth-token`. Supabase JS SDK loaded via CDN — no import system.
 - **Inline auth-check scripts.** Each HTML page has a small inline `<script>` at the top of `<nav>` that swaps Sign In / Sign Up for the logged-in user's name + avatar.
-- **Color-coded subjects:** Physics teal (`#4ECDC4`), Chemistry red (`#FF6B6B`), Biology green (`#6BCB77`)
-- **Pathway colours:** Combined teal (same as Physics), Triple red (same as Chemistry)
+- **Color-coded subjects:** Physics teal (`#4ECDC4`), Chemistry pastel pink (`#FFD2E6`), Biology green (`#6BCB77`)
+- **Pathway colours:** Combined teal (same as Physics), Triple pastel pink (same as Chemistry)
+- **`--chemistry` vs `--danger` split** (MRB-46 Phase 3 v3, 2026-05-25):
+  Chemistry used to be `#FF6B6B` red, which was being conflated with
+  "warning" UI semantics (overdue tones, error text, delete-X hover).
+  Swapped Chemistry to pastel pink `#FFD2E6`; introduced a paired
+  `--danger: #FF6B6B` token for destructive UI. **For NEW code: use
+  `var(--chemistry)` only for chemistry-subject identity; use
+  `var(--danger)` for everything red-as-warning** (overdue, missed,
+  error states, destructive button hovers). Existing files outside
+  `student/class.html` still route destructive UI through
+  `var(--chemistry)` — that's a known limitation, not a desired
+  state. Route to `var(--danger)` when you next touch each surface.
 - **Tier colours:** Foundation green, Higher yellow (`#FFD93D`)
 - **Backend URL is hardcoded** as `https://mrbadmus-backend.onrender.com` in `mrbadmus.v2.js`. No environment variables on the frontend (no build step).
 - **Supabase anon key is hardcoded** in pages that need it (e.g. leaderboard.html for profile reads). Anon keys are designed to be public — safe to commit.
