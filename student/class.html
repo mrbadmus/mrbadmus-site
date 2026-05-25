@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My class — Mr Badmus AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --darker:    #0F0F1A;
+      --dark:      #1A1A2E;
+      --card:      #16213E;
+      --card2:     #1A2545;
+      --text:      #E8F4FD;
+      --muted:     #8892A4;
+      --physics:   #4ECDC4;
+      --chemistry: #FFD2E6; --danger: #FF6B6B;
+      --biology:   #6BCB77;
+      --science:   #A78BD0;
+      --warning:   #FFA94D;
+      --radius:    12px;
+      --shadow:    0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--darker);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      padding: 90px 20px 60px;
+      display: none;
+    }
+
+    /* ── STUDENT-MODE SUBJECT STRIPE ──
+       Phase 3 v2 polish: thinned to 6px + added a subtle soft glow so
+       the colour reads clearly against the dark theme. v1 (10px solid)
+       could photograph as a washed-out white dash. */
+    .subject-stripe {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: var(--science);
+      z-index: 11;
+      box-shadow: 0 1px 6px rgba(167, 139, 208, 0.35);
+    }
+
+    nav.top-nav {
+      position: fixed;
+      top: 6px; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15,15,26,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2a2a4a;
+      z-index: 10;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: rgba(255,217,61,0.18); color: #FFD93D; }
+    .pill.env-prod { background: rgba(136,136,136,0.18); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    /* ── CLASS HEADER ── */
+    .class-header {
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #2a2a4a;
+    }
+    .class-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+    .class-header-name {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+    .class-header-pill {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--darker);
+      white-space: nowrap;
+    }
+    .class-header-greeting {
+      color: var(--muted);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    /* ── SECTION ── */
+    .section-block { margin-top: 28px; }
+    .section-block:first-child { margin-top: 0; }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.3rem;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+    .section-subtitle {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    /* ── LAYOUT GRID (v2) ──
+       Main 1fr + sidebar 320px on desktop; collapses to single column
+       at ≤900px so the sidebar drops below main on tablets and phones. */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 28px;
+      margin-top: 28px;
+    }
+    .layout-main, .layout-sidebar { min-width: 0; }
+
+    /* ── STATS STRIP (4 tiles) ── */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .stat-tile {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+    .stat-tile-label {
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .stat-tile-value {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.8rem;
+      color: var(--text);
+      line-height: 1;
+    }
+    .stat-tile-value-empty {
+      color: var(--muted);
+      font-style: italic;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+    .stat-tile-sub {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ── ASSIGNMENT CARDS (Due this week + Past assignments share the
+       same card shape; status pill differs) ── */
+    .assignment-card-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .assignment-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+      border-left: 4px solid var(--science);
+    }
+    .assignment-card--past { opacity: 0.72; }
+    .assignment-card--missed { border-left-color: var(--danger); }
+    .assignment-card-subject {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--darker);
+      background: var(--science);
+      align-self: flex-start;
+    }
+    .assignment-card-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+    }
+    .assignment-card-meta {
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .assignment-card-meta.tone-today    { color: var(--warning); }
+    .assignment-card-meta.tone-soon     { color: var(--text); }
+    .assignment-card-meta.tone-overdue  { color: var(--danger); }
+    .assignment-card-meta.tone-on-time  { color: var(--biology); }
+    .assignment-card-meta.tone-late     { color: var(--warning); }
+    .assignment-card-meta.tone-missed   { color: var(--danger); }
+    .assignment-card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .assignment-card-start-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      background: var(--physics);
+      color: var(--darker);
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .assignment-card-start-btn:hover { opacity: 0.85; }
+    .assignment-card-score {
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .assignment-list-empty {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    .show-all-btn {
+      display: block;
+      margin-top: 12px;
+      width: 100%;
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 9px 16px;
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .show-all-btn:hover { color: var(--text); border-color: var(--text); }
+
+    /* ── STARS PODIUM (v3: starscape background) ──
+       Subtle white-stars pattern via inline SVG at low opacity, on top
+       of the existing --card navy. Thematically tied to "Stars
+       Leaderboard." Targeted for replacement once per-school branding
+       lands — see MRB-87 (or whatever ticket follows this v3) for the
+       school-logo swap. Until then, generic-friendly starscape. */
+    .stars-podium {
+      --medal-gold:   #FFD93D;
+      --medal-silver: #C7CDD6;
+      --medal-bronze: #CD8E5C;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 18px;
+      padding: 44px 20px 0;
+      background-color: var(--card);
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><g fill='%23ffffff' fill-opacity='0.16'><circle cx='25' cy='35' r='2'/><circle cx='80' cy='15' r='1.3'/><circle cx='135' cy='42' r='2.6'/><circle cx='190' cy='22' r='1.6'/><circle cx='245' cy='38' r='2.1'/><circle cx='280' cy='12' r='1.2'/><circle cx='50' cy='85' r='1.3'/><circle cx='115' cy='98' r='2.3'/><circle cx='175' cy='80' r='1.4'/><circle cx='220' cy='110' r='2.9'/><circle cx='260' cy='90' r='1.3'/><circle cx='30' cy='150' r='1.8'/><circle cx='90' cy='140' r='1.3'/><circle cx='150' cy='165' r='2.2'/><circle cx='210' cy='150' r='1.6'/><circle cx='265' cy='175' r='2'/><circle cx='40' cy='220' r='1.4'/><circle cx='105' cy='210' r='2.1'/><circle cx='170' cy='235' r='1.3'/><circle cx='225' cy='220' r='1.7'/><circle cx='285' cy='240' r='2.3'/><circle cx='15' cy='275' r='1.3'/><circle cx='75' cy='265' r='1.8'/><circle cx='140' cy='285' r='1.4'/><circle cx='195' cy='270' r='2.1'/><circle cx='250' cy='285' r='1.3'/></g></svg>");
+      background-size: 300px 300px;
+      background-repeat: repeat;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .podium-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+      max-width: 220px;
+    }
+    .podium-standee {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 14px;
+    }
+    .podium-medal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: -16px;
+      position: relative;
+      z-index: 2;
+    }
+    .podium-medal-ribbon {
+      width: 24px;
+      height: 13px;
+      background: linear-gradient(90deg,
+        #C8102E 0%, #C8102E 33.33%,
+        #F2F2F2 33.33%, #F2F2F2 66.66%,
+        #1F4FA8 66.66%, #1F4FA8 100%);
+      clip-path: polygon(0 0, 100% 0, 75% 100%, 25% 100%);
+      margin-bottom: -3px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.35);
+    }
+    .podium-medallion {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem;
+      color: var(--darker); position: relative; z-index: 2;
+      box-shadow:
+        inset 0 2px 2px rgba(255, 255, 255, 0.55),
+        inset 0 -2px 3px rgba(0, 0, 0, 0.22),
+        0 3px 6px rgba(0, 0, 0, 0.5);
+    }
+    .podium-medallion--gold   { background: radial-gradient(circle at 32% 30%, #FFE875 0%, #FFD93D 55%, #C9A82E 100%); }
+    .podium-medallion--silver { background: radial-gradient(circle at 32% 30%, #F0F2F5 0%, #C7CDD6 55%, #8E939C 100%); }
+    .podium-medallion--bronze { background: radial-gradient(circle at 32% 30%, #E0B488 0%, #CD8E5C 55%, #8B5A35 100%); }
+    .podium-medallion--ghost  {
+      background: transparent;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
+      box-shadow: none;
+      color: var(--muted);
+    }
+
+    .podium-avatar {
+      border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-weight: 700; color: var(--darker);
+      object-fit: cover; flex-shrink: 0; position: relative; z-index: 1;
+    }
+    .podium-avatar--gold {
+      width: 84px; height: 84px; font-size: 2rem;
+      box-shadow: 0 0 0 4px var(--medal-gold), 0 0 32px rgba(255, 217, 61, 0.50);
+    }
+    .podium-avatar--silver {
+      width: 60px; height: 60px; font-size: 1.45rem;
+      box-shadow: 0 0 0 3px var(--medal-silver), 0 0 14px rgba(216, 222, 229, 0.18);
+    }
+    .podium-avatar--bronze {
+      width: 60px; height: 60px; font-size: 1.45rem;
+      box-shadow: 0 0 0 3px var(--medal-bronze), 0 0 12px rgba(205, 142, 92, 0.20);
+    }
+    .podium-avatar--ghost {
+      background: transparent;
+      border: 2px dashed rgba(255, 255, 255, 0.18);
+      box-shadow: none;
+    }
+
+    /* "You are here" pulse-glow */
+    .podium-avatar--you,
+    .stars-alsoran-item .student-avatar.is-you {
+      outline: 2px solid rgba(167, 139, 208, 0.85);
+      outline-offset: 4px;
+      animation: youArePulse 2.5s ease-out;
+    }
+    @keyframes youArePulse {
+      0%   { outline-offset: 4px; outline-color: rgba(167, 139, 208, 0); }
+      15%  { outline-offset: 8px; outline-color: rgba(167, 139, 208, 0.65); }
+      30%  { outline-offset: 4px; outline-color: rgba(167, 139, 208, 0.25); }
+      55%  { outline-offset: 7px; outline-color: rgba(167, 139, 208, 0.75); }
+      100% { outline-offset: 4px; outline-color: rgba(167, 139, 208, 0.85); }
+    }
+    .podium-you-label,
+    .stars-alsoran-item .you-tag {
+      font-family: 'Sora', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: var(--science);
+      text-transform: uppercase;
+      letter-spacing: 0.10em;
+      margin-top: 4px;
+    }
+    .stars-alsoran-item .you-tag { margin-top: 0; margin-left: 4px; }
+
+    .podium-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700; font-size: 0.92rem;
+      color: var(--text);
+      text-align: center; max-width: 100%;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      margin-top: 12px;
+    }
+    .podium-name--empty {
+      color: var(--muted);
+      font-weight: 600; font-size: 0.82rem;
+      font-style: italic;
+    }
+    .podium-score {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800; font-size: 1rem;
+      margin-top: 2px;
+    }
+    .podium-score--gold   { color: var(--medal-gold);   }
+    .podium-score--silver { color: var(--medal-silver); }
+    .podium-score--bronze { color: var(--medal-bronze); }
+
+    .podium-plinth {
+      width: 100%;
+      display: flex; align-items: flex-start; justify-content: center;
+      padding-top: 16px;
+      border-top-left-radius: 8px; border-top-right-radius: 8px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 800; font-size: 1.2rem; letter-spacing: 0.02em;
+      background-color: rgba(0, 0, 0, 0.32);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 4px 10px -2px rgba(0, 0, 0, 0.5);
+    }
+    .podium-plinth--gold {
+      background-image: linear-gradient(180deg, rgba(255, 217, 61, 0.22) 0%, rgba(255, 217, 61, 0.04) 100%);
+      height: 110px; color: var(--medal-gold);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 217, 61, 0.30),
+        0 0 24px rgba(255, 217, 61, 0.10),
+        0 4px 10px -2px rgba(0, 0, 0, 0.5);
+    }
+    .podium-plinth--silver {
+      background-image: linear-gradient(180deg, rgba(216, 222, 229, 0.16) 0%, rgba(216, 222, 229, 0.03) 100%);
+      height: 80px; color: var(--medal-silver);
+    }
+    .podium-plinth--bronze {
+      background-image: linear-gradient(180deg, rgba(205, 142, 92, 0.18) 0%, rgba(205, 142, 92, 0.03) 100%);
+      height: 60px; color: var(--medal-bronze);
+    }
+
+    .stars-alsoran {
+      margin-top: 20px;
+      padding: 18px 20px;
+      background: var(--card2);
+      border-radius: var(--radius);
+    }
+    .stars-alsoran-heading {
+      font-family: 'Sora', sans-serif;
+      font-weight: 600; font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .stars-alsoran-list {
+      display: flex; flex-wrap: wrap; gap: 14px 18px;
+    }
+    .stars-alsoran-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; font-weight: 600; color: var(--text);
+    }
+    .student-avatar {
+      flex-shrink: 0;
+      width: 36px; height: 36px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1rem;
+      color: var(--darker);
+      object-fit: cover;
+    }
+    .stars-empty-msg {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-style: italic;
+    }
+
+    /* ── SHOUTOUTS FEED (sidebar in v2) ── */
+    .shoutouts-feed-list {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .shoutout-card {
+      position: relative;
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 14px 16px;
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .shoutout-recipient-block {
+      flex-shrink: 0;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .shoutout-recipient-name {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 0.92rem;
+      color: var(--text);
+    }
+    .shoutout-meta {
+      color: var(--muted);
+      font-size: 0.75rem; font-weight: 600;
+      margin-top: 2px;
+    }
+    .shoutout-body { min-width: 0; }
+    .shoutout-template {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 0.9rem;
+      color: var(--text);
+    }
+    .shoutout-template-emoji { font-size: 1.15rem; }
+    .shoutout-message {
+      color: var(--text);
+      font-size: 0.88rem; line-height: 1.45;
+      font-style: italic; opacity: 0.92;
+    }
+    .shoutout-template + .shoutout-message {
+      font-size: 0.85rem;
+      border-left: 2px solid #2a2a4a;
+      padding-left: 10px;
+      margin-top: 6px;
+    }
+    .shoutouts-empty {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    .shoutouts-loading,
+    .shoutouts-error {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .shoutouts-loadmore {
+      margin-top: 10px;
+      display: block; width: 100%;
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 9px 16px;
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700; font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .shoutouts-loadmore:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
+    .shoutouts-loadmore:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── STATES ── */
+    .state-block { display: none; padding: 60px 20px; text-align: center; }
+    .state-block.show { display: block; }
+    .state-block h2 {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1.4rem;
+      color: var(--text); margin-bottom: 10px;
+    }
+    .state-block p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 480px; margin: 0 auto 20px;
+      line-height: 1.55;
+    }
+    .state-btn {
+      display: inline-block; padding: 10px 22px;
+      border-radius: 22px; background: var(--physics);
+      color: var(--darker);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700; font-size: 0.9rem;
+      cursor: pointer; border: none; text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .state-btn:hover { opacity: 0.85; }
+    .state-loading .dots { display: inline-flex; gap: 6px; margin-top: 10px; }
+    .state-loading .dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+    .state-loading .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .state-loading .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    /* ── MOBILE (≤900: collapse layout-grid; ≤520: tighten everything) ── */
+    @media (max-width: 900px) {
+      .layout-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+    @media (max-width: 520px) {
+      body { padding: 76px 14px 40px; }
+      .container { padding: 0; }
+      .class-header-name { font-size: 1.5rem; }
+      .stats-strip { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .stat-tile { padding: 14px 14px; }
+      .stat-tile-value { font-size: 1.4rem; }
+      .stat-tile-value-empty { font-size: 1rem; }
+      .assignment-card-list { grid-template-columns: 1fr; }
+      .stars-podium { gap: 6px; padding: 32px 8px 0; }
+      .podium-medal { margin-bottom: -13px; }
+      .podium-medal-ribbon { width: 19px; height: 11px; }
+      .podium-medallion { width: 30px; height: 30px; font-size: 0.88rem; }
+      .podium-avatar--gold {
+        width: 64px; height: 64px; font-size: 1.5rem;
+        box-shadow: 0 0 0 3px var(--medal-gold), 0 0 20px rgba(255, 217, 61, 0.40);
+      }
+      .podium-avatar--silver {
+        width: 48px; height: 48px; font-size: 1.15rem;
+        box-shadow: 0 0 0 2px var(--medal-silver), 0 0 10px rgba(216, 222, 229, 0.16);
+      }
+      .podium-avatar--bronze {
+        width: 48px; height: 48px; font-size: 1.15rem;
+        box-shadow: 0 0 0 2px var(--medal-bronze), 0 0 10px rgba(205, 142, 92, 0.18);
+      }
+      .podium-name  { font-size: 0.82rem; margin-top: 10px; }
+      .podium-score { font-size: 0.88rem; }
+      .podium-plinth { font-size: 1rem; padding-top: 12px; }
+      .podium-plinth--gold   { height: 75px; }
+      .podium-plinth--silver { height: 58px; }
+      .podium-plinth--bronze { height: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="subject-stripe" id="subject-stripe"></div>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="env-pill" class="pill env-prod" title=""></span>
+    <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
+    <button class="signout-btn" onclick="MrBadmusStudentGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<main class="container">
+  <div id="state-loading" class="state-block state-loading show">
+    <p>Loading your class</p>
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <div id="state-loaded" style="display:none;">
+    <section id="class-header" class="class-header"></section>
+
+    <!-- Phase 3 v2: leaderboard moved up — first thing a student sees
+         after the header. Mide's intent: "positive competition." -->
+    <section id="leaderboard-section" class="section-block"></section>
+
+    <div class="layout-grid">
+      <div class="layout-main">
+        <section id="stats-strip-section" class="section-block"></section>
+        <section id="due-this-week-section" class="section-block"></section>
+        <section id="past-assignments-section" class="section-block"></section>
+      </div>
+      <aside class="layout-sidebar">
+        <section id="shoutouts-section" class="section-block"></section>
+      </aside>
+    </div>
+  </div>
+
+  <div id="state-not-found" class="state-block">
+    <h2>Class not found</h2>
+    <p>This class doesn't exist or has been removed.</p>
+    <a class="state-btn" href="/index.html">Back home</a>
+  </div>
+
+  <div id="state-not-authorised" class="state-block">
+    <h2>You're not in this class</h2>
+    <p>Looks like this isn't one of your classes. Head back home if you got here by mistake.</p>
+    <a class="state-btn" href="/index.html">Back home</a>
+  </div>
+
+  <div id="state-error" class="state-block">
+    <h2>Couldn't load your class</h2>
+    <p>Something went wrong. Please refresh the page.</p>
+    <button class="state-btn" onclick="window.location.reload()">Refresh</button>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/student-guard.js"></script>
+<script src="/shared/shoutouts.js"></script>
+<script src="/shared/student-data.js"></script>
+<script>
+(function () {
+  const STATES = {
+    loading:       document.getElementById('state-loading'),
+    loaded:        document.getElementById('state-loaded'),
+    notFound:      document.getElementById('state-not-found'),
+    notAuthorised: document.getElementById('state-not-authorised'),
+    error:         document.getElementById('state-error'),
+  };
+  function showState(name) {
+    Object.keys(STATES).forEach(function (k) {
+      const el = STATES[k];
+      if (k === 'loaded') {
+        el.style.display = name === 'loaded' ? 'block' : 'none';
+      } else {
+        el.classList.toggle('show', k === name);
+      }
+    });
+  }
+
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  const AVATAR_COLOUR_VARS = ['var(--physics)', 'var(--chemistry)', 'var(--biology)', 'var(--science)'];
+  function getStudentColour(studentId) {
+    const s = String(studentId || '');
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h + s.charCodeAt(i)) % AVATAR_COLOUR_VARS.length;
+    return AVATAR_COLOUR_VARS[h];
+  }
+
+  // ── Status / countdown formatter (Phase 3 v2) ──
+  // Returns { tone, text } for an assignment card. Tone drives the
+  // .assignment-card-meta colour class.
+  //   submitted on-time  → 'on-time' / '✓ Submitted on time'
+  //   submitted late     → 'late'    / '✗ Submitted late'
+  //   missed (past, no)  → 'missed'  / '✗ Not submitted'
+  //   upcoming (future)  → 'soon' | 'today' / 'Due in N days/hours/minutes/seconds'
+  //   overdue this week  → 'overdue' / 'Overdue by N days/hours/minutes'
+  function formatAssignmentStatus(card, nowMs) {
+    if (card.is_submitted) {
+      return card.on_time
+        ? { tone: 'on-time', text: '✓ Submitted on time' }
+        : { tone: 'late',    text: '✗ Submitted late' };
+    }
+    const dueMs = new Date(card.due_at).getTime();
+    if (isNaN(dueMs)) return { tone: 'soon', text: '—' };
+    const diff = dueMs - nowMs;
+    if (diff >= 0) {
+      // Upcoming. Pick the most-natural unit.
+      const days    = Math.floor(diff / 86400000);
+      const hours   = Math.floor((diff % 86400000) / 3600000);
+      const minutes = Math.floor((diff % 3600000) / 60000);
+      const seconds = Math.floor((diff % 60000) / 1000);
+      if (days >= 1)    return { tone: 'soon',  text: 'Due in ' + days   + ' day'    + (days === 1    ? '' : 's') };
+      if (hours >= 1)   return { tone: 'today', text: 'Due in ' + hours  + ' hour'   + (hours === 1   ? '' : 's') };
+      if (minutes >= 1) return { tone: 'today', text: 'Due in ' + minutes + ' minute' + (minutes === 1 ? '' : 's') };
+      return                  { tone: 'today', text: 'Due in ' + seconds + ' second' + (seconds === 1 ? '' : 's') };
+    }
+    // Past deadline + not submitted. In "Due this week" → overdue red.
+    // In "Past assignments" → missed red (caller can distinguish via context).
+    const ago     = -diff;
+    const days    = Math.floor(ago / 86400000);
+    const hours   = Math.floor((ago % 86400000) / 3600000);
+    const minutes = Math.floor((ago % 3600000) / 60000);
+    if (days >= 1)    return { tone: 'overdue', text: 'Overdue by ' + days   + ' day'    + (days === 1    ? '' : 's') };
+    if (hours >= 1)   return { tone: 'overdue', text: 'Overdue by ' + hours  + ' hour'   + (hours === 1   ? '' : 's') };
+    return                   { tone: 'overdue', text: 'Overdue by ' + minutes + ' minute' + (minutes === 1 ? '' : 's') };
+  }
+
+  // ── Class header ── */
+  function renderClassHeader(klass, viewerFirstName) {
+    const pillHtml = klass.pill_label
+      ? '<span class="class-header-pill" style="background:' + escapeHtml(klass.pill_colour_var) + ';">' +
+          escapeHtml(klass.pill_label) +
+        '</span>'
+      : '';
+    const greeting = viewerFirstName ? 'Hi, ' + escapeHtml(viewerFirstName) : 'Hi';
+    document.getElementById('class-header').innerHTML =
+      '<div class="class-header-top">' +
+        '<h1 class="class-header-name">' + escapeHtml(klass.name) + '</h1>' +
+        pillHtml +
+      '</div>' +
+      '<div class="class-header-greeting">' + greeting + ' — here’s your class at a glance.</div>';
+    document.title = klass.name + ' — Mr Badmus AI';
+
+    const stripeEl = document.getElementById('subject-stripe');
+    if (stripeEl) stripeEl.style.background = klass.stripe_colour_var || 'var(--science)';
+  }
+
+  // ── Stats strip ── */
+  function renderStatsStrip(viewerStats) {
+    const tiles = [
+      {
+        label: 'Submissions',
+        value: viewerStats.submissions_completed,
+        sub: 'of ' + viewerStats.assignments_in_class_count + ' assignments',
+        zero: viewerStats.assignments_in_class_count === 0 ? 'No assignments yet' : null,
+      },
+      {
+        label: 'On time',
+        value: viewerStats.submissions_completed > 0
+          ? viewerStats.on_time_count + '/' + viewerStats.submissions_completed
+          : null,
+        sub: 'submissions',
+        zero: viewerStats.submissions_completed === 0 ? 'Not started yet' : null,
+      },
+      {
+        label: 'Avg score',
+        value: viewerStats.average_score_pct == null ? null : viewerStats.average_score_pct + '%',
+        sub: 'across this class',
+        zero: viewerStats.average_score_pct == null ? 'No graded work yet' : null,
+      },
+      {
+        label: 'Completion',
+        value: viewerStats.submissions_completed_pct == null ? null : viewerStats.submissions_completed_pct + '%',
+        sub: 'of class assignments',
+        zero: viewerStats.submissions_completed_pct == null ? '—' : null,
+      },
+    ];
+
+    const tilesHtml = tiles.map(function (t) {
+      const valueHtml = t.zero != null
+        ? '<div class="stat-tile-value stat-tile-value-empty">' + escapeHtml(t.zero) + '</div>'
+        : '<div class="stat-tile-value">' + escapeHtml(t.value) + '</div>';
+      const subHtml = t.zero != null
+        ? ''
+        : '<div class="stat-tile-sub">' + escapeHtml(t.sub) + '</div>';
+      return '<div class="stat-tile">' +
+        '<div class="stat-tile-label">' + escapeHtml(t.label) + '</div>' +
+        valueHtml + subHtml +
+      '</div>';
+    }).join('');
+
+    document.getElementById('stats-strip-section').innerHTML =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Your stats</h2>' +
+        '<span class="section-subtitle">in this class</span>' +
+      '</div>' +
+      '<div class="stats-strip">' + tilesHtml + '</div>';
+  }
+
+  // ── Start-link builder (env-aware; assignment_id is informational
+  //    until the weekly-challenge page learns to route on it) ── */
+  function buildStartUrl(assignmentId) {
+    const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test' ? '&env=test' : '';
+    return '/weekly-challenge.html?assignment_id=' + encodeURIComponent(assignmentId) + env;
+  }
+
+  function buildAssignmentCardHtml(card, statusInfo, opts) {
+    opts = opts || {};
+    const subjectHtml = card.subject_name
+      ? '<span class="assignment-card-subject" style="background:' + escapeHtml(card.subject_colour_var) + ';">' +
+          escapeHtml(card.subject_name) +
+        '</span>'
+      : '';
+
+    let actionsHtml = '';
+    if (card.is_submitted && card.score != null && card.max_score != null && card.max_score > 0) {
+      const pct = Math.round((card.score / card.max_score) * 100);
+      actionsHtml = '<div class="assignment-card-actions">' +
+        '<span></span>' +
+        '<span class="assignment-card-score">' + pct + '%</span>' +
+      '</div>';
+    } else if (!card.is_submitted && opts.actionable) {
+      // Future or overdue in current week → Start button still available
+      actionsHtml = '<div class="assignment-card-actions">' +
+        '<a class="assignment-card-start-btn" href="' + escapeHtml(buildStartUrl(card.id)) + '">Start</a>' +
+      '</div>';
+    }
+
+    const cardClasses = ['assignment-card'];
+    if (opts.isPast) cardClasses.push('assignment-card--past');
+    if (!card.is_submitted && opts.isPast) cardClasses.push('assignment-card--missed');
+    const borderColour = (!card.is_submitted && opts.isPast)
+      ? 'var(--danger)'
+      : (card.subject_colour_var || 'var(--science)');
+
+    // For past + not-submitted, override the status text to 'Not submitted'
+    // (clearer than "Overdue by N days" in the past-assignments context —
+    // the assignment is gone, not still actionable).
+    let metaText = statusInfo.text;
+    let metaTone = statusInfo.tone;
+    if (opts.isPast && !card.is_submitted) {
+      metaText = '✗ Not submitted';
+      metaTone = 'missed';
+    }
+
+    return '<div class="' + cardClasses.join(' ') + '" style="border-left-color:' + escapeHtml(borderColour) + ';">' +
+      subjectHtml +
+      '<div class="assignment-card-title">' + escapeHtml(card.title) + '</div>' +
+      '<div class="assignment-card-meta tone-' + escapeHtml(metaTone) + '">' + escapeHtml(metaText) + '</div>' +
+      actionsHtml +
+    '</div>';
+  }
+
+  // ── Due this week ── */
+  function renderDueThisWeek(assignments) {
+    const section = document.getElementById('due-this-week-section');
+    const headerHtml =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Due this week</h2>' +
+        '<span class="section-subtitle">' +
+          (assignments.length === 0
+            ? 'Nothing due'
+            : assignments.length + (assignments.length === 1 ? ' assignment' : ' assignments')) +
+        '</span>' +
+      '</div>';
+
+    if (assignments.length === 0) {
+      section.innerHTML = headerHtml +
+        '<div class="assignment-list-empty">Nothing due this week — enjoy the breathing room.</div>';
+      return;
+    }
+
+    const nowMs = Date.now();
+    const cardsHtml = assignments.map(function (a) {
+      const status = formatAssignmentStatus(a, nowMs);
+      return buildAssignmentCardHtml(a, status, { actionable: true });
+    }).join('');
+
+    section.innerHTML = headerHtml +
+      '<div class="assignment-card-list">' + cardsHtml + '</div>';
+  }
+
+  // ── Past assignments ──
+  // v3 default: at most 3 cards — the most recent submission per
+  // science (Biology, Chemistry, Physics). Empty subjects stay empty
+  // (don't backfill from earlier weeks). For KS3 single-subject
+  // "Science" classes where no Bio/Chem/Phys split exists, fall back
+  // to the 3 most recent past assignments regardless of subject.
+  //
+  // Show-all toggle reveals the full historical list; clicking again
+  // collapses back to the default. The button text reflects the
+  // current state.
+  const pastState = {
+    all: [],          // full historical list, newest-first
+    showAll: false,   // toggle: false=default 3, true=full list
+  };
+
+  function pickDefaultThreeBySubject(allPast) {
+    // pastAssignments are pre-sorted newest-first by due_at, so the
+    // first match per subject IS the most recent.
+    const subjects = ['Biology', 'Chemistry', 'Physics'];
+    const pickedIds = new Set();
+    const picked = [];
+    subjects.forEach(function (subj) {
+      for (let i = 0; i < allPast.length; i++) {
+        if (allPast[i].subject_name === subj && !pickedIds.has(allPast[i].id)) {
+          picked.push(allPast[i]);
+          pickedIds.add(allPast[i].id);
+          break;
+        }
+      }
+    });
+    // KS3 / generic-science fallback — if no Bio/Chem/Phys matched, top up.
+    if (picked.length === 0 && allPast.length > 0) {
+      return allPast.slice(0, 3);
+    }
+    return picked;
+  }
+
+  function renderPastAssignments() {
+    const section = document.getElementById('past-assignments-section');
+    const all = pastState.all || [];
+
+    if (all.length === 0) {
+      section.innerHTML =
+        '<div class="section-header">' +
+          '<h2 class="section-title">Past assignments</h2>' +
+          '<span class="section-subtitle"></span>' +
+        '</div>' +
+        '<div class="assignment-list-empty">No past assignments yet.</div>';
+      return;
+    }
+
+    const visible = pastState.showAll ? all : pickDefaultThreeBySubject(all);
+
+    const subtitleText = pastState.showAll
+      ? (all.length === 1 ? 'showing all (1)' : 'showing all (' + all.length + ')')
+      : (visible.length === 1 ? '1 most recent' : visible.length + ' most recent');
+
+    const headerHtml =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Past assignments</h2>' +
+        '<span class="section-subtitle">' + subtitleText + '</span>' +
+      '</div>';
+
+    const nowMs = Date.now();
+    const cardsHtml = visible.map(function (a) {
+      const status = formatAssignmentStatus(a, nowMs);
+      return buildAssignmentCardHtml(a, status, { isPast: true });
+    }).join('');
+
+    // Toggle button — only render if there's more in the full list
+    // than the default 3-per-subject pick would show.
+    let toggleHtml = '';
+    if (pastState.showAll) {
+      toggleHtml = '<button class="show-all-btn" id="past-toggle-btn">Show less</button>';
+    } else if (all.length > visible.length) {
+      toggleHtml = '<button class="show-all-btn" id="past-toggle-btn">Show all past assignments (' + all.length + ')</button>';
+    }
+
+    section.innerHTML = headerHtml +
+      '<div class="assignment-card-list">' + cardsHtml + '</div>' +
+      toggleHtml;
+
+    const btn = document.getElementById('past-toggle-btn');
+    if (btn) btn.addEventListener('click', function () {
+      pastState.showAll = !pastState.showAll;
+      renderPastAssignments();
+    });
+  }
+
+  // ── Stars podium ── */
+  function formatPodiumName(student) {
+    const first = (student.first_name || '').trim();
+    const last  = (student.last_name  || '').trim();
+    const initial = last ? last.charAt(0).toUpperCase() + '.' : '';
+    return (first + (initial ? ' ' + initial : '')).trim() || '—';
+  }
+
+  function buildPodiumAvatarHtml(student, medal, isYou) {
+    const colour = getStudentColour(student.student_id);
+    const initial = (student.first_name || '').charAt(0).toUpperCase() || '?';
+    const youCls = isYou ? ' podium-avatar--you' : '';
+    const cls = 'podium-avatar podium-avatar--' + medal + youCls;
+    if (student.avatar_url) {
+      const fallback = '<span class="' + cls + '" style="background:' + colour + ';">' + escapeHtml(initial) + '</span>';
+      return '<img class="' + cls + '" src="' + escapeHtml(student.avatar_url) +
+        '" alt="" referrerpolicy="no-referrer" data-fallback="' + escapeHtml(fallback) +
+        '" onerror="this.outerHTML=this.getAttribute(\'data-fallback\')"/>';
+    }
+    return '<span class="' + cls + '" style="background:' + colour + ';">' + escapeHtml(initial) + '</span>';
+  }
+
+  function buildPodiumColumn(student, rankNumber, medal, viewerId) {
+    const RANK_LABELS = { 1: '1st', 2: '2nd', 3: '3rd' };
+    const rankLabel = RANK_LABELS[rankNumber] || (rankNumber + 'th');
+    if (student) {
+      const isYou = !!(viewerId && student.student_id === viewerId);
+      const pct = student.score_pct;
+      const scoreHtml = (pct == null)
+        ? ''
+        : '<div class="podium-score podium-score--' + medal + '">' + escapeHtml(Math.round(pct) + '%') + '</div>';
+      const youLabelHtml = isYou ? '<div class="podium-you-label">YOU</div>' : '';
+      return '<div class="podium-column">' +
+        '<div class="podium-standee">' +
+          '<div class="podium-medal">' +
+            '<div class="podium-medal-ribbon"></div>' +
+            '<div class="podium-medallion podium-medallion--' + medal + '">' + rankNumber + '</div>' +
+          '</div>' +
+          buildPodiumAvatarHtml(student, medal, isYou) +
+          '<div class="podium-name">' + escapeHtml(formatPodiumName(student)) + '</div>' +
+          scoreHtml + youLabelHtml +
+        '</div>' +
+        '<div class="podium-plinth podium-plinth--' + medal + '">' + escapeHtml(rankLabel) + '</div>' +
+      '</div>';
+    }
+    return '<div class="podium-column">' +
+      '<div class="podium-standee">' +
+        '<div class="podium-medal">' +
+          '<div class="podium-medallion podium-medallion--' + medal + ' podium-medallion--ghost">' + rankNumber + '</div>' +
+        '</div>' +
+        '<span class="podium-avatar podium-avatar--' + medal + ' podium-avatar--ghost"></span>' +
+        '<div class="podium-name podium-name--empty">Claim this spot</div>' +
+      '</div>' +
+      '<div class="podium-plinth podium-plinth--' + medal + '">' + escapeHtml(rankLabel) + '</div>' +
+    '</div>';
+  }
+
+  function buildAlsoranAvatarHtml(student, isYou) {
+    const colour = getStudentColour(student.student_id);
+    const initial = (student.first_name || '').charAt(0).toUpperCase() || '?';
+    const youCls = isYou ? ' is-you' : '';
+    const cls = 'student-avatar' + youCls;
+    if (student.avatar_url) {
+      const fallback = '<span class="' + cls + '" style="background:' + colour + ';">' + escapeHtml(initial) + '</span>';
+      return '<img class="' + cls + '" src="' + escapeHtml(student.avatar_url) +
+        '" alt="" referrerpolicy="no-referrer" data-fallback="' + escapeHtml(fallback) +
+        '" onerror="this.outerHTML=this.getAttribute(\'data-fallback\')"/>';
+    }
+    return '<span class="' + cls + '" style="background:' + colour + ';">' + escapeHtml(initial) + '</span>';
+  }
+
+  function buildAlsoranHtml(students, viewerId) {
+    const items = students.map(function (s) {
+      const isYou = !!(viewerId && s.student_id === viewerId);
+      const youTag = isYou ? '<span class="you-tag">YOU</span>' : '';
+      return '<div class="stars-alsoran-item">' +
+        buildAlsoranAvatarHtml(s, isYou) +
+        '<span>' + escapeHtml(formatPodiumName(s)) + '</span>' + youTag +
+      '</div>';
+    }).join('');
+    return '<div class="stars-alsoran">' +
+      '<div class="stars-alsoran-heading">Also earned Stars this week</div>' +
+      '<div class="stars-alsoran-list">' + items + '</div>' +
+    '</div>';
+  }
+
+  function renderStarsLeaderboard(leaderboard, viewerId) {
+    const section = document.getElementById('leaderboard-section');
+    const headerHtml =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Stars Leaderboard</h2>' +
+        '<span class="section-subtitle">This week</span>' +
+      '</div>';
+
+    if (!leaderboard || typeof leaderboard !== 'object') {
+      section.innerHTML = headerHtml + '<div class="stars-empty-msg">Stars unavailable</div>';
+      return;
+    }
+    if (leaderboard.is_empty) {
+      section.innerHTML = '';
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = '';
+    const eligible = Array.isArray(leaderboard.eligible) ? leaderboard.eligible : [];
+    if (eligible.length === 0) {
+      section.innerHTML = headerHtml + '<div class="stars-empty-msg">Stars unavailable</div>';
+      return;
+    }
+    const podiumHtml =
+      '<div class="stars-podium">' +
+        buildPodiumColumn(eligible[1], 2, 'silver', viewerId) +
+        buildPodiumColumn(eligible[0], 1, 'gold',   viewerId) +
+        buildPodiumColumn(eligible[2], 3, 'bronze', viewerId) +
+      '</div>';
+    const alsoranHtml = eligible.length > 3
+      ? buildAlsoranHtml(eligible.slice(3), viewerId)
+      : '';
+    section.innerHTML = headerHtml + podiumHtml + alsoranHtml;
+  }
+
+  // ── Shoutouts feed (sidebar, read-only) ── */
+  const PAGE_SIZE = 20;
+  let currentClassId = null;
+  const feedState = {
+    shoutouts: [], hasMore: false, loading: false, initialLoaded: false, error: null,
+  };
+
+  function initShoutoutsSection() {
+    const section = document.getElementById('shoutouts-section');
+    section.style.display = '';
+    feedState.shoutouts = []; feedState.hasMore = false; feedState.loading = false;
+    feedState.initialLoaded = false; feedState.error = null;
+    section.innerHTML =
+      '<div class="section-header">' +
+        '<h2 class="section-title">Shoutouts</h2>' +
+        '<span class="section-subtitle" id="shoutouts-count"></span>' +
+      '</div>' +
+      '<div class="shoutouts-feed" id="shoutouts-feed">' +
+        '<div class="shoutouts-loading">Loading shoutouts</div>' +
+      '</div>';
+    loadAndRenderFeedFirstPage();
+  }
+
+  async function loadAndRenderFeedFirstPage() {
+    feedState.loading = true; feedState.error = null;
+    feedState.shoutouts = []; feedState.hasMore = false; feedState.initialLoaded = false;
+    renderFeed();
+    try {
+      const result = await MrBadmusStudentData.loadStudentClassShoutouts(currentClassId, { limit: PAGE_SIZE });
+      feedState.shoutouts = result.shoutouts;
+      feedState.hasMore = result.hasMore;
+      feedState.initialLoaded = true;
+    } catch (e) {
+      console.error('[student/class.html] shoutouts first page failed', e);
+      feedState.error = e;
+    } finally {
+      feedState.loading = false;
+      renderFeed();
+    }
+  }
+
+  async function loadMoreShoutouts() {
+    if (feedState.loading || !feedState.hasMore) return;
+    const oldest = feedState.shoutouts[feedState.shoutouts.length - 1];
+    if (!oldest) return;
+    feedState.loading = true;
+    const moreBtn = document.getElementById('shoutouts-loadmore');
+    if (moreBtn) { moreBtn.disabled = true; moreBtn.textContent = 'Loading…'; }
+    try {
+      const result = await MrBadmusStudentData.loadStudentClassShoutouts(currentClassId, {
+        limit: PAGE_SIZE, beforeCreatedAt: oldest.created_at,
+      });
+      feedState.shoutouts = feedState.shoutouts.concat(result.shoutouts);
+      feedState.hasMore = result.hasMore;
+    } catch (e) {
+      console.error('[student/class.html] shoutouts load-more failed', e);
+      feedState.error = e;
+    } finally {
+      feedState.loading = false;
+      renderFeed();
+    }
+  }
+
+  function renderFeed() {
+    const feedEl = document.getElementById('shoutouts-feed');
+    const countEl = document.getElementById('shoutouts-count');
+    if (!feedEl) return;
+    if (countEl) {
+      if (!feedState.initialLoaded) { countEl.textContent = ''; }
+      else {
+        const n = feedState.shoutouts.length;
+        countEl.textContent = n === 0
+          ? ''
+          : (feedState.hasMore ? n + '+ shown' : (n === 1 ? '1 shoutout' : n + ' shoutouts'));
+      }
+    }
+    if (feedState.loading && !feedState.initialLoaded) {
+      feedEl.innerHTML = '<div class="shoutouts-loading">Loading shoutouts</div>';
+      return;
+    }
+    if (feedState.error && !feedState.initialLoaded) {
+      feedEl.innerHTML = '<div class="shoutouts-error">Couldn’t load shoutouts. Refresh to try again.</div>';
+      return;
+    }
+    if (feedState.shoutouts.length === 0) {
+      feedEl.innerHTML = '<div class="shoutouts-empty">No shoutouts yet.</div>';
+      return;
+    }
+    const cardsHtml = feedState.shoutouts.map(function (s) {
+      return MrBadmusShoutouts.renderShoutoutCard(s, { showDelete: false });
+    }).join('');
+    const loadMoreHtml = feedState.hasMore
+      ? '<button class="shoutouts-loadmore" id="shoutouts-loadmore">Load more</button>'
+      : '';
+    feedEl.innerHTML = '<div class="shoutouts-feed-list">' + cardsHtml + '</div>' + loadMoreHtml;
+    const moreBtn = document.getElementById('shoutouts-loadmore');
+    if (moreBtn) moreBtn.addEventListener('click', loadMoreShoutouts);
+  }
+
+  // ── Bootstrap (with Phase 3 v2 defensive logging — bug 3 mitigation) ── */
+  MrBadmusStudentGuard.requireStudentRole({
+    onAllowed: async function (ctx) {
+      // Each step is logged. If the page hangs in loading, the last log
+      // line tells you which step didn't complete (vs nothing → guard
+      // never entered onAllowed). Any thrown error is caught at the
+      // outer try/catch and shown as the error state instead of leaving
+      // the spinner spinning forever.
+      try {
+        const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
+        console.log('[student/class.html] onAllowed entered, env=' + env + ', user=' + ctx.user.id);
+
+        const firstName = ctx.profile.first_name || 'student';
+        document.getElementById('nav-user-area').textContent = '👤 ' + firstName;
+        const envEl = document.getElementById('env-pill');
+        envEl.textContent = env.toUpperCase();
+        envEl.className = 'pill env-' + env;
+        envEl.title = env === 'test'
+          ? 'Test sandbox — fake data only'
+          : 'Production — live student data';
+
+        document.body.style.display = 'block';
+
+        const classId = new URLSearchParams(window.location.search).get('class');
+        if (!classId) {
+          console.warn('[student/class.html] no ?class= in URL, showing notFound');
+          showState('notFound');
+          return;
+        }
+
+        console.log('[student/class.html] loadStudentClass(' + classId + ') starting...');
+        const detail = await MrBadmusStudentData.loadStudentClass(classId, ctx.user.id);
+        console.log('[student/class.html] loadStudentClass OK, rendering...', {
+          assignments_in_class: detail.viewerStats.assignments_in_class_count,
+          due_this_week_count:  detail.assignmentsDueThisWeek.length,
+          past_count:           detail.pastAssignments.length,
+          leaderboard_eligible: (detail.leaderboard && detail.leaderboard.eligible) ? detail.leaderboard.eligible.length : 0,
+          viewer_on_podium:     detail.viewerOnPodium,
+        });
+
+        currentClassId = detail.class.id;
+        renderClassHeader(detail.class, ctx.profile.first_name);
+        renderStarsLeaderboard(detail.leaderboard, ctx.user.id);
+        renderStatsStrip(detail.viewerStats);
+        renderDueThisWeek(detail.assignmentsDueThisWeek);
+
+        pastState.all = detail.pastAssignments || [];
+        pastState.showAll = false;
+        renderPastAssignments();
+
+        initShoutoutsSection();
+        showState('loaded');
+        console.log('[student/class.html] render complete');
+      } catch (e) {
+        console.error('[student/class.html] onAllowed threw', e);
+        if (e && e.code === 'invalid_class_id') return showState('notFound');
+        if (e && e.code === 'class_not_found')  return showState('notFound');
+        if (e && e.code === 'not_authorised')   return showState('notAuthorised');
+        showState('error');
+      }
+    },
+  });
+})();
+</script>
+
+</body>
+</html>

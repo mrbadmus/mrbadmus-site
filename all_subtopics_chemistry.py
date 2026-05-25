@@ -16,7 +16,7 @@ atmosphere:        4
 using-resources:   4
 """
 
-CHEMISTRY_COLOR = "#FF6B6B"
+CHEMISTRY_COLOR = "#FFD2E6"
 
 CHEMISTRY_SUBTOPICS_ALL = {
 

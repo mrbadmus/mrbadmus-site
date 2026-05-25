@@ -3,7 +3,7 @@
 
 :root {
   --physics: #4ECDC4;
-  --chemistry: #FF6B6B;
+  --chemistry: #FFD2E6; --danger: #FF6B6B;
   --biology: #6BCB77;
   --yellow: #FFD93D;
   --orange: #FF6B35;

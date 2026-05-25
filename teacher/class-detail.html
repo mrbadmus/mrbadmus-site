@@ -16,7 +16,7 @@
       --text:      #E8F4FD;
       --muted:     #8892A4;
       --physics:   #4ECDC4;
-      --chemistry: #FF6B6B;
+      --chemistry: #FFD2E6; --danger: #FF6B6B;
       --biology:   #6BCB77;
       --science:   #A78BD0;
       --warning:   #FFA94D;
@@ -1096,6 +1096,7 @@
 <script src="/shared/config.js"></script>
 <script src="/shared/teacher-guard.js"></script>
 <script src="/shared/teacher-data.js"></script>
+<script src="/shared/shoutouts.js"></script>
 <script>
 (function () {
   const STATES = {
@@ -1828,21 +1829,13 @@
   //
   // RLS is the security gate; the UI suppresses affordances the
   // policies would block anyway (e.g. delete X only on own shoutouts).
-  const SHOUTOUT_TEMPLATES = [
-    { key: 'top_of_class',             emoji: '🌟', label: 'Top of the class this week' },
-    { key: 'brilliant_improvement',    emoji: '📈', label: 'Brilliant improvement' },
-    { key: 'every_assignment_on_time', emoji: '⏰', label: 'Every assignment on time' },
-    { key: 'smashed_tough_topic',      emoji: '🎯', label: 'Smashed a tough topic' },
-    { key: 'bounced_back_strong',      emoji: '💪', label: 'Bounced back strong' },
-    { key: 'helped_classmate',         emoji: '🤝', label: 'Helped a classmate' },
-  ];
-  function templateByKey(key) {
-    if (!key) return null;
-    for (let i = 0; i < SHOUTOUT_TEMPLATES.length; i++) {
-      if (SHOUTOUT_TEMPLATES[i].key === key) return SHOUTOUT_TEMPLATES[i];
-    }
-    return null;
-  }
+  //
+  // SHOUTOUT_TEMPLATES + templateByKey + the card renderer live in
+  // /shared/shoutouts.js since Phase 3 — also used by /student/class.html.
+  // The compose form below references MrBadmusShoutouts.SHOUTOUT_TEMPLATES
+  // for the 6 preset buttons; the feed renderer uses
+  // MrBadmusShoutouts.renderShoutoutCard with { showDelete:true, currentUserId }
+  // so the X icon appears only on the teacher's own shoutouts.
 
   const MAX_MESSAGE_LEN = 500;
   const COUNTER_WARN_AT = 480;
@@ -1912,7 +1905,7 @@
       return '<option value="' + escapeHtml(s.id) + '">' + escapeHtml(name) + '</option>';
     }).join('');
 
-    const templateBtnsHtml = SHOUTOUT_TEMPLATES.map(function (t) {
+    const templateBtnsHtml = MrBadmusShoutouts.SHOUTOUT_TEMPLATES.map(function (t) {
       return '<button type="button" class="template-btn" data-template-key="' +
         escapeHtml(t.key) + '">' +
         '<span class="template-btn-emoji">' + t.emoji + '</span>' +
@@ -2169,7 +2162,10 @@
     }
 
     const cardsHtml = feedState.shoutouts.map(function (s) {
-      return buildShoutoutCardHtml(s, s.author_id === currentUserId);
+      return MrBadmusShoutouts.renderShoutoutCard(s, {
+        showDelete: true,
+        currentUserId: currentUserId,
+      });
     }).join('');
 
     const loadMoreHtml = feedState.hasMore
@@ -2192,59 +2188,9 @@
     }
   }
 
-  function buildShoutoutCardHtml(s, isOwn) {
-    const recipient = s.recipient || {};
-    const author    = s.author    || {};
-    const recipientName = ((recipient.first_name || '') + ' ' + (recipient.last_name || '')).trim() || '—';
-    const authorName    = ((author.first_name    || '') + ' ' + (author.last_name    || '')).trim() || '—';
-
-    // Build avatar for the recipient (visual focus is on who got celebrated).
-    // Falls back to initial+colour if no avatar_url. Reuses the existing
-    // getStudentColour/buildInitialsHtml pattern by inlining what we need.
-    const recipientColour = getStudentColour(s.recipient_id);
-    const recipientInitial = (recipient.first_name || '').charAt(0).toUpperCase() || '?';
-    const avatarHtml = recipient.avatar_url
-      ? '<img class="student-avatar" src="' + escapeHtml(recipient.avatar_url) +
-          '" alt="" referrerpolicy="no-referrer" data-fallback="' +
-          escapeHtml('<span class="student-avatar" style="background:' + recipientColour + ';">' +
-            escapeHtml(recipientInitial) + '</span>') +
-          '" onerror="this.outerHTML=this.getAttribute(\'data-fallback\')"/>'
-      : '<span class="student-avatar" style="background:' + recipientColour + ';">' +
-          escapeHtml(recipientInitial) + '</span>';
-
-    const tpl = templateByKey(s.template_key);
-    let bodyHtml = '';
-    if (tpl) {
-      bodyHtml += '<div class="shoutout-template">' +
-        '<span class="shoutout-template-emoji">' + tpl.emoji + '</span>' +
-        '<span>' + escapeHtml(tpl.label) + '</span>' +
-      '</div>';
-    }
-    if (s.message) {
-      bodyHtml += '<div class="shoutout-message">' + escapeHtml(s.message) + '</div>';
-    }
-
-    const deleteHtml = isOwn
-      ? '<div class="shoutout-delete-wrap">' +
-          '<button class="shoutout-delete-btn" type="button" aria-label="Remove shoutout">×</button>' +
-        '</div>'
-      : '';
-
-    return '<div class="shoutout-card" data-shoutout-id="' + escapeHtml(s.id) +
-        '" data-is-own="' + (isOwn ? '1' : '0') + '">' +
-      '<div class="shoutout-recipient-block">' +
-        avatarHtml +
-        '<div>' +
-          '<div class="shoutout-recipient-name">' + escapeHtml(recipientName) + '</div>' +
-          '<div class="shoutout-meta">by ' + escapeHtml(authorName) + ' · ' +
-            escapeHtml(formatRelativeTime(s.created_at)) +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="shoutout-body">' + bodyHtml + '</div>' +
-      deleteHtml +
-    '</div>';
-  }
+  // buildShoutoutCardHtml lived here through Phase 2; Phase 3 extracted
+  // it to /shared/shoutouts.js as MrBadmusShoutouts.renderShoutoutCard
+  // for reuse on the new student class detail page.
 
   function wireDeleteAffordance(cardEl, shoutoutId) {
     const wrap = cardEl.querySelector('.shoutout-delete-wrap');

@@ -1167,32 +1167,31 @@ window.MrBadmusTeacherData = (function () {
       throw new Error('[teacher-data] Supabase client unavailable — getClient() returned null');
     }
 
-    let q = sb
-      .from('class_shoutouts')
-      .select(
-        'id, template_key, message, created_at, author_id, recipient_id, ' +
-        'author:profiles!class_shoutouts_author_id_fkey ( first_name, last_name, avatar_url ), ' +
-        'recipient:profiles!class_shoutouts_recipient_id_fkey ( first_name, last_name, avatar_url )'
-      )
-      .eq('class_id', classId)
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false })
-      .limit(limit);
-
-    if (beforeCreatedAt) {
-      q = q.lt('created_at', beforeCreatedAt);
-    }
-
-    const { data, error } = await q;
+    // Phase 3 v2: call the class_shoutouts_for_viewer RPC instead of a
+    // direct PostgREST query with profile-FK joins. The RPC is SECURITY
+    // DEFINER so it can resolve author + recipient first_name/last_name/
+    // avatar_url across the RLS gap (teachers couldn't read OTHER
+    // teachers' profiles via the FK join, which surfaced as em-dash
+    // names on shoutouts authored by another teacher).
+    //
+    // Migration: 20260525093000_class_shoutouts_for_viewer.sql.
+    // The RPC's membership/teaches gate matches the class_shoutouts
+    // SELECT policy — same audience, no over-exposure.
+    const { data, error } = await sb.rpc('class_shoutouts_for_viewer', {
+      p_class_id:          classId,
+      p_limit:             limit,
+      p_before_created_at: beforeCreatedAt,
+    });
     if (error) {
-      console.error('[teacher-data] loadClassShoutouts failed', error);
+      console.error('[teacher-data] loadClassShoutouts (RPC) failed', error);
       throw error;
     }
 
-    const shoutouts = data || [];
+    // RPC returns { shoutouts: [...], hasMore: boolean } directly as jsonb.
+    const result = data || {};
     return {
-      shoutouts: shoutouts,
-      hasMore: shoutouts.length === limit,
+      shoutouts: Array.isArray(result.shoutouts) ? result.shoutouts : [],
+      hasMore:   !!result.hasMore,
     };
   }
 
