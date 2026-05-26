@@ -198,8 +198,19 @@ If the backend is unreachable, the chat falls back to a static message.
 - **Shared JS via `window.MrBadmus`.** The chat engine exposes itself as a global so any page can call `MrBadmus.init(...)`.
 - **Supabase auth is client-side.** Sessions in `localStorage` under `sb-urklkrwevjtlfbwnipjn-auth-token`. Supabase JS SDK loaded via CDN — no import system.
 - **Inline auth-check scripts.** Each HTML page has a small inline `<script>` at the top of `<nav>` that swaps Sign In / Sign Up for the logged-in user's name + avatar.
-- **Color-coded subjects:** Physics teal (`#4ECDC4`), Chemistry red (`#FF6B6B`), Biology green (`#6BCB77`)
-- **Pathway colours:** Combined teal (same as Physics), Triple red (same as Chemistry)
+- **Color-coded subjects:** Physics teal (`#4ECDC4`), Chemistry pastel pink (`#FFD2E6`), Biology green (`#6BCB77`)
+- **Pathway colours:** Combined teal (same as Physics), Triple pastel pink (same as Chemistry)
+- **`--chemistry` vs `--danger` split** (MRB-46 Phase 3 v3, 2026-05-25):
+  Chemistry used to be `#FF6B6B` red, which was being conflated with
+  "warning" UI semantics (overdue tones, error text, delete-X hover).
+  Swapped Chemistry to pastel pink `#FFD2E6`; introduced a paired
+  `--danger: #FF6B6B` token for destructive UI. **For NEW code: use
+  `var(--chemistry)` only for chemistry-subject identity; use
+  `var(--danger)` for everything red-as-warning** (overdue, missed,
+  error states, destructive button hovers). Existing files outside
+  `student/class.html` still route destructive UI through
+  `var(--chemistry)` — that's a known limitation, not a desired
+  state. Route to `var(--danger)` when you next touch each surface.
 - **Tier colours:** Foundation green, Higher yellow (`#FFD93D`)
 - **Backend URL is hardcoded** as `https://mrbadmus-backend.onrender.com` in `mrbadmus.v2.js`. No environment variables on the frontend (no build step).
 - **Supabase anon key is hardcoded** in pages that need it (e.g. leaderboard.html for profile reads). Anon keys are designed to be public — safe to commit.
@@ -270,6 +281,84 @@ Mide is a teacher and creative founder, not a developer. Keep this in mind at al
 - **Flag anything that could break the live site** before proceeding. 135+ students rely on this site.
 - **Never `git push` in Terminal** — Mide uses GitHub Desktop exclusively for commits and pushes.
 - **For Supabase admin tasks**, give Mide direct SQL to paste into the Supabase SQL Editor. Never try to migrate schemas from code.
+
+---
+
+## Working pattern (how Mide and Claude operate)
+
+Captured 12 May 2026 mid-way through MRB-38 build. This is how Mide
+and chat-Claude have been operating across the schools layer rollout.
+Future-Mide and future-Claude (and any new collaborator) should keep
+to this.
+
+**1. Three-way workflow with clear lanes.** Mide directs (product,
+scope, priorities). Chat-Claude architects (plans, writes prompts,
+gates between phases, plain-English translator). Claude Code executes
+(queries, code, file edits, Linear writes). Each lane does what it's
+best at. None of us tries to do the others' jobs.
+
+**2. Investigate before editing.** Read the current state first. No
+"I'll just change this" without recon. Diffs shown before approval.
+The work moves faster long-term because we don't waste time undoing
+wrong assumptions.
+
+**3. Gate-driven phases.** Big tasks split into sub-phases. Each
+phase has an explicit gate where chat-Claude pauses for Mide's
+approval. No barrelling through. Catches divergence early when it's
+cheap to fix.
+
+**4. "What could go wrong?" before structural changes.** Standard
+pre-flight check before any migration, refactor, or scope change.
+Catches edge cases that would otherwise become Phase 6 bugs.
+
+**5. "Are you sure that's everything?" before approving multi-file
+changes.** Specifically catches scope-creep in batches.
+
+**6. Linear is source of truth.** Every decision, gotcha, deferred
+item gets pinned. No "remind me why we did this" 6 weeks later.
+Comments on the right ticket so context lives with the work.
+
+**7. New scope goes in new tickets or comments, never folded silently
+into the current ticket.** Avatar bank → MRB-55. Multi-attempts →
+comment on Stage 4 ticket. Brand drift → MRB-54. The thing in front
+of us stays the thing in front of us.
+
+**8. Production-touching work uses the MCP swap dance.** Both
+Supabase MCPs (prod + test) are never live simultaneously.
+`claude mcp remove supabase-test` before any prod step, re-add after.
+
+**9. Never `git push` from terminal.** GitHub Desktop only. Always.
+
+**10. Mide manages his own schedule.** Chat-Claude does not project
+fatigue or advise breaks unless Mide explicitly raises it. Speed of
+ideation→execution is the priority.
+
+**11. Supabase tooling discipline.** Hard-won from MRB-46 Phase 1
+(24 May 2026) after ~2 hours of MCP auth churn. Apply paths, folder
+taxonomy, CLI auth pattern, and operational notes (test/prod refs,
+pooler maintenance, `supabase-test` MCP write-enabled rationale)
+live in the "Supabase migrations toolchain" section above. With
+MRB-84 landed, the CLI (`supabase db push`) is the primary apply
+path; MCP `apply_migration` is the one-off ad-hoc fallback. The
+swap-dance in item 8 above applies only when explicitly switching
+to prod, not for read/write toggles within test. Gotchas observed
+in the wild:
+
+- **RLS soft-delete gotcha.** If a SELECT policy filters by a column
+  the UPDATE will set (e.g. `deleted_at IS NULL`), the UPDATE fails
+  with `42501: new row violates row-level security policy` even when
+  the UPDATE policy passes. Postgres applies SELECT USING to the
+  post-update row state to prevent information-leak via update-into-
+  invisibility. Fix: widen the SELECT policy to cover the legitimate
+  post-update state (e.g. allow author to see their own deleted rows),
+  or use a SECURITY DEFINER function. The frontend can continue
+  filtering defensively — UX stays the same. Discovered in MRB-46
+  Phase 2 when wiring author-only soft-delete on `class_shoutouts`;
+  fix lives in migration `20260524195500_fix_class_shoutouts_soft_delete.sql`.
+
+Mide's stated principle: "Slow and thorough beats fast and patchy" —
+applied to *correctness*, not pace. Ideation cycles stay short;
+verification stays rigorous.
 
 ---
 
