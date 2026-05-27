@@ -5,7 +5,7 @@ Run: python3 generate_site.py
 Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 """
 
-import os, shutil, json
+import os, shutil, json, glob, sys
 
 # ─────────────────────────────────────────────
 #  SITE DATA — all topics, subtopics, equations,
@@ -4949,16 +4949,22 @@ def build_site(output_dir="mrbadmus_site"):
         else:
             print(f"  ⚠️  {_auth_file} not found — skipping")
 
-    # ── Stage 2A shared files (config.js + teacher-guard.js + teacher-data.js) ──
-    # Plain copies, no patching. These are loaded directly by /teacher/* pages.
-    for _shared_file in ["config.js", "teacher-guard.js", "teacher-data.js"]:
-        _src = f"shared/{_shared_file}"
-        _dst = f"{output_dir}/shared/{_shared_file}"
-        if _os.path.exists(_src):
+    # ── Auto-copy any non-patched file in shared/ ──
+    # Glob-based instead of hardcoded list so future additions to shared/
+    # don't require generator edits. styles.css and mrbadmus.v2.js are
+    # excluded — those are written above via templated open() and would
+    # be overwritten by a plain copy.
+    _shared_explicit_writes = {"styles.css", "mrbadmus.v2.js"}
+    for _src in sorted(glob.glob("shared/*")):
+        _filename = os.path.basename(_src)
+        if _filename in _shared_explicit_writes or not os.path.isfile(_src):
+            continue
+        _dst = f"{output_dir}/shared/{_filename}"
+        try:
             _shutil.copy2(_src, _dst)
-            print(f"  ✅ shared/{_shared_file}")
-        else:
-            print(f"  ⚠️  shared/{_shared_file} not found — skipping")
+            print(f"  ✅ shared/{_filename}")
+        except Exception as e:
+            print(f"  ⚠️  shared/{_filename}: {e}")
 
     # ── Stage 2A teacher pages tree ──
     # Whole teacher/ directory copied so /teacher/classes.html (and future
@@ -4972,6 +4978,19 @@ def build_site(output_dir="mrbadmus_site"):
         print(f"  ✅ teacher/ (directory tree)")
     else:
         print(f"  ⚠️  teacher/ directory not found — skipping")
+
+    # ── Stage 2C student pages tree ──
+    # Mirror of the teacher/ block above. Whole student/ directory copied
+    # into output. Added in MRB-46 Phase 3 (Stage 2C) for /student/class.html.
+    _student_src = "student"
+    _student_dst = f"{output_dir}/student"
+    if _os.path.isdir(_student_src):
+        if _os.path.exists(_student_dst):
+            _shutil.rmtree(_student_dst)
+        _shutil.copytree(_student_src, _student_dst)
+        print(f"  ✅ student/ (directory tree)")
+    else:
+        print(f"  ⚠️  student/ directory not found — skipping")
 
     # ── Landing page ──
     with open(f"{output_dir}/index.html", "w") as f:
@@ -5057,6 +5076,32 @@ def build_site(output_dir="mrbadmus_site"):
                             f.write(st_html)
                         print(f"        ✅ .../{topic['id']}/{st['id']}.html")
                         total_pages += 1
+
+    # ── Safety net — fail loudly if the round-trip would delete source files ──
+    # The "Copy to repo root" round-trip below does shutil.rmtree(./<dir>) for
+    # each top-level dir in mrbadmus_site/ before copytree-ing it back. If a
+    # source dir has files not represented in mrbadmus_site/, those files get
+    # destroyed. This check catches the bug class permanently — any future
+    # addition to shared/, teacher/, or student/ that the generator doesn't
+    # know about will fail here instead of silently destroying files.
+    # Discovered in MRB-46 Phase 3 / MRB-35 bundle merge when three shared/*
+    # JS files added by the bundle were silently deleted from the source tree
+    # by the round-trip. See MRB-88 for the architectural follow-up
+    # (auto-discovery across all top-level dirs, not just these three).
+    for _dir in ["shared", "teacher", "student"]:
+        if not os.path.isdir(_dir):
+            continue
+        _source_files = set(os.listdir(_dir))
+        _deploy_dir = os.path.join(output_dir, _dir)
+        _deploy_files = set(os.listdir(_deploy_dir)) if os.path.isdir(_deploy_dir) else set()
+        _missing = _source_files - _deploy_files
+        if _missing:
+            print(f"\n❌ ABORT: {_dir}/ has files not in {output_dir}/{_dir}/:")
+            for _f in sorted(_missing):
+                print(f"     {_f}")
+            print(f"   The round-trip would delete these from source.")
+            print(f"   Either copy them to {output_dir}/{_dir}/ explicitly, or add them to the generator's copy logic.")
+            sys.exit(1)
 
     # ── Copy to repo root ──
     for item in os.listdir(output_dir):
