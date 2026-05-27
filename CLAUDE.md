@@ -224,11 +224,12 @@ Established by MRB-84 (2026-05-24). Future migration work follows this pattern.
 
 ### Folder taxonomy
 
-Three sibling folders under `supabase/`, each with a `README.md`. The Supabase CLI only reads `migrations/`; the other two are invisible to `supabase db push` and `supabase migration list`.
+Four sibling folders under `supabase/`, each with a `README.md`. The Supabase CLI only reads `migrations/`; the other three are invisible to `supabase db push` and `supabase migration list`.
 
 - **`supabase/migrations/`** — forward migrations. Files named `YYYYMMDDHHMMSS_description.sql` where the timestamp matches the `schema_migrations.version` they register as. CLI parses the version from the filename.
 - **`supabase/rollbacks/`** — manual undo SQL for specific migrations. Apply manually only. Files keep the original `NNNN_` sequence prefix (CLI never reads them).
 - **`supabase/baselines/`** — bootstrap/recovery SQL (recreate from scratch, disaster recovery). Apply manually only.
+- **`supabase/seeds/`** — test-only fixture SQL (fake users, fake submissions). Never applied on prod via CLI; manual psql only against test.
 
 ### Apply path
 
@@ -246,18 +247,6 @@ unset SUPABASE_ACCESS_TOKEN
 ```
 
 Then prefix CLI commands with `SUPABASE_ACCESS_TOKEN="$(cat /tmp/sb_token)"`. DB password follows the same pattern (`/tmp/sb_pw`). Clean both up at end of session. Generate the PAT from `supabase.com/dashboard/account/tokens`.
-
-### ⚠️ Caveat — MRB-85 pending
-
-5 test-only seed migrations currently sit in `supabase/migrations/`:
-
-- `20260503091243_stage2_test_seeds.sql`
-- `20260503112332_stage2_test_passwords.sql`
-- `20260503120702_stage2_test_seeds_fix_auth_columns.sql`
-- `20260503125202_stage2_test_seeds_fix_email_change.sql`
-- `20260503221955_stage2_test_seeds_expanded.sql`
-
-If `supabase db push` is run after re-linking to prod (project ref `urklkrwevjtlfbwnipjn`), these would attempt to apply against prod — best case errors on conflicts, worst case leaks fake users + known passwords into production. **Always verify the linked project ref before `db push` until MRB-85 lands** and moves these to `supabase/seeds/` with explicit-target tooling.
 
 ### Other Supabase-related operational notes
 
