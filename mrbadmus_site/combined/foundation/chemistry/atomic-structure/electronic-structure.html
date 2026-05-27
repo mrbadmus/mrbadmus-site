@@ -7,11 +7,11 @@
   <link rel="stylesheet" href="/shared/styles.css"/>
   
 <style>
-:root { --subject: #FF6B6B; }
+:root { --subject: #FFD2E6; }
 .section-title { color: var(--subject); }
 .var-table { display:flex;flex-direction:column;gap:8px; }
-.var-row { display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #FF6B6B; }
-.var-sym { font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:#FF6B6B;min-width:28px; }
+.var-row { display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #FFD2E6; }
+.var-sym { font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:#FFD2E6;min-width:28px; }
 .var-desc { font-size:0.9rem;color:var(--text); }
 .keynote-box { background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.3);border-radius:10px;padding:16px 20px; }
 .mistake-box { background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:16px 20px;margin:16px 0; }
@@ -42,7 +42,7 @@
 .match-target { display:flex;flex-direction:column;gap:6px; }
 .match-term { font-weight:700;font-size:0.9rem; }
 .match-drop { border:2px dashed rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;min-height:40px;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.15s; }
-.match-drop.drag-over { border-color:#FF6B6B;background:rgba(78,205,196,0.08); }
+.match-drop.drag-over { border-color:#FFD2E6;background:rgba(78,205,196,0.08); }
 .match-drop.has-item { color:var(--text);border-style:solid;border-color:rgba(255,255,255,0.2); }
 .match-drop.match-correct { border-color:#6BCB77;background:rgba(107,203,119,0.1); }
 .match-drop.match-wrong { border-color:#FF6B6B;background:rgba(255,107,107,0.1); }
@@ -51,12 +51,12 @@
 .match-def:hover { background:rgba(255,255,255,0.12); }
 .match-def.dragging { opacity:0.5; }
 .match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
-.match-check-btn { background:#FF6B6B;color:#0F0F1A; }
+.match-check-btn { background:#FFD2E6;color:#0F0F1A; }
 .match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
 .match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
 .match-result-win { background:rgba(107,203,119,0.15);color:#6BCB77; }
 .match-result-partial { background:rgba(255,107,107,0.12);color:#FF8888; }
-.fifa-label { font-size:0.75rem;font-weight:800;color:#FF6B6B;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px; }
+.fifa-label { font-size:0.75rem;font-weight:800;color:#FFD2E6;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px; }
 </style>
 </head>
 <body>
@@ -75,7 +75,7 @@
     <span style="color:var(--muted)">›</span>
     <a href="/combined/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
     <span style="color:var(--muted)">›</span>
-    <a href="/combined/foundation/chemistry/index.html" style="color:#FF6B6B;font-weight:700;">🧪 Chemistry</a>
+    <a href="/combined/foundation/chemistry/index.html" style="color:#FFD2E6;font-weight:700;">🧪 Chemistry</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
       <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
       <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
@@ -112,7 +112,7 @@
   
 <div class="topic-header">
   <a class="back-link" href="/combined/foundation/chemistry/atomic-structure.html">← Back to Atomic Structure and the Periodic Table</a>
-  <h1 style="color:#FF6B6B">🧪 Electronic Structure</h1>
+  <h1 style="color:#FFD2E6">🧪 Electronic Structure</h1>
   <span class="spec-pill">Spec 5.1.1.7</span>
   <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
 </div>
@@ -169,11 +169,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-electronic-structure"><div class="match-def" data-index="4" draggable="true">2.8.2 — 2 outer electrons, Group 2 element</div>
-<div class="match-def" data-index="3" draggable="true">2.8 — full outer shell, noble gas, very unreactive</div>
-<div class="match-def" data-index="0" draggable="true">2.8.1 — 11 electrons: 2 in shell 1, 8 in shell 2, 1 in shell 3</div>
+      <div class="match-defs" id="defPool-electronic-structure"><div class="match-def" data-index="3" draggable="true">2.8 — full outer shell, noble gas, very unreactive</div>
 <div class="match-def" data-index="2" draggable="true">2.8.8.2 — 20 electrons across four shells</div>
+<div class="match-def" data-index="0" draggable="true">2.8.1 — 11 electrons: 2 in shell 1, 8 in shell 2, 1 in shell 3</div>
 <div class="match-def" data-index="1" draggable="true">2.8.7 — 17 electrons: 2 in shell 1, 8 in shell 2, 7 in shell 3</div>
+<div class="match-def" data-index="4" draggable="true">2.8.2 — 2 outer electrons, Group 2 element</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -190,19 +190,19 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="1" data-wrong-exp='{0: "The NUMBER OF SHELLS tells you the PERIOD (3 shells = Period 3). The GROUP is determined by the number of OUTER electrons (6).",2: "The number of complete inner shells tells you the PERIOD — 2 inner shells means Period 3. Groups are determined by OUTER electrons.",3: "16 is the total number of electrons (2+8+6) — this tells you the atomic number, not the group.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "The NUMBER OF SHELLS tells you the PERIOD (3 shells = Period 3). The GROUP is determined by the number of OUTER electrons (6).",1: "The number of complete inner shells tells you the PERIOD — 2 inner shells means Period 3. Groups are determined by OUTER electrons.",3: "16 is the total number of electrons (2+8+6) — this tells you the atomic number, not the group.",}'>
   <div class="q-text">1. An element has the electronic configuration 2.8.6. Which group of the periodic table is it in?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Period 3 — it has 3 shells</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Group 6 — it has 6 electrons in its outermost shell</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Group 2 — there are 2 complete shells below the outer shell</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Group 2 — there are 2 complete shells below the outer shell</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Group 6 — it has 6 electrons in its outermost shell</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Group 16 — add all the electrons together</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Li has 3 electrons total, Na has 11 — very different totals, but the same outer shell count (1) is what matters for reactivity.",1: "Li is Period 2, Na is Period 3 — they are in different periods. Same GROUP, different periods.",2: "Li has mass number 7, Na has mass number 23 — different mass numbers. Chemical similarity comes from electron configuration.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Li has mass number 7, Na has mass number 23 — different mass numbers. Chemical similarity comes from electron configuration.",1: "Li has 3 electrons total, Na has 11 — very different totals, but the same outer shell count (1) is what matters for reactivity.",2: "Li is Period 2, Na is Period 3 — they are in different periods. Same GROUP, different periods.",}'>
   <div class="q-text">2. Why do lithium (2.1) and sodium (2.8.1) have similar chemical properties?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Both have the same total number of electrons</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Both are in the same period of the periodic table</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Both have the same mass number</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Both have the same mass number</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Both have the same total number of electrons</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">Both are in the same period of the periodic table</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Both have 1 electron in their outer shell — they react in similar ways to achieve a full outer shell</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
@@ -240,7 +240,7 @@
   <div class="card" style="text-align:center;padding:32px;">
     <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
     <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FF6B6B;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <button data-open-chat style="background:#FFD2E6;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">
