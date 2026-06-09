@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Import students — Mr Badmus AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --darker:    #0F0F1A;
+      --dark:      #1A1A2E;
+      --card:      #16213E;
+      --card2:     #1A2545;
+      --text:      #E8F4FD;
+      --muted:     #8892A4;
+      --physics:   #4ECDC4;
+      --chemistry: #FFD2E6; --danger: #FF6B6B;
+      --biology:   #6BCB77;
+      --science:   #A78BD0;
+      --warning:   #FFA94D;
+      --foundation:#6BCB77;
+      --higher:    #FFD93D;
+      --radius:    12px;
+      --shadow:    0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--darker);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      padding: 80px 20px 60px;
+      /* Hidden until requireTeacherRole's onAllowed callback fires.
+         Fail-closed: if the guard bounces or JS fails, the page never
+         reveals teacher content. */
+      display: none;
+    }
+
+    /* ── NAV (matches teacher/class-detail.html exactly) ── */
+    nav.top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15,15,26,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #2a2a4a;
+      z-index: 10;
+    }
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .pill.env-test { background: rgba(255,217,61,0.18); color: #FFD93D; }
+    .pill.env-prod { background: rgba(136,136,136,0.18); color: var(--muted); }
+    .signout-btn {
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* ── PAGE LAYOUT ── */
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--text); }
+
+    .page-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 2rem;
+      color: var(--text);
+      letter-spacing: 0.01em;
+      margin-bottom: 6px;
+    }
+    .page-subtitle {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+
+    /* ── STEP INDICATOR (1 → 2 → 3) ── */
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 32px;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card2);
+      border: 2px solid #2a2a4a;
+      color: var(--muted);
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .step.active .step-num {
+      background: var(--physics);
+      border-color: var(--physics);
+      color: var(--darker);
+    }
+    .step.done .step-num {
+      background: transparent;
+      border-color: var(--physics);
+      color: var(--physics);
+    }
+    .step.active .step-label,
+    .step.done .step-label { color: var(--text); }
+    .step-connector {
+      flex: 1;
+      height: 2px;
+      background: #2a2a4a;
+      margin: 0 14px;
+      min-width: 24px;
+    }
+    .step-connector.done { background: var(--physics); }
+
+    /* ── SCREEN ── */
+    .screen { display: none; }
+    .screen.show { display: block; }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .card-help {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    /* ── DROP ZONE ── */
+    .dropzone {
+      border: 2px dashed #2a2a4a;
+      border-radius: var(--radius);
+      padding: 44px 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--card2);
+    }
+    .dropzone:hover,
+    .dropzone:focus-visible { border-color: var(--physics); outline: none; }
+    .dropzone.dragover {
+      border-color: var(--physics);
+      background: rgba(78, 205, 196, 0.08);
+    }
+    .dropzone-icon { font-size: 2.4rem; margin-bottom: 10px; }
+    .dropzone-text {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .dropzone-hint { color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+    .dropzone-browse { color: var(--physics); text-decoration: underline; }
+    .file-input-hidden { display: none; }
+
+    .file-summary {
+      display: none;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: var(--card2);
+      border-radius: 8px;
+      border: 1px solid #2a2a4a;
+    }
+    .file-summary.show { display: flex; }
+    .file-summary-icon {
+      flex-shrink: 0;
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: rgba(78,205,196,0.16);
+      color: var(--physics);
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .file-summary-name {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 0.92rem;
+    }
+    .file-summary-meta {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .file-clear {
+      margin-left: auto;
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .file-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+    .parse-error {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(255,107,107,0.10);
+      border: 1px solid var(--danger);
+      border-radius: 8px;
+      color: var(--danger);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+    .parse-error.show { display: block; }
+
+    /* ── TABLES ── */
+    .table-wrap {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-top: 16px;
+    }
+    .table-scroll { overflow-x: auto; }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+    .data-table thead th {
+      background: var(--card2);
+      color: var(--muted);
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 12px 16px;
+      white-space: nowrap;
+    }
+    .data-table tbody td {
+      padding: 11px 16px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    .data-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+    .cell-muted { color: var(--muted); }
+    .preview-caption {
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    /* ── COLUMN MAPPING ── */
+    .mapping-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .map-row { }
+    .map-label {
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .map-label .req { color: var(--danger); }
+    .field-select,
+    .compose-select {
+      width: 100%;
+      background: var(--card2);
+      border: 1px solid #2a2a4a;
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      padding: 10px 12px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .field-select:focus,
+    .compose-select:focus { outline: none; border-color: var(--physics); }
+    .field-select.invalid { border-color: var(--danger); }
+
+    /* ── PER-CLASS SETTINGS ── */
+    .class-settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .class-setting {
+      background: var(--card2);
+      border: 1px solid #2a2a4a;
+      border-radius: var(--radius);
+      padding: 16px 18px;
+    }
+    .class-setting.incomplete { border-color: var(--warning); }
+    .class-setting-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .class-setting-name {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text);
+    }
+    .class-setting-count {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .class-setting-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .setting-block { }
+    .setting-block-label {
+      display: block;
+      font-family: 'Sora', sans-serif;
+      font-weight: 600;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .toggle-group {
+      display: flex;
+      gap: 8px;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 9px 10px;
+      background: var(--card);
+      border: 2px solid #2a2a4a;
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .toggle-btn:hover { background: rgba(255,255,255,0.05); }
+    /* Selected states are colour-coded per the brand rules:
+       Combined = teal (--physics), Triple = pink (--chemistry),
+       Foundation = green, Higher = yellow. Filled chip, dark text. */
+    .toggle-btn.sel-combined {
+      background: var(--physics); border-color: var(--physics); color: var(--darker);
+    }
+    .toggle-btn.sel-triple {
+      background: var(--chemistry); border-color: var(--chemistry); color: var(--darker);
+    }
+    .toggle-btn.sel-foundation {
+      background: var(--foundation); border-color: var(--foundation); color: var(--darker);
+    }
+    .toggle-btn.sel-higher {
+      background: var(--higher); border-color: var(--higher); color: var(--darker);
+    }
+
+    .validation-note {
+      margin-top: 14px;
+      color: var(--warning);
+      font-size: 0.86rem;
+      font-weight: 600;
+      display: none;
+    }
+    .validation-note.show { display: block; }
+
+    /* ── PREVIEW SENTENCE (screen 3) ── */
+    .preview-sentence {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .preview-sentence strong { color: var(--physics); }
+    .preview-sentence .issue-count { color: var(--warning); }
+    .preview-loading {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+    .dots { display: inline-flex; gap: 6px; }
+    .dots span {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--muted);
+      animation: bounce 1.2s infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+    .issues-table td.issue-reason { white-space: normal; }
+    .issue-row-num { color: var(--muted); font-weight: 700; }
+
+    .dryrun-error {
+      display: none;
+      padding: 14px 16px;
+      background: rgba(255,107,107,0.10);
+      border: 1px solid var(--danger);
+      border-radius: 8px;
+      color: var(--danger);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+    .dryrun-error.show { display: block; }
+
+    /* ── SUCCESS PANEL ── */
+    .success-panel {
+      display: none;
+      text-align: center;
+      padding: 44px 24px;
+    }
+    .success-panel.show { display: block; }
+    .success-icon {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: rgba(107,203,119,0.16);
+      color: var(--biology);
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+    .success-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .success-summary {
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 600;
+      line-height: 1.7;
+      max-width: 540px;
+      margin: 0 auto 24px;
+    }
+    .success-summary strong { color: var(--biology); }
+
+    /* ── WIZARD NAV BUTTONS ── */
+    .wizard-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .btn {
+      padding: 11px 26px;
+      border-radius: 24px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+      transition: opacity 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-primary { background: var(--physics); color: var(--darker); }
+    .btn-primary:hover:not(:disabled) { opacity: 0.85; }
+    .btn-primary:disabled {
+      background: var(--card2);
+      color: var(--muted);
+      cursor: not-allowed;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+
+    /* ── STATES (loading) ── */
+    .state-block { display: none; padding: 60px 20px; text-align: center; }
+    .state-block.show { display: block; }
+    .state-block p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin: 0 auto 14px;
+      line-height: 1.55;
+    }
+    .state-loading .dots { margin-top: 10px; justify-content: center; }
+
+    @media (max-width: 560px) {
+      .step-label { display: none; }
+      .page-title { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <span id="env-pill" class="pill env-prod" title=""></span>
+    <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
+    <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
+  </div>
+</nav>
+
+<main class="container">
+  <a id="back-link" class="back-link" href="/teacher/classes.html">← Back to my classes</a>
+
+  <h1 class="page-title">Import students</h1>
+  <p class="page-subtitle">
+    Upload a class list as a CSV file. We'll match it against your existing
+    classes and students — running it twice never creates duplicates.
+  </p>
+
+  <!-- Step indicator 1 → 2 → 3 -->
+  <div class="stepper" id="stepper">
+    <div class="step active" data-step="1">
+      <span class="step-num">1</span><span class="step-label">Upload &amp; preview</span>
+    </div>
+    <span class="step-connector" data-connector="1"></span>
+    <div class="step" data-step="2">
+      <span class="step-num">2</span><span class="step-label">Map &amp; set classes</span>
+    </div>
+    <span class="step-connector" data-connector="2"></span>
+    <div class="step" data-step="3">
+      <span class="step-num">3</span><span class="step-label">Review &amp; confirm</span>
+    </div>
+  </div>
+
+  <!-- ── SCREEN 1 — Upload & preview ─────────────────────────────────── -->
+  <section id="screen-1" class="screen show">
+    <div class="card">
+      <h2 class="card-title">Choose your class list</h2>
+      <p class="card-help">
+        A CSV with one row per student. It should have columns for email,
+        first name, last name, and which class each student is in.
+      </p>
+
+      <div id="dropzone" class="dropzone" tabindex="0" role="button"
+           aria-label="Choose a CSV file or drop one here">
+        <div class="dropzone-icon">📄</div>
+        <div class="dropzone-text">Drop your CSV here</div>
+        <div class="dropzone-hint">
+          or <span class="dropzone-browse">browse for a file</span> · .csv only
+        </div>
+      </div>
+      <input id="file-input" class="file-input-hidden" type="file" accept=".csv,text/csv"/>
+
+      <div id="file-summary" class="file-summary">
+        <div class="file-summary-icon">✓</div>
+        <div>
+          <div id="file-summary-name" class="file-summary-name"></div>
+          <div id="file-summary-meta" class="file-summary-meta"></div>
+        </div>
+        <button id="file-clear" class="file-clear" type="button">Remove</button>
+      </div>
+
+      <div id="parse-error" class="parse-error"></div>
+    </div>
+
+    <div id="preview-card" class="card" style="display:none;">
+      <h2 class="card-title">Quick preview</h2>
+      <p class="card-help">The first 5 rows, exactly as we read them.</p>
+      <div class="table-wrap"><div class="table-scroll">
+        <table class="data-table" id="preview-table">
+          <thead><tr id="preview-head"></tr></thead>
+          <tbody id="preview-body"></tbody>
+        </table>
+      </div></div>
+      <div id="preview-caption" class="preview-caption"></div>
+    </div>
+
+    <div class="wizard-actions">
+      <span></span>
+      <button id="to-screen-2" class="btn btn-primary" disabled>Next: map columns →</button>
+    </div>
+  </section>
+
+  <!-- ── SCREEN 2 — Column mapping + per-class settings ──────────────── -->
+  <section id="screen-2" class="screen">
+    <div class="card">
+      <h2 class="card-title">Match your columns</h2>
+      <p class="card-help">
+        We've guessed which column is which — check each one is right and fix
+        any that aren't.
+      </p>
+      <div class="mapping-grid">
+        <div class="map-row">
+          <label class="map-label" for="map-email">Email <span class="req">*</span></label>
+          <select id="map-email" class="field-select"></select>
+        </div>
+        <div class="map-row">
+          <label class="map-label" for="map-first">First name <span class="req">*</span></label>
+          <select id="map-first" class="field-select"></select>
+        </div>
+        <div class="map-row">
+          <label class="map-label" for="map-last">Last name <span class="req">*</span></label>
+          <select id="map-last" class="field-select"></select>
+        </div>
+        <div class="map-row">
+          <label class="map-label" for="map-class">Class <span class="req">*</span></label>
+          <select id="map-class" class="field-select"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2 class="card-title">Set up each class</h2>
+      <p class="card-help">
+        For every class in your file, choose Combined or Triple and Foundation
+        or Higher. You can optionally assign a teacher and subject.
+      </p>
+      <div id="class-settings-list" class="class-settings-list"></div>
+      <div id="screen2-validation" class="validation-note">
+        Please choose Combined/Triple and Foundation/Higher for every class
+        before continuing.
+      </div>
+    </div>
+
+    <div class="wizard-actions">
+      <button id="back-to-1" class="btn btn-ghost" type="button">← Back</button>
+      <button id="to-screen-3" class="btn btn-primary" type="button">Next: review →</button>
+    </div>
+  </section>
+
+  <!-- ── SCREEN 3 — Full preview + single confirm ────────────────────── -->
+  <section id="screen-3" class="screen">
+    <!-- The dry-run preview + confirm UI (hidden once import succeeds) -->
+    <div id="confirm-stage">
+      <div class="card">
+        <h2 class="card-title">Here's what will happen</h2>
+        <p class="card-help">
+          This is a safe preview — nothing is saved until you press Confirm.
+        </p>
+        <div id="preview-loading" class="preview-loading">
+          <span>Checking your file against your school's records</span>
+          <span class="dots"><span></span><span></span><span></span></span>
+        </div>
+        <div id="preview-sentence" class="preview-sentence" style="display:none;"></div>
+        <div id="dryrun-error" class="dryrun-error"></div>
+      </div>
+
+      <div id="issues-card" class="card" style="display:none;">
+        <h2 class="card-title">Rows that need a look</h2>
+        <p class="card-help">
+          These rows have something we couldn't process automatically. The rest
+          of your import will still go ahead.
+        </p>
+        <div class="table-wrap"><div class="table-scroll">
+          <table class="data-table issues-table">
+            <thead><tr>
+              <th scope="col">Row</th>
+              <th scope="col">Email</th>
+              <th scope="col">What happened</th>
+            </tr></thead>
+            <tbody id="issues-body"></tbody>
+          </table>
+        </div></div>
+      </div>
+
+      <div class="wizard-actions">
+        <button id="back-to-2" class="btn btn-ghost" type="button">← Back</button>
+        <button id="confirm-import" class="btn btn-primary" type="button" disabled>
+          Confirm import
+        </button>
+      </div>
+    </div>
+
+    <!-- Success panel — replaces the confirm stage on a successful real run -->
+    <div id="success-panel" class="success-panel card">
+      <div class="success-icon">✓</div>
+      <div class="success-title">Import complete</div>
+      <div id="success-summary" class="success-summary"></div>
+      <a id="success-back-link" class="btn btn-primary" href="/teacher/classes.html">
+        Go to my classes
+      </a>
+    </div>
+  </section>
+
+  <!-- Loading gate (shown before guard reveals the page content) -->
+  <div id="state-loading" class="state-block state-loading">
+    <p>Loading</p>
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+</main>
+
+<!-- ── Bootstrap: SDK → papaparse → config → guard ─────────────────────── -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+<script src="/shared/config.js"></script>
+<script src="/shared/teacher-guard.js"></script>
+<script>
+(function () {
+  // ── Module-scoped Supabase client + page state ─────────────────────────
+  let sb = null;            // shared client (lazy — created in onAllowed)
+  let mySchoolId = null;    // current teacher's school_id (from guard profile)
+  let currentUserId = null; // current teacher's id (default teacher assignment)
+
+  // Parsed-file state (set on screen 1).
+  const fileState = {
+    fileName: '',
+    rawText: '',
+    fileHash: '',
+    headers: [],            // detected CSV column headers
+    rows: [],               // array of row objects (header-keyed)
+    rowCount: 0,
+  };
+
+  // Column mapping (screen 2). Each value is a chosen CSV header name.
+  const mapping = { email: '', firstName: '', lastName: '', className: '' };
+
+  // Per-class settings (screen 2). Keyed by class name → { pathway, tier,
+  // teacherId, subjectId, studentCount }.
+  let classSettings = {};
+
+  // Staff + subject option lists (loaded once in onAllowed).
+  let staffOptions = [];    // [{ id, label }]
+  let subjectOptions = [];  // [{ id, name }]
+
+  // Dry-run payload result (screen 3) — held so Confirm can re-send dryRun:false.
+  let lastPayload = null;
+  let confirming = false;
+
+  // ── Small helpers ──────────────────────────────────────────────────────
+  function escapeHtml(str) {
+    return String(str == null ? '' : str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+  function envSuffix(sep) {
+    return (window.MrBadmusConfig && window.MrBadmusConfig.environment) === 'test'
+      ? sep + 'env=test' : '';
+  }
+  function classesUrl() { return '/teacher/classes.html' + envSuffix('?'); }
+
+  function $(id) { return document.getElementById(id); }
+
+  // ── Step indicator ──────────────────────────────────────────────────────
+  function setStep(n) {
+    document.querySelectorAll('.step').forEach(function (el) {
+      const s = Number(el.getAttribute('data-step'));
+      el.classList.toggle('active', s === n);
+      el.classList.toggle('done', s < n);
+    });
+    document.querySelectorAll('.step-connector').forEach(function (el) {
+      const c = Number(el.getAttribute('data-connector'));
+      el.classList.toggle('done', c < n);
+    });
+    ['1', '2', '3'].forEach(function (s) {
+      $('screen-' + s).classList.toggle('show', s === String(n));
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── SHA-256 hex of the raw CSV text (source.fileHash) ────────────────────
+  async function sha256Hex(text) {
+    const buf = new TextEncoder().encode(text);
+    const digest = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(digest))
+      .map(function (b) { return b.toString(16).padStart(2, '0'); })
+      .join('');
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // SCREEN 1 — Upload & preview
+  // ════════════════════════════════════════════════════════════════════════
+  function showParseError(msg) {
+    const el = $('parse-error');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+  function clearParseError() { $('parse-error').classList.remove('show'); }
+
+  function resetFileState() {
+    fileState.fileName = '';
+    fileState.rawText = '';
+    fileState.fileHash = '';
+    fileState.headers = [];
+    fileState.rows = [];
+    fileState.rowCount = 0;
+    $('file-summary').classList.remove('show');
+    $('preview-card').style.display = 'none';
+    $('to-screen-2').disabled = true;
+  }
+
+  function handleFile(file) {
+    clearParseError();
+    if (!file) return;
+    const isCsv = /\.csv$/i.test(file.name) || file.type === 'text/csv' ||
+      file.type === 'application/vnd.ms-excel';
+    if (!isCsv) {
+      showParseError('That doesn\'t look like a CSV file. Please choose a .csv file.');
+      return;
+    }
+
+    // Read the raw text once (for the SHA-256 hash + rowCount source field),
+    // then hand the same File to Papa.parse for structured rows.
+    const reader = new FileReader();
+    reader.onload = async function () {
+      fileState.rawText = String(reader.result || '');
+      try {
+        fileState.fileHash = await sha256Hex(fileState.rawText);
+      } catch (e) {
+        console.error('[import.html] hash failed', e);
+        fileState.fileHash = '';
+      }
+    };
+    reader.onerror = function () {
+      showParseError('Couldn\'t read that file. Try again.');
+    };
+    reader.readAsText(file);
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        const rows = results.data || [];
+        const headers = (results.meta && results.meta.fields) || [];
+        if (!headers.length) {
+          showParseError('We couldn\'t find any column headers in that file. ' +
+            'Make sure the first row names each column.');
+          return;
+        }
+        if (!rows.length) {
+          showParseError('That file has headers but no student rows.');
+          return;
+        }
+        fileState.fileName = file.name;
+        fileState.headers = headers;
+        fileState.rows = rows;
+        fileState.rowCount = rows.length;
+        renderFileSummary();
+        renderPreview();
+        $('to-screen-2').disabled = false;
+      },
+      error: function (err) {
+        console.error('[import.html] Papa.parse error', err);
+        showParseError('We couldn\'t read that CSV. Check the file and try again.');
+      },
+    });
+  }
+
+  function renderFileSummary() {
+    $('file-summary-name').textContent = fileState.fileName;
+    const cols = fileState.headers.length;
+    $('file-summary-meta').textContent =
+      fileState.rowCount + (fileState.rowCount === 1 ? ' row' : ' rows') +
+      ' · ' + cols + (cols === 1 ? ' column' : ' columns');
+    $('file-summary').classList.add('show');
+  }
+
+  function renderPreview() {
+    const headHtml = fileState.headers.map(function (h) {
+      return '<th scope="col">' + escapeHtml(h) + '</th>';
+    }).join('');
+    $('preview-head').innerHTML = headHtml;
+
+    const first5 = fileState.rows.slice(0, 5);
+    const bodyHtml = first5.map(function (row) {
+      const cells = fileState.headers.map(function (h) {
+        const v = row[h];
+        return (v == null || v === '')
+          ? '<td class="cell-muted">—</td>'
+          : '<td>' + escapeHtml(v) + '</td>';
+      }).join('');
+      return '<tr>' + cells + '</tr>';
+    }).join('');
+    $('preview-body').innerHTML = bodyHtml;
+
+    $('preview-caption').textContent =
+      'Showing ' + first5.length + ' of ' + fileState.rowCount +
+      (fileState.rowCount === 1 ? ' row.' : ' rows.');
+    $('preview-card').style.display = '';
+  }
+
+  function wireScreen1() {
+    const dz = $('dropzone');
+    const input = $('file-input');
+
+    dz.addEventListener('click', function () { input.click(); });
+    dz.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); input.click(); }
+    });
+    dz.addEventListener('dragover', function (e) {
+      e.preventDefault(); dz.classList.add('dragover');
+    });
+    dz.addEventListener('dragleave', function () { dz.classList.remove('dragover'); });
+    dz.addEventListener('drop', function (e) {
+      e.preventDefault();
+      dz.classList.remove('dragover');
+      const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+      if (f) handleFile(f);
+    });
+
+    input.addEventListener('change', function () {
+      const f = input.files && input.files[0];
+      if (f) handleFile(f);
+    });
+
+    $('file-clear').addEventListener('click', function () {
+      input.value = '';
+      clearParseError();
+      resetFileState();
+    });
+
+    $('to-screen-2').addEventListener('click', function () {
+      buildScreen2();
+      setStep(2);
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // SCREEN 2 — Column mapping + per-class settings
+  // ════════════════════════════════════════════════════════════════════════
+
+  // Smart auto-detection of the likely column for each field.
+  const GUESS_RE = {
+    email:     /e-?mail/i,
+    firstName: /first|forename|given/i,
+    lastName:  /last|surname|family/i,
+    className: /class|form|group|set|reg/i,
+  };
+  function guessHeader(re) {
+    const match = fileState.headers.find(function (h) { return re.test(h); });
+    return match || (fileState.headers[0] || '');
+  }
+
+  function buildSelectOptions(selectedHeader) {
+    return fileState.headers.map(function (h) {
+      const sel = h === selectedHeader ? ' selected' : '';
+      return '<option value="' + escapeHtml(h) + '"' + sel + '>' + escapeHtml(h) + '</option>';
+    }).join('');
+  }
+
+  function buildScreen2() {
+    // ── Column mapping selects (pre-guessed) ──
+    mapping.email     = guessHeader(GUESS_RE.email);
+    mapping.firstName = guessHeader(GUESS_RE.firstName);
+    mapping.lastName  = guessHeader(GUESS_RE.lastName);
+    mapping.className = guessHeader(GUESS_RE.className);
+
+    $('map-email').innerHTML = buildSelectOptions(mapping.email);
+    $('map-first').innerHTML = buildSelectOptions(mapping.firstName);
+    $('map-last').innerHTML  = buildSelectOptions(mapping.lastName);
+    $('map-class').innerHTML = buildSelectOptions(mapping.className);
+
+    $('map-email').onchange = function () { mapping.email = this.value; rebuildClassSettings(); };
+    $('map-first').onchange = function () { mapping.firstName = this.value; };
+    $('map-last').onchange  = function () { mapping.lastName = this.value; };
+    $('map-class').onchange = function () { mapping.className = this.value; rebuildClassSettings(); };
+
+    rebuildClassSettings();
+  }
+
+  // Distinct, non-empty class names from the chosen class column, with a
+  // per-class student count for display.
+  function distinctClasses() {
+    const counts = {};
+    const order = [];
+    fileState.rows.forEach(function (row) {
+      const name = String(row[mapping.className] == null ? '' : row[mapping.className]).trim();
+      if (!name) return;
+      if (!(name in counts)) { counts[name] = 0; order.push(name); }
+      counts[name]++;
+    });
+    return order.map(function (name) { return { name: name, count: counts[name] }; });
+  }
+
+  // Rebuild the per-class settings list. Preserves any previously-chosen
+  // pathway/tier/teacher/subject for class names that still exist.
+  function rebuildClassSettings() {
+    const classes = distinctClasses();
+    const next = {};
+    classes.forEach(function (c) {
+      const prev = classSettings[c.name] || {};
+      next[c.name] = {
+        pathway:   prev.pathway || null,   // 'combined' | 'triple'
+        tier:      prev.tier || null,      // 'foundation' | 'higher'
+        teacherId: prev.teacherId !== undefined ? prev.teacherId : (currentUserId || null),
+        subjectId: prev.subjectId || null,
+        count:     c.count,
+      };
+    });
+    classSettings = next;
+    renderClassSettings(classes);
+  }
+
+  function staffOptionsHtml(selectedId) {
+    const blank = '<option value="">No teacher assigned</option>';
+    const opts = staffOptions.map(function (o) {
+      const sel = o.id === selectedId ? ' selected' : '';
+      return '<option value="' + escapeHtml(o.id) + '"' + sel + '>' +
+        escapeHtml(o.label) + '</option>';
+    }).join('');
+    return blank + opts;
+  }
+  function subjectOptionsHtml(selectedId) {
+    const blank = '<option value="">Choose a subject…</option>';
+    const opts = subjectOptions.map(function (o) {
+      const sel = o.id === selectedId ? ' selected' : '';
+      return '<option value="' + escapeHtml(o.id) + '"' + sel + '>' +
+        escapeHtml(o.name) + '</option>';
+    }).join('');
+    return blank + opts;
+  }
+
+  function renderClassSettings(classes) {
+    const listEl = $('class-settings-list');
+    if (!classes.length) {
+      listEl.innerHTML =
+        '<div class="class-setting"><div class="class-setting-name">No classes found</div>' +
+        '<p class="card-help" style="margin:8px 0 0;">The column you picked for ' +
+        '"Class" has no values. Go back and choose a different column.</p></div>';
+      return;
+    }
+
+    listEl.innerHTML = classes.map(function (c) {
+      const s = classSettings[c.name];
+      const subjectRow = s.teacherId
+        ? '<div class="setting-block" data-subject-block>' +
+            '<span class="setting-block-label">Subject (for that teacher)</span>' +
+            '<select class="compose-select" data-subject="' + escapeHtml(c.name) + '">' +
+              subjectOptionsHtml(s.subjectId) +
+            '</select>' +
+          '</div>'
+        : '';
+
+      return '<div class="class-setting" data-class="' + escapeHtml(c.name) + '">' +
+        '<div class="class-setting-head">' +
+          '<span class="class-setting-name">' + escapeHtml(c.name) + '</span>' +
+          '<span class="class-setting-count">' + c.count +
+            (c.count === 1 ? ' student' : ' students') + '</span>' +
+        '</div>' +
+        '<div class="class-setting-grid">' +
+          // Combined / Triple
+          '<div class="setting-block">' +
+            '<span class="setting-block-label">Combined or Triple</span>' +
+            '<div class="toggle-group">' +
+              '<button type="button" class="toggle-btn' +
+                (s.pathway === 'combined' ? ' sel-combined' : '') +
+                '" data-pathway="combined" data-class-name="' + escapeHtml(c.name) + '">Combined</button>' +
+              '<button type="button" class="toggle-btn' +
+                (s.pathway === 'triple' ? ' sel-triple' : '') +
+                '" data-pathway="triple" data-class-name="' + escapeHtml(c.name) + '">Triple</button>' +
+            '</div>' +
+          '</div>' +
+          // Foundation / Higher
+          '<div class="setting-block">' +
+            '<span class="setting-block-label">Foundation or Higher</span>' +
+            '<div class="toggle-group">' +
+              '<button type="button" class="toggle-btn' +
+                (s.tier === 'foundation' ? ' sel-foundation' : '') +
+                '" data-tier="foundation" data-class-name="' + escapeHtml(c.name) + '">Foundation</button>' +
+              '<button type="button" class="toggle-btn' +
+                (s.tier === 'higher' ? ' sel-higher' : '') +
+                '" data-tier="higher" data-class-name="' + escapeHtml(c.name) + '">Higher</button>' +
+            '</div>' +
+          '</div>' +
+          // Teacher
+          '<div class="setting-block">' +
+            '<span class="setting-block-label">Teacher (optional)</span>' +
+            '<select class="compose-select" data-teacher="' + escapeHtml(c.name) + '">' +
+              staffOptionsHtml(s.teacherId) +
+            '</select>' +
+          '</div>' +
+          subjectRow +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    wireClassSettingsHandlers();
+  }
+
+  function wireClassSettingsHandlers() {
+    const listEl = $('class-settings-list');
+
+    listEl.querySelectorAll('[data-pathway]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const name = btn.getAttribute('data-class-name');
+        classSettings[name].pathway = btn.getAttribute('data-pathway');
+        // Re-render just to repaint the toggle selection; cheap (<=12 classes).
+        renderClassSettings(distinctClasses());
+      });
+    });
+    listEl.querySelectorAll('[data-tier]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const name = btn.getAttribute('data-class-name');
+        classSettings[name].tier = btn.getAttribute('data-tier');
+        renderClassSettings(distinctClasses());
+      });
+    });
+    listEl.querySelectorAll('[data-teacher]').forEach(function (sel) {
+      sel.addEventListener('change', function () {
+        const name = sel.getAttribute('data-teacher');
+        classSettings[name].teacherId = sel.value || null;
+        // Toggling a teacher on/off shows/hides the subject select.
+        if (!classSettings[name].teacherId) classSettings[name].subjectId = null;
+        renderClassSettings(distinctClasses());
+      });
+    });
+    listEl.querySelectorAll('[data-subject]').forEach(function (sel) {
+      sel.addEventListener('change', function () {
+        const name = sel.getAttribute('data-subject');
+        classSettings[name].subjectId = sel.value || null;
+      });
+    });
+  }
+
+  // Every class must have BOTH pathway AND tier set before continuing.
+  function screen2IsValid() {
+    const names = Object.keys(classSettings);
+    if (!names.length) return false;
+    return names.every(function (n) {
+      return !!classSettings[n].pathway && !!classSettings[n].tier;
+    });
+  }
+
+  function wireScreen2() {
+    $('back-to-1').addEventListener('click', function () { setStep(1); });
+
+    $('to-screen-3').addEventListener('click', function () {
+      // Highlight incomplete classes if validation fails.
+      const valid = screen2IsValid();
+      $('screen2-validation').classList.toggle('show', !valid);
+      document.querySelectorAll('.class-setting').forEach(function (el) {
+        const name = el.getAttribute('data-class');
+        const s = classSettings[name];
+        el.classList.toggle('incomplete', !s || !s.pathway || !s.tier);
+      });
+      if (!valid) {
+        document.querySelector('.class-setting.incomplete')?.scrollIntoView(
+          { behavior: 'smooth', block: 'center' });
+        return;
+      }
+      startScreen3();
+    });
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // SCREEN 3 — Full preview (dry run) + single confirm
+  // ════════════════════════════════════════════════════════════════════════
+
+  // Build the roster-import payload from the parsed file + mapping + per-class
+  // settings. rowIndex is the 1-based CSV data-row number (excludes the
+  // header row) so the teacher can find a flagged row in their spreadsheet.
+  function buildPayload(dryRun) {
+    const classes = Object.keys(classSettings).map(function (name) {
+      const s = classSettings[name];
+      return {
+        name:      name,
+        keyStage:  'KS4',
+        yearGroup: 10,
+        tier:      s.tier,
+        pathway:   s.pathway,
+        teacherId: s.teacherId || null,
+        // Subject only meaningful when a teacher is assigned.
+        subjectId: s.teacherId ? (s.subjectId || null) : null,
+      };
+    });
+
+    const students = [];
+    fileState.rows.forEach(function (row, i) {
+      const className = String(row[mapping.className] == null ? '' : row[mapping.className]).trim();
+      students.push({
+        rowIndex:        i + 1, // 1-based data row (header is row 0)
+        email:           String(row[mapping.email] == null ? '' : row[mapping.email]).trim(),
+        firstName:       String(row[mapping.firstName] == null ? '' : row[mapping.firstName]).trim() || null,
+        lastName:        String(row[mapping.lastName] == null ? '' : row[mapping.lastName]).trim() || null,
+        className:       className,
+        tierOverride:    null,
+        pathwayOverride: null,
+      });
+    });
+
+    return {
+      dryRun:           dryRun,
+      source: {
+        fileName: fileState.fileName,
+        fileHash: fileState.fileHash,
+        rowCount: fileState.rowCount,
+      },
+      academicYearName: null,
+      classes:          classes,
+      students:         students,
+    };
+  }
+
+  // reason-code → plain English (teacher-facing; never the raw code).
+  function friendlyReason(reason, detail) {
+    switch (reason) {
+      case 'missing_email':        return 'No email address — skipped.';
+      case 'invalid_email':        return 'That email doesn\'t look valid — skipped.';
+      case 'duplicate_in_file':    return 'This email appears more than once in your file — only the first was used.';
+      case 'unknown_class':        return 'Class "' + (detail || '') + '" wasn\'t set up — skipped.';
+      case 'email_belongs_to_staff': return 'This email belongs to a staff account — left untouched.';
+      case 'name_updated':         return 'Name updated' + (detail ? ' (' + detail + ')' : '') + '.';
+      case 'auth_create_failed':   return 'We couldn\'t create this account — skipped.';
+      case 'class_create_failed':  return 'We couldn\'t create this class.';
+      default:                     return reason || 'Needs a look.';
+    }
+  }
+
+  function pluralPart(n, singular, plural) {
+    return n + ' ' + (n === 1 ? singular : (plural || singular + 's'));
+  }
+
+  function renderCountsSentence(counts) {
+    // Human sentence using the exact count fields from the contract.
+    const parts = [];
+    parts.push('create <strong>' + pluralPart(counts.classesCreated, 'class', 'classes') + '</strong>');
+    parts.push('add <strong>' + pluralPart(counts.studentsCreated, 'new student') + '</strong>');
+    parts.push('attach <strong>' + pluralPart(counts.studentsAttached, 'existing student') + '</strong>');
+    parts.push('update <strong>' + pluralPart(counts.profilesUpdated, 'student') + '</strong>');
+
+    let sentence = 'This will ' + parts.join(', ') + '.';
+
+    if (counts.studentsAlreadyAttached > 0) {
+      sentence += ' ' + pluralPart(counts.studentsAlreadyAttached, 'student') +
+        ' ' + (counts.studentsAlreadyAttached === 1 ? 'is' : 'are') + ' already attached.';
+    }
+    if (counts.classesFound > 0) {
+      sentence += ' ' + pluralPart(counts.classesFound, 'class', 'classes') +
+        ' already ' + (counts.classesFound === 1 ? 'exists' : 'exist') + ' and will be reused.';
+    }
+    return sentence;
+  }
+
+  function showDryrunError(msg) {
+    const el = $('dryrun-error');
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  async function startScreen3() {
+    setStep(3);
+
+    // Reset screen-3 UI to its loading state.
+    confirming = false;
+    lastPayload = null;
+    $('success-panel').classList.remove('show');
+    $('confirm-stage').style.display = '';
+    $('preview-loading').style.display = '';
+    $('preview-sentence').style.display = 'none';
+    $('issues-card').style.display = 'none';
+    $('dryrun-error').classList.remove('show');
+    $('confirm-import').disabled = true;
+
+    const payload = buildPayload(true); // dryRun
+    lastPayload = payload;
+
+    try {
+      const { data, error } = await sb.functions.invoke('roster-import', { body: payload });
+      if (error) throw error;
+      if (!data || !data.ok) {
+        throw new Error((data && data.error) || 'unknown_error');
+      }
+      renderDryrunResult(data);
+    } catch (e) {
+      console.error('[import.html] dry-run failed', e);
+      $('preview-loading').style.display = 'none';
+      showDryrunError(friendlyInvokeError(e));
+    }
+  }
+
+  // Translate a known backend error code OR a transport error into plain
+  // English. The dry-run/confirm both surface through here.
+  function friendlyInvokeError(e) {
+    const msg = (e && (e.message || e.error)) || '';
+    if (/no_academic_year/i.test(msg)) {
+      return 'Your school doesn\'t have a current academic year set up yet. ' +
+        'Ask your admin to set one, then try again.';
+    }
+    if (/no_classes/i.test(msg)) {
+      return 'No classes were found in your file. Go back and check the class column.';
+    }
+    if (/not_staff_of_school|403/i.test(msg)) {
+      return 'You don\'t have permission to import students for this school.';
+    }
+    if (/unauthorized|missing_token|401/i.test(msg)) {
+      return 'Your session has expired. Please refresh the page and sign in again.';
+    }
+    return 'Something went wrong while checking your file. Please try again.';
+  }
+
+  function renderDryrunResult(data) {
+    $('preview-loading').style.display = 'none';
+
+    const counts = data.counts || {};
+    const issues = Array.isArray(data.issues) ? data.issues : [];
+
+    let sentence = renderCountsSentence(counts);
+    if (issues.length > 0) {
+      sentence += ' <span class="issue-count">' +
+        pluralPart(issues.length, 'row') + ' ' +
+        (issues.length === 1 ? 'has' : 'have') + ' an issue (see below).</span>';
+    }
+    const sEl = $('preview-sentence');
+    sEl.innerHTML = sentence;
+    sEl.style.display = '';
+
+    // Issues table.
+    if (issues.length > 0) {
+      $('issues-body').innerHTML = issues.map(function (iss) {
+        const rowNum = (iss.rowIndex != null) ? iss.rowIndex : '—';
+        return '<tr>' +
+          '<td class="issue-row-num">' + escapeHtml(rowNum) + '</td>' +
+          '<td>' + escapeHtml(iss.email || '—') + '</td>' +
+          '<td class="issue-reason">' + escapeHtml(friendlyReason(iss.reason, iss.detail)) + '</td>' +
+        '</tr>';
+      }).join('');
+      $('issues-card').style.display = '';
+    } else {
+      $('issues-card').style.display = 'none';
+    }
+
+    // Enable confirm only once we have a clean dry-run.
+    $('confirm-import').disabled = false;
+  }
+
+  async function doConfirmImport() {
+    if (confirming) return;
+    confirming = true;
+    const btn = $('confirm-import');
+    btn.disabled = true;
+    btn.textContent = 'Importing…';
+    $('dryrun-error').classList.remove('show');
+
+    try {
+      const payload = buildPayload(false); // dryRun:false — the real write
+      const { data, error } = await sb.functions.invoke('roster-import', { body: payload });
+      if (error) throw error;
+      if (!data || !data.ok) {
+        throw new Error((data && data.error) || 'unknown_error');
+      }
+      renderSuccess(data);
+    } catch (e) {
+      console.error('[import.html] confirm import failed', e);
+      showDryrunError(friendlyInvokeError(e));
+      // Re-enable so the teacher can retry; the operation is idempotent, so a
+      // retry after a partial/failed run never duplicates.
+      btn.disabled = false;
+      btn.textContent = 'Confirm import';
+      confirming = false;
+    }
+  }
+
+  function renderSuccess(data) {
+    const counts = data.counts || {};
+    const parts = [];
+    parts.push(pluralPart(counts.classesCreated, 'class', 'classes') + ' created');
+    parts.push(pluralPart(counts.studentsCreated, 'new student') + ' added');
+    parts.push(pluralPart(counts.studentsAttached, 'student') + ' attached');
+    if (counts.profilesUpdated > 0) parts.push(pluralPart(counts.profilesUpdated, 'student') + ' updated');
+
+    $('success-summary').innerHTML =
+      'We <strong>' + parts.join('</strong>, <strong>') + '</strong>.';
+
+    $('confirm-stage').style.display = 'none';
+    $('success-panel').classList.add('show');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function wireScreen3() {
+    $('back-to-2').addEventListener('click', function () { setStep(2); });
+    $('confirm-import').addEventListener('click', doConfirmImport);
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // Staff + subject option loading (screen 2 dropdowns)
+  // ════════════════════════════════════════════════════════════════════════
+  async function loadStaffAndSubjects() {
+    // Staff candidates for teacher assignment. A plain teacher typically only
+    // sees themselves due to RLS — that's fine; we default to the current user.
+    try {
+      const { data: staff, error: staffErr } = await sb
+        .from('profiles')
+        .select('id, first_name, last_name, role')
+        .eq('school_id', mySchoolId)
+        .in('role', ['teacher', 'hod', 'admin']);
+      if (staffErr) throw staffErr;
+      staffOptions = (staff || []).map(function (p) {
+        const name = ((p.first_name || '') + ' ' + (p.last_name || '')).trim() || 'Unnamed staff';
+        const isMe = p.id === currentUserId;
+        return { id: p.id, label: name + (isMe ? ' (you)' : '') };
+      }).sort(function (a, b) {
+        // Current user first, then alphabetical.
+        if (/\(you\)$/.test(a.label)) return -1;
+        if (/\(you\)$/.test(b.label)) return 1;
+        return a.label.localeCompare(b.label);
+      });
+    } catch (e) {
+      console.error('[import.html] staff load failed', e);
+      staffOptions = [];
+    }
+
+    try {
+      const { data: subjects, error: subjErr } = await sb
+        .from('subjects')
+        .select('id, name')
+        .eq('active', true);
+      if (subjErr) throw subjErr;
+      subjectOptions = (subjects || []).map(function (s) {
+        return { id: s.id, name: s.name };
+      });
+    } catch (e) {
+      console.error('[import.html] subjects load failed', e);
+      subjectOptions = [];
+    }
+  }
+
+  // ════════════════════════════════════════════════════════════════════════
+  // Boot — guard then reveal
+  // ════════════════════════════════════════════════════════════════════════
+  $('state-loading').classList.add('show');
+
+  MrBadmusTeacherGuard.requireTeacherRole({
+    onAllowed: async function (ctx) {
+      // Reuse the guard's shared client so we talk to the same project the
+      // guard validated against (prod/test switch is honoured).
+      sb = MrBadmusTeacherGuard.getClient();
+      currentUserId = ctx.user.id;
+      mySchoolId = ctx.profile.school_id || null;
+
+      const firstName = ctx.profile.first_name || 'teacher';
+      const env = (window.MrBadmusConfig && window.MrBadmusConfig.environment) || 'prod';
+
+      $('nav-user-area').textContent = '👤 ' + firstName;
+      const envEl = $('env-pill');
+      envEl.textContent = env.toUpperCase();
+      envEl.className = 'pill env-' + env;
+      envEl.title = env === 'test'
+        ? 'Test sandbox — fake data only'
+        : 'Production — live student data';
+
+      // Preserve ?env on the back links.
+      $('back-link').href = classesUrl();
+      $('success-back-link').href = classesUrl();
+
+      // Reveal the page (guard approved). Hide the loading gate.
+      $('state-loading').classList.remove('show');
+      document.body.style.display = 'block';
+
+      // Wire all three screens up-front; navigation only swaps visibility.
+      wireScreen1();
+      wireScreen2();
+      wireScreen3();
+
+      // Load teacher/subject options in the background — they're only needed
+      // on screen 2, by which point this has resolved.
+      loadStaffAndSubjects();
+    },
+  });
+})();
+</script>
+
+</body>
+</html>
