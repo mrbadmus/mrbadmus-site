@@ -49,6 +49,7 @@ type StudentRow = {
   className?: string;
   tierOverride?: string | null;
   pathwayOverride?: string | null;
+  externalStudentId?: string | null; // external MIS id (e.g. Synergy Admission Number) — store-only
 };
 type ClassSpec = {
   name: string;
@@ -206,6 +207,7 @@ Deno.serve(async (req) => {
 
   // ── 5. process students (dedupe by email; flag messy rows) ──
   const seenEmail = new Set<string>();
+  const seenExternalId = new Set<string>(); // in-file duplicate detection for the external MIS id
   for (const s of students) {
     const rawEmail = (s.email || "").trim();
     const email = rawEmail.toLowerCase();
@@ -248,12 +250,12 @@ Deno.serve(async (req) => {
     const preExisting = !!studentId;
 
     let existingProfile:
-      | { role: string; first_name: string | null; last_name: string | null; tier: string | null; science_pathway: string | null; school_id: string | null; key_stage: string | null }
+      | { role: string; first_name: string | null; last_name: string | null; tier: string | null; science_pathway: string | null; school_id: string | null; key_stage: string | null; external_student_id: string | null }
       | null = null;
     if (preExisting) {
       const { data: p } = await admin
         .from("profiles")
-        .select("role, first_name, last_name, tier, science_pathway, school_id, key_stage")
+        .select("role, first_name, last_name, tier, science_pathway, school_id, key_stage, external_student_id")
         .eq("id", studentId)
         .maybeSingle();
       existingProfile = p as typeof existingProfile;
@@ -265,6 +267,21 @@ Deno.serve(async (req) => {
       }
     }
 
+    // external MIS id (store-only — never used to match identity). Trim;
+    // treat '' as null. Flag in-file duplicates but DON'T fail the row: drop
+    // the dup id to null so the partial unique index can't reject the write —
+    // the student is still imported (matched by email), just without the id.
+    const rawExternalId = (s.externalStudentId || "").trim();
+    let externalStudentId: string | null = rawExternalId || null;
+    if (externalStudentId) {
+      if (seenExternalId.has(externalStudentId)) {
+        issues.push({ rowIndex: s.rowIndex, email, reason: "duplicate_external_id", detail: externalStudentId });
+        externalStudentId = null;
+      } else {
+        seenExternalId.add(externalStudentId);
+      }
+    }
+
     // desired profile state — class-governed key_stage, KS4-gated tier/pathway
     const desired = {
       first_name: s.firstName ?? existingProfile?.first_name ?? null,
@@ -273,6 +290,8 @@ Deno.serve(async (req) => {
       key_stage: classKeyStage,
       tier: desiredTier,
       science_pathway: desiredPathway,
+      // store-only; preserve a previously-stored id when this file omits it
+      external_student_id: externalStudentId ?? existingProfile?.external_student_id ?? null,
     };
 
     if (preExisting) {
@@ -283,7 +302,8 @@ Deno.serve(async (req) => {
         (existingProfile?.school_id ?? null) !== desired.school_id ||
         (existingProfile?.key_stage ?? null) !== desired.key_stage ||
         (existingProfile?.tier ?? null) !== desired.tier ||
-        (existingProfile?.science_pathway ?? null) !== desired.science_pathway;
+        (existingProfile?.science_pathway ?? null) !== desired.science_pathway ||
+        (existingProfile?.external_student_id ?? null) !== desired.external_student_id;
       if (changed) {
         counts.profilesUpdated++;
         if (
