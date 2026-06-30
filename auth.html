@@ -348,7 +348,7 @@
 
     const { error } = await sb.auth.signInWithOAuth({
       provider,
-      options: { redirectTo, queryParams }
+      options: { redirectTo, queryParams, scopes: 'openid profile email' }
     });
     if (error) {
       sessionStorage.removeItem('mrb_sso_pending');
