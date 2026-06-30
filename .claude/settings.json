@@ -41,7 +41,9 @@
       "mcp__supabase-test__get_logs",
       "mcp__supabase-test__get_project_url",
       "mcp__supabase-test__list_migrations",
-      "mcp__supabase-test__list_tables"
+      "mcp__supabase-test__list_tables",
+      "mcp__claude_ai_Supabase__apply_migration",
+      "mcp__claude_ai_Supabase__get_advisors"
     ]
   }
 }
