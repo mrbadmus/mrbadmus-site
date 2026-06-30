@@ -235,6 +235,13 @@
       transition: opacity 0.15s;
     }
     .state-btn:hover { opacity: 0.85; }
+    /* Secondary variant — outlined, sits in the page header as a lighter-weight action than the filled .state-btn. */
+    .state-btn.secondary {
+      background: transparent;
+      color: var(--physics);
+      border: 1px solid var(--physics);
+    }
+    .state-btn.secondary:hover { opacity: 1; background: rgba(78,205,196,0.1); }
     .state-loading .dots { display: inline-flex; gap: 6px; margin-top: 10px; }
     .state-loading .dots span {
       width: 8px; height: 8px;
@@ -286,6 +293,7 @@
   <header class="page-header">
     <h1>My classes</h1>
     <p class="subtitle" id="subtitle">Loading…</p>
+    <a class="state-btn secondary" id="import-link" href="/teacher/import.html" style="margin-top:14px;">Import students (CSV)</a>
   </header>
 
   <div id="state-loading" class="state-block state-loading show">
@@ -489,6 +497,11 @@
       envEl.title = env === 'test'
         ? 'Test sandbox — fake data only'
         : 'Production — live student data';
+
+      // Thread ?env=test through the import link, matching the card-click convention below.
+      if (env === 'test') {
+        document.getElementById('import-link').href = '/teacher/import.html?env=test';
+      }
 
       const subtitleEl = document.getElementById('subtitle');
       subtitleEl.textContent = firstName + ', loading your classes…';
