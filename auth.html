@@ -140,6 +140,31 @@
       text-decoration: none;
     }
     .back-link:hover { color: var(--text); }
+
+    /* School SSO buttons (provider-agnostic: Microsoft Entra ID + Google) */
+    .sso-heading { text-align: center; font-size: 0.82rem; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+    .btn-sso {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 2px solid #2a2a4a;
+      background: #ffffff;
+      color: #1a1a2e;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 10px;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-sso:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+    .btn-sso:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-sso svg { width: 18px; height: 18px; flex: none; }
+    .sso-sub { text-align: center; font-size: 0.74rem; color: var(--muted); margin-top: 10px; line-height: 1.45; }
   </style>
 </head>
 <body>
@@ -199,6 +224,19 @@
       By signing up you agree to use this platform for revision purposes.
     </p>
   </div>
+
+  <!-- SCHOOL SSO — provider-agnostic (Microsoft Entra ID + Google), one handler -->
+  <div class="divider">or</div>
+  <div class="sso-heading">Have a school account?</div>
+  <button class="btn-sso" id="btn-sso-azure" onclick="signInWithSSO('azure')">
+    <svg viewBox="0 0 23 23" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#f25022" d="M1 1h10v10H1z"/><path fill="#7fba00" d="M12 1h10v10H12z"/><path fill="#00a4ef" d="M1 12h10v10H1z"/><path fill="#ffb900" d="M12 12h10v10H12z"/></svg>
+    Sign in with Microsoft
+  </button>
+  <button class="btn-sso" id="btn-sso-google" onclick="signInWithSSO('google')">
+    <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.3-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16 19 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.1 29.5 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 10-2 13.6-5.2l-6.3-5.3C29.2 35 26.7 36 24 36c-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.6 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.1-4 5.5l6.3 5.3C41.9 35.8 44 30.3 44 24c0-1.3-.1-2.3-.4-3.5z"/></svg>
+    Sign in with Google
+  </button>
+  <p class="sso-sub">Students &amp; staff: use the same school login you use for email. Your teacher sets up your account &mdash; if sign-in is blocked, ask them to add you first.</p>
 
   <a href="/index.html" class="back-link">← Back to site</a>
 </div>
@@ -279,6 +317,49 @@
 
 
 
+  // ── School SSO (provider-agnostic) ──────────────────────────────────
+  // One handler drives BOTH Microsoft Entra ID ('azure') and Google
+  // ('google'). Everything downstream of the returned email — domain
+  // allowlist, role resolution, account-linking-by-email — is provider-
+  // neutral and lives server-side (the Before-User-Created auth hook) and
+  // in redirectAfterAuth() below.
+  async function signInWithSSO(provider) {
+    showMsg('');
+    // Preserve ?env and ?return through the OAuth round-trip so the user
+    // lands back in the same environment / destination.
+    const params = new URLSearchParams(window.location.search);
+    const redirectParams = new URLSearchParams();
+    if (params.get('env'))    redirectParams.set('env', params.get('env'));
+    if (params.get('return')) redirectParams.set('return', params.get('return'));
+    const qs = redirectParams.toString();
+    const redirectTo = window.location.origin + '/auth.html' + (qs ? ('?' + qs) : '');
+
+    // Belt-and-braces only. We are multi-school, so we never pin a single
+    // Google 'hd' hosted-domain hint here — the per-school email_domains
+    // allowlist + the Before-User-Created hook are the real gate, applied
+    // identically regardless of provider.
+    const queryParams = { prompt: 'select_account' };
+
+    const btn = document.getElementById('btn-sso-' + provider);
+    if (btn) btn.disabled = true;
+    // Survives the full-page OAuth redirect (same tab) so we can log the
+    // sso_login exactly once when control returns to this page.
+    sessionStorage.setItem('mrb_sso_pending', provider);
+
+    const { error } = await sb.auth.signInWithOAuth({
+      provider,
+      options: { redirectTo, queryParams }
+    });
+    if (error) {
+      sessionStorage.removeItem('mrb_sso_pending');
+      if (btn) btn.disabled = false;
+      showMsg(error.message);
+    }
+    // On success the browser navigates to the provider and returns to
+    // redirectTo, where the getSession() block at the bottom logs the
+    // sso_login and routes the user via redirectAfterAuth().
+  }
+
   function redirectAfterAuth() {
     // Where to land after a successful sign-in.
     // Students with no science_pathway go to /profile-setup (the existing
@@ -305,9 +386,19 @@
     });
   }
 
-  // Check if already logged in
+  // On (re)load: if there's a session, route the user. If we've just
+  // returned from a school SSO round-trip, log the sso_login first (audit).
   sb.auth.getSession().then(({ data: { session } }) => {
-    if (session) redirectAfterAuth();
+    if (!session) return;
+    const ssoProvider = sessionStorage.getItem('mrb_sso_pending');
+    if (ssoProvider) {
+      sessionStorage.removeItem('mrb_sso_pending');
+      sb.rpc('log_my_event', { p_action: 'sso_login', p_payload: { provider: ssoProvider } })
+        .then(() => redirectAfterAuth())
+        .catch(() => redirectAfterAuth());
+    } else {
+      redirectAfterAuth();
+    }
   });
 
   // Auto-switch to correct tab based on URL param (?tab=signup or ?tab=signin)
