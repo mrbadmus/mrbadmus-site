@@ -941,7 +941,7 @@ def make_landing():
   </a>
 
   <a class="pathway-card triple" href="/triple/index.html">
-    <div class="pathway-icon">⚗️</div>
+    <div class="pathway-icon">🧪</div>
     <h2 style="color:#FFD2E6">Triple Science</h2>
     <p>Separate Biology, Chemistry and Physics qualifications with extended content. Foundation and Higher tiers.</p>
     <div class="pathway-badge-row">
@@ -1708,7 +1708,7 @@ def make_pathway_page(pathway):
     """Combined Science or Triple Science landing — choose Foundation or Higher."""
     pc = PATHWAY_COLORS[pathway]
     label = "Combined Science" if pathway == "combined" else "Triple Science"
-    emoji = "🔬" if pathway == "combined" else "⚗️"
+    emoji = "🔬" if pathway == "combined" else "🧪"
     description = {
         "combined": "The Combined Science qualification covers all three sciences in one course. Choose your tier below.",
         "triple":   "Triple Science covers separate Biology, Chemistry and Physics qualifications with extended content. Choose your tier below.",
