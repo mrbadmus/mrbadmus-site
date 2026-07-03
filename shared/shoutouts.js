@@ -25,7 +25,7 @@
  *   MrBadmusShoutouts.renderShoutoutCard(shoutout, opts)
  *     shoutout = { id, template_key, message, created_at,
  *                  author_id, recipient_id,
- *                  author:    { first_name, last_name, avatar_url } | null,
+ *                  author:    { first_name, last_name, display_name?, avatar_url } | null,
  *                  recipient: { first_name, last_name, avatar_url } | null }
  *     opts     = { showDelete: bool, currentUserId: uuid | null }
  *     Returns: HTML string for one shoutout card.
@@ -140,7 +140,10 @@ window.MrBadmusShoutouts = (function () {
     const recipient = shoutout.recipient || {};
     const author    = shoutout.author    || {};
     const recipientName = ((recipient.first_name || '') + ' ' + (recipient.last_name || '')).trim() || '—';
-    const authorName    = ((author.first_name    || '') + ' ' + (author.last_name    || '')).trim() || '—';
+    // Decision F: viewers see the teacher's chosen display name ("Mr Badmus");
+    // real name is only the fallback while no display name is set.
+    const authorName    = (author.display_name && String(author.display_name).trim())
+                       || ((author.first_name    || '') + ' ' + (author.last_name    || '')).trim() || '—';
 
     const avatarHtml = buildAvatarHtml(recipient, shoutout.recipient_id);
 
