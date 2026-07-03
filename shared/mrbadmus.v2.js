@@ -169,7 +169,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
     for (const item of items) {
       if (item.k.some(k => lq.includes(k))) return item.r;
     }
-    return `Great question! 😊 Ask me about a specific topic and I\'ll help. For unlimited live AI answers, the teacher can add the API key in server settings.`;
+    return `Hmm, I\'m having trouble thinking right now — give me a minute and try again! 😊`;
   }
 
   function addMsg(role, html) {
@@ -312,6 +312,7 @@ FULL BIOLOGY SPECIFICATION TOPICS:
       chatHistory.push({ role:'assistant', content:reply });
       if (chatHistory.length > 20) chatHistory.splice(0,2);
     } catch(err) {
+      console.error('MrBadmus chat request failed:', (err && err.message) ? err.message : err);
       chatHistory.pop();
       if (t) t.querySelector('.chat-msg__bubble').innerHTML = hasImg ? '⚠️ Sorry, couldn\'t process that image. Please try again or type your question.' : getFallback(q, currentSubject);
     }
