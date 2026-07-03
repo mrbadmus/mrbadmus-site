@@ -73,37 +73,18 @@
     }
     .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
-    .container { max-width: 640px; margin: 0 auto; }
-    .page-header { margin-bottom: 20px; }
-    .page-header h1 { font-family: 'Sora', sans-serif; font-size: 1.5rem; }
-
-    /* First-visit banner (F-iii: dismissible, never blocking) */
-    .dn-banner {
-      display: none;
-      align-items: flex-start;
-      gap: 10px;
-      background: rgba(78,205,196,0.1);
-      border: 1px solid rgba(78,205,196,0.4);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-    }
-    .dn-banner.show { display: flex; }
-    .dn-banner .dismiss {
-      margin-left: auto;
-      background: none; border: none;
-      color: var(--muted); font-size: 1rem; cursor: pointer; line-height: 1;
-    }
+    .container { max-width: 780px; margin: 0 auto; }
+    .page-header { margin-bottom: 32px; }
+    .page-header h1 { font-family: 'Sora', sans-serif; font-size: 1.7rem; }
 
     .card {
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 22px;
-      margin-bottom: 18px;
+      padding: 30px;
+      margin-bottom: 26px;
     }
-    .field { margin-bottom: 20px; }
+    .field { margin-bottom: 28px; }
     .field:last-child { margin-bottom: 0; }
     .field-label {
       font-size: 0.75rem;
@@ -113,8 +94,7 @@
       color: var(--muted);
       margin-bottom: 6px;
     }
-    .field-value { font-size: 1.05rem; font-weight: 600; }
-    .field-hint { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+    .field-value { font-size: 1.15rem; font-weight: 600; }
 
     .dn-row { display: flex; gap: 10px; }
     .dn-row input {
@@ -175,27 +155,19 @@
 <div class="container">
   <div class="page-header"><h1>Your profile</h1></div>
 
-  <div id="dn-banner" class="dn-banner">
-    <span>👋</span>
-    <span><strong>What should students call you?</strong><br/>
-      Right now students see your full name. Set a display name below — like “Mr Badmus” — and that’s what they’ll see everywhere.</span>
-    <button class="dismiss" title="Dismiss" onclick="dismissBanner()">✕</button>
-  </div>
-
   <div class="card">
     <div class="field">
-      <div class="field-label">What students call you</div>
+      <div class="field-label">What name should students see</div>
       <div class="dn-row">
         <input id="dn-input" type="text" maxlength="50" placeholder="e.g. Mr Badmus" autocomplete="off"/>
         <button id="dn-save" onclick="saveDisplayName()">Save</button>
       </div>
-      <div class="dn-preview">Preview: <strong>Set by <span id="dn-preview-name">…</span></strong></div>
+      <div class="dn-preview">Students will see: <strong><span id="dn-preview-name">…</span></strong></div>
       <div id="dn-msg" class="dn-msg"></div>
     </div>
     <div class="field">
       <div class="field-label">Your name</div>
       <div class="field-value" id="real-name">…</div>
-      <div class="field-hint">Only staff at your school see your real name. Need it corrected? Ask your school admin.</div>
     </div>
     <div class="field">
       <div class="field-label">Role &amp; access</div>
@@ -222,11 +194,6 @@
   // pathway/tier/target-grade — those are student concepts.
   var sb = null;
   var uid = null;
-
-  function dismissBanner() {
-    document.getElementById('dn-banner').classList.remove('show');
-    try { localStorage.setItem('mrb-dn-banner-dismissed', '1'); } catch (e) {}
-  }
 
   function showMsg(kind, text) {
     var el = document.getElementById('dn-msg');
@@ -256,7 +223,6 @@
     }
     showMsg('ok', 'Saved. Students now see “' + (value || 'your full name') + '”.');
     updatePreview(value, document.getElementById('real-name').textContent);
-    if (value) dismissBanner();
   }
 
   // Live preview while typing
@@ -284,13 +250,6 @@
       document.getElementById('real-name').textContent = realName;
       document.getElementById('dn-input').value = p.display_name || '';
       updatePreview(p.display_name, realName);
-
-      // F-iii: gentle dismissible banner while unset — never a blocking wall
-      var dismissed = false;
-      try { dismissed = localStorage.getItem('mrb-dn-banner-dismissed') === '1'; } catch (e) {}
-      if (!p.display_name && !dismissed) {
-        document.getElementById('dn-banner').classList.add('show');
-      }
 
       // Access line in plain words (M8 vocabulary — never the word "scope"):
       // base "Teacher" + any live grants: hod → "Head of <dept>",
