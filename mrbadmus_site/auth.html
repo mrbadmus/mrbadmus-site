@@ -135,6 +135,24 @@
     .msg.error { background: #2a0d0d; border: 1px solid #FF6B6B; color: #ff9a9a; display: block; }
     .msg.success { background: #0d2a0d; border: 1px solid #6BCB77; color: #a8f0a8; display: block; }
 
+    .confirm-note {
+      background: #0d2a0d;
+      border: 1px solid #6BCB77;
+      color: #a8f0a8;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.55;
+      margin-bottom: 4px;
+    }
+    .btn-resend {
+      background: transparent;
+      border: 1.5px solid var(--physics);
+      color: var(--physics);
+    }
+    .btn-resend:disabled { opacity: 0.5; cursor: not-allowed; }
+
     .back-link {
       display: block;
       text-align: center;
@@ -202,8 +220,7 @@
       <input type="password" id="signin-password" placeholder="Your password" autocomplete="current-password"/>
     </div>
     <button class="btn btn-primary" id="btn-signin" onclick="signIn()">Sign In</button>
-
-
+    <button class="btn btn-resend" id="btn-resend-signin" style="display:none" onclick="resendConfirmation('btn-resend-signin')">Resend confirmation email</button>
   </div>
 
   <!-- SIGN UP FORM -->
@@ -227,6 +244,16 @@
     <p style="text-align:center;font-size:0.78rem;color:var(--muted);margin-top:14px;">
       By signing up you agree to use this platform for revision purposes.
     </p>
+  </div>
+
+  <!-- POST-SIGNUP SUCCESS (confirm-email flow) — replaces the signup form
+       after Create Account succeeds; switchTab() resets it. -->
+  <div id="signup-success" style="display:none">
+    <div class="confirm-note">
+      Almost there — we’ve emailed you a confirmation link.<br/>
+      Click it, then sign in. (Check spam/Promotions if you don’t see it.)
+    </div>
+    <button class="btn btn-resend" id="btn-resend-signup" onclick="resendConfirmation('btn-resend-signup')">Resend confirmation email</button>
   </div>
 
   <!-- SCHOOL SSO — provider-agnostic (Microsoft Entra ID + Google), one handler -->
@@ -258,7 +285,41 @@
     document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
     document.getElementById('tab-signin').className = 'tab' + (tab === 'signin' ? ' active' : '');
     document.getElementById('tab-signup').className = 'tab' + (tab === 'signup' ? ' active' : '');
+    document.getElementById('signup-success').style.display = 'none';
+    document.getElementById('btn-resend-signin').style.display = 'none';
     showMsg('');
+  }
+
+  // ── Resend confirmation (shared by post-signup + unconfirmed sign-in) ──
+  let resendEmail = '';
+
+  function startResendCooldown(btn, seconds) {
+    let left = seconds;
+    btn.disabled = true;
+    btn.textContent = 'Resend available in ' + left + 's';
+    const tick = setInterval(function () {
+      left -= 1;
+      if (left <= 0) {
+        clearInterval(tick);
+        btn.disabled = false;
+        btn.textContent = 'Resend confirmation email';
+      } else {
+        btn.textContent = 'Resend available in ' + left + 's';
+      }
+    }, 1000);
+  }
+
+  async function resendConfirmation(btnId) {
+    const btn = document.getElementById(btnId);
+    if (!resendEmail) return showMsg('Enter your email above first, then try again.');
+    btn.disabled = true;
+    const { error } = await sb.auth.resend({ type: 'signup', email: resendEmail });
+    if (error) {
+      btn.disabled = false;
+      return showMsg(error.message);
+    }
+    showMsg('Confirmation email sent to ' + resendEmail + '.', 'success');
+    startResendCooldown(btn, 60);
   }
 
   function showMsg(text, type = 'error') {
@@ -282,7 +343,18 @@
     const { error } = await sb.auth.signInWithPassword({ email, password });
     setLoading('btn-signin', false);
 
-    if (error) return showMsg(error.message);
+    if (error) {
+      // Unconfirmed email gets a plain-English explanation + inline resend,
+      // not the bare red box.
+      if (/email not confirmed/i.test(error.message || '')) {
+        resendEmail = email;
+        document.getElementById('btn-resend-signin').style.display = 'block';
+        return showMsg('Your email isn’t confirmed yet — click the link we emailed you, then sign in. (Check spam/Promotions if you don’t see it.)');
+      }
+      document.getElementById('btn-resend-signin').style.display = 'none';
+      return showMsg(error.message);
+    }
+    document.getElementById('btn-resend-signin').style.display = 'none';
     redirectAfterAuth();
   }
 
@@ -304,15 +376,28 @@
 
     if (error) return showMsg(error.message);
 
+    // Supabase obfuscates "this email already has an account": instead of an
+    // error it returns a user with an EMPTY identities array. Detect it and
+    // say so — no more silent no-op.
+    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      switchTab('signin');
+      document.getElementById('signin-email').value = email;
+      showMsg('Looks like you already have an account — sign in instead (or use Forgot password).');
+      return;
+    }
+
     // Update profile with first name
     if (data.user) {
       await sb.from('profiles').upsert({ id: data.user.id, first_name: firstName });
     }
 
-    // If email confirmation required
+    // Email confirmation required: replace the form with a clear success
+    // state + resend button (switchTab restores the form if they navigate).
     if (!data.session) {
-      showMsg('Check your email to confirm your account, then sign in!', 'success');
-      switchTab('signin');
+      resendEmail = email;
+      document.getElementById('form-signup').style.display = 'none';
+      document.getElementById('signup-success').style.display = 'block';
+      showMsg('');
       return;
     }
 
