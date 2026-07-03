@@ -219,6 +219,9 @@
       <label>Password</label>
       <input type="password" id="signin-password" placeholder="Your password" autocomplete="current-password"/>
     </div>
+    <div style="text-align:right;margin:-6px 0 12px;">
+      <a href="#" id="link-forgot" onclick="forgotPassword(); return false;" style="color:var(--muted);font-size:0.8rem;">Forgot password?</a>
+    </div>
     <button class="btn btn-primary" id="btn-signin" onclick="signIn()">Sign In</button>
     <button class="btn btn-resend" id="btn-resend-signin" style="display:none" onclick="resendConfirmation('btn-resend-signin')">Resend confirmation email</button>
   </div>
@@ -332,6 +335,33 @@
     const btn = document.getElementById(btnId);
     btn.disabled = loading;
     btn.textContent = loading ? 'Please wait...' : (btnId === 'btn-signin' ? 'Sign In' : 'Create Account');
+  }
+
+  // ── Forgot password ────────────────────────────────────────────────
+  // Sends the Supabase reset email; the link lands on /reset-password.html.
+  // Response copy is deliberately the same whether or not the email has an
+  // account (no account enumeration). 60s cooldown between sends.
+  let forgotCoolingDown = false;
+
+  async function forgotPassword() {
+    if (forgotCoolingDown) return;
+    const email = document.getElementById('signin-email').value.trim();
+    if (!email) return showMsg('Enter your email address above first, then tap “Forgot password?” again.');
+
+    const env = new URLSearchParams(window.location.search).get('env');
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin + '/reset-password.html' + (env ? '?env=' + env : '')
+    });
+    if (error) return showMsg(error.message);
+
+    showMsg('If that email has an account, we’ve sent a password-reset link. (Check spam/Promotions if you don’t see it.)', 'success');
+    forgotCoolingDown = true;
+    const link = document.getElementById('link-forgot');
+    link.style.opacity = '0.5';
+    setTimeout(function () {
+      forgotCoolingDown = false;
+      link.style.opacity = '';
+    }, 60000);
   }
 
   async function signIn() {

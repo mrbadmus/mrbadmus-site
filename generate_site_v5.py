@@ -4958,7 +4958,7 @@ def build_site(output_dir="mrbadmus_site"):
 
     # ── Auth pages — copy into output if they exist in repo root ──
     import shutil as _shutil, os as _os
-    for _auth_file in ["auth.html", "profile-setup.html", "teacher-profile.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html", "my-challenges.html"]:
+    for _auth_file in ["auth.html", "reset-password.html", "profile-setup.html", "teacher-profile.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html", "my-challenges.html"]:
         _src = _auth_file
         _dst = f"{output_dir}/{_auth_file}"
         if _os.path.exists(_src):

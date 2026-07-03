@@ -19,10 +19,12 @@
 // on first school SSO login their verified email links automatically.
 //
 // KEY-STAGE RULE: the class a student is imported into governs their stage.
-// We set profiles.key_stage to the class's key_stage and only set tier/
-// science_pathway when that key_stage is 'KS4' (the profiles_tier_only_ks4
-// CHECK constraint). This keeps the write constraint-safe and idempotent —
-// a single gated upsert is the only profile write path.
+// The class's year_group (when supplied) is authoritative for its key_stage:
+// Years 7–9 → KS3, 10–11 → KS4, 12–13 → KS5. We set profiles.key_stage to
+// the class's key_stage and only set tier/science_pathway when that
+// key_stage is 'KS4' (the profiles_tier_only_ks4 CHECK constraint). This
+// keeps the write constraint-safe and idempotent — a single gated upsert is
+// the only profile write path.
 // =====================================================================
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
@@ -137,12 +139,21 @@ Deno.serve(async (req) => {
   for (const c of classes) {
     if (!c?.name) continue;
     classSpecByName.set(c.name, c);
-    const keyStage = c.keyStage && ["KS3", "KS4", "KS5"].includes(c.keyStage) ? c.keyStage : "KS4";
+    // year_group is authoritative for the key stage when supplied (7–9 →
+    // KS3, 10–11 → KS4, 12–13 → KS5); a client-sent keyStage that disagrees
+    // is ignored so a class can never be, say, Year 7 + KS4.
+    const yg = Number.isInteger(c.yearGroup) && c.yearGroup! >= 7 && c.yearGroup! <= 13
+      ? (c.yearGroup as number)
+      : null;
+    const clientKeyStage = c.keyStage && ["KS3", "KS4", "KS5"].includes(c.keyStage) ? c.keyStage : null;
+    const keyStage = yg !== null
+      ? (yg <= 9 ? "KS3" : yg <= 11 ? "KS4" : "KS5")
+      : (clientKeyStage ?? "KS4");
     classKeyStageByName.set(c.name, keyStage);
     // tier/pathway only valid at KS4 (DB CHECK constraint)
     const tier = keyStage === "KS4" ? (c.tier ?? null) : null;
     const pathway = keyStage === "KS4" ? (c.pathway ?? null) : null;
-    const yearGroup = Number.isInteger(c.yearGroup) ? c.yearGroup : keyStage === "KS4" ? 10 : 7;
+    const yearGroup = yg ?? (keyStage === "KS4" ? 10 : keyStage === "KS3" ? 7 : 12);
 
     const { data: existing } = await admin
       .from("classes")

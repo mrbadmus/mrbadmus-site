@@ -720,13 +720,15 @@
     <div class="card">
       <h2 class="card-title">Set up each class</h2>
       <p class="card-help">
-        For every class in your file, choose Combined or Triple and Foundation
-        or Higher. You can optionally assign a teacher and subject.
+        Check the year group for every class — we've guessed it from the class
+        name. Years 10–11 also need Combined or Triple and Foundation or
+        Higher; Years 7–9 (KS3) don't. You can optionally assign a teacher
+        and subject.
       </p>
       <div id="class-settings-list" class="class-settings-list"></div>
       <div id="screen2-validation" class="validation-note">
-        Please choose Combined/Triple and Foundation/Higher for every class
-        before continuing.
+        Please choose a year group for every class, and Combined/Triple and
+        Foundation/Higher for every Year 10–11 class, before continuing.
       </div>
     </div>
 
@@ -751,6 +753,25 @@
         </div>
         <div id="preview-sentence" class="preview-sentence" style="display:none;"></div>
         <div id="dryrun-error" class="dryrun-error"></div>
+      </div>
+
+      <div id="classes-review-card" class="card">
+        <h2 class="card-title">Classes in this import</h2>
+        <p class="card-help">
+          Each class with its year group, key stage and course.
+        </p>
+        <div class="table-wrap"><div class="table-scroll">
+          <table class="data-table">
+            <thead><tr>
+              <th scope="col">Class</th>
+              <th scope="col">Year</th>
+              <th scope="col">Key stage</th>
+              <th scope="col">Course</th>
+              <th scope="col">Students</th>
+            </tr></thead>
+            <tbody id="classes-review-body"></tbody>
+          </table>
+        </div></div>
       </div>
 
       <div id="issues-card" class="card" style="display:none;">
@@ -829,9 +850,23 @@
   let classMode = 'column';
   let singleClassName = '';
 
-  // Per-class settings (screen 2). Keyed by class name → { pathway, tier,
-  // teacherId, subjectId, studentCount }.
+  // Per-class settings (screen 2). Keyed by class name → { year, pathway,
+  // tier, teacherId, subjectId, studentCount }. Years 7–9 are KS3 (no
+  // pathway/tier); Years 10–11 are KS4 (pathway + tier required).
   let classSettings = {};
+
+  // Year group from the leading digits of a class name: "7H4" → 7,
+  // "10R/Sc1" → 10. Returns null when there's no usable leading number.
+  function parseYearFromName(name) {
+    const m = /^\s*(\d{1,2})/.exec(name || '');
+    if (!m) return null;
+    const y = Number(m[1]);
+    return (y >= 7 && y <= 11) ? y : null;
+  }
+  function keyStageForYear(year) {
+    if (!year) return null;
+    return year <= 9 ? 'KS3' : 'KS4';
+  }
 
   // Staff + subject option lists (loaded once in onAllowed).
   let staffOptions = [];    // [{ id, label }]
@@ -1147,6 +1182,9 @@
     classes.forEach(function (c) {
       const prev = classSettings[c.name] || {};
       next[c.name] = {
+        // Auto-guess the year from the class name once; after that, respect
+        // whatever the teacher chose (including "not chosen yet").
+        year:      ('year' in prev) ? prev.year : parseYearFromName(c.name),
         pathway:   prev.pathway || null,   // 'combined' | 'triple'
         tier:      prev.tier || null,      // 'foundation' | 'higher'
         teacherId: prev.teacherId !== undefined ? prev.teacherId : (currentUserId || null),
@@ -1176,6 +1214,16 @@
     }).join('');
     return blank + opts;
   }
+  function yearOptionsHtml(selectedYear) {
+    const blank = '<option value=""' + (selectedYear ? '' : ' selected') +
+      '>Choose a year…</option>';
+    const opts = [7, 8, 9, 10, 11].map(function (y) {
+      const sel = y === selectedYear ? ' selected' : '';
+      return '<option value="' + y + '"' + sel + '>Year ' + y +
+        ' · ' + keyStageForYear(y) + '</option>';
+    }).join('');
+    return blank + opts;
+  }
 
   function renderClassSettings(classes) {
     const listEl = $('class-settings-list');
@@ -1198,14 +1246,17 @@
           '</div>'
         : '';
 
-      return '<div class="class-setting" data-class="' + escapeHtml(c.name) + '">' +
-        '<div class="class-setting-head">' +
-          '<span class="class-setting-name">' + escapeHtml(c.name) + '</span>' +
-          '<span class="class-setting-count">' + c.count +
-            (c.count === 1 ? ' student' : ' students') + '</span>' +
-        '</div>' +
-        '<div class="class-setting-grid">' +
-          // Combined / Triple
+      // Years 7–9 are KS3: pathway/tier don't apply, so those controls are
+      // replaced with a short note. Years 10–11 (and "year not chosen yet")
+      // show the Combined/Triple + Foundation/Higher toggles as before.
+      const isKs3 = s.year != null && s.year <= 9;
+      const pathwayTierBlocks = isKs3
+        ? '<div class="setting-block">' +
+            '<span class="setting-block-label">Course</span>' +
+            '<p class="card-help" style="margin:0;">Key Stage 3 — Science. ' +
+            'Combined/Triple and Foundation/Higher don’t apply.</p>' +
+          '</div>'
+        : // Combined / Triple
           '<div class="setting-block">' +
             '<span class="setting-block-label">Combined or Triple</span>' +
             '<div class="toggle-group">' +
@@ -1228,7 +1279,23 @@
                 (s.tier === 'higher' ? ' sel-higher' : '') +
                 '" data-tier="higher" data-class-name="' + escapeHtml(c.name) + '">Higher</button>' +
             '</div>' +
+          '</div>';
+
+      return '<div class="class-setting" data-class="' + escapeHtml(c.name) + '">' +
+        '<div class="class-setting-head">' +
+          '<span class="class-setting-name">' + escapeHtml(c.name) + '</span>' +
+          '<span class="class-setting-count">' + c.count +
+            (c.count === 1 ? ' student' : ' students') + '</span>' +
+        '</div>' +
+        '<div class="class-setting-grid">' +
+          // Year group (drives KS3 vs KS4)
+          '<div class="setting-block">' +
+            '<span class="setting-block-label">Year group</span>' +
+            '<select class="compose-select" data-year="' + escapeHtml(c.name) + '">' +
+              yearOptionsHtml(s.year) +
+            '</select>' +
           '</div>' +
+          pathwayTierBlocks +
           // Teacher
           '<div class="setting-block">' +
             '<span class="setting-block-label">Teacher (optional)</span>' +
@@ -1247,6 +1314,15 @@
   function wireClassSettingsHandlers() {
     const listEl = $('class-settings-list');
 
+    listEl.querySelectorAll('[data-year]').forEach(function (sel) {
+      sel.addEventListener('change', function () {
+        const name = sel.getAttribute('data-year');
+        classSettings[name].year = sel.value ? Number(sel.value) : null;
+        // Re-render: switching between KS3 and KS4 swaps the pathway/tier
+        // controls in or out.
+        renderClassSettings(distinctClasses());
+      });
+    });
     listEl.querySelectorAll('[data-pathway]').forEach(function (btn) {
       btn.addEventListener('click', function () {
         const name = btn.getAttribute('data-class-name');
@@ -1279,13 +1355,17 @@
     });
   }
 
-  // Every class must have BOTH pathway AND tier set before continuing.
+  // A class is complete when it has a year group, and — for KS4 (Years
+  // 10–11) only — both pathway and tier. KS3 classes need just the year.
+  function classIsComplete(s) {
+    if (!s || !s.year) return false;
+    if (keyStageForYear(s.year) === 'KS4') return !!s.pathway && !!s.tier;
+    return true;
+  }
   function screen2IsValid() {
     const names = Object.keys(classSettings);
     if (!names.length) return false;
-    return names.every(function (n) {
-      return !!classSettings[n].pathway && !!classSettings[n].tier;
-    });
+    return names.every(function (n) { return classIsComplete(classSettings[n]); });
   }
 
   function wireScreen2() {
@@ -1297,8 +1377,7 @@
       $('screen2-validation').classList.toggle('show', !valid);
       document.querySelectorAll('.class-setting').forEach(function (el) {
         const name = el.getAttribute('data-class');
-        const s = classSettings[name];
-        el.classList.toggle('incomplete', !s || !s.pathway || !s.tier);
+        el.classList.toggle('incomplete', !classIsComplete(classSettings[name]));
       });
       if (!valid) {
         document.querySelector('.class-setting.incomplete')?.scrollIntoView(
@@ -1319,12 +1398,15 @@
   function buildPayload(dryRun) {
     const classes = Object.keys(classSettings).map(function (name) {
       const s = classSettings[name];
+      // Year group drives the key stage: 7–9 → KS3 (no tier/pathway, per
+      // the classes_tier_only_ks4 DB constraint), 10–11 → KS4.
+      const ks = keyStageForYear(s.year);
       return {
         name:      name,
-        keyStage:  'KS4',
-        yearGroup: 10,
-        tier:      s.tier,
-        pathway:   s.pathway,
+        keyStage:  ks,
+        yearGroup: s.year,
+        tier:      ks === 'KS4' ? s.tier : null,
+        pathway:   ks === 'KS4' ? s.pathway : null,
         teacherId: s.teacherId || null,
         // Subject only meaningful when a teacher is assigned.
         subjectId: s.teacherId ? (s.subjectId || null) : null,
@@ -1411,6 +1493,28 @@
     el.classList.add('show');
   }
 
+  // "Classes in this import" table — year group, key stage and course per
+  // class, exactly as they'll be sent. Rendered from the local settings so
+  // it shows even while the dry-run is still checking.
+  function renderClassesReview() {
+    function courseLabel(s, ks) {
+      if (ks === 'KS3') return 'Science';
+      const cap = function (v) { return v ? v.charAt(0).toUpperCase() + v.slice(1) : '—'; };
+      return cap(s.pathway) + ' · ' + cap(s.tier);
+    }
+    $('classes-review-body').innerHTML = Object.keys(classSettings).map(function (name) {
+      const s = classSettings[name];
+      const ks = keyStageForYear(s.year);
+      return '<tr>' +
+        '<td>' + escapeHtml(name) + '</td>' +
+        '<td>Year ' + escapeHtml(s.year) + '</td>' +
+        '<td>' + escapeHtml(ks) + '</td>' +
+        '<td>' + escapeHtml(courseLabel(s, ks)) + '</td>' +
+        '<td class="cell-muted">' + s.count + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
   async function startScreen3() {
     setStep(3);
 
@@ -1424,6 +1528,7 @@
     $('issues-card').style.display = 'none';
     $('dryrun-error').classList.remove('show');
     $('confirm-import').disabled = true;
+    renderClassesReview();
 
     const payload = buildPayload(true); // dryRun
     lastPayload = payload;
