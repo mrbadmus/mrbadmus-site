@@ -95,12 +95,25 @@
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
         if (area) {
-          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          // Profile chip routes by advisory role: staff → teacher profile,
+          // students → profile setup. Routing is UX only — RLS guards the data.
+          var profileHref = '/profile-setup.html';
+          try { profileHref = localStorage.getItem('mrb-profile-href') || profileHref; } catch(err) {}
+          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
+            headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
+          }).then(function(r) { return r.ok ? r.json() : null; }).then(function(rows) {
+            var role = rows && rows[0] && rows[0].role;
+            profileHref = (role && role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
+            try { localStorage.setItem('mrb-profile-href', profileHref); } catch(err) {}
+            var link = document.getElementById('nav-profile-link');
+            if (link) link.href = profileHref;
+          }).catch(function() {});
           fetch('https://mrbadmus-backend.onrender.com/api/profile', {
             headers: { 'Authorization': 'Bearer ' + session.access_token }
           }).then(r => r.ok ? r.json() : null).then(function(profile) {
             if (profile && profile.avatar_url) {
-              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
             }
           }).catch(function() {});
         }
@@ -169,9 +182,9 @@
 </div>
 </div>
       <div class="match-defs" id="defPool-testing-for-gases"><div class="match-def" data-index="3" draggable="true">Damp litmus paper → bleaches white</div>
+<div class="match-def" data-index="1" draggable="true">Glowing splint → relights as oxygen supports combustion</div>
 <div class="match-def" data-index="2" draggable="true">Bubble through limewater → turns milky (white CaCO₃ precipitate)</div>
 <div class="match-def" data-index="0" draggable="true">Lit splint → squeaky pop as hydrogen ignites in air</div>
-<div class="match-def" data-index="1" draggable="true">Glowing splint → relights as oxygen supports combustion</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -188,18 +201,18 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Chlorine bleaches damp paper — it doesn\'t reliably relight a glowing splint.",1: "CO₂ does NOT support combustion — it would extinguish the splint, not relight it.",2: "Hydrogen uses a LIT splint (not glowing) and produces a squeaky pop — not a relight.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "CO₂ does NOT support combustion — it would extinguish the splint, not relight it.",1: "Hydrogen uses a LIT splint (not glowing) and produces a squeaky pop — not a relight.",3: "Chlorine bleaches damp paper — it doesn\'t reliably relight a glowing splint.",}'>
   <div class="q-text">1. A student collects a gas and holds a glowing splint near it. The splint relights. What gas is present?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Chlorine — chlorine bleaches and might react with the splint</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Carbon dioxide — CO₂ extinguishes flames and would put the splint out</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Hydrogen — hydrogen produces a squeaky pop with a lit splint</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Oxygen — oxygen supports combustion and relights a glowing splint</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Carbon dioxide — CO₂ extinguishes flames and would put the splint out</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Hydrogen — hydrogen produces a squeaky pop with a lit splint</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Oxygen — oxygen supports combustion and relights a glowing splint</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Chlorine — chlorine bleaches and might react with the splint</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "While damp paper might absorb more gas, the specific reason for dampness is the CHEMISTRY — water is needed to convert Cl₂ into the bleaching agent HClO.",1: "Chlorine is not flammable and does not ignite paper — it is a toxic gas but not a fire hazard in this context.",3: "Chlorine sinking (being denser than air) is a practical concern but not why the paper must be damp — the chemistry requires water for the bleaching reaction.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Chlorine is not flammable and does not ignite paper — it is a toxic gas but not a fire hazard in this context.",1: "While damp paper might absorb more gas, the specific reason for dampness is the CHEMISTRY — water is needed to convert Cl₂ into the bleaching agent HClO.",3: "Chlorine sinking (being denser than air) is a practical concern but not why the paper must be damp — the chemistry requires water for the bleaching reaction.",}'>
   <div class="q-text">2. Why must the litmus paper be damp when testing for chlorine?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Damp paper absorbs more chlorine — making the colour change easier to see</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Dry litmus paper would catch fire in chlorine gas</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Dry litmus paper would catch fire in chlorine gas</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">Damp paper absorbs more chlorine — making the colour change easier to see</button>
 <button class="quiz-opt" data-qi="1" data-oi="2">Chlorine must dissolve in water to form hypochlorous acid (HClO) — the actual bleaching agent</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Chlorine is heavier than air and needs moist air to rise to the paper</button>
 </div>

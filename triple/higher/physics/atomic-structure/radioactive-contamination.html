@@ -95,12 +95,25 @@
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
         if (area) {
-          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          // Profile chip routes by advisory role: staff → teacher profile,
+          // students → profile setup. Routing is UX only — RLS guards the data.
+          var profileHref = '/profile-setup.html';
+          try { profileHref = localStorage.getItem('mrb-profile-href') || profileHref; } catch(err) {}
+          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
+            headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
+          }).then(function(r) { return r.ok ? r.json() : null; }).then(function(rows) {
+            var role = rows && rows[0] && rows[0].role;
+            profileHref = (role && role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
+            try { localStorage.setItem('mrb-profile-href', profileHref); } catch(err) {}
+            var link = document.getElementById('nav-profile-link');
+            if (link) link.href = profileHref;
+          }).catch(function() {});
           fetch('https://mrbadmus-backend.onrender.com/api/profile', {
             headers: { 'Authorization': 'Bearer ' + session.access_token }
           }).then(r => r.ok ? r.json() : null).then(function(profile) {
             if (profile && profile.avatar_url) {
-              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
             }
           }).catch(function() {});
         }
@@ -169,11 +182,11 @@
   <div class="match-drop" data-accepts="4">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-radioactive-contamination"><div class="match-def" data-index="4" draggable="true">Alpha radiation — highly ionising, short range, deposits all energy nearby</div>
-<div class="match-def" data-index="1" draggable="true">Radioactive material spilled on skin — source remains in contact</div>
-<div class="match-def" data-index="2" draggable="true">Standing near a gamma source — move away and exposure stops</div>
-<div class="match-def" data-index="3" draggable="true">Medical X-ray — brief external exposure, no source deposited</div>
+      <div class="match-defs" id="defPool-radioactive-contamination"><div class="match-def" data-index="2" draggable="true">Standing near a gamma source — move away and exposure stops</div>
+<div class="match-def" data-index="4" draggable="true">Alpha radiation — highly ionising, short range, deposits all energy nearby</div>
 <div class="match-def" data-index="0" draggable="true">Breathing in radioactive dust — source is now inside the body</div>
+<div class="match-def" data-index="3" draggable="true">Medical X-ray — brief external exposure, no source deposited</div>
+<div class="match-def" data-index="1" draggable="true">Radioactive material spilled on skin — source remains in contact</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -190,11 +203,11 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Alpha has very SHORT range — it doesn\'t travel far. That\'s exactly the problem: all its energy is deposited locally in lung tissue.",1: "Radiation types don\'t change — alpha always remains alpha. Different isotopes emit different types, but the type doesn\'t transform.",2: "Radioactive dust lodges in lung tissue and continues to emit radiation there — it doesn\'t simply get exhaled.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Alpha has very SHORT range — it doesn\'t travel far. That\'s exactly the problem: all its energy is deposited locally in lung tissue.",1: "Radioactive dust lodges in lung tissue and continues to emit radiation there — it doesn\'t simply get exhaled.",2: "Radiation types don\'t change — alpha always remains alpha. Different isotopes emit different types, but the type doesn\'t transform.",}'>
   <div class="q-text">1. A worker accidentally inhales radioactive dust containing an alpha emitter. Why is this particularly dangerous?</div>
   <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Alpha travels far inside the body reaching all organs — more widespread damage</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Alpha inside the body becomes beta radiation — which is more penetrating</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Alpha is easily exhaled — it escapes before causing harm</button>
+<button class="quiz-opt" data-qi="0" data-oi="1">Alpha is easily exhaled — it escapes before causing harm</button>
+<button class="quiz-opt" data-qi="0" data-oi="2">Alpha inside the body becomes beta radiation — which is more penetrating</button>
 <button class="quiz-opt" data-qi="0" data-oi="3">Alpha is highly ionising — inside the body all the ionising energy is deposited in nearby lung tissue, causing severe local damage</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>

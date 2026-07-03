@@ -95,12 +95,25 @@
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
         if (area) {
-          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          // Profile chip routes by advisory role: staff → teacher profile,
+          // students → profile setup. Routing is UX only — RLS guards the data.
+          var profileHref = '/profile-setup.html';
+          try { profileHref = localStorage.getItem('mrb-profile-href') || profileHref; } catch(err) {}
+          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
+            headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
+          }).then(function(r) { return r.ok ? r.json() : null; }).then(function(rows) {
+            var role = rows && rows[0] && rows[0].role;
+            profileHref = (role && role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
+            try { localStorage.setItem('mrb-profile-href', profileHref); } catch(err) {}
+            var link = document.getElementById('nav-profile-link');
+            if (link) link.href = profileHref;
+          }).catch(function() {});
           fetch('https://mrbadmus-backend.onrender.com/api/profile', {
             headers: { 'Authorization': 'Bearer ' + session.access_token }
           }).then(r => r.ok ? r.json() : null).then(function(profile) {
             if (profile && profile.avatar_url) {
-              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
             }
           }).catch(function() {});
         }
@@ -165,10 +178,10 @@
   <div class="match-drop" data-accepts="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-conservation-of-mass"><div class="match-def" data-index="1" draggable="true">2H₂ + O₂ → 2H₂O (need 2 H₂ and 2 H₂O to balance all atoms)</div>
+      <div class="match-defs" id="defPool-conservation-of-mass"><div class="match-def" data-index="2" draggable="true">4Fe + 3O₂ → 2Fe₂O₃ (4 Fe and 6 O each side)</div>
 <div class="match-def" data-index="0" draggable="true">2Na + Cl₂ → 2NaCl (need 2 Na to balance the 2 Cl)</div>
-<div class="match-def" data-index="2" draggable="true">4Fe + 3O₂ → 2Fe₂O₃ (4 Fe and 6 O each side)</div>
 <div class="match-def" data-index="3" draggable="true">Ca + 2H₂O → Ca(OH)₂ + H₂ (need 2 water molecules)</div>
+<div class="match-def" data-index="1" draggable="true">2H₂ + O₂ → 2H₂O (need 2 H₂ and 2 H₂O to balance all atoms)</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -185,28 +198,28 @@
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of 3</div>
-  <div class="quiz-card" id="qcard-0" data-answer="3" data-wrong-exp='{0: "Readability is a benefit but not the fundamental reason — conservation of mass is.",1: "An unbalanced equation can still show the correct reactants and products — it just doesn\'t correctly represent the quantitative relationship between them.",2: "Balancing is a scientific law requirement (conservation of mass), not a naming convention.",}'>
+  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "An unbalanced equation can still show the correct reactants and products — it just doesn\'t correctly represent the quantitative relationship between them.",2: "Balancing is a scientific law requirement (conservation of mass), not a naming convention.",3: "Readability is a benefit but not the fundamental reason — conservation of mass is.",}'>
   <div class="q-text">1. Why must chemical equations be balanced?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Balanced equations are easier to read and understand</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Atoms cannot be created or destroyed — the same atoms must appear on both sides of the equation</button>
 <button class="quiz-opt" data-qi="0" data-oi="1">Unbalanced equations produce different products</button>
 <button class="quiz-opt" data-qi="0" data-oi="2">Equations must be balanced to follow international chemical naming rules</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Atoms cannot be created or destroyed — the same atoms must appear on both sides of the equation</button>
+<button class="quiz-opt" data-qi="0" data-oi="3">Balanced equations are easier to read and understand</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="2" data-wrong-exp='{0: "Mass in = mass out. If 40 g MgO is made from 24 g Mg, the remaining 40 − 24 = 16 g must have come from oxygen.",1: "The mass of oxygen is only part of the product mass — the product contains both magnesium AND oxygen.",3: "Conservation of mass allows this calculation: mass O₂ = mass product − mass Mg = 40 − 24 = 16 g.",}'>
+</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Mass in = mass out. If 40 g MgO is made from 24 g Mg, the remaining 40 − 24 = 16 g must have come from oxygen.",2: "The mass of oxygen is only part of the product mass — the product contains both magnesium AND oxygen.",3: "Conservation of mass allows this calculation: mass O₂ = mass product − mass Mg = 40 − 24 = 16 g.",}'>
   <div class="q-text">2. 24 g of magnesium reacts completely with oxygen to form magnesium oxide. 40 g of magnesium oxide is produced. How much oxygen reacted?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">40 g — the oxygen has the same mass as the product</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">64 g — double the mass of magnesium</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">16 g — conservation of mass: mass of O₂ = 40 − 24 = 16 g</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">16 g — conservation of mass: mass of O₂ = 40 − 24 = 16 g</button>
+<button class="quiz-opt" data-qi="1" data-oi="1">40 g — the oxygen has the same mass as the product</button>
+<button class="quiz-opt" data-qi="1" data-oi="2">64 g — double the mass of magnesium</button>
 <button class="quiz-opt" data-qi="1" data-oi="3">Cannot be determined without the balanced equation</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="1" data-wrong-exp='{0: "2Fe + O₂ → Fe₂O₃: left has 2 Fe, 2 O; right has 2 Fe, 3 O — oxygen not balanced.",2: "Fe + O₂ → Fe₂O₃: left has 1 Fe, 2 O; right has 2 Fe, 3 O — not balanced.",3: "Fe + 3O₂ → 2Fe₂O₃: left has 1 Fe, 6 O; right has 4 Fe, 6 O — iron not balanced.",}'>
+</div><div class="quiz-card" id="qcard-2" data-answer="1" data-wrong-exp='{0: "Fe + O₂ → Fe₂O₃: left has 1 Fe, 2 O; right has 2 Fe, 3 O — not balanced.",2: "Fe + 3O₂ → 2Fe₂O₃: left has 1 Fe, 6 O; right has 4 Fe, 6 O — iron not balanced.",3: "2Fe + O₂ → Fe₂O₃: left has 2 Fe, 2 O; right has 2 Fe, 3 O — oxygen not balanced.",}'>
   <div class="q-text">3. Which of these is a correctly balanced equation?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">2Fe + O₂ → Fe₂O₃</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Fe + O₂ → Fe₂O₃</button>
 <button class="quiz-opt" data-qi="2" data-oi="1">4Fe + 3O₂ → 2Fe₂O₃</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">Fe + O₂ → Fe₂O₃</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">Fe + 3O₂ → 2Fe₂O₃</button>
+<button class="quiz-opt" data-qi="2" data-oi="2">Fe + 3O₂ → 2Fe₂O₃</button>
+<button class="quiz-opt" data-qi="2" data-oi="3">2Fe + O₂ → Fe₂O₃</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
 </div>
