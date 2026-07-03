@@ -675,12 +675,25 @@ def nav_html(active_subject="", pathway="", tier=""):
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
         if (area) {{
-          area.innerHTML = '<a href="/profile-setup.html" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          // Profile chip routes by advisory role: staff → teacher profile,
+          // students → profile setup. Routing is UX only — RLS guards the data.
+          var profileHref = '/profile-setup.html';
+          try {{ profileHref = localStorage.getItem('mrb-profile-href') || profileHref; }} catch(err) {{}}
+          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {{
+            headers: {{ 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }}
+          }}).then(function(r) {{ return r.ok ? r.json() : null; }}).then(function(rows) {{
+            var role = rows && rows[0] && rows[0].role;
+            profileHref = (role && role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
+            try {{ localStorage.setItem('mrb-profile-href', profileHref); }} catch(err) {{}}
+            var link = document.getElementById('nav-profile-link');
+            if (link) link.href = profileHref;
+          }}).catch(function() {{}});
           fetch('https://mrbadmus-backend.onrender.com/api/profile', {{
             headers: {{ 'Authorization': 'Bearer ' + session.access_token }}
           }}).then(r => r.ok ? r.json() : null).then(function(profile) {{
             if (profile && profile.avatar_url) {{
-              area.innerHTML = '<a href="/profile-setup.html" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
             }}
           }}).catch(function() {{}});
         }}
@@ -3701,10 +3714,13 @@ def make_matching_widget(matching, st_id, color):
 
     pairs_len = len(pairs)
 
-    # Shuffle the definitions (right-hand side) so they don't appear in order
+    # Shuffle the definitions (right-hand side) so they don't appear in order.
+    # Seeded per subtopic so regeneration is deterministic — same content in,
+    # byte-identical page out. Unseeded shuffling made every generator run
+    # rewrite ~1,000 unchanged pages (the "shuffle churn").
     indexed_pairs = list(enumerate(pairs))
     shuffled_defs = list(indexed_pairs)
-    random.shuffle(shuffled_defs)
+    random.Random("match:%s:%d" % (st_id, pairs_len)).shuffle(shuffled_defs)
 
     items_html = ""
     for i, pair in shuffled_defs:
@@ -3764,9 +3780,11 @@ def make_new_quiz(quiz, color):
         return ""
     cards_html = ""
     for i, q in enumerate(quiz):
-        # Shuffle options so correct answer isn't always option A
+        # Shuffle options so correct answer isn't always option A.
+        # Seeded from the question content so regeneration is deterministic
+        # (kills the shuffle churn); editing a question naturally reshuffles it.
         opts = list(enumerate(q["opts"]))  # [(original_idx, (text, is_correct)), ...]
-        random.shuffle(opts)
+        random.Random("quiz:%d:%r" % (i, q["opts"])).shuffle(opts)
 
         opts_html = ""
         correct_display_idx = None  # position after shuffle
@@ -4940,7 +4958,7 @@ def build_site(output_dir="mrbadmus_site"):
 
     # ── Auth pages — copy into output if they exist in repo root ──
     import shutil as _shutil, os as _os
-    for _auth_file in ["auth.html", "profile-setup.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html", "my-challenges.html"]:
+    for _auth_file in ["auth.html", "profile-setup.html", "teacher-profile.html", "weekly-challenge.html", "leaderboard.html", "past-papers.html", "my-challenges.html"]:
         _src = _auth_file
         _dst = f"{output_dir}/{_auth_file}"
         if _os.path.exists(_src):
