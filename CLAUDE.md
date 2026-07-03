@@ -33,8 +33,6 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 | **Hosting** | Cloudflare Pages at mrbadmus.com (auto-deploys from GitHub) |
 | **Email** | Resend.com from noreply@mrbadmus.com |
 
-⚠️ **Netlify is legacy** — fully cancelled. Ignore any mention of Netlify, netlify.app, or Netlify functions in old briefs or comments. The stack is Cloudflare Pages + Render only.
-
 ---
 
 ## Brand presentation rule
