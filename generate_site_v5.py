@@ -4996,12 +4996,21 @@ def build_site(output_dir="mrbadmus_site"):
     _shared_explicit_writes = {"styles.css", "mrbadmus.v2.js"}
     for _src in sorted(glob.glob("shared/*")):
         _filename = os.path.basename(_src)
-        if _filename in _shared_explicit_writes or not os.path.isfile(_src):
+        if _filename in _shared_explicit_writes:
             continue
         _dst = f"{output_dir}/shared/{_filename}"
         try:
-            _shutil.copy2(_src, _dst)
-            print(f"  ✅ shared/{_filename}")
+            if os.path.isdir(_src):
+                # Subdirectories (e.g. shared/fonts/) copied whole —
+                # the flat glob alone would skip them and trip the
+                # round-trip safety net below.
+                if _os.path.exists(_dst):
+                    _shutil.rmtree(_dst)
+                _shutil.copytree(_src, _dst)
+                print(f"  ✅ shared/{_filename}/ (directory)")
+            else:
+                _shutil.copy2(_src, _dst)
+                print(f"  ✅ shared/{_filename}")
         except Exception as e:
             print(f"  ⚠️  shared/{_filename}: {e}")
 

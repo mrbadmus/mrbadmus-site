@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>PREVIEW — Energy | Physics | MrBadmusAI redesign</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
+  <style>
+    /* ═══ PREVIEW of the Phase-2 styles.css rewrite. Consumes tokens only —
+       no palette literals in this file. ═══ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      font-size: var(--fs-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: var(--lh-body);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* ── NAV ── */
+    .nav {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 0 var(--sp-5);
+      height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-brand {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-size: 1.35rem; font-weight: 600;
+      color: var(--text);
+      display: flex; align-items: center; gap: 9px;
+      letter-spacing: -0.01em;
+    }
+    .brand-logo { flex-shrink: 0; }
+    .nav-links { display: flex; gap: var(--sp-1); align-items: center; }
+    .nav-links a {
+      font-size: var(--fs-small); font-weight: 600;
+      padding: 6px 13px; border-radius: 999px;
+      color: var(--muted);
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-links a:hover { background: var(--accent-soft); color: var(--accent); }
+    .nav-links a.challenge-chip {
+      color: var(--on-accent); background: var(--accent); font-weight: 700;
+    }
+    .nav-links a.challenge-chip:hover { background: var(--accent-hover); color: var(--on-accent); }
+    .crumb-sep { color: var(--border-strong); font-size: 0.8rem; }
+    .nav-links a.crumb { font-weight: 700; }
+    .nav-links a.crumb.pathway { color: var(--combined); }
+    .nav-links a.crumb.tier    { color: var(--higher); }
+    .nav-links a.crumb.subject { color: var(--physics); }
+    .nav-links a.btn-signup {
+      border: 1.5px solid var(--accent); color: var(--accent);
+      padding: 6px 15px; border-radius: 999px; font-weight: 700; font-size: var(--fs-small);
+    }
+    .nav-links a.btn-signup:hover { background: var(--accent-soft); }
+    .nav-links a.btn-signin {
+      background: var(--accent); color: var(--on-accent);
+      padding: 7px 16px; border-radius: 999px; font-weight: 700; font-size: var(--fs-small);
+    }
+    .nav-links a.btn-signin:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+    /* ── TOPIC HEADER ── */
+    .topic-header {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: var(--sp-7) var(--sp-5) var(--sp-5);
+    }
+    .back-link {
+      font-size: var(--fs-small); font-weight: 600; color: var(--muted);
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-bottom: var(--sp-4);
+    }
+    .back-link:hover { color: var(--accent); }
+    .topic-kicker {
+      font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--physics); margin-bottom: var(--sp-2);
+    }
+    .topic-header h1 {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-size: var(--fs-page-title);
+      font-weight: 550;
+      line-height: var(--lh-title);
+      letter-spacing: -0.015em;
+      margin-bottom: var(--sp-3);
+    }
+    .meta-row { display: flex; align-items: center; gap: var(--sp-2); flex-wrap: wrap; }
+    .spec-pill {
+      font-size: var(--fs-label); font-weight: 700;
+      padding: 4px 12px; border-radius: 999px;
+      border: 1px solid var(--accent-border);
+      color: var(--accent); background: var(--accent-soft);
+    }
+    .paper-pill, .tier-pill {
+      font-size: var(--fs-label); font-weight: 700;
+      padding: 4px 12px; border-radius: 999px;
+      background: var(--sunken); color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .tier-pill { color: var(--higher); background: var(--higher-soft); border-color: transparent; }
+
+    /* ── CONTENT ── */
+    .content-area {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 var(--sp-5) 120px;
+    }
+    .section { margin-bottom: var(--sp-7); }
+    .section-title {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-size: var(--fs-section); font-weight: 600;
+      letter-spacing: -0.01em;
+      display: flex; align-items: baseline; gap: var(--sp-3);
+      margin-bottom: var(--sp-4);
+    }
+    .section-title::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+      align-self: center;
+    }
+    .section-sub { font-size: var(--fs-small); color: var(--muted); margin-top: var(--sp-2); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: var(--sp-5);
+    }
+
+    /* ── SUBTOPIC GRID — two columns on desktop ── */
+    .subtopic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--sp-3);
+    }
+    @media (max-width: 760px) { .subtopic-grid { grid-template-columns: 1fr; } }
+    .subtopic-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: var(--sp-4) var(--sp-4) var(--sp-4) var(--sp-5);
+      display: flex; align-items: center; justify-content: space-between; gap: var(--sp-3);
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+    }
+    .subtopic-card:hover {
+      border-color: var(--accent-border);
+      box-shadow: var(--shadow-pop);
+      transform: translateY(-1px);
+    }
+    .subtopic-card .st-title {
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-size: var(--fs-card-title); font-weight: 600;
+      display: block; margin-bottom: 2px;
+    }
+    .subtopic-card:hover .st-title { color: var(--accent); }
+    .subtopic-card .st-spec {
+      font-size: var(--fs-label); font-weight: 700; color: var(--accent);
+      letter-spacing: 0.04em;
+    }
+    .expand-btn {
+      width: 34px; height: 34px; flex-shrink: 0;
+      border-radius: var(--radius-sm);
+      background: var(--accent-soft);
+      border: 1px solid var(--accent-border);
+      color: var(--accent);
+      font-size: 1.25rem; font-weight: 600; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, color 0.15s;
+    }
+    .subtopic-card:hover .expand-btn { background: var(--accent); color: var(--on-accent); }
+
+    /* ── EQUATIONS ── */
+    .formula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--sp-3); }
+    .formula-pill {
+      background: var(--sunken);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: var(--sp-3) var(--sp-4);
+      font-family: 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
+      font-size: 0.95rem; font-weight: 600;
+      text-align: center;
+    }
+
+    /* ── HIGHER BOX ── */
+    .higher-box {
+      background: var(--higher-soft);
+      border: 1px solid transparent;
+      border-left: 3px solid var(--higher);
+      border-radius: var(--radius-sm);
+      padding: var(--sp-4) var(--sp-5);
+      margin-bottom: var(--sp-3);
+    }
+    .higher-box::before {
+      content: '⭐ Higher tier';
+      display: block;
+      font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--higher);
+      margin-bottom: var(--sp-1);
+    }
+
+    /* ── ASK AI ── */
+    .ask-card { text-align: center; padding: var(--sp-6) var(--sp-5); }
+    .ask-card .ask-lede {
+      font-family: var(--font-serif); font-optical-sizing: auto;
+      font-size: var(--fs-section); font-weight: 600; margin-bottom: var(--sp-2);
+    }
+    .ask-card .ask-sub { color: var(--muted); font-size: var(--fs-small); margin-bottom: var(--sp-4); }
+    .btn-primary {
+      display: inline-block;
+      background: var(--accent); color: var(--on-accent);
+      border: none; cursor: pointer;
+      padding: 13px 30px; border-radius: 999px;
+      font-family: var(--font-sans); font-size: var(--fs-body); font-weight: 700;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--accent-hover); }
+
+    /* ── PREV / NEXT ── */
+    .subtopic-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: var(--sp-3); flex-wrap: wrap; margin-top: var(--sp-6);
+    }
+    .all-topics-link { font-size: var(--fs-small); font-weight: 600; color: var(--muted); }
+    .all-topics-link:hover { color: var(--accent); }
+    .nav-arrow {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-card);
+      padding: var(--sp-3) var(--sp-4);
+      max-width: 45%;
+      display: flex; align-items: center; gap: var(--sp-2);
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .nav-arrow:hover { border-color: var(--accent-border); }
+    .nav-arrow:hover .nav-arrow-title { color: var(--accent); }
+    .nav-arrow.next::after { content: '→'; color: var(--accent); font-weight: 700; }
+    .nav-arrow.prev::before { content: '←'; color: var(--accent); font-weight: 700; }
+    .nav-arrow-label { font-size: var(--fs-label); color: var(--muted); font-weight: 600; }
+    .nav-arrow-title { font-weight: 700; font-size: var(--fs-small); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+
+    /* ── CHAT FAB ── */
+    .chat-fab {
+      position: fixed; bottom: 28px; right: 28px; z-index: 90;
+      height: 54px; padding: 0 22px 0 18px;
+      border-radius: 999px; border: none; cursor: pointer;
+      background: var(--accent); color: var(--on-accent);
+      font-family: var(--font-sans); font-size: var(--fs-small); font-weight: 700;
+      display: flex; align-items: center; gap: 9px;
+      box-shadow: var(--shadow-pop);
+      transition: background 0.15s, transform 0.15s;
+      white-space: nowrap;
+    }
+    .chat-fab:hover { background: var(--accent-hover); transform: scale(1.04); }
+
+    /* ── PREVIEW-ONLY THEME TOGGLE (not part of the shipped design) ── */
+    .preview-pill {
+      position: fixed; bottom: 28px; left: 28px; z-index: 90;
+      background: var(--card); border: 1px solid var(--border-strong);
+      border-radius: 999px; box-shadow: var(--shadow-pop);
+      padding: 8px 14px; font-size: var(--fs-label); font-weight: 700;
+      color: var(--muted); display: flex; align-items: center; gap: 10px;
+    }
+    .preview-pill button {
+      background: var(--sunken); color: var(--text);
+      border: 1px solid var(--border); border-radius: 999px;
+      padding: 4px 12px; cursor: pointer;
+      font-family: var(--font-sans); font-size: var(--fs-label); font-weight: 700;
+    }
+
+    @media (max-width: 900px) { .nav-links .crumb, .crumb-sep { display: none; } }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .chat-fab { width: 54px; padding: 0; justify-content: center; }
+      .chat-fab .fab-text { display: none; }
+      body { padding-bottom: 90px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <div class="nav-links">
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/index.html" class="crumb pathway">Combined</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/higher/index.html" class="crumb tier">Higher</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/higher/physics/index.html" class="crumb subject">Physics</a>
+    <span style="margin-left:4px;display:flex;gap:6px;align-items:center;">
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
+    </span>
+  </div>
+</nav>
+
+<div class="topic-header">
+  <a class="back-link" href="/combined/higher/physics/index.html">← Back to Physics</a>
+  <div class="topic-kicker">Physics · Combined Science</div>
+  <h1>Energy</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.1</span>
+    <span class="paper-pill">Paper 1</span>
+    <span class="tier-pill">📙 Higher</span>
+  </div>
+</div>
+
+<div class="content-area">
+
+  <div class="section">
+    <div class="section-title">Subtopics</div>
+    <div class="subtopic-grid">
+      <a class="subtopic-card" href="/combined/higher/physics/energy/energy-stores-systems.html">
+        <span><span class="st-title">Energy Stores and Systems</span><span class="st-spec">Spec 6.1.1.1</span></span>
+        <span class="expand-btn">+</span>
+      </a>
+      <a class="subtopic-card" href="/combined/higher/physics/energy/changes-in-energy.html">
+        <span><span class="st-title">Changes in Energy</span><span class="st-spec">Spec 6.1.1.2</span></span>
+        <span class="expand-btn">+</span>
+      </a>
+      <a class="subtopic-card" href="/combined/higher/physics/energy/energy-changes-in-systems.html">
+        <span><span class="st-title">Energy Changes in Systems</span><span class="st-spec">Spec 6.1.1.3</span></span>
+        <span class="expand-btn">+</span>
+      </a>
+      <a class="subtopic-card" href="/combined/higher/physics/energy/power.html">
+        <span><span class="st-title">Power</span><span class="st-spec">Spec 6.1.1.4</span></span>
+        <span class="expand-btn">+</span>
+      </a>
+      <a class="subtopic-card" href="/combined/higher/physics/energy/energy-transfers-in-a-system.html">
+        <span><span class="st-title">Energy Transfers in a System</span><span class="st-spec">Spec 6.1.2.1</span></span>
+        <span class="expand-btn">+</span>
+      </a>
+      <a class="subtopic-card" href="/combined/higher/physics/energy/efficiency.html">
+        <span><span class="st-title">Efficiency</span><span class="st-spec">Spec 6.1.2.2</span></span>
+        <span class="expand-btn">+</span>
+      </a>
+      <a class="subtopic-card" href="/combined/higher/physics/energy/energy-resources.html">
+        <span><span class="st-title">Energy Resources</span><span class="st-spec">Spec 6.1.3</span></span>
+        <span class="expand-btn">+</span>
+      </a>
+    </div>
+    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Key Equations</div>
+    <div class="formula-grid">
+      <div class="formula-pill">KE = ½mv²</div>
+      <div class="formula-pill">GPE = mgh</div>
+      <div class="formula-pill">E = QΔθ</div>
+      <div class="formula-pill">Efficiency = useful ÷ total</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Higher Tier Content</div>
+    <div class="higher-box"><p>Elastic potential energy: E = ½ke²</p></div>
+    <div class="higher-box"><p>Derivation of KE formula</p></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Ask Mr Badmus AI</div>
+    <div class="card ask-card">
+      <p class="ask-lede">Got a question about Energy?</p>
+      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
+      <button class="btn-primary" data-open-chat>💬 Ask Mr Badmus AI</button>
+    </div>
+  </div>
+
+  <div class="subtopic-nav">
+    <span></span>
+    <a href="/combined/higher/physics/index.html" class="all-topics-link">📋 All Physics Topics</a>
+    <a class="nav-arrow next" href="/combined/higher/physics/electricity.html"><span><div class="nav-arrow-label">Next Topic</div><div class="nav-arrow-title">Electricity</div></span></a>
+  </div>
+
+</div>
+
+<button class="chat-fab"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg><span class="fab-text">Ask MrBadmusAI</span></button>
+
+<div class="preview-pill">
+  PREVIEW
+  <button onclick="var h=document.documentElement;var d=h.getAttribute('data-theme')==='dark';if(d){h.removeAttribute('data-theme');}else{h.setAttribute('data-theme','dark');}this.textContent=d?'🌙 Try dark':'☀️ Back to light';">🌙 Try dark</button>
+</div>
+
+</body>
+</html>

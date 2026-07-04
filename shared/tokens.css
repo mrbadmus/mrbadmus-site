@@ -1,0 +1,165 @@
+/* ═══════════════════════════════════════════════════════════════
+   MrBadmusAI — Design Tokens (single source of truth)
+   Light is the DEFAULT theme. Dark is opt-in via [data-theme="dark"]
+   on <html>. KS3 playful variant hooks via [data-mode="ks3"].
+
+   Every page on the site loads this file FIRST. Page stylesheets
+   consume these variables and must not re-declare palette values.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Self-hosted fonts (no Google CDN, no @import) ──
+   Fraunces: variable, wght 400–700, optical size 9–144 (display
+   quality at topic-title sizes, sturdy at card-title sizes).
+   Plus Jakarta Sans: variable, wght 200–800. Latin subsets. */
+@font-face {
+  font-family: 'Fraunces';
+  src: url('/shared/fonts/fraunces-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: url('/shared/fonts/plus-jakarta-sans-var-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* ── Surfaces — cream page vs white card is a DELIBERATE pairing.
+     The warmth of the whole design comes from this relationship:
+     warm cream ground, pure-white cards lifted off it by border +
+     shadow (contrast ratio cream:white ≈ 1.13 — separation is done
+     by --border and --shadow-card, not by luminance alone). ── */
+  --bg:        #F7F1E5;   /* cream page ground */
+  --card:      #FFFFFF;   /* white card surface */
+  --sunken:    #EFE7D6;   /* sunken surface — wells, input troughs, code/formula strips */
+  --border:    #E4DAC6;   /* warm hairline on cream */
+  --border-strong: #D4C7AD;
+
+  /* ── Ink ── */
+  --text:      #241C14;   /* warm near-black — 15.6:1 on cream */
+  --muted:     #6B5F51;   /* warm grey-brown — 5.8:1 on cream */
+
+  /* ── THE ACCENT — burnt orange / rust. The signature.
+     Links, active & hover states, primary buttons, the challenge
+     chip, "+" controls, spec numbers. 5.95:1 on cream (AA text),
+     6.4:1 with white text when used as a button fill. ── */
+  --accent:        #A63C12;
+  --accent-hover:  #8A300C;   /* darken on hover (light theme) */
+  --accent-soft:   rgba(166, 60, 18, 0.09);   /* tinted fills, active chips */
+  --accent-border: rgba(166, 60, 18, 0.28);
+  --on-accent:     #FFFFFF;   /* text on accent-filled controls */
+
+  /* ── Brand gradient (logo chevron + brand wordmark effects).
+     Retoned from the dark-theme #FFD93D→#FF6B35 toward the burnt
+     direction: gold-ochre into rust. Same identity, sits on cream. ── */
+  --brand-grad-a: #C97C1B;
+  --brand-grad-b: #A63C12;
+
+  /* ── Subject identity — recoloured for light ground.
+     All pass AA (4.5:1+) as text on cream. ── */
+  --physics:   #1D6FB8;   /* physics blue   — 4.9:1 */
+  --chemistry: #B02342;   /* chemistry crimson — 6.2:1 (NOT orange; distinct from --accent rust and --danger) */
+  --biology:   #237A3B;   /* biology green  — 5.0:1 */
+  --physics-soft:   rgba(29, 111, 184, 0.10);
+  --chemistry-soft: rgba(176, 35, 66, 0.09);
+  --biology-soft:   rgba(35, 122, 59, 0.10);
+
+  /* ── Pathway + tier ── */
+  --combined:  var(--physics);
+  --triple:    var(--chemistry);
+  --foundation: var(--biology);
+  --higher:    #8A6D00;   /* deep gold — readable heir to the yellow tier colour */
+  --higher-soft: rgba(138, 109, 0, 0.12);
+
+  /* ── Semantics — red-as-warning stays its own token, never --chemistry ── */
+  --danger:       #B3261E;
+  --danger-soft:  rgba(179, 38, 30, 0.09);
+  --success:      #237A3B;
+  --success-soft: rgba(35, 122, 59, 0.10);
+
+  /* ── Type — serif for headlines and topic/section titles ONLY.
+     Body text and all UI stay sans (readability, dyslexic students). ── */
+  --font-serif: 'Fraunces', 'Iowan Old Style', Georgia, serif;
+  --font-sans:  'Plus Jakarta Sans', -apple-system, 'Segoe UI', sans-serif;
+
+  --fs-body:       1rem;                                    /* 16px body floor */
+  --fs-small:      0.875rem;                                /* 14px secondary */
+  --fs-label:      0.75rem;                                 /* 12px uppercase labels */
+  --fs-card-title: 1.125rem;                                /* 18px — serif */
+  --fs-section:    1.375rem;                                /* 22px — serif */
+  --fs-page-title: clamp(1.875rem, 1.1rem + 2.6vw, 3.75rem);/* 30px → 60px — serif display */
+
+  --lh-body:  1.65;
+  --lh-title: 1.15;
+
+  /* ── Layout ── */
+  --content-max: 1080px;   /* main content column */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px;
+
+  --radius-sm: 8px;
+  --radius:    12px;
+  --radius-lg: 18px;
+
+  /* ── Shadows — warm-tinted, soft; cards lift off the cream ── */
+  --shadow-card: 0 1px 2px rgba(64, 45, 26, 0.05), 0 4px 14px rgba(64, 45, 26, 0.07);
+  --shadow-pop:  0 2px 6px rgba(64, 45, 26, 0.08), 0 12px 32px rgba(64, 45, 26, 0.14);
+
+  color-scheme: light;
+}
+
+/* ═══ DARK — opt-in via <html data-theme="dark">. Gold on near-black. ═══ */
+[data-theme="dark"] {
+  --bg:        #14110D;
+  --card:      #1D1915;
+  --sunken:    #0F0D0A;
+  --border:    #322B22;
+  --border-strong: #453B2E;
+
+  --text:      #EDE5D8;
+  --muted:     #A2957F;
+
+  --accent:        #E0AC4B;   /* gold — 9.1:1 on near-black */
+  --accent-hover:  #ECBE68;   /* lighten on hover (dark theme) */
+  --accent-soft:   rgba(224, 172, 75, 0.12);
+  --accent-border: rgba(224, 172, 75, 0.35);
+  --on-accent:     #14110D;
+
+  --brand-grad-a: #E8C15E;
+  --brand-grad-b: #C2551F;
+
+  --physics:   #5FA8E0;
+  --chemistry: #E06080;
+  --biology:   #55B36A;
+  --physics-soft:   rgba(95, 168, 224, 0.14);
+  --chemistry-soft: rgba(224, 96, 128, 0.13);
+  --biology-soft:   rgba(85, 179, 106, 0.14);
+
+  --higher:      #E0AC4B;
+  --higher-soft: rgba(224, 172, 75, 0.14);
+
+  --danger:       #E5655C;
+  --danger-soft:  rgba(229, 101, 92, 0.13);
+  --success:      #55B36A;
+  --success-soft: rgba(85, 179, 106, 0.14);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 4px 14px rgba(0, 0, 0, 0.45);
+  --shadow-pop:  0 2px 6px rgba(0, 0, 0, 0.5), 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  color-scheme: dark;
+}
+
+/* ═══ KS3 — playful variant hook. Same bones, different energy.
+   Full KS3 styling lands in a later pass; these are the dials. ═══ */
+[data-mode="ks3"] {
+  --accent:        #C4490F;   /* a notch brighter, still burnt */
+  --accent-hover:  #A63C12;
+  --radius-sm: 12px;
+  --radius:    18px;
+  --radius-lg: 26px;
+}
