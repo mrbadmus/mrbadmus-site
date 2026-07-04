@@ -9097,7 +9097,7 @@ BIOLOGY_SUBTOPICS_ALL = {
                                    3: 'Seed banks are conservation facilities — not commercial enterprises, though '
                                       'some seed collections are used to support farmers.'}}],
   'rp': None,
-  'spec': '4.7.4',
+  'spec': '4.7.3.1',
   'summary': 'Define biodiversity, explain its importance and describe threats to it and conservation measures.',
   'theory': [{'content': 'BIODIVERSITY is the variety of life on Earth.\n'
                          '\n'
@@ -9400,136 +9400,7 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'The Water Cycle',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'DENITRIFYING bacteria convert NITRATES BACK TO N₂ — they REDUCE soil nitrogen and make it less '
-                    'fertile. NITRIFYING bacteria convert AMMONIA TO NITRATES — they INCREASE soil nitrogen '
-                    'availability. These are opposite processes by different bacteria. Denitrification is favoured in '
-                    'WATERLOGGED (anaerobic) soils.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'nitrogen-cycle',
-  'key_note': 'N₂ → ammonia: nitrogen-fixing bacteria (soil or root nodules). Ammonia → nitrates: nitrifying bacteria. '
-              'Plants absorb nitrates. Decomposers release ammonia. Nitrates → N₂: denitrifying bacteria (anaerobic). '
-              'Eutrophication: nitrate leaching → algal bloom → O₂ depletion → fish die.',
-  'matching': {'instruction': 'Match each process to the bacteria responsible and what it converts.',
-               'pairs': [('Nitrogen fixation',
-                          'Nitrogen-fixing bacteria — convert N₂ gas to ammonia in soil or root nodules'),
-                         ('Nitrification',
-                          'Nitrifying bacteria — convert ammonia to nitrites then nitrates in the soil'),
-                         ('Denitrification',
-                          'Denitrifying bacteria — convert nitrates back to N₂ gas in waterlogged soil'),
-                         ('Decomposition (ammonification)',
-                          'Decomposers (bacteria/fungi) — break down proteins in dead organisms, releasing ammonia'),
-                         ('Absorption',
-                          'Plant roots absorb nitrate ions from the soil to make amino acids and proteins')],
-               'title': 'Match the Nitrogen Cycle Process'},
-  'quiz': [{'opts': [('N₂ is an extremely unreactive gas — it must be fixed into ammonia or nitrates by bacteria '
-                      'before plants can use it',
-                      True),
-                     ('N₂ molecules are too large to pass through root cell membranes', False),
-                     ('Nitrogen is toxic to plants in its atmospheric form', False),
-                     ("Plants already have enough nitrogen — they don't need more from the atmosphere", False)],
-            'q': "Why can't plants use atmospheric nitrogen (N₂) directly?",
-            'wrong_explanations': {1: 'N₂ is a small molecule — its unreactivity is due to the very strong triple bond '
-                                      'between the nitrogen atoms, not its size.',
-                                   2: 'N₂ is completely non-toxic — it makes up 78% of the air we breathe. Its issue '
-                                      'is extreme chemical stability, not toxicity.',
-                                   3: 'Plants are frequently nitrogen-limited in their growth — nitrogen deficiency '
-                                      'causes yellowing leaves (chlorosis). They need nitrogen continuously.'}},
-           {'opts': [('Excess nitrates enter water → algal bloom → plants die → decomposers use all O₂ → fish '
-                      'suffocate — caused by fertiliser leaching from farmland',
-                      True),
-                     ('Acid rain lowering the pH of lakes and rivers — caused by nitrogen oxides from vehicle exhausts',
-                      False),
-                     ('Plastic pollution blocking light from reaching aquatic plants in rivers and lakes', False),
-                     ('Warming water temperatures reducing oxygen solubility — caused by climate change', False)],
-            'q': 'What is eutrophication and what causes it?',
-            'wrong_explanations': {1: 'Acid rain from nitrogen oxides is a real environmental problem — but '
-                                      'eutrophication specifically refers to the nitrate leaching → algal bloom → '
-                                      'oxygen depletion sequence.',
-                                   2: 'Plastic pollution is a serious problem — but eutrophication is specifically '
-                                      'caused by NUTRIENT enrichment (excess nitrates/phosphates), not plastic.',
-                                   3: 'Warming does reduce oxygen solubility — but eutrophication is specifically the '
-                                      'nutrient enrichment process causing algal blooms and oxygen depletion.'}},
-           {'opts': [('Legumes have root nodules containing nitrogen-fixing bacteria — these add nitrates to the soil, '
-                      'naturally fertilising it for the next crop',
-                      True),
-                     ('Legumes have deeper roots that break up compacted soil to improve drainage', False),
-                     ('Legumes produce chemicals that kill pests and diseases in the soil', False),
-                     ('Legumes absorb excess water that would otherwise waterlog the soil', False)],
-            'q': 'Why do farmers rotate crops, sometimes planting legumes (e.g. clover or peas)?',
-            'wrong_explanations': {1: 'Root depth is an advantage of some legumes — but the primary reason for '
-                                      'including them in rotation is NITROGEN FIXATION by Rhizobium bacteria in root '
-                                      'nodules.',
-                                   2: 'Some plants do suppress soil pests — but the specific benefit of legumes in '
-                                      'crop rotation is nitrogen fixation, not pest control.',
-                                   3: "Legumes don't have exceptional water absorption compared to other plants — the "
-                                      'key benefit is nitrogen fixation.'}}],
-  'rp': None,
-  'spec': '4.7.3',
-  'summary': 'Describe how nitrogen is cycled through ecosystems by bacteria and other processes.',
-  'theory': [{'content': 'NITROGEN is essential for life — it is a key component of:\n'
-                         'AMINO ACIDS — the building blocks of proteins (enzymes, structural proteins, haemoglobin).\n'
-                         'NUCLEOTIDES — the building blocks of DNA and RNA.\n'
-                         'CHLOROPHYLL — the photosynthetic pigment in plants.\n'
-                         '\n'
-                         'Nitrogen makes up approximately 78% of the atmosphere — but as N₂ gas, which is EXTREMELY '
-                         'UNREACTIVE. Plants and animals CANNOT use N₂ directly.\n'
-                         '\n'
-                         'Nitrogen must first be FIXED — converted into a usable form (ammonia or nitrates) — before '
-                         'organisms can use it.\n'
-                         '\n'
-                         'The nitrogen cycle describes how nitrogen moves between the atmosphere, soil, plants, '
-                         'animals and decomposers.',
-              'heading': 'Why Nitrogen is Essential'},
-             {'content': 'NITROGEN FIXATION — converting N₂ to ammonia (NH₃):\n'
-                         'CARRIED OUT BY: nitrogen-fixing bacteria.\n'
-                         'IN SOIL: free-living bacteria (e.g. Azotobacter) fix N₂ in the soil.\n'
-                         'IN ROOT NODULES: mutualistic bacteria (Rhizobium) live in the root nodules of LEGUMES (peas, '
-                         'beans, clover, soybeans). They fix N₂, providing the plant with nitrates. The plant provides '
-                         'the bacteria with glucose.\n'
-                         'LIGHTNING: very high energy lightning can also fix small amounts of N₂.\n'
-                         '\n'
-                         'NITRIFICATION — converting ammonia to nitrates:\n'
-                         'Ammonia (NH₃) in the soil is converted to NITRITES then NITRATES (NO₃⁻) by NITRIFYING '
-                         'BACTERIA.\n'
-                         'Plants can absorb nitrates through their roots.\n'
-                         '\n'
-                         'ABSORPTION — plants absorb nitrates from soil → use them to make amino acids → proteins.\n'
-                         '\n'
-                         'CONSUMPTION — animals eat plants → nitrogen passes along food chains.\n'
-                         '\n'
-                         'DECOMPOSITION — when organisms die:\n'
-                         'DECOMPOSERS (bacteria and fungi) break down proteins and nucleic acids in dead organisms and '
-                         'waste.\n'
-                         'They release nitrogen as AMMONIA (ammonification).\n'
-                         'Ammonia → nitrification → nitrates (cycle continues).\n'
-                         '\n'
-                         'DENITRIFICATION — converting nitrates back to N₂:\n'
-                         'DENITRIFYING BACTERIA convert nitrates → N₂ gas, which returns to the atmosphere.\n'
-                         "Occurs mainly in WATERLOGGED (anaerobic) soils — these bacteria don't need oxygen.\n"
-                         'Reduces soil fertility.',
-              'heading': 'The Key Processes'},
-             {'content': 'FERTILISERS:\n'
-                         'Farmers add ARTIFICIAL FERTILISERS (ammonium nitrate, etc.) or ORGANIC FERTILISERS (manure, '
-                         'compost) to replace nitrates removed by harvesting crops.\n'
-                         'Excess fertiliser can be washed from fields into rivers and lakes by rain — a process called '
-                         'LEACHING.\n'
-                         '\n'
-                         'EUTROPHICATION — the consequence of nitrate leaching:\n'
-                         '1. Excess nitrates enter a river or lake.\n'
-                         '2. Algae grow rapidly (algal bloom) — covering the water surface.\n'
-                         '3. Light cannot penetrate to underwater plants — they die.\n'
-                         '4. Dead plants and algae are decomposed by bacteria.\n'
-                         '5. Decomposing bacteria use up all the OXYGEN in the water (aerobic decomposition).\n'
-                         '6. Oxygen concentration falls → fish and other aquatic animals suffocate and die.\n'
-                         '\n'
-                         'NITROGEN OXIDES from vehicle exhausts and power stations:\n'
-                         'Fall as ACID RAIN — damages vegetation and acidifies rivers and lakes.',
-              'heading': 'Human Impact on the Nitrogen Cycle'}],
-  'title': 'The Nitrogen Cycle',
-  'triple_only': None,
-  'variables': []},
+ 
  {'common_mistake': 'DECOMPOSERS are bacteria and fungi — they chemically break down organic matter using enzymes. '
                     'DETRITIVORES (earthworms, woodlice) physically shred material into smaller pieces — increasing '
                     'surface area for decomposers. Detritivores do NOT chemically decompose material. Both are '

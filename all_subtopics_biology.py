@@ -3520,146 +3520,6 @@ BIOLOGY_SUBTOPICS_ALL = {
               'heading': 'Thalidomide — A Cautionary Tale'}],
   'title': 'Drug Discovery and Development',
   'triple_only': None,
-  'variables': []},
- {'common_mistake': 'Plants do NOT have an immune system like animals — no antibodies, no lymphocytes, no phagocytes. '
-                    'Their defences are physical (walls, wax, bark) and chemical (poisons, antimicrobials). They are '
-                    'passive or triggered responses, not a learned adaptive immune system.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'plant-disease-detection-defence',
-  'key_note': 'Plant physical defences: cell walls, waxy cuticle, bark, thorns, closing stomata. Chemical defences: '
-              'antibacterial compounds (e.g. allicin), poisons/alkaloids (e.g. nicotine, caffeine, quinine). Active '
-              'responses: hypersensitive response (kills cells around infection), systemic acquired resistance.',
-  'matching': {'instruction': 'Sort each plant defence into physical or chemical.',
-               'pairs': [('Physical', 'Cell walls — rigid cellulose barrier around each cell'),
-                         ('Physical', 'Waxy cuticle — waterproof surface layer prevents colonisation'),
-                         ('Chemical', 'Nicotine in tobacco — highly toxic to insects, deters feeding'),
-                         ('Physical', 'Thorns — deter herbivores from eating the plant'),
-                         ('Chemical', 'Allicin in garlic — antibacterial and antifungal compound'),
-                         ('Chemical', 'Tannins in oak bark — bitter taste deters herbivores')],
-               'title': 'Physical or Chemical Plant Defence?'},
-  'quiz': [{'opts': [('Rose black spot — a fungal disease caused by Diplocarpon rosae', True),
-                     ('Tobacco mosaic virus — a viral disease causing discolouration', False),
-                     ('Salmonella — a bacterial infection from contaminated soil', False),
-                     ('The plant is simply overwatered and needs less water', False)],
-            'q': 'A gardener notices black spots on their rose leaves and the leaves are turning yellow. What is most '
-                 'likely causing this?',
-            'wrong_explanations': {1: 'TMV causes a mosaic pattern of light and dark green/yellow patches — not '
-                                      'specific black spots with yellowing leaves around them.',
-                                   2: 'Salmonella affects animals, not plants — it does not cause leaf spots in roses.',
-                                   3: 'Overwatering can cause some yellowing, but the distinctive BLACK SPOTS '
-                                      'specifically indicate rose black spot fungal infection.'}},
-           {'opts': [('It provides a waterproof physical barrier that prevents pathogens from landing and colonising '
-                      'the leaf surface',
-                      True),
-                     ('It contains antibiotics that kill any bacteria landing on the leaf', False),
-                     ('It absorbs UV radiation to prevent DNA damage in leaf cells', False),
-                     ('It makes leaves slippery so insects cannot grip and feed on them', False)],
-            'q': 'Why does the waxy cuticle on leaves help protect the plant from disease?',
-            'wrong_explanations': {1: 'The cuticle does not contain antibiotics — it is a physical, waterproof '
-                                      'barrier. Plant chemical defences (like tannins or allicin) are separate from '
-                                      'the cuticle.',
-                                   2: 'UV protection is a secondary function in some plants — but the PRIMARY '
-                                      'defensive role of the cuticle is as a physical barrier to pathogens and water '
-                                      'loss.',
-                                   3: 'Waxiness can make leaves slippery, but the main function is waterproofing — '
-                                      'creating an inhospitable surface for pathogen growth.'}},
-           {'opts': [('The plant rapidly kills cells around an infection site, creating a dead zone that contains the '
-                      'pathogen and prevents it spreading',
-                      True),
-                     ('The plant produces excess antibodies to destroy the invading pathogen', False),
-                     ('The plant overreacts to harmless stimuli and closes all its stomata', False),
-                     ('The plant produces spores to spread its own genetic material before dying', False)],
-            'q': 'What is the hypersensitive response in plants?',
-            'wrong_explanations': {1: "Plants don't produce antibodies — that is an animal immune system response. "
-                                      "Plants' active responses involve chemical signalling and cell death.",
-                                   2: "Closing stomata IS a response to pathogens — but the 'hypersensitive response' "
-                                      'specifically refers to deliberately killing cells around the infection site as '
-                                      'a containment strategy.',
-                                   3: 'Sporulation is a reproductive or survival strategy in some fungi and bacteria — '
-                                      'not part of the plant hypersensitive response.'}}],
-  'rp': None,
-  'spec': '4.3.5',
-  'summary': 'Describe how plant diseases are identified and how plants defend themselves against pathogens and pests.',
-  'theory': [{'content': 'Plants can be infected by bacteria, viruses, fungi and other parasites — just like animals. '
-                         'Recognising disease symptoms is important for farmers, gardeners and conservationists.\n'
-                         '\n'
-                         'Common symptoms of plant disease:\n'
-                         'STUNTED GROWTH — plant is smaller or grows more slowly than expected for its age and growing '
-                         'conditions.\n'
-                         'SPOTS ON LEAVES — discoloured patches, often black, brown or orange.\n'
-                         'AREAS OF DECAY (ROT) — brown, soft, collapsing tissue in stems, roots or fruit.\n'
-                         'ABNORMAL GROWTHS — unusual swellings, galls or distorted structures.\n'
-                         'MALFORMED LEAVES OR STEMS — twisted, curled or distorted plant parts.\n'
-                         'DISCOLOURATION — yellowing (chlorosis), bleaching, mosaic patterns.\n'
-                         '\n'
-                         'How to identify the specific cause:\n'
-                         'Look up symptoms in a plant disease identification guide or database.\n'
-                         'Send a sample to a laboratory for microscopic examination.\n'
-                         'Test using specific diagnostic kits (e.g. lateral flow tests for specific pathogens).\n'
-                         'Observe when and where the disease appears — conditions often give clues (e.g. fungal '
-                         'diseases favour wet, warm weather).',
-              'heading': 'Identifying Plant Disease'},
-             {'content': 'Plants have evolved a range of physical defences that act as barriers to prevent pathogens '
-                         'and pests from entering:\n'
-                         '\n'
-                         'CELL WALLS made of cellulose — provide a rigid physical barrier around each cell. Much '
-                         'harder for pathogens to penetrate than a soft cell membrane alone.\n'
-                         '\n'
-                         'WAXY CUTICLE on leaves and stems — a waterproof, waxy layer secreted by epidermal cells. '
-                         'Prevents pathogens from landing and colonising the leaf surface. Also reduces water loss.\n'
-                         '\n'
-                         'BARK on woody stems — tough outer layers protect living tissue (phloem and cambium) '
-                         'underneath from physical damage and pathogen entry.\n'
-                         '\n'
-                         'THORNS and SPINES — physical deterrents to herbivores, reducing the chances of wounds '
-                         'through which pathogens can enter.\n'
-                         '\n'
-                         'CLOSING OF STOMATA — when plants detect pathogen attack, they can close stomata to prevent '
-                         'pathogen entry through these openings.',
-              'heading': 'Physical Defences in Plants'},
-             {'content': 'Plants also produce a wide range of chemicals that deter herbivores and fight pathogens:\n'
-                         '\n'
-                         'ANTIBACTERIAL COMPOUNDS — some plants produce substances with antimicrobial properties:\n'
-                         'Allicin in garlic — shown to have antibacterial and antifungal activity.\n'
-                         'Tannins in oak bark and tea leaves — bitter astringent compounds that deter herbivores and '
-                         'have some antimicrobial properties.\n'
-                         '\n'
-                         'POISONS (ALKALOIDS) — plants produce toxic secondary metabolites to deter animals from '
-                         'eating them:\n'
-                         'Nicotine in tobacco plants — highly toxic to insects (used as an insecticide).\n'
-                         'Caffeine in coffee and tea plants — deters insects from feeding.\n'
-                         'Quinine in cinchona trees — bitter taste deters herbivores; also has antimicrobial '
-                         'properties.\n'
-                         'Digitalis (foxglove) — toxic to vertebrates including humans if eaten in large quantities.\n'
-                         '\n'
-                         'INSECT-REPELLING COMPOUNDS — volatile chemicals released from leaves deter insects from '
-                         'landing and laying eggs.\n'
-                         '\n'
-                         'STICKY RESINS and LATEX — trap insects on the surface or clog their mouthparts if they try '
-                         'to feed.',
-              'heading': 'Chemical Defences in Plants'},
-             {'content': 'Plants can also mount active responses when they detect pathogen invasion:\n'
-                         '\n'
-                         'HYPERSENSITIVE RESPONSE — when a pathogen is detected, the plant rapidly KILLS the cells '
-                         'immediately surrounding the infection site, creating a zone of dead cells.\n'
-                         'This dead zone acts as a firebreak — the pathogen cannot spread through dead cells, '
-                         'containing the infection.\n'
-                         '\n'
-                         'SYSTEMIC ACQUIRED RESISTANCE (SAR) — after a localised infection, the whole plant can become '
-                         'more resistant to future attacks.\n'
-                         'The plant produces signalling molecules (like salicylic acid) that travel to uninfected '
-                         "parts of the plant, 'warning' them to prepare chemical defences.\n"
-                         '\n'
-                         'Many of the chemicals plants produce for defence have also been used by humans:\n'
-                         'Aspirin derived from salicylic acid.\n'
-                         'Quinine — antimalarial drug.\n'
-                         'Morphine and codeine — painkillers from poppies.\n'
-                         'Many modern medicines originated as plant defence chemicals.',
-              'heading': 'Responding to Attack'}],
-  'title': 'Plant Disease Detection and Defence',
-  'triple_only': None,
   'variables': []}],
 
 "bioenergetics": [{'common_mistake': 'Photosynthesis only happens in LIGHT and only in cells with CHLOROPLASTS. Respiration happens ALL '
@@ -4976,139 +4836,7 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'Reflex Actions',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'VASODILATION means blood vessels WIDEN — MORE blood near skin surface — MORE heat lost — occurs '
-                    'when TOO HOT. VASOCONSTRICTION means blood vessels NARROW — LESS blood near skin surface — LESS '
-                    'heat lost — occurs when TOO COLD. Students often get these mixed up. Remember: Dilation = '
-                    'Diameter increases = more heat lost.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'thermoregulation',
-  'key_note': 'Too hot: sweat (evaporation cools), vasodilation (more heat lost from skin), hairs flat. Too cold: '
-              'shiver (respiration generates heat), vasoconstriction (less heat lost), hairs raised (insulation). '
-              'Hypothalamus = the thermostat.',
-  'matching': {'instruction': 'Sort each response — does it happen when the body is too hot or too cold?',
-               'pairs': [('Too hot', 'Sweating — evaporation removes heat from the body surface'),
-                         ('Too hot', 'Vasodilation — blood vessels widen, more heat lost from skin surface'),
-                         ('Too cold', 'Shivering — rapid muscle contractions generate heat via respiration'),
-                         ('Too cold', 'Vasoconstriction — blood vessels narrow, less heat lost from skin'),
-                         ('Too hot', 'Hairs lie flat — less insulation, more heat can escape'),
-                         ('Too cold', 'Hairs stand on end — traps air for insulation (causes goosebumps)')],
-               'title': 'Too Hot or Too Cold?'},
-  'quiz': [{'opts': [('Water evaporating from the skin surface absorbs latent heat energy from the body — cooling it',
-                      True),
-                     ('Sweat removes hot blood from deep in the body and cools it at the surface', False),
-                     ('The salt in sweat chemically reacts with the skin to absorb heat', False),
-                     ('Sweating increases blood flow to the skin, which cools the blood', False)],
-            'q': 'Why does sweating cool the body down?',
-            'wrong_explanations': {1: "Sweating doesn't involve blood — it is a secretion from sweat glands. The "
-                                      'cooling effect is from EVAPORATION.',
-                                   2: 'Salt in sweat helps retain water on the skin surface longer — the cooling '
-                                      'mechanism is evaporation of water, not a chemical reaction.',
-                                   3: 'Vasodilation increases blood flow to the skin for cooling — sweating itself is '
-                                      'a separate mechanism that works through evaporation.'}},
-           {'opts': [('Blood vessels near the skin widen — occurs when the body is too hot, allowing more heat to be '
-                      'lost',
-                      True),
-                     ('Blood vessels narrow — occurs when the body is too cold, to conserve heat', False),
-                     ('Blood vessels widen — occurs when the body is too cold, to warm the skin', False),
-                     ('Blood vessels contract — occurs when the body is too hot, to prevent overheating', False)],
-            'q': 'What is vasodilation and when does it occur?',
-            'wrong_explanations': {1: 'Blood vessels NARROWING = VASOCONSTRICTION — this happens when cold, to reduce '
-                                      'heat loss. Vasodilation is widening.',
-                                   2: 'If blood vessels widened when cold, more heat would be LOST — that would make '
-                                      'the cold problem worse. Vasodilation occurs when HOT.',
-                                   3: 'Blood vessels CONTRACTING = VASOCONSTRICTION — occurs when cold, not hot.'}},
-           {'opts': [('Rapid muscle contractions require aerobic respiration — heat is released as a by-product of '
-                      'respiration',
-                      True),
-                     ('Shivering increases blood flow to the skin, warming the surface', False),
-                     ('The vibration of muscles generates electrical energy that heats the body', False),
-                     ('Shivering activates sweat glands which release warm fluid to the skin', False)],
-            'q': 'Why does shivering help when you are cold?',
-            'wrong_explanations': {1: 'Increased blood flow to the skin (vasodilation) increases heat LOSS — when '
-                                      'cold, vasoconstriction REDUCES blood flow to the skin. Shivering warms the body '
-                                      'through metabolic heat.',
-                                   2: 'Muscles generate heat through CHEMICAL energy released in respiration — not by '
-                                      'converting movement to electrical energy.',
-                                   3: 'Sweat glands are LESS active when cold — sweating causes heat loss, which is '
-                                      "the opposite of what's needed."}}],
-  'rp': None,
-  'spec': '4.5.1',
-  'summary': 'Describe how the body maintains a constant core temperature of 37°C.',
-  'theory': [{'content': 'The human body must maintain a core temperature of approximately 37°C.\n'
-                         '\n'
-                         'This is the OPTIMUM TEMPERATURE for human enzymes — the temperature at which they work most '
-                         'efficiently.\n'
-                         '\n'
-                         'If temperature rises above ~40°C: enzymes denature → reactions stop → organ failure → death '
-                         '(hyperthermia).\n'
-                         '\n'
-                         'If temperature falls below ~34°C: enzyme activity decreases dramatically → brain and heart '
-                         'function affected → loss of consciousness → death (hypothermia).\n'
-                         '\n'
-                         'The body is constantly generating heat (from respiration in all cells) and losing heat (to '
-                         'the environment). Thermoregulation balances these.',
-              'heading': 'Why Temperature Must Be Controlled'},
-             {'content': "The HYPOTHALAMUS — a region in the brain — acts as the body's thermostat.\n"
-                         '\n'
-                         'It has two types of thermoreceptors:\n'
-                         'CENTRAL THERMORECEPTORS in the hypothalamus itself — monitor the temperature of blood '
-                         'flowing through the brain.\n'
-                         'PERIPHERAL THERMORECEPTORS in the skin — detect changes in surface temperature (giving '
-                         'advance warning of environmental temperature changes).\n'
-                         '\n'
-                         'When the hypothalamus detects deviation from 37°C, it sends signals via the nervous system '
-                         'and hormones to trigger corrective responses.',
-              'heading': "The Hypothalamus — The Body's Thermostat"},
-             {'content': 'When body temperature rises ABOVE 37°C, the hypothalamus triggers responses to LOSE heat:\n'
-                         '\n'
-                         'SWEATING:\n'
-                         'Sweat glands in the skin produce sweat (mainly water + salts).\n'
-                         'Sweat spreads over the skin surface.\n'
-                         'As water EVAPORATES from the skin, it absorbs latent heat from the body → body cools.\n'
-                         'More sweating occurs in hot conditions or during exercise.\n'
-                         '\n'
-                         'VASODILATION:\n'
-                         'Blood vessels (arterioles) near the skin surface WIDEN.\n'
-                         'More blood flows close to the skin surface.\n'
-                         'More heat is lost by radiation and convection from the skin.\n'
-                         'This is why the skin looks flushed or red when hot.\n'
-                         '\n'
-                         'HAIRS LIE FLAT:\n'
-                         'Erector pili muscles RELAX → hairs lie flat.\n'
-                         'No trapped air layer → less insulation → more heat can escape.\n'
-                         '(More significant in other mammals than in humans due to less body hair.)',
-              'heading': 'Responses When Too Hot'},
-             {'content': 'When body temperature falls BELOW 37°C, the hypothalamus triggers responses to GENERATE and '
-                         'RETAIN heat:\n'
-                         '\n'
-                         'SHIVERING:\n'
-                         'Skeletal muscles contract rapidly and repeatedly.\n'
-                         'Muscle contractions require RESPIRATION → releases heat as a by-product.\n'
-                         'Shivering can increase heat production up to 5× the resting rate.\n'
-                         '\n'
-                         'VASOCONSTRICTION:\n'
-                         'Blood vessels near the skin surface NARROW.\n'
-                         'Less blood flows close to the skin surface.\n'
-                         'Less heat lost by radiation from the skin.\n'
-                         'Fingers and toes may become pale or blue in extreme cold.\n'
-                         '\n'
-                         'HAIRS STAND ON END:\n'
-                         'Erector pili muscles CONTRACT → hairs raise upright.\n'
-                         'Traps a layer of warm air close to the skin → insulation layer.\n'
-                         "(More effective in other mammals — in humans this causes 'goosebumps').\n"
-                         '\n'
-                         'REDUCED SWEATING:\n'
-                         'Sweat glands become less active.\n'
-                         'Less evaporative cooling.\n'
-                         '\n'
-                         'ADRENALINE RELEASED:\n'
-                         'Hormone that increases metabolic rate → more respiration → more heat produced.',
-              'heading': 'Responses When Too Cold'}],
-  'title': 'Thermoregulation',
-  'triple_only': None,
-  'variables': []},
+ 
  {'common_mistake': 'Hormones travel in the BLOOD to target organs — they do NOT travel along nerves. Do not confuse '
                     'the two systems. Also: not all organs respond to every hormone — only TARGET ORGANS with the '
                     'correct receptor proteins respond.',
@@ -5612,7 +5340,125 @@ BIOLOGY_SUBTOPICS_ALL = {
               'heading': 'Ethical Considerations'}],
   'title': 'Contraception and Fertility Treatment',
   'triple_only': None,
-  'variables': []}],
+  'variables': []},
+  {'common_mistake': 'When calculating reaction time from the ruler drop test — distance must be in METRES (not cm). g '
+                    '= 10 m/s² (or 9.8 m/s² for more precision). Rearrange d = ½gt² to get t = √(2d/g). Always take '
+                    'multiple repeats and use the MEAN — single measurements are unreliable.',
+  'equations': ['d = ½ × g × t²', 't = √(2d ÷ g)'],
+  'fifas': [{'label': 'Reaction Time Calculation',
+             'question': 'A ruler falls 20 cm before being caught. Calculate the reaction time. (g = 10 m/s²)',
+             'steps': [('F', 't = √(2d ÷ g)'),
+                       ('I', 'd = 20 cm = 0.20 m. t = √(2 × 0.20 ÷ 10)'),
+                       ('F', 't = √(0.40 ÷ 10) = √0.04'),
+                       ('A', 't = 0.2 seconds')]}],
+  'higher': None,
+  'id': 'reaction-time',
+  'key_note': 'Reaction time: time from stimulus to response. Ruler drop test: measure distance fallen → calculate '
+              'time using t = √(2d/g). Affected by: fatigue, alcohol, drugs, age, distraction. Multiple repeats → mean '
+              'for reliability.',
+  'matching': {'instruction': 'Does each factor increase or decrease reaction time?',
+               'pairs': [('Increases reaction time', 'Alcohol — a depressant that slows synaptic transmission'),
+                         ('Decreases reaction time', 'Caffeine — a stimulant that increases neurotransmitter activity'),
+                         ('Increases reaction time', 'Fatigue — tired nervous system responds more slowly'),
+                         ('Increases reaction time', 'Distraction — divided attention reduces processing speed'),
+                         ('Decreases reaction time', 'Practice — repeated performance improves speed of response')],
+               'title': 'Match the Factor to its Effect on Reaction Time'},
+  'quiz': [{'opts': [('t = √(2 × 0.45 ÷ 10) = √0.09 = 0.30 s', True),
+                     ('t = √(2 × 45 ÷ 10) = 3.0 s', False),
+                     ('t = 0.45 ÷ 10 = 0.045 s', False),
+                     ('t = 2 × 0.45 × 10 = 9.0 s', False)],
+            'q': 'In a ruler drop test, a ruler falls 45 cm before being caught. Which calculation gives the reaction '
+                 'time? (g = 10 m/s²)',
+            'wrong_explanations': {1: '45 cm must be converted to metres (0.45 m) before using in the formula. Using '
+                                      '45 gives a nonsensically large answer.',
+                                   2: 't = d/g is not the correct formula. The correct rearrangement of d = ½gt² gives '
+                                      't = √(2d/g).',
+                                   3: 'Multiplying gives a large number — the formula requires square root of (2d/g), '
+                                      'not multiplication of all terms.'}},
+           {'opts': [('Reaction time varies randomly between trials — the mean gives a more reliable estimate of true '
+                      'reaction time',
+                      True),
+                     ('The ruler wears out and becomes less accurate after each drop', False),
+                     ("The person's brain learns the formula and gets better at calculating the answer", False),
+                     ('Multiple repeats prevent the person from practising and improving', False)],
+            'q': 'Why should a reaction time experiment use multiple repeats and calculate the mean?',
+            'wrong_explanations': {1: "Rulers don't wear out with use — the variation is in the human nervous system "
+                                      'response, not the equipment.',
+                                   2: 'The person does not calculate anything during the experiment — they simply '
+                                      'catch the ruler. Multiple repeats address random biological variation.',
+                                   3: 'Practice effects are a potential confound — but the PRIMARY reason for multiple '
+                                      'repeats is to reduce random variation in measurements.'}}],
+  'rp': None,
+  'spec': '4.5.2',
+  'summary': 'Describe how to measure reaction time and explain what affects it.',
+  'theory': [{'content': 'REACTION TIME is the time between a stimulus being detected and a response being made.\n'
+                         '\n'
+                         'It involves the complete nervous system pathway:\n'
+                         'Stimulus detected by receptor → electrical impulse along sensory neurone → relay neurone in '
+                         'CNS → motor neurone → effector responds.\n'
+                         '\n'
+                         'Typical human reaction time: 0.2–0.3 seconds for a simple stimulus.\n'
+                         '\n'
+                         'Reaction time varies between individuals and is affected by several factors:\n'
+                         'AGE — reaction time generally increases (worsens) with age.\n'
+                         'GENDER — some research suggests small differences between males and females.\n'
+                         'STIMULUS TYPE — auditory (sound) reactions are slightly faster than visual (light) '
+                         'reactions.\n'
+                         'PRACTICE — repeated performance improves reaction time.\n'
+                         'FATIGUE — tiredness slows reaction time significantly.\n'
+                         'DRUGS AND ALCOHOL — depressants (alcohol, sedatives) slow reaction time; stimulants '
+                         '(caffeine) may slightly improve it.\n'
+                         'DISTRACTION — dividing attention (e.g. using a phone while driving) significantly increases '
+                         'reaction time.',
+              'heading': 'What is Reaction Time?'},
+             {'content': 'The RULER DROP TEST is a simple method to measure reaction time:\n'
+                         '\n'
+                         'METHOD:\n'
+                         '1. Person A holds a ruler vertically with the 0 cm mark at the bottom.\n'
+                         '2. Person B places their thumb and finger at the 0 cm mark, not touching the ruler.\n'
+                         '3. Without warning, Person A drops the ruler.\n'
+                         '4. Person B catches it as quickly as possible.\n'
+                         '5. The distance the ruler falls before being caught is measured.\n'
+                         '6. Use the distance to calculate reaction time using the formula: d = ½ × g × t²\n'
+                         '   Rearranging: t = √(2d/g) where g = 10 m/s².\n'
+                         '7. Repeat multiple times and calculate the MEAN to reduce the effect of random variation.\n'
+                         '\n'
+                         'IMPROVING RELIABILITY:\n'
+                         'Conduct multiple repeats and calculate a mean.\n'
+                         'Ensure no anticipation of the drop (no pattern or warning).\n'
+                         'Keep conditions consistent (same ruler, same position, same person).\n'
+                         '\n'
+                         'COMPUTER-BASED TESTS:\n'
+                         'More accurate than the ruler test — use a computer screen stimulus and measure time to press '
+                         'a key.\n'
+                         'Remove human error in reading the ruler distance.',
+              'heading': 'Measuring Reaction Time — The Ruler Drop Test'},
+             {'content': 'Common investigations into reaction time:\n'
+                         '\n'
+                         'EFFECT OF CAFFEINE:\n'
+                         'Caffeine is a stimulant — it increases the release of neurotransmitters at synapses.\n'
+                         'Hypothesis: caffeine will decrease reaction time (improve performance).\n'
+                         'Method: measure reaction time before and after consuming caffeine. Compare to a placebo '
+                         'group.\n'
+                         'Controls: same person, same test, same time of day, account for practice effect.\n'
+                         '\n'
+                         'EFFECT OF DISTRACTION:\n'
+                         'Using a phone or listening to music divides attention.\n'
+                         'Hypothesis: distraction will increase reaction time.\n'
+                         'Method: test reaction time with and without a distractor (e.g. mental arithmetic task '
+                         'simultaneously).\n'
+                         '\n'
+                         'IMPORTANT: the ruler drop test has limitations:\n'
+                         'Random variation — each trial can differ.\n'
+                         'Subject may anticipate the drop.\n'
+                         'Measuring exactly where the ruler is caught introduces error.\n'
+                         'This is why multiple repeats and means are essential.',
+              'heading': 'Factors Affecting Reaction Time — Investigations'}],
+  'title': 'Reaction Time',
+  'triple_only': None,
+  'variables': [('d', 'Distance ruler falls', 'metres', 'm'),
+                ('t', 'Reaction time', 'seconds', 's'),
+                ('g', 'Gravitational field strength', 'm/s²', '')]}],
 
 "inheritance": [{'common_mistake': 'MITOSIS produces IDENTICAL cells (used for growth and repair). MEIOSIS produces GAMETES with HALF '
                     'the chromosome number — and they are genetically different from each other. Students often '
@@ -7656,7 +7502,7 @@ BIOLOGY_SUBTOPICS_ALL = {
                                    3: 'Seed banks are conservation facilities — not commercial enterprises, though '
                                       'some seed collections are used to support farmers.'}}],
   'rp': None,
-  'spec': '4.7.4',
+  'spec': '4.7.3.1',
   'summary': 'Define biodiversity, explain its importance and describe threats to it and conservation measures.',
   'theory': [{'content': 'BIODIVERSITY is the variety of life on Earth.\n'
                          '\n'
@@ -7728,6 +7574,414 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'Biodiversity',
   'triple_only': None,
   'variables': []},
+  {'common_mistake': 'Pollution is not only about litter you can see. Invisible pollution — sewage and '
+                   'fertiliser in water, acidic gases in air, pesticides soaking into land — often does the '
+                   'most damage to biodiversity. Also remember: MORE people AND a higher standard of living '
+                   'both increase waste, not just population size alone.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'waste-management',
+ 'key_note': 'Rising population + higher living standards → more resources used, more waste, more pollution. '
+             'Pollution occurs in water (sewage, fertiliser, toxic chemicals), air (smoke, sulfur '
+             'dioxide/acid rain) and land (landfill, pesticides/herbicides). Pollution kills organisms and '
+             'reduces biodiversity.',
+ 'matching': {'instruction': 'Sort each pollutant into the environment it mainly pollutes.',
+              'pairs': [('Water', 'Sewage — untreated human waste released into rivers and seas'),
+                        ('Water', 'Fertiliser washed off farmland causing eutrophication'),
+                        ('Air', 'Sulfur dioxide from burning fuels, causing acid rain'),
+                        ('Air', 'Smoke and smoke particles from combustion'),
+                        ('Land', 'Landfill — rubbish buried in the ground'),
+                        ('Land', 'Pesticides and herbicides sprayed on crops')],
+              'title': 'Where Does This Pollution Happen?'},
+ 'quiz': [{'opts': [('People use more resources and produce more waste per person', True),
+                    ('People automatically have more children', False),
+                    ('A higher standard of living has no effect on pollution', False),
+                    ('People move to the countryside where there is less waste', False)],
+           'q': 'Why does a rising human standard of living increase pollution, even where population is '
+                'stable?',
+           'wrong_explanations': {1: 'Standard of living is about resource use per person, not birth rate — '
+                                     'both population size AND resource use per person raise pollution.',
+                                  2: 'It is the extra resource use and waste per person that increases '
+                                     'pollution, not the standard of living itself being harmless.',
+                                  3: 'Where people go does not remove the waste — a higher standard of '
+                                     'living means each person consumes and discards more.'}},
+          {'opts': [('Water', True),
+                    ('Air', False),
+                    ('Land only', False),
+                    ('None — fertiliser is not a pollutant', False)],
+           'q': 'Fertiliser washing into a river reduces biodiversity. Which environment is being polluted?',
+           'wrong_explanations': {1: 'Fertiliser in a river is water pollution — it causes eutrophication, '
+                                     'lowering oxygen and killing fish.',
+                                  2: 'Fertiliser run-off enters water, not the air.',
+                                  3: 'Fertiliser is a pollutant when it reaches water — it damages the '
+                                     'ecosystem even though it helps crops grow on land.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.2',
+ 'summary': 'Explain how human population growth and rising living standards increase pollution of water, '
+            'air and land, reducing biodiversity.',
+ 'theory': [{'content': 'The human POPULATION is growing rapidly, and the STANDARD OF LIVING is rising in '
+                        'many countries.\n'
+                        '\n'
+                        'Both of these mean humans use MORE RESOURCES and produce MORE WASTE.\n'
+                        '\n'
+                        'Unless this waste and the chemicals in it are handled properly, more POLLUTION is '
+                        'caused.\n'
+                        '\n'
+                        'Pollution KILLS plants and animals, which REDUCES BIODIVERSITY (the variety of '
+                        'living things in an area).',
+             'heading': 'Why pollution is increasing'},
+            {'content': 'Pollution can occur in three places:\n'
+                        '\n'
+                        'IN WATER — from sewage, from fertiliser washed off fields, and from toxic '
+                        'chemicals. Fertiliser causes eutrophication (algae bloom → less oxygen → fish '
+                        'die).\n'
+                        '\n'
+                        'IN AIR — from smoke and from acidic gases such as sulfur dioxide, which cause acid '
+                        'rain.\n'
+                        '\n'
+                        'ON LAND — from landfill (buried rubbish) and from toxic chemicals such as '
+                        'pesticides and herbicides, which can wash into soil and water.',
+             'heading': 'The three places pollution happens'},
+            {'content': 'Every source of pollution damages HABITATS and directly KILLS organisms.\n'
+                        '\n'
+                        'When organisms die or habitats are destroyed, the number of species and their '
+                        'numbers fall — biodiversity DECREASES.\n'
+                        '\n'
+                        'Managing waste properly (treating sewage, filtering gases, recycling) reduces '
+                        'pollution and helps protect biodiversity.',
+             'heading': 'Why it matters'}],
+ 'title': 'Waste Management and Pollution',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'Destroying a peat bog harms the environment in TWO ways, not one: it reduces '
+                   'biodiversity (habitat lost) AND releases carbon dioxide (stored carbon escapes as the '
+                   'peat decays or is burned). Many students only mention one. Peat is extracted mainly for '
+                   'COMPOST, not just as a fuel.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'land-use',
+ 'key_note': 'Humans reduce land for other species by building, quarrying, farming and dumping waste. Peat '
+             'bogs store carbon and are rich habitats. Extracting peat for compost/fuel destroys the habitat '
+             '(lowering biodiversity) and releases CO₂ when peat decays or burns. Use peat-free compost.',
+ 'matching': {'instruction': 'Sort each statement into a human land use or a consequence of destroying peat '
+                             'bogs.',
+              'pairs': [('Human land use', 'Building houses, factories and roads'),
+                        ('Human land use', 'Quarrying rock and minerals'),
+                        ('Human land use', 'Farming crops and livestock'),
+                        ('Consequence of peat destruction',
+                         'Carbon dioxide released as peat decays or burns'),
+                        ('Consequence of peat destruction', 'Loss of a specialised habitat'),
+                        ('Consequence of peat destruction', 'Reduced biodiversity of bog species')],
+              'title': 'Land Use: Cause or Consequence?'},
+ 'quiz': [{'opts': [('Peat stores carbon from partly-decayed plants; decay or burning releases it as CO₂',
+                     True),
+                    ('Peat is made of pure carbon dioxide gas', False),
+                    ('Machines used to dig peat run on petrol', False),
+                    ('Peat reflects sunlight, warming the air', False)],
+           'q': 'Why does draining and extracting peat release carbon dioxide?',
+           'wrong_explanations': {1: 'Peat is partly-decayed plant material that locked away carbon; when it '
+                                     'decays in air or is burned, that carbon is released as CO₂.',
+                                  2: 'Peat is solid plant material, not CO₂ gas — the CO₂ is released only '
+                                     'when the stored carbon reacts with oxygen.',
+                                  3: 'The machinery is a minor factor; the main release is the carbon stored '
+                                     'in the peat itself escaping as CO₂.'}},
+          {'opts': [('Buying peat-free compost for gardens', True),
+                    ('Extracting peat faster so it is used up sooner', False),
+                    ('Burning peat instead of using it as compost', False),
+                    ('Draining more bogs to create farmland', False)],
+           'q': 'Which single change would best protect peat bog biodiversity?',
+           'wrong_explanations': {1: 'If gardeners choose peat-free compost, demand for peat falls, so fewer '
+                                     'bogs are destroyed and their biodiversity is protected.',
+                                  2: 'Extracting peat faster destroys the habitat sooner — the opposite of '
+                                     'protecting it.',
+                                  3: 'Burning peat still destroys the bog and releases CO₂.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.3',
+ 'summary': 'Describe how humans reduce land available for other organisms, and explain why destroying peat '
+            'bogs harms biodiversity and releases carbon dioxide.',
+ 'theory': [{'content': 'Humans REDUCE the amount of land available for other plants and animals.\n'
+                        '\n'
+                        'We use land for:\n'
+                        'BUILDING — houses, factories, roads.\n'
+                        'QUARRYING — digging out rock and minerals.\n'
+                        'FARMING — growing crops and keeping animals.\n'
+                        'DUMPING WASTE — landfill sites.\n'
+                        '\n'
+                        'Every time land is used for these, HABITATS are destroyed and there is less space '
+                        'for wild species — so biodiversity falls.',
+             'heading': 'How humans use up land'},
+            {'content': 'PEAT BOGS are waterlogged areas where dead plants do not fully decay (there is not '
+                        'enough oxygen for decomposers).\n'
+                        '\n'
+                        'Over thousands of years the partly-decayed plants build up as PEAT.\n'
+                        '\n'
+                        'Because the plants never fully decayed, peat STORES a large amount of CARBON.\n'
+                        '\n'
+                        'Peat bogs are an important HABITAT for many specialised plants, animals and '
+                        'microorganisms.',
+             'heading': 'What peat bogs are'},
+            {'content': 'Peat is dug up (extracted) to sell as COMPOST for gardens and for commercial food '
+                        'production, and it can be burned as a fuel.\n'
+                        '\n'
+                        'Destroying peat bogs:\n'
+                        'REDUCES the area of this habitat → the biodiversity of the species living there '
+                        'DECREASES.\n'
+                        'Releases CARBON DIOXIDE — when peat is drained and decays, or is burned, the stored '
+                        'carbon is released as CO₂, adding to global warming.\n'
+                        '\n'
+                        'Using peat-free compost helps protect peat bogs.',
+             'heading': 'Why destroying peat bogs is a problem'}],
+ 'title': 'Land Use and Peat Bogs',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'Deforestation raises atmospheric CO₂ for TWO separate reasons: fewer trees means less '
+                   'CO₂ is absorbed by photosynthesis, AND burning or decay of the wood releases stored CO₂. '
+                   'Give both. Also, decay releases CO₂ because MICROORGANISMS respire as they break the '
+                   'wood down — it is a biological process.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'deforestation',
+ 'key_note': 'Tropical deforestation provides land for cattle, rice fields and biofuel crops. Consequences: '
+             'less CO₂ removed (less photosynthesis), more CO₂ released (burning trees + microbial decay of '
+             'wood), and reduced biodiversity from habitat loss.',
+ 'matching': {'instruction': 'Sort each into a reason for deforestation or a consequence of it.',
+              'pairs': [('Reason for deforestation', 'Clearing land to graze cattle'),
+                        ('Reason for deforestation', 'Creating rice fields to grow more food'),
+                        ('Reason for deforestation', 'Growing crops to make biofuels'),
+                        ('Consequence of deforestation', 'Less carbon dioxide removed by photosynthesis'),
+                        ('Consequence of deforestation', 'Carbon dioxide released by burning and decay'),
+                        ('Consequence of deforestation', 'Reduced biodiversity as habitats are lost')],
+              'title': 'Deforestation: Reason or Consequence?'},
+ 'quiz': [{'opts': [('Fewer trees means less photosynthesis, so less CO₂ is absorbed', True),
+                    ('Trees release oxygen that destroys carbon dioxide', False),
+                    ('Cutting trees cools the planet, trapping CO₂ in the soil', False),
+                    ('Deforestation increases the number of decomposers', False)],
+           'q': 'How does deforestation lead to LESS carbon dioxide being removed from the atmosphere?',
+           'wrong_explanations': {1: 'Trees remove CO₂ by photosynthesis; with fewer trees, less CO₂ is '
+                                     'taken out of the air.',
+                                  2: 'Photosynthesis absorbs CO₂ — oxygen release does not "destroy" carbon '
+                                     'dioxide.',
+                                  3: 'Removing trees reduces CO₂ uptake; it does not trap carbon in the '
+                                     'soil.'}},
+          {'opts': [('Microorganisms respire as they break down the dead wood, releasing CO₂', True),
+                    ('Wood turns directly into carbon dioxide with no organisms involved', False),
+                    ('Decay absorbs carbon dioxide from the air', False),
+                    ('Only burning releases CO₂ — decay does not', False)],
+           'q': 'Burning felled trees and the decay of leftover wood both release carbon dioxide. Why does '
+                'decay release CO₂?',
+           'wrong_explanations': {1: 'Decomposer microorganisms respire while feeding on the dead wood, and '
+                                     'respiration releases carbon dioxide.',
+                                  2: 'Decay is a biological process — microorganisms carry it out; wood does '
+                                     'not spontaneously become CO₂.',
+                                  3: 'Decay releases CO₂, it does not absorb it.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.4',
+ 'summary': 'Explain the reasons for large-scale deforestation in tropical areas and its consequences for '
+            'carbon dioxide levels and biodiversity.',
+ 'theory': [{'content': 'Large-scale DEFORESTATION (cutting down forests) has happened in tropical areas '
+                        'to:\n'
+                        '\n'
+                        'Provide land for CATTLE and for RICE FIELDS (to produce more food).\n'
+                        '\n'
+                        'Grow crops used to make BIOFUELS (fuels made from plants, e.g. ethanol).\n'
+                        '\n'
+                        'Tropical forests are cleared quickly, often by cutting and burning the trees.',
+             'heading': 'Why forests are cut down'},
+            {'content': 'Deforestation changes the balance of carbon dioxide in the atmosphere in TWO ways:\n'
+                        '\n'
+                        'LESS CO₂ IS REMOVED — fewer trees means less PHOTOSYNTHESIS, so less carbon dioxide '
+                        'is taken out of the air.\n'
+                        '\n'
+                        'MORE CO₂ IS RELEASED — burning the trees releases CO₂, and when microorganisms '
+                        'DECAY the felled wood they release CO₂ during respiration.\n'
+                        '\n'
+                        'The overall result is that atmospheric carbon dioxide INCREASES, adding to global '
+                        'warming.',
+             'heading': 'Effect on carbon dioxide'},
+            {'content': 'Forests, especially tropical rainforests, are the richest habitats on Earth.\n'
+                        '\n'
+                        'When a forest is destroyed, the HABITAT of countless species is lost.\n'
+                        '\n'
+                        'Many species become locally extinct — so BIODIVERSITY is REDUCED.\n'
+                        '\n'
+                        'Lost biodiversity can mean losing species before we even know their value (for '
+                        'example, plants that could be new medicines).',
+             'heading': 'Effect on biodiversity'}],
+ 'title': 'Deforestation',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'In BIOLOGY, focus on the LIVING consequences of global warming — changes in species '
+                   'distribution, migration, and biodiversity — not just the greenhouse-gas chemistry. Also, '
+                   "'distribution' means WHERE a species lives (its range), not how many there are. Rising "
+                   'sea level is caused by BOTH melting ice AND warm water expanding.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'global-warming',
+ 'key_note': 'Rising CO₂ and methane (greenhouse gases) trap heat → global warming. Biological consequences: '
+             'changed species distribution, altered migration patterns, rising sea levels flooding habitats, '
+             'and reduced biodiversity. Evidence comes from global data; treat model predictions with '
+             'appropriate caution.',
+ 'matching': {'instruction': 'Sort each into a cause of global warming or a biological effect of it.',
+              'pairs': [('Cause', 'Rising carbon dioxide from burning fossil fuels'),
+                        ('Cause', 'Rising methane from livestock farming'),
+                        ('Cause', 'Deforestation reducing CO₂ absorption'),
+                        ('Biological effect', 'Species distribution shifting towards the poles'),
+                        ('Biological effect', 'Changes in bird migration timing'),
+                        ('Biological effect', 'Coastal habitats lost as sea levels rise')],
+              'title': 'Global Warming: Cause or Effect?'},
+ 'quiz': [{'opts': [('The geographic area where the species is found', True),
+                    ('The total number of individuals in the species', False),
+                    ('How the food is shared within a population', False),
+                    ('The genetic variety within the species', False)],
+           'q': 'Global warming changes the "distribution" of a species. What does distribution mean?',
+           'wrong_explanations': {1: 'Distribution is the range — the places on Earth where a species lives. '
+                                     'Warming shifts this range.',
+                                  2: 'That is population size, not distribution.',
+                                  3: 'That is not what distribution means in ecology.'}},
+          {'opts': [('Melting ice and thermal expansion of warmer water', True),
+                    ('Photosynthesis and respiration', False),
+                    ('More rain falling on land', False),
+                    ('Fish releasing carbon dioxide', False)],
+           'q': 'Which pair of processes is causing sea levels to rise?',
+           'wrong_explanations': {1: 'Warming melts land ice (adding water) and makes existing sea water '
+                                     'expand as it warms — both raise sea level.',
+                                  2: 'Photosynthesis and respiration cycle carbon; they do not raise sea '
+                                     'level.',
+                                  3: 'Rainfall does not cause the long-term rise; melting ice and thermal '
+                                     'expansion do.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.5',
+ 'summary': 'Describe how rising carbon dioxide and methane cause global warming, and explain its biological '
+            'consequences for species distribution, migration and biodiversity.',
+ 'theory': [{'content': 'The levels of CARBON DIOXIDE and METHANE in the atmosphere are INCREASING.\n'
+                        '\n'
+                        "These are GREENHOUSE GASES — they trap heat energy near the Earth's surface.\n"
+                        '\n'
+                        "As their levels rise, more heat is trapped, so the Earth's average temperature is "
+                        'increasing. This is GLOBAL WARMING.\n'
+                        '\n'
+                        'Human activities that raise these gases include burning fossil fuels, '
+                        'deforestation, and farming livestock (which produce methane).',
+             'heading': 'What is causing global warming'},
+            {'content': 'Global warming has serious effects on living things:\n'
+                        '\n'
+                        'CHANGES IN DISTRIBUTION — as temperatures change, some species can no longer '
+                        'survive where they used to live, so their geographic range shifts (often towards '
+                        'the poles or higher ground).\n'
+                        '\n'
+                        'CHANGES IN MIGRATION PATTERNS — migrating animals (e.g. birds) may arrive earlier '
+                        'or travel to different places as seasons shift.\n'
+                        '\n'
+                        'RISING SEA LEVELS — melting ice and the expansion of warmer water raise sea levels, '
+                        'flooding coastal HABITATS.\n'
+                        '\n'
+                        'REDUCED BIODIVERSITY — species that cannot move or adapt fast enough may become '
+                        'extinct.',
+             'heading': 'Biological consequences'},
+            {'content': 'Scientists collect DATA on temperature, CO₂ levels, ice cover and species ranges '
+                        'from all over the world.\n'
+                        '\n'
+                        'There is strong evidence that human activity is causing global warming.\n'
+                        '\n'
+                        'We must be careful about UNCERTAINTIES — climate is complex and predictions rely on '
+                        'models — but the overall trend is clear.\n'
+                        '\n'
+                        'You should be able to read graphs of these data and describe what they show without '
+                        'overstating certainty.',
+             'heading': 'Evaluating the evidence'}],
+ 'title': 'Global Warming and Its Effects on Ecosystems',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': "'Maintaining biodiversity' is about active human PROGRAMMES (breeding, protecting "
+                   "habitats, hedgerows, recycling, cutting emissions), not just 'stop polluting'. Also be "
+                   'ready to explain the CONFLICT: conservation costs money and land, so it competes with '
+                   'farming, building and jobs.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'maintaining-biodiversity',
+ 'key_note': 'Programmes to maintain biodiversity: breeding programmes for endangered species; protecting '
+             'and regenerating rare habitats; reintroducing field margins and hedgerows; governments '
+             'reducing deforestation and CO₂ emissions; recycling instead of landfill. These conflict with '
+             'human needs (cost, food, land, livelihoods).',
+ 'matching': {'instruction': 'Sort each into a measure that maintains biodiversity or a human need that '
+                             'conflicts with it.',
+              'pairs': [('Conservation measure', 'Breeding programmes for endangered species'),
+                        ('Conservation measure', 'Reintroducing hedgerows and field margins on farms'),
+                        ('Conservation measure', 'Recycling resources instead of using landfill'),
+                        ('Conflicting human need', 'Money that could be spent on hospitals or schools'),
+                        ('Conflicting human need', 'Land needed for farming and housing'),
+                        ('Conflicting human need', 'Local jobs that depend on logging or fishing')],
+              'title': 'Conservation Measure or Human Conflict?'},
+ 'quiz': [{'opts': [('They provide food and shelter for a wider range of species', True),
+                    ('They increase the yield of the single crop', False),
+                    ('They stop the farmer using any pesticides', False),
+                    ('They remove all competition between species', False)],
+           'q': 'Why might reintroducing hedgerows and field margins on a large single-crop farm increase '
+                'biodiversity?',
+           'wrong_explanations': {1: 'Hedgerows and margins add habitat variety, giving insects, birds and '
+                                     'mammals food and shelter, so more species can live there.',
+                                  2: 'Their main benefit here is biodiversity, not crop yield.',
+                                  3: 'Hedgerows help wildlife but do not automatically stop pesticide use.'}},
+          {'opts': [('Protecting a habitat reduces land available for farming or building', True),
+                    ('Protecting a habitat always makes everyone wealthier', False),
+                    ('Conservation never costs any money', False),
+                    ('Endangered species breed better without any human help', False)],
+           'q': 'Conservation programmes often cause conflict. Which is an example of that conflict?',
+           'wrong_explanations': {1: 'Land set aside for conservation cannot be used for farms or houses — '
+                                     'that is the trade-off with human needs.',
+                                  2: 'Conservation has costs and can limit development, so it does not '
+                                     'always make everyone wealthier.',
+                                  3: 'Conservation programmes need funding — that cost is exactly what '
+                                     'creates conflict.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.6',
+ 'summary': 'Describe the programmes humans use to reduce their impact on ecosystems and maintain '
+            'biodiversity, and the conflicts these can involve.',
+ 'theory': [{'content': 'Human activities — pollution, land use, deforestation and global warming — REDUCE '
+                        'biodiversity.\n'
+                        '\n'
+                        'Scientists and governments have set up PROGRAMMES to reduce these negative effects '
+                        'and help maintain ecosystems and biodiversity.\n'
+                        '\n'
+                        'Maintaining biodiversity protects the ECOSYSTEM SERVICES humans rely on (food, '
+                        'clean water, pollination) as well as the species themselves.',
+             'heading': 'Why we act to protect biodiversity'},
+            {'content': 'Key measures include:\n'
+                        '\n'
+                        'BREEDING PROGRAMMES for endangered species (for example in zoos), to increase their '
+                        'numbers.\n'
+                        '\n'
+                        'PROTECTION and REGENERATION of rare habitats, such as nature reserves and '
+                        'replanting.\n'
+                        '\n'
+                        'Reintroducing FIELD MARGINS and HEDGEROWS on farms that grow only one crop, giving '
+                        'wildlife food and shelter.\n'
+                        '\n'
+                        'Governments REDUCING deforestation and carbon dioxide emissions.\n'
+                        '\n'
+                        'RECYCLING resources rather than dumping waste in landfill.',
+             'heading': 'Programmes that maintain biodiversity'},
+            {'content': 'Protecting biodiversity often CONFLICTS with human needs and pressures:\n'
+                        '\n'
+                        'COST — conservation programmes need money that could be spent elsewhere.\n'
+                        '\n'
+                        'FOOD AND LAND — protecting habitats can limit land available for farming or '
+                        'building.\n'
+                        '\n'
+                        'LOCAL LIVELIHOODS — people may depend on activities (logging, fishing) that damage '
+                        'biodiversity.\n'
+                        '\n'
+                        'So decisions involve balancing the benefits of biodiversity against these human '
+                        'needs — there is not always an easy answer.',
+             'heading': 'Conflicts and trade-offs'}],
+ 'title': 'Maintaining Biodiversity',
+ 'triple_only': None,
+ 'variables': []},
  {'common_mistake': 'PLANTS also respire — they release CO₂ just like animals. The difference is that during the DAY, '
                     'photosynthesis removes MORE CO₂ than respiration releases — so there is net CO₂ uptake. At night, '
                     "only respiration occurs. Students often say 'plants absorb CO₂, they don't release it' — this is "
@@ -7959,136 +8213,7 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'The Water Cycle',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'DENITRIFYING bacteria convert NITRATES BACK TO N₂ — they REDUCE soil nitrogen and make it less '
-                    'fertile. NITRIFYING bacteria convert AMMONIA TO NITRATES — they INCREASE soil nitrogen '
-                    'availability. These are opposite processes by different bacteria. Denitrification is favoured in '
-                    'WATERLOGGED (anaerobic) soils.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'nitrogen-cycle',
-  'key_note': 'N₂ → ammonia: nitrogen-fixing bacteria (soil or root nodules). Ammonia → nitrates: nitrifying bacteria. '
-              'Plants absorb nitrates. Decomposers release ammonia. Nitrates → N₂: denitrifying bacteria (anaerobic). '
-              'Eutrophication: nitrate leaching → algal bloom → O₂ depletion → fish die.',
-  'matching': {'instruction': 'Match each process to the bacteria responsible and what it converts.',
-               'pairs': [('Nitrogen fixation',
-                          'Nitrogen-fixing bacteria — convert N₂ gas to ammonia in soil or root nodules'),
-                         ('Nitrification',
-                          'Nitrifying bacteria — convert ammonia to nitrites then nitrates in the soil'),
-                         ('Denitrification',
-                          'Denitrifying bacteria — convert nitrates back to N₂ gas in waterlogged soil'),
-                         ('Decomposition (ammonification)',
-                          'Decomposers (bacteria/fungi) — break down proteins in dead organisms, releasing ammonia'),
-                         ('Absorption',
-                          'Plant roots absorb nitrate ions from the soil to make amino acids and proteins')],
-               'title': 'Match the Nitrogen Cycle Process'},
-  'quiz': [{'opts': [('N₂ is an extremely unreactive gas — it must be fixed into ammonia or nitrates by bacteria '
-                      'before plants can use it',
-                      True),
-                     ('N₂ molecules are too large to pass through root cell membranes', False),
-                     ('Nitrogen is toxic to plants in its atmospheric form', False),
-                     ("Plants already have enough nitrogen — they don't need more from the atmosphere", False)],
-            'q': "Why can't plants use atmospheric nitrogen (N₂) directly?",
-            'wrong_explanations': {1: 'N₂ is a small molecule — its unreactivity is due to the very strong triple bond '
-                                      'between the nitrogen atoms, not its size.',
-                                   2: 'N₂ is completely non-toxic — it makes up 78% of the air we breathe. Its issue '
-                                      'is extreme chemical stability, not toxicity.',
-                                   3: 'Plants are frequently nitrogen-limited in their growth — nitrogen deficiency '
-                                      'causes yellowing leaves (chlorosis). They need nitrogen continuously.'}},
-           {'opts': [('Excess nitrates enter water → algal bloom → plants die → decomposers use all O₂ → fish '
-                      'suffocate — caused by fertiliser leaching from farmland',
-                      True),
-                     ('Acid rain lowering the pH of lakes and rivers — caused by nitrogen oxides from vehicle exhausts',
-                      False),
-                     ('Plastic pollution blocking light from reaching aquatic plants in rivers and lakes', False),
-                     ('Warming water temperatures reducing oxygen solubility — caused by climate change', False)],
-            'q': 'What is eutrophication and what causes it?',
-            'wrong_explanations': {1: 'Acid rain from nitrogen oxides is a real environmental problem — but '
-                                      'eutrophication specifically refers to the nitrate leaching → algal bloom → '
-                                      'oxygen depletion sequence.',
-                                   2: 'Plastic pollution is a serious problem — but eutrophication is specifically '
-                                      'caused by NUTRIENT enrichment (excess nitrates/phosphates), not plastic.',
-                                   3: 'Warming does reduce oxygen solubility — but eutrophication is specifically the '
-                                      'nutrient enrichment process causing algal blooms and oxygen depletion.'}},
-           {'opts': [('Legumes have root nodules containing nitrogen-fixing bacteria — these add nitrates to the soil, '
-                      'naturally fertilising it for the next crop',
-                      True),
-                     ('Legumes have deeper roots that break up compacted soil to improve drainage', False),
-                     ('Legumes produce chemicals that kill pests and diseases in the soil', False),
-                     ('Legumes absorb excess water that would otherwise waterlog the soil', False)],
-            'q': 'Why do farmers rotate crops, sometimes planting legumes (e.g. clover or peas)?',
-            'wrong_explanations': {1: 'Root depth is an advantage of some legumes — but the primary reason for '
-                                      'including them in rotation is NITROGEN FIXATION by Rhizobium bacteria in root '
-                                      'nodules.',
-                                   2: 'Some plants do suppress soil pests — but the specific benefit of legumes in '
-                                      'crop rotation is nitrogen fixation, not pest control.',
-                                   3: "Legumes don't have exceptional water absorption compared to other plants — the "
-                                      'key benefit is nitrogen fixation.'}}],
-  'rp': None,
-  'spec': '4.7.3',
-  'summary': 'Describe how nitrogen is cycled through ecosystems by bacteria and other processes.',
-  'theory': [{'content': 'NITROGEN is essential for life — it is a key component of:\n'
-                         'AMINO ACIDS — the building blocks of proteins (enzymes, structural proteins, haemoglobin).\n'
-                         'NUCLEOTIDES — the building blocks of DNA and RNA.\n'
-                         'CHLOROPHYLL — the photosynthetic pigment in plants.\n'
-                         '\n'
-                         'Nitrogen makes up approximately 78% of the atmosphere — but as N₂ gas, which is EXTREMELY '
-                         'UNREACTIVE. Plants and animals CANNOT use N₂ directly.\n'
-                         '\n'
-                         'Nitrogen must first be FIXED — converted into a usable form (ammonia or nitrates) — before '
-                         'organisms can use it.\n'
-                         '\n'
-                         'The nitrogen cycle describes how nitrogen moves between the atmosphere, soil, plants, '
-                         'animals and decomposers.',
-              'heading': 'Why Nitrogen is Essential'},
-             {'content': 'NITROGEN FIXATION — converting N₂ to ammonia (NH₃):\n'
-                         'CARRIED OUT BY: nitrogen-fixing bacteria.\n'
-                         'IN SOIL: free-living bacteria (e.g. Azotobacter) fix N₂ in the soil.\n'
-                         'IN ROOT NODULES: mutualistic bacteria (Rhizobium) live in the root nodules of LEGUMES (peas, '
-                         'beans, clover, soybeans). They fix N₂, providing the plant with nitrates. The plant provides '
-                         'the bacteria with glucose.\n'
-                         'LIGHTNING: very high energy lightning can also fix small amounts of N₂.\n'
-                         '\n'
-                         'NITRIFICATION — converting ammonia to nitrates:\n'
-                         'Ammonia (NH₃) in the soil is converted to NITRITES then NITRATES (NO₃⁻) by NITRIFYING '
-                         'BACTERIA.\n'
-                         'Plants can absorb nitrates through their roots.\n'
-                         '\n'
-                         'ABSORPTION — plants absorb nitrates from soil → use them to make amino acids → proteins.\n'
-                         '\n'
-                         'CONSUMPTION — animals eat plants → nitrogen passes along food chains.\n'
-                         '\n'
-                         'DECOMPOSITION — when organisms die:\n'
-                         'DECOMPOSERS (bacteria and fungi) break down proteins and nucleic acids in dead organisms and '
-                         'waste.\n'
-                         'They release nitrogen as AMMONIA (ammonification).\n'
-                         'Ammonia → nitrification → nitrates (cycle continues).\n'
-                         '\n'
-                         'DENITRIFICATION — converting nitrates back to N₂:\n'
-                         'DENITRIFYING BACTERIA convert nitrates → N₂ gas, which returns to the atmosphere.\n'
-                         "Occurs mainly in WATERLOGGED (anaerobic) soils — these bacteria don't need oxygen.\n"
-                         'Reduces soil fertility.',
-              'heading': 'The Key Processes'},
-             {'content': 'FERTILISERS:\n'
-                         'Farmers add ARTIFICIAL FERTILISERS (ammonium nitrate, etc.) or ORGANIC FERTILISERS (manure, '
-                         'compost) to replace nitrates removed by harvesting crops.\n'
-                         'Excess fertiliser can be washed from fields into rivers and lakes by rain — a process called '
-                         'LEACHING.\n'
-                         '\n'
-                         'EUTROPHICATION — the consequence of nitrate leaching:\n'
-                         '1. Excess nitrates enter a river or lake.\n'
-                         '2. Algae grow rapidly (algal bloom) — covering the water surface.\n'
-                         '3. Light cannot penetrate to underwater plants — they die.\n'
-                         '4. Dead plants and algae are decomposed by bacteria.\n'
-                         '5. Decomposing bacteria use up all the OXYGEN in the water (aerobic decomposition).\n'
-                         '6. Oxygen concentration falls → fish and other aquatic animals suffocate and die.\n'
-                         '\n'
-                         'NITROGEN OXIDES from vehicle exhausts and power stations:\n'
-                         'Fall as ACID RAIN — damages vegetation and acidifies rivers and lakes.',
-              'heading': 'Human Impact on the Nitrogen Cycle'}],
-  'title': 'The Nitrogen Cycle',
-  'triple_only': None,
-  'variables': []},
+ 
  {'common_mistake': 'DECOMPOSERS are bacteria and fungi — they chemically break down organic matter using enzymes. '
                     'DETRITIVORES (earthworms, woodlice) physically shred material into smaller pieces — increasing '
                     'surface area for decomposers. Detritivores do NOT chemically decompose material. Both are '

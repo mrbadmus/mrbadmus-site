@@ -1105,142 +1105,6 @@ BIOLOGY_SUBTOPICS_ALL = {
               'heading': 'Exchange Surfaces in Multicellular Organisms'}],
   'title': 'Diffusion, Osmosis and Active Transport',
   'triple_only': None,
-  'variables': []},
- {'common_mistake': 'Petri dishes in school are incubated at 25°C — NOT at 37°C (body temperature). This is '
-                    'deliberately to reduce the risk of growing dangerous human pathogens. A larger inhibition zone '
-                    'means MORE effective antibiotic — the bacteria cannot grow in that area. A disc with no clear '
-                    'zone = resistant bacteria.',
-  'equations': ['Area of inhibition zone = π × r²'],
-  'fifas': [{'label': 'Inhibition Zone Area',
-             'question': 'An antibiotic disc produces a clear zone with a diameter of 18 mm. Calculate the area of the '
-                         'inhibition zone.',
-             'steps': [('F', 'Area = π × r²'),
-                       ('I', 'Diameter = 18 mm → radius = 9 mm. Area = π × 9²'),
-                       ('F', 'Area = π × 81 = 254.47...'),
-                       ('A', 'Area ≈ 254 mm²')]}],
-  'higher': None,
-  'id': 'culturing-microorganisms',
-  'key_note': 'Culture medium: agar + nutrients in Petri dish. Aseptic technique: sterilise equipment, flame loops, '
-              'work near Bunsen. Incubate at max 25°C in school (safety). Inhibition zone: clear area around '
-              'antibiotic disc — larger = more effective.',
-  'matching': {'instruction': 'Match each step to why it is done.',
-               'pairs': [('Autoclave Petri dishes and media', 'Kills all microorganisms including spores before use'),
-                         ('Flame the inoculating loop',
-                          'Sterilises the loop before and after use — prevents contamination'),
-                         ('Work near a Bunsen burner',
-                          'Rising hot air carries airborne contaminants away from the work surface'),
-                         ('Seal Petri dish with tape',
-                          'Prevents airborne microorganisms from entering after inoculation'),
-                         ('Incubate at 25°C not 37°C', 'Safety — reduces risk of growing dangerous human pathogens'),
-                         ('Larger inhibition zone',
-                          'More effective antibiotic — bacteria cannot grow in a wider area')],
-               'title': 'Match the Aseptic Technique Step'},
-  'quiz': [{'opts': [('Safety — bacteria that grow optimally at 37°C are more likely to be harmful human pathogens',
-                      True),
-                     ('Bacteria grow faster at 25°C', False),
-                     ('37°C would melt the agar', False),
-                     ('Antibiotics only work at 25°C', False)],
-            'q': 'Why are school bacterial cultures incubated at 25°C rather than 37°C?',
-            'wrong_explanations': {1: 'Bacteria generally grow FASTER at higher temperatures — 37°C would give quicker '
-                                      'results, but the safety risk outweighs this.',
-                                   2: 'Agar melts at much higher temperatures (around 85°C) — 37°C would not melt it.',
-                                   3: 'Antibiotic effectiveness is not temperature-dependent in this way — the safety '
-                                      'concern is the primary reason.'}},
-           {'opts': [('The antibiotic is highly effective against that bacterium — it diffuses outward and kills '
-                      'bacteria in a wide area',
-                      True),
-                     ('The bacteria are resistant — they moved away from the antibiotic', False),
-                     ('The disc absorbed the bacteria, leaving a clear area', False),
-                     ('The agar failed to set properly in that area', False)],
-            'q': 'What does a large inhibition zone around an antibiotic disc indicate?',
-            'wrong_explanations': {1: 'Resistant bacteria show NO inhibition zone — they grow right up to the disc.',
-                                   2: "Discs absorb the antibiotic solution — they don't absorb bacteria.",
-                                   3: 'Properly prepared agar sets evenly — uneven setting would affect all areas, not '
-                                      'just around specific discs.'}},
-           {'opts': [('To sterilise it — killing all microorganisms before use (preventing contamination) and after '
-                      'use (preventing spread)',
-                      True),
-                     ('To warm the loop so bacteria transfer more easily', False),
-                     ('To melt the agar so bacteria can be mixed in', False),
-                     ('To activate the bacteria before plating', False)],
-            'q': 'Why is an inoculating loop flamed before and after transferring bacteria?',
-            'wrong_explanations': {1: 'Warming would not sterilise — only red-hot temperatures kill all '
-                                      'microorganisms.',
-                                   2: 'The loop does not touch agar during streaking in a way that needs melting — it '
-                                      'is used at room temperature to spread bacteria on the surface.',
-                                   3: "Bacteria don't need 'activation' — flaming is purely for sterilisation."}}],
-  'rp': 'RP6 — Required practical: investigate the effect of antiseptics or antibiotics on bacterial growth using agar '
-        'plates and measuring inhibition zones.',
-  'spec': '4.1.2',
-  'summary': 'Describe how bacteria are cultured in the laboratory and how to prevent contamination.',
-  'theory': [{'content': 'CULTURING microorganisms means growing them in controlled laboratory conditions so we can '
-                         'study them.\n'
-                         '\n'
-                         'Culturing bacteria is essential for:\n'
-                         'Testing the effectiveness of antibiotics and antiseptics.\n'
-                         'Studying the growth and behaviour of pathogens.\n'
-                         'Producing medicines, foods (yoghurt, bread, cheese) and industrial chemicals.\n'
-                         'Researching new drugs and treatments.\n'
-                         '\n'
-                         'Bacteria and fungi are grown on or in a CULTURE MEDIUM — a substance containing all the '
-                         'nutrients the microorganism needs:\n'
-                         'Carbon source (glucose or other sugar) for energy.\n'
-                         'Nitrogen source (nitrates or amino acids) for protein synthesis.\n'
-                         'Minerals and vitamins.\n'
-                         '\n'
-                         'The most common culture medium is AGAR — a gel made from seaweed. Nutrients are dissolved in '
-                         'warm liquid agar which is then poured into PETRI DISHES where it sets into a firm gel. '
-                         'Bacteria grow on the surface, forming visible colonies.',
-              'heading': 'Why We Culture Microorganisms'},
-             {'content': 'Contamination means unwanted microorganisms getting into the culture — this would give false '
-                         'results and could introduce dangerous pathogens.\n'
-                         '\n'
-                         'ASEPTIC TECHNIQUE is the set of procedures used to prevent contamination:\n'
-                         '\n'
-                         'STERILISING EQUIPMENT:\n'
-                         'Petri dishes and culture media are sterilised using an AUTOCLAVE (high-pressure steam at '
-                         '121°C) — kills all microorganisms including spores.\n'
-                         'Glass equipment (beakers, loops) can be sterilised by heating in a Bunsen flame.\n'
-                         '\n'
-                         'PROCEDURE:\n'
-                         'Work near a Bunsen burner — hot rising air carries contaminants away from the work area.\n'
-                         'Flame the inoculating loop until red hot before AND after use — kills all bacteria on it.\n'
-                         'Flame the neck of the culture bottle or test tube before opening.\n'
-                         'Lift the Petri dish lid only slightly and briefly — never fully open it.\n'
-                         'Seal Petri dishes with tape after inoculation — prevents airborne contamination.\n'
-                         '\n'
-                         'TEMPERATURE OF INCUBATION:\n'
-                         'In school laboratories, cultures are incubated at a MAXIMUM of 25°C — not at body '
-                         'temperature (37°C).\n'
-                         'This is a safety precaution — bacteria that thrive at 37°C are more likely to be harmful '
-                         'human pathogens.\n'
-                         'In industry and research, 37°C may be used under strict controlled conditions.',
-              'heading': 'Preventing Contamination — Aseptic Technique'},
-             {'content': 'Agar plates are used to test which antibiotics or antiseptics are most effective against '
-                         'bacteria.\n'
-                         '\n'
-                         'METHOD:\n'
-                         '1. Spread bacteria evenly over the surface of an agar plate (lawn of bacteria).\n'
-                         '2. Place discs of filter paper soaked in different antibiotics/antiseptics on the agar '
-                         'surface.\n'
-                         '3. Incubate at 25°C for 24–48 hours.\n'
-                         '4. Observe and measure the CLEAR ZONES (inhibition zones) around each disc.\n'
-                         '\n'
-                         'INHIBITION ZONE:\n'
-                         'As the antibiotic/antiseptic diffuses outward from the disc, it kills or inhibits nearby '
-                         'bacteria.\n'
-                         'A LARGER inhibition zone = MORE EFFECTIVE antibiotic/antiseptic at that concentration.\n'
-                         'NO inhibition zone = the bacteria are RESISTANT to that antibiotic.\n'
-                         '\n'
-                         'CALCULATING ZONE AREA:\n'
-                         'Area = π × r² (where r = radius of clear zone)\n'
-                         'Compare zones to determine which substance is most effective.\n'
-                         '\n'
-                         'CONTROL DISC: a disc soaked in distilled water only — confirms that any inhibition is due to '
-                         'the substance, not the disc itself.',
-              'heading': 'Investigating Antibiotic and Antiseptic Effectiveness'}],
-  'title': 'Culturing Microorganisms',
-  'triple_only': None,
   'variables': []}],
 
 "organisation": [{'common_mistake': 'Students confuse tissue and organ. Remember: a tissue is ONE type of cell doing ONE job. An organ '
@@ -3716,270 +3580,7 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'Drug Discovery and Development',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Plants do NOT have an immune system like animals — no antibodies, no lymphocytes, no phagocytes. '
-                    'Their defences are physical (walls, wax, bark) and chemical (poisons, antimicrobials). They are '
-                    'passive or triggered responses, not a learned adaptive immune system.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'plant-disease-detection-defence',
-  'key_note': 'Plant physical defences: cell walls, waxy cuticle, bark, thorns, closing stomata. Chemical defences: '
-              'antibacterial compounds (e.g. allicin), poisons/alkaloids (e.g. nicotine, caffeine, quinine). Active '
-              'responses: hypersensitive response (kills cells around infection), systemic acquired resistance.',
-  'matching': {'instruction': 'Sort each plant defence into physical or chemical.',
-               'pairs': [('Physical', 'Cell walls — rigid cellulose barrier around each cell'),
-                         ('Physical', 'Waxy cuticle — waterproof surface layer prevents colonisation'),
-                         ('Chemical', 'Nicotine in tobacco — highly toxic to insects, deters feeding'),
-                         ('Physical', 'Thorns — deter herbivores from eating the plant'),
-                         ('Chemical', 'Allicin in garlic — antibacterial and antifungal compound'),
-                         ('Chemical', 'Tannins in oak bark — bitter taste deters herbivores')],
-               'title': 'Physical or Chemical Plant Defence?'},
-  'quiz': [{'opts': [('Rose black spot — a fungal disease caused by Diplocarpon rosae', True),
-                     ('Tobacco mosaic virus — a viral disease causing discolouration', False),
-                     ('Salmonella — a bacterial infection from contaminated soil', False),
-                     ('The plant is simply overwatered and needs less water', False)],
-            'q': 'A gardener notices black spots on their rose leaves and the leaves are turning yellow. What is most '
-                 'likely causing this?',
-            'wrong_explanations': {1: 'TMV causes a mosaic pattern of light and dark green/yellow patches — not '
-                                      'specific black spots with yellowing leaves around them.',
-                                   2: 'Salmonella affects animals, not plants — it does not cause leaf spots in roses.',
-                                   3: 'Overwatering can cause some yellowing, but the distinctive BLACK SPOTS '
-                                      'specifically indicate rose black spot fungal infection.'}},
-           {'opts': [('It provides a waterproof physical barrier that prevents pathogens from landing and colonising '
-                      'the leaf surface',
-                      True),
-                     ('It contains antibiotics that kill any bacteria landing on the leaf', False),
-                     ('It absorbs UV radiation to prevent DNA damage in leaf cells', False),
-                     ('It makes leaves slippery so insects cannot grip and feed on them', False)],
-            'q': 'Why does the waxy cuticle on leaves help protect the plant from disease?',
-            'wrong_explanations': {1: 'The cuticle does not contain antibiotics — it is a physical, waterproof '
-                                      'barrier. Plant chemical defences (like tannins or allicin) are separate from '
-                                      'the cuticle.',
-                                   2: 'UV protection is a secondary function in some plants — but the PRIMARY '
-                                      'defensive role of the cuticle is as a physical barrier to pathogens and water '
-                                      'loss.',
-                                   3: 'Waxiness can make leaves slippery, but the main function is waterproofing — '
-                                      'creating an inhospitable surface for pathogen growth.'}},
-           {'opts': [('The plant rapidly kills cells around an infection site, creating a dead zone that contains the '
-                      'pathogen and prevents it spreading',
-                      True),
-                     ('The plant produces excess antibodies to destroy the invading pathogen', False),
-                     ('The plant overreacts to harmless stimuli and closes all its stomata', False),
-                     ('The plant produces spores to spread its own genetic material before dying', False)],
-            'q': 'What is the hypersensitive response in plants?',
-            'wrong_explanations': {1: "Plants don't produce antibodies — that is an animal immune system response. "
-                                      "Plants' active responses involve chemical signalling and cell death.",
-                                   2: "Closing stomata IS a response to pathogens — but the 'hypersensitive response' "
-                                      'specifically refers to deliberately killing cells around the infection site as '
-                                      'a containment strategy.',
-                                   3: 'Sporulation is a reproductive or survival strategy in some fungi and bacteria — '
-                                      'not part of the plant hypersensitive response.'}}],
-  'rp': None,
-  'spec': '4.3.5',
-  'summary': 'Describe how plant diseases are identified and how plants defend themselves against pathogens and pests.',
-  'theory': [{'content': 'Plants can be infected by bacteria, viruses, fungi and other parasites — just like animals. '
-                         'Recognising disease symptoms is important for farmers, gardeners and conservationists.\n'
-                         '\n'
-                         'Common symptoms of plant disease:\n'
-                         'STUNTED GROWTH — plant is smaller or grows more slowly than expected for its age and growing '
-                         'conditions.\n'
-                         'SPOTS ON LEAVES — discoloured patches, often black, brown or orange.\n'
-                         'AREAS OF DECAY (ROT) — brown, soft, collapsing tissue in stems, roots or fruit.\n'
-                         'ABNORMAL GROWTHS — unusual swellings, galls or distorted structures.\n'
-                         'MALFORMED LEAVES OR STEMS — twisted, curled or distorted plant parts.\n'
-                         'DISCOLOURATION — yellowing (chlorosis), bleaching, mosaic patterns.\n'
-                         '\n'
-                         'How to identify the specific cause:\n'
-                         'Look up symptoms in a plant disease identification guide or database.\n'
-                         'Send a sample to a laboratory for microscopic examination.\n'
-                         'Test using specific diagnostic kits (e.g. lateral flow tests for specific pathogens).\n'
-                         'Observe when and where the disease appears — conditions often give clues (e.g. fungal '
-                         'diseases favour wet, warm weather).',
-              'heading': 'Identifying Plant Disease'},
-             {'content': 'Plants have evolved a range of physical defences that act as barriers to prevent pathogens '
-                         'and pests from entering:\n'
-                         '\n'
-                         'CELL WALLS made of cellulose — provide a rigid physical barrier around each cell. Much '
-                         'harder for pathogens to penetrate than a soft cell membrane alone.\n'
-                         '\n'
-                         'WAXY CUTICLE on leaves and stems — a waterproof, waxy layer secreted by epidermal cells. '
-                         'Prevents pathogens from landing and colonising the leaf surface. Also reduces water loss.\n'
-                         '\n'
-                         'BARK on woody stems — tough outer layers protect living tissue (phloem and cambium) '
-                         'underneath from physical damage and pathogen entry.\n'
-                         '\n'
-                         'THORNS and SPINES — physical deterrents to herbivores, reducing the chances of wounds '
-                         'through which pathogens can enter.\n'
-                         '\n'
-                         'CLOSING OF STOMATA — when plants detect pathogen attack, they can close stomata to prevent '
-                         'pathogen entry through these openings.',
-              'heading': 'Physical Defences in Plants'},
-             {'content': 'Plants also produce a wide range of chemicals that deter herbivores and fight pathogens:\n'
-                         '\n'
-                         'ANTIBACTERIAL COMPOUNDS — some plants produce substances with antimicrobial properties:\n'
-                         'Allicin in garlic — shown to have antibacterial and antifungal activity.\n'
-                         'Tannins in oak bark and tea leaves — bitter astringent compounds that deter herbivores and '
-                         'have some antimicrobial properties.\n'
-                         '\n'
-                         'POISONS (ALKALOIDS) — plants produce toxic secondary metabolites to deter animals from '
-                         'eating them:\n'
-                         'Nicotine in tobacco plants — highly toxic to insects (used as an insecticide).\n'
-                         'Caffeine in coffee and tea plants — deters insects from feeding.\n'
-                         'Quinine in cinchona trees — bitter taste deters herbivores; also has antimicrobial '
-                         'properties.\n'
-                         'Digitalis (foxglove) — toxic to vertebrates including humans if eaten in large quantities.\n'
-                         '\n'
-                         'INSECT-REPELLING COMPOUNDS — volatile chemicals released from leaves deter insects from '
-                         'landing and laying eggs.\n'
-                         '\n'
-                         'STICKY RESINS and LATEX — trap insects on the surface or clog their mouthparts if they try '
-                         'to feed.',
-              'heading': 'Chemical Defences in Plants'},
-             {'content': 'Plants can also mount active responses when they detect pathogen invasion:\n'
-                         '\n'
-                         'HYPERSENSITIVE RESPONSE — when a pathogen is detected, the plant rapidly KILLS the cells '
-                         'immediately surrounding the infection site, creating a zone of dead cells.\n'
-                         'This dead zone acts as a firebreak — the pathogen cannot spread through dead cells, '
-                         'containing the infection.\n'
-                         '\n'
-                         'SYSTEMIC ACQUIRED RESISTANCE (SAR) — after a localised infection, the whole plant can become '
-                         'more resistant to future attacks.\n'
-                         'The plant produces signalling molecules (like salicylic acid) that travel to uninfected '
-                         "parts of the plant, 'warning' them to prepare chemical defences.\n"
-                         '\n'
-                         'Many of the chemicals plants produce for defence have also been used by humans:\n'
-                         'Aspirin derived from salicylic acid.\n'
-                         'Quinine — antimalarial drug.\n'
-                         'Morphine and codeine — painkillers from poppies.\n'
-                         'Many modern medicines originated as plant defence chemicals.',
-              'heading': 'Responding to Attack'}],
-  'title': 'Plant Disease Detection and Defence',
-  'triple_only': None,
-  'variables': []},
- {'common_mistake': 'Monoclonal antibodies are NOT the same as normal antibodies — they are IDENTICAL copies from ONE '
-                    'clone, all specific to ONE antigen. Normal (polyclonal) antibodies are a mixture. Also: '
-                    'monoclonal antibodies in cancer treatment target the cancer cells specifically — this is why they '
-                    'cause fewer side effects than chemotherapy (which kills all rapidly dividing cells).',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'monoclonal-antibodies',
-  'key_note': 'Monoclonal antibodies: identical antibodies from one B-lymphocyte clone. Made by fusing lymphocytes '
-              'with tumour cells → hybridoma cells. Uses: pregnancy tests (detect hCG), cancer treatment (targeted '
-              'therapy), diagnostic tests (COVID LFT). More specific than chemotherapy.',
-  'matching': {'instruction': 'Match each use to how monoclonal antibodies are used.',
-               'pairs': [('Pregnancy test',
-                          'Detects hCG hormone — monoclonal antibodies bind to hCG in urine, producing a colour '
-                          'change'),
-                         ('Cancer treatment',
-                          'Antibodies bind to specific proteins on cancer cell surfaces — blocking growth or '
-                          'delivering drugs'),
-                         ('COVID lateral flow test',
-                          'Antibodies detect specific viral antigens — rapid diagnostic result'),
-                         ('Hybridoma cell',
-                          'Fused B-lymphocyte + tumour cell — divides indefinitely and produces specific antibodies')],
-               'title': 'Match the Monoclonal Antibody Use'},
-  'quiz': [{'opts': [('A cell formed by fusing a lymphocyte with a tumour cell — it divides indefinitely AND produces '
-                      'specific antibodies',
-                      True),
-                     ('A lymphocyte that has been infected by a virus — producing antibodies to fight it', False),
-                     ('A stem cell that can differentiate into any type of immune cell', False),
-                     ('A cancer cell that has been trained to produce antibodies by injecting it with antigens',
-                      False)],
-            'q': 'What is a hybridoma cell and why is it useful?',
-            'wrong_explanations': {1: 'A virus-infected lymphocyte would produce antibodies against the virus — not a '
-                                      'hybridoma.',
-                                   2: 'Stem cells differentiate into specialised cells — hybridomas are a specific '
-                                      'fusion product for antibody production.',
-                                   3: "Cancer cells don't produce antibodies naturally — they are fused with "
-                                      'lymphocytes to give them this ability.'}},
-           {'opts': [('They bind specifically to proteins on cancer cell surfaces — leaving healthy cells unaffected',
-                      True),
-                     ('They are injected directly into tumours — not into the bloodstream', False),
-                     ("They are made from the patient's own cells — so they know which cells are cancerous", False),
-                     ('They kill cancer cells instantly — unlike chemotherapy which takes weeks', False)],
-            'q': 'Why are monoclonal antibodies more targeted than conventional chemotherapy for cancer treatment?',
-            'wrong_explanations': {1: 'Monoclonal antibodies can be given intravenously — the specificity comes from '
-                                      'their precise binding to cancer-cell antigens, not from targeted injection.',
-                                   2: "Current monoclonal antibodies are generally not made from the patient's own "
-                                      'cells — they are produced from mouse or humanised cell lines.',
-                                   3: 'Both treatments take time to work — the advantage of monoclonal antibodies is '
-                                      'specificity, not speed.'}},
-           {'opts': [('The antibodies bind ONLY to hCG molecules — not to other hormones or substances in urine', True),
-                     ("The antibodies were taken from a pregnant woman's blood", False),
-                     ('The antibodies can detect any hormone in the body', False),
-                     ('The test uses polyclonal antibodies for a broad detection range', False)],
-            'q': 'A pregnancy test uses monoclonal antibodies specific to hCG. What does this mean?',
-            'wrong_explanations': {1: 'The antibodies come from hybridoma cells cultured in a laboratory — not from a '
-                                      'pregnant woman.',
-                                   2: 'Monoclonal antibodies are highly specific to ONE antigen — detecting any '
-                                      'hormone would require polyclonal antibodies or a panel of specific tests.',
-                                   3: 'Pregnancy tests use MONOCLONAL antibodies — specific to hCG only. This '
-                                      'specificity prevents false positives from other hormones.'}}],
-  'rp': None,
-  'spec': '4.3.5',
-  'summary': 'Describe how monoclonal antibodies are produced and their uses in medicine and diagnosis.',
-  'theory': [{'content': 'MONOCLONAL ANTIBODIES are identical antibodies produced from a single clone of B-lymphocytes '
-                         '— they are all specific to exactly the same antigen.\n'
-                         '\n'
-                         'Normal antibodies are polyclonal — a mixture of different antibodies made by different '
-                         'lymphocytes, each responding to slightly different parts of a pathogen.\n'
-                         '\n'
-                         'Monoclonal antibodies are MONOSPECIFIC — they bind to one specific target molecule with very '
-                         'high precision. This makes them extremely useful tools in medicine, diagnosis and research.\n'
-                         '\n'
-                         'Key property: because they are produced from a single clone, every antibody is IDENTICAL — '
-                         'same shape, same binding site, same specificity.',
-              'heading': 'What Are Monoclonal Antibodies?'},
-             {'content': 'Producing monoclonal antibodies involves a clever combination of lymphocytes (which make '
-                         "antibodies but don't divide indefinitely) and tumour cells (which divide indefinitely but "
-                         "don't make useful antibodies).\n"
-                         '\n'
-                         'STEPS:\n'
-                         "1. Inject a mouse with the target antigen → the mouse's immune system produces specific "
-                         'lymphocytes.\n'
-                         "2. Remove the lymphocytes from the mouse's spleen.\n"
-                         '3. FUSE the lymphocytes with TUMOUR CELLS (myeloma cells) — this creates HYBRIDOMA CELLS.\n'
-                         '4. Hybridoma cells divide indefinitely AND produce the specific antibody.\n'
-                         '5. Select and clone the hybridoma cells that produce the desired antibody.\n'
-                         '6. Culture the clone in large quantities → produces large amounts of identical monoclonal '
-                         'antibodies.\n'
-                         '7. Purify and collect the antibodies.\n'
-                         '\n'
-                         "Hybridoma cells are sometimes called 'immortal antibody factories' — they combine the "
-                         'antibody-producing ability of B-cells with the unlimited division of cancer cells.',
-              'heading': 'How Monoclonal Antibodies Are Produced'},
-             {'content': 'PREGNANCY TESTS:\n'
-                         'Detect the hormone hCG (human chorionic gonadotropin) — produced only during pregnancy.\n'
-                         'Monoclonal antibodies specific to hCG are on the test strip.\n'
-                         'If hCG is present in urine, it binds to the antibodies → produces a visible colour change.\n'
-                         'Quick, accurate and specific — one of the most widely used diagnostic tests.\n'
-                         '\n'
-                         'CANCER TREATMENT (targeted therapy):\n'
-                         'Monoclonal antibodies can be designed to bind to SPECIFIC PROTEINS on cancer cell surfaces.\n'
-                         'This can: block signals that tell cancer cells to divide; mark cancer cells for destruction '
-                         'by the immune system; or carry a drug/radioactive substance directly to the cancer cell '
-                         '(magic bullet therapy).\n'
-                         'Example: Herceptin (trastuzumab) binds to HER2 receptors on some breast cancer cells — '
-                         'blocking tumour growth.\n'
-                         'Advantage over chemotherapy: targets cancer cells specifically — less damage to healthy '
-                         'cells.\n'
-                         '\n'
-                         'DIAGNOSTIC TESTS:\n'
-                         'Used in lateral flow tests (e.g. COVID-19 LFTs, flu tests) — detect specific antigens '
-                         'quickly.\n'
-                         'Used in blood tests to detect hormones, pathogens or cancer markers.\n'
-                         'Used in research to locate specific molecules in tissues (immunohistochemistry).\n'
-                         '\n'
-                         'SIDE EFFECTS:\n'
-                         'Monoclonal antibodies can cause fever, rashes, joint pain, low blood pressure.\n'
-                         'Some trigger allergic reactions — the immune system may respond to the foreign antibody '
-                         'proteins.\n'
-                         'Long-term effects are still being researched for newer treatments.',
-              'heading': 'Uses of Monoclonal Antibodies'}],
-  'title': 'Monoclonal Antibodies',
-  'triple_only': None,
-  'variables': []}],
+ ],
 
 "bioenergetics": [{'common_mistake': 'Photosynthesis only happens in LIGHT and only in cells with CHLOROPLASTS. Respiration happens ALL '
                     "THE TIME in ALL living cells. Never say 'plants don't respire' — they do, constantly. In bright "
@@ -5313,143 +4914,7 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'Reflex Actions',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'VASODILATION means blood vessels WIDEN — MORE blood near skin surface — MORE heat lost — occurs '
-                    'when TOO HOT. VASOCONSTRICTION means blood vessels NARROW — LESS blood near skin surface — LESS '
-                    'heat lost — occurs when TOO COLD. Students often get these mixed up. Remember: Dilation = '
-                    'Diameter increases = more heat lost.',
-  'equations': [],
-  'fifas': [],
-  'higher': 'The hypothalamus monitors core blood temperature and skin temperature (via peripheral thermoreceptors). '
-            'Vasoconstriction: arterioles near skin narrow → less blood near surface → less heat lost. Vasodilation: '
-            'arterioles widen → more blood near surface → more heat lost. Sweating: evaporation removes latent heat. '
-            'Shivering: rapid muscle contraction generates metabolic heat. Hairs erect: trap air as insulation. '
-            'Students should be able to explain these mechanisms in terms of negative feedback.',
-  'id': 'thermoregulation',
-  'key_note': 'Too hot: sweat (evaporation cools), vasodilation (more heat lost from skin), hairs flat. Too cold: '
-              'shiver (respiration generates heat), vasoconstriction (less heat lost), hairs raised (insulation). '
-              'Hypothalamus = the thermostat.',
-  'matching': {'instruction': 'Sort each response — does it happen when the body is too hot or too cold?',
-               'pairs': [('Too hot', 'Sweating — evaporation removes heat from the body surface'),
-                         ('Too hot', 'Vasodilation — blood vessels widen, more heat lost from skin surface'),
-                         ('Too cold', 'Shivering — rapid muscle contractions generate heat via respiration'),
-                         ('Too cold', 'Vasoconstriction — blood vessels narrow, less heat lost from skin'),
-                         ('Too hot', 'Hairs lie flat — less insulation, more heat can escape'),
-                         ('Too cold', 'Hairs stand on end — traps air for insulation (causes goosebumps)')],
-               'title': 'Too Hot or Too Cold?'},
-  'quiz': [{'opts': [('Water evaporating from the skin surface absorbs latent heat energy from the body — cooling it',
-                      True),
-                     ('Sweat removes hot blood from deep in the body and cools it at the surface', False),
-                     ('The salt in sweat chemically reacts with the skin to absorb heat', False),
-                     ('Sweating increases blood flow to the skin, which cools the blood', False)],
-            'q': 'Why does sweating cool the body down?',
-            'wrong_explanations': {1: "Sweating doesn't involve blood — it is a secretion from sweat glands. The "
-                                      'cooling effect is from EVAPORATION.',
-                                   2: 'Salt in sweat helps retain water on the skin surface longer — the cooling '
-                                      'mechanism is evaporation of water, not a chemical reaction.',
-                                   3: 'Vasodilation increases blood flow to the skin for cooling — sweating itself is '
-                                      'a separate mechanism that works through evaporation.'}},
-           {'opts': [('Blood vessels near the skin widen — occurs when the body is too hot, allowing more heat to be '
-                      'lost',
-                      True),
-                     ('Blood vessels narrow — occurs when the body is too cold, to conserve heat', False),
-                     ('Blood vessels widen — occurs when the body is too cold, to warm the skin', False),
-                     ('Blood vessels contract — occurs when the body is too hot, to prevent overheating', False)],
-            'q': 'What is vasodilation and when does it occur?',
-            'wrong_explanations': {1: 'Blood vessels NARROWING = VASOCONSTRICTION — this happens when cold, to reduce '
-                                      'heat loss. Vasodilation is widening.',
-                                   2: 'If blood vessels widened when cold, more heat would be LOST — that would make '
-                                      'the cold problem worse. Vasodilation occurs when HOT.',
-                                   3: 'Blood vessels CONTRACTING = VASOCONSTRICTION — occurs when cold, not hot.'}},
-           {'opts': [('Rapid muscle contractions require aerobic respiration — heat is released as a by-product of '
-                      'respiration',
-                      True),
-                     ('Shivering increases blood flow to the skin, warming the surface', False),
-                     ('The vibration of muscles generates electrical energy that heats the body', False),
-                     ('Shivering activates sweat glands which release warm fluid to the skin', False)],
-            'q': 'Why does shivering help when you are cold?',
-            'wrong_explanations': {1: 'Increased blood flow to the skin (vasodilation) increases heat LOSS — when '
-                                      'cold, vasoconstriction REDUCES blood flow to the skin. Shivering warms the body '
-                                      'through metabolic heat.',
-                                   2: 'Muscles generate heat through CHEMICAL energy released in respiration — not by '
-                                      'converting movement to electrical energy.',
-                                   3: 'Sweat glands are LESS active when cold — sweating causes heat loss, which is '
-                                      "the opposite of what's needed."}}],
-  'rp': None,
-  'spec': '4.5.1',
-  'summary': 'Describe how the body maintains a constant core temperature of 37°C.',
-  'theory': [{'content': 'The human body must maintain a core temperature of approximately 37°C.\n'
-                         '\n'
-                         'This is the OPTIMUM TEMPERATURE for human enzymes — the temperature at which they work most '
-                         'efficiently.\n'
-                         '\n'
-                         'If temperature rises above ~40°C: enzymes denature → reactions stop → organ failure → death '
-                         '(hyperthermia).\n'
-                         '\n'
-                         'If temperature falls below ~34°C: enzyme activity decreases dramatically → brain and heart '
-                         'function affected → loss of consciousness → death (hypothermia).\n'
-                         '\n'
-                         'The body is constantly generating heat (from respiration in all cells) and losing heat (to '
-                         'the environment). Thermoregulation balances these.',
-              'heading': 'Why Temperature Must Be Controlled'},
-             {'content': "The HYPOTHALAMUS — a region in the brain — acts as the body's thermostat.\n"
-                         '\n'
-                         'It has two types of thermoreceptors:\n'
-                         'CENTRAL THERMORECEPTORS in the hypothalamus itself — monitor the temperature of blood '
-                         'flowing through the brain.\n'
-                         'PERIPHERAL THERMORECEPTORS in the skin — detect changes in surface temperature (giving '
-                         'advance warning of environmental temperature changes).\n'
-                         '\n'
-                         'When the hypothalamus detects deviation from 37°C, it sends signals via the nervous system '
-                         'and hormones to trigger corrective responses.',
-              'heading': "The Hypothalamus — The Body's Thermostat"},
-             {'content': 'When body temperature rises ABOVE 37°C, the hypothalamus triggers responses to LOSE heat:\n'
-                         '\n'
-                         'SWEATING:\n'
-                         'Sweat glands in the skin produce sweat (mainly water + salts).\n'
-                         'Sweat spreads over the skin surface.\n'
-                         'As water EVAPORATES from the skin, it absorbs latent heat from the body → body cools.\n'
-                         'More sweating occurs in hot conditions or during exercise.\n'
-                         '\n'
-                         'VASODILATION:\n'
-                         'Blood vessels (arterioles) near the skin surface WIDEN.\n'
-                         'More blood flows close to the skin surface.\n'
-                         'More heat is lost by radiation and convection from the skin.\n'
-                         'This is why the skin looks flushed or red when hot.\n'
-                         '\n'
-                         'HAIRS LIE FLAT:\n'
-                         'Erector pili muscles RELAX → hairs lie flat.\n'
-                         'No trapped air layer → less insulation → more heat can escape.\n'
-                         '(More significant in other mammals than in humans due to less body hair.)',
-              'heading': 'Responses When Too Hot'},
-             {'content': 'When body temperature falls BELOW 37°C, the hypothalamus triggers responses to GENERATE and '
-                         'RETAIN heat:\n'
-                         '\n'
-                         'SHIVERING:\n'
-                         'Skeletal muscles contract rapidly and repeatedly.\n'
-                         'Muscle contractions require RESPIRATION → releases heat as a by-product.\n'
-                         'Shivering can increase heat production up to 5× the resting rate.\n'
-                         '\n'
-                         'VASOCONSTRICTION:\n'
-                         'Blood vessels near the skin surface NARROW.\n'
-                         'Less blood flows close to the skin surface.\n'
-                         'Less heat lost by radiation from the skin.\n'
-                         'Fingers and toes may become pale or blue in extreme cold.\n'
-                         '\n'
-                         'HAIRS STAND ON END:\n'
-                         'Erector pili muscles CONTRACT → hairs raise upright.\n'
-                         'Traps a layer of warm air close to the skin → insulation layer.\n'
-                         "(More effective in other mammals — in humans this causes 'goosebumps').\n"
-                         '\n'
-                         'REDUCED SWEATING:\n'
-                         'Sweat glands become less active.\n'
-                         'Less evaporative cooling.\n'
-                         '\n'
-                         'ADRENALINE RELEASED:\n'
-                         'Hormone that increases metabolic rate → more respiration → more heat produced.',
-              'heading': 'Responses When Too Cold'}],
-  'title': 'Thermoregulation',
-  'triple_only': None,
-  'variables': []},
+ 
  {'common_mistake': 'Hormones travel in the BLOOD to target organs — they do NOT travel along nerves. Do not confuse '
                     'the two systems. Also: not all organs respond to every hormone — only TARGET ORGANS with the '
                     'correct receptor proteins respond.',
@@ -6088,350 +5553,8 @@ BIOLOGY_SUBTOPICS_ALL = {
   'variables': [('d', 'Distance ruler falls', 'metres', 'm'),
                 ('t', 'Reaction time', 'seconds', 's'),
                 ('g', 'Gravitational field strength', 'm/s²', '')]},
- {'common_mistake': 'Students often mix up the three main brain regions. CEREBRAL CORTEX = thinking, memory, language, '
-                    'voluntary movement. CEREBELLUM = coordination and balance. MEDULLA = heart rate and breathing '
-                    "(vital automatic functions). A useful memory trick: 'Cerebellum = coordination' (both start with "
-                    "C and 'coordination').",
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'the-brain',
-  'key_note': 'Cerebral cortex: consciousness, intelligence, memory, personality. Cerebellum: coordination, balance. '
-              'Medulla: heart rate, breathing — vital automatic functions. Studied by: MRI, EEG, electrical '
-              'stimulation, brain damage case studies. Hard to treat: no neurone regeneration, blood-brain barrier.',
-  'matching': {'instruction': 'Match each brain region to what it controls.',
-               'pairs': [('Cerebral cortex', 'Consciousness, memory, language, intelligence, voluntary movement'),
-                         ('Cerebellum', 'Coordination of movement, balance and posture'),
-                         ('Medulla oblongata', 'Heart rate, breathing rate — unconscious vital functions'),
-                         ('fMRI scan', 'Shows which brain regions are active by detecting changes in blood flow'),
-                         ('EEG', 'Records electrical activity of the brain via electrodes on the scalp')],
-               'title': 'Match the Brain Region to its Function'},
-  'quiz': [{'opts': [('Coordination and balance — the cerebellum controls smooth, coordinated movement', True),
-                     ('Heart rate — the cerebellum controls autonomic functions', False),
-                     ('Memory and language — the cerebellum controls higher cognitive functions', False),
-                     ('Breathing — the cerebellum controls respiratory rate', False)],
-            'q': 'A patient suffers a stroke affecting the cerebellum. Which function is most likely to be impaired?',
-            'wrong_explanations': {1: 'Heart rate and breathing are controlled by the MEDULLA OBLONGATA — not the '
-                                      'cerebellum.',
-                                   2: 'Memory and language are controlled by the CEREBRAL CORTEX — not the cerebellum.',
-                                   3: 'Breathing rate is controlled by the MEDULLA — the cerebellum coordinates '
-                                      'movement.'}},
-           {'opts': [('Adult brain neurones cannot regenerate — unlike most other body cells, damaged neurones are not '
-                      'replaced',
-                      True),
-                     ('The blood-brain barrier prevents blood from reaching damaged areas', False),
-                     ('Strokes destroy the entire brain — there is no undamaged tissue to repair from', False),
-                     ('The immune system attacks any new neurones, preventing recovery', False)],
-            'q': 'Why is it difficult to repair brain damage caused by a stroke?',
-            'wrong_explanations': {1: 'The blood-brain barrier restricts what substances cross from blood to brain — '
-                                      "it doesn't prevent blood from reaching the brain (in fact strokes are often "
-                                      'caused by blood supply being cut off).',
-                                   2: 'Strokes affect specific regions — not the whole brain. The challenge is neurone '
-                                      'regeneration in those regions.',
-                                   3: 'The immune system does play a role in brain inflammation after injury — but the '
-                                      'primary reason for poor recovery is the inability of neurones to regenerate.'}}],
-  'rp': None,
-  'spec': '4.5.2.4',
-  'summary': 'Describe the structure of the brain, the functions of its main regions and how the brain is studied.',
-  'theory': [{'content': 'The BRAIN is the most complex organ in the human body — containing approximately 86 billion '
-                         'neurones, each connected to thousands of others.\n'
-                         '\n'
-                         'The brain has several distinct regions, each responsible for different functions:\n'
-                         '\n'
-                         'CEREBRAL CORTEX (cerebrum):\n'
-                         'The largest part of the brain — the highly folded outer layer.\n'
-                         'Responsible for: consciousness, intelligence, memory, language, personality, voluntary '
-                         'movement, sensory perception.\n'
-                         'Divided into left and right hemispheres — each processes information from the opposite side '
-                         'of the body.\n'
-                         'The folded structure (gyri and sulci) increases surface area for more neurones.\n'
-                         '\n'
-                         'CEREBELLUM:\n'
-                         'Located at the back and base of the brain.\n'
-                         'Responsible for: coordination of movement, balance, posture, fine motor control.\n'
-                         'Damage → loss of coordination and balance.\n'
-                         '\n'
-                         'MEDULLA OBLONGATA:\n'
-                         'At the base of the brain, continuous with the spinal cord.\n'
-                         'Controls: unconscious vital functions — heart rate, breathing rate, blood pressure, '
-                         'swallowing, vomiting.\n'
-                         'Damage is life-threatening — these functions are essential for survival.',
-              'heading': 'Structure of the Brain'},
-             {'content': 'The brain is extremely complex and difficult to study — it cannot easily be biopsied or '
-                         'experimented on safely.\n'
-                         '\n'
-                         'METHODS:\n'
-                         '\n'
-                         'ELECTROENCEPHALOGRAPHY (EEG):\n'
-                         'Electrodes placed on the scalp record electrical activity of the brain as patterns of '
-                         'waves.\n'
-                         'Used to diagnose epilepsy and sleep disorders.\n'
-                         'Shows which areas are active but with limited spatial resolution.\n'
-                         '\n'
-                         'FUNCTIONAL MRI (fMRI):\n'
-                         'Detects changes in blood flow to different brain regions — more active regions need more '
-                         'blood and oxygen.\n'
-                         'Produces detailed 3D images showing which brain regions are active during different tasks.\n'
-                         'Allows mapping of brain function non-invasively.\n'
-                         'Used in research to understand language, memory, emotion and decision-making.\n'
-                         '\n'
-                         'ELECTRICAL STIMULATION:\n'
-                         'Neurosurgeons can stimulate specific brain regions electrically during brain surgery '
-                         '(patient kept awake).\n'
-                         'The patient reports what they experience — helping identify which areas control which '
-                         'functions.\n'
-                         'Led to early mapping of sensory and motor areas.\n'
-                         '\n'
-                         'STUDYING BRAIN DAMAGE:\n'
-                         'Case studies of patients with specific brain injuries have provided crucial insights.\n'
-                         'Famous case: Phineas Gage — a railway worker whose personality changed dramatically after a '
-                         'rod passed through his frontal lobe (1848).\n'
-                         'Patient HM — removal of hippocampus to treat epilepsy caused inability to form new long-term '
-                         'memories.',
-              'heading': 'How We Study the Brain'},
-             {'content': 'Treating brain conditions is extremely challenging:\n'
-                         '\n'
-                         'BLOOD-BRAIN BARRIER:\n'
-                         'A layer of tightly packed cells around brain blood vessels that prevents many substances '
-                         'from crossing from blood into brain tissue.\n'
-                         'Protects the brain from pathogens and toxins — but also prevents many drugs from reaching '
-                         'brain tissue.\n'
-                         'Drug delivery to the brain is a major challenge in neurology and psychiatry.\n'
-                         '\n'
-                         'NEURONE REPAIR:\n'
-                         'Unlike most body tissues, adult brain neurones cannot regenerate if damaged.\n'
-                         'This is why brain injuries (stroke, trauma) often cause permanent deficits.\n'
-                         'Stem cell research aims to find ways to regenerate damaged brain tissue.\n'
-                         '\n'
-                         'ETHICAL CONSTRAINTS:\n'
-                         'Brain tissue cannot be biopsied safely — unlike a tumour elsewhere.\n'
-                         'Experimentation is limited by the ethical requirement to protect patients.\n'
-                         'Much of our knowledge comes from accidents, disease and animal studies.',
-              'heading': 'Why the Brain is Difficult to Treat'}],
-  'title': 'The Brain',
-  'triple_only': None,
-  'variables': []},
- {'common_mistake': 'For near vision: ciliary muscles CONTRACT and lens becomes more ROUNDED. For far vision: ciliary '
-                    'muscles RELAX and lens becomes FLATTER. Students often get this backwards. Remember: when you '
-                    'look at something NEAR, the ciliary muscle has to work hard (CONTRACT) to make the lens rounder.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'the-eye',
-  'key_note': 'Cornea: main refraction. Lens: fine focus (accommodation). Near: ciliary contracts → lens round. Far: '
-              'ciliary relaxes → lens flat. Retina: rods (dim/mono), cones (colour/bright). Fovea: sharpest vision. '
-              'Optic nerve → brain.',
-  'matching': {'instruction': 'Match each structure to what it does.',
-               'pairs': [('Cornea', "Transparent curved surface — provides most of the eye's refraction"),
-                         ('Iris', 'Coloured ring of muscle — controls pupil size and light entry'),
-                         ('Lens', 'Flexible disc — fine-tunes focus by changing shape (accommodation)'),
-                         ('Ciliary muscle', 'Contracts or relaxes to change lens shape via suspensory ligaments'),
-                         ('Retina',
-                          'Light-sensitive layer — contains rods and cones that convert light to electrical signals'),
-                         ('Optic nerve', 'Carries electrical impulses from the retina to the brain')],
-               'title': 'Match the Eye Structure to its Function'},
-  'quiz': [{'opts': [('Ciliary muscles contract → suspensory ligaments slacken → lens becomes more rounded for near '
-                      'vision',
-                      True),
-                     ('Ciliary muscles relax → suspensory ligaments become taut → lens becomes flatter for near vision',
-                      False),
-                     ('Ciliary muscles contract → suspensory ligaments become taut → lens becomes flatter', False),
-                     ('Ciliary muscles relax → suspensory ligaments slacken → lens becomes more rounded', False)],
-            'q': 'A student looks from a distant window to a book close to them. What happens to the ciliary muscles '
-                 'and lens?',
-            'wrong_explanations': {1: 'Relaxing ciliary muscles = FAR vision (flat lens). For NEAR vision, ciliary '
-                                      'muscles must CONTRACT.',
-                                   2: 'When ciliary muscles contract, ligaments SLACKEN (not become taut). The lens '
-                                      'rounds up because tension is removed.',
-                                   3: 'Relaxing ciliary muscles causes ligaments to become taut — but the lens becomes '
-                                      'FLAT, not rounded.'}},
-           {'opts': [('To reduce the amount of light entering the eye — preventing damage to the sensitive retina',
-                      True),
-                     ('To increase the amount of light entering — bright light improves vision', False),
-                     ('To improve colour vision — cones work better with a smaller pupil', False),
-                     ('The lens expands when bright and blocks more of the pupil', False)],
-            'q': 'Why do the pupils constrict in bright light?',
-            'wrong_explanations': {1: 'Constriction REDUCES light entry — pupils dilate to INCREASE light entry in dim '
-                                      'conditions.',
-                                   2: 'Cones work well in bright light regardless of pupil size — the pupil reflex is '
-                                      'about PROTECTING the retina from excessive light.',
-                                   3: "The lens doesn't change size or block the pupil — accommodation changes lens "
-                                      'shape, not size.'}}],
-  'rp': None,
-  'spec': '4.5.2.5',
-  'summary': 'Describe the structure of the eye and the function of each part.',
-  'theory': [{'content': 'The eye is a sense organ — it detects light stimuli and converts them into electrical '
-                         'impulses sent to the brain via the optic nerve.\n'
-                         '\n'
-                         'Key structures:\n'
-                         '\n'
-                         'CORNEA — transparent, curved front surface. Refracts (bends) light — does most of the '
-                         'focusing (about 70% of total refraction).\n'
-                         '\n'
-                         'IRIS — the coloured ring of muscle around the pupil. Controls the size of the PUPIL to '
-                         'regulate how much light enters.\n'
-                         '\n'
-                         'PUPIL — the hole in the centre of the iris. Not a structure itself — just the opening. Lets '
-                         'light into the eye.\n'
-                         '\n'
-                         'LENS — a flexible, transparent disc behind the iris. Fine-tunes focusing by changing shape '
-                         '(ACCOMMODATION). Held in place by suspensory ligaments attached to the ciliary body.\n'
-                         '\n'
-                         'CILIARY MUSCLE — ring of muscle surrounding the lens. Contracts or relaxes to change the '
-                         'tension on the lens via the suspensory ligaments, altering the lens shape and focal length.\n'
-                         '\n'
-                         'SUSPENSORY LIGAMENTS — fibres connecting the lens to the ciliary muscle. When ciliary muscle '
-                         'contracts → ligaments loosen → lens becomes more rounded (for near vision).\n'
-                         '\n'
-                         'RETINA — the light-sensitive layer at the back of the eye. Contains two types of '
-                         'photoreceptor cells: RODS (sensitive to light intensity — monochrome, dim conditions) and '
-                         'CONES (sensitive to colour — need bright light, concentrated in the fovea).\n'
-                         '\n'
-                         'FOVEA (yellow spot) — area of highest cone density on the retina — sharpest colour vision.\n'
-                         '\n'
-                         'OPTIC NERVE — carries electrical impulses from the retina to the brain for processing.\n'
-                         '\n'
-                         'BLIND SPOT — where the optic nerve exits — no photoreceptors here, so no vision in this '
-                         'area.',
-              'heading': 'Structure of the Eye'},
-             {'content': 'ACCOMMODATION is the process by which the lens changes shape to focus on objects at '
-                         'different distances.\n'
-                         '\n'
-                         'FOCUSING ON A NEAR OBJECT:\n'
-                         'Ciliary muscles CONTRACT.\n'
-                         'Suspensory ligaments SLACKEN (less tension on lens).\n'
-                         'Lens becomes more ROUNDED (more curved, fatter).\n'
-                         'More refraction → shorter focal length → image focused on retina.\n'
-                         '\n'
-                         'FOCUSING ON A DISTANT OBJECT:\n'
-                         'Ciliary muscles RELAX.\n'
-                         'Suspensory ligaments become TAUT (pull on lens).\n'
-                         'Lens becomes FLATTER (less curved, thinner).\n'
-                         'Less refraction → longer focal length → image focused on retina.\n'
-                         '\n'
-                         'MEMORY AID:\n'
-                         'Near = ciliary contracts, lens round.\n'
-                         'Far = ciliary relaxes, lens flat.\n'
-                         '\n'
-                         'THE PUPIL REFLEX (controlling light entry):\n'
-                         'BRIGHT LIGHT → circular muscles of iris CONTRACT → pupil CONSTRICTS (gets smaller) → less '
-                         'light enters → prevents damage to retina.\n'
-                         'DIM LIGHT → radial muscles of iris CONTRACT → pupil DILATES (gets larger) → more light '
-                         'enters → improves vision in low light.',
-              'heading': 'How the Eye Focuses — Accommodation'}],
-  'title': 'The Eye',
-  'triple_only': None,
-  'variables': []},
- {'common_mistake': 'Short-sight is corrected by a CONCAVE lens (diverging). Long-sight is corrected by a CONVEX lens '
-                    '(converging). Students often get these the wrong way round. Memory tip: Short-sight = Concave = '
-                    'diverging (spreads light out, moves focal point back). Long-sight = convex = converging (brings '
-                    'light together, moves focal point forward).',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'defects-of-the-eye',
-  'key_note': 'Short-sight (myopia): eyeball too long, image in front of retina → correct with CONCAVE lens. '
-              'Long-sight (hyperopia): eyeball too short, image behind retina → correct with CONVEX lens. Laser '
-              'surgery reshapes cornea permanently.',
-  'matching': {'instruction': 'Match each feature to short-sight or long-sight.',
-               'pairs': [('Short-sight', 'Cannot see distant objects clearly — eyeball too long or lens too curved'),
-                         ('Long-sight', 'Cannot see near objects clearly — eyeball too short or lens too flat'),
-                         ('Short-sight', 'Corrected with a concave (diverging) lens'),
-                         ('Long-sight', 'Corrected with a convex (converging) lens'),
-                         ('Short-sight', 'Image forms in front of the retina'),
-                         ('Long-sight', 'Image would form behind the retina')],
-               'title': 'Short-sight or Long-sight?'},
-  'quiz': [{'opts': [('Short-sight (myopia) — corrected with concave (diverging) lenses', True),
-                     ('Long-sight (hyperopia) — corrected with convex (converging) lenses', False),
-                     ('Short-sight (myopia) — corrected with convex (converging) lenses', False),
-                     ('Long-sight (hyperopia) — corrected with concave (diverging) lenses', False)],
-            'q': 'A student cannot see the board clearly but can read their textbook easily. What is the most likely '
-                 'condition and correction?',
-            'wrong_explanations': {1: 'Cannot see far (board) but CAN see near (textbook) = LONG-SIGHT. Long-sight is '
-                                      'corrected with CONVEX lenses.',
-                                   2: 'Cannot see far but CAN see near = SHORT-SIGHT. Concave lenses correct '
-                                      'short-sight, not convex.',
-                                   3: 'Long-sight cannot see near objects and CAN see distant objects more easily. If '
-                                      "near vision is fine, it's short-sight."}},
-           {'opts': [('The laser flattens the cornea — reducing its curvature and refractive power, moving the focal '
-                      'point back onto the retina',
-                      True),
-                     ('The laser makes the cornea more curved — increasing refraction and moving the focal point '
-                      'forward',
-                      False),
-                     ('The laser reshapes the lens — making it flatter to reduce refraction', False),
-                     ('The laser shortens the eyeball — bringing the retina closer to the focal point', False)],
-            'q': 'How does laser eye surgery correct short-sight?',
-            'wrong_explanations': {1: 'Making the cornea MORE curved = correcting LONG-SIGHT (needs more refraction). '
-                                      'Short-sight needs LESS refraction = FLATTER cornea.',
-                                   2: 'Laser surgery operates on the CORNEA — not the lens. The lens is not reshaped '
-                                      'by laser treatment.',
-                                   3: 'Laser surgery cannot change the physical length of the eyeball — it only '
-                                      "reshapes the cornea's surface curvature."}}],
-  'rp': None,
-  'spec': '4.5.2.6',
-  'summary': 'Describe the causes of long-sight and short-sight and how they are corrected.',
-  'theory': [{'content': 'SHORT-SIGHT (MYOPIA) means being unable to see distant objects clearly — they appear '
-                         'blurred.\n'
-                         '\n'
-                         'CAUSE:\n'
-                         'The eyeball is too LONG (front to back), OR the lens is too curved (too powerful).\n'
-                         'Light from distant objects is brought to a focus IN FRONT OF the retina — not on it.\n'
-                         'The image on the retina is therefore blurred.\n'
-                         'Close objects can still be seen clearly — the lens can round up enough to focus them.\n'
-                         '\n'
-                         'CORRECTION:\n'
-                         'CONCAVE (diverging) LENS — diverges the light rays before they enter the eye.\n'
-                         'This moves the focal point backwards — onto the retina.\n'
-                         'Concave lenses have a negative power value.\n'
-                         'Can also be corrected by: laser eye surgery (reshaping the cornea to reduce its curvature).\n'
-                         '\n'
-                         'PREVALENCE: short-sight has become more common globally — particularly in young people. '
-                         'Thought to be linked to increased close-up work (screens, reading) and less time outdoors.',
-              'heading': 'Short-Sightedness (Myopia)'},
-             {'content': 'LONG-SIGHT (HYPEROPIA) means being unable to see near objects clearly — they appear '
-                         'blurred.\n'
-                         '\n'
-                         'CAUSE:\n'
-                         'The eyeball is too SHORT (front to back), OR the lens is too flat (not powerful enough).\n'
-                         'Light from nearby objects would be brought to a focus BEHIND the retina — but the retina '
-                         'intercepts the rays before they converge.\n'
-                         'The image on the retina is blurred.\n'
-                         'Distant objects may be seen more clearly as they require less refraction.\n'
-                         '\n'
-                         'CORRECTION:\n'
-                         'CONVEX (converging) LENS — converges the light rays before they enter the eye.\n'
-                         'This moves the focal point forward — onto the retina.\n'
-                         'Convex lenses have a positive power value.\n'
-                         'Can also be corrected by: laser eye surgery (reshaping the cornea to increase curvature).\n'
-                         '\n'
-                         'AGE-RELATED LONG-SIGHT (PRESBYOPIA):\n'
-                         'As people age, the lens becomes less flexible → cannot round up as much → difficulty '
-                         'focusing on near objects.\n'
-                         'This is why many people need reading glasses after the age of 40–50.',
-              'heading': 'Long-Sightedness (Hyperopia)'},
-             {'content': 'SPECTACLES (GLASSES):\n'
-                         'Safest option — no surgery involved.\n'
-                         'Easily updated as prescription changes.\n'
-                         'Convex lenses for long-sight; concave lenses for short-sight.\n'
-                         '\n'
-                         'CONTACT LENSES:\n'
-                         'Sit directly on the cornea.\n'
-                         'Invisible when worn — cosmetic advantage.\n'
-                         'Risk of infection if not handled hygienically.\n'
-                         'Same lens types as glasses (concave or convex).\n'
-                         '\n'
-                         'LASER EYE SURGERY:\n'
-                         'Uses a laser to reshape the CORNEA — permanently altering its curvature.\n'
-                         'Short-sight: cornea flattened → less refraction → focal point moves back.\n'
-                         'Long-sight: cornea made more curved → more refraction → focal point moves forward.\n'
-                         'Permanent correction — no need for glasses or contacts afterwards.\n'
-                         'Risks: dry eyes, glare, halos, rare complications. Only suitable for adults with stable '
-                         'prescription.',
-              'heading': 'Corrective Methods Compared'}],
-  'title': 'Defects of the Eye',
-  'triple_only': None,
-  'variables': []}],
+ 
+ ],
 
 "inheritance": [{'common_mistake': 'MITOSIS produces IDENTICAL cells (used for growth and repair). MEIOSIS produces GAMETES with HALF '
                     'the chromosome number — and they are genetically different from each other. Students often '
@@ -8532,7 +7655,7 @@ BIOLOGY_SUBTOPICS_ALL = {
                                    3: 'Seed banks are conservation facilities — not commercial enterprises, though '
                                       'some seed collections are used to support farmers.'}}],
   'rp': None,
-  'spec': '4.7.4',
+  'spec': '4.7.3.1',
   'summary': 'Define biodiversity, explain its importance and describe threats to it and conservation measures.',
   'theory': [{'content': 'BIODIVERSITY is the variety of life on Earth.\n'
                          '\n'
@@ -8604,6 +7727,414 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'Biodiversity',
   'triple_only': None,
   'variables': []},
+  {'common_mistake': 'Pollution is not only about litter you can see. Invisible pollution — sewage and '
+                   'fertiliser in water, acidic gases in air, pesticides soaking into land — often does the '
+                   'most damage to biodiversity. Also remember: MORE people AND a higher standard of living '
+                   'both increase waste, not just population size alone.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'waste-management',
+ 'key_note': 'Rising population + higher living standards → more resources used, more waste, more pollution. '
+             'Pollution occurs in water (sewage, fertiliser, toxic chemicals), air (smoke, sulfur '
+             'dioxide/acid rain) and land (landfill, pesticides/herbicides). Pollution kills organisms and '
+             'reduces biodiversity.',
+ 'matching': {'instruction': 'Sort each pollutant into the environment it mainly pollutes.',
+              'pairs': [('Water', 'Sewage — untreated human waste released into rivers and seas'),
+                        ('Water', 'Fertiliser washed off farmland causing eutrophication'),
+                        ('Air', 'Sulfur dioxide from burning fuels, causing acid rain'),
+                        ('Air', 'Smoke and smoke particles from combustion'),
+                        ('Land', 'Landfill — rubbish buried in the ground'),
+                        ('Land', 'Pesticides and herbicides sprayed on crops')],
+              'title': 'Where Does This Pollution Happen?'},
+ 'quiz': [{'opts': [('People use more resources and produce more waste per person', True),
+                    ('People automatically have more children', False),
+                    ('A higher standard of living has no effect on pollution', False),
+                    ('People move to the countryside where there is less waste', False)],
+           'q': 'Why does a rising human standard of living increase pollution, even where population is '
+                'stable?',
+           'wrong_explanations': {1: 'Standard of living is about resource use per person, not birth rate — '
+                                     'both population size AND resource use per person raise pollution.',
+                                  2: 'It is the extra resource use and waste per person that increases '
+                                     'pollution, not the standard of living itself being harmless.',
+                                  3: 'Where people go does not remove the waste — a higher standard of '
+                                     'living means each person consumes and discards more.'}},
+          {'opts': [('Water', True),
+                    ('Air', False),
+                    ('Land only', False),
+                    ('None — fertiliser is not a pollutant', False)],
+           'q': 'Fertiliser washing into a river reduces biodiversity. Which environment is being polluted?',
+           'wrong_explanations': {1: 'Fertiliser in a river is water pollution — it causes eutrophication, '
+                                     'lowering oxygen and killing fish.',
+                                  2: 'Fertiliser run-off enters water, not the air.',
+                                  3: 'Fertiliser is a pollutant when it reaches water — it damages the '
+                                     'ecosystem even though it helps crops grow on land.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.2',
+ 'summary': 'Explain how human population growth and rising living standards increase pollution of water, '
+            'air and land, reducing biodiversity.',
+ 'theory': [{'content': 'The human POPULATION is growing rapidly, and the STANDARD OF LIVING is rising in '
+                        'many countries.\n'
+                        '\n'
+                        'Both of these mean humans use MORE RESOURCES and produce MORE WASTE.\n'
+                        '\n'
+                        'Unless this waste and the chemicals in it are handled properly, more POLLUTION is '
+                        'caused.\n'
+                        '\n'
+                        'Pollution KILLS plants and animals, which REDUCES BIODIVERSITY (the variety of '
+                        'living things in an area).',
+             'heading': 'Why pollution is increasing'},
+            {'content': 'Pollution can occur in three places:\n'
+                        '\n'
+                        'IN WATER — from sewage, from fertiliser washed off fields, and from toxic '
+                        'chemicals. Fertiliser causes eutrophication (algae bloom → less oxygen → fish '
+                        'die).\n'
+                        '\n'
+                        'IN AIR — from smoke and from acidic gases such as sulfur dioxide, which cause acid '
+                        'rain.\n'
+                        '\n'
+                        'ON LAND — from landfill (buried rubbish) and from toxic chemicals such as '
+                        'pesticides and herbicides, which can wash into soil and water.',
+             'heading': 'The three places pollution happens'},
+            {'content': 'Every source of pollution damages HABITATS and directly KILLS organisms.\n'
+                        '\n'
+                        'When organisms die or habitats are destroyed, the number of species and their '
+                        'numbers fall — biodiversity DECREASES.\n'
+                        '\n'
+                        'Managing waste properly (treating sewage, filtering gases, recycling) reduces '
+                        'pollution and helps protect biodiversity.',
+             'heading': 'Why it matters'}],
+ 'title': 'Waste Management and Pollution',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'Destroying a peat bog harms the environment in TWO ways, not one: it reduces '
+                   'biodiversity (habitat lost) AND releases carbon dioxide (stored carbon escapes as the '
+                   'peat decays or is burned). Many students only mention one. Peat is extracted mainly for '
+                   'COMPOST, not just as a fuel.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'land-use',
+ 'key_note': 'Humans reduce land for other species by building, quarrying, farming and dumping waste. Peat '
+             'bogs store carbon and are rich habitats. Extracting peat for compost/fuel destroys the habitat '
+             '(lowering biodiversity) and releases CO₂ when peat decays or burns. Use peat-free compost.',
+ 'matching': {'instruction': 'Sort each statement into a human land use or a consequence of destroying peat '
+                             'bogs.',
+              'pairs': [('Human land use', 'Building houses, factories and roads'),
+                        ('Human land use', 'Quarrying rock and minerals'),
+                        ('Human land use', 'Farming crops and livestock'),
+                        ('Consequence of peat destruction',
+                         'Carbon dioxide released as peat decays or burns'),
+                        ('Consequence of peat destruction', 'Loss of a specialised habitat'),
+                        ('Consequence of peat destruction', 'Reduced biodiversity of bog species')],
+              'title': 'Land Use: Cause or Consequence?'},
+ 'quiz': [{'opts': [('Peat stores carbon from partly-decayed plants; decay or burning releases it as CO₂',
+                     True),
+                    ('Peat is made of pure carbon dioxide gas', False),
+                    ('Machines used to dig peat run on petrol', False),
+                    ('Peat reflects sunlight, warming the air', False)],
+           'q': 'Why does draining and extracting peat release carbon dioxide?',
+           'wrong_explanations': {1: 'Peat is partly-decayed plant material that locked away carbon; when it '
+                                     'decays in air or is burned, that carbon is released as CO₂.',
+                                  2: 'Peat is solid plant material, not CO₂ gas — the CO₂ is released only '
+                                     'when the stored carbon reacts with oxygen.',
+                                  3: 'The machinery is a minor factor; the main release is the carbon stored '
+                                     'in the peat itself escaping as CO₂.'}},
+          {'opts': [('Buying peat-free compost for gardens', True),
+                    ('Extracting peat faster so it is used up sooner', False),
+                    ('Burning peat instead of using it as compost', False),
+                    ('Draining more bogs to create farmland', False)],
+           'q': 'Which single change would best protect peat bog biodiversity?',
+           'wrong_explanations': {1: 'If gardeners choose peat-free compost, demand for peat falls, so fewer '
+                                     'bogs are destroyed and their biodiversity is protected.',
+                                  2: 'Extracting peat faster destroys the habitat sooner — the opposite of '
+                                     'protecting it.',
+                                  3: 'Burning peat still destroys the bog and releases CO₂.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.3',
+ 'summary': 'Describe how humans reduce land available for other organisms, and explain why destroying peat '
+            'bogs harms biodiversity and releases carbon dioxide.',
+ 'theory': [{'content': 'Humans REDUCE the amount of land available for other plants and animals.\n'
+                        '\n'
+                        'We use land for:\n'
+                        'BUILDING — houses, factories, roads.\n'
+                        'QUARRYING — digging out rock and minerals.\n'
+                        'FARMING — growing crops and keeping animals.\n'
+                        'DUMPING WASTE — landfill sites.\n'
+                        '\n'
+                        'Every time land is used for these, HABITATS are destroyed and there is less space '
+                        'for wild species — so biodiversity falls.',
+             'heading': 'How humans use up land'},
+            {'content': 'PEAT BOGS are waterlogged areas where dead plants do not fully decay (there is not '
+                        'enough oxygen for decomposers).\n'
+                        '\n'
+                        'Over thousands of years the partly-decayed plants build up as PEAT.\n'
+                        '\n'
+                        'Because the plants never fully decayed, peat STORES a large amount of CARBON.\n'
+                        '\n'
+                        'Peat bogs are an important HABITAT for many specialised plants, animals and '
+                        'microorganisms.',
+             'heading': 'What peat bogs are'},
+            {'content': 'Peat is dug up (extracted) to sell as COMPOST for gardens and for commercial food '
+                        'production, and it can be burned as a fuel.\n'
+                        '\n'
+                        'Destroying peat bogs:\n'
+                        'REDUCES the area of this habitat → the biodiversity of the species living there '
+                        'DECREASES.\n'
+                        'Releases CARBON DIOXIDE — when peat is drained and decays, or is burned, the stored '
+                        'carbon is released as CO₂, adding to global warming.\n'
+                        '\n'
+                        'Using peat-free compost helps protect peat bogs.',
+             'heading': 'Why destroying peat bogs is a problem'}],
+ 'title': 'Land Use and Peat Bogs',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'Deforestation raises atmospheric CO₂ for TWO separate reasons: fewer trees means less '
+                   'CO₂ is absorbed by photosynthesis, AND burning or decay of the wood releases stored CO₂. '
+                   'Give both. Also, decay releases CO₂ because MICROORGANISMS respire as they break the '
+                   'wood down — it is a biological process.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'deforestation',
+ 'key_note': 'Tropical deforestation provides land for cattle, rice fields and biofuel crops. Consequences: '
+             'less CO₂ removed (less photosynthesis), more CO₂ released (burning trees + microbial decay of '
+             'wood), and reduced biodiversity from habitat loss.',
+ 'matching': {'instruction': 'Sort each into a reason for deforestation or a consequence of it.',
+              'pairs': [('Reason for deforestation', 'Clearing land to graze cattle'),
+                        ('Reason for deforestation', 'Creating rice fields to grow more food'),
+                        ('Reason for deforestation', 'Growing crops to make biofuels'),
+                        ('Consequence of deforestation', 'Less carbon dioxide removed by photosynthesis'),
+                        ('Consequence of deforestation', 'Carbon dioxide released by burning and decay'),
+                        ('Consequence of deforestation', 'Reduced biodiversity as habitats are lost')],
+              'title': 'Deforestation: Reason or Consequence?'},
+ 'quiz': [{'opts': [('Fewer trees means less photosynthesis, so less CO₂ is absorbed', True),
+                    ('Trees release oxygen that destroys carbon dioxide', False),
+                    ('Cutting trees cools the planet, trapping CO₂ in the soil', False),
+                    ('Deforestation increases the number of decomposers', False)],
+           'q': 'How does deforestation lead to LESS carbon dioxide being removed from the atmosphere?',
+           'wrong_explanations': {1: 'Trees remove CO₂ by photosynthesis; with fewer trees, less CO₂ is '
+                                     'taken out of the air.',
+                                  2: 'Photosynthesis absorbs CO₂ — oxygen release does not "destroy" carbon '
+                                     'dioxide.',
+                                  3: 'Removing trees reduces CO₂ uptake; it does not trap carbon in the '
+                                     'soil.'}},
+          {'opts': [('Microorganisms respire as they break down the dead wood, releasing CO₂', True),
+                    ('Wood turns directly into carbon dioxide with no organisms involved', False),
+                    ('Decay absorbs carbon dioxide from the air', False),
+                    ('Only burning releases CO₂ — decay does not', False)],
+           'q': 'Burning felled trees and the decay of leftover wood both release carbon dioxide. Why does '
+                'decay release CO₂?',
+           'wrong_explanations': {1: 'Decomposer microorganisms respire while feeding on the dead wood, and '
+                                     'respiration releases carbon dioxide.',
+                                  2: 'Decay is a biological process — microorganisms carry it out; wood does '
+                                     'not spontaneously become CO₂.',
+                                  3: 'Decay releases CO₂, it does not absorb it.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.4',
+ 'summary': 'Explain the reasons for large-scale deforestation in tropical areas and its consequences for '
+            'carbon dioxide levels and biodiversity.',
+ 'theory': [{'content': 'Large-scale DEFORESTATION (cutting down forests) has happened in tropical areas '
+                        'to:\n'
+                        '\n'
+                        'Provide land for CATTLE and for RICE FIELDS (to produce more food).\n'
+                        '\n'
+                        'Grow crops used to make BIOFUELS (fuels made from plants, e.g. ethanol).\n'
+                        '\n'
+                        'Tropical forests are cleared quickly, often by cutting and burning the trees.',
+             'heading': 'Why forests are cut down'},
+            {'content': 'Deforestation changes the balance of carbon dioxide in the atmosphere in TWO ways:\n'
+                        '\n'
+                        'LESS CO₂ IS REMOVED — fewer trees means less PHOTOSYNTHESIS, so less carbon dioxide '
+                        'is taken out of the air.\n'
+                        '\n'
+                        'MORE CO₂ IS RELEASED — burning the trees releases CO₂, and when microorganisms '
+                        'DECAY the felled wood they release CO₂ during respiration.\n'
+                        '\n'
+                        'The overall result is that atmospheric carbon dioxide INCREASES, adding to global '
+                        'warming.',
+             'heading': 'Effect on carbon dioxide'},
+            {'content': 'Forests, especially tropical rainforests, are the richest habitats on Earth.\n'
+                        '\n'
+                        'When a forest is destroyed, the HABITAT of countless species is lost.\n'
+                        '\n'
+                        'Many species become locally extinct — so BIODIVERSITY is REDUCED.\n'
+                        '\n'
+                        'Lost biodiversity can mean losing species before we even know their value (for '
+                        'example, plants that could be new medicines).',
+             'heading': 'Effect on biodiversity'}],
+ 'title': 'Deforestation',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'In BIOLOGY, focus on the LIVING consequences of global warming — changes in species '
+                   'distribution, migration, and biodiversity — not just the greenhouse-gas chemistry. Also, '
+                   "'distribution' means WHERE a species lives (its range), not how many there are. Rising "
+                   'sea level is caused by BOTH melting ice AND warm water expanding.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'global-warming',
+ 'key_note': 'Rising CO₂ and methane (greenhouse gases) trap heat → global warming. Biological consequences: '
+             'changed species distribution, altered migration patterns, rising sea levels flooding habitats, '
+             'and reduced biodiversity. Evidence comes from global data; treat model predictions with '
+             'appropriate caution.',
+ 'matching': {'instruction': 'Sort each into a cause of global warming or a biological effect of it.',
+              'pairs': [('Cause', 'Rising carbon dioxide from burning fossil fuels'),
+                        ('Cause', 'Rising methane from livestock farming'),
+                        ('Cause', 'Deforestation reducing CO₂ absorption'),
+                        ('Biological effect', 'Species distribution shifting towards the poles'),
+                        ('Biological effect', 'Changes in bird migration timing'),
+                        ('Biological effect', 'Coastal habitats lost as sea levels rise')],
+              'title': 'Global Warming: Cause or Effect?'},
+ 'quiz': [{'opts': [('The geographic area where the species is found', True),
+                    ('The total number of individuals in the species', False),
+                    ('How the food is shared within a population', False),
+                    ('The genetic variety within the species', False)],
+           'q': 'Global warming changes the "distribution" of a species. What does distribution mean?',
+           'wrong_explanations': {1: 'Distribution is the range — the places on Earth where a species lives. '
+                                     'Warming shifts this range.',
+                                  2: 'That is population size, not distribution.',
+                                  3: 'That is not what distribution means in ecology.'}},
+          {'opts': [('Melting ice and thermal expansion of warmer water', True),
+                    ('Photosynthesis and respiration', False),
+                    ('More rain falling on land', False),
+                    ('Fish releasing carbon dioxide', False)],
+           'q': 'Which pair of processes is causing sea levels to rise?',
+           'wrong_explanations': {1: 'Warming melts land ice (adding water) and makes existing sea water '
+                                     'expand as it warms — both raise sea level.',
+                                  2: 'Photosynthesis and respiration cycle carbon; they do not raise sea '
+                                     'level.',
+                                  3: 'Rainfall does not cause the long-term rise; melting ice and thermal '
+                                     'expansion do.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.5',
+ 'summary': 'Describe how rising carbon dioxide and methane cause global warming, and explain its biological '
+            'consequences for species distribution, migration and biodiversity.',
+ 'theory': [{'content': 'The levels of CARBON DIOXIDE and METHANE in the atmosphere are INCREASING.\n'
+                        '\n'
+                        "These are GREENHOUSE GASES — they trap heat energy near the Earth's surface.\n"
+                        '\n'
+                        "As their levels rise, more heat is trapped, so the Earth's average temperature is "
+                        'increasing. This is GLOBAL WARMING.\n'
+                        '\n'
+                        'Human activities that raise these gases include burning fossil fuels, '
+                        'deforestation, and farming livestock (which produce methane).',
+             'heading': 'What is causing global warming'},
+            {'content': 'Global warming has serious effects on living things:\n'
+                        '\n'
+                        'CHANGES IN DISTRIBUTION — as temperatures change, some species can no longer '
+                        'survive where they used to live, so their geographic range shifts (often towards '
+                        'the poles or higher ground).\n'
+                        '\n'
+                        'CHANGES IN MIGRATION PATTERNS — migrating animals (e.g. birds) may arrive earlier '
+                        'or travel to different places as seasons shift.\n'
+                        '\n'
+                        'RISING SEA LEVELS — melting ice and the expansion of warmer water raise sea levels, '
+                        'flooding coastal HABITATS.\n'
+                        '\n'
+                        'REDUCED BIODIVERSITY — species that cannot move or adapt fast enough may become '
+                        'extinct.',
+             'heading': 'Biological consequences'},
+            {'content': 'Scientists collect DATA on temperature, CO₂ levels, ice cover and species ranges '
+                        'from all over the world.\n'
+                        '\n'
+                        'There is strong evidence that human activity is causing global warming.\n'
+                        '\n'
+                        'We must be careful about UNCERTAINTIES — climate is complex and predictions rely on '
+                        'models — but the overall trend is clear.\n'
+                        '\n'
+                        'You should be able to read graphs of these data and describe what they show without '
+                        'overstating certainty.',
+             'heading': 'Evaluating the evidence'}],
+ 'title': 'Global Warming and Its Effects on Ecosystems',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': "'Maintaining biodiversity' is about active human PROGRAMMES (breeding, protecting "
+                   "habitats, hedgerows, recycling, cutting emissions), not just 'stop polluting'. Also be "
+                   'ready to explain the CONFLICT: conservation costs money and land, so it competes with '
+                   'farming, building and jobs.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'maintaining-biodiversity',
+ 'key_note': 'Programmes to maintain biodiversity: breeding programmes for endangered species; protecting '
+             'and regenerating rare habitats; reintroducing field margins and hedgerows; governments '
+             'reducing deforestation and CO₂ emissions; recycling instead of landfill. These conflict with '
+             'human needs (cost, food, land, livelihoods).',
+ 'matching': {'instruction': 'Sort each into a measure that maintains biodiversity or a human need that '
+                             'conflicts with it.',
+              'pairs': [('Conservation measure', 'Breeding programmes for endangered species'),
+                        ('Conservation measure', 'Reintroducing hedgerows and field margins on farms'),
+                        ('Conservation measure', 'Recycling resources instead of using landfill'),
+                        ('Conflicting human need', 'Money that could be spent on hospitals or schools'),
+                        ('Conflicting human need', 'Land needed for farming and housing'),
+                        ('Conflicting human need', 'Local jobs that depend on logging or fishing')],
+              'title': 'Conservation Measure or Human Conflict?'},
+ 'quiz': [{'opts': [('They provide food and shelter for a wider range of species', True),
+                    ('They increase the yield of the single crop', False),
+                    ('They stop the farmer using any pesticides', False),
+                    ('They remove all competition between species', False)],
+           'q': 'Why might reintroducing hedgerows and field margins on a large single-crop farm increase '
+                'biodiversity?',
+           'wrong_explanations': {1: 'Hedgerows and margins add habitat variety, giving insects, birds and '
+                                     'mammals food and shelter, so more species can live there.',
+                                  2: 'Their main benefit here is biodiversity, not crop yield.',
+                                  3: 'Hedgerows help wildlife but do not automatically stop pesticide use.'}},
+          {'opts': [('Protecting a habitat reduces land available for farming or building', True),
+                    ('Protecting a habitat always makes everyone wealthier', False),
+                    ('Conservation never costs any money', False),
+                    ('Endangered species breed better without any human help', False)],
+           'q': 'Conservation programmes often cause conflict. Which is an example of that conflict?',
+           'wrong_explanations': {1: 'Land set aside for conservation cannot be used for farms or houses — '
+                                     'that is the trade-off with human needs.',
+                                  2: 'Conservation has costs and can limit development, so it does not '
+                                     'always make everyone wealthier.',
+                                  3: 'Conservation programmes need funding — that cost is exactly what '
+                                     'creates conflict.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.6',
+ 'summary': 'Describe the programmes humans use to reduce their impact on ecosystems and maintain '
+            'biodiversity, and the conflicts these can involve.',
+ 'theory': [{'content': 'Human activities — pollution, land use, deforestation and global warming — REDUCE '
+                        'biodiversity.\n'
+                        '\n'
+                        'Scientists and governments have set up PROGRAMMES to reduce these negative effects '
+                        'and help maintain ecosystems and biodiversity.\n'
+                        '\n'
+                        'Maintaining biodiversity protects the ECOSYSTEM SERVICES humans rely on (food, '
+                        'clean water, pollination) as well as the species themselves.',
+             'heading': 'Why we act to protect biodiversity'},
+            {'content': 'Key measures include:\n'
+                        '\n'
+                        'BREEDING PROGRAMMES for endangered species (for example in zoos), to increase their '
+                        'numbers.\n'
+                        '\n'
+                        'PROTECTION and REGENERATION of rare habitats, such as nature reserves and '
+                        'replanting.\n'
+                        '\n'
+                        'Reintroducing FIELD MARGINS and HEDGEROWS on farms that grow only one crop, giving '
+                        'wildlife food and shelter.\n'
+                        '\n'
+                        'Governments REDUCING deforestation and carbon dioxide emissions.\n'
+                        '\n'
+                        'RECYCLING resources rather than dumping waste in landfill.',
+             'heading': 'Programmes that maintain biodiversity'},
+            {'content': 'Protecting biodiversity often CONFLICTS with human needs and pressures:\n'
+                        '\n'
+                        'COST — conservation programmes need money that could be spent elsewhere.\n'
+                        '\n'
+                        'FOOD AND LAND — protecting habitats can limit land available for farming or '
+                        'building.\n'
+                        '\n'
+                        'LOCAL LIVELIHOODS — people may depend on activities (logging, fishing) that damage '
+                        'biodiversity.\n'
+                        '\n'
+                        'So decisions involve balancing the benefits of biodiversity against these human '
+                        'needs — there is not always an easy answer.',
+             'heading': 'Conflicts and trade-offs'}],
+ 'title': 'Maintaining Biodiversity',
+ 'triple_only': None,
+ 'variables': []},
  {'common_mistake': 'PLANTS also respire — they release CO₂ just like animals. The difference is that during the DAY, '
                     'photosynthesis removes MORE CO₂ than respiration releases — so there is net CO₂ uptake. At night, '
                     "only respiration occurs. Students often say 'plants absorb CO₂, they don't release it' — this is "
@@ -8839,136 +8370,7 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'The Water Cycle',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'DENITRIFYING bacteria convert NITRATES BACK TO N₂ — they REDUCE soil nitrogen and make it less '
-                    'fertile. NITRIFYING bacteria convert AMMONIA TO NITRATES — they INCREASE soil nitrogen '
-                    'availability. These are opposite processes by different bacteria. Denitrification is favoured in '
-                    'WATERLOGGED (anaerobic) soils.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'nitrogen-cycle',
-  'key_note': 'N₂ → ammonia: nitrogen-fixing bacteria (soil or root nodules). Ammonia → nitrates: nitrifying bacteria. '
-              'Plants absorb nitrates. Decomposers release ammonia. Nitrates → N₂: denitrifying bacteria (anaerobic). '
-              'Eutrophication: nitrate leaching → algal bloom → O₂ depletion → fish die.',
-  'matching': {'instruction': 'Match each process to the bacteria responsible and what it converts.',
-               'pairs': [('Nitrogen fixation',
-                          'Nitrogen-fixing bacteria — convert N₂ gas to ammonia in soil or root nodules'),
-                         ('Nitrification',
-                          'Nitrifying bacteria — convert ammonia to nitrites then nitrates in the soil'),
-                         ('Denitrification',
-                          'Denitrifying bacteria — convert nitrates back to N₂ gas in waterlogged soil'),
-                         ('Decomposition (ammonification)',
-                          'Decomposers (bacteria/fungi) — break down proteins in dead organisms, releasing ammonia'),
-                         ('Absorption',
-                          'Plant roots absorb nitrate ions from the soil to make amino acids and proteins')],
-               'title': 'Match the Nitrogen Cycle Process'},
-  'quiz': [{'opts': [('N₂ is an extremely unreactive gas — it must be fixed into ammonia or nitrates by bacteria '
-                      'before plants can use it',
-                      True),
-                     ('N₂ molecules are too large to pass through root cell membranes', False),
-                     ('Nitrogen is toxic to plants in its atmospheric form', False),
-                     ("Plants already have enough nitrogen — they don't need more from the atmosphere", False)],
-            'q': "Why can't plants use atmospheric nitrogen (N₂) directly?",
-            'wrong_explanations': {1: 'N₂ is a small molecule — its unreactivity is due to the very strong triple bond '
-                                      'between the nitrogen atoms, not its size.',
-                                   2: 'N₂ is completely non-toxic — it makes up 78% of the air we breathe. Its issue '
-                                      'is extreme chemical stability, not toxicity.',
-                                   3: 'Plants are frequently nitrogen-limited in their growth — nitrogen deficiency '
-                                      'causes yellowing leaves (chlorosis). They need nitrogen continuously.'}},
-           {'opts': [('Excess nitrates enter water → algal bloom → plants die → decomposers use all O₂ → fish '
-                      'suffocate — caused by fertiliser leaching from farmland',
-                      True),
-                     ('Acid rain lowering the pH of lakes and rivers — caused by nitrogen oxides from vehicle exhausts',
-                      False),
-                     ('Plastic pollution blocking light from reaching aquatic plants in rivers and lakes', False),
-                     ('Warming water temperatures reducing oxygen solubility — caused by climate change', False)],
-            'q': 'What is eutrophication and what causes it?',
-            'wrong_explanations': {1: 'Acid rain from nitrogen oxides is a real environmental problem — but '
-                                      'eutrophication specifically refers to the nitrate leaching → algal bloom → '
-                                      'oxygen depletion sequence.',
-                                   2: 'Plastic pollution is a serious problem — but eutrophication is specifically '
-                                      'caused by NUTRIENT enrichment (excess nitrates/phosphates), not plastic.',
-                                   3: 'Warming does reduce oxygen solubility — but eutrophication is specifically the '
-                                      'nutrient enrichment process causing algal blooms and oxygen depletion.'}},
-           {'opts': [('Legumes have root nodules containing nitrogen-fixing bacteria — these add nitrates to the soil, '
-                      'naturally fertilising it for the next crop',
-                      True),
-                     ('Legumes have deeper roots that break up compacted soil to improve drainage', False),
-                     ('Legumes produce chemicals that kill pests and diseases in the soil', False),
-                     ('Legumes absorb excess water that would otherwise waterlog the soil', False)],
-            'q': 'Why do farmers rotate crops, sometimes planting legumes (e.g. clover or peas)?',
-            'wrong_explanations': {1: 'Root depth is an advantage of some legumes — but the primary reason for '
-                                      'including them in rotation is NITROGEN FIXATION by Rhizobium bacteria in root '
-                                      'nodules.',
-                                   2: 'Some plants do suppress soil pests — but the specific benefit of legumes in '
-                                      'crop rotation is nitrogen fixation, not pest control.',
-                                   3: "Legumes don't have exceptional water absorption compared to other plants — the "
-                                      'key benefit is nitrogen fixation.'}}],
-  'rp': None,
-  'spec': '4.7.3',
-  'summary': 'Describe how nitrogen is cycled through ecosystems by bacteria and other processes.',
-  'theory': [{'content': 'NITROGEN is essential for life — it is a key component of:\n'
-                         'AMINO ACIDS — the building blocks of proteins (enzymes, structural proteins, haemoglobin).\n'
-                         'NUCLEOTIDES — the building blocks of DNA and RNA.\n'
-                         'CHLOROPHYLL — the photosynthetic pigment in plants.\n'
-                         '\n'
-                         'Nitrogen makes up approximately 78% of the atmosphere — but as N₂ gas, which is EXTREMELY '
-                         'UNREACTIVE. Plants and animals CANNOT use N₂ directly.\n'
-                         '\n'
-                         'Nitrogen must first be FIXED — converted into a usable form (ammonia or nitrates) — before '
-                         'organisms can use it.\n'
-                         '\n'
-                         'The nitrogen cycle describes how nitrogen moves between the atmosphere, soil, plants, '
-                         'animals and decomposers.',
-              'heading': 'Why Nitrogen is Essential'},
-             {'content': 'NITROGEN FIXATION — converting N₂ to ammonia (NH₃):\n'
-                         'CARRIED OUT BY: nitrogen-fixing bacteria.\n'
-                         'IN SOIL: free-living bacteria (e.g. Azotobacter) fix N₂ in the soil.\n'
-                         'IN ROOT NODULES: mutualistic bacteria (Rhizobium) live in the root nodules of LEGUMES (peas, '
-                         'beans, clover, soybeans). They fix N₂, providing the plant with nitrates. The plant provides '
-                         'the bacteria with glucose.\n'
-                         'LIGHTNING: very high energy lightning can also fix small amounts of N₂.\n'
-                         '\n'
-                         'NITRIFICATION — converting ammonia to nitrates:\n'
-                         'Ammonia (NH₃) in the soil is converted to NITRITES then NITRATES (NO₃⁻) by NITRIFYING '
-                         'BACTERIA.\n'
-                         'Plants can absorb nitrates through their roots.\n'
-                         '\n'
-                         'ABSORPTION — plants absorb nitrates from soil → use them to make amino acids → proteins.\n'
-                         '\n'
-                         'CONSUMPTION — animals eat plants → nitrogen passes along food chains.\n'
-                         '\n'
-                         'DECOMPOSITION — when organisms die:\n'
-                         'DECOMPOSERS (bacteria and fungi) break down proteins and nucleic acids in dead organisms and '
-                         'waste.\n'
-                         'They release nitrogen as AMMONIA (ammonification).\n'
-                         'Ammonia → nitrification → nitrates (cycle continues).\n'
-                         '\n'
-                         'DENITRIFICATION — converting nitrates back to N₂:\n'
-                         'DENITRIFYING BACTERIA convert nitrates → N₂ gas, which returns to the atmosphere.\n'
-                         "Occurs mainly in WATERLOGGED (anaerobic) soils — these bacteria don't need oxygen.\n"
-                         'Reduces soil fertility.',
-              'heading': 'The Key Processes'},
-             {'content': 'FERTILISERS:\n'
-                         'Farmers add ARTIFICIAL FERTILISERS (ammonium nitrate, etc.) or ORGANIC FERTILISERS (manure, '
-                         'compost) to replace nitrates removed by harvesting crops.\n'
-                         'Excess fertiliser can be washed from fields into rivers and lakes by rain — a process called '
-                         'LEACHING.\n'
-                         '\n'
-                         'EUTROPHICATION — the consequence of nitrate leaching:\n'
-                         '1. Excess nitrates enter a river or lake.\n'
-                         '2. Algae grow rapidly (algal bloom) — covering the water surface.\n'
-                         '3. Light cannot penetrate to underwater plants — they die.\n'
-                         '4. Dead plants and algae are decomposed by bacteria.\n'
-                         '5. Decomposing bacteria use up all the OXYGEN in the water (aerobic decomposition).\n'
-                         '6. Oxygen concentration falls → fish and other aquatic animals suffocate and die.\n'
-                         '\n'
-                         'NITROGEN OXIDES from vehicle exhausts and power stations:\n'
-                         'Fall as ACID RAIN — damages vegetation and acidifies rivers and lakes.',
-              'heading': 'Human Impact on the Nitrogen Cycle'}],
-  'title': 'The Nitrogen Cycle',
-  'triple_only': None,
-  'variables': []},
+ 
  {'common_mistake': 'DECOMPOSERS are bacteria and fungi — they chemically break down organic matter using enzymes. '
                     'DETRITIVORES (earthworms, woodlice) physically shred material into smaller pieces — increasing '
                     'surface area for decomposers. Detritivores do NOT chemically decompose material. Both are '
@@ -9240,497 +8642,8 @@ BIOLOGY_SUBTOPICS_ALL = {
                 ('n₁', 'Number caught and marked in first sample', 'individuals', ''),
                 ('n₂', 'Total number caught in second sample', 'individuals', ''),
                 ('m', 'Number of marked individuals in second sample', 'individuals', '')]},
- {'common_mistake': 'Pyramids of BIOMASS always narrow upward — they are NEVER inverted. Pyramids of NUMBER can be '
-                    'inverted (e.g. one tree, thousands of insects). Students often mix these up. Remember: biomass is '
-                    'dry mass — always decreases up the pyramid because energy is lost at each level.',
-  'equations': ['Efficiency (%) = (biomass transferred ÷ biomass available) × 100'],
-  'fifas': [{'label': 'Biomass Transfer Efficiency',
-             'question': 'A meadow contains 5000 kg of grass. Rabbits feeding on the grass have a total mass of 400 '
-                         'kg. Calculate the efficiency of energy transfer.',
-             'steps': [('F', 'Efficiency = (biomass at next level ÷ biomass at previous level) × 100'),
-                       ('I', 'Efficiency = (400 ÷ 5000) × 100'),
-                       ('F', 'Efficiency = 0.08 × 100'),
-                       ('A', 'Efficiency = 8%')]}],
-  'higher': None,
-  'id': 'trophic-levels-biomass',
-  'key_note': 'Trophic levels 1–4: producer → primary → secondary → tertiary. Biomass decreases upward — lost as heat, '
-              'waste, uneaten material. Efficiency = (next level ÷ previous level) × 100%. Typically ~10%. Eating '
-              'lower trophic levels is more efficient.',
-  'matching': {'instruction': 'Match each term to its correct description.',
-               'pairs': [('Trophic level 1', 'Producers — plants and algae — fix energy by photosynthesis'),
-                         ('Pyramid of biomass',
-                          'Shows dry mass of organisms at each trophic level — always narrows upward'),
-                         ('10% efficiency',
-                          'Typical proportion of biomass transferred from one trophic level to the next'),
-                         ('Biomass lost as heat', 'Energy used in respiration — not passed to the next trophic level'),
-                         ('Pyramid of number', 'Can be inverted — e.g. one oak tree supporting thousands of insects')],
-               'title': 'Match the Trophic Level Concept'},
-  'quiz': [{'opts': [('~10% at each level — two transfers of ~10% gives 200/20,000 = 1%', True),
-                     ('1% — the total efficiency across the whole chain', False),
-                     ('50% at each level — energy is split equally between each level', False),
-                     ('200% — the tertiary consumers gain extra energy from activity', False)],
-            'q': 'A food chain has 20,000 kJ of energy in producers. Only 200 kJ reaches tertiary consumers. What is '
-                 'the efficiency of each trophic level transfer, assuming equal efficiency at each step?',
-            'wrong_explanations': {1: '1% is the TOTAL efficiency across TWO transfers — each individual step is '
-                                      'approximately 10% (10% of 10% = 1%). The question asks about EACH trophic '
-                                      'level.',
-                                   2: 'Energy is LOST at each level — never split equally. 50% would mean almost no '
-                                      'loss, which is unrealistic.',
-                                   3: 'Energy cannot be created — it can only be transferred or lost. Tertiary '
-                                      'consumers cannot gain more energy than is available.'}},
-           {'opts': [('Biomass accounts for actual dry mass at each level — always less at higher levels. Numbers can '
-                      'be misleading — one tree is one organism but has enormous biomass',
-                      True),
-                     ('Pyramids of number are always wrong — scientists stopped using them', False),
-                     ('Biomass includes water, making higher levels appear heavier', False),
-                     ('Pyramids of number only work in marine ecosystems', False)],
-            'q': 'Why is a pyramid of number sometimes inverted but a pyramid of biomass never is?',
-            'wrong_explanations': {1: 'Pyramids of number are still used — they just have known limitations. An '
-                                      'inverted number pyramid shows a real ecological situation (few large organisms '
-                                      'supporting many small ones).',
-                                   2: 'Biomass is specifically DRY mass — water is removed. Including water would make '
-                                      'comparisons less meaningful.',
-                                   3: 'Pyramids of number are valid in all ecosystems — the inversion simply occurs '
-                                      'when one large organism supports many smaller ones.'}}],
-  'rp': None,
-  'spec': '4.7.1',
-  'summary': 'Describe trophic levels, pyramids of biomass and calculate the efficiency of energy transfer.',
-  'theory': [{'content': 'A TROPHIC LEVEL is a feeding level in a food chain or food web.\n'
-                         '\n'
-                         'TROPHIC LEVEL 1 — PRODUCERS (plants and algae): fix energy from sunlight by photosynthesis. '
-                         'All food chains begin here.\n'
-                         '\n'
-                         'TROPHIC LEVEL 2 — PRIMARY CONSUMERS (herbivores): eat producers.\n'
-                         '\n'
-                         'TROPHIC LEVEL 3 — SECONDARY CONSUMERS: eat primary consumers.\n'
-                         '\n'
-                         'TROPHIC LEVEL 4 — TERTIARY CONSUMERS: eat secondary consumers.\n'
-                         '\n'
-                         'DECOMPOSERS — break down dead organisms at ALL trophic levels, returning nutrients to the '
-                         'soil.\n'
-                         '\n'
-                         'Organisms can occupy more than one trophic level — e.g. an omnivore (like a human or bear) '
-                         'that eats both plants AND animals.',
-              'heading': 'Trophic Levels'},
-             {'content': 'A PYRAMID OF BIOMASS shows the TOTAL MASS of organisms at each trophic level (measured as '
-                         'DRY MASS — all water removed).\n'
-                         '\n'
-                         'Pyramids of biomass ALWAYS narrow going upward — because biomass decreases at each trophic '
-                         'level.\n'
-                         '\n'
-                         'Biomass is lost between trophic levels because:\n'
-                         'Organisms use energy in RESPIRATION — released as heat and not passed on.\n'
-                         'Not all of each organism is EATEN — bones, shells, hair, roots remain.\n'
-                         'Some material is excreted as waste (faeces, urine) and not absorbed.\n'
-                         '\n'
-                         'Pyramids of biomass are more accurate than pyramids of number because:\n'
-                         'Pyramids of NUMBER can be inverted (e.g. one oak tree supports thousands of insects — the '
-                         'tree would be a tiny bar at the bottom).\n'
-                         'Biomass accounts for the actual mass at each level — giving a true picture of energy '
-                         'available.',
-              'heading': 'Pyramids of Biomass'},
-             {'content': 'The efficiency of energy/biomass transfer between trophic levels can be calculated:\n'
-                         '\n'
-                         'EFFICIENCY (%) = (biomass at next trophic level ÷ biomass at previous trophic level) × 100\n'
-                         '\n'
-                         'Typically only about 10% of biomass is transferred from one trophic level to the next — the '
-                         'rest is lost.\n'
-                         '\n'
-                         'Example:\n'
-                         'Grass (producers): 10,000 kg dry mass\n'
-                         'Rabbits (primary consumers): 1,000 kg dry mass → efficiency = (1000 ÷ 10,000) × 100 = 10%\n'
-                         'Foxes (secondary consumers): 100 kg dry mass → efficiency = (100 ÷ 1000) × 100 = 10%\n'
-                         '\n'
-                         'WHY THIS MATTERS for food production:\n'
-                         'Eating plants (lower trophic level) is more energy-efficient than eating meat (higher '
-                         'trophic level).\n'
-                         'Feeding grain to cattle then eating the cattle wastes ~90% of the energy at each step.\n'
-                         'A vegetarian diet can feed more people per unit of agricultural land than a meat-based diet.',
-              'heading': 'Efficiency of Biomass Transfer'}],
-  'title': 'Trophic Levels and Biomass',
-  'triple_only': None,
-  'variables': [('B_next', 'Biomass at next trophic level', 'kg', 'kg'),
-                ('B_prev', 'Biomass at previous trophic level', 'kg', 'kg')]},
- {'common_mistake': 'Sustainable fishing is not about stopping fishing — it is about fishing at rates that allow fish '
-                    'populations to maintain their numbers. Quotas, size limits and protected areas allow fish to '
-                    'breed before being caught. Aquaculture (fish farming) can reduce pressure on wild stocks but has '
-                    'its own environmental impacts.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'food-production',
-  'key_note': 'Intensive farming: high yield but habitat loss, pollution, GHG emissions. Meat production less '
-              'efficient than plant production — livestock are at higher trophic levels (10% energy transfer). '
-              'Sustainable fishing: quotas, size limits, mesh regulations, protected areas, closed seasons.',
-  'matching': {'instruction': 'Match each method to how it helps fish populations recover.',
-               'pairs': [('Fishing quotas', 'Limits total catch per year — gives populations time to recover'),
-                         ('Minimum size limits', 'Allows young fish to reach breeding age before being caught'),
-                         ('Larger mesh nets', 'Juvenile fish escape through larger holes — reduce bycatch'),
-                         ('Marine protected areas',
-                          'No-fishing zones act as breeding refuges — allow population recovery'),
-                         ('Aquaculture', 'Farming fish reduces pressure on wild populations')],
-               'title': 'Match the Sustainable Fishing Method'},
-  'quiz': [{'opts': [('Cattle are at trophic level 2 — only ~10% of energy is transferred from grain to beef, so large '
-                      'amounts of grain are needed',
-                      True),
-                     ('Cattle digest food very inefficiently — most grain passes through without being absorbed',
-                      False),
-                     ('Cattle need grain for warmth and movement, not just growth', False),
-                     ('Modern cattle breeds have been selectively bred to eat more grain', False)],
-            'q': 'Why does producing 1 kg of beef require approximately 8–10 kg of grain?',
-            'wrong_explanations': {1: 'Poor digestion is a partial contributor — but the primary reason is '
-                                      'thermodynamic: energy is lost as heat through respiration at each trophic '
-                                      'level.',
-                                   2: 'Warmth and movement do require energy — but this is still part of the 90% '
-                                      'energy loss that occurs at each trophic level, not a separate reason.',
-                                   3: "Selective breeding for traits like high meat yield doesn't change the "
-                                      'fundamental thermodynamics of energy transfer between trophic levels.'}},
-           {'opts': [('By limiting catch, they ensure fish populations are not reduced below the level needed for '
-                      'sustainable reproduction',
-                      True),
-                     ('Quotas force fishers to catch only large, old fish — which allows younger fish to reproduce',
-                      False),
-                     ('Quotas reduce the need for large mesh nets — so more fish can be caught sustainably', False),
-                     ('Quotas prevent fish from other countries entering UK waters', False)],
-            'q': 'Why do fishing quotas help maintain fish populations?',
-            'wrong_explanations': {1: 'Quotas limit total catch volume — they do not specify which size fish are '
-                                      'caught. Size limits are a separate regulation.',
-                                   2: 'Quotas allow more fish — by reducing total pressure on stocks so populations '
-                                      "recover. They don't relate to mesh size.",
-                                   3: 'Quotas are about total harvest amounts — territorial fishing rights are managed '
-                                      'separately through international agreements.'}}],
-  'rp': None,
-  'spec': '4.7.4',
-  'summary': 'Explain how human food production affects ecosystems and how sustainability can be improved.',
-  'theory': [{'content': 'The human population has grown rapidly — we now need to produce more food than ever before '
-                         'from a finite amount of land.\n'
-                         '\n'
-                         'FARMING LAND USE:\n'
-                         "Approximately 50% of the Earth's habitable land is used for agriculture.\n"
-                         'This has dramatically reduced natural habitats — particularly forests and wetlands.\n'
-                         'Large-scale agriculture often involves MONOCULTURES — growing one crop species over vast '
-                         'areas.\n'
-                         '\n'
-                         'Consequences of modern intensive farming:\n'
-                         'HABITAT LOSS — natural ecosystems cleared for cropland or pasture → biodiversity loss.\n'
-                         'SOIL DEGRADATION — intensive tilling, removal of hedgerows and chemical use reduce soil '
-                         'quality.\n'
-                         'WATER POLLUTION — nitrate and pesticide runoff into rivers and groundwater '
-                         '(eutrophication).\n'
-                         'GREENHOUSE GAS EMISSIONS — livestock (methane), deforestation (CO₂), nitrogen fertilisers '
-                         '(N₂O).\n'
-                         '\n'
-                         'FARMING TECHNIQUES TO INCREASE YIELD:\n'
-                         'FERTILISERS — provide nitrogen, phosphorus, potassium for plant growth.\n'
-                         'PESTICIDES — kill insects, fungi, weeds that reduce crop yield.\n'
-                         'SELECTIVE BREEDING — developing high-yield, disease-resistant varieties.\n'
-                         'GENETIC MODIFICATION — herbicide-resistant and pest-resistant crops.\n'
-                         'GREENHOUSES — controlled conditions maximise growth year-round.',
-              'heading': 'Food Production and Land Use'},
-             {'content': 'Producing meat and dairy requires significantly more land, water and energy than producing '
-                         'equivalent plant-based food.\n'
-                         '\n'
-                         'WHY ANIMAL PRODUCTS ARE LESS EFFICIENT:\n'
-                         'Cattle, pigs and chickens are at trophic level 2 or above — they eat plant material.\n'
-                         "As we've seen, only ~10% of energy at one trophic level passes to the next.\n"
-                         'The grain fed to livestock contains far more energy than the meat produced from it.\n'
-                         'To produce 1 kg of beef, approximately 8–10 kg of grain is needed.\n'
-                         '\n'
-                         'IMPACTS:\n'
-                         'MORE LAND needed to grow feed crops AND for grazing.\n'
-                         'MORE WATER — livestock production is a major consumer of freshwater globally.\n'
-                         'METHANE — cattle and sheep produce large amounts of methane (a potent greenhouse gas) during '
-                         'digestion.\n'
-                         'DEFORESTATION — particularly in South America, forest is cleared for cattle ranching and soy '
-                         'production (livestock feed).\n'
-                         '\n'
-                         'IMPLICATION:\n'
-                         'Reducing meat consumption — particularly beef — is one of the most effective individual '
-                         'actions for reducing environmental impact.\n'
-                         'Plant-based diets require less land, less water and produce fewer greenhouse gases.',
-              'heading': 'The Cost of Raising Livestock'},
-             {'content': "Many of the world's fisheries are being OVERFISHED — fish are being caught faster than "
-                         'populations can reproduce and recover.\n'
-                         '\n'
-                         'Consequences of overfishing:\n'
-                         'Fish populations collapse — some fisheries have been effectively destroyed (e.g. Grand Banks '
-                         'cod fishery, Canada).\n'
-                         'Food security threatened — billions of people depend on fish as a primary protein source.\n'
-                         'Ecosystem damage — removing key fish species disrupts food webs.\n'
-                         '\n'
-                         'METHODS TO ACHIEVE SUSTAINABLE FISHING:\n'
-                         '\n'
-                         'FISHING QUOTAS:\n'
-                         'Governments and international bodies set limits on how much of each species can be caught '
-                         'per year.\n'
-                         'Gives populations time to recover.\n'
-                         'Controversial — difficult to enforce and quota-setting is politically contentious.\n'
-                         '\n'
-                         'FISH SIZE LIMITS:\n'
-                         'Fish below a minimum size cannot be landed.\n'
-                         'Allows young fish to reach breeding age — ensuring population reproduction.\n'
-                         '\n'
-                         'NET MESH SIZE REGULATIONS:\n'
-                         'Larger mesh sizes allow juvenile fish to escape and grow.\n'
-                         'Reduces bycatch (accidentally caught non-target species).\n'
-                         '\n'
-                         'FISHING BANS (closed seasons and marine protected areas):\n'
-                         'Banning fishing in certain areas or at certain times allows populations to recover.\n'
-                         'Marine reserves where fishing is completely prohibited can act as breeding refuges.\n'
-                         '\n'
-                         'SUSTAINABLE AQUACULTURE (fish farming):\n'
-                         'Farming fish in controlled conditions reduces pressure on wild populations.\n'
-                         'Environmental concerns: waste, disease spread to wild fish, feed requirements.',
-              'heading': 'Sustainable Fishing'}],
-  'title': 'Food Production, Land Use and Sustainable Fishing',
-  'triple_only': None,
-  'variables': []},
- {'common_mistake': 'Lichens as indicator species indicate AIR QUALITY (sensitive to SO₂ air pollution). Mayfly larvae '
-                    'indicate WATER QUALITY (sensitive to low oxygen/pollution). Students mix these up. Both are '
-                    'absent from polluted environments — but one tells you about air, the other about water.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'environmental-change',
-  'key_note': 'Environmental change: natural or human-caused. Climate change → species moving poleward, seasonal '
-              'mismatch, coral bleaching. Indicator species: lichens (air quality), mayfly larvae (water quality). '
-              'Pollution → eutrophication, acid rain, oil spills. Habitat destruction → fragmentation → extinction '
-              'risk.',
-  'matching': {'instruction': 'Match each change to its ecological consequence.',
-               'pairs': [('Rising temperatures', 'Many UK butterfly species expanding their range northwards'),
-                         ('Eutrophication', 'Algal bloom → oxygen depletion → fish death in rivers'),
-                         ('SO₂ air pollution',
-                          'Lichens absent from polluted urban areas — indicator of poor air quality'),
-                         ('Phenological mismatch',
-                          "Caterpillars emerge earlier due to warmth — but birds don't breed earlier → chicks starve"),
-                         ('Habitat fragmentation', 'Isolated habitat patches reduce gene flow between populations')],
-               'title': 'Match the Environmental Impact'},
-  'quiz': [{'opts': [('Water quality has deteriorated — mayfly larvae are sensitive to low oxygen and pollution; their '
-                      'absence suggests nutrient runoff or other pollution',
-                      True),
-                     ('The river temperature has risen — mayfly larvae cannot survive in warm water', False),
-                     ('A predator has eaten all the mayfly larvae in that section', False),
-                     ('Mayfly larvae prefer the area upstream — they always migrate away from farmland', False)],
-            'q': 'Scientists find that mayfly larvae are absent from a stretch of river downstream from a farm. What '
-                 'does this suggest?',
-            'wrong_explanations': {1: 'Temperature can affect mayfly larvae — but the downstream location from a farm '
-                                      'specifically suggests NUTRIENT RUNOFF and eutrophication as the primary cause.',
-                                   2: 'Predation could reduce numbers but is unlikely to eliminate an entire '
-                                      'population in a specific stretch. The farm location strongly implies pollution.',
-                                   3: 'Mayfly larvae are not known to actively migrate away from farmland — their '
-                                      'absence is due to intolerable abiotic conditions (low oxygen from '
-                                      'eutrophication).'}},
-           {'opts': [('Climate change — rising spring temperatures trigger earlier breeding, as birds respond to '
-                      'warmer conditions',
-                      True),
-                     ('Selective breeding by conservationists to match earlier insect emergence', False),
-                     ('Reduced daylight in summer due to increased cloud cover', False),
-                     ('Birds have evolved to breed earlier because earlier chicks survive better', False)],
-            'q': 'Many bird species in the UK are breeding earlier in the year than they did 50 years ago. What is the '
-                 'most likely cause?',
-            'wrong_explanations': {1: "Conservationists don't selectively breed wild bird populations — the change is "
-                                      'a response to environmental conditions.',
-                                   2: 'Daylight hours have not significantly changed — it is TEMPERATURE that is '
-                                      'changing with climate change. Day length is a key breeding trigger, but the '
-                                      'earlier TIMING of temperature warming is causing earlier breeding.',
-                                   3: 'While natural selection could eventually select for earlier breeding, the '
-                                      'change has occurred too rapidly (within 50 years) to be explained by '
-                                      'evolutionary change — it is a direct behavioural response to environmental '
-                                      'change.'}}],
-  'rp': None,
-  'spec': '4.7.4',
-  'summary': 'Describe how environmental changes affect the distribution and abundance of species.',
-  'theory': [{'content': 'ENVIRONMENTAL CHANGE is any significant alteration to the abiotic or biotic conditions in an '
-                         'ecosystem.\n'
-                         '\n'
-                         'Changes can be:\n'
-                         'NATURAL — volcanic eruptions, floods, droughts, ice ages, disease outbreaks.\n'
-                         'HUMAN-CAUSED (ANTHROPOGENIC) — deforestation, agriculture, pollution, climate change, '
-                         'invasive species.\n'
-                         '\n'
-                         'Environmental change affects organisms because they are adapted to specific conditions.\n'
-                         "If conditions change beyond an organism's tolerance range, it:\n"
-                         'MOVES to a more suitable habitat (migration).\n'
-                         'Adapts over many generations through natural selection.\n'
-                         'BECOMES LOCALLY EXTINCT (extirpation).\n'
-                         'BECOMES EXTINCT if it cannot move or adapt quickly enough.\n'
-                         '\n'
-                         'MONITORING ENVIRONMENTAL CHANGE:\n'
-                         'POPULATION SIZE changes — increases or decreases indicate changes in habitat suitability.\n'
-                         'SPECIES DISTRIBUTION — mapping where species occur over time shows range shifts.\n'
-                         'INDICATOR SPECIES — species whose presence, absence or population size reflects '
-                         'environmental quality.',
-              'heading': 'Environmental Change and Species Distribution'},
-             {'content': 'CLIMATE CHANGE is causing measurable shifts in species distributions worldwide.\n'
-                         '\n'
-                         'EFFECTS OF RISING TEMPERATURES:\n'
-                         'SPECIES MOVING POLEWARD — organisms whose optimal temperature range is shifting move towards '
-                         'the poles or to higher altitudes. Example: many UK butterfly species have expanded their '
-                         'range northwards in recent decades.\n'
-                         'SEASONAL TIMING SHIFTS (PHENOLOGY) — spring events happening earlier: flowers blooming '
-                         "sooner, insects emerging earlier, birds migrating earlier. If these timing shifts don't "
-                         'match between interdependent species (e.g. caterpillar emergence and bird breeding) — '
-                         'MISMATCH occurs → reduced survival.\n'
-                         'RANGE CONTRACTION — species at the warm edge of their range find conditions too hot and '
-                         'cannot move further poleward → population declines.\n'
-                         'CORAL BLEACHING — warmer oceans cause coral polyps to expel their symbiotic algae → coral '
-                         'turns white and eventually dies if temperatures remain elevated.\n'
-                         '\n'
-                         'EFFECTS OF CHANGED RAINFALL PATTERNS:\n'
-                         'Drought-prone areas expand → grasslands may become deserts.\n'
-                         'Wetter areas may support new species previously excluded by dryness.\n'
-                         '\n'
-                         'SEA LEVEL RISE:\n'
-                         'Coastal and low-lying habitats (salt marshes, mangroves, coral atolls) at risk.\n'
-                         'Many coastal species lose their habitat.',
-              'heading': 'Climate Change and Species Distribution'},
-             {'content': 'POLLUTION affects species distribution:\n'
-                         '\n'
-                         'AIR POLLUTION:\n'
-                         'SO₂ from burning fossil fuels — indicator species lichens are very sensitive to SO₂ and are '
-                         'absent from polluted urban areas. Their presence indicates clean air.\n'
-                         'Nitrogen oxides → acid rain → acidification of soils and rivers → loss of acid-sensitive '
-                         'species.\n'
-                         '\n'
-                         'WATER POLLUTION:\n'
-                         'Nitrate and phosphate runoff (eutrophication) → algal blooms → oxygen depletion → fish die.\n'
-                         'OIL SPILLS — coat bird feathers and mammal fur → prevents insulation and waterproofing → '
-                         'death. Oil is toxic to many marine organisms.\n'
-                         'PLASTIC POLLUTION — entanglement, ingestion by marine animals.\n'
-                         '\n'
-                         'INDICATOR SPECIES for water quality:\n'
-                         'Mayfly larvae — only in clean, well-oxygenated water (absent from polluted rivers).\n'
-                         'Rat-tailed maggots — tolerate very low oxygen (indicate polluted water).\n'
-                         'Bloodworms — intermediate tolerance.\n'
-                         '\n'
-                         'HABITAT DESTRUCTION:\n'
-                         'Deforestation, draining of wetlands, urbanisation and agricultural expansion destroy '
-                         'habitats.\n'
-                         'Habitat fragmentation — dividing continuous habitats into isolated patches reduces gene flow '
-                         'between populations and increases local extinction risk.',
-              'heading': 'Pollution and Habitat Destruction'}],
-  'title': 'The Impact of Environmental Change',
-  'triple_only': None,
-  'variables': []},
- {'common_mistake': 'Biotechnology is NOT just genetic engineering — it covers any use of living organisms or their '
-                    'components in useful processes. This includes traditional uses like brewing and baking as well as '
-                    'cutting-edge genetic modification. Mycoprotein (Quorn) is made from a FUNGUS — not from soy or '
-                    'plant protein. It is grown in a fermenter using glucose.',
-  'equations': [],
-  'fifas': [],
-  'higher': None,
-  'id': 'role-of-biotechnology',
-  'key_note': 'Biotechnology: using living organisms for useful products. GM crops: higher yield, disease/pest '
-              'resistance — but gene escape, biodiversity, corporate control concerns. Insulin from GM bacteria. '
-              'Mycoprotein (Quorn): from fungus Fusarium — efficient, low environmental footprint. Bioremediation: '
-              'using microbes to clean up pollution.',
-  'matching': {'instruction': 'Match each biotechnology application to how it works.',
-               'pairs': [('GM insulin production',
-                          'Human insulin gene in E. coli → bacteria produce human insulin in fermenters'),
-                         ('Bt crops',
-                          'Gene from Bacillus thuringiensis inserted → crop produces natural insecticide → fewer '
-                          'pesticide sprays'),
-                         ('Golden Rice',
-                          'Beta-carotene gene inserted → provides vitamin A precursor in regions with deficiency'),
-                         ('Mycoprotein (Quorn)',
-                          'Fungus Fusarium grown in fermenter on glucose → protein-rich meat alternative'),
-                         ('Bioremediation', 'Bacteria used to break down oil spills or detoxify polluted soil')],
-               'title': 'Match the Biotechnology Application'},
-  'quiz': [{'opts': [('Fungus is at a lower trophic level than cattle — energy transfer is far more efficient, '
-                      'requiring less land, water and producing fewer emissions',
-                      True),
-                     ('Mycoprotein contains more protein per kg than beef', False),
-                     ('Fungi do not respire — so no CO₂ is released during production', False),
-                     ('Quorn is made from plants which are better for the environment than animals', False)],
-            'q': 'Why is mycoprotein (Quorn) considered more environmentally sustainable than beef?',
-            'wrong_explanations': {1: 'Nutritional content differs but is not the reason for environmental '
-                                      'sustainability — the efficiency of production is the key factor.',
-                                   2: 'Fungi do respire — they are living organisms. They do, however, produce less '
-                                      'methane than cattle.',
-                                   3: 'Quorn is made from a FUNGUS (Fusarium venenatum) — not from plants.'}},
-           {'opts': [('The herbicide-resistance gene could spread to wild plant relatives — creating '
-                      "herbicide-resistant 'superweeds'",
-                      True),
-                     ('The crops produce their own herbicide which kills nearby wild plants', False),
-                     ('GM crops grow so fast they shade out all other vegetation nearby', False),
-                     ('The herbicide-resistant crops cannot be eaten safely by humans', False)],
-            'q': 'What is a potential ecological concern about growing herbicide-resistant GM crops?',
-            'wrong_explanations': {1: "Herbicide-resistant crops resist externally applied herbicides — they don't "
-                                      'produce herbicide themselves.',
-                                   2: 'BT crops produce insecticide — not herbicide-resistant crops. And even Bt '
-                                      "crops' insecticide is targeted, not broadly killing all vegetation.",
-                                   3: 'GM crops are tested for human safety before approval — herbicide resistance '
-                                      'itself does not make the crop unsafe to eat.'}}],
-  'rp': None,
-  'spec': '4.7.4',
-  'summary': 'Describe how biotechnology contributes to food production and medicine.',
-  'theory': [{'content': 'BIOTECHNOLOGY is the use of living organisms (or their components) to develop products or '
-                         'processes that are useful to humans.\n'
-                         '\n'
-                         'Biotechnology is not new — humans have used yeast for brewing and baking for thousands of '
-                         'years. But modern biotechnology uses sophisticated genetic engineering and cell culture '
-                         'techniques.\n'
-                         '\n'
-                         'Key areas of biotechnology:\n'
-                         'GENETIC ENGINEERING of microorganisms to produce medicines (e.g. insulin).\n'
-                         'GENETICALLY MODIFIED CROPS for higher yield, disease resistance or improved nutrition.\n'
-                         'CLONING of plants for large-scale production of identical high-quality varieties.\n'
-                         'MICROORGANISMS for food production (cheese, yoghurt, fermentation).\n'
-                         'BIOREMEDIATION — using microorganisms to break down pollutants in soil and water.',
-              'heading': 'What is Biotechnology?'},
-             {'content': 'GM CROPS — advantages and concerns:\n'
-                         '\n'
-                         'ADVANTAGES:\n'
-                         'Herbicide-resistant crops — fields can be sprayed without damaging the crop → more effective '
-                         'weed control → higher yield.\n'
-                         'Insect-resistant crops (Bt crops) — produce natural insecticide → less need for chemical '
-                         'pesticide spraying → environmental benefit.\n'
-                         'Disease-resistant crops — less crop loss to fungal and bacterial diseases.\n'
-                         'Drought-tolerant crops — essential as climate change increases droughts in farming regions.\n'
-                         'Golden Rice — provides beta-carotene (vitamin A precursor) to address deficiency in '
-                         'developing countries.\n'
-                         '\n'
-                         'CONCERNS:\n'
-                         'GENE ESCAPE — modified genes could spread to wild relatives → unpredictable ecological '
-                         'effects.\n'
-                         'BIODIVERSITY REDUCTION — wide use of identical GM varieties reduces genetic diversity of '
-                         'crops.\n'
-                         'CORPORATE CONTROL — large companies own GM seed patents → farmers cannot save seeds → '
-                         'dependency.\n'
-                         'UNCERTAINTY — long-term effects on human health and ecosystems not fully known.\n'
-                         "ETHICAL OBJECTIONS — concerns about 'playing God' or interfering with natural processes.\n"
-                         '\n'
-                         'FUNGI IN FOOD PRODUCTION:\n'
-                         'Mycoprotein (Quorn) — made from the fungus Fusarium venenatum grown in fermenters.\n'
-                         'High-protein, low-fat meat alternative. Grown rapidly and efficiently using glucose from '
-                         'starch as the carbon source.\n'
-                         'Far more energy-efficient to produce than meat — requires much less land and water.',
-              'heading': 'Biotechnology in Food Production'},
-             {'content': 'MEDICINES FROM BIOTECHNOLOGY:\n'
-                         'INSULIN — human insulin gene inserted into E. coli bacteria → bacteria produce human insulin '
-                         'in fermenters → purified for diabetic patients. Identical to human insulin → fewer immune '
-                         'reactions than animal-derived insulin.\n'
-                         'GROWTH HORMONE — produced by GM bacteria → treats growth disorders.\n'
-                         'VACCINES — hepatitis B vaccine produced from GM yeast (antigen-producing).\n'
-                         'ANTIBODIES — monoclonal antibodies from hybridoma cells for cancer treatment and diagnosis.\n'
-                         '\n'
-                         'BIOREMEDIATION:\n'
-                         'Some bacteria can break down oil spills — used after marine pollution events.\n'
-                         'Bacteria can detoxify heavy metals in contaminated soil.\n'
-                         'Fungi (mycoremediation) can break down persistent organic pollutants.\n'
-                         '\n'
-                         'MYCOPROTEIN PRODUCTION (QUORN):\n'
-                         'Fusarium venenatum grown in a fermenter on glucose medium.\n'
-                         'Highly efficient — doubles mass every few hours.\n'
-                         'Harvested, processed and flavoured to create meat-like texture.\n'
-                         'Significantly lower environmental footprint than livestock production:\n'
-                         'Less land (no grazing or feed crop cultivation at scale).\n'
-                         'Less water.\n'
-                         'Less greenhouse gas emission.\n'
-                         'No animal welfare concerns.',
-              'heading': 'Biotechnology in Medicine and the Environment'}],
-  'title': 'The Role of Biotechnology',
-  'triple_only': None,
-  'variables': []}],
+ 
+ 
+ ],
 
 }
