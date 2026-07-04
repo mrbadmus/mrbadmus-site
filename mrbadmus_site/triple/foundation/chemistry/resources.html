@@ -3,44 +3,37 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Using Resources | Chemistry | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-html { background: #0F0F1A; }
-:root { --subject: #FFD2E6; }
-.section-title { color: var(--subject); }
-.subtopic-list-new { display:flex;flex-direction:column; }
-.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
-.subtopic-row:last-child { border-bottom:none; }
-.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
-.subtopic-main:hover { background:rgba(255,255,255,0.03); }
-.subtopic-link { display:flex;align-items:center;gap:12px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
-.subtopic-link:hover .subtopic-title { color:#FFD2E6;text-decoration:underline; }
-.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#FFD2E6;width:28px;height:28px;border-radius:6px;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
-.expand-btn:hover { background:#FFD2E6;color:#0F0F1A; }
+html { background: var(--bg); }
+:root { --subject: #B02342; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/index.html" style="color:#FFD2E6;font-weight:700;">Triple Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/chemistry/index.html" style="color:#FFD2E6;font-weight:700;">🧪 Chemistry</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/chemistry/index.html" class="crumb" style="color:#B02342;">🧪 Chemistry</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -95,105 +88,62 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/chemistry/index.html">← Back to Chemistry</a>
-  <h1 style="color:#FFD2E6">🧪 Using Resources</h1>
-  <span class="spec-pill">Spec 4.10</span>
-  <span class="paper-pill">Paper 2</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
+  <div class="topic-kicker">Chemistry · Triple Science</div>
+  <h1>Using Resources</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.10</span>
+    <span class="paper-pill">Paper 2</span>
+    <span class="tier-pill">📗 Foundation</span>
+  </div>
 </div>
 
 <div class="content-area">
 
   <div class="section">
-    <div class="section-title">📋 Subtopics — click any to open full notes</div>
-    <div class="card" style="padding:0;overflow:hidden;">
-      <div class="subtopic-list-new">
-<div class="subtopic-row" id="row-earths-resources">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/earths-resources.html">
-      <span class="subtopic-title">Using the Earth's Resources and Sustainable Development</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.10.1.1</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/earths-resources.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-potable-water">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/potable-water.html">
-      <span class="subtopic-title">Potable Water and Water Treatment</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.10.1.2–5.10.1.3</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/potable-water.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-life-cycle-assessment">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/life-cycle-assessment.html">
-      <span class="subtopic-title">Life Cycle Assessment</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.10.2.1</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/life-cycle-assessment.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-reducing-use-of-resources">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/reducing-use-of-resources.html">
-      <span class="subtopic-title">Ways of Reducing the Use of Resources</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.10.2.2</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/reducing-use-of-resources.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-corrosion-prevention">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/corrosion-prevention.html">
-      <span class="subtopic-title">Corrosion and Its Prevention</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.10.3.1</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/corrosion-prevention.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-alloys-useful-materials">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/alloys-useful-materials.html">
-      <span class="subtopic-title">Alloys as Useful Materials</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.10.3.2</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/alloys-useful-materials.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-ceramics-polymers-composites">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/ceramics-polymers-composites.html">
-      <span class="subtopic-title">Ceramics, Polymers and Composites</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.10.3.3</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/ceramics-polymers-composites.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-haber-process">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/haber-process.html">
-      <span class="subtopic-title">The Haber Process</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.10.4.1</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/haber-process.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-npk-fertilisers">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/chemistry/resources/npk-fertilisers.html">
-      <span class="subtopic-title">Production and Uses of NPK Fertilisers</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.10.4.2</span>
-    </a>
-    <a href="/triple/foundation/chemistry/resources/npk-fertilisers.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div></div>
+    <div class="section-title">Subtopics</div>
+    <div class="subtopic-grid">
+<a class="subtopic-card" id="row-earths-resources" href="/triple/foundation/chemistry/resources/earths-resources.html">
+  <span><span class="st-title">Using the Earth's Resources and Sustainable Development</span><span class="st-spec">Spec 5.10.1.1</span><span class="st-desc">Describe how humans use the Earth's resources and the importance of sustainable development.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-potable-water" href="/triple/foundation/chemistry/resources/potable-water.html">
+  <span><span class="st-title">Potable Water and Water Treatment</span><span class="st-spec">Spec 5.10.1.2–5.10.1.3</span><span class="st-desc">Describe how potable water is produced and how waste water is treated.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-life-cycle-assessment" href="/triple/foundation/chemistry/resources/life-cycle-assessment.html">
+  <span><span class="st-title">Life Cycle Assessment</span><span class="st-spec">Spec 5.10.2.1</span><span class="st-desc">Describe what a life cycle assessment is and how it is used to evaluate the environmental impact of products.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-reducing-use-of-resources" href="/triple/foundation/chemistry/resources/reducing-use-of-resources.html">
+  <span><span class="st-title">Ways of Reducing the Use of Resources</span><span class="st-spec">Spec 5.10.2.2</span><span class="st-desc">Describe how resources can be conserved through reduction, reuse and recycling.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-corrosion-prevention" href="/triple/foundation/chemistry/resources/corrosion-prevention.html">
+  <span><span class="st-title">Corrosion and Its Prevention</span><span class="st-spec">Spec 4.10.3.1</span><span class="st-desc">Explain why iron rusts and describe methods to prevent corrosion.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-alloys-useful-materials" href="/triple/foundation/chemistry/resources/alloys-useful-materials.html">
+  <span><span class="st-title">Alloys as Useful Materials</span><span class="st-spec">Spec 4.10.3.2</span><span class="st-desc">Describe why alloys are more useful than pure metals and give examples with their uses.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-ceramics-polymers-composites" href="/triple/foundation/chemistry/resources/ceramics-polymers-composites.html">
+  <span><span class="st-title">Ceramics, Polymers and Composites</span><span class="st-spec">Spec 4.10.3.3</span><span class="st-desc">Describe the properties and uses of ceramics, polymers and composites as engineering materials.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-haber-process" href="/triple/foundation/chemistry/resources/haber-process.html">
+  <span><span class="st-title">The Haber Process</span><span class="st-spec">Spec 4.10.4.1</span><span class="st-desc">Describe the Haber process for manufacturing ammonia and explain the industrial conditions used.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-npk-fertilisers" href="/triple/foundation/chemistry/resources/npk-fertilisers.html">
+  <span><span class="st-title">Production and Uses of NPK Fertilisers</span><span class="st-spec">Spec 4.10.4.2</span><span class="st-desc">Describe what NPK fertilisers are and how they are manufactured using integrated industrial processes.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
     </div>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a subtopic title or the <strong>+</strong> button to open the full notes, quiz and examples.</p>
+    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
   </div>
 
   <div class="section">
-    <div class="section-title">📐 Key Equations</div>
+    <div class="section-title">Key Equations</div>
     <div class="formula-grid"><div class="formula-pill">N₂ + 3H₂ ⇌ 2NH₃</div>
 </div>
   </div>
@@ -202,10 +152,11 @@ html { background: #0F0F1A; }
   
 
   <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
-    <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Using Resources? 💬</p>
-      <button data-open-chat style="background:#FFD2E6;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <div class="section-title">Ask Mr Badmus AI</div>
+    <div class="card ask-card">
+      <p class="ask-lede">Got a question about Using Resources?</p>
+      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
+      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 
@@ -216,7 +167,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

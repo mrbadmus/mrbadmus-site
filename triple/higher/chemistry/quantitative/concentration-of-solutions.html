@@ -3,84 +3,38 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Concentration of Solutions | Chemistry | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   
 <style>
-html { background: #0F0F1A; }
-:root { --subject: #FFD2E6; }
-.section-title { color: var(--subject); }
-.var-table { display:flex;flex-direction:column;gap:8px; }
-.var-row { display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #FFD2E6; }
-.var-sym { font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:#FFD2E6;min-width:28px; }
-.var-desc { font-size:0.9rem;color:var(--text); }
-.keynote-box { background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.3);border-radius:10px;padding:16px 20px; }
-.mistake-box { background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:16px 20px;margin:16px 0; }
-.mistake-title { font-weight:800;color:#FF6B6B;margin-bottom:8px; }
-.higher-box { background:rgba(255,217,61,0.08);border-left:4px solid #FFD93D;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.triple-box { background:rgba(78,205,196,0.08);border-left:4px solid #4ECDC4;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.star-rating-card { padding:24px; }
-.stars-row { display:flex;gap:8px;margin:12px 0; }
-.star-btn { background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:0.4;transition:opacity 0.2s,transform 0.1s; }
-.star-btn:hover,.star-btn.star-active { opacity:1; }
-.star-btn.star-active { transform:scale(1.15); }
-.star-labels { display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:8px; }
-.star-feedback { display:none;margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:0.88rem; }
-.quiz-progress { background:rgba(255,255,255,0.05);border-radius:8px;padding:8px 14px;font-size:0.82rem;color:var(--muted);margin-bottom:16px; }
-.quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
-.q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
-.quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
-.quiz-opt:hover { background:rgba(255,255,255,0.1); }
-.quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
-.quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
-.quiz-fb { display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem;line-height:1.6; }
-.quiz-fb.show { display:block; }
-.quiz-fb.correct-fb { background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:#6BCB77; }
-.quiz-fb.wrong-fb { background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#FF8888; }
-.match-layout { display:flex;gap:20px;flex-wrap:wrap; }
-.match-targets { display:flex;flex-direction:column;gap:10px;flex:1;min-width:200px; }
-.match-target { display:flex;flex-direction:column;gap:6px; }
-.match-term { font-weight:700;font-size:0.9rem; }
-.match-drop { border:2px dashed rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;min-height:40px;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.15s; }
-.match-drop.drag-over { border-color:#FFD2E6;background:rgba(78,205,196,0.08); }
-.match-drop.has-item { color:var(--text);border-style:solid;border-color:rgba(255,255,255,0.2); }
-.match-drop.match-correct { border-color:#6BCB77;background:rgba(107,203,119,0.1); }
-.match-drop.match-wrong { border-color:#FF6B6B;background:rgba(255,107,107,0.1); }
-.match-defs { display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px; }
-.match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
-.match-def:hover { background:rgba(255,255,255,0.12); }
-.match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
-.match-check-btn { background:#FFD2E6;color:#0F0F1A; }
-.match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
-.match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
-.match-result-win { background:rgba(107,203,119,0.15);color:#6BCB77; }
-.match-result-partial { background:rgba(255,107,107,0.12);color:#FF8888; }
-.fifa-label { font-size:0.75rem;font-weight:800;color:#FFD2E6;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px; }
+html { background: var(--bg); }
+:root { --subject: #B02342; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/index.html" style="color:#FFD2E6;font-weight:700;">Triple Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/higher/chemistry/index.html" style="color:#FFD2E6;font-weight:700;">🧪 Chemistry</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/higher/index.html" class="crumb" style="color:#7A5F00;">Higher</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/higher/chemistry/index.html" class="crumb" style="color:#B02342;">🧪 Chemistry</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -135,9 +89,12 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/triple/higher/chemistry/quantitative.html">← Back to Quantitative Chemistry</a>
-  <h1 style="color:#FFD2E6">🧪 Concentration of Solutions</h1>
-  <span class="spec-pill">Spec 5.3.2.5</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📙 Higher</span>
+  <div class="topic-kicker">Chemistry · Quantitative Chemistry</div>
+  <h1>Concentration of Solutions</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 5.3.2.5</span>
+    <span class="tier-pill">📙 Higher</span>
+  </div>
 </div>
 
 <div class="content-area">
@@ -146,13 +103,13 @@ html { background: #0F0F1A; }
     <div class="section-title">📖 In-Depth Theory</div>
     <div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">What is Concentration?</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The CONCENTRATION of a solution tells us how much solute is dissolved per unit volume of solution.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>A CONCENTRATED solution has a LOT of solute dissolved in a given volume.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>A DILUTE solution has a LITTLE solute dissolved in the same volume.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Concentration can be expressed in two ways at Foundation level:</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>1. In g/dm³ (grams per decimetre cubed):</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Concentration (g/dm³) = mass of solute (g) ÷ volume of solution (dm³)</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>2. In g/cm³ (grams per centimetre cubed) — less common:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Concentration (g/cm³) = mass of solute (g) ÷ volume of solution (cm³)</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Note: 1 dm³ = 1000 cm³ = 1 litre</div>
+  <div class='theory-line'>The CONCENTRATION of a solution tells us how much solute is dissolved per unit volume of solution.</div><div class='theory-gap'></div><div class='theory-line'>A CONCENTRATED solution has a LOT of solute dissolved in a given volume.</div><div class='theory-line'>A DILUTE solution has a LITTLE solute dissolved in the same volume.</div><div class='theory-gap'></div><div class='theory-line'>Concentration can be expressed in two ways at Foundation level:</div><div class='theory-gap'></div><div class='theory-line'>1. In g/dm³ (grams per decimetre cubed):</div><div class='theory-line'>Concentration (g/dm³) = mass of solute (g) ÷ volume of solution (dm³)</div><div class='theory-gap'></div><div class='theory-line'>2. In g/cm³ (grams per centimetre cubed) — less common:</div><div class='theory-line'>Concentration (g/cm³) = mass of solute (g) ÷ volume of solution (cm³)</div><div class='theory-gap'></div><div class='theory-line'>Note: 1 dm³ = 1000 cm³ = 1 litre</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Calculating Concentration</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>FORMULA:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>concentration (g/dm³) = mass of solute (g) ÷ volume of solution (dm³)</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Rearranging:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>mass (g) = concentration (g/dm³) × volume (dm³)</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>volume (dm³) = mass (g) ÷ concentration (g/dm³)</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>IMPORTANT: volume must be in dm³. If given in cm³, divide by 1000 first.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>250 cm³ = 0.250 dm³</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>500 cm³ = 0.500 dm³</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>EXAMPLES:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>1. 10 g of NaCl dissolved in 0.5 dm³ (500 cm³) of water.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Concentration = 10 ÷ 0.5 = 20 g/dm³</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>2. A solution has concentration 50 g/dm³. What mass is in 200 cm³?</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Volume = 200 ÷ 1000 = 0.2 dm³</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Mass = 50 × 0.2 = 10 g</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>3. 8 g of glucose gives a concentration of 16 g/dm³. What volume was used?</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Volume = 8 ÷ 16 = 0.5 dm³ = 500 cm³</div>
+  <div class='theory-line'>FORMULA:</div><div class='theory-line'>concentration (g/dm³) = mass of solute (g) ÷ volume of solution (dm³)</div><div class='theory-gap'></div><div class='theory-line'>Rearranging:</div><div class='theory-line'>mass (g) = concentration (g/dm³) × volume (dm³)</div><div class='theory-line'>volume (dm³) = mass (g) ÷ concentration (g/dm³)</div><div class='theory-gap'></div><div class='theory-line'>IMPORTANT: volume must be in dm³. If given in cm³, divide by 1000 first.</div><div class='theory-line'>250 cm³ = 0.250 dm³</div><div class='theory-line'>500 cm³ = 0.500 dm³</div><div class='theory-gap'></div><div class='theory-line'>EXAMPLES:</div><div class='theory-line'>1. 10 g of NaCl dissolved in 0.5 dm³ (500 cm³) of water.</div><div class='theory-line'>Concentration = 10 ÷ 0.5 = 20 g/dm³</div><div class='theory-gap'></div><div class='theory-line'>2. A solution has concentration 50 g/dm³. What mass is in 200 cm³?</div><div class='theory-line'>Volume = 200 ÷ 1000 = 0.2 dm³</div><div class='theory-line'>Mass = 50 × 0.2 = 10 g</div><div class='theory-gap'></div><div class='theory-line'>3. 8 g of glucose gives a concentration of 16 g/dm³. What volume was used?</div><div class='theory-line'>Volume = 8 ÷ 16 = 0.5 dm³ = 500 cm³</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Dilution</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>DILUTION means adding more solvent (usually water) to reduce the concentration of a solution.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>When you dilute a solution:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The AMOUNT of solute stays the SAME.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The VOLUME increases.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The CONCENTRATION decreases.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Dilution formula:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>concentration₁ × volume₁ = concentration₂ × volume₂</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Example:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>100 cm³ of 40 g/dm³ solution is diluted to 400 cm³. What is the new concentration?</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>c₁V₁ = c₂V₂</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>40 × 0.1 = c₂ × 0.4</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>4 = c₂ × 0.4</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>c₂ = 4 ÷ 0.4 = 10 g/dm³</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>SERIAL DILUTION:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>A technique where a solution is diluted by a fixed factor multiple times.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Useful for making a range of known concentrations.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Example: Start with 100 g/dm³ → dilute 1:10 → 10 g/dm³ → dilute 1:10 → 1 g/dm³.</div>
+  <div class='theory-line'>DILUTION means adding more solvent (usually water) to reduce the concentration of a solution.</div><div class='theory-gap'></div><div class='theory-line'>When you dilute a solution:</div><div class='theory-line'>The AMOUNT of solute stays the SAME.</div><div class='theory-line'>The VOLUME increases.</div><div class='theory-line'>The CONCENTRATION decreases.</div><div class='theory-gap'></div><div class='theory-line'>Dilution formula:</div><div class='theory-line'>concentration₁ × volume₁ = concentration₂ × volume₂</div><div class='theory-gap'></div><div class='theory-line'>Example:</div><div class='theory-line'>100 cm³ of 40 g/dm³ solution is diluted to 400 cm³. What is the new concentration?</div><div class='theory-line'>c₁V₁ = c₂V₂</div><div class='theory-line'>40 × 0.1 = c₂ × 0.4</div><div class='theory-line'>4 = c₂ × 0.4</div><div class='theory-line'>c₂ = 4 ÷ 0.4 = 10 g/dm³</div><div class='theory-gap'></div><div class='theory-line'>SERIAL DILUTION:</div><div class='theory-line'>A technique where a solution is diluted by a fixed factor multiple times.</div><div class='theory-line'>Useful for making a range of known concentrations.</div><div class='theory-line'>Example: Start with 100 g/dm³ → dilute 1:10 → 10 g/dm³ → dilute 1:10 → 1 g/dm³.</div>
 </div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
@@ -214,7 +171,7 @@ html { background: #0F0F1A; }
   <div class="section-title">⚽ FIFA Worked Examples</div>
   <div class="fifa-box" style="margin-bottom:20px;">
   <div class="fifa-label">Concentration Calculation</div>
-  <p style="margin-bottom:14px;font-size:0.95rem;font-style:italic;color:#ccc;">15 g of sodium hydroxide (NaOH) is dissolved to make 500 cm³ of solution. Calculate the concentration in g/dm³.</p>
+  <p class="fifa-question">15 g of sodium hydroxide (NaOH) is dissolved to make 500 cm³ of solution. Calculate the concentration in g/dm³.</p>
   <div class="fifa-step">
   <div class="fifa-letter">F</div>
   <p>concentration (g/dm³) = mass (g) ÷ volume (dm³)</p>
@@ -286,10 +243,10 @@ html { background: #0F0F1A; }
 </div>
   <div class="section">
   <div class="section-title">🤖 Ask Mr Badmus AI</div>
-  <div class="card" style="text-align:center;padding:32px;">
-    <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
-    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FFD2E6;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+  <div class="card ask-card">
+    <p class="ask-lede">Stuck? Just ask! 💬</p>
+    <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">
@@ -299,7 +256,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
@@ -383,9 +340,9 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
         const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
         endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
         endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(107,203,119,0.15)' : ratio >= 0.6 ? 'rgba(255,217,61,0.12)' : 'rgba(255,107,107,0.12)';
-        endMsg.style.color = ratio === 1 ? '#6BCB77' : ratio >= 0.6 ? '#FFD93D' : '#FF8888';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(107,203,119,0.3)' : ratio >= 0.6 ? 'rgba(255,217,61,0.3)' : 'rgba(255,107,107,0.3)');
+        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
       }
     } else {
       if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;

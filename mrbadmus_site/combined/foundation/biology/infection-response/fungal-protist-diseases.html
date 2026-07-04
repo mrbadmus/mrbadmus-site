@@ -3,84 +3,38 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Fungal and Protist Diseases | Biology | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   
 <style>
-html { background: #0F0F1A; }
-:root { --subject: #6BCB77; }
-.section-title { color: var(--subject); }
-.var-table { display:flex;flex-direction:column;gap:8px; }
-.var-row { display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #6BCB77; }
-.var-sym { font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:#6BCB77;min-width:28px; }
-.var-desc { font-size:0.9rem;color:var(--text); }
-.keynote-box { background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.3);border-radius:10px;padding:16px 20px; }
-.mistake-box { background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:16px 20px;margin:16px 0; }
-.mistake-title { font-weight:800;color:#FF6B6B;margin-bottom:8px; }
-.higher-box { background:rgba(255,217,61,0.08);border-left:4px solid #FFD93D;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.triple-box { background:rgba(78,205,196,0.08);border-left:4px solid #4ECDC4;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.star-rating-card { padding:24px; }
-.stars-row { display:flex;gap:8px;margin:12px 0; }
-.star-btn { background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:0.4;transition:opacity 0.2s,transform 0.1s; }
-.star-btn:hover,.star-btn.star-active { opacity:1; }
-.star-btn.star-active { transform:scale(1.15); }
-.star-labels { display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:8px; }
-.star-feedback { display:none;margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:0.88rem; }
-.quiz-progress { background:rgba(255,255,255,0.05);border-radius:8px;padding:8px 14px;font-size:0.82rem;color:var(--muted);margin-bottom:16px; }
-.quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
-.q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
-.quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
-.quiz-opt:hover { background:rgba(255,255,255,0.1); }
-.quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
-.quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
-.quiz-fb { display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem;line-height:1.6; }
-.quiz-fb.show { display:block; }
-.quiz-fb.correct-fb { background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:#6BCB77; }
-.quiz-fb.wrong-fb { background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#FF8888; }
-.match-layout { display:flex;gap:20px;flex-wrap:wrap; }
-.match-targets { display:flex;flex-direction:column;gap:10px;flex:1;min-width:200px; }
-.match-target { display:flex;flex-direction:column;gap:6px; }
-.match-term { font-weight:700;font-size:0.9rem; }
-.match-drop { border:2px dashed rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;min-height:40px;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.15s; }
-.match-drop.drag-over { border-color:#6BCB77;background:rgba(78,205,196,0.08); }
-.match-drop.has-item { color:var(--text);border-style:solid;border-color:rgba(255,255,255,0.2); }
-.match-drop.match-correct { border-color:#6BCB77;background:rgba(107,203,119,0.1); }
-.match-drop.match-wrong { border-color:#FF6B6B;background:rgba(255,107,107,0.1); }
-.match-defs { display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px; }
-.match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
-.match-def:hover { background:rgba(255,255,255,0.12); }
-.match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
-.match-check-btn { background:#6BCB77;color:#0F0F1A; }
-.match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
-.match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
-.match-result-win { background:rgba(107,203,119,0.15);color:#6BCB77; }
-.match-result-partial { background:rgba(255,107,107,0.12);color:#FF8888; }
-.fifa-label { font-size:0.75rem;font-weight:800;color:#6BCB77;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px; }
+html { background: var(--bg); }
+:root { --subject: #237A3B; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/index.html" style="color:#4ECDC4;font-weight:700;">Combined Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/foundation/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/index.html" class="crumb" style="color:#1D6FB8;">Combined Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/foundation/biology/index.html" class="crumb" style="color:#237A3B;">🌿 Biology</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -135,9 +89,12 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/combined/foundation/biology/infection-response.html">← Back to Infection and Response</a>
-  <h1 style="color:#6BCB77">🌿 Fungal and Protist Diseases</h1>
-  <span class="spec-pill">Spec 4.3.1.4</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
+  <div class="topic-kicker">Biology · Infection and Response</div>
+  <h1>Fungal and Protist Diseases</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.3.1.4</span>
+    <span class="tier-pill">📗 Foundation</span>
+  </div>
 </div>
 
 <div class="content-area">
@@ -146,13 +103,13 @@ html { background: #0F0F1A; }
     <div class="section-title">📖 In-Depth Theory</div>
     <div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Fungal Diseases — Rose Black Spot</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>CAUSE: Diplocarpon rosae — a fungal pathogen that infects rose plants.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>TRANSMISSION: Fungal spores spread through WATER (rain splashing from leaf to leaf) and by WIND. Spores land on leaves and germinate when conditions are warm and wet.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>SYMPTOMS:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Purple or black spots appearing on rose leaves.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Leaves turn yellow around the spots.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Affected leaves drop off the plant prematurely — DEFOLIATION.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>WHY IT MATTERS: The loss of leaves is the key problem. Fewer leaves → less surface area for photosynthesis → the plant grows poorly, produces fewer flowers and is weakened overall. Severely infected plants may die.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>PREVENTION AND TREATMENT:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Remove and destroy infected leaves immediately — do NOT compost them (spores can survive).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Apply FUNGICIDE sprays to remaining leaves — kills fungal growth.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Choose disease-resistant rose varieties.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Avoid overhead watering — wet leaves encourage fungal growth.</div>
+  <div class='theory-line'>CAUSE: Diplocarpon rosae — a fungal pathogen that infects rose plants.</div><div class='theory-gap'></div><div class='theory-line'>TRANSMISSION: Fungal spores spread through WATER (rain splashing from leaf to leaf) and by WIND. Spores land on leaves and germinate when conditions are warm and wet.</div><div class='theory-gap'></div><div class='theory-line'>SYMPTOMS:</div><div class='theory-line'>Purple or black spots appearing on rose leaves.</div><div class='theory-line'>Leaves turn yellow around the spots.</div><div class='theory-line'>Affected leaves drop off the plant prematurely — DEFOLIATION.</div><div class='theory-gap'></div><div class='theory-line'>WHY IT MATTERS: The loss of leaves is the key problem. Fewer leaves → less surface area for photosynthesis → the plant grows poorly, produces fewer flowers and is weakened overall. Severely infected plants may die.</div><div class='theory-gap'></div><div class='theory-line'>PREVENTION AND TREATMENT:</div><div class='theory-line'>Remove and destroy infected leaves immediately — do NOT compost them (spores can survive).</div><div class='theory-line'>Apply FUNGICIDE sprays to remaining leaves — kills fungal growth.</div><div class='theory-line'>Choose disease-resistant rose varieties.</div><div class='theory-line'>Avoid overhead watering — wet leaves encourage fungal growth.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Protist Diseases — Malaria</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>CAUSE: Plasmodium — a protist (single-celled eukaryote). Several species cause malaria; Plasmodium falciparum is the most deadly.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>VECTOR: The female Anopheles mosquito — she bites infected humans, picks up Plasmodium, and injects it into the next person she bites. The mosquito is the VECTOR, not the pathogen.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>LIFE CYCLE IN BRIEF:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Plasmodium is injected into the human bloodstream during a mosquito bite.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>It travels to the liver and multiplies.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>It then infects and DESTROYS red blood cells in cycles.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The destruction of red blood cells causes the characteristic RECURRING FEVER.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>SYMPTOMS: High fever (cyclical — comes and goes in waves), headache, vomiting, muscle pain and fatigue. Severe malaria can cause: anaemia (from red blood cell destruction), kidney failure, cerebral malaria (affecting the brain), coma and death.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>PREVENTION (breaking the transmission cycle):</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Mosquito nets (especially insecticide-treated bed nets — ITNs).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Insecticide sprays to kill mosquitoes.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Draining standing water where mosquitoes breed.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Anti-malarial drugs taken before and during travel to high-risk areas.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>TREATMENT: Anti-malarial drugs (e.g. artemisinin-based combination therapies). Resistance to some anti-malarials is also emerging.</div>
+  <div class='theory-line'>CAUSE: Plasmodium — a protist (single-celled eukaryote). Several species cause malaria; Plasmodium falciparum is the most deadly.</div><div class='theory-gap'></div><div class='theory-line'>VECTOR: The female Anopheles mosquito — she bites infected humans, picks up Plasmodium, and injects it into the next person she bites. The mosquito is the VECTOR, not the pathogen.</div><div class='theory-gap'></div><div class='theory-line'>LIFE CYCLE IN BRIEF:</div><div class='theory-line'>Plasmodium is injected into the human bloodstream during a mosquito bite.</div><div class='theory-line'>It travels to the liver and multiplies.</div><div class='theory-line'>It then infects and DESTROYS red blood cells in cycles.</div><div class='theory-line'>The destruction of red blood cells causes the characteristic RECURRING FEVER.</div><div class='theory-gap'></div><div class='theory-line'>SYMPTOMS: High fever (cyclical — comes and goes in waves), headache, vomiting, muscle pain and fatigue. Severe malaria can cause: anaemia (from red blood cell destruction), kidney failure, cerebral malaria (affecting the brain), coma and death.</div><div class='theory-gap'></div><div class='theory-line'>PREVENTION (breaking the transmission cycle):</div><div class='theory-line'>Mosquito nets (especially insecticide-treated bed nets — ITNs).</div><div class='theory-line'>Insecticide sprays to kill mosquitoes.</div><div class='theory-line'>Draining standing water where mosquitoes breed.</div><div class='theory-line'>Anti-malarial drugs taken before and during travel to high-risk areas.</div><div class='theory-gap'></div><div class='theory-line'>TREATMENT: Anti-malarial drugs (e.g. artemisinin-based combination therapies). Resistance to some anti-malarials is also emerging.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Comparing Fungal and Protist Diseases</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>It helps to compare these two types side by side:</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>ROSE BLACK SPOT:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Pathogen type: FUNGUS.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Host: Rose plants.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Spread: Water and wind carrying spores.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Damage: Leaf spots and defoliation → reduced photosynthesis.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Treatment: Fungicide, removing infected leaves.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>MALARIA:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Pathogen type: PROTIST (Plasmodium).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Host: Humans (and other primates).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Spread: Via the Anopheles mosquito VECTOR.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Damage: Destroys red blood cells → recurring fever, anaemia, can be fatal.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Treatment: Anti-malarial drugs.</div>
+  <div class='theory-line'>It helps to compare these two types side by side:</div><div class='theory-gap'></div><div class='theory-line'>ROSE BLACK SPOT:</div><div class='theory-line'>Pathogen type: FUNGUS.</div><div class='theory-line'>Host: Rose plants.</div><div class='theory-line'>Spread: Water and wind carrying spores.</div><div class='theory-line'>Damage: Leaf spots and defoliation → reduced photosynthesis.</div><div class='theory-line'>Treatment: Fungicide, removing infected leaves.</div><div class='theory-gap'></div><div class='theory-line'>MALARIA:</div><div class='theory-line'>Pathogen type: PROTIST (Plasmodium).</div><div class='theory-line'>Host: Humans (and other primates).</div><div class='theory-line'>Spread: Via the Anopheles mosquito VECTOR.</div><div class='theory-line'>Damage: Destroys red blood cells → recurring fever, anaemia, can be fatal.</div><div class='theory-line'>Treatment: Anti-malarial drugs.</div>
 </div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
@@ -265,10 +222,10 @@ html { background: #0F0F1A; }
 </div>
   <div class="section">
   <div class="section-title">🤖 Ask Mr Badmus AI</div>
-  <div class="card" style="text-align:center;padding:32px;">
-    <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
-    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+  <div class="card ask-card">
+    <p class="ask-lede">Stuck? Just ask! 💬</p>
+    <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">
@@ -278,7 +235,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
@@ -362,9 +319,9 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
         const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
         endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
         endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(107,203,119,0.15)' : ratio >= 0.6 ? 'rgba(255,217,61,0.12)' : 'rgba(255,107,107,0.12)';
-        endMsg.style.color = ratio === 1 ? '#6BCB77' : ratio >= 0.6 ? '#FFD93D' : '#FF8888';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(107,203,119,0.3)' : ratio >= 0.6 ? 'rgba(255,217,61,0.3)' : 'rgba(255,107,107,0.3)');
+        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
       }
     } else {
       if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;

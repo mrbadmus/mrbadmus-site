@@ -3,84 +3,38 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Enzymes | Biology | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   
 <style>
-html { background: #0F0F1A; }
-:root { --subject: #6BCB77; }
-.section-title { color: var(--subject); }
-.var-table { display:flex;flex-direction:column;gap:8px; }
-.var-row { display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #6BCB77; }
-.var-sym { font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:#6BCB77;min-width:28px; }
-.var-desc { font-size:0.9rem;color:var(--text); }
-.keynote-box { background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.3);border-radius:10px;padding:16px 20px; }
-.mistake-box { background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:16px 20px;margin:16px 0; }
-.mistake-title { font-weight:800;color:#FF6B6B;margin-bottom:8px; }
-.higher-box { background:rgba(255,217,61,0.08);border-left:4px solid #FFD93D;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.triple-box { background:rgba(78,205,196,0.08);border-left:4px solid #4ECDC4;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.star-rating-card { padding:24px; }
-.stars-row { display:flex;gap:8px;margin:12px 0; }
-.star-btn { background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:0.4;transition:opacity 0.2s,transform 0.1s; }
-.star-btn:hover,.star-btn.star-active { opacity:1; }
-.star-btn.star-active { transform:scale(1.15); }
-.star-labels { display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:8px; }
-.star-feedback { display:none;margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:0.88rem; }
-.quiz-progress { background:rgba(255,255,255,0.05);border-radius:8px;padding:8px 14px;font-size:0.82rem;color:var(--muted);margin-bottom:16px; }
-.quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
-.q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
-.quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
-.quiz-opt:hover { background:rgba(255,255,255,0.1); }
-.quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
-.quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
-.quiz-fb { display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem;line-height:1.6; }
-.quiz-fb.show { display:block; }
-.quiz-fb.correct-fb { background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:#6BCB77; }
-.quiz-fb.wrong-fb { background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#FF8888; }
-.match-layout { display:flex;gap:20px;flex-wrap:wrap; }
-.match-targets { display:flex;flex-direction:column;gap:10px;flex:1;min-width:200px; }
-.match-target { display:flex;flex-direction:column;gap:6px; }
-.match-term { font-weight:700;font-size:0.9rem; }
-.match-drop { border:2px dashed rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;min-height:40px;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.15s; }
-.match-drop.drag-over { border-color:#6BCB77;background:rgba(78,205,196,0.08); }
-.match-drop.has-item { color:var(--text);border-style:solid;border-color:rgba(255,255,255,0.2); }
-.match-drop.match-correct { border-color:#6BCB77;background:rgba(107,203,119,0.1); }
-.match-drop.match-wrong { border-color:#FF6B6B;background:rgba(255,107,107,0.1); }
-.match-defs { display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px; }
-.match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
-.match-def:hover { background:rgba(255,255,255,0.12); }
-.match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
-.match-check-btn { background:#6BCB77;color:#0F0F1A; }
-.match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
-.match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
-.match-result-win { background:rgba(107,203,119,0.15);color:#6BCB77; }
-.match-result-partial { background:rgba(255,107,107,0.12);color:#FF8888; }
-.fifa-label { font-size:0.75rem;font-weight:800;color:#6BCB77;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px; }
+html { background: var(--bg); }
+:root { --subject: #237A3B; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/index.html" style="color:#4ECDC4;font-weight:700;">Combined Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/foundation/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/index.html" class="crumb" style="color:#1D6FB8;">Combined Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/foundation/biology/index.html" class="crumb" style="color:#237A3B;">🌿 Biology</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -135,9 +89,12 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/combined/foundation/biology/organisation.html">← Back to Organisation</a>
-  <h1 style="color:#6BCB77">🌿 Enzymes</h1>
-  <span class="spec-pill">Spec 4.2.2.2</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
+  <div class="topic-kicker">Biology · Organisation</div>
+  <h1>Enzymes</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.2.2.2</span>
+    <span class="tier-pill">📗 Foundation</span>
+  </div>
 </div>
 
 <div class="content-area">
@@ -146,19 +103,19 @@ html { background: #0F0F1A; }
     <div class="section-title">📖 In-Depth Theory</div>
     <div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">What Are Enzymes?</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Enzymes are biological catalysts — proteins that speed up chemical reactions in living organisms without being used up in the reaction.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Without enzymes, many reactions in the body would happen too slowly to sustain life.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Every enzyme is a protein with a specific 3D shape. Part of this shape forms the ACTIVE SITE — a region with a very specific shape that fits only ONE type of molecule (the SUBSTRATE).</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>This specificity (one enzyme = one substrate) is explained by the LOCK AND KEY MODEL.</div>
+  <div class='theory-line'>Enzymes are biological catalysts — proteins that speed up chemical reactions in living organisms without being used up in the reaction.</div><div class='theory-gap'></div><div class='theory-line'>Without enzymes, many reactions in the body would happen too slowly to sustain life.</div><div class='theory-gap'></div><div class='theory-line'>Every enzyme is a protein with a specific 3D shape. Part of this shape forms the ACTIVE SITE — a region with a very specific shape that fits only ONE type of molecule (the SUBSTRATE).</div><div class='theory-gap'></div><div class='theory-line'>This specificity (one enzyme = one substrate) is explained by the LOCK AND KEY MODEL.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">The Lock and Key Model</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The lock and key model explains enzyme specificity.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The ENZYME is the lock — its active site has a unique shape.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The SUBSTRATE is the key — only the correctly shaped substrate fits into the active site.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>What happens:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>1. The substrate collides with the enzyme's active site.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>2. The substrate binds to form an ENZYME-SUBSTRATE COMPLEX.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>3. The enzyme catalyses the reaction — substrate is converted into PRODUCTS.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>4. Products are released from the active site.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>5. The enzyme is UNCHANGED and ready to bind another substrate molecule.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>This is why enzymes are NOT used up — they can be used over and over again.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Real-life example: amylase (enzyme) has an active site that ONLY fits starch molecules (substrate). It will not break down proteins or fats — their shape is different.</div>
+  <div class='theory-line'>The lock and key model explains enzyme specificity.</div><div class='theory-gap'></div><div class='theory-line'>The ENZYME is the lock — its active site has a unique shape.</div><div class='theory-line'>The SUBSTRATE is the key — only the correctly shaped substrate fits into the active site.</div><div class='theory-gap'></div><div class='theory-line'>What happens:</div><div class='theory-line'>1. The substrate collides with the enzyme's active site.</div><div class='theory-line'>2. The substrate binds to form an ENZYME-SUBSTRATE COMPLEX.</div><div class='theory-line'>3. The enzyme catalyses the reaction — substrate is converted into PRODUCTS.</div><div class='theory-line'>4. Products are released from the active site.</div><div class='theory-line'>5. The enzyme is UNCHANGED and ready to bind another substrate molecule.</div><div class='theory-gap'></div><div class='theory-line'>This is why enzymes are NOT used up — they can be used over and over again.</div><div class='theory-gap'></div><div class='theory-line'>Real-life example: amylase (enzyme) has an active site that ONLY fits starch molecules (substrate). It will not break down proteins or fats — their shape is different.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Effect of Temperature on Enzyme Activity</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Temperature has a huge effect on how fast enzymes work.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>LOW TEMPERATURE (e.g. 10°C):</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Particles have less kinetic energy.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Fewer enzyme-substrate collisions per second.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Reaction rate is slow.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>RISING TEMPERATURE:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>More kinetic energy → more collisions → more enzyme-substrate complexes formed → faster reaction rate.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>OPTIMUM TEMPERATURE:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The temperature at which the enzyme works fastest.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>For most human enzymes: approximately 37°C (body temperature).</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>ABOVE OPTIMUM TEMPERATURE:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Vibrations in the enzyme become too violent.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The shape of the active site is permanently changed — DENATURATION.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Substrate can no longer fit into the denatured active site.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Reaction rate falls rapidly to zero.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>IMPORTANT: denaturation is PERMANENT. Cooling the enzyme back down does NOT restore its activity.</div>
+  <div class='theory-line'>Temperature has a huge effect on how fast enzymes work.</div><div class='theory-gap'></div><div class='theory-line'>LOW TEMPERATURE (e.g. 10°C):</div><div class='theory-line'>Particles have less kinetic energy.</div><div class='theory-line'>Fewer enzyme-substrate collisions per second.</div><div class='theory-line'>Reaction rate is slow.</div><div class='theory-gap'></div><div class='theory-line'>RISING TEMPERATURE:</div><div class='theory-line'>More kinetic energy → more collisions → more enzyme-substrate complexes formed → faster reaction rate.</div><div class='theory-gap'></div><div class='theory-line'>OPTIMUM TEMPERATURE:</div><div class='theory-line'>The temperature at which the enzyme works fastest.</div><div class='theory-line'>For most human enzymes: approximately 37°C (body temperature).</div><div class='theory-gap'></div><div class='theory-line'>ABOVE OPTIMUM TEMPERATURE:</div><div class='theory-line'>Vibrations in the enzyme become too violent.</div><div class='theory-line'>The shape of the active site is permanently changed — DENATURATION.</div><div class='theory-line'>Substrate can no longer fit into the denatured active site.</div><div class='theory-line'>Reaction rate falls rapidly to zero.</div><div class='theory-gap'></div><div class='theory-line'>IMPORTANT: denaturation is PERMANENT. Cooling the enzyme back down does NOT restore its activity.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Effect of pH on Enzyme Activity</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Each enzyme also has an OPTIMUM pH — the pH at which it works best.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>PH AWAY FROM THE OPTIMUM:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Changes in pH alter the charges on the amino acids that form the active site.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Hydrogen bonds in the enzyme are disrupted.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The shape of the active site changes.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The substrate no longer fits — enzyme activity decreases.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>At extreme pH values, the enzyme DENATURES permanently.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Different enzymes have different optimum pH values depending on where they work:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Salivary amylase — optimum pH ~7 (neutral — the mouth).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Pepsin — optimum pH ~2 (acidic — the stomach, where HCl is present).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Pancreatic enzymes — optimum pH ~7–8 (neutral to slightly alkaline — small intestine, where bile has neutralised the acid).</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>This is WHY the body produces acid in the stomach and bile to neutralise it — creating the right pH for each enzyme in each location.</div>
+  <div class='theory-line'>Each enzyme also has an OPTIMUM pH — the pH at which it works best.</div><div class='theory-gap'></div><div class='theory-line'>PH AWAY FROM THE OPTIMUM:</div><div class='theory-line'>Changes in pH alter the charges on the amino acids that form the active site.</div><div class='theory-line'>Hydrogen bonds in the enzyme are disrupted.</div><div class='theory-line'>The shape of the active site changes.</div><div class='theory-line'>The substrate no longer fits — enzyme activity decreases.</div><div class='theory-line'>At extreme pH values, the enzyme DENATURES permanently.</div><div class='theory-gap'></div><div class='theory-line'>Different enzymes have different optimum pH values depending on where they work:</div><div class='theory-line'>Salivary amylase — optimum pH ~7 (neutral — the mouth).</div><div class='theory-line'>Pepsin — optimum pH ~2 (acidic — the stomach, where HCl is present).</div><div class='theory-line'>Pancreatic enzymes — optimum pH ~7–8 (neutral to slightly alkaline — small intestine, where bile has neutralised the acid).</div><div class='theory-gap'></div><div class='theory-line'>This is WHY the body produces acid in the stomach and bile to neutralise it — creating the right pH for each enzyme in each location.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Factors That Affect Enzyme Rate — Summary</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Three key factors affect the rate of enzyme-catalysed reactions:</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>1. TEMPERATURE — increases rate up to optimum (~37°C for human enzymes), then denaturation causes rate to fall sharply.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>2. pH — each enzyme has an optimum pH. Too acidic or too alkaline = active site changes shape = slower reaction or denaturation.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>3. SUBSTRATE CONCENTRATION — more substrate molecules = more collisions with enzyme = faster rate (up to a point). Once all enzyme active sites are occupied, adding more substrate has no effect — the enzyme is saturated.</div>
+  <div class='theory-line'>Three key factors affect the rate of enzyme-catalysed reactions:</div><div class='theory-gap'></div><div class='theory-line'>1. TEMPERATURE — increases rate up to optimum (~37°C for human enzymes), then denaturation causes rate to fall sharply.</div><div class='theory-gap'></div><div class='theory-line'>2. pH — each enzyme has an optimum pH. Too acidic or too alkaline = active site changes shape = slower reaction or denaturation.</div><div class='theory-gap'></div><div class='theory-line'>3. SUBSTRATE CONCENTRATION — more substrate molecules = more collisions with enzyme = faster rate (up to a point). Once all enzyme active sites are occupied, adding more substrate has no effect — the enzyme is saturated.</div>
 </div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
@@ -300,10 +257,10 @@ html { background: #0F0F1A; }
 </div>
   <div class="section">
   <div class="section-title">🤖 Ask Mr Badmus AI</div>
-  <div class="card" style="text-align:center;padding:32px;">
-    <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
-    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+  <div class="card ask-card">
+    <p class="ask-lede">Stuck? Just ask! 💬</p>
+    <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">
@@ -313,7 +270,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
@@ -397,9 +354,9 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
         const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
         endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
         endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(107,203,119,0.15)' : ratio >= 0.6 ? 'rgba(255,217,61,0.12)' : 'rgba(255,107,107,0.12)';
-        endMsg.style.color = ratio === 1 ? '#6BCB77' : ratio >= 0.6 ? '#FFD93D' : '#FF8888';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(107,203,119,0.3)' : ratio >= 0.6 ? 'rgba(255,217,61,0.3)' : 'rgba(255,107,107,0.3)');
+        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
       }
     } else {
       if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;

@@ -3,44 +3,37 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Particle Model of Matter | Physics | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-html { background: #0F0F1A; }
-:root { --subject: #4ECDC4; }
-.section-title { color: var(--subject); }
-.subtopic-list-new { display:flex;flex-direction:column; }
-.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
-.subtopic-row:last-child { border-bottom:none; }
-.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
-.subtopic-main:hover { background:rgba(255,255,255,0.03); }
-.subtopic-link { display:flex;align-items:center;gap:12px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
-.subtopic-link:hover .subtopic-title { color:#4ECDC4;text-decoration:underline; }
-.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#4ECDC4;width:28px;height:28px;border-radius:6px;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
-.expand-btn:hover { background:#4ECDC4;color:#0F0F1A; }
+html { background: var(--bg); }
+:root { --subject: #1D6FB8; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/index.html" style="color:#FFD2E6;font-weight:700;">Triple Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/physics/index.html" style="color:#4ECDC4;font-weight:700;">⚡ Physics</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/physics/index.html" class="crumb" style="color:#1D6FB8;">⚡ Physics</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -95,78 +88,50 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/physics/index.html">← Back to Physics</a>
-  <h1 style="color:#4ECDC4">⚡ Particle Model of Matter</h1>
-  <span class="spec-pill">Spec 4.3</span>
-  <span class="paper-pill">Paper 1</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
+  <div class="topic-kicker">Physics · Triple Science</div>
+  <h1>Particle Model of Matter</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.3</span>
+    <span class="paper-pill">Paper 1</span>
+    <span class="tier-pill">📗 Foundation</span>
+  </div>
 </div>
 
 <div class="content-area">
 
   <div class="section">
-    <div class="section-title">📋 Subtopics — click any to open full notes</div>
-    <div class="card" style="padding:0;overflow:hidden;">
-      <div class="subtopic-list-new">
-<div class="subtopic-row" id="row-density-of-materials">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/physics/particle-model/density-of-materials.html">
-      <span class="subtopic-title">Density of Materials</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.3.1.1</span>
-    </a>
-    <a href="/triple/foundation/physics/particle-model/density-of-materials.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-changes-of-state">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/physics/particle-model/changes-of-state.html">
-      <span class="subtopic-title">Changes of State</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.3.1.2</span>
-    </a>
-    <a href="/triple/foundation/physics/particle-model/changes-of-state.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-internal-energy">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/physics/particle-model/internal-energy.html">
-      <span class="subtopic-title">Internal Energy</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.3.2.1</span>
-    </a>
-    <a href="/triple/foundation/physics/particle-model/internal-energy.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-temperature-changes-shc">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/physics/particle-model/temperature-changes-shc.html">
-      <span class="subtopic-title">Temperature Changes and Specific Heat Capacity</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.3.2.2</span>
-    </a>
-    <a href="/triple/foundation/physics/particle-model/temperature-changes-shc.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-specific-latent-heat">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/physics/particle-model/specific-latent-heat.html">
-      <span class="subtopic-title">Changes of State and Specific Latent Heat</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.3.2.3</span>
-    </a>
-    <a href="/triple/foundation/physics/particle-model/specific-latent-heat.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-particle-motion-pressure">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/physics/particle-model/particle-motion-pressure.html">
-      <span class="subtopic-title">Particle Motion in Gases</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.3.3.1</span>
-    </a>
-    <a href="/triple/foundation/physics/particle-model/particle-motion-pressure.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div></div>
+    <div class="section-title">Subtopics</div>
+    <div class="subtopic-grid">
+<a class="subtopic-card" id="row-density-of-materials" href="/triple/foundation/physics/particle-model/density-of-materials.html">
+  <span><span class="st-title">Density of Materials</span><span class="st-spec">Spec 6.3.1.1</span><span class="st-desc">Define density and calculate it from mass and volume for solids and liquids.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-changes-of-state" href="/triple/foundation/physics/particle-model/changes-of-state.html">
+  <span><span class="st-title">Changes of State</span><span class="st-spec">Spec 6.3.1.2</span><span class="st-desc">Describe changes of state in terms of particles and explain why mass is conserved.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-internal-energy" href="/triple/foundation/physics/particle-model/internal-energy.html">
+  <span><span class="st-title">Internal Energy</span><span class="st-spec">Spec 6.3.2.1</span><span class="st-desc">Define internal energy and explain how heating affects a system.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-temperature-changes-shc" href="/triple/foundation/physics/particle-model/temperature-changes-shc.html">
+  <span><span class="st-title">Temperature Changes and Specific Heat Capacity</span><span class="st-spec">Spec 6.3.2.2</span><span class="st-desc">Use ΔE = mcΔθ to calculate energy changes when substances are heated or cooled.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-specific-latent-heat" href="/triple/foundation/physics/particle-model/specific-latent-heat.html">
+  <span><span class="st-title">Changes of State and Specific Latent Heat</span><span class="st-spec">Spec 6.3.2.3</span><span class="st-desc">Define specific latent heat and calculate energy for changes of state using E = mL.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-particle-motion-pressure" href="/triple/foundation/physics/particle-model/particle-motion-pressure.html">
+  <span><span class="st-title">Particle Motion in Gases</span><span class="st-spec">Spec 6.3.3.1</span><span class="st-desc">Explain gas pressure in terms of particle motion and describe how temperature and volume affect pressure.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
     </div>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a subtopic title or the <strong>+</strong> button to open the full notes, quiz and examples.</p>
+    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
   </div>
 
   <div class="section">
-    <div class="section-title">📐 Key Equations</div>
+    <div class="section-title">Key Equations</div>
     <div class="formula-grid"><div class="formula-pill">ρ = m/V</div>
 <div class="formula-pill">E = mcΔθ</div>
 <div class="formula-pill">E = mL</div>
@@ -179,10 +144,11 @@ html { background: #0F0F1A; }
   
 
   <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
-    <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Particle Model of Matter? 💬</p>
-      <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <div class="section-title">Ask Mr Badmus AI</div>
+    <div class="card ask-card">
+      <p class="ask-lede">Got a question about Particle Model of Matter?</p>
+      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
+      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 
@@ -193,7 +159,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

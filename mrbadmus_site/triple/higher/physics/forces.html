@@ -3,44 +3,37 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Forces | Physics | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-html { background: #0F0F1A; }
-:root { --subject: #4ECDC4; }
-.section-title { color: var(--subject); }
-.subtopic-list-new { display:flex;flex-direction:column; }
-.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
-.subtopic-row:last-child { border-bottom:none; }
-.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
-.subtopic-main:hover { background:rgba(255,255,255,0.03); }
-.subtopic-link { display:flex;align-items:center;gap:12px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
-.subtopic-link:hover .subtopic-title { color:#4ECDC4;text-decoration:underline; }
-.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#4ECDC4;width:28px;height:28px;border-radius:6px;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
-.expand-btn:hover { background:#4ECDC4;color:#0F0F1A; }
+html { background: var(--bg); }
+:root { --subject: #1D6FB8; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/index.html" style="color:#FFD2E6;font-weight:700;">Triple Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/higher/physics/index.html" style="color:#4ECDC4;font-weight:700;">⚡ Physics</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/higher/index.html" class="crumb" style="color:#7A5F00;">Higher</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/higher/physics/index.html" class="crumb" style="color:#1D6FB8;">⚡ Physics</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -95,186 +88,98 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/triple/higher/physics/index.html">← Back to Physics</a>
-  <h1 style="color:#4ECDC4">⚡ Forces</h1>
-  <span class="spec-pill">Spec 4.5</span>
-  <span class="paper-pill">Paper 2</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📙 Higher</span>
+  <div class="topic-kicker">Physics · Triple Science</div>
+  <h1>Forces</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.5</span>
+    <span class="paper-pill">Paper 2</span>
+    <span class="tier-pill">📙 Higher</span>
+  </div>
 </div>
 
 <div class="content-area">
 
   <div class="section">
-    <div class="section-title">📋 Subtopics — click any to open full notes</div>
-    <div class="card" style="padding:0;overflow:hidden;">
-      <div class="subtopic-list-new">
-<div class="subtopic-row" id="row-scalar-vector-quantities">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/scalar-vector-quantities.html">
-      <span class="subtopic-title">Scalar and Vector Quantities</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.1.1</span>
-    </a>
-    <a href="/triple/higher/physics/forces/scalar-vector-quantities.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-contact-noncontact-forces">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/contact-noncontact-forces.html">
-      <span class="subtopic-title">Contact and Non-Contact Forces</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.1.2</span>
-    </a>
-    <a href="/triple/higher/physics/forces/contact-noncontact-forces.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-gravity">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/gravity.html">
-      <span class="subtopic-title">Gravity</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.1.3</span>
-    </a>
-    <a href="/triple/higher/physics/forces/gravity.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-resultant-forces">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/resultant-forces.html">
-      <span class="subtopic-title">Resultant Forces</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.1.4</span>
-    </a>
-    <a href="/triple/higher/physics/forces/resultant-forces.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-resolving-forces">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/resolving-forces.html">
-      <span class="subtopic-title">Resolving Forces and Vector Diagrams</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.1 (HT only)</span>
-    </a>
-    <a href="/triple/higher/physics/forces/resolving-forces.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-free-body-diagrams">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/free-body-diagrams.html">
-      <span class="subtopic-title">Free Body Diagrams</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.1 (HT only)</span>
-    </a>
-    <a href="/triple/higher/physics/forces/free-body-diagrams.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-work-done-energy-transfer">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/work-done-energy-transfer.html">
-      <span class="subtopic-title">Work Done and Energy Transfer</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.2</span>
-    </a>
-    <a href="/triple/higher/physics/forces/work-done-energy-transfer.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-forces-elasticity">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/forces-elasticity.html">
-      <span class="subtopic-title">Forces and Elasticity</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.3</span>
-    </a>
-    <a href="/triple/higher/physics/forces/forces-elasticity.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-moments-levers-gears">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/moments-levers-gears.html">
-      <span class="subtopic-title">Moments, Levers and Gears</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.3 (physics only)</span>
-    </a>
-    <a href="/triple/higher/physics/forces/moments-levers-gears.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-pressure-in-a-fluid">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/pressure-in-a-fluid.html">
-      <span class="subtopic-title">Pressure in a Fluid</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.5 (physics only)</span>
-    </a>
-    <a href="/triple/higher/physics/forces/pressure-in-a-fluid.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-upthrust-floating">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/upthrust-floating.html">
-      <span class="subtopic-title">Upthrust and Floating</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.5.1.2 (HT only)</span>
-    </a>
-    <a href="/triple/higher/physics/forces/upthrust-floating.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-distance-speed-velocity">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/distance-speed-velocity.html">
-      <span class="subtopic-title">Distance, Speed and Velocity</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.4.1.1–6.5.4.1.3</span>
-    </a>
-    <a href="/triple/higher/physics/forces/distance-speed-velocity.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-distance-time-graphs">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/distance-time-graphs.html">
-      <span class="subtopic-title">Distance–Time Graphs</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.4.1.4</span>
-    </a>
-    <a href="/triple/higher/physics/forces/distance-time-graphs.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-acceleration">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/acceleration.html">
-      <span class="subtopic-title">Acceleration</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.4.1.5</span>
-    </a>
-    <a href="/triple/higher/physics/forces/acceleration.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-newtons-laws">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/newtons-laws.html">
-      <span class="subtopic-title">Newton's Laws of Motion</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.4.2.1–6.5.4.2.3</span>
-    </a>
-    <a href="/triple/higher/physics/forces/newtons-laws.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-stopping-distance-braking">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/stopping-distance-braking.html">
-      <span class="subtopic-title">Stopping Distance and Braking</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.4.3</span>
-    </a>
-    <a href="/triple/higher/physics/forces/stopping-distance-braking.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-motion-in-a-circle">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/motion-in-a-circle.html">
-      <span class="subtopic-title">Motion in a Circle</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.6 (HT only)</span>
-    </a>
-    <a href="/triple/higher/physics/forces/motion-in-a-circle.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-momentum">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/higher/physics/forces/momentum.html">
-      <span class="subtopic-title">Momentum</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 6.5.5.1–6.5.5.2</span>
-    </a>
-    <a href="/triple/higher/physics/forces/momentum.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div></div>
+    <div class="section-title">Subtopics</div>
+    <div class="subtopic-grid">
+<a class="subtopic-card" id="row-scalar-vector-quantities" href="/triple/higher/physics/forces/scalar-vector-quantities.html">
+  <span><span class="st-title">Scalar and Vector Quantities</span><span class="st-spec">Spec 6.5.1.1</span><span class="st-desc">Distinguish scalar and vector quantities and represent vectors with arrows.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-contact-noncontact-forces" href="/triple/higher/physics/forces/contact-noncontact-forces.html">
+  <span><span class="st-title">Contact and Non-Contact Forces</span><span class="st-spec">Spec 6.5.1.2</span><span class="st-desc">Classify forces as contact or non-contact and give examples of each.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-gravity" href="/triple/higher/physics/forces/gravity.html">
+  <span><span class="st-title">Gravity</span><span class="st-spec">Spec 6.5.1.3</span><span class="st-desc">Explain weight as gravitational force, distinguish mass from weight, and calculate using W = mg.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-resultant-forces" href="/triple/higher/physics/forces/resultant-forces.html">
+  <span><span class="st-title">Resultant Forces</span><span class="st-spec">Spec 6.5.1.4</span><span class="st-desc">Find the resultant of forces and relate it to the motion of an object.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-resolving-forces" href="/triple/higher/physics/forces/resolving-forces.html">
+  <span><span class="st-title">Resolving Forces and Vector Diagrams</span><span class="st-spec">Spec 6.5.1 (HT only)</span><span class="st-desc">Resolve forces into components and use vector diagrams to find resultants.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-free-body-diagrams" href="/triple/higher/physics/forces/free-body-diagrams.html">
+  <span><span class="st-title">Free Body Diagrams</span><span class="st-spec">Spec 6.5.1 (HT only)</span><span class="st-desc">Draw and interpret free body diagrams to represent the forces acting on an object.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-work-done-energy-transfer" href="/triple/higher/physics/forces/work-done-energy-transfer.html">
+  <span><span class="st-title">Work Done and Energy Transfer</span><span class="st-spec">Spec 6.5.2</span><span class="st-desc">Calculate work done by a force and understand it as energy transferred.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-forces-elasticity" href="/triple/higher/physics/forces/forces-elasticity.html">
+  <span><span class="st-title">Forces and Elasticity</span><span class="st-spec">Spec 6.5.3</span><span class="st-desc">Apply Hooke's Law to springs and distinguish elastic from inelastic deformation.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-moments-levers-gears" href="/triple/higher/physics/forces/moments-levers-gears.html">
+  <span><span class="st-title">Moments, Levers and Gears</span><span class="st-spec">Spec 6.5.3 (physics only)</span><span class="st-desc">Calculate moments, apply the principle of moments and describe levers and gears as force multipliers.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-pressure-in-a-fluid" href="/triple/higher/physics/forces/pressure-in-a-fluid.html">
+  <span><span class="st-title">Pressure in a Fluid</span><span class="st-spec">Spec 6.5.5 (physics only)</span><span class="st-desc">Calculate pressure in fluids, explain atmospheric pressure and describe pressure-depth relationships.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-upthrust-floating" href="/triple/higher/physics/forces/upthrust-floating.html">
+  <span><span class="st-title">Upthrust and Floating</span><span class="st-spec">Spec 6.5.5.1.2 (HT only)</span><span class="st-desc">Explain upthrust using pressure differences and apply Archimedes' principle to floating.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-distance-speed-velocity" href="/triple/higher/physics/forces/distance-speed-velocity.html">
+  <span><span class="st-title">Distance, Speed and Velocity</span><span class="st-spec">Spec 6.5.4.1.1–6.5.4.1.3</span><span class="st-desc">Define and calculate distance, displacement, speed and velocity.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-distance-time-graphs" href="/triple/higher/physics/forces/distance-time-graphs.html">
+  <span><span class="st-title">Distance–Time Graphs</span><span class="st-spec">Spec 6.5.4.1.4</span><span class="st-desc">Interpret distance–time graphs and calculate speed from the gradient.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-acceleration" href="/triple/higher/physics/forces/acceleration.html">
+  <span><span class="st-title">Acceleration</span><span class="st-spec">Spec 6.5.4.1.5</span><span class="st-desc">Calculate acceleration and use velocity–time graphs to describe and analyse motion.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-newtons-laws" href="/triple/higher/physics/forces/newtons-laws.html">
+  <span><span class="st-title">Newton's Laws of Motion</span><span class="st-spec">Spec 6.5.4.2.1–6.5.4.2.3</span><span class="st-desc">State and apply Newton's three laws of motion.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-stopping-distance-braking" href="/triple/higher/physics/forces/stopping-distance-braking.html">
+  <span><span class="st-title">Stopping Distance and Braking</span><span class="st-spec">Spec 6.5.4.3</span><span class="st-desc">Define stopping distance and explain factors affecting thinking distance and braking distance.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-motion-in-a-circle" href="/triple/higher/physics/forces/motion-in-a-circle.html">
+  <span><span class="st-title">Motion in a Circle</span><span class="st-spec">Spec 6.5.6 (HT only)</span><span class="st-desc">Explain why circular motion involves constant speed but changing velocity, and identify the centripetal force.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-momentum" href="/triple/higher/physics/forces/momentum.html">
+  <span><span class="st-title">Momentum</span><span class="st-spec">Spec 6.5.5.1–6.5.5.2</span><span class="st-desc">Define momentum, calculate it using p = mv and apply conservation of momentum to collisions.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
     </div>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a subtopic title or the <strong>+</strong> button to open the full notes, quiz and examples.</p>
+    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
   </div>
 
   <div class="section">
-    <div class="section-title">📐 Key Equations</div>
+    <div class="section-title">Key Equations</div>
     <div class="formula-grid"><div class="formula-pill">W = mg</div>
 <div class="formula-pill">W = Fs</div>
 <div class="formula-pill">F = ke</div>
@@ -291,10 +196,11 @@ html { background: #0F0F1A; }
   <div class="section"><div class="section-title">🔬 Triple Science Extensions</div><div class="triple-box"><p>Moments, levers and gears</p></div><div class="triple-box"><p>Pressure in fluids and upthrust</p></div></div>
 
   <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
-    <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Forces? 💬</p>
-      <button data-open-chat style="background:#4ECDC4;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <div class="section-title">Ask Mr Badmus AI</div>
+    <div class="card ask-card">
+      <p class="ask-lede">Got a question about Forces?</p>
+      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
+      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 
@@ -305,7 +211,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

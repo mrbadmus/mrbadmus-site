@@ -3,44 +3,37 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Infection and Response | Biology | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-html { background: #0F0F1A; }
-:root { --subject: #6BCB77; }
-.section-title { color: var(--subject); }
-.subtopic-list-new { display:flex;flex-direction:column; }
-.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
-.subtopic-row:last-child { border-bottom:none; }
-.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
-.subtopic-main:hover { background:rgba(255,255,255,0.03); }
-.subtopic-link { display:flex;align-items:center;gap:12px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
-.subtopic-link:hover .subtopic-title { color:#6BCB77;text-decoration:underline; }
-.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#6BCB77;width:28px;height:28px;border-radius:6px;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
-.expand-btn:hover { background:#6BCB77;color:#0F0F1A; }
+html { background: var(--bg); }
+:root { --subject: #237A3B; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/index.html" style="color:#FFD2E6;font-weight:700;">Triple Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/biology/index.html" class="crumb" style="color:#237A3B;">🌿 Biology</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -95,96 +88,58 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/biology/index.html">← Back to Biology</a>
-  <h1 style="color:#6BCB77">🌿 Infection and Response</h1>
-  <span class="spec-pill">Spec 4.3</span>
-  <span class="paper-pill">Paper 1</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
+  <div class="topic-kicker">Biology · Triple Science</div>
+  <h1>Infection and Response</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.3</span>
+    <span class="paper-pill">Paper 1</span>
+    <span class="tier-pill">📗 Foundation</span>
+  </div>
 </div>
 
 <div class="content-area">
 
   <div class="section">
-    <div class="section-title">📋 Subtopics — click any to open full notes</div>
-    <div class="card" style="padding:0;overflow:hidden;">
-      <div class="subtopic-list-new">
-<div class="subtopic-row" id="row-communicable-diseases-defence">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/communicable-diseases-defence.html">
-      <span class="subtopic-title">Communicable Diseases and Human Defence Systems</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.1</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/communicable-diseases-defence.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-viral-diseases">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/viral-diseases.html">
-      <span class="subtopic-title">Viral Diseases</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.1.2</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/viral-diseases.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-bacterial-diseases">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/bacterial-diseases.html">
-      <span class="subtopic-title">Bacterial Diseases</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.1.3</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/bacterial-diseases.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-fungal-protist-diseases">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/fungal-protist-diseases.html">
-      <span class="subtopic-title">Fungal and Protist Diseases</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.1.4</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/fungal-protist-diseases.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-vaccination">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/vaccination.html">
-      <span class="subtopic-title">Vaccination</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.2</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/vaccination.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-antibiotics-painkillers">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/antibiotics-painkillers.html">
-      <span class="subtopic-title">Antibiotics and Painkillers</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.3</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/antibiotics-painkillers.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-drug-discovery-development">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/drug-discovery-development.html">
-      <span class="subtopic-title">Drug Discovery and Development</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.4</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/drug-discovery-development.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-plant-disease-detection-defence">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/triple/foundation/biology/infection-response/plant-disease-detection-defence.html">
-      <span class="subtopic-title">Plant Disease Detection and Defence</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 4.3.5</span>
-    </a>
-    <a href="/triple/foundation/biology/infection-response/plant-disease-detection-defence.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div></div>
+    <div class="section-title">Subtopics</div>
+    <div class="subtopic-grid">
+<a class="subtopic-card" id="row-communicable-diseases-defence" href="/triple/foundation/biology/infection-response/communicable-diseases-defence.html">
+  <span><span class="st-title">Communicable Diseases and Human Defence Systems</span><span class="st-spec">Spec 4.3.1</span><span class="st-desc">Describe what communicable diseases are, how pathogens spread and how the body defends itself.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-viral-diseases" href="/triple/foundation/biology/infection-response/viral-diseases.html">
+  <span><span class="st-title">Viral Diseases</span><span class="st-spec">Spec 4.3.1.2</span><span class="st-desc">Describe the main viral diseases — measles, HIV/AIDS and tobacco mosaic virus.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-bacterial-diseases" href="/triple/foundation/biology/infection-response/bacterial-diseases.html">
+  <span><span class="st-title">Bacterial Diseases</span><span class="st-spec">Spec 4.3.1.3</span><span class="st-desc">Describe Salmonella food poisoning and Gonorrhoea as examples of bacterial diseases.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-fungal-protist-diseases" href="/triple/foundation/biology/infection-response/fungal-protist-diseases.html">
+  <span><span class="st-title">Fungal and Protist Diseases</span><span class="st-spec">Spec 4.3.1.4</span><span class="st-desc">Describe rose black spot (fungal) and malaria (protist) as examples of these disease types.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-vaccination" href="/triple/foundation/biology/infection-response/vaccination.html">
+  <span><span class="st-title">Vaccination</span><span class="st-spec">Spec 4.3.2</span><span class="st-desc">Explain how vaccines work, why they protect populations and what herd immunity means.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-antibiotics-painkillers" href="/triple/foundation/biology/infection-response/antibiotics-painkillers.html">
+  <span><span class="st-title">Antibiotics and Painkillers</span><span class="st-spec">Spec 4.3.3</span><span class="st-desc">Explain how antibiotics work, why antibiotic resistance is a threat, and the role of painkillers.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-drug-discovery-development" href="/triple/foundation/biology/infection-response/drug-discovery-development.html">
+  <span><span class="st-title">Drug Discovery and Development</span><span class="st-spec">Spec 4.3.4</span><span class="st-desc">Describe how new drugs are discovered, tested and approved before being used on patients.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-plant-disease-detection-defence" href="/triple/foundation/biology/infection-response/plant-disease-detection-defence.html">
+  <span><span class="st-title">Plant Disease Detection and Defence</span><span class="st-spec">Spec 4.3.5</span><span class="st-desc">Describe how plant diseases are identified and how plants defend themselves against pathogens and pests.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
     </div>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a subtopic title or the <strong>+</strong> button to open the full notes, quiz and examples.</p>
+    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
   </div>
 
   <div class="section">
-    <div class="section-title">📐 Key Equations</div>
+    <div class="section-title">Key Equations</div>
     <div class="formula-grid"><p style="color:var(--muted);font-size:0.9rem;">See individual subtopic pages for equations.</p></div>
   </div>
 
@@ -192,10 +147,11 @@ html { background: #0F0F1A; }
   
 
   <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
-    <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Infection and Response? 💬</p>
-      <button data-open-chat style="background:#6BCB77;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <div class="section-title">Ask Mr Badmus AI</div>
+    <div class="card ask-card">
+      <p class="ask-lede">Got a question about Infection and Response?</p>
+      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
+      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 
@@ -206,7 +162,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

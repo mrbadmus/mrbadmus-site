@@ -3,44 +3,37 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Quantitative Chemistry | Chemistry | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-html { background: #0F0F1A; }
-:root { --subject: #FFD2E6; }
-.section-title { color: var(--subject); }
-.subtopic-list-new { display:flex;flex-direction:column; }
-.subtopic-row { border-bottom:1px solid rgba(255,255,255,0.06); }
-.subtopic-row:last-child { border-bottom:none; }
-.subtopic-main { display:flex;align-items:center;justify-content:space-between;padding:14px 20px;transition:background 0.15s; }
-.subtopic-main:hover { background:rgba(255,255,255,0.03); }
-.subtopic-link { display:flex;align-items:center;gap:12px;flex:1;text-decoration:none;color:var(--text);font-size:0.95rem;font-weight:600;transition:color 0.15s; }
-.subtopic-link:hover .subtopic-title { color:#FFD2E6;text-decoration:underline; }
-.expand-btn { background:rgba(78,205,196,0.15);border:1px solid rgba(78,205,196,0.3);color:#FFD2E6;width:28px;height:28px;border-radius:6px;font-size:1.2rem;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0;margin-left:12px; }
-.expand-btn:hover { background:#FFD2E6;color:#0F0F1A; }
+html { background: var(--bg); }
+:root { --subject: #B02342; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/index.html" style="color:#4ECDC4;font-weight:700;">Combined Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/combined/higher/chemistry/index.html" style="color:#FFD2E6;font-weight:700;">🧪 Chemistry</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/index.html" class="crumb" style="color:#1D6FB8;">Combined Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/higher/index.html" class="crumb" style="color:#7A5F00;">Higher</a>
+    <span class="crumb-sep">›</span>
+    <a href="/combined/higher/chemistry/index.html" class="crumb" style="color:#B02342;">🧪 Chemistry</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -95,96 +88,58 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/combined/higher/chemistry/index.html">← Back to Chemistry</a>
-  <h1 style="color:#FFD2E6">🧪 Quantitative Chemistry</h1>
-  <span class="spec-pill">Spec 4.3</span>
-  <span class="paper-pill">Paper 1</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📙 Higher</span>
+  <div class="topic-kicker">Chemistry · Combined Science</div>
+  <h1>Quantitative Chemistry</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 4.3</span>
+    <span class="paper-pill">Paper 1</span>
+    <span class="tier-pill">📙 Higher</span>
+  </div>
 </div>
 
 <div class="content-area">
 
   <div class="section">
-    <div class="section-title">📋 Subtopics — click any to open full notes</div>
-    <div class="card" style="padding:0;overflow:hidden;">
-      <div class="subtopic-list-new">
-<div class="subtopic-row" id="row-conservation-of-mass">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/conservation-of-mass.html">
-      <span class="subtopic-title">Conservation of Mass and Balanced Equations</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.1.1</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/conservation-of-mass.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-relative-formula-mass">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/relative-formula-mass.html">
-      <span class="subtopic-title">Relative Formula Mass</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.1.2</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/relative-formula-mass.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-mass-changes-reactions">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/mass-changes-reactions.html">
-      <span class="subtopic-title">Mass Changes in Reactions</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.1.3</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/mass-changes-reactions.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-chemical-measurements">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/chemical-measurements.html">
-      <span class="subtopic-title">Chemical Measurements</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.1.4</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/chemical-measurements.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-concentration-of-solutions">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/concentration-of-solutions.html">
-      <span class="subtopic-title">Concentration of Solutions</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.2.5</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/concentration-of-solutions.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-moles">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/moles.html">
-      <span class="subtopic-title">Moles</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.2.1</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/moles.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-amounts-in-equations">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/amounts-in-equations.html">
-      <span class="subtopic-title">Amounts of Substances in Equations</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.2.2</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/amounts-in-equations.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div>
-<div class="subtopic-row" id="row-using-moles-calculations">
-  <div class="subtopic-main">
-    <a class="subtopic-link" href="/combined/higher/chemistry/quantitative/using-moles-calculations.html">
-      <span class="subtopic-title">Using Moles — Calculations and Limiting Reactants</span>
-      <span style="font-size:0.78rem;color:var(--muted);">Spec 5.3.2.3–5.3.2.4</span>
-    </a>
-    <a href="/combined/higher/chemistry/quantitative/using-moles-calculations.html" class="expand-btn" title="Open full notes" style="text-decoration:none;">+</a>
-  </div>
-</div></div>
+    <div class="section-title">Subtopics</div>
+    <div class="subtopic-grid">
+<a class="subtopic-card" id="row-conservation-of-mass" href="/combined/higher/chemistry/quantitative/conservation-of-mass.html">
+  <span><span class="st-title">Conservation of Mass and Balanced Equations</span><span class="st-spec">Spec 5.3.1.1</span><span class="st-desc">Explain the law of conservation of mass and balance symbol equations.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-relative-formula-mass" href="/combined/higher/chemistry/quantitative/relative-formula-mass.html">
+  <span><span class="st-title">Relative Formula Mass</span><span class="st-spec">Spec 5.3.1.2</span><span class="st-desc">Calculate relative formula mass (Mr) from relative atomic masses and use it in calculations.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-mass-changes-reactions" href="/combined/higher/chemistry/quantitative/mass-changes-reactions.html">
+  <span><span class="st-title">Mass Changes in Reactions</span><span class="st-spec">Spec 5.3.1.3</span><span class="st-desc">Explain why the measured mass sometimes appears to change in a reaction and predict mass changes.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-chemical-measurements" href="/combined/higher/chemistry/quantitative/chemical-measurements.html">
+  <span><span class="st-title">Chemical Measurements</span><span class="st-spec">Spec 5.3.1.4</span><span class="st-desc">Describe the importance of precise measurements in chemistry and sources of uncertainty.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-concentration-of-solutions" href="/combined/higher/chemistry/quantitative/concentration-of-solutions.html">
+  <span><span class="st-title">Concentration of Solutions</span><span class="st-spec">Spec 5.3.2.5</span><span class="st-desc">Define concentration and calculate it from mass and volume.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-moles" href="/combined/higher/chemistry/quantitative/moles.html">
+  <span><span class="st-title">Moles</span><span class="st-spec">Spec 5.3.2.1</span><span class="st-desc">Define the mole, use the Avogadro constant and calculate moles from mass and Mr.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-amounts-in-equations" href="/combined/higher/chemistry/quantitative/amounts-in-equations.html">
+  <span><span class="st-title">Amounts of Substances in Equations</span><span class="st-spec">Spec 5.3.2.2</span><span class="st-desc">Use balanced equations and moles to calculate masses of reactants and products.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
+<a class="subtopic-card" id="row-using-moles-calculations" href="/combined/higher/chemistry/quantitative/using-moles-calculations.html">
+  <span><span class="st-title">Using Moles — Calculations and Limiting Reactants</span><span class="st-spec">Spec 5.3.2.3–5.3.2.4</span><span class="st-desc">Use moles to balance equations, calculate concentration in mol/dm³ and identify limiting reactants.</span></span>
+  <span class="expand-btn" title="Open full notes">+</span>
+</a>
     </div>
-    <p style="font-size:0.82rem;color:var(--muted);margin-top:10px;">💡 Click a subtopic title or the <strong>+</strong> button to open the full notes, quiz and examples.</p>
+    <p class="section-sub">💡 Click a subtopic or the <strong>+</strong> to open the full notes, quiz and examples.</p>
   </div>
 
   <div class="section">
-    <div class="section-title">📐 Key Equations</div>
+    <div class="section-title">Key Equations</div>
     <div class="formula-grid"><div class="formula-pill">mol = mass ÷ Mr</div>
 <div class="formula-pill">mol = c × V</div>
 <div class="formula-pill">mol = V ÷ 24</div>
@@ -197,10 +152,11 @@ html { background: #0F0F1A; }
   
 
   <div class="section">
-    <div class="section-title">🤖 Ask Mr Badmus AI</div>
-    <div class="card" style="text-align:center;padding:32px;">
-      <p style="font-size:1.1rem;margin-bottom:16px;font-weight:700;">Got a question about Quantitative Chemistry? 💬</p>
-      <button data-open-chat style="background:#FFD2E6;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+    <div class="section-title">Ask Mr Badmus AI</div>
+    <div class="card ask-card">
+      <p class="ask-lede">Got a question about Quantitative Chemistry?</p>
+      <p class="ask-sub">I'll use FIFA for calculations and flag Higher and Triple content clearly.</p>
+      <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
     </div>
   </div>
 
@@ -211,7 +167,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">

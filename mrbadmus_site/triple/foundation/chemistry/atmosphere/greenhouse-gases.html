@@ -3,84 +3,38 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Greenhouse Gases and Climate Change | Chemistry | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   
 <style>
-html { background: #0F0F1A; }
-:root { --subject: #FFD2E6; }
-.section-title { color: var(--subject); }
-.var-table { display:flex;flex-direction:column;gap:8px; }
-.var-row { display:flex;align-items:center;gap:16px;padding:10px 16px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid #FFD2E6; }
-.var-sym { font-family:'Courier New',monospace;font-size:1.1rem;font-weight:700;color:#FFD2E6;min-width:28px; }
-.var-desc { font-size:0.9rem;color:var(--text); }
-.keynote-box { background:rgba(255,217,61,0.08);border:1px solid rgba(255,217,61,0.3);border-radius:10px;padding:16px 20px; }
-.mistake-box { background:rgba(255,107,107,0.08);border:1px solid rgba(255,107,107,0.3);border-radius:10px;padding:16px 20px;margin:16px 0; }
-.mistake-title { font-weight:800;color:#FF6B6B;margin-bottom:8px; }
-.higher-box { background:rgba(255,217,61,0.08);border-left:4px solid #FFD93D;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.triple-box { background:rgba(78,205,196,0.08);border-left:4px solid #4ECDC4;padding:14px 18px;border-radius:8px;margin-bottom:10px; }
-.star-rating-card { padding:24px; }
-.stars-row { display:flex;gap:8px;margin:12px 0; }
-.star-btn { background:none;border:none;font-size:1.5rem;cursor:pointer;opacity:0.4;transition:opacity 0.2s,transform 0.1s; }
-.star-btn:hover,.star-btn.star-active { opacity:1; }
-.star-btn.star-active { transform:scale(1.15); }
-.star-labels { display:flex;justify-content:space-between;font-size:0.75rem;color:var(--muted);margin-bottom:8px; }
-.star-feedback { display:none;margin-top:10px;padding:10px 14px;background:rgba(255,255,255,0.05);border-radius:8px;font-size:0.88rem; }
-.quiz-progress { background:rgba(255,255,255,0.05);border-radius:8px;padding:8px 14px;font-size:0.82rem;color:var(--muted);margin-bottom:16px; }
-.quiz-card { background:var(--card);border-radius:12px;padding:20px;margin-bottom:16px;border:1px solid rgba(255,255,255,0.06); }
-.q-text { font-weight:700;margin-bottom:14px;line-height:1.5; }
-.quiz-options { display:flex;flex-direction:column;gap:8px; }
-.quiz-opt { background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:10px 16px;border-radius:8px;cursor:pointer;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;font-size:0.9rem;transition:all 0.15s; }
-.quiz-opt:hover { background:rgba(255,255,255,0.1); }
-.quiz-opt.correct { background:rgba(107,203,119,0.2);border-color:#6BCB77;color:#6BCB77; }
-.quiz-opt.wrong { background:rgba(255,107,107,0.2);border-color:#FF6B6B;color:#FF6B6B; }
-.quiz-fb { display:none;margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem;line-height:1.6; }
-.quiz-fb.show { display:block; }
-.quiz-fb.correct-fb { background:rgba(107,203,119,0.15);border:1px solid rgba(107,203,119,0.3);color:#6BCB77; }
-.quiz-fb.wrong-fb { background:rgba(255,107,107,0.12);border:1px solid rgba(255,107,107,0.3);color:#FF8888; }
-.match-layout { display:flex;gap:20px;flex-wrap:wrap; }
-.match-targets { display:flex;flex-direction:column;gap:10px;flex:1;min-width:200px; }
-.match-target { display:flex;flex-direction:column;gap:6px; }
-.match-term { font-weight:700;font-size:0.9rem; }
-.match-drop { border:2px dashed rgba(255,255,255,0.2);border-radius:8px;padding:8px 12px;min-height:40px;font-size:0.82rem;color:var(--muted);cursor:pointer;transition:all 0.15s; }
-.match-drop.drag-over { border-color:#FFD2E6;background:rgba(78,205,196,0.08); }
-.match-drop.has-item { color:var(--text);border-style:solid;border-color:rgba(255,255,255,0.2); }
-.match-drop.match-correct { border-color:#6BCB77;background:rgba(107,203,119,0.1); }
-.match-drop.match-wrong { border-color:#FF6B6B;background:rgba(255,107,107,0.1); }
-.match-defs { display:flex;flex-direction:column;gap:8px;flex:1;min-width:180px; }
-.match-def { background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:8px 12px;cursor:grab;font-size:0.85rem;user-select:none;transition:opacity 0.15s; }
-.match-def:hover { background:rgba(255,255,255,0.12); }
-.match-def.dragging { opacity:0.5; }
-.match-check-btn,.match-reset-btn { padding:8px 18px;border-radius:8px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:0.85rem; }
-.match-check-btn { background:#FFD2E6;color:#0F0F1A; }
-.match-reset-btn { background:rgba(255,255,255,0.08);color:var(--text); }
-.match-result { margin-top:12px;padding:10px 14px;border-radius:8px;font-size:0.88rem; }
-.match-result-win { background:rgba(107,203,119,0.15);color:#6BCB77; }
-.match-result-partial { background:rgba(255,107,107,0.12);color:#FF8888; }
-.fifa-label { font-size:0.75rem;font-weight:800;color:#FFD2E6;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px; }
+html { background: var(--bg); }
+:root { --subject: #B02342; }
 </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/index.html" style="color:#FFD2E6;font-weight:700;">Triple Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/index.html" style="color:#6BCB77;font-weight:700;">Foundation</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/foundation/chemistry/index.html" style="color:#FFD2E6;font-weight:700;">🧪 Chemistry</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/index.html" class="crumb" style="color:#237A3B;">Foundation</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/foundation/chemistry/index.html" class="crumb" style="color:#B02342;">🧪 Chemistry</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -135,9 +89,12 @@ html { background: #0F0F1A; }
   
 <div class="topic-header">
   <a class="back-link" href="/triple/foundation/chemistry/atmosphere.html">← Back to Chemistry of the Atmosphere</a>
-  <h1 style="color:#FFD2E6">🧪 Greenhouse Gases and Climate Change</h1>
-  <span class="spec-pill">Spec 5.9.2.1–5.9.2.4</span>
-  <span class="badge" style="background:rgba(255,255,255,0.08);margin-left:6px;font-size:0.75rem;">📗 Foundation</span>
+  <div class="topic-kicker">Chemistry · Chemistry of the Atmosphere</div>
+  <h1>Greenhouse Gases and Climate Change</h1>
+  <div class="meta-row">
+    <span class="spec-pill">Spec 5.9.2.1–5.9.2.4</span>
+    <span class="tier-pill">📗 Foundation</span>
+  </div>
 </div>
 
 <div class="content-area">
@@ -146,13 +103,13 @@ html { background: #0F0F1A; }
     <div class="section-title">📖 In-Depth Theory</div>
     <div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">The Greenhouse Effect</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The GREENHOUSE EFFECT is the natural process that keeps the Earth warm enough to support life.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>HOW IT WORKS:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>1. Short-wave radiation (visible light and UV) from the Sun passes through the atmosphere and warms the Earth's surface.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>2. The Earth's surface emits INFRARED (heat) radiation back upward.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>3. GREENHOUSE GASES in the atmosphere ABSORB this infrared radiation and re-emit it in all directions — including back towards Earth.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>4. This traps heat and warms the Earth — without it, Earth would be approximately −18°C.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>GREENHOUSE GASES include:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>WATER VAPOUR (H₂O) — biggest natural greenhouse gas.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>CARBON DIOXIDE (CO₂) — from combustion, respiration, deforestation.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>METHANE (CH₄) — from livestock, landfill, natural gas leaks, wetlands.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>NITROUS OXIDE (N₂O) — from agriculture, fertilisers.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Without the greenhouse effect: Earth would be too cold for life.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>With TOO MUCH greenhouse effect: global warming → climate change.</div>
+  <div class='theory-line'>The GREENHOUSE EFFECT is the natural process that keeps the Earth warm enough to support life.</div><div class='theory-gap'></div><div class='theory-line'>HOW IT WORKS:</div><div class='theory-line'>1. Short-wave radiation (visible light and UV) from the Sun passes through the atmosphere and warms the Earth's surface.</div><div class='theory-line'>2. The Earth's surface emits INFRARED (heat) radiation back upward.</div><div class='theory-line'>3. GREENHOUSE GASES in the atmosphere ABSORB this infrared radiation and re-emit it in all directions — including back towards Earth.</div><div class='theory-line'>4. This traps heat and warms the Earth — without it, Earth would be approximately −18°C.</div><div class='theory-gap'></div><div class='theory-line'>GREENHOUSE GASES include:</div><div class='theory-line'>WATER VAPOUR (H₂O) — biggest natural greenhouse gas.</div><div class='theory-line'>CARBON DIOXIDE (CO₂) — from combustion, respiration, deforestation.</div><div class='theory-line'>METHANE (CH₄) — from livestock, landfill, natural gas leaks, wetlands.</div><div class='theory-line'>NITROUS OXIDE (N₂O) — from agriculture, fertilisers.</div><div class='theory-gap'></div><div class='theory-line'>Without the greenhouse effect: Earth would be too cold for life.</div><div class='theory-line'>With TOO MUCH greenhouse effect: global warming → climate change.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Human Activities Increasing Greenhouse Gases</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Human activities are INCREASING greenhouse gas concentrations beyond natural levels:</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>CARBON DIOXIDE (CO₂):</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>BURNING FOSSIL FUELS — coal, oil, natural gas release CO₂ locked underground for millions of years.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>DEFORESTATION — trees absorb CO₂; removing them reduces absorption AND releases stored carbon when burned or decomposed.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>CEMENT PRODUCTION — CaCO₃ → CaO + CO₂ (decomposition releases CO₂).</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>METHANE (CH₄):</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>LIVESTOCK (cattle and sheep) — produce methane during digestion (enteric fermentation).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>LANDFILL SITES — decomposition of organic waste under anaerobic conditions produces methane.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>RICE PADDIES — anaerobic decomposition in flooded fields.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>NATURAL GAS LEAKS from extraction and distribution.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>NITROUS OXIDE (N₂O):</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>NITROGEN FERTILISERS — bacteria convert excess fertiliser to N₂O.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>AGRICULTURAL SOILS.</div>
+  <div class='theory-line'>Human activities are INCREASING greenhouse gas concentrations beyond natural levels:</div><div class='theory-gap'></div><div class='theory-line'>CARBON DIOXIDE (CO₂):</div><div class='theory-line'>BURNING FOSSIL FUELS — coal, oil, natural gas release CO₂ locked underground for millions of years.</div><div class='theory-line'>DEFORESTATION — trees absorb CO₂; removing them reduces absorption AND releases stored carbon when burned or decomposed.</div><div class='theory-line'>CEMENT PRODUCTION — CaCO₃ → CaO + CO₂ (decomposition releases CO₂).</div><div class='theory-gap'></div><div class='theory-line'>METHANE (CH₄):</div><div class='theory-line'>LIVESTOCK (cattle and sheep) — produce methane during digestion (enteric fermentation).</div><div class='theory-line'>LANDFILL SITES — decomposition of organic waste under anaerobic conditions produces methane.</div><div class='theory-line'>RICE PADDIES — anaerobic decomposition in flooded fields.</div><div class='theory-line'>NATURAL GAS LEAKS from extraction and distribution.</div><div class='theory-gap'></div><div class='theory-line'>NITROUS OXIDE (N₂O):</div><div class='theory-line'>NITROGEN FERTILISERS — bacteria convert excess fertiliser to N₂O.</div><div class='theory-line'>AGRICULTURAL SOILS.</div>
 </div><div class="card" style="margin-bottom:14px;">
   <h4 style="margin-bottom:10px;font-size:1rem;">Global Climate Change and Carbon Footprint</h4>
-  <div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>GLOBAL CLIMATE CHANGE:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Rising greenhouse gas levels increase the greenhouse effect → GLOBAL WARMING — rising average global temperatures.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>EFFECTS of climate change:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>MELTING ICE CAPS AND GLACIERS → rising sea levels → coastal flooding.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>MORE EXTREME WEATHER — stronger storms, more intense rainfall, droughts.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>HABITAT LOSS — ecosystems disrupted, species extinction risk.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>OCEAN ACIDIFICATION — CO₂ dissolves in seawater to form carbonic acid → threatens coral reefs and shellfish.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>AGRICULTURAL DISRUPTION — changed growing seasons, droughts, flooding.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>CARBON FOOTPRINT:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>The total amount of greenhouse gases (measured as CO₂ equivalent) produced by an individual, organisation or product.</div><div style='height:4px;'></div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>REDUCING CARBON FOOTPRINT:</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Renewable energy (wind, solar, hydroelectric) instead of fossil fuels.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Improve energy efficiency (insulation, LED lighting, efficient vehicles).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Electric vehicles.</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Plant trees (reforestation).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Reduce meat consumption (livestock produce methane).</div><div style='background:rgba(255,255,255,0.04);border-left:3px solid rgba(107,203,119,0.35);border-radius:6px;padding:9px 14px;margin:0 0 7px 0;font-size:0.93rem;line-height:1.75;color:var(--text);'>Carbon capture and storage (CCS).</div>
+  <div class='theory-line'>GLOBAL CLIMATE CHANGE:</div><div class='theory-line'>Rising greenhouse gas levels increase the greenhouse effect → GLOBAL WARMING — rising average global temperatures.</div><div class='theory-gap'></div><div class='theory-line'>EFFECTS of climate change:</div><div class='theory-line'>MELTING ICE CAPS AND GLACIERS → rising sea levels → coastal flooding.</div><div class='theory-line'>MORE EXTREME WEATHER — stronger storms, more intense rainfall, droughts.</div><div class='theory-line'>HABITAT LOSS — ecosystems disrupted, species extinction risk.</div><div class='theory-line'>OCEAN ACIDIFICATION — CO₂ dissolves in seawater to form carbonic acid → threatens coral reefs and shellfish.</div><div class='theory-line'>AGRICULTURAL DISRUPTION — changed growing seasons, droughts, flooding.</div><div class='theory-gap'></div><div class='theory-line'>CARBON FOOTPRINT:</div><div class='theory-line'>The total amount of greenhouse gases (measured as CO₂ equivalent) produced by an individual, organisation or product.</div><div class='theory-gap'></div><div class='theory-line'>REDUCING CARBON FOOTPRINT:</div><div class='theory-line'>Renewable energy (wind, solar, hydroelectric) instead of fossil fuels.</div><div class='theory-line'>Improve energy efficiency (insulation, LED lighting, efficient vehicles).</div><div class='theory-line'>Electric vehicles.</div><div class='theory-line'>Plant trees (reforestation).</div><div class='theory-line'>Reduce meat consumption (livestock produce methane).</div><div class='theory-line'>Carbon capture and storage (CCS).</div>
 </div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
@@ -260,10 +217,10 @@ html { background: #0F0F1A; }
 </div>
   <div class="section">
   <div class="section-title">🤖 Ask Mr Badmus AI</div>
-  <div class="card" style="text-align:center;padding:32px;">
-    <p style="font-size:1.1rem;margin-bottom:8px;font-weight:700;">Stuck? Just ask! 💬</p>
-    <p style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
-    <button data-open-chat style="background:#FFD2E6;color:#0F0F1A;border:none;padding:14px 32px;border-radius:50px;font-size:1rem;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">💬 Ask Mr Badmus AI</button>
+  <div class="card ask-card">
+    <p class="ask-lede">Stuck? Just ask! 💬</p>
+    <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
   <div class="subtopic-nav">
@@ -273,7 +230,7 @@ html { background: #0F0F1A; }
 </div>
 
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
@@ -357,9 +314,9 @@ document.querySelectorAll('.quiz-opt').forEach(btn => {
         const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
         endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
         endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(107,203,119,0.15)' : ratio >= 0.6 ? 'rgba(255,217,61,0.12)' : 'rgba(255,107,107,0.12)';
-        endMsg.style.color = ratio === 1 ? '#6BCB77' : ratio >= 0.6 ? '#FFD93D' : '#FF8888';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(107,203,119,0.3)' : ratio >= 0.6 ? 'rgba(255,217,61,0.3)' : 'rgba(255,107,107,0.3)');
+        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
       }
     } else {
       if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;

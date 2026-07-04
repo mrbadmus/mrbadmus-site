@@ -3,38 +3,38 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Biology | Higher | Triple Science | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
-    html { background: #0F0F1A; }
-    :root { --subject: #6BCB77; }
-    .topic-card { border-left-color: var(--subject); }
-    .section-title { color: var(--subject); }
+    html { background: var(--bg); }
+    :root { --subject: #237A3B; }
     .go-btn { background: var(--subject); }
-    .spec-pill { border-color: var(--subject); }
   </style>
 </head>
 <body>
   <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
-    <a href="/index.html" style="color:var(--muted);">Home</a>
-    <a href="/weekly-challenge.html" style="color:#FFD93D;font-weight:800;">⚡ Challenge</a>
-    <a href="/leaderboard.html" style="color:var(--muted);">🏆</a>
-    <a href="/past-papers.html" style="color:var(--muted);">📄 Past Papers</a>
-    <a href="/my-challenges.html" style="color:var(--muted);">📊 My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)" style="color:var(--muted);font-size:1.1rem;text-decoration:none;">🔍</a>
+    <a href="/index.html">Home</a>
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
+    <a href="/leaderboard.html">🏆</a>
+    <a href="/past-papers.html">Past Papers</a>
+    <a href="/my-challenges.html">My Challenges</a>
+    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
     
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/index.html" style="color:#FFD2E6;font-weight:700;">Triple Science</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/higher/index.html" style="color:#FFD93D;font-weight:700;">Higher</a>
-    <span style="color:var(--muted)">›</span>
-    <a href="/triple/higher/biology/index.html" style="color:#6BCB77;font-weight:700;">🌿 Biology</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/higher/index.html" class="crumb" style="color:#7A5F00;">Higher</a>
+    <span class="crumb-sep">›</span>
+    <a href="/triple/higher/biology/index.html" class="crumb" style="color:#237A3B;">🌿 Biology</a>
     <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
-      <a href="/auth.html?tab=signup" style="border:2px solid #4ECDC4;color:#4ECDC4;padding:5px 12px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign Up</a>
-      <a href="/auth.html?tab=signin" style="background:linear-gradient(135deg,#4ECDC4,#38a89d);color:#0F0F1A;padding:6px 14px;border-radius:20px;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">Sign In</a>
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
   </div>
 </nav>
@@ -89,7 +89,7 @@
   
 <div class="hub-header">
   <a class="back-link" href="/triple/higher/index.html">← Back to Higher Tier</a>
-  <h1 style="color:#6BCB77">🌿 Biology</h1>
+  <h1 style="color:#237A3B">🌿 Biology</h1>
   <p>Triple Science — Higher Tier — 7 topics</p>
 </div>
 <div class="topic-grid">
@@ -101,7 +101,7 @@
   <div class="topic-card-meta">Spec 4.1 &nbsp;·&nbsp; Paper 1</div>
   <div><span class="badge badge-rp">📋 2 RP</span><span class="badge badge-h">⭐ Higher</span></div>
   <div class="topic-card-footer">
-    <span class="go-btn" style="background:#6BCB77;color:#0F0F1A;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:800;">Study this topic →</span>
+    <span class="go-btn">Study this topic →</span>
   </div>
 </a>
 <a class="topic-card" href="/triple/higher/biology/organisation.html">
@@ -111,7 +111,7 @@
   <div class="topic-card-meta">Spec 4.2 &nbsp;·&nbsp; Paper 1</div>
   <div><span class="badge badge-rp">📋 2 RP</span><span class="badge badge-h">⭐ Higher</span></div>
   <div class="topic-card-footer">
-    <span class="go-btn" style="background:#6BCB77;color:#0F0F1A;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:800;">Study this topic →</span>
+    <span class="go-btn">Study this topic →</span>
   </div>
 </a>
 <a class="topic-card" href="/triple/higher/biology/infection-response.html">
@@ -121,7 +121,7 @@
   <div class="topic-card-meta">Spec 4.3 &nbsp;·&nbsp; Paper 1</div>
   <div><span class="badge badge-h">⭐ Higher</span></div>
   <div class="topic-card-footer">
-    <span class="go-btn" style="background:#6BCB77;color:#0F0F1A;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:800;">Study this topic →</span>
+    <span class="go-btn">Study this topic →</span>
   </div>
 </a>
 <a class="topic-card" href="/triple/higher/biology/bioenergetics.html">
@@ -131,7 +131,7 @@
   <div class="topic-card-meta">Spec 4.4 &nbsp;·&nbsp; Paper 1</div>
   <div><span class="badge badge-rp">📋 2 RP</span><span class="badge badge-h">⭐ Higher</span></div>
   <div class="topic-card-footer">
-    <span class="go-btn" style="background:#6BCB77;color:#0F0F1A;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:800;">Study this topic →</span>
+    <span class="go-btn">Study this topic →</span>
   </div>
 </a>
 <a class="topic-card" href="/triple/higher/biology/homeostasis.html">
@@ -141,7 +141,7 @@
   <div class="topic-card-meta">Spec 4.5 &nbsp;·&nbsp; Paper 2</div>
   <div><span class="badge badge-rp">📋 1 RP</span><span class="badge badge-h">⭐ Higher</span><span class="badge badge-t">🔬 Triple</span></div>
   <div class="topic-card-footer">
-    <span class="go-btn" style="background:#6BCB77;color:#0F0F1A;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:800;">Study this topic →</span>
+    <span class="go-btn">Study this topic →</span>
   </div>
 </a>
 <a class="topic-card" href="/triple/higher/biology/inheritance.html">
@@ -151,7 +151,7 @@
   <div class="topic-card-meta">Spec 4.6 &nbsp;·&nbsp; Paper 2</div>
   <div><span class="badge badge-h">⭐ Higher</span><span class="badge badge-t">🔬 Triple</span></div>
   <div class="topic-card-footer">
-    <span class="go-btn" style="background:#6BCB77;color:#0F0F1A;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:800;">Study this topic →</span>
+    <span class="go-btn">Study this topic →</span>
   </div>
 </a>
 <a class="topic-card" href="/triple/higher/biology/ecology.html">
@@ -161,11 +161,11 @@
   <div class="topic-card-meta">Spec 4.7 &nbsp;·&nbsp; Paper 2</div>
   <div><span class="badge badge-rp">📋 1 RP</span><span class="badge badge-h">⭐ Higher</span></div>
   <div class="topic-card-footer">
-    <span class="go-btn" style="background:#6BCB77;color:#0F0F1A;padding:7px 18px;border-radius:20px;font-size:0.82rem;font-weight:800;">Study this topic →</span>
+    <span class="go-btn">Study this topic →</span>
   </div>
 </a>
 </div>
-  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="#0F0F1A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
+  <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 
 <div class="chat-overlay" id="chatOverlay">
   <div class="chat-modal">
