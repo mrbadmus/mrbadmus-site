@@ -9,6 +9,8 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   
 <style>
 html { background: var(--bg); }
@@ -24,7 +26,7 @@ html { background: var(--bg); }
     <a href="/leaderboard.html">🏆</a>
     <a href="/past-papers.html">Past Papers</a>
     <a href="/my-challenges.html">My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
+    <a href="#" title="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
     
     <span class="crumb-sep">›</span>
     <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
@@ -136,35 +138,35 @@ html { background: var(--bg); }
     <div class="match-layout">
       <div class="match-targets"><div class="match-target" data-index="0">
   <div class="match-term">Left ventricle</div>
-  <div class="match-drop" data-accepts="0">Drop here</div>
+  <div class="match-drop" data-accepts="0" data-accepts-group="0">Drop here</div>
 </div>
 <div class="match-target" data-index="1">
   <div class="match-term">Right ventricle</div>
-  <div class="match-drop" data-accepts="1">Drop here</div>
+  <div class="match-drop" data-accepts="1" data-accepts-group="1">Drop here</div>
 </div>
 <div class="match-target" data-index="2">
   <div class="match-term">Valves</div>
-  <div class="match-drop" data-accepts="2">Drop here</div>
+  <div class="match-drop" data-accepts="2" data-accepts-group="2">Drop here</div>
 </div>
 <div class="match-target" data-index="3">
   <div class="match-term">Coronary arteries</div>
-  <div class="match-drop" data-accepts="3">Drop here</div>
+  <div class="match-drop" data-accepts="3" data-accepts-group="3">Drop here</div>
 </div>
 <div class="match-target" data-index="4">
   <div class="match-term">Pulmonary vein</div>
-  <div class="match-drop" data-accepts="4">Drop here</div>
+  <div class="match-drop" data-accepts="4" data-accepts-group="4">Drop here</div>
 </div>
 <div class="match-target" data-index="5">
   <div class="match-term">Vena cava</div>
-  <div class="match-drop" data-accepts="5">Drop here</div>
+  <div class="match-drop" data-accepts="5" data-accepts-group="5">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-heart-blood-vessels"><div class="match-def" data-index="0" draggable="true">Pumps oxygenated blood to the whole body via the aorta — thickest walls</div>
-<div class="match-def" data-index="3" draggable="true">Supply the heart muscle itself with oxygenated blood</div>
-<div class="match-def" data-index="5" draggable="true">Carries deoxygenated blood FROM the body TO the right atrium</div>
-<div class="match-def" data-index="4" draggable="true">Carries oxygenated blood FROM the lungs TO the left atrium</div>
-<div class="match-def" data-index="2" draggable="true">Prevent backflow of blood — open and close with pressure changes</div>
-<div class="match-def" data-index="1" draggable="true">Pumps deoxygenated blood to the lungs via the pulmonary artery</div>
+      <div class="match-defs" id="defPool-heart-blood-vessels"><div class="match-def" data-index="0" data-group="0" draggable="true">Pumps oxygenated blood to the whole body via the aorta — thickest walls</div>
+<div class="match-def" data-index="3" data-group="3" draggable="true">Supply the heart muscle itself with oxygenated blood</div>
+<div class="match-def" data-index="5" data-group="5" draggable="true">Carries deoxygenated blood FROM the body TO the right atrium</div>
+<div class="match-def" data-index="4" data-group="4" draggable="true">Carries oxygenated blood FROM the lungs TO the left atrium</div>
+<div class="match-def" data-index="2" data-group="2" draggable="true">Prevent backflow of blood — open and close with pressure changes</div>
+<div class="match-def" data-index="1" data-group="1" draggable="true">Pumps deoxygenated blood to the lungs via the pulmonary artery</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -360,9 +362,12 @@ function checkMatching(stId, pairs) {
   let correct = 0;
   targets.forEach(target => {
     const drop = target.querySelector('.match-drop');
-    const accepts = parseInt(drop.dataset.accepts);
+    // Grade by category group (MRB-104): a slot is correct when the item in it
+    // belongs to a row sharing this slot's term. For one-to-one matchings each
+    // group holds exactly one item, so this is identical to an exact match.
+    const acceptsGroup = drop.dataset.acceptsGroup;
     const placed = drop.querySelector('.match-def');
-    if (placed && parseInt(placed.dataset.index) === accepts) {
+    if (placed && placed.dataset.group === acceptsGroup) {
       drop.classList.add('match-correct'); drop.classList.remove('match-wrong'); correct++;
     } else if (placed) {
       drop.classList.add('match-wrong'); drop.classList.remove('match-correct');

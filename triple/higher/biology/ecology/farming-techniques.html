@@ -9,6 +9,8 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   
 <style>
 html { background: var(--bg); }
@@ -24,7 +26,7 @@ html { background: var(--bg); }
     <a href="/leaderboard.html">🏆</a>
     <a href="/past-papers.html">Past Papers</a>
     <a href="/my-challenges.html">My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
+    <a href="#" title="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
     
     <span class="crumb-sep">›</span>
     <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
@@ -130,25 +132,25 @@ html { background: var(--bg); }
     <div class="match-layout">
       <div class="match-targets"><div class="match-target" data-index="0">
   <div class="match-term">Restricting animal movement</div>
-  <div class="match-drop" data-accepts="0">Drop here</div>
+  <div class="match-drop" data-accepts="0" data-accepts-group="0">Drop here</div>
 </div>
 <div class="match-target" data-index="1">
   <div class="match-term">Controlling temperature</div>
-  <div class="match-drop" data-accepts="1">Drop here</div>
+  <div class="match-drop" data-accepts="1" data-accepts-group="1">Drop here</div>
 </div>
 <div class="match-target" data-index="2">
   <div class="match-term">Using fertilisers</div>
-  <div class="match-drop" data-accepts="2">Drop here</div>
+  <div class="match-drop" data-accepts="2" data-accepts-group="2">Drop here</div>
 </div>
 <div class="match-target" data-index="3">
   <div class="match-term">Biological control</div>
-  <div class="match-drop" data-accepts="3">Drop here</div>
+  <div class="match-drop" data-accepts="3" data-accepts-group="3">Drop here</div>
 </div>
 </div>
-      <div class="match-defs" id="defPool-farming-techniques"><div class="match-def" data-index="2" draggable="true">Adds essential minerals (NPK) to soil — improves crop growth and yield</div>
-<div class="match-def" data-index="1" draggable="true">Less energy spent maintaining body temperature — more energy available for growth</div>
-<div class="match-def" data-index="0" draggable="true">Less energy used in respiration for muscle activity — more energy retained as body mass</div>
-<div class="match-def" data-index="3" draggable="true">Uses natural predators to control pests — no chemical residues, less damage to non-target species</div>
+      <div class="match-defs" id="defPool-farming-techniques"><div class="match-def" data-index="2" data-group="2" draggable="true">Adds essential minerals (NPK) to soil — improves crop growth and yield</div>
+<div class="match-def" data-index="1" data-group="1" draggable="true">Less energy spent maintaining body temperature — more energy available for growth</div>
+<div class="match-def" data-index="0" data-group="0" draggable="true">Less energy used in respiration for muscle activity — more energy retained as body mass</div>
+<div class="match-def" data-index="3" data-group="3" draggable="true">Uses natural predators to control pests — no chemical residues, less damage to non-target species</div>
 </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
@@ -331,9 +333,12 @@ function checkMatching(stId, pairs) {
   let correct = 0;
   targets.forEach(target => {
     const drop = target.querySelector('.match-drop');
-    const accepts = parseInt(drop.dataset.accepts);
+    // Grade by category group (MRB-104): a slot is correct when the item in it
+    // belongs to a row sharing this slot's term. For one-to-one matchings each
+    // group holds exactly one item, so this is identical to an exact match.
+    const acceptsGroup = drop.dataset.acceptsGroup;
     const placed = drop.querySelector('.match-def');
-    if (placed && parseInt(placed.dataset.index) === accepts) {
+    if (placed && placed.dataset.group === acceptsGroup) {
       drop.classList.add('match-correct'); drop.classList.remove('match-wrong'); correct++;
     } else if (placed) {
       drop.classList.add('match-wrong'); drop.classList.remove('match-correct');

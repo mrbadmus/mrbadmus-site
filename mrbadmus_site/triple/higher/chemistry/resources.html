@@ -9,6 +9,8 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   <style>
 html { background: var(--bg); }
 :root { --subject: #B02342; }
@@ -23,7 +25,7 @@ html { background: var(--bg); }
     <a href="/leaderboard.html">🏆</a>
     <a href="/past-papers.html">Past Papers</a>
     <a href="/my-challenges.html">My Challenges</a>
-    <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(()=>document.getElementById('siteSearch')?.focus(),100)">🔍</a>
+    <a href="#" title="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
     
     <span class="crumb-sep">›</span>
     <a href="/triple/index.html" class="crumb" style="color:#B02342;">Triple Science</a>
