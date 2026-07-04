@@ -253,8 +253,8 @@ FULL BIOLOGY SPECIFICATION TOPICS:
       chatInited = true;
       const sn = {physics:'Physics ⚡',chemistry:'Chemistry 🧪',biology:'Biology 🌿'}[currentSubject];
       const greet = studentName
-        ? "Hey " + studentName + "! 👋 I'm Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?"
-        : "Hey! 👋 I'm Mr Badmus — here to help you smash your GCSE Science. What are we stuck on?";
+        ? "Hey " + studentName + "! 👋 I'm Mr Badmus, here to help you smash your GCSE Science. What are we stuck on?"
+        : "Hey! 👋 I'm Mr Badmus, here to help you smash your GCSE Science. What are we stuck on?";
       addMsg('bot', greet);
     }
     setTimeout(() => document.getElementById('ci')?.focus(), 100);

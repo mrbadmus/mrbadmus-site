@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Leaderboard | MrBadmusAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
       --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
@@ -46,7 +48,7 @@
     .tab:hover { border-color: #4a4a6a; }
     .tab.active { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
     .tab.active.bio { background: rgba(107,203,119,0.15); border-color: var(--biology); color: var(--biology); }
-    .tab.active.chem { background: rgba(255,107,107,0.15); border-color: var(--chemistry); color: var(--chemistry); }
+    .tab.active.chem { background: rgba(255,210,230,0.15); border-color: var(--chemistry); color: var(--chemistry); }
     .tab.active.phys { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
     .tab.active.overall { background: rgba(255,217,61,0.15); border-color: var(--yellow); color: var(--yellow); }
 
@@ -72,7 +74,7 @@
     }
     .pathway-btn:hover, .tier-btn:hover { border-color: #4a4a6a; }
     .pathway-btn.active.combined { border-color: var(--physics); background: rgba(78,205,196,0.12); color: var(--physics); }
-    .pathway-btn.active.triple   { border-color: var(--chemistry); background: rgba(255,107,107,0.12); color: var(--chemistry); }
+    .pathway-btn.active.triple   { border-color: var(--chemistry); background: rgba(255,210,230,0.12); color: var(--chemistry); }
     .tier-btn.active.foundation  { border-color: var(--biology); background: rgba(107,203,119,0.12); color: var(--biology); }
     .tier-btn.active.higher      { border-color: var(--yellow); background: rgba(255,217,61,0.12); color: var(--yellow); }
 
@@ -292,6 +294,11 @@
     document.getElementById('podium').innerHTML = '';
     document.getElementById('rest-list').innerHTML = '';
     document.getElementById('empty').style.display = 'none';
+    // Reset the empty-state copy to its default — a previous failed load leaves
+    // the "Could not load" error text on this shared element, which would
+    // otherwise show on every genuinely-empty track for the rest of the visit.
+    document.querySelector('#empty h3').textContent = 'No scores yet!';
+    document.querySelector('#empty p').textContent = 'Be the first to complete the challenge and claim the top spot.';
 
     var url;
     if (currentSubject === 'overall') {
@@ -398,7 +405,7 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('content').style.display = 'block';
     } catch (err) {
-      document.getElementById('loading').innerHTML = '<p style="color:var(--chemistry);">Could not load leaderboard. Try refreshing.</p>';
+      document.getElementById('loading').innerHTML = '<p style="color:var(--danger);">Could not load leaderboard. Try refreshing.</p>';
     }
   }
   init();

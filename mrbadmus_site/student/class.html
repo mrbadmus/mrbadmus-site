@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>My class — Mr Badmus AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker:    #0F0F1A;
       --dark:      #1A1A2E;
@@ -270,6 +272,18 @@
       transition: opacity 0.15s;
     }
     .assignment-card-start-btn:hover { opacity: 0.85; }
+    .assignment-card-start-soon {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid #2a2a4a;
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
     .assignment-card-score {
       color: var(--text);
       font-size: 0.85rem;
@@ -680,6 +694,7 @@
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="env-pill" class="pill env-prod" title=""></span>
     <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
+    <a id="settings-link" href="/student/settings.html" style="color:#888;font-weight:700;font-size:0.85rem;text-decoration:none;">⚙️ Settings</a>
     <button class="signout-btn" onclick="MrBadmusStudentGuard.signOut()">Sign out</button>
   </div>
 </nav>
@@ -819,7 +834,7 @@
         '<h1 class="class-header-name">' + escapeHtml(klass.name) + '</h1>' +
         pillHtml +
       '</div>' +
-      '<div class="class-header-greeting">' + greeting + ' — here’s your class at a glance.</div>';
+      '<div class="class-header-greeting">' + greeting + '. Here’s your class at a glance.</div>';
     document.title = klass.name + ' — Mr Badmus AI';
 
     const stripeEl = document.getElementById('subject-stripe');
@@ -853,7 +868,7 @@
         label: 'Completion',
         value: viewerStats.submissions_completed_pct == null ? null : viewerStats.submissions_completed_pct + '%',
         sub: 'of class assignments',
-        zero: viewerStats.submissions_completed_pct == null ? '—' : null,
+        zero: viewerStats.submissions_completed_pct == null ? 'No assignments yet' : null,
       },
     ];
 
@@ -901,10 +916,18 @@
         '<span class="assignment-card-score">' + pct + '%</span>' +
       '</div>';
     } else if (!card.is_submitted && opts.actionable) {
-      // Future or overdue in current week → Start button still available
-      actionsHtml = '<div class="assignment-card-actions">' +
-        '<a class="assignment-card-start-btn" href="' + escapeHtml(buildStartUrl(card.id)) + '">Start</a>' +
-      '</div>';
+      if (currentClassKeyStage === 'KS3') {
+        // The weekly challenge is GCSE-only. For KS3 classes the Start button
+        // would funnel students into the GCSE profile wizard, so disable it.
+        actionsHtml = '<div class="assignment-card-actions">' +
+          '<span class="assignment-card-start-soon">Coming soon for KS3</span>' +
+        '</div>';
+      } else {
+        // Future or overdue in current week → Start button still available
+        actionsHtml = '<div class="assignment-card-actions">' +
+          '<a class="assignment-card-start-btn" href="' + escapeHtml(buildStartUrl(card.id)) + '">Start</a>' +
+        '</div>';
+      }
     }
 
     const cardClasses = ['assignment-card'];
@@ -1174,6 +1197,7 @@
   // ── Shoutouts feed (sidebar, read-only) ── */
   const PAGE_SIZE = 20;
   let currentClassId = null;
+  let currentClassKeyStage = null;
   const feedState = {
     shoutouts: [], hasMore: false, loading: false, initialLoaded: false, error: null,
   };
@@ -1217,6 +1241,7 @@
     const oldest = feedState.shoutouts[feedState.shoutouts.length - 1];
     if (!oldest) return;
     feedState.loading = true;
+    feedState.error = null; // clear any prior load-more error before retrying
     const moreBtn = document.getElementById('shoutouts-loadmore');
     if (moreBtn) { moreBtn.disabled = true; moreBtn.textContent = 'Loading…'; }
     try {
@@ -1265,7 +1290,12 @@
     const loadMoreHtml = feedState.hasMore
       ? '<button class="shoutouts-loadmore" id="shoutouts-loadmore">Load more</button>'
       : '';
-    feedEl.innerHTML = '<div class="shoutouts-feed-list">' + cardsHtml + '</div>' + loadMoreHtml;
+    // A failed "load more" (after the first page loaded) would otherwise be
+    // silent — the button just resets. Surface a one-line inline error.
+    const loadMoreErrorHtml = feedState.error
+      ? '<div class="shoutouts-error" style="margin-top:10px;">Couldn’t load more. Tap Load more to try again.</div>'
+      : '';
+    feedEl.innerHTML = '<div class="shoutouts-feed-list">' + cardsHtml + '</div>' + loadMoreHtml + loadMoreErrorHtml;
     const moreBtn = document.getElementById('shoutouts-loadmore');
     if (moreBtn) moreBtn.addEventListener('click', loadMoreShoutouts);
   }
@@ -1284,6 +1314,8 @@
 
         const firstName = ctx.profile.first_name || 'student';
         document.getElementById('nav-user-area').textContent = '👤 ' + firstName;
+        const settingsLink = document.getElementById('settings-link');
+        if (settingsLink) settingsLink.href = '/student/settings.html' + (env === 'test' ? '?env=test' : '');
         const envEl = document.getElementById('env-pill');
         envEl.textContent = env.toUpperCase();
         envEl.className = 'pill env-' + env;
@@ -1311,6 +1343,7 @@
         });
 
         currentClassId = detail.class.id;
+        currentClassKeyStage = detail.class.key_stage;
         renderClassHeader(detail.class, ctx.profile.first_name);
         renderStarsLeaderboard(detail.leaderboard, ctx.user.id);
         renderStatsStrip(detail.viewerStats);

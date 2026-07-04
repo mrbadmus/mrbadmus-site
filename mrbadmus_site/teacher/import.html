@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Import students — Mr Badmus AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker:    #0F0F1A;
       --dark:      #1A1A2E;
@@ -749,16 +751,20 @@
       <p class="card-help">
         Check the year group for every class. We've detected it from the class
         name. Years 10–11 also need Combined or Triple and Foundation or
-        Higher; Years 7–9 (KS3) don't. You can optionally assign a teacher
-        and subject.
+        Higher; Years 7–9 (KS3) don't. Assigning a teacher is optional, but if
+        you assign a teacher you must also choose a subject.
       </p>
       <div id="class-settings-list" class="class-settings-list"></div>
       <div id="screen2-validation" class="validation-note">
-        Please choose a year group for every class, and Combined/Triple and
-        Foundation/Higher for every Year 10–11 class, before continuing.
+        Please choose a year group for every class, Combined/Triple and
+        Foundation/Higher for every Year 10–11 class, and a subject for every
+        class you've assigned a teacher to, before continuing.
       </div>
     </div>
 
+    <div id="staff-loading-note" class="card-help" style="display:none;margin-top:10px;">
+      Loading teacher list…
+    </div>
     <div class="wizard-actions">
       <button id="back-to-1" class="btn btn-ghost" type="button">← Back</button>
       <button id="to-screen-3" class="btn btn-primary" type="button">Next: review →</button>
@@ -887,6 +893,10 @@
   // Column mapping (screen 2). Each value is a chosen CSV header name.
   // externalId is OPTIONAL ('' = not mapped → omitted from the payload).
   const mapping = { email: '', firstName: '', lastName: '', className: '', externalId: '' };
+  // Signature of the file we last auto-guessed the mapping for. Lets buildScreen2
+  // re-guess when a new file is loaded but preserve manual column choices when the
+  // teacher just steps Back to screen 1 and returns.
+  let mappingGuessedFor = null;
 
   // Class source. 'column' (primary): class name comes from a mapped CSV column.
   // 'single' (fallback): the file has no class column, so one typed name is used
@@ -915,6 +925,17 @@
   // Staff + subject option lists (loaded once in onAllowed).
   let staffOptions = [];    // [{ id, label }]
   let subjectOptions = [];  // [{ id, name }]
+  let staffSubjectsLoaded = false; // false until loadStaffAndSubjects() resolves
+
+  // Screen 2 depends on the staff/subject lists for its dropdowns. Until they've
+  // loaded, block the "review" step and show a note, so the teacher can't submit
+  // an assignment against an empty/half-populated teacher list.
+  function applyStaffLoadingState() {
+    const note = document.getElementById('staff-loading-note');
+    const nextBtn = document.getElementById('to-screen-3');
+    if (note) note.style.display = staffSubjectsLoaded ? 'none' : 'block';
+    if (nextBtn) nextBtn.disabled = !staffSubjectsLoaded;
+  }
 
   // Dry-run payload result (screen 3) — held so Confirm can re-send dryRun:false.
   let lastPayload = null;
@@ -1177,6 +1198,7 @@
     $('to-screen-2').addEventListener('click', function () {
       buildScreen2();
       setStep(2);
+      applyStaffLoadingState();
     });
   }
 
@@ -1237,12 +1259,20 @@
   }
 
   function buildScreen2() {
-    // ── Column mapping selects (pre-guessed) ──
-    mapping.email      = guessHeader(GUESS_RE.email);
-    mapping.firstName  = guessHeader(GUESS_RE.firstName);
-    mapping.lastName   = guessHeader(GUESS_RE.lastName);
-    mapping.className  = guessHeader(GUESS_RE.className);
-    mapping.externalId = guessHeaderOptional(GUESS_RE.external); // optional
+    // ── Column mapping selects ──
+    // Only auto-guess on first sight of this file. If the teacher has already
+    // been here and stepped Back to screen 1, preserve their manual column
+    // choices instead of clobbering them with fresh guesses. A different file
+    // (new signature) re-guesses from scratch.
+    const fileSig = fileState.fileName + '|' + fileState.headers.join(',');
+    if (mappingGuessedFor !== fileSig) {
+      mapping.email      = guessHeader(GUESS_RE.email);
+      mapping.firstName  = guessHeader(GUESS_RE.firstName);
+      mapping.lastName   = guessHeader(GUESS_RE.lastName);
+      mapping.className  = guessHeader(GUESS_RE.className);
+      mapping.externalId = guessHeaderOptional(GUESS_RE.external); // optional
+      mappingGuessedFor = fileSig;
+    }
 
     $('map-email').innerHTML    = buildSelectOptions(mapping.email);
     $('map-first').innerHTML    = buildSelectOptions(mapping.firstName);
@@ -1352,7 +1382,7 @@
       const s = classSettings[c.name];
       const subjectRow = s.teacherId
         ? '<div class="setting-block" data-subject-block>' +
-            '<span class="setting-block-label">Subject (for that teacher)</span>' +
+            '<span class="setting-block-label">Subject (for that teacher) <span class="req">*</span></span>' +
             '<select class="compose-select" data-subject="' + escapeHtml(c.name) + '">' +
               subjectOptionsHtml(s.subjectId) +
             '</select>' +
@@ -1471,6 +1501,10 @@
   // 10–11) only — both pathway and tier. KS3 classes need just the year.
   function classIsComplete(s) {
     if (!s || !s.year) return false;
+    // If a teacher is assigned, a subject is required. Without it the roster
+    // import silently skips the class_teachers row and the class never appears
+    // in My classes.
+    if (s.teacherId && !s.subjectId) return false;
     if (keyStageForYear(s.year) === 'KS4') return !!s.pathway && !!s.tier;
     return true;
   }
@@ -1699,9 +1733,10 @@
     $('confirm-import').disabled = true;
     renderClassesReview();
 
-    if (!(await sessionMatchesGuard())) {
+    const sstate = await sessionState();
+    if (sstate !== 'ok') {
       $('preview-loading').style.display = 'none';
-      showSessionSwapError();
+      showSessionError(sstate);
       return;
     }
 
@@ -1718,8 +1753,22 @@
     } catch (e) {
       console.error('[import.html] dry-run failed', e);
       $('preview-loading').style.display = 'none';
-      showDryrunError(friendlyInvokeError(e));
+      showDryrunError(await friendlyInvokeErrorAsync(e));
     }
+  }
+
+  // supabase-js surfaces a non-2xx edge-function response as a FunctionsHttpError
+  // whose .message is the fixed "…non-2xx status code" string — the real error
+  // code (missing_token, no_academic_year, …) lives unparsed on e.context (the
+  // Response). Read that body first so friendlyInvokeError's regexes can match.
+  async function friendlyInvokeErrorAsync(e) {
+    if (e && e.context && typeof e.context.json === 'function') {
+      try {
+        const body = await e.context.json();
+        if (body && body.error) e = new Error(body.error);
+      } catch (_) { /* body wasn't JSON — fall through to the generic path */ }
+    }
+    return friendlyInvokeError(e);
   }
 
   // Translate a known backend error code OR a transport error into plain
@@ -1750,21 +1799,28 @@
   // account in another tab silently swaps who our requests act as. Before
   // firing the dry-run or the real import, confirm the session still belongs
   // to the user the guard admitted at page load.
-  async function sessionMatchesGuard() {
+  // Returns 'ok' (still the guarded user), 'no_session' (session gone/expired),
+  // or 'mismatch' (a different account signed in, e.g. another tab).
+  async function sessionState() {
     try {
       const { data } = await sb.auth.getSession();
       const uid = data && data.session && data.session.user && data.session.user.id;
-      return !!uid && uid === currentUserId;
+      if (!uid) return 'no_session';
+      return uid === currentUserId ? 'ok' : 'mismatch';
     } catch (e) {
       console.error('[import.html] session re-check failed', e);
-      return false;
+      return 'no_session';
     }
   }
-  function showSessionSwapError() {
+  function showSessionError(state) {
     const el = $('dryrun-error');
-    el.innerHTML = 'Your signed-in account changed — please ' +
-      '<a href="/auth.html" style="color:inherit;font-weight:700;">sign back in' +
-      '</a> as your staff account.';
+    const link = '<a href="/auth.html" style="color:inherit;font-weight:700;">';
+    if (state === 'no_session') {
+      el.innerHTML = 'Your session has expired. Please ' + link + 'sign in again</a>.';
+    } else {
+      el.innerHTML = 'Your signed-in account changed. Please ' + link +
+        'sign back in</a> as your staff account.';
+    }
     el.classList.add('show');
   }
 
@@ -1807,8 +1863,9 @@
     btn.textContent = 'Importing…';
     $('dryrun-error').classList.remove('show');
 
-    if (!(await sessionMatchesGuard())) {
-      showSessionSwapError();
+    const sstate = await sessionState();
+    if (sstate !== 'ok') {
+      showSessionError(sstate);
       btn.disabled = false;
       btn.textContent = 'Confirm import';
       confirming = false;
@@ -1825,7 +1882,7 @@
       renderSuccess(data);
     } catch (e) {
       console.error('[import.html] confirm import failed', e);
-      showDryrunError(friendlyInvokeError(e));
+      showDryrunError(await friendlyInvokeErrorAsync(e));
       // Re-enable so the teacher can retry; the operation is idempotent, so a
       // retry after a partial/failed run never duplicates.
       btn.disabled = false;
@@ -1904,6 +1961,15 @@
     } catch (e) {
       console.error('[import.html] subjects load failed', e);
       subjectOptions = [];
+    }
+
+    // Both fetches settled (even a failure leaves usable empty lists — the
+    // teacher can still proceed without assigning a teacher). Unblock screen 2
+    // and repopulate its dropdowns if the teacher is already looking at it.
+    staffSubjectsLoaded = true;
+    applyStaffLoadingState();
+    if (document.getElementById('screen-2').classList.contains('show')) {
+      rebuildClassSettings();
     }
   }
 

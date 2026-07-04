@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Confirm account move — Mr Badmus AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker:    #0F0F1A;
       --dark:      #1A1A2E;
@@ -205,7 +207,7 @@
       <p>Your previous progress has been moved onto your school account.</p>
       <p id="success-summary" class="claim-summary" style="display:none;"></p>
       <div class="claim-actions">
-        <a id="dashboard-link" class="btn btn-primary" href="/student/class.html">Go to my dashboard</a>
+        <a id="dashboard-link" class="btn btn-primary" href="/index.html">Go to my dashboard</a>
       </div>
     </div>
   </div>
@@ -240,6 +242,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js"></script>
 <script>
+  // If config.js or the Supabase SDK failed to load (CDN blocked/outage), show
+  // the error state instead of throwing an uncaught error and hanging forever
+  // on "Confirming…".
+  if (!window.MrBadmusConfig || !window.supabase) {
+    var _loadingEl = document.getElementById('state-loading');
+    var _errorEl = document.getElementById('state-error');
+    if (_loadingEl) _loadingEl.classList.remove('show');
+    if (_errorEl) _errorEl.classList.add('show');
+    throw new Error('claim-confirm: config or Supabase SDK failed to load');
+  }
+
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.MrBadmusConfig;
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -269,7 +282,7 @@
   }
 
   // Wire the dashboard + sign-in links to preserve ?env=test.
-  document.getElementById('dashboard-link').href = '/student/class.html' + envQuery;
+  document.getElementById('dashboard-link').href = '/index.html' + envQuery;
   document.getElementById('problem-auth-link').href = '/auth.html' + envQuery;
   document.getElementById('error-auth-link').href = '/auth.html' + envQuery;
 

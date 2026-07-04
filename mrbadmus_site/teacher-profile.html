@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Your profile — Mr Badmus AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker:    #0F0F1A;
       --dark:      #1A1A2E;
@@ -147,6 +149,8 @@
 <nav class="top-nav">
   <a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
   <div class="nav-right">
+    <a href="/teacher/classes.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">My classes</a>
+    <a href="/teacher/import.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">Import students</a>
     <span id="env-pill" class="pill env-prod" style="display:none;">TEST</span>
     <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
   </div>

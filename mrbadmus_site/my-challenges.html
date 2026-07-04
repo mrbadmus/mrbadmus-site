@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>My Challenges | MrBadmusAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
       --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
@@ -52,11 +54,11 @@
     .tier-foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
     .tier-higher { background: rgba(255,217,61,0.15); color: var(--yellow); }
     .pathway-combined { background: rgba(78,205,196,0.15); color: var(--physics); }
-    .pathway-triple   { background: rgba(255,107,107,0.15); color: var(--chemistry); }
+    .pathway-triple   { background: rgba(255,210,230,0.15); color: var(--chemistry); }
     .attempt-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.3rem; flex-shrink: 0; }
     .score-good { color: var(--biology); }
     .score-ok { color: var(--yellow); }
-    .score-low { color: var(--chemistry); }
+    .score-low { color: var(--danger); }
     .chevron { font-size: 0.9rem; color: var(--muted); transition: transform 0.2s; flex-shrink: 0; }
     .attempt.open .chevron { transform: rotate(180deg); }
 
@@ -81,7 +83,7 @@
       font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.72rem; flex-shrink: 0;
     }
     .q-option-row.correct .q-option-letter { background: var(--biology); color: #0F0F1A; }
-    .q-option-row.student-wrong .q-option-letter { background: var(--chemistry); color: #fff; }
+    .q-option-row.student-wrong .q-option-letter { background: var(--danger); color: #fff; }
 
     .q-explanation {
       margin-top: 10px; margin-left: 26px; padding: 10px 12px;
@@ -201,7 +203,7 @@
       renderHistory(history);
     } catch (err) {
       console.error(err);
-      document.getElementById('loading').innerHTML = '<p style="color:var(--chemistry);">Could not load your history. Try refreshing.</p>';
+      document.getElementById('loading').innerHTML = '<p style="color:var(--danger);">Could not load your history. Try refreshing.</p>';
     }
   }
 
@@ -213,8 +215,9 @@
       var scoreClass = pct >= 80 ? 'score-good' : pct >= 50 ? 'score-ok' : 'score-low';
       var emoji = subjectEmojis[h.subject] || '📝';
       var subjLabel = subjectLabels[h.subject] || h.subject;
-      var tierClass = 'tier-' + h.tier;
-      var tierLabel = h.tier.charAt(0).toUpperCase() + h.tier.slice(1);
+      var tier = h.tier || 'foundation';
+      var tierClass = 'tier-' + tier;
+      var tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1);
       var pathwayClass = 'pathway-' + (h.pathway || 'combined');
       var pathwayLabel = h.pathway ? (h.pathway.charAt(0).toUpperCase() + h.pathway.slice(1)) : '';
       var mins = Math.floor((h.time_taken || 0) / 60);

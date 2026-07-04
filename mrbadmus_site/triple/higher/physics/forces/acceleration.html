@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Acceleration | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   
 <style>
+html { background: #0F0F1A; }
 :root { --subject: #4ECDC4; }
 .section-title { color: var(--subject); }
 .var-table { display:flex;flex-direction:column;gap:8px; }
@@ -91,21 +93,29 @@
     if (raw) {
       const session = JSON.parse(raw);
       const user = session?.user;
-      if (user) {
+      // If the stored session has already expired, don't render a signed-in
+      // chip that would 401 on click — leave the Sign In / Sign Up buttons.
+      const expMs = session && session.expires_at ? session.expires_at * 1000 : 0;
+      if (user && !(expMs && expMs <= Date.now())) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
         if (area) {
           // Profile chip routes by advisory role: staff → teacher profile,
           // students → profile setup. Routing is UX only — RLS guards the data.
+          // Cache the resolved href PER USER (never a global key) so a previous
+          // account's route can't leak onto a different signed-in user.
+          var hrefKey = 'mrb-profile-href:' + user.id;
           var profileHref = '/profile-setup.html';
-          try { profileHref = localStorage.getItem('mrb-profile-href') || profileHref; } catch(err) {}
+          try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch(err) {}
           area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
           fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
             headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
           }).then(function(r) { return r.ok ? r.json() : null; }).then(function(rows) {
-            var role = rows && rows[0] && rows[0].role;
-            profileHref = (role && role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
-            try { localStorage.setItem('mrb-profile-href', profileHref); } catch(err) {}
+            // Only trust and cache a real role row. A 401/empty response must not
+            // overwrite the cache with the student default.
+            if (!rows || !rows[0]) return;
+            profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
+            try { localStorage.setItem(hrefKey, profileHref); } catch(err) {}
             var link = document.getElementById('nav-profile-link');
             if (link) link.href = profileHref;
           }).catch(function() {});
@@ -252,7 +262,7 @@
 </div>
 <script>
 (function(){
-  const scoreMessages = ["Keep going — re-read the theory and try again. You"ll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you"ll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You"ve really got this topic down. 🏆"];
+  const scoreMessages = ["Keep going — re-read the theory and try again. You'll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you'll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You've really got this topic down. 🏆"];
   document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{});
   // handled by global quiz JS below
 })();

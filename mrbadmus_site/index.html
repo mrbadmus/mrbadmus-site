@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>MrBadmusAI — GCSE Science Revision</title>
   <meta name="description" content="Free GCSE Science revision with AI tutor, FIFA worked examples, quizzes and full topic notes. Physics, Chemistry, Biology."/>
   <link rel="stylesheet" href="/shared/styles.css"/>
@@ -33,21 +34,29 @@
     if (raw) {
       const session = JSON.parse(raw);
       const user = session?.user;
-      if (user) {
+      // If the stored session has already expired, don't render a signed-in
+      // chip that would 401 on click — leave the Sign In / Sign Up buttons.
+      const expMs = session && session.expires_at ? session.expires_at * 1000 : 0;
+      if (user && !(expMs && expMs <= Date.now())) {
         const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
         const area = document.getElementById('nav-auth-area');
         if (area) {
           // Profile chip routes by advisory role: staff → teacher profile,
           // students → profile setup. Routing is UX only — RLS guards the data.
+          // Cache the resolved href PER USER (never a global key) so a previous
+          // account's route can't leak onto a different signed-in user.
+          var hrefKey = 'mrb-profile-href:' + user.id;
           var profileHref = '/profile-setup.html';
-          try { profileHref = localStorage.getItem('mrb-profile-href') || profileHref; } catch(err) {}
+          try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch(err) {}
           area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
           fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
             headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
           }).then(function(r) { return r.ok ? r.json() : null; }).then(function(rows) {
-            var role = rows && rows[0] && rows[0].role;
-            profileHref = (role && role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
-            try { localStorage.setItem('mrb-profile-href', profileHref); } catch(err) {}
+            // Only trust and cache a real role row. A 401/empty response must not
+            // overwrite the cache with the student default.
+            if (!rows || !rows[0]) return;
+            profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
+            try { localStorage.setItem(hrefKey, profileHref); } catch(err) {}
             var link = document.getElementById('nav-profile-link');
             if (link) link.href = profileHref;
           }).catch(function() {});
@@ -291,13 +300,13 @@
     {t:'Chromatography',s:'Chemistry',url:'/combined/higher/chemistry/analysis/chromatography.html',c:'#FFD2E6'},
     {t:'Testing for Gases',s:'Chemistry',url:'/combined/higher/chemistry/analysis/testing-for-gases.html',c:'#FFD2E6'},
     {t:'Composition of the Atmosphere',s:'Chemistry',url:'/combined/higher/chemistry/atmosphere/composition-of-atmosphere.html',c:'#FFD2E6'},
-    {t:'The Earth's Early Atmosphere',s:'Chemistry',url:'/combined/higher/chemistry/atmosphere/early-atmosphere.html',c:'#FFD2E6'},
+    {t:'The Earth\'s Early Atmosphere',s:'Chemistry',url:'/combined/higher/chemistry/atmosphere/early-atmosphere.html',c:'#FFD2E6'},
     {t:'Greenhouse Gases and Climate Change',s:'Chemistry',url:'/combined/higher/chemistry/atmosphere/greenhouse-gases.html',c:'#FFD2E6'},
     {t:'Atmospheric Pollutants from Fuels',s:'Chemistry',url:'/combined/higher/chemistry/atmosphere/atmospheric-pollutants.html',c:'#FFD2E6'},
-    {t:'Using the Earth's Resources',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/earths-resources.html',c:'#FFD2E6'},
-    {t:'Potable Water and Water Treatment',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/potable-water.html',c:'#FFD2E6'},
-    {t:'Life Cycle Assessment',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/life-cycle-assessment.html',c:'#FFD2E6'},
-    {t:'Reducing Use of Resources',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/reducing-use-of-resources.html',c:'#FFD2E6'},
+    {t:'Using the Earth\'s Resources',s:'Chemistry',url:'/combined/higher/chemistry/resources/earths-resources.html',c:'#FFD2E6'},
+    {t:'Potable Water and Water Treatment',s:'Chemistry',url:'/combined/higher/chemistry/resources/potable-water.html',c:'#FFD2E6'},
+    {t:'Life Cycle Assessment',s:'Chemistry',url:'/combined/higher/chemistry/resources/life-cycle-assessment.html',c:'#FFD2E6'},
+    {t:'Reducing Use of Resources',s:'Chemistry',url:'/combined/higher/chemistry/resources/reducing-use-of-resources.html',c:'#FFD2E6'},
     {t:'Moles',s:'Chemistry',url:'/combined/higher/chemistry/quantitative/moles.html',c:'#FFD2E6'},
     {t:'Amounts of Substances in Equations',s:'Chemistry',url:'/combined/higher/chemistry/quantitative/amounts-in-equations.html',c:'#FFD2E6'},
     {t:'Using Moles — Limiting Reactants',s:'Chemistry',url:'/combined/higher/chemistry/quantitative/using-moles-calculations.html',c:'#FFD2E6'},
@@ -470,10 +479,10 @@
     {t:'Tests for Carbonates, Halides and Sulfates',s:'Chemistry',url:'/triple/higher/chemistry/analysis/carbonates-halides-sulfates.html',c:'#FFD2E6'},
     {t:'Instrumental Methods and Flame Emission Spectroscopy',s:'Chemistry',url:'/triple/higher/chemistry/analysis/instrumental-methods.html',c:'#FFD2E6'},
     {t:'The Composition of the Atmosphere',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/composition-of-atmosphere.html',c:'#FFD2E6'},
-    {t:'The Earth's Early Atmosphere and How It Changed',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/early-atmosphere.html',c:'#FFD2E6'},
+    {t:'The Earth\'s Early Atmosphere and How It Changed',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/early-atmosphere.html',c:'#FFD2E6'},
     {t:'Greenhouse Gases and Climate Change',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/greenhouse-gases.html',c:'#FFD2E6'},
     {t:'Atmospheric Pollutants from Fuels',s:'Chemistry',url:'/triple/higher/chemistry/atmosphere/atmospheric-pollutants.html',c:'#FFD2E6'},
-    {t:'Using the Earth's Resources and Sustainable Development',s:'Chemistry',url:'/triple/higher/chemistry/resources/earths-resources.html',c:'#FFD2E6'},
+    {t:'Using the Earth\'s Resources and Sustainable Development',s:'Chemistry',url:'/triple/higher/chemistry/resources/earths-resources.html',c:'#FFD2E6'},
     {t:'Potable Water and Water Treatment',s:'Chemistry',url:'/triple/higher/chemistry/resources/potable-water.html',c:'#FFD2E6'},
     {t:'Life Cycle Assessment',s:'Chemistry',url:'/triple/higher/chemistry/resources/life-cycle-assessment.html',c:'#FFD2E6'},
     {t:'Ways of Reducing the Use of Resources',s:'Chemistry',url:'/triple/higher/chemistry/resources/reducing-use-of-resources.html',c:'#FFD2E6'},
@@ -483,7 +492,7 @@
     {t:'The Haber Process',s:'Chemistry',url:'/triple/higher/chemistry/resources/haber-process.html',c:'#FFD2E6'},
     {t:'Production and Uses of NPK Fertilisers',s:'Chemistry',url:'/triple/higher/chemistry/resources/npk-fertilisers.html',c:'#FFD2E6'},
     {t:'Alternative Methods of Extracting Metals',s:'Chemistry',url:'/triple/higher/chemistry/resources/alternative-metal-extraction.html',c:'#FFD2E6'},
-    {t:'Alternative Methods of Extracting Metals',s:'Chemistry',url:'/combined/higher/chemistry/using-resources/alternative-metal-extraction.html',c:'#FFD2E6'},
+    {t:'Alternative Methods of Extracting Metals',s:'Chemistry',url:'/combined/higher/chemistry/resources/alternative-metal-extraction.html',c:'#FFD2E6'},
     {t:'Energy Stores and Systems',s:'Physics',url:'/combined/higher/physics/energy/energy-stores-systems.html',c:'#4ECDC4'},
     {t:'Changes in Energy',s:'Physics',url:'/combined/higher/physics/energy/changes-in-energy.html',c:'#4ECDC4'},
     {t:'Energy Changes in Systems',s:'Physics',url:'/combined/higher/physics/energy/energy-changes-in-systems.html',c:'#4ECDC4'},
@@ -586,7 +595,7 @@
     {t:'Distance, Speed and Velocity',s:'Physics',url:'/triple/foundation/physics/forces/distance-speed-velocity.html',c:'#4ECDC4'},
     {t:'Distance–Time Graphs',s:'Physics',url:'/triple/foundation/physics/forces/distance-time-graphs.html',c:'#4ECDC4'},
     {t:'Acceleration',s:'Physics',url:'/triple/foundation/physics/forces/acceleration.html',c:'#4ECDC4'},
-    {t:'Newton's Laws of Motion',s:'Physics',url:'/triple/foundation/physics/forces/newtons-laws.html',c:'#4ECDC4'},
+    {t:'Newton\'s Laws of Motion',s:'Physics',url:'/triple/foundation/physics/forces/newtons-laws.html',c:'#4ECDC4'},
     {t:'Stopping Distance and Braking',s:'Physics',url:'/triple/foundation/physics/forces/stopping-distance-braking.html',c:'#4ECDC4'},
     {t:'Transverse and Longitudinal Waves',s:'Physics',url:'/triple/foundation/physics/waves/transverse-longitudinal-waves.html',c:'#4ECDC4'},
     {t:'Properties of Waves',s:'Physics',url:'/triple/foundation/physics/waves/properties-of-waves.html',c:'#4ECDC4'},
@@ -654,7 +663,7 @@
     {t:'Distance, Speed and Velocity',s:'Physics',url:'/triple/higher/physics/forces/distance-speed-velocity.html',c:'#4ECDC4'},
     {t:'Distance–Time Graphs',s:'Physics',url:'/triple/higher/physics/forces/distance-time-graphs.html',c:'#4ECDC4'},
     {t:'Acceleration',s:'Physics',url:'/triple/higher/physics/forces/acceleration.html',c:'#4ECDC4'},
-    {t:'Newton's Laws of Motion',s:'Physics',url:'/triple/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
+    {t:'Newton\'s Laws of Motion',s:'Physics',url:'/triple/higher/physics/forces/newtons-laws.html',c:'#4ECDC4'},
     {t:'Stopping Distance and Braking',s:'Physics',url:'/triple/higher/physics/forces/stopping-distance-braking.html',c:'#4ECDC4'},
     {t:'Motion in a Circle',s:'Physics',url:'/triple/higher/physics/forces/motion-in-a-circle.html',c:'#4ECDC4'},
     {t:'Momentum',s:'Physics',url:'/triple/higher/physics/forces/momentum.html',c:'#4ECDC4'},
@@ -669,11 +678,11 @@
     {t:'Wave Front Diagrams and Refraction',s:'Physics',url:'/triple/higher/physics/waves/wave-front-refraction.html',c:'#4ECDC4'},
     {t:'Lenses',s:'Physics',url:'/triple/higher/physics/waves/lenses.html',c:'#4ECDC4'},
     {t:'Infrared Emission, Absorption and Black Bodies',s:'Physics',url:'/triple/higher/physics/waves/infrared-black-bodies.html',c:'#4ECDC4'},
-    {t:'Radiation Balance and Earth's Temperature',s:'Physics',url:'/triple/higher/physics/waves/radiation-balance-temperature.html',c:'#4ECDC4'},
+    {t:'Radiation Balance and Earth\'s Temperature',s:'Physics',url:'/triple/higher/physics/waves/radiation-balance-temperature.html',c:'#4ECDC4'},
     {t:'Poles of a Magnet and Permanent Magnetism',s:'Physics',url:'/triple/higher/physics/magnetism/poles-of-a-magnet.html',c:'#4ECDC4'},
     {t:'Magnetic Fields',s:'Physics',url:'/triple/higher/physics/magnetism/magnetic-fields.html',c:'#4ECDC4'},
     {t:'Electromagnetism',s:'Physics',url:'/triple/higher/physics/magnetism/electromagnetism.html',c:'#4ECDC4'},
-    {t:'Fleming's Left-Hand Rule and the Motor Effect',s:'Physics',url:'/triple/higher/physics/magnetism/flemings-left-hand-rule.html',c:'#4ECDC4'},
+    {t:'Fleming\'s Left-Hand Rule and the Motor Effect',s:'Physics',url:'/triple/higher/physics/magnetism/flemings-left-hand-rule.html',c:'#4ECDC4'},
     {t:'Electric Motors',s:'Physics',url:'/triple/higher/physics/magnetism/electric-motors.html',c:'#4ECDC4'},
     {t:'Loudspeakers and Headphones',s:'Physics',url:'/triple/higher/physics/magnetism/loudspeakers-headphones.html',c:'#4ECDC4'},
     {t:'Induced Potential and the Generator Effect',s:'Physics',url:'/triple/higher/physics/magnetism/induced-potential.html',c:'#4ECDC4'},
@@ -685,9 +694,9 @@
     {t:'The Life Cycle of a Star',s:'Physics',url:'/triple/higher/physics/space/stellar-evolution.html',c:'#4ECDC4'},
     {t:'Red-shift and the Big Bang',s:'Physics',url:'/triple/higher/physics/space/red-shift-big-bang.html',c:'#4ECDC4'},
     {t:'Dark Matter and Dark Energy',s:'Physics',url:'/triple/higher/physics/space/dark-matter-dark-energy.html',c:'#4ECDC4'},
-    {t:'Cell Structure',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-structure.html',c:'#6BCB77'},
+    {t:'Animal and Plant Cells',s:'Biology',url:'/combined/higher/biology/cell-biology/animal-plant-cells.html',c:'#6BCB77'},
     {t:'Transport in Cells (Diffusion, Osmosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/transport-in-cells.html',c:'#6BCB77'},
-    {t:'Cell Division (Mitosis)',s:'Biology',url:'/combined/higher/biology/cell-biology/cell-division.html',c:'#6BCB77'},
+    {t:'Chromosomes, the Cell Cycle and Mitosis',s:'Biology',url:'/combined/higher/biology/cell-biology/chromosomes-mitosis.html',c:'#6BCB77'},
     {t:'Principles of Organisation',s:'Biology',url:'/combined/higher/biology/organisation/principles-of-organisation.html',c:'#6BCB77'},
     {t:'The Digestive System',s:'Biology',url:'/combined/higher/biology/organisation/digestive-system.html',c:'#6BCB77'},
     {t:'Enzymes',s:'Biology',url:'/combined/higher/biology/organisation/enzymes.html',c:'#6BCB77'},

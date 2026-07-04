@@ -3,10 +3,12 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Sign In | MrBadmusAI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
       --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
@@ -202,6 +204,16 @@
     <p>GCSE Science Revision</p>
   </div>
 
+  <!-- Already-signed-in interstitial — shown on a device that already has a
+       live session, so a second person isn't silently routed into someone
+       else's account. -->
+  <div id="already-signed-in" style="display:none;text-align:center;padding:6px 0 2px;">
+    <p style="color:var(--text);font-weight:700;font-size:1.05rem;margin-bottom:4px;">You're already signed in</p>
+    <p id="already-email" style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;word-break:break-all;"></p>
+    <button class="btn btn-primary" id="continue-btn" onclick="continueSignedIn()">Continue<span id="continue-count"></span></button>
+    <button class="btn" id="switch-account-btn" onclick="signOutFromAuth()" style="background:#2a2a4a;color:var(--muted);">Sign out / use another account</button>
+  </div>
+
   <div class="tabs">
     <div class="tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</div>
     <div class="tab"        id="tab-signup" onclick="switchTab('signup')">Create Account</div>
@@ -260,6 +272,7 @@
   </div>
 
   <!-- SCHOOL SSO — provider-agnostic (Microsoft Entra ID + Google), one handler -->
+  <div id="sso-row">
   <div class="divider">or</div>
   <div class="sso-heading">Have a school account?</div>
   <button class="btn-sso" id="btn-sso-azure" onclick="signInWithSSO('azure')">
@@ -271,6 +284,7 @@
     Sign in with Google
   </button>
   <p class="sso-sub">Students &amp; staff: use the same school login you use for email. Your teacher sets up your account &mdash; if sign-in is blocked, ask them to add you first.</p>
+  </div>
 
   <a href="/index.html" class="back-link">← Back to site</a>
 </div>
@@ -416,10 +430,10 @@
       return;
     }
 
-    // Update profile with first name
-    if (data.user) {
-      await sb.from('profiles').upsert({ id: data.user.id, first_name: firstName });
-    }
+    // No profile write here: in the email-confirm flow there's no session yet,
+    // so this upsert was silently blocked by RLS anyway. first_name travels in
+    // the signup metadata (options.data above) — the handle_new_user trigger
+    // seeds the profile row, and profile-setup collects/edits it later.
 
     // Email confirmation required: replace the form with a clear success
     // state + resend button (switchTab restores the form if they navigate).
@@ -490,13 +504,29 @@
     const returnUrl = new URLSearchParams(window.location.search).get('return') || '/index.html';
     sb.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
-      sb.from('profiles').select('first_name, science_pathway, role').eq('id', session.user.id).single()
-        .then(({ data: p }) => {
+      sb.from('profiles').select('first_name, science_pathway, tier, role, key_stage').eq('id', session.user.id).single()
+        .then(({ data: p, error }) => {
+          // A real query failure (network blip, RLS error) is NOT the same as
+          // "no profile row". Don't trap the user in the student wizard on a
+          // transient error — send them to where they were headed. PGRST116 is
+          // Supabase's "no rows" code, which we treat as a genuinely new user.
+          if (error && error.code !== 'PGRST116') {
+            window.location.href = returnUrl;
+            return;
+          }
           const isStaff = p && ['teacher', 'hod', 'admin'].includes(p.role);
           if (isStaff) {
             // Honour ?return= if explicitly set, otherwise default to teacher home.
             window.location.href = returnUrl !== '/index.html' ? returnUrl : '/teacher/classes.html';
-          } else if (!p?.science_pathway) {
+          } else if (p && p.key_stage === 'KS3') {
+            // KS3 students legitimately have no science_pathway/tier (DB
+            // constraint blocks them from KS4 fields). Never send them to the
+            // GCSE onboarding wizard — that's the MRB-101 sign-in loop.
+            window.location.href = returnUrl;
+          } else if (!p || !p.science_pathway || !p.tier) {
+            // GCSE student with an incomplete profile (missing pathway OR tier)
+            // finishes onboarding first. Checking both fields closes the gap
+            // where a tier-less profile slipped through to a backend 400.
             window.location.href = '/profile-setup.html';
           } else {
             window.location.href = returnUrl;
@@ -505,8 +535,44 @@
     });
   }
 
-  // On (re)load: if there's a session, route the user. If we've just
-  // returned from a school SSO round-trip, log the sso_login first (audit).
+  // Continue / sign-out handlers for the already-signed-in interstitial.
+  let continueTimer = null;
+  function continueSignedIn() {
+    if (continueTimer) { clearInterval(continueTimer); continueTimer = null; }
+    redirectAfterAuth();
+  }
+  function signOutFromAuth() {
+    if (continueTimer) { clearInterval(continueTimer); continueTimer = null; }
+    sb.auth.signOut().then(function () { window.location.reload(); })
+      .catch(function () { window.location.reload(); });
+  }
+
+  function showAlreadySignedIn(session) {
+    const card = document.getElementById('already-signed-in');
+    const emailEl = document.getElementById('already-email');
+    if (!card || !emailEl) { redirectAfterAuth(); return; }
+    emailEl.textContent = (session.user && session.user.email) || '';
+    // Hide the sign-in/up UI while the interstitial is showing.
+    document.querySelector('.tabs').style.display = 'none';
+    document.getElementById('form-signin').style.display = 'none';
+    document.getElementById('form-signup').style.display = 'none';
+    const ssoRow = document.getElementById('sso-row');
+    if (ssoRow) ssoRow.style.display = 'none';
+    card.style.display = 'block';
+    // Auto-continue after 3s with a visible countdown; any button cancels it.
+    let remaining = 3;
+    const countEl = document.getElementById('continue-count');
+    if (countEl) countEl.textContent = ' (' + remaining + ')';
+    continueTimer = setInterval(function () {
+      remaining -= 1;
+      if (remaining <= 0) { continueSignedIn(); return; }
+      if (countEl) countEl.textContent = ' (' + remaining + ')';
+    }, 1000);
+  }
+
+  // On (re)load: if there's a session, show the "already signed in" interstitial
+  // (shared-device safety) rather than auto-routing. If we've just returned from
+  // a school SSO round-trip, that's an intentional sign-in — route immediately.
   sb.auth.getSession().then(({ data: { session } }) => {
     if (!session) return;
     const ssoProvider = sessionStorage.getItem('mrb_sso_pending');
@@ -516,7 +582,7 @@
         .then(() => redirectAfterAuth())
         .catch(() => redirectAfterAuth());
     } else {
-      redirectAfterAuth();
+      showAlreadySignedIn(session);
     }
   });
 

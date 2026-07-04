@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>My Profile | MrBadmusAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
       --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
@@ -109,7 +111,7 @@
       font-weight: 800;
     }
     .tag-combined { background: rgba(78,205,196,0.15); color: var(--physics); }
-    .tag-triple { background: rgba(255,107,107,0.15); color: var(--chemistry); }
+    .tag-triple { background: rgba(255,210,230,0.15); color: var(--chemistry); }
     .tag-foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
     .tag-higher { background: rgba(255,217,61,0.15); color: var(--yellow); }
 
@@ -122,7 +124,7 @@
       padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
     }
     .chip-weak {
-      background: rgba(255,107,107,0.15); color: var(--chemistry);
+      background: rgba(255,107,107,0.15); color: var(--danger);
       padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
     }
 
@@ -151,7 +153,7 @@
     .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-secondary { background: #2a2a4a; color: var(--muted); }
     .btn-secondary:hover { background: #3a3a5a; color: var(--text); }
-    .btn-danger { background: rgba(255,107,107,0.15); color: var(--chemistry); }
+    .btn-danger { background: rgba(255,107,107,0.15); color: var(--danger); }
     .btn-danger:hover { background: rgba(255,107,107,0.25); }
 
     /* ── WIZARD (for new users / editing) ─────────────────── */
@@ -339,6 +341,18 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
+     KS3 — "you're all set" (Years 7–9 don't pick a GCSE pathway)
+     ══════════════════════════════════════════════════════════ -->
+<div class="dashboard" id="ks3-allset">
+  <div class="dash-section" style="text-align:center;">
+    <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;margin-bottom:10px;">You're all set</h2>
+    <p style="color:var(--muted);line-height:1.6;margin-bottom:22px;">You don't need to set up a science pathway for Years 7–9. You're ready to go.</p>
+    <a href="/index.html" class="btn btn-primary" style="text-decoration:none;">Head to the homepage</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
      WIZARD — shown for new users or when editing
      ══════════════════════════════════════════════════════════ -->
 <div class="wizard" id="wizard">
@@ -354,7 +368,7 @@
       <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
       <h2 style="font-size:2rem;background:linear-gradient(135deg,#4ECDC4,#6BCB77);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">You're in!</h2>
       <p style="font-size:1.1rem;color:var(--text);font-weight:700;margin:8px 0 4px;">Welcome to MrBadmusAI</p>
-      <p style="color:var(--muted);line-height:1.6;">I'm Mr Badmus — your personal GCSE Science tutor. Let me get to know you so I can help you properly. Takes 2 minutes.</p>
+      <p style="color:var(--muted);line-height:1.6;">I'm Mr Badmus, your personal GCSE Science tutor. Let me get to know you so I can help you properly. Takes 2 minutes.</p>
     </div>
 
     <div class="avatar-section">
@@ -379,6 +393,9 @@
       <label>Year group</label>
       <select id="year-group">
         <option value="">Select year group</option>
+        <option value="Year 7">Year 7</option>
+        <option value="Year 8">Year 8</option>
+        <option value="Year 9">Year 9</option>
         <option value="Year 10">Year 10</option>
         <option value="Year 11">Year 11</option>
         <option value="Year 12">Year 12 (A-Level)</option>
@@ -389,7 +406,7 @@
     <div class="nav-btns">
       <button class="btn btn-primary" onclick="nextStep(1)">Next →</button>
     </div>
-    <div class="skip"><a onclick="skipAll()">Skip for now — I'll set this up later</a></div>
+    <div class="skip"><a onclick="skipAll()">Skip for now. I'll set this up later</a></div>
   </div>
 
   <div class="step" id="step-2">
@@ -454,7 +471,7 @@
   <div class="step" id="step-3">
     <div class="step-header">
       <h2>🎯 Your Target Grade</h2>
-      <p>Mr Badmus will pitch his explanations to help you hit this grade. Be ambitious — he'll push you!</p>
+      <p>Mr Badmus will pitch his explanations to help you hit this grade. Be ambitious. He'll push you!</p>
     </div>
 
     <div class="form-group">
@@ -570,6 +587,24 @@
 
     var profile = profileResult.data;
 
+    // Staff never see the student onboarding wizard — this is a student-shaped
+    // form and staff have no science_pathway by design. Send them to their own
+    // profile page instead. (Keeps the spinner up during the redirect.)
+    if (profile && ['teacher', 'hod', 'admin'].indexOf(profile.role) !== -1) {
+      window.location.replace('/teacher-profile.html');
+      return;
+    }
+
+    // KS3 students (Years 7–9) legitimately have no pathway/tier and must not
+    // be pushed through the GCSE wizard — that's the MRB-101 sign-in loop.
+    // Show them a simple "you're all set" panel instead. Edit mode is a no-op
+    // for them since there's nothing to edit.
+    if (profile && profile.key_stage === 'KS3') {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('ks3-allset').style.display = 'block';
+      return;
+    }
+
     // Hide loading
     document.getElementById('loading').style.display = 'none';
 
@@ -610,8 +645,11 @@
     var tierEl = document.getElementById('dash-tier');
     if (p.tier === 'foundation') {
       tierEl.innerHTML = '<span class="dash-tag tag-foundation">🌱 Foundation</span>';
-    } else {
+    } else if (p.tier === 'higher') {
       tierEl.innerHTML = '<span class="dash-tag tag-higher">⭐ Higher</span>';
+    } else {
+      // Don't present a missing tier as "Higher" — say so honestly.
+      tierEl.innerHTML = '<span class="dash-tag" style="color:var(--muted);">Not set</span>';
     }
 
     document.getElementById('dash-board').textContent = p.exam_board || 'AQA';
@@ -831,6 +869,22 @@
   }
 
   async function finish() {
+    // In edit mode the Save button calls finish() directly, skipping the step-1
+    // and step-2 gates in nextStep(). Re-check them here so an empty name or a
+    // missing pathway/tier can't be saved.
+    if (!document.getElementById('first-name').value.trim()) {
+      alert('Please enter your name so Mr Badmus knows who you are!');
+      return;
+    }
+    if (!profileData.pathway) {
+      alert('Please pick your science pathway (Combined or Triple) before continuing.');
+      return;
+    }
+    if (!profileData.tier) {
+      alert('Please pick your tier (Foundation or Higher) before continuing.');
+      return;
+    }
+
     var btn = document.getElementById('btn-finish');
     btn.disabled = true;
     btn.textContent = 'Saving...';

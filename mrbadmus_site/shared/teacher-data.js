@@ -264,7 +264,9 @@ window.MrBadmusTeacherData = (function () {
       };
     } catch (e) {
       console.error('[teacher-data] metrics failed for class', classId, e);
-      return zero;
+      // Flag the failure so callers can render "—" / "couldn't load stats"
+      // instead of presenting these zeros as if the class were genuinely empty.
+      return Object.assign({}, zero, { metrics_failed: true });
     }
   }
 

@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Weekly Challenge | MrBadmusAI</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
       --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
@@ -46,7 +48,7 @@
     .subject-card:hover { transform: translateY(-3px); }
     .subject-card.selected { transform: translateY(-3px); }
     .subject-card.bio.selected { border-color: var(--biology); box-shadow: 0 8px 30px rgba(107,203,119,0.2); }
-    .subject-card.chem.selected { border-color: var(--chemistry); box-shadow: 0 8px 30px rgba(255,107,107,0.2); }
+    .subject-card.chem.selected { border-color: var(--chemistry); box-shadow: 0 8px 30px rgba(255,210,230,0.2); }
     .subject-card.phys.selected { border-color: var(--physics); box-shadow: 0 8px 30px rgba(78,205,196,0.2); }
     .subject-card .sc-emoji { font-size: 2.5rem; margin-bottom: 10px; display: block; }
     .subject-card .sc-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; }
@@ -103,7 +105,7 @@
     }
     .q-difficulty.easy { background: rgba(107,203,119,0.15); color: var(--biology); }
     .q-difficulty.medium { background: rgba(255,217,61,0.15); color: var(--yellow); }
-    .q-difficulty.hard { background: rgba(255,107,107,0.15); color: var(--chemistry); }
+    .q-difficulty.hard { background: rgba(255,107,107,0.15); color: var(--danger); }
     .q-text { font-size: 1.1rem; font-weight: 700; line-height: 1.6; margin-bottom: 20px; }
     .q-options { display: flex; flex-direction: column; gap: 10px; }
     .q-option {
@@ -143,7 +145,7 @@
     .result-item:last-child { border-bottom: none; }
     .result-q { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
     .result-correct { color: var(--biology); font-weight: 800; font-size: 0.85rem; }
-    .result-wrong { color: var(--chemistry); font-weight: 800; font-size: 0.85rem; }
+    .result-wrong { color: var(--danger); font-weight: 800; font-size: 0.85rem; }
     .result-explanation { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
     .results-actions { display: flex; gap: 12px; margin-top: 24px; }
     .results-actions a {
@@ -191,6 +193,14 @@
     <a href="/auth.html?tab=signup" style="padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Sora',sans-serif;font-weight:800;text-decoration:none;display:inline-block;">Create Account</a>
   </div>
 
+  <!-- KS3: the weekly challenge is a GCSE (KS4) feature -->
+  <div id="ks3-message" style="display:none;text-align:center;padding-top:60px;">
+    <div style="font-size:3rem;">🌱</div>
+    <h2 style="font-family:'Sora',sans-serif;font-size:1.5rem;margin:16px 0 8px;">Weekly Challenges are coming soon for KS3</h2>
+    <p style="color:var(--muted);margin-bottom:20px;">For now, explore topics and try the topic quizzes from the homepage.</p>
+    <a href="/index.html" style="padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Sora',sans-serif;font-weight:800;text-decoration:none;display:inline-block;">Explore topics</a>
+  </div>
+
   <!-- STEP 1: Pick subject -->
   <div class="picker" id="picker" style="display:none;">
     <h1>⚡ Weekly Challenge</h1>
@@ -221,7 +231,7 @@
 
     <div class="intro-rules">
       <h3>⚡ Rules</h3>
-      <p><strong>15 questions</strong> — matched to your course pathway and tier</p>
+      <p><strong>15 questions</strong>, matched to your course pathway and tier</p>
       <p><strong>One attempt per subject</strong> — do all 3 to top the overall leaderboard</p>
       <p><strong>Timed</strong> — faster = higher rank on ties</p>
       <p><strong>Top 10</strong> make the leaderboard with name, school and picture</p>
@@ -243,6 +253,9 @@
       <span class="q-difficulty" id="q-difficulty">Easy</span>
       <div class="q-text" id="q-text"></div>
       <div class="q-options" id="q-options"></div>
+    </div>
+    <div id="submit-error" style="display:none;text-align:center;color:var(--danger);font-weight:700;margin-top:14px;">
+      Something went wrong. Try submitting again.
     </div>
     <div class="q-nav">
       <button class="btn btn-secondary" id="btn-prev" onclick="prevQuestion()" disabled>← Back</button>
@@ -345,12 +358,22 @@
     // Fetch profile to learn student's pathway + tier for badge and status key lookup
     try {
       var profileRes = await sb.from('profiles')
-        .select('science_pathway, tier')
+        .select('science_pathway, tier, key_stage, role')
         .eq('id', session.user.id)
         .single();
       if (profileRes.data) {
         studentPathway = profileRes.data.science_pathway;
         studentTier = profileRes.data.tier;
+        // KS3 students can't take the GCSE weekly challenge — show a KS3 message
+        // instead of the picker (which would only lead to a backend 400 and a
+        // bounce into the GCSE profile wizard). Keyed on key_stage so incomplete
+        // GCSE students still get routed to finish their profile, not this.
+        var isStaff = ['teacher', 'hod', 'admin'].indexOf(profileRes.data.role) !== -1;
+        if (!isStaff && profileRes.data.key_stage === 'KS3') {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('ks3-message').style.display = 'block';
+          return;
+        }
         if (studentPathway && studentTier) {
           var pathLabel = studentPathway.charAt(0).toUpperCase() + studentPathway.slice(1);
           var tierLabel = studentTier.charAt(0).toUpperCase() + studentTier.slice(1);
@@ -393,7 +416,7 @@
 
     document.getElementById('picker').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
-    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject + ' challenge...';
+    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1) + ' challenge...';
 
     try {
       var sessResult = await sb.auth.getSession();
@@ -512,9 +535,18 @@
     else { submitQuiz(); }
   }
 
+  // Re-show the quiz (answers are still in memory and in the DOM) so a failed
+  // submit doesn't strand the student on a blank page with their work lost.
+  function restoreQuizForRetry() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('quiz').style.display = 'block';
+    document.getElementById('submit-error').style.display = 'block';
+  }
+
   async function submitQuiz() {
     clearInterval(timerInterval);
     var timeTaken = Math.floor((Date.now() - startTime) / 1000);
+    document.getElementById('submit-error').style.display = 'none';
     document.getElementById('quiz').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
     document.querySelector('#loading p').textContent = 'Submitting your answers...';
@@ -527,13 +559,12 @@
         body: JSON.stringify({ challenge_id: challenge.id, answers: answers, time_taken: timeTaken }),
       });
       var data = await res.json();
+      if (!res.ok) { restoreQuizForRetry(); return; }
       document.getElementById('loading').style.display = 'none';
-      if (!res.ok) { alert(data.error || 'Something went wrong.'); return; }
       showResults(data, timeTaken);
     } catch (err) {
       console.error(err);
-      document.getElementById('loading').style.display = 'none';
-      alert('Connection error.');
+      restoreQuizForRetry();
     }
   }
 
@@ -541,7 +572,7 @@
     document.getElementById('results').style.display = 'block';
     var pct = data.percentage;
     document.getElementById('results-score').textContent = data.score + ' / ' + data.max_score;
-    document.getElementById('results-score').style.color = pct >= 80 ? 'var(--biology)' : pct >= 50 ? 'var(--yellow)' : 'var(--chemistry)';
+    document.getElementById('results-score').style.color = pct >= 80 ? 'var(--biology)' : pct >= 50 ? 'var(--yellow)' : 'var(--danger)';
     document.getElementById('results-emoji').textContent = pct >= 90 ? '🏆' : pct >= 70 ? '🔥' : pct >= 50 ? '💪' : '📚';
     var msgs = { 90: 'Outstanding!', 70: 'Great work!', 50: 'Good effort — keep revising!', 0: 'Tough one — now you know what to revise!' };
     var msg = pct >= 90 ? msgs[90] : pct >= 70 ? msgs[70] : pct >= 50 ? msgs[50] : msgs[0];

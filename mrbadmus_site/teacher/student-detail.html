@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Student detail — Mr Badmus AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker:    #0F0F1A;
       --dark:      #1A1A2E;
@@ -73,7 +75,7 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .signout-btn:hover { border-color: var(--chemistry); color: var(--chemistry); }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
     /* ── PAGE LAYOUT ── */
     .container { max-width: 1100px; margin: 0 auto; }
@@ -277,7 +279,7 @@
     }
     .ontime-pill.late {
       background: rgba(255, 107, 107, 0.18);
-      color: var(--chemistry);
+      color: var(--danger);
     }
     .cell-muted { color: var(--muted); }
 
@@ -362,8 +364,8 @@
   </div>
 
   <div id="state-not-authorised" class="state-block">
-    <h2>Not your student — yet</h2>
-    <p>Your school admin will add you to this class soon. Check back later or head back to your classes list.</p>
+    <h2>You don't have access to this student</h2>
+    <p>If you think you should have access, ask your school admin. Otherwise head back to your classes list.</p>
     <a class="state-btn back-to-classes" href="/teacher/classes.html">Back to my classes</a>
   </div>
 

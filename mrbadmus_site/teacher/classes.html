@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>My classes — Mr Badmus AI</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
+    html { background: #0F0F1A; }
     :root {
       --darker:    #0F0F1A;
       --dark:      #1A1A2E;
@@ -73,7 +75,7 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .signout-btn:hover { border-color: var(--chemistry); color: var(--chemistry); }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
     /* ── PAGE HEADER ── */
     .container { max-width: 1100px; margin: 0 auto; }
@@ -305,7 +307,7 @@
 
   <div id="state-empty" class="state-block">
     <h2>No classes yet</h2>
-    <p>Your school admin will add you to classes soon. In the meantime, want to explore Mr Badmus AI?</p>
+    <p>When your school admin adds you to classes, they'll appear here. In the meantime, want to explore Mr Badmus AI?</p>
     <a class="state-btn" href="/index.html">Back to homepage</a>
   </div>
 
@@ -399,6 +401,7 @@
   function buildMetaLine(klass) {
     const parts = [];
     if (klass.year_group != null) parts.push('Year ' + klass.year_group);
+    if (klass.key_stage)          parts.push(klass.key_stage);
     if (klass.tier)               parts.push(capitalise(klass.tier));
     if (klass.science_pathway)    parts.push(capitalise(klass.science_pathway));
     return parts.join(' · ');
@@ -411,6 +414,10 @@
   }
 
   function buildCompletionBlock(klass) {
+    // Stats query failed — don't imply the class is empty. Say so honestly.
+    if (klass.metrics_failed) {
+      return '<div class="card-completion-empty">Couldn\'t load stats</div>';
+    }
     if (klass.assignment_count === 0) {
       return '<div class="card-completion-empty">No assignments yet</div>';
     }
@@ -465,7 +472,7 @@
         pillHtml +
       '</div>' +
       metaHtml +
-      '<div class="card-students">' + escapeHtml(buildStudentLine(klass.student_count)) + '</div>' +
+      '<div class="card-students">' + escapeHtml(klass.metrics_failed ? '—' : buildStudentLine(klass.student_count)) + '</div>' +
       buildCompletionBlock(klass) +
       '<div class="card-activity">' + escapeHtml(activity) + '</div>';
 
