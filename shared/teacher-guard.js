@@ -131,7 +131,10 @@ window.MrBadmusTeacherGuard = (function () {
         console.error('[teacher-guard] signOut error', e);
       }
     }
-    window.location.replace('/auth.html');
+    // Preserve the test environment across sign-out so a tester doesn't get
+    // silently dropped onto the production auth page.
+    const isTest = window.MrBadmusConfig && window.MrBadmusConfig.environment === 'test';
+    window.location.replace('/auth.html' + (isTest ? '?env=test' : ''));
   }
 
   return { requireTeacherRole, signOut, getClient, ALLOWED_ROLES };

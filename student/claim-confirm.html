@@ -242,6 +242,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js"></script>
 <script>
+  // If config.js or the Supabase SDK failed to load (CDN blocked/outage), show
+  // the error state instead of throwing an uncaught error and hanging forever
+  // on "Confirming…".
+  if (!window.MrBadmusConfig || !window.supabase) {
+    var _loadingEl = document.getElementById('state-loading');
+    var _errorEl = document.getElementById('state-error');
+    if (_loadingEl) _loadingEl.classList.remove('show');
+    if (_errorEl) _errorEl.classList.add('show');
+    throw new Error('claim-confirm: config or Supabase SDK failed to load');
+  }
+
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.MrBadmusConfig;
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 

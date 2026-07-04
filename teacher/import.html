@@ -1733,9 +1733,10 @@
     $('confirm-import').disabled = true;
     renderClassesReview();
 
-    if (!(await sessionMatchesGuard())) {
+    const sstate = await sessionState();
+    if (sstate !== 'ok') {
       $('preview-loading').style.display = 'none';
-      showSessionSwapError();
+      showSessionError(sstate);
       return;
     }
 
@@ -1798,21 +1799,28 @@
   // account in another tab silently swaps who our requests act as. Before
   // firing the dry-run or the real import, confirm the session still belongs
   // to the user the guard admitted at page load.
-  async function sessionMatchesGuard() {
+  // Returns 'ok' (still the guarded user), 'no_session' (session gone/expired),
+  // or 'mismatch' (a different account signed in, e.g. another tab).
+  async function sessionState() {
     try {
       const { data } = await sb.auth.getSession();
       const uid = data && data.session && data.session.user && data.session.user.id;
-      return !!uid && uid === currentUserId;
+      if (!uid) return 'no_session';
+      return uid === currentUserId ? 'ok' : 'mismatch';
     } catch (e) {
       console.error('[import.html] session re-check failed', e);
-      return false;
+      return 'no_session';
     }
   }
-  function showSessionSwapError() {
+  function showSessionError(state) {
     const el = $('dryrun-error');
-    el.innerHTML = 'Your signed-in account changed — please ' +
-      '<a href="/auth.html" style="color:inherit;font-weight:700;">sign back in' +
-      '</a> as your staff account.';
+    const link = '<a href="/auth.html" style="color:inherit;font-weight:700;">';
+    if (state === 'no_session') {
+      el.innerHTML = 'Your session has expired. Please ' + link + 'sign in again</a>.';
+    } else {
+      el.innerHTML = 'Your signed-in account changed. Please ' + link +
+        'sign back in</a> as your staff account.';
+    }
     el.classList.add('show');
   }
 
@@ -1855,8 +1863,9 @@
     btn.textContent = 'Importing…';
     $('dryrun-error').classList.remove('show');
 
-    if (!(await sessionMatchesGuard())) {
-      showSessionSwapError();
+    const sstate = await sessionState();
+    if (sstate !== 'ok') {
+      showSessionError(sstate);
       btn.disabled = false;
       btn.textContent = 'Confirm import';
       confirming = false;

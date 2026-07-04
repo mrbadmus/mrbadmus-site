@@ -48,7 +48,7 @@
     .tab:hover { border-color: #4a4a6a; }
     .tab.active { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
     .tab.active.bio { background: rgba(107,203,119,0.15); border-color: var(--biology); color: var(--biology); }
-    .tab.active.chem { background: rgba(255,107,107,0.15); border-color: var(--chemistry); color: var(--chemistry); }
+    .tab.active.chem { background: rgba(255,210,230,0.15); border-color: var(--chemistry); color: var(--chemistry); }
     .tab.active.phys { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
     .tab.active.overall { background: rgba(255,217,61,0.15); border-color: var(--yellow); color: var(--yellow); }
 
@@ -74,7 +74,7 @@
     }
     .pathway-btn:hover, .tier-btn:hover { border-color: #4a4a6a; }
     .pathway-btn.active.combined { border-color: var(--physics); background: rgba(78,205,196,0.12); color: var(--physics); }
-    .pathway-btn.active.triple   { border-color: var(--chemistry); background: rgba(255,107,107,0.12); color: var(--chemistry); }
+    .pathway-btn.active.triple   { border-color: var(--chemistry); background: rgba(255,210,230,0.12); color: var(--chemistry); }
     .tier-btn.active.foundation  { border-color: var(--biology); background: rgba(107,203,119,0.12); color: var(--biology); }
     .tier-btn.active.higher      { border-color: var(--yellow); background: rgba(255,217,61,0.12); color: var(--yellow); }
 
@@ -405,7 +405,7 @@
       document.getElementById('loading').style.display = 'none';
       document.getElementById('content').style.display = 'block';
     } catch (err) {
-      document.getElementById('loading').innerHTML = '<p style="color:var(--chemistry);">Could not load leaderboard. Try refreshing.</p>';
+      document.getElementById('loading').innerHTML = '<p style="color:var(--danger);">Could not load leaderboard. Try refreshing.</p>';
     }
   }
   init();

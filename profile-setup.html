@@ -111,7 +111,7 @@
       font-weight: 800;
     }
     .tag-combined { background: rgba(78,205,196,0.15); color: var(--physics); }
-    .tag-triple { background: rgba(255,107,107,0.15); color: var(--chemistry); }
+    .tag-triple { background: rgba(255,210,230,0.15); color: var(--chemistry); }
     .tag-foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
     .tag-higher { background: rgba(255,217,61,0.15); color: var(--yellow); }
 
@@ -124,7 +124,7 @@
       padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
     }
     .chip-weak {
-      background: rgba(255,107,107,0.15); color: var(--chemistry);
+      background: rgba(255,107,107,0.15); color: var(--danger);
       padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
     }
 
@@ -153,7 +153,7 @@
     .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-secondary { background: #2a2a4a; color: var(--muted); }
     .btn-secondary:hover { background: #3a3a5a; color: var(--text); }
-    .btn-danger { background: rgba(255,107,107,0.15); color: var(--chemistry); }
+    .btn-danger { background: rgba(255,107,107,0.15); color: var(--danger); }
     .btn-danger:hover { background: rgba(255,107,107,0.25); }
 
     /* ── WIZARD (for new users / editing) ─────────────────── */
@@ -368,7 +368,7 @@
       <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
       <h2 style="font-size:2rem;background:linear-gradient(135deg,#4ECDC4,#6BCB77);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">You're in!</h2>
       <p style="font-size:1.1rem;color:var(--text);font-weight:700;margin:8px 0 4px;">Welcome to MrBadmusAI</p>
-      <p style="color:var(--muted);line-height:1.6;">I'm Mr Badmus — your personal GCSE Science tutor. Let me get to know you so I can help you properly. Takes 2 minutes.</p>
+      <p style="color:var(--muted);line-height:1.6;">I'm Mr Badmus, your personal GCSE Science tutor. Let me get to know you so I can help you properly. Takes 2 minutes.</p>
     </div>
 
     <div class="avatar-section">
@@ -406,7 +406,7 @@
     <div class="nav-btns">
       <button class="btn btn-primary" onclick="nextStep(1)">Next →</button>
     </div>
-    <div class="skip"><a onclick="skipAll()">Skip for now — I'll set this up later</a></div>
+    <div class="skip"><a onclick="skipAll()">Skip for now. I'll set this up later</a></div>
   </div>
 
   <div class="step" id="step-2">
@@ -471,7 +471,7 @@
   <div class="step" id="step-3">
     <div class="step-header">
       <h2>🎯 Your Target Grade</h2>
-      <p>Mr Badmus will pitch his explanations to help you hit this grade. Be ambitious — he'll push you!</p>
+      <p>Mr Badmus will pitch his explanations to help you hit this grade. Be ambitious. He'll push you!</p>
     </div>
 
     <div class="form-group">

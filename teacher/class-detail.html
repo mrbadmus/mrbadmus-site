@@ -76,7 +76,7 @@
       cursor: pointer;
       transition: all 0.15s;
     }
-    .signout-btn:hover { border-color: var(--chemistry); color: var(--chemistry); }
+    .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
     /* ── PAGE LAYOUT ── */
     .container { max-width: 1100px; margin: 0 auto; }
@@ -284,7 +284,7 @@
     }
     .thisweek-bar-fill.green { background: var(--biology); }
     .thisweek-bar-fill.amber { background: var(--warning); }
-    .thisweek-bar-fill.red   { background: var(--chemistry); }
+    .thisweek-bar-fill.red   { background: var(--danger); }
     .thisweek-pct {
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 700;
@@ -298,7 +298,7 @@
       font-weight: 600;
       color: var(--muted);
     }
-    .thisweek-microcopy.red   { color: var(--chemistry); }
+    .thisweek-microcopy.red   { color: var(--danger); }
     .thisweek-microcopy.amber { color: var(--warning); }
     .thisweek-noweek {
       color: var(--muted);
@@ -353,7 +353,7 @@
       background: rgba(255, 107, 107, 0.10);
     }
     .assignments-table tbody tr.row-low-mean .cell-mean {
-      color: var(--chemistry);
+      color: var(--danger);
       font-weight: 700;
     }
 
@@ -370,7 +370,7 @@
     }
 
     /* Due-date tone variants — chosen by formatDueDate's tone value. */
-    .due-tone-overdue { color: var(--chemistry); font-weight: 600; }
+    .due-tone-overdue { color: var(--danger); font-weight: 600; }
     .due-tone-today   { color: var(--warning);   font-weight: 600; }
     .due-tone-soon    { color: var(--text); }
     .due-tone-normal  { color: var(--muted); }
@@ -835,7 +835,7 @@
       color: var(--muted);
     }
     .compose-counter.warn  { color: var(--warning); }
-    .compose-counter.error { color: var(--chemistry); }
+    .compose-counter.error { color: var(--danger); }
 
     .compose-actions {
       display: flex;
@@ -846,7 +846,7 @@
     }
     .compose-error {
       flex: 1;
-      color: var(--chemistry);
+      color: var(--danger);
       font-size: 0.88rem;
       font-weight: 600;
     }
@@ -965,7 +965,7 @@
       transition: all 0.15s;
       padding: 0;
     }
-    .shoutout-delete-btn:hover { border-color: var(--chemistry); color: var(--chemistry); }
+    .shoutout-delete-btn:hover { border-color: var(--danger); color: var(--danger); }
     .shoutout-confirm {
       display: inline-flex;
       align-items: center;
@@ -988,7 +988,7 @@
       padding: 2px 6px;
       border-radius: 6px;
     }
-    .shoutout-confirm-yes { color: var(--chemistry); }
+    .shoutout-confirm-yes { color: var(--danger); }
     .shoutout-confirm-yes:hover { background: rgba(255,107,107,0.12); }
     .shoutout-confirm-cancel { color: var(--muted); }
     .shoutout-confirm-cancel:hover { color: var(--text); }
@@ -996,8 +996,8 @@
        and reverts to the X for retry. */
     .shoutout-delete-error {
       background: rgba(255, 107, 107, 0.12);
-      border: 1px solid var(--chemistry);
-      color: var(--chemistry);
+      border: 1px solid var(--danger);
+      color: var(--danger);
       font-family: 'Plus Jakarta Sans', sans-serif;
       font-weight: 700;
       font-size: 0.75rem;
@@ -1081,8 +1081,8 @@
   </div>
 
   <div id="state-not-authorised" class="state-block">
-    <h2>Not your class — yet</h2>
-    <p>Your school admin will add you to this class soon. Check back later or head back to your classes list.</p>
+    <h2>You don't have access to this class</h2>
+    <p>If you think you should have access, ask your school admin. Otherwise head back to your classes list.</p>
     <a class="state-btn back-to-classes" href="/teacher/classes.html">Back to my classes</a>
   </div>
 
@@ -1139,6 +1139,7 @@
   function buildMetaLine(klass) {
     const parts = [];
     if (klass.year_group != null) parts.push('Year ' + klass.year_group);
+    if (klass.key_stage)          parts.push(klass.key_stage);
     if (klass.tier)               parts.push(capitalise(klass.tier));
     if (klass.science_pathway)    parts.push(capitalise(klass.science_pathway));
     return parts.join(' · ');

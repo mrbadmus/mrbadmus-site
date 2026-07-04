@@ -430,10 +430,10 @@
       return;
     }
 
-    // Update profile with first name
-    if (data.user) {
-      await sb.from('profiles').upsert({ id: data.user.id, first_name: firstName });
-    }
+    // No profile write here: in the email-confirm flow there's no session yet,
+    // so this upsert was silently blocked by RLS anyway. first_name travels in
+    // the signup metadata (options.data above) — the handle_new_user trigger
+    // seeds the profile row, and profile-setup collects/edits it later.
 
     // Email confirmation required: replace the form with a clear success
     // state + resend button (switchTab restores the form if they navigate).

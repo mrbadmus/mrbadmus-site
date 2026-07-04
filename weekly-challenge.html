@@ -48,7 +48,7 @@
     .subject-card:hover { transform: translateY(-3px); }
     .subject-card.selected { transform: translateY(-3px); }
     .subject-card.bio.selected { border-color: var(--biology); box-shadow: 0 8px 30px rgba(107,203,119,0.2); }
-    .subject-card.chem.selected { border-color: var(--chemistry); box-shadow: 0 8px 30px rgba(255,107,107,0.2); }
+    .subject-card.chem.selected { border-color: var(--chemistry); box-shadow: 0 8px 30px rgba(255,210,230,0.2); }
     .subject-card.phys.selected { border-color: var(--physics); box-shadow: 0 8px 30px rgba(78,205,196,0.2); }
     .subject-card .sc-emoji { font-size: 2.5rem; margin-bottom: 10px; display: block; }
     .subject-card .sc-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem; }
@@ -105,7 +105,7 @@
     }
     .q-difficulty.easy { background: rgba(107,203,119,0.15); color: var(--biology); }
     .q-difficulty.medium { background: rgba(255,217,61,0.15); color: var(--yellow); }
-    .q-difficulty.hard { background: rgba(255,107,107,0.15); color: var(--chemistry); }
+    .q-difficulty.hard { background: rgba(255,107,107,0.15); color: var(--danger); }
     .q-text { font-size: 1.1rem; font-weight: 700; line-height: 1.6; margin-bottom: 20px; }
     .q-options { display: flex; flex-direction: column; gap: 10px; }
     .q-option {
@@ -145,7 +145,7 @@
     .result-item:last-child { border-bottom: none; }
     .result-q { font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
     .result-correct { color: var(--biology); font-weight: 800; font-size: 0.85rem; }
-    .result-wrong { color: var(--chemistry); font-weight: 800; font-size: 0.85rem; }
+    .result-wrong { color: var(--danger); font-weight: 800; font-size: 0.85rem; }
     .result-explanation { color: var(--muted); font-size: 0.82rem; margin-top: 4px; }
     .results-actions { display: flex; gap: 12px; margin-top: 24px; }
     .results-actions a {
@@ -231,7 +231,7 @@
 
     <div class="intro-rules">
       <h3>⚡ Rules</h3>
-      <p><strong>15 questions</strong> — matched to your course pathway and tier</p>
+      <p><strong>15 questions</strong>, matched to your course pathway and tier</p>
       <p><strong>One attempt per subject</strong> — do all 3 to top the overall leaderboard</p>
       <p><strong>Timed</strong> — faster = higher rank on ties</p>
       <p><strong>Top 10</strong> make the leaderboard with name, school and picture</p>
@@ -416,7 +416,7 @@
 
     document.getElementById('picker').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
-    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject + ' challenge...';
+    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1) + ' challenge...';
 
     try {
       var sessResult = await sb.auth.getSession();
@@ -572,7 +572,7 @@
     document.getElementById('results').style.display = 'block';
     var pct = data.percentage;
     document.getElementById('results-score').textContent = data.score + ' / ' + data.max_score;
-    document.getElementById('results-score').style.color = pct >= 80 ? 'var(--biology)' : pct >= 50 ? 'var(--yellow)' : 'var(--chemistry)';
+    document.getElementById('results-score').style.color = pct >= 80 ? 'var(--biology)' : pct >= 50 ? 'var(--yellow)' : 'var(--danger)';
     document.getElementById('results-emoji').textContent = pct >= 90 ? '🏆' : pct >= 70 ? '🔥' : pct >= 50 ? '💪' : '📚';
     var msgs = { 90: 'Outstanding!', 70: 'Great work!', 50: 'Good effort — keep revising!', 0: 'Tough one — now you know what to revise!' };
     var msg = pct >= 90 ? msgs[90] : pct >= 70 ? msgs[70] : pct >= 50 ? msgs[50] : msgs[0];

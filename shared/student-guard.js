@@ -141,7 +141,10 @@ window.MrBadmusStudentGuard = (function () {
         console.error('[student-guard] signOut error', e);
       }
     }
-    window.location.replace('/auth.html');
+    // Preserve the test environment across sign-out so a tester doesn't get
+    // silently dropped onto the production auth page.
+    const isTest = window.MrBadmusConfig && window.MrBadmusConfig.environment === 'test';
+    window.location.replace('/auth.html' + (isTest ? '?env=test' : ''));
   }
 
   return { requireStudentRole, signOut, getClient, ALLOWED_ROLES };

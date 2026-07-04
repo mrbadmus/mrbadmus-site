@@ -834,7 +834,7 @@
         '<h1 class="class-header-name">' + escapeHtml(klass.name) + '</h1>' +
         pillHtml +
       '</div>' +
-      '<div class="class-header-greeting">' + greeting + ' — here’s your class at a glance.</div>';
+      '<div class="class-header-greeting">' + greeting + '. Here’s your class at a glance.</div>';
     document.title = klass.name + ' — Mr Badmus AI';
 
     const stripeEl = document.getElementById('subject-stripe');
@@ -868,7 +868,7 @@
         label: 'Completion',
         value: viewerStats.submissions_completed_pct == null ? null : viewerStats.submissions_completed_pct + '%',
         sub: 'of class assignments',
-        zero: viewerStats.submissions_completed_pct == null ? '—' : null,
+        zero: viewerStats.submissions_completed_pct == null ? 'No assignments yet' : null,
       },
     ];
 
