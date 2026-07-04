@@ -270,6 +270,18 @@
       transition: opacity 0.15s;
     }
     .assignment-card-start-btn:hover { opacity: 0.85; }
+    .assignment-card-start-soon {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 18px;
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid #2a2a4a;
+      border-radius: 20px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
     .assignment-card-score {
       color: var(--text);
       font-size: 0.85rem;
@@ -901,10 +913,18 @@
         '<span class="assignment-card-score">' + pct + '%</span>' +
       '</div>';
     } else if (!card.is_submitted && opts.actionable) {
-      // Future or overdue in current week → Start button still available
-      actionsHtml = '<div class="assignment-card-actions">' +
-        '<a class="assignment-card-start-btn" href="' + escapeHtml(buildStartUrl(card.id)) + '">Start</a>' +
-      '</div>';
+      if (currentClassKeyStage === 'KS3') {
+        // The weekly challenge is GCSE-only. For KS3 classes the Start button
+        // would funnel students into the GCSE profile wizard, so disable it.
+        actionsHtml = '<div class="assignment-card-actions">' +
+          '<span class="assignment-card-start-soon">Coming soon for KS3</span>' +
+        '</div>';
+      } else {
+        // Future or overdue in current week → Start button still available
+        actionsHtml = '<div class="assignment-card-actions">' +
+          '<a class="assignment-card-start-btn" href="' + escapeHtml(buildStartUrl(card.id)) + '">Start</a>' +
+        '</div>';
+      }
     }
 
     const cardClasses = ['assignment-card'];
@@ -1174,6 +1194,7 @@
   // ── Shoutouts feed (sidebar, read-only) ── */
   const PAGE_SIZE = 20;
   let currentClassId = null;
+  let currentClassKeyStage = null;
   const feedState = {
     shoutouts: [], hasMore: false, loading: false, initialLoaded: false, error: null,
   };
@@ -1311,6 +1332,7 @@
         });
 
         currentClassId = detail.class.id;
+        currentClassKeyStage = detail.class.key_stage;
         renderClassHeader(detail.class, ctx.profile.first_name);
         renderStarsLeaderboard(detail.leaderboard, ctx.user.id);
         renderStatsStrip(detail.viewerStats);

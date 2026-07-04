@@ -205,7 +205,7 @@
       <p>Your previous progress has been moved onto your school account.</p>
       <p id="success-summary" class="claim-summary" style="display:none;"></p>
       <div class="claim-actions">
-        <a id="dashboard-link" class="btn btn-primary" href="/student/class.html">Go to my dashboard</a>
+        <a id="dashboard-link" class="btn btn-primary" href="/index.html">Go to my dashboard</a>
       </div>
     </div>
   </div>
@@ -269,7 +269,7 @@
   }
 
   // Wire the dashboard + sign-in links to preserve ?env=test.
-  document.getElementById('dashboard-link').href = '/student/class.html' + envQuery;
+  document.getElementById('dashboard-link').href = '/index.html' + envQuery;
   document.getElementById('problem-auth-link').href = '/auth.html' + envQuery;
   document.getElementById('error-auth-link').href = '/auth.html' + envQuery;
 

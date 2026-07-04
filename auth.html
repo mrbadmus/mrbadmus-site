@@ -490,13 +490,29 @@
     const returnUrl = new URLSearchParams(window.location.search).get('return') || '/index.html';
     sb.auth.getSession().then(({ data: { session } }) => {
       if (!session) return;
-      sb.from('profiles').select('first_name, science_pathway, role').eq('id', session.user.id).single()
-        .then(({ data: p }) => {
+      sb.from('profiles').select('first_name, science_pathway, tier, role, key_stage').eq('id', session.user.id).single()
+        .then(({ data: p, error }) => {
+          // A real query failure (network blip, RLS error) is NOT the same as
+          // "no profile row". Don't trap the user in the student wizard on a
+          // transient error — send them to where they were headed. PGRST116 is
+          // Supabase's "no rows" code, which we treat as a genuinely new user.
+          if (error && error.code !== 'PGRST116') {
+            window.location.href = returnUrl;
+            return;
+          }
           const isStaff = p && ['teacher', 'hod', 'admin'].includes(p.role);
           if (isStaff) {
             // Honour ?return= if explicitly set, otherwise default to teacher home.
             window.location.href = returnUrl !== '/index.html' ? returnUrl : '/teacher/classes.html';
-          } else if (!p?.science_pathway) {
+          } else if (p && p.key_stage === 'KS3') {
+            // KS3 students legitimately have no science_pathway/tier (DB
+            // constraint blocks them from KS4 fields). Never send them to the
+            // GCSE onboarding wizard — that's the MRB-101 sign-in loop.
+            window.location.href = returnUrl;
+          } else if (!p || !p.science_pathway || !p.tier) {
+            // GCSE student with an incomplete profile (missing pathway OR tier)
+            // finishes onboarding first. Checking both fields closes the gap
+            // where a tier-less profile slipped through to a backend 400.
             window.location.href = '/profile-setup.html';
           } else {
             window.location.href = returnUrl;

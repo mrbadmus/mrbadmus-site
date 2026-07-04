@@ -191,6 +191,14 @@
     <a href="/auth.html?tab=signup" style="padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Sora',sans-serif;font-weight:800;text-decoration:none;display:inline-block;">Create Account</a>
   </div>
 
+  <!-- KS3: the weekly challenge is a GCSE (KS4) feature -->
+  <div id="ks3-message" style="display:none;text-align:center;padding-top:60px;">
+    <div style="font-size:3rem;">🌱</div>
+    <h2 style="font-family:'Sora',sans-serif;font-size:1.5rem;margin:16px 0 8px;">Weekly Challenges are coming soon for KS3</h2>
+    <p style="color:var(--muted);margin-bottom:20px;">For now, explore topics and try the topic quizzes from the homepage.</p>
+    <a href="/index.html" style="padding:14px 32px;border-radius:14px;background:linear-gradient(135deg,var(--physics),#38a89d);color:#0F0F1A;font-family:'Sora',sans-serif;font-weight:800;text-decoration:none;display:inline-block;">Explore topics</a>
+  </div>
+
   <!-- STEP 1: Pick subject -->
   <div class="picker" id="picker" style="display:none;">
     <h1>⚡ Weekly Challenge</h1>
@@ -345,12 +353,22 @@
     // Fetch profile to learn student's pathway + tier for badge and status key lookup
     try {
       var profileRes = await sb.from('profiles')
-        .select('science_pathway, tier')
+        .select('science_pathway, tier, key_stage, role')
         .eq('id', session.user.id)
         .single();
       if (profileRes.data) {
         studentPathway = profileRes.data.science_pathway;
         studentTier = profileRes.data.tier;
+        // KS3 students can't take the GCSE weekly challenge — show a KS3 message
+        // instead of the picker (which would only lead to a backend 400 and a
+        // bounce into the GCSE profile wizard). Keyed on key_stage so incomplete
+        // GCSE students still get routed to finish their profile, not this.
+        var isStaff = ['teacher', 'hod', 'admin'].indexOf(profileRes.data.role) !== -1;
+        if (!isStaff && profileRes.data.key_stage === 'KS3') {
+          document.getElementById('loading').style.display = 'none';
+          document.getElementById('ks3-message').style.display = 'block';
+          return;
+        }
         if (studentPathway && studentTier) {
           var pathLabel = studentPathway.charAt(0).toUpperCase() + studentPathway.slice(1);
           var tierLabel = studentTier.charAt(0).toUpperCase() + studentTier.slice(1);

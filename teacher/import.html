@@ -749,13 +749,14 @@
       <p class="card-help">
         Check the year group for every class. We've detected it from the class
         name. Years 10–11 also need Combined or Triple and Foundation or
-        Higher; Years 7–9 (KS3) don't. You can optionally assign a teacher
-        and subject.
+        Higher; Years 7–9 (KS3) don't. Assigning a teacher is optional, but if
+        you assign a teacher you must also choose a subject.
       </p>
       <div id="class-settings-list" class="class-settings-list"></div>
       <div id="screen2-validation" class="validation-note">
-        Please choose a year group for every class, and Combined/Triple and
-        Foundation/Higher for every Year 10–11 class, before continuing.
+        Please choose a year group for every class, Combined/Triple and
+        Foundation/Higher for every Year 10–11 class, and a subject for every
+        class you've assigned a teacher to, before continuing.
       </div>
     </div>
 
@@ -1352,7 +1353,7 @@
       const s = classSettings[c.name];
       const subjectRow = s.teacherId
         ? '<div class="setting-block" data-subject-block>' +
-            '<span class="setting-block-label">Subject (for that teacher)</span>' +
+            '<span class="setting-block-label">Subject (for that teacher) <span class="req">*</span></span>' +
             '<select class="compose-select" data-subject="' + escapeHtml(c.name) + '">' +
               subjectOptionsHtml(s.subjectId) +
             '</select>' +
@@ -1471,6 +1472,10 @@
   // 10–11) only — both pathway and tier. KS3 classes need just the year.
   function classIsComplete(s) {
     if (!s || !s.year) return false;
+    // If a teacher is assigned, a subject is required. Without it the roster
+    // import silently skips the class_teachers row and the class never appears
+    // in My classes.
+    if (s.teacherId && !s.subjectId) return false;
     if (keyStageForYear(s.year) === 'KS4') return !!s.pathway && !!s.tier;
     return true;
   }

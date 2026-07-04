@@ -339,6 +339,18 @@
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
+     KS3 — "you're all set" (Years 7–9 don't pick a GCSE pathway)
+     ══════════════════════════════════════════════════════════ -->
+<div class="dashboard" id="ks3-allset">
+  <div class="dash-section" style="text-align:center;">
+    <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
+    <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;margin-bottom:10px;">You're all set</h2>
+    <p style="color:var(--muted);line-height:1.6;margin-bottom:22px;">You don't need to set up a science pathway for Years 7–9. You're ready to go.</p>
+    <a href="/index.html" class="btn btn-primary" style="text-decoration:none;">Head to the homepage</a>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
      WIZARD — shown for new users or when editing
      ══════════════════════════════════════════════════════════ -->
 <div class="wizard" id="wizard">
@@ -379,6 +391,9 @@
       <label>Year group</label>
       <select id="year-group">
         <option value="">Select year group</option>
+        <option value="Year 7">Year 7</option>
+        <option value="Year 8">Year 8</option>
+        <option value="Year 9">Year 9</option>
         <option value="Year 10">Year 10</option>
         <option value="Year 11">Year 11</option>
         <option value="Year 12">Year 12 (A-Level)</option>
@@ -570,6 +585,24 @@
 
     var profile = profileResult.data;
 
+    // Staff never see the student onboarding wizard — this is a student-shaped
+    // form and staff have no science_pathway by design. Send them to their own
+    // profile page instead. (Keeps the spinner up during the redirect.)
+    if (profile && ['teacher', 'hod', 'admin'].indexOf(profile.role) !== -1) {
+      window.location.replace('/teacher-profile.html');
+      return;
+    }
+
+    // KS3 students (Years 7–9) legitimately have no pathway/tier and must not
+    // be pushed through the GCSE wizard — that's the MRB-101 sign-in loop.
+    // Show them a simple "you're all set" panel instead. Edit mode is a no-op
+    // for them since there's nothing to edit.
+    if (profile && profile.key_stage === 'KS3') {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('ks3-allset').style.display = 'block';
+      return;
+    }
+
     // Hide loading
     document.getElementById('loading').style.display = 'none';
 
@@ -610,8 +643,11 @@
     var tierEl = document.getElementById('dash-tier');
     if (p.tier === 'foundation') {
       tierEl.innerHTML = '<span class="dash-tag tag-foundation">🌱 Foundation</span>';
-    } else {
+    } else if (p.tier === 'higher') {
       tierEl.innerHTML = '<span class="dash-tag tag-higher">⭐ Higher</span>';
+    } else {
+      // Don't present a missing tier as "Higher" — say so honestly.
+      tierEl.innerHTML = '<span class="dash-tag" style="color:var(--muted);">Not set</span>';
     }
 
     document.getElementById('dash-board').textContent = p.exam_board || 'AQA';
