@@ -79,7 +79,7 @@
     .signout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
     /* ── PAGE LAYOUT ── */
-    .container { max-width: 1000px; margin: 0 auto; }
+    .container { max-width: 1100px; margin: 0 auto; }
 
     .back-link {
       display: inline-block;
@@ -167,8 +167,8 @@
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      padding: 24px;
-      margin-bottom: 20px;
+      padding: 28px;
+      margin-bottom: 22px;
     }
     .card-title {
       font-family: 'Sora', sans-serif;
@@ -314,12 +314,36 @@
       font-weight: 600;
       margin-top: 10px;
     }
+    /* Expanded preview stays scrollable inside a capped height so a long
+       file never blows the page out. */
+    .table-scroll.expanded { max-height: 420px; overflow-y: auto; }
+    .preview-toggle {
+      margin-top: 12px;
+      background: transparent;
+      border: 1px solid #2a2a4a;
+      color: var(--muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preview-toggle:hover { border-color: var(--physics); color: var(--text); }
 
     /* ── COLUMN MAPPING ── */
+    /* All five mappers (Email, First name, Last name, Class, Student ID)
+       sit on one row at desktop width. minmax(0, 1fr) lets the columns
+       compress equally instead of intrinsic-sizing into a wrap (a plain 1fr
+       floors at the widest select's content width). Below 700px they stack. */
     .mapping-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 16px;
+    }
+    @media (max-width: 700px) {
+      .mapping-grid { grid-template-columns: 1fr; }
     }
     .map-row { }
     .map-label {
@@ -610,7 +634,7 @@
   <h1 class="page-title">Import students</h1>
   <p class="page-subtitle">
     Upload a class list as a CSV file. We'll match it against your existing
-    classes and students — running it twice never creates duplicates.
+    classes and students. Running it twice never creates duplicates.
   </p>
 
   <!-- Step indicator 1 → 2 → 3 -->
@@ -633,19 +657,20 @@
     <div class="card">
       <h2 class="card-title">Choose your class list</h2>
       <p class="card-help">
-        A CSV with one row per student. It should have columns for email,
-        first name, last name, and which class each student is in.
+        A CSV or Excel file with one row per student. It should have columns
+        for email, first name, last name, and which class each student is in.
       </p>
 
       <div id="dropzone" class="dropzone" tabindex="0" role="button"
-           aria-label="Choose a CSV file or drop one here">
+           aria-label="Choose a CSV or Excel file or drop one here">
         <div class="dropzone-icon">📄</div>
-        <div class="dropzone-text">Drop your CSV here</div>
+        <div class="dropzone-text">Drop your CSV or Excel file here</div>
         <div class="dropzone-hint">
-          or <span class="dropzone-browse">browse for a file</span> · .csv only
+          or <span class="dropzone-browse">browse for a file</span> · .csv, .xlsx
         </div>
       </div>
-      <input id="file-input" class="file-input-hidden" type="file" accept=".csv,text/csv"/>
+      <input id="file-input" class="file-input-hidden" type="file"
+             accept=".csv,.xlsx,.xls,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"/>
 
       <div id="file-summary" class="file-summary">
         <div class="file-summary-icon">✓</div>
@@ -662,13 +687,15 @@
     <div id="preview-card" class="card" style="display:none;">
       <h2 class="card-title">Quick preview</h2>
       <p class="card-help">The first 5 rows, exactly as we read them.</p>
-      <div class="table-wrap"><div class="table-scroll">
+      <div class="table-wrap"><div class="table-scroll" id="preview-scroll">
         <table class="data-table" id="preview-table">
           <thead><tr id="preview-head"></tr></thead>
           <tbody id="preview-body"></tbody>
         </table>
       </div></div>
       <div id="preview-caption" class="preview-caption"></div>
+      <button id="preview-toggle" class="preview-toggle" type="button"
+              style="display:none;"></button>
     </div>
 
     <div class="wizard-actions">
@@ -682,7 +709,7 @@
     <div class="card">
       <h2 class="card-title">Match your columns</h2>
       <p class="card-help">
-        We've guessed which column is which — check each one is right and fix
+        We've matched each column automatically. Check they're right and fix
         any that aren't.
       </p>
       <div class="mapping-grid">
@@ -713,14 +740,14 @@
       </div>
       <label class="single-class-toggle" for="no-class-col">
         <input type="checkbox" id="no-class-col">
-        My file has no Class column — use one class name for everyone
+        My file has no Class column. Use one class name for everyone
       </label>
     </div>
 
     <div class="card">
       <h2 class="card-title">Set up each class</h2>
       <p class="card-help">
-        Check the year group for every class — we've guessed it from the class
+        Check the year group for every class. We've detected it from the class
         name. Years 10–11 also need Combined or Triple and Foundation or
         Higher; Years 7–9 (KS3) don't. You can optionally assign a teacher
         and subject.
@@ -745,7 +772,7 @@
       <div class="card">
         <h2 class="card-title">Here's what will happen</h2>
         <p class="card-help">
-          This is a safe preview — nothing is saved until you press Confirm.
+          This is a safe preview. Nothing is saved until you press Confirm.
         </p>
         <div id="preview-loading" class="preview-loading">
           <span>Checking your file against your school's records</span>
@@ -805,6 +832,19 @@
       <div class="success-icon">✓</div>
       <div class="success-title">Import complete</div>
       <div id="success-summary" class="success-summary"></div>
+      <div id="success-issues" class="table-wrap"
+           style="display:none;text-align:left;margin:0 auto 24px;max-width:680px;">
+        <div class="table-scroll">
+          <table class="data-table issues-table">
+            <thead><tr>
+              <th scope="col">Row</th>
+              <th scope="col">Email</th>
+              <th scope="col">What happened</th>
+            </tr></thead>
+            <tbody id="success-issues-body"></tbody>
+          </table>
+        </div>
+      </div>
       <a id="success-back-link" class="btn btn-primary" href="/teacher/classes.html">
         Go to my classes
       </a>
@@ -818,9 +858,10 @@
   </div>
 </main>
 
-<!-- ── Bootstrap: SDK → papaparse → config → guard ─────────────────────── -->
+<!-- ── Bootstrap: SDK → papaparse → SheetJS → config → guard ───────────── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="/shared/config.js"></script>
 <script src="/shared/teacher-guard.js"></script>
 <script>
@@ -839,6 +880,9 @@
     rows: [],               // array of row objects (header-keyed)
     rowCount: 0,
   };
+  // Quick-preview expansion: false = first 5 rows, true = every row (inside
+  // a capped, scrollable table).
+  let previewExpanded = false;
 
   // Column mapping (screen 2). Each value is a chosen CSV header name.
   // externalId is OPTIONAL ('' = not mapped → omitted from the payload).
@@ -910,13 +954,16 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ── SHA-256 hex of the raw CSV text (source.fileHash) ────────────────────
-  async function sha256Hex(text) {
-    const buf = new TextEncoder().encode(text);
+  // ── SHA-256 hex of the uploaded file (source.fileHash) ──────────────────
+  // CSVs hash their text; Excel files hash their raw bytes.
+  async function sha256HexBytes(buf) {
     const digest = await crypto.subtle.digest('SHA-256', buf);
     return Array.from(new Uint8Array(digest))
       .map(function (b) { return b.toString(16).padStart(2, '0'); })
       .join('');
+  }
+  async function sha256Hex(text) {
+    return sha256HexBytes(new TextEncoder().encode(text));
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -936,23 +983,49 @@
     fileState.headers = [];
     fileState.rows = [];
     fileState.rowCount = 0;
+    previewExpanded = false;
     $('file-summary').classList.remove('show');
     $('preview-card').style.display = 'none';
     $('to-screen-2').disabled = true;
   }
 
+  // Both parsers (papaparse for CSV, SheetJS for Excel) normalise into this
+  // one intermediate shape — header names + header-keyed row objects — so
+  // everything downstream (mapping, class detection, payload) is untouched.
+  function ingestParsed(fileName, headers, rows) {
+    if (!headers.length) {
+      showParseError('We couldn\'t find any column headers in that file. ' +
+        'Make sure the first row names each column.');
+      return;
+    }
+    if (!rows.length) {
+      showParseError('That file has headers but no student rows.');
+      return;
+    }
+    fileState.fileName = fileName;
+    fileState.headers = headers;
+    fileState.rows = rows;
+    fileState.rowCount = rows.length;
+    previewExpanded = false;
+    renderFileSummary();
+    renderPreview();
+    $('to-screen-2').disabled = false;
+  }
+
   function handleFile(file) {
     clearParseError();
     if (!file) return;
-    const isCsv = /\.csv$/i.test(file.name) || file.type === 'text/csv' ||
-      file.type === 'application/vnd.ms-excel';
-    if (!isCsv) {
-      showParseError('That doesn\'t look like a CSV file. Please choose a .csv file.');
+    const isCsv = /\.csv$/i.test(file.name) || file.type === 'text/csv';
+    const isExcel = /\.(xlsx|xls)$/i.test(file.name);
+    if (!isCsv && !isExcel) {
+      showParseError('That doesn\'t look like a CSV or Excel file. ' +
+        'Please choose a .csv or .xlsx file.');
       return;
     }
+    if (isExcel) { handleExcelFile(file); return; }
 
-    // Read the raw text once (for the SHA-256 hash + rowCount source field),
-    // then hand the same File to Papa.parse for structured rows.
+    // CSV path: read the raw text once (for the SHA-256 hash), then hand the
+    // same File to Papa.parse for structured rows.
     const reader = new FileReader();
     reader.onload = async function () {
       fileState.rawText = String(reader.result || '');
@@ -972,30 +1045,54 @@
       header: true,
       skipEmptyLines: true,
       complete: function (results) {
-        const rows = results.data || [];
-        const headers = (results.meta && results.meta.fields) || [];
-        if (!headers.length) {
-          showParseError('We couldn\'t find any column headers in that file. ' +
-            'Make sure the first row names each column.');
-          return;
-        }
-        if (!rows.length) {
-          showParseError('That file has headers but no student rows.');
-          return;
-        }
-        fileState.fileName = file.name;
-        fileState.headers = headers;
-        fileState.rows = rows;
-        fileState.rowCount = rows.length;
-        renderFileSummary();
-        renderPreview();
-        $('to-screen-2').disabled = false;
+        ingestParsed(file.name,
+          (results.meta && results.meta.fields) || [],
+          results.data || []);
       },
       error: function (err) {
         console.error('[import.html] Papa.parse error', err);
         showParseError('We couldn\'t read that CSV. Check the file and try again.');
       },
     });
+  }
+
+  // Excel path: SheetJS reads the first sheet into header-keyed row objects,
+  // matching what papaparse produces for a CSV.
+  function handleExcelFile(file) {
+    const reader = new FileReader();
+    reader.onload = async function () {
+      try {
+        const buf = reader.result;
+        fileState.rawText = '';
+        try {
+          fileState.fileHash = await sha256HexBytes(buf);
+        } catch (e) {
+          console.error('[import.html] hash failed', e);
+          fileState.fileHash = '';
+        }
+        const wb = XLSX.read(buf, { type: 'array' });
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        if (!ws) {
+          showParseError('That Excel file has no sheets we can read.');
+          return;
+        }
+        // Header row exactly as written (row objects are keyed by these), and
+        // raw:false so numbers/dates arrive as the text shown in Excel.
+        const headerRow = XLSX.utils.sheet_to_json(ws, { header: 1 })[0] || [];
+        const headers = headerRow
+          .map(function (h) { return String(h == null ? '' : h); })
+          .filter(function (h) { return h.trim() !== ''; });
+        const rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false });
+        ingestParsed(file.name, headers, rows);
+      } catch (e) {
+        console.error('[import.html] Excel parse error', e);
+        showParseError('We couldn\'t read that Excel file. Check the file and try again.');
+      }
+    };
+    reader.onerror = function () {
+      showParseError('Couldn\'t read that file. Try again.');
+    };
+    reader.readAsArrayBuffer(file);
   }
 
   function renderFileSummary() {
@@ -1013,8 +1110,8 @@
     }).join('');
     $('preview-head').innerHTML = headHtml;
 
-    const first5 = fileState.rows.slice(0, 5);
-    const bodyHtml = first5.map(function (row) {
+    const shown = previewExpanded ? fileState.rows : fileState.rows.slice(0, 5);
+    const bodyHtml = shown.map(function (row) {
       const cells = fileState.headers.map(function (h) {
         const v = row[h];
         return (v == null || v === '')
@@ -1026,8 +1123,19 @@
     $('preview-body').innerHTML = bodyHtml;
 
     $('preview-caption').textContent =
-      'Showing ' + first5.length + ' of ' + fileState.rowCount +
+      'Showing ' + shown.length + ' of ' + fileState.rowCount +
       (fileState.rowCount === 1 ? ' row.' : ' rows.');
+    $('preview-scroll').classList.toggle('expanded', previewExpanded);
+
+    const toggle = $('preview-toggle');
+    if (fileState.rowCount > 5) {
+      toggle.textContent = previewExpanded
+        ? 'Show fewer ▴'
+        : 'Show all ' + fileState.rowCount + ' rows ▾';
+      toggle.style.display = '';
+    } else {
+      toggle.style.display = 'none';
+    }
     $('preview-card').style.display = '';
   }
 
@@ -1059,6 +1167,11 @@
       input.value = '';
       clearParseError();
       resetFileState();
+    });
+
+    $('preview-toggle').addEventListener('click', function () {
+      previewExpanded = !previewExpanded;
+      renderPreview();
     });
 
     $('to-screen-2').addEventListener('click', function () {
@@ -1253,8 +1366,7 @@
       const pathwayTierBlocks = isKs3
         ? '<div class="setting-block">' +
             '<span class="setting-block-label">Course</span>' +
-            '<p class="card-help" style="margin:0;">Key Stage 3 — Science. ' +
-            'Combined/Triple and Foundation/Higher don’t apply.</p>' +
+            '<p class="card-help" style="margin:0;">Key Stage 3</p>' +
           '</div>'
         : // Combined / Triple
           '<div class="setting-block">' +
@@ -1465,26 +1577,83 @@
   function pluralPart(n, singular, plural) {
     return n + ' ' + (n === 1 ? singular : (plural || singular + 's'));
   }
+  function joinList(parts) {
+    if (parts.length <= 1) return parts.join('');
+    if (parts.length === 2) return parts[0] + ' and ' + parts[1];
+    return parts.slice(0, -1).join(', ') + ', and ' + parts[parts.length - 1];
+  }
 
-  function renderCountsSentence(counts) {
-    // Human sentence using the exact count fields from the contract.
-    const parts = [];
-    parts.push('create <strong>' + pluralPart(counts.classesCreated, 'class', 'classes') + '</strong>');
-    parts.push('add <strong>' + pluralPart(counts.studentsCreated, 'new student') + '</strong>');
-    parts.push('attach <strong>' + pluralPart(counts.studentsAttached, 'existing student') + '</strong>');
-    parts.push('update <strong>' + pluralPart(counts.profilesUpdated, 'student') + '</strong>');
+  // One summary sentence for both the dry-run preview (past=false, "This
+  // will…") and the completion screen (past=true, "We…").
+  //
+  // Count semantics from the roster-import contract: studentsAttached is the
+  // TOTAL enrolled this run (new + existing accounts) — not a separate
+  // "existing students" group. studentsCreated = brand-new accounts within
+  // that total; profilesUpdated = existing accounts whose details changed.
+  function importSummaryHtml(counts, past) {
+    const c = counts || {};
+    const enrolled = c.studentsAttached || 0;
 
-    let sentence = 'This will ' + parts.join(', ') + '.';
-
-    if (counts.studentsAlreadyAttached > 0) {
-      sentence += ' ' + pluralPart(counts.studentsAlreadyAttached, 'student') +
-        ' ' + (counts.studentsAlreadyAttached === 1 ? 'is' : 'are') + ' already attached.';
+    const actions = [];
+    if (c.classesCreated > 0) {
+      actions.push((past ? 'created' : 'create') + ' <strong>' +
+        pluralPart(c.classesCreated, 'class', 'classes') + '</strong>');
     }
-    if (counts.classesFound > 0) {
-      sentence += ' ' + pluralPart(counts.classesFound, 'class', 'classes') +
-        ' already ' + (counts.classesFound === 1 ? 'exists' : 'exist') + ' and will be reused.';
+    if (c.classesFound > 0) {
+      actions.push((past ? 'added' : 'add') + ' students to <strong>' +
+        pluralPart(c.classesFound, 'existing class', 'existing classes') + '</strong>');
+    }
+    actions.push((past ? 'enrolled' : 'enrol') + ' <strong>' +
+      pluralPart(enrolled, 'student') + '</strong>');
+
+    let sentence = (past ? 'We ' : 'This will ') + joinList(actions) + '.';
+
+    // Breakdown of the enrolled total as its own sentence: new accounts,
+    // matched-and-updated, and (when the numbers leave a remainder)
+    // matched-unchanged. When everyone is new, say so in one clean line.
+    const newAccounts = c.studentsCreated || 0;
+    const updated = c.profilesUpdated || 0;
+    const matchedUnchanged = Math.max(0, enrolled - newAccounts - updated);
+    if (enrolled > 0 && newAccounts === enrolled) {
+      sentence += newAccounts === 1
+        ? ' The student is a new account.'
+        : ' All ' + newAccounts + ' are new accounts.';
+    } else {
+      const breakdown = [];
+      if (newAccounts > 0) {
+        breakdown.push(newAccounts +
+          (newAccounts === 1 ? ' is a new account' : ' are new accounts'));
+      }
+      if (updated > 0) {
+        breakdown.push(updated + (updated === 1 ? ' is' : ' are') +
+          ' matched to existing account' + (updated === 1 ? '' : 's') + ' and updated');
+      }
+      if (matchedUnchanged > 0) {
+        breakdown.push(matchedUnchanged + (matchedUnchanged === 1 ? ' is' : ' are') +
+          ' matched to existing account' + (matchedUnchanged === 1 ? '' : 's'));
+      }
+      if (breakdown.length) sentence += ' ' + breakdown.join(', ') + '.';
+    }
+
+    if (c.studentsAlreadyAttached > 0) {
+      sentence += ' ' + pluralPart(c.studentsAlreadyAttached, 'student') + ' ' +
+        (past
+          ? (c.studentsAlreadyAttached === 1 ? 'was' : 'were') + ' already enrolled.'
+          : (c.studentsAlreadyAttached === 1 ? 'is' : 'are') + ' already enrolled and won\'t change.');
     }
     return sentence;
+  }
+
+  // Rows for an issues table (shared by the dry-run and completion screens).
+  function issuesRowsHtml(issues) {
+    return issues.map(function (iss) {
+      const rowNum = (iss.rowIndex != null) ? iss.rowIndex : '—';
+      return '<tr>' +
+        '<td class="issue-row-num">' + escapeHtml(rowNum) + '</td>' +
+        '<td>' + escapeHtml(iss.email || '—') + '</td>' +
+        '<td class="issue-reason">' + escapeHtml(friendlyReason(iss.reason, iss.detail)) + '</td>' +
+      '</tr>';
+    }).join('');
   }
 
   function showDryrunError(msg) {
@@ -1530,6 +1699,12 @@
     $('confirm-import').disabled = true;
     renderClassesReview();
 
+    if (!(await sessionMatchesGuard())) {
+      $('preview-loading').style.display = 'none';
+      showSessionSwapError();
+      return;
+    }
+
     const payload = buildPayload(true); // dryRun
     lastPayload = payload;
 
@@ -1548,23 +1723,49 @@
   }
 
   // Translate a known backend error code OR a transport error into plain
-  // English. The dry-run/confirm both surface through here.
+  // English. The dry-run/confirm both surface through here. Unknown errors
+  // show their code so support can act on a screenshot.
   function friendlyInvokeError(e) {
     const msg = (e && (e.message || e.error)) || '';
+    if (/not_staff_of_school|403/i.test(msg)) {
+      return 'Your signed-in account isn\'t a staff account at a school — ' +
+        'sign in with your school staff account and try again.';
+    }
     if (/no_academic_year/i.test(msg)) {
-      return 'Your school doesn\'t have a current academic year set up yet. ' +
-        'Ask your admin to set one, then try again.';
+      return 'Your school has no current academic year set up — contact support.';
+    }
+    if (/missing_token|unauthorized|401/i.test(msg)) {
+      return 'Your session has expired — sign in again.';
     }
     if (/no_classes/i.test(msg)) {
       return 'No classes were found in your file. Go back and check the class column.';
     }
-    if (/not_staff_of_school|403/i.test(msg)) {
-      return 'You don\'t have permission to import students for this school.';
+    const code = String(msg).replace(/\s+/g, ' ').trim().slice(0, 80);
+    return 'Something went wrong' + (code ? ' (' + code + ')' : '') +
+      '. Please try again.';
+  }
+
+  // ── Session re-check before any POST ────────────────────────────────────
+  // The Supabase session lives in localStorage, so signing into a different
+  // account in another tab silently swaps who our requests act as. Before
+  // firing the dry-run or the real import, confirm the session still belongs
+  // to the user the guard admitted at page load.
+  async function sessionMatchesGuard() {
+    try {
+      const { data } = await sb.auth.getSession();
+      const uid = data && data.session && data.session.user && data.session.user.id;
+      return !!uid && uid === currentUserId;
+    } catch (e) {
+      console.error('[import.html] session re-check failed', e);
+      return false;
     }
-    if (/unauthorized|missing_token|401/i.test(msg)) {
-      return 'Your session has expired. Please refresh the page and sign in again.';
-    }
-    return 'Something went wrong while checking your file. Please try again.';
+  }
+  function showSessionSwapError() {
+    const el = $('dryrun-error');
+    el.innerHTML = 'Your signed-in account changed — please ' +
+      '<a href="/auth.html" style="color:inherit;font-weight:700;">sign back in' +
+      '</a> as your staff account.';
+    el.classList.add('show');
   }
 
   function renderDryrunResult(data) {
@@ -1573,11 +1774,14 @@
     const counts = data.counts || {};
     const issues = Array.isArray(data.issues) ? data.issues : [];
 
-    let sentence = renderCountsSentence(counts);
-    if (issues.length > 0) {
+    let sentence = importSummaryHtml(counts, false);
+    if (counts.studentsSkipped > 0) {
+      sentence += ' <span class="issue-count">' +
+        pluralPart(counts.studentsSkipped, 'row') + ' will be skipped. See below.</span>';
+    } else if (issues.length > 0) {
       sentence += ' <span class="issue-count">' +
         pluralPart(issues.length, 'row') + ' ' +
-        (issues.length === 1 ? 'has' : 'have') + ' an issue (see below).</span>';
+        (issues.length === 1 ? 'has' : 'have') + ' a note (see below).</span>';
     }
     const sEl = $('preview-sentence');
     sEl.innerHTML = sentence;
@@ -1585,14 +1789,7 @@
 
     // Issues table.
     if (issues.length > 0) {
-      $('issues-body').innerHTML = issues.map(function (iss) {
-        const rowNum = (iss.rowIndex != null) ? iss.rowIndex : '—';
-        return '<tr>' +
-          '<td class="issue-row-num">' + escapeHtml(rowNum) + '</td>' +
-          '<td>' + escapeHtml(iss.email || '—') + '</td>' +
-          '<td class="issue-reason">' + escapeHtml(friendlyReason(iss.reason, iss.detail)) + '</td>' +
-        '</tr>';
-      }).join('');
+      $('issues-body').innerHTML = issuesRowsHtml(issues);
       $('issues-card').style.display = '';
     } else {
       $('issues-card').style.display = 'none';
@@ -1609,6 +1806,14 @@
     btn.disabled = true;
     btn.textContent = 'Importing…';
     $('dryrun-error').classList.remove('show');
+
+    if (!(await sessionMatchesGuard())) {
+      showSessionSwapError();
+      btn.disabled = false;
+      btn.textContent = 'Confirm import';
+      confirming = false;
+      return;
+    }
 
     try {
       const payload = buildPayload(false); // dryRun:false — the real write
@@ -1631,14 +1836,23 @@
 
   function renderSuccess(data) {
     const counts = data.counts || {};
-    const parts = [];
-    parts.push(pluralPart(counts.classesCreated, 'class', 'classes') + ' created');
-    parts.push(pluralPart(counts.studentsCreated, 'new student') + ' added');
-    parts.push(pluralPart(counts.studentsAttached, 'student') + ' attached');
-    if (counts.profilesUpdated > 0) parts.push(pluralPart(counts.profilesUpdated, 'student') + ' updated');
+    const issues = Array.isArray(data.issues) ? data.issues : [];
 
-    $('success-summary').innerHTML =
-      'We <strong>' + parts.join('</strong>, <strong>') + '</strong>.';
+    let summary = importSummaryHtml(counts, true);
+    if (counts.studentsSkipped > 0) {
+      summary += ' <span class="issue-count">' +
+        pluralPart(counts.studentsSkipped, 'row') + ' ' +
+        (counts.studentsSkipped === 1 ? 'was' : 'were') + ' skipped. See below.</span>';
+    }
+    $('success-summary').innerHTML = summary;
+
+    // Per-row issues list on the completion screen (skips, notes).
+    if (issues.length > 0) {
+      $('success-issues-body').innerHTML = issuesRowsHtml(issues);
+      $('success-issues').style.display = '';
+    } else {
+      $('success-issues').style.display = 'none';
+    }
 
     $('confirm-stage').style.display = 'none';
     $('success-panel').classList.add('show');
