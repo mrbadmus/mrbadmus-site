@@ -1,6 +1,10 @@
 /* MrBadmusAI — Global Design System */
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap');
 
+/* Dark background on <html> so there's no white flash before body paints.
+   @import must precede style rules, so this is the first rule after it. */
+html { background: #0F0F1A; }
+
 :root {
   --physics: #4ECDC4;
   --chemistry: #FFD2E6; --danger: #FF6B6B;

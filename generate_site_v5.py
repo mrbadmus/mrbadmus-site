@@ -769,9 +769,11 @@ def page_shell(title, subject, body_html, topic_id="", topic_title="", pathway="
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>{title} | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   <style>
+    html {{ background: #0F0F1A; }}
     :root {{ --subject: {color}; }}
     .topic-card {{ border-left-color: var(--subject); }}
     .section-title {{ color: var(--subject); }}
@@ -1707,6 +1709,7 @@ def make_landing():
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>MrBadmusAI — GCSE Science Revision</title>
   <meta name="description" content="Free GCSE Science revision with AI tutor, FIFA worked examples, quizzes and full topic notes. Physics, Chemistry, Biology."/>
   <link rel="stylesheet" href="/shared/styles.css"/>
@@ -1767,6 +1770,7 @@ def make_pathway_page(pathway):
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>{label} | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
 </head>
@@ -1819,6 +1823,7 @@ def make_tier_page(pathway, tier):
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>{pathway_label} {tier.title()} | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
 </head>
@@ -4151,6 +4156,7 @@ try {{
 
     extra_css = f"""
 <style>
+html {{ background: #0F0F1A; }}
 :root {{ --subject: {color}; }}
 .section-title {{ color: var(--subject); }}
 
@@ -4216,6 +4222,7 @@ try {{
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>{st['title']} | Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   {extra_css}
@@ -4268,6 +4275,7 @@ def make_updated_electricity_page():
 </div>"""
 
     extra_css = f"""<style>
+html {{ background: #0F0F1A; }}
 :root {{ --subject: {color}; }}
 .section-title {{ color: var(--subject); }}
 .subtopic-list-new {{ display:flex;flex-direction:column; }}
@@ -4322,6 +4330,7 @@ def make_updated_electricity_page():
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   {extra_css}
@@ -4655,6 +4664,7 @@ try {{
 
     extra_css = f"""
 <style>
+html {{ background: #0F0F1A; }}
 :root {{ --subject: {color}; }}
 .section-title {{ color: var(--subject); }}
 .var-table {{ display:flex;flex-direction:column;gap:8px; }}
@@ -4712,6 +4722,7 @@ try {{
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>{st['title']} | {subject_label} | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   {extra_css}
@@ -4808,6 +4819,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
     tier_badge = '📗 Foundation' if tier == 'foundation' else '📙 Higher'
 
     extra_css = f"""<style>
+html {{ background: #0F0F1A; }}
 :root {{ --subject: {color}; }}
 .section-title {{ color: var(--subject); }}
 .subtopic-list-new {{ display:flex;flex-direction:column; }}
@@ -4865,6 +4877,7 @@ def make_pathway_topic_page_with_subtopics(pathway, tier, subject, topic, subtop
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <meta name="theme-color" content="#0F0F1A"/>
   <title>{topic['title']} | {data['label']} | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
   {extra_css}
