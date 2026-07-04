@@ -292,6 +292,11 @@
     document.getElementById('podium').innerHTML = '';
     document.getElementById('rest-list').innerHTML = '';
     document.getElementById('empty').style.display = 'none';
+    // Reset the empty-state copy to its default — a previous failed load leaves
+    // the "Could not load" error text on this shared element, which would
+    // otherwise show on every genuinely-empty track for the rest of the visit.
+    document.querySelector('#empty h3').textContent = 'No scores yet!';
+    document.querySelector('#empty p').textContent = 'Be the first to complete the challenge and claim the top spot.';
 
     var url;
     if (currentSubject === 'overall') {

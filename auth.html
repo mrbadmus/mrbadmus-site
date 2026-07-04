@@ -202,6 +202,16 @@
     <p>GCSE Science Revision</p>
   </div>
 
+  <!-- Already-signed-in interstitial — shown on a device that already has a
+       live session, so a second person isn't silently routed into someone
+       else's account. -->
+  <div id="already-signed-in" style="display:none;text-align:center;padding:6px 0 2px;">
+    <p style="color:var(--text);font-weight:700;font-size:1.05rem;margin-bottom:4px;">You're already signed in</p>
+    <p id="already-email" style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;word-break:break-all;"></p>
+    <button class="btn btn-primary" id="continue-btn" onclick="continueSignedIn()">Continue<span id="continue-count"></span></button>
+    <button class="btn" id="switch-account-btn" onclick="signOutFromAuth()" style="background:#2a2a4a;color:var(--muted);">Sign out / use another account</button>
+  </div>
+
   <div class="tabs">
     <div class="tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</div>
     <div class="tab"        id="tab-signup" onclick="switchTab('signup')">Create Account</div>
@@ -260,6 +270,7 @@
   </div>
 
   <!-- SCHOOL SSO — provider-agnostic (Microsoft Entra ID + Google), one handler -->
+  <div id="sso-row">
   <div class="divider">or</div>
   <div class="sso-heading">Have a school account?</div>
   <button class="btn-sso" id="btn-sso-azure" onclick="signInWithSSO('azure')">
@@ -271,6 +282,7 @@
     Sign in with Google
   </button>
   <p class="sso-sub">Students &amp; staff: use the same school login you use for email. Your teacher sets up your account &mdash; if sign-in is blocked, ask them to add you first.</p>
+  </div>
 
   <a href="/index.html" class="back-link">← Back to site</a>
 </div>
@@ -521,8 +533,44 @@
     });
   }
 
-  // On (re)load: if there's a session, route the user. If we've just
-  // returned from a school SSO round-trip, log the sso_login first (audit).
+  // Continue / sign-out handlers for the already-signed-in interstitial.
+  let continueTimer = null;
+  function continueSignedIn() {
+    if (continueTimer) { clearInterval(continueTimer); continueTimer = null; }
+    redirectAfterAuth();
+  }
+  function signOutFromAuth() {
+    if (continueTimer) { clearInterval(continueTimer); continueTimer = null; }
+    sb.auth.signOut().then(function () { window.location.reload(); })
+      .catch(function () { window.location.reload(); });
+  }
+
+  function showAlreadySignedIn(session) {
+    const card = document.getElementById('already-signed-in');
+    const emailEl = document.getElementById('already-email');
+    if (!card || !emailEl) { redirectAfterAuth(); return; }
+    emailEl.textContent = (session.user && session.user.email) || '';
+    // Hide the sign-in/up UI while the interstitial is showing.
+    document.querySelector('.tabs').style.display = 'none';
+    document.getElementById('form-signin').style.display = 'none';
+    document.getElementById('form-signup').style.display = 'none';
+    const ssoRow = document.getElementById('sso-row');
+    if (ssoRow) ssoRow.style.display = 'none';
+    card.style.display = 'block';
+    // Auto-continue after 3s with a visible countdown; any button cancels it.
+    let remaining = 3;
+    const countEl = document.getElementById('continue-count');
+    if (countEl) countEl.textContent = ' (' + remaining + ')';
+    continueTimer = setInterval(function () {
+      remaining -= 1;
+      if (remaining <= 0) { continueSignedIn(); return; }
+      if (countEl) countEl.textContent = ' (' + remaining + ')';
+    }, 1000);
+  }
+
+  // On (re)load: if there's a session, show the "already signed in" interstitial
+  // (shared-device safety) rather than auto-routing. If we've just returned from
+  // a school SSO round-trip, that's an intentional sign-in — route immediately.
   sb.auth.getSession().then(({ data: { session } }) => {
     if (!session) return;
     const ssoProvider = sessionStorage.getItem('mrb_sso_pending');
@@ -532,7 +580,7 @@
         .then(() => redirectAfterAuth())
         .catch(() => redirectAfterAuth());
     } else {
-      redirectAfterAuth();
+      showAlreadySignedIn(session);
     }
   });
 

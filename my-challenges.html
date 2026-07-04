@@ -213,8 +213,9 @@
       var scoreClass = pct >= 80 ? 'score-good' : pct >= 50 ? 'score-ok' : 'score-low';
       var emoji = subjectEmojis[h.subject] || '📝';
       var subjLabel = subjectLabels[h.subject] || h.subject;
-      var tierClass = 'tier-' + h.tier;
-      var tierLabel = h.tier.charAt(0).toUpperCase() + h.tier.slice(1);
+      var tier = h.tier || 'foundation';
+      var tierClass = 'tier-' + tier;
+      var tierLabel = tier.charAt(0).toUpperCase() + tier.slice(1);
       var pathwayClass = 'pathway-' + (h.pathway || 'combined');
       var pathwayLabel = h.pathway ? (h.pathway.charAt(0).toUpperCase() + h.pathway.slice(1)) : '';
       var mins = Math.floor((h.time_taken || 0) / 60);

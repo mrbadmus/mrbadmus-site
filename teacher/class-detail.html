@@ -2097,6 +2097,7 @@
     if (!oldest) return;
 
     feedState.loading = true;
+    feedState.error = null; // clear any prior load-more error before retrying
     // Don't blank existing rows — just disable load-more button while in-flight.
     const moreBtn = document.getElementById('shoutouts-loadmore');
     if (moreBtn) {
@@ -2172,9 +2173,15 @@
       ? '<button class="shoutouts-loadmore" id="shoutouts-loadmore">Load more</button>'
       : '';
 
+    // A failed "load more" (after the first page loaded) would otherwise be
+    // silent — the button just resets. Surface a one-line inline error.
+    const loadMoreErrorHtml = feedState.error
+      ? '<div class="shoutouts-error" style="margin-top:10px;">Couldn\'t load more. Tap Load more to try again.</div>'
+      : '';
+
     feedEl.innerHTML =
       '<div class="shoutouts-feed-list">' + cardsHtml + '</div>' +
-      loadMoreHtml;
+      loadMoreHtml + loadMoreErrorHtml;
 
     // Wire delete + load-more handlers on the freshly-rendered DOM.
     feedEl.querySelectorAll('.shoutout-card').forEach(function (cardEl) {

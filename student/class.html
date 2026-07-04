@@ -692,6 +692,7 @@
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="env-pill" class="pill env-prod" title=""></span>
     <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
+    <a id="settings-link" href="/student/settings.html" style="color:#888;font-weight:700;font-size:0.85rem;text-decoration:none;">⚙️ Settings</a>
     <button class="signout-btn" onclick="MrBadmusStudentGuard.signOut()">Sign out</button>
   </div>
 </nav>
@@ -1238,6 +1239,7 @@
     const oldest = feedState.shoutouts[feedState.shoutouts.length - 1];
     if (!oldest) return;
     feedState.loading = true;
+    feedState.error = null; // clear any prior load-more error before retrying
     const moreBtn = document.getElementById('shoutouts-loadmore');
     if (moreBtn) { moreBtn.disabled = true; moreBtn.textContent = 'Loading…'; }
     try {
@@ -1286,7 +1288,12 @@
     const loadMoreHtml = feedState.hasMore
       ? '<button class="shoutouts-loadmore" id="shoutouts-loadmore">Load more</button>'
       : '';
-    feedEl.innerHTML = '<div class="shoutouts-feed-list">' + cardsHtml + '</div>' + loadMoreHtml;
+    // A failed "load more" (after the first page loaded) would otherwise be
+    // silent — the button just resets. Surface a one-line inline error.
+    const loadMoreErrorHtml = feedState.error
+      ? '<div class="shoutouts-error" style="margin-top:10px;">Couldn’t load more. Tap Load more to try again.</div>'
+      : '';
+    feedEl.innerHTML = '<div class="shoutouts-feed-list">' + cardsHtml + '</div>' + loadMoreHtml + loadMoreErrorHtml;
     const moreBtn = document.getElementById('shoutouts-loadmore');
     if (moreBtn) moreBtn.addEventListener('click', loadMoreShoutouts);
   }
@@ -1305,6 +1312,8 @@
 
         const firstName = ctx.profile.first_name || 'student';
         document.getElementById('nav-user-area').textContent = '👤 ' + firstName;
+        const settingsLink = document.getElementById('settings-link');
+        if (settingsLink) settingsLink.href = '/student/settings.html' + (env === 'test' ? '?env=test' : '');
         const envEl = document.getElementById('env-pill');
         envEl.textContent = env.toUpperCase();
         envEl.className = 'pill env-' + env;

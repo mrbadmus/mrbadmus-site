@@ -867,6 +867,22 @@
   }
 
   async function finish() {
+    // In edit mode the Save button calls finish() directly, skipping the step-1
+    // and step-2 gates in nextStep(). Re-check them here so an empty name or a
+    // missing pathway/tier can't be saved.
+    if (!document.getElementById('first-name').value.trim()) {
+      alert('Please enter your name so Mr Badmus knows who you are!');
+      return;
+    }
+    if (!profileData.pathway) {
+      alert('Please pick your science pathway (Combined or Triple) before continuing.');
+      return;
+    }
+    if (!profileData.tier) {
+      alert('Please pick your tier (Foundation or Higher) before continuing.');
+      return;
+    }
+
     var btn = document.getElementById('btn-finish');
     btn.disabled = true;
     btn.textContent = 'Saving...';

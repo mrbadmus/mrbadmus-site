@@ -411,6 +411,10 @@
   }
 
   function buildCompletionBlock(klass) {
+    // Stats query failed — don't imply the class is empty. Say so honestly.
+    if (klass.metrics_failed) {
+      return '<div class="card-completion-empty">Couldn\'t load stats</div>';
+    }
     if (klass.assignment_count === 0) {
       return '<div class="card-completion-empty">No assignments yet</div>';
     }
@@ -465,7 +469,7 @@
         pillHtml +
       '</div>' +
       metaHtml +
-      '<div class="card-students">' + escapeHtml(buildStudentLine(klass.student_count)) + '</div>' +
+      '<div class="card-students">' + escapeHtml(klass.metrics_failed ? '—' : buildStudentLine(klass.student_count)) + '</div>' +
       buildCompletionBlock(klass) +
       '<div class="card-activity">' + escapeHtml(activity) + '</div>';
 

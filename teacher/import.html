@@ -760,6 +760,9 @@
       </div>
     </div>
 
+    <div id="staff-loading-note" class="card-help" style="display:none;margin-top:10px;">
+      Loading teacher list…
+    </div>
     <div class="wizard-actions">
       <button id="back-to-1" class="btn btn-ghost" type="button">← Back</button>
       <button id="to-screen-3" class="btn btn-primary" type="button">Next: review →</button>
@@ -888,6 +891,10 @@
   // Column mapping (screen 2). Each value is a chosen CSV header name.
   // externalId is OPTIONAL ('' = not mapped → omitted from the payload).
   const mapping = { email: '', firstName: '', lastName: '', className: '', externalId: '' };
+  // Signature of the file we last auto-guessed the mapping for. Lets buildScreen2
+  // re-guess when a new file is loaded but preserve manual column choices when the
+  // teacher just steps Back to screen 1 and returns.
+  let mappingGuessedFor = null;
 
   // Class source. 'column' (primary): class name comes from a mapped CSV column.
   // 'single' (fallback): the file has no class column, so one typed name is used
@@ -916,6 +923,17 @@
   // Staff + subject option lists (loaded once in onAllowed).
   let staffOptions = [];    // [{ id, label }]
   let subjectOptions = [];  // [{ id, name }]
+  let staffSubjectsLoaded = false; // false until loadStaffAndSubjects() resolves
+
+  // Screen 2 depends on the staff/subject lists for its dropdowns. Until they've
+  // loaded, block the "review" step and show a note, so the teacher can't submit
+  // an assignment against an empty/half-populated teacher list.
+  function applyStaffLoadingState() {
+    const note = document.getElementById('staff-loading-note');
+    const nextBtn = document.getElementById('to-screen-3');
+    if (note) note.style.display = staffSubjectsLoaded ? 'none' : 'block';
+    if (nextBtn) nextBtn.disabled = !staffSubjectsLoaded;
+  }
 
   // Dry-run payload result (screen 3) — held so Confirm can re-send dryRun:false.
   let lastPayload = null;
@@ -1178,6 +1196,7 @@
     $('to-screen-2').addEventListener('click', function () {
       buildScreen2();
       setStep(2);
+      applyStaffLoadingState();
     });
   }
 
@@ -1238,12 +1257,20 @@
   }
 
   function buildScreen2() {
-    // ── Column mapping selects (pre-guessed) ──
-    mapping.email      = guessHeader(GUESS_RE.email);
-    mapping.firstName  = guessHeader(GUESS_RE.firstName);
-    mapping.lastName   = guessHeader(GUESS_RE.lastName);
-    mapping.className  = guessHeader(GUESS_RE.className);
-    mapping.externalId = guessHeaderOptional(GUESS_RE.external); // optional
+    // ── Column mapping selects ──
+    // Only auto-guess on first sight of this file. If the teacher has already
+    // been here and stepped Back to screen 1, preserve their manual column
+    // choices instead of clobbering them with fresh guesses. A different file
+    // (new signature) re-guesses from scratch.
+    const fileSig = fileState.fileName + '|' + fileState.headers.join(',');
+    if (mappingGuessedFor !== fileSig) {
+      mapping.email      = guessHeader(GUESS_RE.email);
+      mapping.firstName  = guessHeader(GUESS_RE.firstName);
+      mapping.lastName   = guessHeader(GUESS_RE.lastName);
+      mapping.className  = guessHeader(GUESS_RE.className);
+      mapping.externalId = guessHeaderOptional(GUESS_RE.external); // optional
+      mappingGuessedFor = fileSig;
+    }
 
     $('map-email').innerHTML    = buildSelectOptions(mapping.email);
     $('map-first').innerHTML    = buildSelectOptions(mapping.firstName);
@@ -1723,8 +1750,22 @@
     } catch (e) {
       console.error('[import.html] dry-run failed', e);
       $('preview-loading').style.display = 'none';
-      showDryrunError(friendlyInvokeError(e));
+      showDryrunError(await friendlyInvokeErrorAsync(e));
     }
+  }
+
+  // supabase-js surfaces a non-2xx edge-function response as a FunctionsHttpError
+  // whose .message is the fixed "…non-2xx status code" string — the real error
+  // code (missing_token, no_academic_year, …) lives unparsed on e.context (the
+  // Response). Read that body first so friendlyInvokeError's regexes can match.
+  async function friendlyInvokeErrorAsync(e) {
+    if (e && e.context && typeof e.context.json === 'function') {
+      try {
+        const body = await e.context.json();
+        if (body && body.error) e = new Error(body.error);
+      } catch (_) { /* body wasn't JSON — fall through to the generic path */ }
+    }
+    return friendlyInvokeError(e);
   }
 
   // Translate a known backend error code OR a transport error into plain
@@ -1830,7 +1871,7 @@
       renderSuccess(data);
     } catch (e) {
       console.error('[import.html] confirm import failed', e);
-      showDryrunError(friendlyInvokeError(e));
+      showDryrunError(await friendlyInvokeErrorAsync(e));
       // Re-enable so the teacher can retry; the operation is idempotent, so a
       // retry after a partial/failed run never duplicates.
       btn.disabled = false;
@@ -1909,6 +1950,15 @@
     } catch (e) {
       console.error('[import.html] subjects load failed', e);
       subjectOptions = [];
+    }
+
+    // Both fetches settled (even a failure leaves usable empty lists — the
+    // teacher can still proceed without assigning a teacher). Unblock screen 2
+    // and repopulate its dropdowns if the teacher is already looking at it.
+    staffSubjectsLoaded = true;
+    applyStaffLoadingState();
+    if (document.getElementById('screen-2').classList.contains('show')) {
+      rebuildClassSettings();
     }
   }
 

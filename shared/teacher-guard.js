@@ -94,9 +94,18 @@ window.MrBadmusTeacherGuard = (function () {
       .eq('id', user.id)
       .single();
 
-    if (error || !profile) {
-      console.error('[teacher-guard] profile lookup failed for session user — bouncing to home', error);
+    if (error && error.code !== 'PGRST116') {
+      // A real query failure (network blip, RLS timeout) is NOT a denial —
+      // don't treat a legitimate teacher as "not a teacher". Bounce to login so
+      // a re-auth lands them back here (return path preserved). PGRST116 is
+      // Supabase's "no rows" code, handled as a genuine no-profile below.
+      console.error('[teacher-guard] profile lookup errored — bouncing to login', error);
       if (onDenied) return onDenied({ reason: 'profile_lookup_failed', error });
+      return bounceToLogin();
+    }
+    if (!profile) {
+      console.error('[teacher-guard] no profile row for session user — bouncing to home', error);
+      if (onDenied) return onDenied({ reason: 'no_profile', error });
       return bounceToHome();
     }
 

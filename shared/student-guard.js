@@ -106,9 +106,18 @@ window.MrBadmusStudentGuard = (function () {
       .eq('id', user.id)
       .single();
 
-    if (error || !profile) {
-      console.error('[student-guard] profile lookup failed for session user — bouncing to home', error);
+    if (error && error.code !== 'PGRST116') {
+      // A real query failure (network blip, RLS timeout) is NOT a denial —
+      // don't dump a signed-in student on the login page as if they'd never
+      // signed in. Bounce to login so a re-auth returns them here (return path
+      // preserved). PGRST116 is Supabase's "no rows" code, handled below.
+      console.error('[student-guard] profile lookup errored — bouncing to login', error);
       if (onDenied) return onDenied({ reason: 'profile_lookup_failed', error });
+      return bounceToLogin();
+    }
+    if (!profile) {
+      console.error('[student-guard] no profile row for session user — bouncing to home', error);
+      if (onDenied) return onDenied({ reason: 'no_profile', error });
       return bounceToHome();
     }
 
