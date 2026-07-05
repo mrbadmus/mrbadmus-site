@@ -623,8 +623,10 @@ HEAD_ASSETS = """<link rel="preload" href="/shared/fonts/fraunces-var-latin.woff
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
+  <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/search-index.js" defer></script>
-  <script src="/shared/search.js" defer></script>"""
+  <script src="/shared/search.js" defer></script>
+  <script src="/shared/nav.js" defer></script>"""
 
 THEME_COLOR = "#F7F1E5"  # pre-paint browser chrome tint — matches --bg (light default)
 
@@ -634,12 +636,14 @@ THEME_COLOR = "#F7F1E5"  # pre-paint browser chrome tint — matches --bg (light
 # ─────────────────────────────────────────────
 
 def nav_html(active_subject="", pathway="", tier=""):
-    """Nav bar — shows home, search icon, and optionally pathway breadcrumb."""
-    pathway_links = ""
+    """Canonical public top-nav (MRB-109). Styling lives in shared/nav.css;
+    behaviour — the auth chip and the accessible hamburger drawer — lives in
+    shared/nav.js. This returns markup only."""
+    crumbs = ""
     if pathway and tier:
         pc = PATHWAY_COLORS.get(pathway, "#1D6FB8")
         tc = TIER_COLORS.get(tier, "#7A5F00")
-        pathway_links = f"""
+        crumbs = f"""
     <span class="crumb-sep">›</span>
     <a href="/{pathway}/index.html" class="crumb" style="color:{pc};">{pathway.title()} Science</a>
     <span class="crumb-sep">›</span>
@@ -648,79 +652,31 @@ def nav_html(active_subject="", pathway="", tier=""):
             sc = SITE_DATA[active_subject]["color"]
             sl = SITE_DATA[active_subject]["label"]
             se = SITE_DATA[active_subject]["emoji"]
-            pathway_links += f"""
+            crumbs += f"""
     <span class="crumb-sep">›</span>
     <a href="/{pathway}/{tier}/{active_subject}/index.html" class="crumb" style="color:{sc};">{se} {sl}</a>"""
     elif pathway:
         pc = PATHWAY_COLORS.get(pathway, "#1D6FB8")
-        pathway_links = f"""
+        crumbs = f"""
     <span class="crumb-sep">›</span>
     <a href="/{pathway}/index.html" class="crumb" style="color:{pc};">{pathway.title()} Science</a>"""
 
+    crumbs_block = f'<div class="nav-crumbs">{crumbs}</div>' if crumbs else ""
+
     return f"""<nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-links">
-    <a href="/index.html">Home</a>
-    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
-    <a href="/leaderboard.html">🏆</a>
-    <a href="/past-papers.html">Past Papers</a>
-    <a href="/my-challenges.html">My Challenges</a>
-    <a href="#" title="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;">🔍</a>
-    {pathway_links}
-    <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
+  {crumbs_block}
+  <div class="nav-cluster">
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
+    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
+    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;">🔍</a>
+    <span id="nav-auth-area">
       <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
       <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
+    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
   </div>
-</nav>
-<script>
-(function(){{
-  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  try {{
-    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
-    if (raw) {{
-      const session = JSON.parse(raw);
-      const user = session?.user;
-      // If the stored session has already expired, don't render a signed-in
-      // chip that would 401 on click — leave the Sign In / Sign Up buttons.
-      const expMs = session && session.expires_at ? session.expires_at * 1000 : 0;
-      if (user && !(expMs && expMs <= Date.now())) {{
-        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
-        const area = document.getElementById('nav-auth-area');
-        if (area) {{
-          // Profile chip routes by advisory role: staff → teacher profile,
-          // students → profile setup. Routing is UX only — RLS guards the data.
-          // Cache the resolved href PER USER (never a global key) so a previous
-          // account's route can't leak onto a different signed-in user.
-          var hrefKey = 'mrb-profile-href:' + user.id;
-          var profileHref = '/profile-setup.html';
-          try {{ profileHref = localStorage.getItem(hrefKey) || profileHref; }} catch(err) {{}}
-          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);padding:5px 12px;border-radius:999px;font-weight:700;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
-          fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {{
-            headers: {{ 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }}
-          }}).then(function(r) {{ return r.ok ? r.json() : null; }}).then(function(rows) {{
-            // Only trust and cache a real role row. A 401/empty response must not
-            // overwrite the cache with the student default.
-            if (!rows || !rows[0]) return;
-            profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
-            try {{ localStorage.setItem(hrefKey, profileHref); }} catch(err) {{}}
-            var link = document.getElementById('nav-profile-link');
-            if (link) link.href = profileHref;
-          }}).catch(function() {{}});
-          fetch('https://mrbadmus-backend.onrender.com/api/profile', {{
-            headers: {{ 'Authorization': 'Bearer ' + session.access_token }}
-          }}).then(r => r.ok ? r.json() : null).then(function(profile) {{
-            if (profile && profile.avatar_url) {{
-              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"/><span style="color:var(--accent);font-weight:700;font-size:0.82rem;">' + firstName + '</span></a>';
-            }}
-          }}).catch(function() {{}});
-        }}
-      }}
-    }}
-  }} catch(e) {{}}
-}})();
-</script>"""
+</nav>"""
 
 
 # ─────────────────────────────────────────────
@@ -835,26 +791,11 @@ def make_landing():
 <section class="hero">
   <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
   <p>Your GCSE Science revision hub — Physics, Chemistry &amp; Biology. Choose your course below.</p>
-  <div class="hero-search">
-    <input type="text" id="siteSearch" placeholder="🔍 Search topics e.g. 'photosynthesis', 'forces'..." autocomplete="off"/>
-    <div id="searchResults" class="search-results"></div>
-  </div>
 </section>
 
-<a href="/weekly-challenge.html" class="challenge-teaser">
-  <div style="display:flex;align-items:center;gap:14px;">
-    <span style="font-size:2rem;flex-shrink:0;">⚡</span>
-    <div style="flex:1;min-width:0;">
-      <div class="challenge-teaser-title">Weekly Challenge</div>
-      <div class="challenge-teaser-sub">15 questions · one attempt · can you reach the top 10?</div>
-    </div>
-    <span class="challenge-teaser-cta">Take the Challenge →</span>
-  </div>
-</a>
-
 <!-- ── TOP STARS OF THE WEEK ───────────────────────────── -->
-<div id="top-stars" style="max-width:880px;margin:0 auto 32px;padding:0 24px;display:none;">
-  <div style="text-align:center;margin-bottom:18px;">
+<div id="top-stars" style="max-width:880px;margin:0 auto 20px;padding:0 24px;display:none;">
+  <div style="text-align:center;margin-bottom:10px;">
     <h2 class="stars-heading">⭐ Top Stars of the Week</h2>
     <p style="color:var(--muted);font-size:0.88rem;margin-top:6px;">Take the weekly quiz and see if you can earn a place in the top 10</p>
   </div>
@@ -898,21 +839,15 @@ def make_landing():
 </div>
 
 <style>
-.challenge-teaser { display:block;max-width:880px;margin:0 auto 32px;padding:20px 24px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);text-decoration:none;transition:border-color 0.15s,box-shadow 0.15s,transform 0.15s; }
-.challenge-teaser:hover { border-color:var(--accent-border);box-shadow:var(--shadow-pop);transform:translateY(-2px); }
-.challenge-teaser-title { font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.15rem;color:var(--text); }
-.challenge-teaser-sub { color:var(--muted);font-size:0.85rem;font-weight:500;margin-top:2px; }
-.challenge-teaser-cta { background:var(--accent);color:var(--on-accent);padding:10px 18px;border-radius:999px;font-weight:700;font-size:0.85rem;white-space:nowrap;flex-shrink:0; }
-.challenge-teaser:hover .challenge-teaser-cta { background:var(--accent-hover); }
 .stars-heading { font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.5rem;display:inline-block; }
-.sotw-card { background:var(--card);border:1px solid var(--border);border-top:3px solid var(--higher);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:20px 24px;margin-bottom:20px; }
+.sotw-card { background:var(--card);border:1px solid var(--border);border-top:3px solid var(--higher);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:14px 20px;margin-bottom:12px; }
 .sotw-kicker { font-weight:600;font-size:0.72rem;color:var(--higher);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px; }
 .sotw-name { font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.25rem;color:var(--text); }
 .sotw-school { color:var(--muted);font-size:0.82rem;font-weight:500; }
 .sotw-avatar { width:64px;height:64px;border-radius:50%;border:3px solid var(--higher);overflow:hidden;background:var(--sunken);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0; }
 .sotw-score { font-weight:700;font-size:1.8rem;color:var(--higher);font-variant-numeric:tabular-nums; }
 .sotw-subjects { color:var(--muted);font-size:0.72rem;font-weight:500; }
-.stars-panel { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);padding:18px; }
+.stars-panel { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);padding:14px; }
 .stars-panel-foundation { border-top:3px solid var(--foundation); }
 .stars-panel-higher { border-top:3px solid var(--higher); }
 .stars-panel-title { font-family:var(--font-sans);font-weight:600;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.04em; }
@@ -1003,42 +938,7 @@ def make_landing():
   </a>
 
 </div>
-
-<style>
-.hero-search { max-width:560px;margin:24px auto 0;position:relative; }
-.hero-search input { width:100%;padding:14px 20px;border-radius:999px;border:1px solid var(--border-strong);background:var(--card);color:var(--text);font-family:var(--font-sans);font-size:1rem;outline:none;box-shadow:var(--shadow-card);transition:border-color 0.2s; }
-.hero-search input:focus { border-color:var(--accent); }
-.hero-search input::placeholder { color:var(--muted); }
-.search-results { position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card);border:1px solid var(--border-strong);border-radius:14px;box-shadow:var(--shadow-pop);max-height:320px;overflow-y:auto;z-index:200;display:none; }
-.search-results.open { display:block; }
-.search-result-item { padding:12px 18px;cursor:pointer;border-bottom:1px solid var(--border);font-size:0.9rem;display:flex;align-items:center;gap:10px;text-align:left; }
-.search-result-item:last-child { border-bottom:none; }
-.search-result-item:hover { background:var(--accent-soft); }
-.search-result-subject { font-size:0.72rem;padding:2px 8px;border-radius:10px;font-weight:600;flex-shrink:0; }
-</style>
-
-<script>
-(function() {
-  // Quick search index — pathway links for Combined Higher as default deep link
-  const INDEX = null; // index now loaded from /shared/search-index.js (window.MRB_SEARCH_INDEX)
-  const input = document.getElementById('siteSearch');
-  const results = document.getElementById('searchResults');
-  if (!input) return;
-  input.addEventListener('input', function() {
-    const q = this.value.trim().toLowerCase();
-    if (q.length < 2) { results.classList.remove('open'); return; }
-    const matches = (window.MRB_SEARCH_INDEX||[]).filter(item => item.t.toLowerCase().includes(q) || item.s.toLowerCase().includes(q)).slice(0,8);
-    if (!matches.length) { results.classList.remove('open'); return; }
-    results.innerHTML = matches.map(m =>
-      '<a class="search-result-item" href="' + m.url + '">' +
-      '<span class="search-result-subject" style="background:' + m.c + '22;color:' + m.c + '">' + m.s + '</span>' +
-      '<span>' + m.t + '</span></a>'
-    ).join('');
-    results.classList.add('open');
-  });
-  document.addEventListener('click', e => { if (!e.target.closest('.hero-search')) results.classList.remove('open'); });
-})();
-</script>"""
+"""
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -3580,6 +3480,8 @@ html {{ background: #0F0F1A; }}
   <meta name="theme-color" content="#0F0F1A"/>
   <title>{st['title']} | Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
+  <link rel="stylesheet" href="/shared/nav.css"/>
+  <script src="/shared/nav.js" defer></script>
   {extra_css}
 </head>
 <body>
@@ -3688,6 +3590,8 @@ html {{ background: #0F0F1A; }}
   <meta name="theme-color" content="#0F0F1A"/>
   <title>Electricity | Physics | MrBadmusAI</title>
   <link rel="stylesheet" href="/shared/styles.css"/>
+  <link rel="stylesheet" href="/shared/nav.css"/>
+  <script src="/shared/nav.js" defer></script>
   {extra_css}
 </head>
 <body>

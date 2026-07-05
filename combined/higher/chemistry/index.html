@@ -9,8 +9,10 @@
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css"/>
   <link rel="stylesheet" href="/shared/styles.css"/>
+  <link rel="stylesheet" href="/shared/nav.css"/>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
+  <script src="/shared/nav.js" defer></script>
   <style>
     html { background: var(--bg); }
     :root { --subject: #B02342; }
@@ -20,74 +22,24 @@
 <body>
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-links">
-    <a href="/index.html">Home</a>
-    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
-    <a href="/leaderboard.html">🏆</a>
-    <a href="/past-papers.html">Past Papers</a>
-    <a href="/my-challenges.html">My Challenges</a>
-    <a href="#" title="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
-    
+  <div class="nav-crumbs">
     <span class="crumb-sep">›</span>
     <a href="/combined/index.html" class="crumb" style="color:#1D6FB8;">Combined Science</a>
     <span class="crumb-sep">›</span>
     <a href="/combined/higher/index.html" class="crumb" style="color:#7A5F00;">Higher</a>
     <span class="crumb-sep">›</span>
-    <a href="/combined/higher/chemistry/index.html" class="crumb" style="color:#B02342;">🧪 Chemistry</a>
-    <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
+    <a href="/combined/higher/chemistry/index.html" class="crumb" style="color:#B02342;">🧪 Chemistry</a></div>
+  <div class="nav-cluster">
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
+    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
+    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
+    <span id="nav-auth-area">
       <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
       <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
+    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
   </div>
 </nav>
-<script>
-(function(){
-  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  try {
-    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
-    if (raw) {
-      const session = JSON.parse(raw);
-      const user = session?.user;
-      // If the stored session has already expired, don't render a signed-in
-      // chip that would 401 on click — leave the Sign In / Sign Up buttons.
-      const expMs = session && session.expires_at ? session.expires_at * 1000 : 0;
-      if (user && !(expMs && expMs <= Date.now())) {
-        const firstName = user.user_metadata?.first_name || user.email?.split('@')[0] || 'You';
-        const area = document.getElementById('nav-auth-area');
-        if (area) {
-          // Profile chip routes by advisory role: staff → teacher profile,
-          // students → profile setup. Routing is UX only — RLS guards the data.
-          // Cache the resolved href PER USER (never a global key) so a previous
-          // account's route can't leak onto a different signed-in user.
-          var hrefKey = 'mrb-profile-href:' + user.id;
-          var profileHref = '/profile-setup.html';
-          try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch(err) {}
-          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);padding:5px 12px;border-radius:999px;font-weight:700;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
-          fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
-            headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
-          }).then(function(r) { return r.ok ? r.json() : null; }).then(function(rows) {
-            // Only trust and cache a real role row. A 401/empty response must not
-            // overwrite the cache with the student default.
-            if (!rows || !rows[0]) return;
-            profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
-            try { localStorage.setItem(hrefKey, profileHref); } catch(err) {}
-            var link = document.getElementById('nav-profile-link');
-            if (link) link.href = profileHref;
-          }).catch(function() {});
-          fetch('https://mrbadmus-backend.onrender.com/api/profile', {
-            headers: { 'Authorization': 'Bearer ' + session.access_token }
-          }).then(r => r.ok ? r.json() : null).then(function(profile) {
-            if (profile && profile.avatar_url) {
-              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"/><span style="color:var(--accent);font-weight:700;font-size:0.82rem;">' + firstName + '</span></a>';
-            }
-          }).catch(function() {});
-        }
-      }
-    }
-  } catch(e) {}
-})();
-</script>
   
 <div class="hub-header">
   <a class="back-link" href="/combined/higher/index.html">← Back to Higher Tier</a>

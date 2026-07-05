@@ -1,0 +1,272 @@
+/* ───────────────────────────────────────────────────────────────────────
+   shared/nav.css — canonical public top-nav (MRB-109)
+
+   Single source of truth for the public/student-facing nav across the whole
+   site: the 997 generated topic pages, the homepage, and the hand-written
+   app pages (leaderboard, weekly-challenge, my-challenges, past-papers,
+   profile-setup, revision).
+
+   Layout: brand/wordmark on the LEFT (links home) + optional breadcrumb;
+   a compact utility cluster on the RIGHT (Challenge pill, Leaderboard,
+   Search, auth control) that is persistent at all widths; and a hamburger
+   button that opens a full-menu drawer. Behaviour + accessibility live in
+   shared/nav.js. Tokens only — no new colours.
+
+   Dashboards (teacher/*, student/*, teacher-profile) keep their own
+   utilitarian .top-nav per the brand rule and do NOT load this file.
+   ─────────────────────────────────────────────────────────────────────── */
+
+.nav {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 var(--sp-5);
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ── Brand / wordmark (left) ── */
+.nav-brand {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.brand-logo { flex-shrink: 0; }
+
+/* ── Optional breadcrumb (left, after brand; hidden on narrow screens) ── */
+.nav-crumbs { display: flex; align-items: center; gap: 6px; min-width: 0; overflow: hidden; }
+.nav-crumbs .crumb-sep { color: var(--border-strong); font-size: 0.8rem; }
+.nav-crumbs a.crumb {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Utility cluster (right) — persistent at all widths ── */
+.nav-cluster { display: flex; align-items: center; gap: var(--sp-1); flex-shrink: 0; }
+
+.nav-cluster a { text-decoration: none; }
+
+.challenge-chip {
+  color: var(--on-accent);
+  background: var(--accent);
+  font-weight: 700;
+  font-size: var(--fs-small);
+  padding: 7px 15px;
+  border-radius: 999px;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.challenge-chip:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+.nav-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  line-height: 1;
+  color: var(--muted);
+  padding: 7px 10px;
+  border-radius: 999px;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-icon-link:hover { background: var(--accent-soft); color: var(--accent); }
+
+/* Auth control — Sign In / Sign Up when signed out, chip when signed in.
+   The chip colours are the audited ~5.5:1 contrast pair — do not weaken. */
+#nav-auth-area { display: flex; gap: 6px; align-items: center; }
+.btn-signup {
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  padding: 6px 15px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: var(--fs-small);
+  white-space: nowrap;
+}
+.btn-signup:hover { background: var(--accent-soft); color: var(--accent); }
+.btn-signin {
+  background: var(--accent);
+  color: var(--on-accent);
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: var(--fs-small);
+  white-space: nowrap;
+}
+.btn-signin:hover { background: var(--accent-hover); color: var(--on-accent); }
+
+/* ── Hamburger button ── */
+.nav-burger {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 40px;
+  height: 38px;
+  padding: 0 9px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.nav-burger:hover { background: var(--accent-soft); border-color: var(--accent-border); }
+.nav-burger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.nav-burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.nav-burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-burger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.nav-burger:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ── Drawer + scrim (injected by nav.js) ── */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 14, 8, 0.44);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 200;
+}
+.nav-overlay.open { opacity: 1; visibility: visible; }
+
+.nav-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(320px, 85vw);
+  background: var(--card);
+  border-left: 1px solid var(--border);
+  box-shadow: var(--shadow-pop);
+  transform: translateX(100%);
+  transition: transform 0.24s ease;
+  z-index: 201;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 16px calc(18px + env(safe-area-inset-bottom));
+  overflow-y: auto;
+}
+.nav-drawer.open { transform: translateX(0); }
+
+.nav-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.nav-drawer-title {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--text);
+}
+.nav-drawer-close {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+.nav-drawer-close:hover { background: var(--sunken); color: var(--text); }
+.nav-drawer-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.nav-drawer-menu { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; }
+.nav-drawer-menu a,
+.nav-drawer-menu button.nav-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  text-decoration: none;
+  padding: 13px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.nav-drawer-menu a:hover,
+.nav-drawer-menu button.nav-drawer-link:hover { background: var(--accent-soft); color: var(--accent); }
+.nav-drawer-menu a:focus-visible,
+.nav-drawer-menu button.nav-drawer-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.nav-drawer-menu .nav-drawer-ico { font-size: 1.1rem; width: 22px; text-align: center; flex-shrink: 0; }
+
+.nav-drawer-auth {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nav-drawer-auth a,
+.nav-drawer-auth .nav-drawer-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ── Responsive tightening ── */
+@media (max-width: 900px) { .nav-crumbs { display: none; } }
+@media (max-width: 560px) {
+  .nav { padding: 0 var(--sp-3); gap: var(--sp-2); }
+  .nav-brand { font-size: 1.1rem; gap: 7px; }
+  .nav-cluster { gap: 3px; }
+  .challenge-chip .nav-chip-label { display: none; }   /* ⚡ only on small screens */
+  .challenge-chip { padding: 7px 9px; }
+  .nav-icon-link { padding: 6px 7px; }
+  /* Sign Up collapses into the drawer on phones so the persistent cluster
+     (Challenge, Leaderboard, Search, Sign In, menu) fits without overflow.
+     The signed-in chip is a single element and is unaffected. */
+  #nav-auth-area .btn-signup { display: none; }
+  .btn-signin { padding: 7px 12px; }
+  .nav-burger { width: 36px; padding: 0 8px; }
+}
+/* Smallest phones: Leaderboard + Search collapse into the drawer so the bar
+   never overflows. Challenge (primary CTA), Sign In and the menu stay put. */
+@media (max-width: 400px) {
+  .nav-cluster .nav-icon-link { display: none; }
+}
+@media (max-width: 360px) {
+  .nav-brand { font-size: 1rem; }
+}

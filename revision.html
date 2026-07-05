@@ -8,6 +8,10 @@
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="stylesheet" href="/shared/tokens.css"/>
+  <link rel="stylesheet" href="/shared/nav.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
+  <script src="/shared/nav.js" defer></script>
   <style>
     /* ═══ revision.html — consumes tokens only, no palette literals. Matches
        the redesigned generator pages (light editorial). ═══ */
@@ -23,47 +27,7 @@
     }
     a { color: inherit; text-decoration: none; }
 
-    /* ── NAV (matches generator redesign) ── */
-    .nav {
-      background: var(--card);
-      border-bottom: 1px solid var(--border);
-      padding: 0 var(--sp-5);
-      height: 62px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 100;
-      overflow-x: auto; scrollbar-width: none;
-    }
-    .nav::-webkit-scrollbar { display: none; }
-    .nav-brand {
-      font-family: var(--font-serif);
-      font-optical-sizing: auto;
-      font-size: 1.35rem; font-weight: 600;
-      color: var(--text);
-      display: flex; align-items: center; gap: 9px;
-      letter-spacing: -0.01em; flex-shrink: 0;
-    }
-    .brand-logo { flex-shrink: 0; }
-    .nav-links { display: flex; gap: var(--sp-1); align-items: center; flex-shrink: 0; }
-    .nav-links a {
-      font-size: var(--fs-small); font-weight: 600;
-      padding: 6px 13px; border-radius: 999px;
-      color: var(--muted); white-space: nowrap;
-      transition: background 0.15s, color 0.15s;
-    }
-    .nav-links a:hover { background: var(--accent-soft); color: var(--accent); }
-    .nav-links a.challenge-chip { color: var(--on-accent); background: var(--accent); font-weight: 700; }
-    .nav-links a.challenge-chip:hover { background: var(--accent-hover); color: var(--on-accent); }
-    .nav-links a.here { color: var(--accent); background: var(--accent-soft); font-weight: 700; }
-    .nav-links a.btn-signup {
-      border: 1.5px solid var(--accent); color: var(--accent);
-      padding: 6px 15px; border-radius: 999px; font-weight: 700; font-size: var(--fs-small);
-    }
-    .nav-links a.btn-signup:hover { background: var(--accent-soft); }
-    .nav-links a.btn-signin {
-      background: var(--accent); color: var(--on-accent);
-      padding: 7px 16px; border-radius: 999px; font-weight: 700; font-size: var(--fs-small);
-    }
-    .nav-links a.btn-signin:hover { background: var(--accent-hover); color: var(--on-accent); }
+    /* Public top-nav styling now lives in /shared/nav.css (MRB-109). */
 
     /* ── PAGE HEADER ── */
     .page-head {
@@ -221,7 +185,6 @@
     .gate-note a { color: var(--accent); font-weight: 700; }
 
     @media (max-width: 768px) {
-      .nav-links a:not(.btn-signup):not(.btn-signin):not(.challenge-chip) { padding: 6px 8px; }
       .dl-btn { flex: 1; justify-content: center; }
     }
   </style>
@@ -230,58 +193,17 @@
 
 <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <div class="nav-links">
-    <a href="/index.html">Home</a>
-    <a href="/weekly-challenge.html" class="challenge-chip">⚡ Challenge</a>
-    <a href="/leaderboard.html">🏆</a>
-    <a href="/past-papers.html">Past Papers</a>
-    <a href="/revision.html" class="here">Revision</a>
-    <span id="nav-auth-area" style="margin-left:4px;display:flex;gap:6px;align-items:center;">
+  <div class="nav-cluster">
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
+    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
+    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
+    <span id="nav-auth-area">
       <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
       <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
     </span>
+    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
   </div>
 </nav>
-
-<!-- ── Nav auth chip: same session pattern as generator pages, retoned to
-     tokens (accent instead of the old teal). ── -->
-<script>
-(function(){
-  const SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
-  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
-  try {
-    const raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
-    if (!raw) return;
-    const session = JSON.parse(raw);
-    const user = session && session.user;
-    const expMs = session && session.expires_at ? session.expires_at * 1000 : 0;
-    if (!user || (expMs && expMs <= Date.now())) return;
-    const firstName = (user.user_metadata && user.user_metadata.first_name) || (user.email ? user.email.split('@')[0] : 'You');
-    const area = document.getElementById('nav-auth-area');
-    if (!area) return;
-    var hrefKey = 'mrb-profile-href:' + user.id;
-    var profileHref = '/profile-setup.html';
-    try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch(err) {}
-    area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:var(--accent);font-weight:700;font-size:var(--fs-small);text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
-    fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
-    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(rows){
-      if (!rows || !rows[0]) return;
-      profileHref = (rows[0].role && rows[0].role !== 'student') ? '/teacher-profile.html' : '/profile-setup.html';
-      try { localStorage.setItem(hrefKey, profileHref); } catch(err) {}
-      var link = document.getElementById('nav-profile-link');
-      if (link) link.href = profileHref;
-    }).catch(function(){});
-    fetch('https://mrbadmus-backend.onrender.com/api/profile', {
-      headers: { 'Authorization': 'Bearer ' + session.access_token }
-    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(profile){
-      if (profile && profile.avatar_url) {
-        area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"/><span style="color:var(--accent);font-weight:700;font-size:var(--fs-small);">' + firstName + '</span></a>';
-      }
-    }).catch(function(){});
-  } catch(e) {}
-})();
-</script>
 
 <div class="page-head">
   <div class="page-kicker">Revision Library</div>
