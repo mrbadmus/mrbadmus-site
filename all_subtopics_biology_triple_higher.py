@@ -9469,6 +9469,414 @@ BIOLOGY_SUBTOPICS_ALL = {
   'title': 'Biodiversity',
   'triple_only': None,
   'variables': []},
+  {'common_mistake': 'Pollution is not only about litter you can see. Invisible pollution — sewage and '
+                   'fertiliser in water, acidic gases in air, pesticides soaking into land — often does the '
+                   'most damage to biodiversity. Also remember: MORE people AND a higher standard of living '
+                   'both increase waste, not just population size alone.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'waste-management',
+ 'key_note': 'Rising population + higher living standards → more resources used, more waste, more pollution. '
+             'Pollution occurs in water (sewage, fertiliser, toxic chemicals), air (smoke, sulfur '
+             'dioxide/acid rain) and land (landfill, pesticides/herbicides). Pollution kills organisms and '
+             'reduces biodiversity.',
+ 'matching': {'instruction': 'Sort each pollutant into the environment it mainly pollutes.',
+              'pairs': [('Water', 'Sewage — untreated human waste released into rivers and seas'),
+                        ('Water', 'Fertiliser washed off farmland causing eutrophication'),
+                        ('Air', 'Sulfur dioxide from burning fuels, causing acid rain'),
+                        ('Air', 'Smoke and smoke particles from combustion'),
+                        ('Land', 'Landfill — rubbish buried in the ground'),
+                        ('Land', 'Pesticides and herbicides sprayed on crops')],
+              'title': 'Where Does This Pollution Happen?'},
+ 'quiz': [{'opts': [('People use more resources and produce more waste per person', True),
+                    ('People automatically have more children', False),
+                    ('A higher standard of living has no effect on pollution', False),
+                    ('People move to the countryside where there is less waste', False)],
+           'q': 'Why does a rising human standard of living increase pollution, even where population is '
+                'stable?',
+           'wrong_explanations': {1: 'Standard of living is about resource use per person, not birth rate — '
+                                     'both population size AND resource use per person raise pollution.',
+                                  2: 'It is the extra resource use and waste per person that increases '
+                                     'pollution, not the standard of living itself being harmless.',
+                                  3: 'Where people go does not remove the waste — a higher standard of '
+                                     'living means each person consumes and discards more.'}},
+          {'opts': [('Water', True),
+                    ('Air', False),
+                    ('Land only', False),
+                    ('None — fertiliser is not a pollutant', False)],
+           'q': 'Fertiliser washing into a river reduces biodiversity. Which environment is being polluted?',
+           'wrong_explanations': {1: 'Fertiliser in a river is water pollution — it causes eutrophication, '
+                                     'lowering oxygen and killing fish.',
+                                  2: 'Fertiliser run-off enters water, not the air.',
+                                  3: 'Fertiliser is a pollutant when it reaches water — it damages the '
+                                     'ecosystem even though it helps crops grow on land.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.2',
+ 'summary': 'Explain how human population growth and rising living standards increase pollution of water, '
+            'air and land, reducing biodiversity.',
+ 'theory': [{'content': 'The human POPULATION is growing rapidly, and the STANDARD OF LIVING is rising in '
+                        'many countries.\n'
+                        '\n'
+                        'Both of these mean humans use MORE RESOURCES and produce MORE WASTE.\n'
+                        '\n'
+                        'Unless this waste and the chemicals in it are handled properly, more POLLUTION is '
+                        'caused.\n'
+                        '\n'
+                        'Pollution KILLS plants and animals, which REDUCES BIODIVERSITY (the variety of '
+                        'living things in an area).',
+             'heading': 'Why pollution is increasing'},
+            {'content': 'Pollution can occur in three places:\n'
+                        '\n'
+                        'IN WATER — from sewage, from fertiliser washed off fields, and from toxic '
+                        'chemicals. Fertiliser causes eutrophication (algae bloom → less oxygen → fish '
+                        'die).\n'
+                        '\n'
+                        'IN AIR — from smoke and from acidic gases such as sulfur dioxide, which cause acid '
+                        'rain.\n'
+                        '\n'
+                        'ON LAND — from landfill (buried rubbish) and from toxic chemicals such as '
+                        'pesticides and herbicides, which can wash into soil and water.',
+             'heading': 'The three places pollution happens'},
+            {'content': 'Every source of pollution damages HABITATS and directly KILLS organisms.\n'
+                        '\n'
+                        'When organisms die or habitats are destroyed, the number of species and their '
+                        'numbers fall — biodiversity DECREASES.\n'
+                        '\n'
+                        'Managing waste properly (treating sewage, filtering gases, recycling) reduces '
+                        'pollution and helps protect biodiversity.',
+             'heading': 'Why it matters'}],
+ 'title': 'Waste Management and Pollution',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'Destroying a peat bog harms the environment in TWO ways, not one: it reduces '
+                   'biodiversity (habitat lost) AND releases carbon dioxide (stored carbon escapes as the '
+                   'peat decays or is burned). Many students only mention one. Peat is extracted mainly for '
+                   'COMPOST, not just as a fuel.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'land-use',
+ 'key_note': 'Humans reduce land for other species by building, quarrying, farming and dumping waste. Peat '
+             'bogs store carbon and are rich habitats. Extracting peat for compost/fuel destroys the habitat '
+             '(lowering biodiversity) and releases CO₂ when peat decays or burns. Use peat-free compost.',
+ 'matching': {'instruction': 'Sort each statement into a human land use or a consequence of destroying peat '
+                             'bogs.',
+              'pairs': [('Human land use', 'Building houses, factories and roads'),
+                        ('Human land use', 'Quarrying rock and minerals'),
+                        ('Human land use', 'Farming crops and livestock'),
+                        ('Consequence of peat destruction',
+                         'Carbon dioxide released as peat decays or burns'),
+                        ('Consequence of peat destruction', 'Loss of a specialised habitat'),
+                        ('Consequence of peat destruction', 'Reduced biodiversity of bog species')],
+              'title': 'Land Use: Cause or Consequence?'},
+ 'quiz': [{'opts': [('Peat stores carbon from partly-decayed plants; decay or burning releases it as CO₂',
+                     True),
+                    ('Peat is made of pure carbon dioxide gas', False),
+                    ('Machines used to dig peat run on petrol', False),
+                    ('Peat reflects sunlight, warming the air', False)],
+           'q': 'Why does draining and extracting peat release carbon dioxide?',
+           'wrong_explanations': {1: 'Peat is partly-decayed plant material that locked away carbon; when it '
+                                     'decays in air or is burned, that carbon is released as CO₂.',
+                                  2: 'Peat is solid plant material, not CO₂ gas — the CO₂ is released only '
+                                     'when the stored carbon reacts with oxygen.',
+                                  3: 'The machinery is a minor factor; the main release is the carbon stored '
+                                     'in the peat itself escaping as CO₂.'}},
+          {'opts': [('Buying peat-free compost for gardens', True),
+                    ('Extracting peat faster so it is used up sooner', False),
+                    ('Burning peat instead of using it as compost', False),
+                    ('Draining more bogs to create farmland', False)],
+           'q': 'Which single change would best protect peat bog biodiversity?',
+           'wrong_explanations': {1: 'If gardeners choose peat-free compost, demand for peat falls, so fewer '
+                                     'bogs are destroyed and their biodiversity is protected.',
+                                  2: 'Extracting peat faster destroys the habitat sooner — the opposite of '
+                                     'protecting it.',
+                                  3: 'Burning peat still destroys the bog and releases CO₂.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.3',
+ 'summary': 'Describe how humans reduce land available for other organisms, and explain why destroying peat '
+            'bogs harms biodiversity and releases carbon dioxide.',
+ 'theory': [{'content': 'Humans REDUCE the amount of land available for other plants and animals.\n'
+                        '\n'
+                        'We use land for:\n'
+                        'BUILDING — houses, factories, roads.\n'
+                        'QUARRYING — digging out rock and minerals.\n'
+                        'FARMING — growing crops and keeping animals.\n'
+                        'DUMPING WASTE — landfill sites.\n'
+                        '\n'
+                        'Every time land is used for these, HABITATS are destroyed and there is less space '
+                        'for wild species — so biodiversity falls.',
+             'heading': 'How humans use up land'},
+            {'content': 'PEAT BOGS are waterlogged areas where dead plants do not fully decay (there is not '
+                        'enough oxygen for decomposers).\n'
+                        '\n'
+                        'Over thousands of years the partly-decayed plants build up as PEAT.\n'
+                        '\n'
+                        'Because the plants never fully decayed, peat STORES a large amount of CARBON.\n'
+                        '\n'
+                        'Peat bogs are an important HABITAT for many specialised plants, animals and '
+                        'microorganisms.',
+             'heading': 'What peat bogs are'},
+            {'content': 'Peat is dug up (extracted) to sell as COMPOST for gardens and for commercial food '
+                        'production, and it can be burned as a fuel.\n'
+                        '\n'
+                        'Destroying peat bogs:\n'
+                        'REDUCES the area of this habitat → the biodiversity of the species living there '
+                        'DECREASES.\n'
+                        'Releases CARBON DIOXIDE — when peat is drained and decays, or is burned, the stored '
+                        'carbon is released as CO₂, adding to global warming.\n'
+                        '\n'
+                        'Using peat-free compost helps protect peat bogs.',
+             'heading': 'Why destroying peat bogs is a problem'}],
+ 'title': 'Land Use and Peat Bogs',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'Deforestation raises atmospheric CO₂ for TWO separate reasons: fewer trees means less '
+                   'CO₂ is absorbed by photosynthesis, AND burning or decay of the wood releases stored CO₂. '
+                   'Give both. Also, decay releases CO₂ because MICROORGANISMS respire as they break the '
+                   'wood down — it is a biological process.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'deforestation',
+ 'key_note': 'Tropical deforestation provides land for cattle, rice fields and biofuel crops. Consequences: '
+             'less CO₂ removed (less photosynthesis), more CO₂ released (burning trees + microbial decay of '
+             'wood), and reduced biodiversity from habitat loss.',
+ 'matching': {'instruction': 'Sort each into a reason for deforestation or a consequence of it.',
+              'pairs': [('Reason for deforestation', 'Clearing land to graze cattle'),
+                        ('Reason for deforestation', 'Creating rice fields to grow more food'),
+                        ('Reason for deforestation', 'Growing crops to make biofuels'),
+                        ('Consequence of deforestation', 'Less carbon dioxide removed by photosynthesis'),
+                        ('Consequence of deforestation', 'Carbon dioxide released by burning and decay'),
+                        ('Consequence of deforestation', 'Reduced biodiversity as habitats are lost')],
+              'title': 'Deforestation: Reason or Consequence?'},
+ 'quiz': [{'opts': [('Fewer trees means less photosynthesis, so less CO₂ is absorbed', True),
+                    ('Trees release oxygen that destroys carbon dioxide', False),
+                    ('Cutting trees cools the planet, trapping CO₂ in the soil', False),
+                    ('Deforestation increases the number of decomposers', False)],
+           'q': 'How does deforestation lead to LESS carbon dioxide being removed from the atmosphere?',
+           'wrong_explanations': {1: 'Trees remove CO₂ by photosynthesis; with fewer trees, less CO₂ is '
+                                     'taken out of the air.',
+                                  2: 'Photosynthesis absorbs CO₂ — oxygen release does not "destroy" carbon '
+                                     'dioxide.',
+                                  3: 'Removing trees reduces CO₂ uptake; it does not trap carbon in the '
+                                     'soil.'}},
+          {'opts': [('Microorganisms respire as they break down the dead wood, releasing CO₂', True),
+                    ('Wood turns directly into carbon dioxide with no organisms involved', False),
+                    ('Decay absorbs carbon dioxide from the air', False),
+                    ('Only burning releases CO₂ — decay does not', False)],
+           'q': 'Burning felled trees and the decay of leftover wood both release carbon dioxide. Why does '
+                'decay release CO₂?',
+           'wrong_explanations': {1: 'Decomposer microorganisms respire while feeding on the dead wood, and '
+                                     'respiration releases carbon dioxide.',
+                                  2: 'Decay is a biological process — microorganisms carry it out; wood does '
+                                     'not spontaneously become CO₂.',
+                                  3: 'Decay releases CO₂, it does not absorb it.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.4',
+ 'summary': 'Explain the reasons for large-scale deforestation in tropical areas and its consequences for '
+            'carbon dioxide levels and biodiversity.',
+ 'theory': [{'content': 'Large-scale DEFORESTATION (cutting down forests) has happened in tropical areas '
+                        'to:\n'
+                        '\n'
+                        'Provide land for CATTLE and for RICE FIELDS (to produce more food).\n'
+                        '\n'
+                        'Grow crops used to make BIOFUELS (fuels made from plants, e.g. ethanol).\n'
+                        '\n'
+                        'Tropical forests are cleared quickly, often by cutting and burning the trees.',
+             'heading': 'Why forests are cut down'},
+            {'content': 'Deforestation changes the balance of carbon dioxide in the atmosphere in TWO ways:\n'
+                        '\n'
+                        'LESS CO₂ IS REMOVED — fewer trees means less PHOTOSYNTHESIS, so less carbon dioxide '
+                        'is taken out of the air.\n'
+                        '\n'
+                        'MORE CO₂ IS RELEASED — burning the trees releases CO₂, and when microorganisms '
+                        'DECAY the felled wood they release CO₂ during respiration.\n'
+                        '\n'
+                        'The overall result is that atmospheric carbon dioxide INCREASES, adding to global '
+                        'warming.',
+             'heading': 'Effect on carbon dioxide'},
+            {'content': 'Forests, especially tropical rainforests, are the richest habitats on Earth.\n'
+                        '\n'
+                        'When a forest is destroyed, the HABITAT of countless species is lost.\n'
+                        '\n'
+                        'Many species become locally extinct — so BIODIVERSITY is REDUCED.\n'
+                        '\n'
+                        'Lost biodiversity can mean losing species before we even know their value (for '
+                        'example, plants that could be new medicines).',
+             'heading': 'Effect on biodiversity'}],
+ 'title': 'Deforestation',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': 'In BIOLOGY, focus on the LIVING consequences of global warming — changes in species '
+                   'distribution, migration, and biodiversity — not just the greenhouse-gas chemistry. Also, '
+                   "'distribution' means WHERE a species lives (its range), not how many there are. Rising "
+                   'sea level is caused by BOTH melting ice AND warm water expanding.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'global-warming',
+ 'key_note': 'Rising CO₂ and methane (greenhouse gases) trap heat → global warming. Biological consequences: '
+             'changed species distribution, altered migration patterns, rising sea levels flooding habitats, '
+             'and reduced biodiversity. Evidence comes from global data; treat model predictions with '
+             'appropriate caution.',
+ 'matching': {'instruction': 'Sort each into a cause of global warming or a biological effect of it.',
+              'pairs': [('Cause', 'Rising carbon dioxide from burning fossil fuels'),
+                        ('Cause', 'Rising methane from livestock farming'),
+                        ('Cause', 'Deforestation reducing CO₂ absorption'),
+                        ('Biological effect', 'Species distribution shifting towards the poles'),
+                        ('Biological effect', 'Changes in bird migration timing'),
+                        ('Biological effect', 'Coastal habitats lost as sea levels rise')],
+              'title': 'Global Warming: Cause or Effect?'},
+ 'quiz': [{'opts': [('The geographic area where the species is found', True),
+                    ('The total number of individuals in the species', False),
+                    ('How the food is shared within a population', False),
+                    ('The genetic variety within the species', False)],
+           'q': 'Global warming changes the "distribution" of a species. What does distribution mean?',
+           'wrong_explanations': {1: 'Distribution is the range — the places on Earth where a species lives. '
+                                     'Warming shifts this range.',
+                                  2: 'That is population size, not distribution.',
+                                  3: 'That is not what distribution means in ecology.'}},
+          {'opts': [('Melting ice and thermal expansion of warmer water', True),
+                    ('Photosynthesis and respiration', False),
+                    ('More rain falling on land', False),
+                    ('Fish releasing carbon dioxide', False)],
+           'q': 'Which pair of processes is causing sea levels to rise?',
+           'wrong_explanations': {1: 'Warming melts land ice (adding water) and makes existing sea water '
+                                     'expand as it warms — both raise sea level.',
+                                  2: 'Photosynthesis and respiration cycle carbon; they do not raise sea '
+                                     'level.',
+                                  3: 'Rainfall does not cause the long-term rise; melting ice and thermal '
+                                     'expansion do.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.5',
+ 'summary': 'Describe how rising carbon dioxide and methane cause global warming, and explain its biological '
+            'consequences for species distribution, migration and biodiversity.',
+ 'theory': [{'content': 'The levels of CARBON DIOXIDE and METHANE in the atmosphere are INCREASING.\n'
+                        '\n'
+                        "These are GREENHOUSE GASES — they trap heat energy near the Earth's surface.\n"
+                        '\n'
+                        "As their levels rise, more heat is trapped, so the Earth's average temperature is "
+                        'increasing. This is GLOBAL WARMING.\n'
+                        '\n'
+                        'Human activities that raise these gases include burning fossil fuels, '
+                        'deforestation, and farming livestock (which produce methane).',
+             'heading': 'What is causing global warming'},
+            {'content': 'Global warming has serious effects on living things:\n'
+                        '\n'
+                        'CHANGES IN DISTRIBUTION — as temperatures change, some species can no longer '
+                        'survive where they used to live, so their geographic range shifts (often towards '
+                        'the poles or higher ground).\n'
+                        '\n'
+                        'CHANGES IN MIGRATION PATTERNS — migrating animals (e.g. birds) may arrive earlier '
+                        'or travel to different places as seasons shift.\n'
+                        '\n'
+                        'RISING SEA LEVELS — melting ice and the expansion of warmer water raise sea levels, '
+                        'flooding coastal HABITATS.\n'
+                        '\n'
+                        'REDUCED BIODIVERSITY — species that cannot move or adapt fast enough may become '
+                        'extinct.',
+             'heading': 'Biological consequences'},
+            {'content': 'Scientists collect DATA on temperature, CO₂ levels, ice cover and species ranges '
+                        'from all over the world.\n'
+                        '\n'
+                        'There is strong evidence that human activity is causing global warming.\n'
+                        '\n'
+                        'We must be careful about UNCERTAINTIES — climate is complex and predictions rely on '
+                        'models — but the overall trend is clear.\n'
+                        '\n'
+                        'You should be able to read graphs of these data and describe what they show without '
+                        'overstating certainty.',
+             'heading': 'Evaluating the evidence'}],
+ 'title': 'Global Warming and Its Effects on Ecosystems',
+ 'triple_only': None,
+ 'variables': []},
+  {'common_mistake': "'Maintaining biodiversity' is about active human PROGRAMMES (breeding, protecting "
+                   "habitats, hedgerows, recycling, cutting emissions), not just 'stop polluting'. Also be "
+                   'ready to explain the CONFLICT: conservation costs money and land, so it competes with '
+                   'farming, building and jobs.',
+ 'equations': [],
+ 'fifas': [],
+ 'higher': None,
+ 'id': 'maintaining-biodiversity',
+ 'key_note': 'Programmes to maintain biodiversity: breeding programmes for endangered species; protecting '
+             'and regenerating rare habitats; reintroducing field margins and hedgerows; governments '
+             'reducing deforestation and CO₂ emissions; recycling instead of landfill. These conflict with '
+             'human needs (cost, food, land, livelihoods).',
+ 'matching': {'instruction': 'Sort each into a measure that maintains biodiversity or a human need that '
+                             'conflicts with it.',
+              'pairs': [('Conservation measure', 'Breeding programmes for endangered species'),
+                        ('Conservation measure', 'Reintroducing hedgerows and field margins on farms'),
+                        ('Conservation measure', 'Recycling resources instead of using landfill'),
+                        ('Conflicting human need', 'Money that could be spent on hospitals or schools'),
+                        ('Conflicting human need', 'Land needed for farming and housing'),
+                        ('Conflicting human need', 'Local jobs that depend on logging or fishing')],
+              'title': 'Conservation Measure or Human Conflict?'},
+ 'quiz': [{'opts': [('They provide food and shelter for a wider range of species', True),
+                    ('They increase the yield of the single crop', False),
+                    ('They stop the farmer using any pesticides', False),
+                    ('They remove all competition between species', False)],
+           'q': 'Why might reintroducing hedgerows and field margins on a large single-crop farm increase '
+                'biodiversity?',
+           'wrong_explanations': {1: 'Hedgerows and margins add habitat variety, giving insects, birds and '
+                                     'mammals food and shelter, so more species can live there.',
+                                  2: 'Their main benefit here is biodiversity, not crop yield.',
+                                  3: 'Hedgerows help wildlife but do not automatically stop pesticide use.'}},
+          {'opts': [('Protecting a habitat reduces land available for farming or building', True),
+                    ('Protecting a habitat always makes everyone wealthier', False),
+                    ('Conservation never costs any money', False),
+                    ('Endangered species breed better without any human help', False)],
+           'q': 'Conservation programmes often cause conflict. Which is an example of that conflict?',
+           'wrong_explanations': {1: 'Land set aside for conservation cannot be used for farms or houses — '
+                                     'that is the trade-off with human needs.',
+                                  2: 'Conservation has costs and can limit development, so it does not '
+                                     'always make everyone wealthier.',
+                                  3: 'Conservation programmes need funding — that cost is exactly what '
+                                     'creates conflict.'}}],
+ 'rp': None,
+ 'spec': '4.7.3.6',
+ 'summary': 'Describe the programmes humans use to reduce their impact on ecosystems and maintain '
+            'biodiversity, and the conflicts these can involve.',
+ 'theory': [{'content': 'Human activities — pollution, land use, deforestation and global warming — REDUCE '
+                        'biodiversity.\n'
+                        '\n'
+                        'Scientists and governments have set up PROGRAMMES to reduce these negative effects '
+                        'and help maintain ecosystems and biodiversity.\n'
+                        '\n'
+                        'Maintaining biodiversity protects the ECOSYSTEM SERVICES humans rely on (food, '
+                        'clean water, pollination) as well as the species themselves.',
+             'heading': 'Why we act to protect biodiversity'},
+            {'content': 'Key measures include:\n'
+                        '\n'
+                        'BREEDING PROGRAMMES for endangered species (for example in zoos), to increase their '
+                        'numbers.\n'
+                        '\n'
+                        'PROTECTION and REGENERATION of rare habitats, such as nature reserves and '
+                        'replanting.\n'
+                        '\n'
+                        'Reintroducing FIELD MARGINS and HEDGEROWS on farms that grow only one crop, giving '
+                        'wildlife food and shelter.\n'
+                        '\n'
+                        'Governments REDUCING deforestation and carbon dioxide emissions.\n'
+                        '\n'
+                        'RECYCLING resources rather than dumping waste in landfill.',
+             'heading': 'Programmes that maintain biodiversity'},
+            {'content': 'Protecting biodiversity often CONFLICTS with human needs and pressures:\n'
+                        '\n'
+                        'COST — conservation programmes need money that could be spent elsewhere.\n'
+                        '\n'
+                        'FOOD AND LAND — protecting habitats can limit land available for farming or '
+                        'building.\n'
+                        '\n'
+                        'LOCAL LIVELIHOODS — people may depend on activities (logging, fishing) that damage '
+                        'biodiversity.\n'
+                        '\n'
+                        'So decisions involve balancing the benefits of biodiversity against these human '
+                        'needs — there is not always an easy answer.',
+             'heading': 'Conflicts and trade-offs'}],
+ 'title': 'Maintaining Biodiversity',
+ 'triple_only': None,
+ 'variables': []},
  {'common_mistake': 'PLANTS also respire — they release CO₂ just like animals. The difference is that during the DAY, '
                     'photosynthesis removes MORE CO₂ than respiration releases — so there is net CO₂ uptake. At night, '
                     "only respiration occurs. Students often say 'plants absorb CO₂, they don't release it' — this is "
