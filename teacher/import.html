@@ -3,29 +3,21 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Import students — Mr Badmus AI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   <style>
-    html { background: #0F0F1A; }
+    html { background: var(--bg); }
     :root {
-      --darker:    #0F0F1A;
-      --dark:      #1A1A2E;
-      --card:      #16213E;
-      --card2:     #1A2545;
-      --text:      #E8F4FD;
-      --muted:     #8892A4;
-      --physics:   #4ECDC4;
-      --chemistry: #FFD2E6; --danger: #FF6B6B;
-      --biology:   #6BCB77;
-      --science:   #A78BD0;
-      --warning:   #FFA94D;
-      --foundation:#6BCB77;
-      --higher:    #FFD93D;
-      --radius:    12px;
-      --shadow:    0 4px 20px rgba(0,0,0,0.4);
+      --darker:    var(--bg);
+      --dark:      var(--sunken);
+      --card2:     var(--sunken);
+      --warning:   var(--danger);
+      --shadow:    var(--shadow-card);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,7 +25,7 @@
     body {
       background: var(--darker);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       min-height: 100vh;
       padding: 80px 20px 60px;
       /* Hidden until requireTeacherRole's onAllowed callback fires.
@@ -50,9 +42,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(15,15,26,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #2a2a4a;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
       z-index: 10;
     }
     .pill {
@@ -64,15 +55,15 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-    .pill.env-test { background: rgba(255,217,61,0.18); color: #FFD93D; }
-    .pill.env-prod { background: rgba(136,136,136,0.18); color: var(--muted); }
+    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
+    .pill.env-prod { background: var(--sunken); color: var(--muted); }
     .signout-btn {
       background: transparent;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       color: var(--muted);
       padding: 5px 12px;
       border-radius: 8px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.78rem;
       cursor: pointer;
@@ -95,7 +86,7 @@
     .back-link:hover { color: var(--text); }
 
     .page-title {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 800;
       font-size: 2rem;
       color: var(--text);
@@ -122,7 +113,7 @@
       align-items: center;
       gap: 10px;
       color: var(--muted);
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700;
       font-size: 0.9rem;
     }
@@ -135,31 +126,31 @@
       align-items: center;
       justify-content: center;
       background: var(--card2);
-      border: 2px solid #2a2a4a;
+      border: 2px solid var(--border);
       color: var(--muted);
       font-size: 0.85rem;
       transition: all 0.2s;
     }
     .step.active .step-num {
-      background: var(--physics);
-      border-color: var(--physics);
-      color: var(--darker);
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--on-accent);
     }
     .step.done .step-num {
       background: transparent;
-      border-color: var(--physics);
-      color: var(--physics);
+      border-color: var(--accent);
+      color: var(--accent);
     }
     .step.active .step-label,
     .step.done .step-label { color: var(--text); }
     .step-connector {
       flex: 1;
       height: 2px;
-      background: #2a2a4a;
+      background: var(--border);
       margin: 0 14px;
       min-width: 24px;
     }
-    .step-connector.done { background: var(--physics); }
+    .step-connector.done { background: var(--accent); }
 
     /* ── SCREEN ── */
     .screen { display: none; }
@@ -173,7 +164,7 @@
       margin-bottom: 22px;
     }
     .card-title {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700;
       font-size: 1.15rem;
       color: var(--text);
@@ -189,7 +180,7 @@
 
     /* ── DROP ZONE ── */
     .dropzone {
-      border: 2px dashed #2a2a4a;
+      border: 2px dashed var(--border);
       border-radius: var(--radius);
       padding: 44px 24px;
       text-align: center;
@@ -198,21 +189,21 @@
       background: var(--card2);
     }
     .dropzone:hover,
-    .dropzone:focus-visible { border-color: var(--physics); outline: none; }
+    .dropzone:focus-visible { border-color: var(--accent); outline: none; }
     .dropzone.dragover {
-      border-color: var(--physics);
-      background: rgba(78, 205, 196, 0.08);
+      border-color: var(--accent);
+      background: var(--accent-soft);
     }
     .dropzone-icon { font-size: 2.4rem; margin-bottom: 10px; }
     .dropzone-text {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700;
       font-size: 1rem;
       color: var(--text);
       margin-bottom: 6px;
     }
     .dropzone-hint { color: var(--muted); font-size: 0.85rem; font-weight: 600; }
-    .dropzone-browse { color: var(--physics); text-decoration: underline; }
+    .dropzone-browse { color: var(--accent); text-decoration: underline; }
     .file-input-hidden { display: none; }
 
     .file-summary {
@@ -223,15 +214,15 @@
       padding: 12px 16px;
       background: var(--card2);
       border-radius: 8px;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
     }
     .file-summary.show { display: flex; }
     .file-summary-icon {
       flex-shrink: 0;
       width: 34px; height: 34px;
       border-radius: 8px;
-      background: rgba(78,205,196,0.16);
-      color: var(--physics);
+      background: var(--accent-soft);
+      color: var(--accent);
       display: inline-flex;
       align-items: center; justify-content: center;
       font-size: 1.1rem;
@@ -250,11 +241,11 @@
     .file-clear {
       margin-left: auto;
       background: transparent;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       color: var(--muted);
       padding: 5px 12px;
       border-radius: 8px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.78rem;
       cursor: pointer;
@@ -266,7 +257,7 @@
       display: none;
       margin-top: 14px;
       padding: 12px 16px;
-      background: rgba(255,107,107,0.10);
+      background: var(--danger-soft);
       border: 1px solid var(--danger);
       border-radius: 8px;
       color: var(--danger);
@@ -292,7 +283,7 @@
     .data-table thead th {
       background: var(--card2);
       color: var(--muted);
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 600;
       font-size: 0.7rem;
       letter-spacing: 0.06em;
@@ -303,12 +294,12 @@
     }
     .data-table tbody td {
       padding: 11px 16px;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      border-top: 1px solid var(--border);
       color: var(--text);
       vertical-align: middle;
       white-space: nowrap;
     }
-    .data-table tbody tr:hover td { background: rgba(255,255,255,0.03); }
+    .data-table tbody tr:hover td { background: var(--accent-soft); }
     .cell-muted { color: var(--muted); }
     .preview-caption {
       color: var(--muted);
@@ -322,17 +313,17 @@
     .preview-toggle {
       margin-top: 12px;
       background: transparent;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       color: var(--muted);
       padding: 6px 14px;
       border-radius: 8px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.15s;
     }
-    .preview-toggle:hover { border-color: var(--physics); color: var(--text); }
+    .preview-toggle:hover { border-color: var(--accent); color: var(--text); }
 
     /* ── COLUMN MAPPING ── */
     /* All five mappers (Email, First name, Last name, Class, Student ID)
@@ -350,7 +341,7 @@
     .map-row { }
     .map-label {
       display: block;
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 600;
       font-size: 0.72rem;
       letter-spacing: 0.06em;
@@ -363,10 +354,10 @@
     .compose-select {
       width: 100%;
       background: var(--card2);
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border-strong);
       border-radius: 8px;
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-size: 0.92rem;
       font-weight: 600;
       padding: 10px 12px;
@@ -374,7 +365,7 @@
       transition: border-color 0.15s;
     }
     .field-select:focus,
-    .compose-select:focus { outline: none; border-color: var(--physics); }
+    .compose-select:focus { outline: none; border-color: var(--accent); }
     .field-select.invalid { border-color: var(--danger); }
     input.field-select { cursor: text; }
     .map-label .opt {
@@ -388,7 +379,7 @@
       align-items: center;
       gap: 9px;
       margin-top: 16px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-size: 0.9rem;
       font-weight: 600;
       color: var(--muted);
@@ -398,7 +389,7 @@
       width: 16px;
       height: 16px;
       cursor: pointer;
-      accent-color: var(--physics);
+      accent-color: var(--accent);
     }
 
     /* ── PER-CLASS SETTINGS ── */
@@ -409,7 +400,7 @@
     }
     .class-setting {
       background: var(--card2);
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 16px 18px;
     }
@@ -422,7 +413,7 @@
       margin-bottom: 14px;
     }
     .class-setting-name {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700;
       font-size: 1.05rem;
       color: var(--text);
@@ -440,7 +431,7 @@
     .setting-block { }
     .setting-block-label {
       display: block;
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 600;
       font-size: 0.68rem;
       letter-spacing: 0.06em;
@@ -456,30 +447,30 @@
       flex: 1;
       padding: 9px 10px;
       background: var(--card);
-      border: 2px solid #2a2a4a;
+      border: 2px solid var(--border-strong);
       border-radius: 8px;
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.15s;
     }
-    .toggle-btn:hover { background: rgba(255,255,255,0.05); }
+    .toggle-btn:hover { background: var(--accent-soft); }
     /* Selected states are colour-coded per the brand rules:
-       Combined = teal (--physics), Triple = pink (--chemistry),
-       Foundation = green, Higher = yellow. Filled chip, dark text. */
+       Combined = blue (--combined), Triple = crimson (--triple),
+       Foundation = green, Higher = gold. Filled chip, light text. */
     .toggle-btn.sel-combined {
-      background: var(--physics); border-color: var(--physics); color: var(--darker);
+      background: var(--combined); border-color: var(--combined); color: var(--on-accent);
     }
     .toggle-btn.sel-triple {
-      background: var(--chemistry); border-color: var(--chemistry); color: var(--darker);
+      background: var(--triple); border-color: var(--triple); color: var(--on-accent);
     }
     .toggle-btn.sel-foundation {
-      background: var(--foundation); border-color: var(--foundation); color: var(--darker);
+      background: var(--foundation); border-color: var(--foundation); color: var(--on-accent);
     }
     .toggle-btn.sel-higher {
-      background: var(--higher); border-color: var(--higher); color: var(--darker);
+      background: var(--higher); border-color: var(--higher); color: var(--on-accent);
     }
 
     .validation-note {
@@ -498,7 +489,7 @@
       line-height: 1.7;
       color: var(--text);
     }
-    .preview-sentence strong { color: var(--physics); }
+    .preview-sentence strong { color: var(--accent); }
     .preview-sentence .issue-count { color: var(--warning); }
     .preview-loading {
       display: flex;
@@ -524,7 +515,7 @@
     .dryrun-error {
       display: none;
       padding: 14px 16px;
-      background: rgba(255,107,107,0.10);
+      background: var(--danger-soft);
       border: 1px solid var(--danger);
       border-radius: 8px;
       color: var(--danger);
@@ -543,7 +534,7 @@
     .success-icon {
       width: 64px; height: 64px;
       border-radius: 50%;
-      background: rgba(107,203,119,0.16);
+      background: var(--success-soft);
       color: var(--biology);
       display: inline-flex;
       align-items: center; justify-content: center;
@@ -551,7 +542,7 @@
       margin-bottom: 16px;
     }
     .success-title {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 800;
       font-size: 1.5rem;
       color: var(--text);
@@ -578,7 +569,7 @@
     .btn {
       padding: 11px 26px;
       border-radius: 24px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.92rem;
       cursor: pointer;
@@ -587,7 +578,7 @@
       display: inline-block;
       transition: opacity 0.15s, border-color 0.15s, color 0.15s;
     }
-    .btn-primary { background: var(--physics); color: var(--darker); }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
     .btn-primary:hover:not(:disabled) { opacity: 0.85; }
     .btn-primary:disabled {
       background: var(--card2);
@@ -596,7 +587,7 @@
     }
     .btn-ghost {
       background: transparent;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       color: var(--muted);
     }
     .btn-ghost:hover { border-color: var(--text); color: var(--text); }
@@ -622,10 +613,10 @@
 <body>
 
 <nav class="top-nav">
-  <a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
+  <a href="/index.html" style="font-family:var(--font-serif);font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="env-pill" class="pill env-prod" title=""></span>
-    <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
+    <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
     <button class="signout-btn" onclick="MrBadmusTeacherGuard.signOut()">Sign out</button>
   </div>
 </nav>

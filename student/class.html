@@ -3,35 +3,33 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>My class — Mr Badmus AI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   <style>
-    html { background: #0F0F1A; }
+    html { background: var(--bg); }
     :root {
-      --darker:    #0F0F1A;
-      --dark:      #1A1A2E;
-      --card:      #16213E;
-      --card2:     #1A2545;
-      --text:      #E8F4FD;
-      --muted:     #8892A4;
-      --physics:   #4ECDC4;
-      --chemistry: #FFD2E6; --danger: #FF6B6B;
-      --biology:   #6BCB77;
-      --science:   #A78BD0;
-      --warning:   #FFA94D;
-      --radius:    12px;
-      --shadow:    0 4px 20px rgba(0,0,0,0.4);
+      /* Page-only aliases mapped onto design tokens. --card/--text/--muted/
+         --physics/--chemistry/--biology/--danger/--radius inherit from
+         tokens.css and must NOT be re-declared here. */
+      --darker:    var(--bg);
+      --dark:      var(--sunken);
+      --card2:     var(--sunken);
+      --science:   var(--accent);   /* generic "science" accent → burnt orange */
+      --warning:   var(--higher);   /* soft caution amber (due-today / late) */
+      --shadow:    var(--shadow-card);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--darker);
+      background: var(--bg);
       color: var(--text);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       min-height: 100vh;
       padding: 90px 20px 60px;
       display: none;
@@ -47,7 +45,7 @@
       height: 6px;
       background: var(--science);
       z-index: 11;
-      box-shadow: 0 1px 6px rgba(167, 139, 208, 0.35);
+      box-shadow: 0 1px 6px rgba(166, 60, 18, 0.30);
     }
 
     nav.top-nav {
@@ -57,9 +55,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(15,15,26,0.95);
+      background: var(--card);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid #2a2a4a;
+      border-bottom: 1px solid var(--border);
       z-index: 10;
     }
     .pill {
@@ -71,15 +69,15 @@
       letter-spacing: 0.06em;
       text-transform: uppercase;
     }
-    .pill.env-test { background: rgba(255,217,61,0.18); color: #FFD93D; }
-    .pill.env-prod { background: rgba(136,136,136,0.18); color: var(--muted); }
+    .pill.env-test { background: var(--higher-soft); color: var(--higher); }
+    .pill.env-prod { background: var(--sunken); color: var(--muted); }
     .signout-btn {
       background: transparent;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       color: var(--muted);
       padding: 5px 12px;
       border-radius: 8px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.78rem;
       cursor: pointer;
@@ -93,7 +91,7 @@
     .class-header {
       margin-bottom: 24px;
       padding-bottom: 20px;
-      border-bottom: 1px solid #2a2a4a;
+      border-bottom: 1px solid var(--border);
     }
     .class-header-top {
       display: flex;
@@ -104,11 +102,12 @@
       flex-wrap: wrap;
     }
     .class-header-name {
-      font-family: 'Sora', sans-serif;
-      font-weight: 800;
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
+      font-weight: 700;
       font-size: 2rem;
       color: var(--text);
-      letter-spacing: 0.01em;
+      letter-spacing: -0.01em;
     }
     .class-header-pill {
       flex-shrink: 0;
@@ -117,7 +116,7 @@
       font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.04em;
-      color: var(--darker);
+      color: var(--on-accent);
       white-space: nowrap;
     }
     .class-header-greeting {
@@ -137,11 +136,12 @@
       margin-bottom: 14px;
     }
     .section-title {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
+      font-optical-sizing: auto;
       font-weight: 700;
       font-size: 1.3rem;
       color: var(--text);
-      letter-spacing: 0.01em;
+      letter-spacing: -0.01em;
     }
     .section-subtitle {
       color: var(--muted);
@@ -173,7 +173,7 @@
       box-shadow: var(--shadow);
     }
     .stat-tile-label {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 600;
       font-size: 0.72rem;
       letter-spacing: 0.06em;
@@ -182,7 +182,7 @@
       margin-bottom: 8px;
     }
     .stat-tile-value {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 800;
       font-size: 1.8rem;
       color: var(--text);
@@ -228,12 +228,12 @@
       font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.04em;
-      color: var(--darker);
+      color: var(--on-accent);
       background: var(--science);
       align-self: flex-start;
     }
     .assignment-card-title {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700;
       font-size: 1rem;
       color: var(--text);
@@ -260,10 +260,10 @@
       display: inline-flex;
       align-items: center;
       padding: 8px 18px;
-      background: var(--physics);
-      color: var(--darker);
+      background: var(--accent);
+      color: var(--on-accent);
       border-radius: 20px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.85rem;
       text-decoration: none;
@@ -278,9 +278,9 @@
       padding: 8px 18px;
       background: transparent;
       color: var(--muted);
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       border-radius: 20px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.85rem;
     }
@@ -303,11 +303,11 @@
       margin-top: 12px;
       width: 100%;
       background: transparent;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       color: var(--muted);
       padding: 9px 16px;
       border-radius: 20px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700;
       font-size: 0.85rem;
       cursor: pointer;
@@ -322,16 +322,16 @@
        lands — see MRB-87 (or whatever ticket follows this v3) for the
        school-logo swap. Until then, generic-friendly starscape. */
     .stars-podium {
-      --medal-gold:   #FFD93D;
-      --medal-silver: #C7CDD6;
-      --medal-bronze: #CD8E5C;
+      --medal-gold:   #C79A2E;
+      --medal-silver: #8E939C;
+      --medal-bronze: #A9713F;
       display: flex;
       align-items: flex-end;
       justify-content: center;
       gap: 18px;
       padding: 44px 20px 0;
       background-color: var(--card);
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><g fill='%23ffffff' fill-opacity='0.16'><circle cx='25' cy='35' r='2'/><circle cx='80' cy='15' r='1.3'/><circle cx='135' cy='42' r='2.6'/><circle cx='190' cy='22' r='1.6'/><circle cx='245' cy='38' r='2.1'/><circle cx='280' cy='12' r='1.2'/><circle cx='50' cy='85' r='1.3'/><circle cx='115' cy='98' r='2.3'/><circle cx='175' cy='80' r='1.4'/><circle cx='220' cy='110' r='2.9'/><circle cx='260' cy='90' r='1.3'/><circle cx='30' cy='150' r='1.8'/><circle cx='90' cy='140' r='1.3'/><circle cx='150' cy='165' r='2.2'/><circle cx='210' cy='150' r='1.6'/><circle cx='265' cy='175' r='2'/><circle cx='40' cy='220' r='1.4'/><circle cx='105' cy='210' r='2.1'/><circle cx='170' cy='235' r='1.3'/><circle cx='225' cy='220' r='1.7'/><circle cx='285' cy='240' r='2.3'/><circle cx='15' cy='275' r='1.3'/><circle cx='75' cy='265' r='1.8'/><circle cx='140' cy='285' r='1.4'/><circle cx='195' cy='270' r='2.1'/><circle cx='250' cy='285' r='1.3'/></g></svg>");
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><g fill='%23A63C12' fill-opacity='0.10'><circle cx='25' cy='35' r='2'/><circle cx='80' cy='15' r='1.3'/><circle cx='135' cy='42' r='2.6'/><circle cx='190' cy='22' r='1.6'/><circle cx='245' cy='38' r='2.1'/><circle cx='280' cy='12' r='1.2'/><circle cx='50' cy='85' r='1.3'/><circle cx='115' cy='98' r='2.3'/><circle cx='175' cy='80' r='1.4'/><circle cx='220' cy='110' r='2.9'/><circle cx='260' cy='90' r='1.3'/><circle cx='30' cy='150' r='1.8'/><circle cx='90' cy='140' r='1.3'/><circle cx='150' cy='165' r='2.2'/><circle cx='210' cy='150' r='1.6'/><circle cx='265' cy='175' r='2'/><circle cx='40' cy='220' r='1.4'/><circle cx='105' cy='210' r='2.1'/><circle cx='170' cy='235' r='1.3'/><circle cx='225' cy='220' r='1.7'/><circle cx='285' cy='240' r='2.3'/><circle cx='15' cy='275' r='1.3'/><circle cx='75' cy='265' r='1.8'/><circle cx='140' cy='285' r='1.4'/><circle cx='195' cy='270' r='2.1'/><circle cx='250' cy='285' r='1.3'/></g></svg>");
       background-size: 300px 300px;
       background-repeat: repeat;
       border-radius: var(--radius);
@@ -376,19 +376,19 @@
     .podium-medallion {
       width: 36px; height: 36px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem;
-      color: var(--darker); position: relative; z-index: 2;
+      font-family: var(--font-serif); font-weight: 800; font-size: 1.05rem;
+      color: #241C14; position: relative; z-index: 2;
       box-shadow:
         inset 0 2px 2px rgba(255, 255, 255, 0.55),
         inset 0 -2px 3px rgba(0, 0, 0, 0.22),
         0 3px 6px rgba(0, 0, 0, 0.5);
     }
-    .podium-medallion--gold   { background: radial-gradient(circle at 32% 30%, #FFE875 0%, #FFD93D 55%, #C9A82E 100%); }
+    .podium-medallion--gold   { background: radial-gradient(circle at 32% 30%, #FFE875 0%, #EFC63A 55%, #C9A82E 100%); }
     .podium-medallion--silver { background: radial-gradient(circle at 32% 30%, #F0F2F5 0%, #C7CDD6 55%, #8E939C 100%); }
     .podium-medallion--bronze { background: radial-gradient(circle at 32% 30%, #E0B488 0%, #CD8E5C 55%, #8B5A35 100%); }
     .podium-medallion--ghost  {
       background: transparent;
-      border: 2px dashed rgba(255, 255, 255, 0.2);
+      border: 2px dashed var(--border-strong);
       box-shadow: none;
       color: var(--muted);
     }
@@ -396,7 +396,7 @@
     .podium-avatar {
       border-radius: 50%;
       display: inline-flex; align-items: center; justify-content: center;
-      font-family: 'Sora', sans-serif; font-weight: 700; color: var(--darker);
+      font-family: var(--font-serif); font-weight: 700; color: var(--on-accent);
       object-fit: cover; flex-shrink: 0; position: relative; z-index: 1;
     }
     .podium-avatar--gold {
@@ -413,27 +413,27 @@
     }
     .podium-avatar--ghost {
       background: transparent;
-      border: 2px dashed rgba(255, 255, 255, 0.18);
+      border: 2px dashed var(--border-strong);
       box-shadow: none;
     }
 
     /* "You are here" pulse-glow */
     .podium-avatar--you,
     .stars-alsoran-item .student-avatar.is-you {
-      outline: 2px solid rgba(167, 139, 208, 0.85);
+      outline: 2px solid rgba(166, 60, 18, 0.85);
       outline-offset: 4px;
       animation: youArePulse 2.5s ease-out;
     }
     @keyframes youArePulse {
-      0%   { outline-offset: 4px; outline-color: rgba(167, 139, 208, 0); }
-      15%  { outline-offset: 8px; outline-color: rgba(167, 139, 208, 0.65); }
-      30%  { outline-offset: 4px; outline-color: rgba(167, 139, 208, 0.25); }
-      55%  { outline-offset: 7px; outline-color: rgba(167, 139, 208, 0.75); }
-      100% { outline-offset: 4px; outline-color: rgba(167, 139, 208, 0.85); }
+      0%   { outline-offset: 4px; outline-color: rgba(166, 60, 18, 0); }
+      15%  { outline-offset: 8px; outline-color: rgba(166, 60, 18, 0.65); }
+      30%  { outline-offset: 4px; outline-color: rgba(166, 60, 18, 0.25); }
+      55%  { outline-offset: 7px; outline-color: rgba(166, 60, 18, 0.75); }
+      100% { outline-offset: 4px; outline-color: rgba(166, 60, 18, 0.85); }
     }
     .podium-you-label,
     .stars-alsoran-item .you-tag {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-size: 0.65rem;
       font-weight: 800;
       color: var(--science);
@@ -444,7 +444,7 @@
     .stars-alsoran-item .you-tag { margin-top: 0; margin-left: 4px; }
 
     .podium-name {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700; font-size: 0.92rem;
       color: var(--text);
       text-align: center; max-width: 100%;
@@ -457,7 +457,7 @@
       font-style: italic;
     }
     .podium-score {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 800; font-size: 1rem;
       margin-top: 2px;
     }
@@ -470,7 +470,7 @@
       display: flex; align-items: flex-start; justify-content: center;
       padding-top: 16px;
       border-top-left-radius: 8px; border-top-right-radius: 8px;
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 800; font-size: 1.2rem; letter-spacing: 0.02em;
       background-color: rgba(0, 0, 0, 0.32);
       box-shadow:
@@ -501,7 +501,7 @@
       border-radius: var(--radius);
     }
     .stars-alsoran-heading {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 600; font-size: 0.72rem;
       color: var(--muted);
       letter-spacing: 0.06em; text-transform: uppercase;
@@ -518,9 +518,9 @@
       flex-shrink: 0;
       width: 36px; height: 36px; border-radius: 50%;
       display: inline-flex; align-items: center; justify-content: center;
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700; font-size: 1rem;
-      color: var(--darker);
+      color: var(--on-accent);
       object-fit: cover;
     }
     .stars-empty-msg {
@@ -550,7 +550,7 @@
       display: flex; align-items: center; gap: 10px;
     }
     .shoutout-recipient-name {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700; font-size: 0.92rem;
       color: var(--text);
     }
@@ -562,7 +562,7 @@
     .shoutout-body { min-width: 0; }
     .shoutout-template {
       display: inline-flex; align-items: center; gap: 8px;
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700; font-size: 0.9rem;
       color: var(--text);
     }
@@ -574,7 +574,7 @@
     }
     .shoutout-template + .shoutout-message {
       font-size: 0.85rem;
-      border-left: 2px solid #2a2a4a;
+      border-left: 2px solid var(--border);
       padding-left: 10px;
       margin-top: 6px;
     }
@@ -600,11 +600,11 @@
       margin-top: 10px;
       display: block; width: 100%;
       background: transparent;
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       color: var(--muted);
       padding: 9px 16px;
       border-radius: 20px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: var(--font-sans);
       font-weight: 700; font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.15s;
@@ -616,7 +616,7 @@
     .state-block { display: none; padding: 60px 20px; text-align: center; }
     .state-block.show { display: block; }
     .state-block h2 {
-      font-family: 'Sora', sans-serif;
+      font-family: var(--font-serif);
       font-weight: 700; font-size: 1.4rem;
       color: var(--text); margin-bottom: 10px;
     }
@@ -628,9 +628,9 @@
     }
     .state-btn {
       display: inline-block; padding: 10px 22px;
-      border-radius: 22px; background: var(--physics);
-      color: var(--darker);
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      border-radius: 22px; background: var(--accent);
+      color: var(--on-accent);
+      font-family: var(--font-sans);
       font-weight: 700; font-size: 0.9rem;
       cursor: pointer; border: none; text-decoration: none;
       transition: opacity 0.15s;
@@ -690,11 +690,11 @@
 <div class="subject-stripe" id="subject-stripe"></div>
 
 <nav class="top-nav">
-  <a href="/index.html" style="font-family:'Sora',sans-serif;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:0.01em;">MrBadmusAI</a>
+  <a href="/index.html" style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;letter-spacing:-0.01em;">MrBadmusAI</a>
   <div style="display:flex;align-items:center;gap:10px;">
     <span id="env-pill" class="pill env-prod" title=""></span>
-    <span id="nav-user-area" style="color:#888;font-weight:700;font-size:0.85rem;"></span>
-    <a id="settings-link" href="/student/settings.html" style="color:#888;font-weight:700;font-size:0.85rem;text-decoration:none;">⚙️ Settings</a>
+    <span id="nav-user-area" style="color:var(--muted);font-weight:700;font-size:0.85rem;"></span>
+    <a id="settings-link" href="/student/settings.html" style="color:var(--muted);font-weight:700;font-size:0.85rem;text-decoration:none;">⚙️ Settings</a>
     <button class="signout-btn" onclick="MrBadmusStudentGuard.signOut()">Sign out</button>
   </div>
 </nav>

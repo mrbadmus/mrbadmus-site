@@ -56,7 +56,7 @@
           var hrefKey = 'mrb-profile-href:' + user.id;
           var profileHref = '/profile-setup.html';
           try { profileHref = localStorage.getItem(hrefKey) || profileHref; } catch(err) {}
-          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="color:#4ECDC4;font-weight:800;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
+          area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent-border);padding:5px 12px;border-radius:999px;font-weight:700;font-size:0.82rem;text-decoration:none;white-space:nowrap;">👤 ' + firstName + '</a>';
           fetch(SUPA_URL + '/rest/v1/profiles?id=eq.' + user.id + '&select=role', {
             headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token }
           }).then(function(r) { return r.ok ? r.json() : null; }).then(function(rows) {
@@ -72,7 +72,7 @@
             headers: { 'Authorization': 'Bearer ' + session.access_token }
           }).then(r => r.ok ? r.json() : null).then(function(profile) {
             if (profile && profile.avatar_url) {
-              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid #4ECDC4;"/><span style="color:#4ECDC4;font-weight:800;font-size:0.82rem;">' + firstName + '</span></a>';
+              area.innerHTML = '<a id="nav-profile-link" href="' + profileHref + '" style="display:flex;align-items:center;gap:6px;text-decoration:none;white-space:nowrap;"><img src="' + profile.avatar_url + '" style="width:28px;height:28px;border-radius:50%;object-fit:cover;border:2px solid var(--accent);"/><span style="color:var(--accent);font-weight:700;font-size:0.82rem;">' + firstName + '</span></a>';
             }
           }).catch(function() {});
         }

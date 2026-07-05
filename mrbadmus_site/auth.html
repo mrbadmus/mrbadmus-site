@@ -3,189 +3,48 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Sign In | MrBadmusAI</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Sora:wght@700;800&display=swap" rel="stylesheet"/>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   <style>
-    html { background: #0F0F1A; }
-    :root {
-      --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
-      --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
-      --text: #E8E8F0; --muted: #888;
-    }
+    html { background: var(--bg); }
+    :root { --darker: var(--bg); --dark: var(--sunken); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      background: var(--darker);
-      color: var(--text);
-      font-family: 'Nunito', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .card {
-      background: var(--card);
-      border-radius: 20px;
-      padding: 40px 36px;
-      width: 100%;
-      max-width: 420px;
-      border: 1px solid #2a2a4a;
-    }
-    .logo {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-    .logo h1 {
-      font-family: 'Sora', sans-serif;
-      font-weight: 800;
-      font-size: 2rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #FFD93D, #FF6B35);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-sans); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: var(--card); border-radius: var(--radius-lg); padding: 40px 36px; width: 100%; max-width: 420px; border: 1px solid var(--border); box-shadow: var(--shadow-card); }
+    .logo { text-align: center; margin-bottom: 28px; }
+    .logo h1 { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; font-size: 2rem; display: inline-flex; align-items: center; gap: 10px; color: var(--text); letter-spacing: -0.01em; }
     .logo p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
-
-    .tabs {
-      display: flex;
-      background: var(--dark);
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 28px;
-    }
-    .tab {
-      flex: 1;
-      padding: 10px;
-      text-align: center;
-      border-radius: 9px;
-      cursor: pointer;
-      font-weight: 700;
-      font-size: 0.9rem;
-      color: var(--muted);
-      transition: all 0.2s;
-    }
-    .tab.active {
-      background: var(--physics);
-      color: #0F0F1A;
-    }
-
+    .tabs { display: flex; background: var(--sunken); border-radius: var(--radius); padding: 4px; margin-bottom: 28px; }
+    .tab { flex: 1; padding: 10px; text-align: center; border-radius: var(--radius-sm); cursor: pointer; font-weight: 700; font-size: 0.9rem; color: var(--muted); transition: all 0.2s; }
+    .tab.active { background: var(--accent); color: var(--on-accent); }
     .form-group { margin-bottom: 18px; }
     label { display: block; font-weight: 700; font-size: 0.85rem; color: var(--muted); margin-bottom: 6px; }
-    input {
-      width: 100%;
-      background: var(--dark);
-      border: 2px solid #2a2a4a;
-      border-radius: 10px;
-      padding: 12px 14px;
-      color: var(--text);
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.95rem;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    input:focus { border-color: var(--physics); }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      font-family: 'Fredoka One', cursive;
-      font-size: 1.1rem;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 8px;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, var(--physics), #38a89d);
-      color: #0F0F1A;
-    }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    input { width: 100%; background: var(--card); border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm); padding: 12px 14px; color: var(--text); font-family: var(--font-sans); font-size: 0.95rem; outline: none; transition: border-color 0.2s; }
+    input:focus { border-color: var(--accent); }
+    .btn { width: 100%; padding: 14px; border-radius: var(--radius); border: none; font-family: var(--font-sans); font-weight: 700; font-size: 1.05rem; cursor: pointer; transition: all 0.2s; margin-top: 8px; }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
     .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-    .divider {
-      text-align: center;
-      color: var(--muted);
-      font-size: 0.8rem;
-      margin: 20px 0;
-      position: relative;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      width: 40%;
-      height: 1px;
-      background: #2a2a4a;
-    }
+    .divider { text-align: center; color: var(--muted); font-size: 0.8rem; margin: 20px 0; position: relative; }
+    .divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
     .divider::before { left: 0; }
     .divider::after { right: 0; }
-
-    .msg {
-      padding: 12px 14px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      margin-bottom: 16px;
-      display: none;
-    }
-    .msg.error { background: #2a0d0d; border: 1px solid #FF6B6B; color: #ff9a9a; display: block; }
-    .msg.success { background: #0d2a0d; border: 1px solid #6BCB77; color: #a8f0a8; display: block; }
-
-    .confirm-note {
-      background: #0d2a0d;
-      border: 1px solid #6BCB77;
-      color: #a8f0a8;
-      border-radius: 10px;
-      padding: 14px 16px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      line-height: 1.55;
-      margin-bottom: 4px;
-    }
-    .btn-resend {
-      background: transparent;
-      border: 1.5px solid var(--physics);
-      color: var(--physics);
-    }
+    .msg { padding: 12px 14px; border-radius: var(--radius-sm); font-size: 0.88rem; font-weight: 600; margin-bottom: 16px; display: none; }
+    .msg.error { background: var(--danger-soft); border: 1px solid var(--danger); color: var(--danger); display: block; }
+    .msg.success { background: var(--success-soft); border: 1px solid var(--success); color: var(--success); display: block; }
+    .confirm-note { background: var(--success-soft); border: 1px solid var(--success); color: var(--success); border-radius: var(--radius-sm); padding: 14px 16px; font-size: 0.9rem; font-weight: 600; line-height: 1.55; margin-bottom: 4px; }
+    .btn-resend { background: transparent; border: 1.5px solid var(--accent); color: var(--accent); }
     .btn-resend:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 20px;
-      color: var(--muted);
-      font-size: 0.85rem;
-      text-decoration: none;
-    }
-    .back-link:hover { color: var(--text); }
-
-    /* School SSO buttons (provider-agnostic: Microsoft Entra ID + Google) */
+    .back-link { display: block; text-align: center; margin-top: 20px; color: var(--muted); font-size: 0.85rem; text-decoration: none; }
+    .back-link:hover { color: var(--accent); }
     .sso-heading { text-align: center; font-size: 0.82rem; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
-    .btn-sso {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 2px solid #2a2a4a;
-      background: #ffffff;
-      color: #1a1a2e;
-      font-family: 'Nunito', sans-serif;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 10px;
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-    .btn-sso:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+    .btn-sso { width: 100%; padding: 12px 14px; border-radius: var(--radius); border: 1.5px solid var(--border-strong); background: var(--card); color: var(--text); font-family: var(--font-sans); font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; transition: transform 0.15s, box-shadow 0.15s; }
+    .btn-sso:hover { transform: translateY(-1px); box-shadow: var(--shadow-card); }
     .btn-sso:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-sso svg { width: 18px; height: 18px; flex: none; }
     .sso-sub { text-align: center; font-size: 0.74rem; color: var(--muted); margin-top: 10px; line-height: 1.45; }
@@ -193,14 +52,14 @@
 </head>
 <body>
 
-<nav style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,15,26,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #2a2a4a;z-index:10;">
-  <a href="/index.html" style="display:flex;align-items:center;gap:8px;font-family:'Sora',sans-serif;font-weight:800;font-size:1.3rem;text-decoration:none;background:linear-gradient(135deg,#FFD93D,#FF6B35);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
-  <a href="/index.html" style="color:#888;font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
+<nav style="position:fixed;top:0;left:0;right:0;padding:12px 24px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid var(--border);z-index:10;">
+  <a href="/index.html" style="display:flex;align-items:center;gap:8px;font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.3rem;text-decoration:none;color:var(--text);letter-spacing:-0.01em;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a href="/index.html" style="color:var(--muted);font-size:0.85rem;font-weight:700;text-decoration:none;">← Back to site</a>
 </nav>
 
 <div class="card" style="margin-top:60px;">
   <div class="logo">
-    <h1><svg width="30" height="30" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#authHeroGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#authHeroGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="authHeroGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</h1>
+    <h1><svg width="30" height="30" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M4 6l4-4 4 4" stroke="url(#authHeroGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#authHeroGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="authHeroGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</h1>
     <p>GCSE Science Revision</p>
   </div>
 
@@ -211,7 +70,7 @@
     <p style="color:var(--text);font-weight:700;font-size:1.05rem;margin-bottom:4px;">You're already signed in</p>
     <p id="already-email" style="color:var(--muted);font-size:0.9rem;margin-bottom:20px;word-break:break-all;"></p>
     <button class="btn btn-primary" id="continue-btn" onclick="continueSignedIn()">Continue<span id="continue-count"></span></button>
-    <button class="btn" id="switch-account-btn" onclick="signOutFromAuth()" style="background:#2a2a4a;color:var(--muted);">Sign out / use another account</button>
+    <button class="btn" id="switch-account-btn" onclick="signOutFromAuth()" style="background:var(--sunken);color:var(--muted);border:1px solid var(--border);">Sign out / use another account</button>
   </div>
 
   <div class="tabs">

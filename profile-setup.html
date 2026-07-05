@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>My Profile | MrBadmusAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   <style>
-    html { background: #0F0F1A; }
+    html { background: var(--bg); }
     :root {
-      --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
-      --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
-      --text: #E8E8F0; --muted: #888; --yellow: #FFD93D;
+      --darker: var(--bg); --dark: var(--sunken);
+      --yellow: var(--higher);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: var(--darker);
       color: var(--text);
-      font-family: 'Nunito', sans-serif;
+      font-family: var(--font-sans);
       min-height: 100vh;
       padding: 20px;
     }
@@ -27,16 +30,15 @@
       position: fixed; top: 0; left: 0; right: 0;
       padding: 12px 24px;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(15,15,26,0.95);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #2a2a4a;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
       z-index: 10;
     }
     .nav-brand {
-      font-family: 'Fredoka One', cursive; font-size: 1.3rem;
-      text-decoration: none;
-      background: linear-gradient(135deg, #FFD93D, #FF6B35);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600;
+      font-size: 1.3rem; text-decoration: none; color: var(--text);
+      letter-spacing: -0.01em;
+      display: inline-flex; align-items: center; gap: 8px;
     }
     .nav-links { display: flex; align-items: center; gap: 12px; font-size: 0.88rem; }
     .nav-links a { color: var(--muted); text-decoration: none; font-weight: 700; }
@@ -49,7 +51,7 @@
     }
     .spinner {
       width: 40px; height: 40px;
-      border: 4px solid #2a2a4a; border-top-color: var(--physics);
+      border: 4px solid var(--border); border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
@@ -66,7 +68,7 @@
     .dash-avatar {
       width: 90px; height: 90px;
       border-radius: 50%;
-      border: 3px solid var(--physics);
+      border: 3px solid var(--accent);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden; margin: 0 auto 14px;
       font-size: 2.5rem;
@@ -76,28 +78,31 @@
       width: 100%; height: 100%; object-fit: cover;
     }
     .dash-name {
-      font-family: 'Fredoka One', cursive; font-size: 1.8rem;
+      font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600;
+      letter-spacing: -0.01em; font-size: 1.8rem;
     }
     .dash-email {
       color: var(--muted); font-size: 0.85rem; margin-top: 2px;
     }
     .dash-section {
       background: var(--card);
-      border: 1px solid #2a2a4a;
+      border: 1px solid var(--border);
       border-radius: 16px;
       padding: 22px 24px;
       margin-bottom: 16px;
+      box-shadow: var(--shadow-card);
     }
     .dash-section-title {
-      font-family: 'Fredoka One', cursive;
+      font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600;
+      letter-spacing: -0.01em;
       font-size: 1rem;
-      color: var(--physics);
+      color: var(--accent);
       margin-bottom: 14px;
     }
     .dash-row {
       display: flex; justify-content: space-between; align-items: center;
       padding: 8px 0;
-      border-bottom: 1px solid #1e2d4a;
+      border-bottom: 1px solid var(--border);
     }
     .dash-row:last-child { border-bottom: none; }
     .dash-label { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
@@ -110,21 +115,21 @@
       font-size: 0.78rem;
       font-weight: 800;
     }
-    .tag-combined { background: rgba(78,205,196,0.15); color: var(--physics); }
-    .tag-triple { background: rgba(255,210,230,0.15); color: var(--chemistry); }
-    .tag-foundation { background: rgba(107,203,119,0.15); color: var(--biology); }
-    .tag-higher { background: rgba(255,217,61,0.15); color: var(--yellow); }
+    .tag-combined { background: var(--physics-soft); color: var(--physics); }
+    .tag-triple { background: var(--chemistry-soft); color: var(--chemistry); }
+    .tag-foundation { background: var(--biology-soft); color: var(--biology); }
+    .tag-higher { background: var(--higher-soft); color: var(--yellow); }
 
     .dash-chips {
       display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end;
       max-width: 65%;
     }
     .chip-strong {
-      background: rgba(107,203,119,0.15); color: var(--biology);
+      background: var(--success-soft); color: var(--success);
       padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
     }
     .chip-weak {
-      background: rgba(255,107,107,0.15); color: var(--danger);
+      background: var(--danger-soft); color: var(--danger);
       padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 800;
     }
 
@@ -144,17 +149,17 @@
     .btn {
       flex: 1; padding: 14px;
       border-radius: 14px; border: none;
-      font-family: 'Fredoka One', cursive;
+      font-family: var(--font-sans); font-weight: 700;
       font-size: 1.05rem; cursor: pointer;
       transition: all 0.2s; text-align: center;
       text-decoration: none;
     }
-    .btn-primary { background: linear-gradient(135deg, var(--physics), #38a89d); color: #0F0F1A; }
-    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
-    .btn-secondary { background: #2a2a4a; color: var(--muted); }
-    .btn-secondary:hover { background: #3a3a5a; color: var(--text); }
-    .btn-danger { background: rgba(255,107,107,0.15); color: var(--danger); }
-    .btn-danger:hover { background: rgba(255,107,107,0.25); }
+    .btn-primary { background: var(--accent); color: var(--on-accent); }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn-secondary { background: var(--sunken); color: var(--muted); }
+    .btn-secondary:hover { background: var(--border-strong); color: var(--text); }
+    .btn-danger { background: var(--danger-soft); color: var(--danger); }
+    .btn-danger:hover { background: var(--danger-soft); }
 
     /* ── WIZARD (for new users / editing) ─────────────────── */
     .wizard {
@@ -164,23 +169,24 @@
     .progress-bar { display: flex; gap: 6px; margin-bottom: 32px; }
     .progress-step {
       flex: 1; height: 4px; border-radius: 4px;
-      background: #2a2a4a; transition: background 0.3s;
+      background: var(--border); transition: background 0.3s;
     }
-    .progress-step.done { background: var(--physics); }
+    .progress-step.done { background: var(--accent); }
     .progress-step.active { background: var(--yellow); }
 
     .step { display: none; }
     .step.active { display: block; }
     .step-header { margin-bottom: 28px; }
     .step-header h2 {
-      font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 6px;
+      font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600;
+      letter-spacing: -0.01em; font-size: 1.8rem; margin-bottom: 6px;
     }
     .step-header p { color: var(--muted); line-height: 1.5; }
 
     .avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 28px; }
     .avatar-ring {
       width: 100px; height: 100px; border-radius: 50%;
-      border: 3px solid var(--physics);
+      border: 3px solid var(--accent);
       display: flex; align-items: center; justify-content: center;
       overflow: hidden; cursor: pointer; position: relative; margin-bottom: 10px;
     }
@@ -199,38 +205,38 @@
     .form-group { margin-bottom: 20px; }
     label { display: block; font-weight: 700; font-size: 0.85rem; color: var(--muted); margin-bottom: 8px; }
     input, select, textarea {
-      width: 100%; background: var(--dark);
-      border: 2px solid #2a2a4a; border-radius: 12px;
+      width: 100%; background: var(--card);
+      border: 2px solid var(--border-strong); border-radius: 12px;
       padding: 13px 16px; color: var(--text);
-      font-family: 'Nunito', sans-serif; font-size: 0.95rem;
+      font-family: var(--font-sans); font-size: 0.95rem;
       outline: none; transition: border-color 0.2s;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--physics); }
-    select option { background: var(--dark); }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    select option { background: var(--card); }
     textarea { resize: vertical; min-height: 80px; }
 
     .choice-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
     .choice-card {
-      background: var(--dark); border: 2px solid #2a2a4a;
+      background: var(--card); border: 2px solid var(--border-strong);
       border-radius: 14px; padding: 16px; cursor: pointer;
       transition: all 0.2s; text-align: center;
     }
-    .choice-card:hover { border-color: var(--physics); }
-    .choice-card.selected { border-color: var(--physics); background: #0d2a2a; }
+    .choice-card:hover { border-color: var(--accent); }
+    .choice-card.selected { border-color: var(--accent); background: var(--accent-soft); }
     .choice-card .icon { font-size: 2rem; margin-bottom: 6px; }
     .choice-card .title { font-weight: 800; font-size: 0.95rem; }
     .choice-card .sub { font-size: 0.78rem; color: var(--muted); margin-top: 2px; }
 
     .topic-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .topic-chip {
-      background: var(--dark); border: 2px solid #2a2a4a;
+      background: var(--card); border: 2px solid var(--border-strong);
       border-radius: 10px; padding: 10px 12px; cursor: pointer;
       transition: all 0.2s; font-size: 0.85rem; font-weight: 700;
       display: flex; align-items: center; gap: 8px;
     }
     .topic-chip .dot {
       width: 10px; height: 10px; border-radius: 50%;
-      background: #2a2a4a; flex-shrink: 0; transition: background 0.2s;
+      background: var(--border-strong); flex-shrink: 0; transition: background 0.2s;
     }
     .topic-chip.strong { border-color: var(--biology); }
     .topic-chip.strong .dot { background: var(--biology); }
@@ -244,12 +250,12 @@
     .grade-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .grade-btn {
       width: 48px; height: 48px; border-radius: 12px;
-      border: 2px solid #2a2a4a; background: var(--dark);
-      color: var(--text); font-family: 'Fredoka One', cursive;
+      border: 2px solid var(--border-strong); background: var(--card);
+      color: var(--text); font-family: var(--font-sans); font-weight: 700;
       font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
     }
     .grade-btn:hover { border-color: var(--yellow); }
-    .grade-btn.selected { border-color: var(--yellow); background: #2a2a0d; color: var(--yellow); }
+    .grade-btn.selected { border-color: var(--yellow); background: var(--higher-soft); color: var(--yellow); }
 
     .nav-btns { display: flex; gap: 12px; margin-top: 32px; }
     .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
@@ -263,7 +269,7 @@
 
 <!-- ── NAV BAR ────────────────────────────────────────────── -->
 <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
     <a href="/index.html">Home</a>
     <a href="/index.html#siteSearch" title="Search topics" onclick="setTimeout(function(){var e=document.getElementById('siteSearch');if(e)e.focus();},100)" style="font-size:1.1rem;">🔍</a>
@@ -346,7 +352,7 @@
 <div class="dashboard" id="ks3-allset">
   <div class="dash-section" style="text-align:center;">
     <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
-    <h2 style="font-family:'Fredoka One',cursive;font-size:1.8rem;margin-bottom:10px;">You're all set</h2>
+    <h2 style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;letter-spacing:-0.01em;font-size:1.8rem;margin-bottom:10px;">You're all set</h2>
     <p style="color:var(--muted);line-height:1.6;margin-bottom:22px;">You don't need to set up a science pathway for Years 7–9. You're ready to go.</p>
     <a href="/index.html" class="btn btn-primary" style="text-decoration:none;">Head to the homepage</a>
   </div>
@@ -366,7 +372,7 @@
   <div class="step active" id="step-1">
     <div class="step-header" id="step1-header" style="text-align:center;padding:20px 0 10px;">
       <div style="font-size:3rem;margin-bottom:12px;">🎉</div>
-      <h2 style="font-size:2rem;background:linear-gradient(135deg,#4ECDC4,#6BCB77);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">You're in!</h2>
+      <h2 style="font-size:2rem;color:var(--accent);">You're in!</h2>
       <p style="font-size:1.1rem;color:var(--text);font-weight:700;margin:8px 0 4px;">Welcome to MrBadmusAI</p>
       <p style="color:var(--muted);line-height:1.6;">I'm Mr Badmus, your personal GCSE Science tutor. Let me get to know you so I can help you properly. Takes 2 minutes.</p>
     </div>
@@ -504,7 +510,7 @@
     </div>
 
     <div class="legend">
-      <span><div class="dot" style="background:#2a2a4a"></div> Not set</span>
+      <span><div class="dot" style="background:var(--border-strong)"></div> Not set</span>
       <span><div class="dot" style="background:var(--biology)"></div> Confident</span>
       <span><div class="dot" style="background:var(--chemistry)"></div> Find hard</span>
     </div>

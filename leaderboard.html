@@ -3,64 +3,66 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#0F0F1A"/>
+  <meta name="theme-color" content="#F7F1E5"/>
   <title>Leaderboard | MrBadmusAI</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
   <style>
-    html { background: #0F0F1A; }
+    html { background: var(--bg); }
     :root {
-      --darker: #0F0F1A; --dark: #1A1A2E; --card: #16213E;
-      --physics: #4ECDC4; --chemistry: #FFD2E6; --danger: #FF6B6B; --biology: #6BCB77;
-      --text: #E8E8F0; --muted: #888; --yellow: #FFD93D; --orange: #FF6B35;
-      --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+      --darker: var(--bg); --dark: var(--sunken);
+      --yellow: var(--higher); --gold: var(--higher);
+      --silver: #C0C0C0; --bronze: #CD7F32;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--darker); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; min-height: 100vh; }
+    body { background: var(--darker); color: var(--text); font-family: var(--font-sans); min-height: 100vh; }
 
     .nav {
       position: sticky; top: 0; left: 0; right: 0; padding: 0 24px; height: 60px;
       display: flex; align-items: center; justify-content: space-between;
-      background: var(--dark); border-bottom: 1px solid rgba(255,255,255,0.08); z-index: 100;
+      background: var(--card); border-bottom: 1px solid var(--border); z-index: 100;
     }
     .nav-brand {
-      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.4rem; text-decoration: none;
-      background: linear-gradient(135deg, var(--yellow), var(--orange));
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; font-size: 1.4rem;
+      text-decoration: none; color: var(--text); letter-spacing: -0.01em;
       display: flex; align-items: center; gap: 8px;
     }
     .brand-logo { flex-shrink: 0; }
     .nav-links { display: flex; gap: 10px; align-items: center; }
     .nav-links a { color: var(--muted); text-decoration: none; font-weight: 700; font-size: 0.88rem; padding: 6px 14px; border-radius: 20px; }
-    .nav-links a:hover { background: rgba(255,255,255,0.1); }
+    .nav-links a:hover { background: var(--sunken); }
 
     .container { max-width: 720px; margin: 0 auto; padding: 28px 20px 40px; }
 
     .header { text-align: center; margin-bottom: 24px; }
-    .header h1 { font-family: 'Sora', sans-serif; font-size: 2rem; margin-bottom: 4px; }
+    .header h1 { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; letter-spacing: -0.01em; font-size: 2rem; margin-bottom: 4px; }
 
     /* ── TABS ────────────────────────────────────── */
     .tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
     .tab {
-      padding: 8px 18px; border-radius: 20px; border: 2px solid #2a2a4a;
-      background: transparent; color: var(--muted); font-family: 'Sora', sans-serif;
+      padding: 8px 18px; border-radius: 20px; border: 2px solid var(--border-strong);
+      background: transparent; color: var(--muted); font-family: var(--font-serif);
       font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
     }
-    .tab:hover { border-color: #4a4a6a; }
-    .tab.active { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
-    .tab.active.bio { background: rgba(107,203,119,0.15); border-color: var(--biology); color: var(--biology); }
-    .tab.active.chem { background: rgba(255,210,230,0.15); border-color: var(--chemistry); color: var(--chemistry); }
-    .tab.active.phys { background: rgba(78,205,196,0.15); border-color: var(--physics); color: var(--physics); }
-    .tab.active.overall { background: rgba(255,217,61,0.15); border-color: var(--yellow); color: var(--yellow); }
+    .tab:hover { border-color: var(--accent-border); }
+    .tab.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+    .tab.active.bio { background: var(--biology-soft); border-color: var(--biology); color: var(--biology); }
+    .tab.active.chem { background: var(--chemistry-soft); border-color: var(--chemistry); color: var(--chemistry); }
+    .tab.active.phys { background: var(--physics-soft); border-color: var(--physics); color: var(--physics); }
+    .tab.active.overall { background: var(--higher-soft); border-color: var(--higher); color: var(--higher); }
 
     /* ── CHAMPION HERO ──────────────────────────────── */
     .champion-hero {
-      background: linear-gradient(135deg, rgba(255,215,0,0.07), rgba(255,107,53,0.04));
-      border: 1px solid rgba(255,215,0,0.2); border-radius: 20px;
+      background: var(--higher-soft);
+      border: 1px solid var(--border); border-radius: 20px;
       padding: 28px 20px 20px; margin-bottom: 28px; text-align: center;
     }
     .champion-title {
-      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.8rem;
-      color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;
+      font-family: var(--font-serif); font-weight: 600; font-size: 0.8rem;
+      color: var(--higher); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;
     }
     .champion-hero .podium { margin: 0; min-height: auto; }
 
@@ -68,15 +70,15 @@
     .toggle-row { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 16px; }
     .pathway-toggle, .tier-toggle { display: flex; gap: 6px; }
     .pathway-btn, .tier-btn {
-      padding: 7px 18px; border-radius: 16px; border: 2px solid #2a2a4a;
+      padding: 7px 18px; border-radius: 16px; border: 2px solid var(--border-strong);
       background: transparent; color: var(--muted); font-weight: 700; font-size: 0.82rem;
-      cursor: pointer; transition: all 0.2s; font-family: 'Plus Jakarta Sans', sans-serif;
+      cursor: pointer; transition: all 0.2s; font-family: var(--font-sans);
     }
-    .pathway-btn:hover, .tier-btn:hover { border-color: #4a4a6a; }
-    .pathway-btn.active.combined { border-color: var(--physics); background: rgba(78,205,196,0.12); color: var(--physics); }
-    .pathway-btn.active.triple   { border-color: var(--chemistry); background: rgba(255,210,230,0.12); color: var(--chemistry); }
-    .tier-btn.active.foundation  { border-color: var(--biology); background: rgba(107,203,119,0.12); color: var(--biology); }
-    .tier-btn.active.higher      { border-color: var(--yellow); background: rgba(255,217,61,0.12); color: var(--yellow); }
+    .pathway-btn:hover, .tier-btn:hover { border-color: var(--accent-border); }
+    .pathway-btn.active.combined { border-color: var(--physics); background: var(--physics-soft); color: var(--physics); }
+    .pathway-btn.active.triple   { border-color: var(--chemistry); background: var(--chemistry-soft); color: var(--chemistry); }
+    .tier-btn.active.foundation  { border-color: var(--biology); background: var(--biology-soft); color: var(--biology); }
+    .tier-btn.active.higher      { border-color: var(--higher); background: var(--higher-soft); color: var(--higher); }
 
     .week-info {
       text-align: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; font-weight: 700;
@@ -91,7 +93,7 @@
     .podium-avatar {
       border-radius: 50%; overflow: hidden; margin: 0 auto 8px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; background: var(--dark);
+      font-size: 1.5rem; background: var(--sunken);
     }
     .podium-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .podium-slot.first .podium-avatar { width: 96px; height: 96px; border: 4px solid var(--gold); }
@@ -99,10 +101,10 @@
     .podium-slot.third .podium-avatar { width: 68px; height: 68px; border: 3px solid var(--bronze); }
     .podium-medal { font-size: 1.8rem; margin-bottom: 4px; }
     .podium-slot.first .podium-medal { font-size: 2.2rem; }
-    .podium-name { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 0.9rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .podium-name { font-family: var(--font-serif); font-weight: 600; font-size: 0.9rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .podium-slot.first .podium-name { font-size: 1.05rem; max-width: 140px; }
     .podium-school { color: var(--muted); font-size: 0.72rem; font-weight: 700; }
-    .podium-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.15rem; margin-top: 4px; }
+    .podium-score { font-family: var(--font-serif); font-weight: 600; font-size: 1.15rem; margin-top: 4px; }
     .podium-slot.first .podium-score { font-size: 1.3rem; color: var(--gold); }
     .podium-slot.second .podium-score { color: var(--silver); }
     .podium-slot.third .podium-score { color: var(--bronze); }
@@ -110,9 +112,9 @@
     .podium-base {
       border-radius: 12px 12px 0 0; margin-top: 8px;
       display: flex; align-items: center; justify-content: center;
-      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.3rem; color: rgba(255,255,255,0.12);
+      font-family: var(--font-serif); font-weight: 600; font-size: 1.3rem; color: var(--border-strong);
     }
-    .podium-slot.first .podium-base { background: linear-gradient(180deg, rgba(255,215,0,0.22) 0%, rgba(255,215,0,0.06) 100%); height: 96px; width: 126px; border: 1px solid rgba(255,215,0,0.18); }
+    .podium-slot.first .podium-base { background: var(--higher-soft); height: 96px; width: 126px; border: 1px solid var(--border); }
     .podium-slot.second .podium-base { background: linear-gradient(180deg, rgba(192,192,192,0.18) 0%, rgba(192,192,192,0.05) 100%); height: 66px; width: 106px; border: 1px solid rgba(192,192,192,0.12); }
     .podium-slot.third .podium-base { background: linear-gradient(180deg, rgba(205,127,50,0.18) 0%, rgba(205,127,50,0.05) 100%); height: 46px; width: 106px; border: 1px solid rgba(205,127,50,0.12); }
 
@@ -120,39 +122,39 @@
     .rest-list { margin-top: 8px; }
     .rest-item {
       display: flex; align-items: center; gap: 14px;
-      padding: 14px 16px; background: var(--card); border: 1px solid #2a2a4a;
+      padding: 14px 16px; background: var(--card); border: 1px solid var(--border);
       border-radius: 14px; margin-bottom: 8px;
     }
-    .rest-rank { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--muted); width: 28px; text-align: center; flex-shrink: 0; }
+    .rest-rank { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; color: var(--muted); width: 28px; text-align: center; flex-shrink: 0; }
     .rest-avatar {
       width: 42px; height: 42px; border-radius: 50%; overflow: hidden;
-      border: 2px solid #2a2a4a; display: flex; align-items: center;
-      justify-content: center; font-size: 1.1rem; background: var(--dark); flex-shrink: 0;
+      border: 2px solid var(--border); display: flex; align-items: center;
+      justify-content: center; font-size: 1.1rem; background: var(--sunken); flex-shrink: 0;
     }
     .rest-avatar img { width: 100%; height: 100%; object-fit: cover; }
     .rest-info { flex: 1; min-width: 0; }
     .rest-name { font-weight: 800; font-size: 0.92rem; }
     .rest-school { color: var(--muted); font-size: 0.75rem; }
-    .rest-score { font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1.05rem; flex-shrink: 0; }
+    .rest-score { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; flex-shrink: 0; }
 
     .empty {
       text-align: center; padding: 50px 20px;
-      background: var(--card); border: 1px solid #2a2a4a; border-radius: 18px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
     }
-    .empty h3 { font-family: 'Sora', sans-serif; margin: 16px 0 8px; }
+    .empty h3 { font-family: var(--font-serif); margin: 16px 0 8px; }
     .empty p { color: var(--muted); }
 
     .loading { text-align: center; padding-top: 100px; }
     .spinner {
-      width: 40px; height: 40px; border: 4px solid #2a2a4a; border-top-color: var(--physics);
+      width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent);
       border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .cta-challenge {
       display: block; text-align: center; margin-top: 28px; padding: 16px;
-      border-radius: 16px; background: linear-gradient(135deg, var(--physics), #38a89d);
-      color: #0F0F1A; font-family: 'Sora', sans-serif; font-weight: 800; font-size: 1rem;
+      border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+      color: var(--on-accent); font-family: var(--font-serif); font-weight: 700; font-size: 1rem;
       text-decoration: none; transition: all 0.2s;
     }
     .cta-challenge:hover { opacity: 0.9; transform: translateY(-2px); }
@@ -176,7 +178,7 @@
 <body>
 
 <nav class="nav">
-  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-links">
     <a href="/weekly-challenge.html">⚡ Challenge</a>
     <a href="/index.html">Home</a>
