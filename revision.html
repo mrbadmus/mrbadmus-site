@@ -45,7 +45,6 @@
       line-height: var(--lh-title); letter-spacing: -0.015em;
       margin-bottom: var(--sp-3);
     }
-    .page-head p.lede { color: var(--muted); font-size: 1.05rem; max-width: 60ch; }
 
     /* ── BREADCRUMB ── */
     .crumbs {
@@ -156,12 +155,13 @@
     }
     .dl-btn.ready { background: var(--accent); color: var(--on-accent); }
     .dl-btn.ready:hover { background: var(--accent-hover); transform: translateY(-1px); }
-    .dl-btn.gated {
+    .dl-btn.secondary {
       background: transparent; color: var(--accent);
       border: 1.5px solid var(--accent-border);
     }
-    .dl-btn.gated:hover { background: var(--accent-soft); }
+    .dl-btn.secondary:hover { background: var(--accent-soft); }
     .dl-btn[disabled] { opacity: 0.6; cursor: default; transform: none; }
+    .mat-actions { flex-shrink: 0; display: flex; gap: var(--sp-2); }
 
     /* ── EMPTY / COMING-SOON ── */
     .empty {
@@ -174,17 +174,8 @@
     .empty .e-emoji { font-size: 2rem; display: block; margin-bottom: var(--sp-2); }
     .empty .e-head { font-family: var(--font-serif); font-optical-sizing: auto; font-size: var(--fs-section); font-weight: 600; color: var(--text); margin-bottom: var(--sp-1); }
 
-    .gate-note {
-      max-width: var(--content-max); margin: var(--sp-6) auto 0; padding: 0 var(--sp-5);
-      font-size: var(--fs-small); color: var(--muted);
-    }
-    .gate-note .card-note {
-      background: var(--accent-soft); border: 1px solid var(--accent-border);
-      border-radius: var(--radius); padding: var(--sp-4) var(--sp-5);
-    }
-    .gate-note a { color: var(--accent); font-weight: 700; }
-
     @media (max-width: 768px) {
+      .mat-actions { width: 100%; }
       .dl-btn { flex: 1; justify-content: center; }
     }
   </style>
@@ -208,19 +199,11 @@
 <div class="page-head">
   <div class="page-kicker">Revision Library</div>
   <h1>Revision Materials</h1>
-  <p class="lede">Notes, worksheets, mark schemes and revision packs written by Mr Badmus, organised the way AQA organises the exams. Browse freely — sign in to download.</p>
 </div>
 
 <nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
 
 <main class="content" id="view"></main>
-
-<div class="gate-note" id="gateNote" hidden>
-  <div class="card-note">
-    📥 <strong>Downloads are for signed-in students.</strong> Browsing is open to everyone —
-    <a href="/auth.html?tab=signup">create a free account</a> to download the files.
-  </div>
-</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
@@ -367,7 +350,6 @@
   // ── Rendering ──
   var view = document.getElementById('view');
   var crumbsEl = document.getElementById('crumbs');
-  var gateNote = document.getElementById('gateNote');
 
   function crumbLabel(level, val, path) {
     if (level === 0) return PATHWAYS[val] ? PATHWAYS[val].name : val;
@@ -416,7 +398,6 @@
     // Validate path against taxonomy; trim invalid tails.
     path = validatePath(path);
     renderCrumbs(path);
-    gateNote.hidden = !!session; // show the "sign in to download" note only to logged-out visitors
 
     if (path.length === 0) return renderPathways();
     if (path.length === 1) return renderTiers(path);
@@ -441,7 +422,6 @@
 
   function renderPathways() {
     var html = '<h2 class="level-title">Choose your pathway</h2>' +
-      '<p class="level-sub">Not sure? Combined Science is the default for most students. Your teacher will confirm which you sit.</p>' +
       '<div class="grid cols-2">';
     Object.keys(PATHWAYS).forEach(function(p){
       var d = PATHWAYS[p];
@@ -452,7 +432,6 @@
 
   function renderTiers(path) {
     var html = '<h2 class="level-title">Choose your tier</h2>' +
-      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · pick the tier you’re entered for.</p>' +
       '<div class="grid cols-2">';
     Object.keys(TIERS).forEach(function(t){
       var d = TIERS[t];
@@ -463,7 +442,6 @@
 
   function renderSubjects(path) {
     var html = '<h2 class="level-title">Choose a subject</h2>' +
-      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + '</p>' +
       '<div class="grid cols-3">';
     SUBJECT_ORDER.forEach(function(s){
       var d = SUBJECTS[s];
@@ -475,7 +453,6 @@
   function renderPapers(path) {
     var d = SUBJECTS[path[2]];
     var html = '<h2 class="level-title">' + esc(d.name) + ' — choose a paper</h2>' +
-      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + '</p>' +
       '<div class="grid cols-2">';
     Object.keys(PAPERS).forEach(function(p){
       var topicNames = topicsFor(path[2], p, path[0]).map(function(t){ return t.name; }).join(' · ');
@@ -488,7 +465,6 @@
     var d = SUBJECTS[path[2]];
     var topics = topicsFor(path[2], path[3], path[0]);
     var html = '<h2 class="level-title">' + esc(d.name) + ' · ' + esc(PAPERS[path[3]]) + ' — topics</h2>' +
-      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + ' · pick a topic to see its materials.</p>' +
       '<div class="grid cols-auto">';
     topics.forEach(function(t){
       html += choiceCard({
@@ -506,7 +482,7 @@
     var rows = listMaterials({ pathway: path[0], tier: path[1], subject: path[2], paper: path[3], topic: path[4] });
 
     var head = '<h2 class="level-title">' + esc(topic.name) + '</h2>' +
-      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + ' · ' + esc(d.name) + ' · ' + esc(PAPERS[path[3]]) + (topic.spec ? ' · Spec ' + esc(topic.spec) : '') + '</p>';
+      (topic.spec ? '<p class="level-sub">Spec ' + esc(topic.spec) + '</p>' : '');
 
     if (!materialsReady) {
       view.innerHTML = head + '<div class="empty"><span class="e-emoji">⏳</span><div class="e-head">Loading…</div></div>';
@@ -515,8 +491,7 @@
     if (rows.length === 0) {
       view.innerHTML = head +
         '<div class="empty"><span class="e-emoji">🌱</span>' +
-        '<div class="e-head">Coming soon</div>' +
-        '<p>Mr Badmus is still writing the materials for this topic. Check back soon — or explore another topic in the meantime.</p></div>';
+        '<div class="e-head">Coming soon</div></div>';
       return;
     }
 
@@ -524,9 +499,12 @@
     rows.forEach(function(m){
       var mt = MATERIAL_TYPES[m.material_type] || MATERIAL_TYPES.other;
       var size = fmtSize(m.file_size_bytes);
-      var btn = session
-        ? '<button class="dl-btn ready" data-download="' + esc(encodeURIComponent(m.file_path)) + '" data-name="' + esc(m.title) + '">⬇ Download</button>'
-        : '<button class="dl-btn gated" data-signin="1">🔒 Sign up to download</button>';
+      var enc = esc(encodeURIComponent(m.file_path));
+      var btn = '<div class="mat-actions">' +
+        '<button class="dl-btn secondary" data-open="' + enc + '">Open</button>' +
+        '<button class="dl-btn ready" data-download="' + enc + '" data-name="' + esc(m.title) + '"' +
+          (session ? '' : ' title="Sign in to download"') + '>Download</button>' +
+      '</div>';
       html += '<div class="mat-card" style="--tint:' + d.tint + ';--tint-soft:' + d.soft + ';">' +
         '<div class="mat-badge">' + mt.emoji + '</div>' +
         '<div class="mat-body">' +
@@ -544,27 +522,50 @@
     view.innerHTML = html + '</div>';
   }
 
-  // ── Download gating (Phase 4) ──
+  // ── File access ──
   function bounceToAuth() {
     var ret = encodeURIComponent(location.pathname + location.hash);
     location.href = '/auth.html?tab=signup&return=' + ret;
   }
 
-  function download(encodedPath, name, btn) {
-    if (!session) return bounceToAuth();
-    var filePath = decodeURIComponent(encodedPath);
-    var old = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Preparing…';
-    // Mint a short-lived signed URL from the authenticated session. A private
-    // bucket means a logged-out user can never deep-link the raw file.
-    fetch(SUPA_URL + '/storage/v1/object/sign/' + BUCKET + '/' + filePath, {
+  // Mint a short-lived signed URL for a file. Anon read is permitted on the
+  // bucket, so this works whether or not a session exists — logged-in requests
+  // use the user token, logged-out ones fall back to the public anon key.
+  // forDownload appends &download so the browser saves rather than previews.
+  function signUrl(filePath, forDownload, name) {
+    var token = session ? session.access_token : SUPA_KEY;
+    return fetch(SUPA_URL + '/storage/v1/object/sign/' + BUCKET + '/' + filePath, {
       method: 'POST',
-      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': 'application/json' },
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
       body: JSON.stringify({ expiresIn: 60 })
     }).then(function(r){ return r.ok ? r.json() : null; }).then(function(data){
-      btn.disabled = false; btn.textContent = old;
-      if (!data || !data.signedURL) { alert('Sorry — that download is not available right now. Please try again.'); return; }
+      if (!data || !data.signedURL) return null;
       var url = SUPA_URL + '/storage/v1' + data.signedURL;
+      if (forDownload) url += '&download=' + encodeURIComponent(name || '');
+      return url;
+    });
+  }
+
+  // Open (preview) — available to everyone. Open the tab synchronously inside
+  // the click gesture (avoids the popup blocker), then point it at the signed
+  // URL once it resolves.
+  function openMaterial(encodedPath) {
+    var w = window.open('', '_blank', 'noopener');
+    signUrl(decodeURIComponent(encodedPath), false).then(function(url){
+      if (!url) { if (w) w.close(); alert('Sorry — that file can’t be opened right now. Please try again.'); return; }
+      if (w) w.location = url; else window.location = url;
+    }).catch(function(){ if (w) w.close(); alert('Sorry — that file can’t be opened right now. Please try again.'); });
+  }
+
+  // Download — signed-in students get the file; logged-out ones are nudged to
+  // sign up first.
+  function download(encodedPath, name, btn) {
+    if (!session) return bounceToAuth();
+    var old = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Preparing…';
+    signUrl(decodeURIComponent(encodedPath), true, name).then(function(url){
+      btn.disabled = false; btn.textContent = old;
+      if (!url) { alert('Sorry — that download is not available right now. Please try again.'); return; }
       var a = document.createElement('a');
       a.href = url; a.download = name || ''; a.rel = 'noopener';
       document.body.appendChild(a); a.click(); document.body.removeChild(a);
@@ -575,10 +576,10 @@
   }
 
   view.addEventListener('click', function(e){
+    var op = e.target.closest && e.target.closest('[data-open]');
+    if (op) { e.preventDefault(); openMaterial(op.getAttribute('data-open')); return; }
     var dl = e.target.closest && e.target.closest('[data-download]');
     if (dl) { e.preventDefault(); download(dl.getAttribute('data-download'), dl.getAttribute('data-name'), dl); return; }
-    var si = e.target.closest && e.target.closest('[data-signin]');
-    if (si) { e.preventDefault(); bounceToAuth(); return; }
   });
 
   function esc(s) {
