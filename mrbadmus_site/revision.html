@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#F7F1E5"/>
+  <title>Revision Materials | MrBadmusAI</title>
+  <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
+  <link rel="stylesheet" href="/shared/tokens.css"/>
+  <link rel="stylesheet" href="/shared/nav.css"/>
+  <script src="/shared/search-index.js" defer></script>
+  <script src="/shared/search.js" defer></script>
+  <script src="/shared/nav.js" defer></script>
+  <style>
+    /* ═══ revision.html — consumes tokens only, no palette literals. Matches
+       the redesigned generator pages (light editorial). ═══ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      font-size: var(--fs-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: var(--lh-body);
+      min-height: 100vh;
+    }
+    a { color: inherit; text-decoration: none; }
+
+    /* Public top-nav styling now lives in /shared/nav.css (MRB-109). */
+
+    /* ── PAGE HEADER ── */
+    .page-head {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: var(--sp-7) var(--sp-5) var(--sp-4);
+    }
+    .page-kicker {
+      font-size: var(--fs-label); font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: var(--sp-2);
+    }
+    .page-head h1 {
+      font-family: var(--font-serif); font-optical-sizing: auto;
+      font-size: var(--fs-page-title); font-weight: 550;
+      line-height: var(--lh-title); letter-spacing: -0.015em;
+      margin-bottom: var(--sp-3);
+    }
+    .page-head p.lede { color: var(--muted); font-size: 1.05rem; max-width: 60ch; }
+
+    /* ── BREADCRUMB ── */
+    .crumbs {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 var(--sp-5) var(--sp-2);
+      display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+      font-size: var(--fs-small); font-weight: 600;
+    }
+    .crumbs .back {
+      color: var(--muted); display: inline-flex; align-items: center; gap: 6px;
+      margin-right: var(--sp-2);
+    }
+    .crumbs .back:hover { color: var(--accent); }
+    .crumbs .crumb { color: var(--accent); }
+    .crumbs .crumb:hover { text-decoration: underline; }
+    .crumbs .crumb.current { color: var(--muted); pointer-events: none; }
+    .crumbs .sep { color: var(--border-strong); }
+
+    /* ── CONTENT ── */
+    .content {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: var(--sp-4) var(--sp-5) 120px;
+    }
+    .level-title {
+      font-family: var(--font-serif); font-optical-sizing: auto;
+      font-size: var(--fs-section); font-weight: 600; letter-spacing: -0.01em;
+      margin-bottom: var(--sp-2);
+    }
+    .level-sub { color: var(--muted); font-size: var(--fs-small); margin-bottom: var(--sp-5); }
+
+    /* ── CHOICE GRID (pathway / tier / subject / paper / topic) ── */
+    .grid { display: grid; gap: var(--sp-4); }
+    .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid.cols-auto { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    @media (max-width: 720px) {
+      .grid.cols-2, .grid.cols-3, .grid.cols-auto { grid-template-columns: 1fr; }
+    }
+
+    .choice {
+      --tint: var(--accent);
+      --tint-soft: var(--accent-soft);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--tint);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: var(--sp-5);
+      display: flex; flex-direction: column; gap: var(--sp-2);
+      cursor: pointer; text-align: left;
+      transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+      min-height: 118px; justify-content: center;
+    }
+    .choice:hover { box-shadow: var(--shadow-pop); transform: translateY(-2px); }
+    .choice .c-eyebrow {
+      font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--tint);
+    }
+    .choice .c-title {
+      font-family: var(--font-serif); font-optical-sizing: auto;
+      font-size: 1.5rem; font-weight: 600; line-height: 1.15; color: var(--text);
+    }
+    .choice .c-desc { font-size: var(--fs-small); color: var(--muted); }
+    .choice .c-count {
+      margin-top: var(--sp-1); font-size: var(--fs-label); font-weight: 700;
+      color: var(--tint); background: var(--tint-soft);
+      align-self: flex-start; padding: 3px 10px; border-radius: 999px;
+    }
+    .choice .c-count.empty { color: var(--muted); background: var(--sunken); }
+
+    /* ── MATERIALS LIST ── */
+    .mat-list { display: flex; flex-direction: column; gap: var(--sp-3); }
+    .mat-card {
+      --tint: var(--accent);
+      --tint-soft: var(--accent-soft);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-card);
+      padding: var(--sp-4) var(--sp-5);
+      display: flex; align-items: center; gap: var(--sp-4); flex-wrap: wrap;
+    }
+    .mat-badge {
+      width: 44px; height: 44px; flex-shrink: 0; border-radius: var(--radius-sm);
+      background: var(--tint-soft); color: var(--tint);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+    }
+    .mat-body { flex: 1; min-width: 200px; }
+    .mat-title { font-family: var(--font-serif); font-optical-sizing: auto; font-size: var(--fs-card-title); font-weight: 600; }
+    .mat-desc { font-size: var(--fs-small); color: var(--muted); margin-top: 2px; }
+    .mat-meta { display: flex; gap: var(--sp-2); flex-wrap: wrap; align-items: center; margin-top: var(--sp-2); }
+    .tag {
+      font-size: var(--fs-label); font-weight: 700; letter-spacing: 0.03em;
+      padding: 3px 10px; border-radius: 999px;
+      background: var(--sunken); color: var(--muted); border: 1px solid var(--border);
+    }
+    .tag.type { color: var(--tint); background: var(--tint-soft); border-color: transparent; }
+    .mat-size { font-size: var(--fs-label); color: var(--muted); font-weight: 600; }
+    .dl-btn {
+      flex-shrink: 0;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: 999px; cursor: pointer;
+      font-family: var(--font-sans); font-size: var(--fs-small); font-weight: 700;
+      border: none; transition: background 0.15s, transform 0.15s;
+    }
+    .dl-btn.ready { background: var(--accent); color: var(--on-accent); }
+    .dl-btn.ready:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .dl-btn.gated {
+      background: transparent; color: var(--accent);
+      border: 1.5px solid var(--accent-border);
+    }
+    .dl-btn.gated:hover { background: var(--accent-soft); }
+    .dl-btn[disabled] { opacity: 0.6; cursor: default; transform: none; }
+
+    /* ── EMPTY / COMING-SOON ── */
+    .empty {
+      background: var(--card);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius);
+      padding: var(--sp-7) var(--sp-5);
+      text-align: center; color: var(--muted);
+    }
+    .empty .e-emoji { font-size: 2rem; display: block; margin-bottom: var(--sp-2); }
+    .empty .e-head { font-family: var(--font-serif); font-optical-sizing: auto; font-size: var(--fs-section); font-weight: 600; color: var(--text); margin-bottom: var(--sp-1); }
+
+    .gate-note {
+      max-width: var(--content-max); margin: var(--sp-6) auto 0; padding: 0 var(--sp-5);
+      font-size: var(--fs-small); color: var(--muted);
+    }
+    .gate-note .card-note {
+      background: var(--accent-soft); border: 1px solid var(--accent-border);
+      border-radius: var(--radius); padding: var(--sp-4) var(--sp-5);
+    }
+    .gate-note a { color: var(--accent); font-weight: 700; }
+
+    @media (max-width: 768px) {
+      .dl-btn { flex: 1; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
+  <div class="nav-cluster">
+    <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
+    <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
+    <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){MRBSearch.open();}return false;">🔍</a>
+    <span id="nav-auth-area">
+      <a href="/auth.html?tab=signup" class="btn-signup">Sign Up</a>
+      <a href="/auth.html?tab=signin" class="btn-signin">Sign In</a>
+    </span>
+    <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-head">
+  <div class="page-kicker">Revision Library</div>
+  <h1>Revision Materials</h1>
+  <p class="lede">Notes, worksheets, mark schemes and revision packs written by Mr Badmus, organised the way AQA organises the exams. Browse freely — sign in to download.</p>
+</div>
+
+<nav class="crumbs" id="crumbs" aria-label="Breadcrumb"></nav>
+
+<main class="content" id="view"></main>
+
+<div class="gate-note" id="gateNote" hidden>
+  <div class="card-note">
+    📥 <strong>Downloads are for signed-in students.</strong> Browsing is open to everyone —
+    <a href="/auth.html?tab=signup">create a free account</a> to download the files.
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   revision.html — 6-level drill-down
+   Pathway → Tier → Subject → Paper → Topic → materials
+   ═══════════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  var SUPA_URL = 'https://urklkrwevjtlfbwnipjn.supabase.co';
+  var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
+  var BUCKET = 'revision-materials';
+
+  /* ── Canonical AQA taxonomy — mirrors SITE_DATA in generate_site_v5.py and
+     docs/adr/revision-materials.md. If SITE_DATA changes, update all three
+     (here, the ADR, and the revision_materials_topic_check constraint). ── */
+  var PATHWAYS = {
+    combined: { name: 'Combined Science', code: '8464', desc: 'Two GCSEs across all three sciences.', tint: 'var(--combined)', soft: 'var(--physics-soft)' },
+    triple:   { name: 'Triple Science',   code: '8461–3', desc: 'Separate GCSEs in Biology, Chemistry and Physics.', tint: 'var(--triple)', soft: 'var(--chemistry-soft)' }
+  };
+  var TIERS = {
+    foundation: { name: 'Foundation', desc: 'Grades 1–5.', tint: 'var(--foundation)', soft: 'var(--biology-soft)' },
+    higher:     { name: 'Higher',     desc: 'Grades 4–9.', tint: 'var(--higher)', soft: 'var(--higher-soft)' }
+  };
+  var SUBJECTS = {
+    biology:   { name: 'Biology',   spec: '8461', tint: 'var(--biology)',   soft: 'var(--biology-soft)',   emoji: '🧬' },
+    chemistry: { name: 'Chemistry', spec: '8462', tint: 'var(--chemistry)', soft: 'var(--chemistry-soft)', emoji: '🧪' },
+    physics:   { name: 'Physics',   spec: '8463', tint: 'var(--physics)',   soft: 'var(--physics-soft)',   emoji: '⚡' }
+  };
+  var PAPERS = { paper_1: 'Paper 1', paper_2: 'Paper 2' };
+  var SUBJECT_ORDER = ['biology', 'chemistry', 'physics'];
+
+  // topics[subject][paper] = [ {slug, name, spec, tripleOnly?} ]
+  var TOPICS = {
+    biology: {
+      paper_1: [
+        { slug: 'cell-biology',       name: 'Cell Biology',                         spec: '4.1' },
+        { slug: 'organisation',       name: 'Organisation',                         spec: '4.2' },
+        { slug: 'infection-response', name: 'Infection and Response',               spec: '4.3' },
+        { slug: 'bioenergetics',      name: 'Bioenergetics',                        spec: '4.4' }
+      ],
+      paper_2: [
+        { slug: 'homeostasis', name: 'Homeostasis and Response',             spec: '4.5' },
+        { slug: 'inheritance', name: 'Inheritance, Variation and Evolution', spec: '4.6' },
+        { slug: 'ecology',     name: 'Ecology',                              spec: '4.7' }
+      ]
+    },
+    chemistry: {
+      paper_1: [
+        { slug: 'atomic-structure', name: 'Atomic Structure and the Periodic Table',     spec: '4.1' },
+        { slug: 'bonding',          name: 'Bonding, Structure and Properties of Matter',  spec: '4.2' },
+        { slug: 'quantitative',     name: 'Quantitative Chemistry',                       spec: '4.3' },
+        { slug: 'chemical-changes', name: 'Chemical Changes',                             spec: '4.4' },
+        { slug: 'energy-changes',   name: 'Energy Changes',                               spec: '4.5' }
+      ],
+      paper_2: [
+        { slug: 'rates-equilibrium', name: 'Rate and Extent of Chemical Change', spec: '4.6' },
+        { slug: 'organic',           name: 'Organic Chemistry',                  spec: '4.7' },
+        { slug: 'analysis',          name: 'Chemical Analysis',                  spec: '4.8' },
+        { slug: 'atmosphere',        name: 'Chemistry of the Atmosphere',        spec: '4.9' },
+        { slug: 'resources',         name: 'Using Resources',                    spec: '4.10' }
+      ]
+    },
+    physics: {
+      paper_1: [
+        { slug: 'energy',           name: 'Energy',            spec: '4.1' },
+        { slug: 'electricity',      name: 'Electricity',       spec: '4.2' },
+        { slug: 'particle-model',   name: 'Particle Model of Matter', spec: '4.3' },
+        { slug: 'atomic-structure', name: 'Atomic Structure',  spec: '4.4' }
+      ],
+      paper_2: [
+        { slug: 'forces',    name: 'Forces',                        spec: '4.5' },
+        { slug: 'waves',     name: 'Waves',                         spec: '4.6' },
+        { slug: 'magnetism', name: 'Magnetism and Electromagnetism', spec: '4.7' },
+        { slug: 'space',     name: 'Space Physics',                 spec: '4.8', tripleOnly: true }
+      ]
+    }
+  };
+
+  var MATERIAL_TYPES = {
+    notes:       { label: 'Notes',       emoji: '📝' },
+    worksheet:   { label: 'Worksheet',   emoji: '✏️' },
+    mark_scheme: { label: 'Mark scheme', emoji: '✅' },
+    pack:        { label: 'Revision pack', emoji: '📦' },
+    other:       { label: 'Resource',    emoji: '📄' }
+  };
+
+  // ── State: session + material rows ──
+  var session = readSession();
+  var materials = [];          // all non-deleted rows
+  var materialsReady = false;  // fetch completed (success or fail)
+
+  function readSession() {
+    try {
+      var raw = localStorage.getItem('sb-urklkrwevjtlfbwnipjn-auth-token');
+      if (!raw) return null;
+      var s = JSON.parse(raw);
+      var expMs = s && s.expires_at ? s.expires_at * 1000 : 0;
+      if (!s || !s.user || (expMs && expMs <= Date.now())) return null;
+      return s;
+    } catch (e) { return null; }
+  }
+
+  function topicsFor(subject, paper, pathway) {
+    var list = (TOPICS[subject] && TOPICS[subject][paper]) || [];
+    // Content gating: Space Physics is Triple-only. Never surface it to Combined.
+    if (pathway === 'combined') list = list.filter(function(t){ return !t.tripleOnly; });
+    return list;
+  }
+
+  function fmtSize(bytes) {
+    if (!bytes || bytes <= 0) return '';
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function countMaterials(f) {
+    return materials.filter(function(m){
+      for (var k in f) { if (f[k] != null && m[k] !== f[k]) return false; }
+      return true;
+    }).length;
+  }
+  function listMaterials(f) {
+    return materials.filter(function(m){
+      for (var k in f) { if (f[k] != null && m[k] !== f[k]) return false; }
+      return true;
+    });
+  }
+
+  // ── URL hash <-> state ──
+  // #{pathway}/{tier}/{subject}/{paper}/{topic}  (any depth; shorter = higher level)
+  function parseHash() {
+    var h = location.hash.replace(/^#\/?/, '');
+    if (!h) return [];
+    return h.split('/').filter(Boolean);
+  }
+  function setHash(parts) {
+    var h = parts.length ? '#' + parts.join('/') : '#';
+    if (location.hash !== h) location.hash = h;
+    else render();
+  }
+
+  // ── Rendering ──
+  var view = document.getElementById('view');
+  var crumbsEl = document.getElementById('crumbs');
+  var gateNote = document.getElementById('gateNote');
+
+  function crumbLabel(level, val, path) {
+    if (level === 0) return PATHWAYS[val] ? PATHWAYS[val].name : val;
+    if (level === 1) return TIERS[val] ? TIERS[val].name : val;
+    if (level === 2) return SUBJECTS[val] ? SUBJECTS[val].name : val;
+    if (level === 3) return PAPERS[val] || val;
+    if (level === 4) {
+      var t = (TOPICS[path[2]] && TOPICS[path[2]][path[3]] || []).filter(function(x){ return x.slug === val; })[0];
+      return t ? t.name : val;
+    }
+    return val;
+  }
+
+  function renderCrumbs(path) {
+    var html = '<a class="back" href="#' + path.slice(0, -1).join('/') + '">← Back</a>';
+    html += '<a class="crumb" href="#">Revision</a>';
+    for (var i = 0; i < path.length; i++) {
+      var isLast = i === path.length - 1;
+      var target = '#' + path.slice(0, i + 1).join('/');
+      html += '<span class="sep">›</span>';
+      html += '<a class="crumb' + (isLast ? ' current' : '') + '" href="' + target + '">' + esc(crumbLabel(i, path[i], path)) + '</a>';
+    }
+    if (path.length === 0) { crumbsEl.innerHTML = ''; crumbsEl.hidden = true; return; }
+    crumbsEl.hidden = false;
+    crumbsEl.innerHTML = html;
+  }
+
+  function choiceCard(opts) {
+    // opts: {href, eyebrow, title, desc, tint, soft, count}
+    var countHtml = '';
+    if (typeof opts.count === 'number') {
+      var cls = opts.count > 0 ? 'c-count' : 'c-count empty';
+      var txt = opts.count > 0 ? (opts.count + ' material' + (opts.count === 1 ? '' : 's')) : 'Coming soon';
+      countHtml = '<span class="' + cls + '">' + txt + '</span>';
+    }
+    return '<a class="choice" href="' + opts.href + '" style="--tint:' + opts.tint + ';--tint-soft:' + opts.soft + ';">' +
+      (opts.eyebrow ? '<span class="c-eyebrow">' + esc(opts.eyebrow) + '</span>' : '') +
+      '<span class="c-title">' + esc(opts.title) + '</span>' +
+      (opts.desc ? '<span class="c-desc">' + esc(opts.desc) + '</span>' : '') +
+      countHtml +
+    '</a>';
+  }
+
+  function render() {
+    var path = parseHash();
+    // Validate path against taxonomy; trim invalid tails.
+    path = validatePath(path);
+    renderCrumbs(path);
+    gateNote.hidden = !!session; // show the "sign in to download" note only to logged-out visitors
+
+    if (path.length === 0) return renderPathways();
+    if (path.length === 1) return renderTiers(path);
+    if (path.length === 2) return renderSubjects(path);
+    if (path.length === 3) return renderPapers(path);
+    if (path.length === 4) return renderTopics(path);
+    return renderMaterials(path);
+  }
+
+  function validatePath(path) {
+    var out = [];
+    if (path[0] && PATHWAYS[path[0]]) out.push(path[0]); else return out;
+    if (path[1] && TIERS[path[1]]) out.push(path[1]); else return out;
+    if (path[2] && SUBJECTS[path[2]]) out.push(path[2]); else return out;
+    if (path[3] && PAPERS[path[3]]) out.push(path[3]); else return out;
+    if (path[4]) {
+      var ok = topicsFor(out[2], out[3], out[0]).some(function(t){ return t.slug === path[4]; });
+      if (ok) out.push(path[4]);
+    }
+    return out;
+  }
+
+  function renderPathways() {
+    var html = '<h2 class="level-title">Choose your pathway</h2>' +
+      '<p class="level-sub">Not sure? Combined Science is the default for most students. Your teacher will confirm which you sit.</p>' +
+      '<div class="grid cols-2">';
+    Object.keys(PATHWAYS).forEach(function(p){
+      var d = PATHWAYS[p];
+      html += choiceCard({ href: '#' + p, eyebrow: 'AQA ' + d.code, title: d.name, desc: d.desc, tint: d.tint, soft: d.soft, count: countMaterials({ pathway: p }) });
+    });
+    view.innerHTML = html + '</div>';
+  }
+
+  function renderTiers(path) {
+    var html = '<h2 class="level-title">Choose your tier</h2>' +
+      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · pick the tier you’re entered for.</p>' +
+      '<div class="grid cols-2">';
+    Object.keys(TIERS).forEach(function(t){
+      var d = TIERS[t];
+      html += choiceCard({ href: '#' + path[0] + '/' + t, eyebrow: 'Tier', title: d.name, desc: d.desc, tint: d.tint, soft: d.soft, count: countMaterials({ pathway: path[0], tier: t }) });
+    });
+    view.innerHTML = html + '</div>';
+  }
+
+  function renderSubjects(path) {
+    var html = '<h2 class="level-title">Choose a subject</h2>' +
+      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + '</p>' +
+      '<div class="grid cols-3">';
+    SUBJECT_ORDER.forEach(function(s){
+      var d = SUBJECTS[s];
+      html += choiceCard({ href: '#' + path[0] + '/' + path[1] + '/' + s, eyebrow: d.emoji + ' AQA ' + d.spec, title: d.name, tint: d.tint, soft: d.soft, count: countMaterials({ pathway: path[0], tier: path[1], subject: s }) });
+    });
+    view.innerHTML = html + '</div>';
+  }
+
+  function renderPapers(path) {
+    var d = SUBJECTS[path[2]];
+    var html = '<h2 class="level-title">' + esc(d.name) + ' — choose a paper</h2>' +
+      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + '</p>' +
+      '<div class="grid cols-2">';
+    Object.keys(PAPERS).forEach(function(p){
+      var topicNames = topicsFor(path[2], p, path[0]).map(function(t){ return t.name; }).join(' · ');
+      html += choiceCard({ href: '#' + path[0] + '/' + path[1] + '/' + path[2] + '/' + p, eyebrow: d.emoji + ' ' + d.name, title: PAPERS[p], desc: topicNames, tint: d.tint, soft: d.soft, count: countMaterials({ pathway: path[0], tier: path[1], subject: path[2], paper: p }) });
+    });
+    view.innerHTML = html + '</div>';
+  }
+
+  function renderTopics(path) {
+    var d = SUBJECTS[path[2]];
+    var topics = topicsFor(path[2], path[3], path[0]);
+    var html = '<h2 class="level-title">' + esc(d.name) + ' · ' + esc(PAPERS[path[3]]) + ' — topics</h2>' +
+      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + ' · pick a topic to see its materials.</p>' +
+      '<div class="grid cols-auto">';
+    topics.forEach(function(t){
+      html += choiceCard({
+        href: '#' + path[0] + '/' + path[1] + '/' + path[2] + '/' + path[3] + '/' + t.slug,
+        eyebrow: 'Spec ' + t.spec, title: t.name, tint: d.tint, soft: d.soft,
+        count: countMaterials({ pathway: path[0], tier: path[1], subject: path[2], paper: path[3], topic: t.slug })
+      });
+    });
+    view.innerHTML = html + '</div>';
+  }
+
+  function renderMaterials(path) {
+    var d = SUBJECTS[path[2]];
+    var topic = topicsFor(path[2], path[3], path[0]).filter(function(t){ return t.slug === path[4]; })[0] || { name: path[4], spec: '' };
+    var rows = listMaterials({ pathway: path[0], tier: path[1], subject: path[2], paper: path[3], topic: path[4] });
+
+    var head = '<h2 class="level-title">' + esc(topic.name) + '</h2>' +
+      '<p class="level-sub">' + esc(PATHWAYS[path[0]].name) + ' · ' + esc(TIERS[path[1]].name) + ' · ' + esc(d.name) + ' · ' + esc(PAPERS[path[3]]) + (topic.spec ? ' · Spec ' + esc(topic.spec) : '') + '</p>';
+
+    if (!materialsReady) {
+      view.innerHTML = head + '<div class="empty"><span class="e-emoji">⏳</span><div class="e-head">Loading…</div></div>';
+      return;
+    }
+    if (rows.length === 0) {
+      view.innerHTML = head +
+        '<div class="empty"><span class="e-emoji">🌱</span>' +
+        '<div class="e-head">Coming soon</div>' +
+        '<p>Mr Badmus is still writing the materials for this topic. Check back soon — or explore another topic in the meantime.</p></div>';
+      return;
+    }
+
+    var html = head + '<div class="mat-list">';
+    rows.forEach(function(m){
+      var mt = MATERIAL_TYPES[m.material_type] || MATERIAL_TYPES.other;
+      var size = fmtSize(m.file_size_bytes);
+      var btn = session
+        ? '<button class="dl-btn ready" data-download="' + esc(encodeURIComponent(m.file_path)) + '" data-name="' + esc(m.title) + '">⬇ Download</button>'
+        : '<button class="dl-btn gated" data-signin="1">🔒 Sign up to download</button>';
+      html += '<div class="mat-card" style="--tint:' + d.tint + ';--tint-soft:' + d.soft + ';">' +
+        '<div class="mat-badge">' + mt.emoji + '</div>' +
+        '<div class="mat-body">' +
+          '<div class="mat-title">' + esc(m.title) + '</div>' +
+          (m.description ? '<div class="mat-desc">' + esc(m.description) + '</div>' : '') +
+          '<div class="mat-meta">' +
+            '<span class="tag type">' + esc(mt.label) + '</span>' +
+            '<span class="tag" style="color:' + d.tint + ';">' + esc(d.name) + '</span>' +
+            (size ? '<span class="mat-size">' + size + '</span>' : '') +
+          '</div>' +
+        '</div>' +
+        btn +
+      '</div>';
+    });
+    view.innerHTML = html + '</div>';
+  }
+
+  // ── Download gating (Phase 4) ──
+  function bounceToAuth() {
+    var ret = encodeURIComponent(location.pathname + location.hash);
+    location.href = '/auth.html?tab=signup&return=' + ret;
+  }
+
+  function download(encodedPath, name, btn) {
+    if (!session) return bounceToAuth();
+    var filePath = decodeURIComponent(encodedPath);
+    var old = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Preparing…';
+    // Mint a short-lived signed URL from the authenticated session. A private
+    // bucket means a logged-out user can never deep-link the raw file.
+    fetch(SUPA_URL + '/storage/v1/object/sign/' + BUCKET + '/' + filePath, {
+      method: 'POST',
+      headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + session.access_token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ expiresIn: 60 })
+    }).then(function(r){ return r.ok ? r.json() : null; }).then(function(data){
+      btn.disabled = false; btn.textContent = old;
+      if (!data || !data.signedURL) { alert('Sorry — that download is not available right now. Please try again.'); return; }
+      var url = SUPA_URL + '/storage/v1' + data.signedURL;
+      var a = document.createElement('a');
+      a.href = url; a.download = name || ''; a.rel = 'noopener';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = old;
+      alert('Sorry — that download is not available right now. Please try again.');
+    });
+  }
+
+  view.addEventListener('click', function(e){
+    var dl = e.target.closest && e.target.closest('[data-download]');
+    if (dl) { e.preventDefault(); download(dl.getAttribute('data-download'), dl.getAttribute('data-name'), dl); return; }
+    var si = e.target.closest && e.target.closest('[data-signin]');
+    if (si) { e.preventDefault(); bounceToAuth(); return; }
+  });
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // ── Boot ──
+  window.addEventListener('hashchange', render);
+  render(); // first paint (empty states until data arrives)
+
+  // Fetch material metadata. Public SELECT (anon key). If the table isn't live
+  // yet the fetch fails cleanly and every topic shows "Coming soon".
+  fetch(SUPA_URL + '/rest/v1/revision_materials?deleted_at=is.null&select=id,title,description,subject,pathway,tier,paper,topic,material_type,file_path,file_size_bytes&order=created_at.desc', {
+    headers: { 'apikey': SUPA_KEY }
+  }).then(function(r){ return r.ok ? r.json() : []; }).then(function(rows){
+    materials = Array.isArray(rows) ? rows : [];
+    materialsReady = true;
+    render();
+  }).catch(function(){
+    materials = []; materialsReady = true; render();
+  });
+})();
+</script>
+
+</body>
+</html>

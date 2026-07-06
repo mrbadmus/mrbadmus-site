@@ -112,6 +112,7 @@
     { ico: '⚡', label: 'Challenge', href: '/weekly-challenge.html' },
     { ico: '🏆', label: 'Leaderboard', href: '/leaderboard.html' },
     { ico: '📄', label: 'Past Papers', href: '/past-papers.html' },
+    { ico: '📚', label: 'Revision', href: '/revision.html' },
     { ico: '📊', label: 'My Challenges', href: '/my-challenges.html' },
     { ico: '🔍', label: 'Search', search: true }
   ];
