@@ -4357,6 +4357,49 @@ def build_site(output_dir="mrbadmus_site"):
             print(f"   Either copy them to {output_dir}/{_dir}/ explicitly, or add them to the generator's copy logic.")
             sys.exit(1)
 
+    # ── Cache-bust shared stylesheets ──
+    # Stamp a content-hash version query (?v=<hash>) onto every <link> to a
+    # shared stylesheet, so browsers, network proxies, and Cloudflare's edge
+    # refetch the CSS when — and only when — its content changes. Without this,
+    # a device can keep serving an old cached styles.css/tokens.css indefinitely
+    # (survives hard-refresh and incognito when the stale copy is upstream),
+    # which is exactly how a font-size fix goes live everywhere except one
+    # laptop. Runs before the round-trip so both mrbadmus_site/ and the repo
+    # root get the same stamped links. Idempotent: the regex matches whether or
+    # not a stale ?v= is already present, so a previously-stamped copied file
+    # (auth.html, teacher/*, etc.) is re-stamped to the current hash, never
+    # frozen at an old one.
+    import hashlib as _hashlib, re as _re
+    _versioned_css = ["tokens.css", "styles.css", "nav.css"]
+    _asset_ver = {}
+    for _name in _versioned_css:
+        _p = os.path.join(output_dir, "shared", _name)
+        if os.path.exists(_p):
+            with open(_p, "rb") as _fh:
+                _asset_ver[_name] = _hashlib.md5(_fh.read()).hexdigest()[:8]
+    if _asset_ver:
+        _ver_pat = _re.compile(
+            r'/shared/(' + '|'.join(_re.escape(n) for n in _asset_ver) + r')(?:\?v=[a-f0-9]+)?"'
+        )
+        def _stamp_versions(_html):
+            return _ver_pat.sub(
+                lambda m: f'/shared/{m.group(1)}?v={_asset_ver[m.group(1)]}"', _html
+            )
+        _stamped = 0
+        for _root, _subdirs, _files in os.walk(output_dir):
+            for _fn in _files:
+                if not _fn.endswith(".html"):
+                    continue
+                _fp = os.path.join(_root, _fn)
+                with open(_fp, "r", encoding="utf-8") as _fh:
+                    _content = _fh.read()
+                _new = _stamp_versions(_content)
+                if _new != _content:
+                    with open(_fp, "w", encoding="utf-8") as _fh:
+                        _fh.write(_new)
+                    _stamped += 1
+        print(f"  ✅ cache-bust: stamped {_stamped} pages — {_asset_ver}")
+
     # ── Copy to repo root ──
     for item in os.listdir(output_dir):
         s = os.path.join(output_dir, item)
