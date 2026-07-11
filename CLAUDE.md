@@ -368,3 +368,15 @@ Small things to tighten when you're next in the relevant area — not urgent, no
 - `weekly_scores` — student attempts. Stores pathway, tier, subject, score, max_score, time_taken. `pathway` is locked at attempt time (copied from the challenge row, not from profile).
 
 ⚠️ **Schema naming gotcha:** the profile table uses `science_pathway`, but `weekly_challenges` and `weekly_scores` use just `pathway`. Don't confuse them in queries.
+## How to work (commander, executor, scout)
+
+You are the commander. Hand work off instead of doing it yourself:
+- Reads, searches, "where is X" -> the scout.
+- Content authoring, porting, any file edits -> the executor.
+- You keep your focus for planning and judgement.
+
+Act, do not ask. Only stop for Mide on: anything touching the live site,
+anything that cannot be undone, a real product or scope decision, and the
+merge decision. Everything else, just do it and say what you did.
+
+Never git push. Mide pushes via GitHub Desktop. One session works one worktree.
