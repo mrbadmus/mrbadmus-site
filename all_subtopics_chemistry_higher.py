@@ -1365,14 +1365,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"bonding": [{'common_mistake': 'The strong bond in a covalent MOLECULE is between atoms within the molecule. The WEAK forces '
-                    'between separate molecules (intermolecular forces) are what give simple molecular substances '
-                    'their LOW melting points. Students often confuse the strong covalent bond (within a molecule) '
-                    'with the weak intermolecular forces (between molecules).',
+"bonding": [{'common_mistake': 'Students often think that when a simple molecular substance melts, its covalent bonds break. They do not: melting only separates whole molecules from each other by overcoming the weak intermolecular forces between them. The strong covalent bonds inside each molecule stay intact — which is why a low melting point tells you nothing about how strong the covalent bonds themselves are.',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'chemical-bonds',
+  'examiner_tip': 'When a question says "predict" or "identify" the bonding, justify it from the elements: metal + non-metal → ionic, two non-metals → covalent, a metal alone → metallic. Naming the bond type without saying why the elements produce it rarely earns full marks.',
   'key_note': 'Metal + non-metal → ionic (electron transfer). Non-metal + non-metal → covalent (electron sharing). '
               'Metal → metallic (electron sea). Bond type determines properties: ionic = high MP, conducts when '
               'molten/dissolved; simple covalent = low MP; metallic = conducts, malleable.',
@@ -1383,30 +1381,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Ionic', 'Magnesium oxide (MgO) — metal + non-metal, electron transfer'),
                          ('Covalent', 'Carbon dioxide (CO₂) — two non-metals sharing electron pairs')],
                'title': 'Match the Bond Type'},
-  'quiz': [{'opts': [('Ionic bonding — the metal transfers electrons to the non-metal, forming oppositely charged ions',
-                      True),
-                     ('Covalent bonding — the metal shares electrons with the non-metal', False),
-                     ('Metallic bonding — electrons are released into a delocalised sea', False),
-                     ('Hydrogen bonding — a weak attraction between the two atoms', False)],
-            'q': 'Which type of bonding occurs between a metal and a non-metal?',
-            'wrong_explanations': {1: 'Covalent bonding occurs between NON-METALS only — metals do not typically share '
-                                      'electrons.',
-                                   2: 'Metallic bonding occurs in PURE METALS or alloys — not between a metal and a '
-                                      'non-metal.',
-                                   3: 'Hydrogen bonding is a type of intermolecular force, not a primary bond type '
-                                      'between elements — and it is not what forms between a metal and non-metal.'}},
-           {'opts': [('Ionic — magnesium transfers 2 electrons to oxygen, forming Mg²⁺ and O²⁻ ions', True),
-                     ('Covalent — they share 2 electrons to fill their outer shells', False),
-                     ('Metallic — magnesium releases electrons into a sea', False),
-                     ("No bonding — they don't react because both are stable elements", False)],
-            'q': 'Magnesium (Group 2) reacts with oxygen (Group 6) to form magnesium oxide. What type of bonding does '
-                 'MgO have?',
-            'wrong_explanations': {1: 'Magnesium and oxygen share electrons in covalent bonds — this only happens '
-                                      'between two non-metals. Magnesium is a metal.',
-                                   2: 'Metallic bonding occurs in metals only — not in compounds containing both a '
-                                      'metal and non-metal.',
-                                   3: 'Magnesium burns vigorously in oxygen — it is very reactive. The product MgO is '
-                                      'a stable ionic compound.'}}],
+  'quiz': [{'opts': [
+               ('Ionic — the metal atom transfers electrons to the non-metal, forming oppositely charged ions that attract', True),
+               ('Covalent — the metal and non-metal share a pair of electrons', False),
+               ('Metallic — the atoms sit in a sea of delocalised electrons', False),
+               ('Hydrogen bonding — a weak attraction forms between the two atoms', False)
+              ],
+            'q': 'Sodium chloride is made from a metal and a non-metal. Predict the type of bonding it contains and describe how it forms.',
+            'wrong_explanations': {
+               1: 'Sharing electrons is covalent bonding, and it occurs between two NON-metals — not a metal with a non-metal.',
+               2: 'Metallic bonding needs metal atoms only (a pure metal or alloy), not a metal combined with a non-metal.',
+               3: 'Hydrogen bonding is a weak intermolecular force, not the main bond between a metal and a non-metal.'
+              }},
+           {'opts': [
+               ('Ionic — magnesium transfers 2 electrons to oxygen, forming Mg²⁺ and O²⁻ ions', True),
+               ('Covalent — they share 2 electrons to fill their outer shells', False),
+               ('Metallic — magnesium releases electrons into a sea', False),
+               ('No bonding — both are stable so they do not react', False)
+              ],
+            'q': 'Magnesium (Group 2) reacts with oxygen (Group 6) to form magnesium oxide. Identify the type of bonding in MgO.',
+            'wrong_explanations': {
+               1: 'Sharing electrons is covalent and only happens between two non-metals; magnesium is a metal.',
+               2: 'Metallic bonding occurs in metals only, not in a compound of a metal with a non-metal.',
+               3: 'Magnesium burns vigorously in oxygen — MgO is a stable ionic compound.'
+              }},
+           {'opts': [
+               ('Covalent — the non-metal atoms share pairs of electrons', True),
+               ('Ionic — one atom transfers electrons to the other', False),
+               ('Metallic — the atoms share a sea of delocalised electrons', False),
+               ('Ionic — because water can conduct electricity', False)
+              ],
+            'q': 'Water (H₂O) is made from two non-metals. Predict the type of bonding it contains.',
+            'wrong_explanations': {
+               1: 'Electron transfer (ionic) happens between a metal and a non-metal; hydrogen and oxygen are both non-metals.',
+               2: 'Metallic bonding needs metal atoms; water contains none.',
+               3: 'Pure water barely conducts; where it does, it is due to tiny amounts of ions, not because it is ionic.'
+              }},
+           {'opts': [
+               ('Its atoms release outer electrons into a delocalised sea, and the positive ions are attracted to that sea', True),
+               ('Its atoms share pairs of electrons in covalent bonds', False),
+               ('It transfers electrons to form positive and negative ions', False),
+               ('Its atoms are simply packed closely together with no forces between them', False)
+              ],
+            'q': 'Explain why copper is described as having metallic bonding.',
+            'wrong_explanations': {
+               1: 'Sharing pairs of electrons is covalent bonding, which occurs between non-metals — copper is a metal.',
+               2: 'Transfer forming positive and negative ions is ionic bonding, which needs a non-metal as well.',
+               3: 'There ARE strong forces — the electrostatic attraction between the positive ions and the electron sea.'
+              }},
+           {'opts': [
+               ('In ionic bonding electrons are transferred from one atom to another; in covalent bonding electrons are shared between atoms', True),
+               ('In ionic bonding electrons are shared; in covalent bonding they are transferred', False),
+               ('In both, electrons are transferred, but ionic bonds are stronger', False),
+               ('In both, electrons are shared, but covalent bonds involve metals', False)
+              ],
+            'q': 'Describe the difference in how electrons behave in ionic bonding compared with covalent bonding.',
+            'wrong_explanations': {
+               1: 'This is the wrong way round: ionic = transfer, covalent = sharing.',
+               2: 'Covalent bonding is sharing, not transfer; only ionic bonding transfers electrons.',
+               3: 'Covalent bonding is sharing (not transfer) and occurs between non-metals, not metals.'
+              }},
+           {'opts': [
+               ('Ionic — the ions are fixed in the solid but become free to move (and carry charge) when molten or dissolved', True),
+               ('Metallic — delocalised electrons carry charge in all states', False),
+               ('Simple covalent — the molecules move when the substance melts', False),
+               ('Giant covalent — the electrons are released only on melting', False)
+              ],
+            'q': 'A substance has a high melting point and conducts electricity only when molten or dissolved, never when solid. Deduce its type of bonding and justify your answer.',
+            'wrong_explanations': {
+               1: 'A metal would conduct as a SOLID too (delocalised electrons move in the solid) — this substance does not.',
+               2: 'Simple covalent substances have LOW melting points and never conduct (no charged particles).',
+               3: 'Giant covalent substances (e.g. diamond) do not conduct even when molten — no free charges (graphite excepted).'
+              }},
+           {'opts': [
+               ('Ionic: oppositely charged ions attracted by electrostatic forces. Metallic: positive ions attracted to a sea of delocalised electrons', True),
+               ('Both contain only neutral atoms held together by shared electron pairs', False),
+               ('Ionic contains delocalised electrons; metallic contains positive and negative ions', False),
+               ('Both contain positive and negative ions attracting each other', False)
+              ],
+            'q': 'Compare ionic bonding and metallic bonding in terms of the particles present and the forces holding them together.',
+            'wrong_explanations': {
+               1: 'Neither is neutral atoms sharing pairs — that describes covalent bonding.',
+               2: 'This swaps the two over: delocalised electrons are in METALS; positive and negative ions are in IONIC compounds.',
+               3: 'Metals do not contain negative ions — they have positive ions and a sea of (negative) delocalised electrons.'
+              }},
+           {'opts': [
+               ('Metals (left/centre) tend to lose electrons and non-metals (right) tend to gain or share them, so the combination of positions predicts transfer, sharing or a metallic sea', True),
+               ('Elements in the same period always bond ionically', False),
+               ('The bond type depends only on the atomic mass, which increases across the table', False),
+               ('All elements on the right of the table form metallic bonds', False)
+              ],
+            'q': 'Explain why the type of bonding in a substance can often be predicted from the positions of its elements in the periodic table.',
+            'wrong_explanations': {
+               1: 'It is not the period that decides bonding, but whether each element is a metal or a non-metal.',
+               2: 'Atomic mass does not determine bond type; whether atoms lose, gain or share electrons does.',
+               3: 'The right-hand side of the table is the NON-metals, which form covalent or ionic bonds, not metallic.'
+              }},
+           {'opts': [
+               ('Metallic — delocalised electrons carry the current, and layers of ions can slide so it bends rather than shatters', True),
+               ('Ionic — the ions carry current and slide over each other', False),
+               ('Simple covalent — the molecules conduct and flex', False),
+               ('Giant covalent — free electrons conduct and the rigid lattice bends', False)
+              ],
+            'q': 'A shiny solid conducts electricity and can be bent into shape without breaking. Deduce its type of bonding and explain both properties.',
+            'wrong_explanations': {
+               1: 'Ionic solids do NOT conduct (ions fixed) and are brittle — they shatter, not bend.',
+               2: 'Simple covalent substances do not conduct at all (no charged particles).',
+               3: 'Giant covalent substances are hard and rigid, not bendable, and mostly do not conduct.'
+              }},
+           {'opts': [
+               ('In the solid the ions are locked in fixed positions; when molten they are free to move and carry charge', True),
+               ('Solid magnesium chloride has no ions until it melts', False),
+               ('Melting adds electrons that carry the current', False),
+               ('The solid is too cold for any current to flow', False)
+              ],
+            'q': 'Explain why solid magnesium chloride does not conduct electricity, but molten magnesium chloride does.',
+            'wrong_explanations': {
+               1: 'The Mg²⁺ and Cl⁻ ions exist in the solid lattice already — they simply cannot move when solid.',
+               2: 'Conduction in molten ionic compounds is by moving IONS, not by added electrons.',
+               3: 'Temperature alone is not the point — it is whether the charged ions are free to move.'
+              }}],
   'rp': None,
   'spec': '5.2.1.1',
   'summary': 'Describe why atoms form chemical bonds and the three main types of bonding.',
@@ -1463,14 +1557,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Chemical Bonds',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'The IONIC BOND is the electrostatic attraction between OPPOSITELY charged ions — NOT the transfer '
-                    'of electrons itself. The transfer creates the ions; the attraction between them IS the bond. '
-                    'Also: ionic compounds always have an overall charge of ZERO — the positive and negative charges '
-                    'must balance.',
+ {'common_mistake': 'Students often say the ionic bond IS the transfer of electrons from the metal to the non-metal. That is not the bond: the transfer is a one-off event that only creates the ions. The ionic bond itself is the strong electrostatic attraction between the oppositely charged ions produced. Remember too that these charges must balance, so every ionic compound has an overall charge of zero.',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'ionic-bonding',
+  'examiner_tip': "Describing how an ionic bond forms, don't stop at \"electrons transfer\" — that only makes the ions. The bond is the strong electrostatic attraction between the oppositely charged ions. Then check the charges balance to an overall zero.",
   'key_note': 'Ionic bonding: metal loses electrons → positive ion. Non-metal gains electrons → negative ion. Opposite '
               'charges attract → ionic bond. Both achieve full outer shells. Group number tells you charge: Group 1 → '
               '+1, Group 7 → −1 etc. Overall compound charge = zero.',
@@ -1481,29 +1573,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Oxygen (Group 6)', 'O²⁻ — gains 2 electrons to achieve noble gas configuration'),
                          ('Aluminium (Group 3)', 'Al³⁺ — loses 3 electrons to achieve noble gas configuration')],
                'title': 'Match the Ion to its Charge'},
-  'quiz': [{'opts': [('Sodium loses 1 electron → Na⁺ (2.8). Chlorine gains 1 electron → Cl⁻ (2.8.8). Opposite charges '
-                      'attract.',
-                      True),
-                     ('Sodium and chlorine share 1 electron pair to form a single covalent bond.', False),
-                     ('Both atoms lose electrons to form a positive lattice structure.', False),
-                     ('Chlorine loses 1 electron to sodium, making chlorine positive.', False)],
-            'q': 'When sodium (2.8.1) reacts with chlorine (2.8.7) to form NaCl, what happens?',
-            'wrong_explanations': {1: 'Covalent bonds involve sharing — NaCl is ionic (metal + non-metal = electron '
-                                      'TRANSFER).',
-                                   2: 'In ionic bonding only the METAL loses electrons — the non-metal GAINS them.',
-                                   3: "Chlorine GAINS electrons (it needs 1 more to fill its outer shell) — it doesn't "
-                                      'lose them. Non-metals gain electrons to form negative ions.'}},
-           {'opts': [('CaCl₂ — Ca forms Ca²⁺, each Cl forms Cl⁻, so 2 chloride ions needed to balance the 2+ charge',
-                      True),
-                     ('CaCl — 1 calcium bonds with 1 chlorine', False),
-                     ('Ca₂Cl — 2 calcium atoms bond with 1 chlorine', False),
-                     ('CaCl₃ — calcium needs 3 chlorine atoms to be stable', False)],
-            'q': 'What is the formula of calcium chloride? (Calcium is Group 2, Chlorine is Group 7)',
-            'wrong_explanations': {1: 'CaCl would give a total charge of +2 + (−1) = +1 — not neutral. Ionic compounds '
-                                      'must have zero overall charge.',
-                                   2: 'Ca₂Cl would give 2×(+2) + (−1) = +3 — not neutral.',
-                                   3: 'CaCl₃ would give +2 + 3×(−1) = −1 — not neutral. You need exactly 2 Cl⁻ to '
-                                      'balance 1 Ca²⁺.'}}],
+  'quiz': [{'opts': [
+               ('Sodium loses its 1 outer electron to form Na⁺ (2.8); chlorine gains it to form Cl⁻ (2.8.8); the oppositely charged ions then attract', True),
+               ('Sodium and chlorine share one pair of electrons in a single covalent bond', False),
+               ('Both atoms lose their outer electrons into a shared pool', False),
+               ('Chlorine loses one electron to sodium, so chlorine becomes positive', False)
+              ],
+            'q': 'Sodium (2.8.1) reacts with chlorine (2.8.7) to form sodium chloride. Describe what happens to the electrons.',
+            'wrong_explanations': {
+               1: 'Sharing is covalent bonding. NaCl is a metal + non-metal, so electrons are TRANSFERRED, not shared.',
+               2: 'Only the metal (sodium) loses electrons; the non-metal (chlorine) gains them.',
+               3: 'Chlorine GAINS the electron (it needs 1 more for a full shell), so it becomes the NEGATIVE ion.'
+              }},
+           {'opts': [
+               ('The total positive charge on the metal ions exactly balances the total negative charge on the non-metal ions', True),
+               ('The electrons transferred are destroyed, leaving neutral atoms', False),
+               ('The ions are held so tightly that their charges disappear', False),
+               ('Only the outer shells carry charge, and these cancel when the shells are full', False)
+              ],
+            'q': 'Explain why an ionic compound such as sodium chloride has no overall electrical charge.',
+            'wrong_explanations': {
+               1: 'Electrons are transferred, not destroyed — charge is conserved. The compound is neutral because the ion charges balance.',
+               2: "Charge does not 'disappear' — the ions keep their charges; the compound is neutral because they sum to zero.",
+               3: 'A full shell is not uncharged. Neutrality comes from equal amounts of positive and negative charge.'
+              }},
+           {'opts': [
+               ('CaCl₂ — Ca²⁺ needs two Cl⁻ ions to balance its charge', True),
+               ('CaCl — one calcium ion bonds with one chloride ion', False),
+               ('Ca₂Cl — two calcium ions bond with one chloride ion', False),
+               ('CaCl₃ — calcium needs three chloride ions to become stable', False)
+              ],
+            'q': 'Determine the formula of calcium chloride. (Calcium is in Group 2, chlorine is in Group 7.)',
+            'wrong_explanations': {
+               1: 'CaCl would give +2 + (−1) = +1 overall — not neutral. You need two Cl⁻ to balance one Ca²⁺.',
+               2: 'Ca₂Cl would give 2(+2) + (−1) = +3 — not neutral.',
+               3: 'CaCl₃ would give +2 + 3(−1) = −1 — not neutral. Exactly two Cl⁻ balance one Ca²⁺.'
+              }},
+           {'opts': [
+               ('Metals have few outer electrons and lose them to empty their outer shell, leaving a positive ion; non-metals have nearly full shells and gain electrons, becoming negative', True),
+               ('Metals are heavier, so their nuclei pull electrons in and become positive', False),
+               ('Non-metals contain more protons, which makes them negative', False),
+               ('Metals gain electrons and non-metals lose them, to reach a full shell', False)
+              ],
+            'q': 'Explain, in terms of electron arrangement, why metals form positive ions but non-metals form negative ions.',
+            'wrong_explanations': {
+               1: 'Mass/heaviness does not set the charge — it is how many electrons are lost or gained to reach a full shell.',
+               2: "Proton number sets the element's identity, not the sign of the ion; gaining electrons is what makes non-metals negative.",
+               3: 'This is the wrong way round: metals LOSE electrons (become +), non-metals GAIN electrons (become −).'
+              }},
+           {'opts': [
+               ('Electrons from one atom are drawn as dots and from the other as crosses, showing the single outer electron moving from sodium to chlorine so each ion has a full outer shell', True),
+               ('It shows the sodium and chlorine sharing a pair of electrons drawn between them', False),
+               ('It shows a sea of electrons moving freely around fixed positive ions', False),
+               ('It shows the chlorine atom giving one electron to the sodium atom', False)
+              ],
+            'q': 'Describe how a dot-and-cross diagram represents the formation of the ions in sodium chloride.',
+            'wrong_explanations': {
+               1: 'That describes a COVALENT dot-and-cross (shared pair). In NaCl the electron is transferred, not shared.',
+               2: 'That is the metallic bonding model, not a dot-and-cross diagram of ionic NaCl.',
+               3: 'The transfer is the other way: sodium (the metal) gives its electron to chlorine (the non-metal).'
+              }},
+           {'opts': [
+               ('MgCl₂ — Mg²⁺ has a 2+ charge, so it needs two Cl⁻ ions to balance it', True),
+               ('MgCl — one magnesium ion pairs with one chloride ion', False),
+               ('Mg₂Cl — two magnesium ions pair with one chloride ion', False),
+               ('MgCl₃ — magnesium needs three chloride ions', False)
+              ],
+            'q': 'Magnesium reacts with chlorine. Deduce the formula of the compound formed and justify it using the ion charges.',
+            'wrong_explanations': {
+               1: 'MgCl gives +2 + (−1) = +1 — not neutral. Two Cl⁻ are needed to balance Mg²⁺.',
+               2: 'Mg₂Cl gives 2(+2) + (−1) = +3 — not neutral.',
+               3: 'MgCl₃ gives +2 + 3(−1) = −1 — not neutral; only two Cl⁻ are required.'
+              }},
+           {'opts': [
+               ('The transfer only creates the ions; the ionic bond is the electrostatic attraction between the oppositely charged ions that results', True),
+               ('It is correct — the ionic bond is the movement of the electron', False),
+               ('The electrons are shared, not transferred, so the description is wrong', False),
+               ('Sodium gains the electron, so the direction of transfer is wrong', False)
+              ],
+            'q': "A student writes: 'The ionic bond is the transfer of electrons from sodium to chlorine.' Explain why this statement is not correct.",
+            'wrong_explanations': {
+               1: 'The transfer is a one-off event, not the ongoing bond — so the statement is not correct.',
+               2: 'Sodium chloride is ionic (metal + non-metal), so electrons are transferred, not shared.',
+               3: "Sodium is the metal and LOSES the electron; chlorine gains it. The stated direction is right — the error is calling the transfer 'the bond'."
+              }},
+           {'opts': [
+               ('K₂O — each K⁺ carries 1+, so two are needed to balance one O²⁻', True),
+               ('KO — one potassium ion balances one oxygen ion', False),
+               ('KO₂ — one potassium ion needs two oxide ions', False),
+               ('K₂O₃ — by analogy with aluminium oxide', False)
+              ],
+            'q': 'Potassium reacts with oxygen. Predict the formula of potassium oxide and justify your answer using ion charges. (K is Group 1, O is Group 6.)',
+            'wrong_explanations': {
+               1: 'KO gives +1 + (−2) = −1 — not neutral. Two K⁺ are needed to balance one O²⁻.',
+               2: 'KO₂ gives +1 + 2(−2) = −3 — not neutral.',
+               3: 'K forms 1+ (not 3+), so the aluminium-oxide pattern does not apply; K₂O is correct.'
+              }},
+           {'opts': [
+               ('Their outer shells are already full, so they have no tendency to lose or gain electrons', True),
+               ('They are gases, and gases cannot form ions', False),
+               ('Their atoms are too small to hold a charge', False),
+               ('They already exist as negative ions in nature', False)
+              ],
+            'q': 'Explain why the noble gases in Group 0 do not normally form ions.',
+            'wrong_explanations': {
+               1: "State of matter does not decide this — many gases form ions when they react. Noble gases don't because their shells are full.",
+               2: 'Atom size does not prevent ion formation; a full outer shell removes the tendency to react.',
+               3: 'Noble gases are neutral atoms with full shells, not naturally occurring ions.'
+              }},
+           {'opts': [
+               ('Al loses 3 electrons to form Al³⁺ and O gains 2 to form O²⁻; balancing the charges needs two Al³⁺ (6+) and three O²⁻ (6−)', True),
+               ('Aluminium and oxygen share three pairs of electrons', False),
+               ('Aluminium forms Al²⁺ and oxygen forms O³⁻, giving Al₃O₂', False),
+               ('The subscripts 2 and 3 come from the group numbers 2 and 3', False)
+              ],
+            'q': 'Explain, in terms of electron transfer, why the formula of aluminium oxide is Al₂O₃.',
+            'wrong_explanations': {
+               1: 'Aluminium oxide is ionic (metal + non-metal) — electrons are transferred, not shared.',
+               2: 'Aluminium is Group 3 (forms Al³⁺) and oxygen is Group 6 (forms O²⁻); the charges are swapped here, which would give the wrong formula.',
+               3: 'The subscripts come from balancing the CHARGES (3+ and 2− → lowest common multiple 6), not from the group numbers directly.'
+              }}],
   'rp': None,
   'spec': '5.2.1.2',
   'summary': 'Describe how ionic bonds form by electron transfer between metals and non-metals.',
@@ -1558,14 +1747,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Ionic Bonding',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Ionic compounds conduct electricity when MOLTEN or in SOLUTION — NOT when solid. The ions in '
-                    'solid ionic compounds are held in fixed positions in the lattice and cannot move. Melting or '
-                    'dissolving gives the ions freedom to move — and moving charged particles = electrical '
-                    'conductivity.',
+ {'common_mistake': 'Students often say that because ionic compounds contain charged ions they should conduct electricity even when solid. They do not: in a solid the ions are locked in fixed positions in the lattice and cannot move. Only when the compound is melted or dissolved are the ions free to move — and it is moving charged particles that carry a current.',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'ionic-compounds',
+  'examiner_tip': "For conduction marks you must say the ions are free to move. Solid ionic compounds don't conduct because the ions are locked in the lattice; only when molten or dissolved can the ions move and carry charge. \"It contains charged particles\" on its own scores nothing.",
   'key_note': 'Giant ionic lattice: regular 3D arrangement of alternating + and − ions held by strong electrostatic '
               'forces in all directions. High MP/BP (strong forces). Brittle (layers shift → ion repulsion). Solid: no '
               'conduction (ions fixed). Molten/dissolved: conducts (ions free to move).',
@@ -1582,30 +1769,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Often soluble in water',
                           'Water molecules attract and surround ions, pulling them away from the lattice')],
                'title': 'Ionic Compound Property — Explain Why'},
-  'quiz': [{'opts': [('Solid: ions in fixed positions — cannot move. Molten: ions free to move and carry charge.',
-                      True),
-                     ('Solid NaCl has no ions — they only form when the compound melts.', False),
-                     ('Solid NaCl is an insulator because it is white — colour prevents conductivity.', False),
-                     ('Molten NaCl produces electrons that carry the current — not ions.', False)],
-            'q': 'Why does solid sodium chloride not conduct electricity, but molten sodium chloride does?',
-            'wrong_explanations': {1: 'NaCl is always ionic — the Na⁺ and Cl⁻ ions exist in the solid lattice. They '
-                                      "just can't MOVE when solid.",
-                                   2: 'Colour has no effect on electrical conductivity.',
-                                   3: 'Ionic conduction is carried by IONS (charged atoms), not electrons. Electron '
-                                      'conduction occurs in metals.'}},
-           {'opts': [('Strong electrostatic forces between many oppositely charged ions throughout the giant lattice '
-                      'require a lot of energy to overcome',
-                      True),
-                     ('The large size of ionic crystals means more energy is needed to melt the whole crystal', False),
-                     ('Ionic compounds contain strong covalent bonds that must be broken', False),
-                     ('The electrons in ionic compounds are tightly held and resist heating', False)],
-            'q': 'Why do ionic compounds have high melting points?',
-            'wrong_explanations': {1: "Physical size of a crystal doesn't determine melting point — the STRENGTH of "
-                                      'bonding does.',
-                                   2: 'Ionic compounds contain IONIC bonds (electrostatic attractions between ions) — '
-                                      'not covalent bonds.',
-                                   3: 'Electrons in ionic compounds are transferred to ions — they are not the source '
-                                      'of high melting point.'}}],
+  'quiz': [{'opts': [
+               ('In the solid the ions are held in fixed positions and cannot move; when molten the ions are free to move and carry charge', True),
+               ('Solid sodium chloride contains no ions — they only form when it melts', False),
+               ('Solid sodium chloride is white, and colour prevents conduction', False),
+               ('Molten sodium chloride conducts using free electrons, not ions', False)
+              ],
+            'q': 'Explain why solid sodium chloride does not conduct electricity, but molten sodium chloride does.',
+            'wrong_explanations': {
+               1: 'NaCl is ionic in all states — the Na⁺ and Cl⁻ ions are present in the solid, they just cannot move.',
+               2: 'Colour has no effect on electrical conductivity.',
+               3: 'Ionic conduction is carried by IONS, not electrons; electron conduction happens in metals.'
+              }},
+           {'opts': [
+               ('Many strong electrostatic forces act between the oppositely charged ions throughout the giant lattice, so a lot of energy is needed to separate them', True),
+               ('The large size of the crystal means more energy is needed to melt it', False),
+               ('Ionic compounds contain strong covalent bonds that must be broken', False),
+               ('The electrons in the compound are tightly held and resist heating', False)
+              ],
+            'q': 'Explain why ionic compounds have high melting points.',
+            'wrong_explanations': {
+               1: 'The physical size of a crystal does not set the melting point — the strength of the bonding does.',
+               2: 'Ionic compounds contain ionic bonds (electrostatic attraction between ions), not covalent bonds.',
+               3: 'Electrons are transferred to form the ions; they are not the reason for the high melting point.'
+              }},
+           {'opts': [
+               ('A regular 3D arrangement of many oppositely charged ions, held by strong electrostatic forces acting in all directions', True),
+               ('A small group of a few ions joined into a single molecule', False),
+               ('A sea of delocalised electrons around fixed positive ions', False),
+               ('Long chains of atoms joined by weak forces', False)
+              ],
+            'q': 'Describe the structure of a giant ionic lattice.',
+            'wrong_explanations': {
+               1: 'An ionic compound is NOT made of small molecules — it is a giant lattice of billions of ions.',
+               2: 'That is the metallic bonding model; ionic lattices have positive AND negative ions, no electron sea.',
+               3: 'That describes polymers; ionic lattices are rigid 3D arrangements of ions, not chains.'
+              }},
+           {'opts': [
+               ('A blow shifts the layers of ions so that like-charged ions line up next to each other; they repel strongly and the crystal splits', True),
+               ('The covalent bonds inside the crystal snap', False),
+               ('The delocalised electrons stop holding the ions together', False),
+               ('The ions melt at the point of impact', False)
+              ],
+            'q': 'Ionic compounds are hard but brittle. Explain why they shatter when hit.',
+            'wrong_explanations': {
+               1: 'Ionic compounds have no covalent bonds — they are held by electrostatic attraction between ions.',
+               2: 'Ionic compounds contain no delocalised electrons — that is a metallic feature.',
+               3: 'Shattering is a mechanical effect of ion repulsion, not melting.'
+              }},
+           {'opts': [
+               ('Water molecules pull the ions away from the lattice; the freed ions can move through the solution and carry charge', True),
+               ('The water breaks the ions down into neutral atoms that carry current', False),
+               ('The water adds electrons that carry the current', False),
+               ('Dissolving turns the compound into a metal', False)
+              ],
+            'q': 'Explain why many ionic compounds dissolve in water and the solution then conducts electricity.',
+            'wrong_explanations': {
+               1: 'The ions keep their charges when they dissolve — they are not turned into neutral atoms.',
+               2: 'Conduction in the solution is by the moving IONS, not by added electrons.',
+               3: 'Dissolving separates the existing ions; it does not create metallic bonding.'
+              }},
+           {'opts': [
+               ('Mg²⁺ and O²⁻ carry 2+/2− charges, larger than the 1+/1− of Na⁺ and Cl⁻, so the electrostatic forces between the ions are stronger and need more energy to break', True),
+               ('Magnesium oxide has a bigger crystal, so more bonds must be broken', False),
+               ('Magnesium oxide contains more ions per formula unit than sodium chloride', False),
+               ('Magnesium is a heavier element than sodium, which raises the melting point', False)
+              ],
+            'q': 'Magnesium oxide has a much higher melting point than sodium chloride. Explain why.',
+            'wrong_explanations': {
+               1: 'Crystal size is not the factor — both are giant lattices; the strength of each ion-ion attraction is what matters.',
+               2: 'Both MgO and NaCl have a 1:1 ratio of ions — neither has more ions per formula unit.',
+               3: 'Atomic mass does not set the melting point; the ionic CHARGE does.'
+              }},
+           {'opts': [
+               ('In an ionic solid, shifting the layers brings like charges together and they repel, so it shatters; in a metal the layers of ions slide and the electron sea keeps them bonded, so it bends', True),
+               ('Ionic compounds contain delocalised electrons that snap; metals do not', False),
+               ('Ionic bonds are weak and metallic bonds are strong', False),
+               ('Metals are molecular and ionic compounds are giant', False)
+              ],
+            'q': 'Explain, in terms of structure and bonding, why ionic compounds are hard and brittle whereas metals are malleable.',
+            'wrong_explanations': {
+               1: 'Ionic compounds contain no delocalised electrons; that is a metallic feature.',
+               2: 'Both bonds are strong — the difference is what happens to the structure when layers move.',
+               3: 'Both are giant structures; the difference is the electron sea in metals versus fixed ions in ionic solids.'
+              }},
+           {'opts': [
+               ('A giant ionic lattice with ionic bonding — the high melting point shows strong forces, and it conducts only when the ions become free to move on melting', True),
+               ('A simple molecular substance — the low forces let it melt and conduct', False),
+               ('A metallic structure — it conducts because of delocalised electrons', False),
+               ('A giant covalent structure — it conducts when the covalent bonds melt', False)
+              ],
+            'q': 'A white solid melts at about 800°C and conducts electricity when molten but not when solid. Deduce its structure and bonding, and justify your answer using its properties.',
+            'wrong_explanations': {
+               1: 'Simple molecular substances have LOW melting points and never conduct — this melts at 800°C and does conduct when molten.',
+               2: 'A metal would conduct as a SOLID too; this one does not.',
+               3: "Giant covalent substances do not conduct when molten (graphite excepted), and their bonds do not 'melt' into charge carriers."
+              }},
+           {'opts': [
+               ('The ions are held in fixed positions in the lattice, so although they are charged they cannot move to carry a current', True),
+               ('The charges on the ions cancel out completely in the solid', False),
+               ('Solids can never conduct electricity', False),
+               ('The ions turn into neutral atoms when the compound is solid', False)
+              ],
+            'q': 'Explain why ionic compounds do not conduct electricity in the solid state, even though they are made of charged ions.',
+            'wrong_explanations': {
+               1: 'The charges do not cancel — the ions keep them; conduction fails only because the ions cannot move.',
+               2: 'Many solids conduct (metals, graphite); the issue here is that the ions are fixed.',
+               3: 'The ions stay as ions in the solid; they do not become neutral atoms.'
+              }},
+           {'opts': [
+               ('In some compounds the electrostatic forces between the ions are too strong for the water molecules to pull them out of the lattice', True),
+               ('Insoluble ionic compounds contain no ions', False),
+               ('Water can only dissolve metals', False),
+               ('Insoluble compounds have covalent bonds instead of ionic bonds', False)
+              ],
+            'q': 'Suggest why not all ionic compounds are soluble in water.',
+            'wrong_explanations': {
+               1: 'All ionic compounds contain ions; solubility depends on how the ion-ion forces compare with the ion-water attractions.',
+               2: 'Water dissolves many ionic compounds (non-metal-containing), not just metals.',
+               3: 'Insoluble ionic compounds are still ionic — the difference is the strength of their lattice forces.'
+              }}],
   'rp': None,
   'spec': '5.2.1.3',
   'summary': 'Describe the giant ionic lattice structure of ionic compounds and link it to their properties.',
@@ -1668,16 +1951,14 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Ionic Compounds',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Covalent bonds are STRONG — but simple molecular substances have LOW melting points because the '
-                    'FORCES BETWEEN molecules (intermolecular forces) are WEAK. The covalent bond is within the '
-                    'molecule; melting involves separating molecules from each other (overcoming intermolecular '
-                    'forces), not breaking the bonds within them.',
+ {'common_mistake': 'Students often say that covalent bonds must be weak because substances like water have low boiling points. The covalent bonds themselves are actually very strong. The low melting and boiling points come from the weak intermolecular forces BETWEEN whole molecules — when the substance melts, those weak forces are overcome, not the strong covalent bonds inside each molecule.',
   'equations': [],
   'fifas': [],
   'higher': 'Draw dot-and-cross diagrams for: H₂, Cl₂, HCl, O₂ (double bond), N₂ (triple bond), CH₄, H₂O, NH₃, CO₂. '
             'Show lone pairs on relevant atoms. Understand bond polarity in terms of electronegativity differences. '
             'The shared electrons are attracted to both nuclei — electrostatic attraction is the covalent bond.',
   'id': 'covalent-bonding',
+  'examiner_tip': 'Never call covalent bonds weak. To explain a low boiling point, the marks are for the weak intermolecular forces between molecules being overcome — the covalent bonds inside each molecule are strong and stay intact.',
   'key_note': 'Covalent bonding: non-metals share electron pairs. Each shared pair = one covalent bond. Both atoms '
               'achieve full outer shells. Single bond: 1 shared pair. Double bond: 2 shared pairs. Covalent bonds '
               'within molecules are STRONG. Intermolecular forces between molecules are WEAK → low melting points.',
@@ -1688,32 +1969,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('O₂', '1 double covalent bond — 2 shared pairs between 2 O atoms'),
                          ('N₂', '1 triple covalent bond — 3 shared pairs between 2 N atoms')],
                'title': 'Match the Molecule to its Bonding'},
-  'quiz': [{'opts': [('4 — carbon has 4 outer electrons and needs 4 more to achieve a full shell of 8', True),
-                     ('1 — carbon only forms one bond at a time', False),
-                     ('2 — carbon forms 2 bonds like oxygen', False),
-                     ('8 — carbon needs to reach a total of 8 electrons', False)],
-            'q': 'Carbon (Group 4) bonds with hydrogen (Group 1) to form methane (CH₄). How many covalent bonds does '
-                 'carbon form?',
-            'wrong_explanations': {1: 'Carbon forms one bond per atom, not one bond total. Each covalent bond shares 2 '
-                                      'electrons — carbon forms 4 bonds to share 4 × 2 = 8 electrons total.',
-                                   2: 'Oxygen (Group 6) needs 2 more electrons — so it forms 2 bonds. Carbon (Group 4) '
-                                      'needs 4 more.',
-                                   3: 'Carbon needs 8 electrons in its outer shell — but each BOND provides 2 shared '
-                                      'electrons. 4 bonds × 2 = 8 electrons total in the outer shell.'}},
-           {'opts': [('An oxygen atom has 6 outer electrons — sharing 2 pairs with another O atom gives both atoms a '
-                      'full outer shell of 8',
-                      True),
-                     ('Two oxygen atoms bond to make a more stable element in the periodic table', False),
-                     ('Oxygen atoms repel each other and form O₂ to cancel the repulsion', False),
-                     ('O₂ is formed because oxygen needs to be a gas at room temperature', False)],
-            'q': 'Why does oxygen exist as O₂ rather than individual O atoms?',
-            'wrong_explanations': {1: 'This confuses bonding with stability classification — O₂ forms because of '
-                                      "electron configuration, not because it changes the element's position.",
-                                   2: 'Atoms of the same element have the same charge and actually do repel each other '
-                                      'slightly — but covalent bonding (SHARING electrons) overcomes this by creating '
-                                      'a stronger attraction.',
-                                   3: 'Whether a substance is a gas depends on intermolecular forces, not on why O₂ '
-                                      'forms. O₂ forms because of electronic structure.'}}],
+  'quiz': [{'opts': [
+               ('4 — carbon has 4 outer electrons and needs 4 more, so it forms 4 shared pairs', True),
+               ('1 — carbon forms only one bond at a time', False),
+               ('2 — carbon forms 2 bonds like oxygen', False),
+               ('8 — carbon needs 8 electrons in total', False)
+              ],
+            'q': 'Carbon (Group 4) bonds with hydrogen to form methane, CH₄. Determine how many covalent bonds a carbon atom forms.',
+            'wrong_explanations': {
+               1: 'Carbon forms one bond per shared pair, and it needs 4 shared pairs — not a single bond.',
+               2: 'Oxygen (Group 6) needs 2 more electrons so forms 2 bonds; carbon (Group 4) needs 4.',
+               3: 'Carbon needs 8 electrons in its outer shell, but each BOND provides 2 shared electrons, so 4 bonds give the 8.'
+              }},
+           {'opts': [
+               ('Each oxygen atom has 6 outer electrons and needs 2 more; by sharing two pairs with another O atom, both reach a full outer shell of 8', True),
+               ('Two oxygen atoms join to make a more stable element in the periodic table', False),
+               ('Oxygen atoms repel each other and pair up to cancel the repulsion', False),
+               ('Oxygen forms O₂ so that it can be a gas at room temperature', False)
+              ],
+            'q': 'Explain why oxygen exists as O₂ molecules rather than as single O atoms.',
+            'wrong_explanations': {
+               1: "Bonding does not change an element's position in the periodic table; O₂ forms because of electron sharing.",
+               2: 'Atoms of the same element do repel slightly, but covalent bonding (sharing) creates a stronger overall attraction.',
+               3: 'Whether a substance is a gas depends on intermolecular forces, not on why the molecule forms.'
+              }},
+           {'opts': [
+               ('A shared pair of electrons between two non-metal atoms, attracted to both nuclei', True),
+               ('The transfer of electrons from a metal to a non-metal', False),
+               ('A sea of delocalised electrons shared between metal ions', False),
+               ('A weak attraction between two separate molecules', False)
+              ],
+            'q': 'Describe what is meant by a covalent bond.',
+            'wrong_explanations': {
+               1: 'Transferring electrons is ionic bonding, which occurs between a metal and a non-metal.',
+               2: 'A delocalised electron sea is the metallic bonding model.',
+               3: 'That describes an intermolecular force, which acts BETWEEN molecules, not the bond within one.'
+              }},
+           {'opts': [
+               ('2', True),
+               ('1', False),
+               ('3', False),
+               ('4', False)
+              ],
+            'q': 'State the number of single covalent bonds present in a water molecule, H₂O.',
+            'wrong_explanations': {
+               1: 'Oxygen forms 1 bond with each of the 2 hydrogen atoms, giving 2 bonds — not 1.',
+               2: 'Water has only 2 hydrogen atoms, so only 2 O–H bonds form.',
+               3: 'That would need 4 hydrogen atoms; water has 2.'
+              }},
+           {'opts': [
+               ('Each chlorine atom has 7 outer electrons and needs 1 more, so the two atoms share one pair, giving both a full shell of 8', True),
+               ('Each chlorine atom shares three pairs of electrons', False),
+               ('One chlorine atom transfers an electron to the other', False),
+               ('The two atoms are held together by a sea of delocalised electrons', False)
+              ],
+            'q': 'Explain why a chlorine molecule (Cl₂) contains a single covalent bond.',
+            'wrong_explanations': {
+               1: 'Sharing three pairs would be a triple bond; chlorine needs only 1 more electron, so it shares one pair.',
+               2: 'Transferring an electron is ionic bonding; two identical non-metal atoms share instead.',
+               3: 'A delocalised electron sea is metallic bonding; Cl₂ is a simple covalent molecule.'
+              }},
+           {'opts': [
+               ('Each nitrogen atom has 5 outer electrons and needs 3 more, so the two atoms share three pairs, giving both a full shell of 8', True),
+               ('Nitrogen atoms share one pair of electrons', False),
+               ('Each nitrogen atom transfers 3 electrons to the other', False),
+               ('Nitrogen forms a triple bond because it is a gas', False)
+              ],
+            'q': 'Explain, in terms of electrons, why a nitrogen molecule (N₂) contains a triple bond.',
+            'wrong_explanations': {
+               1: 'Sharing only one pair (a single bond) would leave each nitrogen short of a full shell.',
+               2: 'Transfer is ionic bonding; two identical non-metal atoms share electrons instead.',
+               3: 'Being a gas is a consequence of weak intermolecular forces, not the reason for the triple bond.'
+              }},
+           {'opts': [
+               ('Carbon shares two pairs with each oxygen (two double bonds), reaching 8 electrons; each oxygen shares two pairs with carbon, also reaching 8', True),
+               ('Carbon transfers 4 electrons to the two oxygen atoms', False),
+               ('Each atom keeps its own electrons and none are shared', False),
+               ('Carbon shares one pair with each oxygen, so all reach 8', False)
+              ],
+            'q': 'A dot-and-cross diagram of carbon dioxide shows O=C=O. Explain how this arrangement gives every atom a full outer shell.',
+            'wrong_explanations': {
+               1: 'CO₂ is covalent (all non-metals), so electrons are shared, not transferred.',
+               2: 'If no electrons were shared, none of the atoms would reach a full shell.',
+               3: 'Sharing only one pair with each oxygen would leave carbon with 6 electrons, not 8 — CO₂ needs double bonds.'
+              }},
+           {'opts': [
+               ('Melting and boiling only overcome the weak intermolecular forces between whole molecules; the strong covalent bonds inside the molecules are not broken', True),
+               ('The covalent bonds are actually very weak and break easily', False),
+               ('The molecules lose their electrons when heated', False),
+               ('Simple molecules have no forces between them at all', False)
+              ],
+            'q': 'Explain why simple molecular substances have low melting and boiling points, despite containing strong covalent bonds.',
+            'wrong_explanations': {
+               1: 'The covalent bonds are strong — that is why they stay intact when the substance melts.',
+               2: 'No electrons are lost on melting; only the weak intermolecular forces are overcome.',
+               3: 'There ARE forces between molecules (intermolecular forces) — they are just weak.'
+              }},
+           {'opts': [
+               ('A single bond shares 2 electrons (1 pair), a double bond 4 electrons (2 pairs) and a triple bond 6 electrons (3 pairs)', True),
+               ('A single bond shares 1 electron, a double 2 and a triple 3', False),
+               ('All three share the same number of electrons but differ in strength only', False),
+               ('A triple bond shares fewer electrons than a single bond', False)
+              ],
+            'q': 'Compare a single, a double and a triple covalent bond in terms of the number of shared electrons.',
+            'wrong_explanations': {
+               1: 'Each bond is a shared PAIR (2 electrons), so a single bond shares 2 electrons, not 1.',
+               2: 'The number of shared electrons increases: 2, 4 then 6 — they are not equal.',
+               3: 'A triple bond shares MORE electrons (6) than a single bond (2).'
+              }},
+           {'opts': [
+               ('3 — nitrogen has 5 outer electrons and needs 3 more, so it forms 3 single bonds with 3 hydrogen atoms', True),
+               ('5 — nitrogen forms one bond for each outer electron', False),
+               ('1 — nitrogen forms a single bond only', False),
+               ('8 — nitrogen needs 8 electrons so forms 8 bonds', False)
+              ],
+            'q': 'Ammonia is NH₃. Deduce the number of covalent bonds nitrogen forms, and explain why.',
+            'wrong_explanations': {
+               1: 'Nitrogen bonds to gain electrons up to 8, not one bond per existing outer electron.',
+               2: 'One bond would leave nitrogen well short of a full shell.',
+               3: 'Nitrogen needs 8 electrons in its shell, but each bond provides 2 shared electrons, so it needs 3 bonds, not 8.'
+              }}],
   'rp': None,
   'spec': '5.2.1.4',
   'summary': 'Describe how covalent bonds form by electron sharing between non-metal atoms.',
@@ -1785,14 +2160,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Covalent Bonding',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'The metallic bond is the attraction between POSITIVE METAL IONS and the SEA OF DELOCALISED '
-                    'ELECTRONS — not between individual atoms directly. Malleability works because ion LAYERS slide — '
-                    'the electron sea allows this without breaking bonds. If layers had to break ionic bonds (like in '
-                    'ionic compounds), the metal would shatter instead of bend.',
+ {'common_mistake': 'Students often say the metallic bond is an attraction between neighbouring metal atoms. It is not between atoms: the metal atoms lose their outer electrons to become positive ions, and the bond is the strong electrostatic attraction between those positive ions and the surrounding sea of delocalised electrons. That electron sea is also why metals bend rather than shatter — the layers of ions can slide while the sea holds everything together.',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'metallic-bonding',
+  'examiner_tip': 'Be precise: the metallic bond is the attraction between the positive metal ions and the sea of delocalised electrons — not an attraction "between atoms". Use "delocalised electrons" to explain conduction and "layers of ions slide" to explain why metals bend rather than shatter.',
   'key_note': 'Metallic bonding: positive metal ions in a lattice + sea of delocalised electrons. High MP/BP (strong '
               'electrostatic forces). Conducts electricity and heat (delocalised electrons move freely). '
               'Malleable/ductile (layers slide, electron sea remains). Alloys harder — different sized atoms disrupt '
@@ -1809,31 +2182,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Alloys are harder',
                           'Different-sized atoms disrupt the regular lattice — layers cannot slide as easily')],
                'title': 'Metallic Property — Structural Explanation'},
-  'quiz': [{'opts': [('Delocalised electrons can move freely through the metallic lattice and carry charge', True),
-                     ('Metal ions are positively charged and attract electrical current', False),
-                     ('Metals have more protons than non-metals, making them better at conducting', False),
-                     ('The regular lattice of metal ions allows electrical signals to travel between them', False)],
-            'q': 'Why are metals good conductors of electricity?',
-            'wrong_explanations': {1: 'Positive ions ATTRACT electrons but do not themselves move to carry current — '
-                                      'it is the mobile delocalised electrons that carry charge.',
-                                   2: "Proton count determines the element's identity, not its conductivity — "
-                                      'non-metals can also have many protons but are poor conductors.',
-                                   3: 'The lattice provides the structure, but conductivity comes from the FREE '
-                                      'electrons, not from the ions themselves.'}},
-           {'opts': [('Carbon atoms in steel have a different size to iron atoms — they disrupt the regular lattice '
-                      'and prevent layers from sliding',
-                      True),
-                     ('Steel has stronger metallic bonds than iron because it contains more electrons', False),
-                     ('Carbon atoms fill the gaps between iron atoms, increasing density and hardness', False),
-                     ('Steel is harder because it has been purified — removing impurities strengthens the metal',
-                      False)],
-            'q': 'Why is steel harder than pure iron?',
-            'wrong_explanations': {1: 'Steel has more metallic bonds in total, but the KEY reason is DISRUPTION of the '
-                                      'lattice by differently-sized atoms.',
-                                   2: 'Carbon atoms do fill interstitial spaces, but the hardening mechanism is '
-                                      'specifically about PREVENTING LAYER SLIDING — the lattice disruption model.',
-                                   3: 'Steel is iron made LESS pure (with carbon added) — it is the ADDITION of a '
-                                      'different-sized element that makes it harder, not purification.'}}],
+  'quiz': [{'opts': [
+               ('They contain delocalised electrons that are free to move through the structure and carry charge', True),
+               ('Their positive ions move through the metal to carry the current', False),
+               ('They have more protons than non-metals, which conduct the current', False),
+               ('The regular lattice lets electrical signals jump between fixed ions', False)
+              ],
+            'q': 'Explain why metals are good conductors of electricity.',
+            'wrong_explanations': {
+               1: 'The positive ions are held in the lattice; it is the mobile delocalised electrons that carry charge.',
+               2: "Proton number sets an element's identity, not its conductivity — many non-metals have lots of protons but do not conduct.",
+               3: 'Conduction comes from the free electrons moving, not from the fixed ions.'
+              }},
+           {'opts': [
+               ('The added carbon atoms are a different size to the iron atoms, so they distort the regular lattice and stop the layers of ions sliding', True),
+               ('Steel contains more electrons, which makes stronger metallic bonds', False),
+               ('The carbon atoms fill the gaps, which increases the density and hardness', False),
+               ('Steel is purer than iron, and purer metals are always harder', False)
+              ],
+            'q': 'Explain why steel is harder than pure iron.',
+            'wrong_explanations': {
+               1: 'There may be more atoms overall, but the KEY reason is the disruption of the lattice by different-sized atoms.',
+               2: 'Carbon does occupy spaces, but the hardening comes specifically from preventing the layers from sliding.',
+               3: 'Steel is iron made LESS pure (carbon added); it is the added, differently-sized atoms that harden it.'
+              }},
+           {'opts': [
+               ('A regular lattice of positive metal ions surrounded by a sea of delocalised electrons', True),
+               ('A giant lattice of alternating positive and negative ions', False),
+               ('Separate metal molecules held by weak intermolecular forces', False),
+               ('Neutral metal atoms sharing pairs of electrons in covalent bonds', False)
+              ],
+            'q': 'Describe the structure of a metal according to the metallic bonding model.',
+            'wrong_explanations': {
+               1: 'Alternating positive and negative ions describes an IONIC lattice, not a metal.',
+               2: 'Metals are giant structures, not separate molecules.',
+               3: 'Metals do not share pairs in covalent bonds; their outer electrons are delocalised.'
+              }},
+           {'opts': [
+               ('The layers of positive ions can slide over one another, and the electron sea re-surrounds them in their new positions without the bonding breaking', True),
+               ('The metallic bonds break and then instantly reform as new bonds', False),
+               ('The delocalised electrons push the ions apart to let them move', False),
+               ('The ions are so small that they simply flow like a liquid', False)
+              ],
+            'q': 'Explain why metals are malleable (can be hammered into shape).',
+            'wrong_explanations': {
+               1: 'The bonding does not break — the electron sea keeps holding the ions together as the layers slide.',
+               2: 'The electrons hold the ions together; they do not push them apart.',
+               3: 'The ions stay in a solid lattice; they slide as layers rather than flowing freely.'
+              }},
+           {'opts': [
+               ('There is strong electrostatic attraction between the many positive ions and the sea of delocalised electrons, so a lot of energy is needed to overcome it', True),
+               ('Metals contain strong covalent bonds throughout', False),
+               ('The delocalised electrons are very heavy', False),
+               ('Metal atoms are simply packed together with no forces to overcome', False)
+              ],
+            'q': 'Explain why metals have high melting points.',
+            'wrong_explanations': {
+               1: 'Metals do not contain covalent bonds; the metallic bond is the ion-to-electron-sea attraction.',
+               2: 'Electrons have almost no mass; the high melting point is due to the strength of the attraction, not electron mass.',
+               3: 'There ARE strong forces — that is exactly why the melting point is high.'
+              }},
+           {'opts': [
+               ('The delocalised electrons are free to move: they carry electric charge, and they also transfer kinetic (thermal) energy quickly through the structure', True),
+               ('The positive ions vibrate and pass on both current and heat', False),
+               ('The covalent bonds carry the current and the heat', False),
+               ('Metals absorb heat and electricity because they are shiny', False)
+              ],
+            'q': 'Explain why metals are good conductors of both electricity and heat.',
+            'wrong_explanations': {
+               1: 'Ion vibration transfers some heat, but electrical current and most heat transfer are carried by the mobile electrons.',
+               2: 'Metals have no covalent bonds; conduction is due to delocalised electrons.',
+               3: 'Shininess is unrelated to conductivity.'
+              }},
+           {'opts': [
+               ('The tin atoms are a different size to the copper atoms, distorting the regular layers so they cannot slide over each other as easily', True),
+               ('Bronze contains stronger covalent bonds than copper', False),
+               ('Tin is a gas that fills the gaps in the copper', False),
+               ('Bronze has fewer delocalised electrons than copper', False)
+              ],
+            'q': 'Explain why an alloy such as bronze is harder than the pure copper it is mostly made from.',
+            'wrong_explanations': {
+               1: 'Metals and alloys have no covalent bonds; the hardening is due to lattice distortion.',
+               2: 'Tin is a solid metal; it sits within the lattice as differently-sized atoms.',
+               3: 'The number of electrons is not the reason — disrupting the layers is.'
+              }},
+           {'opts': [
+               ('A metal has positive ions in a sea of delocalised electrons and conducts as a solid; an ionic solid has fixed positive and negative ions and does not conduct until molten or dissolved', True),
+               ('Both have delocalised electrons and both conduct as solids', False),
+               ('Both have fixed ions and neither conducts as a solid', False),
+               ('A metal has positive and negative ions; an ionic solid has an electron sea', False)
+              ],
+            'q': 'Compare metallic bonding with ionic bonding in terms of the particles present and whether the solid conducts electricity.',
+            'wrong_explanations': {
+               1: 'Ionic solids have no delocalised electrons and do not conduct as solids, so they are not the same.',
+               2: "Metals DO conduct as solids (mobile electrons), so 'neither conducts' is wrong.",
+               3: 'This swaps them over: the electron sea is in the METAL; positive and negative ions are in the IONIC solid.'
+              }},
+           {'opts': [
+               ('The layers of positive ions slide into new positions while the delocalised electron sea keeps them bonded, so the structure does not break', True),
+               ('The metallic bonds are weak, so the metal stretches easily', False),
+               ('The ions turn into a liquid as the wire is drawn', False),
+               ('The electrons leave the metal, letting the ions move', False)
+              ],
+            'q': 'Explain why metals can be drawn into wires (are ductile) without breaking.',
+            'wrong_explanations': {
+               1: 'The bonds are strong; ductility comes from the layers sliding while the electron sea maintains the bonding.',
+               2: 'The metal stays solid while being drawn into a wire.',
+               3: 'The electrons stay in the metal (that is what holds it together as it deforms).'
+              }},
+           {'opts': [
+               ('It conducts electricity well (delocalised electrons carry charge) and it is ductile (layers of ions slide, so it can be drawn into wires)', True),
+               ('It is brittle (so it snaps to length) and it is an insulator (so it is safe)', False),
+               ('It has a low melting point (so it melts in use) and it is magnetic', False),
+               ('It is radioactive (so it carries current) and it is transparent', False)
+              ],
+            'q': 'Copper is used for electrical wiring. Suggest two properties of copper that make it suitable, and link each to metallic bonding.',
+            'wrong_explanations': {
+               1: 'Brittleness and insulation would make copper useless for wiring — it is ductile and conductive.',
+               2: "A low melting point would be a disadvantage in a wire, and copper's suitability is not due to magnetism.",
+               3: 'Copper is neither radioactive nor transparent, and neither would help it carry current.'
+              }}],
   'rp': None,
   'spec': '5.2.1.5',
   'summary': 'Describe the metallic bonding model and use it to explain the properties of metals.',
@@ -1893,13 +2361,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Metallic Bonding',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Changes of state are PHYSICAL changes — the substance does not change chemically. H₂O is always '
-                    'H₂O whether it is ice, water or steam. (aq) means dissolved in WATER specifically — not just any '
-                    'liquid. A substance in ethanol or acetone would NOT be labelled (aq).',
+ {'common_mistake': 'Students often think that melting or boiling a substance must be a chemical change because something clearly happens. It is a physical change: the particles gain or lose energy and rearrange, but the substance itself is unchanged — ice, water and steam are all H₂O. (Remember too that (aq) means dissolved in water specifically, not just any liquid.)',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'states-of-matter',
+  'examiner_tip': "Melting and boiling are physical changes — the particles rearrange but the substance is unchanged (ice, water and steam are all H₂O), so don't call them chemical changes. And use the state symbol (aq) only for something dissolved in water, not for any liquid.",
   'key_note': 'Solid: fixed positions, vibrate. Liquid: close but can flow. Gas: widely spread, rapid random motion. '
               'Melting (s→l), boiling (l→g), condensing (g→l), freezing (l→s). State symbols: (s) solid, (l) liquid, '
               '(g) gas, (aq) aqueous solution.',
@@ -1910,28 +2377,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Freezing', 'Liquid → solid — energy removed, particles slow enough to form regular lattice'),
                          ('Sublimation', 'Solid → gas directly — e.g. iodine, dry ice (CO₂)')],
                'title': 'Match the State Change to its Name'},
-  'quiz': [{'opts': [('(aq) — aqueous, meaning dissolved in water', True),
-                     ('(l) — liquid, because a solution is a liquid', False),
-                     ('(d) — dissolved', False),
-                     ('(w) — water solution', False)],
-            'q': 'What state symbol is used for a substance dissolved in water?',
-            'wrong_explanations': {1: '(l) means PURE liquid — e.g. liquid water H₂O(l). A solution of NaCl in water '
-                                      'would use NaCl(aq), not NaCl(l).',
-                                   2: 'There is no (d) state symbol in chemistry equations.',
-                                   3: 'The four state symbols are (s), (l), (g) and (aq) — no (w) symbol exists.'}},
-           {'opts': [('Physical change — the chemical formula stays as H₂O; only the arrangement of particles changes',
-                      True),
-                     ('Chemical change — a new substance (water) is produced from ice', False),
-                     ('Chemical change — energy is added, which must have broken chemical bonds', False),
-                     ('Neither — melting is a change of state, not classified as physical or chemical', False)],
-            'q': 'Ice melts to form water. Is this a physical or chemical change? Explain.',
-            'wrong_explanations': {1: 'Ice and water are the same substance — H₂O. Water is NOT a new substance; it is '
-                                      'just the same H₂O molecules in a different state.',
-                                   2: 'Energy can be added without breaking covalent bonds — melting ice only '
-                                      'overcomes the INTERMOLECULAR FORCES (hydrogen bonds between water molecules), '
-                                      'not the covalent O-H bonds.',
-                                   3: 'Changes of state ARE classified as physical changes — the composition of the '
-                                      'substance does not change.'}}],
+  'quiz': [{'opts': [
+               ('A physical change — the substance is still H₂O; only the arrangement of the particles changes', True),
+               ('A chemical change — a new substance, water, is made from ice', False),
+               ('A chemical change — heating must have broken chemical bonds', False),
+               ('Neither — melting is not classed as physical or chemical', False)
+              ],
+            'q': 'Ice melts to form water. State whether this is a physical or a chemical change, and explain your answer.',
+            'wrong_explanations': {
+               1: 'Ice and water are the same substance (H₂O) — water is not a new substance, just a different state.',
+               2: 'Melting only overcomes the forces between the water molecules; the covalent O–H bonds are not broken.',
+               3: 'A change of state IS a physical change, because the composition of the substance does not change.'
+              }},
+           {'opts': [
+               ('Closely packed in a regular pattern, vibrating about fixed positions', True),
+               ('Closely packed but able to move around and flow past each other', False),
+               ('Far apart and moving quickly in all directions', False),
+               ('Arranged in long chains that slide over one another', False)
+              ],
+            'q': 'Describe the arrangement and movement of the particles in a solid.',
+            'wrong_explanations': {
+               1: 'Particles that can move past each other and flow describes a LIQUID, not a solid.',
+               2: 'Particles far apart moving quickly describes a GAS.',
+               3: "Sliding chains describe a polymer's structure, not the general particle model of a solid."
+              }},
+           {'opts': [
+               ('Boiling (or evaporation)', True),
+               ('Condensation', False),
+               ('Freezing', False),
+               ('Melting', False)
+              ],
+            'q': 'Name the change of state that occurs when a liquid turns into a gas.',
+            'wrong_explanations': {
+               1: 'Condensation is the reverse — gas turning into liquid.',
+               2: 'Freezing is liquid turning into solid.',
+               3: 'Melting is solid turning into liquid.'
+              }},
+           {'opts': [
+               ('(aq)', True),
+               ('(l)', False),
+               ('(s)', False),
+               ('(g)', False)
+              ],
+            'q': 'In the equation NaCl(s) → Na⁺(?) + Cl⁻(?), state the symbol that shows the ions are dissolved in water.',
+            'wrong_explanations': {
+               1: '(l) means a pure liquid, e.g. molten NaCl(l) or water H₂O(l) — not a substance dissolved in water.',
+               2: '(s) means solid; here the dissolved ions are free in solution, not a solid.',
+               3: '(g) means a gas; dissolved ions in water are not gaseous.'
+              }},
+           {'opts': [
+               ("A gas has large spaces between its particles that can be pushed closer together; a solid's particles are already touching", True),
+               ('A gas has heavier particles that squash more easily', False),
+               ('A solid has no particles, so there is nothing to compress', False),
+               ('A gas is warmer, and warm things always compress', False)
+              ],
+            'q': 'Explain, in terms of particles, why a gas can be compressed but a solid cannot.',
+            'wrong_explanations': {
+               1: 'Particle mass does not control compressibility — the spacing between particles does.',
+               2: 'A solid is made of particles too; they are just packed closely with no space to compress into.',
+               3: 'Temperature is not the reason — it is the spacing of the particles.'
+              }},
+           {'opts': [
+               ('The particles gain enough energy to overcome the forces holding them together and escape into the gas state', True),
+               ('The particles lose energy and move closer together', False),
+               ('The chemical bonds inside the particles break to release a gas', False),
+               ('The particles shrink so they can float away', False)
+              ],
+            'q': 'Explain, in terms of energy and forces, what happens to the particles when a liquid boils.',
+            'wrong_explanations': {
+               1: 'Boiling adds energy — the particles move more and separate, they do not lose energy or move closer.',
+               2: 'Boiling overcomes the forces BETWEEN particles, not the bonds inside them (that would be a chemical change).',
+               3: 'Particles do not shrink; they gain energy and move apart.'
+              }},
+           {'opts': [
+               ('The energy supplied is used to overcome the forces between the particles (to change the state), rather than to raise the temperature', True),
+               ('The thermometer stops working at the melting point', False),
+               ('No energy is being supplied during melting', False),
+               ('The particles stop absorbing energy once melting begins', False)
+              ],
+            'q': 'As a pure solid is heated until it melts, its temperature stays constant during melting even though heating continues. Explain why.',
+            'wrong_explanations': {
+               1: 'The thermometer works fine — the energy is going into the state change, not into heating.',
+               2: 'Energy is still being supplied; it is being used to separate the particles.',
+               3: 'The particles keep absorbing energy — it is used to break the structure apart, not to warm it.'
+              }},
+           {'opts': [
+               ('It treats particles as solid, identical spheres and ignores the forces between them (and their real shapes and sizes)', True),
+               ('It shows that particles move, which is incorrect', False),
+               ('It proves that all substances are the same', False),
+               ('It cannot be used to explain changes of state', False)
+              ],
+            'q': 'The particle model represents particles as small solid spheres. Suggest one limitation of this model.',
+            'wrong_explanations': {
+               1: 'Particles really do move — that part of the model is correct, so it is not a limitation.',
+               2: 'The model actually shows substances differ (different arrangements); it does not claim they are the same.',
+               3: 'The model IS used to explain changes of state; that is one of its strengths.'
+              }},
+           {'opts': [
+               ('No new substance is made — the same particles are simply rearranged, and the change can be reversed', True),
+               ('A new substance is always produced, but it looks the same', False),
+               ('Chemical bonds within the particles are broken and remade', False),
+               ('Energy is released, which defines a physical change', False)
+              ],
+            'q': 'Explain why a change of state is classed as a physical change and not a chemical change.',
+            'wrong_explanations': {
+               1: 'If a new substance were made it would be a chemical change; in a change of state the substance is unchanged.',
+               2: 'The bonds inside the particles are not broken — only the forces between particles change.',
+               3: 'Energy transfer alone does not define the type of change; whether a new substance forms does.'
+              }},
+           {'opts': [
+               ('They lose energy, slow down, and the forces between them pull them together into a liquid', True),
+               ('They gain energy and spread further apart', False),
+               ('They turn into a new chemical substance', False),
+               ('They break apart into hydrogen and oxygen', False)
+              ],
+            'q': 'Predict what happens to the water particles when steam condenses on a cold window, in terms of their energy and movement.',
+            'wrong_explanations': {
+               1: 'Condensation removes energy — the particles slow down and come together, they do not gain energy or spread out.',
+               2: 'Condensation is a physical change; steam and liquid water are the same substance.',
+               3: 'The molecules stay as H₂O; the covalent bonds do not break.'
+              }}],
   'rp': None,
   'spec': '5.2.2.1–5.2.2.2',
   'summary': 'Describe the three states of matter, the changes between them and how to use state symbols.',
@@ -2001,14 +2566,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'States of Matter and State Symbols',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Ionic compounds conduct in solution because the IONS move — NOT because electrons move. This is '
-                    'IONIC conduction (different from ELECTRONIC conduction in metals). Also: ionic compounds are '
-                    'brittle, not ductile. They crack when struck because shifting layers brings like charges together '
-                    '→ repulsion → shattering.',
+ {'common_mistake': 'Students often say that ionic solutions conduct electricity because electrons flow through them, just like in a metal. They do not: ionic compounds have no free electrons. They conduct only when molten or dissolved, and it is the ions themselves that move and carry the charge. (This is also why ionic compounds are brittle rather than bendy — shifting the lattice brings like charges together, and they repel.)',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'properties-ionic-compounds',
+  'examiner_tip': 'When explaining conduction, say it is the ions that move — ionic compounds have no free electrons, so never describe electrons flowing "like in a metal". They conduct only when molten or dissolved, because that is when the ions are free to move.',
   'key_note': 'Giant ionic lattice → high MP/BP (strong electrostatic forces). Brittle (layer shift → repulsion → '
               'shatters). Solid: no conduction. Molten/dissolved: conducts (mobile ions). Higher ionic charge → '
               'stronger forces → higher MP. Many dissolve in water.',
@@ -2020,30 +2583,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Metal', 'Conducts electricity in solid state — delocalised electrons carry charge'),
                          ('Both', 'High melting points — strong electrostatic forces throughout the structure')],
                'title': 'Ionic vs Metallic Properties'},
-  'quiz': [{'opts': [('Mg²⁺ and O²⁻ have higher charges (±2) than Na⁺ and Cl⁻ (±1) — stronger electrostatic forces '
-                      'between ions',
-                      True),
-                     ('MgO has a larger crystal lattice, so more bonds must be broken', False),
-                     ('MgO contains more ions per formula unit than NaCl', False),
-                     ('Magnesium is a heavier element than sodium — this increases the melting point', False)],
-            'q': 'Magnesium oxide (MgO) has a higher melting point than sodium chloride (NaCl). Why?',
-            'wrong_explanations': {1: 'Crystal size is not the determining factor — both have giant lattices. The '
-                                      'STRENGTH of individual ion-ion attractions matters.',
-                                   2: 'Both NaCl and MgO have a 1:1 ratio of ions in their formula — neither has more '
-                                      'ions per formula unit.',
-                                   3: 'Atomic mass does not determine melting point — the CHARGE on the ions '
-                                      'determines the strength of electrostatic forces.'}},
-           {'opts': [('Dissolved in water and molten — ions are free to move in both cases', True),
-                     ('Only in solid form — the lattice provides a pathway for electrons', False),
-                     ('In all forms — NaCl always has ions present that can carry charge', False),
-                     ('Only when dissolved — the water provides the conducting pathway', False)],
-            'q': 'A student tests whether NaCl conducts electricity in four forms: solid, dissolved in water, molten, '
-                 'and as a gas. In which forms does it conduct?',
-            'wrong_explanations': {1: 'Solid NaCl has ions but they are FIXED — they cannot move to carry charge.',
-                                   2: 'Ions present does NOT mean they can conduct — they must be FREE TO MOVE. In a '
-                                      'solid, they are fixed in the lattice.',
-                                   3: 'Molten NaCl also conducts — water is not needed. Free ions (whether from '
-                                      'melting or dissolving) allow conduction.'}}],
+  'quiz': [{'opts': [
+               ('Dissolved in water and molten — in both the ions are free to move and carry charge', True),
+               ('Only as a solid — the lattice provides a path for the electrons', False),
+               ('In all four forms — sodium chloride always contains ions', False),
+               ('Only when dissolved — the water is what carries the current', False)
+              ],
+            'q': 'A student tests whether sodium chloride conducts electricity in four forms: solid, dissolved in water, molten, and as a vapour. Predict in which forms it conducts, and explain why.',
+            'wrong_explanations': {
+               1: 'Solid NaCl has ions but they are FIXED — they cannot move to carry charge, so it does not conduct as a solid.',
+               2: 'Having ions is not enough; they must be free to move. In the solid (and vapour) they cannot carry a current.',
+               3: 'Molten NaCl also conducts — water is not required. Free ions from melting OR dissolving both allow conduction.'
+              }},
+           {'opts': [
+               ('When molten or dissolved the ions are free to move and carry charge; in the solid they are held in fixed positions', True),
+               ('Melting or dissolving creates ions that were not there in the solid', False),
+               ('Molten ionic compounds conduct using delocalised electrons', False),
+               ('Solid ionic compounds have no charged particles', False)
+              ],
+            'q': 'Explain why ionic compounds conduct electricity when molten or dissolved, but not when solid.',
+            'wrong_explanations': {
+               1: 'The ions already exist in the solid — melting or dissolving frees them to move, it does not create them.',
+               2: 'Ionic conduction is by moving IONS, not delocalised electrons (that is metals).',
+               3: 'Solid ionic compounds do contain charged ions; they simply cannot move.'
+              }},
+           {'opts': [
+               ('There are many strong electrostatic attractions between the oppositely charged ions throughout the giant lattice, needing a lot of energy to overcome', True),
+               ('The crystals are large, so more heat is needed', False),
+               ('Strong covalent bonds throughout the lattice must be broken', False),
+               ('The ions are very heavy and resist heating', False)
+              ],
+            'q': 'Explain why ionic compounds have high melting and boiling points.',
+            'wrong_explanations': {
+               1: 'Crystal size does not set the melting point; the strength of the ionic bonding does.',
+               2: 'Ionic compounds have ionic bonds (ion-to-ion attraction), not covalent bonds.',
+               3: 'Ion mass is not the reason; the strength of the electrostatic attraction is.'
+              }},
+           {'opts': [
+               ('The blow shifts a layer of ions so like charges line up next to each other; they repel and the crystal splits apart', True),
+               ('The covalent bonds in the crystal snap', False),
+               ('The ions melt at the point of impact', False),
+               ('The delocalised electrons are knocked out of place', False)
+              ],
+            'q': 'Ionic compounds are hard but brittle. Explain why a crystal shatters when it is struck.',
+            'wrong_explanations': {
+               1: 'Ionic compounds contain no covalent bonds — they are held by ionic (electrostatic) attraction.',
+               2: 'Shattering is caused by ion repulsion when layers shift, not by melting.',
+               3: 'Ionic compounds have no delocalised electrons; that is a metallic feature.'
+              }},
+           {'opts': [
+               ('A giant ionic lattice — a regular 3D arrangement of oppositely charged ions with strong electrostatic forces in all directions', True),
+               ('A small molecule of a few ions held weakly together', False),
+               ('A lattice of positive ions in a sea of delocalised electrons', False),
+               ('Long chains of ions joined by weak intermolecular forces', False)
+              ],
+            'q': 'Describe the type of structure that is responsible for the properties of ionic compounds.',
+            'wrong_explanations': {
+               1: 'Ionic compounds are giant lattices, not small molecules.',
+               2: 'That is the metallic model; ionic compounds have positive AND negative ions, no electron sea.',
+               3: 'That describes a polymer-like arrangement, not an ionic lattice.'
+              }},
+           {'opts': [
+               ('Mg²⁺ and O²⁻ carry 2+/2− charges, larger than the 1+/1− of Na⁺ and Cl⁻, so the electrostatic forces between the ions are stronger and need more energy to overcome', True),
+               ('Magnesium oxide has a larger crystal lattice, so more energy is needed', False),
+               ('Magnesium oxide has more ions per formula unit than sodium chloride', False),
+               ('Magnesium is heavier than sodium, which raises the melting point', False)
+              ],
+            'q': 'Magnesium oxide (MgO) has a higher melting point than sodium chloride (NaCl). Explain why.',
+            'wrong_explanations': {
+               1: 'Crystal size is not the determining factor — both are giant lattices; the strength of each ion-ion attraction matters.',
+               2: 'Both MgO and NaCl are 1:1 — neither has more ions per formula unit.',
+               3: 'Atomic mass does not set the melting point; the ionic charge does.'
+              }},
+           {'opts': [
+               ('A metal conducts using delocalised electrons that move; molten sodium chloride conducts using its ions that move', True),
+               ('Both conduct using delocalised electrons', False),
+               ('Both conduct using moving ions', False),
+               ('A metal conducts using ions; molten sodium chloride uses electrons', False)
+              ],
+            'q': 'Explain the difference between how a metal conducts electricity and how molten sodium chloride conducts electricity.',
+            'wrong_explanations': {
+               1: 'Only the metal uses delocalised electrons; molten NaCl uses moving ions, not electrons.',
+               2: 'The metal does not conduct by moving ions — its ions are fixed; the electrons move.',
+               3: 'This swaps them over: metals use electrons, molten ionic compounds use ions.'
+              }},
+           {'opts': [
+               ('Sodium oxide — its O²⁻ ions carry a 2− charge compared with Cl⁻ at 1−, giving stronger forces and a higher melting point', True),
+               ('Sodium chloride — because it contains chlorine, which is heavier than oxygen', False),
+               ('They are equal, because both contain sodium ions', False),
+               ('Sodium oxide — because it has more atoms in its formula', False)
+              ],
+            'q': 'Predict which has the higher melting point, sodium chloride (NaCl) or sodium oxide (Na₂O), and justify your answer using ionic charge.',
+            'wrong_explanations': {
+               1: 'Atomic mass is not the key factor; the O²⁻ charge (2−) creates stronger attraction than Cl⁻ (1−).',
+               2: "Having the same positive ion does not make the melting points equal — the negative ion's charge differs.",
+               3: 'The higher melting point comes from the higher ionic charge (O²⁻), not simply from more atoms.'
+              }},
+           {'opts': [
+               ('A higher melting point means more energy is needed to separate the ions, which shows the electrostatic forces holding them are stronger', True),
+               ('A higher melting point means the ions are lighter', False),
+               ('The melting point depends only on the size of the crystal', False),
+               ('The melting point is unrelated to the forces between ions', False)
+              ],
+            'q': 'Explain why the melting point of an ionic compound gives information about the strength of the forces between its ions.',
+            'wrong_explanations': {
+               1: 'Ion mass is not what the melting point reveals; it reflects the strength of the attraction.',
+               2: 'Crystal size does not set the melting point; the strength of the ionic forces does.',
+               3: 'The melting point is directly linked to the strength of the forces between the ions.'
+              }},
+           {'opts': [
+               ('Its 2+/2− ions give very strong ionic bonding and a very high melting point, so it can withstand the high temperatures without melting', True),
+               ('It is a good electrical conductor when solid', False),
+               ('It has a low melting point, so it melts to seal the furnace', False),
+               ('It is a soft, flexible material that absorbs heat', False)
+              ],
+            'q': 'Suggest why magnesium oxide is used to line the inside of furnaces.',
+            'wrong_explanations': {
+               1: 'Solid MgO does not conduct electricity (fixed ions); that is not why it is used to line furnaces.',
+               2: 'A low melting point would be useless in a furnace; MgO is chosen for its VERY HIGH melting point.',
+               3: 'MgO is hard and brittle, not soft and flexible; it is chosen for heat resistance.'
+              }}],
   'rp': None,
   'spec': '5.2.2.3',
   'summary': 'Explain the properties of ionic compounds in terms of their giant lattice structure.',
@@ -2102,14 +2761,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Structure and Properties of Ionic Compounds',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Simple molecular substances have LOW melting points because INTERMOLECULAR FORCES between '
-                    'molecules are weak — NOT because covalent bonds are weak. The covalent bonds WITHIN molecules are '
-                    'actually very strong. The confusion between these two types of force is one of the most common '
-                    'errors in this topic.',
+ {'common_mistake': 'Students often say that simple molecular substances melt easily because their covalent bonds are weak. The covalent bonds inside each molecule are actually strong. What is weak are the intermolecular forces BETWEEN the separate molecules — melting or boiling overcomes those and leaves the covalent bonds untouched, which is why the melting point is low.',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'properties-small-molecules',
+  'examiner_tip': 'Never write "the bonds break" when a simple molecular substance melts. Say the weak intermolecular forces between molecules are overcome — the strong covalent bonds inside each molecule stay intact.',
   'key_note': 'Simple molecules: small, discrete, strong covalent bonds within. Low MP/BP because WEAK intermolecular '
               'forces between molecules. Larger molecules → stronger intermolecular forces → higher MP/BP. No '
               'electrical conduction (no free electrons or ions). Melting/boiling separates molecules — does NOT break '
@@ -2123,36 +2780,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Simple molecular', 'Does not conduct electricity — no free ions or electrons'),
                          ('Giant structure (ionic)', 'Conducts when molten or dissolved — free ions carry charge')],
                'title': 'Simple Molecular vs Giant Structure'},
-  'quiz': [{'opts': [('Water molecules form stronger intermolecular forces (hydrogen bonds) than methane — more energy '
-                      'needed to separate water molecules',
-                      True),
-                     ('Water has more covalent bonds — it takes more energy to break them', False),
-                     ('Methane is lighter and therefore evaporates faster', False),
-                     ('Water contains oxygen, which makes molecules heavier and harder to separate', False)],
-            'q': 'Water (H₂O) boils at 100°C, but methane (CH₄) boils at −161°C. Both are simple molecular substances. '
-                 'Why is the difference so large?',
-            'wrong_explanations': {1: 'Boiling does NOT break covalent bonds — water has 2 covalent bonds, methane has '
-                                      '4. Bond count is not the reason.',
-                                   2: 'Lighter molecules do evaporate faster at a given temperature, but boiling point '
-                                      'is about the temperature at which intermolecular forces are overcome — not just '
-                                      'molecular mass.',
-                                   3: 'Oxygen does make water heavier, but the primary reason is STRONGER '
-                                      'INTERMOLECULAR FORCES (hydrogen bonds) in water compared to the weaker London '
-                                      'dispersion forces in methane.'}},
-           {'opts': [('They have no free electrons or ions — there are no charged particles that can move to carry a '
-                      'current',
-                      True),
-                     ('The covalent bonds are too strong to allow electron movement', False),
-                     ('The molecules are too small to carry a useful electrical charge', False),
-                     ("Simple molecules are always gases, and gases don't conduct electricity", False)],
-            'q': 'Why do simple molecular substances not conduct electricity?',
-            'wrong_explanations': {1: 'Electrical conduction depends on FREE MOVING charged particles — not on bond '
-                                      'strength. Even if bonds were weaker, without free charges there would be no '
-                                      'conductivity.',
-                                   2: "Molecular size doesn't determine conductivity — metals are much larger "
-                                      'structures but conduct excellently because of free electrons.',
-                                   3: 'Some gases DO conduct electricity (e.g. plasma, ionised gas) — and simple '
-                                      'molecular substances can be solids or liquids too.'}}],
+  'quiz': [{'opts': [
+               ('Water molecules have stronger intermolecular forces than methane molecules, so more energy is needed to separate them', True),
+               ('Water has more covalent bonds, so it takes more energy to break them', False),
+               ('Methane is lighter, so it simply evaporates faster', False),
+               ('Water contains oxygen, which makes the molecules too heavy to boil easily', False)
+              ],
+            'q': 'Water (H₂O) boils at 100°C but methane (CH₄) boils at −161°C, although both are simple molecular. Explain why the difference is so large.',
+            'wrong_explanations': {
+               1: 'Boiling does not break covalent bonds — water has 2 and methane has 4, so bond count is not the reason.',
+               2: 'Lighter molecules can evaporate faster, but boiling point is set by the strength of the intermolecular forces.',
+               3: 'The key reason is the stronger intermolecular forces in water, not simply the mass of the molecules.'
+              }},
+           {'opts': [
+               ('They have no free electrons or ions — there are no charged particles that can move to carry a current', True),
+               ('Their covalent bonds are too strong to let electrons move', False),
+               ('Their molecules are too small to hold a charge', False),
+               ('Simple molecules are always gases, and gases never conduct', False)
+              ],
+            'q': 'Explain why simple molecular substances do not conduct electricity.',
+            'wrong_explanations': {
+               1: 'Conduction needs free charged particles, not weaker bonds — even weak bonds would not help without free charges.',
+               2: 'Molecular size is not the point; metals are large structures and conduct because of free electrons.',
+               3: 'Some gases can conduct (e.g. when ionised), and simple molecular substances can be solids or liquids too.'
+              }},
+           {'opts': [
+               ('The forces between the molecules (intermolecular forces) are weak, so only a little energy is needed to separate them', True),
+               ('The covalent bonds within the molecules are very weak', False),
+               ('The molecules lose electrons easily when warmed', False),
+               ('There are no forces at all between the molecules', False)
+              ],
+            'q': 'Explain why simple molecular substances have low melting and boiling points.',
+            'wrong_explanations': {
+               1: 'The covalent bonds within molecules are strong; it is the forces between molecules that are weak.',
+               2: 'No electrons are lost on melting; the weak intermolecular forces are simply overcome.',
+               3: 'There ARE forces between molecules (intermolecular forces) — they are just weak.'
+              }},
+           {'opts': [
+               ('The weak intermolecular forces between the molecules', True),
+               ('The strong covalent bonds within the molecules', False),
+               ('The ionic bonds between the molecules', False),
+               ('The metallic bonds holding the molecules together', False)
+              ],
+            'q': 'State what is overcome when a simple molecular substance boils.',
+            'wrong_explanations': {
+               1: 'The strong covalent bonds inside the molecules are NOT broken on boiling.',
+               2: 'Simple molecular substances contain no ionic bonds.',
+               3: 'There are no metallic bonds in a simple molecular substance.'
+              }},
+           {'opts': [
+               ('A substance made of small molecules, each with a fixed number of atoms joined by strong covalent bonds', True),
+               ('A giant lattice of ions held by electrostatic forces', False),
+               ('A giant structure of atoms all joined by covalent bonds', False),
+               ('A metal made of positive ions in a sea of electrons', False)
+              ],
+            'q': 'Describe what a simple molecular substance is.',
+            'wrong_explanations': {
+               1: 'A giant ionic lattice describes an ionic compound, not a simple molecular substance.',
+               2: 'A giant covalent structure (like diamond) is different — its covalent bonds run throughout, with no small molecules.',
+               3: 'That describes a metal, not a molecular substance.'
+              }},
+           {'opts': [
+               ('Larger molecules have more electrons, giving stronger intermolecular forces, so more energy is needed to separate them', True),
+               ('Larger molecules have stronger covalent bonds inside them', False),
+               ('Larger molecules are always ionic', False),
+               ('Larger molecules contain free electrons that raise the melting point', False)
+              ],
+            'q': 'Explain why larger molecules generally have higher melting and boiling points than smaller molecules.',
+            'wrong_explanations': {
+               1: 'The covalent bonds inside are not what melts; it is the intermolecular forces, which grow with molecule size.',
+               2: 'Larger molecular substances are still covalent/molecular, not ionic.',
+               3: 'Simple molecular substances have no free electrons; the higher melting point is due to stronger intermolecular forces.'
+              }},
+           {'opts': [
+               ('Melting only needs enough energy to overcome the weak intermolecular forces between molecules, which is far less than the energy needed to break the strong covalent bonds', True),
+               ('The covalent bonds are weaker than the intermolecular forces', False),
+               ('The molecules gain electrons that protect the covalent bonds', False),
+               ('The covalent bonds are shared out among all the molecules', False)
+              ],
+            'q': 'Explain why melting a simple molecular substance does not break its covalent bonds.',
+            'wrong_explanations': {
+               1: 'Covalent bonds are much STRONGER than intermolecular forces, so melting overcomes the weak forces only.',
+               2: 'No electrons are gained on melting.',
+               3: 'Covalent bonds stay within each molecule; they are not shared between molecules.'
+              }},
+           {'opts': [
+               ('Iodine molecules are relatively large, so the intermolecular forces between them are strong enough to hold them as a solid at room temperature', True),
+               ('Iodine has stronger covalent bonds than other molecules', False),
+               ('Iodine is an ionic compound', False),
+               ('Iodine molecules contain free electrons', False)
+              ],
+            'q': 'Many simple molecular substances are gases at room temperature, but iodine is a solid. Suggest why iodine is a solid.',
+            'wrong_explanations': {
+               1: 'The covalent bond strength inside I₂ is not the reason; it is the stronger intermolecular forces between larger molecules.',
+               2: 'Iodine (I₂) is a simple molecular substance, not ionic.',
+               3: 'Iodine has no free electrons; its solid state is due to intermolecular forces.'
+              }},
+           {'opts': [
+               ('Simple molecular, with covalent bonding — low melting point (weak intermolecular forces) and no charged particles to conduct', True),
+               ('Ionic — it has a low melting point and free ions', False),
+               ('Metallic — it does not conduct because the electrons are fixed', False),
+               ('Giant covalent — low melting point from weak covalent bonds', False)
+              ],
+            'q': 'A substance has a low melting point and does not conduct electricity in any state. Deduce its structure and bonding.',
+            'wrong_explanations': {
+               1: 'Ionic compounds have HIGH melting points and conduct when molten — this does neither.',
+               2: 'Metals conduct (delocalised electrons) and usually have high melting points.',
+               3: 'Giant covalent structures have very HIGH melting points, not low ones.'
+              }},
+           {'opts': [
+               ('Melting overcomes only the weak intermolecular forces between molecules; the strong covalent bonds inside the molecules are not involved', True),
+               ('Because the covalent bonds break at exactly the melting point', False),
+               ('Because covalent bonds have no strength to measure', False),
+               ('Because the melting point measures the ionic bonds instead', False)
+              ],
+            'q': 'Explain why the melting point of a simple molecular substance tells you nothing about the strength of its covalent bonds.',
+            'wrong_explanations': {
+               1: 'The covalent bonds are not broken on melting, so the melting point cannot tell you their strength.',
+               2: 'Covalent bonds are strong and definitely have a measurable strength — just not one shown by the melting point.',
+               3: 'There are no ionic bonds in a simple molecular substance.'
+              }}],
   'rp': None,
   'spec': '5.2.2.4',
   'summary': 'Explain why simple molecular substances have low melting points and do not conduct electricity.',
@@ -2214,14 +2961,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Structure and Properties of Small Molecules',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Polymers are LARGE MOLECULES — they are NOT giant covalent structures. Each polymer chain is one '
-                    'large molecule held to others by intermolecular forces (which are weak). Giant covalent '
-                    'structures (like diamond) have covalent bonds extending throughout the entire structure — very '
-                    'different. This is why polymers have much lower melting points than diamond.',
+ {'common_mistake': "Students often call polymers giant covalent structures because the chains are so large. They are not: a polymer is a very large molecule, and the chains are held to each other only by weak intermolecular forces. In a giant covalent structure such as diamond, strong covalent bonds run all the way through — which is why diamond's melting point is far higher than any polymer's.",
   'equations': ['n CH₂=CH₂ → [—CH₂—CH₂—]ₙ  (poly(ethene))'],
   'fifas': [],
   'higher': None,
   'id': 'polymers',
+  'examiner_tip': "Don't call a polymer a giant covalent structure. It is a large molecule whose chains are held to each other by weak intermolecular forces — that is why it melts far below diamond, where strong covalent bonds run all the way through. That force difference is where the comparison marks are.",
   'key_note': 'Polymer: long chain of repeating monomer units. Addition polymerisation: monomers with C=C double bonds '
               'join together. Properties depend on chain length and intermolecular forces. Solid at room temperature, '
               'flexible, insulators. Thermoplastic: soften on heating. Thermosetting: permanently hard.',
@@ -2232,31 +2977,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Protein', 'Monomer: amino acids — biological polymer in all living things'),
                          ('Starch', 'Monomer: glucose — energy storage polymer in plants')],
                'title': 'Match the Polymer to its Monomer'},
-  'quiz': [{'opts': [('Ethene — CH₂=CH₂ — the double bond opens up and monomers join together', True),
-                     ('Ethane — C₂H₆ — a saturated hydrocarbon that joins together', False),
-                     ('Ethanol — C₂H₅OH — an alcohol that polymerises', False),
-                     ('Methane — CH₄ — the simplest hydrocarbon', False)],
-            'q': 'What is the monomer used to make poly(ethene)?',
-            'wrong_explanations': {1: 'Ethane is SATURATED (no double bond) — addition polymerisation requires a C=C '
-                                      'double bond. Ethane cannot polymerise by addition.',
-                                   2: 'Ethanol can undergo condensation reactions but does not form poly(ethene) — and '
-                                      'poly(ethene) is produced by addition polymerisation.',
-                                   3: 'Methane has no double bond and only 1 carbon — it cannot chain together to form '
-                                      'poly(ethene).'}},
-           {'opts': [('Polymers are separate large molecules — held together by weak intermolecular forces. Diamond '
-                      'has strong covalent bonds throughout the entire structure.',
-                      True),
-                     ('Polymers contain fewer atoms than diamond — less matter to heat up', False),
-                     ('Diamond has ionic bonds which are stronger than covalent bonds in polymers', False),
-                     ('Polymers are synthetic — natural structures like diamond are always stronger', False)],
-            'q': 'Why do polymers have lower melting points than giant covalent structures like diamond?',
-            'wrong_explanations': {1: 'Polymers are LARGE molecules — a single polymer chain may contain millions of '
-                                      'atoms. The issue is the TYPE of forces between chains, not the number of atoms.',
-                                   2: 'Diamond is entirely COVALENT — it has no ionic bonds. The covalent bonds '
-                                      'extending throughout the 3D diamond structure are what make it so hard and '
-                                      'high-melting.',
-                                   3: 'Both natural and synthetic structures can have high or low melting points — it '
-                                      'depends on structure and bonding, not whether they are naturally occurring.'}}],
+  'quiz': [{'opts': [
+               ('A polymer is made of separate large molecules held together by weak intermolecular forces, while diamond has strong covalent bonds throughout the whole structure', True),
+               ('Polymers contain fewer atoms than diamond, so there is less to heat', False),
+               ('Diamond has ionic bonds, which are stronger than the covalent bonds in polymers', False),
+               ('Polymers are man-made, and natural structures are always stronger', False)
+              ],
+            'q': 'Explain why polymers have much lower melting points than giant covalent structures such as diamond.',
+            'wrong_explanations': {
+               1: 'A single polymer chain can contain millions of atoms — the difference is the TYPE of forces, not the number of atoms.',
+               2: 'Diamond is entirely covalent, with no ionic bonds; its strong covalent network gives the high melting point.',
+               3: 'Whether a material is natural or synthetic does not set its melting point; structure and bonding do.'
+              }},
+           {'opts': [
+               ('Ethene has a C=C double bond that can open up so the monomers join together; ethane is saturated (only single bonds), so it cannot join in this way', True),
+               ('Ethane is too heavy a molecule to react', False),
+               ('Ethane contains no carbon, so it cannot form a carbon chain', False),
+               ('Ethene is an ionic compound, which is needed for polymerisation', False)
+              ],
+            'q': 'Ethene (CH₂=CH₂) can be used to make poly(ethene), but ethane (C₂H₆) cannot. Explain why.',
+            'wrong_explanations': {
+               1: 'Molecular mass is not the barrier; ethane simply has no C=C double bond to open up.',
+               2: 'Ethane (C₂H₆) does contain carbon — it just has no double bond to enable addition polymerisation.',
+               3: 'Ethene is a covalent molecule, not ionic; the double bond is what matters.'
+              }},
+           {'opts': [
+               ('Many small monomer molecules join together to form one long chain molecule', True),
+               ('A single large molecule breaks apart into many small ones', False),
+               ('Two atoms share electrons to form one molecule', False),
+               ('Positive and negative ions attract to form a lattice', False)
+              ],
+            'q': 'Describe how a polymer forms from monomers.',
+            'wrong_explanations': {
+               1: 'Polymerisation joins monomers together; it does not break a molecule apart.',
+               2: 'A single shared pair between two atoms is one covalent bond, not polymerisation.',
+               3: 'That describes ionic bonding, not the formation of a polymer.'
+              }},
+           {'opts': [
+               ('Its molecules are very long chains, so there is enough intermolecular force between them to hold it as a solid', True),
+               ('Its covalent bonds are ionic and therefore strong', False),
+               ('It contains a giant lattice of ions', False),
+               ('It has delocalised electrons that lock it in place', False)
+              ],
+            'q': 'Explain why poly(ethene) is a solid at room temperature.',
+            'wrong_explanations': {
+               1: 'Poly(ethene) has covalent, not ionic, bonds; its solid state is due to intermolecular forces between long chains.',
+               2: 'Poly(ethene) is molecular, not a giant ionic lattice.',
+               3: 'Poly(ethene) has no delocalised electrons; it is an insulator.'
+              }},
+           {'opts': [
+               ('A small molecule that can join with many others to form a polymer', True),
+               ('The long chain molecule made when many small molecules join', False),
+               ('A single atom that makes up a polymer', False),
+               ('A mixture of two different plastics', False)
+              ],
+            'q': 'State what is meant by a monomer.',
+            'wrong_explanations': {
+               1: 'The long chain is the POLYMER; the monomer is the small starting molecule.',
+               2: 'A monomer is a molecule, not a single atom.',
+               3: 'A monomer is a pure substance (one type of molecule), not a mixture.'
+              }},
+           {'opts': [
+               ('The C=C double bond in each ethene opens up; the freed electrons form new bonds to neighbouring monomers, linking them into a long saturated chain', True),
+               ('The ethene molecules lose atoms which join to form the chain', False),
+               ('The ethene molecules transfer electrons to form ions that attract', False),
+               ('Water is removed between each pair of monomers to join them', False)
+              ],
+            'q': 'Explain, in terms of the double bond, how addition polymerisation forms poly(ethene) from ethene.',
+            'wrong_explanations': {
+               1: 'In addition polymerisation no atoms are lost — the whole monomer becomes part of the chain.',
+               2: 'Polymerisation of ethene is by opening the double bond (covalent), not by forming ions.',
+               3: 'Removing water describes condensation polymerisation, not the addition polymerisation of ethene.'
+              }},
+           {'opts': [
+               ('Longer chains have more points of contact, so the total intermolecular forces between chains are stronger and need more energy to overcome', True),
+               ('Longer chains have stronger covalent bonds along them', False),
+               ('Longer chains contain ions that attract strongly', False),
+               ('Longer chains are always cross-linked', False)
+              ],
+            'q': 'Explain why a polymer with longer chains tends to have a higher melting point than one with shorter chains.',
+            'wrong_explanations': {
+               1: 'The covalent bonds along the chain are not what melts; the intermolecular forces between chains are, and these grow with chain length.',
+               2: 'Polymers are molecular, not ionic — there are no ions between the chains.',
+               3: 'Chain length and cross-linking are different things; a longer chain is not automatically cross-linked.'
+              }},
+           {'opts': [
+               ('PVC contains polar C–Cl bonds, giving stronger intermolecular forces between the chains than in poly(ethene)', True),
+               ('PVC has ionic bonds between its chains', False),
+               ('PVC has weaker covalent bonds, so it sets harder', False),
+               ('PVC chains are metallic and conduct heat away', False)
+              ],
+            'q': 'PVC is stiffer and higher-melting than poly(ethene). Suggest why, in terms of intermolecular forces.',
+            'wrong_explanations': {
+               1: 'PVC is still a molecular polymer, not ionic; the stronger forces come from the polar C–Cl bonds.',
+               2: 'Weaker covalent bonds would make it less stable, not stiffer; the effect is due to stronger intermolecular forces.',
+               3: 'PVC is an insulator, not metallic.'
+              }},
+           {'opts': [
+               ('Melting only supplies enough energy to overcome the weak intermolecular forces between the chains, which is far less than needed to break the strong covalent bonds', True),
+               ('The covalent bonds are weaker than the forces between chains', False),
+               ('The chains gain electrons that protect the bonds', False),
+               ('The covalent bonds are shared between the chains', False)
+              ],
+            'q': 'Explain why melting a polymer does not break the covalent bonds along its chains.',
+            'wrong_explanations': {
+               1: 'Covalent bonds are much stronger than the intermolecular forces, so only the weak forces are overcome.',
+               2: 'No electrons are gained on melting.',
+               3: 'Covalent bonds run along each chain; they are not shared between separate chains.'
+              }},
+           {'opts': [
+               ('Every atom of each monomer ends up in the polymer chain, because the monomers simply add together at the opened double bond', True),
+               ('A water molecule is released, but it is too small to notice', False),
+               ('The monomers lose hydrogen atoms as they join', False),
+               ('Half of each monomer is left behind as waste', False)
+              ],
+            'q': 'In addition polymerisation, explain why no small molecule is lost when the monomers join together.',
+            'wrong_explanations': {
+               1: 'Losing water is condensation polymerisation; addition polymerisation loses nothing.',
+               2: 'No hydrogen atoms are lost in addition polymerisation.',
+               3: 'No part of the monomer is left behind — all atoms are kept in the polymer.'
+              }}],
   'rp': None,
   'spec': '5.2.2.5',
   'summary': 'Describe the structure of polymers and explain their properties.',
@@ -2325,10 +3165,7 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Polymers',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'GRAPHITE conducts electricity — it is the exception to the rule that giant covalent structures '
-                    "don't conduct. Diamond does NOT conduct. The difference: in graphite, each carbon uses only 3 of "
-                    'its 4 outer electrons for bonds — the 4th electron is delocalised and free to move. In diamond, '
-                    'all 4 electrons are used in bonds — none are free.',
+ {'common_mistake': 'Students often assume that because diamond and graphite are both giant covalent structures made of carbon, they must have the same properties. They do not: graphite conducts electricity and is soft and slippery, while diamond does not conduct and is extremely hard. The difference is that in graphite each carbon bonds to only three others, leaving one delocalised electron per atom and weak forces between layers; in diamond every carbon bonds to four others with no free electrons.',
   'equations': [],
   'fifas': [],
   'higher': 'Graphene: a single layer of graphite — one atom thick, conducts electricity (delocalised electrons), '
@@ -2336,6 +3173,7 @@ CHEMISTRY_SUBTOPICS_ALL = {
             'and as lubricant. Carbon nanotubes: cylindrical graphene — very strong along axis, conduct electricity. '
             'All based on hexagonal carbon networks.',
   'id': 'giant-covalent-structures',
+  'examiner_tip': "Compare diamond and graphite through their bonding, not just their properties: diamond — each carbon bonds to four others (rigid, no free electrons → doesn't conduct); graphite — each bonds to three, leaving one delocalised electron per atom (conducts) with weak forces between layers (soft, slippery). Tie every property back to the number of bonds.",
   'key_note': 'Giant covalent: many atoms all bonded by covalent bonds — very high MP, very hard. Diamond: each C '
               'bonds to 4 others, 3D lattice, does NOT conduct. Graphite: each C bonds to 3 others in layers, 4th '
               'electron delocalised — DOES conduct, layers slide (soft/lubricant). Both are carbon — different '
@@ -2348,31 +3186,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Graphite', 'Used as pencil lead and as electrodes in electrolysis'),
                          ('Diamond', 'Used for cutting tools and as a gemstone — hardest natural substance')],
                'title': 'Diamond or Graphite?'},
-  'quiz': [{'opts': [('Graphite has one delocalised electron per carbon atom — free to move and carry charge. Diamond '
-                      'uses all 4 outer electrons in bonds — none are free.',
-                      True),
-                     ('Graphite contains more carbon atoms than diamond — more atoms means better conductivity', False),
-                     ('Diamond is transparent — light passes through, but electricity cannot follow light', False),
-                     ('Graphite has metallic bonding while diamond has ionic bonding', False)],
-            'q': 'Why does graphite conduct electricity but diamond does not?',
-            'wrong_explanations': {1: "The NUMBER of carbon atoms doesn't determine conductivity — it is the "
-                                      'availability of FREE electrons that matters.',
-                                   2: 'Transparency and electrical conductivity are completely unrelated properties.',
-                                   3: 'Both diamond and graphite are entirely COVALENT — neither has metallic or ionic '
-                                      'bonding.'}},
-           {'opts': [('Graphite has layers of carbon atoms held by weak intermolecular forces — the layers can slide '
-                      'over each other easily',
-                      True),
-                     ('Graphite is smooth because it has no atoms on its surface', False),
-                     ('Graphite dissolves in water, creating a slippery solution', False),
-                     ('Graphite is very hard like diamond, which makes surfaces it coats more slippery', False)],
-            'q': 'Why is graphite used as a lubricant?',
-            'wrong_explanations': {1: 'Surfaces always have atoms — graphite is slippery because of its LAYERED '
-                                      'STRUCTURE where layers slide.',
-                                   2: 'Graphite does not dissolve in water — it is used as a dry lubricant in '
-                                      'situations where oil would be problematic.',
-                                   3: 'Diamond is hard but NOT slippery — hardness and slipperiness are different '
-                                      'properties. Graphite is SOFT, not hard.'}}],
+  'quiz': [{'opts': [
+               ('Graphite has a delocalised electron per carbon free to move, while diamond uses all four outer electrons in bonds', True),
+               ('Graphite packs more carbon atoms into each layer, and more atoms always means better electrical conductivity', False),
+               ('Diamond is transparent, so charge passes through it as light rather than as an electric current', False),
+               ('Graphite conducts because it has metallic bonding, and diamond has ionic bonding that traps its electrons', False)
+              ],
+            'q': 'Explain why graphite conducts electricity but diamond does not.',
+            'wrong_explanations': {
+               1: 'Conductivity depends on having charge carriers free to move, not on how many atoms the structure contains.',
+               2: 'Whether a material is transparent to light is unrelated to whether it conducts electricity.',
+               3: 'Both are giant covalent, not metallic or ionic; the free electrons in graphite come from each carbon bonding to only three others.'
+              }},
+           {'opts': [
+               ('Its atoms form layers held by weak forces between them, so the layers slide over each other easily', True),
+               ('Its surface is so perfectly smooth that there are no atoms on it for other surfaces to catch on', False),
+               ('It dissolves in water between the surfaces to form a thin, slippery lubricating solution', False),
+               ('It is as hard as diamond, and very hard materials naturally make surfaces slippery', False)
+              ],
+            'q': 'Explain why graphite is used as a lubricant.',
+            'wrong_explanations': {
+               1: 'All solids have atoms at their surface; graphite is slippery because its layers slide, not because atoms are absent.',
+               2: 'Graphite does not dissolve in water — it works as a dry lubricant, so no solution is formed.',
+               3: 'Graphite is soft, not hard like diamond; hardness would make it abrasive, not slippery.'
+              }},
+           {'opts': [
+               ('Every carbon is joined to four others by strong covalent bonds throughout a giant rigid lattice', True),
+               ('Its separate molecules are held to each other by unusually strong intermolecular forces that need lots of energy', False),
+               ('It is held together throughout by strong ionic bonds between oppositely charged carbon ions', False),
+               ('Its delocalised electrons form a strong sea that holds all the carbon atoms tightly in place', False)
+              ],
+            'q': 'Explain why diamond is very hard and has a very high melting point.',
+            'wrong_explanations': {
+               1: 'Diamond is not made of separate molecules — it is one giant covalent lattice, so there are no intermolecular forces.',
+               2: 'Diamond is entirely covalent and contains no ions; there are no ionic bonds to break.',
+               3: 'Diamond has no delocalised electrons — all four outer electrons of each carbon are held in covalent bonds.'
+              }},
+           {'opts': [
+               ('A structure in which many atoms are all joined by covalent bonds running throughout', True),
+               ('A structure built from many small, separate molecules held close together in a regular pattern', False),
+               ('A regular lattice of positive and negative ions held together by strong electrostatic attraction', False),
+               ('A lattice of positive metal ions surrounded by a sea of delocalised electrons', False)
+              ],
+            'q': 'Describe what a giant covalent structure is.',
+            'wrong_explanations': {
+               1: 'That describes a simple molecular substance; a giant covalent structure has no separate molecules — the bonding is continuous.',
+               2: 'That is a giant ionic lattice; giant covalent structures contain no ions, only atoms joined by covalent bonds.',
+               3: 'That is a giant metallic structure; giant covalent structures have no delocalised electrons or metal ions.'
+              }},
+           {'opts': [
+               ('They are different forms (allotropes) of carbon, with the atoms joined in different arrangements', True),
+               ('They actually contain different elements, which is what gives them their different physical properties', False),
+               ('One is a metal and the other a non-metal, so their bonding and properties differ', False),
+               ('Diamond is built from ions while graphite is built from small carbon molecules', False)
+              ],
+            'q': 'State why diamond and graphite can both be made of carbon yet have very different properties.',
+            'wrong_explanations': {
+               1: 'Both are pure carbon — the same single element; only the arrangement of the atoms differs.',
+               2: 'Carbon is a non-metal in both forms; neither diamond nor graphite is a metal.',
+               3: 'Both are giant covalent structures of carbon atoms — neither contains ions or separate small molecules.'
+              }},
+           {'opts': [
+               ('It is giant covalent, so many strong Si–O covalent bonds must be broken to melt it', True),
+               ('It is ionic, so strong electrostatic forces between Si and O ions must be overcome', False),
+               ('It is a simple molecule, so strong intermolecular forces between SiO₂ molecules must be broken', False),
+               ('It is a metal, so a strong sea of delocalised electrons holds the ions together', False)
+              ],
+            'q': 'Explain why silicon dioxide (found in sand and quartz) has a very high melting point.',
+            'wrong_explanations': {
+               1: 'Silicon dioxide is giant covalent, not ionic — it contains no ions, only Si and O atoms joined by covalent bonds.',
+               2: 'It is not simple molecular — the Si–O covalent bonds run throughout the whole structure, with no separate molecules.',
+               3: 'Silicon dioxide is a non-metal compound with no delocalised electrons; its bonding is covalent, not metallic.'
+              }},
+           {'opts': [
+               ('Each carbon covalently bonds to three others in a strong network, and its fourth outer electron is delocalised', True),
+               ('It contains free-moving ions that carry charge, and the ionic bonds between them make it strong', False),
+               ('It is a metal, so its sea of delocalised electrons lets it conduct and hold together strongly', False),
+               ('Its molecules are held to each other by strong intermolecular forces, like a simple molecular solid', False)
+              ],
+            'q': 'Graphene is a single layer of graphite. Explain why it conducts electricity and is very strong.',
+            'wrong_explanations': {
+               1: 'Graphene has no ions — its conduction comes from delocalised electrons, and its strength from covalent bonds.',
+               2: 'Graphene is a covalent form of carbon, not a metal, though it does conduct via delocalised electrons.',
+               3: 'Graphene is one giant covalent sheet, not separate molecules, so there are no intermolecular forces.'
+              }},
+           {'opts': [
+               ('Its molecules are hollow cages, so a drug can be carried inside and released where needed', True),
+               ('It is a metal, so the drug is held on its surface by a sea of delocalised electrons', False),
+               ('It reacts with the drug to form a new compound that then dissolves and spreads through the blood', False),
+               ('It is giant covalent, so its bonds run throughout and hold the drug tightly inside the structure', False)
+              ],
+            'q': 'Explain why buckminsterfullerene (C₆₀) can be used to deliver drugs to specific parts of the body.',
+            'wrong_explanations': {
+               1: 'C₆₀ is a covalent carbon molecule, not a metal, so it has no delocalised-electron surface to carry a drug.',
+               2: 'The drug is held physically inside the hollow cage; C₆₀ does not react with it to carry it.',
+               3: 'C₆₀ is a small hollow molecule, not a giant covalent structure — the drug sits inside the cage, not bonded throughout.'
+              }},
+           {'opts': [
+               ('Melting breaks the strong covalent bonds within layers, while sliding only overcomes the weak forces between layers', True),
+               ('The layers are held to each other by strong ionic bonds that need a lot of energy to break', False),
+               ('All of its delocalised electrons must first be removed before the layers can break apart and melt', False),
+               ('Graphite does not really have a high melting point; it softens easily because the layers slide', False)
+              ],
+            'q': 'Explain why graphite has a high melting point even though its layers can slide over each other easily.',
+            'wrong_explanations': {
+               1: 'There are no ionic bonds in graphite; the high melting point comes from strong covalent bonds within each layer, not forces between layers.',
+               2: 'Melting breaks covalent bonds within the layers; the delocalised electrons are not removed and are not what must be overcome to melt it.',
+               3: 'Graphite does have a high melting point, because of the strong covalent bonds within each layer.'
+              }},
+           {'opts': [
+               ('Diamond forms 4 bonds per carbon and does not conduct; graphite forms 3, leaving a delocalised electron, so conducts', True),
+               ('Both form 4 bonds per carbon, and both conduct because each has a spare delocalised electron', False),
+               ('Both form 3 bonds per carbon, and neither conducts because every electron is used in a bond', False),
+               ('Diamond forms 3 bonds and conducts, while graphite forms 4 bonds and does not conduct', False)
+              ],
+            'q': 'Compare diamond and graphite in terms of the number of bonds each carbon forms and whether they conduct electricity.',
+            'wrong_explanations': {
+               1: 'Only graphite conducts, and only diamond forms 4 bonds; diamond has all its electrons in bonds, so no spare delocalised electron.',
+               2: 'Diamond forms 4 bonds (not 3) and graphite does conduct, because graphite has a fourth electron that is delocalised.',
+               3: 'This swaps them over: diamond forms 4 bonds and does not conduct; graphite forms 3 and does conduct.'
+              }}],
   'rp': None,
   'spec': '5.2.2.6',
   'summary': 'Describe the structures of diamond and graphite and explain their contrasting properties.',
@@ -2435,14 +3368,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Giant Covalent Structures',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Metals conduct electricity in the SOLID state — unlike ionic compounds which only conduct when '
-                    'molten or dissolved. This is because metallic conduction uses DELOCALISED ELECTRONS (which are '
-                    'already free to move in the solid), whereas ionic conduction requires ions to move (which they '
-                    "can't do when fixed in a solid lattice).",
+ {'common_mistake': 'Students often think that because ionic compounds only conduct when molten, metals must be the same. They are not: a metal conducts in the solid state because its delocalised electrons are already free to move. Ionic compounds cannot conduct as solids because their charge carriers are ions, which stay locked in place until the compound melts or dissolves.',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'metals-alloys',
+  'examiner_tip': "Two easy marks to lose: metals conduct as solids because their delocalised electrons are already free to move — don't say they must melt first like ionic compounds; and alloys are harder because different-sized atoms distort the layers so they can't slide. Name the delocalised electrons and the disrupted layers explicitly.",
   'key_note': 'Metallic structure: positive ions + delocalised electrons. High MP/BP, malleable, ductile (layers '
               'slide). Conducts electricity AND heat in solid state (delocalised electrons). Alloys: different-sized '
               'atoms disrupt regular lattice → harder. Steel, bronze, brass are key examples.',
@@ -2454,34 +3385,126 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Stainless steel',
                           'Iron + chromium + nickel — resists corrosion — used in cutlery and surgical instruments')],
                'title': 'Metal or Alloy — Property Match'},
-  'quiz': [{'opts': [('Metals have delocalised electrons that are free to move even when solid. Ionic solids have ions '
-                      'fixed in the lattice — they cannot move.',
-                      True),
-                     ('Metal atoms are smaller than ions, so they move more easily through the solid', False),
-                     ('Metals have more protons, making them better at conducting positive charge', False),
-                     ('Ionic compounds have stronger bonds that prevent any particle movement', False)],
-            'q': 'Why can metals conduct electricity in the solid state, but ionic compounds cannot?',
-            'wrong_explanations': {1: "Atomic size doesn't determine conductivity — it's the AVAILABILITY OF FREE "
-                                      'CHARGE CARRIERS that matters.',
-                                   2: "Proton count doesn't determine conductivity — non-metals can have many protons "
-                                      'but are poor conductors.',
-                                   3: 'Ionic bonds are strong — but ionic compounds CAN conduct when MELTED (ions '
-                                      'become free). The issue in solids is that ions are FIXED, not that bonds are '
-                                      'stronger.'}},
-           {'opts': [('Zinc atoms are a different size to copper atoms — they disrupt the regular lattice and prevent '
-                      'layers from sliding',
-                      True),
-                     ('Brass has more metallic bonds than copper — more bonds means harder', False),
-                     ('Zinc is a harder metal than copper, so mixing them gives a harder product', False),
-                     ('Brass has a different crystal structure that is always harder than face-centred cubic', False)],
-            'q': 'Why is brass (copper + zinc) harder than pure copper?',
-            'wrong_explanations': {1: "More bonds doesn't necessarily mean harder — the mechanism is LATTICE "
-                                      'DISRUPTION preventing layer sliding.',
-                                   2: 'Zinc alone is harder than pure copper, but the hardening in brass comes '
-                                      'specifically from DISRUPTING the regular copper lattice with differently-sized '
-                                      'zinc atoms.',
-                                   3: 'Crystal structure does change in alloys — but the explanation at GCSE level '
-                                      'focuses on differently-sized atoms disrupting lattice planes.'}}],
+  'quiz': [{'opts': [
+               ('Metals have delocalised electrons that are free to move even when solid; in an ionic solid the ions are locked in fixed positions and cannot move', True),
+               ('Metal atoms are smaller than ions, so they move more easily through the solid', False),
+               ('Metals have more protons, which makes them better at conducting', False),
+               ('Ionic bonds are stronger, which stops any particle from moving', False)
+              ],
+            'q': 'Explain why metals can conduct electricity in the solid state, but ionic compounds cannot.',
+            'wrong_explanations': {
+               1: 'Atom or ion size is not the reason — it is the availability of free-moving charge carriers.',
+               2: 'Proton number does not determine conductivity; many non-metals have lots of protons but do not conduct.',
+               3: 'Ionic compounds CAN conduct when molten (ions freed); the issue in the solid is fixed ions, not stronger bonds.'
+              }},
+           {'opts': [
+               ('The zinc atoms are a different size to the copper atoms, so they distort the regular lattice and stop the layers of atoms sliding over each other', True),
+               ('Brass has more metallic bonds than copper, and more bonds means harder', False),
+               ('Zinc is a harder metal, so mixing it in makes the product hard', False),
+               ('Brass has been purified, and pure metals are always harder', False)
+              ],
+            'q': 'Explain why brass (copper mixed with zinc) is harder than pure copper.',
+            'wrong_explanations': {
+               1: 'More bonds does not necessarily mean harder — the hardening is due to lattice disruption preventing layers sliding.',
+               2: "The key mechanism is disrupting the regular copper lattice with differently-sized atoms, not zinc's own hardness.",
+               3: 'Brass is a mixture (less pure than copper); it is the added, differently-sized atoms that harden it.'
+              }},
+           {'opts': [
+               ('The delocalised electrons are free to move and quickly transfer thermal energy through the structure', True),
+               ('The positive ions carry the heat as they move around', False),
+               ('Metals contain water that spreads the heat', False),
+               ('The covalent bonds pass the heat along', False)
+              ],
+            'q': 'Explain why metals are good conductors of heat.',
+            'wrong_explanations': {
+               1: 'The positive ions are fixed and only vibrate; the mobile delocalised electrons carry most of the heat.',
+               2: 'Metals do not contain water; heat is carried by the delocalised electrons.',
+               3: 'Metals have no covalent bonds; heat is transferred by the electron sea.'
+              }},
+           {'opts': [
+               ('A pure metal has a regular lattice of same-sized atoms; an alloy has atoms of different sizes that distort the regular arrangement', True),
+               ('A pure metal contains ions but an alloy contains only atoms', False),
+               ('A pure metal is molecular but an alloy is a giant lattice', False),
+               ('A pure metal has no bonding but an alloy has metallic bonding', False)
+              ],
+            'q': 'Describe the difference in structure between a pure metal and one of its alloys.',
+            'wrong_explanations': {
+               1: 'Both have positive ions and a sea of electrons; the difference is that the alloy has differently-sized atoms.',
+               2: 'Both are giant metallic structures, not molecular.',
+               3: 'Both are held by metallic bonding; the difference is the mix of atom sizes.'
+              }},
+           {'opts': [
+               ('In a pure metal the layers of same-sized atoms can slide over each other easily, making it soft; alloying adds differently-sized atoms that stop the layers sliding', True),
+               ('Pure metals contain no metallic bonds, so they fall apart', False),
+               ('Pure metals are always liquids at room temperature', False),
+               ('Pure metals have too many delocalised electrons to be strong', False)
+              ],
+            'q': 'Explain why pure metals are often too soft for use, so alloys are made instead.',
+            'wrong_explanations': {
+               1: 'Pure metals do have metallic bonding; they are soft because their identical-sized atoms let layers slide.',
+               2: 'Most pure metals are solid at room temperature; they are simply soft.',
+               3: 'The number of delocalised electrons is not the reason; sliding layers of identical atoms is.'
+              }},
+           {'opts': [
+               ('Metals contain delocalised electrons that are free to move and carry charge and thermal energy; simple molecular substances have no free electrons or ions', True),
+               ('Metals contain free ions but molecules do not', False),
+               ('Metals have stronger covalent bonds than molecules', False),
+               ('Simple molecular substances have delocalised electrons that are fixed', False)
+              ],
+            'q': 'Explain, in terms of particles, why metals conduct electricity and heat but simple molecular substances do not.',
+            'wrong_explanations': {
+               1: 'Metals conduct via delocalised electrons, not free ions (ions are fixed in a solid metal).',
+               2: 'Metals have no covalent bonds; conduction is due to the electron sea.',
+               3: 'Simple molecular substances have no delocalised electrons at all.'
+              }},
+           {'opts': [
+               ('It is hard and strong (differently-sized atoms disrupt the lattice so layers cannot slide) and it resists corrosion', True),
+               ('It is soft and brittle, so it can be shaped and snapped', False),
+               ('It has a low melting point, so it melts clean', False),
+               ('It is a good insulator, so it is safe to hold', False)
+              ],
+            'q': 'Stainless steel is used to make cutlery. Suggest two properties that make it suitable and relate them to its structure.',
+            'wrong_explanations': {
+               1: 'Soft, brittle cutlery would be useless; stainless steel is hard and strong because of its alloy structure.',
+               2: 'A low melting point would be a disadvantage for cutlery.',
+               3: 'Being a conductor or insulator is not the key reason cutlery is made from stainless steel.'
+              }},
+           {'opts': [
+               ('The different-sized atoms in the alloy distort the regular layers, so the layers can no longer slide over each other easily', True),
+               ('The alloy has weaker metallic bonds, which makes it more rigid', False),
+               ('The alloy contains ionic bonds that hold it firmly', False),
+               ('The alloy has fewer delocalised electrons, so it is stronger', False)
+              ],
+            'q': 'Explain why an alloy is generally harder than the pure metal it is made from, using the idea of layers of atoms.',
+            'wrong_explanations': {
+               1: 'Weaker bonds would make it softer, not harder; the hardening is due to lattice distortion.',
+               2: 'Alloys are still held by metallic bonding, not ionic bonds.',
+               3: 'The number of delocalised electrons is not the reason; disrupting the layers is.'
+              }},
+           {'opts': [
+               ('The alloy is much stronger and harder than pure aluminium while still having a low density, so the aircraft is strong but light', True),
+               ('Pure aluminium is a better conductor, which is dangerous in flight', False),
+               ('The alloy is cheaper because it contains no aluminium', False),
+               ('Pure aluminium is a gas at room temperature', False)
+              ],
+            'q': 'Aluminium is used for aircraft bodies. Suggest why an aluminium alloy is used rather than pure aluminium.',
+            'wrong_explanations': {
+               1: 'Conductivity is not the reason; the alloy is chosen because it is stronger while remaining light.',
+               2: 'Aluminium alloys still contain mostly aluminium.',
+               3: 'Aluminium is a solid metal at room temperature.'
+              }},
+           {'opts': [
+               ('In a metal the layers of ions slide and the electron sea keeps them bonded, so it bends; in an ionic solid, shifting the layers brings like charges together, which repel and split the crystal', True),
+               ('Both bend, but metals bend more quickly', False),
+               ('Metals contain covalent bonds that flex; ionic compounds do not', False),
+               ('Ionic compounds contain delocalised electrons that snap', False)
+              ],
+            'q': 'Explain why metals are malleable but ionic compounds are brittle, in terms of what happens when the layers move.',
+            'wrong_explanations': {
+               1: 'Ionic compounds do not bend at all — they shatter, because of ion repulsion when layers shift.',
+               2: 'Metals have no covalent bonds; malleability comes from the sliding layers held by the electron sea.',
+               3: 'Ionic compounds have no delocalised electrons; that is a metallic feature.'
+              }}],
   'rp': None,
   'spec': '5.2.2.7–5.2.2.8',
   'summary': 'Explain the properties of metals and alloys in terms of metallic bonding and structure.',

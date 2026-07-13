@@ -7,8 +7,8 @@
   <title>Giant Covalent Structures | Chemistry | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=835937ec"/>
-  <link rel="stylesheet" href="/shared/styles.css?v=bd95e810"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=f21cf111"/>
+  <link rel="stylesheet" href="/shared/styles.css?v=2da37530"/>
   <link rel="stylesheet" href="/shared/nav.css?v=2fd4a55f"/>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
@@ -18,8 +18,33 @@
 html { background: var(--bg); }
 :root { --subject: #B02342; }
 </style>
+  
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Redesign pilot — page-scoped chrome (bonding · giant-covalent-structures) */
+html { background: var(--surface-page); }
+.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
+.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
+.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
+/* Locked callout shells — Common Mistake + Key Note (Design's spec) */
+.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
+.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
+.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
+/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
+.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
+.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
+/* Reveal-at-end quiz (MRB-121) — selected state + Check / Try-again controls */
+.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
+.rd .quiz-opt:disabled { pointer-events: none; }
+.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
+.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
+.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+</style>
 </head>
-<body>
+<body class="rd">
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-crumbs">
@@ -50,6 +75,11 @@ html { background: var(--bg); }
 
 <div class="content-area">
 
+  <div class="rd-hero-slot">
+    <div class="rd-hero-kicker">🔬 Interactive · explore the two structures</div>
+    <div id="hero-giant-covalent-structures"></div>
+  </div>
+
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
     <div class="card" style="margin-bottom:14px;">
@@ -64,7 +94,7 @@ html { background: var(--bg); }
 </div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
-  <p style="font-size:0.9rem;line-height:1.7;">GRAPHITE conducts electricity — it is the exception to the rule that giant covalent structures don't conduct. Diamond does NOT conduct. The difference: in graphite, each carbon uses only 3 of its 4 outer electrons for bonds — the 4th electron is delocalised and free to move. In diamond, all 4 electrons are used in bonds — none are free.</p>
+  <p style="font-size:0.9rem;line-height:1.7;">Students often assume that because diamond and graphite are both giant covalent structures made of carbon, they must have the same properties. They do not: graphite conducts electricity and is soft and slippery, while diamond does not conduct and is extremely hard. The difference is that in graphite each carbon bonds to only three others, leaving one delocalised electron per atom and weak forces between layers; in diamond every carbon bonds to four others with no free electrons.</p>
 </div>
   </div>
 
@@ -74,84 +104,121 @@ html { background: var(--bg); }
   <div class="section-title">📌 Key Note</div>
   <div class="keynote-box"><p>Giant covalent: many atoms all bonded by covalent bonds — very high MP, very hard. Diamond: each C bonds to 4 others, 3D lattice, does NOT conduct. Graphite: each C bonds to 3 others in layers, 4th electron delocalised — DOES conduct, layers slide (soft/lubricant). Both are carbon — different allotropes.</p></div>
 </div>
+  <div class="section"><div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">Compare diamond and graphite through their bonding, not just their properties: diamond — each carbon bonds to four others (rigid, no free electrons → doesn't conduct); graphite — each bonds to three, leaving one delocalised electron per atom (conducts) with weak forces between layers (soft, slippery). Tie every property back to the number of bonds.</div></div></div>
   <div class="section">
-  <div class="section-title">🎯 Matching Activity — Diamond or Graphite?</div>
-  <div class="card">
-    <p style="font-size:0.88rem;color:var(--muted);margin-bottom:16px;">Sort each property into diamond or graphite. — drag the symbols on the right to match the component names on the left.</p>
-    <div class="match-layout">
-      <div class="match-targets"><div class="match-target" data-index="0">
-  <div class="match-term">Diamond</div>
-  <div class="match-drop" data-accepts="0" data-accepts-group="0">Drop here</div>
-</div>
-<div class="match-target" data-index="1">
-  <div class="match-term">Graphite</div>
-  <div class="match-drop" data-accepts="1" data-accepts-group="1">Drop here</div>
-</div>
-<div class="match-target" data-index="2">
-  <div class="match-term">Graphite</div>
-  <div class="match-drop" data-accepts="2" data-accepts-group="1">Drop here</div>
-</div>
-<div class="match-target" data-index="3">
-  <div class="match-term">Diamond</div>
-  <div class="match-drop" data-accepts="3" data-accepts-group="0">Drop here</div>
-</div>
-<div class="match-target" data-index="4">
-  <div class="match-term">Graphite</div>
-  <div class="match-drop" data-accepts="4" data-accepts-group="1">Drop here</div>
-</div>
-<div class="match-target" data-index="5">
-  <div class="match-term">Diamond</div>
-  <div class="match-drop" data-accepts="5" data-accepts-group="0">Drop here</div>
-</div>
-</div>
-      <div class="match-defs" id="defPool-giant-covalent-structures"><div class="match-def" data-index="0" data-group="0" draggable="true">Each carbon bonded to 4 others in a 3D tetrahedral lattice — very hard</div>
-<div class="match-def" data-index="1" data-group="1" draggable="true">Each carbon bonded to 3 others in flat hexagonal sheets — layers can slide</div>
-<div class="match-def" data-index="2" data-group="1" draggable="true">Conducts electricity — 4th outer electron is delocalised between layers</div>
-<div class="match-def" data-index="5" data-group="0" draggable="true">Used for cutting tools and as a gemstone — hardest natural substance</div>
-<div class="match-def" data-index="4" data-group="1" draggable="true">Used as pencil lead and as electrodes in electrolysis</div>
-<div class="match-def" data-index="3" data-group="0" draggable="true">Does NOT conduct electricity — all 4 outer electrons are used in bonds</div>
-</div>
-    </div>
-    <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
-      <button class="match-check-btn" onclick="checkMatching('giant-covalent-structures', 6)">✅ Check Answers</button>
-      <button class="match-reset-btn" onclick="resetMatching('giant-covalent-structures', 6)">🔄 Reset</button>
-    </div>
-    <div class="match-result" id="matchResult-giant-covalent-structures"></div>
+    <div class="rd-hero-kicker">🎯 Retrieval · sort the properties</div>
+    <div id="bins-giant-covalent-structures"></div>
   </div>
-</div>
   
   
   
   
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
-  <div class="quiz-progress" id="quizProgress">Question 1 of 2</div>
-  <div class="quiz-card" id="qcard-0" data-answer="0" data-wrong-exp='{1: "Transparency and electrical conductivity are completely unrelated properties.",2: "Both diamond and graphite are entirely COVALENT — neither has metallic or ionic bonding.",3: "The NUMBER of carbon atoms doesn\'t determine conductivity — it is the availability of FREE electrons that matters.",}'>
-  <div class="q-text">1. Why does graphite conduct electricity but diamond does not?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Graphite has one delocalised electron per carbon atom — free to move and carry charge. Diamond uses all 4 outer electrons in bonds — none are free.</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Diamond is transparent — light passes through, but electricity cannot follow light</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Graphite has metallic bonding while diamond has ionic bonding</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Graphite contains more carbon atoms than diamond — more atoms means better conductivity</button>
+  <div class="quiz-progress" id="quizProgress">Answer all 12 questions, then check your answers.</div>
+  <div class="quiz-card" id="qcard-0">
+  <div class="q-text">1. Explain why graphite conducts electricity but diamond does not.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-correct="1">Graphite has a delocalised electron per carbon free to move, while diamond uses all four outer electrons in bonds</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Conductivity depends on having charge carriers free to move, not on how many atoms the structure contains.">Graphite packs more carbon atoms into each layer, and more atoms always means better electrical conductivity</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Whether a material is transparent to light is unrelated to whether it conducts electricity.">Diamond is transparent, so charge passes through it as light rather than as an electric current</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Both are giant covalent, not metallic or ionic; the free electrons in graphite come from each carbon bonding to only three others.">Graphite conducts because it has metallic bonding, and diamond has ionic bonding that traps its electrons</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="3" data-wrong-exp='{0: "Graphite does not dissolve in water — it is used as a dry lubricant in situations where oil would be problematic.",1: "Surfaces always have atoms — graphite is slippery because of its LAYERED STRUCTURE where layers slide.",2: "Diamond is hard but NOT slippery — hardness and slipperiness are different properties. Graphite is SOFT, not hard.",}'>
-  <div class="q-text">2. Why is graphite used as a lubricant?</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Graphite dissolves in water, creating a slippery solution</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Graphite is smooth because it has no atoms on its surface</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Graphite is very hard like diamond, which makes surfaces it coats more slippery</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Graphite has layers of carbon atoms held by weak intermolecular forces — the layers can slide over each other easily</button>
+</div><div class="quiz-card" id="qcard-1">
+  <div class="q-text">2. Explain why graphite is used as a lubricant.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-correct="1">Its atoms form layers held by weak forces between them, so the layers slide over each other easily</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="All solids have atoms at their surface; graphite is slippery because its layers slide, not because atoms are absent.">Its surface is so perfectly smooth that there are no atoms on it for other surfaces to catch on</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Graphite does not dissolve in water — it works as a dry lubricant, so no solution is formed.">It dissolves in water between the surfaces to form a thin, slippery lubricating solution</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Graphite is soft, not hard like diamond; hardness would make it abrasive, not slippery.">It is as hard as diamond, and very hard materials naturally make surfaces slippery</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
+</div><div class="quiz-card" id="qcard-2">
+  <div class="q-text">3. Explain why diamond is very hard and has a very high melting point.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-correct="1">Every carbon is joined to four others by strong covalent bonds throughout a giant rigid lattice</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Diamond is not made of separate molecules — it is one giant covalent lattice, so there are no intermolecular forces.">Its separate molecules are held to each other by unusually strong intermolecular forces that need lots of energy</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Diamond is entirely covalent and contains no ions; there are no ionic bonds to break.">It is held together throughout by strong ionic bonds between oppositely charged carbon ions</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Diamond has no delocalised electrons — all four outer electrons of each carbon are held in covalent bonds.">Its delocalised electrons form a strong sea that holds all the carbon atoms tightly in place</button>
 </div>
+  <div class="quiz-fb" id="qfb-2"></div>
+</div><div class="quiz-card" id="qcard-3">
+  <div class="q-text">4. Describe what a giant covalent structure is.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-correct="1">A structure in which many atoms are all joined by covalent bonds running throughout</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="That describes a simple molecular substance; a giant covalent structure has no separate molecules — the bonding is continuous.">A structure built from many small, separate molecules held close together in a regular pattern</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="That is a giant ionic lattice; giant covalent structures contain no ions, only atoms joined by covalent bonds.">A regular lattice of positive and negative ions held together by strong electrostatic attraction</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="That is a giant metallic structure; giant covalent structures have no delocalised electrons or metal ions.">A lattice of positive metal ions surrounded by a sea of delocalised electrons</button>
+</div>
+  <div class="quiz-fb" id="qfb-3"></div>
+</div><div class="quiz-card" id="qcard-4">
+  <div class="q-text">5. State why diamond and graphite can both be made of carbon yet have very different properties.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-correct="1">They are different forms (allotropes) of carbon, with the atoms joined in different arrangements</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="Both are pure carbon — the same single element; only the arrangement of the atoms differs.">They actually contain different elements, which is what gives them their different physical properties</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="Carbon is a non-metal in both forms; neither diamond nor graphite is a metal.">One is a metal and the other a non-metal, so their bonding and properties differ</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="Both are giant covalent structures of carbon atoms — neither contains ions or separate small molecules.">Diamond is built from ions while graphite is built from small carbon molecules</button>
+</div>
+  <div class="quiz-fb" id="qfb-4"></div>
+</div><div class="quiz-card" id="qcard-5">
+  <div class="q-text">6. Describe the structure of graphene and give one of its uses.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-correct="1">A single layer of graphite, one atom thick, that conducts electricity; used in electronics</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="A hollow ball of carbon that acts as a lubricant describes a fullerene, not graphene.">A hollow ball of carbon atoms that is soft and slippery; used as a dry lubricant</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="A hard giant 3D lattice with four bonds per carbon describes diamond, not graphene.">A giant 3D lattice with four bonds per carbon that is very hard; used in cutting tools</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="A long chain of repeating units used for plastic bags describes a polymer, not graphene.">A long chain of many repeating carbon units, joined end to end; used to make plastic bags</button>
+</div>
+  <div class="quiz-fb" id="qfb-5"></div>
+</div><div class="quiz-card" id="qcard-6">
+  <div class="q-text">7. Describe the structure of buckminsterfullerene (C₆₀) and give one of its uses.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-correct="1">A hollow cage of 60 carbon atoms; used to deliver drugs into the body</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="A single flat sheet one atom thick describes graphene, not a fullerene.">A single flat sheet of carbon, one atom thick, that conducts; used in electronics</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="A hard giant 3D lattice used in cutting tools describes diamond, not a hollow fullerene molecule.">A giant 3D lattice of carbon that is extremely hard; used in cutting tools</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Positive ions in a sea of electrons describes a metal; a fullerene is a covalent carbon molecule.">A lattice of positive carbon ions in a sea of electrons; used in electrical wiring</button>
+</div>
+  <div class="quiz-fb" id="qfb-6"></div>
+</div><div class="quiz-card" id="qcard-7">
+  <div class="q-text">8. Describe carbon nanotubes and give one of their uses.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-correct="1">Cylinders of carbon atoms, like rolled-up graphene; very strong, so used to reinforce materials</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Hollow balls of carbon describe fullerenes, and carbon nanostructures are not burned as a fuel.">Hollow balls of carbon atoms that release lots of heat; burned as a fuel for energy</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="A soft, slippery carbon used to write in pencils describes graphite, not nanotubes.">A soft, slippery form of carbon whose layers rub off easily; used to write in pencils</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="A hard, transparent giant 3D lattice used as a gemstone describes diamond, not a nanotube.">A giant 3D lattice of carbon that is transparent and very hard; used as a gemstone</button>
+</div>
+  <div class="quiz-fb" id="qfb-7"></div>
+</div><div class="quiz-card" id="qcard-8">
+  <div class="q-text">9. Identify a use of diamond that depends on its hardness.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-correct="1">Cutting and drilling through hard materials</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Carrying current needs a conductor, but diamond has no free electrons and does not conduct.">Electrodes that carry an electric current</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="A lubricant must be soft and slippery; diamond is the hardest material, so it cannot lubricate.">Dry lubricant for sliding machine parts</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Writing needs soft layers that rub off; diamond is too hard to leave a mark this way.">Rubbing off to write on paper</button>
+</div>
+  <div class="quiz-fb" id="qfb-8"></div>
+</div><div class="quiz-card" id="qcard-9">
+  <div class="q-text">10. Identify which substance is a giant covalent structure.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-correct="1">Diamond</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Sodium chloride is a giant ionic lattice.">Sodium chloride</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Copper is a metal (giant metallic structure).">Copper</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Carbon dioxide is a simple molecular substance, not giant covalent.">Carbon dioxide</button>
+</div>
+  <div class="quiz-fb" id="qfb-9"></div>
+</div><div class="quiz-card" id="qcard-10">
+  <div class="q-text">11. State whether diamond conducts electricity, and give a reason.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="10" data-correct="1">No — all four outer electrons of each carbon are used in bonds, so none are free to move</button>
+<button class="quiz-opt" data-qi="10" data-wrong-exp="In diamond every outer electron is held in a covalent bond — unlike graphite, there is no delocalised electron, so it cannot conduct.">Yes — like graphite, each of its carbons has a delocalised outer electron that is free to move</button>
+<button class="quiz-opt" data-qi="10" data-wrong-exp="Being made of carbon does not guarantee conduction — graphite conducts but diamond does not, because of how the electrons are used.">Yes — it is made of carbon, and every form of carbon conducts electricity like graphite does</button>
+<button class="quiz-opt" data-qi="10" data-wrong-exp="Diamond has no ions and no free electrons, so it does not conduct even when molten.">Only when molten — its carbon ions become free to move once the solid lattice melts</button>
+</div>
+  <div class="quiz-fb" id="qfb-10"></div>
+</div><div class="quiz-card" id="qcard-11">
+  <div class="q-text">12. Name the giant covalent form of carbon used for pencil 'lead' and as electrodes.</div>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="11" data-correct="1">Graphite</button>
+<button class="quiz-opt" data-qi="11" data-wrong-exp="Diamond is too hard and does not conduct, so it is not used for pencils or electrodes.">Diamond</button>
+<button class="quiz-opt" data-qi="11" data-wrong-exp="Buckminsterfullerene is a molecular cage, not the material used for pencil 'lead'.">Buckminsterfullerene</button>
+<button class="quiz-opt" data-qi="11" data-wrong-exp="Poly(ethene) is a polymer, not a form of carbon used as electrodes.">Poly(ethene)</button>
+</div>
+  <div class="quiz-fb" id="qfb-11"></div>
+</div>
+  <div class="quiz-actions">
+    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
+    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+  </div>
   <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
 </div>
-<script>
-(function(){
-  const scoreMessages = ["Keep going — re-read the theory and try again. You'll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you'll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You've really got this topic down. 🏆"];
-  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{});
-  // handled by global quiz JS below
-})();
-</script>
   <div class="section">
   <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
   <div class="card star-rating-card">
@@ -214,129 +281,118 @@ html { background: var(--bg); }
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Giant Covalent Structures (5.2.2.6)'});</script>
   <script>
-const SCORE_MESSAGES = [
-  "Keep going — re-read the theory and try again. You'll get there! 📖",
-  "Not bad — review the sections you missed and have another go. 💪",
-  "Decent effort! A bit more revision and you'll nail it. 🔄",
-  "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-  "Excellent! You've really got this topic down. 🏆",
-];
+(function(){
+  const SCORE_MESSAGES = [
+    "Keep going — re-read the theory and try again. You'll get there! 📖",
+    "Not bad — review the sections you missed and have another go. 💪",
+    "Decent effort! A bit more revision and you'll nail it. 🔄",
+    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+    "Excellent! You've really got this topic down. 🏆"
+  ];
+  const cards = Array.from(document.querySelectorAll('.quiz-card'));
+  const total = cards.length;
+  if (!total) return;
+  const checkBtn = document.getElementById('quizCheckBtn');
+  const againBtn = document.getElementById('quizAgainBtn');
+  const endMsg = document.getElementById('quizEndMsg');
+  const prog = document.getElementById('quizProgress');
+  let checked = false;
 
-document.querySelectorAll('.quiz-opt').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const card = this.closest('.quiz-card');
-    if (card.dataset.answered) return;
-    const correctIdx = parseInt(card.dataset.answer);
-    const clickedIdx = parseInt(this.dataset.oi);
-    const isCorrect = clickedIdx === correctIdx;
-
-    // Store whether student got THIS card right
-    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
-
-    const fb = document.getElementById('qfb-' + this.dataset.qi);
-
-    card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
-      if (idx === correctIdx) o.classList.add('correct');
-      else if (o === this && !isCorrect) o.classList.add('wrong');
-      o.disabled = true;
-    });
-
-    let wrongExp = {};
-    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
-
-    if (isCorrect) {
-      fb.className = 'quiz-fb correct-fb show';
-      fb.innerHTML = '✅ Correct! Well done!';
-    } else {
-      const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
-      fb.className = 'quiz-fb wrong-fb show';
-      fb.innerHTML = '❌ Incorrect. ' + explanation;
-    }
-
-    const allCards = document.querySelectorAll('.quiz-card');
-    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
-    const total = allCards.length;
-    const answered = answeredCards.length;
-    const prog = document.getElementById('quizProgress');
-
-    if (answered === total) {
-      // Count only cards where student clicked correct
-      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
-      if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
-
-      const endMsg = document.getElementById('quizEndMsg');
-      if (endMsg) {
-        const ratio = correctCount / total;
-        const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
-        endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
-        endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
+  function shuffleOptions(){
+    document.querySelectorAll('.quiz-options').forEach(function(box){
+      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
+      for (let k = opts.length - 1; k > 0; k--){
+        const j = Math.floor(Math.random() * (k + 1));
+        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
       }
-    } else {
-      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
-    }
-  });
-});
-</script>
-  <script>
-function checkMatching(stId, pairs) {
-  const targets = document.querySelectorAll('.match-target');
-  let correct = 0;
-  targets.forEach(target => {
-    const drop = target.querySelector('.match-drop');
-    // Grade by category group (MRB-104): a slot is correct when the item in it
-    // belongs to a row sharing this slot's term. For one-to-one matchings each
-    // group holds exactly one item, so this is identical to an exact match.
-    const acceptsGroup = drop.dataset.acceptsGroup;
-    const placed = drop.querySelector('.match-def');
-    if (placed && placed.dataset.group === acceptsGroup) {
-      drop.classList.add('match-correct'); drop.classList.remove('match-wrong'); correct++;
-    } else if (placed) {
-      drop.classList.add('match-wrong'); drop.classList.remove('match-correct');
-    }
-  });
-  const result = document.getElementById('matchResult-' + stId);
-  const total = pairs;
-  if (correct === total) {
-    result.innerHTML = '🎉 Perfect! All ' + total + ' matched correctly!';
-    result.className = 'match-result match-result-win';
-  } else {
-    result.innerHTML = correct + '/' + total + ' correct — keep trying!';
-    result.className = 'match-result match-result-partial';
+      opts.forEach(function(o){ box.appendChild(o); });
+    });
   }
-}
-function resetMatching(stId, pairs) {
-  const pool = document.getElementById('defPool-' + stId);
-  document.querySelectorAll('.match-drop').forEach(drop => {
-    const placed = drop.querySelector('.match-def');
-    if (placed) pool.appendChild(placed);
-    drop.innerHTML = 'Drop here';
-    drop.classList.remove('match-correct', 'match-wrong', 'has-item');
+
+  function updateProgress(){
+    if (checked || !prog) return;
+    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
+    prog.textContent = answered === total
+      ? 'All ' + total + ' answered — hit Check answers below ↓'
+      : answered + ' of ' + total + ' answered';
+  }
+
+  function onSelect(){
+    if (checked) return;
+    const box = this.closest('.quiz-options');
+    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
+    this.classList.add('selected');
+    updateProgress();
+  }
+
+  function reveal(){
+    checked = true;
+    let correctCount = 0;
+    cards.forEach(function(card, i){
+      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
+      const chosen = card.querySelector('.quiz-opt.selected');
+      const fb = document.getElementById('qfb-' + i);
+      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
+      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
+      if (correctOpt) correctOpt.classList.add('correct');
+      const isRight = !!(chosen && chosen.dataset.correct === '1');
+      if (isRight) correctCount++;
+      if (chosen && !isRight) chosen.classList.add('wrong');
+      if (!fb) return;
+      if (!chosen){
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
+      } else if (isRight){
+        fb.className = 'quiz-fb correct-fb show';
+        fb.textContent = '✅ Correct! Well done!';
+      } else {
+        const exp = chosen.dataset.wrongExp;
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
+      }
+    });
+    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+    if (endMsg){
+      const ratio = correctCount / total;
+      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+      endMsg.style.display = 'block';
+      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+    }
+    if (checkBtn) checkBtn.style.display = 'none';
+    if (againBtn) againBtn.style.display = '';
+  }
+
+  function tryAgain(){
+    checked = false;
+    cards.forEach(function(card, i){
+      card.querySelectorAll('.quiz-opt').forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('selected', 'correct', 'wrong');
+      });
+      const fb = document.getElementById('qfb-' + i);
+      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
+    });
+    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
+    if (checkBtn) checkBtn.style.display = '';
+    if (againBtn) againBtn.style.display = 'none';
+    shuffleOptions();
+    updateProgress();
+  }
+
+  cards.forEach(function(card){
+    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
   });
-  const result = document.getElementById('matchResult-' + stId);
-  if (result) { result.innerHTML = ''; result.className = 'match-result'; }
-}
-document.querySelectorAll('.match-def').forEach(def => {
-  def.addEventListener('dragstart', e => { e.dataTransfer.setData('text/plain', def.dataset.index); def.classList.add('dragging'); });
-  def.addEventListener('dragend', () => def.classList.remove('dragging'));
-});
-document.querySelectorAll('.match-drop').forEach(drop => {
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag-over'); });
-  drop.addEventListener('dragleave', () => drop.classList.remove('drag-over'));
-  drop.addEventListener('drop', e => {
-    e.preventDefault(); drop.classList.remove('drag-over');
-    const idx = e.dataTransfer.getData('text/plain');
-    const def = document.querySelector('.match-def[data-index="' + idx + '"]');
-    if (!def) return;
-    const existing = drop.querySelector('.match-def');
-    if (existing) document.getElementById('defPool-giant-covalent-structures').appendChild(existing);
-    drop.innerHTML = ''; drop.appendChild(def);
-    drop.classList.add('has-item'); drop.classList.remove('match-correct', 'match-wrong');
-  });
-});
+  if (checkBtn) checkBtn.addEventListener('click', reveal);
+  if (againBtn) againBtn.addEventListener('click', tryAgain);
+  shuffleOptions();
+  updateProgress();
+})();
 </script>
+  
   <script>
 const STAR_MESSAGES_giant_covalent_structures = ["No worries \u2014 that's what Mr Badmus AI is here for! Hit the chat button below and ask me to explain it from scratch. \ud83d\udcac", "Good start! Read through the theory again, then try the quiz once more. You'll get there! \ud83d\udcd6", "Solid \u2014 you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. \ud83d\udde3\ufe0f", "Great work! Just review the parts you found tricky and you'll be flying. \ud83d\ude80", "PERFECT! You've nailed this topic. Move on \u2014 you're ready! \ud83c\udfc6"];
 function rateTopic(stId, rating) {
@@ -351,5 +407,19 @@ try {
   if (saved) rateTopic('giant-covalent-structures', parseInt(saved));
 } catch(e) {}
 </script>
+  
+  <script src="/shared/heroes/two-state-compare.js"></script>
+  <script src="/shared/heroes/categorise-bins.js"></script>
+  <script src="/shared/heroes/bonding-configs.js"></script>
+  <script>
+  (function(){
+    var cfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['giant-covalent-structures'];
+    var host = document.getElementById('hero-giant-covalent-structures');
+    if (cfg && host && window.MrbHeroes && MrbHeroes.twoStateCompare) MrbHeroes.twoStateCompare.init(host, cfg);
+    var binCfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['giant-covalent-structures-bins'];
+    var binHost = document.getElementById('bins-giant-covalent-structures');
+    if (binCfg && binHost && window.MrbHeroes && MrbHeroes.categoriseBins) MrbHeroes.categoriseBins.init(binHost, binCfg);
+  })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+</style>
+</helmet>
+
+<div style="max-width:1060px; margin:0 auto; padding:48px 24px 90px;">
+
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 00</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:44px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 10px;">Locked Tokens &amp; Page Template</h1>
+  <p style="font-size:15.5px; line-height:1.6; color:#6B635A; max-width:72ch; margin:0 0 12px;">The canonical token record for the Mr Badmus page system, plus the page skeleton as named slots. This supersedes the earlier Sora / Plus Jakarta / Fraunces spec. Hero components: <a href="Bonding Hero 1 — State Toggle Lab.dc.html">01 State Toggle Lab</a> · <a href="Bonding Hero 2 — Dot-and-Cross Stepper.dc.html">02 Dot-and-Cross Stepper</a> · <a href="Bonding Hero 3 — Two-State Compare.dc.html">03 Two-State Compare</a> · <a href="Bonding Hero 4 — Structure Hotspot.dc.html">04 Structure Hotspot</a> · <a href="Bonding Hero 5 — Zoom Scale Explorer.dc.html">05 Zoom / Scale Explorer</a> · <a href="Bonding Hero 6 - FIFA Step Reveal.dc.html">06 FIFA Step Reveal</a> · <a href="Bonding Hero 7 - Energy Profile Plotter.dc.html">07 Energy Profile Plotter</a> · <a href="Bonding Hero 8 - Slider Relationship.dc.html">08 Slider Relationship</a> · <a href="Bonding Hero 9 - Categorise Bins.dc.html">09 Categorise Bins</a></p>
+
+  <!-- PART 1: TOKENS -->
+  <div style="display:flex; align-items:center; gap:14px; margin:44px 0 18px;">
+    <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin:0;">Part 1 — Canonical token block</h2>
+    <div style="flex:1; height:1px; background:#D8CFBD;"></div>
+  </div>
+
+  <div style="background:#1A1714; border-radius:22px; padding:26px 30px; overflow-x:auto; box-shadow:0 40px 80px -45px rgba(60,30,20,.45);">
+<pre style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.75; color:#EAE3D6;">:root {
+  /* ---- Type ---- */
+  --font-display: "Space Grotesk", sans-serif;   /* headings, buttons, big numbers */
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;   /* all running text */
+  --font-mono: "IBM Plex Mono", monospace;       /* labels, spec codes, equations, hint bars */
+
+  /* ---- Surfaces ---- */
+  --surface-page: #E7E1D4;      /* page background behind the card */
+  --surface-card: #F5F1E8;      /* the big page card that holds everything */
+  --surface-panel: #FFFDF8;     /* inner panels: theory cards, labs, quiz blocks */
+  --surface-inset: #F7F2E8;     /* inset chips/steps sitting on a panel */
+  --surface-dark: #1A1714;      /* hint bars, active toggle buttons */
+  --border: #E4DCCB;            /* the only structural border colour */
+  --rule: #D8CFBD;              /* section-header hairline rules */
+
+  /* ---- Ink ---- */
+  --ink: #1A1714;               /* headings */
+  --ink-body: #2A241E;          /* body copy */
+  --ink-muted: #6B635A;         /* secondary copy, back-links */
+  --ink-faint: #8A8074;         /* captions, mono sub-labels */
+
+  /* ---- Accent (burnt orange, three steps) ---- */
+  --accent: #E0531F;            /* brightest — sparing highlights only */
+  --accent-strong: #C0392B;     /* primary CTAs, kicker text, callout spines */
+  --accent-deep: #B5341A;       /* accent headings on light tints */
+  --accent-tint: #FBE0D6;       /* accent chip fill (spec pill, selected chip) */
+  --accent-tint-border: #F0BBA9;/* border on accent chips */
+  --accent-wash: #FBEEE9;       /* example / info callout fill */
+
+  /* ---- Contextual accents (no per-subject colour system) ---- */
+  --context-blue: #2E7DD1;      /* endothermic / cooling / "cold" side of a contrast */
+  --context-sage: #3E6B47;      /* positive verdicts, "conducts", exothermic side */
+
+  /* ---- Marking states (quiz + matching feedback) ---- */
+  --ok: #2E6B3A;  --ok-bg: #E7F3EA;  --ok-border: #7FB98A;
+  --err: #A83824; --err-bg: #FBE4DE; --err-border: #E0897B;
+
+  /* ---- Radii ---- */
+  --r-card: 28px;               /* outer page card */
+  --r-panel: 22px;              /* labs + theory panels */
+  --r-callout: 18px;            /* Common Mistake / Key Note shells */
+  --r-control: 12px;            /* buttons, quiz options, chips */
+  --r-pill: 999px;              /* spec pills, score badges, CTAs */
+
+  /* ---- Shadows ---- */
+  --shadow-card: 0 40px 80px -45px rgba(60,30,20,.45);   /* outer page card */
+  --shadow-panel: 0 22px 50px -35px rgba(60,30,20,.5);   /* hero lab panel */
+  --shadow-cta: 0 8px 20px -8px rgba(192,57,43,.7);      /* red primary buttons */
+}</pre>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-top:16px;">
+    <div style="background:#F5F1E8; border:1px solid #E4DCCB; border-radius:14px; padding:16px 18px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:10px;">SURFACES</div>
+      <div style="display:flex; gap:8px;">
+        <div style="flex:1; height:44px; border-radius:8px; background:#E7E1D4; border:1px solid #D8CFBD;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#F5F1E8; border:1px solid #E4DCCB;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#FFFDF8; border:1px solid #E4DCCB;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#F7F2E8; border:1px solid #E4DCCB;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#1A1714;"></div>
+      </div>
+    </div>
+    <div style="background:#F5F1E8; border:1px solid #E4DCCB; border-radius:14px; padding:16px 18px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:10px;">ACCENT RAMP</div>
+      <div style="display:flex; gap:8px;">
+        <div style="flex:1; height:44px; border-radius:8px; background:#E0531F;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#C0392B;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#B5341A;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#FBE0D6; border:1px solid #F0BBA9;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#FBEEE9; border:1px solid #E4DCCB;"></div>
+      </div>
+    </div>
+    <div style="background:#F5F1E8; border:1px solid #E4DCCB; border-radius:14px; padding:16px 18px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:10px;">CONTEXTUAL + MARKING</div>
+      <div style="display:flex; gap:8px;">
+        <div style="flex:1; height:44px; border-radius:8px; background:#2E7DD1;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#3E6B47;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#E7F3EA; border:1px solid #7FB98A;"></div>
+        <div style="flex:1; height:44px; border-radius:8px; background:#FBE4DE; border:1px solid #E0897B;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALLOUT TREATMENTS -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px;">
+    <div style="background:linear-gradient(180deg,#FBE7E2,#F8E0DA); border:1px solid #EBBCB1; border-left:5px solid #C0392B; border-radius:18px; padding:18px 22px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="font-size:17px;">⚠️</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#B5341A;">Common Mistake — locked shell</span></div>
+      <p style="margin:0; font-size:13.5px; line-height:1.6; color:#3A2A26;">Gradient <span style="font-family:'IBM Plex Mono',monospace; font-size:12px;">#FBE7E2 → #F8E0DA</span>, border <span style="font-family:'IBM Plex Mono',monospace; font-size:12px;">#EBBCB1</span>, 5px spine <span style="font-family:'IBM Plex Mono',monospace; font-size:12px;">--accent-strong</span>, radius <span style="font-family:'IBM Plex Mono',monospace; font-size:12px;">--r-callout</span>. Only the text is per-page.</p>
+    </div>
+    <div style="background:linear-gradient(90deg,#FBE7E0,#F6EFE2); border:1px solid #E4DCCB; border-left:5px solid #C0392B; border-radius:16px; padding:18px 22px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="font-size:17px;">📌</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#1A1714;">Key Note — locked shell</span></div>
+      <p style="margin:0; font-size:13.5px; line-height:1.6; color:#2A241E;">Gradient <span style="font-family:'IBM Plex Mono',monospace; font-size:12px;">#FBE7E0 → #F6EFE2</span> (90deg), border <span style="font-family:'IBM Plex Mono',monospace; font-size:12px;">--border</span>, 5px spine <span style="font-family:'IBM Plex Mono',monospace; font-size:12px;">--accent-strong</span>, radius 16px. Only the text is per-page.</p>
+    </div>
+  </div>
+
+  <!-- PART 2: PAGE TEMPLATE -->
+  <div style="display:flex; align-items:center; gap:14px; margin:52px 0 8px;">
+    <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin:0;">Part 2 — Page skeleton as named slots</h2>
+    <div style="flex:1; height:1px; background:#D8CFBD;"></div>
+  </div>
+  <p style="font-size:14.5px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 20px;">Top-to-bottom order is fixed. <b style="color:#1A1714;">Fixed furniture</b> is stamped once and never edited per page; <b style="color:#B5341A;">per-page</b> blocks are fed by content. Optional blocks are simply omitted when a subtopic doesn't need them.</p>
+
+  <div style="background:#F5F1E8; border:1px solid #E4DCCB; border-radius:22px; overflow:hidden; box-shadow:0 40px 80px -45px rgba(60,30,20,.45);">
+    <sc-for list="{{ slots }}" as="s" hint-placeholder-count="12">
+      <div style="display:grid; grid-template-columns:44px 220px 1fr 170px; gap:16px; align-items:center; padding:15px 24px; border-bottom:1px solid #EBE4D4;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; color:#B0A695;">{{ s.num }}</div>
+        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#1A1714;">{{ s.name }}</div>
+        <div style="font-size:13.5px; line-height:1.5; color:#6B635A;">{{ s.desc }}</div>
+        <div style="display:flex; gap:6px; justify-content:flex-end; flex-wrap:wrap;">
+          <span style="{{ s.badgeStyle }}">{{ s.badge }}</span>
+          <sc-if value="{{ s.optional }}" hint-placeholder-val="{{ false }}">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.08em; color:#9A6B1E; background:#F6E9CE; border:1px solid #E4CE9C; padding:4px 10px; border-radius:999px;">OPTIONAL</span>
+          </sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="margin-top:16px; background:#FBEEE9; border-left:4px solid #C0392B; border-radius:12px; padding:14px 18px; font-size:13.5px; line-height:1.6; color:#3A2A26;">
+    <b>Hero rule:</b> exactly one hero archetype per page, chosen from the five in this library. The hero shell (panel, header row, dark mono hint bar) is fixed furniture; everything inside it comes from that hero's <span style="font-family:'IBM Plex Mono',monospace; font-size:12.5px;">CONFIG</span>.
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const FIXED = { fam: "'IBM Plex Mono',monospace", label: 'FIXED FURNITURE' };
+    const badge = (fixed) => ({
+      fontFamily: "'IBM Plex Mono',monospace", fontSize: '10.5px', fontWeight: 600, letterSpacing: '.08em',
+      color: fixed ? '#4A4238' : '#B5341A',
+      background: fixed ? '#EFE7D8' : '#FBE0D6',
+      border: '1px solid ' + (fixed ? '#E4DCCB' : '#F0BBA9'),
+      padding: '4px 10px', borderRadius: '999px', whiteSpace: 'nowrap',
+    });
+    const rows = [
+      ['Page header', 'Back-link, mono kicker (SUBJECT · TOPIC), H1, spec pill + tier pill. Shell fixed; text per page.', 'PER-PAGE', false],
+      ['Hero + interactive', 'One hero archetype per page, fed entirely by its CONFIG object. Shell is fixed furniture.', 'PER-PAGE', false],
+      ['Explainer cards ×2–3', 'In-Depth Theory panels on --surface-panel, radius --r-panel. Content fully per page.', 'PER-PAGE', false],
+      ['Common Mistake', 'Locked red-gradient shell with ⚠️ header; only the paragraph is per-page.', 'FIXED SHELL', false],
+      ['Key Note', 'Locked warm-gradient shell with 📌 section header; only the summary text is per-page.', 'FIXED SHELL', false],
+      ['Variables / Key Equations', 'Mono equation panel. Included only where the subtopic has quantities.', 'PER-PAGE', true],
+      ['Matching activity', 'Tap-to-place targets + tray, Check / Reset buttons, score pill. Shell and marking logic fixed; targets + facts per page.', 'FIXED SHELL', false],
+      ['Higher Tier', 'Amber-flagged extension panel.', 'PER-PAGE', true],
+      ['Required Practical', 'Practical walkthrough panel.', 'PER-PAGE', true],
+      ['Test Yourself', 'MCQ cards with instant green/red marking and score pill. Shell fixed; questions per page.', 'FIXED SHELL', false],
+      ['Star Rating', 'Five-star self-assessment, persisted per topic. Identical every page.', 'FIXED FURNITURE', false],
+      ['Ask AI', 'Ask Mr Badmus AI callout + CTA. Identical shell; one line of blurb per page.', 'FIXED FURNITURE', false],
+      ['Footer Nav', 'Previous / Next subtopic cards + all-subtopics link. Links per page, shell fixed.', 'FIXED FURNITURE', false],
+    ];
+    const slots = rows.map((r, i) => ({
+      num: String(i + 1).padStart(2, '0'),
+      name: r[0], desc: r[1], badge: r[2], optional: r[3],
+      badgeStyle: badge(r[2] !== 'PER-PAGE'),
+    }));
+    return { slots };
+  }
+}
+</script>
+</body>
+</html>

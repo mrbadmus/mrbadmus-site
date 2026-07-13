@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes drawLine { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes popIn { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 07</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">Energy Profile Plotter</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">A reaction-coordinate diagram with an exothermic / endothermic toggle. Reactants, products, the activation-energy hump and ΔH are all drawn from <span style="font-family:'IBM Plex Mono',monospace; font-size:13px;">CONFIG</span> energy levels. The component runs twice below with two different configs. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+          <div style="flex:1;"></div>
+          <div style="display:flex; background:#EFE7D8; border-radius:999px; padding:4px;">
+            <sc-for list="{{ ins.modeBtns }}" as="m" hint-placeholder-count="2">
+              <button onClick="{{ m.onClick }}" style="{{ m.style }}">{{ m.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1.55fr .95fr;">
+          <!-- plot -->
+          <div style="padding:22px 22px 18px; background:linear-gradient(180deg,#FFFDF8,#FBF4EF); border-right:1px solid #EFE7D8;">
+            <div style="width:100%;">{{ ins.diagram }}</div>
+            <p style="margin:8px 4px 0; font-size:13.5px; line-height:1.55; color:#6B635A;">{{ ins.caption }}</p>
+          </div>
+
+          <!-- info -->
+          <div style="padding:20px 22px; display:flex; flex-direction:column; gap:14px;">
+            <div>
+              <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:6px;">REACTION</div>
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#1A1714; line-height:1.3;">{{ ins.reaction }}</div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:14px; background:#F7F2E8; border-radius:12px; padding:12px 14px;">
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:34px; line-height:1; color:{{ ins.accent }};">{{ ins.dhSign }}</div>
+              <div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:{{ ins.accent }};">{{ ins.dhWord }}</div>
+                <div style="font-size:12px; color:#8A8074; line-height:1.35;">{{ ins.tempWord }}</div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <sc-for list="{{ ins.tags }}" as="t" hint-placeholder-count="3">
+                <span style="{{ t.style }}">{{ t.label }}</span>
+              </sc-for>
+            </div>
+
+            <div style="height:1px; background:#EFE7D8;"></div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px;"><span style="width:22px; height:0; border-top:2px dashed #9A9082;"></span><span style="font-size:12.5px; color:#6B635A;">Reactants: <b style="color:#1A1714;">{{ ins.reactants }}</b></span></div>
+              <div style="display:flex; align-items:center; gap:10px;"><span style="width:22px; height:0; border-top:2px dashed #9A9082;"></span><span style="font-size:12.5px; color:#6B635A;">Products: <b style="color:#1A1714;">{{ ins.products }}</b></span></div>
+              <div style="display:flex; align-items:center; gap:10px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; color:#7A7266;">Eₐ</span><span style="font-size:12.5px; color:#6B635A;">Activation energy — the hump to break bonds</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.5; color:#EAE3D6;">{{ ins.hint }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 07 — ENERGY PROFILE PLOTTER
+   A reaction-coordinate (energy profile) diagram with an
+   exothermic / endothermic toggle. The curve, the activation-
+   energy hump (Eₐ) and the ΔH arrow are all DRAWN TO SCALE from
+   energy levels in the config — nothing about the shape is
+   hardcoded. Products sit lower than reactants for exothermic,
+   higher for endothermic.
+
+   CONFIG SCHEMA (CONFIGS holds two to prove parametrisation):
+   {
+     configLabel: string   // demo label only, not shown on real pages
+     emoji, title, subtitle: string
+     defaultMode: 'exo' | 'endo'   // which profile shows first
+     profiles: {
+       exo:  <profile>,     // the exothermic reaction to show
+       endo: <profile>      // the endothermic reaction to show
+     },
+     hint: string           // dark mono bar text
+   }
+   <profile> = {
+     reaction:  string,     // full equation, shown in the info panel
+     reactants: string,     // left-hand label on the curve
+     products:  string,     // right-hand label on the curve
+     rE, peakE, pE: number, // RELATIVE energy of reactants, the peak,
+                            // and products (unitless — only their
+                            // ratios matter; peakE is always highest).
+                            // These drive the geometry directly.
+     caption:  string,      // sentence under the plot
+     tempWord: string,      // surroundings effect line
+     tags: [ string ]       // short chips (releases energy, ΔH negative…)
+   }
+   Interaction logic (the plot() geometry model) is a pure method,
+   separate from the SVG renderer buildDiagram() and the template
+   binding in renderVals(), so it ports cleanly.
+============================================================ */
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — COMBUSTION vs THERMAL DECOMPOSITION (defaults to exothermic)',
+    emoji: '🔥', title: 'Exothermic & Endothermic Profiles', subtitle: 'toggle to compare the two shapes',
+    defaultMode: 'exo',
+    profiles: {
+      exo: {
+        reaction: 'CH₄ + 2O₂ → CO₂ + 2H₂O', reactants: 'CH₄ + O₂', products: 'CO₂ + H₂O',
+        rE: 62, peakE: 90, pE: 20,
+        caption: 'Combustion of methane. The products sit LOWER than the reactants — energy is released to the surroundings, so ΔH is negative.',
+        tempWord: 'surroundings get hotter', tags: ['🔥 releases energy', 'ΔH negative', 'ΔT positive'],
+      },
+      endo: {
+        reaction: 'CaCO₃ → CaO + CO₂', reactants: 'CaCO₃', products: 'CaO + CO₂',
+        rE: 26, peakE: 92, pE: 66,
+        caption: 'Thermal decomposition of calcium carbonate. The products sit HIGHER than the reactants — energy is absorbed, so ΔH is positive.',
+        tempWord: 'surroundings get colder', tags: ['❄️ absorbs energy', 'ΔH positive', 'ΔT negative'],
+      },
+    },
+    hint: 'Read left → right. The hump is the activation energy Eₐ (energy to start the reaction). Whether products end lower or higher than reactants tells you the sign of ΔH.',
+  },
+  {
+    configLabel: 'CONFIG B — NEUTRALISATION vs DISSOLVING AMMONIUM NITRATE (defaults to endothermic)',
+    emoji: '🧪', title: 'Which Way Does the Energy Go?', subtitle: 'a different reaction pair, starting on endothermic',
+    defaultMode: 'endo',
+    profiles: {
+      exo: {
+        reaction: 'HCl + NaOH → NaCl + H₂O', reactants: 'HCl + NaOH', products: 'NaCl + H₂O',
+        rE: 58, peakE: 74, pE: 24,
+        caption: 'Neutralisation of an acid with an alkali. A small activation energy and products well below the reactants — strongly exothermic, so the mixture warms up.',
+        tempWord: 'mixture warms up', tags: ['🔥 releases energy', 'ΔH negative', 'small Eₐ'],
+      },
+      endo: {
+        reaction: 'NH₄NO₃(s) → NH₄NO₃(aq)', reactants: 'NH₄NO₃ + water', products: 'dissolved ions',
+        rE: 34, peakE: 84, pE: 62,
+        caption: 'Dissolving ammonium nitrate in water. The products sit HIGHER than the reactants — energy is taken in, so the beaker feels cold (used in instant cold packs).',
+        tempWord: 'beaker feels cold', tags: ['❄️ absorbs energy', 'ΔH positive', 'cold pack'],
+      },
+    },
+    hint: 'Same diagram, different reactions. Endothermic profiles always climb: products higher than reactants → ΔH positive → the surroundings cool down.',
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { modes: CONFIGS.map((c) => c.defaultMode) };
+  }
+  setMode(ci, m) { const modes = this.state.modes.slice(); modes[ci] = m; this.setState({ modes }); }
+
+  /* --- pure geometry model (separable from rendering) --- */
+  plot(p) {
+    const yTop = 52, yBase = 214;
+    const lo = Math.min(p.rE, p.pE) - 8, hi = p.peakE + 5;
+    const y = (E) => yTop + (hi - E) / (hi - lo) * (yBase - yTop);
+    return { rY: y(p.rE), pY: y(p.pE), kY: y(p.peakE) };
+  }
+
+  buildDiagram(ci) {
+    const h = React.createElement;
+    const mode = this.state.modes[ci];
+    const p = CONFIGS[ci].profiles[mode];
+    const g = this.plot(p);
+    const accent = mode === 'exo' ? '#E0531F' : '#2E7DD1';
+    const soft = mode === 'exo' ? '#F0C4AE' : '#B7D2EC';
+    const exo = mode === 'exo';
+    const W = 460, H = 264;
+    const path = `M72,${g.rY} L152,${g.rY} C196,${g.rY} 204,${g.kY} 236,${g.kY} C268,${g.kY} 276,${g.pY} 320,${g.pY} L404,${g.pY}`;
+    const arrow = (x, y1, y2, color, w) => {
+      const dir = y2 > y1 ? 1 : -1;
+      return [
+        h('line', { key: 'l', x1: x, y1, x2: x, y2, stroke: color, strokeWidth: w || 1.6 }),
+        h('polygon', { key: 'a', points: `${x - 4},${y2 - dir * 7} ${x + 4},${y2 - dir * 7} ${x},${y2}`, fill: color }),
+        h('polygon', { key: 'b', points: `${x - 4},${y1 + dir * 7} ${x + 4},${y1 + dir * 7} ${x},${y1}`, fill: color }),
+      ];
+    };
+    return h('svg', { viewBox: `0 0 ${W} ${H}`, style: { width: '100%', height: 'auto', display: 'block', overflow: 'visible' } }, [
+      // axes
+      h('line', { key: 'ax', x1: 52, y1: 30, x2: 52, y2: 224, stroke: '#C9BFAD', strokeWidth: 1.6 }),
+      h('line', { key: 'axh', x1: 52, y1: 224, x2: 414, y2: 224, stroke: '#C9BFAD', strokeWidth: 1.6 }),
+      h('text', { key: 'yl', x: 0, y: 0, transform: 'translate(16,132) rotate(-90)', fontSize: 10, fill: '#9A9082', textAnchor: 'middle', fontFamily: 'IBM Plex Mono, monospace', letterSpacing: '.1em' }, 'ENERGY'),
+      h('text', { key: 'xl', x: 233, y: 244, fontSize: 10, fill: '#9A9082', textAnchor: 'middle', fontFamily: 'IBM Plex Mono, monospace', letterSpacing: '.1em' }, 'REACTION PROGRESS'),
+      // dashed levels
+      h('line', { key: 'rl', x1: 72, y1: g.rY, x2: 404, y2: g.rY, stroke: soft, strokeWidth: 1.4, strokeDasharray: '4 5', opacity: 0.7 }),
+      h('line', { key: 'pl', x1: 72, y1: g.pY, x2: 404, y2: g.pY, stroke: soft, strokeWidth: 1.4, strokeDasharray: '4 5', opacity: 0.7 }),
+      // curve (re-draws on mode change via key)
+      h('path', { key: 'curve-' + mode, d: path, fill: 'none', stroke: accent, strokeWidth: 3.4, strokeLinecap: 'round', strokeLinejoin: 'round', pathLength: 1, strokeDasharray: 1, style: { animation: 'drawLine 1s ease-out both' } }),
+      // Eₐ arrow (reactants → peak)
+      ...arrow(186, g.rY, g.kY, '#8A8074'),
+      h('text', { key: 'ea', x: 176, y: (g.rY + g.kY) / 2 + 3, fontSize: 12, fill: '#6B635A', textAnchor: 'end', fontWeight: 600, fontFamily: 'IBM Plex Mono, monospace' }, 'Eₐ'),
+      // ΔH arrow (reactants → products)
+      ...arrow(404, g.rY, g.pY, accent, 2),
+      h('text', { key: 'dh', x: 414, y: (g.rY + g.pY) / 2 + 4, fontSize: 13, fill: accent, fontWeight: 700, fontFamily: 'IBM Plex Mono, monospace' }, 'ΔH'),
+      // endpoint dots
+      h('circle', { key: 'c1', cx: 72, cy: g.rY, r: 4.5, fill: accent }),
+      h('circle', { key: 'c2', cx: 404, cy: g.pY, r: 4.5, fill: accent }),
+      // endpoint labels
+      h('text', { key: 't1', x: 72, y: g.rY + (exo ? -11 : 18), fontSize: 11, fill: '#3A342C', textAnchor: 'start', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }, p.reactants),
+      h('text', { key: 't2', x: 404, y: g.pY + (g.pY > g.rY ? 18 : -11), fontSize: 11, fill: '#3A342C', textAnchor: 'end', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }, p.products),
+    ]);
+  }
+
+  renderVals() {
+    const seg = { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '13px', border: 'none', padding: '7px 14px', borderRadius: '999px', cursor: 'pointer', transition: 'all .18s', whiteSpace: 'nowrap' };
+    const instances = CONFIGS.map((cfg, ci) => {
+      const mode = this.state.modes[ci];
+      const p = cfg.profiles[mode];
+      const accent = mode === 'exo' ? '#E0531F' : '#2E7DD1';
+      const modeBtns = [
+        { key: 'exo', label: '🔥 Exothermic' },
+        { key: 'endo', label: '❄️ Endothermic' },
+      ].map((m) => {
+        const on = mode === m.key;
+        const acc = m.key === 'exo' ? '#E0531F' : '#2E7DD1';
+        return { label: m.label, onClick: () => this.setMode(ci, m.key), style: on ? { ...seg, background: acc, color: '#fff', boxShadow: '0 6px 14px -6px ' + acc } : { ...seg, background: 'transparent', color: '#8A8074' } };
+      });
+      const tagStyle = (i) => ({
+        fontFamily: "'IBM Plex Mono',monospace", fontSize: '12px', fontWeight: 600,
+        color: mode === 'exo' ? '#B5341A' : '#1F5FA6',
+        background: mode === 'exo' ? '#FBE0D6' : '#DCEAF7',
+        border: '1px solid ' + (mode === 'exo' ? '#F0BBA9' : '#B7D2EC'),
+        padding: '5px 11px', borderRadius: '999px',
+      });
+      const tags = p.tags.map((t, i) => ({ label: t, style: tagStyle(i) }));
+      return {
+        configLabel: cfg.configLabel, emoji: cfg.emoji, title: cfg.title, subtitle: cfg.subtitle,
+        modeBtns, diagram: this.buildDiagram(ci), accent,
+        caption: p.caption, reaction: p.reaction, reactants: p.reactants, products: p.products,
+        dhSign: mode === 'exo' ? '−' : '+',
+        dhWord: mode === 'exo' ? 'ΔH is negative' : 'ΔH is positive',
+        tempWord: p.tempWord, tags, hint: cfg.hint,
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>

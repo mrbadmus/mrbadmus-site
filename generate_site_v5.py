@@ -7,6 +7,14 @@ Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 
 import os, shutil, json, glob, sys
 
+# Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
+# redesigned bonding pages. Frozen source fields are never edited; blocks are
+# authored presentation. See bonding_redesign.py and the port map.
+from bonding_redesign import (
+    BONDING_REDESIGN, BLOCK_CSS as BONDING_BLOCK_CSS,
+    render_theory_blocks, interactive_init_js, render_examiner_tip,
+)
+
 # ─────────────────────────────────────────────
 #  SITE DATA — all topics, subtopics, equations,
 #  required practicals, flags
@@ -3039,10 +3047,185 @@ def make_fifa_boxes(fifas):
 </div>"""
 
 
-def make_new_quiz(quiz, color):
+def _esc_attr(s):
+    """Escape a string for safe use inside a double-quoted HTML attribute."""
+    return (str(s).replace("&", "&amp;").replace('"', "&quot;")
+            .replace("<", "&lt;").replace(">", "&gt;"))
+
+
+def make_pilot_quiz(quiz):
+    """
+    Reveal-at-end quiz (MRB-121) — pilot page only.
+
+    Differs from the standard make_new_quiz in three ways:
+      1. Options are emitted in CANONICAL order (no build-time shuffle) — the
+         browser shuffles them on load, exactly like the Categorise Bins hero.
+         This kills the build-time shuffle churn on this page.
+      2. Each option carries its own correctness (`data-correct`) and, for a
+         wrong option, its misconception text (`data-wrong-exp`). Grading is by
+         attribute, so it is independent of the display order.
+      3. No feedback markup is pre-shown. The PILOT_QUIZ_JS controller withholds
+         all correct/incorrect feedback until "Check answers" is pressed.
+
+    Question text, options, correct answers and misconception text are frozen —
+    this is behaviour only.
+    """
+    cards_html = ""
+    for i, q in enumerate(quiz):
+        orig_wrong_exp = q.get("wrong_explanations", {})
+        opts_html = ""
+        for orig_j, (opt_text, is_correct) in enumerate(q["opts"]):
+            attrs = f' data-qi="{i}"'
+            if is_correct:
+                attrs += ' data-correct="1"'
+            else:
+                exp = orig_wrong_exp.get(orig_j)
+                if exp:
+                    attrs += f' data-wrong-exp="{_esc_attr(exp)}"'
+            opts_html += f'<button class="quiz-opt"{attrs}>{opt_text}</button>\n'
+        cards_html += f"""<div class="quiz-card" id="qcard-{i}">
+  <div class="q-text">{i+1}. {q['q']}</div>
+  <div class="quiz-options">{opts_html}</div>
+  <div class="quiz-fb" id="qfb-{i}"></div>
+</div>"""
+
+    return f"""<div class="section">
+  <div class="section-title">🎯 Test Yourself</div>
+  <div class="quiz-progress" id="quizProgress">Answer all {len(quiz)} questions, then check your answers.</div>
+  {cards_html}
+  <div class="quiz-actions">
+    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
+    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+  </div>
+  <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
+</div>"""
+
+
+# Reveal-at-end quiz controller (MRB-121, pilot page only). Emitted in place of
+# the standard instant-mark quiz_js. Selecting an option only records the
+# choice; no green/red until "Check answers". Grading reads data-correct, so it
+# is independent of the browser-shuffled option order. "Try again" clears and
+# reshuffles (same approach as the bins hero).
+PILOT_QUIZ_JS = """
+(function(){
+  const SCORE_MESSAGES = [
+    "Keep going — re-read the theory and try again. You'll get there! 📖",
+    "Not bad — review the sections you missed and have another go. 💪",
+    "Decent effort! A bit more revision and you'll nail it. 🔄",
+    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+    "Excellent! You've really got this topic down. 🏆"
+  ];
+  const cards = Array.from(document.querySelectorAll('.quiz-card'));
+  const total = cards.length;
+  if (!total) return;
+  const checkBtn = document.getElementById('quizCheckBtn');
+  const againBtn = document.getElementById('quizAgainBtn');
+  const endMsg = document.getElementById('quizEndMsg');
+  const prog = document.getElementById('quizProgress');
+  let checked = false;
+
+  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
+  function shuffleOptions(){
+    document.querySelectorAll('.quiz-options').forEach(function(box){
+      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
+      for (let k = opts.length - 1; k > 0; k--){
+        const j = Math.floor(Math.random() * (k + 1));
+        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
+      }
+      opts.forEach(function(o){ box.appendChild(o); });
+    });
+  }
+
+  function updateProgress(){
+    if (checked || !prog) return;
+    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
+    prog.textContent = answered === total
+      ? 'All ' + total + ' answered — hit Check answers below ↓'
+      : answered + ' of ' + total + ' answered';
+  }
+
+  function onSelect(){
+    if (checked) return;
+    const box = this.closest('.quiz-options');
+    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
+    this.classList.add('selected');
+    updateProgress();
+  }
+
+  function reveal(){
+    checked = true;
+    let correctCount = 0;
+    cards.forEach(function(card, i){
+      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
+      const chosen = card.querySelector('.quiz-opt.selected');
+      const fb = document.getElementById('qfb-' + i);
+      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
+      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
+      if (correctOpt) correctOpt.classList.add('correct');
+      const isRight = !!(chosen && chosen.dataset.correct === '1');
+      if (isRight) correctCount++;
+      if (chosen && !isRight) chosen.classList.add('wrong');
+      if (!fb) return;
+      if (!chosen){
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
+      } else if (isRight){
+        fb.className = 'quiz-fb correct-fb show';
+        fb.textContent = '✅ Correct! Well done!';
+      } else {
+        const exp = chosen.dataset.wrongExp;
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
+      }
+    });
+    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+    if (endMsg){
+      const ratio = correctCount / total;
+      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+      endMsg.style.display = 'block';
+      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+    }
+    if (checkBtn) checkBtn.style.display = 'none';
+    if (againBtn) againBtn.style.display = '';
+  }
+
+  function tryAgain(){
+    checked = false;
+    cards.forEach(function(card, i){
+      card.querySelectorAll('.quiz-opt').forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('selected', 'correct', 'wrong');
+      });
+      const fb = document.getElementById('qfb-' + i);
+      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
+    });
+    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
+    if (checkBtn) checkBtn.style.display = '';
+    if (againBtn) againBtn.style.display = 'none';
+    shuffleOptions();
+    updateProgress();
+  }
+
+  cards.forEach(function(card){
+    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
+  });
+  if (checkBtn) checkBtn.addEventListener('click', reveal);
+  if (againBtn) againBtn.addEventListener('click', tryAgain);
+  shuffleOptions();
+  updateProgress();
+})();
+"""
+
+
+def make_new_quiz(quiz, color, pilot=False):
     import random
     if not quiz:
         return ""
+    if pilot:
+        return make_pilot_quiz(quiz)
     cards_html = ""
     for i, q in enumerate(quiz):
         # Shuffle options so correct answer isn't always option A.
@@ -3183,6 +3366,17 @@ def make_new_subtopic_page(st, color):
         mistake_html = f"""<div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
   <p style="font-size:0.9rem;line-height:1.7;">{st['common_mistake']}</p>
+</div>"""
+
+    # Examiner tip — one exam-technique pointer per page (site-wide field).
+    # Leading newline lets it piggyback onto the keynote line (see body) so pages
+    # without a tip stay byte-identical.
+    examiner_html = ""
+    if st.get("examiner_tip"):
+        examiner_html = f"""
+  <div class="section">
+  <div class="section-title">⭐ Examiner Tip</div>
+  <div class="examiner-box"><p>{st['examiner_tip']}</p></div>
 </div>"""
 
     # Higher box
@@ -3394,7 +3588,7 @@ try {{
 
   {var_html}
   {eq_html}
-  {keynote_html}
+  {keynote_html}{examiner_html}
   {matching_html}
   {fifa_html}
   {higher_html}
@@ -3702,6 +3896,19 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
   <p style="font-size:0.9rem;line-height:1.7;">{st['common_mistake']}</p>
 </div>"""
 
+    # Examiner tip — one exam-technique pointer per page (site-wide field).
+    # Non-redesigned pages render it as a flat amber callout; .rd pages override
+    # this below with the canonical examiner-tip block. The leading newline lets
+    # it piggyback onto the keynote line in the body, so pages WITHOUT a tip stay
+    # byte-identical (an empty examiner_html appends nothing).
+    examiner_html = ""
+    if st.get("examiner_tip"):
+        examiner_html = f"""
+  <div class="section">
+  <div class="section-title">⭐ Examiner Tip</div>
+  <div class="examiner-box"><p>{st['examiner_tip']}</p></div>
+</div>"""
+
     # Higher box — only on higher tier
     higher_html = ""
     if tier == "higher" and st.get("higher"):
@@ -3890,6 +4097,158 @@ try {{
     subject_emoji = SITE_DATA[subject]["emoji"]
     paper_num = "1"  # default; could be looked up from topic data
 
+    # ── Redesign hero slot (MRB-113 Phase B pilot) ──
+    # Gated to the single sign-off page: giant-covalent-structures in the
+    # bonding topic. `rd` on <body> opts the page into the Locked Tokens
+    # (see shared/tokens.css). Every OTHER page keeps body_class="" and is
+    # byte-identical to before — nothing else on the site is touched.
+    body_class = ""
+    hero_html = ""
+    hero_scripts = ""
+    redesign_css = ""
+    if topic_id == "bonding" and st_id == "giant-covalent-structures":
+        body_class = "rd"
+        # JOB 1 — kill dead drag-match JS on the exemplar. The matching activity
+        # on this page is now the Categorise Bins hero, so the drag-match widget
+        # DOM (.match-def / .match-drop) no longer exists here and the standard
+        # matching_js has nothing to bind to. Null it so this page carries no
+        # dead code. Every OTHER page keeps the drag-match JS intact.
+        matching_js = ""
+        # JOB 2 (MRB-121) — reveal-at-end quiz. Re-emit the quiz with no
+        # build-time shuffle (options carry their own correctness and shuffle in
+        # the browser) and swap the instant-mark controller for the
+        # commit-all-then-review one. Question/option/answer/misconception text
+        # is unchanged — behaviour only.
+        quiz_html = make_new_quiz(st.get("quiz", []), color, pilot=True)
+        quiz_js = PILOT_QUIZ_JS
+        # Swap the drag-match widget for the Categorise Bins hero (Hero 09).
+        # The old widget rendered one labelled slot per card in SOURCE ORDER,
+        # so a student could drag top-to-bottom without reading (positional
+        # give-away). Bins have no per-card slots and the cards are shuffled in
+        # the browser on every load, so order carries no answer. Grading is by
+        # card→bin mapping (see categorise-bins.js), independent of display
+        # order. Pilot-gated exactly like the `.rd` opt-in above — every OTHER
+        # matching activity keeps the drag-match widget, byte-identical.
+        matching_html = f"""<div class="section">
+    <div class="rd-hero-kicker">🎯 Retrieval · sort the properties</div>
+    <div id="bins-{st_id}"></div>
+  </div>"""
+        hero_html = f"""
+  <div class="rd-hero-slot">
+    <div class="rd-hero-kicker">🔬 Interactive · explore the two structures</div>
+    <div id="hero-{st_id}"></div>
+  </div>
+"""
+        hero_scripts = f"""
+  <script src="/shared/heroes/two-state-compare.js"></script>
+  <script src="/shared/heroes/categorise-bins.js"></script>
+  <script src="/shared/heroes/bonding-configs.js"></script>
+  <script>
+  (function(){{
+    var cfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['{st_id}'];
+    var host = document.getElementById('hero-{st_id}');
+    if (cfg && host && window.MrbHeroes && MrbHeroes.twoStateCompare) MrbHeroes.twoStateCompare.init(host, cfg);
+    var binCfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['{st_id}-bins'];
+    var binHost = document.getElementById('bins-{st_id}');
+    if (binCfg && binHost && window.MrbHeroes && MrbHeroes.categoriseBins) MrbHeroes.categoriseBins.init(binHost, binCfg);
+  }})();
+  </script>"""
+        redesign_css = """
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Redesign pilot — page-scoped chrome (bonding · giant-covalent-structures) */
+html { background: var(--surface-page); }
+.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
+.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
+.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
+/* Locked callout shells — Common Mistake + Key Note (Design's spec) */
+.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
+.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
+.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
+/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
+.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
+.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
+/* Reveal-at-end quiz (MRB-121) — selected state + Check / Try-again controls */
+.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
+.rd .quiz-opt:disabled { pointer-events: none; }
+.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
+.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
+.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+</style>"""
+    elif topic_id == "bonding" and st_id in BONDING_REDESIGN:
+        # ── Block-page redesign (MRB-113 Phase B, Path B) ──
+        # Same `.rd` opt-in + reveal-quiz + Categorise-Bins mechanics as the
+        # exemplar, but the In-Depth Theory is rebuilt from the Theory Block
+        # Library (bonding_redesign.py) and — for these pilot pages — the page
+        # carries no structural hero. The interactive mistake-check block
+        # replaces the static Common-Mistake box. The frozen source fields are
+        # untouched; block content is authored presentation. Every non-listed
+        # page keeps body_class="" and is byte-identical to before.
+        rcfg = BONDING_REDESIGN[st_id]
+        body_class = "rd"
+        matching_js = ""
+        quiz_html = make_new_quiz(st.get("quiz", []), color, pilot=True)
+        quiz_js = PILOT_QUIZ_JS
+        # Theory → blocks. The mistake-check/compare-reveal interaction lives
+        # inside the blocks, so the standalone static mistake box is suppressed.
+        theory_html, _rd_interactive = render_theory_blocks(rcfg["theory_blocks"], st_id)
+        mistake_html = ""
+        # Activity — Categorise Bins (config key in shared/heroes/bonding-configs.js).
+        act = rcfg["activity"]
+        matching_html = f"""<div class="section">
+    <div class="rd-hero-kicker">🎯 Retrieval · sort the cards</div>
+    <div id="bins-{st_id}"></div>
+  </div>"""
+        hero_html = ""  # block-only pilot pages carry no structural hero
+        _tb_init = interactive_init_js(_rd_interactive)
+        hero_scripts = f"""
+  <script src="/shared/heroes/categorise-bins.js"></script>
+  <script src="/shared/heroes/theory-blocks.js"></script>
+  <script src="/shared/heroes/bonding-configs.js"></script>
+  <script>
+  (function(){{
+    var binCfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['{act["config_key"]}'];
+    var binHost = document.getElementById('bins-{st_id}');
+    if (binCfg && binHost && window.MrbHeroes && MrbHeroes.categoriseBins) MrbHeroes.categoriseBins.init(binHost, binCfg);
+  }})();
+{_tb_init}
+  </script>"""
+        redesign_css = """
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Redesign — page-scoped chrome (bonding · block page) */
+html { background: var(--surface-page); }
+.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
+.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
+.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
+.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
+.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
+.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
+/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
+.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
+.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
+.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
+.rd .quiz-opt:disabled { pointer-events: none; }
+.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
+.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
+.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+""" + BONDING_BLOCK_CSS + """
+</style>"""
+
+    # On redesigned (.rd) pages the Examiner Tip renders as the canonical
+    # amber/gold theory block, not the flat callout built above.
+    if body_class == "rd":
+        examiner_html = (
+            f'\n  <div class="section">{render_examiner_tip(st["examiner_tip"])}</div>'
+            if st.get("examiner_tip") else ""
+        )
+
     body = f"""
 <div class="topic-header">
   <a class="back-link" href="/{pathway}/{tier}/{subject}/{topic_id}.html">← Back to {topic_title}</a>
@@ -3902,7 +4261,7 @@ try {{
 </div>
 
 <div class="content-area">
-
+{hero_html}
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
     {theory_html}
@@ -3911,7 +4270,7 @@ try {{
 
   {var_html}
   {eq_html}
-  {keynote_html}
+  {keynote_html}{examiner_html}
   {matching_html}
   {fifa_html_content}
   {higher_html}
@@ -3930,6 +4289,12 @@ html {{ background: var(--bg); }}
 :root {{ --subject: {color}; }}
 </style>"""
 
+    # Emit the matching <script> only when there is matching JS to run. On the
+    # pilot page matching_js is nulled (JOB 1), so no empty/dead tag appears.
+    # For every other page matching_js is non-empty, so this is byte-identical
+    # to the previous unconditional `<script>{matching_js}</script>`.
+    matching_script = f"<script>{matching_js}</script>" if matching_js else ""
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -3939,16 +4304,18 @@ html {{ background: var(--bg); }}
   <title>{st['title']} | {subject_label} | MrBadmusAI</title>
   {HEAD_ASSETS}
   {extra_css}
+  {redesign_css}
 </head>
-<body>
+<body class="{body_class}">
   {nav_html(subject, pathway, tier)}
   {body}
   {chat_html()}
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{subject:'{subject}',topic:'{st["title"]} ({st["spec"]})'}});</script>
   <script>{quiz_js}</script>
-  <script>{matching_js}</script>
+  {matching_script}
   <script>{star_js}</script>
+  {hero_scripts}
 </body>
 </html>"""
 

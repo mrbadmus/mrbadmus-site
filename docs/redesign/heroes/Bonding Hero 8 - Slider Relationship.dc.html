@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 6px; border-radius: 999px; background: #E4DCCB; outline: none; margin: 0; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 22px; height: 22px; border-radius: 50%; background: #C0392B; border: 3px solid #FFFDF8; box-shadow: 0 3px 8px -2px rgba(192,57,43,.6); cursor: grab; }
+  input[type=range]::-webkit-slider-thumb:active { cursor: grabbing; }
+  input[type=range]::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: #C0392B; border: 3px solid #FFFDF8; box-shadow: 0 3px 8px -2px rgba(192,57,43,.6); cursor: grab; }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 08</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">Slider Relationship</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">Drag a variable and the graph or readout responds live. The relationship stays qualitative and clearly labelled. Slider range, mapping and readouts all come from <span style="font-family:'IBM Plex Mono',monospace; font-size:13px;">CONFIG</span> — the component runs twice below with two different configs. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1.5fr 1fr;">
+          <!-- viz + slider -->
+          <div style="padding:22px 24px 20px; background:linear-gradient(180deg,#FFFDF8,#FBF4EF); border-right:1px solid #EFE7D8;">
+            <div style="width:100%;">{{ ins.viz }}</div>
+            <div style="margin-top:16px;">
+              <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:8px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">{{ ins.sliderLabel }}</span>
+                <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#C0392B;">{{ ins.valueText }}</span>
+              </div>
+              <input type="range" min="{{ ins.min }}" max="{{ ins.max }}" step="{{ ins.step }}" value="{{ ins.value }}" onChange="{{ ins.onInput }}"></input>
+              <div style="display:flex; justify-content:space-between; margin-top:6px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8A8074;">{{ ins.lowTag }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8A8074;">{{ ins.highTag }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- readout -->
+          <div style="padding:20px 22px; display:flex; flex-direction:column; gap:14px;">
+            <div style="background:#F7F2E8; border-radius:14px; padding:16px 18px;">
+              <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:6px;">{{ ins.readoutLabel }}</div>
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; line-height:1.1; color:#B5341A;">{{ ins.word }}</div>
+              <div style="font-size:13px; line-height:1.5; color:#6B635A; margin-top:6px;">{{ ins.wordSub }}</div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:10px; background:#FBEEE9; border-left:4px solid #C0392B; border-radius:10px; padding:11px 14px;">
+              <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px; color:#C0392B;">{{ ins.trendArrow }}</span>
+              <span style="font-size:12.5px; line-height:1.45; color:#3A2A26;">{{ ins.trend }}</span>
+            </div>
+
+            <div style="height:1px; background:#EFE7D8;"></div>
+            <div style="display:flex; flex-direction:column; gap:9px;">
+              <sc-for list="{{ ins.facts }}" as="f" hint-placeholder-count="2">
+                <div style="display:flex; gap:10px; align-items:flex-start;"><span style="color:#E0531F; font-weight:700; margin-top:1px;">→</span><span style="font-size:13px; line-height:1.5; color:#2A241E;">{{ f }}</span></div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.5; color:#EAE3D6;">{{ ins.hint }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 08 — SLIDER RELATIONSHIP
+   Drag a variable; a graph or readout responds live. The
+   relationship is deliberately QUALITATIVE and clearly labelled
+   (no fake precise numbers on the response). Two visual kinds,
+   chosen by config:
+     • kind:'curve' — an amount-of-product vs time graph whose
+       gradient gets steeper as the variable rises (rate).
+     • kind:'shift' — an equilibrium position with two proportion
+       bars that shift left/right (Le Chatelier).
+
+   CONFIG SCHEMA (CONFIGS holds two to prove parametrisation):
+   {
+     configLabel: string   // demo label only, not shown on real pages
+     emoji, title, subtitle: string
+     kind: 'curve' | 'shift'
+     slider: { label, min, max, step, default, unit, lowTag, highTag }
+     readoutLabel: string  // heading over the big qualitative word
+     bands: [ { upTo, word, sub } ]   // picked by fraction f=0..1 of the
+                                      // slider; first band with f<=upTo wins
+     trendArrow: string, trend: string   // constant statement of direction
+     facts: [ string ]     // supporting bullet points
+     // kind:'curve' only —
+     curve: { kMin, kMax, plateauLabel, yLabel, xLabel }
+             // rate constant at slider min / max (drives steepness)
+     // kind:'shift' only —
+     shift: { reaction, leftLabel, rightLabel, posMin, posMax }
+             // equilibrium position (0=all reactants,1=all products)
+             // at slider min / max
+     hint: string
+   }
+   The value→state maths (frac / bandFor / curve k / shift pos) lives
+   in pure methods, separate from the SVG renderer buildViz() and the
+   template binding in renderVals(), so it ports cleanly.
+============================================================ */
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — RATE OF REACTION vs TEMPERATURE (curve gets steeper)',
+    emoji: '🌡️', title: 'Rate vs Temperature', subtitle: 'hotter → steeper curve, same final amount, reached sooner',
+    kind: 'curve',
+    slider: { label: 'TEMPERATURE', min: 10, max: 90, step: 5, default: 30, unit: ' °C', lowTag: '10 °C · cold', highTag: '90 °C · hot' },
+    readoutLabel: 'RATE OF REACTION',
+    bands: [
+      { upTo: 0.18, word: 'Very slow', sub: 'Particles move slowly — few collisions have enough energy.' },
+      { upTo: 0.42, word: 'Slow', sub: 'Occasional successful collisions.' },
+      { upTo: 0.68, word: 'Moderate', sub: 'Collisions are more frequent and more energetic.' },
+      { upTo: 0.88, word: 'Fast', sub: 'Many collisions now exceed the activation energy.' },
+      { upTo: 1.01, word: 'Very fast', sub: 'Reaction finishes quickly — the curve is steep and levels off early.' },
+    ],
+    trendArrow: '↑', trend: 'Raising the temperature makes the reaction faster — the curve is steeper at the start.',
+    facts: [
+      'Higher temperature → particles move faster and collide more often.',
+      'A greater proportion of collisions have energy above the activation energy.',
+      'The final amount of product is the SAME — only the time taken changes.',
+    ],
+    curve: { kMin: 0.5, kMax: 6, plateauLabel: 'same final amount', yLabel: 'PRODUCT', xLabel: 'TIME' },
+    hint: 'Temperature changes the RATE, not the amount. Every curve reaches the same plateau — a hotter run just gets there sooner with a steeper initial gradient.',
+  },
+  {
+    configLabel: 'CONFIG B — EQUILIBRIUM POSITION vs PRESSURE (Le Chatelier)',
+    emoji: '⚖️', title: 'Equilibrium & Pressure', subtitle: 'Haber process — which way does the position shift?',
+    kind: 'shift',
+    slider: { label: 'PRESSURE', min: 1, max: 10, step: 1, default: 2, unit: ' × 10⁷ Pa', lowTag: 'low pressure', highTag: 'high pressure' },
+    readoutLabel: 'EQUILIBRIUM POSITION',
+    bands: [
+      { upTo: 0.34, word: 'Favours reactants', sub: 'At low pressure little ammonia forms.' },
+      { upTo: 0.6, word: 'Roughly balanced', sub: 'Reactants and products in similar amounts.' },
+      { upTo: 1.01, word: 'Favours products', sub: 'Higher pressure pushes the position toward more ammonia.' },
+    ],
+    trendArrow: '→', trend: 'Increasing the pressure shifts the equilibrium to the side with fewer gas molecules — the product side.',
+    facts: [
+      'Forward side: N₂ + 3H₂ = 4 molecules of gas. Product side: 2NH₃ = 2 molecules.',
+      'Le Chatelier: raise the pressure → the system opposes it by moving to fewer gas molecules.',
+      'So higher pressure shifts the position RIGHT → more NH₃ (yield rises).',
+    ],
+    shift: { reaction: 'N₂ + 3H₂ ⇌ 2NH₃', leftLabel: 'Reactants (N₂ + H₂)', rightLabel: 'Products (NH₃)', posMin: 0.28, posMax: 0.78 },
+    hint: 'Le Chatelier with pressure: the equilibrium shifts toward the side with fewer moles of gas. Here that is the ammonia side, so high pressure raises the yield.',
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { vals: CONFIGS.map((c) => c.slider.default) };
+  }
+  setVal(ci, v) { const vals = this.state.vals.slice(); vals[ci] = v; this.setState({ vals }); }
+
+  /* --- pure value → state maths (separable from rendering) --- */
+  frac(cfg, v) { return (v - cfg.slider.min) / (cfg.slider.max - cfg.slider.min); }
+  bandFor(cfg, f) { return cfg.bands.find((b) => f <= b.upTo) || cfg.bands[cfg.bands.length - 1]; }
+
+  buildCurve(cfg, f) {
+    const h = React.createElement;
+    const W = 440, H = 240, x0 = 54, x1 = 412, y0 = 210, yTop = 28;
+    const plateauY = yTop + 14;
+    const k = cfg.curve.kMin + f * (cfg.curve.kMax - cfg.curve.kMin);
+    const build = (kk) => {
+      let d = '';
+      for (let i = 0; i <= 48; i++) {
+        const tn = i / 48;
+        const amt = 1 - Math.exp(-kk * tn * 3.2);
+        const x = x0 + tn * (x1 - x0);
+        const y = y0 - amt * (y0 - plateauY);
+        d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+      }
+      return d.trim();
+    };
+    return h('svg', { viewBox: `0 0 ${W} ${H}`, style: { width: '100%', height: 'auto', display: 'block', overflow: 'visible' } }, [
+      h('line', { key: 'ay', x1: x0, y1: yTop - 6, x2: x0, y2: y0, stroke: '#C9BFAD', strokeWidth: 1.6 }),
+      h('line', { key: 'ax', x1: x0, y1: y0, x2: x1, y2: y0, stroke: '#C9BFAD', strokeWidth: 1.6 }),
+      h('text', { key: 'yl', transform: `translate(16,${(yTop + y0) / 2}) rotate(-90)`, fontSize: 10, fill: '#9A9082', textAnchor: 'middle', letterSpacing: '.1em', fontFamily: 'IBM Plex Mono, monospace' }, cfg.curve.yLabel),
+      h('text', { key: 'xl', x: (x0 + x1) / 2, y: y0 + 24, fontSize: 10, fill: '#9A9082', textAnchor: 'middle', letterSpacing: '.1em', fontFamily: 'IBM Plex Mono, monospace' }, cfg.curve.xLabel),
+      h('line', { key: 'pll', x1: x0, y1: plateauY, x2: x1, y2: plateauY, stroke: '#C9BFAD', strokeWidth: 1.3, strokeDasharray: '4 5' }),
+      h('text', { key: 'plt', x: x1, y: plateauY - 6, fontSize: 10, fill: '#9A9082', textAnchor: 'end', fontFamily: 'IBM Plex Mono, monospace' }, cfg.curve.plateauLabel),
+      // ghost slowest curve for reference
+      h('path', { key: 'ghost', d: build(cfg.curve.kMin), fill: 'none', stroke: '#D8CFBD', strokeWidth: 2, strokeDasharray: '3 4' }),
+      // live curve
+      h('path', { key: 'live', d: build(k), fill: 'none', stroke: '#E0531F', strokeWidth: 3.6, strokeLinecap: 'round', strokeLinejoin: 'round', style: { transition: 'all .12s linear' } }),
+    ]);
+  }
+
+  buildShift(cfg, f) {
+    const h = React.createElement;
+    const s = cfg.shift;
+    const pos = s.posMin + f * (s.posMax - s.posMin); // 0..1 toward products
+    const W = 440, H = 240, baseY = 196, maxH = 150, colW = 92;
+    const lX = 96, rX = 300;
+    const lH = 24 + (1 - pos) * maxH, rH = 24 + pos * maxH;
+    const bar = (x, hgt, color, label, glyph) => [
+      h('rect', { key: 'b', x, y: baseY - hgt, width: colW, height: hgt, rx: 10, fill: color, style: { transition: 'all .12s linear' } }),
+      h('text', { key: 'g', x: x + colW / 2, y: baseY - hgt / 2 + 8, fontSize: 22, textAnchor: 'middle' }, glyph),
+      h('text', { key: 't', x: x + colW / 2, y: baseY + 20, fontSize: 11, fill: '#3A342C', textAnchor: 'middle', fontWeight: 600, fontFamily: 'Space Grotesk, sans-serif' }, label),
+    ];
+    const toProducts = pos >= 0.5;
+    return h('svg', { viewBox: `0 0 ${W} ${H}`, style: { width: '100%', height: 'auto', display: 'block', overflow: 'visible' } }, [
+      h('text', { key: 'rx', x: W / 2, y: 22, fontSize: 17, fill: '#1A1714', textAnchor: 'middle', fontWeight: 700, fontFamily: 'Space Grotesk, sans-serif' }, s.reaction),
+      h('line', { key: 'base', x1: 60, y1: baseY, x2: 380, y2: baseY, stroke: '#C9BFAD', strokeWidth: 1.6 }),
+      ...bar(lX, lH, '#6B96C9', 'reactants', '🔵'),
+      ...bar(rX, rH, '#E0745F', 'products', '🟠'),
+      // shift arrow
+      h('text', { key: 'arr', x: W / 2, y: 96, fontSize: 40, textAnchor: 'middle', fill: toProducts ? '#E0531F' : '#2E7DD1', fontWeight: 700, style: { transition: 'all .15s' } }, toProducts ? '→' : '←'),
+      h('text', { key: 'arrl', x: W / 2, y: 122, fontSize: 11, textAnchor: 'middle', fill: '#6B635A', fontFamily: 'IBM Plex Mono, monospace' }, toProducts ? 'shifts right' : 'shifts left'),
+    ]);
+  }
+
+  buildViz(ci) {
+    const cfg = CONFIGS[ci];
+    const f = this.frac(cfg, this.state.vals[ci]);
+    return cfg.kind === 'curve' ? this.buildCurve(cfg, f) : this.buildShift(cfg, f);
+  }
+
+  renderVals() {
+    const instances = CONFIGS.map((cfg, ci) => {
+      const v = this.state.vals[ci];
+      const f = this.frac(cfg, v);
+      const band = this.bandFor(cfg, f);
+      return {
+        configLabel: cfg.configLabel, emoji: cfg.emoji, title: cfg.title, subtitle: cfg.subtitle,
+        viz: this.buildViz(ci),
+        sliderLabel: cfg.slider.label, valueText: v + cfg.slider.unit,
+        min: cfg.slider.min, max: cfg.slider.max, step: cfg.slider.step, value: v,
+        onInput: (e) => this.setVal(ci, Number(e.target.value)),
+        lowTag: cfg.slider.lowTag, highTag: cfg.slider.highTag,
+        readoutLabel: cfg.readoutLabel, word: band.word, wordSub: band.sub,
+        trendArrow: cfg.trendArrow, trend: cfg.trend, facts: cfg.facts, hint: cfg.hint,
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>

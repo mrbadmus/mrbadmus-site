@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes popIn { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 09</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">Categorise Bins</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">Tap a card, tap a bin, then check — each card reveals whether it landed in the right place. The cards, the two bin labels and the correct mapping all come from <span style="font-family:'IBM Plex Mono',monospace; font-size:13px;">CONFIG</span>. The component runs twice below with two different configs. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+        </div>
+
+        <div style="padding:22px 24px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px;">
+            <p style="margin:0; font-size:14.5px; color:#6B635A; max-width:60ch;">{{ ins.prompt }}</p>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:{{ ins.scoreColor }}; background:{{ ins.scoreBg }}; padding:7px 14px; border-radius:999px; white-space:nowrap;">{{ ins.scoreText }}</div>
+          </div>
+
+          <!-- tray -->
+          <div style="background:#F7F2E8; border:1px dashed #D8CFBD; border-radius:16px; padding:16px; margin-bottom:18px; min-height:64px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:10px;">{{ ins.trayLabel }}</div>
+            <sc-if value="{{ ins.trayEmpty }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size:14px; color:#B0A695; padding:4px 2px;">All sorted — hit Check answers below ↓</div>
+            </sc-if>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <sc-for list="{{ ins.tray }}" as="it" hint-placeholder-count="6">
+                <button onClick="{{ it.onClick }}" style="{{ it.style }}">{{ it.text }}</button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- bins -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <sc-for list="{{ ins.bins }}" as="bin" hint-placeholder-count="2">
+              <div onClick="{{ bin.onDrop }}" style="{{ bin.style }}">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                  <span style="font-size:18px;">{{ bin.emoji }}</span>
+                  <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:{{ bin.headColor }};">{{ bin.label }}</span>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px;">
+                  <sc-if value="{{ bin.isEmpty }}" hint-placeholder-val="{{ true }}">
+                    <div style="font-size:13.5px; color:{{ bin.hintColor }};">{{ bin.hint }}</div>
+                  </sc-if>
+                  <sc-for list="{{ bin.placed }}" as="it" hint-placeholder-count="0">
+                    <button onClick="{{ it.onClick }}" style="{{ it.style }}"><span>{{ it.text }}</span><span style="font-weight:700; margin-left:8px;">{{ it.mark }}</span></button>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="display:flex; gap:12px; margin-top:20px; flex-wrap:wrap;">
+            <button onClick="{{ ins.onCheck }}" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#fff; background:#B5341A; border:none; padding:13px 24px; border-radius:12px; cursor:pointer; box-shadow:0 8px 20px -8px rgba(181,52,26,.7);">✓ Check answers</button>
+            <button onClick="{{ ins.onReset }}" style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15px; color:#4A4238; background:#EFE7D8; border:1px solid #E4DCCB; padding:13px 24px; border-radius:12px; cursor:pointer;">↻ Reset</button>
+          </div>
+        </div>
+
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.5; color:#EAE3D6;">{{ ins.hint }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 09 — CATEGORISE BINS
+   The reusable "sort it" archetype. Tap a card to select it, tap
+   a bin to drop it, tap a placed card to send it back to the
+   tray. Check answers marks every card ✓ / ✕ in place (per-card
+   correctness reveal) and updates the score pill.
+
+   The archetype is a BINARY sort: a config supplies exactly two
+   bins (this keeps the two-column layout fixed furniture, like
+   the four FIFA steps in Hero 06). Cards, bin labels and the
+   correct mapping are all per-config.
+
+   CONFIG SCHEMA (CONFIGS holds two to prove parametrisation):
+   {
+     configLabel: string   // demo label only, not shown on real pages
+     emoji, title, subtitle: string
+     prompt: string        // instruction line above the tray
+     trayLabel: string     // mono label on the tray
+     bins: [               // EXACTLY 2
+       { key, label, emoji, hint, tint: 'warm' | 'cool' }
+     ],
+     cards: [ { id, text, bin } ],   // bin = key of the correct bin
+     hint: string          // dark mono bar text
+   }
+   Interaction logic (select / drop / remove / mark) is kept in
+   pure methods separate from the template binding in renderVals(),
+   so it ports to vanilla later.
+============================================================ */
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — SORT REACTIONS: EXOTHERMIC or ENDOTHERMIC',
+    emoji: '🔥', title: 'Exothermic or Endothermic?', subtitle: 'sort each reaction by the way energy flows',
+    prompt: 'Tap a reaction, then tap a bin. A reaction that releases energy is exothermic; one that takes energy in is endothermic. Tap a placed card to send it back.',
+    trayLabel: 'REACTIONS · tap one, then tap a bin',
+    bins: [
+      { key: 'exo', label: 'Exothermic', emoji: '🔥', hint: 'Releases energy — surroundings heat up.', tint: 'warm' },
+      { key: 'endo', label: 'Endothermic', emoji: '❄️', hint: 'Absorbs energy — surroundings cool down.', tint: 'cool' },
+    ],
+    cards: [
+      { id: 'comb', text: 'Burning methane in air', bin: 'exo' },
+      { id: 'neut', text: 'Neutralising HCl with NaOH (temp rises)', bin: 'exo' },
+      { id: 'resp', text: 'Respiration in cells', bin: 'exo' },
+      { id: 'thermal', text: 'Thermal decomposition of CaCO₃', bin: 'endo' },
+      { id: 'diss', text: 'Dissolving ammonium nitrate (temp falls)', bin: 'endo' },
+      { id: 'photo', text: 'Photosynthesis', bin: 'endo' },
+    ],
+    hint: 'Exothermic = energy OUT, surroundings get hotter (ΔH negative). Endothermic = energy IN, surroundings get colder (ΔH positive).',
+  },
+  {
+    configLabel: 'CONFIG B — SORT PROCESSES: OXIDATION or REDUCTION',
+    emoji: '🔋', title: 'Oxidation or Reduction?', subtitle: 'OIL RIG — track the electrons',
+    prompt: 'Tap a process, then tap a bin. Use OIL RIG: Oxidation Is Loss of electrons, Reduction Is Gain of electrons. Tap a placed card to send it back.',
+    trayLabel: 'PROCESSES · tap one, then tap a bin',
+    bins: [
+      { key: 'ox', label: 'Oxidation', emoji: '➖', hint: 'Loss of electrons (OIL).', tint: 'warm' },
+      { key: 'red', label: 'Reduction', emoji: '➕', hint: 'Gain of electrons (RIG).', tint: 'cool' },
+    ],
+    cards: [
+      { id: 'mg', text: 'Mg → Mg²⁺ + 2e⁻', bin: 'ox' },
+      { id: 'fe', text: 'Iron rusting: Fe → Fe³⁺ + 3e⁻', bin: 'ox' },
+      { id: 'zn', text: 'Zn loses electrons at the negative electrode', bin: 'ox' },
+      { id: 'cl', text: 'Cl₂ + 2e⁻ → 2Cl⁻', bin: 'red' },
+      { id: 'cu', text: 'Cu²⁺ + 2e⁻ → Cu at the cathode', bin: 'red' },
+      { id: 'h', text: '2H⁺ + 2e⁻ → H₂', bin: 'red' },
+    ],
+    hint: 'OIL RIG: Oxidation Is Loss, Reduction Is Gain — of electrons. Losing electrons makes an ion more positive; gaining electrons makes it more negative.',
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { inst: CONFIGS.map(() => ({ selected: null, placed: {}, checked: false })) };
+  }
+  upd(ci, patch) { const inst = this.state.inst.map((o, i) => (i === ci ? { ...o, ...patch } : o)); this.setState({ inst }); }
+
+  /* --- pure interaction logic (separable from template binding) --- */
+  select(ci, id) { const it = this.state.inst[ci]; this.upd(ci, { selected: it.selected === id ? null : id, checked: false }); }
+  remove(ci, id) { const it = this.state.inst[ci]; const placed = { ...it.placed }; delete placed[id]; this.upd(ci, { placed, checked: false, selected: null }); }
+  drop(ci, binKey) { const it = this.state.inst[ci]; if (!it.selected) return; this.upd(ci, { placed: { ...it.placed, [it.selected]: binKey }, selected: null, checked: false }); }
+  check(ci) { this.upd(ci, { checked: true, selected: null }); }
+  reset(ci) { this.upd(ci, { placed: {}, checked: false, selected: null }); }
+
+  renderVals() {
+    const chipBase = { fontFamily: "'IBM Plex Sans',sans-serif", fontSize: '13.5px', lineHeight: '1.4', textAlign: 'left', cursor: 'pointer', borderRadius: '10px', padding: '10px 13px', transition: 'all .15s' };
+    const tints = {
+      warm: { fill: 'linear-gradient(180deg,#FDF1E9,#FBF7EF)', border: '#E7A886', head: '#B5341A', hint: '#C7A38F' },
+      cool: { fill: 'linear-gradient(180deg,#E9F1FA,#F4F7FB)', border: '#9CC0E4', head: '#1F5FA6', hint: '#96B4D4' },
+    };
+
+    const instances = CONFIGS.map((cfg, ci) => {
+      const it = this.state.inst[ci];
+      const { placed, checked, selected } = it;
+      const byId = (id) => cfg.cards.find((c) => c.id === id);
+
+      const trayCard = (c) => ({
+        text: c.text, onClick: () => this.select(ci, c.id),
+        style: selected === c.id
+          ? { ...chipBase, background: '#FBEAE1', border: '2px solid #E0531F', color: '#2A241E', boxShadow: '0 6px 16px -8px rgba(224,83,31,.6)' }
+          : { ...chipBase, background: '#FFFDF8', border: '1px solid #E4DCCB', color: '#2A241E' },
+      });
+      const placedCard = (c) => {
+        let bg = '#FFFDF8', bd = '#E4DCCB', fg = '#2A241E', mark = '';
+        if (checked) {
+          const ok = placed[c.id] === c.bin;
+          bg = ok ? '#E7F3EA' : '#FBE4DE'; bd = ok ? '#7FB98A' : '#E0897B'; fg = ok ? '#2E6B3A' : '#A83824'; mark = ok ? '✓' : '✕';
+        }
+        return { text: c.text, mark, onClick: () => this.remove(ci, c.id), style: { ...chipBase, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: bg, border: '1px solid ' + bd, color: fg } };
+      };
+
+      const tray = cfg.cards.filter((c) => !(c.id in placed)).map(trayCard);
+      const bins = cfg.bins.map((b) => {
+        const t = tints[b.tint] || tints.warm;
+        const placedHere = cfg.cards.filter((c) => placed[c.id] === b.key).map(placedCard);
+        return {
+          key: b.key, emoji: b.emoji, label: b.label, hint: b.hint, headColor: t.head, hintColor: t.hint,
+          onDrop: () => this.drop(ci, b.key), isEmpty: placedHere.length === 0, placed: placedHere,
+          style: { cursor: 'pointer', background: t.fill, border: '2px dashed ' + t.border, borderRadius: '16px', padding: '16px', minHeight: '120px', transition: 'all .15s' },
+        };
+      });
+
+      const total = cfg.cards.length;
+      const sorted = total - tray.length;
+      const correct = cfg.cards.filter((c) => placed[c.id] === c.bin).length;
+      let scoreText = tray.length ? sorted + ' / ' + total + ' sorted' : 'Ready to check';
+      let scoreColor = '#8A8074', scoreBg = '#EFE7D8';
+      if (checked) {
+        scoreText = correct + ' / ' + total + ' correct' + (correct === total ? '  🎉' : '');
+        if (correct === total) { scoreColor = '#2E6B3A'; scoreBg = '#E7F3EA'; }
+        else { scoreColor = '#A83824'; scoreBg = '#FBE4DE'; }
+      }
+
+      return {
+        configLabel: cfg.configLabel, emoji: cfg.emoji, title: cfg.title, subtitle: cfg.subtitle,
+        prompt: cfg.prompt, trayLabel: cfg.trayLabel,
+        tray, trayEmpty: tray.length === 0, bins,
+        onCheck: () => this.check(ci), onReset: () => this.reset(ci),
+        scoreText, scoreColor, scoreBg, hint: cfg.hint,
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>
