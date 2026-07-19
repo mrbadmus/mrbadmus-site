@@ -19,8 +19,94 @@ html { background: var(--bg); }
 :root { --subject: #B02342; }
 </style>
   
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Redesign — page-scoped chrome (bonding · block page) */
+html { background: var(--surface-page); }
+.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
+.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
+.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
+.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
+.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
+.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
+/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
+.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
+.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
+.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
+.rd .quiz-opt:disabled { pointer-events: none; }
+.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
+.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
+.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+
+/* Theory Block Library — static blocks (MRB-113 Phase B) */
+.rd .rd-blocks { display: flex; flex-direction: column; gap: 18px; }
+.rd .rd-blk-lead { margin: 0; font-family: var(--font-body,sans-serif); font-size: calc(16.5px * var(--rd-fs-scale, 1)); line-height: 1.6; color: #211B15; max-width: 72ch; }
+.rd .rd-blk-lead b { color: var(--ink,#1A1714); }
+/* feature-cards */
+.rd .rd-blk-feature { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+.rd .rd-fcard { border-radius: 14px; padding: 16px 18px; border: 1px solid; }
+.rd .rd-fcard__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-fcard__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); line-height: 1.3; }
+.rd .rd-fcard__body { font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; }
+.rd .rd-fcard--good { background: #E7F3EA; border-color: #B9DCC1; }
+.rd .rd-fcard--good .rd-fcard__hd b { color: #3E6B47; }
+.rd .rd-fcard--limit { background: #FBE4DE; border-color: #EFC0B4; }
+.rd .rd-fcard--limit .rd-fcard__hd b { color: #B5341A; }
+.rd .rd-fcard--neutral { background: #F7F2E8; border-color: #E4DCCB; }
+.rd .rd-fcard--neutral .rd-fcard__hd b { color: #B5341A; }
+/* compare-cards */
+.rd .rd-blk-compare .rd-cmp-grid { display: grid; gap: 14px; }
+.rd .rd-cmp-col { background: #FFFDF8; border: 1px solid #E4DCCB; border-radius: 16px; overflow: hidden; }
+.rd .rd-cmp-col__hd { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #EFE7D8; background: #F7F2E8; }
+.rd .rd-cmp-col__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(17px * var(--rd-fs-scale, 1)); color: #1A1714; }
+.rd .rd-cmp-row { display: flex; flex-direction: column; gap: 2px; padding: 11px 18px; border-bottom: 1px solid #F2ECDD; }
+.rd .rd-cmp-row:last-child { border-bottom: none; }
+.rd .rd-cmp-row__k { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .06em; color: #716A60; text-transform: uppercase; }
+.rd .rd-cmp-row__v { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #211B15; line-height: 1.35; }
+.rd .rd-cmp-row--hl { padding: 12px 18px; }
+.rd .rd-cmp-row--hl.tone-good { background: #E7F3EA; border-top: 2px solid #7FB98A; }
+.rd .rd-cmp-row--hl.tone-good .rd-cmp-row__k { color: #55735B; } .rd .rd-cmp-row--hl.tone-good .rd-cmp-row__v { color: #3E6B47; }
+.rd .rd-cmp-row--hl.tone-limit { background: #FBE4DE; border-top: 2px solid #E0897B; }
+.rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__k { color: #9C5342; } .rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__v { color: #B5341A; }
+.rd .rd-cmp-row--hl.tone-neutral { background: #F7F2E8; border-top: 2px solid #D8CFBD; }
+.rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__k { color: #716A60; } .rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__v { color: #211B15; }
+.rd .rd-cmp-verdict { margin-top: 12px; text-align: center; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #95270F; background: #F8D2C4; border: 1px solid #EBAF9B; border-radius: 999px; padding: 9px 18px; }
+@media (max-width: 560px) { .rd .rd-blk-compare .rd-cmp-grid { grid-template-columns: 1fr !important; } }
+/* MRB-124 — feature-cards clip at narrow width: repeat(auto-fit,minmax(210px,1fr))
+   demands 2×210px+gap on a ~400px viewport, so a second track overflows and drags
+   the whole page into horizontal scroll. Stack to a single column at the same
+   breakpoint the compare-cards use. Later source order → wins over the base rule. */
+@media (max-width: 560px) { .rd .rd-blk-feature { grid-template-columns: 1fr; } }
+/* step-sequence */
+.rd .rd-blk-steps { display: flex; flex-direction: column; gap: 8px; }
+.rd .rd-step { display: flex; gap: 14px; align-items: flex-start; background: #F7F2E8; border-radius: 12px; padding: 13px 16px; }
+.rd .rd-step__n { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14px * var(--rd-fs-scale, 1)); color: #fff; background: #C0392B; min-width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+.rd .rd-step__t { font-size: calc(14.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; padding-top: 3px; }
+/* example-callout */
+.rd .rd-blk-example { background: #FBEEE9; border-left: 4px solid #C0392B; border-radius: 12px; padding: 16px 20px; }
+.rd .rd-blk-example__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rd .rd-blk-example__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15.5px * var(--rd-fs-scale, 1)); color: #B5341A; }
+.rd .rd-blk-example__lines { display: flex; flex-direction: column; gap: 5px; }
+.rd .rd-blk-example__lines div { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.5; color: #3A2A26; }
+/* aside-callout */
+.rd .rd-blk-aside { background: #F6E9CE; border-left: 4px solid #C7861F; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-aside b { display: block; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #7A5510; margin-bottom: 4px; }
+.rd .rd-blk-aside__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A1E; }
+/* examiner-tip — exam-technique callout. Amber/gold with its own left-border,
+   deliberately distinct from the red example-callout (#C0392B), the red Common
+   Mistake, and the burnt-orange brand accent (--accent-strong). */
+.rd .rd-blk-examiner { background: #FEF6E0; border-left: 4px solid #E0A21A; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-examiner__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-blk-examiner__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #8A5E0A; }
+.rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
+.rd .rd-blk-examiner__body b { color: #6E4A00; }
+
+</style>
 </head>
-<body class="">
+<body class="rd">
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-crumbs">
@@ -51,18 +137,14 @@ html { background: var(--bg); }
 
 <div class="content-area">
 
+  <div class="rd-hero-slot">
+    <div class="rd-hero-kicker">🔬 Interactive · work the surface-area-to-volume calculation</div>
+    <div id="hero-nanoparticles"></div>
+  </div>
+
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
-    <div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">What Are Nanoparticles?</h4>
-  <div class='theory-line'>NANOPARTICLES are particles with dimensions in the range of 1 to 100 NANOMETRES (nm).</div><div class='theory-gap'></div><div class='theory-line'>1 nm = 1 × 10⁻⁹ m</div><div class='theory-gap'></div><div class='theory-line'>Nanoparticles contain a few hundred to a few thousand atoms — much smaller than bulk materials, but larger than individual atoms or molecules.</div><div class='theory-gap'></div><div class='theory-line'>At this tiny scale, materials can have VERY DIFFERENT properties compared to the same material in bulk (large) form. For example:</div><div class='theory-line'>Gold in bulk: yellow, does not react with most chemicals, melts at 1064°C.</div><div class='theory-line'>Gold nanoparticles: red/purple colour, much higher reactivity, much lower melting point.</div><div class='theory-gap'></div><div class='theory-line'>This is because nanoparticles have an enormous SURFACE AREA TO VOLUME RATIO compared to bulk material — a much greater proportion of atoms are on the surface and available for reactions.</div><div class='theory-gap'></div><div class='theory-line'>Larger surface area → higher reactivity, faster catalyst action, different optical properties.</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Carbon Nanostructures — Graphene and Fullerenes</h4>
-  <div class='theory-line'>GRAPHENE:</div><div class='theory-line'>A SINGLE LAYER of graphite — a flat sheet of carbon atoms arranged in a hexagonal lattice, just ONE ATOM THICK.</div><div class='theory-line'>Properties:</div><div class='theory-line'>Extremely strong (one of the strongest materials ever tested).</div><div class='theory-line'>Very lightweight — just one atom thick.</div><div class='theory-line'>Excellent electrical conductor — delocalised electrons (as in graphite).</div><div class='theory-line'>Almost transparent.</div><div class='theory-line'>Potential uses: flexible electronics, touchscreens, ultralight composite materials, medical sensors.</div><div class='theory-gap'></div><div class='theory-line'>FULLERENES:</div><div class='theory-line'>Carbon molecules where atoms form hollow SPHERES, TUBES or other shapes.</div><div class='theory-line'>BUCKMINSTERFULLERENE (C₆₀) — also called 'buckyballs':</div><div class='theory-line'>60 carbon atoms arranged in a sphere (like a football — hexagons and pentagons).</div><div class='theory-line'>Hollow structure.</div><div class='theory-line'>Fairly stable, can enclose other atoms or molecules inside the cage.</div><div class='theory-line'>Uses: drug delivery (molecules placed inside for targeted medicine), lubricants, catalysis.</div><div class='theory-gap'></div><div class='theory-line'>CARBON NANOTUBES:</div><div class='theory-line'>Rolled-up sheets of graphene forming hollow cylindrical tubes.</div><div class='theory-line'>Very strong and stiff along the tube axis.</div><div class='theory-line'>Excellent electrical conductors (delocalised electrons).</div><div class='theory-line'>Uses: reinforcing composite materials, electronics, future nanotechnology.</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Uses and Risks of Nanoparticles</h4>
-  <div class='theory-line'>USES OF NANOPARTICLES:</div><div class='theory-line'>SUNSCREEN: Titanium dioxide (TiO₂) nanoparticles — transparent (unlike bulk TiO₂ which is white) but still absorb UV radiation effectively.</div><div class='theory-line'>ANTIBACTERIAL products: Silver nanoparticles — high surface area → high reactivity against bacteria. Used in wound dressings, socks, food packaging.</div><div class='theory-line'>CATALYSIS: High surface area makes nanoparticles extremely effective catalysts.</div><div class='theory-line'>DRUG DELIVERY: Nanoparticles can carry drugs directly to target cells (e.g. tumour cells).</div><div class='theory-line'>COATINGS: Self-cleaning glass, water-repelling fabrics.</div><div class='theory-line'>ELECTRONICS: Used in transistors, sensors, LEDs.</div><div class='theory-gap'></div><div class='theory-line'>POTENTIAL RISKS:</div><div class='theory-line'>Nanoparticles are so small they can:</div><div class='theory-line'>Pass through cell membranes — may cause unknown biological effects.</div><div class='theory-line'>Be inhaled into the lungs and bypass normal defence mechanisms.</div><div class='theory-line'>Persist in the environment — may accumulate in food chains.</div><div class='theory-line'>Interact unexpectedly with biological systems — long-term effects not fully understood.</div><div class='theory-gap'></div><div class='theory-line'>The same properties that make nanoparticles useful (small size, high reactivity, ability to penetrate membranes) also make them potentially hazardous.</div><div class='theory-gap'></div><div class='theory-line'>More research is needed to fully understand the health and environmental impacts — this is an area of active scientific investigation.</div>
-</div>
+    <div class="rd-blocks"><p class="rd-blk-lead">Nanoparticles are tiny particles <b>1–100 nm</b> across (1 nm = 1×10⁻⁹ m), containing a few hundred to a few thousand atoms. At this scale a material can behave very differently from its bulk form.</p><div class="rd-blk-compare"><div class="rd-cmp-grid" style="grid-template-columns:repeat(2,1fr);"><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🟡</span><b>Bulk gold</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Colour</span><span class="rd-cmp-row__v">Yellow</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Reactivity</span><span class="rd-cmp-row__v">Low — unreactive with most chemicals</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Melting point</span><span class="rd-cmp-row__v">1064 °C</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🔴</span><b>Gold nanoparticles</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Colour</span><span class="rd-cmp-row__v">Red / purple</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Reactivity</span><span class="rd-cmp-row__v">Much higher</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Melting point</span><span class="rd-cmp-row__v">Much lower</span></div></div></div><div class="rd-cmp-verdict">Same gold atoms — but a huge surface-area-to-volume ratio means far more atoms sit on the surface, so reactivity shoots up.</div></div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">▦</span><b>Graphene</b></div><div class="rd-fcard__body">A single layer of graphite, one atom thick — extremely strong, very light, and conducts electricity.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚽</span><b>Buckminsterfullerene (C₆₀)</b></div><div class="rd-fcard__body">60 carbon atoms in a hollow sphere ('buckyball') — can cage molecules; used in drug delivery and lubricants.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🛢️</span><b>Carbon nanotube</b></div><div class="rd-fcard__body">A rolled-up graphene sheet forming a hollow tube — very strong along its length and conducts electricity.</div></div></div><div class="rd-blk-example"><div class="rd-blk-example__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">✅</span><b>Uses of nanoparticles</b></div><div class="rd-blk-example__lines"><div>Sunscreen: TiO₂ nanoparticles are transparent but still block UV.</div><div>Antibacterial: silver nanoparticles — high surface area → very reactive against bacteria.</div><div>Catalysis: a high surface area makes them very effective catalysts.</div><div>Drug delivery: they can carry medicine directly to target cells.</div></div></div><div class="rd-blk-aside"><b>⚠️ Risks — why more research is needed</b><div class="rd-blk-aside__body">Nanoparticles are so small they may pass through cell membranes, be breathed deep into the lungs, and persist in the environment and food chains. Their long-term health and environmental effects are not yet fully understood.</div></div></div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
   <p style="font-size:0.9rem;line-height:1.7;">Students often think that a nanoparticle of gold must be a different substance from ordinary gold because its colour and reactivity are so different. It is the same substance — the same gold atoms. What changes is the scale: nanoparticles have a far larger surface-area-to-volume ratio, so a much greater fraction of their atoms sit on the surface, which changes their properties.</p>
@@ -75,10 +157,7 @@ html { background: var(--bg); }
   <div class="section-title">📌 Key Note</div>
   <div class="keynote-box"><p>Nanoparticles: 1–100 nm. Huge surface area to volume ratio → different properties, higher reactivity. Graphene: single layer of graphite, strong, conducts. Fullerenes (C₆₀): hollow carbon spheres, drug delivery. Nanotubes: rolled graphene, strong conductors. Risks: may penetrate cells, unknown long-term effects.</p></div>
 </div>
-  <div class="section">
-  <div class="section-title">⭐ Examiner Tip</div>
-  <div class="examiner-box"><p>When asked why nanoparticles behave differently from the bulk material, the marks are for the surface-area-to-volume ratio — say a much greater fraction of the atoms sit on the surface. Never write that it is a "different substance": it is the same atoms at a smaller scale.</p></div>
-</div>
+  <div class="section"><div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">When asked why nanoparticles behave differently from the bulk material, the marks are for the surface-area-to-volume ratio — say a much greater fraction of the atoms sit on the surface. Never write that it is a "different substance": it is the same atoms at a smaller scale.</div></div></div>
   <div class="section">
   <div class="section-title">🎯 Matching Activity — Match the Carbon Nanostructure</div>
   <div class="card">
@@ -176,97 +255,94 @@ html { background: var(--bg); }
   
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
-  <div class="quiz-progress" id="quizProgress">Question 1 of 10</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Nanoparticles are made of the SAME atoms as the bulk material — it is the scale that changes the properties.",1: "Nanoparticles are often MORE reactive (so less stable in some ways), not simply more stable.",3: "The bonds are the same type as in the bulk; what differs is the fraction of atoms on the surface.",}'>
+  <div class="quiz-progress" id="quizProgress">Answer all 10 questions, then check your answers.</div>
+  <div class="quiz-card" id="qcard-0">
   <div class="q-text">1. Explain why nanoparticles have different properties from the same material in bulk (large-scale) form.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">They are made of different atoms from the bulk material</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">They are always more stable than the bulk material</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">They have a much larger surface-area-to-volume ratio, so a greater fraction of their atoms are on the surface and available to take part in reactions</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">They have weaker chemical bonds than the bulk material</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-correct="1">They have a much larger surface-area-to-volume ratio, so a greater fraction of their atoms are on the surface and available to take part in reactions</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Nanoparticles are made of the SAME atoms as the bulk material — it is the scale that changes the properties.">They are made of different atoms from the bulk material</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="The bonds are the same type as in the bulk; what differs is the fraction of atoms on the surface.">They have weaker chemical bonds than the bulk material</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Nanoparticles are often MORE reactive (so less stable in some ways), not simply more stable.">They are always more stable than the bulk material</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Nanoparticles are lighter than larger particles; the concern is that their small size lets them penetrate the body.",2: "The main concern is their ability to penetrate cells because of their size, not a specific reaction with water.",3: "A nanoparticle contains LESS material than a larger particle — the concern is its size and reactivity, not the amount.",}'>
+</div><div class="quiz-card" id="qcard-1">
   <div class="q-text">2. Suggest why nanoparticles may pose a greater health risk than the same material in larger particle form.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">They are heavier, so they stay in the lungs longer</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Their very small size may let them pass through cell membranes and into cells, and their long-term effects are not yet fully understood</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">They react with water in the body to make dangerous chemicals</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">They are more toxic because they contain more of the harmful material</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-correct="1">Their very small size may let them pass through cell membranes and into cells, and their long-term effects are not yet fully understood</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="A nanoparticle contains LESS material than a larger particle — the concern is its size and reactivity, not the amount.">They are more toxic because they contain more of the harmful material</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Nanoparticles are lighter than larger particles; the concern is that their small size lets them penetrate the body.">They are heavier, so they stay in the lungs longer</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="The main concern is their ability to penetrate cells because of their size, not a specific reaction with water.">They react with water in the body to make dangerous chemicals</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="2" data-wrong-exp='{0: "Smaller particles have a HIGHER surface-area-to-volume ratio, not a lower one.",1: "The ratio definitely changes with size — it rises as particles get smaller.",3: "The ratio actually becomes very large (not zero) for very small particles.",}'>
+</div><div class="quiz-card" id="qcard-2">
   <div class="q-text">3. Describe what happens to a particle's surface-area-to-volume ratio as the particle gets smaller.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">The ratio decreases as the particle gets smaller</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">The ratio stays the same whatever the size</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">The ratio increases — smaller particles have a greater surface area compared with their volume</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">The ratio becomes zero for very small particles</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-correct="1">The ratio increases — smaller particles have a greater surface area compared with their volume</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Smaller particles have a HIGHER surface-area-to-volume ratio, not a lower one.">The ratio decreases as the particle gets smaller</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="The ratio definitely changes with size — it rises as particles get smaller.">The ratio stays the same whatever the size</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="The ratio actually becomes very large (not zero) for very small particles.">The ratio becomes zero for very small particles</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="0" data-wrong-exp='{1: "They do not simply dissolve into a gas; their antibacterial effect is due to their reactive surface.",2: "Nanoparticles are small, not large; it is their high surface-area-to-volume ratio that makes them effective.",3: "Cost is not the property being asked about; their antibacterial action comes from their high reactivity.",}'>
+</div><div class="quiz-card" id="qcard-3">
   <div class="q-text">4. Silver nanoparticles are added to wound dressings. Suggest why their small size makes them suitable for this use.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Their large surface-area-to-volume ratio makes them very reactive, so they are strongly antibacterial and only a small amount is needed</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">They dissolve completely to form a harmless gas</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">Their large size lets them cover the whole wound</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">They are cheaper than any other material</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-correct="1">Their large surface-area-to-volume ratio makes them very reactive, so they are strongly antibacterial and only a small amount is needed</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="Nanoparticles are small, not large; it is their high surface-area-to-volume ratio that makes them effective.">Their large size lets them cover the whole wound</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="Cost is not the property being asked about; their antibacterial action comes from their high reactivity.">They are cheaper than any other material</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="They do not simply dissolve into a gas; their antibacterial effect is due to their reactive surface.">They dissolve completely to form a harmless gas</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="1" data-wrong-exp='{0: "A catalyst is not consumed and does not dissolve into the reactants; it provides a surface.",2: "Catalysts provide an alternative pathway; they do not simply heat the reaction up.",3: "Catalysts are not used up in a reaction; nanoparticles work because of their large reactive surface.",}'>
+</div><div class="quiz-card" id="qcard-4">
   <div class="q-text">5. Explain why nanoparticles make very effective catalysts.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">They dissolve into the reactants to react faster</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">Their high surface-area-to-volume ratio provides a large surface for reactions, so a small mass is very effective</button>
-<button class="quiz-opt" data-qi="4" data-oi="2">They increase the temperature of the reaction</button>
-<button class="quiz-opt" data-qi="4" data-oi="3">They are used up during the reaction, which speeds it up</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-correct="1">Their high surface-area-to-volume ratio provides a large surface for reactions, so a small mass is very effective</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="Catalysts are not used up in a reaction; nanoparticles work because of their large reactive surface.">They are used up during the reaction, which speeds it up</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="A catalyst is not consumed and does not dissolve into the reactants; it provides a surface.">They dissolve into the reactants to react faster</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="Catalysts provide an alternative pathway; they do not simply heat the reaction up.">They increase the temperature of the reaction</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
-</div><div class="quiz-card" id="qcard-5" data-answer="1" data-wrong-exp='{0: "Conductivity is irrelevant to sunscreen; the point is transparency plus UV absorption.",2: "It is the same chemical (titanium dioxide) — only the particle size differs, which changes its appearance.",3: "Bulk TiO₂ is the white one; the nanoparticle form is chosen because it is transparent, not white.",}'>
+</div><div class="quiz-card" id="qcard-5">
   <div class="q-text">6. Titanium dioxide nanoparticles are used in sunscreen. Suggest why the nanoparticle form is used instead of bulk titanium dioxide.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-oi="0">The nanoparticle form makes the sunscreen conduct electricity</button>
-<button class="quiz-opt" data-qi="5" data-oi="1">At the nanoscale it is transparent on the skin but still absorbs harmful UV radiation, unlike bulk titanium dioxide which is white</button>
-<button class="quiz-opt" data-qi="5" data-oi="2">The nanoparticle form is a different, safer chemical</button>
-<button class="quiz-opt" data-qi="5" data-oi="3">The nanoparticle form reflects all light so the skin looks white</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-correct="1">At the nanoscale it is transparent on the skin but still absorbs harmful UV radiation, unlike bulk titanium dioxide which is white</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="It is the same chemical (titanium dioxide) — only the particle size differs, which changes its appearance.">The nanoparticle form is a different, safer chemical</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="Bulk TiO₂ is the white one; the nanoparticle form is chosen because it is transparent, not white.">The nanoparticle form reflects all light so the skin looks white</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="Conductivity is irrelevant to sunscreen; the point is transparency plus UV absorption.">The nanoparticle form makes the sunscreen conduct electricity</button>
 </div>
   <div class="quiz-fb" id="qfb-5"></div>
-</div><div class="quiz-card" id="qcard-6" data-answer="2" data-wrong-exp='{0: "Nanoparticles are defined as 1–100 nm, not 100–1000 nm.",1: "Nanoparticles are measured in nanometres (nm), not millimetres — mm are a million times larger.",3: "Centimetres are far too large; nanoparticles are 1–100 nm.",}'>
+</div><div class="quiz-card" id="qcard-6">
   <div class="q-text">7. State the range of sizes (in nanometres) that defines a nanoparticle.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-oi="0">100 to 1000 nm</button>
-<button class="quiz-opt" data-qi="6" data-oi="1">1 to 100 mm</button>
-<button class="quiz-opt" data-qi="6" data-oi="2">1 to 100 nm</button>
-<button class="quiz-opt" data-qi="6" data-oi="3">1 to 100 cm</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-correct="1">1 to 100 nm</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Nanoparticles are measured in nanometres (nm), not millimetres — mm are a million times larger.">1 to 100 mm</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Centimetres are far too large; nanoparticles are 1–100 nm.">1 to 100 cm</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Nanoparticles are defined as 1–100 nm, not 100–1000 nm.">100 to 1000 nm</button>
 </div>
   <div class="quiz-fb" id="qfb-6"></div>
-</div><div class="quiz-card" id="qcard-7" data-answer="3" data-wrong-exp='{0: "Structural beams use bulk metals/alloys, not nanoparticles.",1: "Window glass is a bulk material, not a nanoparticle application.",2: "Nanoparticles are not burned as a fuel.",}'>
+</div><div class="quiz-card" id="qcard-7">
   <div class="q-text">8. Identify a use of nanoparticles.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-oi="0">As the main structural beams in a building</button>
-<button class="quiz-opt" data-qi="7" data-oi="1">As window glass</button>
-<button class="quiz-opt" data-qi="7" data-oi="2">As a fuel burned in power stations</button>
-<button class="quiz-opt" data-qi="7" data-oi="3">In sunscreens, as an antibacterial agent, or as a catalyst</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-correct="1">In sunscreens, as an antibacterial agent, or as a catalyst</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Structural beams use bulk metals/alloys, not nanoparticles.">As the main structural beams in a building</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Nanoparticles are not burned as a fuel.">As a fuel burned in power stations</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Window glass is a bulk material, not a nanoparticle application.">As window glass</button>
 </div>
   <div class="quiz-fb" id="qfb-7"></div>
-</div><div class="quiz-card" id="qcard-8" data-answer="0" data-wrong-exp='{1: "Buckminsterfullerene is a hollow cage of 60 carbon atoms, not a flat layer.",2: "Diamond is a 3D giant covalent lattice, not a single layer.",3: "Poly(ethene) is a polymer, not a form of carbon.",}'>
+</div><div class="quiz-card" id="qcard-8">
   <div class="q-text">9. Name the carbon nanostructure that is a single layer of graphite, one atom thick.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-oi="0">Graphene</button>
-<button class="quiz-opt" data-qi="8" data-oi="1">Buckminsterfullerene</button>
-<button class="quiz-opt" data-qi="8" data-oi="2">Diamond</button>
-<button class="quiz-opt" data-qi="8" data-oi="3">Poly(ethene)</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-correct="1">Graphene</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Diamond is a 3D giant covalent lattice, not a single layer.">Diamond</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Buckminsterfullerene is a hollow cage of 60 carbon atoms, not a flat layer.">Buckminsterfullerene</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Poly(ethene) is a polymer, not a form of carbon.">Poly(ethene)</button>
 </div>
   <div class="quiz-fb" id="qfb-8"></div>
-</div><div class="quiz-card" id="qcard-9" data-answer="3" data-wrong-exp='{0: "Nanoparticles do not routinely explode in air; the concern is their ability to enter cells.",1: "Nanoparticles are extremely light; they do not make materials heavier.",2: "Reusability is not the health/environmental risk being described.",}'>
+</div><div class="quiz-card" id="qcard-9">
   <div class="q-text">10. Identify one possible risk of using nanoparticles.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-oi="0">They always explode when exposed to air</button>
-<button class="quiz-opt" data-qi="9" data-oi="1">They make materials much heavier</button>
-<button class="quiz-opt" data-qi="9" data-oi="2">They can only ever be used once</button>
-<button class="quiz-opt" data-qi="9" data-oi="3">They may penetrate cells, and their long-term effects are not yet fully understood</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-correct="1">They may penetrate cells, and their long-term effects are not yet fully understood</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Nanoparticles do not routinely explode in air; the concern is their ability to enter cells.">They always explode when exposed to air</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Nanoparticles are extremely light; they do not make materials heavier.">They make materials much heavier</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Reusability is not the health/environmental risk being described.">They can only ever be used once</button>
 </div>
   <div class="quiz-fb" id="qfb-9"></div>
 </div>
+  <div class="quiz-actions">
+    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
+    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+  </div>
   <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
 </div>
-<script>
-(function(){
-  const scoreMessages = ["Keep going — re-read the theory and try again. You'll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you'll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You've really got this topic down. 🏆"];
-  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{});
-  // handled by global quiz JS below
-})();
-</script>
   <div class="section">
   <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
   <div class="card star-rating-card">
@@ -329,71 +405,116 @@ html { background: var(--bg); }
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Nanoparticles (5.2.3.3)'});</script>
   <script>
-const SCORE_MESSAGES = [
-  "Keep going — re-read the theory and try again. You'll get there! 📖",
-  "Not bad — review the sections you missed and have another go. 💪",
-  "Decent effort! A bit more revision and you'll nail it. 🔄",
-  "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-  "Excellent! You've really got this topic down. 🏆",
-];
+(function(){
+  const SCORE_MESSAGES = [
+    "Keep going — re-read the theory and try again. You'll get there! 📖",
+    "Not bad — review the sections you missed and have another go. 💪",
+    "Decent effort! A bit more revision and you'll nail it. 🔄",
+    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+    "Excellent! You've really got this topic down. 🏆"
+  ];
+  const cards = Array.from(document.querySelectorAll('.quiz-card'));
+  const total = cards.length;
+  if (!total) return;
+  const checkBtn = document.getElementById('quizCheckBtn');
+  const againBtn = document.getElementById('quizAgainBtn');
+  const endMsg = document.getElementById('quizEndMsg');
+  const prog = document.getElementById('quizProgress');
+  let checked = false;
 
-document.querySelectorAll('.quiz-opt').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const card = this.closest('.quiz-card');
-    if (card.dataset.answered) return;
-    const correctIdx = parseInt(card.dataset.answer);
-    const clickedIdx = parseInt(this.dataset.oi);
-    const isCorrect = clickedIdx === correctIdx;
-
-    // Store whether student got THIS card right
-    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
-
-    const fb = document.getElementById('qfb-' + this.dataset.qi);
-
-    card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
-      if (idx === correctIdx) o.classList.add('correct');
-      else if (o === this && !isCorrect) o.classList.add('wrong');
-      o.disabled = true;
-    });
-
-    let wrongExp = {};
-    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
-
-    if (isCorrect) {
-      fb.className = 'quiz-fb correct-fb show';
-      fb.innerHTML = '✅ Correct! Well done!';
-    } else {
-      const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
-      fb.className = 'quiz-fb wrong-fb show';
-      fb.innerHTML = '❌ Incorrect. ' + explanation;
-    }
-
-    const allCards = document.querySelectorAll('.quiz-card');
-    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
-    const total = allCards.length;
-    const answered = answeredCards.length;
-    const prog = document.getElementById('quizProgress');
-
-    if (answered === total) {
-      // Count only cards where student clicked correct
-      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
-      if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
-
-      const endMsg = document.getElementById('quizEndMsg');
-      if (endMsg) {
-        const ratio = correctCount / total;
-        const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
-        endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
-        endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
+  function shuffleOptions(){
+    document.querySelectorAll('.quiz-options').forEach(function(box){
+      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
+      for (let k = opts.length - 1; k > 0; k--){
+        const j = Math.floor(Math.random() * (k + 1));
+        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
       }
-    } else {
-      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
+      opts.forEach(function(o){ box.appendChild(o); });
+    });
+  }
+
+  function updateProgress(){
+    if (checked || !prog) return;
+    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
+    prog.textContent = answered === total
+      ? 'All ' + total + ' answered — hit Check answers below ↓'
+      : answered + ' of ' + total + ' answered';
+  }
+
+  function onSelect(){
+    if (checked) return;
+    const box = this.closest('.quiz-options');
+    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
+    this.classList.add('selected');
+    updateProgress();
+  }
+
+  function reveal(){
+    checked = true;
+    let correctCount = 0;
+    cards.forEach(function(card, i){
+      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
+      const chosen = card.querySelector('.quiz-opt.selected');
+      const fb = document.getElementById('qfb-' + i);
+      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
+      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
+      if (correctOpt) correctOpt.classList.add('correct');
+      const isRight = !!(chosen && chosen.dataset.correct === '1');
+      if (isRight) correctCount++;
+      if (chosen && !isRight) chosen.classList.add('wrong');
+      if (!fb) return;
+      if (!chosen){
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
+      } else if (isRight){
+        fb.className = 'quiz-fb correct-fb show';
+        fb.textContent = '✅ Correct! Well done!';
+      } else {
+        const exp = chosen.dataset.wrongExp;
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
+      }
+    });
+    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+    if (endMsg){
+      const ratio = correctCount / total;
+      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+      endMsg.style.display = 'block';
+      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
     }
+    if (checkBtn) checkBtn.style.display = 'none';
+    if (againBtn) againBtn.style.display = '';
+  }
+
+  function tryAgain(){
+    checked = false;
+    cards.forEach(function(card, i){
+      card.querySelectorAll('.quiz-opt').forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('selected', 'correct', 'wrong');
+      });
+      const fb = document.getElementById('qfb-' + i);
+      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
+    });
+    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
+    if (checkBtn) checkBtn.style.display = '';
+    if (againBtn) againBtn.style.display = 'none';
+    shuffleOptions();
+    updateProgress();
+  }
+
+  cards.forEach(function(card){
+    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
   });
-});
+  if (checkBtn) checkBtn.addEventListener('click', reveal);
+  if (againBtn) againBtn.addEventListener('click', tryAgain);
+  shuffleOptions();
+  updateProgress();
+})();
 </script>
   <script>
 function checkMatching(stId, pairs) {
@@ -467,5 +588,10 @@ try {
 } catch(e) {}
 </script>
   
+  <script src="/shared/heroes/fifa-step-reveal.js"></script>
+  <script>
+    (function(){var host=document.getElementById('hero-nanoparticles');if(host&&window.MrbHeroes&&MrbHeroes.fifaStepReveal)MrbHeroes.fifaStepReveal.init(host,{"emoji": "⚽", "title": "Surface Area : Volume", "subtitle": "Formula → Insert → Fine-tune → Answer", "examples": [{"name": "Cube · side 2", "problem": "A cube-shaped particle has sides of length 2. Calculate its surface area to volume ratio.", "given": [{"sym": "side length", "val": "2", "note": "a cube"}], "steps": [{"title": "Write the formula", "worked": "surface area to volume ratio = surface area ÷ volume", "note": "Compare the outside area with the inside volume.", "practice": {"prompt": "Which formula gives the surface area to volume ratio?", "kind": "choice", "options": [{"text": "surface area ÷ volume", "correct": true}, {"text": "volume ÷ surface area"}, {"text": "surface area × volume"}], "feedback": {"wrong": "It is a ratio of area to volume — divide the surface area by the volume."}}}, {"title": "Work out surface area and volume", "worked": "surface area = 6 faces × (2 × 2) = 24;  volume = 2 × 2 × 2 = 8", "note": "A cube has 6 identical faces (side × side); its volume is side × side × side.", "practice": {"prompt": "Work out the surface area and the volume of a cube of side 2.", "kind": "input", "blanks": [{"prefix": "surface area = 6 × (2×2) =", "accept": ["24"]}, {"prefix": "volume = 2×2×2 =", "accept": ["8"]}], "feedback": {"wrong": "Surface area = 6 × (2×2) = 24. Volume = 2 × 2 × 2 = 8."}}}, {"title": "Set up the division", "worked": "ratio = 24 ÷ 8", "note": "Divide the surface area by the volume.", "practice": {"prompt": "Which division gives the ratio?", "kind": "choice", "options": [{"text": "24 ÷ 8", "correct": true}, {"text": "8 ÷ 24"}, {"text": "24 × 8"}], "feedback": {"wrong": "Surface area ÷ volume = 24 ÷ 8."}}}, {"title": "State the ratio", "worked": "surface area to volume ratio = 3 (that is, 3 : 1)", "note": "Work out the division; here the ratio has no unit.", "practice": {"prompt": "Work out 24 ÷ 8.", "kind": "input", "blanks": [{"prefix": "ratio =", "suffix": "(or 3 : 1)", "accept": ["3", "3:1"]}], "feedback": {"wrong": "24 ÷ 8 = 3, so the ratio is 3 (that is, 3 : 1)."}}}], "success": {"title": "Correct — ratio = 3 (3 : 1)", "sub": "Formula, surface area and volume, the division, and the ratio — all right."}, "hint": "FIFA: Formula → Insert → Fine-tune → Answer. Ratio = surface area ÷ volume; a cube has 6 faces and volume = side³."}, {"name": "Cube · side 1", "problem": "A cube-shaped particle has sides of length 1. Calculate its surface area to volume ratio and compare it with the side-2 cube.", "given": [{"sym": "side length", "val": "1", "note": "a smaller cube"}], "steps": [{"title": "Write the formula", "worked": "surface area to volume ratio = surface area ÷ volume", "note": "Same formula — area over volume.", "practice": {"prompt": "Which formula gives the surface area to volume ratio?", "kind": "choice", "options": [{"text": "surface area ÷ volume", "correct": true}, {"text": "volume ÷ surface area"}, {"text": "surface area × volume"}], "feedback": {"wrong": "It is a ratio of area to volume — divide the surface area by the volume."}}}, {"title": "Work out surface area and volume", "worked": "surface area = 6 × (1 × 1) = 6;  volume = 1 × 1 × 1 = 1", "note": "Same method: 6 faces, and side³ for the volume.", "practice": {"prompt": "Work out the surface area and the volume of a cube of side 1.", "kind": "input", "blanks": [{"prefix": "surface area = 6 × (1×1) =", "accept": ["6"]}, {"prefix": "volume = 1×1×1 =", "accept": ["1"]}], "feedback": {"wrong": "Surface area = 6 × 1 = 6. Volume = 1."}}}, {"title": "Set up the division", "worked": "ratio = 6 ÷ 1", "note": "Divide the surface area by the volume.", "practice": {"prompt": "Which division gives the ratio?", "kind": "choice", "options": [{"text": "6 ÷ 1", "correct": true}, {"text": "1 ÷ 6"}, {"text": "6 × 1"}], "feedback": {"wrong": "Surface area ÷ volume = 6 ÷ 1."}}}, {"title": "State the ratio and compare", "worked": "ratio = 6 (that is, 6 : 1) — the smaller cube has the LARGER ratio", "note": "Compare with the side-2 cube (ratio 3).", "practice": {"prompt": "Work out 6 ÷ 1.", "kind": "input", "blanks": [{"prefix": "ratio =", "suffix": "(or 6 : 1)", "accept": ["6", "6:1"]}], "feedback": {"wrong": "6 ÷ 1 = 6 (6 : 1) — bigger than the side-2 cube's 3. The SMALLER cube has the LARGER ratio."}}}], "success": {"title": "Correct — ratio = 6 (6 : 1)", "sub": "The smaller cube has the larger surface area to volume ratio."}, "hint": "FIFA: Formula → Insert → Fine-tune → Answer. Ratio = surface area ÷ volume; a cube has 6 faces and volume = side³."}, {"name": "Cube · side 3", "problem": "A cube-shaped particle has sides of length 3. Calculate its surface area to volume ratio.", "given": [{"sym": "side length", "val": "3", "note": "a larger cube"}], "steps": [{"title": "Write the formula", "worked": "surface area to volume ratio = surface area ÷ volume", "note": "Same formula — area over volume.", "practice": {"prompt": "Which formula gives the surface area to volume ratio?", "kind": "choice", "options": [{"text": "surface area ÷ volume", "correct": true}, {"text": "volume ÷ surface area"}, {"text": "surface area × volume"}], "feedback": {"wrong": "It is a ratio of area to volume — divide the surface area by the volume."}}}, {"title": "Work out surface area and volume", "worked": "surface area = 6 × (3 × 3) = 54;  volume = 3 × 3 × 3 = 27", "note": "6 faces of side × side, and side³ for the volume.", "practice": {"prompt": "Work out the surface area and the volume of a cube of side 3.", "kind": "input", "blanks": [{"prefix": "surface area = 6 × (3×3) =", "accept": ["54"]}, {"prefix": "volume = 3×3×3 =", "accept": ["27"]}], "feedback": {"wrong": "Surface area = 6 × 9 = 54. Volume = 3³ = 27."}}}, {"title": "Set up the division", "worked": "ratio = 54 ÷ 27", "note": "Divide the surface area by the volume.", "practice": {"prompt": "Which division gives the ratio?", "kind": "choice", "options": [{"text": "54 ÷ 27", "correct": true}, {"text": "27 ÷ 54"}, {"text": "54 × 27"}], "feedback": {"wrong": "Surface area ÷ volume = 54 ÷ 27."}}}, {"title": "State the ratio", "worked": "ratio = 2 (that is, 2 : 1) — the largest cube has the SMALLEST ratio", "note": "The biggest cube gives the smallest ratio.", "practice": {"prompt": "Work out 54 ÷ 27.", "kind": "input", "blanks": [{"prefix": "ratio =", "suffix": "(or 2 : 1)", "accept": ["2", "2:1"]}], "feedback": {"wrong": "54 ÷ 27 = 2 (2 : 1) — the LARGEST cube has the SMALLEST ratio."}}}], "success": {"title": "Correct — ratio = 2 (2 : 1)", "sub": "The largest cube has the smallest surface area to volume ratio."}, "hint": "FIFA: Formula → Insert → Fine-tune → Answer. Ratio = surface area ÷ volume; a cube has 6 faces and volume = side³."}]});})();
+
+  </script>
 </body>
 </html>

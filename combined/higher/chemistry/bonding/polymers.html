@@ -19,8 +19,94 @@ html { background: var(--bg); }
 :root { --subject: #B02342; }
 </style>
   
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Redesign — page-scoped chrome (bonding · block page) */
+html { background: var(--surface-page); }
+.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
+.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
+.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
+.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
+.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
+.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
+/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
+.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
+.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
+.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
+.rd .quiz-opt:disabled { pointer-events: none; }
+.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
+.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
+.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+
+/* Theory Block Library — static blocks (MRB-113 Phase B) */
+.rd .rd-blocks { display: flex; flex-direction: column; gap: 18px; }
+.rd .rd-blk-lead { margin: 0; font-family: var(--font-body,sans-serif); font-size: calc(16.5px * var(--rd-fs-scale, 1)); line-height: 1.6; color: #211B15; max-width: 72ch; }
+.rd .rd-blk-lead b { color: var(--ink,#1A1714); }
+/* feature-cards */
+.rd .rd-blk-feature { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+.rd .rd-fcard { border-radius: 14px; padding: 16px 18px; border: 1px solid; }
+.rd .rd-fcard__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-fcard__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); line-height: 1.3; }
+.rd .rd-fcard__body { font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; }
+.rd .rd-fcard--good { background: #E7F3EA; border-color: #B9DCC1; }
+.rd .rd-fcard--good .rd-fcard__hd b { color: #3E6B47; }
+.rd .rd-fcard--limit { background: #FBE4DE; border-color: #EFC0B4; }
+.rd .rd-fcard--limit .rd-fcard__hd b { color: #B5341A; }
+.rd .rd-fcard--neutral { background: #F7F2E8; border-color: #E4DCCB; }
+.rd .rd-fcard--neutral .rd-fcard__hd b { color: #B5341A; }
+/* compare-cards */
+.rd .rd-blk-compare .rd-cmp-grid { display: grid; gap: 14px; }
+.rd .rd-cmp-col { background: #FFFDF8; border: 1px solid #E4DCCB; border-radius: 16px; overflow: hidden; }
+.rd .rd-cmp-col__hd { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #EFE7D8; background: #F7F2E8; }
+.rd .rd-cmp-col__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(17px * var(--rd-fs-scale, 1)); color: #1A1714; }
+.rd .rd-cmp-row { display: flex; flex-direction: column; gap: 2px; padding: 11px 18px; border-bottom: 1px solid #F2ECDD; }
+.rd .rd-cmp-row:last-child { border-bottom: none; }
+.rd .rd-cmp-row__k { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .06em; color: #716A60; text-transform: uppercase; }
+.rd .rd-cmp-row__v { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #211B15; line-height: 1.35; }
+.rd .rd-cmp-row--hl { padding: 12px 18px; }
+.rd .rd-cmp-row--hl.tone-good { background: #E7F3EA; border-top: 2px solid #7FB98A; }
+.rd .rd-cmp-row--hl.tone-good .rd-cmp-row__k { color: #55735B; } .rd .rd-cmp-row--hl.tone-good .rd-cmp-row__v { color: #3E6B47; }
+.rd .rd-cmp-row--hl.tone-limit { background: #FBE4DE; border-top: 2px solid #E0897B; }
+.rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__k { color: #9C5342; } .rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__v { color: #B5341A; }
+.rd .rd-cmp-row--hl.tone-neutral { background: #F7F2E8; border-top: 2px solid #D8CFBD; }
+.rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__k { color: #716A60; } .rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__v { color: #211B15; }
+.rd .rd-cmp-verdict { margin-top: 12px; text-align: center; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #95270F; background: #F8D2C4; border: 1px solid #EBAF9B; border-radius: 999px; padding: 9px 18px; }
+@media (max-width: 560px) { .rd .rd-blk-compare .rd-cmp-grid { grid-template-columns: 1fr !important; } }
+/* MRB-124 — feature-cards clip at narrow width: repeat(auto-fit,minmax(210px,1fr))
+   demands 2×210px+gap on a ~400px viewport, so a second track overflows and drags
+   the whole page into horizontal scroll. Stack to a single column at the same
+   breakpoint the compare-cards use. Later source order → wins over the base rule. */
+@media (max-width: 560px) { .rd .rd-blk-feature { grid-template-columns: 1fr; } }
+/* step-sequence */
+.rd .rd-blk-steps { display: flex; flex-direction: column; gap: 8px; }
+.rd .rd-step { display: flex; gap: 14px; align-items: flex-start; background: #F7F2E8; border-radius: 12px; padding: 13px 16px; }
+.rd .rd-step__n { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14px * var(--rd-fs-scale, 1)); color: #fff; background: #C0392B; min-width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+.rd .rd-step__t { font-size: calc(14.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; padding-top: 3px; }
+/* example-callout */
+.rd .rd-blk-example { background: #FBEEE9; border-left: 4px solid #C0392B; border-radius: 12px; padding: 16px 20px; }
+.rd .rd-blk-example__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rd .rd-blk-example__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15.5px * var(--rd-fs-scale, 1)); color: #B5341A; }
+.rd .rd-blk-example__lines { display: flex; flex-direction: column; gap: 5px; }
+.rd .rd-blk-example__lines div { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.5; color: #3A2A26; }
+/* aside-callout */
+.rd .rd-blk-aside { background: #F6E9CE; border-left: 4px solid #C7861F; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-aside b { display: block; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #7A5510; margin-bottom: 4px; }
+.rd .rd-blk-aside__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A1E; }
+/* examiner-tip — exam-technique callout. Amber/gold with its own left-border,
+   deliberately distinct from the red example-callout (#C0392B), the red Common
+   Mistake, and the burnt-orange brand accent (--accent-strong). */
+.rd .rd-blk-examiner { background: #FEF6E0; border-left: 4px solid #E0A21A; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-examiner__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-blk-examiner__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #8A5E0A; }
+.rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
+.rd .rd-blk-examiner__body b { color: #6E4A00; }
+
+</style>
 </head>
-<body class="">
+<body class="rd">
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-crumbs">
@@ -53,20 +139,8 @@ html { background: var(--bg); }
 
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
-    <div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">What Are Polymers?</h4>
-  <div class='theory-line'>POLYMERS are very large molecules made from many small repeating units called MONOMERS joined together in long chains.</div><div class='theory-gap'></div><div class='theory-line'>The process of joining monomers is called POLYMERISATION.</div><div class='theory-gap'></div><div class='theory-line'>Key terminology:</div><div class='theory-line'>MONOMER — small molecule that can join with others to form a polymer.</div><div class='theory-line'>POLYMER — the long chain molecule formed from thousands of monomers.</div><div class='theory-line'>The repeating unit in a polymer is typically written in brackets with an n outside: [—CH₂—CH₂—]ₙ</div><div class='theory-gap'></div><div class='theory-line'>Examples:</div><div class='theory-line'>Poly(ethene) — monomer: ethene (CH₂=CH₂) → polymer: long chain of —CH₂—CH₂— units.</div><div class='theory-line'>Poly(propene) — monomer: propene.</div><div class='theory-line'>PVC (polyvinyl chloride) — monomer: chloroethene.</div><div class='theory-line'>Nylon — forms from two different monomers (a diamine and a dicarboxylic acid).</div><div class='theory-line'>Protein — polymer of amino acid monomers.</div><div class='theory-line'>DNA — polymer of nucleotide monomers.</div><div class='theory-line'>Starch and cellulose — polymers of glucose monomers.</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Properties of Polymers</h4>
-  <div class='theory-line'>Polymers are SIMPLE MOLECULAR structures — they consist of individual polymer chains (very large molecules) held together by INTERMOLECULAR FORCES.</div><div class='theory-gap'></div><div class='theory-line'>Properties depend on the CHAIN LENGTH and STRENGTH OF INTERMOLECULAR FORCES:</div><div class='theory-gap'></div><div class='theory-line'>LONG CHAIN LENGTH:</div><div class='theory-line'>Longer chains have more surface area → stronger intermolecular forces → higher melting point.</div><div class='theory-line'>Very long polymers tend to be solid at room temperature.</div><div class='theory-gap'></div><div class='theory-line'>TYPE OF POLYMER (affects intermolecular force strength):</div><div class='theory-line'>Poly(ethene) — weak forces → flexible, low melting point → used in plastic bags.</div><div class='theory-line'>PVC — stronger intermolecular forces (polar C-Cl bonds) → stiffer, higher melting point.</div><div class='theory-line'>Nylon — hydrogen bonds between chains → strong, high melting point.</div><div class='theory-gap'></div><div class='theory-line'>GENERAL POLYMER PROPERTIES:</div><div class='theory-line'>Solid at room temperature (long chains, reasonable intermolecular forces).</div><div class='theory-line'>Insulators — do not conduct electricity (no free electrons or ions).</div><div class='theory-line'>Flexible (unless cross-linked or crystalline).</div><div class='theory-line'>Low density compared to metals.</div><div class='theory-line'>Can be moulded when heated — THERMOPLASTIC polymers soften when heated.</div><div class='theory-line'>Some polymers are THERMOSETTING — they harden permanently when heated (cross-links form).</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Addition Polymerisation</h4>
-  <div class='theory-line'>ADDITION POLYMERISATION occurs when monomers containing DOUBLE BONDS (C=C) join together.</div><div class='theory-gap'></div><div class='theory-line'>The double bond opens up — one bond breaks and the freed electrons form a new bond with the next monomer.</div><div class='theory-gap'></div><div class='theory-line'>Example — poly(ethene):</div><div class='theory-line'>Monomer: ethene CH₂=CH₂</div><div class='theory-line'>Polymerisation: n CH₂=CH₂ → [—CH₂—CH₂—]ₙ</div><div class='theory-gap'></div><div class='theory-line'>The product is a SATURATED polymer (no double bonds remain in the chain).</div><div class='theory-gap'></div><div class='theory-line'>Other addition polymers:</div><div class='theory-line'>Poly(propene): monomer propene (CH₂=CHCH₃)</div><div class='theory-line'>PVC: monomer chloroethene (CH₂=CHCl)</div><div class='theory-line'>Poly(styrene): monomer styrene (CH₂=CHC₆H₅)</div><div class='theory-gap'></div><div class='theory-line'>Notice: in addition polymerisation, ALL atoms of the monomer appear in the polymer — no atoms are lost or expelled.</div>
-</div>
-    <div class="mistake-box">
-  <div class="mistake-title">⚠️ Common Mistake</div>
-  <p style="font-size:0.9rem;line-height:1.7;">Students often call polymers giant covalent structures because the chains are so large. They are not: a polymer is a very large molecule, and the chains are held to each other only by weak intermolecular forces. In a giant covalent structure such as diamond, strong covalent bonds run all the way through — which is why diamond's melting point is far higher than any polymer's.</p>
-</div>
+    <div class="rd-blocks"><p class="rd-blk-lead">Polymers are very large molecules made from many small repeating units called <b>monomers</b>, joined into long chains. The joining process is called polymerisation.</p><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔹</span><b>Monomer</b></div><div class="rd-fcard__body">A small molecule that can join with others — e.g. ethene, CH₂=CH₂.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⛓️</span><b>Polymer</b></div><div class="rd-fcard__body">The long chain formed from thousands of monomers — e.g. poly(ethene).</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔁</span><b>Repeating unit</b></div><div class="rd-fcard__body">Written in brackets with n outside: [—CH₂—CH₂—]ₙ.</div></div></div><div class="rd-blk-steps"><div class="rd-step"><span class="rd-step__n">1</span><span class="rd-step__t">Addition polymerisation uses monomers that contain a C=C double bond.</span></div><div class="rd-step"><span class="rd-step__n">2</span><span class="rd-step__t">The double bond opens up — one bond breaks and frees a pair of electrons.</span></div><div class="rd-step"><span class="rd-step__n">3</span><span class="rd-step__t">Those electrons form a new bond to the next monomer.</span></div><div class="rd-step"><span class="rd-step__n">4</span><span class="rd-step__t">The monomers link into a long saturated chain (no double bonds left) — and no atoms are lost.</span></div></div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🧊</span><b>Solid at room temperature</b></div><div class="rd-fcard__body">Long chains and reasonable intermolecular forces keep polymers solid and flexible.</div></div><div class="rd-fcard rd-fcard--limit"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🚫</span><b>Electrical insulators</b></div><div class="rd-fcard__body">No free electrons or ions, so they do not conduct electricity.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔥</span><b>Thermoplastic vs thermosetting</b></div><div class="rd-fcard__body">Thermoplastics soften when heated and reshape; thermosetting polymers form cross-links and stay hard.</div></div></div><div id="tb-mistakecheck-polymers-4"></div></div>
+    
   </div>
 
   
@@ -78,10 +152,7 @@ html { background: var(--bg); }
   <div class="section-title">📌 Key Note</div>
   <div class="keynote-box"><p>Polymer: long chain of repeating monomer units. Addition polymerisation: monomers with C=C double bonds join together. Properties depend on chain length and intermolecular forces. Solid at room temperature, flexible, insulators. Thermoplastic: soften on heating. Thermosetting: permanently hard.</p></div>
 </div>
-  <div class="section">
-  <div class="section-title">⭐ Examiner Tip</div>
-  <div class="examiner-box"><p>Don't call a polymer a giant covalent structure. It is a large molecule whose chains are held to each other by weak intermolecular forces — that is why it melts far below diamond, where strong covalent bonds run all the way through. That force difference is where the comparison marks are.</p></div>
-</div>
+  <div class="section"><div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">Don't call a polymer a giant covalent structure. It is a large molecule whose chains are held to each other by weak intermolecular forces — that is why it melts far below diamond, where strong covalent bonds run all the way through. That force difference is where the comparison marks are.</div></div></div>
   <div class="section">
   <div class="section-title">🎯 Matching Activity — Match the Polymer to its Monomer</div>
   <div class="card">
@@ -128,97 +199,94 @@ html { background: var(--bg); }
   
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
-  <div class="quiz-progress" id="quizProgress">Question 1 of 10</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "A single polymer chain can contain millions of atoms — the difference is the TYPE of forces, not the number of atoms.",1: "Whether a material is natural or synthetic does not set its melting point; structure and bonding do.",3: "Diamond is entirely covalent, with no ionic bonds; its strong covalent network gives the high melting point.",}'>
+  <div class="quiz-progress" id="quizProgress">Answer all 10 questions, then check your answers.</div>
+  <div class="quiz-card" id="qcard-0">
   <div class="q-text">1. Explain why polymers have much lower melting points than giant covalent structures such as diamond.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Polymers contain fewer atoms than diamond, so there is less to heat</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Polymers are man-made, and natural structures are always stronger</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">A polymer is made of separate large molecules held together by weak intermolecular forces, while diamond has strong covalent bonds throughout the whole structure</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Diamond has ionic bonds, which are stronger than the covalent bonds in polymers</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-correct="1">A polymer is made of separate large molecules held together by weak intermolecular forces, while diamond has strong covalent bonds throughout the whole structure</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="A single polymer chain can contain millions of atoms — the difference is the TYPE of forces, not the number of atoms.">Polymers contain fewer atoms than diamond, so there is less to heat</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Diamond is entirely covalent, with no ionic bonds; its strong covalent network gives the high melting point.">Diamond has ionic bonds, which are stronger than the covalent bonds in polymers</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Whether a material is natural or synthetic does not set its melting point; structure and bonding do.">Polymers are man-made, and natural structures are always stronger</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Ethane (C₂H₆) does contain carbon — it just has no double bond to enable addition polymerisation.",2: "Molecular mass is not the barrier; ethane simply has no C=C double bond to open up.",3: "Ethene is a covalent molecule, not ionic; the double bond is what matters.",}'>
+</div><div class="quiz-card" id="qcard-1">
   <div class="q-text">2. Ethene (CH₂=CH₂) can be used to make poly(ethene), but ethane (C₂H₆) cannot. Explain why.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">Ethane contains no carbon, so it cannot form a carbon chain</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">Ethene has a C=C double bond that can open up so the monomers join together; ethane is saturated (only single bonds), so it cannot join in this way</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Ethane is too heavy a molecule to react</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Ethene is an ionic compound, which is needed for polymerisation</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-correct="1">Ethene has a C=C double bond that can open up so the monomers join together; ethane is saturated (only single bonds), so it cannot join in this way</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Molecular mass is not the barrier; ethane simply has no C=C double bond to open up.">Ethane is too heavy a molecule to react</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Ethane (C₂H₆) does contain carbon — it just has no double bond to enable addition polymerisation.">Ethane contains no carbon, so it cannot form a carbon chain</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Ethene is a covalent molecule, not ionic; the double bond is what matters.">Ethene is an ionic compound, which is needed for polymerisation</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "A single shared pair between two atoms is one covalent bond, not polymerisation.",1: "Polymerisation joins monomers together; it does not break a molecule apart.",2: "That describes ionic bonding, not the formation of a polymer.",}'>
+</div><div class="quiz-card" id="qcard-2">
   <div class="q-text">3. Describe how a polymer forms from monomers.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">Two atoms share electrons to form one molecule</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">A single large molecule breaks apart into many small ones</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">Positive and negative ions attract to form a lattice</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">Many small monomer molecules join together to form one long chain molecule</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-correct="1">Many small monomer molecules join together to form one long chain molecule</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Polymerisation joins monomers together; it does not break a molecule apart.">A single large molecule breaks apart into many small ones</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="A single shared pair between two atoms is one covalent bond, not polymerisation.">Two atoms share electrons to form one molecule</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="That describes ionic bonding, not the formation of a polymer.">Positive and negative ions attract to form a lattice</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="3" data-wrong-exp='{0: "Poly(ethene) has covalent, not ionic, bonds; its solid state is due to intermolecular forces between long chains.",1: "Poly(ethene) has no delocalised electrons; it is an insulator.",2: "Poly(ethene) is molecular, not a giant ionic lattice.",}'>
+</div><div class="quiz-card" id="qcard-3">
   <div class="q-text">4. Explain why poly(ethene) is a solid at room temperature.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Its covalent bonds are ionic and therefore strong</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">It has delocalised electrons that lock it in place</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">It contains a giant lattice of ions</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">Its molecules are very long chains, so there is enough intermolecular force between them to hold it as a solid</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-correct="1">Its molecules are very long chains, so there is enough intermolecular force between them to hold it as a solid</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="Poly(ethene) has covalent, not ionic, bonds; its solid state is due to intermolecular forces between long chains.">Its covalent bonds are ionic and therefore strong</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="Poly(ethene) is molecular, not a giant ionic lattice.">It contains a giant lattice of ions</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="Poly(ethene) has no delocalised electrons; it is an insulator.">It has delocalised electrons that lock it in place</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="2" data-wrong-exp='{0: "A monomer is a pure substance (one type of molecule), not a mixture.",1: "The long chain is the POLYMER; the monomer is the small starting molecule.",3: "A monomer is a molecule, not a single atom.",}'>
+</div><div class="quiz-card" id="qcard-4">
   <div class="q-text">5. State what is meant by a monomer.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">A mixture of two different plastics</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">The long chain molecule made when many small molecules join</button>
-<button class="quiz-opt" data-qi="4" data-oi="2">A small molecule that can join with many others to form a polymer</button>
-<button class="quiz-opt" data-qi="4" data-oi="3">A single atom that makes up a polymer</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-correct="1">A small molecule that can join with many others to form a polymer</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="The long chain is the POLYMER; the monomer is the small starting molecule.">The long chain molecule made when many small molecules join</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="A monomer is a molecule, not a single atom.">A single atom that makes up a polymer</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="A monomer is a pure substance (one type of molecule), not a mixture.">A mixture of two different plastics</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
-</div><div class="quiz-card" id="qcard-5" data-answer="0" data-wrong-exp='{1: "In addition polymerisation no atoms are lost — the whole monomer becomes part of the chain.",2: "Removing water describes condensation polymerisation, not the addition polymerisation of ethene.",3: "Polymerisation of ethene is by opening the double bond (covalent), not by forming ions.",}'>
+</div><div class="quiz-card" id="qcard-5">
   <div class="q-text">6. Explain, in terms of the double bond, how addition polymerisation forms poly(ethene) from ethene.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-oi="0">The C=C double bond in each ethene opens up; the freed electrons form new bonds to neighbouring monomers, linking them into a long saturated chain</button>
-<button class="quiz-opt" data-qi="5" data-oi="1">The ethene molecules lose atoms which join to form the chain</button>
-<button class="quiz-opt" data-qi="5" data-oi="2">Water is removed between each pair of monomers to join them</button>
-<button class="quiz-opt" data-qi="5" data-oi="3">The ethene molecules transfer electrons to form ions that attract</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-correct="1">The C=C double bond in each ethene opens up; the freed electrons form new bonds to neighbouring monomers, linking them into a long saturated chain</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="In addition polymerisation no atoms are lost — the whole monomer becomes part of the chain.">The ethene molecules lose atoms which join to form the chain</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="Polymerisation of ethene is by opening the double bond (covalent), not by forming ions.">The ethene molecules transfer electrons to form ions that attract</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="Removing water describes condensation polymerisation, not the addition polymerisation of ethene.">Water is removed between each pair of monomers to join them</button>
 </div>
   <div class="quiz-fb" id="qfb-5"></div>
-</div><div class="quiz-card" id="qcard-6" data-answer="1" data-wrong-exp='{0: "Chain length and cross-linking are different things; a longer chain is not automatically cross-linked.",2: "Polymers are molecular, not ionic — there are no ions between the chains.",3: "The covalent bonds along the chain are not what melts; the intermolecular forces between chains are, and these grow with chain length.",}'>
+</div><div class="quiz-card" id="qcard-6">
   <div class="q-text">7. Explain why a polymer with longer chains tends to have a higher melting point than one with shorter chains.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-oi="0">Longer chains are always cross-linked</button>
-<button class="quiz-opt" data-qi="6" data-oi="1">Longer chains have more points of contact, so the total intermolecular forces between chains are stronger and need more energy to overcome</button>
-<button class="quiz-opt" data-qi="6" data-oi="2">Longer chains contain ions that attract strongly</button>
-<button class="quiz-opt" data-qi="6" data-oi="3">Longer chains have stronger covalent bonds along them</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-correct="1">Longer chains have more points of contact, so the total intermolecular forces between chains are stronger and need more energy to overcome</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="The covalent bonds along the chain are not what melts; the intermolecular forces between chains are, and these grow with chain length.">Longer chains have stronger covalent bonds along them</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Polymers are molecular, not ionic — there are no ions between the chains.">Longer chains contain ions that attract strongly</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Chain length and cross-linking are different things; a longer chain is not automatically cross-linked.">Longer chains are always cross-linked</button>
 </div>
   <div class="quiz-fb" id="qfb-6"></div>
-</div><div class="quiz-card" id="qcard-7" data-answer="2" data-wrong-exp='{0: "PVC is still a molecular polymer, not ionic; the stronger forces come from the polar C–Cl bonds.",1: "PVC is an insulator, not metallic.",3: "Weaker covalent bonds would make it less stable, not stiffer; the effect is due to stronger intermolecular forces.",}'>
+</div><div class="quiz-card" id="qcard-7">
   <div class="q-text">8. PVC is stiffer and higher-melting than poly(ethene). Suggest why, in terms of intermolecular forces.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-oi="0">PVC has ionic bonds between its chains</button>
-<button class="quiz-opt" data-qi="7" data-oi="1">PVC chains are metallic and conduct heat away</button>
-<button class="quiz-opt" data-qi="7" data-oi="2">PVC contains polar C–Cl bonds, giving stronger intermolecular forces between the chains than in poly(ethene)</button>
-<button class="quiz-opt" data-qi="7" data-oi="3">PVC has weaker covalent bonds, so it sets harder</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-correct="1">PVC contains polar C–Cl bonds, giving stronger intermolecular forces between the chains than in poly(ethene)</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="PVC is still a molecular polymer, not ionic; the stronger forces come from the polar C–Cl bonds.">PVC has ionic bonds between its chains</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Weaker covalent bonds would make it less stable, not stiffer; the effect is due to stronger intermolecular forces.">PVC has weaker covalent bonds, so it sets harder</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="PVC is an insulator, not metallic.">PVC chains are metallic and conduct heat away</button>
 </div>
   <div class="quiz-fb" id="qfb-7"></div>
-</div><div class="quiz-card" id="qcard-8" data-answer="2" data-wrong-exp='{0: "Covalent bonds are much stronger than the intermolecular forces, so only the weak forces are overcome.",1: "Covalent bonds run along each chain; they are not shared between separate chains.",3: "No electrons are gained on melting.",}'>
+</div><div class="quiz-card" id="qcard-8">
   <div class="q-text">9. Explain why melting a polymer does not break the covalent bonds along its chains.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-oi="0">The covalent bonds are weaker than the forces between chains</button>
-<button class="quiz-opt" data-qi="8" data-oi="1">The covalent bonds are shared between the chains</button>
-<button class="quiz-opt" data-qi="8" data-oi="2">Melting only supplies enough energy to overcome the weak intermolecular forces between the chains, which is far less than needed to break the strong covalent bonds</button>
-<button class="quiz-opt" data-qi="8" data-oi="3">The chains gain electrons that protect the bonds</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-correct="1">Melting only supplies enough energy to overcome the weak intermolecular forces between the chains, which is far less than needed to break the strong covalent bonds</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Covalent bonds are much stronger than the intermolecular forces, so only the weak forces are overcome.">The covalent bonds are weaker than the forces between chains</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="No electrons are gained on melting.">The chains gain electrons that protect the bonds</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Covalent bonds run along each chain; they are not shared between separate chains.">The covalent bonds are shared between the chains</button>
 </div>
   <div class="quiz-fb" id="qfb-8"></div>
-</div><div class="quiz-card" id="qcard-9" data-answer="0" data-wrong-exp='{1: "Losing water is condensation polymerisation; addition polymerisation loses nothing.",2: "No part of the monomer is left behind — all atoms are kept in the polymer.",3: "No hydrogen atoms are lost in addition polymerisation.",}'>
+</div><div class="quiz-card" id="qcard-9">
   <div class="q-text">10. In addition polymerisation, explain why no small molecule is lost when the monomers join together.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-oi="0">Every atom of each monomer ends up in the polymer chain, because the monomers simply add together at the opened double bond</button>
-<button class="quiz-opt" data-qi="9" data-oi="1">A water molecule is released, but it is too small to notice</button>
-<button class="quiz-opt" data-qi="9" data-oi="2">Half of each monomer is left behind as waste</button>
-<button class="quiz-opt" data-qi="9" data-oi="3">The monomers lose hydrogen atoms as they join</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-correct="1">Every atom of each monomer ends up in the polymer chain, because the monomers simply add together at the opened double bond</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Losing water is condensation polymerisation; addition polymerisation loses nothing.">A water molecule is released, but it is too small to notice</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="No hydrogen atoms are lost in addition polymerisation.">The monomers lose hydrogen atoms as they join</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="No part of the monomer is left behind — all atoms are kept in the polymer.">Half of each monomer is left behind as waste</button>
 </div>
   <div class="quiz-fb" id="qfb-9"></div>
 </div>
+  <div class="quiz-actions">
+    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
+    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+  </div>
   <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
 </div>
-<script>
-(function(){
-  const scoreMessages = ["Keep going — re-read the theory and try again. You'll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you'll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You've really got this topic down. 🏆"];
-  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{});
-  // handled by global quiz JS below
-})();
-</script>
   <div class="section">
   <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
   <div class="card star-rating-card">
@@ -281,71 +349,116 @@ html { background: var(--bg); }
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Polymers (5.2.2.5)'});</script>
   <script>
-const SCORE_MESSAGES = [
-  "Keep going — re-read the theory and try again. You'll get there! 📖",
-  "Not bad — review the sections you missed and have another go. 💪",
-  "Decent effort! A bit more revision and you'll nail it. 🔄",
-  "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-  "Excellent! You've really got this topic down. 🏆",
-];
+(function(){
+  const SCORE_MESSAGES = [
+    "Keep going — re-read the theory and try again. You'll get there! 📖",
+    "Not bad — review the sections you missed and have another go. 💪",
+    "Decent effort! A bit more revision and you'll nail it. 🔄",
+    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+    "Excellent! You've really got this topic down. 🏆"
+  ];
+  const cards = Array.from(document.querySelectorAll('.quiz-card'));
+  const total = cards.length;
+  if (!total) return;
+  const checkBtn = document.getElementById('quizCheckBtn');
+  const againBtn = document.getElementById('quizAgainBtn');
+  const endMsg = document.getElementById('quizEndMsg');
+  const prog = document.getElementById('quizProgress');
+  let checked = false;
 
-document.querySelectorAll('.quiz-opt').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const card = this.closest('.quiz-card');
-    if (card.dataset.answered) return;
-    const correctIdx = parseInt(card.dataset.answer);
-    const clickedIdx = parseInt(this.dataset.oi);
-    const isCorrect = clickedIdx === correctIdx;
-
-    // Store whether student got THIS card right
-    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
-
-    const fb = document.getElementById('qfb-' + this.dataset.qi);
-
-    card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
-      if (idx === correctIdx) o.classList.add('correct');
-      else if (o === this && !isCorrect) o.classList.add('wrong');
-      o.disabled = true;
-    });
-
-    let wrongExp = {};
-    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
-
-    if (isCorrect) {
-      fb.className = 'quiz-fb correct-fb show';
-      fb.innerHTML = '✅ Correct! Well done!';
-    } else {
-      const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
-      fb.className = 'quiz-fb wrong-fb show';
-      fb.innerHTML = '❌ Incorrect. ' + explanation;
-    }
-
-    const allCards = document.querySelectorAll('.quiz-card');
-    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
-    const total = allCards.length;
-    const answered = answeredCards.length;
-    const prog = document.getElementById('quizProgress');
-
-    if (answered === total) {
-      // Count only cards where student clicked correct
-      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
-      if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
-
-      const endMsg = document.getElementById('quizEndMsg');
-      if (endMsg) {
-        const ratio = correctCount / total;
-        const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
-        endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
-        endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
+  function shuffleOptions(){
+    document.querySelectorAll('.quiz-options').forEach(function(box){
+      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
+      for (let k = opts.length - 1; k > 0; k--){
+        const j = Math.floor(Math.random() * (k + 1));
+        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
       }
-    } else {
-      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
+      opts.forEach(function(o){ box.appendChild(o); });
+    });
+  }
+
+  function updateProgress(){
+    if (checked || !prog) return;
+    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
+    prog.textContent = answered === total
+      ? 'All ' + total + ' answered — hit Check answers below ↓'
+      : answered + ' of ' + total + ' answered';
+  }
+
+  function onSelect(){
+    if (checked) return;
+    const box = this.closest('.quiz-options');
+    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
+    this.classList.add('selected');
+    updateProgress();
+  }
+
+  function reveal(){
+    checked = true;
+    let correctCount = 0;
+    cards.forEach(function(card, i){
+      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
+      const chosen = card.querySelector('.quiz-opt.selected');
+      const fb = document.getElementById('qfb-' + i);
+      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
+      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
+      if (correctOpt) correctOpt.classList.add('correct');
+      const isRight = !!(chosen && chosen.dataset.correct === '1');
+      if (isRight) correctCount++;
+      if (chosen && !isRight) chosen.classList.add('wrong');
+      if (!fb) return;
+      if (!chosen){
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
+      } else if (isRight){
+        fb.className = 'quiz-fb correct-fb show';
+        fb.textContent = '✅ Correct! Well done!';
+      } else {
+        const exp = chosen.dataset.wrongExp;
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
+      }
+    });
+    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+    if (endMsg){
+      const ratio = correctCount / total;
+      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+      endMsg.style.display = 'block';
+      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
     }
+    if (checkBtn) checkBtn.style.display = 'none';
+    if (againBtn) againBtn.style.display = '';
+  }
+
+  function tryAgain(){
+    checked = false;
+    cards.forEach(function(card, i){
+      card.querySelectorAll('.quiz-opt').forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('selected', 'correct', 'wrong');
+      });
+      const fb = document.getElementById('qfb-' + i);
+      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
+    });
+    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
+    if (checkBtn) checkBtn.style.display = '';
+    if (againBtn) againBtn.style.display = 'none';
+    shuffleOptions();
+    updateProgress();
+  }
+
+  cards.forEach(function(card){
+    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
   });
-});
+  if (checkBtn) checkBtn.addEventListener('click', reveal);
+  if (againBtn) againBtn.addEventListener('click', tryAgain);
+  shuffleOptions();
+  updateProgress();
+})();
 </script>
   <script>
 function checkMatching(stId, pairs) {
@@ -419,5 +532,10 @@ try {
 } catch(e) {}
 </script>
   
+  <script src="/shared/heroes/theory-blocks.js"></script>
+  <script>
+
+    (function(){var h=document.getElementById('tb-mistakecheck-polymers-4');if(h&&window.MrbTheoryBlocks&&MrbTheoryBlocks.mistakeCheck)MrbTheoryBlocks.mistakeCheck.init(h,{"claim": "“Polymers must be giant covalent structures, because their chains are so huge.”", "prompt": "What is the flaw in this reasoning?", "options": [{"text": "A polymer is a large molecule — its chains are held to each other only by weak intermolecular forces, not by covalent bonds running all the way through.", "correct": true}, {"text": "Polymers really are giant covalent structures, just like diamond."}, {"text": "Polymer chains are held together by ionic bonds between the monomers."}], "fix": "A polymer is a very large molecule, but its separate chains are held together only by weak intermolecular forces — which is why polymers melt far below diamond, where strong covalent bonds run all the way through the structure."});})();
+  </script>
 </body>
 </html>

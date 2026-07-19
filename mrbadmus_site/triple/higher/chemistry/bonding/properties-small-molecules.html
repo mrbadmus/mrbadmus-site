@@ -75,6 +75,11 @@ html { background: var(--surface-page); }
 .rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__k { color: #716A60; } .rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__v { color: #211B15; }
 .rd .rd-cmp-verdict { margin-top: 12px; text-align: center; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #95270F; background: #F8D2C4; border: 1px solid #EBAF9B; border-radius: 999px; padding: 9px 18px; }
 @media (max-width: 560px) { .rd .rd-blk-compare .rd-cmp-grid { grid-template-columns: 1fr !important; } }
+/* MRB-124 — feature-cards clip at narrow width: repeat(auto-fit,minmax(210px,1fr))
+   demands 2×210px+gap on a ~400px viewport, so a second track overflows and drags
+   the whole page into horizontal scroll. Stack to a single column at the same
+   breakpoint the compare-cards use. Later source order → wins over the base rule. */
+@media (max-width: 560px) { .rd .rd-blk-feature { grid-template-columns: 1fr; } }
 /* step-sequence */
 .rd .rd-blk-steps { display: flex; flex-direction: column; gap: 8px; }
 .rd .rd-step { display: flex; gap: 14px; align-items: flex-start; background: #F7F2E8; border-radius: 12px; padding: 13px 16px; }
@@ -452,11 +457,7 @@ try {
   <script src="/shared/heroes/theory-blocks.js"></script>
   <script src="/shared/heroes/bonding-configs.js"></script>
   <script>
-  (function(){
-    var binCfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['properties-small-molecules-bins'];
-    var binHost = document.getElementById('bins-properties-small-molecules');
-    if (binCfg && binHost && window.MrbHeroes && MrbHeroes.categoriseBins) MrbHeroes.categoriseBins.init(binHost, binCfg);
-  })();
+    (function(){var binCfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['properties-small-molecules-bins'];var binHost=document.getElementById('bins-properties-small-molecules');if(binCfg&&binHost&&window.MrbHeroes&&MrbHeroes.categoriseBins)MrbHeroes.categoriseBins.init(binHost,binCfg);})();
     (function(){var h=document.getElementById('tb-mistakecheck-properties-small-molecules-4');if(h&&window.MrbTheoryBlocks&&MrbTheoryBlocks.mistakeCheck)MrbTheoryBlocks.mistakeCheck.init(h,{"claim": "“Simple molecular substances melt easily, so their covalent bonds must be weak.”", "prompt": "What is the flaw in this reasoning?", "options": [{"text": "The covalent bonds inside each molecule are strong — it is the weak forces BETWEEN molecules that are overcome on melting.", "correct": true}, {"text": "The covalent bonds really are weak, which is the whole reason the melting point is low."}, {"text": "Simple molecular substances have no covalent bonds — only intermolecular forces hold them together."}], "fix": "The covalent bonds within each molecule are strong. What is weak are the intermolecular forces between the separate molecules — melting or boiling overcomes those and leaves the covalent bonds untouched, which is why the melting point is low."});})();
   </script>
 </body>

@@ -124,4 +124,241 @@
     ],
     hint: 'Simple molecular: small separate molecules, weak forces between them → low MP, no conduction. Giant structures: strong bonds throughout → very high MP; giant ionic ones conduct when molten or dissolved.',
   };
+
+  /* ==========================================================
+     B2 — metallic-bonding · Two-State Compare (electron-sea on/off)
+     The bonding MODEL: with the delocalised sea, the metal conducts
+     and its ion layers slide; imagine the electrons pinned to their
+     atoms and neither works. Captions authored from the frozen
+     `theory` + `common_mistake`. Colour = meaning via `tone`.
+     ========================================================== */
+  bonding['metallic-bonding'] = {
+    emoji: '⚡', title: 'The Electron Sea', subtitle: 'what the delocalised electrons actually do',
+    strap: 'Metallic bond = the strong electrostatic attraction between the positive metal ions and the sea of delocalised electrons — NOT an attraction between atoms.',
+    states: [
+      {
+        key: 'on', label: '🌊 Electron sea ON', emoji: '🌊', tone: 'good',
+        effectTitle: 'Conducts electricity and heat — and the metal bends, not shatters',
+        caption: 'The outer electrons are delocalised — free to move through the whole lattice of positive ions. They carry charge (electricity) and thermal energy (heat), and because the sea re-surrounds the ions wherever they go, layers of ions can slide past each other, so the metal is malleable and ductile.',
+        legend: 'positive ions in a regular lattice · delocalised electrons drift freely',
+        props: [
+          { k: 'Melting point', v: 'High', tone: 'neutral' },
+          { k: 'Conducts electricity', v: 'Yes ✓', tone: 'good' },
+          { k: 'Conducts heat', v: 'Yes ✓', tone: 'good' },
+          { k: 'Malleable / ductile', v: 'Yes', tone: 'neutral' },
+        ],
+        visual: { type: 'electronSea', free: true },
+      },
+      {
+        key: 'off', label: '📍 Electrons pinned', emoji: '📍', tone: 'bad',
+        effectTitle: 'No moving charge — and no metallic bond at all',
+        caption: 'If every outer electron stayed stuck to its own atom, there would be no free charge to carry electricity or heat — and no shared sea to hold the positive ions together. The delocalised sea is exactly what makes a metal a metal. (This state is imaginary — a metal always has its sea.)',
+        legend: 'electrons stuck to their atoms · nothing free to move',
+        props: [
+          { k: 'Conducts electricity', v: 'No ✕', tone: 'bad' },
+          { k: 'Conducts heat', v: 'No ✕', tone: 'bad' },
+          { k: 'Metallic bond', v: 'None', tone: 'bad' },
+        ],
+        visual: { type: 'electronSea', free: false },
+      },
+    ],
+  };
+
+  /* ==========================================================
+     B2 — metals-alloys · Two-State Compare (metalLayers + force)
+     STRUCTURE → PROPERTY: pure metal layers slide under force (soft),
+     an alloy's different-sized atoms block the sliding (hard). The
+     force button drives the shear; per-state `forced` overrides swap
+     the caption. Conduction is owned by metallic-bonding, so it is a
+     plain-fact prop here, not the interaction.
+     ========================================================== */
+  bonding['metals-alloys'] = {
+    emoji: '🔩', title: 'Why Alloys Are Harder', subtitle: 'apply a force and watch the layers',
+    strap: 'A metal is a giant lattice of positive ions in a sea of delocalised electrons. Pure metals are soft because the layers slide; alloys are harder because different-sized atoms stop the layers sliding.',
+    force: { label: '🔨 Apply force', undoLabel: '↩ Release force' },
+    states: [
+      {
+        key: 'pure', label: '⬜ Pure metal', emoji: '⬜', tone: 'neutral',
+        effectTitle: 'Regular layers of one metal — soft and malleable',
+        caption: 'Every ion is the same size, so they pack into neat, evenly-spaced layers. Apply a force to see what happens.',
+        legend: 'identical ions · neat layers that can slide',
+        forced: {
+          tone: 'good',
+          effectTitle: 'Layers slide → the metal bends ✓',
+          caption: 'The layers slip over one another, so the metal changes shape without breaking — the electron sea just re-surrounds the ions in their new positions. This is why pure metals are soft and easily shaped.',
+          legend: 'force applied · layers shear cleanly → bends',
+        },
+        props: [
+          { k: 'Hardness', v: 'Soft', tone: 'neutral' },
+          { k: 'Malleable', v: 'Yes', tone: 'neutral' },
+          { k: 'Conducts (solid)', v: 'Yes ✓', tone: 'good' },
+        ],
+        visual: { type: 'metalLayers', alloy: false },
+      },
+      {
+        key: 'alloy', label: '🔶 Alloy', emoji: '🔶', tone: 'neutral',
+        effectTitle: 'Different-sized atoms mixed in — harder and stronger',
+        caption: 'Atoms of another element (darker) sit among the main ions and distort the regular layers. Apply a force to compare.',
+        legend: 'different-sized atoms · distorted layers',
+        forced: {
+          tone: 'accent',
+          effectTitle: 'Sliding blocked → it resists ✕',
+          caption: 'The odd-sized atoms stop the layers sliding cleanly, so the alloy keeps its shape under the force. That is why alloys such as steel, bronze and brass are harder and stronger than the pure metal.',
+          legend: 'force applied · layers cannot slide → resists',
+        },
+        props: [
+          { k: 'Hardness', v: 'Hard', tone: 'neutral' },
+          { k: 'Malleable', v: 'Less', tone: 'neutral' },
+          { k: 'Conducts (solid)', v: 'Yes ✓', tone: 'good' },
+        ],
+        visual: { type: 'metalLayers', alloy: true },
+      },
+    ],
+  };
+
+  /* ==========================================================
+     B3 — ionic-bonding · Dot-and-Cross Stepper (transfer)
+     Molecule picker: NaCl (1e), MgO (2e), MgCl₂ (2×1e, tri layout).
+     Steps + configs authored from the frozen `theory` dot-and-cross
+     summaries. dots (•) = electrons from the metal.
+     ========================================================== */
+  bonding['ionic-bonding'] = {
+    emoji: '⚛️', title: 'Electron Transfer',
+    molecules: [
+      {
+        name: 'NaCl', mode: 'transfer', layout: 'di',
+        left:  { sym: 'Na', cfgBefore: '2.8.1', cfgAfter: '2.8', charge: '+', outer: 1, r: 74 },
+        right: { sym: 'Cl', cfgBefore: '2.8.7', cfgAfter: '2.8.8', charge: '−', outer: 7, r: 74 },
+        steps: [
+          { phase: 'neutral', title: 'Two neutral atoms', caption: 'Na (2.8.1) has 1 outer electron. Cl (2.8.7) has 7 — one space left in its outer shell.' },
+          { phase: 'focus', title: 'Spot the electron that moves', caption: 'Sodium’s single outer electron (•) is the one that will transfer — metals lose their outer electrons.' },
+          { phase: 'moved', title: 'Transfer', caption: 'The electron moves into chlorine’s outer shell, filling the gap. Nothing is shared — it is given away.' },
+          { phase: 'moved', title: 'Ions formed → the bond', caption: 'Na⁺ (2.8) and Cl⁻ (2.8.8) both have full outer shells. Opposite charges attract — that electrostatic attraction IS the ionic bond.' },
+        ],
+        result: 'Na⁺ + Cl⁻ → NaCl — the electrostatic attraction between the ions IS the ionic bond',
+      },
+      {
+        name: 'MgO', mode: 'transfer', layout: 'di',
+        left:  { sym: 'Mg', cfgBefore: '2.8.2', cfgAfter: '2.8', charge: '2+', outer: 2, r: 74 },
+        right: { sym: 'O', cfgBefore: '2.6', cfgAfter: '2.8', charge: '2−', outer: 6, r: 74 },
+        steps: [
+          { phase: 'neutral', title: 'Two neutral atoms', caption: 'Mg (2.8.2) has 2 outer electrons. O (2.6) has 6 — it needs 2 more for a full shell.' },
+          { phase: 'focus', title: 'Two electrons will move', caption: 'Both of magnesium’s outer electrons (•) transfer — a Group 2 metal loses 2 electrons.' },
+          { phase: 'moved', title: 'Transfer', caption: 'Both electrons move into oxygen’s outer shell, completing it.' },
+          { phase: 'moved', title: 'Ions formed → the bond', caption: 'Mg²⁺ and O²⁻ each have full shells. Double charges attract more strongly than in NaCl — MgO has a much higher melting point.' },
+        ],
+        result: 'Mg²⁺ + O²⁻ → MgO — double charges → stronger attraction → higher melting point',
+      },
+      {
+        name: 'MgCl₂', mode: 'transfer', layout: 'tri',
+        left:  { sym: 'Mg', cfgBefore: '2.8.2', cfgAfter: '2.8', charge: '2+', outer: 2, r: 58 },
+        right: { sym: 'Cl', cfgBefore: '2.8.7', cfgAfter: '2.8.8', charge: '−', outer: 7, r: 58 },
+        steps: [
+          { phase: 'neutral', title: 'One metal, two non-metals', caption: 'Mg has 2 outer electrons to give. Each Cl needs just 1 — so it takes two chlorines to accept both.' },
+          { phase: 'focus', title: 'One electron to each chlorine', caption: 'Magnesium’s two outer electrons (•) will go one to each chlorine atom.' },
+          { phase: 'moved', title: 'Transfer', caption: 'Each Cl gains one electron and becomes Cl⁻; magnesium becomes Mg²⁺.' },
+          { phase: 'moved', title: 'Charges balance', caption: 'One Mg²⁺ (2+) is balanced by two Cl⁻ (2 × 1−). Overall charge = 0, so the formula is MgCl₂.' },
+        ],
+        result: 'Mg²⁺ + 2 Cl⁻ → MgCl₂ — 2 chloride ions balance one Mg²⁺ (overall charge zero)',
+      },
+    ],
+  };
+
+  /* ==========================================================
+     B3 — covalent-bonding · Dot-and-Cross Stepper (share)
+     Diatomic-only picker: H₂, Cl₂, HCl (port map §6). Polyatomic
+     molecules (H₂O, CH₄, NH₃, CO₂) appear as static feature-cards on
+     the page, not in the hero. dots (•) = one atom, crosses (×) = the
+     other; the overlap is the shared pair.
+     ========================================================== */
+  bonding['covalent-bonding'] = {
+    emoji: '⚛️', title: 'Sharing a Pair',
+    molecules: [
+      {
+        name: 'H₂', mode: 'share', layout: 'di',
+        left:  { sym: 'H', cfgBefore: '1', cfgAfter: '2 (shared)', charge: '', outer: 1, r: 48 },
+        right: { sym: 'H', cfgBefore: '1', cfgAfter: '2 (shared)', charge: '', outer: 1, r: 48 },
+        steps: [
+          { phase: 'neutral', title: 'Two non-metal atoms', caption: 'Each hydrogen has 1 electron and needs 1 more for a full shell (2). Neither can afford to give one away.' },
+          { phase: 'focus', title: 'One electron from each', caption: 'Both hydrogens’ electrons are highlighted — they will pair up in the middle.' },
+          { phase: 'moved', title: 'Shared pair = one bond', caption: 'One electron from each atom sits in the overlap. Both hydrogens now count a full shell of 2. One shared pair = one single covalent bond.' },
+        ],
+        result: 'H–H — one shared pair of electrons = one single covalent bond',
+      },
+      {
+        name: 'Cl₂', mode: 'share', layout: 'di',
+        left:  { sym: 'Cl', cfgBefore: '2.8.7', cfgAfter: '2.8.8 (shared)', charge: '', outer: 7, r: 74 },
+        right: { sym: 'Cl', cfgBefore: '2.8.7', cfgAfter: '2.8.8 (shared)', charge: '', outer: 7, r: 74 },
+        steps: [
+          { phase: 'neutral', title: 'Two non-metal atoms', caption: 'Each chlorine has 7 outer electrons and needs just 1 more for a full shell of 8.' },
+          { phase: 'focus', title: 'One electron from each', caption: 'Each chlorine offers one outer electron (•/×) to a shared pair.' },
+          { phase: 'moved', title: 'Shared pair = one bond', caption: 'The shared pair sits between the two atoms, giving each chlorine a full shell of 8. One shared pair = one single covalent bond.' },
+        ],
+        result: 'Cl–Cl — one shared pair completes both shells (each Cl now has 8)',
+      },
+      {
+        name: 'HCl', mode: 'share', layout: 'di',
+        left:  { sym: 'H', cfgBefore: '1', cfgAfter: '2 (shared)', charge: '', outer: 1, r: 48 },
+        right: { sym: 'Cl', cfgBefore: '2.8.7', cfgAfter: '2.8.8 (shared)', charge: '', outer: 7, r: 74 },
+        steps: [
+          { phase: 'neutral', title: 'Two non-metal atoms', caption: 'H needs 1 more electron; Cl needs 1 more. Neither gives one away — they share.' },
+          { phase: 'focus', title: 'One electron from each', caption: 'Hydrogen’s electron (•) and one of chlorine’s (×) are highlighted — they will pair up.' },
+          { phase: 'moved', title: 'Shared pair = one bond', caption: 'The shared pair gives H a full shell of 2 and Cl a full shell of 8. One shared pair = one single covalent bond.' },
+        ],
+        result: 'H–Cl — one shared pair of electrons = one single covalent bond',
+      },
+    ],
+  };
+
+  /* ==========================================================
+     B3 — ionic-compounds · State Toggle Lab (NaCl)
+     4 states (solid / molten / in solution / + force → shatter). The
+     lattice conducts only when the ions are free to move; force shows
+     brittleness (layers shift → like charges repel → shatter). Hints
+     authored from the frozen `theory` + `common_mistake`.
+     ========================================================== */
+  bonding['ionic-compounds'] = {
+    emoji: '🔬', title: 'Ionic Lattice Lab', subtitle: 'why can it conduct… and why does it shatter?',
+    ions: { pos: { glyph: '+' }, neg: { glyph: '−' } },
+    grid: { cols: 7, rows: 5 },
+    states: [
+      { key: 'solid', label: '🧊 Solid', arrangement: 'lattice',
+        verdict: { glow: false, title: 'No conduction ✕', sub: 'Ions are fixed in the lattice.' },
+        hint: 'Solid lattice: ions locked in a regular 3-D pattern, alternating + and −. Strong forces in all directions → high melting point, and no conduction (the ions cannot move).' },
+      { key: 'molten', label: '🔥 Molten', arrangement: 'jiggle',
+        verdict: { glow: true, title: 'Conducts ✓', sub: 'Free-moving ions carry the charge.' },
+        hint: 'Molten: enough energy has broken the lattice down, so the ions are now free to move and carry charge → it conducts.' },
+      { key: 'solution', label: '💧 In solution', arrangement: 'dissolved',
+        verdict: { glow: true, title: 'Conducts ✓', sub: 'Free-moving ions carry the charge.' },
+        hint: 'Dissolved: water molecules surround the ions and pull them out of the lattice (hydration). The free-moving ions make the solution conduct.' },
+      { key: 'shatter', label: '💥 Shattered', inToggle: false, arrangement: 'sheared',
+        verdict: { glow: false, title: 'No conduction ✕', sub: 'Still a solid — ions still fixed.' },
+        hint: 'A force shifted the layers → like charges (+ above +) now sit together and repel strongly → the crystal shatters instead of bending. This is why ionic solids are hard but brittle.' },
+    ],
+    force: { from: 'solid', to: 'shatter', label: '💥 Apply force (test brittleness)', undoLabel: '↩ Un-shatter' },
+  };
+
+  /* ==========================================================
+     B5 — properties-ionic-compounds · Categorise Bins (Ionic / Metal / Both)
+     Cards VERBATIM from the frozen `matching` (an ionic-vs-metal sort;
+     the shared high-MP row → "Both"). Bin tint/emoji presentation only.
+     ========================================================== */
+  bonding['properties-ionic-compounds-bins'] = {
+    emoji: '⚖️', title: 'Ionic compound, metal, or both?', subtitle: 'sort each property by structure',
+    prompt: 'Tap a property, then tap a structure. Ionic compounds and metals share some properties (like high melting points) but differ in others. Tap a placed card to send it back.',
+    trayLabel: 'PROPERTIES · tap one, then tap a structure',
+    bins: [
+      { key: 'ionic', label: 'Ionic compound', emoji: '🧂', tint: 'warm' },
+      { key: 'metal', label: 'Metal', emoji: '🔩', tint: 'cool' },
+      { key: 'both', label: 'Both', emoji: '🤝', tint: 'neutral' },
+    ],
+    cards: [
+      { id: 'pic-brittle', text: 'Brittle — shatters when struck due to repulsion between like-charged ions', bin: 'ionic' },
+      { id: 'pic-malleable', text: 'Malleable — layers of ions can slide without breaking the metallic bond', bin: 'metal' },
+      { id: 'pic-molten', text: 'Conducts electricity when molten but not when solid', bin: 'ionic' },
+      { id: 'pic-solid', text: 'Conducts electricity in solid state — delocalised electrons carry charge', bin: 'metal' },
+      { id: 'pic-highmp', text: 'High melting points — strong electrostatic forces throughout the structure', bin: 'both' },
+    ],
+    hint: 'Ionic compounds: brittle, conduct only when molten/dissolved (mobile ions). Metals: malleable, conduct as solids (delocalised electrons). Both have high melting points — strong electrostatic forces throughout.',
+  };
 })();

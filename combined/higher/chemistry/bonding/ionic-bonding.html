@@ -19,8 +19,94 @@ html { background: var(--bg); }
 :root { --subject: #B02342; }
 </style>
   
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Redesign — page-scoped chrome (bonding · block page) */
+html { background: var(--surface-page); }
+.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
+.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
+.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
+.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
+.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
+.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
+/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
+.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
+.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
+.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
+.rd .quiz-opt:disabled { pointer-events: none; }
+.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
+.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
+.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+
+/* Theory Block Library — static blocks (MRB-113 Phase B) */
+.rd .rd-blocks { display: flex; flex-direction: column; gap: 18px; }
+.rd .rd-blk-lead { margin: 0; font-family: var(--font-body,sans-serif); font-size: calc(16.5px * var(--rd-fs-scale, 1)); line-height: 1.6; color: #211B15; max-width: 72ch; }
+.rd .rd-blk-lead b { color: var(--ink,#1A1714); }
+/* feature-cards */
+.rd .rd-blk-feature { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+.rd .rd-fcard { border-radius: 14px; padding: 16px 18px; border: 1px solid; }
+.rd .rd-fcard__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-fcard__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); line-height: 1.3; }
+.rd .rd-fcard__body { font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; }
+.rd .rd-fcard--good { background: #E7F3EA; border-color: #B9DCC1; }
+.rd .rd-fcard--good .rd-fcard__hd b { color: #3E6B47; }
+.rd .rd-fcard--limit { background: #FBE4DE; border-color: #EFC0B4; }
+.rd .rd-fcard--limit .rd-fcard__hd b { color: #B5341A; }
+.rd .rd-fcard--neutral { background: #F7F2E8; border-color: #E4DCCB; }
+.rd .rd-fcard--neutral .rd-fcard__hd b { color: #B5341A; }
+/* compare-cards */
+.rd .rd-blk-compare .rd-cmp-grid { display: grid; gap: 14px; }
+.rd .rd-cmp-col { background: #FFFDF8; border: 1px solid #E4DCCB; border-radius: 16px; overflow: hidden; }
+.rd .rd-cmp-col__hd { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #EFE7D8; background: #F7F2E8; }
+.rd .rd-cmp-col__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(17px * var(--rd-fs-scale, 1)); color: #1A1714; }
+.rd .rd-cmp-row { display: flex; flex-direction: column; gap: 2px; padding: 11px 18px; border-bottom: 1px solid #F2ECDD; }
+.rd .rd-cmp-row:last-child { border-bottom: none; }
+.rd .rd-cmp-row__k { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .06em; color: #716A60; text-transform: uppercase; }
+.rd .rd-cmp-row__v { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #211B15; line-height: 1.35; }
+.rd .rd-cmp-row--hl { padding: 12px 18px; }
+.rd .rd-cmp-row--hl.tone-good { background: #E7F3EA; border-top: 2px solid #7FB98A; }
+.rd .rd-cmp-row--hl.tone-good .rd-cmp-row__k { color: #55735B; } .rd .rd-cmp-row--hl.tone-good .rd-cmp-row__v { color: #3E6B47; }
+.rd .rd-cmp-row--hl.tone-limit { background: #FBE4DE; border-top: 2px solid #E0897B; }
+.rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__k { color: #9C5342; } .rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__v { color: #B5341A; }
+.rd .rd-cmp-row--hl.tone-neutral { background: #F7F2E8; border-top: 2px solid #D8CFBD; }
+.rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__k { color: #716A60; } .rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__v { color: #211B15; }
+.rd .rd-cmp-verdict { margin-top: 12px; text-align: center; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #95270F; background: #F8D2C4; border: 1px solid #EBAF9B; border-radius: 999px; padding: 9px 18px; }
+@media (max-width: 560px) { .rd .rd-blk-compare .rd-cmp-grid { grid-template-columns: 1fr !important; } }
+/* MRB-124 — feature-cards clip at narrow width: repeat(auto-fit,minmax(210px,1fr))
+   demands 2×210px+gap on a ~400px viewport, so a second track overflows and drags
+   the whole page into horizontal scroll. Stack to a single column at the same
+   breakpoint the compare-cards use. Later source order → wins over the base rule. */
+@media (max-width: 560px) { .rd .rd-blk-feature { grid-template-columns: 1fr; } }
+/* step-sequence */
+.rd .rd-blk-steps { display: flex; flex-direction: column; gap: 8px; }
+.rd .rd-step { display: flex; gap: 14px; align-items: flex-start; background: #F7F2E8; border-radius: 12px; padding: 13px 16px; }
+.rd .rd-step__n { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14px * var(--rd-fs-scale, 1)); color: #fff; background: #C0392B; min-width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+.rd .rd-step__t { font-size: calc(14.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; padding-top: 3px; }
+/* example-callout */
+.rd .rd-blk-example { background: #FBEEE9; border-left: 4px solid #C0392B; border-radius: 12px; padding: 16px 20px; }
+.rd .rd-blk-example__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rd .rd-blk-example__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15.5px * var(--rd-fs-scale, 1)); color: #B5341A; }
+.rd .rd-blk-example__lines { display: flex; flex-direction: column; gap: 5px; }
+.rd .rd-blk-example__lines div { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.5; color: #3A2A26; }
+/* aside-callout */
+.rd .rd-blk-aside { background: #F6E9CE; border-left: 4px solid #C7861F; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-aside b { display: block; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #7A5510; margin-bottom: 4px; }
+.rd .rd-blk-aside__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A1E; }
+/* examiner-tip — exam-technique callout. Amber/gold with its own left-border,
+   deliberately distinct from the red example-callout (#C0392B), the red Common
+   Mistake, and the burnt-orange brand accent (--accent-strong). */
+.rd .rd-blk-examiner { background: #FEF6E0; border-left: 4px solid #E0A21A; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-examiner__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-blk-examiner__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #8A5E0A; }
+.rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
+.rd .rd-blk-examiner__body b { color: #6E4A00; }
+
+</style>
 </head>
-<body class="">
+<body class="rd">
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-crumbs">
@@ -51,18 +137,14 @@ html { background: var(--bg); }
 
 <div class="content-area">
 
+  <div class="rd-hero-slot">
+    <div class="rd-hero-kicker">🔬 Interactive · transfer electrons step by step</div>
+    <div id="hero-ionic-bonding"></div>
+  </div>
+
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
-    <div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">How Ionic Bonds Form</h4>
-  <div class='theory-line'>IONIC BONDING occurs between a METAL and a NON-METAL.</div><div class='theory-gap'></div><div class='theory-line'>The process:</div><div class='theory-line'>1. The metal atom LOSES one or more electrons from its outer shell.</div><div class='theory-line'>2. The non-metal atom GAINS those electrons into its outer shell.</div><div class='theory-line'>3. Both atoms now have FULL OUTER SHELLS — stable noble gas configurations.</div><div class='theory-line'>4. The metal becomes a POSITIVE ION (it lost negative electrons → net positive).</div><div class='theory-line'>5. The non-metal becomes a NEGATIVE ION (it gained negative electrons → net negative).</div><div class='theory-line'>6. OPPOSITE CHARGES ATTRACT — a strong electrostatic force holds the ions together.</div><div class='theory-gap'></div><div class='theory-line'>This electrostatic attraction between oppositely charged ions IS the ionic bond.</div><div class='theory-gap'></div><div class='theory-line'>The ions arrange themselves into a regular 3D lattice structure — many ions alternating positive and negative in a giant ionic lattice.</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Using Dot-and-Cross Diagrams</h4>
-  <div class='theory-line'>DOT-AND-CROSS diagrams show which atoms the electrons came from.</div><div class='theory-line'>Convention: use dots (•) for electrons from one atom and crosses (×) for electrons from another.</div><div class='theory-gap'></div><div class='theory-line'>SODIUM CHLORIDE (NaCl):</div><div class='theory-line'>Na: 2.8.1 — loses its 1 outer electron → becomes Na⁺ (2.8)</div><div class='theory-line'>Cl: 2.8.7 — gains 1 electron → becomes Cl⁻ (2.8.8)</div><div class='theory-gap'></div><div class='theory-line'>MAGNESIUM OXIDE (MgO):</div><div class='theory-line'>Mg: 2.8.2 — loses 2 outer electrons → becomes Mg²⁺ (2.8)</div><div class='theory-line'>O: 2.6 — gains 2 electrons → becomes O²⁻ (2.8)</div><div class='theory-gap'></div><div class='theory-line'>MAGNESIUM CHLORIDE (MgCl₂):</div><div class='theory-line'>Mg: loses 2 electrons → Mg²⁺</div><div class='theory-line'>Each Cl gains 1 electron → each becomes Cl⁻</div><div class='theory-line'>2 chloride ions are needed per magnesium (to accept both electrons).</div><div class='theory-line'>Formula: MgCl₂</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Predicting Ion Charges from Group Number</h4>
-  <div class='theory-line'>You can predict the charge on an ion from its GROUP in the periodic table:</div><div class='theory-gap'></div><div class='theory-line'>GROUP 1 metals → lose 1 electron → +1 ions (Li⁺, Na⁺, K⁺)</div><div class='theory-line'>GROUP 2 metals → lose 2 electrons → +2 ions (Mg²⁺, Ca²⁺)</div><div class='theory-line'>GROUP 3 metals → lose 3 electrons → +3 ions (Al³⁺)</div><div class='theory-gap'></div><div class='theory-line'>GROUP 5 non-metals → gain 3 electrons → −3 ions (N³⁻, P³⁻)</div><div class='theory-line'>GROUP 6 non-metals → gain 2 electrons → −2 ions (O²⁻, S²⁻)</div><div class='theory-line'>GROUP 7 non-metals → gain 1 electron → −1 ions (F⁻, Cl⁻, Br⁻, I⁻)</div><div class='theory-gap'></div><div class='theory-line'>The OVERALL CHARGE of an ionic compound must be ZERO — positive and negative charges balance.</div><div class='theory-line'>For MgCl₂: Mg²⁺ needs 2 Cl⁻ to balance (2+ and 2×1− = 0). ✓</div><div class='theory-line'>For Al₂O₃: 2 Al³⁺ (6+) needs 3 O²⁻ (6−) to balance. ✓</div>
-</div>
+    <div class="rd-blocks"><p class="rd-blk-lead">Ionic bonding happens between a <b>metal and a non-metal</b>. The metal transfers its outer electrons to the non-metal, and the oppositely charged ions that form attract one another.</p><div class="rd-blk-steps"><div class="rd-step"><span class="rd-step__n">1</span><span class="rd-step__t">The metal atom loses one or more electrons from its outer shell.</span></div><div class="rd-step"><span class="rd-step__n">2</span><span class="rd-step__t">The non-metal atom gains those electrons into its outer shell.</span></div><div class="rd-step"><span class="rd-step__n">3</span><span class="rd-step__t">Both atoms now have full outer shells — stable, like a noble gas.</span></div><div class="rd-step"><span class="rd-step__n">4</span><span class="rd-step__t">The metal becomes a positive ion (it lost negative electrons).</span></div><div class="rd-step"><span class="rd-step__n">5</span><span class="rd-step__t">The non-metal becomes a negative ion (it gained negative electrons).</span></div><div class="rd-step"><span class="rd-step__n">6</span><span class="rd-step__t">Opposite charges attract — this strong electrostatic attraction IS the ionic bond.</span></div></div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">➕</span><b>Metals → positive ions</b></div><div class="rd-fcard__body">Group 1 → +1 (Na⁺), Group 2 → +2 (Mg²⁺), Group 3 → +3 (Al³⁺).</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">➖</span><b>Non-metals → negative ions</b></div><div class="rd-fcard__body">Group 7 → −1 (Cl⁻), Group 6 → −2 (O²⁻), Group 5 → −3 (N³⁻).</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚖️</span><b>Charges must balance</b></div><div class="rd-fcard__body">An ionic compound is overall neutral — MgCl₂ needs two Cl⁻ for one Mg²⁺.</div></div></div><div class="rd-blk-example"><div class="rd-blk-example__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚛️</span><b>Dot-and-cross summaries</b></div><div class="rd-blk-example__lines"><div>NaCl: Na 2.8.1 loses 1e → Na⁺ (2.8); Cl 2.8.7 gains 1e → Cl⁻ (2.8.8).</div><div>MgO: Mg 2.8.2 loses 2e → Mg²⁺; O 2.6 gains 2e → O²⁻.</div><div>MgCl₂: Mg loses 2e → Mg²⁺; each Cl gains 1e → two Cl⁻ balance one Mg²⁺.</div></div></div></div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
   <p style="font-size:0.9rem;line-height:1.7;">Students often say the ionic bond IS the transfer of electrons from the metal to the non-metal. That is not the bond: the transfer is a one-off event that only creates the ions. The ionic bond itself is the strong electrostatic attraction between the oppositely charged ions produced. Remember too that these charges must balance, so every ionic compound has an overall charge of zero.</p>
@@ -75,10 +157,7 @@ html { background: var(--bg); }
   <div class="section-title">📌 Key Note</div>
   <div class="keynote-box"><p>Ionic bonding: metal loses electrons → positive ion. Non-metal gains electrons → negative ion. Opposite charges attract → ionic bond. Both achieve full outer shells. Group number tells you charge: Group 1 → +1, Group 7 → −1 etc. Overall compound charge = zero.</p></div>
 </div>
-  <div class="section">
-  <div class="section-title">⭐ Examiner Tip</div>
-  <div class="examiner-box"><p>Describing how an ionic bond forms, don't stop at "electrons transfer" — that only makes the ions. The bond is the strong electrostatic attraction between the oppositely charged ions. Then check the charges balance to an overall zero.</p></div>
-</div>
+  <div class="section"><div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">Describing how an ionic bond forms, don't stop at "electrons transfer" — that only makes the ions. The bond is the strong electrostatic attraction between the oppositely charged ions. Then check the charges balance to an overall zero.</div></div></div>
   <div class="section">
   <div class="section-title">🎯 Matching Activity — Match the Ion to its Charge</div>
   <div class="card">
@@ -125,97 +204,94 @@ html { background: var(--bg); }
   
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
-  <div class="quiz-progress" id="quizProgress">Question 1 of 10</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Chlorine GAINS the electron (it needs 1 more for a full shell), so it becomes the NEGATIVE ion.",1: "Sharing is covalent bonding. NaCl is a metal + non-metal, so electrons are TRANSFERRED, not shared.",3: "Only the metal (sodium) loses electrons; the non-metal (chlorine) gains them.",}'>
+  <div class="quiz-progress" id="quizProgress">Answer all 10 questions, then check your answers.</div>
+  <div class="quiz-card" id="qcard-0">
   <div class="q-text">1. Sodium (2.8.1) reacts with chlorine (2.8.7) to form sodium chloride. Describe what happens to the electrons.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">Chlorine loses one electron to sodium, so chlorine becomes positive</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Sodium and chlorine share one pair of electrons in a single covalent bond</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">Sodium loses its 1 outer electron to form Na⁺ (2.8); chlorine gains it to form Cl⁻ (2.8.8); the oppositely charged ions then attract</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">Both atoms lose their outer electrons into a shared pool</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-correct="1">Sodium loses its 1 outer electron to form Na⁺ (2.8); chlorine gains it to form Cl⁻ (2.8.8); the oppositely charged ions then attract</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Sharing is covalent bonding. NaCl is a metal + non-metal, so electrons are TRANSFERRED, not shared.">Sodium and chlorine share one pair of electrons in a single covalent bond</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Only the metal (sodium) loses electrons; the non-metal (chlorine) gains them.">Both atoms lose their outer electrons into a shared pool</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Chlorine GAINS the electron (it needs 1 more for a full shell), so it becomes the NEGATIVE ion.">Chlorine loses one electron to sodium, so chlorine becomes positive</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="1" data-wrong-exp='{0: "Charge does not \'disappear\' — the ions keep their charges; the compound is neutral because they sum to zero.",2: "Electrons are transferred, not destroyed — charge is conserved. The compound is neutral because the ion charges balance.",3: "A full shell is not uncharged. Neutrality comes from equal amounts of positive and negative charge.",}'>
+</div><div class="quiz-card" id="qcard-1">
   <div class="q-text">2. Explain why an ionic compound such as sodium chloride has no overall electrical charge.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The ions are held so tightly that their charges disappear</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The total positive charge on the metal ions exactly balances the total negative charge on the non-metal ions</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">The electrons transferred are destroyed, leaving neutral atoms</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Only the outer shells carry charge, and these cancel when the shells are full</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-correct="1">The total positive charge on the metal ions exactly balances the total negative charge on the non-metal ions</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Electrons are transferred, not destroyed — charge is conserved. The compound is neutral because the ion charges balance.">The electrons transferred are destroyed, leaving neutral atoms</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Charge does not 'disappear' — the ions keep their charges; the compound is neutral because they sum to zero.">The ions are held so tightly that their charges disappear</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="A full shell is not uncharged. Neutrality comes from equal amounts of positive and negative charge.">Only the outer shells carry charge, and these cancel when the shells are full</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="3" data-wrong-exp='{0: "CaCl₃ would give +2 + 3(−1) = −1 — not neutral. Exactly two Cl⁻ balance one Ca²⁺.",1: "Ca₂Cl would give 2(+2) + (−1) = +3 — not neutral.",2: "CaCl would give +2 + (−1) = +1 overall — not neutral. You need two Cl⁻ to balance one Ca²⁺.",}'>
+</div><div class="quiz-card" id="qcard-2">
   <div class="q-text">3. Determine the formula of calcium chloride. (Calcium is in Group 2, chlorine is in Group 7.)</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">CaCl₃ — calcium needs three chloride ions to become stable</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Ca₂Cl — two calcium ions bond with one chloride ion</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">CaCl — one calcium ion bonds with one chloride ion</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">CaCl₂ — Ca²⁺ needs two Cl⁻ ions to balance its charge</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-correct="1">CaCl₂ — Ca²⁺ needs two Cl⁻ ions to balance its charge</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="CaCl would give +2 + (−1) = +1 overall — not neutral. You need two Cl⁻ to balance one Ca²⁺.">CaCl — one calcium ion bonds with one chloride ion</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Ca₂Cl would give 2(+2) + (−1) = +3 — not neutral.">Ca₂Cl — two calcium ions bond with one chloride ion</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="CaCl₃ would give +2 + 3(−1) = −1 — not neutral. Exactly two Cl⁻ balance one Ca²⁺.">CaCl₃ — calcium needs three chloride ions to become stable</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="1" data-wrong-exp='{0: "Mass/heaviness does not set the charge — it is how many electrons are lost or gained to reach a full shell.",2: "Proton number sets the element\'s identity, not the sign of the ion; gaining electrons is what makes non-metals negative.",3: "This is the wrong way round: metals LOSE electrons (become +), non-metals GAIN electrons (become −).",}'>
+</div><div class="quiz-card" id="qcard-3">
   <div class="q-text">4. Explain, in terms of electron arrangement, why metals form positive ions but non-metals form negative ions.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">Metals are heavier, so their nuclei pull electrons in and become positive</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">Metals have few outer electrons and lose them to empty their outer shell, leaving a positive ion; non-metals have nearly full shells and gain electrons, becoming negative</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">Non-metals contain more protons, which makes them negative</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">Metals gain electrons and non-metals lose them, to reach a full shell</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-correct="1">Metals have few outer electrons and lose them to empty their outer shell, leaving a positive ion; non-metals have nearly full shells and gain electrons, becoming negative</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="Mass/heaviness does not set the charge — it is how many electrons are lost or gained to reach a full shell.">Metals are heavier, so their nuclei pull electrons in and become positive</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="Proton number sets the element's identity, not the sign of the ion; gaining electrons is what makes non-metals negative.">Non-metals contain more protons, which makes them negative</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="This is the wrong way round: metals LOSE electrons (become +), non-metals GAIN electrons (become −).">Metals gain electrons and non-metals lose them, to reach a full shell</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="2" data-wrong-exp='{0: "That is the metallic bonding model, not a dot-and-cross diagram of ionic NaCl.",1: "The transfer is the other way: sodium (the metal) gives its electron to chlorine (the non-metal).",3: "That describes a COVALENT dot-and-cross (shared pair). In NaCl the electron is transferred, not shared.",}'>
+</div><div class="quiz-card" id="qcard-4">
   <div class="q-text">5. Describe how a dot-and-cross diagram represents the formation of the ions in sodium chloride.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">It shows a sea of electrons moving freely around fixed positive ions</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">It shows the chlorine atom giving one electron to the sodium atom</button>
-<button class="quiz-opt" data-qi="4" data-oi="2">Electrons from one atom are drawn as dots and from the other as crosses, showing the single outer electron moving from sodium to chlorine so each ion has a full outer shell</button>
-<button class="quiz-opt" data-qi="4" data-oi="3">It shows the sodium and chlorine sharing a pair of electrons drawn between them</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-correct="1">Electrons from one atom are drawn as dots and from the other as crosses, showing the single outer electron moving from sodium to chlorine so each ion has a full outer shell</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="That describes a COVALENT dot-and-cross (shared pair). In NaCl the electron is transferred, not shared.">It shows the sodium and chlorine sharing a pair of electrons drawn between them</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="That is the metallic bonding model, not a dot-and-cross diagram of ionic NaCl.">It shows a sea of electrons moving freely around fixed positive ions</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="The transfer is the other way: sodium (the metal) gives its electron to chlorine (the non-metal).">It shows the chlorine atom giving one electron to the sodium atom</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
-</div><div class="quiz-card" id="qcard-5" data-answer="1" data-wrong-exp='{0: "Mg₂Cl gives 2(+2) + (−1) = +3 — not neutral.",2: "MgCl gives +2 + (−1) = +1 — not neutral. Two Cl⁻ are needed to balance Mg²⁺.",3: "MgCl₃ gives +2 + 3(−1) = −1 — not neutral; only two Cl⁻ are required.",}'>
+</div><div class="quiz-card" id="qcard-5">
   <div class="q-text">6. Magnesium reacts with chlorine. Deduce the formula of the compound formed and justify it using the ion charges.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-oi="0">Mg₂Cl — two magnesium ions pair with one chloride ion</button>
-<button class="quiz-opt" data-qi="5" data-oi="1">MgCl₂ — Mg²⁺ has a 2+ charge, so it needs two Cl⁻ ions to balance it</button>
-<button class="quiz-opt" data-qi="5" data-oi="2">MgCl — one magnesium ion pairs with one chloride ion</button>
-<button class="quiz-opt" data-qi="5" data-oi="3">MgCl₃ — magnesium needs three chloride ions</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-correct="1">MgCl₂ — Mg²⁺ has a 2+ charge, so it needs two Cl⁻ ions to balance it</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="MgCl gives +2 + (−1) = +1 — not neutral. Two Cl⁻ are needed to balance Mg²⁺.">MgCl — one magnesium ion pairs with one chloride ion</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="Mg₂Cl gives 2(+2) + (−1) = +3 — not neutral.">Mg₂Cl — two magnesium ions pair with one chloride ion</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="MgCl₃ gives +2 + 3(−1) = −1 — not neutral; only two Cl⁻ are required.">MgCl₃ — magnesium needs three chloride ions</button>
 </div>
   <div class="quiz-fb" id="qfb-5"></div>
-</div><div class="quiz-card" id="qcard-6" data-answer="0" data-wrong-exp='{1: "Sodium chloride is ionic (metal + non-metal), so electrons are transferred, not shared.",2: "Sodium is the metal and LOSES the electron; chlorine gains it. The stated direction is right — the error is calling the transfer \'the bond\'.",3: "The transfer is a one-off event, not the ongoing bond — so the statement is not correct.",}'>
+</div><div class="quiz-card" id="qcard-6">
   <div class="q-text">7. A student writes: 'The ionic bond is the transfer of electrons from sodium to chlorine.' Explain why this statement is not correct.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-oi="0">The transfer only creates the ions; the ionic bond is the electrostatic attraction between the oppositely charged ions that results</button>
-<button class="quiz-opt" data-qi="6" data-oi="1">The electrons are shared, not transferred, so the description is wrong</button>
-<button class="quiz-opt" data-qi="6" data-oi="2">Sodium gains the electron, so the direction of transfer is wrong</button>
-<button class="quiz-opt" data-qi="6" data-oi="3">It is correct — the ionic bond is the movement of the electron</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-correct="1">The transfer only creates the ions; the ionic bond is the electrostatic attraction between the oppositely charged ions that results</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="The transfer is a one-off event, not the ongoing bond — so the statement is not correct.">It is correct — the ionic bond is the movement of the electron</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Sodium chloride is ionic (metal + non-metal), so electrons are transferred, not shared.">The electrons are shared, not transferred, so the description is wrong</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="Sodium is the metal and LOSES the electron; chlorine gains it. The stated direction is right — the error is calling the transfer 'the bond'.">Sodium gains the electron, so the direction of transfer is wrong</button>
 </div>
   <div class="quiz-fb" id="qfb-6"></div>
-</div><div class="quiz-card" id="qcard-7" data-answer="1" data-wrong-exp='{0: "KO gives +1 + (−2) = −1 — not neutral. Two K⁺ are needed to balance one O²⁻.",2: "KO₂ gives +1 + 2(−2) = −3 — not neutral.",3: "K forms 1+ (not 3+), so the aluminium-oxide pattern does not apply; K₂O is correct.",}'>
+</div><div class="quiz-card" id="qcard-7">
   <div class="q-text">8. Potassium reacts with oxygen. Predict the formula of potassium oxide and justify your answer using ion charges. (K is Group 1, O is Group 6.)</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-oi="0">KO — one potassium ion balances one oxygen ion</button>
-<button class="quiz-opt" data-qi="7" data-oi="1">K₂O — each K⁺ carries 1+, so two are needed to balance one O²⁻</button>
-<button class="quiz-opt" data-qi="7" data-oi="2">KO₂ — one potassium ion needs two oxide ions</button>
-<button class="quiz-opt" data-qi="7" data-oi="3">K₂O₃ — by analogy with aluminium oxide</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-correct="1">K₂O — each K⁺ carries 1+, so two are needed to balance one O²⁻</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="KO gives +1 + (−2) = −1 — not neutral. Two K⁺ are needed to balance one O²⁻.">KO — one potassium ion balances one oxygen ion</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="KO₂ gives +1 + 2(−2) = −3 — not neutral.">KO₂ — one potassium ion needs two oxide ions</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="K forms 1+ (not 3+), so the aluminium-oxide pattern does not apply; K₂O is correct.">K₂O₃ — by analogy with aluminium oxide</button>
 </div>
   <div class="quiz-fb" id="qfb-7"></div>
-</div><div class="quiz-card" id="qcard-8" data-answer="2" data-wrong-exp='{0: "Noble gases are neutral atoms with full shells, not naturally occurring ions.",1: "State of matter does not decide this — many gases form ions when they react. Noble gases don\'t because their shells are full.",3: "Atom size does not prevent ion formation; a full outer shell removes the tendency to react.",}'>
+</div><div class="quiz-card" id="qcard-8">
   <div class="q-text">9. Explain why the noble gases in Group 0 do not normally form ions.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-oi="0">They already exist as negative ions in nature</button>
-<button class="quiz-opt" data-qi="8" data-oi="1">They are gases, and gases cannot form ions</button>
-<button class="quiz-opt" data-qi="8" data-oi="2">Their outer shells are already full, so they have no tendency to lose or gain electrons</button>
-<button class="quiz-opt" data-qi="8" data-oi="3">Their atoms are too small to hold a charge</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-correct="1">Their outer shells are already full, so they have no tendency to lose or gain electrons</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="State of matter does not decide this — many gases form ions when they react. Noble gases don't because their shells are full.">They are gases, and gases cannot form ions</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Atom size does not prevent ion formation; a full outer shell removes the tendency to react.">Their atoms are too small to hold a charge</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="Noble gases are neutral atoms with full shells, not naturally occurring ions.">They already exist as negative ions in nature</button>
 </div>
   <div class="quiz-fb" id="qfb-8"></div>
-</div><div class="quiz-card" id="qcard-9" data-answer="1" data-wrong-exp='{0: "The subscripts come from balancing the CHARGES (3+ and 2− → lowest common multiple 6), not from the group numbers directly.",2: "Aluminium oxide is ionic (metal + non-metal) — electrons are transferred, not shared.",3: "Aluminium is Group 3 (forms Al³⁺) and oxygen is Group 6 (forms O²⁻); the charges are swapped here, which would give the wrong formula.",}'>
+</div><div class="quiz-card" id="qcard-9">
   <div class="q-text">10. Explain, in terms of electron transfer, why the formula of aluminium oxide is Al₂O₃.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-oi="0">The subscripts 2 and 3 come from the group numbers 2 and 3</button>
-<button class="quiz-opt" data-qi="9" data-oi="1">Al loses 3 electrons to form Al³⁺ and O gains 2 to form O²⁻; balancing the charges needs two Al³⁺ (6+) and three O²⁻ (6−)</button>
-<button class="quiz-opt" data-qi="9" data-oi="2">Aluminium and oxygen share three pairs of electrons</button>
-<button class="quiz-opt" data-qi="9" data-oi="3">Aluminium forms Al²⁺ and oxygen forms O³⁻, giving Al₃O₂</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-correct="1">Al loses 3 electrons to form Al³⁺ and O gains 2 to form O²⁻; balancing the charges needs two Al³⁺ (6+) and three O²⁻ (6−)</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Aluminium oxide is ionic (metal + non-metal) — electrons are transferred, not shared.">Aluminium and oxygen share three pairs of electrons</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Aluminium is Group 3 (forms Al³⁺) and oxygen is Group 6 (forms O²⁻); the charges are swapped here, which would give the wrong formula.">Aluminium forms Al²⁺ and oxygen forms O³⁻, giving Al₃O₂</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="The subscripts come from balancing the CHARGES (3+ and 2− → lowest common multiple 6), not from the group numbers directly.">The subscripts 2 and 3 come from the group numbers 2 and 3</button>
 </div>
   <div class="quiz-fb" id="qfb-9"></div>
 </div>
+  <div class="quiz-actions">
+    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
+    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+  </div>
   <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
 </div>
-<script>
-(function(){
-  const scoreMessages = ["Keep going — re-read the theory and try again. You'll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you'll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You've really got this topic down. 🏆"];
-  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{});
-  // handled by global quiz JS below
-})();
-</script>
   <div class="section">
   <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
   <div class="card star-rating-card">
@@ -278,71 +354,116 @@ html { background: var(--bg); }
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Ionic Bonding (5.2.1.2)'});</script>
   <script>
-const SCORE_MESSAGES = [
-  "Keep going — re-read the theory and try again. You'll get there! 📖",
-  "Not bad — review the sections you missed and have another go. 💪",
-  "Decent effort! A bit more revision and you'll nail it. 🔄",
-  "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-  "Excellent! You've really got this topic down. 🏆",
-];
+(function(){
+  const SCORE_MESSAGES = [
+    "Keep going — re-read the theory and try again. You'll get there! 📖",
+    "Not bad — review the sections you missed and have another go. 💪",
+    "Decent effort! A bit more revision and you'll nail it. 🔄",
+    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+    "Excellent! You've really got this topic down. 🏆"
+  ];
+  const cards = Array.from(document.querySelectorAll('.quiz-card'));
+  const total = cards.length;
+  if (!total) return;
+  const checkBtn = document.getElementById('quizCheckBtn');
+  const againBtn = document.getElementById('quizAgainBtn');
+  const endMsg = document.getElementById('quizEndMsg');
+  const prog = document.getElementById('quizProgress');
+  let checked = false;
 
-document.querySelectorAll('.quiz-opt').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const card = this.closest('.quiz-card');
-    if (card.dataset.answered) return;
-    const correctIdx = parseInt(card.dataset.answer);
-    const clickedIdx = parseInt(this.dataset.oi);
-    const isCorrect = clickedIdx === correctIdx;
-
-    // Store whether student got THIS card right
-    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
-
-    const fb = document.getElementById('qfb-' + this.dataset.qi);
-
-    card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
-      if (idx === correctIdx) o.classList.add('correct');
-      else if (o === this && !isCorrect) o.classList.add('wrong');
-      o.disabled = true;
-    });
-
-    let wrongExp = {};
-    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
-
-    if (isCorrect) {
-      fb.className = 'quiz-fb correct-fb show';
-      fb.innerHTML = '✅ Correct! Well done!';
-    } else {
-      const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
-      fb.className = 'quiz-fb wrong-fb show';
-      fb.innerHTML = '❌ Incorrect. ' + explanation;
-    }
-
-    const allCards = document.querySelectorAll('.quiz-card');
-    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
-    const total = allCards.length;
-    const answered = answeredCards.length;
-    const prog = document.getElementById('quizProgress');
-
-    if (answered === total) {
-      // Count only cards where student clicked correct
-      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
-      if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
-
-      const endMsg = document.getElementById('quizEndMsg');
-      if (endMsg) {
-        const ratio = correctCount / total;
-        const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
-        endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
-        endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
+  function shuffleOptions(){
+    document.querySelectorAll('.quiz-options').forEach(function(box){
+      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
+      for (let k = opts.length - 1; k > 0; k--){
+        const j = Math.floor(Math.random() * (k + 1));
+        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
       }
-    } else {
-      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
+      opts.forEach(function(o){ box.appendChild(o); });
+    });
+  }
+
+  function updateProgress(){
+    if (checked || !prog) return;
+    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
+    prog.textContent = answered === total
+      ? 'All ' + total + ' answered — hit Check answers below ↓'
+      : answered + ' of ' + total + ' answered';
+  }
+
+  function onSelect(){
+    if (checked) return;
+    const box = this.closest('.quiz-options');
+    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
+    this.classList.add('selected');
+    updateProgress();
+  }
+
+  function reveal(){
+    checked = true;
+    let correctCount = 0;
+    cards.forEach(function(card, i){
+      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
+      const chosen = card.querySelector('.quiz-opt.selected');
+      const fb = document.getElementById('qfb-' + i);
+      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
+      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
+      if (correctOpt) correctOpt.classList.add('correct');
+      const isRight = !!(chosen && chosen.dataset.correct === '1');
+      if (isRight) correctCount++;
+      if (chosen && !isRight) chosen.classList.add('wrong');
+      if (!fb) return;
+      if (!chosen){
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
+      } else if (isRight){
+        fb.className = 'quiz-fb correct-fb show';
+        fb.textContent = '✅ Correct! Well done!';
+      } else {
+        const exp = chosen.dataset.wrongExp;
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
+      }
+    });
+    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+    if (endMsg){
+      const ratio = correctCount / total;
+      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+      endMsg.style.display = 'block';
+      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
     }
+    if (checkBtn) checkBtn.style.display = 'none';
+    if (againBtn) againBtn.style.display = '';
+  }
+
+  function tryAgain(){
+    checked = false;
+    cards.forEach(function(card, i){
+      card.querySelectorAll('.quiz-opt').forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('selected', 'correct', 'wrong');
+      });
+      const fb = document.getElementById('qfb-' + i);
+      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
+    });
+    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
+    if (checkBtn) checkBtn.style.display = '';
+    if (againBtn) againBtn.style.display = 'none';
+    shuffleOptions();
+    updateProgress();
+  }
+
+  cards.forEach(function(card){
+    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
   });
-});
+  if (checkBtn) checkBtn.addEventListener('click', reveal);
+  if (againBtn) againBtn.addEventListener('click', tryAgain);
+  shuffleOptions();
+  updateProgress();
+})();
 </script>
   <script>
 function checkMatching(stId, pairs) {
@@ -416,5 +537,11 @@ try {
 } catch(e) {}
 </script>
   
+  <script src="/shared/heroes/dot-cross-stepper.js"></script>
+  <script src="/shared/heroes/bonding-configs.js"></script>
+  <script>
+    (function(){var cfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['ionic-bonding'];var host=document.getElementById('hero-ionic-bonding');if(cfg&&host&&window.MrbHeroes&&MrbHeroes.dotCrossStepper)MrbHeroes.dotCrossStepper.init(host,cfg);})();
+
+  </script>
 </body>
 </html>

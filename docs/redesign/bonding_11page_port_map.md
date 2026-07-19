@@ -1,8 +1,8 @@
 # Bonding — 11-Page Redesign Port Map (MRB-113 Phase B)
 
-**Status:** Phase A recon complete. **HELD for Mide's approval before any building.**
+**Status:** ✅ **BUILT — all 12 bonding pages redesigned** (B0/B1 pilots + B2–B5 + exemplar retrofit) + MRB-124 mobile fix. Verify-clean (0 critical/0 major, nanoparticles FIFA-practice major cleared, content frozen, deterministic, zero non-bonding pages touched). **AWAITING MIDE REVIEW — no commits.** See `port_progress.md` for the phase log, `PORTING.md` for spec-match compromises.
 **Worktree:** `content/bonding` · **Generator:** `generate_site_v5.py` · No commits.
-**Reference standard:** `giant-covalent-structures` (LOCKED exemplar) + the Bonding Theory Block Library.
+**Reference standard:** `giant-covalent-structures` (retrofitted onto the block system in Phase D2) + the Bonding Theory Block Library.
 
 This is the map the whole 11-page port keys off. It is reconciled to **what is actually on
 disk today** (three vanilla-JS components + a React design spec for everything else), not to

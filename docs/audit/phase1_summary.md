@@ -8,7 +8,7 @@ Coverage: **264 unique subtopic pages**, **865 page-variants** (subject × pathw
 | severity | count |
 |---|---|
 | critical | 791 |
-| major | 2057 |
+| major | 2055 |
 | minor | 2112 |
 | info | 962 |
 
@@ -22,7 +22,7 @@ Coverage: **264 unique subtopic pages**, **865 page-variants** (subject × pathw
 | 1-register | minor | 781 |
 | 1-triple-depth | major | 345 |
 | 2-example-count | major | 206 |
-| 2-practice-absent | major | 212 |
+| 2-practice-absent | major | 210 |
 | 2-tier-duplication | major | 96 |
 | 3-mistake-first | major | 781 |
 | 4-menu | info | 143 |

@@ -23,25 +23,87 @@ html { background: var(--bg); }
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <style>
-/* Redesign pilot — page-scoped chrome (bonding · giant-covalent-structures) */
+/* Redesign — page-scoped chrome (bonding · block page) */
 html { background: var(--surface-page); }
 .rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
 .rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
 .rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
-/* Locked callout shells — Common Mistake + Key Note (Design's spec) */
 .rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
 .rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
 .rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
 /* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
 .rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
 .rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
-/* Reveal-at-end quiz (MRB-121) — selected state + Check / Try-again controls */
 .rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
 .rd .quiz-opt:disabled { pointer-events: none; }
 .rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
 .rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
 .rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
 .rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+
+/* Theory Block Library — static blocks (MRB-113 Phase B) */
+.rd .rd-blocks { display: flex; flex-direction: column; gap: 18px; }
+.rd .rd-blk-lead { margin: 0; font-family: var(--font-body,sans-serif); font-size: calc(16.5px * var(--rd-fs-scale, 1)); line-height: 1.6; color: #211B15; max-width: 72ch; }
+.rd .rd-blk-lead b { color: var(--ink,#1A1714); }
+/* feature-cards */
+.rd .rd-blk-feature { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+.rd .rd-fcard { border-radius: 14px; padding: 16px 18px; border: 1px solid; }
+.rd .rd-fcard__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-fcard__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); line-height: 1.3; }
+.rd .rd-fcard__body { font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; }
+.rd .rd-fcard--good { background: #E7F3EA; border-color: #B9DCC1; }
+.rd .rd-fcard--good .rd-fcard__hd b { color: #3E6B47; }
+.rd .rd-fcard--limit { background: #FBE4DE; border-color: #EFC0B4; }
+.rd .rd-fcard--limit .rd-fcard__hd b { color: #B5341A; }
+.rd .rd-fcard--neutral { background: #F7F2E8; border-color: #E4DCCB; }
+.rd .rd-fcard--neutral .rd-fcard__hd b { color: #B5341A; }
+/* compare-cards */
+.rd .rd-blk-compare .rd-cmp-grid { display: grid; gap: 14px; }
+.rd .rd-cmp-col { background: #FFFDF8; border: 1px solid #E4DCCB; border-radius: 16px; overflow: hidden; }
+.rd .rd-cmp-col__hd { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #EFE7D8; background: #F7F2E8; }
+.rd .rd-cmp-col__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(17px * var(--rd-fs-scale, 1)); color: #1A1714; }
+.rd .rd-cmp-row { display: flex; flex-direction: column; gap: 2px; padding: 11px 18px; border-bottom: 1px solid #F2ECDD; }
+.rd .rd-cmp-row:last-child { border-bottom: none; }
+.rd .rd-cmp-row__k { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .06em; color: #716A60; text-transform: uppercase; }
+.rd .rd-cmp-row__v { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #211B15; line-height: 1.35; }
+.rd .rd-cmp-row--hl { padding: 12px 18px; }
+.rd .rd-cmp-row--hl.tone-good { background: #E7F3EA; border-top: 2px solid #7FB98A; }
+.rd .rd-cmp-row--hl.tone-good .rd-cmp-row__k { color: #55735B; } .rd .rd-cmp-row--hl.tone-good .rd-cmp-row__v { color: #3E6B47; }
+.rd .rd-cmp-row--hl.tone-limit { background: #FBE4DE; border-top: 2px solid #E0897B; }
+.rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__k { color: #9C5342; } .rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__v { color: #B5341A; }
+.rd .rd-cmp-row--hl.tone-neutral { background: #F7F2E8; border-top: 2px solid #D8CFBD; }
+.rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__k { color: #716A60; } .rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__v { color: #211B15; }
+.rd .rd-cmp-verdict { margin-top: 12px; text-align: center; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #95270F; background: #F8D2C4; border: 1px solid #EBAF9B; border-radius: 999px; padding: 9px 18px; }
+@media (max-width: 560px) { .rd .rd-blk-compare .rd-cmp-grid { grid-template-columns: 1fr !important; } }
+/* MRB-124 — feature-cards clip at narrow width: repeat(auto-fit,minmax(210px,1fr))
+   demands 2×210px+gap on a ~400px viewport, so a second track overflows and drags
+   the whole page into horizontal scroll. Stack to a single column at the same
+   breakpoint the compare-cards use. Later source order → wins over the base rule. */
+@media (max-width: 560px) { .rd .rd-blk-feature { grid-template-columns: 1fr; } }
+/* step-sequence */
+.rd .rd-blk-steps { display: flex; flex-direction: column; gap: 8px; }
+.rd .rd-step { display: flex; gap: 14px; align-items: flex-start; background: #F7F2E8; border-radius: 12px; padding: 13px 16px; }
+.rd .rd-step__n { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14px * var(--rd-fs-scale, 1)); color: #fff; background: #C0392B; min-width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+.rd .rd-step__t { font-size: calc(14.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; padding-top: 3px; }
+/* example-callout */
+.rd .rd-blk-example { background: #FBEEE9; border-left: 4px solid #C0392B; border-radius: 12px; padding: 16px 20px; }
+.rd .rd-blk-example__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rd .rd-blk-example__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15.5px * var(--rd-fs-scale, 1)); color: #B5341A; }
+.rd .rd-blk-example__lines { display: flex; flex-direction: column; gap: 5px; }
+.rd .rd-blk-example__lines div { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.5; color: #3A2A26; }
+/* aside-callout */
+.rd .rd-blk-aside { background: #F6E9CE; border-left: 4px solid #C7861F; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-aside b { display: block; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #7A5510; margin-bottom: 4px; }
+.rd .rd-blk-aside__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A1E; }
+/* examiner-tip — exam-technique callout. Amber/gold with its own left-border,
+   deliberately distinct from the red example-callout (#C0392B), the red Common
+   Mistake, and the burnt-orange brand accent (--accent-strong). */
+.rd .rd-blk-examiner { background: #FEF6E0; border-left: 4px solid #E0A21A; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-examiner__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-blk-examiner__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #8A5E0A; }
+.rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
+.rd .rd-blk-examiner__body b { color: #6E4A00; }
+
 </style>
 </head>
 <body class="rd">
@@ -82,16 +144,7 @@ html { background: var(--surface-page); }
 
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
-    <div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">What Are Giant Covalent Structures?</h4>
-  <div class='theory-line'>GIANT COVALENT STRUCTURES (also called macromolecular or network structures) are substances where a VERY LARGE NUMBER of atoms are all joined together by COVALENT BONDS throughout the entire structure.</div><div class='theory-gap'></div><div class='theory-line'>Unlike simple molecules (discrete, small), giant covalent structures have no individual molecules — the covalent bonding extends in all directions throughout the solid.</div><div class='theory-gap'></div><div class='theory-line'>Because the structure consists entirely of strong covalent bonds:</div><div class='theory-line'>VERY HIGH melting and boiling points (must break many strong covalent bonds).</div><div class='theory-line'>Very HARD — rigid structure.</div><div class='theory-line'>Generally do NOT conduct electricity (no free electrons or ions).</div><div class='theory-gap'></div><div class='theory-line'>Examples of giant covalent structures:</div><div class='theory-line'>Diamond (carbon)</div><div class='theory-line'>Graphite (carbon)</div><div class='theory-line'>Silicon dioxide (SiO₂) — quartz/sand</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Diamond</h4>
-  <div class='theory-line'>DIAMOND is a form (allotrope) of CARBON.</div><div class='theory-gap'></div><div class='theory-line'>Structure:</div><div class='theory-line'>Each carbon atom is bonded to FOUR other carbon atoms — in a TETRAHEDRAL arrangement.</div><div class='theory-line'>Every carbon uses all 4 outer electrons for bonding.</div><div class='theory-line'>The result is an extremely strong, rigid 3D lattice of covalent bonds.</div><div class='theory-line'>No free electrons — all electrons are in bonds.</div><div class='theory-gap'></div><div class='theory-line'>Properties and explanations:</div><div class='theory-line'>VERY HIGH MELTING POINT: must break many strong C-C covalent bonds throughout the lattice.</div><div class='theory-line'>VERY HARD — hardest natural substance on Earth: rigid 3D lattice, all atoms held firmly in all directions.</div><div class='theory-line'>DOES NOT CONDUCT ELECTRICITY: all 4 outer electrons are used in covalent bonds — no free electrons to carry charge.</div><div class='theory-line'>TRANSPARENT: interacts uniquely with light due to its bonding structure.</div><div class='theory-gap'></div><div class='theory-line'>USES: cutting tools (drill bits, saw blades), gemstones (jewellery), abrasives.</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Graphite</h4>
-  <div class='theory-line'>GRAPHITE is another allotrope of CARBON — same element, completely different structure and properties.</div><div class='theory-gap'></div><div class='theory-line'>Structure:</div><div class='theory-line'>Each carbon atom is bonded to THREE other carbon atoms — forming flat HEXAGONAL RINGS.</div><div class='theory-line'>These hexagons form large flat SHEETS (layers).</div><div class='theory-line'>The layers are held together only by WEAK intermolecular forces — they can slide over each other.</div><div class='theory-line'>The FOURTH outer electron from each carbon is NOT used in bonding — these electrons are DELOCALISED between the layers.</div><div class='theory-gap'></div><div class='theory-line'>Properties and explanations:</div><div class='theory-line'>HIGH MELTING POINT: strong covalent bonds within each layer must be broken.</div><div class='theory-line'>SLIPPERY / SOFT: layers can slide over each other easily (weak forces between layers).</div><div class='theory-line'>CONDUCTS ELECTRICITY: delocalised electrons between layers are free to move and carry charge.</div><div class='theory-line'>GREY/BLACK and OPAQUE: absorbs light.</div><div class='theory-gap'></div><div class='theory-line'>USES: pencil leads (layers slide off onto paper), lubricants, electrodes in electrolysis (conducts, unreactive), electrical contacts.</div>
-</div>
+    <div class="rd-blocks"><p class="rd-blk-lead">Giant covalent structures (also called macromolecular) are substances where a huge number of atoms are all joined by <b>covalent bonds throughout</b> the whole structure — there are no separate molecules. Examples: diamond, graphite and silicon dioxide (SiO₂).</p><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🌡️</span><b>Very high melting point</b></div><div class="rd-fcard__body">Melting means breaking millions of strong covalent bonds, which takes a lot of energy.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">💎</span><b>Very hard &amp; rigid</b></div><div class="rd-fcard__body">A rigid 3-D network of strong bonds holds every atom firmly in place.</div></div><div class="rd-fcard rd-fcard--limit"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🚫</span><b>Usually don't conduct</b></div><div class="rd-fcard__body">Most have no free electrons or ions to carry charge — graphite is the exception.</div></div></div><div class="rd-blk-compare"><div class="rd-cmp-grid" style="grid-template-columns:repeat(2,1fr);"><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">💎</span><b>Diamond</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Bonds per carbon</span><span class="rd-cmp-row__v">4 — rigid 3-D tetrahedral lattice</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Free electrons</span><span class="rd-cmp-row__v">None (all 4 used in bonds)</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Conducts electricity?</span><span class="rd-cmp-row__v">No</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Hardness</span><span class="rd-cmp-row__v">Hardest natural substance</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">✏️</span><b>Graphite</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Bonds per carbon</span><span class="rd-cmp-row__v">3 — flat hexagonal layers</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Free electrons</span><span class="rd-cmp-row__v">1 delocalised per carbon</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Conducts electricity?</span><span class="rd-cmp-row__v">Yes</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Hardness</span><span class="rd-cmp-row__v">Soft &amp; slippery (layers slide)</span></div></div></div><div class="rd-cmp-verdict">Both are pure carbon. The spare 4th electron and the sliding layers are why graphite conducts and is soft, while diamond does neither.</div></div><div class="rd-blk-example"><div class="rd-blk-example__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🛠️</span><b>Uses</b></div><div class="rd-blk-example__lines"><div>Diamond: cutting tools, drill bits, gemstones, abrasives (very hard).</div><div>Graphite: pencil leads and lubricants (layers slide); electrodes in electrolysis (conducts, unreactive).</div></div></div></div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
   <p style="font-size:0.9rem;line-height:1.7;">Students often assume that because diamond and graphite are both giant covalent structures made of carbon, they must have the same properties. They do not: graphite conducts electricity and is soft and slippery, while diamond does not conduct and is extremely hard. The difference is that in graphite each carbon bonds to only three others, leaving one delocalised electron per atom and weak forces between layers; in diamond every carbon bonds to four others with no free electrons.</p>
@@ -395,18 +448,13 @@ try {
 } catch(e) {}
 </script>
   
-  <script src="/shared/heroes/two-state-compare.js"></script>
   <script src="/shared/heroes/categorise-bins.js"></script>
+  <script src="/shared/heroes/two-state-compare.js"></script>
   <script src="/shared/heroes/bonding-configs.js"></script>
   <script>
-  (function(){
-    var cfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['giant-covalent-structures'];
-    var host = document.getElementById('hero-giant-covalent-structures');
-    if (cfg && host && window.MrbHeroes && MrbHeroes.twoStateCompare) MrbHeroes.twoStateCompare.init(host, cfg);
-    var binCfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['giant-covalent-structures-bins'];
-    var binHost = document.getElementById('bins-giant-covalent-structures');
-    if (binCfg && binHost && window.MrbHeroes && MrbHeroes.categoriseBins) MrbHeroes.categoriseBins.init(binHost, binCfg);
-  })();
+    (function(){var binCfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['giant-covalent-structures-bins'];var binHost=document.getElementById('bins-giant-covalent-structures');if(binCfg&&binHost&&window.MrbHeroes&&MrbHeroes.categoriseBins)MrbHeroes.categoriseBins.init(binHost,binCfg);})();
+    (function(){var cfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['giant-covalent-structures'];var host=document.getElementById('hero-giant-covalent-structures');if(cfg&&host&&window.MrbHeroes&&MrbHeroes.twoStateCompare)MrbHeroes.twoStateCompare.init(host,cfg);})();
+
   </script>
 </body>
 </html>

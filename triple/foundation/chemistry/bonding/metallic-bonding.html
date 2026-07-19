@@ -19,8 +19,94 @@ html { background: var(--bg); }
 :root { --subject: #B02342; }
 </style>
   
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Redesign — page-scoped chrome (bonding · block page) */
+html { background: var(--surface-page); }
+.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
+.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
+.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
+.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
+.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
+.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
+/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
+.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
+.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
+.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
+.rd .quiz-opt:disabled { pointer-events: none; }
+.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
+.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
+.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
+
+/* Theory Block Library — static blocks (MRB-113 Phase B) */
+.rd .rd-blocks { display: flex; flex-direction: column; gap: 18px; }
+.rd .rd-blk-lead { margin: 0; font-family: var(--font-body,sans-serif); font-size: calc(16.5px * var(--rd-fs-scale, 1)); line-height: 1.6; color: #211B15; max-width: 72ch; }
+.rd .rd-blk-lead b { color: var(--ink,#1A1714); }
+/* feature-cards */
+.rd .rd-blk-feature { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+.rd .rd-fcard { border-radius: 14px; padding: 16px 18px; border: 1px solid; }
+.rd .rd-fcard__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-fcard__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); line-height: 1.3; }
+.rd .rd-fcard__body { font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; }
+.rd .rd-fcard--good { background: #E7F3EA; border-color: #B9DCC1; }
+.rd .rd-fcard--good .rd-fcard__hd b { color: #3E6B47; }
+.rd .rd-fcard--limit { background: #FBE4DE; border-color: #EFC0B4; }
+.rd .rd-fcard--limit .rd-fcard__hd b { color: #B5341A; }
+.rd .rd-fcard--neutral { background: #F7F2E8; border-color: #E4DCCB; }
+.rd .rd-fcard--neutral .rd-fcard__hd b { color: #B5341A; }
+/* compare-cards */
+.rd .rd-blk-compare .rd-cmp-grid { display: grid; gap: 14px; }
+.rd .rd-cmp-col { background: #FFFDF8; border: 1px solid #E4DCCB; border-radius: 16px; overflow: hidden; }
+.rd .rd-cmp-col__hd { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #EFE7D8; background: #F7F2E8; }
+.rd .rd-cmp-col__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(17px * var(--rd-fs-scale, 1)); color: #1A1714; }
+.rd .rd-cmp-row { display: flex; flex-direction: column; gap: 2px; padding: 11px 18px; border-bottom: 1px solid #F2ECDD; }
+.rd .rd-cmp-row:last-child { border-bottom: none; }
+.rd .rd-cmp-row__k { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .06em; color: #716A60; text-transform: uppercase; }
+.rd .rd-cmp-row__v { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #211B15; line-height: 1.35; }
+.rd .rd-cmp-row--hl { padding: 12px 18px; }
+.rd .rd-cmp-row--hl.tone-good { background: #E7F3EA; border-top: 2px solid #7FB98A; }
+.rd .rd-cmp-row--hl.tone-good .rd-cmp-row__k { color: #55735B; } .rd .rd-cmp-row--hl.tone-good .rd-cmp-row__v { color: #3E6B47; }
+.rd .rd-cmp-row--hl.tone-limit { background: #FBE4DE; border-top: 2px solid #E0897B; }
+.rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__k { color: #9C5342; } .rd .rd-cmp-row--hl.tone-limit .rd-cmp-row__v { color: #B5341A; }
+.rd .rd-cmp-row--hl.tone-neutral { background: #F7F2E8; border-top: 2px solid #D8CFBD; }
+.rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__k { color: #716A60; } .rd .rd-cmp-row--hl.tone-neutral .rd-cmp-row__v { color: #211B15; }
+.rd .rd-cmp-verdict { margin-top: 12px; text-align: center; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14.5px * var(--rd-fs-scale, 1)); color: #95270F; background: #F8D2C4; border: 1px solid #EBAF9B; border-radius: 999px; padding: 9px 18px; }
+@media (max-width: 560px) { .rd .rd-blk-compare .rd-cmp-grid { grid-template-columns: 1fr !important; } }
+/* MRB-124 — feature-cards clip at narrow width: repeat(auto-fit,minmax(210px,1fr))
+   demands 2×210px+gap on a ~400px viewport, so a second track overflows and drags
+   the whole page into horizontal scroll. Stack to a single column at the same
+   breakpoint the compare-cards use. Later source order → wins over the base rule. */
+@media (max-width: 560px) { .rd .rd-blk-feature { grid-template-columns: 1fr; } }
+/* step-sequence */
+.rd .rd-blk-steps { display: flex; flex-direction: column; gap: 8px; }
+.rd .rd-step { display: flex; gap: 14px; align-items: flex-start; background: #F7F2E8; border-radius: 12px; padding: 13px 16px; }
+.rd .rd-step__n { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(14px * var(--rd-fs-scale, 1)); color: #fff; background: #C0392B; min-width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex: none; }
+.rd .rd-step__t { font-size: calc(14.5px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #211B15; padding-top: 3px; }
+/* example-callout */
+.rd .rd-blk-example { background: #FBEEE9; border-left: 4px solid #C0392B; border-radius: 12px; padding: 16px 20px; }
+.rd .rd-blk-example__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.rd .rd-blk-example__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15.5px * var(--rd-fs-scale, 1)); color: #B5341A; }
+.rd .rd-blk-example__lines { display: flex; flex-direction: column; gap: 5px; }
+.rd .rd-blk-example__lines div { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.5; color: #3A2A26; }
+/* aside-callout */
+.rd .rd-blk-aside { background: #F6E9CE; border-left: 4px solid #C7861F; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-aside b { display: block; font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #7A5510; margin-bottom: 4px; }
+.rd .rd-blk-aside__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A1E; }
+/* examiner-tip — exam-technique callout. Amber/gold with its own left-border,
+   deliberately distinct from the red example-callout (#C0392B), the red Common
+   Mistake, and the burnt-orange brand accent (--accent-strong). */
+.rd .rd-blk-examiner { background: #FEF6E0; border-left: 4px solid #E0A21A; border-radius: 12px; padding: 15px 20px; }
+.rd .rd-blk-examiner__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.rd .rd-blk-examiner__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #8A5E0A; }
+.rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
+.rd .rd-blk-examiner__body b { color: #6E4A00; }
+
+</style>
 </head>
-<body class="">
+<body class="rd">
   <nav class="nav">
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   <div class="nav-crumbs">
@@ -51,18 +137,14 @@ html { background: var(--bg); }
 
 <div class="content-area">
 
+  <div class="rd-hero-slot">
+    <div class="rd-hero-kicker">🔬 Interactive · electron sea on / off</div>
+    <div id="hero-metallic-bonding"></div>
+  </div>
+
   <div class="section">
     <div class="section-title">📖 In-Depth Theory</div>
-    <div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">The Metallic Bonding Model</h4>
-  <div class='theory-line'>METALLIC BONDING occurs in METALS (and alloys).</div><div class='theory-gap'></div><div class='theory-line'>The model:</div><div class='theory-line'>1. Metal atoms release their OUTER ELECTRONS — these electrons become DELOCALISED, meaning they are free to move throughout the entire metal structure.</div><div class='theory-line'>2. The metal atoms become POSITIVE IONS (they've lost electrons).</div><div class='theory-line'>3. The positive metal ions are arranged in a regular LATTICE structure.</div><div class='theory-line'>4. The DELOCALISED ELECTRONS move freely between and around the positive ions — forming a 'SEA OF ELECTRONS'.</div><div class='theory-line'>5. STRONG ELECTROSTATIC ATTRACTION between the positive ions and the negative electron sea holds the metal together — THIS IS THE METALLIC BOND.</div><div class='theory-gap'></div><div class='theory-line'>This model is sometimes called the 'electron sea model' — you can picture metal ions floating in a sea of freely moving electrons.</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Properties Explained by Metallic Bonding</h4>
-  <div class='theory-line'>The metallic bonding model explains ALL key metal properties:</div><div class='theory-gap'></div><div class='theory-line'>HIGH MELTING AND BOILING POINTS:</div><div class='theory-line'>Strong electrostatic forces between many positive ions and the electron sea.</div><div class='theory-line'>A lot of energy needed to overcome these forces.</div><div class='theory-line'>Tungsten (W): melts at 3422°C — one of the highest melting metals.</div><div class='theory-gap'></div><div class='theory-line'>GOOD ELECTRICAL CONDUCTORS:</div><div class='theory-line'>Delocalised electrons can move freely through the structure.</div><div class='theory-line'>When a voltage is applied, electrons flow — carrying charge.</div><div class='theory-gap'></div><div class='theory-line'>GOOD THERMAL CONDUCTORS:</div><div class='theory-line'>Delocalised electrons also carry thermal (heat) energy rapidly through the structure.</div><div class='theory-gap'></div><div class='theory-line'>MALLEABLE (can be hammered into shapes):</div><div class='theory-line'>Layers of positive ions can SLIDE past each other without breaking the metallic bond — the electron sea re-surrounds the ions in any new position.</div><div class='theory-gap'></div><div class='theory-line'>DUCTILE (can be drawn into wires):</div><div class='theory-line'>Same reason — ion layers slide without the structure breaking.</div>
-</div><div class="card" style="margin-bottom:14px;">
-  <h4 style="margin-bottom:10px;font-size:1rem;">Alloys</h4>
-  <div class='theory-line'>ALLOYS are MIXTURES of metals (or a metal with a small amount of another element — sometimes carbon).</div><div class='theory-gap'></div><div class='theory-line'>Why alloys are often harder and stronger than pure metals:</div><div class='theory-line'>In a PURE METAL, all ions are the same size — layers of ions can slide over each other easily (making the metal soft and malleable).</div><div class='theory-line'>In an ALLOY, different sized atoms are introduced — they DISRUPT the regular lattice.</div><div class='theory-line'>The different-sized atoms prevent layers from sliding as easily → the alloy is HARDER and STRONGER than the pure metal.</div><div class='theory-gap'></div><div class='theory-line'>Examples of alloys and their uses:</div><div class='theory-line'>STEEL (iron + carbon) — harder than pure iron — used in construction, tools, cars.</div><div class='theory-line'>BRONZE (copper + tin) — harder than pure copper — used in sculptures, coins, bearings.</div><div class='theory-line'>BRASS (copper + zinc) — harder than pure copper — used in musical instruments, door fittings.</div><div class='theory-line'>ALUMINIUM ALLOYS (aluminium + various elements) — strong and lightweight — used in aircraft.</div>
-</div>
+    <div class="rd-blocks"><p class="rd-blk-lead">Metallic bonding occurs in metals and alloys — a regular lattice of positive metal ions surrounded by a shared sea of <b>delocalised electrons</b>.</p><div class="rd-blk-steps"><div class="rd-step"><span class="rd-step__n">1</span><span class="rd-step__t">Metal atoms release their outer electrons, which become delocalised — free to move through the whole structure.</span></div><div class="rd-step"><span class="rd-step__n">2</span><span class="rd-step__t">Each atom that lost electrons is now a positive metal ion.</span></div><div class="rd-step"><span class="rd-step__n">3</span><span class="rd-step__t">The positive ions sit in a regular lattice.</span></div><div class="rd-step"><span class="rd-step__n">4</span><span class="rd-step__t">The delocalised electrons move freely between and around the ions — the 'sea of electrons'.</span></div><div class="rd-step"><span class="rd-step__n">5</span><span class="rd-step__t">Strong electrostatic attraction between the positive ions and the electron sea holds the metal together — this IS the metallic bond.</span></div></div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🌡️</span><b>High melting &amp; boiling point</b></div><div class="rd-fcard__body">Strong forces between the many positive ions and the electron sea take a lot of energy to overcome.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚡</span><b>Conducts electricity</b></div><div class="rd-fcard__body">Delocalised electrons are free to move and carry charge through the structure.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔥</span><b>Conducts heat</b></div><div class="rd-fcard__body">The same delocalised electrons transfer thermal energy rapidly through the metal.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔨</span><b>Malleable &amp; ductile</b></div><div class="rd-fcard__body">Layers of ions slide and the electron sea re-surrounds them, so metals bend and draw into wires without breaking.</div></div></div><div class="rd-blk-example"><div class="rd-blk-example__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🧱</span><b>Example — why alloys are harder</b></div><div class="rd-blk-example__lines"><div>In a pure metal every ion is the same size, so layers slide easily → soft.</div><div>An alloy mixes in different-sized atoms that disrupt the regular lattice.</div><div>The layers can no longer slide as easily → the alloy is harder and stronger (steel, bronze, brass).</div></div></div></div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
   <p style="font-size:0.9rem;line-height:1.7;">Students often say the metallic bond is an attraction between neighbouring metal atoms. It is not between atoms: the metal atoms lose their outer electrons to become positive ions, and the bond is the strong electrostatic attraction between those positive ions and the surrounding sea of delocalised electrons. That electron sea is also why metals bend rather than shatter — the layers of ions can slide while the sea holds everything together.</p>
@@ -75,10 +157,7 @@ html { background: var(--bg); }
   <div class="section-title">📌 Key Note</div>
   <div class="keynote-box"><p>Metallic bonding: positive metal ions in a lattice + sea of delocalised electrons. High MP/BP (strong electrostatic forces). Conducts electricity and heat (delocalised electrons move freely). Malleable/ductile (layers slide, electron sea remains). Alloys harder — different sized atoms disrupt regular lattice.</p></div>
 </div>
-  <div class="section">
-  <div class="section-title">⭐ Examiner Tip</div>
-  <div class="examiner-box"><p>Be precise: the metallic bond is the attraction between the positive metal ions and the sea of delocalised electrons — not an attraction "between atoms". Use "delocalised electrons" to explain conduction and "layers of ions slide" to explain why metals bend rather than shatter.</p></div>
-</div>
+  <div class="section"><div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">Be precise: the metallic bond is the attraction between the positive metal ions and the sea of delocalised electrons — not an attraction "between atoms". Use "delocalised electrons" to explain conduction and "layers of ions slide" to explain why metals bend rather than shatter.</div></div></div>
   <div class="section">
   <div class="section-title">🎯 Matching Activity — Metallic Property — Structural Explanation</div>
   <div class="card">
@@ -125,113 +204,110 @@ html { background: var(--bg); }
   
   <div class="section">
   <div class="section-title">🎯 Test Yourself</div>
-  <div class="quiz-progress" id="quizProgress">Question 1 of 12</div>
-  <div class="quiz-card" id="qcard-0" data-answer="2" data-wrong-exp='{0: "Proton number sets an element\'s identity, not its conductivity — many non-metals have lots of protons but do not conduct.",1: "The positive ions are held in the lattice; it is the mobile delocalised electrons that carry charge.",3: "Conduction comes from the free electrons moving, not from the fixed ions.",}'>
+  <div class="quiz-progress" id="quizProgress">Answer all 12 questions, then check your answers.</div>
+  <div class="quiz-card" id="qcard-0">
   <div class="q-text">1. Explain why metals are good conductors of electricity.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-oi="0">They have more protons than non-metals, which conduct the current</button>
-<button class="quiz-opt" data-qi="0" data-oi="1">Their positive ions move through the metal to carry the current</button>
-<button class="quiz-opt" data-qi="0" data-oi="2">They contain delocalised electrons that are free to move through the structure and carry charge</button>
-<button class="quiz-opt" data-qi="0" data-oi="3">The regular lattice lets electrical signals jump between fixed ions</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-correct="1">They contain delocalised electrons that are free to move through the structure and carry charge</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="The positive ions are held in the lattice; it is the mobile delocalised electrons that carry charge.">Their positive ions move through the metal to carry the current</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Proton number sets an element's identity, not its conductivity — many non-metals have lots of protons but do not conduct.">They have more protons than non-metals, which conduct the current</button>
+<button class="quiz-opt" data-qi="0" data-wrong-exp="Conduction comes from the free electrons moving, not from the fixed ions.">The regular lattice lets electrical signals jump between fixed ions</button>
 </div>
   <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1" data-answer="0" data-wrong-exp='{1: "Carbon does occupy spaces, but the hardening comes specifically from preventing the layers from sliding.",2: "Steel is iron made LESS pure (carbon added); it is the added, differently-sized atoms that harden it.",3: "There may be more atoms overall, but the KEY reason is the disruption of the lattice by different-sized atoms.",}'>
+</div><div class="quiz-card" id="qcard-1">
   <div class="q-text">2. Explain why steel is harder than pure iron.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-oi="0">The added carbon atoms are a different size to the iron atoms, so they distort the regular lattice and stop the layers of ions sliding</button>
-<button class="quiz-opt" data-qi="1" data-oi="1">The carbon atoms fill the gaps, which increases the density and hardness</button>
-<button class="quiz-opt" data-qi="1" data-oi="2">Steel is purer than iron, and purer metals are always harder</button>
-<button class="quiz-opt" data-qi="1" data-oi="3">Steel contains more electrons, which makes stronger metallic bonds</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-correct="1">The added carbon atoms are a different size to the iron atoms, so they distort the regular lattice and stop the layers of ions sliding</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="There may be more atoms overall, but the KEY reason is the disruption of the lattice by different-sized atoms.">Steel contains more electrons, which makes stronger metallic bonds</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Carbon does occupy spaces, but the hardening comes specifically from preventing the layers from sliding.">The carbon atoms fill the gaps, which increases the density and hardness</button>
+<button class="quiz-opt" data-qi="1" data-wrong-exp="Steel is iron made LESS pure (carbon added); it is the added, differently-sized atoms that harden it.">Steel is purer than iron, and purer metals are always harder</button>
 </div>
   <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2" data-answer="2" data-wrong-exp='{0: "Alternating positive and negative ions describes an IONIC lattice, not a metal.",1: "Metals are giant structures, not separate molecules.",3: "Metals do not share pairs in covalent bonds; their outer electrons are delocalised.",}'>
+</div><div class="quiz-card" id="qcard-2">
   <div class="q-text">3. Describe the structure of a metal according to the metallic bonding model.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-oi="0">A giant lattice of alternating positive and negative ions</button>
-<button class="quiz-opt" data-qi="2" data-oi="1">Separate metal molecules held by weak intermolecular forces</button>
-<button class="quiz-opt" data-qi="2" data-oi="2">A regular lattice of positive metal ions surrounded by a sea of delocalised electrons</button>
-<button class="quiz-opt" data-qi="2" data-oi="3">Neutral metal atoms sharing pairs of electrons in covalent bonds</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-correct="1">A regular lattice of positive metal ions surrounded by a sea of delocalised electrons</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Alternating positive and negative ions describes an IONIC lattice, not a metal.">A giant lattice of alternating positive and negative ions</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Metals are giant structures, not separate molecules.">Separate metal molecules held by weak intermolecular forces</button>
+<button class="quiz-opt" data-qi="2" data-wrong-exp="Metals do not share pairs in covalent bonds; their outer electrons are delocalised.">Neutral metal atoms sharing pairs of electrons in covalent bonds</button>
 </div>
   <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3" data-answer="0" data-wrong-exp='{1: "The ions stay in a solid lattice; they slide as layers rather than flowing freely.",2: "The electrons hold the ions together; they do not push them apart.",3: "The bonding does not break — the electron sea keeps holding the ions together as the layers slide.",}'>
+</div><div class="quiz-card" id="qcard-3">
   <div class="q-text">4. Explain why metals are malleable (can be hammered into shape).</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-oi="0">The layers of positive ions can slide over one another, and the electron sea re-surrounds them in their new positions without the bonding breaking</button>
-<button class="quiz-opt" data-qi="3" data-oi="1">The ions are so small that they simply flow like a liquid</button>
-<button class="quiz-opt" data-qi="3" data-oi="2">The delocalised electrons push the ions apart to let them move</button>
-<button class="quiz-opt" data-qi="3" data-oi="3">The metallic bonds break and then instantly reform as new bonds</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-correct="1">The layers of positive ions can slide over one another, and the electron sea re-surrounds them in their new positions without the bonding breaking</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="The bonding does not break — the electron sea keeps holding the ions together as the layers slide.">The metallic bonds break and then instantly reform as new bonds</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="The electrons hold the ions together; they do not push them apart.">The delocalised electrons push the ions apart to let them move</button>
+<button class="quiz-opt" data-qi="3" data-wrong-exp="The ions stay in a solid lattice; they slide as layers rather than flowing freely.">The ions are so small that they simply flow like a liquid</button>
 </div>
   <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4" data-answer="1" data-wrong-exp='{0: "There ARE strong forces — that is exactly why the melting point is high.",2: "Electrons have almost no mass; the high melting point is due to the strength of the attraction, not electron mass.",3: "Metals do not contain covalent bonds; the metallic bond is the ion-to-electron-sea attraction.",}'>
+</div><div class="quiz-card" id="qcard-4">
   <div class="q-text">5. Explain why metals have high melting points.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-oi="0">Metal atoms are simply packed together with no forces to overcome</button>
-<button class="quiz-opt" data-qi="4" data-oi="1">There is strong electrostatic attraction between the many positive ions and the sea of delocalised electrons, so a lot of energy is needed to overcome it</button>
-<button class="quiz-opt" data-qi="4" data-oi="2">The delocalised electrons are very heavy</button>
-<button class="quiz-opt" data-qi="4" data-oi="3">Metals contain strong covalent bonds throughout</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-correct="1">There is strong electrostatic attraction between the many positive ions and the sea of delocalised electrons, so a lot of energy is needed to overcome it</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="Metals do not contain covalent bonds; the metallic bond is the ion-to-electron-sea attraction.">Metals contain strong covalent bonds throughout</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="Electrons have almost no mass; the high melting point is due to the strength of the attraction, not electron mass.">The delocalised electrons are very heavy</button>
+<button class="quiz-opt" data-qi="4" data-wrong-exp="There ARE strong forces — that is exactly why the melting point is high.">Metal atoms are simply packed together with no forces to overcome</button>
 </div>
   <div class="quiz-fb" id="qfb-4"></div>
-</div><div class="quiz-card" id="qcard-5" data-answer="3" data-wrong-exp='{0: "The atoms have become fixed positive ions; it is their outer electrons that are free.",1: "The positive ions are fixed in the lattice; only the electrons are free to move.",2: "Neutrons are locked in the nuclei and never move freely.",}'>
+</div><div class="quiz-card" id="qcard-5">
   <div class="q-text">6. Name the particles that are free to move in a metal.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-oi="0">Whole atoms</button>
-<button class="quiz-opt" data-qi="5" data-oi="1">Positive ions</button>
-<button class="quiz-opt" data-qi="5" data-oi="2">Neutrons</button>
-<button class="quiz-opt" data-qi="5" data-oi="3">Delocalised electrons</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-correct="1">Delocalised electrons</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="The positive ions are fixed in the lattice; only the electrons are free to move.">Positive ions</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="Neutrons are locked in the nuclei and never move freely.">Neutrons</button>
+<button class="quiz-opt" data-qi="5" data-wrong-exp="The atoms have become fixed positive ions; it is their outer electrons that are free.">Whole atoms</button>
 </div>
   <div class="quiz-fb" id="qfb-5"></div>
-</div><div class="quiz-card" id="qcard-6" data-answer="3" data-wrong-exp='{0: "A pure metal is the opposite of an alloy; an alloy is deliberately mixed.",1: "All metals contain delocalised electrons; that is not what defines an alloy.",2: "An alloy is a MIXTURE, not a chemically bonded compound.",}'>
+</div><div class="quiz-card" id="qcard-6">
   <div class="q-text">7. State what is meant by an alloy.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-oi="0">A very pure sample of a single metal</button>
-<button class="quiz-opt" data-qi="6" data-oi="1">A metal that contains no electrons</button>
-<button class="quiz-opt" data-qi="6" data-oi="2">A compound of a metal and a non-metal</button>
-<button class="quiz-opt" data-qi="6" data-oi="3">A mixture of a metal with one or more other elements</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-correct="1">A mixture of a metal with one or more other elements</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="A pure metal is the opposite of an alloy; an alloy is deliberately mixed.">A very pure sample of a single metal</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="An alloy is a MIXTURE, not a chemically bonded compound.">A compound of a metal and a non-metal</button>
+<button class="quiz-opt" data-qi="6" data-wrong-exp="All metals contain delocalised electrons; that is not what defines an alloy.">A metal that contains no electrons</button>
 </div>
   <div class="quiz-fb" id="qfb-6"></div>
-</div><div class="quiz-card" id="qcard-7" data-answer="2" data-wrong-exp='{0: "Most metals have HIGH melting points and are dense.",1: "Conducting only when molten describes ionic compounds, not metals (metals conduct as solids).",3: "Metals are malleable, not brittle, and they conduct rather than insulate.",}'>
+</div><div class="quiz-card" id="qcard-7">
   <div class="q-text">8. Identify a pair of properties of metals that both result from metallic bonding.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-oi="0">Low melting point and low density in every case</button>
-<button class="quiz-opt" data-qi="7" data-oi="1">Dissolving in water and conducting only when molten</button>
-<button class="quiz-opt" data-qi="7" data-oi="2">Good electrical conductivity and malleability</button>
-<button class="quiz-opt" data-qi="7" data-oi="3">Being brittle and being an electrical insulator</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-correct="1">Good electrical conductivity and malleability</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Metals are malleable, not brittle, and they conduct rather than insulate.">Being brittle and being an electrical insulator</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Most metals have HIGH melting points and are dense.">Low melting point and low density in every case</button>
+<button class="quiz-opt" data-qi="7" data-wrong-exp="Conducting only when molten describes ionic compounds, not metals (metals conduct as solids).">Dissolving in water and conducting only when molten</button>
 </div>
   <div class="quiz-fb" id="qfb-7"></div>
-</div><div class="quiz-card" id="qcard-8" data-answer="1" data-wrong-exp='{0: "The ion charge is fixed at positive; it is the electrons that move.",2: "If the ions were neutral there would be nothing for the electron sea to attract.",3: "The ions are positive because the atoms have LOST electrons into the sea.",}'>
+</div><div class="quiz-card" id="qcard-8">
   <div class="q-text">9. State the charge on the metal ions in the metallic bonding model.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-oi="0">It changes constantly</button>
-<button class="quiz-opt" data-qi="8" data-oi="1">Positive</button>
-<button class="quiz-opt" data-qi="8" data-oi="2">Neutral (no charge)</button>
-<button class="quiz-opt" data-qi="8" data-oi="3">Negative</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-correct="1">Positive</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="The ions are positive because the atoms have LOST electrons into the sea.">Negative</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="If the ions were neutral there would be nothing for the electron sea to attract.">Neutral (no charge)</button>
+<button class="quiz-opt" data-qi="8" data-wrong-exp="The ion charge is fixed at positive; it is the electrons that move.">It changes constantly</button>
 </div>
   <div class="quiz-fb" id="qfb-8"></div>
-</div><div class="quiz-card" id="qcard-9" data-answer="0" data-wrong-exp='{1: "The hardening is about lattice disruption, not the number of electrons.",2: "Alloys are LESS pure (they are mixtures), which is exactly why they are harder.",3: "Alloys still have metallic bonding — that is why they remain conductive and are still metals.",}'>
+</div><div class="quiz-card" id="qcard-9">
   <div class="q-text">10. Identify why alloys are generally harder than the pure metals they are made from.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-oi="0">The different-sized atoms disrupt the regular lattice so the layers cannot slide as easily</button>
-<button class="quiz-opt" data-qi="9" data-oi="1">Alloys contain many more delocalised electrons</button>
-<button class="quiz-opt" data-qi="9" data-oi="2">Alloys are purer than the original metal</button>
-<button class="quiz-opt" data-qi="9" data-oi="3">Alloys have no metallic bonding, so they are more rigid</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-correct="1">The different-sized atoms disrupt the regular lattice so the layers cannot slide as easily</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="The hardening is about lattice disruption, not the number of electrons.">Alloys contain many more delocalised electrons</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Alloys are LESS pure (they are mixtures), which is exactly why they are harder.">Alloys are purer than the original metal</button>
+<button class="quiz-opt" data-qi="9" data-wrong-exp="Alloys still have metallic bonding — that is why they remain conductive and are still metals.">Alloys have no metallic bonding, so they are more rigid</button>
 </div>
   <div class="quiz-fb" id="qfb-9"></div>
-</div><div class="quiz-card" id="qcard-10" data-answer="0" data-wrong-exp='{1: "It is the electrons that move in a metal, not the ions.",2: "Most metals are solid at room temperature and still conduct.",3: "Ionic compounds do contain charged particles (ions) — they just cannot move when solid.",}'>
+</div><div class="quiz-card" id="qcard-10">
   <div class="q-text">11. State why metals can conduct electricity when solid, unlike ionic compounds.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="10" data-oi="0">Their delocalised electrons are free to move even in the solid, whereas the ions in a solid ionic compound are fixed</button>
-<button class="quiz-opt" data-qi="10" data-oi="1">Metals contain free-moving ions in the solid</button>
-<button class="quiz-opt" data-qi="10" data-oi="2">Metals are always molten at room temperature</button>
-<button class="quiz-opt" data-qi="10" data-oi="3">Ionic compounds have no charged particles</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="10" data-correct="1">Their delocalised electrons are free to move even in the solid, whereas the ions in a solid ionic compound are fixed</button>
+<button class="quiz-opt" data-qi="10" data-wrong-exp="It is the electrons that move in a metal, not the ions.">Metals contain free-moving ions in the solid</button>
+<button class="quiz-opt" data-qi="10" data-wrong-exp="Most metals are solid at room temperature and still conduct.">Metals are always molten at room temperature</button>
+<button class="quiz-opt" data-qi="10" data-wrong-exp="Ionic compounds do contain charged particles (ions) — they just cannot move when solid.">Ionic compounds have no charged particles</button>
 </div>
   <div class="quiz-fb" id="qfb-10"></div>
-</div><div class="quiz-card" id="qcard-11" data-answer="3" data-wrong-exp='{0: "Steel is mostly iron (with a little carbon), not copper.",1: "Bronze is mostly copper (with tin), not zinc.",2: "Brass is mostly copper (with zinc), not tin.",}'>
+</div><div class="quiz-card" id="qcard-11">
   <div class="q-text">12. Identify a correct pairing of a common alloy with the main metal it is made from.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="11" data-oi="0">Steel — mostly copper</button>
-<button class="quiz-opt" data-qi="11" data-oi="1">Bronze — mostly zinc</button>
-<button class="quiz-opt" data-qi="11" data-oi="2">Brass — mostly tin</button>
-<button class="quiz-opt" data-qi="11" data-oi="3">Steel — mostly iron</button>
+  <div class="quiz-options"><button class="quiz-opt" data-qi="11" data-correct="1">Steel — mostly iron</button>
+<button class="quiz-opt" data-qi="11" data-wrong-exp="Bronze is mostly copper (with tin), not zinc.">Bronze — mostly zinc</button>
+<button class="quiz-opt" data-qi="11" data-wrong-exp="Brass is mostly copper (with zinc), not tin.">Brass — mostly tin</button>
+<button class="quiz-opt" data-qi="11" data-wrong-exp="Steel is mostly iron (with a little carbon), not copper.">Steel — mostly copper</button>
 </div>
   <div class="quiz-fb" id="qfb-11"></div>
 </div>
+  <div class="quiz-actions">
+    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
+    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+  </div>
   <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
 </div>
-<script>
-(function(){
-  const scoreMessages = ["Keep going — re-read the theory and try again. You'll get there! 📖", "Not bad — review the sections you missed and have another go. 💪", "Decent effort! A bit more revision and you'll nail it. 🔄", "Good work! Just a couple of gaps to fill. Nearly there! 🌟", "Excellent! You've really got this topic down. 🏆"];
-  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{});
-  // handled by global quiz JS below
-})();
-</script>
   <div class="section">
   <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
   <div class="card star-rating-card">
@@ -294,71 +370,116 @@ html { background: var(--bg); }
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Metallic Bonding (5.2.1.5)'});</script>
   <script>
-const SCORE_MESSAGES = [
-  "Keep going — re-read the theory and try again. You'll get there! 📖",
-  "Not bad — review the sections you missed and have another go. 💪",
-  "Decent effort! A bit more revision and you'll nail it. 🔄",
-  "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-  "Excellent! You've really got this topic down. 🏆",
-];
+(function(){
+  const SCORE_MESSAGES = [
+    "Keep going — re-read the theory and try again. You'll get there! 📖",
+    "Not bad — review the sections you missed and have another go. 💪",
+    "Decent effort! A bit more revision and you'll nail it. 🔄",
+    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
+    "Excellent! You've really got this topic down. 🏆"
+  ];
+  const cards = Array.from(document.querySelectorAll('.quiz-card'));
+  const total = cards.length;
+  if (!total) return;
+  const checkBtn = document.getElementById('quizCheckBtn');
+  const againBtn = document.getElementById('quizAgainBtn');
+  const endMsg = document.getElementById('quizEndMsg');
+  const prog = document.getElementById('quizProgress');
+  let checked = false;
 
-document.querySelectorAll('.quiz-opt').forEach(btn => {
-  btn.addEventListener('click', function() {
-    const card = this.closest('.quiz-card');
-    if (card.dataset.answered) return;
-    const correctIdx = parseInt(card.dataset.answer);
-    const clickedIdx = parseInt(this.dataset.oi);
-    const isCorrect = clickedIdx === correctIdx;
-
-    // Store whether student got THIS card right
-    card.dataset.answered = isCorrect ? 'correct' : 'wrong';
-
-    const fb = document.getElementById('qfb-' + this.dataset.qi);
-
-    card.querySelectorAll('.quiz-opt').forEach((o, idx) => {
-      if (idx === correctIdx) o.classList.add('correct');
-      else if (o === this && !isCorrect) o.classList.add('wrong');
-      o.disabled = true;
-    });
-
-    let wrongExp = {};
-    try { wrongExp = JSON.parse(card.dataset.wrongExp || '{}'); } catch(e) {}
-
-    if (isCorrect) {
-      fb.className = 'quiz-fb correct-fb show';
-      fb.innerHTML = '✅ Correct! Well done!';
-    } else {
-      const explanation = wrongExp[clickedIdx] || 'Look at the correct answer highlighted above.';
-      fb.className = 'quiz-fb wrong-fb show';
-      fb.innerHTML = '❌ Incorrect. ' + explanation;
-    }
-
-    const allCards = document.querySelectorAll('.quiz-card');
-    const answeredCards = document.querySelectorAll('.quiz-card[data-answered]');
-    const total = allCards.length;
-    const answered = answeredCards.length;
-    const prog = document.getElementById('quizProgress');
-
-    if (answered === total) {
-      // Count only cards where student clicked correct
-      const correctCount = document.querySelectorAll('.quiz-card[data-answered="correct"]').length;
-      if (prog) prog.innerHTML = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
-
-      const endMsg = document.getElementById('quizEndMsg');
-      if (endMsg) {
-        const ratio = correctCount / total;
-        const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
-        endMsg.innerHTML = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
-        endMsg.style.display = 'block';
-        endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-        endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-        endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
+  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
+  function shuffleOptions(){
+    document.querySelectorAll('.quiz-options').forEach(function(box){
+      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
+      for (let k = opts.length - 1; k > 0; k--){
+        const j = Math.floor(Math.random() * (k + 1));
+        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
       }
-    } else {
-      if (prog) prog.innerHTML = 'Question ' + (answered + 1) + ' of ' + total;
+      opts.forEach(function(o){ box.appendChild(o); });
+    });
+  }
+
+  function updateProgress(){
+    if (checked || !prog) return;
+    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
+    prog.textContent = answered === total
+      ? 'All ' + total + ' answered — hit Check answers below ↓'
+      : answered + ' of ' + total + ' answered';
+  }
+
+  function onSelect(){
+    if (checked) return;
+    const box = this.closest('.quiz-options');
+    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
+    this.classList.add('selected');
+    updateProgress();
+  }
+
+  function reveal(){
+    checked = true;
+    let correctCount = 0;
+    cards.forEach(function(card, i){
+      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
+      const chosen = card.querySelector('.quiz-opt.selected');
+      const fb = document.getElementById('qfb-' + i);
+      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
+      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
+      if (correctOpt) correctOpt.classList.add('correct');
+      const isRight = !!(chosen && chosen.dataset.correct === '1');
+      if (isRight) correctCount++;
+      if (chosen && !isRight) chosen.classList.add('wrong');
+      if (!fb) return;
+      if (!chosen){
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
+      } else if (isRight){
+        fb.className = 'quiz-fb correct-fb show';
+        fb.textContent = '✅ Correct! Well done!';
+      } else {
+        const exp = chosen.dataset.wrongExp;
+        fb.className = 'quiz-fb wrong-fb show';
+        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
+      }
+    });
+    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
+    if (endMsg){
+      const ratio = correctCount / total;
+      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
+      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
+      endMsg.style.display = 'block';
+      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
+      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
+      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
     }
+    if (checkBtn) checkBtn.style.display = 'none';
+    if (againBtn) againBtn.style.display = '';
+  }
+
+  function tryAgain(){
+    checked = false;
+    cards.forEach(function(card, i){
+      card.querySelectorAll('.quiz-opt').forEach(function(o){
+        o.disabled = false;
+        o.classList.remove('selected', 'correct', 'wrong');
+      });
+      const fb = document.getElementById('qfb-' + i);
+      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
+    });
+    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
+    if (checkBtn) checkBtn.style.display = '';
+    if (againBtn) againBtn.style.display = 'none';
+    shuffleOptions();
+    updateProgress();
+  }
+
+  cards.forEach(function(card){
+    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
   });
-});
+  if (checkBtn) checkBtn.addEventListener('click', reveal);
+  if (againBtn) againBtn.addEventListener('click', tryAgain);
+  shuffleOptions();
+  updateProgress();
+})();
 </script>
   <script>
 function checkMatching(stId, pairs) {
@@ -432,5 +553,11 @@ try {
 } catch(e) {}
 </script>
   
+  <script src="/shared/heroes/two-state-compare.js"></script>
+  <script src="/shared/heroes/bonding-configs.js"></script>
+  <script>
+    (function(){var cfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['metallic-bonding'];var host=document.getElementById('hero-metallic-bonding');if(cfg&&host&&window.MrbHeroes&&MrbHeroes.twoStateCompare)MrbHeroes.twoStateCompare.init(host,cfg);})();
+
+  </script>
 </body>
 </html>
