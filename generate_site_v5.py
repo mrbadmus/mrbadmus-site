@@ -13,6 +13,7 @@ import os, shutil, json, glob, sys
 from bonding_redesign import (
     BONDING_REDESIGN, BLOCK_CSS as BONDING_BLOCK_CSS,
     render_theory_blocks, interactive_init_js, render_examiner_tip,
+    build_fifa_config,
 )
 
 # ─────────────────────────────────────────────
@@ -4106,114 +4107,100 @@ try {{
     hero_html = ""
     hero_scripts = ""
     redesign_css = ""
-    if topic_id == "bonding" and st_id == "giant-covalent-structures":
+    # ── Exemplar (giant-covalent-structures) retrofitted onto the block system:
+    #    it is now a normal BONDING_REDESIGN entry (Two-State hero + bins + block
+    #    theory), so it flows through the single data-driven branch below. Its
+    #    In-Depth Theory moves from old `.theory-line` prose to the block library;
+    #    hero, bins, quiz, tip and Common Mistake are unchanged (MRB-113 Phase D2).
+    if topic_id == "bonding" and st_id in BONDING_REDESIGN:
+        # ── Bonding redesign — data-driven (MRB-113 Phase B, Path B) ──
+        # One branch for every ported bonding page. The rcfg declares:
+        #   hero     : None | {module, ns, config_key[, kicker]} | {module, ns, build:'fifa'}
+        #   activity : {type:'bins', config_key} | {type:'match'}
+        #   theory_blocks : the Theory Block Library decomposition.
+        # Same `.rd` opt-in + reveal-quiz as the exemplar. The In-Depth Theory is
+        # rebuilt from blocks (bonding_redesign.py); the static Common-Mistake box
+        # is suppressed ONLY when a mistake-check block carries the misconception
+        # (hero pages + compare-reveal pages keep the static box). Frozen source
+        # fields are untouched — block content is authored presentation. Every
+        # non-listed page keeps body_class="" and is byte-identical to before.
+        rcfg = BONDING_REDESIGN[st_id]
         body_class = "rd"
-        # JOB 1 — kill dead drag-match JS on the exemplar. The matching activity
-        # on this page is now the Categorise Bins hero, so the drag-match widget
-        # DOM (.match-def / .match-drop) no longer exists here and the standard
-        # matching_js has nothing to bind to. Null it so this page carries no
-        # dead code. Every OTHER page keeps the drag-match JS intact.
-        matching_js = ""
-        # JOB 2 (MRB-121) — reveal-at-end quiz. Re-emit the quiz with no
-        # build-time shuffle (options carry their own correctness and shuffle in
-        # the browser) and swap the instant-mark controller for the
-        # commit-all-then-review one. Question/option/answer/misconception text
-        # is unchanged — behaviour only.
         quiz_html = make_new_quiz(st.get("quiz", []), color, pilot=True)
         quiz_js = PILOT_QUIZ_JS
-        # Swap the drag-match widget for the Categorise Bins hero (Hero 09).
-        # The old widget rendered one labelled slot per card in SOURCE ORDER,
-        # so a student could drag top-to-bottom without reading (positional
-        # give-away). Bins have no per-card slots and the cards are shuffled in
-        # the browser on every load, so order carries no answer. Grading is by
-        # card→bin mapping (see categorise-bins.js), independent of display
-        # order. Pilot-gated exactly like the `.rd` opt-in above — every OTHER
-        # matching activity keeps the drag-match widget, byte-identical.
-        matching_html = f"""<div class="section">
-    <div class="rd-hero-kicker">🎯 Retrieval · sort the properties</div>
+        theory_html, _rd_interactive = render_theory_blocks(rcfg["theory_blocks"], st_id)
+        # Suppress the static Common-Mistake box iff a mistake-check block carries it.
+        if any(b.get("type") == "mistake-check" for b in rcfg["theory_blocks"]):
+            mistake_html = ""
+
+        _scripts = []   # module src paths, in load order
+        _inits = []     # inline init snippets (each wrapped in an IIFE)
+        _needs_configs = False   # any hero/activity reading MrbHeroConfigs
+
+        # ── Activity: Categorise Bins, or reuse the standard drag-match ──
+        act = rcfg["activity"]
+        if act["type"] == "bins":
+            matching_js = ""   # no drag-match widget on a bins page
+            _bins_kicker = act.get("kicker", "sort the cards")
+            matching_html = f"""<div class="section">
+    <div class="rd-hero-kicker">🎯 Retrieval · {_bins_kicker}</div>
     <div id="bins-{st_id}"></div>
   </div>"""
-        hero_html = f"""
+            _scripts.append("categorise-bins.js")
+            _needs_configs = True
+            _inits.append(
+                "var binCfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['%s'];"
+                "var binHost=document.getElementById('bins-%s');"
+                "if(binCfg&&binHost&&window.MrbHeroes&&MrbHeroes.categoriseBins)MrbHeroes.categoriseBins.init(binHost,binCfg);"
+                % (act["config_key"], st_id))
+        # else 'match': keep the default make_matching_widget + default matching_js.
+
+        # ── Hero: structural interactive, or none ──
+        hero = rcfg.get("hero")
+        if hero:
+            _kicker = hero.get("kicker", "explore the model")
+            hero_html = f"""
   <div class="rd-hero-slot">
-    <div class="rd-hero-kicker">🔬 Interactive · explore the two structures</div>
+    <div class="rd-hero-kicker">🔬 Interactive · {_kicker}</div>
     <div id="hero-{st_id}"></div>
   </div>
 """
-        hero_scripts = f"""
-  <script src="/shared/heroes/two-state-compare.js"></script>
-  <script src="/shared/heroes/categorise-bins.js"></script>
-  <script src="/shared/heroes/bonding-configs.js"></script>
-  <script>
-  (function(){{
-    var cfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['{st_id}'];
-    var host = document.getElementById('hero-{st_id}');
-    if (cfg && host && window.MrbHeroes && MrbHeroes.twoStateCompare) MrbHeroes.twoStateCompare.init(host, cfg);
-    var binCfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['{st_id}-bins'];
-    var binHost = document.getElementById('bins-{st_id}');
-    if (binCfg && binHost && window.MrbHeroes && MrbHeroes.categoriseBins) MrbHeroes.categoriseBins.init(binHost, binCfg);
-  }})();
-  </script>"""
-        redesign_css = """
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap">
-<style>
-/* Redesign pilot — page-scoped chrome (bonding · giant-covalent-structures) */
-html { background: var(--surface-page); }
-.rd .rd-hero-slot { max-width: var(--content-max); margin: var(--sp-5) auto 0; padding: 0 var(--sp-5); }
-.rd .rd-hero-kicker { font-family: var(--font-mono); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep); margin-bottom: var(--sp-3); }  /* MRB-128: kicker text uses --accent-deep #B5341A = 4.64:1 on cream; --accent-strong #C0392B was 4.17:1 (fails AA). Brand token --accent-strong unchanged. */
-.rd .topic-kicker { color: var(--accent-deep); }  /* MRB-128 sweep: topic kicker inherits --subject=--accent-strong on .rd (15px on cream = 4.17:1, fails AA); lift to --accent-deep = 4.64:1. */
-/* Locked callout shells — Common Mistake + Key Note (Design's spec) */
-.rd .mistake-box { background: linear-gradient(180deg,#FBE7E2,#F8E0DA); border: 1px solid #EBBCB1; border-left: 5px solid var(--accent-strong); border-radius: var(--r-callout); }
-.rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
-.rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
-/* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
-.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
-.rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
-/* Reveal-at-end quiz (MRB-121) — selected state + Check / Try-again controls */
-.rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
-.rd .quiz-opt:disabled { pointer-events: none; }
-.rd .quiz-opt { font-size: calc(0.9rem * var(--rd-fs-scale, 1)); }
-.rd .quiz-actions { display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
-.rd .quiz-check-btn { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #fff; background: var(--accent-deep,#B5341A); border: none; padding: 12px 22px; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 20px -8px rgba(181,52,26,.7); }
-.rd .quiz-again-btn { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); padding: 12px 22px; border-radius: 12px; cursor: pointer; }
-</style>"""
-    elif topic_id == "bonding" and st_id in BONDING_REDESIGN:
-        # ── Block-page redesign (MRB-113 Phase B, Path B) ──
-        # Same `.rd` opt-in + reveal-quiz + Categorise-Bins mechanics as the
-        # exemplar, but the In-Depth Theory is rebuilt from the Theory Block
-        # Library (bonding_redesign.py) and — for these pilot pages — the page
-        # carries no structural hero. The interactive mistake-check block
-        # replaces the static Common-Mistake box. The frozen source fields are
-        # untouched; block content is authored presentation. Every non-listed
-        # page keeps body_class="" and is byte-identical to before.
-        rcfg = BONDING_REDESIGN[st_id]
-        body_class = "rd"
-        matching_js = ""
-        quiz_html = make_new_quiz(st.get("quiz", []), color, pilot=True)
-        quiz_js = PILOT_QUIZ_JS
-        # Theory → blocks. The mistake-check/compare-reveal interaction lives
-        # inside the blocks, so the standalone static mistake box is suppressed.
-        theory_html, _rd_interactive = render_theory_blocks(rcfg["theory_blocks"], st_id)
-        mistake_html = ""
-        # Activity — Categorise Bins (config key in shared/heroes/bonding-configs.js).
-        act = rcfg["activity"]
-        matching_html = f"""<div class="section">
-    <div class="rd-hero-kicker">🎯 Retrieval · sort the cards</div>
-    <div id="bins-{st_id}"></div>
-  </div>"""
-        hero_html = ""  # block-only pilot pages carry no structural hero
+            _scripts.append(hero["module"] + ".js")
+            if hero.get("build") == "fifa":
+                # FIFA config = frozen `fifas` worked spine (per variant) zipped
+                # with authored per-tier practice; serialised inline.
+                _fifa_cfg = build_fifa_config(st.get("fifas"), tier)
+                if _fifa_cfg:
+                    _cfg_json = _json.dumps(_fifa_cfg, ensure_ascii=False)
+                    _inits.append(
+                        "var host=document.getElementById('hero-%s');"
+                        "if(host&&window.MrbHeroes&&MrbHeroes.%s)MrbHeroes.%s.init(host,%s);"
+                        % (st_id, hero["ns"], hero["ns"], _cfg_json))
+                else:
+                    hero_html = ""   # defensive: no config → no hero slot
+            else:
+                _needs_configs = True
+                _inits.append(
+                    "var cfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['%s'];"
+                    "var host=document.getElementById('hero-%s');"
+                    "if(cfg&&host&&window.MrbHeroes&&MrbHeroes.%s)MrbHeroes.%s.init(host,cfg);"
+                    % (hero["config_key"], st_id, hero["ns"], hero["ns"]))
+        else:
+            hero_html = ""
+
+        # theory-blocks.js only when an interactive block (mistake-check / compare-reveal) is present
+        if _rd_interactive:
+            _scripts.append("theory-blocks.js")
+        if _needs_configs:
+            _scripts.append("bonding-configs.js")
+
         _tb_init = interactive_init_js(_rd_interactive)
+        _script_tags = "\n".join('  <script src="/shared/heroes/%s"></script>' % s for s in _scripts)
+        _init_body = "\n".join("    (function(){%s})();" % s for s in _inits)
         hero_scripts = f"""
-  <script src="/shared/heroes/categorise-bins.js"></script>
-  <script src="/shared/heroes/theory-blocks.js"></script>
-  <script src="/shared/heroes/bonding-configs.js"></script>
+{_script_tags}
   <script>
-  (function(){{
-    var binCfg = window.MrbHeroConfigs && MrbHeroConfigs.bonding && MrbHeroConfigs.bonding['{act["config_key"]}'];
-    var binHost = document.getElementById('bins-{st_id}');
-    if (binCfg && binHost && window.MrbHeroes && MrbHeroes.categoriseBins) MrbHeroes.categoriseBins.init(binHost, binCfg);
-  }})();
+{_init_body}
 {_tb_init}
   </script>"""
         redesign_css = """

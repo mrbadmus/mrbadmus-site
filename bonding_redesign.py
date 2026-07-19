@@ -247,6 +247,192 @@ def render_examiner_tip(text, bold=None):
     return _r_examiner_tip({"type": "examiner-tip", "text": text, "bold": bold})
 
 
+# ═════════════════════════════════════════════════════════════
+#  FIFA STEP REVEAL — nanoparticles (MRB-113 · content-standards §2)
+#  The WORKED spine is the frozen `fifas` field, read per variant
+#  (Triple-Foundation vs Triple-Higher differ) — never edited. The
+#  authored per-tier PRACTICE below (prompt / options / accept /
+#  feedback + a step title & note) is NEW presentation scaffolding
+#  that turns the static worked examples into the interactive practice
+#  the standard requires. build_fifa_config() zips the two by tier and
+#  by (example index, step index). ⚠ SCIENCE-SENSITIVE — every accept
+#  value is flagged for Mide's full review (content-standards §7).
+# ═════════════════════════════════════════════════════════════
+_FORMULA_CHOICE_CUBE = {
+    "prompt": "Which formula gives the surface area to volume ratio?", "kind": "choice",
+    "options": [
+        {"text": "surface area ÷ volume", "correct": True},
+        {"text": "volume ÷ surface area"},
+        {"text": "surface area × volume"},
+    ],
+    "feedback": {"wrong": "It is a ratio of area to volume — divide the surface area by the volume."},
+}
+_FORMULA_CHOICE_6L = {
+    "prompt": "For a cube, which is the simplest form of the surface area to volume ratio?", "kind": "choice",
+    "options": [
+        {"text": "6 ÷ L", "correct": True},
+        {"text": "L ÷ 6"},
+        {"text": "6 × L"},
+    ],
+    "feedback": {"wrong": "6L² ÷ L³ cancels to 6 ÷ L."},
+}
+
+NANO_FIFA = {
+    "emoji": "⚽", "title": "Surface Area : Volume",
+    "subtitle": "Formula → Insert → Fine-tune → Answer",
+    "foundation": [
+        {"name": "Cube · side 2", "given": [{"sym": "side length", "val": "2", "note": "a cube"}],
+         "success": {"title": "Correct — ratio = 3 (3 : 1)", "sub": "Formula, surface area and volume, the division, and the ratio — all right."},
+         "hint": "FIFA: Formula → Insert → Fine-tune → Answer. Ratio = surface area ÷ volume; a cube has 6 faces and volume = side³.",
+         "steps": [
+             {"title": "Write the formula", "note": "Compare the outside area with the inside volume.", "practice": _FORMULA_CHOICE_CUBE},
+             {"title": "Work out surface area and volume", "note": "A cube has 6 identical faces (side × side); its volume is side × side × side.",
+              "practice": {"prompt": "Work out the surface area and the volume of a cube of side 2.", "kind": "input",
+                  "blanks": [{"prefix": "surface area = 6 × (2×2) =", "accept": ["24"]}, {"prefix": "volume = 2×2×2 =", "accept": ["8"]}],
+                  "feedback": {"wrong": "Surface area = 6 × (2×2) = 24. Volume = 2 × 2 × 2 = 8."}}},
+             {"title": "Set up the division", "note": "Divide the surface area by the volume.",
+              "practice": {"prompt": "Which division gives the ratio?", "kind": "choice",
+                  "options": [{"text": "24 ÷ 8", "correct": True}, {"text": "8 ÷ 24"}, {"text": "24 × 8"}],
+                  "feedback": {"wrong": "Surface area ÷ volume = 24 ÷ 8."}}},
+             {"title": "State the ratio", "note": "Work out the division; here the ratio has no unit.",
+              "practice": {"prompt": "Work out 24 ÷ 8.", "kind": "input",
+                  "blanks": [{"prefix": "ratio =", "suffix": "(or 3 : 1)", "accept": ["3", "3:1"]}],
+                  "feedback": {"wrong": "24 ÷ 8 = 3, so the ratio is 3 (that is, 3 : 1)."}}},
+         ]},
+        {"name": "Cube · side 1", "given": [{"sym": "side length", "val": "1", "note": "a smaller cube"}],
+         "success": {"title": "Correct — ratio = 6 (6 : 1)", "sub": "The smaller cube has the larger surface area to volume ratio."},
+         "hint": "FIFA: Formula → Insert → Fine-tune → Answer. Ratio = surface area ÷ volume; a cube has 6 faces and volume = side³.",
+         "steps": [
+             {"title": "Write the formula", "note": "Same formula — area over volume.", "practice": _FORMULA_CHOICE_CUBE},
+             {"title": "Work out surface area and volume", "note": "Same method: 6 faces, and side³ for the volume.",
+              "practice": {"prompt": "Work out the surface area and the volume of a cube of side 1.", "kind": "input",
+                  "blanks": [{"prefix": "surface area = 6 × (1×1) =", "accept": ["6"]}, {"prefix": "volume = 1×1×1 =", "accept": ["1"]}],
+                  "feedback": {"wrong": "Surface area = 6 × 1 = 6. Volume = 1."}}},
+             {"title": "Set up the division", "note": "Divide the surface area by the volume.",
+              "practice": {"prompt": "Which division gives the ratio?", "kind": "choice",
+                  "options": [{"text": "6 ÷ 1", "correct": True}, {"text": "1 ÷ 6"}, {"text": "6 × 1"}],
+                  "feedback": {"wrong": "Surface area ÷ volume = 6 ÷ 1."}}},
+             {"title": "State the ratio and compare", "note": "Compare with the side-2 cube (ratio 3).",
+              "practice": {"prompt": "Work out 6 ÷ 1.", "kind": "input",
+                  "blanks": [{"prefix": "ratio =", "suffix": "(or 6 : 1)", "accept": ["6", "6:1"]}],
+                  "feedback": {"wrong": "6 ÷ 1 = 6 (6 : 1) — bigger than the side-2 cube's 3. The SMALLER cube has the LARGER ratio."}}},
+         ]},
+        {"name": "Cube · side 3", "given": [{"sym": "side length", "val": "3", "note": "a larger cube"}],
+         "success": {"title": "Correct — ratio = 2 (2 : 1)", "sub": "The largest cube has the smallest surface area to volume ratio."},
+         "hint": "FIFA: Formula → Insert → Fine-tune → Answer. Ratio = surface area ÷ volume; a cube has 6 faces and volume = side³.",
+         "steps": [
+             {"title": "Write the formula", "note": "Same formula — area over volume.", "practice": _FORMULA_CHOICE_CUBE},
+             {"title": "Work out surface area and volume", "note": "6 faces of side × side, and side³ for the volume.",
+              "practice": {"prompt": "Work out the surface area and the volume of a cube of side 3.", "kind": "input",
+                  "blanks": [{"prefix": "surface area = 6 × (3×3) =", "accept": ["54"]}, {"prefix": "volume = 3×3×3 =", "accept": ["27"]}],
+                  "feedback": {"wrong": "Surface area = 6 × 9 = 54. Volume = 3³ = 27."}}},
+             {"title": "Set up the division", "note": "Divide the surface area by the volume.",
+              "practice": {"prompt": "Which division gives the ratio?", "kind": "choice",
+                  "options": [{"text": "54 ÷ 27", "correct": True}, {"text": "27 ÷ 54"}, {"text": "54 × 27"}],
+                  "feedback": {"wrong": "Surface area ÷ volume = 54 ÷ 27."}}},
+             {"title": "State the ratio", "note": "The biggest cube gives the smallest ratio.",
+              "practice": {"prompt": "Work out 54 ÷ 27.", "kind": "input",
+                  "blanks": [{"prefix": "ratio =", "suffix": "(or 2 : 1)", "accept": ["2", "2:1"]}],
+                  "feedback": {"wrong": "54 ÷ 27 = 2 (2 : 1) — the LARGEST cube has the SMALLEST ratio."}}},
+         ]},
+    ],
+    "higher": [
+        {"name": "Nanoparticle · 10 nm", "given": [{"sym": "side length L", "val": "10 nm", "note": "model as a cube"}],
+         "success": {"title": "Correct — ratio = 0.6 nm⁻¹", "sub": "6 ÷ L with L in nm gives the ratio in nm⁻¹."},
+         "hint": "For a cube, surface area to volume ratio = 6 ÷ L. With L in nm the unit is nm⁻¹. Smaller L → larger ratio.",
+         "steps": [
+             {"title": "Write the formula", "note": "For a cube the ratio simplifies: 6L² ÷ L³ = 6 ÷ L.", "practice": _FORMULA_CHOICE_6L},
+             {"title": "Insert the length", "note": "Substitute L = 10 nm.",
+              "practice": {"prompt": "Insert L into 6 ÷ L.", "kind": "input",
+                  "blanks": [{"prefix": "ratio = 6 ÷", "accept": ["10"]}],
+                  "feedback": {"wrong": "L = 10 nm, so the ratio is 6 ÷ 10."}}},
+             {"title": "Fine-tune: the unit", "note": "Length is in nm, so the ratio is per nm.",
+              "practice": {"prompt": "What is the unit of the ratio when L is in nm?", "kind": "choice",
+                  "options": [{"text": "nm⁻¹ (per nm)", "correct": True}, {"text": "nm"}, {"text": "nm²"}],
+                  "feedback": {"wrong": "A number ÷ a length in nm → units of 1/nm = nm⁻¹."}}},
+             {"title": "State the answer with its unit", "note": "Divide, then attach nm⁻¹.",
+              "practice": {"prompt": "Work out 6 ÷ 10 and give the unit.", "kind": "input",
+                  "blanks": [{"prefix": "ratio =", "placeholder": "value", "accept": ["0.6", ".6"]},
+                             {"suffix": "(unit)", "placeholder": "unit", "accept": ["nm⁻¹", "nm-1", "1/nm", "per nm", "nm^-1"]}],
+                  "feedback": {"wrong": "6 ÷ 10 = 0.6, and the unit is nm⁻¹."}}},
+         ]},
+        {"name": "Bulk grain · 1000 nm", "given": [{"sym": "side length L", "val": "1000 nm", "note": "same material, bigger"}],
+         "success": {"title": "Correct — 0.006 nm⁻¹, 100× smaller than the nanoparticle", "sub": "Big particle → tiny ratio; nanoparticle → huge ratio."},
+         "hint": "For a cube, surface area to volume ratio = 6 ÷ L. With L in nm the unit is nm⁻¹. Smaller L → larger ratio.",
+         "steps": [
+             {"title": "Write the formula", "note": "Same simplified form: 6 ÷ L.", "practice": _FORMULA_CHOICE_6L},
+             {"title": "Insert the length", "note": "Substitute L = 1000 nm.",
+              "practice": {"prompt": "Insert L into 6 ÷ L.", "kind": "input",
+                  "blanks": [{"prefix": "ratio = 6 ÷", "accept": ["1000"]}],
+                  "feedback": {"wrong": "L = 1000 nm, so the ratio is 6 ÷ 1000."}}},
+             {"title": "Fine-tune: work it out", "note": "6 ÷ 1000 = 0.006.",
+              "practice": {"prompt": "Work out 6 ÷ 1000 (in nm⁻¹).", "kind": "input",
+                  "blanks": [{"prefix": "ratio =", "accept": ["0.006", ".006"]}],
+                  "feedback": {"wrong": "6 ÷ 1000 = 0.006 nm⁻¹."}}},
+             {"title": "Compare with the nanoparticle", "note": "The 10 nm nanoparticle was 0.6 nm⁻¹.",
+              "practice": {"prompt": "How does this grain's ratio compare with the 10 nm nanoparticle (0.6 nm⁻¹)?", "kind": "choice",
+                  "options": [{"text": "100 times smaller — far fewer atoms on the surface", "correct": True},
+                              {"text": "100 times larger — more atoms on the surface"},
+                              {"text": "about the same"}],
+                  "feedback": {"wrong": "0.006 vs 0.6 → 100× smaller. The nanoparticle has far more of its atoms on the surface."}}},
+         ]},
+        {"name": "Work backwards · ratio 1.2", "given": [{"sym": "ratio", "val": "1.2 nm⁻¹", "note": "find the side length"}],
+         "success": {"title": "Correct — L = 5 nm", "sub": "Rearranged the formula, substituted, and gave the length in nm."},
+         "hint": "For a cube, surface area to volume ratio = 6 ÷ L. Rearranged: L = 6 ÷ ratio. The answer is a length, so its unit is nm.",
+         "steps": [
+             {"title": "Rearrange the formula", "note": "ratio = 6 ÷ L, so L = 6 ÷ ratio.",
+              "practice": {"prompt": "Rearrange ratio = 6 ÷ L to make L the subject.", "kind": "choice",
+                  "options": [{"text": "L = 6 ÷ ratio", "correct": True}, {"text": "L = ratio ÷ 6"}, {"text": "L = 6 × ratio"}],
+                  "feedback": {"wrong": "Multiply both sides by L, then divide by the ratio: L = 6 ÷ ratio."}}},
+             {"title": "Insert the ratio", "note": "Substitute ratio = 1.2 nm⁻¹.",
+              "practice": {"prompt": "Insert the ratio into L = 6 ÷ ratio.", "kind": "input",
+                  "blanks": [{"prefix": "L = 6 ÷", "accept": ["1.2"]}],
+                  "feedback": {"wrong": "ratio = 1.2, so L = 6 ÷ 1.2."}}},
+             {"title": "Fine-tune: the unit", "note": "The answer is a length, so the unit is nm.",
+              "practice": {"prompt": "What unit will the answer have?", "kind": "choice",
+                  "options": [{"text": "nm (a length)", "correct": True}, {"text": "nm⁻¹"}, {"text": "nm²"}],
+                  "feedback": {"wrong": "You are finding a length L, so the unit is nm."}}},
+             {"title": "State the answer with its unit", "note": "Divide, then attach nm.",
+              "practice": {"prompt": "Work out 6 ÷ 1.2 and give the unit.", "kind": "input",
+                  "blanks": [{"prefix": "L =", "placeholder": "value", "accept": ["5"]},
+                             {"suffix": "(unit)", "placeholder": "unit", "accept": ["nm"]}],
+                  "feedback": {"wrong": "6 ÷ 1.2 = 5, and the unit is nm."}}},
+         ]},
+    ],
+}
+
+
+def build_fifa_config(fifas, tier):
+    """Zip the frozen `fifas` worked spine (per variant) with the authored
+    per-tier practice in NANO_FIFA. Returns a fifaStepReveal config, or None
+    if the shapes don't line up (defensive — never emit a broken hero)."""
+    practice_set = NANO_FIFA.get(tier)
+    if not fifas or not practice_set or len(fifas) != len(practice_set):
+        return None
+    examples = []
+    for ex_i, fex in enumerate(fifas):
+        pex = practice_set[ex_i]
+        fsteps = fex.get("steps") or []
+        if len(fsteps) != len(pex["steps"]):
+            return None
+        steps = []
+        for st_i, (_letter, worked_text) in enumerate(fsteps):
+            pstep = pex["steps"][st_i]
+            steps.append({
+                "title": pstep["title"], "worked": worked_text,
+                "note": pstep["note"], "practice": pstep["practice"],
+            })
+        examples.append({
+            "name": pex["name"], "problem": fex.get("question", ""),
+            "given": pex.get("given", []), "steps": steps,
+            "success": pex["success"], "hint": pex["hint"],
+        })
+    return {
+        "emoji": NANO_FIFA["emoji"], "title": NANO_FIFA["title"],
+        "subtitle": NANO_FIFA["subtitle"], "examples": examples,
+    }
+
+
 def interactive_init_js(interactive_specs):
     """Build the inline init JS for a page's interactive theory blocks."""
     if not interactive_specs:
@@ -270,6 +456,48 @@ def interactive_init_js(interactive_specs):
 #  key in shared/heroes/bonding-configs.js.
 # ═════════════════════════════════════════════════════════════
 BONDING_REDESIGN = {
+
+    # ── exemplar · giant-covalent-structures — theory retrofitted onto blocks (D2) ──
+    # Hero (Two-State diamond/graphite), bins, quiz, tip and the static Common
+    # Mistake are unchanged; only the In-Depth Theory moves prose → blocks. The
+    # compare-cards deliberately mirror the hero as a static reference table.
+    "giant-covalent-structures": {
+        "hero": {"module": "two-state-compare", "ns": "twoStateCompare", "config_key": "giant-covalent-structures",
+                 "kicker": "explore the two structures"},
+        "activity": {"type": "bins", "config_key": "giant-covalent-structures-bins", "kicker": "sort the properties"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Giant covalent structures (also called macromolecular) are substances where a huge number of atoms are all joined by covalent bonds throughout the whole structure — there are no separate molecules. Examples: diamond, graphite and silicon dioxide (SiO₂).",
+             "bold": ["covalent bonds throughout"]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🌡️", "title": "Very high melting point", "tone": "neutral",
+                 "body": "Melting means breaking millions of strong covalent bonds, which takes a lot of energy."},
+                {"emoji": "💎", "title": "Very hard & rigid", "tone": "neutral",
+                 "body": "A rigid 3-D network of strong bonds holds every atom firmly in place."},
+                {"emoji": "🚫", "title": "Usually don't conduct", "tone": "limit",
+                 "body": "Most have no free electrons or ions to carry charge — graphite is the exception."},
+            ]},
+            {"type": "compare-cards", "columns": [
+                {"emoji": "💎", "title": "Diamond", "rows": [
+                    {"k": "Bonds per carbon", "v": "4 — rigid 3-D tetrahedral lattice"},
+                    {"k": "Free electrons", "v": "None (all 4 used in bonds)"},
+                    {"k": "Conducts electricity?", "v": "No"},
+                    {"k": "Hardness", "v": "Hardest natural substance"},
+                ]},
+                {"emoji": "✏️", "title": "Graphite", "rows": [
+                    {"k": "Bonds per carbon", "v": "3 — flat hexagonal layers"},
+                    {"k": "Free electrons", "v": "1 delocalised per carbon"},
+                    {"k": "Conducts electricity?", "v": "Yes"},
+                    {"k": "Hardness", "v": "Soft & slippery (layers slide)"},
+                ]},
+            ], "highlight": 2,
+             "verdict": "Both are pure carbon. The spare 4th electron and the sliding layers are why graphite conducts and is soft, while diamond does neither."},
+            {"type": "example-callout", "emoji": "🛠️", "title": "Uses", "lines": [
+                "Diamond: cutting tools, drill bits, gemstones, abrasives (very hard).",
+                "Graphite: pencil leads and lubricants (layers slide); electrodes in electrolysis (conducts, unreactive).",
+            ]},
+        ],
+    },
 
     # ── 1 · chemical-bonds — decision-rule page, block-only ──
     "chemical-bonds": {
@@ -370,6 +598,338 @@ BONDING_REDESIGN = {
                  {"text": "Simple molecular substances have no covalent bonds — only intermolecular forces hold them together."},
              ],
              "fix": "The covalent bonds within each molecule are strong. What is weak are the intermolecular forces between the separate molecules — melting or boiling overcomes those and leaves the covalent bonds untouched, which is why the melting point is low."},
+        ],
+    },
+
+    # ── 2 · states-of-matter — three states + changes + symbols (hero-less, mistake-check) ──
+    "states-of-matter": {
+        "hero": None,
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "All matter exists in one of three states — solid, liquid or gas. The difference is how the particles are arranged and how freely they move.",
+             "bold": ["solid, liquid or gas"]},
+            {"type": "compare-cards", "columns": [
+                {"emoji": "🧊", "title": "Solid", "rows": [
+                    {"k": "Arrangement", "v": "Regular, closely packed"},
+                    {"k": "Movement", "v": "Vibrate about fixed positions"},
+                    {"k": "Shape & volume", "v": "Fixed shape, fixed volume"},
+                    {"k": "Compressible?", "v": "No"},
+                ]},
+                {"emoji": "💧", "title": "Liquid", "rows": [
+                    {"k": "Arrangement", "v": "Close but random"},
+                    {"k": "Movement", "v": "Flow past each other"},
+                    {"k": "Shape & volume", "v": "Takes container shape, fixed volume"},
+                    {"k": "Compressible?", "v": "No"},
+                ]},
+                {"emoji": "💨", "title": "Gas", "rows": [
+                    {"k": "Arrangement", "v": "Far apart, spread out"},
+                    {"k": "Movement", "v": "Fast, random, all directions"},
+                    {"k": "Shape & volume", "v": "Fills any container"},
+                    {"k": "Compressible?", "v": "Yes"},
+                ]},
+            ], "highlight": 1,
+             "verdict": "How freely the particles move drives everything else — shape, volume and whether it can be compressed."},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🫠", "title": "Melting / Freezing", "tone": "neutral",
+                 "body": "Solid ⇌ liquid. Melting adds energy; freezing removes it."},
+                {"emoji": "♨️", "title": "Boiling / Condensing", "tone": "neutral",
+                 "body": "Liquid ⇌ gas. Boiling adds energy; condensing removes it."},
+                {"emoji": "❄️", "title": "Subliming", "tone": "neutral",
+                 "body": "Some solids go straight to gas (iodine, dry ice). All these are physical changes."},
+            ]},
+            {"type": "example-callout", "emoji": "🔤", "title": "State symbols in equations", "lines": [
+                "(s) solid · (l) liquid · (g) gas · (aq) dissolved in water.",
+                "2H₂(g) + O₂(g) → 2H₂O(l)",
+                "NaCl(s) → Na⁺(aq) + Cl⁻(aq)",
+            ]},
+            {"type": "mistake-check",
+             "claim": "“Melting ice or boiling water must be a chemical change, because something clearly happens.”",
+             "prompt": "What is the flaw in this reasoning?",
+             "options": [
+                 {"text": "It is a physical change — the particles gain energy and rearrange, but the substance is unchanged (ice, water and steam are all H₂O).", "correct": True},
+                 {"text": "It is a chemical change, because the water turns into a different substance when it melts or boils."},
+                 {"text": "It is a chemical change, because energy has to be taken in."},
+             ],
+             "fix": "Melting and boiling are physical changes: the particles gain energy and move apart, but no new substance forms — ice, liquid water and steam are all still H₂O. (Use the state symbol (aq) only for something dissolved in water, not for any liquid.)"},
+        ],
+    },
+
+    # ── 3 · ionic-bonding — the transfer mechanism (hero: Dot-and-Cross; static mistake kept) ──
+    "ionic-bonding": {
+        "hero": {"module": "dot-cross-stepper", "ns": "dotCrossStepper", "config_key": "ionic-bonding",
+                 "kicker": "transfer electrons step by step"},
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Ionic bonding happens between a metal and a non-metal. The metal transfers its outer electrons to the non-metal, and the oppositely charged ions that form attract one another.",
+             "bold": ["metal and a non-metal"]},
+            {"type": "step-sequence", "steps": [
+                "The metal atom loses one or more electrons from its outer shell.",
+                "The non-metal atom gains those electrons into its outer shell.",
+                "Both atoms now have full outer shells — stable, like a noble gas.",
+                "The metal becomes a positive ion (it lost negative electrons).",
+                "The non-metal becomes a negative ion (it gained negative electrons).",
+                "Opposite charges attract — this strong electrostatic attraction IS the ionic bond.",
+            ]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "➕", "title": "Metals → positive ions", "tone": "neutral",
+                 "body": "Group 1 → +1 (Na⁺), Group 2 → +2 (Mg²⁺), Group 3 → +3 (Al³⁺)."},
+                {"emoji": "➖", "title": "Non-metals → negative ions", "tone": "neutral",
+                 "body": "Group 7 → −1 (Cl⁻), Group 6 → −2 (O²⁻), Group 5 → −3 (N³⁻)."},
+                {"emoji": "⚖️", "title": "Charges must balance", "tone": "neutral",
+                 "body": "An ionic compound is overall neutral — MgCl₂ needs two Cl⁻ for one Mg²⁺."},
+            ]},
+            {"type": "example-callout", "emoji": "⚛️", "title": "Dot-and-cross summaries", "lines": [
+                "NaCl: Na 2.8.1 loses 1e → Na⁺ (2.8); Cl 2.8.7 gains 1e → Cl⁻ (2.8.8).",
+                "MgO: Mg 2.8.2 loses 2e → Mg²⁺; O 2.6 gains 2e → O²⁻.",
+                "MgCl₂: Mg loses 2e → Mg²⁺; each Cl gains 1e → two Cl⁻ balance one Mg²⁺.",
+            ]},
+        ],
+    },
+
+    # ── 4 · ionic-compounds — giant lattice + conduction-by-state (hero: State Toggle Lab) ──
+    "ionic-compounds": {
+        "hero": {"module": "state-toggle-lab", "ns": "stateToggleLab", "config_key": "ionic-compounds",
+                 "kicker": "change the state, test the lattice"},
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "When an ionic compound forms, the ions don't stay in pairs — they build a giant ionic lattice: a regular 3-D arrangement of alternating positive and negative ions.",
+             "bold": ["giant ionic lattice"]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🧊", "title": "Regular 3-D lattice", "tone": "neutral",
+                 "body": "Positive and negative ions alternate in all directions; in NaCl each ion is surrounded by 6 of the opposite charge."},
+                {"emoji": "🔗", "title": "Strong forces all directions", "tone": "neutral",
+                 "body": "Billions of ions are held by strong electrostatic attraction throughout the crystal."},
+            ]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🌡️", "title": "High melting & boiling point", "tone": "neutral",
+                 "body": "A lot of energy is needed to overcome the strong forces (NaCl 801 °C, MgO 2852 °C)."},
+                {"emoji": "🚫", "title": "No conduction when solid", "tone": "limit",
+                 "body": "The ions are locked in fixed positions, so no charge can move."},
+                {"emoji": "⚡", "title": "Conducts molten or dissolved", "tone": "good",
+                 "body": "Now the ions are free to move, so they can carry charge."},
+                {"emoji": "💥", "title": "Hard but brittle", "tone": "neutral",
+                 "body": "A knock shifts the layers so like charges meet and repel — the crystal shatters."},
+            ]},
+            {"type": "example-callout", "emoji": "🧂", "title": "Example — sodium chloride & solubility", "lines": [
+                "NaCl: Na⁺ and Cl⁻ in a 1:1 ratio throughout the lattice.",
+                "Many ionic compounds dissolve — water molecules surround the ions and pull them from the lattice.",
+                "Some are insoluble and precipitate: Ag⁺(aq) + Cl⁻(aq) → AgCl (white solid).",
+            ]},
+        ],
+    },
+
+    # ── 5 · properties-ionic-compounds — charge magnitude → MP (hero-less, compare-reveal) ──
+    "properties-ionic-compounds": {
+        "hero": None,
+        "activity": {"type": "bins", "config_key": "properties-ionic-compounds-bins"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Ionic compounds have a giant ionic lattice with strong electrostatic forces in all directions between alternating positive and negative ions. That one structure explains every property. The formula shows the simplest whole-number ratio of ions.",
+             "bold": ["giant ionic lattice"]},
+            {"type": "compare-cards", "columns": [
+                {"emoji": "🧂", "title": "NaCl (charges ±1)", "rows": [
+                    {"k": "Ion charges", "v": "Na⁺ and Cl⁻"},
+                    {"k": "Force strength", "v": "Strong"},
+                    {"k": "Melting point", "v": "801 °C"},
+                ]},
+                {"emoji": "🧲", "title": "MgO (charges ±2)", "rows": [
+                    {"k": "Ion charges", "v": "Mg²⁺ and O²⁻"},
+                    {"k": "Force strength", "v": "Much stronger (double charges)"},
+                    {"k": "Melting point", "v": "2852 °C"},
+                ]},
+            ], "highlight": 2,
+             "verdict": "Higher ion charges → stronger attraction → higher melting point. That is why MgO melts far above NaCl."},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "💥", "title": "Hard but brittle", "tone": "neutral",
+                 "body": "A force shifts the layers so like charges align and repel — the crystal shatters rather than bending."},
+                {"emoji": "🚫", "title": "No conduction when solid", "tone": "limit",
+                 "body": "Ions are fixed in the lattice, so nothing can carry charge."},
+                {"emoji": "⚡", "title": "Conducts molten or dissolved", "tone": "good",
+                 "body": "The ions become free to move and carry the current."},
+            ]},
+            {"type": "compare-reveal", "title": "Tap a property to reveal the structural cause",
+             "items": [
+                 {"property": "High melting point", "cause": "Many strong electrostatic forces throughout the giant lattice need a lot of energy to break."},
+                 {"property": "Brittle", "cause": "A knock shifts the layers; like charges line up and repel strongly, so the crystal shatters."},
+                 {"property": "Conducts only when molten or dissolved", "cause": "Only then are the ions free to move — in the solid they are locked in place. Ionic compounds have no free electrons."},
+                 {"property": "Often soluble in water", "cause": "Polar water molecules surround the ions and pull them away from the lattice."},
+             ]},
+        ],
+    },
+
+    # ── 6 · covalent-bonding — the sharing mechanism (hero: Dot-and-Cross share) · ⭐ Higher box ──
+    "covalent-bonding": {
+        "hero": {"module": "dot-cross-stepper", "ns": "dotCrossStepper", "config_key": "covalent-bonding",
+                 "kicker": "share a pair step by step"},
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Covalent bonding happens between non-metal atoms. Instead of transferring electrons, they share pairs of electrons — and each shared pair is one covalent bond.",
+             "bold": ["share pairs of electrons"]},
+            {"type": "step-sequence", "steps": [
+                "Two non-metal atoms come together, each needing more electrons for a full shell.",
+                "They share a pair of electrons — one contributed from each atom.",
+                "Each atom counts the shared pair as part of its own outer shell.",
+                "Both atoms reach full outer shells without either losing electrons entirely.",
+                "The shared pair is attracted to BOTH nuclei — that attraction holds the atoms together, and covalent bonds are strong.",
+            ]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "1️⃣", "title": "Single bond — 1 shared pair", "tone": "neutral",
+                 "body": "H₂ shares one pair. So do H₂O (O–H), NH₃ (N–H) and CH₄ (C–H)."},
+                {"emoji": "2️⃣", "title": "Double bond — 2 shared pairs", "tone": "neutral",
+                 "body": "O₂ shares two pairs. CO₂ has two C=O double bonds."},
+                {"emoji": "3️⃣", "title": "Triple bond — 3 shared pairs", "tone": "neutral",
+                 "body": "N₂ shares three pairs — which makes it very stable."},
+            ]},
+        ],
+    },
+
+    # ── 9 · metallic-bonding — the electron-sea model (hero: Two-State electron sea) ──
+    "metallic-bonding": {
+        "hero": {"module": "two-state-compare", "ns": "twoStateCompare", "config_key": "metallic-bonding",
+                 "kicker": "electron sea on / off"},
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Metallic bonding occurs in metals and alloys — a regular lattice of positive metal ions surrounded by a shared sea of delocalised electrons.",
+             "bold": ["delocalised electrons"]},
+            {"type": "step-sequence", "steps": [
+                "Metal atoms release their outer electrons, which become delocalised — free to move through the whole structure.",
+                "Each atom that lost electrons is now a positive metal ion.",
+                "The positive ions sit in a regular lattice.",
+                "The delocalised electrons move freely between and around the ions — the 'sea of electrons'.",
+                "Strong electrostatic attraction between the positive ions and the electron sea holds the metal together — this IS the metallic bond.",
+            ]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🌡️", "title": "High melting & boiling point", "tone": "neutral",
+                 "body": "Strong forces between the many positive ions and the electron sea take a lot of energy to overcome."},
+                {"emoji": "⚡", "title": "Conducts electricity", "tone": "good",
+                 "body": "Delocalised electrons are free to move and carry charge through the structure."},
+                {"emoji": "🔥", "title": "Conducts heat", "tone": "good",
+                 "body": "The same delocalised electrons transfer thermal energy rapidly through the metal."},
+                {"emoji": "🔨", "title": "Malleable & ductile", "tone": "neutral",
+                 "body": "Layers of ions slide and the electron sea re-surrounds them, so metals bend and draw into wires without breaking."},
+            ]},
+            {"type": "example-callout", "emoji": "🧱", "title": "Example — why alloys are harder", "lines": [
+                "In a pure metal every ion is the same size, so layers slide easily → soft.",
+                "An alloy mixes in different-sized atoms that disrupt the regular lattice.",
+                "The layers can no longer slide as easily → the alloy is harder and stronger (steel, bronze, brass).",
+            ]},
+        ],
+    },
+
+    # ── 10 · metals-alloys — structure→property + alloys (hero: Two-State metalLayers + force) ──
+    "metals-alloys": {
+        "hero": {"module": "two-state-compare", "ns": "twoStateCompare", "config_key": "metals-alloys",
+                 "kicker": "apply a force to pure metal vs alloy"},
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Metals have giant metallic structures — a regular lattice of positive metal ions surrounded by a sea of delocalised electrons. That structure explains all their properties.",
+             "bold": ["giant metallic structures"]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🌡️", "title": "High melting & boiling point", "tone": "neutral",
+                 "body": "Strong forces between the positive ions and the electron sea (exceptions: mercury and gallium are liquid near room temperature)."},
+                {"emoji": "🔨", "title": "Malleable & ductile", "tone": "neutral",
+                 "body": "Layers of ions slide and the electron sea re-accommodates them — so metals hammer into shape and draw into wires."},
+                {"emoji": "⚡", "title": "Conducts electricity & heat (as a solid)", "tone": "good",
+                 "body": "Delocalised electrons are free to move even in the solid, carrying both charge and thermal energy."},
+                {"emoji": "⚖️", "title": "High density", "tone": "neutral",
+                 "body": "A close-packed lattice of heavy atoms makes most metals dense."},
+            ]},
+            {"type": "example-callout", "emoji": "🏗️", "title": "Key alloys and their uses", "lines": [
+                "Steel (iron + carbon) — much harder than iron → construction, tools, vehicles.",
+                "Stainless steel (iron + chromium + nickel) — resists corrosion → cutlery, surgical instruments.",
+                "Bronze (copper + tin) — harder than copper → propellers, statues, bearings.",
+                "Brass (copper + zinc) — golden, harder than copper → instruments, taps.",
+                "Aluminium alloys — strong and lightweight → aircraft, spacecraft.",
+            ]},
+        ],
+    },
+
+    # ── 11 · nanoparticles — SA:V + carbon nanostructures (hero: FIFA) · ⭐ Higher · Triple-only ──
+    "nanoparticles": {
+        "hero": {"module": "fifa-step-reveal", "ns": "fifaStepReveal", "build": "fifa",
+                 "kicker": "work the surface-area-to-volume calculation"},
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Nanoparticles are tiny particles 1–100 nm across (1 nm = 1×10⁻⁹ m), containing a few hundred to a few thousand atoms. At this scale a material can behave very differently from its bulk form.",
+             "bold": ["1–100 nm"]},
+            {"type": "compare-cards", "columns": [
+                {"emoji": "🟡", "title": "Bulk gold", "rows": [
+                    {"k": "Colour", "v": "Yellow"},
+                    {"k": "Reactivity", "v": "Low — unreactive with most chemicals"},
+                    {"k": "Melting point", "v": "1064 °C"},
+                ]},
+                {"emoji": "🔴", "title": "Gold nanoparticles", "rows": [
+                    {"k": "Colour", "v": "Red / purple"},
+                    {"k": "Reactivity", "v": "Much higher"},
+                    {"k": "Melting point", "v": "Much lower"},
+                ]},
+            ], "highlight": 1,
+             "verdict": "Same gold atoms — but a huge surface-area-to-volume ratio means far more atoms sit on the surface, so reactivity shoots up."},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "▦", "title": "Graphene", "tone": "neutral",
+                 "body": "A single layer of graphite, one atom thick — extremely strong, very light, and conducts electricity."},
+                {"emoji": "⚽", "title": "Buckminsterfullerene (C₆₀)", "tone": "neutral",
+                 "body": "60 carbon atoms in a hollow sphere ('buckyball') — can cage molecules; used in drug delivery and lubricants."},
+                {"emoji": "🛢️", "title": "Carbon nanotube", "tone": "neutral",
+                 "body": "A rolled-up graphene sheet forming a hollow tube — very strong along its length and conducts electricity."},
+            ]},
+            {"type": "example-callout", "emoji": "✅", "title": "Uses of nanoparticles", "lines": [
+                "Sunscreen: TiO₂ nanoparticles are transparent but still block UV.",
+                "Antibacterial: silver nanoparticles — high surface area → very reactive against bacteria.",
+                "Catalysis: a high surface area makes them very effective catalysts.",
+                "Drug delivery: they can carry medicine directly to target cells.",
+            ]},
+            {"type": "aside-callout", "title": "⚠️ Risks — why more research is needed",
+             "body": "Nanoparticles are so small they may pass through cell membranes, be breathed deep into the lungs, and persist in the environment and food chains. Their long-term health and environmental effects are not yet fully understood."},
+        ],
+    },
+
+    # ── 8 · polymers — long chains + addition polymerisation (hero-less, mistake-check) · Key Equations ──
+    "polymers": {
+        "hero": None,
+        "activity": {"type": "match"},
+        "theory_blocks": [
+            {"type": "lead",
+             "text": "Polymers are very large molecules made from many small repeating units called monomers, joined into long chains. The joining process is called polymerisation.",
+             "bold": ["monomers"]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🔹", "title": "Monomer", "tone": "neutral",
+                 "body": "A small molecule that can join with others — e.g. ethene, CH₂=CH₂."},
+                {"emoji": "⛓️", "title": "Polymer", "tone": "neutral",
+                 "body": "The long chain formed from thousands of monomers — e.g. poly(ethene)."},
+                {"emoji": "🔁", "title": "Repeating unit", "tone": "neutral",
+                 "body": "Written in brackets with n outside: [—CH₂—CH₂—]ₙ."},
+            ]},
+            {"type": "step-sequence", "steps": [
+                "Addition polymerisation uses monomers that contain a C=C double bond.",
+                "The double bond opens up — one bond breaks and frees a pair of electrons.",
+                "Those electrons form a new bond to the next monomer.",
+                "The monomers link into a long saturated chain (no double bonds left) — and no atoms are lost.",
+            ]},
+            {"type": "feature-cards", "cards": [
+                {"emoji": "🧊", "title": "Solid at room temperature", "tone": "neutral",
+                 "body": "Long chains and reasonable intermolecular forces keep polymers solid and flexible."},
+                {"emoji": "🚫", "title": "Electrical insulators", "tone": "limit",
+                 "body": "No free electrons or ions, so they do not conduct electricity."},
+                {"emoji": "🔥", "title": "Thermoplastic vs thermosetting", "tone": "neutral",
+                 "body": "Thermoplastics soften when heated and reshape; thermosetting polymers form cross-links and stay hard."},
+            ]},
+            {"type": "mistake-check",
+             "claim": "“Polymers must be giant covalent structures, because their chains are so huge.”",
+             "prompt": "What is the flaw in this reasoning?",
+             "options": [
+                 {"text": "A polymer is a large molecule — its chains are held to each other only by weak intermolecular forces, not by covalent bonds running all the way through.", "correct": True},
+                 {"text": "Polymers really are giant covalent structures, just like diamond."},
+                 {"text": "Polymer chains are held together by ionic bonds between the monomers."},
+             ],
+             "fix": "A polymer is a very large molecule, but its separate chains are held together only by weak intermolecular forces — which is why polymers melt far below diamond, where strong covalent bonds run all the way through the structure."},
         ],
     },
 }

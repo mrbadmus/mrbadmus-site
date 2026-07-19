@@ -59,7 +59,7 @@
       '.mrb-tsc,.mrb-tsc *{box-sizing:border-box}',
       '.mrb-tsc{font-family:var(--font-body,system-ui,sans-serif);background:var(--surface-panel,#FFFDF8);border:1px solid var(--border,#E4DCCB);border-radius:var(--r-panel,22px);box-shadow:var(--shadow-panel,0 22px 50px -35px rgba(60,30,20,.5));overflow:hidden}',
       '.mrb-tsc__head{display:flex;align-items:center;gap:10px;padding:16px 24px;border-bottom:1px solid var(--surface-inset,#EFE7D8);flex-wrap:wrap}',
-      '.mrb-tsc__head h3{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(18px * var(--rd-fs-scale, 1));color:var(--ink,#1A1714);margin:0}',
+      '.mrb-tsc__head h3{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(18px * var(--rd-fs-scale, 1));color:var(--ink,#1A1714);margin:0;min-width:0;overflow-wrap:anywhere}',
       '.mrb-tsc__sub{font-family:var(--font-mono,monospace);font-size: calc(12px * var(--rd-fs-scale, 1));color:var(--ink-faint,#8A8074)}',
       '.mrb-tsc__callout{display:flex;gap:14px;align-items:flex-start;padding:18px 24px;border-bottom:1px solid var(--surface-inset,#EFE7D8);border-left:5px solid transparent;transition:background .25s ease,border-color .25s ease}',
       '.mrb-tsc__callout-emoji{font-size: calc(22px * var(--rd-fs-scale, 1));line-height:1.2;flex:none}',
@@ -73,6 +73,8 @@
       '.mrb-tsc__btn{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(14px * var(--rd-fs-scale, 1));text-align:left;cursor:pointer;border-radius:10px;padding:11px 14px;transition:all .15s;color:#4A4238;background:var(--surface-inset,#EFE7D8);border:1px solid var(--border,#E4DCCB)}',
       '.mrb-tsc__btn:hover{border-color:var(--accent-strong,#C0392B)}',
       '.mrb-tsc__btn.is-active{color:#fff;background:var(--surface-dark,#1A1714);border-color:var(--surface-dark,#1A1714)}',
+      '.mrb-tsc__force{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(14px * var(--rd-fs-scale, 1));text-align:center;cursor:pointer;border-radius:10px;padding:11px 14px;margin-top:2px;color:#fff;background:var(--accent-deep,#B5341A);border:none;box-shadow:0 8px 20px -8px rgba(181,52,26,.7)}',
+      '.mrb-tsc__force.is-pressed{color:var(--accent-deep,#B5341A);background:#FBE0D6;border:1px solid #F0BBA9;box-shadow:none}',
       '.mrb-tsc__rule{height:1px;background:var(--surface-inset,#EFE7D8);margin:6px 0}',
       '.mrb-tsc__prop{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 12px;background:var(--surface-inset,#F7F2E8);border-radius:10px}',
       '.mrb-tsc__prop-k{font-family:var(--font-mono,monospace);font-size: calc(11.5px * var(--rd-fs-scale, 1));letter-spacing:.02em;color:var(--ink-faint,#8A8074)}',
@@ -200,14 +202,112 @@
     return el('div', { position: 'relative', width: W + 'px', height: H + 'px' }, kids);
   }
 
-  var RENDERERS = { tetrahedral: drawTetrahedral, hexLayers: drawHexLayers };
-  function buildViz(visual) { return (RENDERERS[visual.type] || drawTetrahedral)(visual); }
+  /* ---- reduced-motion guard (looping animations only) ---- */
+  function reduceMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  /* ---- positive metal ion (reddish, optional '+' glyph) ---- */
+  function ion(x, y, size, glyph, foreign) {
+    var n = el('div', {
+      position: 'absolute', left: (x - size / 2) + 'px', top: (y - size / 2) + 'px',
+      width: size + 'px', height: size + 'px', borderRadius: '50%',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700',
+      fontSize: 'calc(15px * var(--rd-fs-scale, 1))', color: '#fff',
+      background: foreign
+        ? 'radial-gradient(circle at 35% 30%,#8A6B4E,#5A4432)'
+        : 'radial-gradient(circle at 35% 30%,#E0745F,#C0392B)',
+      boxShadow: '0 4px 10px -3px rgba(0,0,0,.35)',
+      transition: 'all .7s cubic-bezier(.4,0,.2,1)',
+    }, glyph || '');
+    return n;
+  }
+
+  /* ---- METAL LAYERS: rows of ions; pure metal shears under force
+     (layers slide → bends), alloy's foreign atoms lock the layers ---- */
+  function drawMetalLayers(v) {
+    var COLS = 8, ROWS = 4, S = 44, ION = 34, padL = 26, padT = 40;
+    var alloySpots = { 5: 1, 10: 1, 13: 1, 19: 1 };
+    var slide = v.forced && !v.alloy;      // only the pure metal shears
+    var shearMax = (ROWS - 1) * 22;
+    var kids = [];
+    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) {
+      var i = r * COLS + c;
+      var foreign = v.alloy && alloySpots[i];
+      var size = foreign ? 44 : ION;
+      var shift = slide ? (ROWS - 1 - r) * 22 : 0;   // top rows travel furthest
+      var x = padL + c * S + (ION - size) / 2 + shift + size / 2;
+      var y = padT + r * S + (ION - size) / 2 + size / 2;
+      kids.push(ion(x, y, size, '', foreign));
+    }
+    var W = padL * 2 + (COLS - 1) * S + ION + shearMax + 6;
+    var H = padT + (ROWS - 1) * S + ION + 42;
+    // applied-force arrow (faint until forced)
+    var arrow = el('div', {
+      position: 'absolute', left: padL + 'px', top: '8px', display: 'flex', alignItems: 'center', gap: '7px',
+      fontFamily: 'var(--font-mono,monospace)', fontWeight: '700', fontSize: 'calc(12px * var(--rd-fs-scale, 1))',
+      letterSpacing: '.06em', color: 'var(--accent-deep,#B5341A)', opacity: v.forced ? '1' : '0.3', transition: 'opacity .4s',
+    }, [document.createTextNode('FORCE'),
+        el('div', { width: '54px', height: '2px', background: 'var(--accent-deep,#B5341A)', position: 'relative' },
+           el('div', { position: 'absolute', right: '-1px', top: '-3px', width: '0', height: '0',
+             borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '7px solid var(--accent-deep,#B5341A)' }))]);
+    kids.push(arrow);
+    if (v.forced) {
+      var good = !v.alloy;
+      kids.push(el('div', {
+        position: 'absolute', left: padL + 'px', top: (H - 24) + 'px',
+        fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700', fontSize: 'calc(12.5px * var(--rd-fs-scale, 1))',
+        color: good ? '#3E6B47' : '#B5341A', background: good ? '#E7F3EA' : '#FBE0D6',
+        border: '1px solid ' + (good ? '#7FB98A' : '#F0BBA9'), padding: '3px 11px', borderRadius: '999px',
+      }, good ? 'layers slide → bends' : 'layers locked → resists'));
+    }
+    return el('div', { position: 'relative', width: W + 'px', height: H + 'px' }, kids);
+  }
+
+  /* ---- ELECTRON SEA: lattice of + ions + one electron each; free →
+     delocalised drift (conducts), pinned → stuck to atoms (no conduction) ---- */
+  function drawElectronSea(v) {
+    var COLS = 7, ROWS = 3, S = 56, ION = 38, padL = 24, padT = 26;
+    var noMotion = reduceMotion();
+    var kids = [];
+    for (var r = 0; r < ROWS; r++) for (var c = 0; c < COLS; c++) {
+      var i = r * COLS + c;
+      kids.push(ion(padL + c * S + ION / 2, padT + r * S + ION / 2, ION, '+', false));
+      var ex = padL + c * S + (v.free ? -8 : 30), ey = padT + r * S + (v.free ? 44 : 30);
+      var st = {
+        position: 'absolute', left: ex + 'px', top: ey + 'px', width: '11px', height: '11px', borderRadius: '50%',
+        transition: 'all .8s cubic-bezier(.4,0,.2,1)',
+      };
+      if (v.free) {
+        st.background = 'var(--context-blue,#2E7DD1)';
+        st.boxShadow = '0 0 6px rgba(46,125,209,.6)';
+        if (!noMotion) st.animation = 'mrbEDrift ' + (2 + (i % 5) * 0.4) + 's ease-in-out ' + (i * -0.3) + 's infinite';
+      } else {
+        st.background = '#9AA6B2'; st.boxShadow = 'none';
+      }
+      kids.push(el('div', st));
+    }
+    var W = padL * 2 + (COLS - 1) * S + ION + 20, H = padT * 2 + (ROWS - 1) * S + ION + 18;
+    return el('div', { position: 'relative', width: W + 'px', height: H + 'px' }, kids);
+  }
+
+  var RENDERERS = {
+    tetrahedral: drawTetrahedral, hexLayers: drawHexLayers,
+    metalLayers: drawMetalLayers, electronSea: drawElectronSea, delocalised: drawElectronSea,
+  };
+  function buildViz(visual, forced) {
+    var v = visual;
+    if (forced != null) { v = {}; for (var k in visual) v[k] = visual[k]; v.forced = forced; }
+    return (RENDERERS[v.type] || drawTetrahedral)(v);
+  }
 
   /* ============ instance ============ */
   function init(container, config) {
     if (!container) return;
     ensureStyles();
     var sel = 0;
+    var forced = false;   // optional "apply force" demo state (config.force)
 
     var root = el('div', null); root.className = 'mrb-tsc';
 
@@ -239,7 +339,7 @@
     var btns = config.states.map(function (s, i) {
       var b = el('button', null, s.label); b.className = 'mrb-tsc__btn';
       b.type = 'button';
-      b.addEventListener('click', function () { sel = i; render(); });
+      b.addEventListener('click', function () { sel = i; forced = false; render(); });
       side.appendChild(b);
       return b;
     });
@@ -248,6 +348,14 @@
     side.appendChild(propLbl);
     var propSlot = el('div', null, ''); side.style.gap = '10px';
     side.appendChild(propSlot);
+
+    // optional force button (only states carrying a `forced` override react)
+    var forceBtn = null;
+    if (config.force) {
+      forceBtn = el('button', null, ''); forceBtn.className = 'mrb-tsc__force'; forceBtn.type = 'button';
+      forceBtn.addEventListener('click', function () { forced = !forced; render(); });
+      side.appendChild(forceBtn);
+    }
 
     var grid = el('div', null, [vizWrap, side]); grid.className = 'mrb-tsc__grid';
 
@@ -261,23 +369,31 @@
 
     function render() {
       var stt = config.states[sel];
-      var tone = TONE[stt.tone] || TONE.neutral;
+      // when forced and this state carries a post-force override, swap to it
+      var applyForce = forced && !!config.force;
+      var view = (applyForce && stt.forced) ? stt.forced : stt;
+      var tone = TONE[(view.tone != null ? view.tone : stt.tone)] || TONE.neutral;
       // callout tint
       callout.style.background = tone.bg;
       callout.style.borderLeftColor = tone.spine;
       calloutEmoji.textContent = stt.emoji || '';
       effect.style.color = tone.color;
-      effect.textContent = stt.effectTitle || '';
-      caption.textContent = stt.caption || '';
-      // viz + legend
+      effect.textContent = view.effectTitle || '';
+      caption.textContent = view.caption || '';
+      // viz + legend (pass the force flag to the renderer)
       vizSlot.innerHTML = '';
-      vizSlot.appendChild(buildViz(stt.visual));
-      legend.textContent = stt.legend || '';
+      vizSlot.appendChild(buildViz(stt.visual, config.force ? forced : null));
+      legend.textContent = (view.legend != null ? view.legend : stt.legend) || '';
       // buttons
       btns.forEach(function (b, i) { b.classList.toggle('is-active', i === sel); });
+      // force button label + pressed style
+      if (forceBtn) {
+        forceBtn.textContent = forced ? config.force.undoLabel : config.force.label;
+        forceBtn.classList.toggle('is-pressed', forced);
+      }
       // property chips
       propSlot.innerHTML = '';
-      (stt.props || []).forEach(function (p) {
+      ((view.props != null ? view.props : stt.props) || []).forEach(function (p) {
         var t = TONE[p.tone] || TONE.neutral;
         var dot = el('span', { background: t.dot }); dot.className = 'mrb-tsc__dot';
         var val = el('span', { color: t.chip }, [dot, document.createTextNode(p.v)]);

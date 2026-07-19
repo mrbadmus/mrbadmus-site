@@ -27,6 +27,18 @@ sys.path.insert(0, ROOT)
 OUT_DIR = os.path.join(ROOT, "docs", "audit")
 EXTRACT_DIR = os.path.join(OUT_DIR, "extracts")
 
+# Pages that render an interactive FIFA practice hero (MRB-113). For these the
+# `2-practice-absent` finding no longer holds — the template renders real
+# per-step practice, not static steps. Keyed by (topic, st_id).
+try:
+    from bonding_redesign import BONDING_REDESIGN as _BONDING_REDESIGN
+    _FIFA_PRACTICE_PAGES = {
+        ("bonding", _sid) for _sid, _cfg in _BONDING_REDESIGN.items()
+        if isinstance(_cfg.get("hero"), dict) and _cfg["hero"].get("build") == "fifa"
+    }
+except Exception:
+    _FIFA_PRACTICE_PAGES = set()
+
 SUBJECTS = ["physics", "chemistry", "biology"]
 VARIANTS = [
     ("combined", "foundation", "all_subtopics_{s}"),
@@ -174,9 +186,13 @@ def main():
                     if len(fifas) < 3:
                         add(subject, pathway, tier, topic, st_id, "fifa", "2-example-count",
                             "major", f"{len(fifas)} worked example(s) — minimum 3")
-                    add(subject, pathway, tier, topic, st_id, "fifa", "2-practice-absent",
-                        "major", "no interactive practice mode "
-                        "(systemic: current template renders static steps only)")
+                    # A redesigned page with a FIFA practice hero (MRB-113) renders
+                    # real per-step interactive practice, so the systemic
+                    # static-steps finding no longer applies to it.
+                    if (topic, st_id) not in _FIFA_PRACTICE_PAGES:
+                        add(subject, pathway, tier, topic, st_id, "fifa", "2-practice-absent",
+                            "major", "no interactive practice mode "
+                            "(systemic: current template renders static steps only)")
                 elif st.get("equations"):
                     add(subject, pathway, tier, topic, st_id, "fifa", "4-menu",
                         "info", "page has equations but no FIFA block — "
