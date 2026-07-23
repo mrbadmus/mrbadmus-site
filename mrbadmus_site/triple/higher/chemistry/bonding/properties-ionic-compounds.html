@@ -104,6 +104,54 @@ html { background: var(--surface-page); }
 .rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
 .rd .rd-blk-examiner__body b { color: #6E4A00; }
 
+/* ══ Bonding v2 Phase 1 (MRB-133) ══ */
+/* Section kickers — the mono kicker voice replaces emoji section titles (§5.9).
+   Same face/colour as .rd-hero-kicker (--accent-deep = 4.64:1 on cream, MRB-128). */
+.rd .rd-sec-kicker { font-family: var(--font-mono,monospace); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep,#B5341A); margin-bottom: 14px; }
+/* Mode chooser — three anchors under the page kicker (§3.2 rule 7) */
+.rd .rd-modes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.rd .rd-modes a { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13.5px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 8px 16px; text-decoration: none; }
+.rd .rd-modes a:hover, .rd .rd-modes a:focus-visible { border-color: var(--accent-strong,#C0392B); }
+/* Checkpoint micro-quiz — a relocated frozen question inline in the theory flow */
+.rd .rd-checkpoint { background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-left: 4px solid var(--context-blue,#2E7DD1); border-radius: 14px; padding: 16px 20px; }
+.rd .rd-checkpoint__kicker { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-deep,#B5341A); margin-bottom: 8px; }
+.rd .rd-checkpoint .q-text { font-size: calc(0.92rem * var(--rd-fs-scale, 1)); font-weight: 600; color: var(--ink,#1A1714); margin-bottom: 10px; }
+.rd .rd-checkpoint .quiz-fb { font-size: calc(0.85rem * var(--rd-fs-scale, 1)); }
+.rd .rd-checkpoint__again { font-family: var(--font-mono,monospace); font-size: calc(11.5px * var(--rd-fs-scale, 1)); color: #4A4238; background: transparent; border: 1px solid var(--border,#E4DCCB); border-radius: 8px; padding: 3px 10px; cursor: pointer; }
+/* Exam-paper quiz (§5.7) — continuous panel, hanging mono numbers, hairline
+   rules, compact lettered options, chunked sets, sticky progress chip */
+.rd .rd-exam { background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: var(--r-panel,22px); box-shadow: var(--shadow-panel,0 22px 50px -35px rgba(60,30,20,.5)); padding: 8px 26px 22px; counter-reset: rdq; }
+.rd .rd-exam__chip { position: sticky; top: 10px; z-index: 4; display: inline-block; font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 600; color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 7px 14px; margin: 12px 0 4px; }
+.rd .rd-exam__chunk-hd { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep,#B5341A); padding: 16px 0 6px; }
+.rd .rd-exam .quiz-card { position: relative; padding: 15px 0 13px 46px; margin: 0; border: none; border-bottom: 1px solid var(--surface-inset,#EFE7D8); border-radius: 0; background: transparent; box-shadow: none; counter-increment: rdq; }
+.rd .rd-exam .quiz-card::before { content: counter(rdq, decimal-leading-zero); position: absolute; left: 0; top: 17px; font-family: var(--font-mono,monospace); font-size: calc(13px * var(--rd-fs-scale, 1)); font-weight: 700; color: #716A60; }
+.rd .rd-exam .q-text { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); font-weight: 600; color: var(--ink,#1A1714); margin-bottom: 9px; }
+.rd .rd-exam .quiz-options, .rd .rd-checkpoint .quiz-options { display: flex; flex-direction: column; gap: 5px; counter-reset: rdopt; }
+.rd .rd-exam .quiz-opt, .rd .rd-checkpoint .quiz-opt { counter-increment: rdopt; display: flex; gap: 10px; align-items: baseline; text-align: left; width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 10px; background: transparent; box-shadow: none; color: var(--ink-body,#2A241E); cursor: pointer; }
+.rd .rd-exam .quiz-opt::before, .rd .rd-checkpoint .quiz-opt::before { content: counter(rdopt, upper-alpha); font-family: var(--font-mono,monospace); font-weight: 700; font-size: calc(12px * var(--rd-fs-scale, 1)); color: #716A60; flex: none; }
+.rd .rd-exam .quiz-opt:hover:not(:disabled), .rd .rd-checkpoint .quiz-opt:hover:not(:disabled) { border-color: var(--border,#E4DCCB); background: var(--surface-inset,#F7F2E8); }
+.rd .rd-exam .quiz-opt.correct, .rd .rd-checkpoint .quiz-opt.correct { background: #E7F3EA; border-color: #7FB98A; color: #2E6B3A; }
+.rd .rd-exam .quiz-opt.wrong, .rd .rd-checkpoint .quiz-opt.wrong { background: #FBE4DE; border-color: #E0897B; color: #A83824; }
+.rd .rd-exam details { border-top: 1px solid var(--surface-inset,#EFE7D8); }
+.rd .rd-exam summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 0; font-family: var(--font-mono,monospace); font-size: calc(12.5px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep,#B5341A); }
+.rd .rd-exam summary::-webkit-details-marker { display: none; }
+.rd .rd-exam summary::after { content: "▾ open"; font-weight: 600; letter-spacing: .04em; color: #716A60; text-transform: none; }
+.rd .rd-exam details[open] summary::after { content: "▴ close"; }
+.rd .rd-exam__check-row { padding: 14px 0 6px; }
+.rd .rd-exam__end { margin-top: 16px; padding: 16px 20px; border-radius: 12px; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); font-weight: 700; }
+.rd .rd-exam__end.is-win { background: #E7F3EA; color: #2E6B3A; border: 1px solid #B9DCC1; }
+.rd .rd-exam__end.is-mid { background: #FEF6E0; color: #7A5510; border: 1px solid #EAD9AC; }
+.rd .rd-exam__end.is-low { background: #FBE4DE; color: #A83824; border: 1px solid #EFC0B4; }
+.rd .rd-exam__actions { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+/* Key Note revision card (§5.6) — last, static, photographable; cover-and-recall */
+.rd .rd-keycard { background: var(--surface-inset,#F7F2E8); border: 1px solid var(--border,#E4DCCB); border-top: 3px solid var(--accent-strong,#C0392B); border-radius: 16px; padding: 18px 24px 20px; }
+.rd .rd-keycard__hd { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.rd .rd-keycard__lbl { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #716A60; }
+.rd .rd-keycard__cover { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.rd .rd-keycard__cover:focus-visible { outline: 2px solid var(--accent-strong,#C0392B); outline-offset: 2px; }
+.rd .rd-keycard__text { font-family: var(--font-mono,monospace); font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.75; color: #211B15; margin: 0; }
+.rd .rd-keycard.is-covered .rd-keycard__text { filter: blur(9px); user-select: none; }
+
 </style>
 </head>
 <body class="rd">
@@ -133,13 +181,36 @@ html { background: var(--surface-page); }
     <span class="spec-pill">Spec 5.2.2.3</span>
     <span class="tier-pill">📙 Higher</span>
   </div>
+  <nav class="rd-modes" aria-label="Choose how to use this page">
+    <a href="#rd-teach">📖 Teach me</a>
+    <a href="#rd-labs">🎮 Labs</a>
+    <a href="#rd-test">🎯 Test me</a>
+  </nav>
 </div>
 
 <div class="content-area">
 
-  <div class="section">
-    <div class="section-title">📖 In-Depth Theory</div>
-    <div class="rd-blocks"><p class="rd-blk-lead">Ionic compounds have a <b>giant ionic lattice</b> with strong electrostatic forces in all directions between alternating positive and negative ions. That one structure explains every property. The formula shows the simplest whole-number ratio of ions.</p><div class="rd-blk-compare"><div class="rd-cmp-grid" style="grid-template-columns:repeat(2,1fr);"><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🧂</span><b>NaCl (charges ±1)</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Ion charges</span><span class="rd-cmp-row__v">Na⁺ and Cl⁻</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Force strength</span><span class="rd-cmp-row__v">Strong</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Melting point</span><span class="rd-cmp-row__v">801 °C</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🧲</span><b>MgO (charges ±2)</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Ion charges</span><span class="rd-cmp-row__v">Mg²⁺ and O²⁻</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Force strength</span><span class="rd-cmp-row__v">Much stronger (double charges)</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Melting point</span><span class="rd-cmp-row__v">2852 °C</span></div></div></div><div class="rd-cmp-verdict">Higher ion charges → stronger attraction → higher melting point. That is why MgO melts far above NaCl.</div></div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">💥</span><b>Hard but brittle</b></div><div class="rd-fcard__body">A force shifts the layers so like charges align and repel — the crystal shatters rather than bending.</div></div><div class="rd-fcard rd-fcard--limit"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🚫</span><b>No conduction when solid</b></div><div class="rd-fcard__body">Ions are fixed in the lattice, so nothing can carry charge.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚡</span><b>Conducts molten or dissolved</b></div><div class="rd-fcard__body">The ions become free to move and carry the current.</div></div></div><div id="tb-comparereveal-properties-ionic-compounds-3"></div></div>
+  <div class="section" id="rd-teach">
+    <div class="rd-sec-kicker">Theory · read, then commit</div>
+    <div class="rd-blocks"><p class="rd-blk-lead">Ionic compounds have a <b>giant ionic lattice</b> with strong electrostatic forces in all directions between alternating positive and negative ions. That one structure explains every property. The formula shows the simplest whole-number ratio of ions.</p><div class="rd-blk-compare"><div class="rd-cmp-grid" style="grid-template-columns:repeat(2,1fr);"><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🧂</span><b>NaCl (charges ±1)</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Ion charges</span><span class="rd-cmp-row__v">Na⁺ and Cl⁻</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Force strength</span><span class="rd-cmp-row__v">Strong</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Melting point</span><span class="rd-cmp-row__v">801 °C</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🧲</span><b>MgO (charges ±2)</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Ion charges</span><span class="rd-cmp-row__v">Mg²⁺ and O²⁻</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Force strength</span><span class="rd-cmp-row__v">Much stronger (double charges)</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">Melting point</span><span class="rd-cmp-row__v">2852 °C</span></div></div></div><div class="rd-cmp-verdict">Higher ion charges → stronger attraction → higher melting point. That is why MgO melts far above NaCl.</div></div><div class="rd-checkpoint" id="cp-properties-ionic-compounds-0">
+  <div class="rd-checkpoint__kicker">Checkpoint · quick check</div>
+  <div class="q-text">Describe the type of structure that is responsible for the properties of ionic compounds.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">A giant ionic lattice — a regular 3D arrangement of oppositely charged ions with strong electrostatic forces in all directions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ionic compounds are giant lattices, not small molecules.">A small molecule of a few ions held weakly together</button>
+<button class="quiz-opt" type="button" data-wrong-exp="That is the metallic model; ionic compounds have positive AND negative ions, no electron sea.">A lattice of positive ions in a sea of delocalised electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="That describes a polymer-like arrangement, not an ionic lattice.">Long chains of ions joined by weak intermolecular forces</button>
+</div>
+  <div class="quiz-fb"></div>
+</div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">💥</span><b>Hard but brittle</b></div><div class="rd-fcard__body">A force shifts the layers so like charges align and repel — the crystal shatters rather than bending.</div></div><div class="rd-fcard rd-fcard--limit"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🚫</span><b>No conduction when solid</b></div><div class="rd-fcard__body">Ions are fixed in the lattice, so nothing can carry charge.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚡</span><b>Conducts molten or dissolved</b></div><div class="rd-fcard__body">The ions become free to move and carry the current.</div></div></div><div class="rd-checkpoint" id="cp-properties-ionic-compounds-1">
+  <div class="rd-checkpoint__kicker">Checkpoint · quick check</div>
+  <div class="q-text">Explain why ionic compounds conduct electricity when molten or dissolved, but not when solid.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">When molten or dissolved the ions are free to move and carry charge; in the solid they are held in fixed positions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="The ions already exist in the solid — melting or dissolving frees them to move, it does not create them.">Melting or dissolving creates ions that were not there in the solid</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ionic conduction is by moving IONS, not delocalised electrons (that is metals).">Molten ionic compounds conduct using delocalised electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Solid ionic compounds do contain charged ions; they simply cannot move.">Solid ionic compounds have no charged particles</button>
+</div>
+  <div class="quiz-fb"></div>
+</div><div id="tb-comparereveal-properties-ionic-compounds-3"></div></div>
     <div class="mistake-box">
   <div class="mistake-title">⚠️ Common Mistake</div>
   <p style="font-size:0.9rem;line-height:1.7;">Students often say that ionic solutions conduct electricity because electrons flow through them, just like in a metal. They do not: ionic compounds have no free electrons. They conduct only when molten or dissolved, and it is the ions themselves that move and carry the charge. (This is also why ionic compounds are brittle rather than bendy — shifting the lattice brings like charges together, and they repel.)</p>
@@ -148,129 +219,137 @@ html { background: var(--surface-page); }
 
   
   
-  <div class="section">
-  <div class="section-title">📌 Key Note</div>
-  <div class="keynote-box"><p>Giant ionic lattice → high MP/BP (strong electrostatic forces). Brittle (layer shift → repulsion → shatters). Solid: no conduction. Molten/dissolved: conducts (mobile ions). Higher ionic charge → stronger forces → higher MP. Many dissolve in water.</p></div>
-</div>
-  <div class="section"><div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">When explaining conduction, say it is the ions that move — ionic compounds have no free electrons, so never describe electrons flowing "like in a metal". They conduct only when molten or dissolved, because that is when the ions are free to move.</div></div></div>
-  <div class="section">
-    <div class="rd-hero-kicker">🎯 Retrieval · sort the cards</div>
+  
+  <div class="section" id="rd-labs">
+    <div class="rd-hero-kicker">Retrieval · sort the cards</div>
     <div id="bins-properties-ionic-compounds"></div>
   </div>
   
   
   
   
-  <div class="section">
-  <div class="section-title">🎯 Test Yourself</div>
-  <div class="quiz-progress" id="quizProgress">Answer all 12 questions, then check your answers.</div>
-  <div class="quiz-card" id="qcard-0">
-  <div class="q-text">1. A student tests whether sodium chloride conducts electricity in four forms: solid, dissolved in water, molten, and as a vapour. Predict in which forms it conducts, and explain why.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-correct="1">Dissolved in water and molten — in both the ions are free to move and carry charge</button>
-<button class="quiz-opt" data-qi="0" data-wrong-exp="Solid NaCl has ions but they are FIXED — they cannot move to carry charge, so it does not conduct as a solid.">Only as a solid — the lattice provides a path for the electrons</button>
-<button class="quiz-opt" data-qi="0" data-wrong-exp="Having ions is not enough; they must be free to move. In the solid (and vapour) they cannot carry a current.">In all four forms — sodium chloride always contains ions</button>
-<button class="quiz-opt" data-qi="0" data-wrong-exp="Molten NaCl also conducts — water is not required. Free ions from melting OR dissolving both allow conduction.">Only when dissolved — the water is what carries the current</button>
+  <div class="section" id="rd-test">
+  <div class="rd-sec-kicker">Test yourself · 10 questions, exam order</div>
+  <div class="rd-exam" data-st="properties-ionic-compounds">
+    <div class="rd-exam__chip">0 of 10 answered</div>
+    <section class="rd-exam__chunk" data-chunk="Warm-up">
+      <div class="rd-exam__chunk-hd">Warm-up · 3 questions</div>
+      <div class="quiz-card">
+  <div class="q-text">A student tests whether sodium chloride conducts electricity in four forms: solid, dissolved in water, molten, and as a vapour. Predict in which forms it conducts, and explain why.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Dissolved in water and molten — in both the ions are free to move and carry charge</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Solid NaCl has ions but they are FIXED — they cannot move to carry charge, so it does not conduct as a solid.">Only as a solid — the lattice provides a path for the electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Having ions is not enough; they must be free to move. In the solid (and vapour) they cannot carry a current.">In all four forms — sodium chloride always contains ions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Molten NaCl also conducts — water is not required. Free ions from melting OR dissolving both allow conduction.">Only when dissolved — the water is what carries the current</button>
 </div>
-  <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1">
-  <div class="q-text">2. Explain why ionic compounds conduct electricity when molten or dissolved, but not when solid.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-correct="1">When molten or dissolved the ions are free to move and carry charge; in the solid they are held in fixed positions</button>
-<button class="quiz-opt" data-qi="1" data-wrong-exp="The ions already exist in the solid — melting or dissolving frees them to move, it does not create them.">Melting or dissolving creates ions that were not there in the solid</button>
-<button class="quiz-opt" data-qi="1" data-wrong-exp="Ionic conduction is by moving IONS, not delocalised electrons (that is metals).">Molten ionic compounds conduct using delocalised electrons</button>
-<button class="quiz-opt" data-qi="1" data-wrong-exp="Solid ionic compounds do contain charged ions; they simply cannot move.">Solid ionic compounds have no charged particles</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Explain why ionic compounds have high melting and boiling points.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">There are many strong electrostatic attractions between the oppositely charged ions throughout the giant lattice, needing a lot of energy to overcome</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Crystal size does not set the melting point; the strength of the ionic bonding does.">The crystals are large, so more heat is needed</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ionic compounds have ionic bonds (ion-to-ion attraction), not covalent bonds.">Strong covalent bonds throughout the lattice must be broken</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ion mass is not the reason; the strength of the electrostatic attraction is.">The ions are very heavy and resist heating</button>
 </div>
-  <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2">
-  <div class="q-text">3. Explain why ionic compounds have high melting and boiling points.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-correct="1">There are many strong electrostatic attractions between the oppositely charged ions throughout the giant lattice, needing a lot of energy to overcome</button>
-<button class="quiz-opt" data-qi="2" data-wrong-exp="Crystal size does not set the melting point; the strength of the ionic bonding does.">The crystals are large, so more heat is needed</button>
-<button class="quiz-opt" data-qi="2" data-wrong-exp="Ionic compounds have ionic bonds (ion-to-ion attraction), not covalent bonds.">Strong covalent bonds throughout the lattice must be broken</button>
-<button class="quiz-opt" data-qi="2" data-wrong-exp="Ion mass is not the reason; the strength of the electrostatic attraction is.">The ions are very heavy and resist heating</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Ionic compounds are hard but brittle. Explain why a crystal shatters when it is struck.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">The blow shifts a layer of ions so like charges line up next to each other; they repel and the crystal splits apart</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ionic compounds contain no covalent bonds — they are held by ionic (electrostatic) attraction.">The covalent bonds in the crystal snap</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Shattering is caused by ion repulsion when layers shift, not by melting.">The ions melt at the point of impact</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ionic compounds have no delocalised electrons; that is a metallic feature.">The delocalised electrons are knocked out of place</button>
 </div>
-  <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3">
-  <div class="q-text">4. Ionic compounds are hard but brittle. Explain why a crystal shatters when it is struck.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-correct="1">The blow shifts a layer of ions so like charges line up next to each other; they repel and the crystal splits apart</button>
-<button class="quiz-opt" data-qi="3" data-wrong-exp="Ionic compounds contain no covalent bonds — they are held by ionic (electrostatic) attraction.">The covalent bonds in the crystal snap</button>
-<button class="quiz-opt" data-qi="3" data-wrong-exp="Shattering is caused by ion repulsion when layers shift, not by melting.">The ions melt at the point of impact</button>
-<button class="quiz-opt" data-qi="3" data-wrong-exp="Ionic compounds have no delocalised electrons; that is a metallic feature.">The delocalised electrons are knocked out of place</button>
+  <div class="quiz-fb"></div>
 </div>
-  <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4">
-  <div class="q-text">5. Describe the type of structure that is responsible for the properties of ionic compounds.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-correct="1">A giant ionic lattice — a regular 3D arrangement of oppositely charged ions with strong electrostatic forces in all directions</button>
-<button class="quiz-opt" data-qi="4" data-wrong-exp="Ionic compounds are giant lattices, not small molecules.">A small molecule of a few ions held weakly together</button>
-<button class="quiz-opt" data-qi="4" data-wrong-exp="That is the metallic model; ionic compounds have positive AND negative ions, no electron sea.">A lattice of positive ions in a sea of delocalised electrons</button>
-<button class="quiz-opt" data-qi="4" data-wrong-exp="That describes a polymer-like arrangement, not an ionic lattice.">Long chains of ions joined by weak intermolecular forces</button>
+      <div class="rd-exam__check-row"><button class="quiz-check-btn" type="button" data-chunk-check>✓ Check this set</button></div>
+    </section>
+    <details class="rd-exam__details"><summary>Exam standard · 3 questions</summary>
+      <section class="rd-exam__chunk" data-chunk="Exam standard">
+      <div class="quiz-card">
+  <div class="q-text">Magnesium oxide (MgO) has a higher melting point than sodium chloride (NaCl). Explain why.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Mg²⁺ and O²⁻ carry 2+/2− charges, larger than the 1+/1− of Na⁺ and Cl⁻, so the electrostatic forces between the ions are stronger and need more energy to overcome</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Crystal size is not the determining factor — both are giant lattices; the strength of each ion-ion attraction matters.">Magnesium oxide has a larger crystal lattice, so more energy is needed</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Both MgO and NaCl are 1:1 — neither has more ions per formula unit.">Magnesium oxide has more ions per formula unit than sodium chloride</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Atomic mass does not set the melting point; the ionic charge does.">Magnesium is heavier than sodium, which raises the melting point</button>
 </div>
-  <div class="quiz-fb" id="qfb-4"></div>
-</div><div class="quiz-card" id="qcard-5">
-  <div class="q-text">6. Magnesium oxide (MgO) has a higher melting point than sodium chloride (NaCl). Explain why.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-correct="1">Mg²⁺ and O²⁻ carry 2+/2− charges, larger than the 1+/1− of Na⁺ and Cl⁻, so the electrostatic forces between the ions are stronger and need more energy to overcome</button>
-<button class="quiz-opt" data-qi="5" data-wrong-exp="Crystal size is not the determining factor — both are giant lattices; the strength of each ion-ion attraction matters.">Magnesium oxide has a larger crystal lattice, so more energy is needed</button>
-<button class="quiz-opt" data-qi="5" data-wrong-exp="Both MgO and NaCl are 1:1 — neither has more ions per formula unit.">Magnesium oxide has more ions per formula unit than sodium chloride</button>
-<button class="quiz-opt" data-qi="5" data-wrong-exp="Atomic mass does not set the melting point; the ionic charge does.">Magnesium is heavier than sodium, which raises the melting point</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Explain the difference between how a metal conducts electricity and how molten sodium chloride conducts electricity.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">A metal conducts using delocalised electrons that move; molten sodium chloride conducts using its ions that move</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Only the metal uses delocalised electrons; molten NaCl uses moving ions, not electrons.">Both conduct using delocalised electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="The metal does not conduct by moving ions — its ions are fixed; the electrons move.">Both conduct using moving ions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="This swaps them over: metals use electrons, molten ionic compounds use ions.">A metal conducts using ions; molten sodium chloride uses electrons</button>
 </div>
-  <div class="quiz-fb" id="qfb-5"></div>
-</div><div class="quiz-card" id="qcard-6">
-  <div class="q-text">7. Explain the difference between how a metal conducts electricity and how molten sodium chloride conducts electricity.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-correct="1">A metal conducts using delocalised electrons that move; molten sodium chloride conducts using its ions that move</button>
-<button class="quiz-opt" data-qi="6" data-wrong-exp="Only the metal uses delocalised electrons; molten NaCl uses moving ions, not electrons.">Both conduct using delocalised electrons</button>
-<button class="quiz-opt" data-qi="6" data-wrong-exp="The metal does not conduct by moving ions — its ions are fixed; the electrons move.">Both conduct using moving ions</button>
-<button class="quiz-opt" data-qi="6" data-wrong-exp="This swaps them over: metals use electrons, molten ionic compounds use ions.">A metal conducts using ions; molten sodium chloride uses electrons</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Predict which has the higher melting point, sodium chloride (NaCl) or sodium oxide (Na₂O), and justify your answer using ionic charge.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Sodium oxide — its O²⁻ ions carry a 2− charge compared with Cl⁻ at 1−, giving stronger forces and a higher melting point</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Atomic mass is not the key factor; the O²⁻ charge (2−) creates stronger attraction than Cl⁻ (1−).">Sodium chloride — because it contains chlorine, which is heavier than oxygen</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Having the same positive ion does not make the melting points equal — the negative ion's charge differs.">They are equal, because both contain sodium ions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="The higher melting point comes from the higher ionic charge (O²⁻), not simply from more atoms.">Sodium oxide — because it has more atoms in its formula</button>
 </div>
-  <div class="quiz-fb" id="qfb-6"></div>
-</div><div class="quiz-card" id="qcard-7">
-  <div class="q-text">8. Predict which has the higher melting point, sodium chloride (NaCl) or sodium oxide (Na₂O), and justify your answer using ionic charge.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-correct="1">Sodium oxide — its O²⁻ ions carry a 2− charge compared with Cl⁻ at 1−, giving stronger forces and a higher melting point</button>
-<button class="quiz-opt" data-qi="7" data-wrong-exp="Atomic mass is not the key factor; the O²⁻ charge (2−) creates stronger attraction than Cl⁻ (1−).">Sodium chloride — because it contains chlorine, which is heavier than oxygen</button>
-<button class="quiz-opt" data-qi="7" data-wrong-exp="Having the same positive ion does not make the melting points equal — the negative ion's charge differs.">They are equal, because both contain sodium ions</button>
-<button class="quiz-opt" data-qi="7" data-wrong-exp="The higher melting point comes from the higher ionic charge (O²⁻), not simply from more atoms.">Sodium oxide — because it has more atoms in its formula</button>
+  <div class="quiz-fb"></div>
 </div>
-  <div class="quiz-fb" id="qfb-7"></div>
-</div><div class="quiz-card" id="qcard-8">
-  <div class="q-text">9. Explain why the melting point of an ionic compound gives information about the strength of the forces between its ions.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-correct="1">A higher melting point means more energy is needed to separate the ions, which shows the electrostatic forces holding them are stronger</button>
-<button class="quiz-opt" data-qi="8" data-wrong-exp="Ion mass is not what the melting point reveals; it reflects the strength of the attraction.">A higher melting point means the ions are lighter</button>
-<button class="quiz-opt" data-qi="8" data-wrong-exp="Crystal size does not set the melting point; the strength of the ionic forces does.">The melting point depends only on the size of the crystal</button>
-<button class="quiz-opt" data-qi="8" data-wrong-exp="The melting point is directly linked to the strength of the forces between the ions.">The melting point is unrelated to the forces between ions</button>
+      <div class="rd-exam__check-row"><button class="quiz-check-btn" type="button" data-chunk-check>✓ Check this set</button></div>
+      </section>
+    </details>
+    <details class="rd-exam__details"><summary>Stretch · 4 questions</summary>
+      <section class="rd-exam__chunk" data-chunk="Stretch">
+      <div class="quiz-card">
+  <div class="q-text">Explain why the melting point of an ionic compound gives information about the strength of the forces between its ions.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">A higher melting point means more energy is needed to separate the ions, which shows the electrostatic forces holding them are stronger</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ion mass is not what the melting point reveals; it reflects the strength of the attraction.">A higher melting point means the ions are lighter</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Crystal size does not set the melting point; the strength of the ionic forces does.">The melting point depends only on the size of the crystal</button>
+<button class="quiz-opt" type="button" data-wrong-exp="The melting point is directly linked to the strength of the forces between the ions.">The melting point is unrelated to the forces between ions</button>
 </div>
-  <div class="quiz-fb" id="qfb-8"></div>
-</div><div class="quiz-card" id="qcard-9">
-  <div class="q-text">10. Suggest why magnesium oxide is used to line the inside of furnaces.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-correct="1">Its 2+/2− ions give very strong ionic bonding and a very high melting point, so it can withstand the high temperatures without melting</button>
-<button class="quiz-opt" data-qi="9" data-wrong-exp="Solid MgO does not conduct electricity (fixed ions); that is not why it is used to line furnaces.">It is a good electrical conductor when solid</button>
-<button class="quiz-opt" data-qi="9" data-wrong-exp="A low melting point would be useless in a furnace; MgO is chosen for its VERY HIGH melting point.">It has a low melting point, so it melts to seal the furnace</button>
-<button class="quiz-opt" data-qi="9" data-wrong-exp="MgO is hard and brittle, not soft and flexible; it is chosen for heat resistance.">It is a soft, flexible material that absorbs heat</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Suggest why magnesium oxide is used to line the inside of furnaces.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Its 2+/2− ions give very strong ionic bonding and a very high melting point, so it can withstand the high temperatures without melting</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Solid MgO does not conduct electricity (fixed ions); that is not why it is used to line furnaces.">It is a good electrical conductor when solid</button>
+<button class="quiz-opt" type="button" data-wrong-exp="A low melting point would be useless in a furnace; MgO is chosen for its VERY HIGH melting point.">It has a low melting point, so it melts to seal the furnace</button>
+<button class="quiz-opt" type="button" data-wrong-exp="MgO is hard and brittle, not soft and flexible; it is chosen for heat resistance.">It is a soft, flexible material that absorbs heat</button>
 </div>
-  <div class="quiz-fb" id="qfb-9"></div>
-</div><div class="quiz-card" id="qcard-10">
-  <div class="q-text">11. Aluminium oxide (Al₂O₃) has a very high melting point. Explain, in terms of ionic charge, why it is higher than that of sodium chloride.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="10" data-correct="1">Al³⁺ and O²⁻ carry high charges (3+ and 2−), giving very strong electrostatic forces that need a great deal of energy to overcome — far more than NaCl's 1+/1−</button>
-<button class="quiz-opt" data-qi="10" data-wrong-exp="Ion size has a smaller effect than charge; the 3+/2− charges are the main reason for the very high melting point.">Aluminium oxide has smaller ions, which always melt at higher temperatures</button>
-<button class="quiz-opt" data-qi="10" data-wrong-exp="Aluminium oxide is ionic (metal + non-metal), not covalent.">Aluminium oxide is a covalent compound with strong bonds</button>
-<button class="quiz-opt" data-qi="10" data-wrong-exp="Aluminium oxide is an ionic compound with a very HIGH melting point, and it does not conduct as a solid.">Aluminium is a metal, so aluminium oxide conducts and melts easily</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Aluminium oxide (Al₂O₃) has a very high melting point. Explain, in terms of ionic charge, why it is higher than that of sodium chloride.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Al³⁺ and O²⁻ carry high charges (3+ and 2−), giving very strong electrostatic forces that need a great deal of energy to overcome — far more than NaCl's 1+/1−</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ion size has a smaller effect than charge; the 3+/2− charges are the main reason for the very high melting point.">Aluminium oxide has smaller ions, which always melt at higher temperatures</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Aluminium oxide is ionic (metal + non-metal), not covalent.">Aluminium oxide is a covalent compound with strong bonds</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Aluminium oxide is an ionic compound with a very HIGH melting point, and it does not conduct as a solid.">Aluminium is a metal, so aluminium oxide conducts and melts easily</button>
 </div>
-  <div class="quiz-fb" id="qfb-10"></div>
-</div><div class="quiz-card" id="qcard-11">
-  <div class="q-text">12. Explain why the ability of a molten ionic compound to conduct electricity depends on its ions acting as charge carriers.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="11" data-correct="1">A current is a flow of charge; in a molten ionic compound the mobile ions carry that charge, so conduction only happens when the ions are free to move</button>
-<button class="quiz-opt" data-qi="11" data-wrong-exp="Fixed ions cannot carry charge; they must be free to move, which happens when the compound is molten.">The ions carry charge only when they are fixed in place</button>
-<button class="quiz-opt" data-qi="11" data-wrong-exp="Ionic conduction is by moving ions, not by electrons, and only when the ions can move.">Electrons in the ions carry the charge whether the compound is solid or molten</button>
-<button class="quiz-opt" data-qi="11" data-wrong-exp="Electrical current is a flow of charge (moving ions here), not simply heat.">The compound conducts because heat, not moving charge, carries the current</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Explain why the ability of a molten ionic compound to conduct electricity depends on its ions acting as charge carriers.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">A current is a flow of charge; in a molten ionic compound the mobile ions carry that charge, so conduction only happens when the ions are free to move</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Fixed ions cannot carry charge; they must be free to move, which happens when the compound is molten.">The ions carry charge only when they are fixed in place</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ionic conduction is by moving ions, not by electrons, and only when the ions can move.">Electrons in the ions carry the charge whether the compound is solid or molten</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Electrical current is a flow of charge (moving ions here), not simply heat.">The compound conducts because heat, not moving charge, carries the current</button>
 </div>
-  <div class="quiz-fb" id="qfb-11"></div>
+  <div class="quiz-fb"></div>
 </div>
-  <div class="quiz-actions">
-    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
-    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+      <div class="rd-exam__check-row"><button class="quiz-check-btn" type="button" data-chunk-check>✓ Check this set</button></div>
+      </section>
+    </details>
+    <div class="rd-exam__end" style="display:none;"></div>
+    <div class="rd-exam__actions">
+      <button class="quiz-check-btn" type="button" data-retry-misses style="display:none;">↻ Retry my misses</button>
+      <button class="quiz-again-btn" type="button" data-start-over style="display:none;">Start over</button>
+    </div>
   </div>
-  <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
+</div>
+<div class="section">
+  <div class="rd-sec-kicker">Key note · cover it, say it, check it</div>
+  <div class="rd-keycard">
+    <div class="rd-keycard__hd">
+      <span class="rd-keycard__lbl">Revision card</span>
+      <button class="rd-keycard__cover" type="button" aria-pressed="false">Cover &amp; recall</button>
+    </div>
+    <p class="rd-keycard__text">Giant ionic lattice → high MP/BP (strong electrostatic forces). Brittle (layer shift → repulsion → shatters). Solid: no conduction. Molten/dissolved: conducts (mobile ions). Higher ionic charge → stronger forces → higher MP. Many dissolve in water.</p>
+  </div>
 </div>
   <div class="section">
-  <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
+  <div class="rd-sec-kicker">Rate your confidence · then let the quiz check it</div>
   <div class="card star-rating-card">
-    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Be honest with yourself — this helps you know what to revise!</p>
+    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Be honest — this only has to convince you.</p>
     <div class="stars-row" id="stars-properties-ionic-compounds">
       <button class="star-btn" data-rating="1" onclick="rateTopic('properties-ionic-compounds', 1)" title="I don't understand this at all">⭐</button>
       <button class="star-btn" data-rating="2" onclick="rateTopic('properties-ionic-compounds', 2)" title="I understand a little">⭐</button>
@@ -281,16 +360,16 @@ html { background: var(--surface-page); }
     <div class="star-labels">
       <span>Don't get it</span>
       <span>Getting there</span>
-      <span>Nailed it!</span>
+      <span>Nailed it</span>
     </div>
     <div class="star-feedback" id="starfb-properties-ionic-compounds"></div>
   </div>
 </div>
   <div class="section">
-  <div class="section-title">🤖 Ask Mr Badmus AI</div>
+  <div class="rd-sec-kicker">Stuck · ask Mr Badmus AI</div>
   <div class="card ask-card">
-    <p class="ask-lede">Stuck? Just ask! 💬</p>
-    <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <p class="ask-lede">Ask about anything on this page.</p>
+    <p class="ask-sub">FIFA for calculations; Higher (⭐) and Triple (🔬) content flagged clearly.</p>
     <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
@@ -328,121 +407,10 @@ html { background: var(--surface-page); }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Structure and Properties of Ionic Compounds (5.2.2.3)'});</script>
-  <script>
-(function(){
-  const SCORE_MESSAGES = [
-    "Keep going — re-read the theory and try again. You'll get there! 📖",
-    "Not bad — review the sections you missed and have another go. 💪",
-    "Decent effort! A bit more revision and you'll nail it. 🔄",
-    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-    "Excellent! You've really got this topic down. 🏆"
-  ];
-  const cards = Array.from(document.querySelectorAll('.quiz-card'));
-  const total = cards.length;
-  if (!total) return;
-  const checkBtn = document.getElementById('quizCheckBtn');
-  const againBtn = document.getElementById('quizAgainBtn');
-  const endMsg = document.getElementById('quizEndMsg');
-  const prog = document.getElementById('quizProgress');
-  let checked = false;
-
-  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
-  function shuffleOptions(){
-    document.querySelectorAll('.quiz-options').forEach(function(box){
-      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
-      for (let k = opts.length - 1; k > 0; k--){
-        const j = Math.floor(Math.random() * (k + 1));
-        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
-      }
-      opts.forEach(function(o){ box.appendChild(o); });
-    });
-  }
-
-  function updateProgress(){
-    if (checked || !prog) return;
-    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
-    prog.textContent = answered === total
-      ? 'All ' + total + ' answered — hit Check answers below ↓'
-      : answered + ' of ' + total + ' answered';
-  }
-
-  function onSelect(){
-    if (checked) return;
-    const box = this.closest('.quiz-options');
-    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
-    this.classList.add('selected');
-    updateProgress();
-  }
-
-  function reveal(){
-    checked = true;
-    let correctCount = 0;
-    cards.forEach(function(card, i){
-      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
-      const chosen = card.querySelector('.quiz-opt.selected');
-      const fb = document.getElementById('qfb-' + i);
-      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
-      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
-      if (correctOpt) correctOpt.classList.add('correct');
-      const isRight = !!(chosen && chosen.dataset.correct === '1');
-      if (isRight) correctCount++;
-      if (chosen && !isRight) chosen.classList.add('wrong');
-      if (!fb) return;
-      if (!chosen){
-        fb.className = 'quiz-fb wrong-fb show';
-        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
-      } else if (isRight){
-        fb.className = 'quiz-fb correct-fb show';
-        fb.textContent = '✅ Correct! Well done!';
-      } else {
-        const exp = chosen.dataset.wrongExp;
-        fb.className = 'quiz-fb wrong-fb show';
-        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
-      }
-    });
-    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
-    if (endMsg){
-      const ratio = correctCount / total;
-      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
-      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
-      endMsg.style.display = 'block';
-      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
-    }
-    if (checkBtn) checkBtn.style.display = 'none';
-    if (againBtn) againBtn.style.display = '';
-  }
-
-  function tryAgain(){
-    checked = false;
-    cards.forEach(function(card, i){
-      card.querySelectorAll('.quiz-opt').forEach(function(o){
-        o.disabled = false;
-        o.classList.remove('selected', 'correct', 'wrong');
-      });
-      const fb = document.getElementById('qfb-' + i);
-      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
-    });
-    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
-    if (checkBtn) checkBtn.style.display = '';
-    if (againBtn) againBtn.style.display = 'none';
-    shuffleOptions();
-    updateProgress();
-  }
-
-  cards.forEach(function(card){
-    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
-  });
-  if (checkBtn) checkBtn.addEventListener('click', reveal);
-  if (againBtn) againBtn.addEventListener('click', tryAgain);
-  shuffleOptions();
-  updateProgress();
-})();
-</script>
+  
   
   <script>
-const STAR_MESSAGES_properties_ionic_compounds = ["No worries \u2014 that's what Mr Badmus AI is here for! Hit the chat button below and ask me to explain it from scratch. \ud83d\udcac", "Good start! Read through the theory again, then try the quiz once more. You'll get there! \ud83d\udcd6", "Solid \u2014 you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. \ud83d\udde3\ufe0f", "Great work! Just review the parts you found tricky and you'll be flying. \ud83d\ude80", "PERFECT! You've nailed this topic. Move on \u2014 you're ready! \ud83c\udfc6"];
+const STAR_MESSAGES_properties_ionic_compounds = ["Start with Teach me above — one block at a time, checkpoint after each. The AI chat can explain anything from scratch.", "Re-read the theory blocks that felt hardest, then run the matching activity to lock in the basics.", "Halfway there. Run the interactive again, then take the quiz — the misses will show you exactly what to revise.", "Nearly solid. Take the quiz and retry your misses — the last gap is usually one idea.", "If the quiz agrees — near full marks below — you're done here. Move on to the next page."];
 function rateTopic(stId, rating) {
   document.querySelectorAll('#stars-' + stId + ' .star-btn').forEach((s, i) => s.classList.toggle('star-active', i < rating));
   const fb = document.getElementById('starfb-' + stId);
@@ -456,11 +424,13 @@ try {
 } catch(e) {}
 </script>
   
+  <script src="/shared/quiz.js"></script>
+  <script src="/shared/rd-page.js"></script>
   <script src="/shared/heroes/categorise-bins.js"></script>
   <script src="/shared/heroes/theory-blocks.js"></script>
   <script src="/shared/heroes/bonding-configs.js"></script>
   <script>
-    (function(){var binCfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['properties-ionic-compounds-bins'];var binHost=document.getElementById('bins-properties-ionic-compounds');if(binCfg&&binHost&&window.MrbHeroes&&MrbHeroes.categoriseBins)MrbHeroes.categoriseBins.init(binHost,binCfg);})();
+    (function(){var binCfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['properties-ionic-compounds-bins'];var binHost=document.getElementById('bins-properties-ionic-compounds');if(binCfg)binCfg.successTip="When explaining conduction, say it is the ions that move — ionic compounds have no free electrons, so never describe electrons flowing \"like in a metal\". They conduct only when molten or dissolved, because that is when the ions are free to move.";if(binCfg&&binHost&&window.MrbHeroes&&MrbHeroes.categoriseBins)MrbHeroes.categoriseBins.init(binHost,binCfg);})();
     (function(){var h=document.getElementById('tb-comparereveal-properties-ionic-compounds-3');if(h&&window.MrbTheoryBlocks&&MrbTheoryBlocks.compareReveal)MrbTheoryBlocks.compareReveal.init(h,{"title": "Tap a property to reveal the structural cause", "items": [{"property": "High melting point", "cause": "Many strong electrostatic forces throughout the giant lattice need a lot of energy to break."}, {"property": "Brittle", "cause": "A knock shifts the layers; like charges line up and repel strongly, so the crystal shatters."}, {"property": "Conducts only when molten or dissolved", "cause": "Only then are the ions free to move — in the solid they are locked in place. Ionic compounds have no free electrons."}, {"property": "Often soluble in water", "cause": "Polar water molecules surround the ions and pull them away from the lattice."}]});})();
   </script>
 </body>

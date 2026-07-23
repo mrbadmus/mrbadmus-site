@@ -192,8 +192,11 @@
           position: 'absolute', left: ex + 'px', top: ey + 'px', width: '12px', height: '12px', borderRadius: '50%',
           background: 'var(--context-blue,#2E7DD1)', boxShadow: '0 0 7px rgba(46,125,209,.67)', transition: 'all .7s cubic-bezier(.4,0,.2,1)',
         };
-        if (v.delocalised) { st.animation = 'mrbEDrift ' + (2.2 + (e % 3) * 0.5) + 's ease-in-out ' + (e * -0.4) + 's infinite'; }
-        else { st.background = '#9AA6B2'; st.boxShadow = 'none'; }
+        /* Phase 0c (MRB-132): mrbEDrift was the one looping animation with no
+           reduced-motion gate (council §8 item 8). Static electrons are the
+           fallback — position and glow still read as delocalised. */
+        if (v.delocalised && !reduceMotion()) { st.animation = 'mrbEDrift ' + (2.2 + (e % 3) * 0.5) + 's ease-in-out ' + (e * -0.4) + 's infinite'; }
+        else if (!v.delocalised) { st.background = '#9AA6B2'; st.boxShadow = 'none'; }
         kids.push(el('div', st));
       }
     }
@@ -308,6 +311,9 @@
     ensureStyles();
     var sel = 0;
     var forced = false;   // optional "apply force" demo state (config.force)
+    // Phase 1a (MRB-133): optional predict-before-reveal gate (Law 4)
+    var gate = (config.predict && window.MrbPredictWrapper)
+      ? MrbPredictWrapper.create(config.predict) : null;
 
     var root = el('div', null); root.className = 'mrb-tsc';
 
@@ -339,7 +345,12 @@
     var btns = config.states.map(function (s, i) {
       var b = el('button', null, s.label); b.className = 'mrb-tsc__btn';
       b.type = 'button';
-      b.addEventListener('click', function () { sel = i; forced = false; render(); });
+      b.addEventListener('click', function () {
+        var key = 'state:' + s.key;
+        if (gate && !gate.allow(key)) return;
+        sel = i; forced = false; render();
+        if (gate) gate.resolveIf(key);
+      });
       side.appendChild(b);
       return b;
     });
@@ -353,7 +364,11 @@
     var forceBtn = null;
     if (config.force) {
       forceBtn = el('button', null, ''); forceBtn.className = 'mrb-tsc__force'; forceBtn.type = 'button';
-      forceBtn.addEventListener('click', function () { forced = !forced; render(); });
+      forceBtn.addEventListener('click', function () {
+        if (gate && !forced && !gate.allow('force')) return;
+        forced = !forced; render();
+        if (gate && forced) gate.resolveIf('force');
+      });
       side.appendChild(forceBtn);
     }
 
@@ -362,6 +377,7 @@
     var strap = el('div', null, config.strap || ''); strap.className = 'mrb-tsc__strap';
 
     root.appendChild(head);
+    if (gate) root.appendChild(gate.el);   // Phase 1a: wager row above the callout
     root.appendChild(callout);
     root.appendChild(grid);
     root.appendChild(strap);
@@ -384,6 +400,12 @@
       vizSlot.innerHTML = '';
       vizSlot.appendChild(buildViz(stt.visual, config.force ? forced : null));
       legend.textContent = (view.legend != null ? view.legend : stt.legend) || '';
+      // Phase 0c (MRB-132): the drawn structure is silent to screen readers —
+      // name it per state so the diagram carries the same message as the visuals.
+      vizSlot.setAttribute('role', 'img');
+      vizSlot.setAttribute('aria-label', 'Diagram: ' + (stt.label || '') + '. '
+        + (view.effectTitle || '') + '. '
+        + ((view.legend != null ? view.legend : stt.legend) || ''));
       // buttons
       btns.forEach(function (b, i) { b.classList.toggle('is-active', i === sel); });
       // force button label + pressed style

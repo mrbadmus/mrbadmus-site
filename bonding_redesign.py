@@ -113,6 +113,54 @@ BLOCK_CSS = """
 .rd .rd-blk-examiner__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); color: #8A5E0A; }
 .rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
 .rd .rd-blk-examiner__body b { color: #6E4A00; }
+
+/* ══ Bonding v2 Phase 1 (MRB-133) ══ */
+/* Section kickers — the mono kicker voice replaces emoji section titles (§5.9).
+   Same face/colour as .rd-hero-kicker (--accent-deep = 4.64:1 on cream, MRB-128). */
+.rd .rd-sec-kicker { font-family: var(--font-mono,monospace); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep,#B5341A); margin-bottom: 14px; }
+/* Mode chooser — three anchors under the page kicker (§3.2 rule 7) */
+.rd .rd-modes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.rd .rd-modes a { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13.5px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 8px 16px; text-decoration: none; }
+.rd .rd-modes a:hover, .rd .rd-modes a:focus-visible { border-color: var(--accent-strong,#C0392B); }
+/* Checkpoint micro-quiz — a relocated frozen question inline in the theory flow */
+.rd .rd-checkpoint { background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-left: 4px solid var(--context-blue,#2E7DD1); border-radius: 14px; padding: 16px 20px; }
+.rd .rd-checkpoint__kicker { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-deep,#B5341A); margin-bottom: 8px; }
+.rd .rd-checkpoint .q-text { font-size: calc(0.92rem * var(--rd-fs-scale, 1)); font-weight: 600; color: var(--ink,#1A1714); margin-bottom: 10px; }
+.rd .rd-checkpoint .quiz-fb { font-size: calc(0.85rem * var(--rd-fs-scale, 1)); }
+.rd .rd-checkpoint__again { font-family: var(--font-mono,monospace); font-size: calc(11.5px * var(--rd-fs-scale, 1)); color: #4A4238; background: transparent; border: 1px solid var(--border,#E4DCCB); border-radius: 8px; padding: 3px 10px; cursor: pointer; }
+/* Exam-paper quiz (§5.7) — continuous panel, hanging mono numbers, hairline
+   rules, compact lettered options, chunked sets, sticky progress chip */
+.rd .rd-exam { background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: var(--r-panel,22px); box-shadow: var(--shadow-panel,0 22px 50px -35px rgba(60,30,20,.5)); padding: 8px 26px 22px; counter-reset: rdq; }
+.rd .rd-exam__chip { position: sticky; top: 10px; z-index: 4; display: inline-block; font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 600; color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 7px 14px; margin: 12px 0 4px; }
+.rd .rd-exam__chunk-hd { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep,#B5341A); padding: 16px 0 6px; }
+.rd .rd-exam .quiz-card { position: relative; padding: 15px 0 13px 46px; margin: 0; border: none; border-bottom: 1px solid var(--surface-inset,#EFE7D8); border-radius: 0; background: transparent; box-shadow: none; counter-increment: rdq; }
+.rd .rd-exam .quiz-card::before { content: counter(rdq, decimal-leading-zero); position: absolute; left: 0; top: 17px; font-family: var(--font-mono,monospace); font-size: calc(13px * var(--rd-fs-scale, 1)); font-weight: 700; color: #716A60; }
+.rd .rd-exam .q-text { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); font-weight: 600; color: var(--ink,#1A1714); margin-bottom: 9px; }
+.rd .rd-exam .quiz-options, .rd .rd-checkpoint .quiz-options { display: flex; flex-direction: column; gap: 5px; counter-reset: rdopt; }
+.rd .rd-exam .quiz-opt, .rd .rd-checkpoint .quiz-opt { counter-increment: rdopt; display: flex; gap: 10px; align-items: baseline; text-align: left; width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 10px; background: transparent; box-shadow: none; color: var(--ink-body,#2A241E); cursor: pointer; }
+.rd .rd-exam .quiz-opt::before, .rd .rd-checkpoint .quiz-opt::before { content: counter(rdopt, upper-alpha); font-family: var(--font-mono,monospace); font-weight: 700; font-size: calc(12px * var(--rd-fs-scale, 1)); color: #716A60; flex: none; }
+.rd .rd-exam .quiz-opt:hover:not(:disabled), .rd .rd-checkpoint .quiz-opt:hover:not(:disabled) { border-color: var(--border,#E4DCCB); background: var(--surface-inset,#F7F2E8); }
+.rd .rd-exam .quiz-opt.correct, .rd .rd-checkpoint .quiz-opt.correct { background: #E7F3EA; border-color: #7FB98A; color: #2E6B3A; }
+.rd .rd-exam .quiz-opt.wrong, .rd .rd-checkpoint .quiz-opt.wrong { background: #FBE4DE; border-color: #E0897B; color: #A83824; }
+.rd .rd-exam details { border-top: 1px solid var(--surface-inset,#EFE7D8); }
+.rd .rd-exam summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 0; font-family: var(--font-mono,monospace); font-size: calc(12.5px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep,#B5341A); }
+.rd .rd-exam summary::-webkit-details-marker { display: none; }
+.rd .rd-exam summary::after { content: "▾ open"; font-weight: 600; letter-spacing: .04em; color: #716A60; text-transform: none; }
+.rd .rd-exam details[open] summary::after { content: "▴ close"; }
+.rd .rd-exam__check-row { padding: 14px 0 6px; }
+.rd .rd-exam__end { margin-top: 16px; padding: 16px 20px; border-radius: 12px; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); font-weight: 700; }
+.rd .rd-exam__end.is-win { background: #E7F3EA; color: #2E6B3A; border: 1px solid #B9DCC1; }
+.rd .rd-exam__end.is-mid { background: #FEF6E0; color: #7A5510; border: 1px solid #EAD9AC; }
+.rd .rd-exam__end.is-low { background: #FBE4DE; color: #A83824; border: 1px solid #EFC0B4; }
+.rd .rd-exam__actions { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+/* Key Note revision card (§5.6) — last, static, photographable; cover-and-recall */
+.rd .rd-keycard { background: var(--surface-inset,#F7F2E8); border: 1px solid var(--border,#E4DCCB); border-top: 3px solid var(--accent-strong,#C0392B); border-radius: 16px; padding: 18px 24px 20px; }
+.rd .rd-keycard__hd { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.rd .rd-keycard__lbl { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #716A60; }
+.rd .rd-keycard__cover { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.rd .rd-keycard__cover:focus-visible { outline: 2px solid var(--accent-strong,#C0392B); outline-offset: 2px; }
+.rd .rd-keycard__text { font-family: var(--font-mono,monospace); font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.75; color: #211B15; margin: 0; }
+.rd .rd-keycard.is-covered .rd-keycard__text { filter: blur(9px); user-select: none; }
 """
 
 
@@ -215,16 +263,22 @@ _STATIC = {
 _INTERACTIVE = {"mistake-check": "mistakeCheck", "compare-reveal": "compareReveal"}
 
 
-def render_theory_blocks(blocks, st_id):
+def render_theory_blocks(blocks, st_id, inserts=None):
     """Return (html, interactive_specs).
 
     html: the In-Depth Theory body, blocks in order. Interactive blocks are
     emitted as an empty host div; their config is returned so the generator
     can serialise an init call (like a hero).
     interactive_specs: list of dicts {ns, host_id, config}.
+
+    inserts (MRB-133 Phase 1c/1f): optional {block_index: [html, ...]} —
+    extra presentation HTML (checkpoint micro-quizzes, the relocated Common
+    Mistake box) appended directly AFTER the named block. Rendering-selection
+    only; the frozen fields feeding those fragments are untouched.
     """
     parts = []
     interactive = []
+    inserts = inserts or {}
     for i, b in enumerate(blocks):
         t = b["type"]
         if t in _STATIC:
@@ -236,6 +290,8 @@ def render_theory_blocks(blocks, st_id):
             interactive.append({"ns": _INTERACTIVE[t], "host_id": host_id, "config": cfg})
         else:
             raise ValueError("Unknown theory block type: %r" % t)
+        for extra in inserts.get(i, []):
+            parts.append(extra)
     html = '<div class="rd-blocks">%s</div>' % "".join(parts)
     return html, interactive
 
@@ -465,6 +521,9 @@ BONDING_REDESIGN = {
         "hero": {"module": "two-state-compare", "ns": "twoStateCompare", "config_key": "giant-covalent-structures",
                  "kicker": "explore the two structures"},
         "activity": {"type": "bins", "config_key": "giant-covalent-structures-bins", "kicker": "sort the properties"},
+        "checkpoints": [{"q": 3, "after": 0}, {"q": 4, "after": 2}],
+        "mistake_after": "hero",       # "both carbon → same properties" is born at the A/B flip
+        "tip_placement": "activity",   # the tip IS the compare technique → bins success state
         "theory_blocks": [
             {"type": "lead",
              "text": "Giant covalent structures (also called macromolecular) are substances where a huge number of atoms are all joined by covalent bonds throughout the whole structure — there are no separate molecules. Examples: diamond, graphite and silicon dioxide (SiO₂).",
@@ -503,6 +562,9 @@ BONDING_REDESIGN = {
     "chemical-bonds": {
         "hero": None,
         "activity": {"type": "bins", "config_key": "chemical-bonds-bins"},
+        "checkpoints": [{"q": 0, "after": 2}, {"q": 2, "after": 2}, {"q": 5, "after": 3}],
+        "mistake_after": None,         # carried by the mistake-check block
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "Atoms form chemical bonds to reach a more stable arrangement — usually a full outer shell, like the noble gases.",
@@ -557,6 +619,9 @@ BONDING_REDESIGN = {
     "properties-small-molecules": {
         "hero": None,
         "activity": {"type": "bins", "config_key": "properties-small-molecules-bins"},
+        "checkpoints": [{"q": 4, "after": 0}, {"q": 3, "after": 1}, {"q": 1, "after": 2}],
+        "mistake_after": None,         # carried by the mistake-check block
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "Simple molecular substances are made of small, separate molecules — each holds a fixed number of atoms joined by strong covalent bonds.",
@@ -605,6 +670,9 @@ BONDING_REDESIGN = {
     "states-of-matter": {
         "hero": None,
         "activity": {"type": "match"},
+        "checkpoints": [{"q": 1, "after": 1}, {"q": 2, "after": 2}, {"q": 3, "after": 3}],
+        "mistake_after": None,         # carried by the mistake-check block
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "All matter exists in one of three states — solid, liquid or gas. The difference is how the particles are arranged and how freely they move.",
@@ -656,22 +724,22 @@ BONDING_REDESIGN = {
     },
 
     # ── 3 · ionic-bonding — the transfer mechanism (hero: Dot-and-Cross; static mistake kept) ──
+    # Phase 1f dedup (MRB-133, council §2.1): the 6-step sequence and the
+    # dot-and-cross example callout narrated EXACTLY what the hero stepper
+    # animates (same molecules, same order) — the strongest "one interactive
+    # then loads of text" evidence in the unit. Both deleted from the
+    # composition; the frozen `theory` field is untouched.
     "ionic-bonding": {
         "hero": {"module": "dot-cross-stepper", "ns": "dotCrossStepper", "config_key": "ionic-bonding",
                  "kicker": "transfer electrons step by step"},
         "activity": {"type": "match"},
+        "checkpoints": [{"q": 0, "after": 0}, {"q": 2, "after": 1}],
+        "mistake_after": "hero",
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "Ionic bonding happens between a metal and a non-metal. The metal transfers its outer electrons to the non-metal, and the oppositely charged ions that form attract one another.",
              "bold": ["metal and a non-metal"]},
-            {"type": "step-sequence", "steps": [
-                "The metal atom loses one or more electrons from its outer shell.",
-                "The non-metal atom gains those electrons into its outer shell.",
-                "Both atoms now have full outer shells — stable, like a noble gas.",
-                "The metal becomes a positive ion (it lost negative electrons).",
-                "The non-metal becomes a negative ion (it gained negative electrons).",
-                "Opposite charges attract — this strong electrostatic attraction IS the ionic bond.",
-            ]},
             {"type": "feature-cards", "cards": [
                 {"emoji": "➕", "title": "Metals → positive ions", "tone": "neutral",
                  "body": "Group 1 → +1 (Na⁺), Group 2 → +2 (Mg²⁺), Group 3 → +3 (Al³⁺)."},
@@ -679,11 +747,6 @@ BONDING_REDESIGN = {
                  "body": "Group 7 → −1 (Cl⁻), Group 6 → −2 (O²⁻), Group 5 → −3 (N³⁻)."},
                 {"emoji": "⚖️", "title": "Charges must balance", "tone": "neutral",
                  "body": "An ionic compound is overall neutral — MgCl₂ needs two Cl⁻ for one Mg²⁺."},
-            ]},
-            {"type": "example-callout", "emoji": "⚛️", "title": "Dot-and-cross summaries", "lines": [
-                "NaCl: Na 2.8.1 loses 1e → Na⁺ (2.8); Cl 2.8.7 gains 1e → Cl⁻ (2.8.8).",
-                "MgO: Mg 2.8.2 loses 2e → Mg²⁺; O 2.6 gains 2e → O²⁻.",
-                "MgCl₂: Mg loses 2e → Mg²⁺; each Cl gains 1e → two Cl⁻ balance one Mg²⁺.",
             ]},
         ],
     },
@@ -693,6 +756,9 @@ BONDING_REDESIGN = {
         "hero": {"module": "state-toggle-lab", "ns": "stateToggleLab", "config_key": "ionic-compounds",
                  "kicker": "change the state, test the lattice"},
         "activity": {"type": "match"},
+        "checkpoints": [{"q": 2, "after": 1}, {"q": 0, "after": 2}],
+        "mistake_after": "hero",       # "charged ions should conduct as a solid" is born at the solid state
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "When an ionic compound forms, the ions don't stay in pairs — they build a giant ionic lattice: a regular 3-D arrangement of alternating positive and negative ions.",
@@ -725,6 +791,9 @@ BONDING_REDESIGN = {
     "properties-ionic-compounds": {
         "hero": None,
         "activity": {"type": "bins", "config_key": "properties-ionic-compounds-bins"},
+        "checkpoints": [{"q": 4, "after": 1}, {"q": 1, "after": 2}],
+        "mistake_after": None,         # end of theory = directly after compare-reveal, the relevant interactive
+        "tip_placement": "activity",   # "ions move, never electrons" is what the bins sort drills
         "theory_blocks": [
             {"type": "lead",
              "text": "Ionic compounds have a giant ionic lattice with strong electrostatic forces in all directions between alternating positive and negative ions. That one structure explains every property. The formula shows the simplest whole-number ratio of ions.",
@@ -761,21 +830,19 @@ BONDING_REDESIGN = {
     },
 
     # ── 6 · covalent-bonding — the sharing mechanism (hero: Dot-and-Cross share) · ⭐ Higher box ──
+    # Phase 1f dedup (MRB-133): the 5-step sequence duplicated the hero stepper's
+    # share narrative — deleted from the composition (frozen `theory` untouched).
     "covalent-bonding": {
         "hero": {"module": "dot-cross-stepper", "ns": "dotCrossStepper", "config_key": "covalent-bonding",
                  "kicker": "share a pair step by step"},
         "activity": {"type": "match"},
+        "checkpoints": [{"q": 2, "after": 0}, {"q": 3, "after": 1}],
+        "mistake_after": None,   # bond-strength mistake stays at the end of theory, before properties pages
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "Covalent bonding happens between non-metal atoms. Instead of transferring electrons, they share pairs of electrons — and each shared pair is one covalent bond.",
              "bold": ["share pairs of electrons"]},
-            {"type": "step-sequence", "steps": [
-                "Two non-metal atoms come together, each needing more electrons for a full shell.",
-                "They share a pair of electrons — one contributed from each atom.",
-                "Each atom counts the shared pair as part of its own outer shell.",
-                "Both atoms reach full outer shells without either losing electrons entirely.",
-                "The shared pair is attracted to BOTH nuclei — that attraction holds the atoms together, and covalent bonds are strong.",
-            ]},
             {"type": "feature-cards", "cards": [
                 {"emoji": "1️⃣", "title": "Single bond — 1 shared pair", "tone": "neutral",
                  "body": "H₂ shares one pair. So do H₂O (O–H), NH₃ (N–H) and CH₄ (C–H)."},
@@ -792,6 +859,9 @@ BONDING_REDESIGN = {
         "hero": {"module": "two-state-compare", "ns": "twoStateCompare", "config_key": "metallic-bonding",
                  "kicker": "electron sea on / off"},
         "activity": {"type": "match"},
+        "checkpoints": [{"q": 2, "after": 1}, {"q": 0, "after": 2}],
+        "mistake_after": "hero",       # "the bond is between atoms" is born at the electron-sea model
+        "tip_placement": "activity",   # "ions + sea, not atoms" is what the property↔reason match drills
         "theory_blocks": [
             {"type": "lead",
              "text": "Metallic bonding occurs in metals and alloys — a regular lattice of positive metal ions surrounded by a shared sea of delocalised electrons.",
@@ -826,6 +896,9 @@ BONDING_REDESIGN = {
         "hero": {"module": "two-state-compare", "ns": "twoStateCompare", "config_key": "metals-alloys",
                  "kicker": "apply a force to pure metal vs alloy"},
         "activity": {"type": "match"},
+        "checkpoints": [{"q": 2, "after": 1}, {"q": 3, "after": 2}],
+        "mistake_after": None,         # conduction mistake belongs with the property cards, not the force hero
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "Metals have giant metallic structures — a regular lattice of positive metal ions surrounded by a sea of delocalised electrons. That structure explains all their properties.",
@@ -851,10 +924,18 @@ BONDING_REDESIGN = {
     },
 
     # ── 11 · nanoparticles — SA:V + carbon nanostructures (hero: FIFA) · ⭐ Higher · Triple-only ──
+    # Phase 1f (MRB-133): suppress_fifa_boxes — the static "⚽ FIFA Worked
+    # Examples" boxes duplicated the FIFA hero's worked spine verbatim
+    # (Law 2: replace, don't stack). The frozen `fifas` field still feeds the
+    # hero config; only the duplicate static rendering is dropped.
     "nanoparticles": {
         "hero": {"module": "fifa-step-reveal", "ns": "fifaStepReveal", "build": "fifa",
                  "kicker": "work the surface-area-to-volume calculation"},
         "activity": {"type": "match"},
+        "suppress_fifa_boxes": True,
+        "checkpoints": [{"q": 2, "after": 1}, {"q": 3, "after": 3}],
+        "mistake_after": 1,            # "nano gold is a different substance" is born at the gold colour flip
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "Nanoparticles are tiny particles 1–100 nm across (1 nm = 1×10⁻⁹ m), containing a few hundred to a few thousand atoms. At this scale a material can behave very differently from its bulk form.",
@@ -895,6 +976,9 @@ BONDING_REDESIGN = {
     "polymers": {
         "hero": None,
         "activity": {"type": "match"},
+        "checkpoints": [{"q": 4, "after": 1}, {"q": 2, "after": 2}, {"q": 3, "after": 3}],
+        "mistake_after": None,         # carried by the mistake-check block
+        "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
              "text": "Polymers are very large molecules made from many small repeating units called monomers, joined into long chains. The joining process is called polymerisation.",

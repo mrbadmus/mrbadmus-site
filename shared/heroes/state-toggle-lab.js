@@ -147,6 +147,9 @@
     ensureStyles();
     var jit = makeJitter(config.grid.cols * config.grid.rows);
     var modeKey = config.states[0].key;
+    // Phase 1a (MRB-133): optional predict-before-reveal gate (Law 4)
+    var gate = (config.predict && window.MrbPredictWrapper)
+      ? MrbPredictWrapper.create(config.predict) : null;
 
     var root = el('div', { className: 'mrb-stl' });
     root.appendChild(el('div', { className: 'mrb-stl__head' }, [
@@ -161,7 +164,12 @@
 
     var btnEls = config.states.filter(function (s) { return s.inToggle !== false; }).map(function (s) {
       var b = el('button', { className: 'mrb-stl__btn', attrs: { type: 'button' },
-        on: { click: function () { modeKey = s.key; render(); } } }, s.label);
+        on: { click: function () {
+          var key = 'state:' + s.key;
+          if (gate && !gate.allow(key)) return;
+          modeKey = s.key; render();
+          if (gate) gate.resolveIf(key);
+        } } }, s.label);
       b._key = s.key; side.appendChild(b); return b;
     });
     side.appendChild(el('div', { className: 'mrb-stl__rule' }));
@@ -175,15 +183,20 @@
     var forceBtn = null;
     if (config.force) {
       forceBtn = el('button', { className: 'mrb-stl__force', attrs: { type: 'button' }, on: { click: function () {
-        if (modeKey === config.force.to) modeKey = config.force.from;
-        else if (modeKey === config.force.from) modeKey = config.force.to;
-        render();
+        if (modeKey === config.force.to) { modeKey = config.force.from; render(); return; }
+        if (modeKey === config.force.from) {
+          if (gate && !gate.allow('force')) return;
+          modeKey = config.force.to;
+          render();
+          if (gate) gate.resolveIf('force');
+        }
       } } });
       side.appendChild(forceBtn);
     }
 
     var grid = el('div', { className: 'mrb-stl__grid' }, [vizWrap, side]);
     var strap = el('div', { className: 'mrb-stl__strap' });
+    if (gate) root.appendChild(gate.el);   // Phase 1a: wager row above the lab
     root.appendChild(grid);
     root.appendChild(strap);
     container.appendChild(root);
@@ -194,6 +207,10 @@
       if (!stateDef) stateDef = config.states[0];
       vizWrap.innerHTML = '';
       vizWrap.appendChild(buildViz(config, stateDef, jit));
+      // Phase 0c (MRB-132): name the lattice diagram per state for screen readers.
+      vizWrap.setAttribute('role', 'img');
+      vizWrap.setAttribute('aria-label', 'Diagram: ' + (stateDef.label || stateDef.key) + '. '
+        + (stateDef.verdict ? stateDef.verdict.title + ' — ' + stateDef.verdict.sub : ''));
       btnEls.forEach(function (b) {
         var on = b._key === modeKey || (config.force && modeKey === config.force.to && b._key === config.force.from);
         b.classList.toggle('is-active', on);

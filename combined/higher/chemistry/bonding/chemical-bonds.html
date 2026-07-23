@@ -104,6 +104,54 @@ html { background: var(--surface-page); }
 .rd .rd-blk-examiner__body { font-size: calc(14px * var(--rd-fs-scale, 1)); line-height: 1.55; color: #4A3A12; }
 .rd .rd-blk-examiner__body b { color: #6E4A00; }
 
+/* ══ Bonding v2 Phase 1 (MRB-133) ══ */
+/* Section kickers — the mono kicker voice replaces emoji section titles (§5.9).
+   Same face/colour as .rd-hero-kicker (--accent-deep = 4.64:1 on cream, MRB-128). */
+.rd .rd-sec-kicker { font-family: var(--font-mono,monospace); font-size: calc(0.72rem * var(--rd-fs-scale, 1)); font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--accent-deep,#B5341A); margin-bottom: 14px; }
+/* Mode chooser — three anchors under the page kicker (§3.2 rule 7) */
+.rd .rd-modes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+.rd .rd-modes a { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13.5px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 8px 16px; text-decoration: none; }
+.rd .rd-modes a:hover, .rd .rd-modes a:focus-visible { border-color: var(--accent-strong,#C0392B); }
+/* Checkpoint micro-quiz — a relocated frozen question inline in the theory flow */
+.rd .rd-checkpoint { background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-left: 4px solid var(--context-blue,#2E7DD1); border-radius: 14px; padding: 16px 20px; }
+.rd .rd-checkpoint__kicker { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent-deep,#B5341A); margin-bottom: 8px; }
+.rd .rd-checkpoint .q-text { font-size: calc(0.92rem * var(--rd-fs-scale, 1)); font-weight: 600; color: var(--ink,#1A1714); margin-bottom: 10px; }
+.rd .rd-checkpoint .quiz-fb { font-size: calc(0.85rem * var(--rd-fs-scale, 1)); }
+.rd .rd-checkpoint__again { font-family: var(--font-mono,monospace); font-size: calc(11.5px * var(--rd-fs-scale, 1)); color: #4A4238; background: transparent; border: 1px solid var(--border,#E4DCCB); border-radius: 8px; padding: 3px 10px; cursor: pointer; }
+/* Exam-paper quiz (§5.7) — continuous panel, hanging mono numbers, hairline
+   rules, compact lettered options, chunked sets, sticky progress chip */
+.rd .rd-exam { background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: var(--r-panel,22px); box-shadow: var(--shadow-panel,0 22px 50px -35px rgba(60,30,20,.5)); padding: 8px 26px 22px; counter-reset: rdq; }
+.rd .rd-exam__chip { position: sticky; top: 10px; z-index: 4; display: inline-block; font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 600; color: #4A4238; background: var(--surface-inset,#EFE7D8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 7px 14px; margin: 12px 0 4px; }
+.rd .rd-exam__chunk-hd { font-family: var(--font-mono,monospace); font-size: calc(12px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep,#B5341A); padding: 16px 0 6px; }
+.rd .rd-exam .quiz-card { position: relative; padding: 15px 0 13px 46px; margin: 0; border: none; border-bottom: 1px solid var(--surface-inset,#EFE7D8); border-radius: 0; background: transparent; box-shadow: none; counter-increment: rdq; }
+.rd .rd-exam .quiz-card::before { content: counter(rdq, decimal-leading-zero); position: absolute; left: 0; top: 17px; font-family: var(--font-mono,monospace); font-size: calc(13px * var(--rd-fs-scale, 1)); font-weight: 700; color: #716A60; }
+.rd .rd-exam .q-text { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); font-weight: 600; color: var(--ink,#1A1714); margin-bottom: 9px; }
+.rd .rd-exam .quiz-options, .rd .rd-checkpoint .quiz-options { display: flex; flex-direction: column; gap: 5px; counter-reset: rdopt; }
+.rd .rd-exam .quiz-opt, .rd .rd-checkpoint .quiz-opt { counter-increment: rdopt; display: flex; gap: 10px; align-items: baseline; text-align: left; width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 10px; background: transparent; box-shadow: none; color: var(--ink-body,#2A241E); cursor: pointer; }
+.rd .rd-exam .quiz-opt::before, .rd .rd-checkpoint .quiz-opt::before { content: counter(rdopt, upper-alpha); font-family: var(--font-mono,monospace); font-weight: 700; font-size: calc(12px * var(--rd-fs-scale, 1)); color: #716A60; flex: none; }
+.rd .rd-exam .quiz-opt:hover:not(:disabled), .rd .rd-checkpoint .quiz-opt:hover:not(:disabled) { border-color: var(--border,#E4DCCB); background: var(--surface-inset,#F7F2E8); }
+.rd .rd-exam .quiz-opt.correct, .rd .rd-checkpoint .quiz-opt.correct { background: #E7F3EA; border-color: #7FB98A; color: #2E6B3A; }
+.rd .rd-exam .quiz-opt.wrong, .rd .rd-checkpoint .quiz-opt.wrong { background: #FBE4DE; border-color: #E0897B; color: #A83824; }
+.rd .rd-exam details { border-top: 1px solid var(--surface-inset,#EFE7D8); }
+.rd .rd-exam summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 0; font-family: var(--font-mono,monospace); font-size: calc(12.5px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep,#B5341A); }
+.rd .rd-exam summary::-webkit-details-marker { display: none; }
+.rd .rd-exam summary::after { content: "▾ open"; font-weight: 600; letter-spacing: .04em; color: #716A60; text-transform: none; }
+.rd .rd-exam details[open] summary::after { content: "▴ close"; }
+.rd .rd-exam__check-row { padding: 14px 0 6px; }
+.rd .rd-exam__end { margin-top: 16px; padding: 16px 20px; border-radius: 12px; font-size: calc(0.95rem * var(--rd-fs-scale, 1)); font-weight: 700; }
+.rd .rd-exam__end.is-win { background: #E7F3EA; color: #2E6B3A; border: 1px solid #B9DCC1; }
+.rd .rd-exam__end.is-mid { background: #FEF6E0; color: #7A5510; border: 1px solid #EAD9AC; }
+.rd .rd-exam__end.is-low { background: #FBE4DE; color: #A83824; border: 1px solid #EFC0B4; }
+.rd .rd-exam__actions { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
+/* Key Note revision card (§5.6) — last, static, photographable; cover-and-recall */
+.rd .rd-keycard { background: var(--surface-inset,#F7F2E8); border: 1px solid var(--border,#E4DCCB); border-top: 3px solid var(--accent-strong,#C0392B); border-radius: 16px; padding: 18px 24px 20px; }
+.rd .rd-keycard__hd { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.rd .rd-keycard__lbl { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #716A60; }
+.rd .rd-keycard__cover { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.rd .rd-keycard__cover:focus-visible { outline: 2px solid var(--accent-strong,#C0392B); outline-offset: 2px; }
+.rd .rd-keycard__text { font-family: var(--font-mono,monospace); font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.75; color: #211B15; margin: 0; }
+.rd .rd-keycard.is-covered .rd-keycard__text { filter: blur(9px); user-select: none; }
+
 </style>
 </head>
 <body class="rd">
@@ -133,125 +181,158 @@ html { background: var(--surface-page); }
     <span class="spec-pill">Spec 5.2.1.1</span>
     <span class="tier-pill">📙 Higher</span>
   </div>
+  <nav class="rd-modes" aria-label="Choose how to use this page">
+    <a href="#rd-teach">📖 Teach me</a>
+    <a href="#rd-labs">🎮 Labs</a>
+    <a href="#rd-test">🎯 Test me</a>
+  </nav>
 </div>
 
 <div class="content-area">
 
-  <div class="section">
-    <div class="section-title">📖 In-Depth Theory</div>
-    <div class="rd-blocks"><p class="rd-blk-lead">Atoms form chemical bonds to reach a more stable arrangement — usually a <b>full outer shell</b>, like the noble gases.</p><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔻</span><b>Metals lose</b></div><div class="rd-fcard__body">Group 1, 2 and 3 metals give away their outer electrons.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔺</span><b>Non-metals gain</b></div><div class="rd-fcard__body">Group 5, 6 and 7 non-metals take electrons in.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🤝</span><b>Non-metals share</b></div><div class="rd-fcard__body">Two non-metals share electrons between them.</div></div></div><div class="rd-blk-compare"><div class="rd-cmp-grid" style="grid-template-columns:repeat(3,1fr);"><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🧂</span><b>Ionic</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Between which atoms</span><span class="rd-cmp-row__v">Metal + non-metal</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">What happens to electrons</span><span class="rd-cmp-row__v">Transferred, metal → non-metal</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Example</span><span class="rd-cmp-row__v">Sodium chloride, NaCl</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">💧</span><b>Covalent</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Between which atoms</span><span class="rd-cmp-row__v">Non-metal + non-metal</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">What happens to electrons</span><span class="rd-cmp-row__v">Shared in pairs</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Example</span><span class="rd-cmp-row__v">Water, H₂O</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🔩</span><b>Metallic</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Between which atoms</span><span class="rd-cmp-row__v">Metal atoms (pure metal)</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">What happens to electrons</span><span class="rd-cmp-row__v">Delocalised into a shared sea</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Example</span><span class="rd-cmp-row__v">Copper, Cu</span></div></div></div><div class="rd-cmp-verdict">What the atoms ARE decides how their electrons behave — and that is the bond.</div></div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🌡️</span><b>Ionic → high melting point</b></div><div class="rd-fcard__body">Strong forces between ions; conducts only when molten or dissolved.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">❄️</span><b>Simple covalent → low melting point</b></div><div class="rd-fcard__body">Weak forces between whole molecules are overcome easily.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚡</span><b>Metallic → conducts</b></div><div class="rd-fcard__body">Delocalised electrons carry charge and heat; metals bend, not shatter.</div></div></div><div id="tb-mistakecheck-chemical-bonds-4"></div></div>
+  <div class="section" id="rd-teach">
+    <div class="rd-sec-kicker">Theory · read, then commit</div>
+    <div class="rd-blocks"><p class="rd-blk-lead">Atoms form chemical bonds to reach a more stable arrangement — usually a <b>full outer shell</b>, like the noble gases.</p><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔻</span><b>Metals lose</b></div><div class="rd-fcard__body">Group 1, 2 and 3 metals give away their outer electrons.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🔺</span><b>Non-metals gain</b></div><div class="rd-fcard__body">Group 5, 6 and 7 non-metals take electrons in.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🤝</span><b>Non-metals share</b></div><div class="rd-fcard__body">Two non-metals share electrons between them.</div></div></div><div class="rd-blk-compare"><div class="rd-cmp-grid" style="grid-template-columns:repeat(3,1fr);"><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🧂</span><b>Ionic</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Between which atoms</span><span class="rd-cmp-row__v">Metal + non-metal</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">What happens to electrons</span><span class="rd-cmp-row__v">Transferred, metal → non-metal</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Example</span><span class="rd-cmp-row__v">Sodium chloride, NaCl</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">💧</span><b>Covalent</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Between which atoms</span><span class="rd-cmp-row__v">Non-metal + non-metal</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">What happens to electrons</span><span class="rd-cmp-row__v">Shared in pairs</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Example</span><span class="rd-cmp-row__v">Water, H₂O</span></div></div><div class="rd-cmp-col"><div class="rd-cmp-col__hd"><span style="font-size: calc(20px * var(--rd-fs-scale, 1));">🔩</span><b>Metallic</b></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Between which atoms</span><span class="rd-cmp-row__v">Metal atoms (pure metal)</span></div><div class="rd-cmp-row rd-cmp-row--hl tone-neutral"><span class="rd-cmp-row__k">What happens to electrons</span><span class="rd-cmp-row__v">Delocalised into a shared sea</span></div><div class="rd-cmp-row"><span class="rd-cmp-row__k">Example</span><span class="rd-cmp-row__v">Copper, Cu</span></div></div></div><div class="rd-cmp-verdict">What the atoms ARE decides how their electrons behave — and that is the bond.</div></div><div class="rd-checkpoint" id="cp-chemical-bonds-0">
+  <div class="rd-checkpoint__kicker">Checkpoint · quick check</div>
+  <div class="q-text">Sodium chloride is made from a metal and a non-metal. Predict the type of bonding it contains and describe how it forms.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Ionic — the metal atom transfers electrons to the non-metal, forming oppositely charged ions that attract</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Sharing electrons is covalent bonding, and it occurs between two NON-metals — not a metal with a non-metal.">Covalent — the metal and non-metal share a pair of electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Metallic bonding needs metal atoms only (a pure metal or alloy), not a metal combined with a non-metal.">Metallic — the atoms sit in a sea of delocalised electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Hydrogen bonding is a weak intermolecular force, not the main bond between a metal and a non-metal.">Hydrogen bonding — a weak attraction forms between the two atoms</button>
+</div>
+  <div class="quiz-fb"></div>
+</div><div class="rd-checkpoint" id="cp-chemical-bonds-1">
+  <div class="rd-checkpoint__kicker">Checkpoint · quick check</div>
+  <div class="q-text">Water (H₂O) is made from two non-metals. Predict the type of bonding it contains.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Covalent — the non-metal atoms share pairs of electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Electron transfer (ionic) happens between a metal and a non-metal; hydrogen and oxygen are both non-metals.">Ionic — one atom transfers electrons to the other</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Metallic bonding needs metal atoms; water contains none.">Metallic — the atoms share a sea of delocalised electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Pure water barely conducts; where it does, it is due to tiny amounts of ions, not because it is ionic.">Ionic — because water can conduct electricity</button>
+</div>
+  <div class="quiz-fb"></div>
+</div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🌡️</span><b>Ionic → high melting point</b></div><div class="rd-fcard__body">Strong forces between ions; conducts only when molten or dissolved.</div></div><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">❄️</span><b>Simple covalent → low melting point</b></div><div class="rd-fcard__body">Weak forces between whole molecules are overcome easily.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚡</span><b>Metallic → conducts</b></div><div class="rd-fcard__body">Delocalised electrons carry charge and heat; metals bend, not shatter.</div></div></div><div class="rd-checkpoint" id="cp-chemical-bonds-2">
+  <div class="rd-checkpoint__kicker">Checkpoint · quick check</div>
+  <div class="q-text">A substance has a high melting point and conducts electricity only when molten or dissolved, never when solid. Deduce its type of bonding and justify your answer.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Ionic — the ions are fixed in the solid but become free to move (and carry charge) when molten or dissolved</button>
+<button class="quiz-opt" type="button" data-wrong-exp="A metal would conduct as a SOLID too (delocalised electrons move in the solid) — this substance does not.">Metallic — delocalised electrons carry charge in all states</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Simple covalent substances have LOW melting points and never conduct (no charged particles).">Simple covalent — the molecules move when the substance melts</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Giant covalent substances (e.g. diamond) do not conduct even when molten — no free charges (graphite excepted).">Giant covalent — the electrons are released only on melting</button>
+</div>
+  <div class="quiz-fb"></div>
+</div><div id="tb-mistakecheck-chemical-bonds-4"></div></div>
     
   </div>
 
   
   
-  <div class="section">
-  <div class="section-title">📌 Key Note</div>
-  <div class="keynote-box"><p>Metal + non-metal → ionic (electron transfer). Non-metal + non-metal → covalent (electron sharing). Metal → metallic (electron sea). Bond type determines properties: ionic = high MP, conducts when molten/dissolved; simple covalent = low MP; metallic = conducts, malleable.</p></div>
-</div>
-  <div class="section"><div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">When a question says "predict" or "identify" the bonding, justify it from the elements: metal + non-metal → ionic, two non-metals → covalent, a metal alone → metallic. Naming the bond type without saying why the elements produce it rarely earns full marks.</div></div></div>
-  <div class="section">
-    <div class="rd-hero-kicker">🎯 Retrieval · sort the cards</div>
+  
+  <div class="section" id="rd-labs">
+    <div class="rd-hero-kicker">Retrieval · sort the cards</div>
     <div id="bins-chemical-bonds"></div>
   </div>
   
   
   
   
-  <div class="section">
-  <div class="section-title">🎯 Test Yourself</div>
-  <div class="quiz-progress" id="quizProgress">Answer all 10 questions, then check your answers.</div>
-  <div class="quiz-card" id="qcard-0">
-  <div class="q-text">1. Sodium chloride is made from a metal and a non-metal. Predict the type of bonding it contains and describe how it forms.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="0" data-correct="1">Ionic — the metal atom transfers electrons to the non-metal, forming oppositely charged ions that attract</button>
-<button class="quiz-opt" data-qi="0" data-wrong-exp="Sharing electrons is covalent bonding, and it occurs between two NON-metals — not a metal with a non-metal.">Covalent — the metal and non-metal share a pair of electrons</button>
-<button class="quiz-opt" data-qi="0" data-wrong-exp="Metallic bonding needs metal atoms only (a pure metal or alloy), not a metal combined with a non-metal.">Metallic — the atoms sit in a sea of delocalised electrons</button>
-<button class="quiz-opt" data-qi="0" data-wrong-exp="Hydrogen bonding is a weak intermolecular force, not the main bond between a metal and a non-metal.">Hydrogen bonding — a weak attraction forms between the two atoms</button>
+  <div class="section" id="rd-test">
+  <div class="rd-sec-kicker">Test yourself · 7 questions, exam order</div>
+  <div class="rd-blk-examiner"><div class="rd-blk-examiner__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⭐</span><b>Examiner Tip</b></div><div class="rd-blk-examiner__body">When a question says "predict" or "identify" the bonding, justify it from the elements: metal + non-metal → ionic, two non-metals → covalent, a metal alone → metallic. Naming the bond type without saying why the elements produce it rarely earns full marks.</div></div>
+  <div class="rd-exam" data-st="chemical-bonds">
+    <div class="rd-exam__chip">0 of 7 answered</div>
+    <section class="rd-exam__chunk" data-chunk="Warm-up">
+      <div class="rd-exam__chunk-hd">Warm-up · 2 questions</div>
+      <div class="quiz-card">
+  <div class="q-text">Magnesium (Group 2) reacts with oxygen (Group 6) to form magnesium oxide. Identify the type of bonding in MgO.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Ionic — magnesium transfers 2 electrons to oxygen, forming Mg²⁺ and O²⁻ ions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Sharing electrons is covalent and only happens between two non-metals; magnesium is a metal.">Covalent — they share 2 electrons to fill their outer shells</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Metallic bonding occurs in metals only, not in a compound of a metal with a non-metal.">Metallic — magnesium releases electrons into a sea</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Magnesium burns vigorously in oxygen — MgO is a stable ionic compound.">No bonding — both are stable so they do not react</button>
 </div>
-  <div class="quiz-fb" id="qfb-0"></div>
-</div><div class="quiz-card" id="qcard-1">
-  <div class="q-text">2. Magnesium (Group 2) reacts with oxygen (Group 6) to form magnesium oxide. Identify the type of bonding in MgO.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="1" data-correct="1">Ionic — magnesium transfers 2 electrons to oxygen, forming Mg²⁺ and O²⁻ ions</button>
-<button class="quiz-opt" data-qi="1" data-wrong-exp="Sharing electrons is covalent and only happens between two non-metals; magnesium is a metal.">Covalent — they share 2 electrons to fill their outer shells</button>
-<button class="quiz-opt" data-qi="1" data-wrong-exp="Metallic bonding occurs in metals only, not in a compound of a metal with a non-metal.">Metallic — magnesium releases electrons into a sea</button>
-<button class="quiz-opt" data-qi="1" data-wrong-exp="Magnesium burns vigorously in oxygen — MgO is a stable ionic compound.">No bonding — both are stable so they do not react</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Explain why copper is described as having metallic bonding.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Its atoms release outer electrons into a delocalised sea, and the positive ions are attracted to that sea</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Sharing pairs of electrons is covalent bonding, which occurs between non-metals — copper is a metal.">Its atoms share pairs of electrons in covalent bonds</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Transfer forming positive and negative ions is ionic bonding, which needs a non-metal as well.">It transfers electrons to form positive and negative ions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="There ARE strong forces — the electrostatic attraction between the positive ions and the electron sea.">Its atoms are simply packed closely together with no forces between them</button>
 </div>
-  <div class="quiz-fb" id="qfb-1"></div>
-</div><div class="quiz-card" id="qcard-2">
-  <div class="q-text">3. Water (H₂O) is made from two non-metals. Predict the type of bonding it contains.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="2" data-correct="1">Covalent — the non-metal atoms share pairs of electrons</button>
-<button class="quiz-opt" data-qi="2" data-wrong-exp="Electron transfer (ionic) happens between a metal and a non-metal; hydrogen and oxygen are both non-metals.">Ionic — one atom transfers electrons to the other</button>
-<button class="quiz-opt" data-qi="2" data-wrong-exp="Metallic bonding needs metal atoms; water contains none.">Metallic — the atoms share a sea of delocalised electrons</button>
-<button class="quiz-opt" data-qi="2" data-wrong-exp="Pure water barely conducts; where it does, it is due to tiny amounts of ions, not because it is ionic.">Ionic — because water can conduct electricity</button>
+  <div class="quiz-fb"></div>
 </div>
-  <div class="quiz-fb" id="qfb-2"></div>
-</div><div class="quiz-card" id="qcard-3">
-  <div class="q-text">4. Explain why copper is described as having metallic bonding.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="3" data-correct="1">Its atoms release outer electrons into a delocalised sea, and the positive ions are attracted to that sea</button>
-<button class="quiz-opt" data-qi="3" data-wrong-exp="Sharing pairs of electrons is covalent bonding, which occurs between non-metals — copper is a metal.">Its atoms share pairs of electrons in covalent bonds</button>
-<button class="quiz-opt" data-qi="3" data-wrong-exp="Transfer forming positive and negative ions is ionic bonding, which needs a non-metal as well.">It transfers electrons to form positive and negative ions</button>
-<button class="quiz-opt" data-qi="3" data-wrong-exp="There ARE strong forces — the electrostatic attraction between the positive ions and the electron sea.">Its atoms are simply packed closely together with no forces between them</button>
+      <div class="rd-exam__check-row"><button class="quiz-check-btn" type="button" data-chunk-check>✓ Check this set</button></div>
+    </section>
+    <details class="rd-exam__details"><summary>Exam standard · 3 questions</summary>
+      <section class="rd-exam__chunk" data-chunk="Exam standard">
+      <div class="quiz-card">
+  <div class="q-text">Describe the difference in how electrons behave in ionic bonding compared with covalent bonding.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">In ionic bonding electrons are transferred from one atom to another; in covalent bonding electrons are shared between atoms</button>
+<button class="quiz-opt" type="button" data-wrong-exp="This is the wrong way round: ionic = transfer, covalent = sharing.">In ionic bonding electrons are shared; in covalent bonding they are transferred</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Covalent bonding is sharing, not transfer; only ionic bonding transfers electrons.">In both, electrons are transferred, but ionic bonds are stronger</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Covalent bonding is sharing (not transfer) and occurs between non-metals, not metals.">In both, electrons are shared, but covalent bonds involve metals</button>
 </div>
-  <div class="quiz-fb" id="qfb-3"></div>
-</div><div class="quiz-card" id="qcard-4">
-  <div class="q-text">5. Describe the difference in how electrons behave in ionic bonding compared with covalent bonding.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="4" data-correct="1">In ionic bonding electrons are transferred from one atom to another; in covalent bonding electrons are shared between atoms</button>
-<button class="quiz-opt" data-qi="4" data-wrong-exp="This is the wrong way round: ionic = transfer, covalent = sharing.">In ionic bonding electrons are shared; in covalent bonding they are transferred</button>
-<button class="quiz-opt" data-qi="4" data-wrong-exp="Covalent bonding is sharing, not transfer; only ionic bonding transfers electrons.">In both, electrons are transferred, but ionic bonds are stronger</button>
-<button class="quiz-opt" data-qi="4" data-wrong-exp="Covalent bonding is sharing (not transfer) and occurs between non-metals, not metals.">In both, electrons are shared, but covalent bonds involve metals</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Compare ionic bonding and metallic bonding in terms of the particles present and the forces holding them together.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Ionic: oppositely charged ions attracted by electrostatic forces. Metallic: positive ions attracted to a sea of delocalised electrons</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Neither is neutral atoms sharing pairs — that describes covalent bonding.">Both contain only neutral atoms held together by shared electron pairs</button>
+<button class="quiz-opt" type="button" data-wrong-exp="This swaps the two over: delocalised electrons are in METALS; positive and negative ions are in IONIC compounds.">Ionic contains delocalised electrons; metallic contains positive and negative ions</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Metals do not contain negative ions — they have positive ions and a sea of (negative) delocalised electrons.">Both contain positive and negative ions attracting each other</button>
 </div>
-  <div class="quiz-fb" id="qfb-4"></div>
-</div><div class="quiz-card" id="qcard-5">
-  <div class="q-text">6. A substance has a high melting point and conducts electricity only when molten or dissolved, never when solid. Deduce its type of bonding and justify your answer.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="5" data-correct="1">Ionic — the ions are fixed in the solid but become free to move (and carry charge) when molten or dissolved</button>
-<button class="quiz-opt" data-qi="5" data-wrong-exp="A metal would conduct as a SOLID too (delocalised electrons move in the solid) — this substance does not.">Metallic — delocalised electrons carry charge in all states</button>
-<button class="quiz-opt" data-qi="5" data-wrong-exp="Simple covalent substances have LOW melting points and never conduct (no charged particles).">Simple covalent — the molecules move when the substance melts</button>
-<button class="quiz-opt" data-qi="5" data-wrong-exp="Giant covalent substances (e.g. diamond) do not conduct even when molten — no free charges (graphite excepted).">Giant covalent — the electrons are released only on melting</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Explain why the type of bonding in a substance can often be predicted from the positions of its elements in the periodic table.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Metals (left/centre) tend to lose electrons and non-metals (right) tend to gain or share them, so the combination of positions predicts transfer, sharing or a metallic sea</button>
+<button class="quiz-opt" type="button" data-wrong-exp="It is not the period that decides bonding, but whether each element is a metal or a non-metal.">Elements in the same period always bond ionically</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Atomic mass does not determine bond type; whether atoms lose, gain or share electrons does.">The bond type depends only on the atomic mass, which increases across the table</button>
+<button class="quiz-opt" type="button" data-wrong-exp="The right-hand side of the table is the NON-metals, which form covalent or ionic bonds, not metallic.">All elements on the right of the table form metallic bonds</button>
 </div>
-  <div class="quiz-fb" id="qfb-5"></div>
-</div><div class="quiz-card" id="qcard-6">
-  <div class="q-text">7. Compare ionic bonding and metallic bonding in terms of the particles present and the forces holding them together.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="6" data-correct="1">Ionic: oppositely charged ions attracted by electrostatic forces. Metallic: positive ions attracted to a sea of delocalised electrons</button>
-<button class="quiz-opt" data-qi="6" data-wrong-exp="Neither is neutral atoms sharing pairs — that describes covalent bonding.">Both contain only neutral atoms held together by shared electron pairs</button>
-<button class="quiz-opt" data-qi="6" data-wrong-exp="This swaps the two over: delocalised electrons are in METALS; positive and negative ions are in IONIC compounds.">Ionic contains delocalised electrons; metallic contains positive and negative ions</button>
-<button class="quiz-opt" data-qi="6" data-wrong-exp="Metals do not contain negative ions — they have positive ions and a sea of (negative) delocalised electrons.">Both contain positive and negative ions attracting each other</button>
+  <div class="quiz-fb"></div>
 </div>
-  <div class="quiz-fb" id="qfb-6"></div>
-</div><div class="quiz-card" id="qcard-7">
-  <div class="q-text">8. Explain why the type of bonding in a substance can often be predicted from the positions of its elements in the periodic table.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="7" data-correct="1">Metals (left/centre) tend to lose electrons and non-metals (right) tend to gain or share them, so the combination of positions predicts transfer, sharing or a metallic sea</button>
-<button class="quiz-opt" data-qi="7" data-wrong-exp="It is not the period that decides bonding, but whether each element is a metal or a non-metal.">Elements in the same period always bond ionically</button>
-<button class="quiz-opt" data-qi="7" data-wrong-exp="Atomic mass does not determine bond type; whether atoms lose, gain or share electrons does.">The bond type depends only on the atomic mass, which increases across the table</button>
-<button class="quiz-opt" data-qi="7" data-wrong-exp="The right-hand side of the table is the NON-metals, which form covalent or ionic bonds, not metallic.">All elements on the right of the table form metallic bonds</button>
+      <div class="rd-exam__check-row"><button class="quiz-check-btn" type="button" data-chunk-check>✓ Check this set</button></div>
+      </section>
+    </details>
+    <details class="rd-exam__details"><summary>Stretch · 2 questions</summary>
+      <section class="rd-exam__chunk" data-chunk="Stretch">
+      <div class="quiz-card">
+  <div class="q-text">A shiny solid conducts electricity and can be bent into shape without breaking. Deduce its type of bonding and explain both properties.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">Metallic — delocalised electrons carry the current, and layers of ions can slide so it bends rather than shatters</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Ionic solids do NOT conduct (ions fixed) and are brittle — they shatter, not bend.">Ionic — the ions carry current and slide over each other</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Simple covalent substances do not conduct at all (no charged particles).">Simple covalent — the molecules conduct and flex</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Giant covalent substances are hard and rigid, not bendable, and mostly do not conduct.">Giant covalent — free electrons conduct and the rigid lattice bends</button>
 </div>
-  <div class="quiz-fb" id="qfb-7"></div>
-</div><div class="quiz-card" id="qcard-8">
-  <div class="q-text">9. A shiny solid conducts electricity and can be bent into shape without breaking. Deduce its type of bonding and explain both properties.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="8" data-correct="1">Metallic — delocalised electrons carry the current, and layers of ions can slide so it bends rather than shatters</button>
-<button class="quiz-opt" data-qi="8" data-wrong-exp="Ionic solids do NOT conduct (ions fixed) and are brittle — they shatter, not bend.">Ionic — the ions carry current and slide over each other</button>
-<button class="quiz-opt" data-qi="8" data-wrong-exp="Simple covalent substances do not conduct at all (no charged particles).">Simple covalent — the molecules conduct and flex</button>
-<button class="quiz-opt" data-qi="8" data-wrong-exp="Giant covalent substances are hard and rigid, not bendable, and mostly do not conduct.">Giant covalent — free electrons conduct and the rigid lattice bends</button>
+  <div class="quiz-fb"></div>
+</div><div class="quiz-card">
+  <div class="q-text">Explain why solid magnesium chloride does not conduct electricity, but molten magnesium chloride does.</div>
+  <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">In the solid the ions are locked in fixed positions; when molten they are free to move and carry charge</button>
+<button class="quiz-opt" type="button" data-wrong-exp="The Mg²⁺ and Cl⁻ ions exist in the solid lattice already — they simply cannot move when solid.">Solid magnesium chloride has no ions until it melts</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Conduction in molten ionic compounds is by moving IONS, not by added electrons.">Melting adds electrons that carry the current</button>
+<button class="quiz-opt" type="button" data-wrong-exp="Temperature alone is not the point — it is whether the charged ions are free to move.">The solid is too cold for any current to flow</button>
 </div>
-  <div class="quiz-fb" id="qfb-8"></div>
-</div><div class="quiz-card" id="qcard-9">
-  <div class="q-text">10. Explain why solid magnesium chloride does not conduct electricity, but molten magnesium chloride does.</div>
-  <div class="quiz-options"><button class="quiz-opt" data-qi="9" data-correct="1">In the solid the ions are locked in fixed positions; when molten they are free to move and carry charge</button>
-<button class="quiz-opt" data-qi="9" data-wrong-exp="The Mg²⁺ and Cl⁻ ions exist in the solid lattice already — they simply cannot move when solid.">Solid magnesium chloride has no ions until it melts</button>
-<button class="quiz-opt" data-qi="9" data-wrong-exp="Conduction in molten ionic compounds is by moving IONS, not by added electrons.">Melting adds electrons that carry the current</button>
-<button class="quiz-opt" data-qi="9" data-wrong-exp="Temperature alone is not the point — it is whether the charged ions are free to move.">The solid is too cold for any current to flow</button>
+  <div class="quiz-fb"></div>
 </div>
-  <div class="quiz-fb" id="qfb-9"></div>
-</div>
-  <div class="quiz-actions">
-    <button class="quiz-check-btn" id="quizCheckBtn" type="button">✓ Check answers</button>
-    <button class="quiz-again-btn" id="quizAgainBtn" type="button" style="display:none;">↻ Try again</button>
+      <div class="rd-exam__check-row"><button class="quiz-check-btn" type="button" data-chunk-check>✓ Check this set</button></div>
+      </section>
+    </details>
+    <div class="rd-exam__end" style="display:none;"></div>
+    <div class="rd-exam__actions">
+      <button class="quiz-check-btn" type="button" data-retry-misses style="display:none;">↻ Retry my misses</button>
+      <button class="quiz-again-btn" type="button" data-start-over style="display:none;">Start over</button>
+    </div>
   </div>
-  <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
+</div>
+<div class="section">
+  <div class="rd-sec-kicker">Key note · cover it, say it, check it</div>
+  <div class="rd-keycard">
+    <div class="rd-keycard__hd">
+      <span class="rd-keycard__lbl">Revision card</span>
+      <button class="rd-keycard__cover" type="button" aria-pressed="false">Cover &amp; recall</button>
+    </div>
+    <p class="rd-keycard__text">Metal + non-metal → ionic (electron transfer). Non-metal + non-metal → covalent (electron sharing). Metal → metallic (electron sea). Bond type determines properties: ionic = high MP, conducts when molten/dissolved; simple covalent = low MP; metallic = conducts, malleable.</p>
+  </div>
 </div>
   <div class="section">
-  <div class="section-title">⭐ How Well Do You Understand This Topic?</div>
+  <div class="rd-sec-kicker">Rate your confidence · then let the quiz check it</div>
   <div class="card star-rating-card">
-    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Be honest with yourself — this helps you know what to revise!</p>
+    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Be honest — this only has to convince you.</p>
     <div class="stars-row" id="stars-chemical-bonds">
       <button class="star-btn" data-rating="1" onclick="rateTopic('chemical-bonds', 1)" title="I don't understand this at all">⭐</button>
       <button class="star-btn" data-rating="2" onclick="rateTopic('chemical-bonds', 2)" title="I understand a little">⭐</button>
@@ -262,16 +343,16 @@ html { background: var(--surface-page); }
     <div class="star-labels">
       <span>Don't get it</span>
       <span>Getting there</span>
-      <span>Nailed it!</span>
+      <span>Nailed it</span>
     </div>
     <div class="star-feedback" id="starfb-chemical-bonds"></div>
   </div>
 </div>
   <div class="section">
-  <div class="section-title">🤖 Ask Mr Badmus AI</div>
+  <div class="rd-sec-kicker">Stuck · ask Mr Badmus AI</div>
   <div class="card ask-card">
-    <p class="ask-lede">Stuck? Just ask! 💬</p>
-    <p class="ask-sub">I'll use FIFA for calculations and flag Higher/Triple content clearly.</p>
+    <p class="ask-lede">Ask about anything on this page.</p>
+    <p class="ask-sub">FIFA for calculations; Higher (⭐) and Triple (🔬) content flagged clearly.</p>
     <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
   </div>
 </div>
@@ -309,121 +390,10 @@ html { background: var(--surface-page); }
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({subject:'chemistry',topic:'Chemical Bonds (5.2.1.1)'});</script>
-  <script>
-(function(){
-  const SCORE_MESSAGES = [
-    "Keep going — re-read the theory and try again. You'll get there! 📖",
-    "Not bad — review the sections you missed and have another go. 💪",
-    "Decent effort! A bit more revision and you'll nail it. 🔄",
-    "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-    "Excellent! You've really got this topic down. 🏆"
-  ];
-  const cards = Array.from(document.querySelectorAll('.quiz-card'));
-  const total = cards.length;
-  if (!total) return;
-  const checkBtn = document.getElementById('quizCheckBtn');
-  const againBtn = document.getElementById('quizAgainBtn');
-  const endMsg = document.getElementById('quizEndMsg');
-  const prog = document.getElementById('quizProgress');
-  let checked = false;
-
-  // Browser-side option shuffle (Fisher–Yates), consistent with the bins hero.
-  function shuffleOptions(){
-    document.querySelectorAll('.quiz-options').forEach(function(box){
-      const opts = Array.from(box.querySelectorAll('.quiz-opt'));
-      for (let k = opts.length - 1; k > 0; k--){
-        const j = Math.floor(Math.random() * (k + 1));
-        const t = opts[k]; opts[k] = opts[j]; opts[j] = t;
-      }
-      opts.forEach(function(o){ box.appendChild(o); });
-    });
-  }
-
-  function updateProgress(){
-    if (checked || !prog) return;
-    const answered = cards.filter(function(c){ return c.querySelector('.quiz-opt.selected'); }).length;
-    prog.textContent = answered === total
-      ? 'All ' + total + ' answered — hit Check answers below ↓'
-      : answered + ' of ' + total + ' answered';
-  }
-
-  function onSelect(){
-    if (checked) return;
-    const box = this.closest('.quiz-options');
-    box.querySelectorAll('.quiz-opt').forEach(function(o){ o.classList.remove('selected'); });
-    this.classList.add('selected');
-    updateProgress();
-  }
-
-  function reveal(){
-    checked = true;
-    let correctCount = 0;
-    cards.forEach(function(card, i){
-      const opts = Array.from(card.querySelectorAll('.quiz-opt'));
-      const chosen = card.querySelector('.quiz-opt.selected');
-      const fb = document.getElementById('qfb-' + i);
-      opts.forEach(function(o){ o.disabled = true; o.classList.remove('selected'); });
-      const correctOpt = opts.filter(function(o){ return o.dataset.correct === '1'; })[0];
-      if (correctOpt) correctOpt.classList.add('correct');
-      const isRight = !!(chosen && chosen.dataset.correct === '1');
-      if (isRight) correctCount++;
-      if (chosen && !isRight) chosen.classList.add('wrong');
-      if (!fb) return;
-      if (!chosen){
-        fb.className = 'quiz-fb wrong-fb show';
-        fb.textContent = '⚠️ Not answered — the correct answer is highlighted above.';
-      } else if (isRight){
-        fb.className = 'quiz-fb correct-fb show';
-        fb.textContent = '✅ Correct! Well done!';
-      } else {
-        const exp = chosen.dataset.wrongExp;
-        fb.className = 'quiz-fb wrong-fb show';
-        fb.textContent = exp ? ('❌ Not quite. ' + exp) : '❌ Not quite — the correct answer is highlighted above.';
-      }
-    });
-    if (prog) prog.textContent = '🎉 Finished! ' + correctCount + '/' + total + ' correct';
-    if (endMsg){
-      const ratio = correctCount / total;
-      const msgIdx = ratio === 1 ? 4 : ratio >= 0.8 ? 3 : ratio >= 0.6 ? 2 : ratio >= 0.4 ? 1 : 0;
-      endMsg.textContent = correctCount + '/' + total + ' — ' + SCORE_MESSAGES[msgIdx];
-      endMsg.style.display = 'block';
-      endMsg.style.background = ratio === 1 ? 'rgba(35,122,59,0.10)' : ratio >= 0.6 ? 'rgba(122,95,0,0.10)' : 'rgba(179,38,30,0.09)';
-      endMsg.style.color = ratio === 1 ? '#237A3B' : ratio >= 0.6 ? '#7A5F00' : '#B3261E';
-      endMsg.style.border = '1px solid ' + (ratio === 1 ? 'rgba(35,122,59,0.3)' : ratio >= 0.6 ? 'rgba(122,95,0,0.3)' : 'rgba(179,38,30,0.3)');
-    }
-    if (checkBtn) checkBtn.style.display = 'none';
-    if (againBtn) againBtn.style.display = '';
-  }
-
-  function tryAgain(){
-    checked = false;
-    cards.forEach(function(card, i){
-      card.querySelectorAll('.quiz-opt').forEach(function(o){
-        o.disabled = false;
-        o.classList.remove('selected', 'correct', 'wrong');
-      });
-      const fb = document.getElementById('qfb-' + i);
-      if (fb){ fb.className = 'quiz-fb'; fb.textContent = ''; }
-    });
-    if (endMsg){ endMsg.style.display = 'none'; endMsg.textContent = ''; }
-    if (checkBtn) checkBtn.style.display = '';
-    if (againBtn) againBtn.style.display = 'none';
-    shuffleOptions();
-    updateProgress();
-  }
-
-  cards.forEach(function(card){
-    card.querySelectorAll('.quiz-opt').forEach(function(btn){ btn.addEventListener('click', onSelect); });
-  });
-  if (checkBtn) checkBtn.addEventListener('click', reveal);
-  if (againBtn) againBtn.addEventListener('click', tryAgain);
-  shuffleOptions();
-  updateProgress();
-})();
-</script>
+  
   
   <script>
-const STAR_MESSAGES_chemical_bonds = ["No worries \u2014 that's what Mr Badmus AI is here for! Hit the chat button below and ask me to explain it from scratch. \ud83d\udcac", "Good start! Read through the theory again, then try the quiz once more. You'll get there! \ud83d\udcd6", "Solid \u2014 you're getting there! Try explaining it out loud to yourself. If you can say it, you know it. \ud83d\udde3\ufe0f", "Great work! Just review the parts you found tricky and you'll be flying. \ud83d\ude80", "PERFECT! You've nailed this topic. Move on \u2014 you're ready! \ud83c\udfc6"];
+const STAR_MESSAGES_chemical_bonds = ["Start with Teach me above — one block at a time, checkpoint after each. The AI chat can explain anything from scratch.", "Re-read the theory blocks that felt hardest, then run the matching activity to lock in the basics.", "Halfway there. Run the interactive again, then take the quiz — the misses will show you exactly what to revise.", "Nearly solid. Take the quiz and retry your misses — the last gap is usually one idea.", "If the quiz agrees — near full marks below — you're done here. Move on to the next page."];
 function rateTopic(stId, rating) {
   document.querySelectorAll('#stars-' + stId + ' .star-btn').forEach((s, i) => s.classList.toggle('star-active', i < rating));
   const fb = document.getElementById('starfb-' + stId);
@@ -437,6 +407,8 @@ try {
 } catch(e) {}
 </script>
   
+  <script src="/shared/quiz.js"></script>
+  <script src="/shared/rd-page.js"></script>
   <script src="/shared/heroes/categorise-bins.js"></script>
   <script src="/shared/heroes/theory-blocks.js"></script>
   <script src="/shared/heroes/bonding-configs.js"></script>

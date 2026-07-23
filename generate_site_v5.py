@@ -3221,6 +3221,109 @@ PILOT_QUIZ_JS = """
 """
 
 
+def _rd_quiz_options(q):
+    """Canonical-order options with data-correct / data-wrong-exp attributes.
+    The browser shuffles per load (shared/quiz.js); grading is by attribute,
+    so display order can never leak or affect marks. Question text, options
+    and misconception text are frozen — behaviour only."""
+    orig_wrong_exp = q.get("wrong_explanations", {})
+    opts_html = ""
+    for orig_j, (opt_text, is_correct) in enumerate(q["opts"]):
+        attrs = ""
+        if is_correct:
+            attrs += ' data-correct="1"'
+        else:
+            exp = orig_wrong_exp.get(orig_j)
+            if exp:
+                attrs += f' data-wrong-exp="{_esc_attr(exp)}"'
+        opts_html += f'<button class="quiz-opt" type="button"{attrs}>{opt_text}</button>\n'
+    return opts_html
+
+
+def make_rd_checkpoint(q, st_id, n):
+    """One checkpoint micro-quiz (MRB-133 Phase 1c): a frozen quiz question
+    RELOCATED inline after the theory block it tests. Immediate feedback on
+    selection — the frozen wrong-option explanations do the teaching."""
+    return f"""<div class="rd-checkpoint" id="cp-{st_id}-{n}">
+  <div class="rd-checkpoint__kicker">Checkpoint · quick check</div>
+  <div class="q-text">{q['q']}</div>
+  <div class="quiz-options">{_rd_quiz_options(q)}</div>
+  <div class="quiz-fb"></div>
+</div>"""
+
+
+def make_rd_quiz(quiz, st_id, checkpoint_qidxs, pre_html=""):
+    """Exam-paper quiz (MRB-133 Phase 1c, council §5.7): one continuous panel,
+    hanging mono numbers (CSS counters), hairline rules, compact lettered
+    options, chunked Warm-up / Exam standard / Stretch with later chunks in
+    <details>, a sticky progress chip and per-chunk check buttons.
+    Questions listed in checkpoint_qidxs render inline as checkpoints instead
+    (relocated, not duplicated). pre_html sits above the panel (e.g. the
+    relocated Examiner Tip, Phase 1f)."""
+    if not quiz:
+        return ""
+    cp = set(checkpoint_qidxs or [])
+    remaining = [(i, q) for i, q in enumerate(quiz) if i not in cp]
+    total = len(remaining)
+    chunk_defs = [("Warm-up", 0, 4), ("Exam standard", 4, 8), ("Stretch", 8, len(quiz))]
+    parts = []
+    first_emitted = False
+    for name, lo, hi in chunk_defs:
+        qs = [(i, q) for i, q in remaining if lo <= i < hi]
+        if not qs:
+            continue
+        cards = ""
+        for i, q in qs:
+            cards += f"""<div class="quiz-card">
+  <div class="q-text">{q['q']}</div>
+  <div class="quiz-options">{_rd_quiz_options(q)}</div>
+  <div class="quiz-fb"></div>
+</div>"""
+        n_lbl = f"{name} · {len(qs)} question{'s' if len(qs) != 1 else ''}"
+        check = '<div class="rd-exam__check-row"><button class="quiz-check-btn" type="button" data-chunk-check>✓ Check this set</button></div>'
+        if not first_emitted:
+            # first chunk open, with its own heading
+            parts.append(f"""<section class="rd-exam__chunk" data-chunk="{name}">
+      <div class="rd-exam__chunk-hd">{n_lbl}</div>
+      {cards}
+      {check}
+    </section>""")
+            first_emitted = True
+        else:
+            # later chunks behind <details> (summary carries the heading)
+            parts.append(f"""<details class="rd-exam__details"><summary>{n_lbl}</summary>
+      <section class="rd-exam__chunk" data-chunk="{name}">
+      {cards}
+      {check}
+      </section>
+    </details>""")
+    chunks_html = "\n    ".join(parts)
+    return f"""<div class="section" id="rd-test">
+  <div class="rd-sec-kicker">Test yourself · {total} questions, exam order</div>{pre_html}
+  <div class="rd-exam" data-st="{st_id}">
+    <div class="rd-exam__chip">0 of {total} answered</div>
+    {chunks_html}
+    <div class="rd-exam__end" style="display:none;"></div>
+    <div class="rd-exam__actions">
+      <button class="quiz-check-btn" type="button" data-retry-misses style="display:none;">↻ Retry my misses</button>
+      <button class="quiz-again-btn" type="button" data-start-over style="display:none;">Start over</button>
+    </div>
+  </div>
+</div>"""
+
+
+# Star-rating feedback for redesigned pages (MRB-133 Phase 1g): every rating
+# answers with a ROUTE, not a congratulation. No exclamation stacking, no
+# emoji. Non-redesigned pages keep STAR_MESSAGES unchanged.
+RD_STAR_MESSAGES = [
+    "Start with Teach me above — one block at a time, checkpoint after each. The AI chat can explain anything from scratch.",
+    "Re-read the theory blocks that felt hardest, then run the matching activity to lock in the basics.",
+    "Halfway there. Run the interactive again, then take the quiz — the misses will show you exactly what to revise.",
+    "Nearly solid. Take the quiz and retry your misses — the last gap is usually one idea.",
+    "If the quiz agrees — near full marks below — you're done here. Move on to the next page.",
+]
+
+
 def make_new_quiz(quiz, color, pilot=False):
     import random
     if not quiz:
@@ -4126,45 +4229,134 @@ try {{
         # non-listed page keeps body_class="" and is byte-identical to before.
         rcfg = BONDING_REDESIGN[st_id]
         body_class = "rd"
-        quiz_html = make_new_quiz(st.get("quiz", []), color, pilot=True)
-        quiz_js = PILOT_QUIZ_JS
-        theory_html, _rd_interactive = render_theory_blocks(rcfg["theory_blocks"], st_id)
-        # Suppress the static Common-Mistake box iff a mistake-check block carries it.
+        # Phase 0d (MRB-132): the quiz engine is no longer inlined per page —
+        # it ships once as /shared/quiz.js and the generator emits a script tag.
+        quiz_js = ""
+
+        # ── Phase 1f (MRB-133): Examiner Tip placement split. Text is frozen
+        # (approved tips); only WHERE it renders changes. 'quiz' → directly
+        # above the quiz panel; 'activity' → the retrieval activity's success
+        # state (successTip in the TapMatch/bins config).
+        _tip_text = st.get("examiner_tip")
+        _tip_mode = rcfg.get("tip_placement", "quiz")
+
+        # ── Phase 1c (MRB-133): checkpoint micro-quizzes — 2–3 frozen recall
+        # questions RELOCATED inline after the theory block they test. The
+        # exam panel renders the remaining questions.
+        _cps = rcfg.get("checkpoints", [])
+        _cp_idxs = [c["q"] for c in _cps]
+        _quiz = st.get("quiz", [])
+        _theory_inserts = {}
+        for _n, _c in enumerate(_cps):
+            if _c["q"] < len(_quiz):
+                _theory_inserts.setdefault(_c["after"], []).append(
+                    make_rd_checkpoint(_quiz[_c["q"]], st_id, _n))
+
+        # ── Phase 1f: Common Mistake moves to the moment the error is born.
+        # mistake_after: 'hero' → directly under the hero slot; int → after
+        # that theory block; None → end of the theory section (unchanged).
+        # Pages whose misconception lives in a mistake-check block suppress
+        # the static box entirely (as before).
+        _mistake_target = rcfg.get("mistake_after")
         if any(b.get("type") == "mistake-check" for b in rcfg["theory_blocks"]):
             mistake_html = ""
+            _mistake_target = None
+        elif isinstance(_mistake_target, int):
+            _theory_inserts.setdefault(_mistake_target, []).append(mistake_html)
+            mistake_html = ""
 
-        _scripts = []   # module src paths, in load order
+        theory_html, _rd_interactive = render_theory_blocks(
+            rcfg["theory_blocks"], st_id, inserts=_theory_inserts)
+
+        # Exam-paper quiz (Phase 1c) with the technique tip above it (Phase 1f)
+        _pre_quiz = ""
+        if _tip_text and _tip_mode == "quiz":
+            _pre_quiz = f"\n  {render_examiner_tip(_tip_text)}"
+        quiz_html = make_rd_quiz(_quiz, st_id, _cp_idxs, pre_html=_pre_quiz)
+
+        # Phase 1f: drop static blocks an interactive already teaches
+        if rcfg.get("suppress_fifa_boxes"):
+            fifa_html_content = ""
+
+        _scripts = []          # hero module src paths (/shared/heroes/), in load order
+        # shared root scripts (/shared/): quiz engine (0d), page chrome (1d);
+        # predict-wrapper (1a) is appended on hero pages below.
+        _shared_scripts = ["quiz.js", "rd-page.js"]
         _inits = []     # inline init snippets (each wrapped in an IIFE)
         _needs_configs = False   # any hero/activity reading MrbHeroConfigs
 
-        # ── Activity: Categorise Bins, or reuse the standard drag-match ──
+        # ── Activity: Categorise Bins, or TapMatch (Phase 0a, MRB-132) ──
+        # (kickers use the mono voice, no emoji — Phase 1g §5.9)
         act = rcfg["activity"]
+        _act_id_attr = "" if rcfg.get("hero") else ' id="rd-labs"'   # Labs anchor (1e)
+        _succ_tip_js = ""
+        if _tip_text and _tip_mode == "activity":
+            _succ_tip_js = "if(binCfg)binCfg.successTip=%s;" % _json.dumps(_tip_text, ensure_ascii=False)
         if act["type"] == "bins":
             matching_js = ""   # no drag-match widget on a bins page
             _bins_kicker = act.get("kicker", "sort the cards")
-            matching_html = f"""<div class="section">
-    <div class="rd-hero-kicker">🎯 Retrieval · {_bins_kicker}</div>
+            matching_html = f"""<div class="section"{_act_id_attr}>
+    <div class="rd-hero-kicker">Retrieval · {_bins_kicker}</div>
     <div id="bins-{st_id}"></div>
   </div>"""
             _scripts.append("categorise-bins.js")
             _needs_configs = True
             _inits.append(
                 "var binCfg=window.MrbHeroConfigs&&MrbHeroConfigs.bonding&&MrbHeroConfigs.bonding['%s'];"
-                "var binHost=document.getElementById('bins-%s');"
-                "if(binCfg&&binHost&&window.MrbHeroes&&MrbHeroes.categoriseBins)MrbHeroes.categoriseBins.init(binHost,binCfg);"
-                % (act["config_key"], st_id))
-        # else 'match': keep the default make_matching_widget + default matching_js.
+                "var binHost=document.getElementById('bins-%s');" % (act["config_key"], st_id)
+                + _succ_tip_js
+                + "if(binCfg&&binHost&&window.MrbHeroes&&MrbHeroes.categoriseBins)MrbHeroes.categoriseBins.init(binHost,binCfg);")
+        else:
+            # 'match' — Phase 0a: the old HTML5 drag-and-drop matching is DEAD on
+            # touch devices and keyboard-inaccessible, so .rd pages ship TapMatch
+            # (tap-select / tap-place, real buttons, browser shuffle of BOTH
+            # columns, grading by mapping). The frozen `matching` field is passed
+            # through UNCHANGED as the card/term texts. Group ids follow the
+            # MRB-104 rule: rows sharing a term share a group.
+            matching_js = ""   # retire the DnD runtime from bonding output
+            _m = st.get("matching")
+            if _m and _m.get("pairs"):
+                _pairs = _m["pairs"]
+                _tg = {}
+                for _t, _d in _pairs:
+                    if _t not in _tg:
+                        _tg[_t] = len(_tg)
+                _tm_cfg = {
+                    "stId": st_id, "title": _m.get("title", "Matching"),
+                    "instruction": _m.get("instruction", ""),
+                    "pairs": [{"t": _t, "d": _d, "g": _tg[_t]} for _t, _d in _pairs],
+                }
+                if _tip_text and _tip_mode == "activity":
+                    _tm_cfg["successTip"] = _tip_text
+                matching_html = f"""<div class="section"{_act_id_attr}>
+    <div class="rd-hero-kicker">Retrieval · {_m.get('title', 'Matching')}</div>
+    <div id="match-{st_id}"></div>
+  </div>"""
+                _shared_scripts.append("tap-match.js")
+                _inits.append(
+                    "var tmHost=document.getElementById('match-%s');"
+                    "if(tmHost&&window.MrbTapMatch)MrbTapMatch.init(tmHost,%s);"
+                    % (st_id, _json.dumps(_tm_cfg, ensure_ascii=False)))
+            else:
+                matching_html = ""
 
         # ── Hero: structural interactive, or none ──
         hero = rcfg.get("hero")
         if hero:
             _kicker = hero.get("kicker", "explore the model")
+            # Phase 1f: mistake_after == 'hero' renders the frozen Common
+            # Mistake box inside the hero slot, at the moment the error is born.
+            _hero_mistake = ""
+            if _mistake_target == "hero" and mistake_html:
+                _hero_mistake = f"\n    {mistake_html}"
+                mistake_html = ""
             hero_html = f"""
-  <div class="rd-hero-slot">
-    <div class="rd-hero-kicker">🔬 Interactive · {_kicker}</div>
-    <div id="hero-{st_id}"></div>
+  <div class="rd-hero-slot" id="rd-labs">
+    <div class="rd-hero-kicker">Interactive · {_kicker}</div>
+    <div id="hero-{st_id}"></div>{_hero_mistake}
   </div>
 """
+            _shared_scripts.append("predict-wrapper.js")   # Phase 1a (Law 4)
             _scripts.append(hero["module"] + ".js")
             if hero.get("build") == "fifa":
                 # FIFA config = frozen `fifas` worked spine (per variant) zipped
@@ -4195,7 +4387,9 @@ try {{
             _scripts.append("bonding-configs.js")
 
         _tb_init = interactive_init_js(_rd_interactive)
-        _script_tags = "\n".join('  <script src="/shared/heroes/%s"></script>' % s for s in _scripts)
+        _script_tags = "\n".join(
+            ['  <script src="/shared/%s"></script>' % s for s in _shared_scripts]
+            + ['  <script src="/shared/heroes/%s"></script>' % s for s in _scripts])
         _init_body = "\n".join("    (function(){%s})();" % s for s in _inits)
         hero_scripts = f"""
 {_script_tags}
@@ -4228,13 +4422,84 @@ html { background: var(--surface-page); }
 """ + BONDING_BLOCK_CSS + """
 </style>"""
 
-    # On redesigned (.rd) pages the Examiner Tip renders as the canonical
-    # amber/gold theory block, not the flat callout built above.
+    # ── Redesigned (.rd) page overrides (MRB-133 Phase 1) — every default
+    # below is byte-identical for non-rd pages. ──
+    mode_chooser_html = ""
+    theory_sec_open = '<div class="section">'
+    theory_title_html = '<div class="section-title">📖 In-Depth Theory</div>'
     if body_class == "rd":
-        examiner_html = (
-            f'\n  <div class="section">{render_examiner_tip(st["examiner_tip"])}</div>'
-            if st.get("examiner_tip") else ""
-        )
+        # Phase 1f: the keynote-adjacent Examiner Tip section is retired — the
+        # tip now renders above the quiz or inside the activity success state.
+        examiner_html = ""
+        # Phase 1d: Key Note becomes the photographable revision card with a
+        # cover-and-recall toggle, and moves to LAST (council §3.2 rule 8) —
+        # appended after the quiz, before the end-matter ritual. Frozen text.
+        keynote_html = ""
+        if st.get("key_note"):
+            quiz_html += f"""
+<div class="section">
+  <div class="rd-sec-kicker">Key note · cover it, say it, check it</div>
+  <div class="rd-keycard">
+    <div class="rd-keycard__hd">
+      <span class="rd-keycard__lbl">Revision card</span>
+      <button class="rd-keycard__cover" type="button" aria-pressed="false">Cover &amp; recall</button>
+    </div>
+    <p class="rd-keycard__text">{st['key_note']}</p>
+  </div>
+</div>"""
+        # Phase 1e: mode chooser — three anchors under the page kicker, serving
+        # the 10-minute bus session and the 40-minute desk session alike.
+        mode_chooser_html = """
+  <nav class="rd-modes" aria-label="Choose how to use this page">
+    <a href="#rd-teach">📖 Teach me</a>
+    <a href="#rd-labs">🎮 Labs</a>
+    <a href="#rd-test">🎯 Test me</a>
+  </nav>"""
+        # Phase 1g: mono kickers replace emoji section titles
+        theory_sec_open = '<div class="section" id="rd-teach">'
+        theory_title_html = '<div class="rd-sec-kicker">Theory · read, then commit</div>'
+        star_html = f"""<div class="section">
+  <div class="rd-sec-kicker">Rate your confidence · then let the quiz check it</div>
+  <div class="card star-rating-card">
+    <p style="font-size:0.95rem;color:var(--muted);margin-bottom:16px;">Be honest — this only has to convince you.</p>
+    <div class="stars-row" id="stars-{st_id}">
+      <button class="star-btn" data-rating="1" onclick="rateTopic('{st_id}', 1)" title="I don't understand this at all">⭐</button>
+      <button class="star-btn" data-rating="2" onclick="rateTopic('{st_id}', 2)" title="I understand a little">⭐</button>
+      <button class="star-btn" data-rating="3" onclick="rateTopic('{st_id}', 3)" title="I understand about half of it">⭐</button>
+      <button class="star-btn" data-rating="4" onclick="rateTopic('{st_id}', 4)" title="I mostly understand it">⭐</button>
+      <button class="star-btn" data-rating="5" onclick="rateTopic('{st_id}', 5)" title="I understand it perfectly">⭐</button>
+    </div>
+    <div class="star-labels">
+      <span>Don't get it</span>
+      <span>Getting there</span>
+      <span>Nailed it</span>
+    </div>
+    <div class="star-feedback" id="starfb-{st_id}"></div>
+  </div>
+</div>"""
+        _rd_star_msgs = _json.dumps(RD_STAR_MESSAGES, ensure_ascii=False)
+        star_js = f"""
+const STAR_MESSAGES_{st_id.replace('-','_')} = {_rd_star_msgs};
+function rateTopic(stId, rating) {{
+  document.querySelectorAll('#stars-' + stId + ' .star-btn').forEach((s, i) => s.classList.toggle('star-active', i < rating));
+  const fb = document.getElementById('starfb-' + stId);
+  fb.innerHTML = STAR_MESSAGES_{st_id.replace('-','_')}[rating - 1];
+  fb.style.display = 'block';
+  try {{ localStorage.setItem('star_' + stId, rating); }} catch(e) {{}}
+}}
+try {{
+  const saved = localStorage.getItem('star_{st_id}');
+  if (saved) rateTopic('{st_id}', parseInt(saved));
+}} catch(e) {{}}
+"""
+        chat_section = f"""<div class="section">
+  <div class="rd-sec-kicker">Stuck · ask Mr Badmus AI</div>
+  <div class="card ask-card">
+    <p class="ask-lede">Ask about anything on this page.</p>
+    <p class="ask-sub">FIFA for calculations; Higher (⭐) and Triple (🔬) content flagged clearly.</p>
+    <button data-open-chat class="btn-primary">💬 Ask Mr Badmus AI</button>
+  </div>
+</div>"""
 
     body = f"""
 <div class="topic-header">
@@ -4244,13 +4509,13 @@ html { background: var(--surface-page); }
   <div class="meta-row">
     <span class="spec-pill">Spec {st['spec']}</span>
     <span class="tier-pill">{tier_badge}</span>
-  </div>
+  </div>{mode_chooser_html}
 </div>
 
 <div class="content-area">
 {hero_html}
-  <div class="section">
-    <div class="section-title">📖 In-Depth Theory</div>
+  {theory_sec_open}
+    {theory_title_html}
     {theory_html}
     {mistake_html}
   </div>
@@ -4281,6 +4546,10 @@ html {{ background: var(--bg); }}
     # For every other page matching_js is non-empty, so this is byte-identical
     # to the previous unconditional `<script>{matching_js}</script>`.
     matching_script = f"<script>{matching_js}</script>" if matching_js else ""
+    # Same guard for the quiz engine: .rd pages null quiz_js (the engine ships
+    # as /shared/quiz.js, Phase 0d); every other page keeps the inline blob and
+    # stays byte-identical.
+    quiz_script = f"<script>{quiz_js}</script>" if quiz_js else ""
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -4299,7 +4568,7 @@ html {{ background: var(--bg); }}
   {chat_html()}
   <script src="/shared/mrbadmus.v2.js"></script>
   <script>MrBadmus.init({{subject:'{subject}',topic:'{st["title"]} ({st["spec"]})'}});</script>
-  <script>{quiz_js}</script>
+  {quiz_script}
   {matching_script}
   <script>{star_js}</script>
   {hero_scripts}

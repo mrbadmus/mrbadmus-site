@@ -181,6 +181,15 @@
     var molecules = config.molecules || [];
     if (!molecules.length) return;
     var mi = 0, step = 0;
+    // Phase 1a (MRB-133): optional predict gate on reaching the reveal step
+    var gate = (config.predict && window.MrbPredictWrapper)
+      ? MrbPredictWrapper.create(config.predict) : null;
+    function goTo(k) {
+      var key = 'step:' + k;
+      if (k > step && gate && !gate.allow(key)) return;
+      step = k; render();
+      if (gate) gate.resolveIf(key);
+    }
 
     var root = el('div', { className: 'mrb-dcs' });
     root.appendChild(el('div', { className: 'mrb-dcs__head' }, [
@@ -205,7 +214,7 @@
       on: { click: function () { step = Math.max(0, step - 1); render(); } } }, '← Back');
     var dotsWrap = el('div', { className: 'mrb-dcs__dots' });
     var nextBtn = el('button', { className: 'mrb-dcs__nav mrb-dcs__nav--next', attrs: { type: 'button' },
-      on: { click: function () { var last = molecules[mi].steps.length - 1; step = Math.min(last, step + 1); render(); } } }, 'Next →');
+      on: { click: function () { var last = molecules[mi].steps.length - 1; goTo(Math.min(last, step + 1)); } } }, 'Next →');
     var count = el('span', { className: 'mrb-dcs__count' });
     var ctrls = el('div', { className: 'mrb-dcs__ctrls' }, [backBtn, dotsWrap, nextBtn, count]);
 
@@ -216,6 +225,7 @@
 
     var result = el('div', { className: 'mrb-dcs__result' });
 
+    if (gate) root.appendChild(gate.el);   // Phase 1a: wager row above the viz
     root.appendChild(vizWrap);
     root.appendChild(ctrls);
     root.appendChild(stepBox);
@@ -228,6 +238,12 @@
       // viz
       vizWrap.innerHTML = '';
       vizWrap.appendChild(buildViz(m, stp.phase));
+      // Phase 0c (MRB-132): name the dot-and-cross diagram per molecule + step
+      // so screen-reader users get the same story the animation tells.
+      vizWrap.setAttribute('role', 'img');
+      vizWrap.setAttribute('aria-label', 'Dot-and-cross diagram: ' + (m.name || '')
+        + '. Step ' + (step + 1) + ' of ' + steps.length + ': ' + (stp.title || '')
+        + '. ' + (stp.caption || ''));
       // picker active
       tabEls.forEach(function (t, k) { t.classList.toggle('is-active', k === mi); });
       // nav
@@ -239,7 +255,7 @@
       steps.forEach(function (_, k) {
         var d = el('button', { className: 'mrb-dcs__dot' + (k <= step ? ' is-done' : ''),
           style: { width: k === step ? '26px' : '10px' }, attrs: { type: 'button', 'aria-label': 'Go to step ' + (k + 1) },
-          on: { click: function () { step = k; render(); } } });
+          on: { click: function () { goTo(k); } } });
         dotsWrap.appendChild(d);
       });
       count.textContent = 'STEP ' + (step + 1) + ' / ' + steps.length;

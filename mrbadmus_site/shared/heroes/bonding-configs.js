@@ -21,6 +21,14 @@
   bonding['giant-covalent-structures'] = {
     emoji: '💎', title: 'Diamond vs Graphite', subtitle: 'same carbon, opposite properties',
     strap: 'Same element — carbon. The properties come out opposite only because the giant covalent structure is arranged differently.',
+    /* Phase 1a predict gate (MRB-133) — grounded in frozen theory: graphite's
+       delocalised 4th electron vs diamond's four locked bonds. */
+    predict: {
+      question: 'Graphite is pure carbon, just like diamond. Will it conduct electricity?',
+      options: ['Yes — it conducts', 'No — carbon never conducts'],
+      correctIndex: 0,
+      revealsOn: 'state:graphite',
+    },
     states: [
       {
         key: 'diamond', label: '💎 Diamond', emoji: '💎', tone: 'accent',
@@ -135,6 +143,14 @@
   bonding['metallic-bonding'] = {
     emoji: '⚡', title: 'The Electron Sea', subtitle: 'what the delocalised electrons actually do',
     strap: 'Metallic bond = the strong electrostatic attraction between the positive metal ions and the sea of delocalised electrons — NOT an attraction between atoms.',
+    /* Phase 1a predict gate — grounded in frozen theory: conduction needs
+       delocalised (free-moving) electrons. */
+    predict: {
+      question: 'Imagine every outer electron stayed stuck to its own atom. Would the metal still conduct?',
+      options: ['Yes — metals always conduct', 'No — nothing free to carry charge'],
+      correctIndex: 1,
+      revealsOn: 'state:off',
+    },
     states: [
       {
         key: 'on', label: '🌊 Electron sea ON', emoji: '🌊', tone: 'good',
@@ -176,6 +192,14 @@
     emoji: '🔩', title: 'Why Alloys Are Harder', subtitle: 'apply a force and watch the layers',
     strap: 'A metal is a giant lattice of positive ions in a sea of delocalised electrons. Pure metals are soft because the layers slide; alloys are harder because different-sized atoms stop the layers sliding.',
     force: { label: '🔨 Apply force', undoLabel: '↩ Release force' },
+    /* Phase 1a predict gate — the council's wager (§4.11): commit before the
+       first force press. Grounded in frozen theory: layer sliding vs disruption. */
+    predict: {
+      question: 'An alloy mixes different-sized atoms into the lattice. Under the same force, will it bend more or less than the pure metal?',
+      options: ['More — the gaps make it floppier', 'Less — the layers can no longer slide'],
+      correctIndex: 1,
+      revealsOn: 'force',
+    },
     states: [
       {
         key: 'pure', label: '⬜ Pure metal', emoji: '⬜', tone: 'neutral',
@@ -224,6 +248,15 @@
      ========================================================== */
   bonding['ionic-bonding'] = {
     emoji: '⚛️', title: 'Electron Transfer',
+    /* Phase 1a predict gate — gates the NaCl transfer step (step index 2).
+       Grounded in frozen theory: transfer, not sharing; distractors mirror the
+       frozen quiz's transfer-vs-share confusion. */
+    predict: {
+      question: 'Sodium’s single outer electron is highlighted. What happens to it?',
+      options: ['It is shared between Na and Cl', 'It transfers completely to chlorine'],
+      correctIndex: 1,
+      revealsOn: 'step:2',
+    },
     molecules: [
       {
         name: 'NaCl', mode: 'transfer', layout: 'di',
@@ -273,6 +306,14 @@
      ========================================================== */
   bonding['covalent-bonding'] = {
     emoji: '⚛️', title: 'Sharing a Pair',
+    /* Phase 1a predict gate — gates the H₂ shared-pair step (step index 2).
+       Grounded in frozen theory: non-metals share; neither can give away. */
+    predict: {
+      question: 'Two hydrogen atoms each need one more electron. How do both end up with a full shell?',
+      options: ['One gives its electron to the other', 'They share a pair of electrons'],
+      correctIndex: 1,
+      revealsOn: 'step:2',
+    },
     molecules: [
       {
         name: 'H₂', mode: 'share', layout: 'di',
@@ -319,6 +360,14 @@
      ========================================================== */
   bonding['ionic-compounds'] = {
     emoji: '🔬', title: 'Ionic Lattice Lab', subtitle: 'why can it conduct… and why does it shatter?',
+    /* Phase 1a predict gate — gates the molten reveal. Grounded in frozen
+       theory + wrong-exp bank: conduction = mobile IONS, never free electrons. */
+    predict: {
+      question: 'Solid sodium chloride does not conduct. What happens when it melts?',
+      options: ['Still no conduction — same substance', 'Conducts — the ions are free to move', 'Conducts — melting frees electrons'],
+      correctIndex: 1,
+      revealsOn: 'state:molten',
+    },
     ions: { pos: { glyph: '+' }, neg: { glyph: '−' } },
     grid: { cols: 7, rows: 5 },
     states: [

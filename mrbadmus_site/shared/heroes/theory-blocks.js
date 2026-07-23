@@ -50,6 +50,8 @@
       '.mrb-tb-mistake__fix-hd{display:flex;align-items:center;gap:8px;margin-bottom:6px}',
       '.mrb-tb-mistake__fix-hd b{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(15px * var(--rd-fs-scale, 1));color:var(--accent-deep,#B5341A)}',
       '.mrb-tb-mistake__fix p{margin:0;font-size: calc(14.5px * var(--rd-fs-scale, 1));line-height:1.65;color:#3A2A26}',
+      '.mrb-tb-mistake__reset{margin-top:12px;font-family:var(--font-display,sans-serif);font-weight:600;font-size: calc(13.5px * var(--rd-fs-scale, 1));color:#4A4238;background:var(--surface-panel,#FFFDF8);border:1px solid #EBBCB1;border-radius:10px;padding:9px 16px;cursor:pointer}',
+      '.mrb-tb-mistake__reset:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
       /* ---- compare-reveal ---- */
       '.mrb-tb-reveal__title{font-family:var(--font-mono,monospace);font-size: calc(13px * var(--rd-fs-scale, 1));font-weight:600;color:#675F56;margin-bottom:10px}',
       '.mrb-tb-reveal__rows{display:flex;flex-direction:column;gap:9px}',
@@ -80,34 +82,43 @@
     return n;
   }
 
-  /* ================= mistake-check ================= */
-  /* One state var: selected index (set once). Click → reveal fix. */
+  /* ================= mistake-check (v2 — MRB-133 Phase 1b) ================= */
+  /* v1 was one-shot: one claim, one click, dead forever — wrong shape for a
+     revision site. v2 adds a reset button and a multi-item bank:
+       old config  {claim, prompt, options, fix}          → migrates unchanged
+       bank config {items: [{claim, prompt, options, fix}, …]}
+     Reset re-arms the current claim; with a bank it also advances to the
+     next claim in sequence. */
   function initMistakeCheck(container, config) {
     if (!container || !config) return;
     ensureStyles();
-    var options = config.options || [];
+    var items = config.items && config.items.length ? config.items : [config];
+    var current = 0;
     var selected = null;
 
     var root = el('div', { className: 'mrb-tb mrb-tb-mistake' });
 
     function render() {
+      var item = items[current];
+      var options = item.options || [];
       root.innerHTML = '';
       var answered = selected !== null;
-      if (answered) root.classList.add('is-answered');
+      root.classList.toggle('is-answered', answered);
 
       root.appendChild(el('div', { className: 'mrb-tb-mistake__hd' }, [
         el('span', { style: { fontSize: 'calc(20px * var(--rd-fs-scale, 1))' } }, '⚠️'),
         el('b', null, 'Common Mistake'),
-        el('span', { className: 'mrb-tb-mistake__tag' }, 'SPOT THE ERROR'),
+        el('span', { className: 'mrb-tb-mistake__tag' },
+          'SPOT THE ERROR' + (items.length > 1 ? ' · ' + (current + 1) + '/' + items.length : '')),
       ]));
 
       root.appendChild(el('div', { className: 'mrb-tb-mistake__claim' }, [
         el('div', { className: 'mrb-tb-mistake__claim-lbl' }, 'A STUDENT WROTE:'),
-        el('div', { className: 'mrb-tb-mistake__claim-txt' }, config.claim || ''),
+        el('div', { className: 'mrb-tb-mistake__claim-txt' }, item.claim || ''),
       ]));
 
       root.appendChild(el('div', { className: 'mrb-tb-mistake__prompt' },
-        config.prompt || 'What is the flaw in this reasoning?'));
+        item.prompt || 'What is the flaw in this reasoning?'));
 
       var opts = options.map(function (o, idx) {
         var cls = 'mrb-tb-mistake__opt';
@@ -116,10 +127,12 @@
           else if (idx === selected) cls += ' is-wrong';
           else cls += ' is-dim';
         }
-        return el('button', {
+        var b = el('button', {
           className: cls,
           on: { click: function () { if (selected === null) { selected = idx; render(); } } },
         }, o.text);
+        b.type = 'button';
+        return b;
       });
       root.appendChild(el('div', { className: 'mrb-tb-mistake__opts' }, opts));
 
@@ -129,8 +142,18 @@
             el('span', { style: { fontSize: 'calc(16px * var(--rd-fs-scale, 1))' } }, '✅'),
             el('b', null, 'The correction'),
           ]),
-          el('p', null, config.fix || ''),
+          el('p', null, item.fix || ''),
         ]));
+        var resetBtn = el('button', {
+          className: 'mrb-tb-mistake__reset',
+          on: { click: function () {
+            if (items.length > 1) current = (current + 1) % items.length;
+            selected = null;
+            render();
+          } },
+        }, items.length > 1 ? '↻ Try the next claim' : '↻ Reset — spot it again later');
+        resetBtn.type = 'button';
+        root.appendChild(resetBtn);
       }
     }
 
