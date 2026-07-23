@@ -75,7 +75,11 @@
       '.mrb-bins__grid{display:grid;gap:16px}',
       '.mrb-bins__bin{border-radius:16px;padding:16px;min-height:120px;transition:all .15s;cursor:pointer}',
       '.mrb-bins__bin.is-target{box-shadow:0 0 0 3px rgba(224,83,31,.28)}',
-      '.mrb-bins__bin-head{display:flex;align-items:center;gap:8px;margin-bottom:12px}',
+      /* Phase 0b (MRB-132): the bin head is a real <button> so a keyboard user
+         can place the selected card with Enter/Space. Styled as the old head row. */
+      '.mrb-bins__bin-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;width:100%;background:transparent;border:none;padding:0;cursor:pointer;text-align:left}',
+      '.mrb-bins__bin-head:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:3px;border-radius:8px}',
+      '.mrb-bins__card:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
       '.mrb-bins__bin-title{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(16px * var(--rd-fs-scale, 1))}',
       '.mrb-bins__placed{display:flex;flex-direction:column;gap:8px}',
       '.mrb-bins__bin-hint{font-size: calc(13.5px * var(--rd-fs-scale, 1))}',
@@ -84,6 +88,10 @@
       '.mrb-bins__card--placed{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%}',
       '.mrb-bins__mark{font-weight:700;margin-left:8px}',
       '.mrb-bins__actions{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}',
+      /* Phase 1f (MRB-133): content-specific Examiner Tip surfaces in the
+         success state (full marks), amber like the examiner-tip block */
+      '.mrb-bins__tip{margin-top:14px;background:#FEF6E0;border-left:4px solid #E0A21A;border-radius:12px;padding:14px 18px;font-size: calc(14px * var(--rd-fs-scale, 1));line-height:1.55;color:#4A3A12}',
+      '.mrb-bins__tip b{font-family:var(--font-display,sans-serif);color:#8A5E0A}',
       '.mrb-bins__check{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(15px * var(--rd-fs-scale, 1));color:#fff;background:var(--accent-deep,#B5341A);border:none;padding:13px 24px;border-radius:12px;cursor:pointer;box-shadow:0 8px 20px -8px rgba(181,52,26,.7)}',
       '.mrb-bins__reset{font-family:var(--font-display,sans-serif);font-weight:600;font-size: calc(15px * var(--rd-fs-scale, 1));color:#4A4238;background:var(--surface-inset,#EFE7D8);border:1px solid var(--border,#E4DCCB);padding:13px 24px;border-radius:12px;cursor:pointer}',
       '.mrb-bins__strap{padding:13px 24px;background:var(--surface-dark,#1A1714);font-family:var(--font-mono,monospace);font-size: calc(12.5px * var(--rd-fs-scale, 1));line-height:1.5;color:#EAE3D6}',
@@ -166,8 +174,9 @@
       placed = {}; selected = null; checked = false; order = shuffle(cards.map(function (c) { return c.id; })); render();
     } } }, '↻ Reset');
     var actions = el('div', { className: 'mrb-bins__actions' }, [checkBtn, resetBtn]);
+    var tipSlot = el('div', null);
 
-    var body = el('div', { className: 'mrb-bins__body' }, [topRow, tray, grid, actions]);
+    var body = el('div', { className: 'mrb-bins__body' }, [topRow, tray, grid, actions, tipSlot]);
 
     root.appendChild(head);
     root.appendChild(body);
@@ -178,30 +187,42 @@
     var binEls = bins.map(function (b) {
       var t = TINT[b.tint] || TINT.warm;
       var titleSpan = el('span', { className: 'mrb-bins__bin-title', style: { color: t.head } }, b.label || b.key);
-      var headRow = el('div', { className: 'mrb-bins__bin-head' }, [
+      // Phase 0b (MRB-132): the head row is a real <button> (Enter/Space place
+      // the selected card); the bin background stays a pointer-only bonus target.
+      var headBtn = el('button', { className: 'mrb-bins__bin-head' }, [
         b.emoji ? el('span', { style: { fontSize: 'calc(18px * var(--rd-fs-scale, 1))' } }, b.emoji) : null,
         titleSpan,
       ]);
+      headBtn.type = 'button';
+      headBtn.setAttribute('aria-pressed', 'false');
+      headBtn.addEventListener('click', function () {
+        if (!selected) return;
+        placed[selected] = b.key; selected = null; checked = false; render();
+      });
       var placedWrap = el('div', { className: 'mrb-bins__placed' });
       var binBox = el('div', {
         className: 'mrb-bins__bin',
         style: { background: t.fill, border: '2px dashed ' + t.border },
         on: { click: function (e) {
-          // clicking the bin background (not a placed card) drops the selected card
-          if (e.target.closest('.mrb-bins__card')) return;
+          // clicking the bin background (not a placed card / the head button)
+          // drops the selected card
+          if (e.target.closest('.mrb-bins__card') || e.target.closest('.mrb-bins__bin-head')) return;
           if (!selected) return;
           placed[selected] = b.key; selected = null; checked = false; render();
         } },
-      }, [headRow, placedWrap]);
-      return { def: b, tint: t, box: binBox, placedWrap: placedWrap };
+      }, [headBtn, placedWrap]);
+      return { def: b, tint: t, box: binBox, headBtn: headBtn, placedWrap: placedWrap };
     });
     binEls.forEach(function (be) { grid.appendChild(be.box); });
 
     function trayCard(c) {
-      return el('button', {
+      var btn = el('button', {
         className: 'mrb-bins__card' + (selected === c.id ? ' is-sel' : ''),
         on: { click: function () { selected = selected === c.id ? null : c.id; checked = false; render(); } },
       }, c.text);
+      btn.type = 'button';
+      btn.setAttribute('aria-pressed', selected === c.id ? 'true' : 'false');
+      return btn;
     }
 
     function placedCard(c) {
@@ -213,7 +234,7 @@
         style.color = ok ? 'var(--ok,#2E6B3A)' : 'var(--err,#A83824)';
         mark = ok ? '✓' : '✕';
       }
-      return el('button', {
+      var btn = el('button', {
         className: 'mrb-bins__card mrb-bins__card--placed',
         style: style,
         on: { click: function () { delete placed[c.id]; checked = false; selected = null; render(); } },
@@ -221,6 +242,9 @@
         el('span', null, c.text),
         mark ? el('span', { className: 'mrb-bins__mark' }, mark) : null,
       ]);
+      btn.type = 'button';
+      btn.setAttribute('aria-label', 'Send back to the tray: ' + c.text);
+      return btn;
     }
 
     function render() {
@@ -233,6 +257,11 @@
       // bins
       binEls.forEach(function (be) {
         be.box.classList.toggle('is-target', !!selected);
+        // Phase 0b: reflect "armed as drop target" to AT + name the action
+        be.headBtn.setAttribute('aria-pressed', selected ? 'true' : 'false');
+        be.headBtn.setAttribute('aria-label', selected
+          ? 'Place the selected card in ' + (be.def.label || be.def.key)
+          : (be.def.label || be.def.key) + ' bin — select a card first');
         be.placedWrap.innerHTML = '';
         var here = cards.filter(function (c) { return placed[c.id] === be.def.key; });
         if (!here.length) {
@@ -248,14 +277,31 @@
       var sorted = total - order.filter(function (id) { return !(id in placed); }).length;
       if (checked) {
         var correct = cards.filter(function (c) { return placed[c.id] === c.bin; }).length;
-        scorePill.textContent = correct + ' / ' + total + ' correct' + (correct === total ? '  🎉' : '');
         var win = correct === total;
+        scorePill.textContent = correct + ' / ' + total + ' correct';
         scorePill.style.color = win ? 'var(--ok,#2E6B3A)' : 'var(--err,#A83824)';
         scorePill.style.background = win ? 'var(--ok-bg,#E7F3EA)' : 'var(--err-bg,#FBE4DE)';
+        // Phase 0e: persist the best sort on this device (never punish)
+        try {
+          if (config.stId) {
+            var bk = 'lab_best_' + config.stId;
+            var prev = parseInt(localStorage.getItem(bk), 10);
+            if (isNaN(prev) || correct > prev) localStorage.setItem(bk, String(correct));
+          }
+        } catch (e) {}
+        // Phase 1f: content-specific Examiner Tip in the success state
+        tipSlot.innerHTML = '';
+        if (win && config.successTip) {
+          var tip = el('div', { className: 'mrb-bins__tip' });
+          tip.appendChild(el('b', null, 'Examiner Tip · '));
+          tip.appendChild(document.createTextNode(config.successTip));
+          tipSlot.appendChild(tip);
+        }
       } else {
         scorePill.textContent = sorted === total ? 'Ready to check' : (sorted + ' / ' + total + ' sorted');
         scorePill.style.color = 'var(--ink-faint,#8A8074)';
         scorePill.style.background = 'var(--surface-inset,#EFE7D8)';
+        tipSlot.innerHTML = '';
       }
     }
 

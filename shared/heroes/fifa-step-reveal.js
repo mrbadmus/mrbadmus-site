@@ -61,6 +61,9 @@
     s.textContent = [
       '@keyframes mrbRevealUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}',
       '@keyframes mrbPopIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}',
+      /* Phase 0c (MRB-132): entrance animations are one-shot, but gate them for
+         reduced-motion anyway — content appears instantly with no transform. */
+      '@media (prefers-reduced-motion: reduce){.mrb-fifa__step--reveal,.mrb-fifa__fb,.mrb-fifa__success{animation:none}}',
       '.mrb-fifa,.mrb-fifa *{box-sizing:border-box}',
       '.mrb-fifa{font-family:var(--font-body,system-ui,sans-serif);background:var(--surface-panel,#FFFDF8);border:1px solid var(--border,#E4DCCB);border-radius:var(--r-panel,22px);box-shadow:var(--shadow-panel,0 22px 50px -35px rgba(60,30,20,.5));overflow:hidden}',
       '.mrb-fifa__head{display:flex;align-items:center;gap:10px;padding:16px 24px;border-bottom:1px solid var(--surface-inset,#EFE7D8);flex-wrap:wrap}',
