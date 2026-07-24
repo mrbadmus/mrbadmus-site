@@ -4,6 +4,45 @@ This file gives Claude Code (the AI assistant) everything it needs to understand
 
 ---
 
+## AUTONOMY CONTRACT — applies to every session, overrides any cautious instinct
+
+Default: ACT. You have authority to investigate, decide, fix, and continue. When something is
+wrong, missing, or unexpected, your first move is to SOLVE IT — dig for the root cause, fix it
+properly, verify the fix, note it, carry on. Do not stop to ask.
+
+A stop costs a full human round trip and Mide's attention. Treat it as expensive. Never use a
+stop as a substitute for thinking harder.
+
+### Stop ONLY for these four
+1. **Irreversible loss** — an action that would destroy data, history, or work that cannot be
+   recovered (force-push, dropping a table, deleting uncommitted work, wiping an OAuth token).
+2. **Science or content accuracy** — whether GCSE science is correct, or whether AQA would credit
+   a given answer. Mide is examiner-qualified; this is his sole gate.
+3. **Production deploy** — the push itself. You may commit freely; Mide pushes.
+4. **Genuinely blocked** — you have tried at least two substantively different approaches and
+   cannot proceed. Say what you tried and why each failed.
+
+### Everything else, you handle
+- Missing prerequisite → create it, use it, remove it if it was temporary
+- A test can't run as specified → find an equivalent that proves the same property, and say so
+- Unexpected state → investigate, explain it in the report, proceed
+- Unspecified design detail → choose what's most consistent with the existing system, state the choice
+- Small adjacent defect spotted in passing → fix it, note it
+- Ambiguous scope → take the reading that best serves the student, state it
+- Something in the prompt is wrong or impossible → do the right thing instead, and say what you changed
+
+### Deviations go in the report, not mid-run
+Where you'd have stopped, write one line at the end instead:
+"Deviation: [what was unexpected] → [what I did] → [why]."
+Mide reads deviations once, at the end, alongside everything else.
+
+### The judgement standard
+Ask: "would a competent senior engineer with full context stop here, or just handle it?" If they'd
+handle it, handle it. Reserve interruption for things that are genuinely Mide's call, not things
+that are merely uncertain.
+
+---
+
 ## What is MrBadmusAI?
 
 MrBadmusAI is a free GCSE Science revision website for UK secondary school students. It covers all three AQA sciences — Physics (spec 8463), Chemistry (spec 8462), and Biology (spec 8461) — at both Foundation and Higher tier, across Combined Science and Triple Science pathways.
