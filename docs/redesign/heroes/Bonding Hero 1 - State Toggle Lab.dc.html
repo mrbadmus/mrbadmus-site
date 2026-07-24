@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes ionJiggle { 0%,100% { transform: translate(0,0); } 25% { transform: translate(3px,-2px); } 50% { transform: translate(-2px,3px); } 75% { transform: translate(2px,2px); } }
+  @keyframes bulbGlow { 0%,100% { filter: drop-shadow(0 0 6px #F4B74088); } 50% { filter: drop-shadow(0 0 16px #F4B740cc); } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 01</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">State Toggle Lab</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">Extracted from Ionic Compounds. All content comes from <span style="font-family:'IBM Plex Mono',monospace; font-size:13px;">CONFIG</span> — the same component runs twice below with two different configs. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1.5fr .9fr;">
+          <div style="padding:16px 18px; background:linear-gradient(180deg,#FFFDF8,#FBF4EF); overflow-x:auto; border-right:1px solid #EFE7D8;">{{ ins.viz }}</div>
+          <div style="padding:20px 22px; display:flex; flex-direction:column; gap:10px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">STATE</div>
+            <sc-for list="{{ ins.stateBtns }}" as="b" hint-placeholder-count="3">
+              <button onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+            </sc-for>
+            <div style="height:1px; background:#EFE7D8; margin:6px 0;"></div>
+            <div style="display:flex; align-items:center; gap:12px; background:#F7F2E8; border-radius:12px; padding:12px 14px;">
+              <span style="font-size:30px; animation:{{ ins.bulbAnim }};">💡</span>
+              <div>
+                <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:{{ ins.verdictColor }};">{{ ins.verdictTitle }}</div>
+                <div style="font-size:12px; color:#8A8074; line-height:1.35;">{{ ins.verdictSub }}</div>
+              </div>
+            </div>
+            <sc-if value="{{ ins.hasForce }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ ins.forceAction }}" style="{{ ins.forceBtnStyle }}">{{ ins.forceLabel }}</button>
+            </sc-if>
+          </div>
+        </div>
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#EAE3D6;">{{ ins.hint }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 01 — STATE TOGGLE LAB
+   A lattice of alternating +/− ions with a state toggle; each
+   state changes the particle arrangement and a conduct verdict.
+
+   CONFIG SCHEMA (one object per page; CONFIGS below holds two
+   to prove parametrisation):
+   {
+     configLabel: string   // demo label only, not rendered on real pages
+     emoji: string         // hero header icon
+     title: string         // hero header title
+     subtitle: string      // mono strapline after the title
+     ions: {
+       pos: { glyph: string },   // text inside positive ions, e.g. '+' or 'Mg²⁺'
+       neg: { glyph: string }    // text inside negative ions
+     },
+     grid: { cols: int, rows: int },   // lattice dimensions
+     states: [ {
+       key: string,        // unique id
+       label: string,      // toggle button label (emoji + text)
+       inToggle: bool?,    // default true; false = reachable only via force button
+       arrangement: 'lattice' | 'jiggle' | 'dissolved' | 'sheared',
+         // lattice   = fixed regular grid
+         // jiggle    = molten: jittered positions + jiggle animation
+         // dissolved = spread out + jiggle + water molecules overlaid
+         // sheared   = bottom rows slid one step; crack line + 'repel!' pill
+       verdict: { glow: bool, title: string, sub: string },  // bulb panel
+       hint: string        // dark mono bar text for this state
+     } ],
+     force: null | {       // optional 'apply force' brittleness demo
+       from: string,       // state key the button is active in
+       to: string,         // sheared state key it jumps to
+       label: string, undoLabel: string
+     }
+   }
+   Interaction logic (arrangement model + renderer) is kept in
+   pure methods (latticeModel, buildViz) separate from the
+   template binding in renderVals(), so it ports cleanly.
+============================================================ */
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — SODIUM CHLORIDE (NaCl), 4 STATES + FORCE DEMO',
+    emoji: '🔬', title: 'Giant Ionic Lattice Lab', subtitle: 'why can it conduct… and why does it shatter?',
+    ions: { pos: { glyph: '+' }, neg: { glyph: '−' } },
+    grid: { cols: 7, rows: 5 },
+    states: [
+      { key: 'solid', label: '🧊 Solid', arrangement: 'lattice',
+        verdict: { glow: false, title: 'No conduction ✗', sub: 'Ions are fixed in the lattice.' },
+        hint: 'Solid lattice: ions locked in a regular 3D pattern. Strong forces in all directions → high melting point, and no conduction (nothing can move).' },
+      { key: 'molten', label: '🔥 Molten', arrangement: 'jiggle',
+        verdict: { glow: true, title: 'Conducts ✓', sub: 'Mobile ions carry the charge.' },
+        hint: 'Molten: the lattice has broken down — ions are now free to move and carry charge → it conducts.' },
+      { key: 'solution', label: '💧 In solution', arrangement: 'dissolved',
+        verdict: { glow: true, title: 'Conducts ✓', sub: 'Mobile ions carry the charge.' },
+        hint: 'Dissolved: water molecules surround the ions (hydration) and spread them out. Free-moving ions → the solution conducts.' },
+      { key: 'shatter', label: '💥 Shattered', inToggle: false, arrangement: 'sheared',
+        verdict: { glow: false, title: 'No conduction ✗', sub: 'Solid crystal — ions still fixed.' },
+        hint: 'A force shifted the layers → like charges (+ above +) now sit together and repel strongly → the crystal shatters instead of bending. This is why ionic solids are brittle.' },
+    ],
+    force: { from: 'solid', to: 'shatter', label: '💥 Apply force (test brittleness)', undoLabel: '↩ Un-shatter' },
+  },
+  {
+    configLabel: 'CONFIG B — MAGNESIUM OXIDE (MgO), 2 STATES, ION SYMBOLS, NO FORCE DEMO',
+    emoji: '🧲', title: 'Magnesium Oxide Lattice Lab', subtitle: '2+ and 2− charges → even stronger attraction',
+    ions: { pos: { glyph: 'Mg²⁺' }, neg: { glyph: 'O²⁻' } },
+    grid: { cols: 6, rows: 4 },
+    states: [
+      { key: 'solid', label: '🧊 Solid', arrangement: 'lattice',
+        verdict: { glow: false, title: 'No conduction ✗', sub: 'Ions fixed — double charges grip harder.' },
+        hint: 'Mg²⁺ and O²⁻ carry double charges → electrostatic forces are much stronger than in NaCl. MgO melts at 2852 °C (NaCl: 801 °C).' },
+      { key: 'molten', label: '🔥 Molten', arrangement: 'jiggle',
+        verdict: { glow: true, title: 'Conducts ✓', sub: 'Free Mg²⁺ and O²⁻ ions carry charge.' },
+        hint: 'Molten MgO: it took a huge amount of energy to get here, but the free ions now conduct — this is how magnesium is refined by electrolysis.' },
+    ],
+    force: null,
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.STEP = 54; this.ION = 40;
+    // stable random jitter per instance
+    this.jits = CONFIGS.map((c, ci) => {
+      const jit = []; let seed = 7 + ci * 31;
+      const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+      for (let i = 0; i < c.grid.cols * c.grid.rows; i++) jit.push({ dx: (rnd() - 0.5) * 16, dy: (rnd() - 0.5) * 16, dur: 1 + rnd() * 0.8, del: rnd() * -2 });
+      return jit;
+    });
+    this.state = { modes: CONFIGS.map(c => c.states[0].key) };
+  }
+
+  setMode(ci, key) {
+    const modes = this.state.modes.slice(); modes[ci] = key; this.setState({ modes });
+  }
+
+  /* --- pure model: where each ion sits for a given arrangement --- */
+  latticeModel(config, arrangement, jit) {
+    const S = this.STEP, C = config.grid.cols, R = config.grid.rows;
+    const padL = 30, padT = 22;
+    const spread = arrangement === 'dissolved' ? 1.18 : 1;
+    const ions = [];
+    for (let r = 0; r < R; r++) for (let cc = 0; cc < C; cc++) {
+      const i = r * C + cc;
+      let x = padL + cc * S * spread, y = padT + r * S * spread, anim = false;
+      const j = jit[i];
+      if (arrangement === 'jiggle' || arrangement === 'dissolved') { x += j.dx; y += j.dy; anim = true; }
+      if (arrangement === 'sheared' && r >= Math.floor(R * 0.6)) { x += S; y += 14; }
+      ions.push({ i, pos: (r + cc) % 2 === 0, x, y, anim, j });
+    }
+    const W = padL * 2 + (C - 1) * S * 1.18 + this.ION;
+    const H = padT * 2 + (R - 1) * S * 1.18 + this.ION + (arrangement === 'sheared' ? 14 : 0);
+    return { ions, W, H, shearY: padT + Math.floor(R * 0.6) * S - 8 };
+  }
+
+  /* --- renderer: model → elements (separable from template binding) --- */
+  buildViz(config, stateDef, jit) {
+    const h = React.createElement;
+    const m = this.latticeModel(config, stateDef.arrangement, jit);
+    const ION = this.ION;
+    const small = config.ions.pos.glyph.length > 1 || config.ions.neg.glyph.length > 1;
+    const kids = m.ions.map(ion => h('div', { key: 'ion' + ion.i, style: {
+      position: 'absolute', left: ion.x + 'px', top: ion.y + 'px', width: ION + 'px', height: ION + 'px',
+      borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: small ? '12px' : '17px',
+      color: '#fff', background: ion.pos ? 'radial-gradient(circle at 35% 30%,#E0745F,#C0392B)' : 'radial-gradient(circle at 35% 30%,#6B96C9,#2E7DD1)',
+      boxShadow: '0 4px 10px -3px rgba(0,0,0,.35)', transition: 'all .6s cubic-bezier(.4,0,.2,1)',
+      animation: ion.anim ? ('ionJiggle ' + ion.j.dur + 's ease-in-out ' + ion.j.del + 's infinite') : 'none',
+    } }, ion.pos ? config.ions.pos.glyph : config.ions.neg.glyph));
+    if (stateDef.arrangement === 'dissolved') {
+      [[70, 40], [200, 30], [340, 60], [120, 150], [280, 190], [400, 120], [40, 210], [360, 220]].forEach((w, k) =>
+        kids.push(h('div', { key: 'w' + k, style: {
+          position: 'absolute', left: w[0] + 'px', top: w[1] + 'px', width: '15px', height: '15px', borderRadius: '50%',
+          background: 'rgba(120,170,220,.5)', border: '1px solid rgba(90,140,200,.6)', animation: 'ionJiggle ' + (1.2 + k * .1) + 's ease-in-out infinite',
+        } })));
+    }
+    if (stateDef.arrangement === 'sheared') {
+      kids.push(h('div', { key: 'crack', style: { position: 'absolute', left: '0', top: m.shearY + 'px', width: m.W + 'px', height: '3px', background: 'repeating-linear-gradient(90deg,#B5341A 0 10px,transparent 10px 18px)', opacity: .8 } }));
+      kids.push(h('div', { key: 'rep', style: { position: 'absolute', left: (m.W / 2 - 40) + 'px', top: (m.shearY - 24) + 'px', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '13px', color: '#B5341A', background: '#FBE0D6', padding: '3px 10px', borderRadius: '999px', border: '1px solid #F0BBA9' } }, '⚡ repel!'));
+    }
+    return h('div', { style: { position: 'relative', width: m.W + 'px', height: m.H + 'px', margin: '0 auto' } }, kids);
+  }
+
+  renderVals() {
+    const btnBase = { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', textAlign: 'left', cursor: 'pointer', borderRadius: '10px', padding: '11px 14px', transition: 'all .15s' };
+    const instances = CONFIGS.map((config, ci) => {
+      const modeKey = this.state.modes[ci];
+      const stateDef = config.states.find(s => s.key === modeKey) || config.states[0];
+      const stateBtns = config.states.filter(s => s.inToggle !== false).map(s => {
+        const on = modeKey === s.key || (config.force && modeKey === config.force.to && s.key === config.force.from);
+        return { label: s.label, onClick: () => this.setMode(ci, s.key),
+          style: { ...btnBase, color: on ? '#fff' : '#4A4238', background: on ? '#1A1714' : '#EFE7D8', border: '1px solid ' + (on ? '#1A1714' : '#E4DCCB') } };
+      });
+      let hasForce = !!config.force, forceLabel = '', forceBtnStyle = {}, forceAction = null;
+      if (hasForce) {
+        const sheared = modeKey === config.force.to;
+        const canForce = modeKey === config.force.from || sheared;
+        forceLabel = sheared ? config.force.undoLabel : config.force.label;
+        forceBtnStyle = sheared
+          ? { ...btnBase, textAlign: 'center', color: '#B5341A', background: '#FBE0D6', border: '1px solid #F0BBA9' }
+          : { ...btnBase, textAlign: 'center', color: canForce ? '#fff' : '#B0A695', background: canForce ? '#C0392B' : '#EFE7D8', border: canForce ? 'none' : '1px solid #E4DCCB', cursor: canForce ? 'pointer' : 'not-allowed' };
+        forceAction = () => { if (sheared) this.setMode(ci, config.force.from); else if (modeKey === config.force.from) this.setMode(ci, config.force.to); };
+      }
+      return {
+        configLabel: config.configLabel, emoji: config.emoji, title: config.title, subtitle: config.subtitle,
+        viz: this.buildViz(config, stateDef, this.jits[ci]),
+        stateBtns,
+        bulbAnim: stateDef.verdict.glow ? 'bulbGlow 1.6s ease-in-out infinite' : 'none',
+        verdictColor: stateDef.verdict.glow ? '#3E6B47' : '#B5341A',
+        verdictTitle: stateDef.verdict.title, verdictSub: stateDef.verdict.sub,
+        hasForce, forceLabel, forceBtnStyle, forceAction,
+        hint: stateDef.hint,
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>

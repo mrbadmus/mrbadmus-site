@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+</style>
+</helmet>
+
+<div style="max-width:1060px; margin:0 auto; padding:48px 24px 90px;">
+
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING THEORY BLOCK LIBRARY · 00</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:44px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 10px;">Theory Block Library</h1>
+  <p style="font-size:15.5px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 8px;">The canonical vocabulary for the In-Depth Theory section, styled to the <a href="Bonding Tokens + Page Template.dc.html">Locked Tokens</a>. Every page is composed from these nine blocks — <b style="color:#1A1714;">two of them interactive</b> (mistake-check, compare-reveal). Each block renders below <b style="color:#1A1714;">from its CONFIG object</b>, with no hardcoded content, and the schema documented beside it. Live on the exemplar: <a href="Giant Covalent Structures (Chemistry).dc.html">Giant Covalent Structures →</a></p>
+
+  <div style="display:flex; flex-direction:column; gap:6px; background:#F5F1E8; border:1px solid #E4DCCB; border-radius:16px; padding:18px 22px; margin:0 0 20px;">
+    <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A;">Rule 1 — Colour = meaning (hard).</div>
+    <div style="font-size:14px; line-height:1.55; color:#3A322A; max-width:80ch;">Semantic colour <b>only</b> where it encodes real meaning: <b style="color:#3E6B47;">green</b> = conducts / mobile charge / favourable, <b style="color:#B5341A;">red</b> = does not / limitation. A plain fact or property is <b>neutral</b>. Decorative colour teaches a false pattern — never tint for looks.</div>
+    <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; margin-top:6px;">Rule 2 — Pacing (hard).</div>
+    <div style="font-size:14px; line-height:1.55; color:#3A322A; max-width:80ch;">One idea per block, short lines, distinct facts on their own line. If a block runs past ~2 lines of prose, it is two blocks.</div>
+    <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; margin-top:6px;">Rule 3 — Parallel &amp; mistake-first.</div>
+    <div style="font-size:14px; line-height:1.55; color:#3A322A; max-width:80ch;">Compare-cards keep the <b>same rows both sides</b> so the eye scans across; mark the payoff row with <code style="font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#B5341A;">highlightRow</code>. Misconceptions are stated <b>first</b>, then corrected.</div>
+  </div>
+
+  <sc-for list="{{ blocks }}" as="blk" hint-placeholder-count="9">
+    <div style="margin-bottom:46px;">
+      <div style="display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:6px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; color:#B0A695;">{{ blk.num }}</span>
+        <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:22px; color:#1A1714;">{{ blk.name }}</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">{{ blk.job }}</span>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ blk.configLabel }}</div>
+
+      <div style="background:#F5F1E8; border:1px solid #E4DCCB; border-radius:22px; padding:26px 28px;">{{ blk.render }}</div>
+
+      <div style="margin-top:10px; background:#1A1714; border-radius:14px; padding:16px 20px; overflow-x:auto;">
+        <pre style="margin:0; font-family:'IBM Plex Mono',monospace; font-size:11.5px; line-height:1.7; color:#EAE3D6;">{{ blk.schema }}</pre>
+      </div>
+    </div>
+  </sc-for>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   THEORY BLOCK LIBRARY — 9 reusable body blocks (canonical vocab).
+   Every block is a pure renderer: render<Name>(config) → element.
+   All content lives in the demo CONFIGS below; the renderers hold
+   ONLY the locked-token shell + interaction logic. Port each as-is.
+
+   Interactive blocks (mistake-check, compare-reveal) keep their
+   state in the Component and expose ONE toggle each — designed to
+   port cleanly to vanilla JS (click → setState → re-render).
+
+   Shared tokens:
+     display "Space Grotesk"  body "IBM Plex Sans"  mono "IBM Plex Mono"
+     panel #FFFDF8  inset #F7F2E8  border #E4DCCB  ink #1A1714
+     body-ink #2A241E  muted #6B635A  accent-deep #B5341A
+     green #3E6B47 (conducts/favourable)  red #B5341A (does not/limit)
+============================================================ */
+
+/* ---- Rule 1: colour = meaning. tone map shared by feature-cards
+        and the compare-cards highlightRow. ---- */
+const CARD_TONE = {
+  good:    { head: '#3E6B47', bg: '#E7F3EA', border: '#B9DCC1' },  // conducts / favourable
+  limit:   { head: '#B5341A', bg: '#FBE4DE', border: '#EFC0B4' },  // does not / limitation
+  neutral: { head: '#B5341A', bg: '#F7F2E8', border: '#E4DCCB' },  // plain fact / property
+};
+const HL_TONE = {
+  good:    { bg: '#E7F3EA', rule: '#7FB98A', k: '#5A7A60', v: '#3E6B47' },
+  limit:   { bg: '#FBE4DE', rule: '#E0897B', k: '#A85A47', v: '#B5341A' },
+  neutral: { bg: '#F7F2E8', rule: '#D8CFBD', k: '#9A9082', v: '#2A241E' },
+};
+
+const SCHEMAS = {
+  lead: `lead: {
+  text: string        // ONE framing idea, <= 2 rendered lines
+  bold?: string[]     // substrings to embolden (renderer wraps them)
+}`,
+  feature: `featureCards: {
+  cards: [ {
+    emoji: string, title: string,
+    tone: 'good' | 'limit' | 'neutral',   // COLOUR = MEANING:
+      //  good  (green) = conducts / mobile charge / favourable
+      //  limit (red)   = does NOT / limitation / drawback
+      //  neutral       = a plain fact or property  (DEFAULT)
+      // Never tint for decoration. A property is neutral.
+    body: string        // ONE short explanation, <= 2 lines
+  } ]                   // keep the trio the SAME KIND of claim
+}`,
+  compare: `compareCards: {
+  columns: [ 2..3 x {                 // facing columns, equal width
+    emoji, title, accent?,
+    rows: [ { k, v, tone? } ]         // one fact per row, ALIGNED;
+  } ],                                // row i in A faces row i in B
+  highlightRow?: number,              // index of the PAYOFF row — the
+      // one that carries the concept + exam mark. Tinted per each
+      // cell's tone (good=green, limit=red) + a rule above, so the
+      // eye is pulled to the row that actually matters.
+  verdict?: string                    // one-line takeaway strip
+}`,
+  steps: `stepSequence: {
+  steps: [ string ]     // ordered; renderer numbers 1/2/3…
+                        // each step ONE clause, <= 2 lines
+}`,
+  example: `exampleCallout: {
+  emoji: string, title: string,       // e.g. '🧪', 'Example — SiO₂'
+  lines: [ string ]     // one fact per line, NOT a paragraph
+}                       // shell: accent wash + accent spine`,
+  aside: `asideCallout: {
+  title: string,        // the caveat headline ('Not all…')
+  body: string          // <= 2 lines of qualification
+}                       // shell: amber wash + amber spine (locked)`,
+  keynote: `keyNote: {
+  beats: [ {            // ONE idea per beat, own line
+    label: string,      // bold opener, e.g. 'Diamond'
+    text: string
+  } ]                   // shell: locked Key Note gradient + spine`,
+  mistakeCheck: `mistakeCheck: {   // ★ INTERACTIVE — active recall
+  claim: string,        // the misconception, shown FIRST
+  prompt?: string,      // 'What is the flaw?' (default)
+  options: [ { text: string, correct?: boolean } ],
+                        // student picks the flaw before being told
+  fix: string           // the correction, revealed AFTER answering
+}   // logic: 1 state var (selected index). Ports to vanilla JS
+    // as a click handler that sets it once, then reveals fix.`,
+  compareReveal: `compareReveal: {  // ★ INTERACTIVE — for pages with
+  title?: string,       // NO comparison hero
+  items: [ {
+    property: string,   // tap this…
+    cause: string       // …to reveal WHY (the structure reason)
+  } ]
+}   // logic: open/closed flag per item (click to toggle).`,
+};
+
+/* ---- demo configs (content lives here, never in renderers) ---- */
+const DEMO = {
+  lead: {
+    text: 'Some covalent substances are not small molecules at all — they are giant covalent structures: huge networks where every atom is joined to its neighbours by strong covalent bonds.',
+    bold: ['giant covalent structures'],
+  },
+  feature: {
+    cards: [
+      { emoji: '🔥', title: 'Very high melting point', tone: 'neutral', body: 'Breaking millions of strong covalent bonds needs huge energy. (Plain property → neutral.)' },
+      { emoji: '⚡', title: 'Graphite conducts', tone: 'good', body: 'One delocalised electron per carbon carries charge. (Favourable → green.)' },
+      { emoji: '🚫', title: 'Diamond can’t conduct', tone: 'limit', body: 'Every outer electron is locked into a bond. (Limitation → red.)' },
+    ],
+  },
+  compare: {
+    columns: [
+      { emoji: '💎', title: 'Diamond', rows: [
+        { k: 'Bonds per carbon', v: '4 — to four other carbons' },
+        { k: 'Structure', v: 'Rigid 3-D tetrahedral lattice' },
+        { k: 'Melting point', v: 'Very high — must break the whole rigid lattice' },
+        { k: 'Conducts electricity', v: 'No — no free electrons', tone: 'limit' },
+      ] },
+      { emoji: '✏️', title: 'Graphite', rows: [
+        { k: 'Bonds per carbon', v: '3 — one electron left over' },
+        { k: 'Structure', v: 'Flat hexagonal layers' },
+        { k: 'Melting point', v: 'Very high — layer bonds are strong' },
+        { k: 'Conducts electricity', v: 'Yes — 1 delocalised electron per carbon', tone: 'good' },
+      ] },
+    ],
+    highlightRow: 3,
+    verdict: 'Same element. Different structure → opposite properties.',
+  },
+  steps: {
+    steps: [
+      'A force pushes on the graphite crystal.',
+      'Only weak forces hold the layers together — they give way.',
+      'A whole layer slides off → the pencil leaves a mark.',
+    ],
+  },
+  example: {
+    emoji: '🧪', title: 'Example — silicon dioxide (SiO₂)',
+    lines: [
+      'The main compound in sand and quartz.',
+      'Every Si atom bonds to 4 O atoms; every O bridges 2 Si.',
+      'Result: one giant lattice → hard, very high melting point, no conduction.',
+    ],
+  },
+  aside: {
+    title: 'Not all covalent substances are giant.',
+    body: 'Most are simple molecules (H₂O, CO₂) with LOW melting points — only the giant networks melt high. Say which type you mean.',
+  },
+  keynote: {
+    beats: [
+      { label: 'Giant covalent', text: 'every atom covalently bonded into one huge network → very high melting points.' },
+      { label: 'Diamond', text: '4 bonds per carbon → very hard, no free electrons, does not conduct.' },
+      { label: 'Graphite', text: '3 bonds per carbon → soft sliding layers, 1 delocalised electron each → conducts.' },
+    ],
+  },
+  mistakeCheck: {
+    claim: '“Graphite is soft, so its bonds must be weak — it should melt easily.”',
+    prompt: 'What is the flaw in this reasoning?',
+    options: [
+      { text: 'Soft doesn’t mean weak covalent bonds — only the forces between the layers are weak, not the bonds within them.', correct: true },
+      { text: 'Graphite isn’t actually soft, so the whole statement is false.' },
+      { text: 'Graphite really does have a low melting point, so it is right that it melts easily.' },
+    ],
+    fix: 'The covalent bonds WITHIN each layer are strong — graphite’s melting point is very high. Only the forces BETWEEN layers are weak. Weak between-layer forces explain the softness; strong in-layer bonds explain the melting point. Keep the two separate.',
+  },
+  compareReveal: {
+    title: 'Tap a property to reveal why the structure causes it.',
+    items: [
+      { property: 'Graphite conducts electricity', cause: 'Each carbon bonds to only 3 others, leaving 1 delocalised electron per atom free to carry charge.' },
+      { property: 'Graphite is soft and slippery', cause: 'Weak forces between the layers let whole sheets slide over one another.' },
+      { property: 'Graphite has a very high melting point', cause: 'The covalent bonds within each layer are strong — melting means breaking millions of them.' },
+    ],
+  },
+};
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mistakeSel: null, revealed: {} };
+  }
+
+  /* ================= BLOCK RENDERERS (pure, portable) ================= */
+
+  boldify(text, bolds) {
+    const h = React.createElement;
+    if (!bolds || !bolds.length) return text;
+    let parts = [text];
+    bolds.forEach(b => {
+      const next = [];
+      parts.forEach(p => {
+        if (typeof p !== 'string') { next.push(p); return; }
+        const i = p.indexOf(b);
+        if (i < 0) { next.push(p); return; }
+        next.push(p.slice(0, i), h('b', { key: b, style: { color: '#1A1714' } }, b), p.slice(i + b.length));
+      });
+      parts = next;
+    });
+    return parts;
+  }
+
+  renderLead(c) {
+    const h = React.createElement;
+    return h('p', { style: { margin: 0, fontFamily: "'IBM Plex Sans',sans-serif", fontSize: '16.5px', lineHeight: 1.6, color: '#2A241E', maxWidth: '72ch' } }, this.boldify(c.text, c.bold));
+  }
+
+  renderFeatureCards(c) {
+    const h = React.createElement;
+    return h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: '12px' } },
+      c.cards.map((card, i) => {
+        const t = CARD_TONE[card.tone] || CARD_TONE.neutral;
+        return h('div', { key: i, style: { background: t.bg, border: '1px solid ' + t.border, borderRadius: '14px', padding: '16px 18px' } },
+          h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' } },
+            h('span', { style: { fontSize: '17px' } }, card.emoji),
+            h('span', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '15px', color: t.head, lineHeight: 1.3 } }, card.title)),
+          h('div', { style: { fontSize: '13.5px', lineHeight: 1.55, color: '#2A241E' } }, card.body));
+      }));
+  }
+
+  renderCompareCards(c) {
+    const h = React.createElement;
+    const hr = c.highlightRow;
+    const cols = c.columns.map((col, ci) => h('div', { key: ci, style: {
+      background: '#FFFDF8', border: '1px solid #E4DCCB', borderRadius: '16px', overflow: 'hidden',
+    } },
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', borderBottom: '1px solid #EFE7D8', background: '#F7F2E8' } },
+        h('span', { style: { fontSize: '20px' } }, col.emoji),
+        h('div', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '17px', color: col.accent || '#1A1714' } }, col.title)),
+      h('div', { style: { display: 'flex', flexDirection: 'column' } },
+        col.rows.map((r, ri) => {
+          const isHL = hr != null && ri === hr;
+          const t = isHL ? (HL_TONE[r.tone] || HL_TONE.neutral) : null;
+          const rowStyle = { display: 'flex', flexDirection: 'column', gap: '2px', padding: isHL ? '12px 18px' : '11px 18px', borderBottom: ri < col.rows.length - 1 ? '1px solid #F2ECDD' : 'none' };
+          if (isHL) { rowStyle.background = t.bg; rowStyle.borderTop = '2px solid ' + t.rule; }
+          return h('div', { key: ri, style: rowStyle },
+            h('span', { style: { fontFamily: "'IBM Plex Mono',monospace", fontSize: '11px', fontWeight: 600, letterSpacing: '.06em', color: isHL ? t.k : '#9A9082', textTransform: 'uppercase' } }, r.k),
+            h('span', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14.5px', color: isHL ? t.v : '#2A241E', lineHeight: 1.35 } }, r.v));
+        })))
+    );
+    const kids = [h('div', { key: 'grid', style: { display: 'grid', gridTemplateColumns: 'repeat(' + c.columns.length + ',1fr)', gap: '14px' } }, cols)];
+    if (c.verdict) kids.push(h('div', { key: 'v', style: {
+      marginTop: '12px', textAlign: 'center', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14.5px',
+      color: '#B5341A', background: '#FBE0D6', border: '1px solid #F0BBA9', borderRadius: '999px', padding: '9px 18px',
+    } }, c.verdict));
+    return h('div', null, kids);
+  }
+
+  renderStepSequence(c) {
+    const h = React.createElement;
+    return h('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px' } },
+      c.steps.map((s, i) => h('div', { key: i, style: { display: 'flex', gap: '14px', alignItems: 'flex-start', background: '#F7F2E8', borderRadius: '12px', padding: '13px 16px' } },
+        h('span', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', color: '#fff', background: '#C0392B', minWidth: '26px', height: '26px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none' } }, String(i + 1)),
+        h('span', { style: { fontSize: '14.5px', lineHeight: 1.55, color: '#2A241E', paddingTop: '3px' } }, s))));
+  }
+
+  renderExampleCallout(c) {
+    const h = React.createElement;
+    return h('div', { style: { background: '#FBEEE9', borderLeft: '4px solid #C0392B', borderRadius: '12px', padding: '16px 20px' } },
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' } },
+        h('span', { style: { fontSize: '17px' } }, c.emoji),
+        h('span', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '15.5px', color: '#B5341A' } }, c.title)),
+      h('div', { style: { display: 'flex', flexDirection: 'column', gap: '5px' } },
+        c.lines.map((l, i) => h('div', { key: i, style: { fontSize: '14px', lineHeight: 1.5, color: '#3A2A26' } }, l))));
+  }
+
+  renderAsideCallout(c) {
+    const h = React.createElement;
+    return h('div', { style: { background: '#F6E9CE', borderLeft: '4px solid #C7861F', borderRadius: '12px', padding: '15px 20px' } },
+      h('div', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '15px', color: '#7A5510', marginBottom: '4px' } }, c.title),
+      h('div', { style: { fontSize: '14px', lineHeight: 1.55, color: '#4A3A1E' } }, c.body));
+  }
+
+  renderKeyNote(c) {
+    const h = React.createElement;
+    return h('div', { style: { background: 'linear-gradient(90deg,#FBE7E0,#F6EFE2)', border: '1px solid #E4DCCB', borderLeft: '5px solid #C0392B', borderRadius: '16px', padding: '20px 26px', display: 'flex', flexDirection: 'column', gap: '9px' } },
+      c.beats.map((b, i) => h('div', { key: i, style: { display: 'flex', gap: '10px', alignItems: 'baseline' } },
+        h('span', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '15px', color: '#B5341A', flex: 'none' } }, b.label),
+        h('span', { style: { fontSize: '15px', lineHeight: 1.55, color: '#2A241E' } }, b.text))));
+  }
+
+  /* ---- INTERACTIVE: mistake-check (spot the error → reveal) ---- */
+  renderMistakeCheck(c) {
+    const h = React.createElement;
+    const answered = this.state.mistakeSel !== null;
+    const opts = c.options.map((o, idx) => {
+      let bg = '#FFFDF8', bd = '#EBBCB1', fg = '#3A2A26';
+      if (answered) { if (o.correct) { bg = '#E7F3EA'; bd = '#7FB98A'; fg = '#2E6B3A'; } else if (idx === this.state.mistakeSel) { bg = '#FBE4DE'; bd = '#E0897B'; fg = '#A83824'; } else { fg = '#9A9082'; } }
+      return h('button', { key: idx, onClick: () => { if (this.state.mistakeSel === null) this.setState({ mistakeSel: idx }); },
+        style: { fontFamily: "'IBM Plex Sans',sans-serif", fontSize: '14px', lineHeight: 1.5, textAlign: 'left', width: '100%', cursor: answered ? 'default' : 'pointer', background: bg, border: '1.5px solid ' + bd, color: fg, borderRadius: '11px', padding: '13px 16px', transition: 'all .15s' } }, o.text);
+    });
+    const kids = [
+      h('div', { key: 'hd', style: { display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' } },
+        h('span', { style: { fontSize: '20px' } }, '⚠️'),
+        h('span', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '17px', color: '#B5341A' } }, 'Common Mistake'),
+        h('span', { style: { fontFamily: "'IBM Plex Mono',monospace", fontSize: '11px', fontWeight: 600, letterSpacing: '.1em', color: '#C08579', marginLeft: 'auto' } }, 'SPOT THE ERROR')),
+      h('div', { key: 'claim', style: { background: '#FFFDF8', border: '1px solid #EBBCB1', borderRadius: '12px', padding: '16px 20px', marginBottom: '14px' } },
+        h('div', { style: { fontFamily: "'IBM Plex Mono',monospace", fontSize: '11px', fontWeight: 600, letterSpacing: '.1em', color: '#9A9082', marginBottom: '6px' } }, 'A STUDENT WROTE:'),
+        h('div', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '16px', lineHeight: 1.4, color: '#7A241A' } }, c.claim)),
+      h('div', { key: 'pr', style: { fontSize: '14px', fontWeight: 600, color: '#3A2A26', marginBottom: '10px' } }, c.prompt || 'What is the flaw in this reasoning?'),
+      h('div', { key: 'opts', style: { display: 'flex', flexDirection: 'column', gap: '9px' } }, opts),
+    ];
+    if (answered) kids.push(h('div', { key: 'fix', style: { marginTop: '14px', background: '#FBEEE9', borderLeft: '4px solid #C0392B', borderRadius: '12px', padding: '16px 20px' } },
+      h('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' } },
+        h('span', { style: { fontSize: '16px' } }, '✅'),
+        h('span', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '15px', color: '#B5341A' } }, 'The correction')),
+      h('p', { style: { margin: 0, fontSize: '14.5px', lineHeight: 1.65, color: '#3A2A26' } }, c.fix)));
+    return h('div', { style: { background: 'linear-gradient(180deg,#FBE7E2,#F8E0DA)', border: '1px solid #EBBCB1', borderLeft: '5px solid #C0392B', borderRadius: '18px', padding: '22px 26px' } }, kids);
+  }
+
+  /* ---- INTERACTIVE: compare-reveal (tap property → reveal cause) ---- */
+  renderCompareReveal(c) {
+    const h = React.createElement;
+    const rows = c.items.map((it, idx) => {
+      const open = !!this.state.revealed[idx];
+      return h('div', { key: idx, style: { border: '1px solid #E4DCCB', borderRadius: '12px', overflow: 'hidden', background: '#FFFDF8' } },
+        h('button', { onClick: () => this.setState(s => ({ revealed: { ...s.revealed, [idx]: !s.revealed[idx] } })),
+          style: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', width: '100%', textAlign: 'left', cursor: 'pointer', border: 'none', background: open ? '#F7F2E8' : '#FFFDF8', padding: '13px 16px', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14.5px', color: '#1A1714', transition: 'all .15s' } },
+          h('span', null, it.property),
+          h('span', { style: { fontFamily: "'IBM Plex Mono',monospace", fontSize: '12px', fontWeight: 600, color: '#B5341A', flex: 'none' } }, open ? 'why ▲' : 'why ▼')),
+        open ? h('div', { style: { padding: '4px 16px 14px', fontSize: '14px', lineHeight: 1.55, color: '#3A2A26' } }, it.cause) : null);
+    });
+    const kids = [];
+    if (c.title) kids.push(h('div', { key: 't', style: { fontSize: '13px', color: '#8A8074', marginBottom: '10px', fontFamily: "'IBM Plex Mono',monospace" } }, c.title));
+    kids.push(h('div', { key: 'rows', style: { display: 'flex', flexDirection: 'column', gap: '9px' } }, rows));
+    return h('div', null, kids);
+  }
+
+  /* ================= library page assembly ================= */
+  renderVals() {
+    const rows = [
+      ['lead', 'short framing line — sets up the section', 'renderLead', DEMO.lead, SCHEMAS.lead],
+      ['feature-cards', 'emoji + semantic colour; colour = meaning, plain facts neutral', 'renderFeatureCards', DEMO.feature, SCHEMAS.feature],
+      ['compare-cards', '2–3 facing columns, rows aligned; highlightRow marks the payoff', 'renderCompareCards', DEMO.compare, SCHEMAS.compare],
+      ['step-sequence', 'numbered 1/2/3 for a process', 'renderStepSequence', DEMO.steps, SCHEMAS.steps],
+      ['example-callout', 'tinted spine block for a worked example', 'renderExampleCallout', DEMO.example, SCHEMAS.example],
+      ['aside-callout', 'amber caveat — exceptions, “not all…”', 'renderAsideCallout', DEMO.aside, SCHEMAS.aside],
+      ['key-note', 'summary — ONE idea per line, never a paragraph', 'renderKeyNote', DEMO.keynote, SCHEMAS.keynote],
+      ['mistake-check', '★ interactive — spot the error, then reveal the correction', 'renderMistakeCheck', DEMO.mistakeCheck, SCHEMAS.mistakeCheck],
+      ['compare-reveal', '★ interactive — tap a property to reveal its cause (hero-less pages)', 'renderCompareReveal', DEMO.compareReveal, SCHEMAS.compareReveal],
+    ];
+    const blocks = rows.map((r, i) => ({
+      num: String(i + 1).padStart(2, '0'),
+      name: r[0], job: '— ' + r[1],
+      configLabel: 'DEMO CONFIG — rendered by ' + r[2] + '(config), no hardcoded content',
+      render: this[r[2]](r[3]),
+      schema: r[4],
+    }));
+    return { blocks };
+  }
+}
+</script>
+</body>
+</html>

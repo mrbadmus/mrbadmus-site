@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes pulseDot { 0%,100% { box-shadow: 0 0 0 0 rgba(224,83,31,.55); } 50% { box-shadow: 0 0 0 9px rgba(224,83,31,0); } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 02</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">Dot-and-Cross Stepper</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">Extracted from the Ionic Bonding electron-transfer simulator, generalised to ordered steps and a transfer-or-share mode. Two configs below prove the parametrisation. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">⚛️</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— dots (•) from one atom, crosses (×) from the other</span>
+        </div>
+        <div style="padding:8px 18px 0; overflow-x:auto;">{{ ins.viz }}</div>
+        <div style="display:flex; align-items:center; gap:14px; padding:6px 24px 14px; flex-wrap:wrap;">
+          <button onClick="{{ ins.back }}" style="{{ ins.backStyle }}">← Back</button>
+          <div style="display:flex; gap:7px; align-items:center;">
+            <sc-for list="{{ ins.dots }}" as="d" hint-placeholder-count="4">
+              <button onClick="{{ d.onClick }}" style="{{ d.style }}"></button>
+            </sc-for>
+          </div>
+          <button onClick="{{ ins.next }}" style="{{ ins.nextStyle }}">{{ ins.nextLabel }}</button>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; color:#9A9082; margin-left:auto;">STEP {{ ins.stepNum }} / {{ ins.stepTotal }}</span>
+        </div>
+        <div style="margin:0 24px 18px; background:#F7F2E8; border-radius:12px; padding:14px 18px;">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#1A1714; margin-bottom:3px;">{{ ins.stepTitle }}</div>
+          <div style="font-size:13.5px; line-height:1.55; color:#5A5248;">{{ ins.stepCaption }}</div>
+        </div>
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:{{ ins.resultColor }};">{{ ins.resultLine }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 02 — DOT-AND-CROSS STEPPER
+   Two (or three) atoms drawn as shells; an ordered step sequence
+   moves outer electrons by transfer OR share, with a caption per
+   step and a final-structure line.
+
+   CONFIG SCHEMA:
+   {
+     configLabel: string      // demo label only
+     title: string            // hero header title
+     mode: 'transfer' | 'share',
+     layout: 'di' | 'tri',    // di = left + right atom; tri = centre metal,
+                              // two non-metals (e.g. MgCl₂, transfer only)
+     left:  { sym, cfgBefore, cfgAfter, charge, outer, r },
+       // sym: element symbol · cfgBefore/After: electron config text
+       // charge: ion charge badge, '' for share · outer: electrons that
+       // move (transfer: 1 or 2) · r: shell radius px
+     right: { sym, cfgBefore, cfgAfter, charge, outer, r },
+       // outer here = electrons already in the outer shell (6 or 7)
+     steps: [ { phase: 'neutral'|'focus'|'moved', title, caption } ],
+       // neutral = atoms apart, nothing highlighted
+       // focus   = the electrons about to move pulse
+       // moved   = transferred (charges shown) or overlapped shared pair
+     result: string           // final structure, shown in the dark bar
+                              // once the last step is reached
+   }
+   The geometry model (electronModel) is pure and separate from
+   the React renderer (buildViz) and the template binding.
+============================================================ */
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — SODIUM CHLORIDE (NaCl), MODE: TRANSFER',
+    title: 'Electron Transfer — NaCl', mode: 'transfer', layout: 'di',
+    left:  { sym: 'Na', cfgBefore: '2.8.1', cfgAfter: '2.8', charge: '+', outer: 1, r: 74 },
+    right: { sym: 'Cl', cfgBefore: '2.8.7', cfgAfter: '2.8.8', charge: '−', outer: 7, r: 74 },
+    steps: [
+      { phase: 'neutral', title: 'Two neutral atoms', caption: 'Na (2.8.1) has 1 outer electron. Cl (2.8.7) has 7 — one space left in its outer shell.' },
+      { phase: 'focus', title: 'Spot the spare electron', caption: 'Sodium\u2019s single outer electron (\u2022) is the one that will move — metals lose their outer electrons.' },
+      { phase: 'moved', title: 'Transfer!', caption: 'The electron jumps into chlorine\u2019s outer shell, filling the gap.' },
+      { phase: 'moved', title: 'Ions formed', caption: 'Na\u207a (2.8) and Cl\u207b (2.8.8) both have full outer shells. Opposite charges attract — that attraction IS the ionic bond.' },
+    ],
+    result: 'Na\u207a + Cl\u207b \u2192 NaCl \u2014 electrostatic attraction between the ions IS the ionic bond',
+  },
+  {
+    configLabel: 'CONFIG B — HYDROGEN CHLORIDE (HCl), MODE: SHARE',
+    title: 'Shared Pair — HCl', mode: 'share', layout: 'di',
+    left:  { sym: 'H', cfgBefore: '1', cfgAfter: '2 (shared)', charge: '', outer: 1, r: 48 },
+    right: { sym: 'Cl', cfgBefore: '2.8.7', cfgAfter: '2.8.8 (shared)', charge: '', outer: 7, r: 74 },
+    steps: [
+      { phase: 'neutral', title: 'Two non-metal atoms', caption: 'H needs 1 more electron; Cl needs 1 more. Neither can afford to give one away.' },
+      { phase: 'focus', title: 'One electron from each', caption: 'Hydrogen\u2019s electron (\u2022) and one of chlorine\u2019s (\u00d7) are highlighted — they will pair up.' },
+      { phase: 'moved', title: 'Shells overlap — shared pair', caption: 'One electron from each atom sits in the overlap. Both atoms now count a full outer shell. One shared pair = one single covalent bond.' },
+    ],
+    result: 'H\u2013Cl \u2014 one shared pair of electrons = one single covalent bond',
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { steps: CONFIGS.map(() => 0) };
+  }
+  go(ci, n) {
+    const steps = this.state.steps.slice();
+    steps[ci] = Math.max(0, Math.min(CONFIGS[ci].steps.length - 1, n));
+    this.setState({ steps });
+  }
+
+  pos(cx, cy, r, deg) { const a = deg * Math.PI / 180; return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) }; }
+
+  atom(prefix, sym, cfg, cx, cy, r, charge, showCharge) {
+    const h = React.createElement;
+    const kids = [];
+    kids.push(h('div', { key: prefix + 'ring', style: { position: 'absolute', left: (cx - r) + 'px', top: (cy - r) + 'px', width: (2 * r) + 'px', height: (2 * r) + 'px', borderRadius: '50%', border: '2px solid #C9BFAD', background: 'radial-gradient(circle,#FFFDF8 55%,#F3ECDD)', transition: 'all .75s cubic-bezier(.5,0,.2,1)' } }));
+    kids.push(h('div', { key: prefix + 'lab', style: { position: 'absolute', left: (cx - r) + 'px', top: (cy - 22) + 'px', width: (2 * r) + 'px', textAlign: 'center', pointerEvents: 'none', transition: 'all .75s cubic-bezier(.5,0,.2,1)' } },
+      h('div', { style: { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '26px', color: '#1A1714', lineHeight: 1 } }, sym),
+      h('div', { style: { fontFamily: "'IBM Plex Mono',monospace", fontSize: '11px', color: '#8A8074', marginTop: '3px' } }, cfg)
+    ));
+    if (showCharge && charge) {
+      const posv = charge.indexOf('+') >= 0;
+      kids.push(h('div', { key: prefix + 'chg', style: { position: 'absolute', left: (cx + r - 14) + 'px', top: (cy - r - 6) + 'px', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '15px', color: '#fff', background: posv ? '#C0392B' : '#2E7DD1', padding: '3px 9px', borderRadius: '999px', boxShadow: '0 4px 10px -3px rgba(0,0,0,.3)' } }, charge));
+    }
+    return kids;
+  }
+
+  dotEl(key, x, y, isDot, focus) {
+    const h = React.createElement;
+    return h('div', { key, style: {
+      position: 'absolute', left: (x - 9) + 'px', top: (y - 9) + 'px', width: '18px', height: '18px',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      transition: 'all .75s cubic-bezier(.5,0,.2,1)',
+      borderRadius: '50%',
+      background: isDot ? '#C0392B' : 'transparent',
+      color: isDot ? '#fff' : '#2E7DD1',
+      fontSize: '17px', fontWeight: 700, fontFamily: "'IBM Plex Mono',monospace", lineHeight: 1,
+      boxShadow: isDot ? '0 2px 6px -2px rgba(192,57,43,.7)' : 'none',
+      animation: focus ? 'pulseDot 1.3s ease-in-out infinite' : 'none',
+    } }, isDot ? '' : '\u00d7');
+  }
+
+  /* --- pure geometry for the current phase --- */
+  buildViz(config, phase) {
+    const h = React.createElement;
+    const after = phase === 'moved';
+    const focus = phase === 'focus';
+    const W = 640, H = 280, cy = 134;
+    const els = [];
+    const L = config.left, Rt = config.right;
+
+    if (config.mode === 'share') {
+      const lx = after ? 280 : 170, rx = after ? 390 : 470;
+      els.push(...this.atom('L', L.sym, after ? L.cfgAfter : L.cfgBefore, lx, cy, L.r, '', false));
+      els.push(...this.atom('R', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, rx, cy, Rt.r, '', false));
+      // right atom's non-pairing electrons (crosses)
+      const spare = [-90, -45, 0, 45, 90, 135, -135].slice(0, Rt.outer - 1);
+      spare.forEach((deg, i) => { const p = this.pos(rx, cy, Rt.r, deg); els.push(this.dotEl('rx' + i, p.x, p.y, false, false)); });
+      // pairing electrons: one dot (left), one cross (right)
+      const pairX = 322;
+      const dp = after ? { x: pairX, y: cy - 11 } : this.pos(lx, cy, L.r, 0);
+      const xp = after ? { x: pairX, y: cy + 11 } : this.pos(rx, cy, Rt.r, 180);
+      els.push(this.dotEl('pairD', dp.x, dp.y, true, focus));
+      els.push(this.dotEl('pairX', xp.x, xp.y, false, focus));
+    } else if (config.layout === 'di') {
+      const mx = 150, nx = 490;
+      els.push(...this.atom('L', L.sym, after ? L.cfgAfter : L.cfgBefore, mx, cy, L.r, L.charge, after));
+      els.push(...this.atom('R', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, nx, cy, Rt.r, Rt.charge, after));
+      let nonAngles, incomingSlots, metalStart;
+      if (Rt.outer === 7) { nonAngles = [-90, -45, 0, 45, 90, 135, -135]; incomingSlots = [180]; metalStart = [0]; }
+      else { nonAngles = [-90, -45, 0, 45, 90, -135]; incomingSlots = [135, 180]; metalStart = [-22, 22]; }
+      nonAngles.forEach((deg, i) => { const p = this.pos(nx, cy, Rt.r, deg); els.push(this.dotEl('nx' + i, p.x, p.y, false, false)); });
+      metalStart.slice(0, L.outer).forEach((deg, i) => {
+        const p = after ? this.pos(nx, cy, Rt.r, incomingSlots[i]) : this.pos(mx, cy, L.r, deg);
+        els.push(this.dotEl('td' + i, p.x, p.y, true, focus));
+      });
+    } else {
+      // tri: metal centre, non-metal each side (transfer of 2 × 1 electron, e.g. MgCl₂)
+      const R = 58, mgx = 320, clL = 108, clR = 532;
+      els.push(...this.atom('M', L.sym, after ? L.cfgAfter : L.cfgBefore, mgx, cy, R, L.charge, after));
+      els.push(...this.atom('NL', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, clL, cy, R, Rt.charge, after));
+      els.push(...this.atom('NR', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, clR, cy, R, Rt.charge, after));
+      [-90, -45, 45, 90, 135, 180, -135].forEach((deg, i) => { const p = this.pos(clL, cy, R, deg); els.push(this.dotEl('cl' + i, p.x, p.y, false, false)); });
+      [-90, -45, 0, 45, 90, 135, -135].forEach((deg, i) => { const p = this.pos(clR, cy, R, deg); els.push(this.dotEl('cr' + i, p.x, p.y, false, false)); });
+      [{ from: 180, tx: clL, ta: 0 }, { from: 0, tx: clR, ta: 180 }].forEach((s, i) => {
+        const p = after ? this.pos(s.tx, cy, R, s.ta) : this.pos(mgx, cy, R, s.from);
+        els.push(this.dotEl('mg' + i, p.x, p.y, true, focus));
+      });
+    }
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px', margin: '0 auto' } }, els);
+  }
+
+  renderVals() {
+    const navBtn = (enabled, primary) => ({
+      fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', cursor: enabled ? 'pointer' : 'not-allowed',
+      borderRadius: '10px', padding: '10px 18px', transition: 'all .15s',
+      color: primary ? '#fff' : (enabled ? '#4A4238' : '#B0A695'),
+      background: primary ? (enabled ? '#C0392B' : '#EFE7D8') : '#EFE7D8',
+      border: primary && enabled ? 'none' : '1px solid #E4DCCB',
+      boxShadow: primary && enabled ? '0 8px 20px -8px rgba(192,57,43,.7)' : 'none',
+      ...(primary && !enabled ? { color: '#B0A695' } : {}),
+    });
+    const instances = CONFIGS.map((config, ci) => {
+      const idx = this.state.steps[ci];
+      const step = config.steps[idx];
+      const last = idx === config.steps.length - 1;
+      const dots = config.steps.map((s, i) => ({
+        onClick: () => this.go(ci, i),
+        style: { width: i === idx ? '26px' : '10px', height: '10px', borderRadius: '999px', border: 'none', cursor: 'pointer', padding: 0, transition: 'all .25s', background: i <= idx ? '#C0392B' : '#DCD3C2' },
+      }));
+      return {
+        configLabel: config.configLabel, title: config.title,
+        viz: this.buildViz(config, step.phase),
+        back: () => this.go(ci, idx - 1), next: () => this.go(ci, idx + 1),
+        backStyle: navBtn(idx > 0, false),
+        nextStyle: navBtn(!last, true),
+        nextLabel: last ? '✓ Done' : 'Next →',
+        dots, stepNum: idx + 1, stepTotal: config.steps.length,
+        stepTitle: step.title, stepCaption: step.caption,
+        resultLine: last ? config.result : 'Final structure: … (step through to build it)',
+        resultColor: last ? '#9BD0A6' : '#8A8074',
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>
