@@ -68,7 +68,7 @@ Commit grouping proposal: packet §8. Mide commits/pushes via GitHub Desktop onl
   - `edf241e7…006b83f0  all_subtopics_chemistry_triple_higher.py`
 - **No commits.** One consolidated stop at the end with a single proposed commit grouping.
 
-## Phase 1.6 status — COMPLETE 24 July 2026 (NOT committed; HEAD still 54fd89804)
+## Phase 1.6 status — COMPLETE 24 July 2026 (committed on `content/bonding` as `105fcf9d4`; merged into `main`)
 
 | Item | Status |
 |---|---|
@@ -131,7 +131,7 @@ stalls); use `getComputedStyle(el).transitionDuration` (a single read) instead.
 - Audit (`audit_content.py`): bonding 0 critical / 0 major (319 minor = frozen
   MCQ length-parity = MRB-122). Unchanged — no content data touched.
 
-## Change containment (proposed single commit — NOT committed)
+## Change containment (committed on `content/bonding` as `105fcf9d4`, merged into `main`)
 
 New: `shared/heroes/keyed-render.js` (+ mirror). Modified: `dot-cross-stepper.js`,
 `two-state-compare.js`, `state-toggle-lab.js` (+ mirrors), `generate_site_v5.py`
