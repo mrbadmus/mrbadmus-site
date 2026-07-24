@@ -279,6 +279,32 @@
     <div class="dash-email" id="dash-email"></div>
   </div>
 
+  <!-- Public username (MRB-138) -->
+  <div class="dash-section" id="dash-username-section">
+    <div class="dash-section-title">🏷️ Public username</div>
+    <p style="font-size:0.82rem;color:var(--muted);margin:-4px 0 10px;line-height:1.5;">Shown on the public leaderboard. Your real name stays private.</p>
+    <div class="dash-row" style="align-items:center;">
+      <span class="dash-value" id="dash-username" style="font-weight:800;font-size:1.05rem;"></span>
+      <button type="button" id="username-change-btn" style="background:var(--card);border:1.5px solid var(--border-strong);color:var(--text);border-radius:999px;padding:6px 14px;font-weight:700;font-size:0.82rem;cursor:pointer;">Change</button>
+    </div>
+    <div id="username-locked" style="display:none;font-size:0.8rem;color:var(--muted);margin-top:8px;"></div>
+
+    <!-- Shuffle-only (MRB-138): no text entry. A fresh handle is previewed; 🎲
+         re-rolls it; Save commits via the set_username RPC. -->
+    <div id="username-change-form" style="display:none;margin-top:12px;">
+      <div style="display:flex;align-items:center;gap:10px;background:var(--sunken);border:1.5px solid var(--border-strong);border-radius:var(--radius-sm,8px);padding:11px 13px;">
+        <span id="username-preview" style="flex:1;min-width:0;font-weight:800;font-size:1.05rem;color:var(--text);font-family:var(--font-serif);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">—</span>
+        <button type="button" id="username-shuffle-btn" style="flex-shrink:0;background:var(--card);border:1.5px solid var(--border-strong);color:var(--text);border-radius:999px;padding:7px 12px;font-weight:700;font-size:0.82rem;cursor:pointer;">🎲 Shuffle for a new one</button>
+      </div>
+      <div id="username-status" aria-live="polite" style="font-size:0.78rem;font-weight:700;min-height:1.1em;margin-top:7px;"></div>
+      <p style="margin:8px 0 10px;color:var(--muted);font-size:0.76rem;line-height:1.6;">Usernames are picked for you to keep the leaderboard friendly. You can change yours once every 30 days.</p>
+      <div style="display:flex;gap:8px;">
+        <button type="button" id="username-save-btn" style="background:var(--accent);color:var(--on-accent);border:none;border-radius:999px;padding:9px 18px;font-weight:700;font-size:0.88rem;cursor:pointer;">Save username</button>
+        <button type="button" id="username-cancel-btn" style="background:var(--sunken);color:var(--muted);border:1px solid var(--border);border-radius:999px;padding:9px 18px;font-weight:700;font-size:0.88rem;cursor:pointer;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
   <div class="dash-section">
     <div class="dash-section-title">📚 My Course</div>
     <div class="dash-row">
@@ -514,6 +540,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="/shared/username-generator.js"></script>
 <script>
   var SUPABASE_URL      = 'https://urklkrwevjtlfbwnipjn.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVya2xrcndldmp0bGZid25pcGpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxOTQyNzksImV4cCI6MjA4OTc3MDI3OX0.pW9AP6TPlKC_XHDTbrEKrEGmGXglN0z5b0KGXD2oHvg';
@@ -612,6 +639,105 @@
   init();
 
   // ══════════════════════════════════════════════════════════
+  // PUBLIC USERNAME (MRB-138)
+  // ══════════════════════════════════════════════════════════
+  var UG = window.MrBadmusUsername;
+  var usernameBound = false;
+  var previewedHandle = '';     // the generated handle currently shown in the change form
+
+  function fmtDay(d) {
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
+  }
+
+  function renderUsername(p) {
+    if (UG && p && p.school_name) UG.configureSchoolName(p.school_name);
+
+    var nameEl = document.getElementById('dash-username');
+    if (p && p.username) {
+      nameEl.textContent = p.username;
+      nameEl.style.color = '';
+    } else {
+      nameEl.textContent = 'Not set yet';
+      nameEl.style.color = 'var(--muted)';
+    }
+
+    // 30-day lock
+    var changeBtn = document.getElementById('username-change-btn');
+    var lockedEl = document.getElementById('username-locked');
+    var nextAllowed = null;
+    if (p && p.last_username_change_at) {
+      var last = new Date(p.last_username_change_at);
+      nextAllowed = new Date(last.getTime() + 30 * 24 * 3600 * 1000);
+    }
+    if (nextAllowed && nextAllowed.getTime() > Date.now()) {
+      changeBtn.style.display = 'none';
+      lockedEl.style.display = 'block';
+      lockedEl.textContent = 'You can change this again on ' + fmtDay(nextAllowed) + '.';
+    } else {
+      changeBtn.style.display = '';
+      lockedEl.style.display = 'none';
+    }
+
+    if (!usernameBound) bindUsernameUI();
+  }
+
+  function bindUsernameUI() {
+    usernameBound = true;
+    var form = document.getElementById('username-change-form');
+    var preview = document.getElementById('username-preview');
+    var status = document.getElementById('username-status');
+
+    function rollPreview() {
+      previewedHandle = UG ? UG.generate() : '';
+      preview.textContent = previewedHandle || '—';
+    }
+
+    document.getElementById('username-change-btn').addEventListener('click', function () {
+      form.style.display = 'block';
+      status.textContent = ''; status.style.color = '';
+      rollPreview();                       // show a fresh candidate on open
+    });
+    document.getElementById('username-shuffle-btn').addEventListener('click', function () {
+      status.textContent = ''; status.style.color = '';
+      rollPreview();
+    });
+    document.getElementById('username-cancel-btn').addEventListener('click', function () {
+      form.style.display = 'none';
+    });
+
+    document.getElementById('username-save-btn').addEventListener('click', async function () {
+      if (!UG || !previewedHandle) return;
+      var val = previewedHandle;
+      var saveBtn = this;
+      saveBtn.disabled = true; status.style.color = 'var(--muted)'; status.textContent = 'Saving…';
+      try {
+        // set_username is the AUTHORITATIVE server-side gate: re-checks moderation,
+        // availability, and the 30-day lock atomically before writing.
+        var res = await sb.rpc('set_username', { candidate: val });
+        if (res.error) throw res.error;
+        var out = res.data || {};
+        if (out.ok) {
+          status.style.color = 'var(--success)'; status.textContent = '✓ Saved';
+          document.getElementById('dash-username').textContent = out.username || val;
+          document.getElementById('dash-username').style.color = '';
+          // Re-lock the UI for 30 days from now.
+          renderUsername({ username: out.username || val, last_username_change_at: new Date().toISOString() });
+          setTimeout(function () { document.getElementById('username-change-form').style.display = 'none'; }, 900);
+        } else {
+          // e.g. a taken handle (extremely rare) or the 30-day lock — offer a re-roll.
+          status.style.color = 'var(--danger)'; status.textContent = out.error || 'Could not save — tap 🎲 and try again.';
+        }
+      } catch (e) {
+        status.style.color = 'var(--danger)';
+        status.textContent = (e && e.message) ? e.message : 'Could not save — try again.';
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════
   // DASHBOARD VIEW
   // ══════════════════════════════════════════════════════════
   function showDashboard(p) {
@@ -627,6 +753,8 @@
     var fullName = (p.first_name || '') + (p.last_name ? ' ' + p.last_name : '');
     document.getElementById('dash-name').textContent = fullName || 'Student';
     document.getElementById('dash-email').textContent = session.user.email;
+
+    renderUsername(p);
 
     // Course info
     var pathwayEl = document.getElementById('dash-pathway');

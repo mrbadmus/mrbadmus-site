@@ -48,6 +48,20 @@
     .btn-sso:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
     .btn-sso svg { width: 18px; height: 18px; flex: none; }
     .sso-sub { text-align: center; font-size: 0.74rem; color: var(--muted); margin-top: 10px; line-height: 1.45; }
+    /* ── Username picker (MRB-138) ── */
+    .handle-box { background: var(--sunken); border: 1.5px solid var(--border-strong); border-radius: var(--radius-sm); padding: 12px 14px; }
+    .handle-chip { display: flex; align-items: center; gap: 10px; }
+    .handle-name { flex: 1; min-width: 0; font-weight: 800; font-size: 1.05rem; color: var(--text); font-family: var(--font-serif); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .btn-shuffle { flex-shrink: 0; background: var(--card); border: 1.5px solid var(--border-strong); color: var(--text); border-radius: 999px; padding: 7px 12px; font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
+    .btn-shuffle:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .btn-shuffle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .handle-hint { font-size: 0.76rem; color: var(--muted); margin-top: 8px; line-height: 1.45; }
+    .handle-hint a { color: var(--accent); font-weight: 700; cursor: pointer; text-decoration: none; }
+    .handle-hint a:hover { text-decoration: underline; }
+    .handle-status { font-size: 0.78rem; font-weight: 700; margin-top: 8px; min-height: 1.1em; }
+    .handle-status.ok { color: var(--success); }
+    .handle-status.err { color: var(--danger); }
+    .handle-status.checking { color: var(--muted); }
   </style>
 </head>
 <body>
@@ -103,6 +117,21 @@
       <label>First name</label>
       <input type="text" id="signup-name" placeholder="e.g. Aisha" autocomplete="given-name"/>
     </div>
+
+    <!-- Username picker (MRB-138, shuffle-only): a handle is generated for you.
+         Accepting is the zero-effort default; 🎲 Shuffle is the ONLY way to change
+         it — there is no text entry, so no profanity/impersonation/real-name risk. -->
+    <div class="form-group">
+      <label>Your username <span style="font-weight:600;color:var(--muted);">— shown on the public leaderboard</span></label>
+      <div class="handle-box">
+        <div class="handle-chip">
+          <span class="handle-name" id="handle-name">—</span>
+          <button type="button" class="btn-shuffle" id="handle-shuffle" aria-label="Shuffle for a new username">🎲 Shuffle</button>
+        </div>
+        <div class="handle-hint">Your real name stays private. Tap 🎲 for a different one.</div>
+      </div>
+    </div>
+
     <div class="form-group">
       <label>Email address</label>
       <input type="email" id="signup-email" placeholder="you@school.com" autocomplete="email"/>
@@ -150,13 +179,34 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="/shared/config.js"></script>
+<script src="/shared/username-generator.js"></script>
 <script>
   // ── Config sourced from /shared/config.js (prod by default,
   //    test on localhost or ?env=test). See MRB-19 D1.
   const { SUPABASE_URL, SUPABASE_ANON_KEY } = window.MrBadmusConfig;
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+  // ── Username picker (MRB-138, shuffle-only) ──────────────────────────────
+  // No text entry: the handle is always a freshly generated, moderation-clean
+  // combination. Shuffle re-rolls; accepting the shown one is the default.
+  const UG = window.MrBadmusUsername;
+  let chosenHandle = '';        // the display-cased handle we'll send at signup
+
+  function setDisplayHandle(h) {
+    chosenHandle = h;
+    document.getElementById('handle-name').textContent = h;
+  }
+  function initHandle() {
+    if (!UG) return;            // generator missing → signup still works without a handle
+    if (!chosenHandle) setDisplayHandle(UG.generate());
+  }
+  function resolveHandle() { return chosenHandle; }   // always a generated handle
+
+  var shuffleBtn = document.getElementById('handle-shuffle');
+  if (shuffleBtn) shuffleBtn.addEventListener('click', function () { if (UG) setDisplayHandle(UG.generate()); });
+
   function switchTab(tab) {
+    if (tab === 'signup') initHandle();
     document.getElementById('form-signin').style.display = tab === 'signin' ? 'block' : 'none';
     document.getElementById('form-signup').style.display = tab === 'signup' ? 'block' : 'none';
     document.getElementById('tab-signin').className = 'tab' + (tab === 'signin' ? ' active' : '');
@@ -270,10 +320,15 @@
     if (!email)     return showMsg('Please enter your email address.');
     if (password.length < 8) return showMsg('Password must be at least 8 characters.');
 
+    // The public username is always a generated, moderation-clean handle.
+    const username = resolveHandle();
+    const signupMeta = { first_name: firstName };
+    if (username) signupMeta.username = username;   // seeded into the profile by handle_new_user
+
     setLoading('btn-signup', true);
     const { data, error } = await sb.auth.signUp({
       email, password,
-      options: { data: { first_name: firstName } }
+      options: { data: signupMeta }
     });
     setLoading('btn-signup', false);
 

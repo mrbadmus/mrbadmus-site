@@ -33,151 +33,274 @@
   <p>Your GCSE Science revision hub — Physics, Chemistry &amp; Biology. Choose your course below.</p>
 </section>
 
-<!-- ── TOP STARS OF THE WEEK ───────────────────────────── -->
-<div id="top-stars" style="max-width:880px;margin:0 auto 20px;padding:0 24px;display:none;">
-  <div style="text-align:center;margin-bottom:10px;">
-    <h2 class="stars-heading">⭐ Top Stars of the Week</h2>
-    <p style="color:var(--muted);font-size:0.88rem;margin-top:6px;">Take the weekly quiz and see if you can earn a place in the top 10</p>
+<!-- ── LANDING BAND: courses (left) + Top Stars rail (right) ─────────────── -->
+<section class="landing-band">
+
+  <!-- LEFT: course cards (visible on first paint) -->
+  <div class="courses-col">
+    <a class="pathway-card combined" href="/combined/index.html">
+      <div class="pathway-icon">🔬</div>
+      <h2 style="color:var(--combined)">Combined Science</h2>
+      <p>Covers Biology, Chemistry and Physics for the Combined Science qualification. Includes Foundation and Higher tiers.</p>
+      <div class="pathway-badge-row">
+        <span class="pathway-badge foundation">Foundation</span>
+        <span class="pathway-badge higher">Higher</span>
+      </div>
+      <div><span class="pathway-go" style="background:var(--combined);">Start Combined Science →</span></div>
+    </a>
+
+    <a class="pathway-card triple" href="/triple/index.html">
+      <div class="pathway-icon">🧪</div>
+      <h2 style="color:var(--triple)">Triple Science</h2>
+      <p>Separate Biology, Chemistry and Physics qualifications with extended content. Foundation and Higher tiers.</p>
+      <div class="pathway-badge-row">
+        <span class="pathway-badge foundation">Foundation</span>
+        <span class="pathway-badge higher">Higher</span>
+      </div>
+      <div><span class="pathway-go" style="background:var(--triple);">Start Triple Science →</span></div>
+    </a>
   </div>
 
-  <!-- Student of the Week -->
-  <div id="sotw-card" class="sotw-card" style="display:none;">
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-      <div style="font-size:2.2rem;flex-shrink:0;">👑</div>
-      <div style="flex:1;min-width:180px;">
-        <div class="sotw-kicker">Champion of the Week</div>
-        <div id="sotw-name" class="sotw-name"></div>
-        <div id="sotw-school" class="sotw-school"></div>
-      </div>
-      <div id="sotw-avatar" class="sotw-avatar"></div>
-      <div style="text-align:right;flex-shrink:0;">
-        <div id="sotw-score" class="sotw-score"></div>
-        <div id="sotw-subjects" class="sotw-subjects"></div>
-      </div>
+  <!-- RIGHT: Top Stars rail -->
+  <aside class="stars-rail" id="stars-rail" aria-label="Top stars of the week">
+    <div class="rail-head">
+      <h2 class="rail-title">⭐ Top Stars</h2>
+      <p class="rail-sub">This week's weekly-quiz leaders</p>
     </div>
-  </div>
 
-  <!-- Top 3 Foundation + Top 3 Higher -->
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px;">
-    <!-- Foundation -->
-    <div class="stars-panel stars-panel-foundation">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-        <span style="font-size:1.2rem;">🌱</span>
-        <h3 class="stars-panel-title" style="color:var(--foundation);">Foundation Stars</h3>
+    <div class="rail-champ" id="rail-champ" style="display:none;">
+      <span class="rail-champ-crown">👑</span>
+      <div class="rail-champ-av" id="rail-champ-av"></div>
+      <div class="rail-champ-info">
+        <div class="rail-champ-kicker">Champion of the Week</div>
+        <div class="rail-champ-name" id="rail-champ-name"></div>
       </div>
-      <div id="foundation-stars"></div>
+      <div class="rail-champ-pct" id="rail-champ-pct"></div>
     </div>
-    <!-- Higher -->
-    <div class="stars-panel stars-panel-higher">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
-        <span style="font-size:1.2rem;">⭐</span>
-        <h3 class="stars-panel-title" style="color:var(--higher);">Higher Stars</h3>
+
+    <div class="rail-slides" id="rail-slides">
+      <div class="rail-slide active" data-tier="foundation" id="slide-foundation" role="tabpanel" aria-label="Foundation top stars">
+        <div class="rail-slide-head" style="color:var(--foundation);">🌱 Foundation</div>
+        <div class="rail-rows" id="rows-foundation"></div>
       </div>
-      <div id="higher-stars"></div>
+      <div class="rail-slide" data-tier="higher" id="slide-higher" role="tabpanel" aria-label="Higher top stars" aria-hidden="true">
+        <div class="rail-slide-head" style="color:var(--higher);">⭐ Higher</div>
+        <div class="rail-rows" id="rows-higher"></div>
+      </div>
     </div>
-  </div>
-</div>
+
+    <div class="rail-empty" id="rail-empty" style="display:none;">No stars yet — be the first!</div>
+
+    <div class="rail-foot">
+      <div class="rail-dots" id="rail-dots" role="tablist" aria-label="Choose tier" style="display:none;">
+        <button class="rail-dot active" type="button" role="tab" data-tier="foundation" aria-selected="true" aria-controls="slide-foundation" aria-label="Show Foundation stars"></button>
+        <button class="rail-dot" type="button" role="tab" data-tier="higher" aria-selected="false" aria-controls="slide-higher" aria-label="Show Higher stars"></button>
+      </div>
+      <a class="rail-full" href="/leaderboard.html">Full leaderboard →</a>
+    </div>
+  </aside>
+
+</section>
 
 <style>
-.stars-heading { font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.5rem;display:inline-block; }
-.sotw-card { background:var(--card);border:1px solid var(--border);border-top:3px solid var(--higher);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:14px 20px;margin-bottom:12px; }
-.sotw-kicker { font-weight:600;font-size:0.72rem;color:var(--higher);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px; }
-.sotw-name { font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.25rem;color:var(--text); }
-.sotw-school { color:var(--muted);font-size:0.82rem;font-weight:500; }
-.sotw-avatar { width:64px;height:64px;border-radius:50%;border:3px solid var(--higher);overflow:hidden;background:var(--sunken);display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0; }
-.sotw-score { font-weight:700;font-size:1.8rem;color:var(--higher);font-variant-numeric:tabular-nums; }
-.sotw-subjects { color:var(--muted);font-size:0.72rem;font-weight:500; }
-.stars-panel { background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-card);padding:14px; }
-.stars-panel-foundation { border-top:3px solid var(--foundation); }
-.stars-panel-higher { border-top:3px solid var(--higher); }
-.stars-panel-title { font-family:var(--font-sans);font-weight:600;font-size:0.9rem;text-transform:uppercase;letter-spacing:0.04em; }
-.star-row { display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border); }
-.star-row:last-child { border-bottom:none; }
-.star-medal { font-size:1.1rem;width:24px;text-align:center;flex-shrink:0; }
-.star-avatar { width:34px;height:34px;border-radius:50%;overflow:hidden;background:var(--sunken);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;border:1.5px solid var(--border-strong); }
-.star-avatar img { width:100%;height:100%;object-fit:cover; }
-.star-info { flex:1;min-width:0; }
-.star-name { font-weight:700;font-size:0.85rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
-.star-school { color:var(--muted);font-size:0.72rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
-.star-score { font-weight:700;font-size:0.95rem;flex-shrink:0;font-variant-numeric:tabular-nums; }
-.star-empty { color:var(--muted);font-size:0.85rem;font-style:italic;text-align:center;padding:12px 0; }
+/* ── Landing band layout ─────────────────────────────────────────────── */
+.landing-band {
+  display: grid;
+  grid-template-columns: minmax(0, 72fr) minmax(0, 28fr);
+  gap: var(--sp-5);
+  max-width: 1240px;
+  margin: var(--sp-5) auto var(--sp-8);
+  padding: 0 var(--sp-5);
+  align-items: start;
+}
+.courses-col { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-5); }
+/* Equal-height cards: grid stretches both to the tallest; each card is a flex
+   column and its description absorbs the slack, so the badge rows and the Start
+   buttons pin to the same baseline on both cards regardless of description length. */
+.courses-col .pathway-card { margin: 0; display: flex; flex-direction: column; }
+.courses-col .pathway-card p { flex: 1 0 auto; }
+
+/* ── Top Stars rail ──────────────────────────────────────────────────── */
+.stars-rail {
+  background: var(--card); border: 1px solid var(--border);
+  border-top: 3px solid var(--higher);
+  border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+  padding: 16px 16px 12px; position: sticky; top: 76px;
+  display: flex; flex-direction: column;
+}
+.rail-head { margin-bottom: 12px; }
+.rail-title { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; font-size: 1.15rem; color: var(--text); }
+.rail-sub { color: var(--muted); font-size: 0.76rem; margin-top: 2px; }
+
+.rail-champ {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--higher-soft); border-radius: var(--radius);
+  padding: 10px 12px; margin-bottom: 12px;
+}
+.rail-champ-crown { font-size: 1.2rem; flex-shrink: 0; }
+.rail-champ-av {
+  width: 34px; height: 34px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+  border: 2px solid var(--higher); background: var(--sunken);
+  display: flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.rail-champ-av img { width: 100%; height: 100%; object-fit: cover; }
+.rail-champ-info { flex: 1; min-width: 0; }
+.rail-champ-kicker { font-size: 0.64rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--higher); }
+.rail-champ-name { font-weight: 800; font-size: 0.9rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rail-champ-pct { font-weight: 800; font-size: 1.05rem; color: var(--higher); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+/* crossfade: both slides share one grid cell → track grows to the taller one */
+.rail-slides { display: grid; flex: 1; }
+.rail-slide { grid-area: 1 / 1; opacity: 0; transition: opacity 0.55s ease; pointer-events: none; }
+.rail-slide.active { opacity: 1; pointer-events: auto; }
+.rail-slide-head { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+
+.rail-row { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.rail-row:last-child { border-bottom: none; }
+.rail-rank { width: 20px; text-align: center; flex-shrink: 0; font-weight: 700; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rail-av { width: 26px; height: 26px; border-radius: 50%; overflow: hidden; flex-shrink: 0; background: var(--sunken); border: 1.5px solid var(--border-strong); display: flex; align-items: center; justify-content: center; font-size: 0.82rem; }
+.rail-av img { width: 100%; height: 100%; object-fit: cover; }
+.rail-name { flex: 1; min-width: 0; font-weight: 700; font-size: 0.82rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rail-pct { flex-shrink: 0; font-weight: 700; font-size: 0.85rem; color: var(--text); font-variant-numeric: tabular-nums; }
+.rail-row-empty { color: var(--muted); font-size: 0.8rem; font-style: italic; padding: 10px 0; text-align: center; }
+.rail-empty { color: var(--muted); font-size: 0.85rem; font-style: italic; text-align: center; padding: 18px 0; }
+
+.rail-foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.rail-dots { display: flex; gap: 7px; }
+.rail-dot { width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0; cursor: pointer; background: var(--border-strong); transition: background 0.2s, transform 0.2s; }
+.rail-dot.active { background: var(--higher); transform: scale(1.15); }
+.rail-dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rail-full { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-decoration: none; white-space: nowrap; }
+.rail-full:hover { text-decoration: underline; }
+.rail-loading { color: var(--muted); font-size: 0.82rem; text-align: center; padding: 14px 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rail-slide { transition: none; }
+  .rail-dot { transition: none; }
+}
+
+/* Below 900px: single column, COURSES FIRST, rail as a compact card below */
+@media (max-width: 900px) {
+  .landing-band { grid-template-columns: 1fr; }
+  .courses-col { order: 1; }
+  .stars-rail { order: 2; position: static; top: auto; }
+}
+@media (max-width: 560px) {
+  .courses-col { grid-template-columns: 1fr; }
+}
 </style>
 
 <script>
 (function() {
   var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
-  var medals = ['🥇','🥈','🥉'];
-  function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
-  function renderStars(entries, tier) {
-    if (!entries || entries.length === 0) {
-      return '<div class="star-empty">No stars yet — be the first!</div>';
-    }
-    var color = tier === 'foundation' ? '#237A3B' : '#7A5F00';
+
+  // Display seam (MRB-138): every public name render goes through here, so
+  // handles appear automatically once the backend adds `username` to the
+  // leaderboard payload. Falls back to first name until then.
+  function displayName(u) { return (u && (u.username || u.name || u.first_name)) || 'Student'; }
+  function esc(s) { var d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+  function pct(e) {
+    if (typeof e.percentage === 'number') return Math.round(e.percentage);
+    if (e.max_score) return Math.round(100 * e.score / e.max_score);
+    return 0;
+  }
+  var rankMarks = ['🥇', '🥈', '🥉'];
+
+  function rowsHtml(entries) {
+    if (!entries || !entries.length) return '<div class="rail-row-empty">No stars yet — be the first!</div>';
+    // Rank fairly by percentage (compares /30 and /45 totals); show up to 5.
+    var list = entries.slice().sort(function(a, b) { return pct(b) - pct(a); }).slice(0, 5);
     var html = '';
-    for (var i = 0; i < entries.length; i++) {
-      var e = entries[i];
-      var avatar = e.avatar_url ? '<img src="'+e.avatar_url+'" alt=""/>' : '🧑‍🎓';
-      html += '<div class="star-row">'+
-        '<span class="star-medal">'+medals[i]+'</span>'+
-        '<div class="star-avatar">'+avatar+'</div>'+
-        '<div class="star-info">'+
-          '<div class="star-name">'+esc(e.name)+'</div>'+
-          (e.school?'<div class="star-school">'+esc(e.school)+'</div>':'')+
-        '</div>'+
-        '<span class="star-score" style="color:'+color+'">'+e.score+'/'+e.max_score+'</span>'+
+    for (var i = 0; i < list.length; i++) {
+      var e = list[i];
+      var av = e.avatar_url ? '<img src="' + esc(e.avatar_url) + '" alt=""/>' : '🧑‍🎓';
+      html += '<div class="rail-row">' +
+        '<span class="rail-rank">' + (rankMarks[i] || (i + 1)) + '</span>' +
+        '<span class="rail-av">' + av + '</span>' +
+        '<span class="rail-name">' + esc(displayName(e)) + '</span>' +
+        '<span class="rail-pct">' + pct(e) + '%</span>' +
       '</div>';
     }
     return html;
   }
-  fetch(RENDER_URL + '/api/weekly-leaderboard/landing').then(function(r){return r.ok?r.json():null;}).then(function(data){
-    if (!data) return;
-    var hasAny = (data.foundation_top3 && data.foundation_top3.length) || (data.higher_top3 && data.higher_top3.length) || data.champion;
-    if (!hasAny) return;
-    document.getElementById('top-stars').style.display = 'block';
-    document.getElementById('foundation-stars').innerHTML = renderStars(data.foundation_top3, 'foundation');
-    document.getElementById('higher-stars').innerHTML = renderStars(data.higher_top3, 'higher');
-    if (data.champion) {
-      var s = data.champion;
-      document.getElementById('sotw-card').style.display = 'block';
-      document.getElementById('sotw-name').textContent = s.name;
-      document.getElementById('sotw-school').textContent = s.school || '';
-      document.getElementById('sotw-score').textContent = s.percentage + '%';
-      document.getElementById('sotw-subjects').textContent = s.score + '/' + s.max_score + ' across all 3 subjects';
-      document.getElementById('sotw-avatar').innerHTML = s.avatar_url ? '<img src="'+s.avatar_url+'" style="width:100%;height:100%;object-fit:cover;" alt=""/>' : '👑';
-    }
-  }).catch(function(){});
+
+  var rail = document.getElementById('stars-rail');
+  var slides = { foundation: document.getElementById('slide-foundation'), higher: document.getElementById('slide-higher') };
+  var dotsWrap = document.getElementById('rail-dots');
+  var dots = dotsWrap.querySelectorAll('.rail-dot');
+
+  document.getElementById('rows-foundation').innerHTML = '<div class="rail-loading">Loading…</div>';
+
+  var available = ['foundation', 'higher'];
+  var order = ['foundation', 'higher'];
+  var idx = 0, timer = null, paused = false;
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function show(tier) {
+    idx = order.indexOf(tier);
+    order.forEach(function(t) {
+      var on = t === tier;
+      slides[t].classList.toggle('active', on);
+      slides[t].setAttribute('aria-hidden', on ? 'false' : 'true');
+    });
+    dots.forEach(function(d) {
+      var on = d.getAttribute('data-tier') === tier;
+      d.classList.toggle('active', on);
+      d.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  }
+  function next() { if (order.length > 1) show(order[(idx + 1) % order.length]); }
+  function start() { if (reduce || timer || order.length < 2) return; timer = setInterval(function() { if (!paused) next(); }, 6000); }
+
+  rail.addEventListener('mouseenter', function() { paused = true; });
+  rail.addEventListener('mouseleave', function() { paused = false; });
+  rail.addEventListener('focusin', function() { paused = true; });
+  rail.addEventListener('focusout', function() { paused = false; });
+  dots.forEach(function(d) {
+    d.addEventListener('click', function() { show(d.getAttribute('data-tier')); });
+  });
+
+  fetch(RENDER_URL + '/api/weekly-leaderboard/landing')
+    .then(function(r) { return r.ok ? r.json() : null; })
+    .then(function(data) {
+      if (!data) { throw new Error('no data'); }
+      var f = data.foundation_top3 || [], h = data.higher_top3 || [];
+      var hasF = f.length > 0, hasH = h.length > 0;
+
+      document.getElementById('rows-foundation').innerHTML = rowsHtml(f);
+      document.getElementById('rows-higher').innerHTML = rowsHtml(h);
+
+      if (data.champion) {
+        var c = data.champion;
+        document.getElementById('rail-champ-name').textContent = displayName(c);
+        document.getElementById('rail-champ-pct').textContent = pct(c) + '%';
+        document.getElementById('rail-champ-av').innerHTML = c.avatar_url ? '<img src="' + esc(c.avatar_url) + '" alt=""/>' : '👑';
+        document.getElementById('rail-champ').style.display = 'flex';
+      }
+
+      if (!hasF && !hasH && !data.champion) {
+        document.getElementById('rail-slides').style.display = 'none';
+        document.getElementById('rail-empty').style.display = 'block';
+        return;
+      }
+
+      order = [];
+      if (hasF) order.push('foundation');
+      if (hasH) order.push('higher');
+      if (order.length === 0) order = ['foundation']; // champion only
+
+      if (order.length === 2) {
+        dotsWrap.style.display = 'flex';
+      }
+      show(order[0]);
+      start();
+    })
+    .catch(function() {
+      document.getElementById('rail-slides').style.display = 'none';
+      document.getElementById('rail-empty').style.display = 'block';
+    });
 })();
 </script>
-
-<div class="pathway-grid">
-
-  <a class="pathway-card combined" href="/combined/index.html">
-    <div class="pathway-icon">🔬</div>
-    <h2 style="color:var(--combined)">Combined Science</h2>
-    <p>Covers Biology, Chemistry and Physics for the Combined Science qualification. Includes Foundation and Higher tiers.</p>
-    <div class="pathway-badge-row">
-      <span class="pathway-badge foundation">Foundation</span>
-      <span class="pathway-badge higher">Higher</span>
-    </div>
-    <div>
-      <span class="pathway-go" style="background:var(--combined);">Start Combined Science →</span>
-    </div>
-  </a>
-
-  <a class="pathway-card triple" href="/triple/index.html">
-    <div class="pathway-icon">🧪</div>
-    <h2 style="color:var(--triple)">Triple Science</h2>
-    <p>Separate Biology, Chemistry and Physics qualifications with extended content. Foundation and Higher tiers.</p>
-    <div class="pathway-badge-row">
-      <span class="pathway-badge foundation">Foundation</span>
-      <span class="pathway-badge higher">Higher</span>
-    </div>
-    <div>
-      <span class="pathway-go" style="background:var(--triple);">Start Triple Science →</span>
-    </div>
-  </a>
-
-</div>
 
   <button class="chat-fab" onclick="MrBadmus.open()" title="Ask MrBadmus AI"><span class="fab-logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 6l4-4 4 4" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/></svg></span><span class="fab-text">Ask MrBadmusAI</span></button>
 

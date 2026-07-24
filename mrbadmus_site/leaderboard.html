@@ -15,152 +15,115 @@
   <style>
     html { background: var(--bg); }
     :root {
-      --darker: var(--bg); --dark: var(--sunken);
-      --yellow: var(--higher); --gold: var(--higher);
-      --silver: #C0C0C0; --bronze: #CD7F32;
+      --gold: var(--higher); --silver: #8C8C8C; --bronze: #B06A2E;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--darker); color: var(--text); font-family: var(--font-sans); min-height: 100vh; }
+    body { background: var(--bg); color: var(--text); font-family: var(--font-sans); min-height: 100vh; }
 
-    /* Public top-nav styling now lives in /shared/nav.css (MRB-109). */
+    .container { max-width: 640px; margin: 0 auto; padding: 28px 20px 48px; }
+    .header { text-align: center; margin-bottom: 6px; }
+    .header h1 { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; letter-spacing: -0.01em; font-size: 2rem; }
+    .week-info { text-align: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 20px; font-weight: 700; }
 
-    .container { max-width: 720px; margin: 0 auto; padding: 28px 20px 40px; }
+    /* ── CHIP ROWS ─────────────────────────────────────── */
+    .chip-row { display: flex; gap: 6px; justify-content: center; margin-bottom: 10px; flex-wrap: wrap; }
+    .chip {
+      padding: 7px 16px; border-radius: 999px; border: 2px solid var(--border-strong);
+      background: transparent; color: var(--muted); font-family: var(--font-sans);
+      font-weight: 700; font-size: 0.82rem; cursor: pointer; transition: all 0.15s;
+    }
+    .chip:hover { border-color: var(--accent-border); }
+    .chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .chip.active.foundation { background: var(--biology-soft); border-color: var(--biology); color: var(--biology); }
+    .chip.active.higher     { background: var(--higher-soft);  border-color: var(--higher);  color: var(--higher); }
+    .chip.active.overall    { background: var(--higher-soft);  border-color: var(--higher);  color: var(--higher); }
+    .chip.active.bio        { background: var(--biology-soft); border-color: var(--biology); color: var(--biology); }
+    .chip.active.chem       { background: var(--chemistry-soft); border-color: var(--chemistry); color: var(--chemistry); }
+    .chip.active.phys       { background: var(--physics-soft); border-color: var(--physics); color: var(--physics); }
+    .chip-row.subjects { margin-bottom: 18px; }
 
-    .header { text-align: center; margin-bottom: 24px; }
-    .header h1 { font-family: var(--font-serif); font-optical-sizing: auto; font-weight: 600; letter-spacing: -0.01em; font-size: 2rem; margin-bottom: 4px; }
+    /* ── TABLE ─────────────────────────────────────────── */
+    .lb-head, .lb-row { display: grid; grid-template-columns: 34px 40px minmax(0, 1fr) 52px 46px 58px; align-items: center; gap: 10px; }
+    .lb-head {
+      padding: 0 14px 8px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.04em; color: var(--muted);
+    }
+    .lb-head .h-right { text-align: right; }
+    .lb-list { display: flex; flex-direction: column; gap: 7px; }
+    .lb-row {
+      padding: 11px 14px; background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .lb-rank { text-align: center; font-family: var(--font-serif); font-weight: 600; font-size: 1rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .lb-av {
+      width: 40px; height: 40px; border-radius: 50%; overflow: hidden; background: var(--sunken);
+      border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
+    }
+    .lb-av img { width: 100%; height: 100%; object-fit: cover; }
+    .lb-namewrap { min-width: 0; }
+    .lb-name { font-weight: 800; font-size: 0.92rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+    .lb-sub { color: var(--muted); font-size: 0.72rem; font-weight: 600; margin-top: 1px; }
+    .lb-pct { text-align: right; font-weight: 800; font-size: 1.02rem; color: var(--text); font-variant-numeric: tabular-nums; }
+    .lb-score { text-align: right; font-size: 0.85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .lb-time { text-align: right; font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 
-    /* ── TABS ────────────────────────────────────── */
-    .tabs { display: flex; gap: 6px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
-    .tab {
-      padding: 8px 18px; border-radius: 20px; border: 2px solid var(--border-strong);
-      background: transparent; color: var(--muted); font-family: var(--font-serif);
-      font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.2s;
-    }
-    .tab:hover { border-color: var(--accent-border); }
-    .tab.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-    .tab.active.bio { background: var(--biology-soft); border-color: var(--biology); color: var(--biology); }
-    .tab.active.chem { background: var(--chemistry-soft); border-color: var(--chemistry); color: var(--chemistry); }
-    .tab.active.phys { background: var(--physics-soft); border-color: var(--physics); color: var(--physics); }
-    .tab.active.overall { background: var(--higher-soft); border-color: var(--higher); color: var(--higher); }
+    /* pathway badge */
+    .pw-badge { flex-shrink: 0; font-size: 0.6rem; font-weight: 800; width: 17px; height: 17px; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; letter-spacing: 0; }
+    .pw-badge.combined { background: var(--physics-soft); color: var(--physics); border: 1px solid var(--physics); }
+    .pw-badge.triple   { background: var(--chemistry-soft); color: var(--chemistry); border: 1px solid var(--chemistry); }
 
-    /* ── CHAMPION HERO ──────────────────────────────── */
-    .champion-hero {
-      background: var(--higher-soft);
-      border: 1px solid var(--border); border-radius: 20px;
-      padding: 28px 20px 20px; margin-bottom: 28px; text-align: center;
-    }
-    .champion-title {
-      font-family: var(--font-serif); font-weight: 600; font-size: 0.8rem;
-      color: var(--higher); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 20px;
-    }
-    .champion-hero .podium { margin: 0; min-height: auto; }
+    /* top-3 emphasis */
+    .lb-row.top { padding: 14px; }
+    .lb-row.top .lb-name { font-size: 1rem; }
+    .lb-row.top .lb-pct { font-size: 1.12rem; }
+    .lb-row.top .lb-av { width: 44px; height: 44px; }
+    .lb-row.r1 { border-color: var(--gold); background: var(--higher-soft); }
+    .lb-row.r1 .lb-av { border-color: var(--gold); }
+    .lb-row.r2 { border-color: rgba(140,140,140,0.5); }
+    .lb-row.r2 .lb-av { border-color: var(--silver); }
+    .lb-row.r3 { border-color: rgba(176,106,46,0.5); }
+    .lb-row.r3 .lb-av { border-color: var(--bronze); }
+    .medal { font-size: 1.15rem; line-height: 1; }
+    .crown { font-size: 0.95rem; }
 
-    /* ── TOGGLE ROW ─────────────────────────────────── */
-    .toggle-row { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .pathway-toggle, .tier-toggle { display: flex; gap: 6px; }
-    .pathway-btn, .tier-btn {
-      padding: 7px 18px; border-radius: 16px; border: 2px solid var(--border-strong);
-      background: transparent; color: var(--muted); font-weight: 700; font-size: 0.82rem;
-      cursor: pointer; transition: all 0.2s; font-family: var(--font-sans);
-    }
-    .pathway-btn:hover, .tier-btn:hover { border-color: var(--accent-border); }
-    .pathway-btn.active.combined { border-color: var(--physics); background: var(--physics-soft); color: var(--physics); }
-    .pathway-btn.active.triple   { border-color: var(--chemistry); background: var(--chemistry-soft); color: var(--chemistry); }
-    .tier-btn.active.foundation  { border-color: var(--biology); background: var(--biology-soft); color: var(--biology); }
-    .tier-btn.active.higher      { border-color: var(--higher); background: var(--higher-soft); color: var(--higher); }
-
-    .week-info {
-      text-align: center; font-size: 0.82rem; color: var(--muted); margin-bottom: 24px; font-weight: 700;
-    }
-
-    /* ── PODIUM ──────────────────────────────────── */
-    .podium { display: flex; align-items: flex-end; justify-content: center; gap: 12px; margin: 24px 0 36px; min-height: 260px; }
-    .podium-slot { text-align: center; flex-shrink: 0; }
-    .podium-slot.first { order: 2; }
-    .podium-slot.second { order: 1; }
-    .podium-slot.third { order: 3; }
-    .podium-avatar {
-      border-radius: 50%; overflow: hidden; margin: 0 auto 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.5rem; background: var(--sunken);
-    }
-    .podium-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .podium-slot.first .podium-avatar { width: 96px; height: 96px; border: 4px solid var(--gold); }
-    .podium-slot.second .podium-avatar { width: 76px; height: 76px; border: 3px solid var(--silver); }
-    .podium-slot.third .podium-avatar { width: 68px; height: 68px; border: 3px solid var(--bronze); }
-    .podium-medal { font-size: 1.8rem; margin-bottom: 4px; }
-    .podium-slot.first .podium-medal { font-size: 2.2rem; }
-    .podium-name { font-family: var(--font-serif); font-weight: 600; font-size: 0.9rem; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .podium-slot.first .podium-name { font-size: 1.05rem; max-width: 140px; }
-    .podium-school { color: var(--muted); font-size: 0.72rem; font-weight: 700; }
-    .podium-score { font-family: var(--font-serif); font-weight: 600; font-size: 1.15rem; margin-top: 4px; }
-    .podium-slot.first .podium-score { font-size: 1.3rem; color: var(--gold); }
-    .podium-slot.second .podium-score { color: var(--silver); }
-    .podium-slot.third .podium-score { color: var(--bronze); }
-    .podium-extra { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-    .podium-base {
-      border-radius: 12px 12px 0 0; margin-top: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-serif); font-weight: 600; font-size: 1.3rem; color: var(--border-strong);
-    }
-    .podium-slot.first .podium-base { background: var(--higher-soft); height: 96px; width: 126px; border: 1px solid var(--border); }
-    .podium-slot.second .podium-base { background: linear-gradient(180deg, rgba(192,192,192,0.18) 0%, rgba(192,192,192,0.05) 100%); height: 66px; width: 106px; border: 1px solid rgba(192,192,192,0.12); }
-    .podium-slot.third .podium-base { background: linear-gradient(180deg, rgba(205,127,50,0.18) 0%, rgba(205,127,50,0.05) 100%); height: 46px; width: 106px; border: 1px solid rgba(205,127,50,0.12); }
-
-    /* ── REST LIST ────────────────────────────────── */
-    .rest-list { margin-top: 8px; }
-    .rest-item {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 16px; background: var(--card); border: 1px solid var(--border);
-      border-radius: 14px; margin-bottom: 8px;
-    }
-    .rest-rank { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; color: var(--muted); width: 28px; text-align: center; flex-shrink: 0; }
-    .rest-avatar {
-      width: 42px; height: 42px; border-radius: 50%; overflow: hidden;
-      border: 2px solid var(--border); display: flex; align-items: center;
-      justify-content: center; font-size: 1.1rem; background: var(--sunken); flex-shrink: 0;
-    }
-    .rest-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .rest-info { flex: 1; min-width: 0; }
-    .rest-name { font-weight: 800; font-size: 0.92rem; }
-    .rest-school { color: var(--muted); font-size: 0.75rem; }
-    .rest-score { font-family: var(--font-serif); font-weight: 600; font-size: 1.05rem; flex-shrink: 0; }
-
-    .empty {
-      text-align: center; padding: 50px 20px;
-      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
-    }
-    .empty h3 { font-family: var(--font-serif); margin: 16px 0 8px; }
+    .empty { text-align: center; padding: 48px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 18px; }
+    .empty h3 { font-family: var(--font-serif); margin: 14px 0 8px; }
     .empty p { color: var(--muted); }
 
-    .loading { text-align: center; padding-top: 100px; }
-    .spinner {
-      width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent);
-      border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px;
-    }
+    .loading { text-align: center; padding-top: 90px; }
+    .spinner { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+
+    /* ── How it works (collapsible) ─────────────────────── */
+    .how { margin-top: 22px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .how summary { cursor: pointer; padding: 14px 16px; font-weight: 700; font-size: 0.9rem; color: var(--text); list-style: none; display: flex; align-items: center; justify-content: space-between; }
+    .how summary::-webkit-details-marker { display: none; }
+    .how summary::after { content: '▾'; color: var(--muted); transition: transform 0.2s; }
+    .how[open] summary::after { transform: rotate(180deg); }
+    .how summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+    .how-body { padding: 0 16px 16px; color: var(--muted); font-size: 0.86rem; line-height: 1.65; }
+    .how-body strong { color: var(--text); }
+    .how-body ul { margin: 8px 0 0 18px; }
+    .how-body li { margin-bottom: 4px; }
 
     .cta-challenge {
-      display: block; text-align: center; margin-top: 28px; padding: 16px;
+      display: block; text-align: center; margin-top: 20px; padding: 16px;
       border-radius: 16px; background: linear-gradient(135deg, var(--accent), var(--accent-hover));
       color: var(--on-accent); font-family: var(--font-serif); font-weight: 700; font-size: 1rem;
       text-decoration: none; transition: all 0.2s;
     }
-    .cta-challenge:hover { opacity: 0.9; transform: translateY(-2px); }
+    .cta-challenge:hover { opacity: 0.92; transform: translateY(-2px); }
+    @media (prefers-reduced-motion: reduce) { .cta-challenge:hover { transform: none; } }
 
-    @media (max-width: 600px) {
-      .tabs { gap: 4px; }
-      .tab { padding: 6px 12px; font-size: 0.78rem; }
-      .podium { gap: 8px; min-height: 220px; }
-      .podium-slot.first .podium-avatar { width: 76px; height: 76px; }
-      .podium-slot.second .podium-avatar { width: 60px; height: 60px; }
-      .podium-slot.third .podium-avatar { width: 54px; height: 54px; }
-      .podium-slot.first .podium-base { width: 100px; height: 76px; }
-      .podium-slot.second .podium-base { width: 86px; height: 52px; }
-      .podium-slot.third .podium-base { width: 86px; height: 38px; }
-      .toggle-row { gap: 8px; }
-      .champion-hero { padding: 20px 14px 16px; }
-      .pathway-btn, .tier-btn { padding: 6px 13px; font-size: 0.78rem; }
+    /* Responsive: drop time then score on narrow screens */
+    @media (max-width: 460px) {
+      .lb-head, .lb-row { grid-template-columns: 30px 38px minmax(0, 1fr) 48px 44px; gap: 8px; }
+      .lb-time, .h-time { display: none; }
+    }
+    @media (max-width: 380px) {
+      .lb-head, .lb-row { grid-template-columns: 28px 34px minmax(0, 1fr) 46px; }
+      .lb-score, .h-score { display: none; }
     }
   </style>
 </head>
@@ -184,45 +147,47 @@
   </div>
 
   <div id="content" style="display:none;">
-    <div class="header">
-      <h1>🏆 Leaderboard</h1>
-    </div>
-
-    <!-- CHAMPION OF THE WEEK HERO -->
-    <div class="champion-hero" id="champion-hero" style="display:none;">
-      <div class="champion-title">Champion of the Week</div>
-      <div class="podium" id="champion-podium"></div>
-    </div>
-
-    <!-- PATHWAY + TIER TOGGLES -->
-    <div class="toggle-row">
-      <div class="pathway-toggle">
-        <button class="pathway-btn combined active" id="btn-combined" onclick="switchPathway('combined', this)">Combined</button>
-        <button class="pathway-btn triple" id="btn-triple" onclick="switchPathway('triple', this)">Triple</button>
-      </div>
-      <div class="tier-toggle">
-        <button class="tier-btn foundation active" id="btn-foundation" onclick="switchTier('foundation', this)">🌱 Foundation</button>
-        <button class="tier-btn higher" id="btn-higher" onclick="switchTier('higher', this)">⭐ Higher</button>
-      </div>
-    </div>
-
-    <!-- SUBJECT TABS -->
-    <div class="tabs" id="subject-tabs">
-      <button class="tab overall active" onclick="switchTab('overall', this)">🏅 Overall</button>
-      <button class="tab bio" onclick="switchTab('biology', this)">🌿 Biology</button>
-      <button class="tab chem" onclick="switchTab('chemistry', this)">🧪 Chemistry</button>
-      <button class="tab phys" onclick="switchTab('physics', this)">⚡ Physics</button>
-    </div>
-
+    <div class="header"><h1>🏆 Leaderboard</h1></div>
     <div class="week-info" id="week-info"></div>
 
-    <div class="podium" id="podium"></div>
-    <div class="rest-list" id="rest-list"></div>
+    <!-- TIER CHIPS -->
+    <div class="chip-row" id="tier-chips" role="group" aria-label="Tier">
+      <button class="chip foundation active" id="chip-foundation" aria-pressed="true" onclick="switchTier('foundation', this)">🌱 Foundation</button>
+      <button class="chip higher" id="chip-higher" aria-pressed="false" onclick="switchTier('higher', this)">⭐ Higher</button>
+    </div>
+
+    <!-- SUBJECT CHIPS -->
+    <div class="chip-row subjects" id="subject-chips" role="group" aria-label="Subject">
+      <button class="chip overall active" aria-pressed="true" onclick="switchSubject('overall', this)">🏅 Overall</button>
+      <button class="chip bio" aria-pressed="false" onclick="switchSubject('biology', this)">🌿 Biology</button>
+      <button class="chip chem" aria-pressed="false" onclick="switchSubject('chemistry', this)">🧪 Chemistry</button>
+      <button class="chip phys" aria-pressed="false" onclick="switchSubject('physics', this)">⚡ Physics</button>
+    </div>
+
+    <div class="lb-head" id="lb-head" style="display:none;">
+      <span>#</span><span></span><span>Student</span>
+      <span class="h-right">%</span><span class="h-right h-score">Score</span><span class="h-right h-time">Time</span>
+    </div>
+    <div class="lb-list" id="lb-list"></div>
+
     <div class="empty" id="empty" style="display:none;">
       <div style="font-size:3rem;">🏟️</div>
       <h3>No scores yet!</h3>
       <p>Be the first to complete the challenge and claim the top spot.</p>
     </div>
+
+    <details class="how">
+      <summary>How the Weekly Quiz works</summary>
+      <div class="how-body">
+        <p>A fresh set of questions drops every week for each subject. Take it once per subject, and your best goes on the board.</p>
+        <ul>
+          <li><strong>Ranked by percentage</strong> — so Combined (out of 30) and Triple (out of 45) compete fairly side by side.</li>
+          <li>Ties are broken by the <strong>faster time</strong>.</li>
+          <li>The <strong>C</strong> / <strong>T</strong> badge shows whether a score came from the Combined or Triple paper.</li>
+          <li>Your pathway and tier come from your profile — pick your subject on the challenge page and go.</li>
+        </ul>
+      </div>
+    </details>
 
     <a href="/weekly-challenge.html" class="cta-challenge">Take the Weekly Challenge ⚡</a>
   </div>
@@ -235,166 +200,139 @@
   var RENDER_URL = 'https://mrbadmus-backend.onrender.com';
   var medals = ['🥇', '🥈', '🥉'];
   var currentSubject = 'overall';
-  var currentPathway = 'combined';
   var currentTier = 'foundation';
 
   fetch(RENDER_URL + '/api/health').catch(function(){});
 
-  function switchTab(subject, el) {
-    currentSubject = subject;
-    document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
-    el.classList.add('active');
-    loadLeaderboard();
+  // Display seam (MRB-138): handles appear automatically once the backend adds
+  // `username` to the leaderboard payload; falls back to first name until then.
+  function displayName(u) { return (u && (u.username || u.name || u.first_name)) || 'Student'; }
+  function esc(str) { var d = document.createElement('div'); d.textContent = str == null ? '' : str; return d.innerHTML; }
+  function pctOf(e) { return e.max_score ? Math.round(100 * e.score / e.max_score) : 0; }
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    var d = new Date(dateStr + 'T00:00:00');
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
   }
-
-  function switchPathway(pathway, el) {
-    currentPathway = pathway;
-    document.querySelectorAll('.pathway-btn').forEach(function(b) { b.classList.remove('active'); });
-    el.classList.add('active');
-    loadLeaderboard();
-  }
+  function formatTime(secs) { var m = Math.floor(secs / 60); var s = secs % 60; return m + 'm ' + s + 's'; }
 
   function switchTier(tier, el) {
     currentTier = tier;
-    document.querySelectorAll('.tier-btn').forEach(function(b) { b.classList.remove('active'); });
-    el.classList.add('active');
+    document.querySelectorAll('#tier-chips .chip').forEach(function(c){ c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+    el.classList.add('active'); el.setAttribute('aria-pressed','true');
+    loadLeaderboard();
+  }
+  function switchSubject(subject, el) {
+    currentSubject = subject;
+    document.querySelectorAll('#subject-chips .chip').forEach(function(c){ c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+    el.classList.add('active'); el.setAttribute('aria-pressed','true');
     loadLeaderboard();
   }
 
-  async function loadChampion() {
-    try {
-      var res = await fetch(RENDER_URL + '/api/weekly-leaderboard/champion');
-      if (!res.ok) return;
-      var data = await res.json();
-      if (!data.champion) return;
-      var c = data.champion;
-      var avatarContent = c.avatar_url ? '<img src="' + c.avatar_url + '" alt=""/>' : '🧑‍🎓';
-      var subsTxt = c.subjects_done ? c.subjects_done + '/3 subjects · ' + c.percentage + '%' : c.percentage + '%';
-      document.getElementById('champion-podium').innerHTML =
-        '<div class="podium-slot first">' +
-          '<div class="podium-medal" style="font-size:2.6rem;">🏆</div>' +
-          '<div class="podium-avatar">' + avatarContent + '</div>' +
-          '<div class="podium-name">' + esc(c.name) + '</div>' +
-          (c.school ? '<div class="podium-school">' + esc(c.school) + '</div>' : '') +
-          '<div class="podium-score">' + c.score + '/' + c.max_score + '</div>' +
-          '<div class="podium-extra">' + subsTxt + '</div>' +
-          (c.time_taken ? '<div class="podium-extra">' + formatTime(c.time_taken) + '</div>' : '') +
-        '</div>';
-      document.getElementById('champion-hero').style.display = 'block';
-    } catch(e) { /* champion section stays hidden */ }
+  function urlFor(pathway) {
+    if (currentSubject === 'overall') {
+      return RENDER_URL + '/api/weekly-leaderboard?overall=true&pathway=' + pathway + '&tier=' + currentTier;
+    }
+    return RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&pathway=' + pathway + '&tier=' + currentTier;
+  }
+  function fetchPathway(pathway) {
+    return fetch(urlFor(pathway)).then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
   }
 
   async function loadLeaderboard() {
-    document.getElementById('podium').innerHTML = '';
-    document.getElementById('rest-list').innerHTML = '';
-    document.getElementById('empty').style.display = 'none';
-    // Reset the empty-state copy to its default — a previous failed load leaves
-    // the "Could not load" error text on this shared element, which would
-    // otherwise show on every genuinely-empty track for the rest of the visit.
-    document.querySelector('#empty h3').textContent = 'No scores yet!';
-    document.querySelector('#empty p').textContent = 'Be the first to complete the challenge and claim the top spot.';
-
-    var url;
-    if (currentSubject === 'overall') {
-      url = RENDER_URL + '/api/weekly-leaderboard?overall=true&pathway=' + currentPathway + '&tier=' + currentTier;
-    } else {
-      url = RENDER_URL + '/api/weekly-leaderboard?subject=' + currentSubject + '&pathway=' + currentPathway + '&tier=' + currentTier;
-    }
+    var listEl = document.getElementById('lb-list');
+    var emptyEl = document.getElementById('empty');
+    var headEl = document.getElementById('lb-head');
+    listEl.innerHTML = '';
+    emptyEl.style.display = 'none';
+    headEl.style.display = 'none';
+    // reset any prior error copy on the shared empty element
+    emptyEl.querySelector('h3').textContent = 'No scores yet!';
+    emptyEl.querySelector('p').textContent = 'Be the first to complete the challenge and claim the top spot.';
 
     try {
-      var res = await fetch(url);
-      var data = await res.json();
+      // Combined /30 and Triple /45 are separate backend lists — fetch both and
+      // merge, so we can rank by PERCENTAGE and drop the pathway filter (MRB-137).
+      var results = await Promise.all([fetchPathway('combined'), fetchPathway('triple')]);
+      var combined = results[0], triple = results[1];
+      var weekStart = (combined && combined.week_start) || (triple && triple.week_start) || '';
 
-      var pathLabel = currentPathway.charAt(0).toUpperCase() + currentPathway.slice(1);
+      var all = [];
+      [['combined', combined], ['triple', triple]].forEach(function(pair) {
+        var pw = pair[0], data = pair[1];
+        var lb = (data && data.leaderboard) || [];
+        lb.forEach(function(e) { e._pathway = pw; e._pct = e.max_score ? e.score / e.max_score : 0; all.push(e); });
+      });
+      // Primary sort: percentage desc. Tiebreak: faster time.
+      all.sort(function(a, b) {
+        if (b._pct !== a._pct) return b._pct - a._pct;
+        return (a.time_taken || 1e9) - (b.time_taken || 1e9);
+      });
+      all = all.slice(0, 10);
+
+      var subjectLabels = { overall: '🏅 Overall', biology: '🌿 Biology', chemistry: '🧪 Chemistry', physics: '⚡ Physics' };
       var tierLabel = currentTier.charAt(0).toUpperCase() + currentTier.slice(1);
-      var infoEl = document.getElementById('week-info');
-      if (currentSubject === 'overall') {
-        infoEl.textContent = '🏅 Overall · ' + pathLabel + ' ' + tierLabel + ' — Week of ' + formatDate(data.week_start);
-      } else {
-        var subjectLabels = { biology: '🌿 Biology', chemistry: '🧪 Chemistry', physics: '⚡ Physics' };
-        infoEl.textContent = (subjectLabels[currentSubject] || currentSubject) + ' · ' + pathLabel + ' ' + tierLabel + ' — Week of ' + formatDate(data.week_start);
-      }
+      document.getElementById('week-info').textContent =
+        (subjectLabels[currentSubject] || currentSubject) + ' · ' + tierLabel + ' — Week of ' + formatDate(weekStart);
 
-      var lb = data.leaderboard || [];
-      if (lb.length === 0) {
-        document.getElementById('empty').style.display = 'block';
-        return;
-      }
+      if (all.length === 0) { emptyEl.style.display = 'block'; return; }
 
-      var podiumHtml = '';
-      var podiumClasses = ['', 'first', 'second', 'third'];
-      var rankLabels = ['1st', '2nd', '3rd'];
-      for (var i = 0; i < Math.min(3, lb.length); i++) {
-        var p = lb[i];
-        var avatarContent = p.avatar_url ? '<img src="' + p.avatar_url + '" alt=""/>' : '🧑‍🎓';
-        var timeTxt = p.time_taken ? formatTime(p.time_taken) : '';
-        var extraInfo = (currentSubject === 'overall' && p.subjects_done) ?
-          '<div class="podium-extra">' + p.subjects_done + '/3 subjects</div>' : '';
-        podiumHtml += '<div class="podium-slot ' + podiumClasses[i + 1] + '">' +
-          '<div class="podium-medal">' + medals[i] + '</div>' +
-          '<div class="podium-avatar">' + avatarContent + '</div>' +
-          '<div class="podium-name">' + esc(p.name) + '</div>' +
-          (p.school ? '<div class="podium-school">' + esc(p.school) + '</div>' : '') +
-          '<div class="podium-score">' + p.score + '/' + p.max_score + '</div>' +
-          (timeTxt ? '<div class="podium-extra">' + timeTxt + '</div>' : '') +
-          extraInfo +
-          '<div class="podium-base">' + rankLabels[i] + '</div></div>';
-      }
-      document.getElementById('podium').innerHTML = podiumHtml;
+      headEl.style.display = 'grid';
+      var html = '';
+      for (var i = 0; i < all.length; i++) {
+        var e = all[i];
+        var rank = i + 1;
+        var isTop = rank <= 3;
+        var rowCls = 'lb-row' + (isTop ? ' top r' + rank : '');
+        var rankCell = isTop ? '<span class="medal">' + medals[i] + '</span>' : rank;
+        var av = e.avatar_url ? '<img src="' + esc(e.avatar_url) + '" alt=""/>' : '🧑‍🎓';
+        var crown = rank === 1 ? '<span class="crown" title="Champion">👑</span>' : '';
+        var badge = '<span class="pw-badge ' + e._pathway + '" title="' + (e._pathway === 'combined' ? 'Combined' : 'Triple') + ' Science">' +
+                    (e._pathway === 'combined' ? 'C' : 'T') + '</span>';
+        var sub = (currentSubject === 'overall' && e.subjects_done)
+          ? '<div class="lb-sub">' + e.subjects_done + '/3 subjects</div>' : '';
+        var timeTxt = e.time_taken ? formatTime(e.time_taken) : '—';
 
-      if (lb.length > 3) {
-        var restHtml = '';
-        for (var j = 3; j < lb.length; j++) {
-          var r = lb[j];
-          var rAvatar = r.avatar_url ? '<img src="' + r.avatar_url + '" alt=""/>' : '🧑‍🎓';
-          var rExtra = (currentSubject === 'overall' && r.subjects_done) ?
-            ' <span style="color:var(--muted);font-size:0.72rem;">(' + r.subjects_done + '/3)</span>' : '';
-          restHtml += '<div class="rest-item">' +
-            '<span class="rest-rank">' + r.rank + '</span>' +
-            '<div class="rest-avatar">' + rAvatar + '</div>' +
-            '<div class="rest-info"><div class="rest-name">' + esc(r.name) +
-            (r.school ? ' <span style="color:var(--muted);font-weight:600;font-size:0.78rem;">· ' + esc(r.school) + '</span>' : '') +
-            '</div></div>' +
-            '<span class="rest-score">' + r.score + '/' + r.max_score + rExtra + '</span></div>';
-        }
-        document.getElementById('rest-list').innerHTML = restHtml;
+        html += '<div class="' + rowCls + '">' +
+          '<span class="lb-rank">' + rankCell + '</span>' +
+          '<span class="lb-av">' + av + '</span>' +
+          '<span class="lb-namewrap">' +
+            '<span class="lb-name">' + crown + esc(displayName(e)) + badge + '</span>' + sub +
+          '</span>' +
+          '<span class="lb-pct">' + pctOf(e) + '%</span>' +
+          '<span class="lb-score">' + e.score + '/' + e.max_score + '</span>' +
+          '<span class="lb-time">' + timeTxt + '</span>' +
+        '</div>';
       }
+      listEl.innerHTML = html;
 
     } catch (err) {
       console.error(err);
-      document.getElementById('empty').style.display = 'block';
-      document.querySelector('#empty h3').textContent = 'Could not load leaderboard';
-      document.querySelector('#empty p').textContent = 'Try refreshing the page.';
+      emptyEl.style.display = 'block';
+      emptyEl.querySelector('h3').textContent = 'Could not load leaderboard';
+      emptyEl.querySelector('p').textContent = 'Try refreshing the page.';
     }
   }
 
   async function init() {
-    // Try to read profile to auto-land on student's own pathway+tier
+    // Auto-land on the student's own tier (pathway is no longer a filter).
     try {
       var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       var result = await sb.auth.getSession();
       if (result.data.session) {
         var uid = result.data.session.user.id;
-        var profileRes = await sb.from('profiles').select('science_pathway, tier').eq('id', uid).single();
-        if (profileRes.data) {
-          if (profileRes.data.science_pathway) {
-            currentPathway = profileRes.data.science_pathway;
-            document.querySelectorAll('.pathway-btn').forEach(function(b) { b.classList.remove('active'); });
-            var pb = document.getElementById('btn-' + currentPathway);
-            if (pb) pb.classList.add('active');
-          }
-          if (profileRes.data.tier) {
-            currentTier = profileRes.data.tier;
-            document.querySelectorAll('.tier-btn').forEach(function(b) { b.classList.remove('active'); });
-            var tb = document.getElementById('btn-' + currentTier);
-            if (tb) tb.classList.add('active');
-          }
+        var profileRes = await sb.from('profiles').select('tier').eq('id', uid).single();
+        if (profileRes.data && profileRes.data.tier) {
+          currentTier = profileRes.data.tier;
+          document.querySelectorAll('#tier-chips .chip').forEach(function(c){ c.classList.remove('active'); c.setAttribute('aria-pressed','false'); });
+          var tb = document.getElementById('chip-' + currentTier);
+          if (tb) { tb.classList.add('active'); tb.setAttribute('aria-pressed','true'); }
         }
       }
-    } catch(e) { /* non-logged-in visitors use defaults — fine */ }
+    } catch(e) { /* logged-out visitors use defaults — fine */ }
 
     try {
-      await loadChampion();
       await loadLeaderboard();
       document.getElementById('loading').style.display = 'none';
       document.getElementById('content').style.display = 'block';
@@ -403,20 +341,6 @@
     }
   }
   init();
-
-  function formatDate(dateStr) {
-    if (!dateStr) return '';
-    var d = new Date(dateStr + 'T00:00:00');
-    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return d.getDate() + ' ' + months[d.getMonth()] + ' ' + d.getFullYear();
-  }
-  function formatTime(secs) {
-    var m = Math.floor(secs / 60); var s = secs % 60;
-    return m + 'm ' + s + 's';
-  }
-  function esc(str) {
-    var div = document.createElement('div'); div.textContent = str; return div.innerHTML;
-  }
 </script>
 </body>
 </html>
