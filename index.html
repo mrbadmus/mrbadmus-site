@@ -238,7 +238,10 @@
 
   function show(tier) {
     idx = order.indexOf(tier);
-    order.forEach(function(t) {
+    // Iterate ALL tiers (not just `order`): a tier that's empty this week is
+    // excluded from `order`, so iterating `order` would leave its slide with the
+    // `active` class from the initial HTML — both slides visible, overlapping.
+    available.forEach(function(t) {
       var on = t === tier;
       slides[t].classList.toggle('active', on);
       slides[t].setAttribute('aria-hidden', on ? 'false' : 'true');
