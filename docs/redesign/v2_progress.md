@@ -44,9 +44,104 @@ NOTHING COMMITTED. HEAD still `e0f7b46c0`. Working tree = Phase 0 + Phase 1 buil
 Awaiting Mide: Gate 0 packet sign-offs (spec defects §1, de-leak texts §2) and Gate 1 pilot review (ionic-bonding, giant-covalent-structures).
 Commit grouping proposal: packet §8. Mide commits/pushes via GitHub Desktop only.
 
+---
+
+# Phase 1.6 run — visible-motion refactor (MRB-134 Fix 1 + Fix 6 remainder)
+
+**Run start:** 24 July 2026 · branch `content/bonding`
+
+## Guards (this run)
+
+- **HEAD at run start:** `54fd89804300476eea992acd83633fafc6363145` ("covalent bonding pages redesign").
+  **Part 0 resolution:** the Phase 1.5 changeset that the previous session *proposed* was
+  **already committed by Mide himself via GitHub Desktop** as `54fd89804` (author `mrbadmus`,
+  2026-07-24 05:31). It contains the proposed 109 files (12 source + 46 root HTML + 46 mirror
+  HTML + 5 mirror shared JS) **plus** `docs/redesign/gate0_packet_bonding_v2.rtf` — Mide chose
+  to track the .rtf where the proposal said leave it untracked. Working tree was clean at run
+  start; there was nothing to commit, so no duplicate commit was created. This IS the guard
+  scenario ("if HEAD moves, first hypothesis is Mide committed via GitHub Desktop"). If HEAD
+  moves again mid-run: STOP, same hypothesis.
+- **Chemistry freeze baseline (SHA256, current committed state — the 4 files are NOT touched this run):**
+  - `b44669d4…c824fdf9  all_subtopics_chemistry.py`
+  - `4d13b977…a0a42b61e  all_subtopics_chemistry_higher.py`
+  - `a3614f4e…f7645b534  all_subtopics_chemistry_triple_foundation.py`
+  - `edf241e7…006b83f0  all_subtopics_chemistry_triple_higher.py`
+- **No commits.** One consolidated stop at the end with a single proposed commit grouping.
+
+## Phase 1.6 status — COMPLETE 24 July 2026 (NOT committed; HEAD still 54fd89804)
+
+| Item | Status |
+|---|---|
+| Part 0 — verify Phase 1.5 landed, record guard, baseline | ✅ done |
+| Shared keyed-reconcile helper (`shared/heroes/keyed-render.js`) | ✅ done |
+| dot-cross-stepper: keyed render + electron travel (headline) + covalent shared-pair | ✅ done |
+| two-state-compare: keyed render + property-value animation + metallic layer slide | ✅ done |
+| state-toggle-lab: keyed render + particle interpolation (solid→molten→dissolved) | ✅ done |
+| Fix 6 remainder: explicit Reveal-comparison button + animated props + VIEWING stays | ✅ done |
+| Reduced-motion: instant end-state everywhere (verified `--force-prefers-reduced-motion`) | ✅ done |
+| Verify: driver node-identity + transition assertions, screenshots, determinism, freeze, keyboard, audit | ✅ done |
+
+## What animates now, and how it was proven (headless-Chrome iframe drivers)
+
+The frame swap is gone: every render reuses the SAME DOM nodes (keyed by a
+stable id) and updates their position/size/value, so the CSS transitions
+already declared on atoms/electrons/ions finally fire.
+
+- **dot-cross transfer** (ionic-bonding): the transferring electron `etr-0`
+  is the SAME node before/after the transfer step (node identity preserved),
+  `transitionrun(left)` fires, it travels 215px→407px. Mid-transfer screenshot
+  shows the • dot floating halfway between Na and Cl.
+- **dot-cross share** (covalent-bonding): `pair-dot` identity preserved,
+  travels 209→313 with smooth computed-left interpolation; the two atoms slide
+  together (ring-L/ring-R/label-L transitionrun).
+- **electronSea** (metallic-bonding): electron `electronSea:e-0` identity
+  preserved, `transitionrun(top)`, travels 16→54 (free→pinned).
+- **metalLayers** (metals-alloys): ion identity preserved, 24 `transitionrun`
+  events, computed-left interpolates 26→43 (layers shear/slide under force).
+- **crossfade + property values** (giant-covalent): structures crossfade
+  (opacity) between diamond↔graphite; property row identity preserved, value
+  animates "4"→"3"; VIEWING indicator + verdict + lock/unlock correct.
+- **state-toggle** (ionic-compounds): 70 ion `transitionrun` events, ions
+  interpolate between arrangements (solid→molten→dissolved reads as motion).
+
+**Testing gotcha (recorded for next time):** under `--virtual-time-budget`,
+`transitionrun` events fire NON-deterministically if you observe with a long
+`setTimeout` (the compositor doesn't tick during fast-forward). Observe with a
+`requestAnimationFrame` sampling loop instead — it forces frames, so both the
+events AND `getComputedStyle(el).left` interpolation are reliable. Reduced-motion
+drivers must NOT use an rAF loop (no frames scheduled when nothing animates → it
+stalls); use `getComputedStyle(el).transitionDuration` (a single read) instead.
+
+## Verification battery (all green)
+
+- Node identity + transition: all 6 engine modes (above).
+- Reduced motion: `--force-prefers-reduced-motion` → keyed nodes report
+  `transition-duration: 0s`, `transition-property: none` on all 3 engines
+  (media-query `!important` kill beats the inline transition); end position
+  still set → instant end-state. dot-cross reduced-motion screenshot shows the
+  electron already docked in Cl's shell (no mid-flight).
+- Screenshots (scratchpad): `shot_dotcross_mid.png`, `shot_dotcross_reducedmotion_end.png`,
+  `shot390_{ionic,giantcov,ioniccompounds}.png` — no page-body horizontal overflow.
+- Determinism: 2 runs → 998 mrbadmus_site HTML byte-identical.
+- Freeze: 4 chemistry data files byte-identical to baseline (`git diff HEAD` empty).
+- Containment: 48 bonding HTML changed (script tag only), ZERO non-bonding HTML.
+- Keyboard: all hero controls native `<button>`; keyed viz nodes (36/12/35) not
+  in tab order; Reveal button focusable + keyboard-operable.
+- Smoke: 0 JS errors across 7 loads incl. `tri` layout (MgCl₂) + Combined variant.
+- Audit (`audit_content.py`): bonding 0 critical / 0 major (319 minor = frozen
+  MCQ length-parity = MRB-122). Unchanged — no content data touched.
+
+## Change containment (proposed single commit — NOT committed)
+
+New: `shared/heroes/keyed-render.js` (+ mirror). Modified: `dot-cross-stepper.js`,
+`two-state-compare.js`, `state-toggle-lab.js` (+ mirrors), `generate_site_v5.py`
+(loads keyed-render.js before the 3 engines), `docs/redesign/v2_progress.md`.
+Generated: 48 bonding HTML (24 root + 24 mirror = 6 engine pages × 4 variants)
+gain the one `<script src="/shared/heroes/keyed-render.js">` tag. = 58 entries.
+
 ## Blocked / skipped log
 
-- (none yet)
+- (none) — all three engines shipped; nothing narrowed or deferred.
 
 ## Notes for resume
 

@@ -66,6 +66,9 @@
       '.mrb-stl__reset{font-family:var(--font-mono,monospace);font-size: calc(12px * var(--rd-fs-scale, 1));font-weight:600;letter-spacing:.04em;color:var(--ink-muted,#6B635A);background:transparent;border:1px solid var(--border,#E4DCCB);border-radius:8px;padding:8px 14px;cursor:pointer;transition:border-color .15s,color .15s}',
       '.mrb-stl__reset:hover{border-color:var(--accent-strong,#C0392B);color:var(--accent-deep,#B5341A)}',
       '.mrb-stl__reset:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
+      /* MRB-134 Law 9: reduced-motion users get the instant end-state — kill the
+         keyed viz nodes' unconditional position transition. */
+      '@media (prefers-reduced-motion: reduce){.mrb-stl__viz [data-k]{transition:none!important}}',
       '@media (max-width:640px){.mrb-stl__grid{grid-template-columns:1fr}.mrb-stl__viz{border-right:none;border-bottom:1px solid var(--surface-inset,#EFE7D8)}}',
     ].join('');
     document.head.appendChild(s);
@@ -114,37 +117,70 @@
     return { ions: ions, W: W, H: H, shearY: padT + Math.floor(R * 0.6) * S - 8 };
   }
 
-  function buildViz(config, stateDef, jit) {
-    var m = latticeModel(config, stateDef.arrangement, jit);
-    var noMotion = reduceMotion();
-    var small = config.ions.pos.glyph.length > 1 || config.ions.neg.glyph.length > 1;
-    var kids = m.ions.map(function (io) {
-      var st = {
-        position: 'absolute', left: io.x + 'px', top: io.y + 'px', width: ION + 'px', height: ION + 'px',
-        borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700', fontSize: small ? 'calc(12px * var(--rd-fs-scale, 1))' : 'calc(17px * var(--rd-fs-scale, 1))',
-        color: '#fff', background: io.pos ? 'radial-gradient(circle at 35% 30%,#E0745F,#C0392B)' : 'radial-gradient(circle at 35% 30%,#6B96C9,#2E7DD1)',
-        boxShadow: '0 4px 10px -3px rgba(0,0,0,.35)', transition: 'all .6s cubic-bezier(.4,0,.2,1)',
+  /* pure model → keyed descriptor list (MRB-134 Law 9). Ions carry a stable
+     key by lattice index, so on a state toggle each ion INTERPOLATES from its
+     old arrangement to the new one (solid → molten → dissolved reads as
+     motion) instead of the whole grid being torn down and rebuilt. */
+  function describeViz(config, stateDef, jit, m, small, noMotion) {
+    var list = m.ions.map(function (io) {
+      return {
+        key: 'ion-' + io.i,
+        create: function () {
+          return el('div', { style: {
+            position: 'absolute', width: ION + 'px', height: ION + 'px',
+            borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700',
+            fontSize: small ? 'calc(12px * var(--rd-fs-scale, 1))' : 'calc(17px * var(--rd-fs-scale, 1))',
+            color: '#fff', background: io.pos ? 'radial-gradient(circle at 35% 30%,#E0745F,#C0392B)' : 'radial-gradient(circle at 35% 30%,#6B96C9,#2E7DD1)',
+            boxShadow: '0 4px 10px -3px rgba(0,0,0,.35)', transition: 'all .6s cubic-bezier(.4,0,.2,1)',
+          } }, io.pos ? config.ions.pos.glyph : config.ions.neg.glyph);
+        },
+        update: function (n) {
+          n.style.left = io.x + 'px'; n.style.top = io.y + 'px';
+          n.style.animation = (io.anim && !noMotion) ? ('mrbIonJiggle ' + io.j.dur + 's ease-in-out ' + io.j.del + 's infinite') : 'none';
+        },
       };
-      if (io.anim && !noMotion) st.animation = 'mrbIonJiggle ' + io.j.dur + 's ease-in-out ' + io.j.del + 's infinite';
-      return el('div', { style: st }, io.pos ? config.ions.pos.glyph : config.ions.neg.glyph);
     });
     if (stateDef.arrangement === 'dissolved') {
-      [[70, 40], [200, 30], [340, 60], [120, 150], [280, 190], [400, 120], [40, 210], [360, 220]].forEach(function (w, k) {
-        var st = { position: 'absolute', left: w[0] + 'px', top: w[1] + 'px', width: '15px', height: '15px', borderRadius: '50%',
-          background: 'rgba(120,170,220,.5)', border: '1px solid rgba(90,140,200,.6)' };
-        if (!noMotion) st.animation = 'mrbIonJiggle ' + (1.2 + k * 0.1) + 's ease-in-out infinite';
-        kids.push(el('div', { style: st }));
+      [[70, 40], [200, 30], [340, 60], [120, 150], [280, 190], [400, 120], [40, 210], [360, 220]].forEach(function (wp, k) {
+        list.push({
+          key: 'water-' + k,
+          create: function () {
+            var st = { position: 'absolute', left: wp[0] + 'px', top: wp[1] + 'px', width: '15px', height: '15px', borderRadius: '50%',
+              background: 'rgba(120,170,220,.5)', border: '1px solid rgba(90,140,200,.6)', transition: 'opacity .4s ease' };
+            if (!noMotion) st.animation = 'mrbIonJiggle ' + (1.2 + k * 0.1) + 's ease-in-out infinite';
+            return el('div', { style: st });
+          },
+          enter: function (n) { n.style.opacity = '0'; },
+          update: function (n) { n.style.opacity = '1'; },
+        });
       });
     }
     if (stateDef.arrangement === 'sheared') {
-      kids.push(el('div', { style: { position: 'absolute', left: '0', top: m.shearY + 'px', width: m.W + 'px', height: '3px',
-        background: 'repeating-linear-gradient(90deg,#B5341A 0 10px,transparent 10px 18px)', opacity: '.8' } }));
-      kids.push(el('div', { style: { position: 'absolute', left: (m.W / 2 - 40) + 'px', top: (m.shearY - 24) + 'px',
-        fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700', fontSize: 'calc(13px * var(--rd-fs-scale, 1))', color: '#B5341A',
-        background: '#FBE0D6', padding: '3px 10px', borderRadius: '999px', border: '1px solid #F0BBA9' } }, '⚡ repel!'));
+      list.push({
+        key: 'shear-line',
+        create: function () { return el('div', { style: { position: 'absolute', left: '0', width: m.W + 'px', height: '3px',
+          background: 'repeating-linear-gradient(90deg,#B5341A 0 10px,transparent 10px 18px)', opacity: '.8', transition: 'opacity .3s ease' } }); },
+        enter: function (n) { n.style.opacity = '0'; },
+        update: function (n) { n.style.top = m.shearY + 'px'; n.style.opacity = '.8'; },
+      });
+      list.push({
+        key: 'shear-badge',
+        create: function () { return el('div', { style: { position: 'absolute',
+          fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700', fontSize: 'calc(13px * var(--rd-fs-scale, 1))', color: '#B5341A',
+          background: '#FBE0D6', padding: '3px 10px', borderRadius: '999px', border: '1px solid #F0BBA9', transition: 'opacity .3s ease' } }, '⚡ repel!'); },
+        enter: function (n) { n.style.opacity = '0'; },
+        update: function (n) { n.style.left = (m.W / 2 - 40) + 'px'; n.style.top = (m.shearY - 24) + 'px'; n.style.opacity = '1'; },
+      });
     }
-    return el('div', { style: { position: 'relative', width: m.W + 'px', height: m.H + 'px', margin: '0 auto' } }, kids);
+    return list;
+  }
+
+  /* keyed paint with a graceful fallback if the reconciler is absent */
+  function paintViz(stage, list, reduce) {
+    if (window.MrbKeyedRender) { MrbKeyedRender.reconcile(stage, list, { reduceMotion: reduce, exit: function (n) { n.style.opacity = '0'; setTimeout(function () { if (n.parentNode) n.parentNode.removeChild(n); }, 420); } }); return; }
+    stage.innerHTML = ''; stage.__mrbKeyed = {};
+    list.forEach(function (d) { var n = d.create(); if (n && n.setAttribute) n.setAttribute('data-k', d.key); if (d.update) d.update(n, true); stage.appendChild(n); });
   }
 
   function init(container, config) {
@@ -152,6 +188,7 @@
     ensureStyles();
     var jit = makeJitter(config.grid.cols * config.grid.rows);
     var modeKey = config.states[0].key;
+    var vizStage = null;   // persistent coordinate space for keyed render
     // Phase 1a (MRB-133): optional predict-before-reveal gate (Law 4)
     var gate = (config.predict && window.MrbPredictWrapper)
       ? MrbPredictWrapper.create(config.predict) : null;
@@ -215,8 +252,17 @@
       var stateDef = null, i;
       for (i = 0; i < config.states.length; i++) if (config.states[i].key === modeKey) stateDef = config.states[i];
       if (!stateDef) stateDef = config.states[0];
-      vizWrap.innerHTML = '';
-      vizWrap.appendChild(buildViz(config, stateDef, jit));
+      // viz — MRB-134 Law 9: reuse the coordinate stage and keyed-reconcile the
+      // ions so they interpolate between arrangements rather than jumping.
+      if (!vizStage) {
+        vizStage = el('div', { style: { position: 'relative', margin: '0 auto' } });
+        vizWrap.appendChild(vizStage);
+      }
+      var m = latticeModel(config, stateDef.arrangement, jit);
+      var noMotion = window.MrbKeyedRender ? MrbKeyedRender.reduceMotion() : reduceMotion();
+      var small = config.ions.pos.glyph.length > 1 || config.ions.neg.glyph.length > 1;
+      vizStage.style.width = m.W + 'px'; vizStage.style.height = m.H + 'px';
+      paintViz(vizStage, describeViz(config, stateDef, jit, m, small, noMotion), noMotion);
       // Phase 0c (MRB-132): name the lattice diagram per state for screen readers.
       vizWrap.setAttribute('role', 'img');
       vizWrap.setAttribute('aria-label', 'Diagram: ' + (stateDef.label || stateDef.key) + '. '

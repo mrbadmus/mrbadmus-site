@@ -4409,6 +4409,10 @@ try {{
   </div>
 """
             _shared_scripts.append("predict-wrapper.js")   # Phase 1a (Law 4)
+            # MRB-134 Phase 1.6 (Law 9): the visible-motion engines reconcile
+            # their viz through the shared keyed renderer — load it first.
+            if hero["module"] in ("dot-cross-stepper", "two-state-compare", "state-toggle-lab"):
+                _scripts.append("keyed-render.js")
             _scripts.append(hero["module"] + ".js")
             if hero.get("build") == "fifa":
                 # FIFA config = frozen `fifas` worked spine (per variant) zipped

@@ -68,6 +68,10 @@
       '.mrb-dcs__reset{font-family:var(--font-mono,monospace);font-size: calc(12px * var(--rd-fs-scale, 1));font-weight:600;letter-spacing:.04em;color:var(--ink-muted,#6B635A);background:transparent;border:1px solid var(--border,#E4DCCB);border-radius:8px;padding:8px 14px;cursor:pointer;transition:border-color .15s,color .15s}',
       '.mrb-dcs__reset:hover{border-color:var(--accent-strong,#C0392B);color:var(--accent-deep,#B5341A)}',
       '.mrb-dcs__reset:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
+      /* MRB-134 Law 9: reduced-motion users get the instant end-state — the
+         keyed viz nodes carry an unconditional CSS transition, so kill it here
+         (a !important stylesheet rule beats the inline transition). */
+      '@media (prefers-reduced-motion: reduce){.mrb-dcs__viz [data-k]{transition:none!important}}',
     ].join('');
     document.head.appendChild(s);
   }
@@ -94,90 +98,178 @@
 
   function pos(cx, cy, r, deg) { var a = deg * Math.PI / 180; return { x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) }; }
 
-  /* ---- one atom: shell ring + symbol/config label + optional charge badge ---- */
-  function atomEls(sym, cfg, cx, cy, r, charge, showCharge) {
+  /* ---- descriptor builders (MRB-134 Law 9) ----
+     Each returns a keyed descriptor for the shared reconciler instead of
+     a fresh DOM node. The geometry (pos/angles/coords) is identical to
+     before; only the node lifecycle changes — nodes are reused across
+     steps and their left/top updated, so the .75s CSS transition already
+     on the ring / label / electron actually fires and the electron is
+     SEEN travelling from shell to shell (never a frame swap). ---- */
+
+  // one atom = a shell ring + a symbol/config label (+ optional charge
+  // badge), keyed by the atom's stable `tag` so it persists across steps.
+  function atomDescs(tag, sym, cfg, cx, cy, r, charge, showCharge) {
     var out = [];
-    out.push(el('div', { style: {
-      position: 'absolute', left: (cx - r) + 'px', top: (cy - r) + 'px', width: (2 * r) + 'px', height: (2 * r) + 'px',
-      borderRadius: '50%', border: '2px solid #C9BFAD', background: 'radial-gradient(circle,#FFFDF8 55%,#F3ECDD)',
-      transition: 'all .75s cubic-bezier(.5,0,.2,1)',
-    } }));
-    out.push(el('div', { style: {
-      position: 'absolute', left: (cx - r) + 'px', top: (cy - 22) + 'px', width: (2 * r) + 'px', textAlign: 'center',
-      pointerEvents: 'none', transition: 'all .75s cubic-bezier(.5,0,.2,1)',
-    } }, [
-      el('div', { style: { fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700', fontSize: 'calc(26px * var(--rd-fs-scale, 1))', color: 'var(--ink,#1A1714)', lineHeight: '1' } }, sym),
-      el('div', { style: { fontFamily: 'var(--font-mono,monospace)', fontSize: 'calc(11px * var(--rd-fs-scale, 1))', fontWeight: '700', color: 'var(--ink-muted,#6B635A)', marginTop: '3px' } }, cfg),
-    ]));
+    out.push({
+      key: 'ring-' + tag,
+      create: function () {
+        return el('div', { style: {
+          position: 'absolute', borderRadius: '50%', border: '2px solid #C9BFAD',
+          background: 'radial-gradient(circle,#FFFDF8 55%,#F3ECDD)',
+          transition: 'all .75s cubic-bezier(.5,0,.2,1)',
+        } });
+      },
+      update: function (n) {
+        n.style.left = (cx - r) + 'px'; n.style.top = (cy - r) + 'px';
+        n.style.width = (2 * r) + 'px'; n.style.height = (2 * r) + 'px';
+      },
+    });
+    out.push({
+      key: 'label-' + tag,
+      create: function () {
+        return el('div', { style: {
+          position: 'absolute', textAlign: 'center', pointerEvents: 'none',
+          transition: 'all .75s cubic-bezier(.5,0,.2,1)',
+        } }, [
+          el('div', { style: { fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700', fontSize: 'calc(26px * var(--rd-fs-scale, 1))', color: 'var(--ink,#1A1714)', lineHeight: '1' } }, sym),
+          el('div', { className: 'mrb-dcs__cfg', style: { fontFamily: 'var(--font-mono,monospace)', fontSize: 'calc(11px * var(--rd-fs-scale, 1))', fontWeight: '700', color: 'var(--ink-muted,#6B635A)', marginTop: '3px' } }, cfg),
+        ]);
+      },
+      update: function (n) {
+        n.style.left = (cx - r) + 'px'; n.style.top = (cy - 22) + 'px'; n.style.width = (2 * r) + 'px';
+        var c = n.querySelector('.mrb-dcs__cfg');
+        if (c && c.textContent !== cfg) c.textContent = cfg;
+      },
+    });
     if (showCharge && charge) {
       var posv = charge.indexOf('+') >= 0;
-      out.push(el('div', { style: {
-        position: 'absolute', left: (cx + r - 14) + 'px', top: (cy - r - 6) + 'px',
-        fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700', fontSize: 'calc(15px * var(--rd-fs-scale, 1))',
-        color: '#fff', background: posv ? '#B5341A' : '#2E7DD1', padding: '3px 9px', borderRadius: '999px',
-        boxShadow: '0 4px 10px -3px rgba(0,0,0,.3)',
-      } }, charge));
+      out.push({
+        key: 'charge-' + tag,
+        create: function () {
+          return el('div', { style: {
+            position: 'absolute', fontFamily: 'var(--font-display,sans-serif)', fontWeight: '700',
+            fontSize: 'calc(15px * var(--rd-fs-scale, 1))', color: '#fff',
+            background: posv ? '#B5341A' : '#2E7DD1', padding: '3px 9px', borderRadius: '999px',
+            boxShadow: '0 4px 10px -3px rgba(0,0,0,.3)', transition: 'opacity .4s ease',
+          } }, charge);
+        },
+        enter: function (n) { n.style.opacity = '0'; },   // the charge only exists once the transfer completes: fade it in
+        update: function (n) {
+          n.style.left = (cx + r - 14) + 'px'; n.style.top = (cy - r - 6) + 'px'; n.style.opacity = '1';
+          if (n.textContent !== charge) n.textContent = charge;
+        },
+      });
     }
     return out;
   }
 
-  /* ---- one electron: filled dot (•, from atom A) or hollow cross (×, from atom B) ---- */
-  function dotEl(x, y, isDot, focus) {
-    var st = {
-      position: 'absolute', left: (x - 9) + 'px', top: (y - 9) + 'px', width: '18px', height: '18px',
-      display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%',
-      transition: 'all .75s cubic-bezier(.5,0,.2,1)',
-      background: isDot ? '#B5341A' : 'transparent', color: isDot ? '#fff' : '#2E7DD1',
-      fontSize: 'calc(17px * var(--rd-fs-scale, 1))', fontWeight: '700', fontFamily: 'var(--font-mono,monospace)', lineHeight: '1',
-      boxShadow: isDot ? '0 2px 6px -2px rgba(181,52,26,.7)' : 'none',
+  // one electron: filled dot (•, from atom A) or hollow cross (×, from atom
+  // B). `enterX/enterY` = its pre-move coordinates: a NEW node spawns there
+  // and animates to (curX,curY); a reused node just moves there.
+  function electronDesc(key, isDot, curX, curY, focus, enterX, enterY) {
+    return {
+      key: key,
+      create: function () {
+        return el('div', { style: {
+          position: 'absolute', width: '18px', height: '18px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%',
+          transition: 'all .75s cubic-bezier(.5,0,.2,1)',
+          background: isDot ? '#B5341A' : 'transparent', color: isDot ? '#fff' : '#2E7DD1',
+          fontSize: 'calc(17px * var(--rd-fs-scale, 1))', fontWeight: '700', fontFamily: 'var(--font-mono,monospace)', lineHeight: '1',
+          boxShadow: isDot ? '0 2px 6px -2px rgba(181,52,26,.7)' : 'none',
+        } }, isDot ? '' : '×');
+      },
+      enter: (enterX != null) ? function (n) { n.style.left = (enterX - 9) + 'px'; n.style.top = (enterY - 9) + 'px'; } : null,
+      update: function (n) {
+        n.style.left = (curX - 9) + 'px'; n.style.top = (curY - 9) + 'px';
+        n.style.animation = (focus && !reduceMotion()) ? 'mrbPulseDot 1.3s ease-in-out infinite' : 'none';
+      },
     };
-    if (focus && !reduceMotion()) st.animation = 'mrbPulseDot 1.3s ease-in-out infinite';
-    return el('div', { style: st }, isDot ? '' : '×');
   }
 
-  /* ---- pure geometry for the current phase ---- */
-  function buildViz(m, phase) {
+  /* ---- pure geometry → keyed descriptor list for the current phase ---- */
+  function describeViz(m, phase) {
     var after = phase === 'moved', focus = phase === 'focus';
-    var W = 640, H = 280, cy = 134;
-    var els = [], L = m.left, Rt = m.right, i;
+    var cy = 134;
+    var out = [], L = m.left, Rt = m.right;
 
     if (m.mode === 'share') {
-      var lx = after ? 280 : 170, rx = after ? 390 : 470;
-      els = els.concat(atomEls(L.sym, after ? L.cfgAfter : L.cfgBefore, lx, cy, L.r, '', false));
-      els = els.concat(atomEls(Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, rx, cy, Rt.r, '', false));
+      var lx = after ? 280 : 170, rx = after ? 390 : 470, lxPre = 170, rxPre = 470;
+      out = out.concat(atomDescs('L', L.sym, after ? L.cfgAfter : L.cfgBefore, lx, cy, L.r, '', false));
+      out = out.concat(atomDescs('R', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, rx, cy, Rt.r, '', false));
       var spare = [-90, -45, 0, 45, 90, 135, -135].slice(0, Rt.outer - 1);
-      spare.forEach(function (deg) { var p = pos(rx, cy, Rt.r, deg); els.push(dotEl(p.x, p.y, false, false)); });
+      spare.forEach(function (deg, k) {
+        var p = pos(rx, cy, Rt.r, deg), pre = pos(rxPre, cy, Rt.r, deg);
+        out.push(electronDesc('nfix-' + k, false, p.x, p.y, false, pre.x, pre.y));
+      });
       var pairX = 322;
       var dp = after ? { x: pairX, y: cy - 11 } : pos(lx, cy, L.r, 0);
       var xp = after ? { x: pairX, y: cy + 11 } : pos(rx, cy, Rt.r, 180);
-      els.push(dotEl(dp.x, dp.y, true, focus));
-      els.push(dotEl(xp.x, xp.y, false, focus));
+      var dpPre = pos(lxPre, cy, L.r, 0), xpPre = pos(rxPre, cy, Rt.r, 180);
+      out.push(electronDesc('pair-dot', true, dp.x, dp.y, focus, dpPre.x, dpPre.y));
+      out.push(electronDesc('pair-cross', false, xp.x, xp.y, focus, xpPre.x, xpPre.y));
     } else if (m.layout === 'di') {
       var mx = 150, nx = 490;
-      els = els.concat(atomEls(L.sym, after ? L.cfgAfter : L.cfgBefore, mx, cy, L.r, L.charge, after));
-      els = els.concat(atomEls(Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, nx, cy, Rt.r, Rt.charge, after));
+      out = out.concat(atomDescs('L', L.sym, after ? L.cfgAfter : L.cfgBefore, mx, cy, L.r, L.charge, after));
+      out = out.concat(atomDescs('R', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, nx, cy, Rt.r, Rt.charge, after));
       var nonAngles, incomingSlots, metalStart;
       if (Rt.outer === 7) { nonAngles = [-90, -45, 0, 45, 90, 135, -135]; incomingSlots = [180]; metalStart = [0]; }
       else { nonAngles = [-90, -45, 0, 45, 90, -135]; incomingSlots = [135, 180]; metalStart = [-22, 22]; }
-      nonAngles.forEach(function (deg) { var p = pos(nx, cy, Rt.r, deg); els.push(dotEl(p.x, p.y, false, false)); });
+      nonAngles.forEach(function (deg, k) { var p = pos(nx, cy, Rt.r, deg); out.push(electronDesc('nfix-' + k, false, p.x, p.y, false)); });
       metalStart.slice(0, L.outer).forEach(function (deg, k) {
-        var p = after ? pos(nx, cy, Rt.r, incomingSlots[k]) : pos(mx, cy, L.r, deg);
-        els.push(dotEl(p.x, p.y, true, focus));
+        var pre = pos(mx, cy, L.r, deg);
+        var p = after ? pos(nx, cy, Rt.r, incomingSlots[k]) : pre;
+        out.push(electronDesc('etr-' + k, true, p.x, p.y, focus, pre.x, pre.y));
       });
     } else {
       // tri: metal centre, a non-metal each side (e.g. MgCl₂ — two 1-electron transfers)
       var R = 58, mgx = 320, clL = 108, clR = 532;
-      els = els.concat(atomEls(L.sym, after ? L.cfgAfter : L.cfgBefore, mgx, cy, R, L.charge, after));
-      els = els.concat(atomEls(Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, clL, cy, R, Rt.charge, after));
-      els = els.concat(atomEls(Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, clR, cy, R, Rt.charge, after));
-      [-90, -45, 45, 90, 135, 180, -135].forEach(function (deg) { var p = pos(clL, cy, R, deg); els.push(dotEl(p.x, p.y, false, false)); });
-      [-90, -45, 0, 45, 90, 135, -135].forEach(function (deg) { var p = pos(clR, cy, R, deg); els.push(dotEl(p.x, p.y, false, false)); });
-      [{ from: 180, tx: clL, ta: 0 }, { from: 0, tx: clR, ta: 180 }].forEach(function (s) {
-        var p = after ? pos(s.tx, cy, R, s.ta) : pos(mgx, cy, R, s.from);
-        els.push(dotEl(p.x, p.y, true, focus));
+      out = out.concat(atomDescs('C', L.sym, after ? L.cfgAfter : L.cfgBefore, mgx, cy, R, L.charge, after));
+      out = out.concat(atomDescs('R', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, clL, cy, R, Rt.charge, after));
+      out = out.concat(atomDescs('R2', Rt.sym, after ? Rt.cfgAfter : Rt.cfgBefore, clR, cy, R, Rt.charge, after));
+      [-90, -45, 45, 90, 135, 180, -135].forEach(function (deg, k) { var p = pos(clL, cy, R, deg); out.push(electronDesc('nfixL-' + k, false, p.x, p.y, false)); });
+      [-90, -45, 0, 45, 90, 135, -135].forEach(function (deg, k) { var p = pos(clR, cy, R, deg); out.push(electronDesc('nfixR-' + k, false, p.x, p.y, false)); });
+      [{ from: 180, tx: clL, ta: 0 }, { from: 0, tx: clR, ta: 180 }].forEach(function (s, k) {
+        var pre = pos(mgx, cy, R, s.from);
+        var p = after ? pos(s.tx, cy, R, s.ta) : pre;
+        out.push(electronDesc('etr-' + k, true, p.x, p.y, focus, pre.x, pre.y));
       });
     }
-    return el('div', { style: { position: 'relative', width: W + 'px', height: H + 'px', margin: '0 auto' } }, els);
+    return out;
+  }
+
+  /* keyed paint with a graceful fallback if the reconciler is absent */
+  function paintViz(stage, descriptors, reduce) {
+    if (window.MrbKeyedRender) { MrbKeyedRender.reconcile(stage, descriptors, { reduceMotion: reduce }); return; }
+    stage.innerHTML = ''; stage.__mrbKeyed = {};
+    descriptors.forEach(function (d) {
+      var n = d.create(); if (n && n.setAttribute) n.setAttribute('data-k', d.key);
+      if (d.update) d.update(n, true); stage.appendChild(n);
+    });
+  }
+
+  // Law 9 detail: the receiving shell highlights the moment the transferred
+  // electron arrives — driven by the electron's own transitionend, not a timer.
+  function armReceiveHighlight(stage, m) {
+    var travelKey = (m.mode === 'share') ? 'pair-dot' : 'etr-0';
+    var rings = (m.mode === 'share') ? ['ring-L', 'ring-R']
+      : (m.layout === 'di') ? ['ring-R'] : ['ring-R', 'ring-R2'];
+    var e = stage.querySelector('[data-k="' + travelKey + '"]');
+    if (!e) return;
+    var done = false;
+    function onEnd(ev) {
+      if (done || (ev.propertyName !== 'left' && ev.propertyName !== 'top')) return;
+      done = true;
+      e.removeEventListener('transitionend', onEnd);
+      rings.forEach(function (rk) {
+        var r = stage.querySelector('[data-k="' + rk + '"]');
+        if (!r) return;
+        var prior = r.style.boxShadow;
+        r.style.boxShadow = '0 0 0 5px rgba(155,208,166,.75)';   // sage "received" glow
+        setTimeout(function () { r.style.boxShadow = prior || 'none'; }, 900);
+      });
+    }
+    e.addEventListener('transitionend', onEnd);
   }
 
   function init(container, config) {
@@ -186,6 +278,7 @@
     var molecules = config.molecules || [];
     if (!molecules.length) return;
     var mi = 0, step = 0;
+    var stage = null, lastMi = -1;   // persistent coordinate space for keyed render
     // Phase 1a (MRB-133): optional predict gate on reaching the reveal step
     var gate = (config.predict && window.MrbPredictWrapper)
       ? MrbPredictWrapper.create(config.predict) : null;
@@ -247,9 +340,21 @@
     function render() {
       var m = molecules[mi], steps = m.steps, last = steps.length - 1;
       var stp = steps[step];
-      // viz
-      vizWrap.innerHTML = '';
-      vizWrap.appendChild(buildViz(m, stp.phase));
+      // viz — MRB-134 Law 9: reuse the coordinate stage and keyed-reconcile
+      // its children so electrons visibly travel between shells rather than
+      // being torn down and rebuilt (the old innerHTML='' frame swap).
+      if (!stage) {
+        stage = el('div', { style: { position: 'relative', width: '640px', height: '280px', margin: '0 auto' } });
+        vizWrap.appendChild(stage);
+      }
+      if (mi !== lastMi) {   // molecule switch = a different diagram: start fresh, never morph across molecules
+        stage.innerHTML = ''; stage.__mrbKeyed = {}; stage.__phase = null; lastMi = mi;
+      }
+      var reduce = window.MrbKeyedRender ? MrbKeyedRender.reduceMotion() : reduceMotion();
+      var prevPhase = stage.__phase;
+      paintViz(stage, describeViz(m, stp.phase), reduce);
+      if (stp.phase === 'moved' && prevPhase && prevPhase !== 'moved' && !reduce) armReceiveHighlight(stage, m);
+      stage.__phase = stp.phase;
       // Phase 0c (MRB-132): name the dot-and-cross diagram per molecule + step
       // so screen-reader users get the same story the animation tells.
       vizWrap.setAttribute('role', 'img');
