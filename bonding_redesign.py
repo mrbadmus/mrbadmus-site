@@ -136,12 +136,22 @@ BLOCK_CSS = """
 .rd .rd-exam .quiz-card { position: relative; padding: 15px 0 13px 46px; margin: 0; border: none; border-bottom: 1px solid var(--surface-inset,#EFE7D8); border-radius: 0; background: transparent; box-shadow: none; counter-increment: rdq; }
 .rd .rd-exam .quiz-card::before { content: counter(rdq, decimal-leading-zero); position: absolute; left: 0; top: 17px; font-family: var(--font-mono,monospace); font-size: calc(13px * var(--rd-fs-scale, 1)); font-weight: 700; color: #716A60; }
 .rd .rd-exam .q-text { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); font-weight: 600; color: var(--ink,#1A1714); margin-bottom: 9px; }
-.rd .rd-exam .quiz-options, .rd .rd-checkpoint .quiz-options { display: flex; flex-direction: column; gap: 5px; counter-reset: rdopt; }
-.rd .rd-exam .quiz-opt, .rd .rd-checkpoint .quiz-opt { counter-increment: rdopt; display: flex; gap: 10px; align-items: baseline; text-align: left; width: 100%; padding: 8px 12px; border: 1px solid transparent; border-radius: 10px; background: transparent; box-shadow: none; color: var(--ink-body,#2A241E); cursor: pointer; }
-.rd .rd-exam .quiz-opt::before, .rd .rd-checkpoint .quiz-opt::before { content: counter(rdopt, upper-alpha); font-family: var(--font-mono,monospace); font-weight: 700; font-size: calc(12px * var(--rd-fs-scale, 1)); color: #716A60; flex: none; }
-.rd .rd-exam .quiz-opt:hover:not(:disabled), .rd .rd-checkpoint .quiz-opt:hover:not(:disabled) { border-color: var(--border,#E4DCCB); background: var(--surface-inset,#F7F2E8); }
-.rd .rd-exam .quiz-opt.correct, .rd .rd-checkpoint .quiz-opt.correct { background: #E7F3EA; border-color: #7FB98A; color: #2E6B3A; }
-.rd .rd-exam .quiz-opt.wrong, .rd .rd-checkpoint .quiz-opt.wrong { background: #FBE4DE; border-color: #E0897B; color: #A83824; }
+.rd .rd-exam .quiz-options, .rd .rd-checkpoint .quiz-options { display: flex; flex-direction: column; gap: 7px; counter-reset: rdopt; }
+/* Fix 3 (MRB-134, law 3/§UI) — options read as tappable cards at a glance:
+   visible 1px border, card surface, a fillable mono letter-chip, hover lift,
+   pressed + selected states, focus ring. Selected fills the letter chip. */
+.rd .rd-exam .quiz-opt, .rd .rd-checkpoint .quiz-opt { counter-increment: rdopt; display: flex; gap: 11px; align-items: flex-start; text-align: left; width: 100%; padding: 11px 13px; border: 1px solid var(--border,#E4DCCB); border-radius: 11px; background: var(--surface-panel,#FFFDF8); box-shadow: 0 1px 0 rgba(60,30,20,.04); color: var(--ink-body,#2A241E); cursor: pointer; transition: transform .13s ease, box-shadow .13s ease, border-color .13s ease, background .13s ease; }
+.rd .rd-exam .quiz-opt::before, .rd .rd-checkpoint .quiz-opt::before { content: counter(rdopt, upper-alpha); flex: none; display: inline-flex; align-items: center; justify-content: center; width: calc(22px * var(--rd-fs-scale, 1)); height: calc(22px * var(--rd-fs-scale, 1)); border: 1px solid var(--border,#E4DCCB); border-radius: 7px; background: var(--surface-page,#FBF6EC); font-family: var(--font-mono,monospace); font-weight: 700; font-size: calc(12px * var(--rd-fs-scale, 1)); color: #716A60; transition: background .13s ease, color .13s ease, border-color .13s ease; }
+.rd .rd-exam .quiz-opt:hover:not(:disabled), .rd .rd-checkpoint .quiz-opt:hover:not(:disabled) { border-color: var(--accent-strong,#C0392B); background: #FFFEFB; box-shadow: 0 7px 18px -12px rgba(60,30,20,.55); transform: translateY(-1px); }
+.rd .rd-exam .quiz-opt:active:not(:disabled), .rd .rd-checkpoint .quiz-opt:active:not(:disabled) { transform: translateY(0); box-shadow: 0 2px 5px -3px rgba(60,30,20,.4); }
+.rd .rd-exam .quiz-opt:focus-visible, .rd .rd-checkpoint .quiz-opt:focus-visible { outline: 2px solid var(--accent-strong,#C0392B); outline-offset: 2px; }
+.rd .rd-exam .quiz-opt.selected, .rd .rd-checkpoint .quiz-opt.selected { border-color: var(--accent-strong,#C0392B); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -10px rgba(192,57,43,.5); transform: none; }
+.rd .rd-exam .quiz-opt.selected::before, .rd .rd-checkpoint .quiz-opt.selected::before { background: var(--accent-strong,#C0392B); border-color: var(--accent-strong,#C0392B); color: #fff; }
+.rd .rd-exam .quiz-opt.correct, .rd .rd-checkpoint .quiz-opt.correct { background: #E7F3EA; border-color: #7FB98A; color: #2E6B3A; box-shadow: none; transform: none; }
+.rd .rd-exam .quiz-opt.correct::before, .rd .rd-checkpoint .quiz-opt.correct::before { background: #7FB98A; border-color: #7FB98A; color: #fff; }
+.rd .rd-exam .quiz-opt.wrong, .rd .rd-checkpoint .quiz-opt.wrong { background: #FBE4DE; border-color: #E0897B; color: #A83824; box-shadow: none; transform: none; }
+.rd .rd-exam .quiz-opt.wrong::before, .rd .rd-checkpoint .quiz-opt.wrong::before { background: #E0897B; border-color: #E0897B; color: #fff; }
+@media (prefers-reduced-motion: reduce) { .rd .rd-exam .quiz-opt, .rd .rd-checkpoint .quiz-opt, .rd .rd-exam .quiz-opt::before, .rd .rd-checkpoint .quiz-opt::before { transition: none; } .rd .rd-exam .quiz-opt:hover:not(:disabled), .rd .rd-checkpoint .quiz-opt:hover:not(:disabled), .rd .rd-exam .quiz-opt:active:not(:disabled), .rd .rd-checkpoint .quiz-opt:active:not(:disabled) { transform: none; } }
 .rd .rd-exam details { border-top: 1px solid var(--surface-inset,#EFE7D8); }
 .rd .rd-exam summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 15px 0; font-family: var(--font-mono,monospace); font-size: calc(12.5px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-deep,#B5341A); }
 .rd .rd-exam summary::-webkit-details-marker { display: none; }
@@ -161,6 +171,14 @@ BLOCK_CSS = """
 .rd .rd-keycard__cover:focus-visible { outline: 2px solid var(--accent-strong,#C0392B); outline-offset: 2px; }
 .rd .rd-keycard__text { font-family: var(--font-mono,monospace); font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.75; color: #211B15; margin: 0; }
 .rd .rd-keycard.is-covered .rd-keycard__text { filter: blur(9px); user-select: none; }
+/* Fix 5 (MRB-134, law 9/10) — Key Note stepped reveal: numbered mark-scheme
+   steps, each individually cover/reveal-able; mono numbers; blur when covered. */
+.rd .rd-keycard__steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 11px; }
+.rd .rd-keycard__step { display: flex; gap: 13px; align-items: flex-start; }
+.rd .rd-keycard__step-n { flex: none; font-family: var(--font-mono,monospace); font-weight: 700; font-size: calc(12px * var(--rd-fs-scale, 1)); line-height: 1.9; color: var(--accent-deep,#B5341A); min-width: calc(20px * var(--rd-fs-scale, 1)); }
+.rd .rd-keycard__step-text { font-family: var(--font-mono,monospace); font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.75; color: #211B15; transition: filter .22s ease; }
+.rd .rd-keycard__step.is-covered .rd-keycard__step-text { filter: blur(8px); user-select: none; }
+@media (prefers-reduced-motion: reduce) { .rd .rd-keycard__step-text { transition: none; } }
 """
 
 
@@ -522,7 +540,7 @@ BONDING_REDESIGN = {
                  "kicker": "explore the two structures"},
         "activity": {"type": "bins", "config_key": "giant-covalent-structures-bins", "kicker": "sort the properties"},
         "checkpoints": [{"q": 3, "after": 0}, {"q": 4, "after": 2}],
-        "mistake_after": "hero",       # "both carbon → same properties" is born at the A/B flip
+        "mistake_after": 2,            # Fix 4 (MRB-134): theory→check→mistake — "both carbon = same properties" corrected right after the diamond/graphite compare + its q4 checkpoint (was hero slot)
         "tip_placement": "activity",   # the tip IS the compare technique → bins success state
         "theory_blocks": [
             {"type": "lead",
@@ -551,6 +569,19 @@ BONDING_REDESIGN = {
                 ]},
             ], "highlight": 2,
              "verdict": "Both are pure carbon. The spare 4th electron and the sliding layers are why graphite conducts and is soft, while diamond does neither."},
+            # ⚑ Exception B (MRB-134, Mide-approved): graphene/fullerenes/nanotubes were
+            # wrongly boxed as HT-only. Text moved higher→base `theory` in all 4 chem data
+            # files; this feature-cards block surfaces it in the redesigned theory for ALL
+            # tiers (Foundation included). Cards are the same authored presentation already
+            # shipped on the nanoparticles page. AQA 5.2.3.3 carries no HT marker.
+            {"type": "feature-cards", "cards": [
+                {"emoji": "▦", "title": "Graphene", "tone": "neutral",
+                 "body": "A single layer of graphite, one atom thick — extremely strong, very light, and conducts electricity."},
+                {"emoji": "⚽", "title": "Buckminsterfullerene (C₆₀)", "tone": "neutral",
+                 "body": "60 carbon atoms in a hollow sphere ('buckyball') — can cage molecules; used in drug delivery and lubricants."},
+                {"emoji": "🛢️", "title": "Carbon nanotube", "tone": "neutral",
+                 "body": "A rolled-up graphene sheet forming a hollow tube — very strong along its length and conducts electricity."},
+            ]},
             {"type": "example-callout", "emoji": "🛠️", "title": "Uses", "lines": [
                 "Diamond: cutting tools, drill bits, gemstones, abrasives (very hard).",
                 "Graphite: pencil leads and lubricants (layers slide); electrodes in electrolysis (conducts, unreactive).",
@@ -734,7 +765,7 @@ BONDING_REDESIGN = {
                  "kicker": "transfer electrons step by step"},
         "activity": {"type": "match"},
         "checkpoints": [{"q": 0, "after": 0}, {"q": 2, "after": 1}],
-        "mistake_after": "hero",
+        "mistake_after": 1,            # Fix 4 (MRB-134): theory→check→mistake — moved off the hero to end-of-theory, after the ion-charge cards + q2 checkpoint
         "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
@@ -757,7 +788,7 @@ BONDING_REDESIGN = {
                  "kicker": "change the state, test the lattice"},
         "activity": {"type": "match"},
         "checkpoints": [{"q": 2, "after": 1}, {"q": 0, "after": 2}],
-        "mistake_after": "hero",       # "charged ions should conduct as a solid" is born at the solid state
+        "mistake_after": 2,            # Fix 4 (MRB-134): theory→check→mistake — "solid should conduct" corrected after the property cards + q0 checkpoint (was hero slot)
         "tip_placement": "quiz",
         "theory_blocks": [
             {"type": "lead",
@@ -860,7 +891,7 @@ BONDING_REDESIGN = {
                  "kicker": "electron sea on / off"},
         "activity": {"type": "match"},
         "checkpoints": [{"q": 2, "after": 1}, {"q": 0, "after": 2}],
-        "mistake_after": "hero",       # "the bond is between atoms" is born at the electron-sea model
+        "mistake_after": 1,            # Fix 4 (MRB-134): theory→check→mistake — "bond is between atoms" corrected after the electron-sea model steps + q2 checkpoint (was hero slot)
         "tip_placement": "activity",   # "ions + sea, not atoms" is what the property↔reason match drills
         "theory_blocks": [
             {"type": "lead",

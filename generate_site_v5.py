@@ -5,7 +5,7 @@ Run: python3 generate_site.py
 Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 """
 
-import os, shutil, json, glob, sys
+import os, shutil, json, glob, sys, re
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -3240,6 +3240,58 @@ def _rd_quiz_options(q):
     return opts_html
 
 
+def _esc_html(s):
+    """Escape plain text for HTML element content."""
+    return str(s).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def split_key_note(text):
+    """Split a frozen Key Note into mark-scheme-ordered steps at sentence
+    boundaries — SPLIT ONLY, never edit (MRB-134 Fix 5, law 10). Guarantees the
+    steps rejoin to the exact original (whitespace-normalised); on ANY mismatch
+    the whole note is returned as one step, so the splitter can never alter
+    frozen text. Abbreviations (e.g./i.e.) are shielded from the boundary rule."""
+    t = (text or "").strip()
+    if not t:
+        return []
+    SH = "\uE000"
+    guard = (t.replace("e.g. ", "e" + SH + "g" + SH + " ")
+              .replace("i.e. ", "i" + SH + "e" + SH + " "))
+    pieces = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9(])", guard)
+    steps = [p.replace(SH, ".").strip() for p in pieces if p.strip()]
+    # lossless check: rejoining with single spaces must reconstruct the note
+    if " ".join(steps) != re.sub(r"\s+", " ", t):
+        return [t]
+    return steps
+
+
+def make_rd_keycard(key_note):
+    """Key Note as a photographable revision card with STEPPED cover-and-recall
+    (MRB-134 Fix 5): the frozen note is split into numbered steps; the card shows
+    all steps by default and the button walks cover -> reveal step 1 -> ... ->
+    all shown (rd-page.js). Steps numbered in mono. Frozen text is split, not
+    edited."""
+    steps = split_key_note(key_note)
+    n = len(steps)
+    lbl = "Revision card" + (" · %d steps" % n if n > 1 else "")
+    items = "".join(
+        '<li class="rd-keycard__step">'
+        '<span class="rd-keycard__step-n">%02d</span>'
+        '<span class="rd-keycard__step-text">%s</span></li>'
+        % (i + 1, _esc_html(s)) for i, s in enumerate(steps))
+    return f"""
+<div class="section">
+  <div class="rd-sec-kicker">Key note · cover it, say it, check it</div>
+  <div class="rd-keycard" data-steps="{n}">
+    <div class="rd-keycard__hd">
+      <span class="rd-keycard__lbl">{lbl}</span>
+      <button class="rd-keycard__cover" type="button" aria-pressed="false">Cover &amp; recall</button>
+    </div>
+    <ol class="rd-keycard__steps">{items}</ol>
+  </div>
+</div>"""
+
+
 def make_rd_checkpoint(q, st_id, n):
     """One checkpoint micro-quiz (MRB-133 Phase 1c): a frozen quiz question
     RELOCATED inline after the theory block it tests. Immediate feedback on
@@ -4436,17 +4488,10 @@ html { background: var(--surface-page); }
         # appended after the quiz, before the end-matter ritual. Frozen text.
         keynote_html = ""
         if st.get("key_note"):
-            quiz_html += f"""
-<div class="section">
-  <div class="rd-sec-kicker">Key note · cover it, say it, check it</div>
-  <div class="rd-keycard">
-    <div class="rd-keycard__hd">
-      <span class="rd-keycard__lbl">Revision card</span>
-      <button class="rd-keycard__cover" type="button" aria-pressed="false">Cover &amp; recall</button>
-    </div>
-    <p class="rd-keycard__text">{st['key_note']}</p>
-  </div>
-</div>"""
+            # Fix 5 (MRB-134): stepped cover-and-recall revision card. Frozen
+            # note is SPLIT into mark-scheme steps (never edited); rd-page.js
+            # walks cover -> reveal step 1 -> ... -> all shown.
+            quiz_html += make_rd_keycard(st['key_note'])
         # Phase 1e: mode chooser — three anchors under the page kicker, serving
         # the 10-minute bus session and the 40-minute desk session alike.
         mode_chooser_html = """

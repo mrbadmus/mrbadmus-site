@@ -61,6 +61,11 @@
       '.mrb-stl__force.is-pressed{color:var(--accent-deep,#B5341A);background:#FBE0D6;border:1px solid #F0BBA9;box-shadow:none}',
       '.mrb-stl__force:disabled{color:#B0A695;background:var(--surface-inset,#EFE7D8);border:1px solid var(--border,#E4DCCB);box-shadow:none;cursor:not-allowed}',
       '.mrb-stl__strap{padding:13px 24px;background:var(--surface-dark,#1A1714);font-family:var(--font-mono,monospace);font-size: calc(12.5px * var(--rd-fs-scale, 1));line-height:1.5;color:#EAE3D6}',
+      /* Fix 2 (MRB-134) — consistent secondary Reset, above the dark strap. */
+      '.mrb-stl__footer{display:flex;justify-content:flex-end;padding:10px 24px 12px;border-top:1px solid var(--surface-inset,#EFE7D8)}',
+      '.mrb-stl__reset{font-family:var(--font-mono,monospace);font-size: calc(12px * var(--rd-fs-scale, 1));font-weight:600;letter-spacing:.04em;color:var(--ink-muted,#6B635A);background:transparent;border:1px solid var(--border,#E4DCCB);border-radius:8px;padding:8px 14px;cursor:pointer;transition:border-color .15s,color .15s}',
+      '.mrb-stl__reset:hover{border-color:var(--accent-strong,#C0392B);color:var(--accent-deep,#B5341A)}',
+      '.mrb-stl__reset:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
       '@media (max-width:640px){.mrb-stl__grid{grid-template-columns:1fr}.mrb-stl__viz{border-right:none;border-bottom:1px solid var(--surface-inset,#EFE7D8)}}',
     ].join('');
     document.head.appendChild(s);
@@ -196,8 +201,13 @@
 
     var grid = el('div', { className: 'mrb-stl__grid' }, [vizWrap, side]);
     var strap = el('div', { className: 'mrb-stl__strap' });
+    // Fix 2 (MRB-134): consistent secondary reset — first state, wager re-armed.
+    var resetBtn = el('button', { className: 'mrb-stl__reset', attrs: { type: 'button', 'aria-label': 'Reset the lab to its first state' },
+      on: { click: function () { modeKey = config.states[0].key; if (gate) gate.reset(); render(); } } }, '↺ Reset');
+    var footer = el('div', { className: 'mrb-stl__footer' }, resetBtn);
     if (gate) root.appendChild(gate.el);   // Phase 1a: wager row above the lab
     root.appendChild(grid);
+    root.appendChild(footer);
     root.appendChild(strap);
     container.appendChild(root);
 

@@ -63,6 +63,11 @@
       '.mrb-dcs__step-t{font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(15px * var(--rd-fs-scale, 1));color:var(--ink,#1A1714);margin-bottom:3px}',
       '.mrb-dcs__step-c{font-size: calc(14px * var(--rd-fs-scale, 1));line-height:1.55;color:#3A322A}',
       '.mrb-dcs__result{padding:13px 24px;background:var(--surface-dark,#1A1714);font-family:var(--font-mono,monospace);font-size: calc(12.5px * var(--rd-fs-scale, 1));line-height:1.5}',
+      /* Fix 2 (MRB-134) — consistent secondary Reset, above the dark strap. */
+      '.mrb-dcs__footer{display:flex;justify-content:flex-end;padding:10px 24px 12px;border-top:1px solid var(--surface-inset,#EFE7D8)}',
+      '.mrb-dcs__reset{font-family:var(--font-mono,monospace);font-size: calc(12px * var(--rd-fs-scale, 1));font-weight:600;letter-spacing:.04em;color:var(--ink-muted,#6B635A);background:transparent;border:1px solid var(--border,#E4DCCB);border-radius:8px;padding:8px 14px;cursor:pointer;transition:border-color .15s,color .15s}',
+      '.mrb-dcs__reset:hover{border-color:var(--accent-strong,#C0392B);color:var(--accent-deep,#B5341A)}',
+      '.mrb-dcs__reset:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
     ].join('');
     document.head.appendChild(s);
   }
@@ -225,10 +230,17 @@
 
     var result = el('div', { className: 'mrb-dcs__result' });
 
+    // Fix 2 (MRB-134): consistent secondary reset — back to step 1 and re-arm
+    // the predict wager. Placed in a footer just above the dark result strap.
+    var resetBtn = el('button', { className: 'mrb-dcs__reset', attrs: { type: 'button', 'aria-label': 'Reset this walkthrough to step 1' },
+      on: { click: function () { step = 0; if (gate) gate.reset(); render(); } } }, '↺ Reset');
+    var footer = el('div', { className: 'mrb-dcs__footer' }, resetBtn);
+
     if (gate) root.appendChild(gate.el);   // Phase 1a: wager row above the viz
     root.appendChild(vizWrap);
     root.appendChild(ctrls);
     root.appendChild(stepBox);
+    root.appendChild(footer);
     root.appendChild(result);
     container.appendChild(root);
 

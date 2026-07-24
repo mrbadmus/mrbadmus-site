@@ -3350,7 +3350,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'USES: pencil leads (layers slide off onto paper), lubricants, electrodes in electrolysis '
                          '(conducts, unreactive), electrical contacts.',
-              'heading': 'Graphite'}],
+              'heading': 'Graphite'},
+             {'content': 'Graphene: a single layer of graphite — one atom thick, conducts electricity (delocalised electrons), '
+                         'extremely strong. Fullerenes: C₆₀ (buckminsterfullerene) — hollow spherical cage, used in drug delivery '
+                         'and as lubricant. Carbon nanotubes: cylindrical graphene — very strong along axis, conduct electricity. '
+                         'All based on hexagonal carbon networks.',
+              'heading': 'Graphene, Fullerenes and Carbon Nanotubes'}],
   'title': 'Giant Covalent Structures',
   'triple_only': None,
   'variables': []},

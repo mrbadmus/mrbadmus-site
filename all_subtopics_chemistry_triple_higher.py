@@ -3524,10 +3524,7 @@ CHEMISTRY_SUBTOPICS_ALL = {
  {'common_mistake': 'Students often assume that because diamond and graphite are both giant covalent structures made of carbon, they must have the same properties. They do not: graphite conducts electricity and is soft and slippery, while diamond does not conduct and is extremely hard. The difference is that in graphite each carbon bonds to only three others, leaving one delocalised electron per atom and weak forces between layers; in diamond every carbon bonds to four others with no free electrons.',
   'equations': [],
   'fifas': [],
-  'higher': 'Graphene: a single layer of graphite — one atom thick, conducts electricity (delocalised electrons), '
-            'extremely strong. Fullerenes: C₆₀ (buckminsterfullerene) — hollow spherical cage, used in drug delivery '
-            'and as lubricant. Carbon nanotubes: cylindrical graphene — very strong along axis, conduct electricity. '
-            'All based on hexagonal carbon networks.',
+  'higher': None,
   'id': 'giant-covalent-structures',
   'examiner_tip': "Compare diamond and graphite through their bonding, not just their properties: diamond — each carbon bonds to four others (rigid, no free electrons → doesn't conduct); graphite — each bonds to three, leaving one delocalised electron per atom (conducts) with weak forces between layers (soft, slippery). Tie every property back to the number of bonds.",
   'key_note': 'Giant covalent: many atoms all bonded by covalent bonds — very high MP, very hard. Diamond: each C '
@@ -3744,7 +3741,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'USES: pencil leads (layers slide off onto paper), lubricants, electrodes in electrolysis '
                          '(conducts, unreactive), electrical contacts.',
-              'heading': 'Graphite'}],
+              'heading': 'Graphite'},
+             {'content': 'Graphene: a single layer of graphite — one atom thick, conducts electricity (delocalised electrons), '
+                         'extremely strong. Fullerenes: C₆₀ (buckminsterfullerene) — hollow spherical cage, used in drug delivery '
+                         'and as lubricant. Carbon nanotubes: cylindrical graphene — very strong along axis, conduct electricity. '
+                         'All based on hexagonal carbon networks.',
+              'heading': 'Graphene, Fullerenes and Carbon Nanotubes'}],
   'title': 'Giant Covalent Structures',
   'triple_only': None,
   'variables': []},

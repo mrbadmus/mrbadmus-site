@@ -81,6 +81,14 @@
       '.mrb-tsc__prop-v{display:flex;align-items:center;gap:7px;font-family:var(--font-display,sans-serif);font-weight:700;font-size: calc(13.5px * var(--rd-fs-scale, 1))}',
       '.mrb-tsc__dot{width:8px;height:8px;border-radius:50%;flex:none}',
       '.mrb-tsc__strap{padding:13px 24px;background:var(--surface-dark,#1A1714);font-family:var(--font-mono,monospace);font-size: calc(12.5px * var(--rd-fs-scale, 1));color:#EAE3D6}',
+      /* Fix 6 (MRB-134) — persistent VIEWING:<state> indicator in the head. */
+      '.mrb-tsc__viewing{margin-left:auto;font-family:var(--font-mono,monospace);font-size: calc(11px * var(--rd-fs-scale, 1));font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--accent-deep,#B5341A);background:var(--surface-inset,#EFE7D8);border:1px solid var(--border,#E4DCCB);border-radius:999px;padding:5px 12px;white-space:nowrap;transition:color .2s ease,background .2s ease}',
+      /* Fix 2 (MRB-134) — consistent secondary Reset, above the dark strap. */
+      '.mrb-tsc__footer{display:flex;justify-content:flex-end;padding:10px 24px 12px;border-top:1px solid var(--surface-inset,#EFE7D8)}',
+      '.mrb-tsc__reset{font-family:var(--font-mono,monospace);font-size: calc(12px * var(--rd-fs-scale, 1));font-weight:600;letter-spacing:.04em;color:var(--ink-muted,#6B635A);background:transparent;border:1px solid var(--border,#E4DCCB);border-radius:8px;padding:8px 14px;cursor:pointer;transition:border-color .15s,color .15s}',
+      '.mrb-tsc__reset:hover{border-color:var(--accent-strong,#C0392B);color:var(--accent-deep,#B5341A)}',
+      '.mrb-tsc__reset:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
+      '@media (prefers-reduced-motion: reduce){.mrb-tsc__viewing{transition:none}}',
       '@media (max-width:640px){.mrb-tsc__grid{grid-template-columns:1fr}.mrb-tsc__viz{border-right:none;border-bottom:1px solid var(--surface-inset,#EFE7D8)}}',
     ].join('');
     document.head.appendChild(s);
@@ -325,6 +333,10 @@
     ]);
     head.className = 'mrb-tsc__head';
     head.childNodes[2].className = 'mrb-tsc__sub';
+    // Fix 6 (MRB-134): persistent VIEWING:<state> indicator, updated in render().
+    var viewing = el('span', null, ''); viewing.className = 'mrb-tsc__viewing';
+    viewing.setAttribute('aria-live', 'polite');
+    head.appendChild(viewing);
 
     // callout (tinted by current state's tone — the locked callout rule)
     var callout = el('div', null); callout.className = 'mrb-tsc__callout';
@@ -376,10 +388,17 @@
 
     var strap = el('div', null, config.strap || ''); strap.className = 'mrb-tsc__strap';
 
+    // Fix 2 (MRB-134): consistent secondary reset — first state, force off, wager re-armed.
+    var resetBtn = el('button', null, '↺ Reset'); resetBtn.className = 'mrb-tsc__reset'; resetBtn.type = 'button';
+    resetBtn.setAttribute('aria-label', 'Reset the comparison to the first state');
+    resetBtn.addEventListener('click', function () { sel = 0; forced = false; if (gate) gate.reset(); render(); });
+    var footer = el('div', null, resetBtn); footer.className = 'mrb-tsc__footer';
+
     root.appendChild(head);
     if (gate) root.appendChild(gate.el);   // Phase 1a: wager row above the callout
     root.appendChild(callout);
     root.appendChild(grid);
+    root.appendChild(footer);
     root.appendChild(strap);
     container.appendChild(root);
 
@@ -389,6 +408,8 @@
       var applyForce = forced && !!config.force;
       var view = (applyForce && stt.forced) ? stt.forced : stt;
       var tone = TONE[(view.tone != null ? view.tone : stt.tone)] || TONE.neutral;
+      // Fix 6 (MRB-134): keep the VIEWING indicator in sync with the toggle.
+      viewing.textContent = 'Viewing: ' + (stt.label || stt.key || '') + (applyForce ? ' · force applied' : '');
       // callout tint
       callout.style.background = tone.bg;
       callout.style.borderLeftColor = tone.spine;

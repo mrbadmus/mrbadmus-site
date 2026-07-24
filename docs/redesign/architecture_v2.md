@@ -6,7 +6,7 @@
 
 ---
 
-## 1. The eight laws
+## 1. The ten laws
 
 Every bonding page is judged against these. A page that violates one is a defect, not a style choice.
 
@@ -33,6 +33,12 @@ The visual system stays coherent while architecture varies: mono kickers replace
 
 **Law 8 — Persistence and return loops.**
 Scores persist (`quiz_best_<page>`, `lab_best_<page>` in localStorage), the end screen shows score + delta vs best, and "retry my misses" rebuilds only what was missed. Never punish: no streaks, no guilt copy, timers opt-in only, no page-level leaderboards, no XP. Low scores get diagnosis + a route; stars respond with a route, not congratulations.
+
+**Law 9 — Motion is meaning.**
+Any transfer, movement, or state change is animated as visible movement, never a frame swap; reduced-motion users get the instant swap. (Added Phase 1.5, MRB-134.)
+
+**Law 10 — Every activity exercises the demand it claims.**
+Recall activities must genuinely require recall; application activities genuine application. Recall is legitimate — it appears in exams. The defect is an activity whose surface features answer it (label-matching with the answer visible). Review procedure: name the activity's intended cognitive demand first, then check the activity actually delivers it. Every distractor encodes a named misconception and its feedback corrects that specific misconception. This is a judgement test applied per activity, never a blanket verdict. (Added Phase 1.5, MRB-134.)
 
 ---
 

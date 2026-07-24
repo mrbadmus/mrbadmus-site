@@ -144,6 +144,20 @@
           ? 'Your prediction was right — watch it play out.'
           : 'Not what you predicted — the model shows why: ' + cfg.options[cfg.correctIndex];
       },
+      // MRB-134 Fix 2: a hero Reset re-arms the wager (uncommit, un-resolve,
+      // clear verdict) so predict-before-reveal starts clean again (Law 4).
+      reset: function () {
+        committed = null;
+        resolved = false;
+        root.classList.remove('is-nudging');
+        chips.forEach(function (c) {
+          c.disabled = false;
+          c.classList.remove('is-committed', 'is-right', 'is-wrong');
+          c.setAttribute('aria-pressed', 'false');
+        });
+        verdict.className = 'mrb-pw__verdict';
+        verdict.textContent = '';
+      },
     };
   }
 
