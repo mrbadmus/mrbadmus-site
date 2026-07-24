@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #ECE7DD; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes pulseGlow { 0%,100% { opacity: .35; transform: scale(1); } 50% { opacity: .7; transform: scale(1.07); } }
+  @keyframes eDrift { 0%,100% { transform: translate(0,0); } 25% { transform: translate(22px,4px); } 50% { transform: translate(44px,-3px); } 75% { transform: translate(18px,6px); } }
+</style>
+</helmet>
+
+<div style="max-width:1160px; margin:0 auto; padding:40px 20px 80px;">
+  <div style="background:#F5F1E8; border-radius:28px; overflow:hidden; box-shadow:0 40px 80px -45px rgba(60,30,20,.45); border:1px solid #E4DCCB;">
+
+    <!-- HEADER + HERO (approved — Two-State Compare, Hero 10) -->
+    <div data-screen-label="Hero" style="position:relative; padding:40px 52px 48px; background:linear-gradient(135deg,#FBE7E0 0%,#F5F1E8 52%,#F6EFE2 100%); overflow:hidden;">
+      <div style="position:absolute; top:-70px; right:70px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle,#E8917E44,transparent 70%); animation:pulseGlow 7s ease-in-out infinite;"></div>
+
+      <div style="position:relative; z-index:2;">
+        <a href="Ionic Compounds (Chemistry).dc.html" style="display:inline-flex; align-items:center; gap:8px; font-size:14px; font-weight:500; color:#6B635A; margin-bottom:22px;">← Back to Bonding, Structure and Properties</a>
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:14px;">CHEMISTRY · BONDING, STRUCTURE AND PROPERTIES OF MATTER</div>
+        <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(32px,4.6vw,60px); line-height:1; letter-spacing:-.02em; color:#1A1714; margin:0 0 22px;">Giant Covalent Structures</h1>
+        <div style="display:flex; flex-wrap:wrap; gap:10px;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:#B5341A; background:#FBE0D6; border:1px solid #F0BBA9; padding:7px 14px; border-radius:999px;">Spec 5.2.3.2</span>
+          <span style="font-size:13px; font-weight:600; color:#9A6B1E; background:#F6E9CE; border:1px solid #E4CE9C; padding:7px 14px; border-radius:999px;">📗 Foundation + Higher</span>
+        </div>
+      </div>
+
+      <!-- HERO 10: DIAMOND vs GRAPHITE (Two-State Compare) -->
+      <div style="position:relative; z-index:2; margin-top:32px; background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">💎</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">Diamond vs Graphite</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— same carbon, opposite properties</span>
+        </div>
+        <div style="display:flex; gap:14px; align-items:flex-start; padding:18px 24px; background:{{ calloutBg }}; border-bottom:1px solid #EFE7D8; border-left:5px solid {{ calloutColor }};">
+          <span style="font-size:22px; line-height:1.2;">{{ stateEmoji }}</span>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px; line-height:1.25; color:{{ calloutColor }}; margin-bottom:4px;">{{ effectTitle }}</div>
+            <div style="font-size:14px; line-height:1.6; color:#3A322A;">{{ caption }}</div>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1.5fr .9fr;">
+          <div style="padding:20px 18px; background:linear-gradient(180deg,#FFFDF8,#FBF4EF); border-right:1px solid #EFE7D8; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; overflow-x:auto;">
+            <div>{{ viz }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.03em; color:#8A8074; text-align:center; max-width:36ch; line-height:1.5;">{{ legend }}</div>
+          </div>
+          <div style="padding:20px 22px; display:flex; flex-direction:column; gap:10px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">COMPARE</div>
+            <sc-for list="{{ stateBtns }}" as="b" hint-placeholder-count="2">
+              <button onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+            </sc-for>
+            <div style="height:1px; background:#EFE7D8; margin:6px 0;"></div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">PROPERTIES</div>
+            <sc-for list="{{ heroProps }}" as="p" hint-placeholder-count="5">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; background:#F7F2E8; border-radius:10px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.02em; color:#8A8074;">{{ p.k }}</span>
+                <span style="display:flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13.5px; color:{{ p.color }};">
+                  <span style="width:8px; height:8px; border-radius:50%; background:{{ p.dot }}; flex:none;"></span>{{ p.v }}
+                </span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#EAE3D6;">Same element — carbon. The properties come out opposite only because the giant covalent structure is arranged differently.</div>
+      </div>
+    </div>
+
+    <!-- BODY -->
+    <div data-screen-label="Theory Body" style="padding:48px 52px 56px;">
+
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:24px;">
+        <span style="font-size:24px;">📖</span>
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin:0;">In-Depth Theory</h2>
+        <div style="flex:1; height:1px; background:#D8CFBD;"></div>
+      </div>
+
+      <!-- ===== PANEL 1: WHAT IS A GIANT COVALENT STRUCTURE ===== -->
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; padding:28px 30px; margin-bottom:20px;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; color:#1A1714; margin-bottom:10px;">What Is a Giant Covalent Structure?</div>
+
+        <!-- lead -->
+        <p style="font-size:16px; line-height:1.6; color:#2A241E; max-width:72ch; margin:0 0 18px;">Some covalent substances are not small molecules at all — they are <b>giant covalent structures</b>: huge networks where every atom is joined to its neighbours by strong covalent bonds.</p>
+
+        <!-- feature-cards — same KIND of claim: each is a property that follows from the giant network. Plain properties → NEUTRAL tone (colour = meaning). -->
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:10px;">BECAUSE IT'S ONE GIANT NETWORK, IT IS ALWAYS:</div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:12px; margin-bottom:18px;">
+          <div style="background:#F7F2E8; border:1px solid #E4DCCB; border-radius:14px; padding:16px 18px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span style="font-size:17px;">🔥</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; line-height:1.3;">Very high melting point</span></div>
+            <div style="font-size:13.5px; line-height:1.55; color:#2A241E;">Melting means breaking millions of strong covalent bonds at once — that needs a huge amount of energy.</div>
+          </div>
+          <div style="background:#F7F2E8; border:1px solid #E4DCCB; border-radius:14px; padding:16px 18px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span style="font-size:17px;">💎</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; line-height:1.3;">Hard and rigid</span></div>
+            <div style="font-size:13.5px; line-height:1.55; color:#2A241E;">Bonds run in every direction through the crystal, locking every atom firmly in place.</div>
+          </div>
+          <div style="background:#F7F2E8; border:1px solid #E4DCCB; border-radius:14px; padding:16px 18px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span style="font-size:17px;">🧊</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; line-height:1.3;">Solid at room temperature</span></div>
+            <div style="font-size:13.5px; line-height:1.55; color:#2A241E;">The strong network never loosens, so giant covalent substances are always solids.</div>
+          </div>
+        </div>
+
+        <!-- aside-callout -->
+        <div style="background:#F6E9CE; border-left:4px solid #C7861F; border-radius:12px; padding:15px 20px;">
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#7A5510; margin-bottom:4px;">Not all covalent substances are giant.</div>
+          <div style="font-size:14px; line-height:1.55; color:#4A3A1E;">Most are <b>simple molecules</b> (H₂O, CO₂) with low melting points. Only the giant networks melt high — always say which type you mean.</div>
+        </div>
+      </div>
+
+      <!-- ===== PANEL 2: DIAMOND vs GRAPHITE ===== -->
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; padding:28px 30px; margin-bottom:20px;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; color:#1A1714; margin-bottom:10px;">Diamond vs Graphite</div>
+
+        <!-- lead -->
+        <p style="font-size:16px; line-height:1.6; color:#2A241E; max-width:72ch; margin:0 0 18px;">Both are <b>pure carbon</b>. Every difference in their properties comes from one thing: how the atoms are arranged.</p>
+
+        <!-- compare-cards -->
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;">
+          <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:16px; overflow:hidden;">
+            <div style="display:flex; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid #EFE7D8; background:#F7F2E8;">
+              <span style="font-size:20px;">💎</span>
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px; color:#1A1714;">Diamond</div>
+            </div>
+            <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">BONDS PER CARBON</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">4 — to four other carbons</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">STRUCTURE</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">Rigid 3-D tetrahedral lattice</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">HARDNESS</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">Very hard</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">MELTING POINT</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">Very high — must break the whole rigid lattice</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:12px 18px; background:#FBE4DE; border-top:2px solid #E0897B;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#A85A47;">CONDUCTS ELECTRICITY</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#B5341A;">No — no free electrons</span></div>
+            </div>
+          </div>
+          <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:16px; overflow:hidden;">
+            <div style="display:flex; align-items:center; gap:10px; padding:14px 18px; border-bottom:1px solid #EFE7D8; background:#F7F2E8;">
+              <span style="font-size:20px;">✏️</span>
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px; color:#1A1714;">Graphite</div>
+            </div>
+            <div style="display:flex; flex-direction:column;">
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">BONDS PER CARBON</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">3 — one electron left over</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">STRUCTURE</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">Flat hexagonal layers</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">HARDNESS</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">Soft &amp; slippery — layers slide</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:11px 18px; border-bottom:1px solid #F2ECDD;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#9A9082;">MELTING POINT</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#2A241E;">Very high — layer bonds are strong</span></div>
+              <div style="display:flex; flex-direction:column; gap:2px; padding:12px 18px; background:#E7F3EA; border-top:2px solid #7FB98A;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.06em; color:#5A7A60;">CONDUCTS ELECTRICITY</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#3E6B47;">Yes — 1 delocalised electron per carbon</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:12px; text-align:center; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:#B5341A; background:#FBE0D6; border:1px solid #F0BBA9; border-radius:999px; padding:9px 18px;">Same element. Different structure → opposite properties.</div>
+      </div>
+
+      <!-- ===== PANEL 3: WHY GRAPHITE IS SOFT (PROCESS) ===== -->
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; padding:28px 30px; margin-bottom:20px;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; color:#1A1714; margin-bottom:10px;">Why a Pencil Writes</div>
+
+        <!-- lead -->
+        <p style="font-size:16px; line-height:1.6; color:#2A241E; max-width:72ch; margin:0 0 16px;">Graphite&#8217;s softness is a process, not a mystery — three steps:</p>
+
+        <!-- step-sequence -->
+        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:18px;">
+          <div style="display:flex; gap:14px; align-items:flex-start; background:#F7F2E8; border-radius:12px; padding:13px 16px;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff; background:#C0392B; min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;">1</span><span style="font-size:14.5px; line-height:1.55; color:#2A241E; padding-top:3px;">You press the pencil onto the paper — a force acts on the graphite.</span></div>
+          <div style="display:flex; gap:14px; align-items:flex-start; background:#F7F2E8; border-radius:12px; padding:13px 16px;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff; background:#C0392B; min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;">2</span><span style="font-size:14.5px; line-height:1.55; color:#2A241E; padding-top:3px;">Only <b>weak forces</b> hold the layers together — no covalent bonds to break.</span></div>
+          <div style="display:flex; gap:14px; align-items:flex-start; background:#F7F2E8; border-radius:12px; padding:13px 16px;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff; background:#C0392B; min-width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center;">3</span><span style="font-size:14.5px; line-height:1.55; color:#2A241E; padding-top:3px;">Whole layers <b>slide off</b> onto the page — that grey line is sheets of carbon.</span></div>
+        </div>
+
+        <!-- example-callout: real-world uses -->
+        <div style="background:#FBEEE9; border-left:4px solid #C0392B; border-radius:12px; padding:16px 20px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="font-size:17px;">🛠️</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15.5px; color:#B5341A;">Where each one earns its living</span></div>
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <div style="font-size:14px; line-height:1.5; color:#3A2A26;"><b>Diamond</b> → cutting tools and drill tips (very hard).</div>
+            <div style="font-size:14px; line-height:1.5; color:#3A2A26;"><b>Graphite</b> → pencils and lubricants (layers slide).</div>
+            <div style="font-size:14px; line-height:1.5; color:#3A2A26;"><b>Graphite</b> → electrodes in electrolysis (conducts + very high melting point).</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PANEL 4: SILICON DIOXIDE ===== -->
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; padding:28px 30px;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:21px; color:#1A1714; margin-bottom:10px;">Not Just Carbon — Silicon Dioxide</div>
+
+        <!-- lead -->
+        <p style="font-size:16px; line-height:1.6; color:#2A241E; max-width:72ch; margin:0 0 16px;">Giant covalent structures can contain <b>more than one element</b>. The exam favourite is silicon dioxide.</p>
+
+        <!-- example-callout: SiO2 -->
+        <div style="background:#FBEEE9; border-left:4px solid #C0392B; border-radius:12px; padding:16px 20px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;"><span style="font-size:17px;">🧪</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15.5px; color:#B5341A;">Example — silicon dioxide (SiO₂, silica)</span></div>
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <div style="font-size:14px; line-height:1.5; color:#3A2A26;">The main compound in <b>sand and quartz</b>.</div>
+            <div style="font-size:14px; line-height:1.5; color:#3A2A26;">Every silicon atom bonds to 4 oxygen atoms; every oxygen bridges 2 silicons.</div>
+            <div style="font-size:14px; line-height:1.5; color:#3A2A26;">Result: one giant lattice → <b>hard</b>, <b>very high</b> melting point, does <b>not</b> conduct.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MISTAKE-CHECK (interactive spot-the-error — from the block library) -->
+      <div style="margin-top:40px; background:linear-gradient(180deg,#FBE7E2,#F8E0DA); border:1px solid #EBBCB1; border-left:5px solid #C0392B; border-radius:18px; padding:24px 28px;">
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;"><span style="font-size:20px;">⚠️</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#B5341A;">Common Mistake</span><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#C08579; margin-left:auto;">SPOT THE ERROR</span></div>
+        <div style="background:#FFFDF8; border:1px solid #EBBCB1; border-radius:12px; padding:16px 20px; margin-bottom:14px;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082; margin-bottom:6px;">A STUDENT WROTE:</div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; line-height:1.4; color:#7A241A;">&#8220;Graphite is soft, so its bonds must be weak — it should melt easily.&#8221;</div>
+        </div>
+        <div style="font-size:14px; font-weight:600; color:#3A2A26; margin-bottom:10px;">What is the flaw in this reasoning?</div>
+        <div style="display:flex; flex-direction:column; gap:9px;">
+          <sc-for list="{{ mistakeOptions }}" as="o" hint-placeholder-count="3">
+            <button onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.text }}</button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ mistakeRevealed }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px; background:#FBEEE9; border-left:4px solid #C0392B; border-radius:12px; padding:16px 20px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span style="font-size:16px;">✅</span><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A;">The correction</span></div>
+            <p style="margin:0; font-size:14.5px; line-height:1.65; color:#3A2A26;">The covalent bonds <b>within</b> each layer are strong — graphite&#8217;s melting point is very high. Only the forces <b>between</b> layers are weak. Weak between-layer forces explain the softness; strong in-layer bonds explain the melting point. Keep the two separate in your answer.</p>
+          </div>
+        </sc-if>
+      </div>
+
+      <!-- KEY NOTE (three beats, one idea per line) -->
+      <div style="display:flex; align-items:center; gap:14px; margin:44px 0 20px;">
+        <span style="font-size:24px;">📌</span>
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin:0;">Key Note</h2>
+        <div style="flex:1; height:1px; background:#D8CFBD;"></div>
+      </div>
+      <div style="background:linear-gradient(90deg,#FBE7E0,#F6EFE2); border:1px solid #E4DCCB; border-left:5px solid #C0392B; border-radius:16px; padding:22px 26px; display:flex; flex-direction:column; gap:10px;">
+        <div style="display:flex; gap:10px; align-items:baseline;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; flex:none;">Giant covalent</span><span style="font-size:15px; line-height:1.55; color:#2A241E;">every atom covalently bonded into one huge network → very high melting points.</span></div>
+        <div style="display:flex; gap:10px; align-items:baseline;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; flex:none;">Diamond</span><span style="font-size:15px; line-height:1.55; color:#2A241E;">4 bonds per carbon → very hard, no free electrons, does not conduct.</span></div>
+        <div style="display:flex; gap:10px; align-items:baseline;"><span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#B5341A; flex:none;">Graphite</span><span style="font-size:15px; line-height:1.55; color:#2A241E;">3 bonds per carbon → soft sliding layers, 1 delocalised electron each → conducts.</span></div>
+      </div>
+
+      <!-- TEST YOURSELF -->
+      <div data-screen-label="Test Yourself" style="display:flex; align-items:center; gap:14px; margin:48px 0 8px;">
+        <span style="font-size:24px;">🎯</span>
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin:0;">Test Yourself</h2>
+        <div style="flex:1; height:1px; background:#D8CFBD;"></div>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; color:#6B635A; background:#EFE7D8; padding:7px 14px; border-radius:999px;">{{ quizScoreText }}</span>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:18px;">
+        <sc-for list="{{ quiz }}" as="q" hint-placeholder-count="2">
+          <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:20px; padding:24px 26px;">
+            <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px; color:#1A1714; margin-bottom:16px; line-height:1.4;">{{ q.q }}</div>
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <sc-for list="{{ q.options }}" as="o" hint-placeholder-count="4">
+                <button onClick="{{ o.onClick }}" style="{{ o.style }}">{{ o.text }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- STAR RATING -->
+      <div style="display:flex; align-items:center; gap:14px; margin:48px 0 20px;">
+        <span style="font-size:24px;">⭐</span>
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin:0;">How Well Do You Understand This Topic?</h2>
+      </div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:20px; padding:26px 28px;">
+        <p style="margin:0 0 16px; font-size:15px; color:#6B635A;">Be honest with yourself — this helps you know what to revise!</p>
+        <div style="display:flex; gap:8px; margin-bottom:12px;">
+          <sc-for list="{{ starRow }}" as="st" hint-placeholder-count="5">
+            <button onClick="{{ st.onClick }}" style="{{ st.style }}">★</button>
+          </sc-for>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:13px; color:#8A8074;">
+          <span>Don't get it</span>
+          <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; color:#C0392B;">{{ starLabel }}</span>
+          <span>Nailed it!</span>
+        </div>
+      </div>
+
+      <!-- ASK AI -->
+      <div style="display:flex; align-items:center; gap:14px; margin:48px 0 20px;">
+        <span style="font-size:24px;">🤖</span>
+        <h2 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin:0;">Ask Mr Badmus AI</h2>
+        <div style="flex:1; height:1px; background:#D8CFBD;"></div>
+      </div>
+      <div style="background:linear-gradient(135deg,#FBE7E0,#F6EFE2); border:1px solid #E4DCCB; border-radius:20px; padding:36px; text-align:center;">
+        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px; color:#1A1714; margin-bottom:8px;">Stuck? Just ask! 💬</div>
+        <p style="margin:0 0 22px; font-size:15px; color:#6B635A;">I'll explain why diamond and graphite behave so differently, what makes SiO₂ giant covalent, and how to word the 6-mark structure questions.</p>
+        <button style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#fff; background:#C0392B; border:none; padding:15px 30px; border-radius:999px; cursor:pointer; box-shadow:0 12px 28px -10px rgba(192,57,43,.7);">💬 Ask Mr Badmus AI</button>
+      </div>
+
+      <!-- FOOTER NAV -->
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:16px; margin-top:48px; padding-top:28px; border-top:1px solid #E4DCCB;">
+        <a href="Ionic Compounds (Chemistry).dc.html" style="display:block; background:#FFFDF8; border:1px solid #E4DCCB; border-radius:14px; padding:14px 20px; min-width:150px;"><div style="font-size:12px; color:#8A8074;">← Previous</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#1A1714;">Simple Molecular Substances</div></a>
+        <a href="#" style="font-size:14px; font-weight:500; color:#6B635A;">📋 All Bonding, Structure and Properties of Matter subtopics</a>
+        <a href="#" style="display:block; text-align:right; background:#FFFDF8; border:1px solid #E4DCCB; border-radius:14px; padding:14px 20px; min-width:150px;"><div style="font-size:12px; color:#8A8074;">Next →</div><div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#1A1714;">Graphene and Fullerenes</div></a>
+      </div>
+
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   GIANT COVALENT STRUCTURES — pilot page.
+   Hero: Hero 10 (Two-State Compare, CONFIG A) — approved, verbatim.
+   Body: composed from the Theory Block Library:
+     P1 lead + property-cards + aside-callout
+     P2 lead + compare-cards (+ verdict strip)
+     P3 lead + step-sequence + example-callout (uses)
+     P4 lead + example-callout (SiO₂)
+     Common Mistake (locked) · Key Note (3 beats)
+   Facts are frozen — copy mirrors Hero 10 / Hero 4 content.
+============================================================ */
+const HERO_STATES = [
+  { key: 'diamond', label: '💎 Diamond', emoji: '💎',
+    effectTitle: 'Rigid, very hard, and an electrical insulator',
+    caption: 'Each carbon forms 4 covalent bonds to 4 other carbons in a giant 3-D tetrahedral lattice. To melt or scratch it you must break millions of strong bonds — so it is extremely hard with a very high melting point. Every outer electron is locked into a bond, leaving no free electrons, so diamond does NOT conduct electricity.',
+    legend: '4 covalent bonds per carbon · rigid 3-D network · no free electrons',
+    props: [
+      { k: 'Bonds per carbon', v: '4', tone: 'neutral' },
+      { k: 'Free electrons', v: 'None', tone: 'bad' },
+      { k: 'Hardness', v: 'Very hard', tone: 'neutral' },
+      { k: 'Melting point', v: 'Very high', tone: 'good' },
+      { k: 'Conducts electricity', v: 'No ✕', tone: 'bad' },
+    ],
+    visual: { type: 'tetrahedral' } },
+  { key: 'graphite', label: '✏️ Graphite', emoji: '✏️',
+    effectTitle: 'Soft & slippery, high melting point — and it conducts',
+    caption: 'Each carbon forms only 3 covalent bonds, building flat hexagonal layers. The layers are held to each other by weak forces, so they slide over one another — making graphite soft and slippery. The spare 4th outer electron on every carbon is delocalised between the layers, so those free electrons carry charge and graphite DOES conduct. Strong bonds within each layer still give a very high melting point.',
+    legend: '3 covalent bonds per carbon · weak forces between sliding layers · 1 free electron each',
+    props: [
+      { k: 'Bonds per carbon', v: '3', tone: 'neutral' },
+      { k: 'Free electrons', v: '1 delocalised', tone: 'good' },
+      { k: 'Between layers', v: 'Weak forces', tone: 'neutral' },
+      { k: 'Melting point', v: 'Very high', tone: 'good' },
+      { k: 'Conducts electricity', v: 'Yes ✓', tone: 'good' },
+    ],
+    visual: { type: 'hexLayers', delocalised: true, slide: true } },
+];
+
+const TONE = {
+  neutral: { chip: '#4A4238', dot: '#B0A695' },
+  good:    { chip: '#3E6B47', dot: '#3E6B47' },
+  bad:     { chip: '#B5341A', dot: '#B5341A' },
+};
+
+/* mistake-check (library block): claim shown first, student picks the flaw,
+   correction revealed after answering. One state var — ports to vanilla JS. */
+const MISTAKE_OPTIONS = [
+  { text: "Soft doesn\u2019t mean weak covalent bonds \u2014 only the forces between the layers are weak, not the bonds within them.", correct: true },
+  { text: "Graphite isn\u2019t actually soft, so the whole statement is false.", correct: false },
+  { text: "Graphite really does have a low melting point, so it is right that it melts easily.", correct: false },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.QUIZ = [
+      { id: 'q1', q: '1. Diamond and graphite are both pure carbon. Why is diamond very hard while graphite is soft?', options: [
+        'Diamond atoms are heavier than graphite atoms, making the crystal denser and harder.',
+        'Diamond: every carbon makes 4 bonds in a rigid 3-D lattice. Graphite: layers held only by weak forces slide over each other.',
+        'Graphite contains impurities that weaken its covalent bonds.',
+        'Diamond has ionic bonds as well as covalent bonds, so it is held together more strongly.',
+      ], correct: 1 },
+      { id: 'q2', q: '2. Why does graphite conduct electricity but diamond does not?', options: [
+        'Graphite is a metal, so it has metallic bonding and a sea of electrons.',
+        'Diamond is transparent, so charge passes straight through without being carried.',
+        'In graphite each carbon bonds to only 3 others — the 4th outer electron is delocalised and free to carry charge. In diamond all 4 are locked into bonds.',
+        'Graphite layers rub together and generate static electricity.',
+      ], correct: 2 },
+      { id: 'q3', q: '3. Silicon dioxide (SiO₂) has a very high melting point. What is the best explanation?', options: [
+        'It is a giant covalent structure — melting requires breaking many strong covalent bonds throughout the lattice.',
+        'It is an ionic lattice of Si⁺ and O⁻ ions with strong electrostatic attractions.',
+        'Its molecules are heavy, so more heat is needed to make them move.',
+        'Strong intermolecular forces between SiO₂ molecules must be overcome.',
+      ], correct: 0 },
+    ];
+    this.state = { sel: 0, qAnswers: {}, stars: 0, mistakeSel: null };
+  }
+  componentDidMount() { try { const s = parseInt(localStorage.getItem('mb_giantcov_stars') || '0', 10); if (s) this.setState({ stars: s }); } catch (e) {} }
+  setStars(n) { this.setState({ stars: n }); try { localStorage.setItem('mb_giantcov_stars', String(n)); } catch (e) {} }
+  answer(qid, idx) { if (qid in this.state.qAnswers) return; this.setState({ qAnswers: { ...this.state.qAnswers, [qid]: idx } }); }
+  answerMistake(idx) { if (this.state.mistakeSel !== null) return; this.setState({ mistakeSel: idx }); }
+
+  /* ---------- Hero 10 renderers (verbatim from the approved hero) ---------- */
+  atom(x, y, size) {
+    return React.createElement('div', { style: {
+      position: 'absolute', left: (x - size / 2) + 'px', top: (y - size / 2) + 'px',
+      width: size + 'px', height: size + 'px', borderRadius: '50%',
+      background: 'radial-gradient(circle at 34% 28%, #5A5148, #241F1A)',
+      boxShadow: '0 3px 7px -2px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06)',
+    } });
+  }
+  bond(a, b, color, thick, opacity) {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    return React.createElement('div', { style: {
+      position: 'absolute', left: a[0] + 'px', top: (a[1] - thick / 2) + 'px',
+      width: len + 'px', height: thick + 'px', background: color, opacity: opacity == null ? 1 : opacity,
+      transformOrigin: '0 50%', transform: 'rotate(' + ang + 'deg)', borderRadius: '2px',
+    } });
+  }
+  drawTetrahedral() {
+    const h = React.createElement;
+    const pad = 30, S = 52, rowH = 44, cols = 4, rows = 4;
+    const pts = [];
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      pts.push([pad + c * S + (r % 2) * (S / 2), pad + r * rowH, r, c]);
+    }
+    const back = pts.map(p => [p[0] + 20, p[1] - 24]);
+    const kids = [];
+    for (let i = 0; i < pts.length; i++) for (let j = 0; j < pts.length; j++) {
+      if (j <= i) continue;
+      const d = Math.hypot(back[i][0] - back[j][0], back[i][1] - back[j][1]);
+      if (d < S * 0.95) kids.push(React.cloneElement(this.bond(back[i], back[j], '#C9BBA6', 5, 0.5), { key: 'bb' + i + '_' + j }));
+    }
+    back.forEach((p, i) => kids.push(React.cloneElement(this.atom(p[0], p[1], 16), { key: 'ba' + i, style: Object.assign({}, this.atom(p[0], p[1], 16).props.style, { opacity: 0.5 }) })));
+    for (let i = 0; i < pts.length; i++) kids.push(React.cloneElement(this.bond(pts[i], back[i], '#B7A88F', 4, 0.45), { key: 'cn' + i }));
+    for (let i = 0; i < pts.length; i++) for (let j = 0; j < pts.length; j++) {
+      if (j <= i) continue;
+      const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
+      if (d < S * 0.95) kids.push(React.cloneElement(this.bond(pts[i], pts[j], '#8A7A66', 6), { key: 'fb' + i + '_' + j }));
+    }
+    pts.forEach((p, i) => kids.push(React.cloneElement(this.atom(p[0], p[1], 22), { key: 'fa' + i })));
+    const W = pad * 2 + (cols - 1) * S + S / 2 + 26, H = pad * 2 + (rows - 1) * rowH + 8;
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+  honeycomb(R) {
+    const cols = 3, rows = 2, hexW = 1.5 * R, hexH = Math.sqrt(3) * R;
+    const A = new Map(), B = new Map();
+    const key = (x, y) => Math.round(x) + ',' + Math.round(y);
+    for (let cc = 0; cc < cols; cc++) for (let rr = 0; rr < rows; rr++) {
+      const cx = cc * hexW, cy = rr * hexH + (cc % 2 ? hexH / 2 : 0), v = [];
+      for (let a = 0; a < 6; a++) { const t = Math.PI / 180 * (60 * a); v.push([cx + R * Math.cos(t), cy + R * Math.sin(t)]); }
+      for (let a = 0; a < 6; a++) {
+        A.set(key(v[a][0], v[a][1]), v[a]);
+        const b = v[(a + 1) % 6], k = [key(v[a][0], v[a][1]), key(b[0], b[1])].sort().join('|');
+        B.set(k, [v[a], b]);
+      }
+    }
+    let minX = 1e9, minY = 1e9;
+    A.forEach(p => { minX = Math.min(minX, p[0]); minY = Math.min(minY, p[1]); });
+    const atoms = [...A.values()].map(p => [p[0] - minX, p[1] - minY]);
+    const bonds = [...B.values()].map(s => [[s[0][0] - minX, s[0][1] - minY], [s[1][0] - minX, s[1][1] - minY]]);
+    let maxX = 0, maxY = 0;
+    atoms.forEach(p => { maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]); });
+    return { atoms, bonds, w: maxX, h: maxY };
+  }
+  drawHexLayers(v) {
+    const h = React.createElement;
+    const R = 24, hc = this.honeycomb(R);
+    const layers = 3, dx = 30, dy = 34, pad = 20;
+    const kids = [];
+    const layerH = (li) => (layers - 1 - li);
+    const ox = (li) => pad + layerH(li) * dx;
+    const oy = (li) => pad + (layers - 1) * dy - layerH(li) * dy + (v.slide ? layerH(li) * 12 : 0);
+    for (let li = layers - 1; li >= 0; li--) {
+      const front = li === 0, op = front ? 1 : 0.42;
+      const bx = ox(li), by = oy(li);
+      hc.bonds.forEach((s, k) => kids.push(React.cloneElement(
+        this.bond([s[0][0] + bx, s[0][1] + by], [s[1][0] + bx, s[1][1] + by], '#8A7A66', front ? 5 : 4, op), { key: 'L' + li + 'b' + k })));
+      hc.atoms.forEach((p, k) => kids.push(React.cloneElement(
+        this.atom(p[0] + bx, p[1] + by, front ? 18 : 14), { key: 'L' + li + 'a' + k,
+        style: Object.assign({}, this.atom(p[0] + bx, p[1] + by, front ? 18 : 14).props.style, { opacity: op }) })));
+    }
+    const gaps = layers - 1;
+    for (let g = 0; g < gaps; g++) {
+      const li = g;
+      const gx = ox(li) + (ox(li + 1) - ox(li)) / 2;
+      const gy = oy(li) + (oy(li + 1) - oy(li)) / 2 + 6;
+      for (let e = 0; e < 4; e++) {
+        const ex = gx + e * 34 + 4, ey = gy + (e % 2) * 12;
+        const style = {
+          position: 'absolute', left: ex + 'px', top: ey + 'px', width: '12px', height: '12px', borderRadius: '50%',
+          background: '#2E7DD1', boxShadow: '0 0 7px #2E7DD1AA', transition: 'all .7s cubic-bezier(.4,0,.2,1)',
+        };
+        if (v.delocalised) style.animation = 'eDrift ' + (2.2 + (e % 3) * 0.5) + 's ease-in-out ' + (e * -0.4) + 's infinite';
+        else { style.background = '#9AA6B2'; style.boxShadow = 'none'; }
+        kids.push(h('div', { key: 'e' + g + '_' + e, style }));
+      }
+    }
+    const W = pad * 2 + hc.w + (layers - 1) * dx + 24;
+    const H = pad * 2 + hc.h + (layers - 1) * dy + (v.slide ? (layers - 1) * 12 : 0) + 8;
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+  buildViz(visual) {
+    if (visual.type === 'tetrahedral') return this.drawTetrahedral();
+    return this.drawHexLayers(visual);
+  }
+
+  renderVals() {
+    const st = HERO_STATES[this.state.sel];
+    const btnBase = { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', textAlign: 'left', cursor: 'pointer', borderRadius: '10px', padding: '11px 14px', transition: 'all .15s' };
+    const stateBtns = HERO_STATES.map((s, i) => ({
+      label: s.label, onClick: () => this.setState({ sel: i }),
+      style: { ...btnBase, color: i === this.state.sel ? '#fff' : '#4A4238', background: i === this.state.sel ? '#1A1714' : '#EFE7D8', border: '1px solid ' + (i === this.state.sel ? '#1A1714' : '#E4DCCB') },
+    }));
+    const heroProps = st.props.map(p => { const t = TONE[p.tone] || TONE.neutral; return { k: p.k, v: p.v, color: t.chip, dot: t.dot }; });
+
+    const quiz = this.QUIZ.map(q => {
+      const chosen = this.state.qAnswers[q.id]; const answered = chosen !== undefined;
+      const opts = q.options.map((text, idx) => {
+        let bg = '#FFFDF8', bd = '#E4DCCB', fg = '#2A241E';
+        if (answered) { if (idx === q.correct) { bg = '#E7F3EA'; bd = '#7FB98A'; fg = '#2E6B3A'; } else if (idx === chosen) { bg = '#FBE4DE'; bd = '#E0897B'; fg = '#A83824'; } else { fg = '#9A9082'; } }
+        return { text, onClick: () => this.answer(q.id, idx), style: { fontFamily: "'IBM Plex Sans',sans-serif", fontSize: '14.5px', lineHeight: '1.5', textAlign: 'left', width: '100%', cursor: answered ? 'default' : 'pointer', background: bg, border: '1.5px solid ' + bd, color: fg, borderRadius: '12px', padding: '14px 18px', transition: 'all .15s' } };
+      });
+      return { ...q, options: opts };
+    });
+    const quizAnswered = Object.keys(this.state.qAnswers).length;
+    const quizCorrect = this.QUIZ.filter(q => this.state.qAnswers[q.id] === q.correct).length;
+
+    const mAnswered = this.state.mistakeSel !== null;
+    const mistakeOptions = MISTAKE_OPTIONS.map((o, idx) => {
+      let bg = '#FFFDF8', bd = '#EBBCB1', fg = '#3A2A26';
+      if (mAnswered) { if (o.correct) { bg = '#E7F3EA'; bd = '#7FB98A'; fg = '#2E6B3A'; } else if (idx === this.state.mistakeSel) { bg = '#FBE4DE'; bd = '#E0897B'; fg = '#A83824'; } else { fg = '#9A9082'; } }
+      return { text: o.text, onClick: () => this.answerMistake(idx), style: { fontFamily: "'IBM Plex Sans',sans-serif", fontSize: '14px', lineHeight: '1.5', textAlign: 'left', width: '100%', cursor: mAnswered ? 'default' : 'pointer', background: bg, border: '1.5px solid ' + bd, color: fg, borderRadius: '11px', padding: '13px 16px', transition: 'all .15s' } };
+    });
+
+    const starBtn = { border: 'none', background: 'none', cursor: 'pointer', fontSize: '38px', lineHeight: '1', padding: '2px' };
+    const starRow = [1, 2, 3, 4, 5].map(n => ({ n, onClick: () => this.setStars(n), style: { ...starBtn, color: n <= this.state.stars ? '#F4B740' : '#DCD3C2' } }));
+
+    return {
+      stateEmoji: st.emoji, calloutColor: '#1A1714', calloutBg: '#F6EFE2',
+      effectTitle: st.effectTitle, caption: st.caption, legend: st.legend,
+      viz: this.buildViz(st.visual), stateBtns, heroProps,
+      mistakeOptions, mistakeRevealed: mAnswered,
+      quiz, quizScoreText: quizAnswered ? (quizCorrect + ' / ' + this.QUIZ.length + ' correct') : 'Answer to see your score',
+      starRow, starLabel: ['', "Don't get it", 'Bit shaky', 'Getting there', 'Pretty confident', 'Nailed it!'][this.state.stars],
+    };
+  }
+}
+</script>
+</body>
+</html>

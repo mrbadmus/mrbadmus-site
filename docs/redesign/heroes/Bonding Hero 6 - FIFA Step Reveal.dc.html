@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes revealUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes popIn { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 06</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">FIFA Step Reveal</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">The calculation workhorse. <b style="color:#1A1714;">Formula → Insert → Fine-tune → Answer.</b> A worked example that reveals step by step, then a practice mode where the student does each step and is marked one step at a time. All content comes from <span style="font-family:'IBM Plex Mono',monospace; font-size:13px;">CONFIG</span> — the component runs twice below with two different configs. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+
+        <!-- header -->
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+        </div>
+
+        <div style="padding:22px 24px;">
+          <!-- problem -->
+          <div style="background:#F7F2E8; border:1px solid #E4DCCB; border-left:4px solid #C0392B; border-radius:12px; padding:16px 18px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.12em; color:#B5341A; margin-bottom:8px;">THE PROBLEM</div>
+            <p style="margin:0 0 14px; font-size:15px; line-height:1.6; color:#2A241E;">{{ ins.problem }}</p>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <sc-for list="{{ ins.given }}" as="g" hint-placeholder-count="3">
+                <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:10px; padding:8px 12px; display:flex; flex-direction:column; gap:2px;">
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8A8074;">{{ g.sym }}</span>
+                  <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px; color:#1A1714;">{{ g.val }}</span>
+                  <span style="font-size:11px; color:#8A8074;">{{ g.note }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- mode toggle -->
+          <div style="display:flex; gap:8px; margin:20px 0 18px;">
+            <sc-for list="{{ ins.modeBtns }}" as="m" hint-placeholder-count="2">
+              <button onClick="{{ m.onClick }}" style="{{ m.style }}">{{ m.label }}</button>
+            </sc-for>
+          </div>
+
+          <!-- WORKED MODE -->
+          <sc-if value="{{ ins.isWorked }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <sc-for list="{{ ins.workedSteps }}" as="st" hint-placeholder-count="4">
+                  <sc-if value="{{ st.shown }}" hint-placeholder-val="{{ true }}">
+                    <div style="animation:revealUp .4s both; border:1px solid #EFE7D8; border-radius:14px; padding:16px 18px; background:#FFFDF8;">
+                      <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                        <div style="{{ st.badgeStyle }}">{{ st.letter }}</div>
+                        <div>
+                          <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.14em; color:#9A9082;">{{ st.name }}</div>
+                          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#1A1714;">{{ st.title }}</div>
+                        </div>
+                      </div>
+                      <div style="background:#1A1714; border-radius:10px; padding:14px 16px; font-family:'IBM Plex Mono',monospace; font-size:15px; line-height:1.5; color:#EAE3D6; overflow-x:auto;">{{ st.line }}</div>
+                      <p style="margin:10px 0 0; font-size:13.5px; line-height:1.55; color:#6B635A;">{{ st.note }}</p>
+                    </div>
+                  </sc-if>
+                </sc-for>
+              </div>
+              <button onClick="{{ ins.onReveal }}" style="{{ ins.revealStyle }}">{{ ins.revealLabel }}</button>
+            </div>
+          </sc-if>
+
+          <!-- PRACTICE MODE -->
+          <sc-if value="{{ ins.isPractice }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <sc-for list="{{ ins.practiceSteps }}" as="st" hint-placeholder-count="4">
+                  <div style="{{ st.cardStyle }}">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                      <div style="{{ st.badgeStyle }}">{{ st.badgeGlyph }}</div>
+                      <div style="flex:1;">
+                        <div style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.14em; color:#9A9082;">{{ st.name }}</div>
+                        <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#1A1714;">{{ st.title }}</div>
+                      </div>
+                    </div>
+
+                    <sc-if value="{{ st.isSolved }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:10px; background:#E7F3EA; border:1px solid #7FB98A; border-radius:10px; padding:10px 14px; font-family:'IBM Plex Mono',monospace; font-size:13.5px; color:#2E6B3A;">{{ st.solvedText }}</div>
+                    </sc-if>
+
+                    <sc-if value="{{ st.isActive }}" hint-placeholder-val="{{ true }}">
+                      <div style="margin-top:12px;">
+                        <p style="margin:0 0 12px; font-size:14px; line-height:1.5; color:#4A4238;">{{ st.prompt }}</p>
+
+                        <sc-if value="{{ st.isChoice }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:flex; flex-direction:column; gap:8px;">
+                            <sc-for list="{{ st.choiceOpts }}" as="op" hint-placeholder-count="3">
+                              <button onClick="{{ op.onClick }}" style="{{ op.style }}">{{ op.label }}</button>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+
+                        <sc-if value="{{ st.isInput }}" hint-placeholder-val="{{ true }}">
+                          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+                            <sc-for list="{{ st.blanks }}" as="bl" hint-placeholder-count="2">
+                              <span style="font-family:'IBM Plex Mono',monospace; font-size:14.5px; color:#2A241E;">{{ bl.prefix }}</span>
+                              <input value="{{ bl.value }}" onChange="{{ bl.onChange }}" placeholder="{{ bl.placeholder }}" style="{{ bl.style }}"></input>
+                              <span style="font-family:'IBM Plex Mono',monospace; font-size:13px; color:#8A8074;">{{ bl.suffix }}</span>
+                            </sc-for>
+                          </div>
+                        </sc-if>
+
+                        <div style="display:flex; align-items:center; gap:12px; margin-top:14px; flex-wrap:wrap;">
+                          <button onClick="{{ st.onCheck }}" style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14px; color:#fff; background:#B5341A; border:none; padding:10px 20px; border-radius:10px; cursor:pointer; box-shadow:0 8px 20px -8px rgba(181,52,26,.7);">Check this step</button>
+                          <sc-if value="{{ st.feedbackShown }}" hint-placeholder-val="{{ false }}">
+                            <div style="animation:popIn .25s both; display:flex; align-items:center; gap:8px; font-size:13.5px; line-height:1.45; color:#A83824; background:#FBE4DE; border:1px solid #E0897B; border-radius:10px; padding:9px 13px;"><span style="font-weight:700;">✕</span><span>{{ st.feedbackText }}</span></div>
+                          </sc-if>
+                        </div>
+                      </div>
+                    </sc-if>
+
+                    <sc-if value="{{ st.isLocked }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:8px; font-size:13px; color:#B0A695;">Complete the step above first.</div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+
+              <sc-if value="{{ ins.allSolved }}" hint-placeholder-val="{{ false }}">
+                <div style="animation:popIn .35s both; margin-top:14px; display:flex; align-items:center; gap:12px; background:#E7F3EA; border:1px solid #7FB98A; border-radius:14px; padding:16px 20px;">
+                  <span style="font-size:26px;">🎉</span>
+                  <div>
+                    <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#2E6B3A;">{{ ins.successTitle }}</div>
+                    <div style="font-size:13px; color:#4A6B4E;">{{ ins.successSub }}</div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <button onClick="{{ ins.onRestart }}" style="font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:14px; color:#4A4238; background:#EFE7D8; border:1px solid #E4DCCB; padding:10px 20px; border-radius:10px; cursor:pointer; margin-top:14px; white-space:nowrap;">{{ ins.restartLabel }}</button>
+            </div>
+          </sc-if>
+        </div>
+
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.5; color:#EAE3D6;">{{ ins.hint }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 06 — FIFA STEP REVEAL
+   The calculation workhorse. FIFA = Formula · Insert · Fine-tune
+   · Answer. Two views of the SAME four-step method:
+     • Worked example — reveal one step at a time on click.
+     • Practice — the student does each step and is marked one
+       step at a time, with feedback tied to the failed step.
+
+   The four FIFA labels (letter + name) are STRUCTURAL and come
+   from the FIFA constant, not the config — so every calculation
+   page keeps the same method spine. A config supplies exactly
+   four steps (one per FIFA phase) with the per-problem content.
+
+   CONFIG SCHEMA (CONFIGS holds two to prove parametrisation):
+   {
+     configLabel: string   // demo label only, not shown on real pages
+     emoji, title, subtitle: string   // hero header
+     problem: string       // the question statement
+     given: [ { sym, val, note } ]    // known-quantity chips
+     steps: [               // EXACTLY 4, mapped to F, I, F, A
+       {
+         title: string,     // step heading
+         worked: string,    // the line shown in the worked example
+                            // (also the green "solved" summary in practice)
+         note: string,      // one-line explanation under the worked line
+         practice: {
+           prompt: string,          // what the student must do
+           kind: 'choice' | 'input',
+           options: [ { text, ok } ],          // kind:'choice' — one ok:true
+           blanks:  [ { prefix, suffix, placeholder, accept:[..] } ],
+                                                // kind:'input' — every blank must match
+           feedback: { wrong: string }         // shown on a wrong check
+         }
+       }
+     ],
+     success: { title, sub },   // banner when all steps are correct
+     hint: string               // dark mono method-reminder bar
+   }
+
+   Interaction logic (answer normalisation + per-step marking) is
+   kept in pure methods (norm / matches / stepCorrect) separate
+   from the template binding in renderVals(), so it ports cleanly.
+============================================================ */
+const FIFA = [
+  { letter: 'F', name: 'FORMULA' },
+  { letter: 'I', name: 'INSERT' },
+  { letter: 'F', name: 'FINE-TUNE' },
+  { letter: 'A', name: 'ANSWER' },
+];
+
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — MEAN RATE OF REACTION (with minutes → seconds conversion)',
+    emoji: '⏱️', title: 'Mean Rate of Reaction', subtitle: 'volume of gas ÷ time — remember to convert to seconds',
+    problem: 'In an experiment, 48 cm³ of gas is collected over 2 minutes. Calculate the mean rate of reaction, giving the correct unit.',
+    given: [
+      { sym: 'quantity', val: '48 cm³', note: 'volume of gas formed' },
+      { sym: 'time', val: '2 min', note: 'convert to seconds!' },
+    ],
+    steps: [
+      {
+        title: 'Write the formula',
+        worked: 'mean rate = quantity of product ÷ time taken',
+        note: 'Rate is an amount per unit of time, so the quantity goes on top and time on the bottom.',
+        practice: {
+          prompt: 'Which formula gives the mean rate of reaction?', kind: 'choice',
+          options: [
+            { text: 'mean rate = quantity ÷ time', ok: true },
+            { text: 'mean rate = time ÷ quantity', ok: false },
+            { text: 'mean rate = quantity × time', ok: false },
+          ],
+          feedback: { wrong: 'Not quite — rate is an amount per unit time, so divide the quantity by the time (not the other way round).' },
+        },
+      },
+      {
+        title: 'Insert the values',
+        worked: 'mean rate = 48 cm³ ÷ 2 min',
+        note: 'Put the two numbers from the question straight into the formula.',
+        practice: {
+          prompt: 'Insert the two values from the question (before converting units).', kind: 'input',
+          blanks: [
+            { prefix: 'mean rate =', suffix: '÷', placeholder: '?', accept: ['48'] },
+            { prefix: '', suffix: '', placeholder: '?', accept: ['2'] },
+          ],
+          feedback: { wrong: 'Read the question again — the volume of gas is 48 cm³ and the time is 2 minutes. Insert those two numbers.' },
+        },
+      },
+      {
+        title: 'Fine-tune: convert the units',
+        worked: '2 min = 2 × 60 = 120 s   →   mean rate = 48 ÷ 120',
+        note: 'Rate of reaction is measured per second, so change minutes to seconds first (× 60).',
+        practice: {
+          prompt: 'Convert the time into seconds.', kind: 'input',
+          blanks: [
+            { prefix: '2 min =', suffix: 's', placeholder: '?', accept: ['120'] },
+          ],
+          feedback: { wrong: 'Multiply the minutes by 60 to get seconds: 2 × 60 = 120 s.' },
+        },
+      },
+      {
+        title: 'State the answer with a unit',
+        worked: 'mean rate = 48 ÷ 120 = 0.4 cm³/s',
+        note: 'Divide, then attach the unit: a volume (cm³) over a time (s) gives cm³/s.',
+        practice: {
+          prompt: 'Work out the final answer and give its unit.', kind: 'input',
+          blanks: [
+            { prefix: 'mean rate =', suffix: '', placeholder: 'value', accept: ['0.4', '.4'] },
+            { prefix: '', suffix: '(unit)', placeholder: 'unit', accept: ['cm³/s', 'cm3/s', 'cm^3/s', 'cm³ /s'] },
+          ],
+          feedback: { wrong: '48 ÷ 120 = 0.4, and the unit is volume ÷ time = cm³/s.' },
+        },
+      },
+    ],
+    success: { title: 'Correct — mean rate = 0.4 cm³/s', sub: 'You picked the formula, inserted the values, converted to seconds, and stated the unit.' },
+    hint: 'FIFA: Formula → Insert → Fine-tune → Answer. For rate of reaction, always convert the time to seconds before dividing.',
+  },
+  {
+    configLabel: 'CONFIG B — BOND-ENERGY CALCULATION (signed ΔH, no unit conversion)',
+    emoji: '🔗', title: 'Bond-Energy ΔH', subtitle: 'energy in to break − energy out to make',
+    problem: 'Hydrogen reacts with chlorine: H₂ + Cl₂ → 2HCl. Use the bond energies below to calculate the overall energy change, ΔH.',
+    given: [
+      { sym: 'H–H', val: '436 kJ/mol', note: 'bond broken ×1' },
+      { sym: 'Cl–Cl', val: '242 kJ/mol', note: 'bond broken ×1' },
+      { sym: 'H–Cl', val: '431 kJ/mol', note: 'bond made ×2' },
+    ],
+    steps: [
+      {
+        title: 'Write the formula',
+        worked: 'ΔH = energy in (bonds broken) − energy out (bonds made)',
+        note: 'Breaking bonds takes energy IN; making bonds gives energy OUT. ΔH is in minus out.',
+        practice: {
+          prompt: 'Which formula gives the overall energy change ΔH?', kind: 'choice',
+          options: [
+            { text: 'ΔH = energy in − energy out', ok: true },
+            { text: 'ΔH = energy out − energy in', ok: false },
+            { text: 'ΔH = energy in + energy out', ok: false },
+          ],
+          feedback: { wrong: 'Watch the order — it is energy IN (to break bonds) minus energy OUT (when bonds form).' },
+        },
+      },
+      {
+        title: 'Insert the bond energies',
+        worked: 'in = (H–H) + (Cl–Cl) = 436 + 242      out = 2 × (H–Cl) = 2 × 431',
+        note: 'One H–H and one Cl–Cl are broken. Two H–Cl bonds are made, so multiply by 2.',
+        practice: {
+          prompt: 'Insert the missing bond energies.', kind: 'input',
+          blanks: [
+            { prefix: 'energy in = 436 +', suffix: '', placeholder: '?', accept: ['242'] },
+            { prefix: 'energy out = 2 ×', suffix: '', placeholder: '?', accept: ['431'] },
+          ],
+          feedback: { wrong: 'Bonds broken: H–H (436) + Cl–Cl (242). Bonds made: two H–Cl, so 2 × 431.' },
+        },
+      },
+      {
+        title: 'Fine-tune: work out each total',
+        worked: 'total in = 436 + 242 = 678       total out = 2 × 431 = 862',
+        note: 'Add up the energy in, and the energy out, before you subtract.',
+        practice: {
+          prompt: 'Work out each total (in kJ/mol).', kind: 'input',
+          blanks: [
+            { prefix: 'total in =', suffix: '', placeholder: '?', accept: ['678'] },
+            { prefix: 'total out =', suffix: '', placeholder: '?', accept: ['862'] },
+          ],
+          feedback: { wrong: '436 + 242 = 678, and 2 × 431 = 862.' },
+        },
+      },
+      {
+        title: 'State ΔH with its sign and unit',
+        worked: 'ΔH = 678 − 862 = −184 kJ/mol   (negative → exothermic)',
+        note: 'In minus out: 678 − 862 = −184. A negative ΔH means the reaction is exothermic.',
+        practice: {
+          prompt: 'State ΔH — keep the sign and give the unit.', kind: 'input',
+          blanks: [
+            { prefix: 'ΔH =', suffix: '', placeholder: 'value', accept: ['-184', '−184'] },
+            { prefix: '', suffix: '(unit)', placeholder: 'unit', accept: ['kJ/mol', 'kj/mol', 'kjmol', 'kj mol'] },
+          ],
+          feedback: { wrong: '678 − 862 = −184. Keep the minus sign (exothermic) — the unit is kJ/mol.' },
+        },
+      },
+    ],
+    success: { title: 'Correct — ΔH = −184 kJ/mol', sub: 'Negative ΔH, so this reaction is exothermic. Formula, insert, totals, signed answer — all right.' },
+    hint: 'FIFA for bond energy: ΔH = (bonds broken) − (bonds made). Negative ΔH = exothermic; positive = endothermic.',
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      insts: CONFIGS.map(() => ({ mode: 'worked', revealed: 1, cur: 0, vals: {}, status: {} })),
+    };
+  }
+
+  setInst(ci, patch) {
+    const insts = this.state.insts.map((o, i) => (i === ci ? { ...o, ...patch } : o));
+    this.setState({ insts });
+  }
+
+  setVal(ci, key, v) {
+    const it = this.state.insts[ci];
+    const vals = { ...it.vals, [key]: v };
+    const status = { ...it.status }; delete status[it.cur];
+    this.setInst(ci, { vals, status });
+  }
+
+  resetPractice(ci) { this.setInst(ci, { cur: 0, vals: {}, status: {} }); }
+
+  /* --- pure answer marking (separable from template binding) --- */
+  norm(s) {
+    return String(s == null ? '' : s).trim().toLowerCase()
+      .replace(/[−–—]/g, '-').replace(/×/g, 'x').replace(/÷/g, '/').replace(/\s+/g, '');
+  }
+  matches(input, accept) {
+    const n = this.norm(input);
+    if (!n) return false;
+    const iv = parseFloat(n.replace(/[^0-9.\-]/g, ''));
+    return accept.some((a) => {
+      const an = this.norm(a);
+      if (n === an) return true;
+      const av = parseFloat(an.replace(/[^0-9.\-]/g, ''));
+      if (!isNaN(av) && !isNaN(iv) && /[0-9]/.test(n) && Math.abs(av - iv) < 1e-9) return true;
+      return false;
+    });
+  }
+  stepCorrect(ci, si) {
+    const it = this.state.insts[ci];
+    const p = CONFIGS[ci].steps[si].practice;
+    if (p.kind === 'choice') {
+      const sel = it.vals[si + ':c'];
+      return sel != null && p.options[sel] && !!p.options[sel].ok;
+    }
+    return p.blanks.every((b, bi) => this.matches(it.vals[si + ':' + bi] || '', b.accept));
+  }
+  checkStep(ci) {
+    const it = this.state.insts[ci];
+    const ok = this.stepCorrect(ci, it.cur);
+    const status = { ...it.status, [it.cur]: ok ? 'right' : 'wrong' };
+    this.setInst(ci, { status, cur: ok ? it.cur + 1 : it.cur });
+  }
+
+  renderVals() {
+    const seg = { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', border: '1px solid #E4DCCB', padding: '9px 16px', borderRadius: '10px', cursor: 'pointer', transition: 'all .15s' };
+    const segOn = { background: '#1A1714', color: '#fff', borderColor: '#1A1714' };
+    const segIdle = { background: '#EFE7D8', color: '#4A4238' };
+    const badge = (bg, fg, glow) => ({ width: '34px', height: '34px', flex: '0 0 34px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '17px', color: fg, background: bg, boxShadow: glow || 'none' });
+    const badgeAccent = badge('radial-gradient(circle at 35% 30%,#E0745F,#C0392B)', '#fff', '0 4px 10px -3px rgba(192,57,43,.5)');
+    const badgeGreen = badge('#E7F3EA', '#2E6B3A', 'none');
+    const badgeGrey = badge('#EFE7D8', '#B0A695', 'none');
+    const optIdle = { fontFamily: "'IBM Plex Mono',monospace", fontSize: '14px', textAlign: 'left', cursor: 'pointer', borderRadius: '10px', padding: '11px 14px', background: '#FFFDF8', border: '1px solid #E4DCCB', color: '#2A241E', transition: 'all .15s' };
+    const optOn = { ...optIdle, background: '#FBEAE1', border: '2px solid #E0531F', color: '#2A241E', boxShadow: '0 6px 16px -8px rgba(224,83,31,.5)' };
+    const inputStyle = { width: '84px', fontFamily: "'IBM Plex Mono',monospace", fontSize: '15px', fontWeight: 600, textAlign: 'center', color: '#1A1714', background: '#fff', border: '1.5px solid #E4DCCB', borderRadius: '8px', padding: '8px 6px', outline: 'none' };
+    const stepCard = { border: '1px solid #EFE7D8', borderRadius: '14px', padding: '16px 18px', background: '#FFFDF8', transition: 'opacity .2s' };
+
+    const instances = CONFIGS.map((cfg, ci) => {
+      const it = this.state.insts[ci];
+      const isWorked = it.mode === 'worked';
+
+      const modeBtns = [
+        { key: 'worked', label: '📖 Worked example' },
+        { key: 'practice', label: '✍️ Practice yourself' },
+      ].map((m) => ({ label: m.label, onClick: () => this.setInst(ci, { mode: m.key }), style: { ...seg, ...(it.mode === m.key ? segOn : segIdle) } }));
+
+      const workedSteps = cfg.steps.map((s, si) => ({
+        letter: FIFA[si].letter, name: FIFA[si].name, title: s.title, line: s.worked, note: s.note,
+        shown: si < it.revealed, badgeStyle: badgeAccent,
+      }));
+      const allRevealed = it.revealed >= cfg.steps.length;
+      const revealLabel = allRevealed ? '↺ Collapse steps' : 'Reveal next step  →';
+      const revealStyle = { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', color: allRevealed ? '#4A4238' : '#fff', background: allRevealed ? '#EFE7D8' : '#C0392B', border: allRevealed ? '1px solid #E4DCCB' : 'none', padding: '11px 22px', borderRadius: '10px', cursor: 'pointer', marginTop: '14px', whiteSpace: 'nowrap', boxShadow: allRevealed ? 'none' : '0 8px 20px -8px rgba(192,57,43,.6)' };
+      const onReveal = () => this.setInst(ci, { revealed: allRevealed ? 1 : it.revealed + 1 });
+
+      const practiceSteps = cfg.steps.map((s, si) => {
+        const phase = si < it.cur ? 'solved' : (si === it.cur ? 'active' : 'locked');
+        const p = s.practice;
+        const stat = it.status[si];
+        let choiceOpts = [], blanks = [];
+        if (p.kind === 'choice') {
+          const sel = it.vals[si + ':c'];
+          choiceOpts = p.options.map((o, oi) => ({ label: o.text, onClick: () => this.setVal(ci, si + ':c', oi), style: sel === oi ? optOn : optIdle }));
+        } else {
+          blanks = p.blanks.map((b, bi) => ({
+            prefix: b.prefix || '', suffix: b.suffix || '', placeholder: b.placeholder || '?',
+            value: it.vals[si + ':' + bi] || '', onChange: (e) => this.setVal(ci, si + ':' + bi, e.target.value), style: inputStyle,
+          }));
+        }
+        return {
+          letter: FIFA[si].letter, name: FIFA[si].name, title: s.title,
+          badgeGlyph: phase === 'solved' ? '✓' : FIFA[si].letter,
+          badgeStyle: phase === 'solved' ? badgeGreen : (phase === 'active' ? badgeAccent : badgeGrey),
+          cardStyle: { ...stepCard, ...(phase === 'locked' ? { opacity: 0.5 } : {}) },
+          isActive: phase === 'active', isSolved: phase === 'solved', isLocked: phase === 'locked',
+          isChoice: p.kind === 'choice', isInput: p.kind !== 'choice',
+          prompt: p.prompt, choiceOpts, blanks,
+          onCheck: () => this.checkStep(ci),
+          feedbackShown: stat === 'wrong', feedbackText: p.feedback.wrong,
+          solvedText: s.worked,
+        };
+      });
+
+      return {
+        configLabel: cfg.configLabel, emoji: cfg.emoji, title: cfg.title, subtitle: cfg.subtitle,
+        problem: cfg.problem, given: cfg.given,
+        modeBtns, isWorked, isPractice: !isWorked,
+        workedSteps, revealLabel, revealStyle, onReveal,
+        practiceSteps, allSolved: it.cur >= cfg.steps.length,
+        successTitle: cfg.success.title, successSub: cfg.success.sub,
+        restartLabel: '↻ Start over', onRestart: () => this.resetPractice(ci),
+        hint: cfg.hint,
+      };
+    });
+
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>

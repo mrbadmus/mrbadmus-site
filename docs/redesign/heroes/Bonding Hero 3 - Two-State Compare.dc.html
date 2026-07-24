@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes eDrift { 0%,100% { transform: translate(0,0); } 25% { transform: translate(26px,5px); } 50% { transform: translate(52px,-4px); } 75% { transform: translate(20px,7px); } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 03</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">Two-State Compare</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">New archetype: an A/B flip showing cause and effect. Two configs below prove the parametrisation. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1.5fr .9fr;">
+          <div style="padding:18px; background:linear-gradient(180deg,#FFFDF8,#FBF4EF); overflow-x:auto; border-right:1px solid #EFE7D8; display:flex; align-items:center; justify-content:center;">{{ ins.viz }}</div>
+          <div style="padding:20px 22px; display:flex; flex-direction:column; gap:10px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">COMPARE</div>
+            <sc-for list="{{ ins.stateBtns }}" as="b" hint-placeholder-count="2">
+              <button onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+            </sc-for>
+            <div style="height:1px; background:#EFE7D8; margin:6px 0;"></div>
+            <div style="background:#F7F2E8; border-radius:12px; padding:14px 16px;">
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:14.5px; color:{{ ins.effectColor }}; margin-bottom:4px;">{{ ins.effectTitle }}</div>
+              <div style="font-size:13px; line-height:1.5; color:#5A5248;">{{ ins.caption }}</div>
+            </div>
+            <sc-if value="{{ ins.hasForce }}" hint-placeholder-val="{{ false }}">
+              <button onClick="{{ ins.forceAction }}" style="{{ ins.forceBtnStyle }}">{{ ins.forceLabel }}</button>
+            </sc-if>
+          </div>
+        </div>
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#EAE3D6;">{{ ins.strap }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 03 — TWO-STATE COMPARE
+   An A/B flip: two states of the same structure, each with its
+   own visual and caption, so the cause-and-effect contrast is
+   one tap.
+
+   CONFIG SCHEMA:
+   {
+     configLabel: string   // demo label only
+     emoji, title, subtitle: string   // hero header
+     strap: string         // fixed dark-bar line for the whole hero
+     force: null | {       // OPTIONAL 'apply force' demo. When present a
+                           // button appears and its pressed/released state
+                           // is passed to the visual as `forced`.
+       label: string,      // button label when force not yet applied
+       undoLabel: string   // button label once force is applied
+     },
+     states: [ exactly 2 × {
+       key: string,
+       label: string,      // toggle button label
+       effectTitle: string,   // bold effect line at rest
+       effectGood: bool,   // true → sage title, false → deep-red title
+       caption: string,    // explanation at rest
+       forced: null | {    // OPTIONAL override shown once force is applied
+         effectTitle, effectGood, caption   // same three fields, post-force
+       },
+       visual: {           // named renderer + params
+         type: 'metalLayers',
+           alloy: bool     // sprinkle larger foreign atoms into the grid;
+                           // sliding is driven by `forced`, not config:
+                           // pure metal shears (bends), alloy stays locked
+         | type: 'delocalised',
+           free: bool      // true → drifting electron sea; false →
+                           // electrons pinned to their atoms
+       }
+     } ]
+   }
+   Visual renderers (drawMetalLayers, drawDelocalised) are pure
+   functions of their params — add new types without touching
+   the state machine or template. The force flag lives in component
+   state, kept separate from the config-driven A/B selection.
+============================================================ */
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — PURE METAL vs ALLOY, VISUAL: metalLayers + FORCE',
+    emoji: '🔩', title: 'Why Alloys Are Harder', subtitle: 'apply a force to each structure',
+    strap: 'Pick a structure, then apply a sideways force — watch whether the layers of atoms can slide.',
+    force: { label: '🔨 Apply force', undoLabel: '↩ Release force' },
+    states: [
+      { key: 'pure', label: '⬜ Pure metal', effectTitle: 'Regular layers of one metal', effectGood: true,
+        caption: 'Identical atoms sit in neat, evenly-spaced layers. Apply a force to see what happens.',
+        forced: { effectTitle: 'Layers slide → it bends ✓', effectGood: true,
+          caption: 'The layers slip over one another, so the metal changes shape without breaking. This is why pure metals are soft and malleable.' },
+        visual: { type: 'metalLayers', alloy: false } },
+      { key: 'alloy', label: '🔶 Alloy', effectTitle: 'Different-sized atoms mixed in', effectGood: true,
+        caption: 'Atoms of another element (darker) sit among the main atoms and distort the layers. Apply a force to compare.',
+        forced: { effectTitle: 'Sliding blocked → it resists ✕', effectGood: false,
+          caption: 'The odd-sized atoms stop the layers sliding cleanly, so the alloy keeps its shape. That is why alloys are harder than the pure metal.' },
+        visual: { type: 'metalLayers', alloy: true } },
+    ],
+  },
+  {
+    configLabel: 'CONFIG B — DELOCALISED ELECTRONS ON/OFF, VISUAL: delocalised',
+    emoji: '⚡', title: 'The Sea of Delocalised Electrons', subtitle: 'what the free electrons actually do',
+    strap: 'Metallic bonding: positive ions in a regular pattern + a sea of delocalised electrons free to drift.',
+    states: [
+      { key: 'on', label: '🌊 Electron sea ON', effectTitle: 'Conducts heat & electricity ✓', effectGood: true,
+        caption: 'Delocalised electrons drift through the whole structure, carrying charge and thermal energy — and gluing the positive ions together.',
+        visual: { type: 'delocalised', free: true } },
+      { key: 'off', label: '📍 Electrons pinned (imaginary)', effectTitle: 'No conduction ✕', effectGood: false,
+        caption: 'If each electron stayed stuck to its own atom, nothing could carry charge — and there would be no metallic bond holding the ions together.',
+        visual: { type: 'delocalised', free: false } },
+    ],
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: CONFIGS.map(() => 0), forced: CONFIGS.map(() => false) };
+  }
+  pick(ci, i) {
+    const sel = this.state.sel.slice(); sel[ci] = i;
+    const forced = this.state.forced.slice(); forced[ci] = false;   // reset force when switching structure
+    this.setState({ sel, forced });
+  }
+  toggleForce(ci) { const forced = this.state.forced.slice(); forced[ci] = !forced[ci]; this.setState({ forced }); }
+
+  drawMetalLayers(v, forced) {
+    const h = React.createElement;
+    const COLS = 8, ROWS = 4, S = 44, ION = 34;
+    const padL = 26, padT = 40;
+    const alloySpots = { 5: 1, 10: 1, 13: 1, 19: 1 };
+    const slide = forced && !v.alloy;    // only the PURE metal shears; the alloy stays locked
+    const shearMax = (ROWS - 1) * 22;
+    const kids = [];
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const i = r * COLS + c;
+      const foreign = v.alloy && alloySpots[i];
+      const size = foreign ? 44 : ION;
+      const shift = slide ? (ROWS - 1 - r) * 22 : 0;   // top rows travel furthest → parallelogram = bend
+      const x = padL + c * S + (ION - size) / 2 + shift;
+      const y = padT + r * S + (ION - size) / 2;
+      kids.push(h('div', { key: 'a' + i, style: {
+        position: 'absolute', left: x + 'px', top: y + 'px', width: size + 'px', height: size + 'px', borderRadius: '50%',
+        background: foreign ? 'radial-gradient(circle at 35% 30%,#8A6B4E,#5A4432)' : 'radial-gradient(circle at 35% 30%,#D9CBB0,#A8977B)',
+        boxShadow: '0 4px 10px -3px rgba(0,0,0,.3)', transition: 'all .7s cubic-bezier(.4,0,.2,1)',
+      } }));
+    }
+    const W = padL * 2 + (COLS - 1) * S + ION + shearMax + 6;
+    const H = padT + (ROWS - 1) * S + ION + 42;
+    // applied-force arrow across the top — faint until force is applied
+    kids.push(h('div', { key: 'arrow', style: {
+      position: 'absolute', left: padL + 'px', top: '8px', display: 'flex', alignItems: 'center', gap: '7px',
+      fontFamily: "'IBM Plex Mono',monospace", fontWeight: 600, fontSize: '11.5px', letterSpacing: '.08em', color: '#B5341A',
+      opacity: forced ? 1 : 0.3, transition: 'opacity .4s',
+    } }, 'FORCE', h('div', { key: 'ln', style: { width: '54px', height: '2px', background: '#B5341A', position: 'relative' } },
+        h('div', { style: { position: 'absolute', right: '-1px', top: '-3px', width: 0, height: 0, borderTop: '4px solid transparent', borderBottom: '4px solid transparent', borderLeft: '7px solid #B5341A' } }))));
+    // verdict pill along the bottom — only once force is applied
+    if (forced) {
+      const good = !v.alloy;
+      kids.push(h('div', { key: 'pill', style: {
+        position: 'absolute', left: padL + 'px', top: (H - 24) + 'px',
+        fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '12.5px',
+        color: good ? '#3E6B47' : '#B5341A', background: good ? '#E7F3EA' : '#FBE0D6',
+        border: '1px solid ' + (good ? '#7FB98A' : '#F0BBA9'), padding: '3px 11px', borderRadius: '999px',
+      } }, good ? 'layers slide → bends' : 'layers locked → resists'));
+    }
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+
+  drawDelocalised(v) {
+    const h = React.createElement;
+    const COLS = 7, ROWS = 3, S = 56, ION = 38;
+    const padL = 24, padT = 26;
+    const kids = [];
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+      const i = r * COLS + c;
+      kids.push(h('div', { key: 'ion' + i, style: {
+        position: 'absolute', left: (padL + c * S) + 'px', top: (padT + r * S) + 'px', width: ION + 'px', height: ION + 'px',
+        borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '16px', color: '#fff',
+        background: 'radial-gradient(circle at 35% 30%,#E0745F,#C0392B)', boxShadow: '0 4px 10px -3px rgba(0,0,0,.3)',
+      } }, '+'));
+      // one electron per atom
+      const ex = padL + c * S + (v.free ? -8 : 30), ey = padT + r * S + (v.free ? 44 : 30);
+      kids.push(h('div', { key: 'e' + i, style: {
+        position: 'absolute', left: ex + 'px', top: ey + 'px', width: '11px', height: '11px', borderRadius: '50%',
+        background: '#2E7DD1', boxShadow: '0 0 6px #2E7DD188', transition: 'all .8s cubic-bezier(.4,0,.2,1)',
+        animation: v.free ? ('eDrift ' + (2 + (i % 5) * 0.4) + 's ease-in-out ' + (i * -0.3) + 's infinite') : 'none',
+      } }));
+    }
+    const W = padL * 2 + (COLS - 1) * S + ION + 20, H = padT * 2 + (ROWS - 1) * S + ION + 18;
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+
+  buildViz(visual, forced) {
+    if (visual.type === 'metalLayers') return this.drawMetalLayers(visual, forced);
+    return this.drawDelocalised(visual);
+  }
+
+  renderVals() {
+    const btnBase = { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', textAlign: 'left', cursor: 'pointer', borderRadius: '10px', padding: '11px 14px', transition: 'all .15s' };
+    const instances = CONFIGS.map((config, ci) => {
+      const idx = this.state.sel[ci];
+      const st = config.states[idx];
+      const hasForce = !!config.force;
+      const forced = hasForce && this.state.forced[ci];
+      const view = (forced && st.forced) ? st.forced : st;   // swap to post-force copy when forced
+      const stateBtns = config.states.map((s, i) => ({
+        label: s.label, onClick: () => this.pick(ci, i),
+        style: { ...btnBase, color: i === idx ? '#fff' : '#4A4238', background: i === idx ? '#1A1714' : '#EFE7D8', border: '1px solid ' + (i === idx ? '#1A1714' : '#E4DCCB') },
+      }));
+      const forceBtnStyle = { ...btnBase, textAlign: 'center', marginTop: '2px',
+        color: forced ? '#B5341A' : '#fff', background: forced ? '#FBE0D6' : '#C0392B',
+        border: forced ? '1px solid #F0BBA9' : 'none', boxShadow: forced ? 'none' : '0 8px 20px -8px rgba(192,57,43,.7)' };
+      return {
+        configLabel: config.configLabel, emoji: config.emoji, title: config.title, subtitle: config.subtitle,
+        viz: this.buildViz(st.visual, forced), stateBtns,
+        effectTitle: view.effectTitle, effectColor: view.effectGood ? '#3E6B47' : '#B5341A',
+        caption: view.caption, strap: config.strap,
+        hasForce, forceAction: () => this.toggleForce(ci),
+        forceLabel: hasForce ? (forced ? config.force.undoLabel : config.force.label) : '', forceBtnStyle,
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>

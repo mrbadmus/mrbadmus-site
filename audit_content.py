@@ -27,6 +27,18 @@ sys.path.insert(0, ROOT)
 OUT_DIR = os.path.join(ROOT, "docs", "audit")
 EXTRACT_DIR = os.path.join(OUT_DIR, "extracts")
 
+# Pages that render an interactive FIFA practice hero (MRB-113). For these the
+# `2-practice-absent` finding no longer holds — the template renders real
+# per-step practice, not static steps. Keyed by (topic, st_id).
+try:
+    from bonding_redesign import BONDING_REDESIGN as _BONDING_REDESIGN
+    _FIFA_PRACTICE_PAGES = {
+        ("bonding", _sid) for _sid, _cfg in _BONDING_REDESIGN.items()
+        if isinstance(_cfg.get("hero"), dict) and _cfg["hero"].get("build") == "fifa"
+    }
+except Exception:
+    _FIFA_PRACTICE_PAGES = set()
+
 SUBJECTS = ["physics", "chemistry", "biology"]
 VARIANTS = [
     ("combined", "foundation", "all_subtopics_{s}"),
@@ -64,6 +76,27 @@ MISTAKE_FIRST = [
 ]
 
 NUM_RE = re.compile(r"\d+(?:\.\d+)?")
+
+
+def length_tell(opts):
+    """Rule 1 (length parity) heuristic. Flag an MCQ where the CORRECT option
+    is a length tell: strictly the longest option AND longer than the longest
+    distractor by >=4 words OR by >=1.4x. Either sub-condition catches a tell
+    (a big absolute gap on long options, or a big proportional gap on short
+    ones), so a student can score by picking the longest line without reading.
+    Returns (correct_wc, max_distractor_wc) if flagged, else None."""
+    if not opts or len(opts) < 3:
+        return None
+    ci = next((j for j, o in enumerate(opts) if o[1]), None)
+    if ci is None:
+        return None
+    wc = [len(str(o[0]).split()) for o in opts]
+    cwc = wc[ci]
+    dwc = [wc[j] for j in range(len(opts)) if j != ci]
+    maxd = max(dwc)
+    if cwc == max(wc) and cwc > maxd and ((cwc - maxd) >= 4 or cwc >= 1.4 * maxd):
+        return (cwc, maxd)
+    return None
 
 
 def first_sentence(text):
@@ -138,14 +171,28 @@ def main():
                         add(subject, pathway, tier, topic, st_id, "quiz", "1-register",
                             "minor", f"0/{n} stems use an AQA command word (AI review)")
 
+                # Rule 1 — length parity (correct option is a length tell)
+                for qi, q in enumerate(quiz, 1):
+                    lt = length_tell(q.get("opts"))
+                    if lt:
+                        add(subject, pathway, tier, topic, st_id, "quiz",
+                            "1-length-parity", "minor",
+                            f"Q{qi}: correct option is longest ({lt[0]}w vs "
+                            f"longest distractor {lt[1]}w) — length tell, "
+                            f"rewrite for parity")
+
                 # Rule 2 — FIFA
                 if fifas:
                     if len(fifas) < 3:
                         add(subject, pathway, tier, topic, st_id, "fifa", "2-example-count",
                             "major", f"{len(fifas)} worked example(s) — minimum 3")
-                    add(subject, pathway, tier, topic, st_id, "fifa", "2-practice-absent",
-                        "major", "no interactive practice mode "
-                        "(systemic: current template renders static steps only)")
+                    # A redesigned page with a FIFA practice hero (MRB-113) renders
+                    # real per-step interactive practice, so the systemic
+                    # static-steps finding no longer applies to it.
+                    if (topic, st_id) not in _FIFA_PRACTICE_PAGES:
+                        add(subject, pathway, tier, topic, st_id, "fifa", "2-practice-absent",
+                            "major", "no interactive practice mode "
+                            "(systemic: current template renders static steps only)")
                 elif st.get("equations"):
                     add(subject, pathway, tier, topic, st_id, "fifa", "4-menu",
                         "info", "page has equations but no FIFA block — "
@@ -161,6 +208,15 @@ def main():
                             f"first sentence states info, not a student mistake "
                             f"(AI review): \"{fs[:90]}\"")
 
+                # Rule 8 — Examiner Tip coverage (info: tracks rollout, not a
+                # defect). One Examiner Tip per page is the standard (§8), but
+                # during rollout a missing tip is reported info-only — weight 0,
+                # so it never inflates a page's severity score or drowns defects.
+                if not st.get("examiner_tip"):
+                    add(subject, pathway, tier, topic, st_id, "examiner_tip",
+                        "8-examiner-tip", "info",
+                        "no Examiner Tip — one per page is the standard (rollout coverage)")
+
                 # Rule 4 — lineup fingerprint
                 fp = "".join("1" if st.get(k) else "0" for k in OPTIONAL_BLOCKS)
                 fingerprints[fp].append(f"{subject}/{pathway}/{tier}/{topic}/{st_id}")
@@ -171,6 +227,7 @@ def main():
                     "quiz_count": n, "fifa_count": len(fifas),
                     "has_common_mistake": bool(cm), "has_matching": bool(st.get("matching")),
                     "has_equations": bool(st.get("equations")), "has_rp": bool(st.get("rp")),
+                    "has_examiner_tip": bool(st.get("examiner_tip")),
                     "lineup": fp,
                 })
 

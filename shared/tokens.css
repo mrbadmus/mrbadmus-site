@@ -163,3 +163,136 @@
   --radius:    18px;
   --radius-lg: 26px;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   REDESIGN — Locked Tokens (MRB-113 Phase B, Design's canonical block)
+   Space Grotesk / IBM Plex Sans / IBM Plex Mono · warm cream + burnt
+   orange. This is the canonical design-system record going forward;
+   the Fraunces / Plus Jakarta values above are superseded.
+
+   ⚠️ PILOT SCOPING (deliberate — see the port report): this token
+   file is loaded by every one of the site's 300+ pages, and the
+   legacy names above (--bg, --card, --accent, --font-serif, …) are
+   consumed by shared/styles.css and inline page styles everywhere.
+   A literal wholesale replace would white-screen the whole site and
+   drop the (self-hosted) fonts. So during the pilot the Locked block
+   is applied by OPT-IN: pages that carry class `rd` on <body> get the
+   new system; every other page renders exactly as before. Promoting
+   this to a global cutover (migrate styles.css off the legacy names,
+   self-host the fonts, drop the .rd scope) is the post-sign-off step.
+
+   The three names that exist in BOTH systems (--accent, --border,
+   --shadow-card) are intentionally NOT redeclared in :root here — that
+   would clobber the live site. They are set inside the `.rd` scope
+   instead, so only redesigned pages pick up the new values.
+   ═══════════════════════════════════════════════════════════════ */
+:root {
+  /* Type */
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body:    "IBM Plex Sans", system-ui, sans-serif;
+  --font-mono:    "IBM Plex Mono", monospace;
+
+  /* Surfaces */
+  --surface-page:  #E7E1D4;
+  --surface-card:  #F5F1E8;
+  --surface-panel: #FFFDF8;
+  --surface-inset: #F7F2E8;
+  --surface-dark:  #1A1714;
+  --rule:          #D8CFBD;
+
+  /* Ink */
+  --ink:       #1A1714;
+  --ink-body:  #2A241E;
+  --ink-muted: #6B635A;
+  --ink-faint: #8A8074;
+
+  /* Accent (burnt orange) — --accent itself is set in .rd (name clash) */
+  --accent-strong:      #C0392B;
+  --accent-deep:        #B5341A;
+  --accent-tint:        #FBE0D6;
+  --accent-tint-border: #F0BBA9;
+  --accent-wash:        #FBEEE9;
+
+  /* Contextual accents (no per-subject colour system) */
+  --context-blue: #2E7DD1;
+  --context-sage: #3E6B47;
+
+  /* Marking states */
+  --ok:  #2E6B3A;  --ok-bg:  #E7F3EA;  --ok-border:  #7FB98A;
+  --err: #A83824;  --err-bg: #FBE4DE;  --err-border: #E0897B;
+
+  /* Radii */
+  --r-card:    28px;
+  --r-panel:   22px;
+  --r-callout: 18px;
+  --r-control: 12px;
+  --r-pill:    999px;
+
+  /* Shadows — --shadow-card is set in .rd (name clash) */
+  --shadow-panel: 0 22px 50px -35px rgba(60,30,20,.5);
+  --shadow-cta:   0 8px 20px -8px rgba(192,57,43,.7);
+}
+
+/* ── Redesign opt-in: <body class="rd"> maps the legacy token names the
+   existing stylesheet consumes onto the Locked values, so the whole page
+   chrome (nav, cards, quiz, matching, callouts) adopts one warm system.
+   Scoped, additive, fully reversible: no other page is touched. ── */
+.rd {
+  /* the two colliding names, at their Locked values */
+  --accent: var(--accent-strong);
+  --border: #E4DCCB;
+
+  /* fonts */
+  --font-serif: var(--font-display);
+  --font-sans:  var(--font-body);
+
+  /* surfaces */
+  --bg:            var(--surface-page);
+  --card:          var(--surface-panel);
+  --sunken:        var(--surface-inset);
+  --border-strong: var(--rule);
+
+  /* ink */
+  --text:  var(--ink);
+  --muted: var(--ink-muted);
+
+  /* accent family → burnt-orange primary */
+  --accent-hover:  var(--accent-deep);
+  --accent-soft:   var(--accent-wash);
+  --accent-border: var(--accent-tint-border);
+  --on-accent:     #FFFFFF;
+
+  /* one warm palette — subject + triple identity fold into the accent */
+  --subject:        var(--accent-strong);
+  --chemistry:      var(--accent-strong);
+  --chemistry-soft: var(--accent-wash);
+
+  /* marking → Locked green / red */
+  --success:      var(--ok);
+  --success-soft: var(--ok-bg);
+  --danger:       var(--err);
+  --danger-soft:  var(--err-bg);
+
+  /* radii → Locked scale */
+  --radius:    var(--r-panel);
+  --radius-lg: var(--r-card);
+  --radius-sm: var(--r-control);
+
+  /* ── MRB-123 · redesign type scale ──
+     Base body 16→18px on redesigned pages. `--rd-fs-scale` is the single
+     lever: every redesign size is `calc(<orig> * var(--rd-fs-scale))`, so
+     one number moves the whole ramp proportionally. Relationships, weights
+     and (unitless) line-heights are unchanged — everything just larger.
+     .rd-gated: the global :root ramp (16px base) is untouched, so the 300+
+     non-redesigned pages are unaffected. To change the base again, edit only
+     this one value (e.g. 1.25 for a 20px base). */
+  --rd-fs-scale: 1.25;   /* 20px ÷ 16px */
+
+  /* the shared --fs-* ramp, scaled on redesigned pages only */
+  --fs-body:       calc(1rem     * var(--rd-fs-scale));
+  --fs-small:      calc(0.875rem * var(--rd-fs-scale));
+  --fs-label:      calc(0.75rem  * var(--rd-fs-scale));
+  --fs-card-title: calc(1.125rem * var(--rd-fs-scale));
+  --fs-section:    calc(1.375rem * var(--rd-fs-scale));
+  --fs-page-title: clamp(calc(1.875rem * var(--rd-fs-scale)), calc((1.1rem + 2.6vw) * var(--rd-fs-scale)), calc(3.75rem * var(--rd-fs-scale)));
+}

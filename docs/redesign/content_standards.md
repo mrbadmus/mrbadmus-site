@@ -17,6 +17,7 @@
 - Every stem uses a real AQA command word where one fits: state, describe, explain, compare, calculate, predict, evaluate, suggest.
 - MCQ format is accepted for now (free-text marking is a different problem), but the stem and options must read like an exam item, not a definition lookup.
 - Distractors are **diagnostic**: each wrong option encodes a real student misconception or a plausible working error, not filler. A distractor nobody would pick is a wasted option.
+- **Length parity**: the correct option and its distractors sit at the same level of detail and length — no option is conspicuously longer or shorter than the others, so a student cannot score by picking the longest line without reading. Where the key must be precise, at least one distractor is equally precise but wrong. (Audited by rule `1-length-parity`: flags a question where the correct option is the longest and exceeds the longest distractor by ≥4 words or ≥1.4×.)
 - Calculation questions: distractors are the answers you get from the classic wrong moves (forgot to convert units, rearranged wrongly, used the wrong equation), so a student who picks one learns which error they made.
 - Feedback on every option: why it's right, or which specific error produced it.
 
@@ -79,3 +80,11 @@ Ten exam-grade questions across 317 pages is roughly 3,000 items, plus FIFA sets
 - **Auto-accept with flagging:** anything the drafting pass itself marks low-confidence goes to the full-review pile regardless of category.
 
 Drafting happens unit by unit alongside the redesign port, not as a separate later pass, so a page is never reskinned while carrying failing content.
+
+## 8. Examiner Tip
+
+**Locked standard: one Examiner Tip per page.** Every page carries exactly one. Unlike the Common Mistake block (§3), which is optional and appears only where a real misconception exists, the Examiner Tip is the one block that is *not* part of the §4 menu — it is mandatory on every page, every subject.
+
+**What a good tip is:** exam technique, grounded in AQA marking. It tells the student what to write — or what not to write — to secure the marks on *this page's* spec point. It is built from the page's own material: the phrasing the mark scheme rewards, the AQA command word the topic tests, or the correction inside its Common Mistake. It is short (one or two sentences) and never invents a rule ("examiners always…"); it points at how the marks are actually awarded for this content.
+
+**Rollout:** the audit tracks coverage at **info** severity (rule `8-examiner-tip`) — a page with no Examiner Tip is reported for tracking, not failed, so coverage grows page-by-page alongside the port without drowning real defects.

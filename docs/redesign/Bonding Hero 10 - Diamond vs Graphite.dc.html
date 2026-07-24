@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes eDrift { 0%,100% { transform: translate(0,0); } 25% { transform: translate(22px,4px); } 50% { transform: translate(44px,-3px); } 75% { transform: translate(18px,6px); } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 10</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">Diamond vs Graphite</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">Two-State Compare, applied to giant covalent structures: flip between two forms of the <b style="color:#1A1714;">same element — carbon</b> and watch why the properties come out opposite. Two configs below prove the parametrisation. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+        </div>
+
+        <div style="display:flex; gap:14px; align-items:flex-start; padding:18px 24px; background:{{ ins.calloutBg }}; border-bottom:1px solid #EFE7D8; border-left:5px solid {{ ins.calloutColor }};">
+          <span style="font-size:22px; line-height:1.2;">{{ ins.stateEmoji }}</span>
+          <div>
+            <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px; line-height:1.25; color:{{ ins.calloutColor }}; margin-bottom:4px;">{{ ins.effectTitle }}</div>
+            <div style="font-size:14px; line-height:1.6; color:#3A322A;">{{ ins.caption }}</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1.5fr .9fr;">
+          <div style="padding:20px 18px; background:linear-gradient(180deg,#FFFDF8,#FBF4EF); border-right:1px solid #EFE7D8; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; overflow-x:auto;">
+            <div>{{ ins.viz }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.03em; color:#8A8074; text-align:center; max-width:36ch; line-height:1.5;">{{ ins.legend }}</div>
+          </div>
+          <div style="padding:20px 22px; display:flex; flex-direction:column; gap:10px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">COMPARE</div>
+            <sc-for list="{{ ins.stateBtns }}" as="b" hint-placeholder-count="2">
+              <button onClick="{{ b.onClick }}" style="{{ b.style }}">{{ b.label }}</button>
+            </sc-for>
+            <div style="height:1px; background:#EFE7D8; margin:6px 0;"></div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">PROPERTIES</div>
+            <sc-for list="{{ ins.props }}" as="p" hint-placeholder-count="4">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:9px 12px; background:#F7F2E8; border-radius:10px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.02em; color:#8A8074;">{{ p.k }}</span>
+                <span style="display:flex; align-items:center; gap:7px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13.5px; color:{{ p.color }};">
+                  <span style="width:8px; height:8px; border-radius:50%; background:{{ p.dot }}; flex:none;"></span>{{ p.v }}
+                </span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#EAE3D6;">{{ ins.strap }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 10 — DIAMOND vs GRAPHITE  (Two-State Compare archetype)
+   An A/B flip between two giant-covalent forms of the SAME
+   element (carbon). Each state carries its own structural
+   diagram + a plainly-stated property consequence with the
+   reason. The important teaching text is NOT in the dark
+   footer strap — it lives in the prominent accent callout
+   directly under the header, where a student can't miss it.
+
+   CONFIG SCHEMA (mirrors Hero 03 so it ports the same way):
+   {
+     configLabel: string     // demo label only
+     emoji, title, subtitle: string   // hero header
+     strap: string           // fixed dark-bar framing line (constant,
+                             // NOT the per-state teaching text)
+     states: [ exactly 2 x {
+       key: string,
+       label: string,        // toggle button label
+       emoji: string,        // icon shown in the callout
+       tone: 'neutral' | 'good' | 'bad',   // callout colour intent
+       effectTitle: string,  // bold consequence headline (in callout)
+       caption: string,      // the reason/explanation (in callout)
+       legend: string,       // mono one-liner under the diagram
+       props: [ { k, v, tone } ],   // plain property chips (tone colours the value)
+       visual: {             // named renderer + params, pure fn of params
+         type: 'tetrahedral'         // diamond: rigid 3-D network, 4 bonds/C
+       | type: 'hexLayers',
+           delocalised: bool,        // draw the free-electron layer between sheets
+           slide: bool               // nudge the layers to hint they slide
+       }
+     } ]
+   }
+   Renderers (drawTetrahedral, drawHexLayers) are pure functions
+   of their params — add types without touching the state machine.
+============================================================ */
+const TONE = {
+  neutral: { color: '#1A1714', bg: '#F6EFE2', dot: '#B0A695', chip: '#4A4238' },
+  good:    { color: '#3E6B47', bg: '#E7F3EA', dot: '#3E6B47', chip: '#3E6B47' },
+  bad:     { color: '#B5341A', bg: '#FBE4DE', dot: '#B5341A', chip: '#B5341A' },
+};
+
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — DIAMOND vs GRAPHITE · visuals: tetrahedral + hexLayers',
+    emoji: '💎', title: 'Diamond vs Graphite', subtitle: 'same carbon, opposite properties',
+    strap: 'Same element — carbon. The properties come out opposite only because the giant covalent structure is arranged differently.',
+    states: [
+      { key: 'diamond', label: '💎 Diamond', emoji: '💎', tone: 'neutral',
+        effectTitle: 'Rigid, very hard, and an electrical insulator',
+        caption: 'Each carbon forms 4 covalent bonds to 4 other carbons in a giant 3-D tetrahedral lattice. To melt or scratch it you must break millions of strong bonds — so it is extremely hard with a very high melting point. Every outer electron is locked into a bond, leaving no free electrons, so diamond does NOT conduct electricity.',
+        legend: '4 covalent bonds per carbon · rigid 3-D network · no free electrons',
+        props: [
+          { k: 'Bonds per carbon', v: '4', tone: 'neutral' },
+          { k: 'Free electrons', v: 'None', tone: 'bad' },
+          { k: 'Hardness', v: 'Very hard', tone: 'neutral' },
+          { k: 'Melting point', v: 'Very high', tone: 'good' },
+          { k: 'Conducts electricity', v: 'No ✕', tone: 'bad' },
+        ],
+        visual: { type: 'tetrahedral' } },
+      { key: 'graphite', label: '✏️ Graphite', emoji: '✏️', tone: 'neutral',
+        effectTitle: 'Soft & slippery, high melting point — and it conducts',
+        caption: 'Each carbon forms only 3 covalent bonds, building flat hexagonal layers. The layers are held to each other by weak forces, so they slide over one another — making graphite soft and slippery. The spare 4th outer electron on every carbon is delocalised between the layers, so those free electrons carry charge and graphite DOES conduct. Strong bonds within each layer still give a very high melting point.',
+        legend: '3 covalent bonds per carbon · weak forces between sliding layers · 1 free electron each',
+        props: [
+          { k: 'Bonds per carbon', v: '3', tone: 'neutral' },
+          { k: 'Free electrons', v: '1 delocalised', tone: 'good' },
+          { k: 'Between layers', v: 'Weak forces', tone: 'neutral' },
+          { k: 'Melting point', v: 'Very high', tone: 'good' },
+          { k: 'Conducts electricity', v: 'Yes ✓', tone: 'good' },
+        ],
+        visual: { type: 'hexLayers', delocalised: true, slide: true } },
+    ],
+  },
+  {
+    configLabel: 'CONFIG B — FREE ELECTRON ON / OFF · visual: hexLayers(delocalised)',
+    emoji: '⚡', title: 'Why Graphite Conducts', subtitle: 'the 4th electron is the whole story',
+    strap: 'Non-metals usually do not conduct. Graphite is the classic exception — entirely because of its one delocalised electron per carbon.',
+    states: [
+      { key: 'free', label: '⚡ 4th electron free', emoji: '⚡', tone: 'good',
+        effectTitle: 'Delocalised electrons carry charge → conducts',
+        caption: 'Carbon has 4 outer electrons but forms only 3 bonds in graphite. The spare electron on every atom becomes delocalised and drifts freely between the layers — a mobile sea of charge. That is exactly why graphite, a non-metal, conducts electricity and is used for electrodes.',
+        legend: 'free electrons drift between the layers → charge can flow',
+        props: [
+          { k: 'Bonds per carbon', v: '3', tone: 'neutral' },
+          { k: '4th outer electron', v: 'Delocalised', tone: 'good' },
+          { k: 'Conducts electricity', v: 'Yes ✓', tone: 'good' },
+        ],
+        visual: { type: 'hexLayers', delocalised: true, slide: false } },
+      { key: 'pinned', label: '🔒 4th electron pinned (imaginary)', emoji: '🔒', tone: 'bad',
+        effectTitle: 'No free electrons → nothing can conduct',
+        caption: 'If that 4th electron stayed locked to its own carbon — the way every electron is locked in diamond — there would be no mobile charge between the layers, so this imaginary graphite could not conduct. The one delocalised electron is the whole reason graphite behaves differently from diamond.',
+        legend: 'electrons pinned to their atoms → no mobile charge',
+        props: [
+          { k: 'Bonds per carbon', v: '3', tone: 'neutral' },
+          { k: '4th outer electron', v: 'Pinned', tone: 'bad' },
+          { k: 'Conducts electricity', v: 'No ✕', tone: 'bad' },
+        ],
+        visual: { type: 'hexLayers', delocalised: false, slide: false } },
+    ],
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: CONFIGS.map(() => 0) };
+  }
+  pick(ci, i) { const sel = this.state.sel.slice(); sel[ci] = i; this.setState({ sel }); }
+
+  atom(x, y, size) {
+    return React.createElement('div', { style: {
+      position: 'absolute', left: (x - size / 2) + 'px', top: (y - size / 2) + 'px',
+      width: size + 'px', height: size + 'px', borderRadius: '50%',
+      background: 'radial-gradient(circle at 34% 28%, #5A5148, #241F1A)',
+      boxShadow: '0 3px 7px -2px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06)',
+    } });
+  }
+  bond(a, b, color, thick, opacity) {
+    const dx = b[0] - a[0], dy = b[1] - a[1];
+    const len = Math.hypot(dx, dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    return React.createElement('div', { style: {
+      position: 'absolute', left: a[0] + 'px', top: (a[1] - thick / 2) + 'px',
+      width: len + 'px', height: thick + 'px', background: color, opacity: opacity == null ? 1 : opacity,
+      transformOrigin: '0 50%', transform: 'rotate(' + ang + 'deg)', borderRadius: '2px',
+    } });
+  }
+
+  drawTetrahedral() {
+    const h = React.createElement;
+    const pad = 30, S = 52, rowH = 44, cols = 4, rows = 4;
+    // build a zig-zag mesh; each interior carbon ends up with 4 bonds
+    const pts = [];
+    for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) {
+      pts.push([pad + c * S + (r % 2) * (S / 2), pad + r * rowH, r, c]);
+    }
+    const back = pts.map(p => [p[0] + 20, p[1] - 24]);   // faded depth copy
+    const kids = [];
+    // depth layer (behind)
+    for (let i = 0; i < pts.length; i++) for (let j = 0; j < pts.length; j++) {
+      if (j <= i) continue;
+      const d = Math.hypot(back[i][0] - back[j][0], back[i][1] - back[j][1]);
+      if (d < S * 0.95) kids.push(React.cloneElement(this.bond(back[i], back[j], '#C9BBA6', 5, 0.5), { key: 'bb' + i + '_' + j }));
+    }
+    back.forEach((p, i) => kids.push(React.cloneElement(this.atom(p[0], p[1], 16), { key: 'ba' + i, style: Object.assign({}, this.atom(p[0], p[1], 16).props.style, { opacity: 0.5 }) })));
+    // connectors front->back (the 4th bond going "into the page")
+    for (let i = 0; i < pts.length; i++) kids.push(React.cloneElement(this.bond(pts[i], back[i], '#B7A88F', 4, 0.45), { key: 'cn' + i }));
+    // front lattice bonds
+    for (let i = 0; i < pts.length; i++) for (let j = 0; j < pts.length; j++) {
+      if (j <= i) continue;
+      const d = Math.hypot(pts[i][0] - pts[j][0], pts[i][1] - pts[j][1]);
+      if (d < S * 0.95) kids.push(React.cloneElement(this.bond(pts[i], pts[j], '#8A7A66', 6), { key: 'fb' + i + '_' + j }));
+    }
+    // front atoms
+    pts.forEach((p, i) => kids.push(React.cloneElement(this.atom(p[0], p[1], 22), { key: 'fa' + i })));
+    const W = pad * 2 + (cols - 1) * S + S / 2 + 26, H = pad * 2 + (rows - 1) * rowH + 8;
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+
+  honeycomb(R) {
+    const cols = 3, rows = 2, hexW = 1.5 * R, hexH = Math.sqrt(3) * R;
+    const A = new Map(), B = new Map();
+    const key = (x, y) => Math.round(x) + ',' + Math.round(y);
+    for (let cc = 0; cc < cols; cc++) for (let rr = 0; rr < rows; rr++) {
+      const cx = cc * hexW, cy = rr * hexH + (cc % 2 ? hexH / 2 : 0), v = [];
+      for (let a = 0; a < 6; a++) { const t = Math.PI / 180 * (60 * a); v.push([cx + R * Math.cos(t), cy + R * Math.sin(t)]); }
+      for (let a = 0; a < 6; a++) {
+        A.set(key(v[a][0], v[a][1]), v[a]);
+        const b = v[(a + 1) % 6], k = [key(v[a][0], v[a][1]), key(b[0], b[1])].sort().join('|');
+        B.set(k, [v[a], b]);
+      }
+    }
+    let minX = 1e9, minY = 1e9;
+    A.forEach(p => { minX = Math.min(minX, p[0]); minY = Math.min(minY, p[1]); });
+    const atoms = [...A.values()].map(p => [p[0] - minX, p[1] - minY]);
+    const bonds = [...B.values()].map(s => [[s[0][0] - minX, s[0][1] - minY], [s[1][0] - minX, s[1][1] - minY]]);
+    let maxX = 0, maxY = 0;
+    atoms.forEach(p => { maxX = Math.max(maxX, p[0]); maxY = Math.max(maxY, p[1]); });
+    return { atoms, bonds, w: maxX, h: maxY };
+  }
+
+  drawHexLayers(v) {
+    const h = React.createElement;
+    const R = 24, hc = this.honeycomb(R);
+    const layers = 3, dx = 30, dy = 34, pad = 20;
+    const kids = [];
+    const layerH = (li) => (layers - 1 - li);          // 0 = front(bottom), higher = back(top)
+    const ox = (li) => pad + layerH(li) * dx;
+    const oy = (li) => pad + (layers - 1) * dy - layerH(li) * dy + (v.slide ? layerH(li) * 12 : 0);
+    // draw back-to-front
+    for (let li = layers - 1; li >= 0; li--) {
+      const front = li === 0, op = front ? 1 : 0.42 + li * 0.0;
+      const bx = ox(li), by = oy(li);
+      hc.bonds.forEach((s, k) => kids.push(React.cloneElement(
+        this.bond([s[0][0] + bx, s[0][1] + by], [s[1][0] + bx, s[1][1] + by], '#8A7A66', front ? 5 : 4, op), { key: 'L' + li + 'b' + k })));
+      hc.atoms.forEach((p, k) => kids.push(React.cloneElement(
+        this.atom(p[0] + bx, p[1] + by, front ? 18 : 14), { key: 'L' + li + 'a' + k,
+        style: Object.assign({}, this.atom(p[0] + bx, p[1] + by, front ? 18 : 14).props.style, { opacity: op }) })));
+    }
+    // delocalised electrons OR pinned electrons, in the gap between layers
+    const gaps = layers - 1;
+    for (let g = 0; g < gaps; g++) {
+      const li = g;                       // gap sits above front-ish layers
+      const gx = ox(li) + (ox(li + 1) - ox(li)) / 2;
+      const gy = oy(li) + (oy(li + 1) - oy(li)) / 2 + 6;
+      for (let e = 0; e < 4; e++) {
+        const ex = gx + e * 34 + 4, ey = gy + (e % 2) * 12;
+        const style = {
+          position: 'absolute', left: ex + 'px', top: ey + 'px', width: '12px', height: '12px', borderRadius: '50%',
+          background: '#2E7DD1', boxShadow: '0 0 7px #2E7DD1AA', transition: 'all .7s cubic-bezier(.4,0,.2,1)',
+        };
+        if (v.delocalised) style.animation = 'eDrift ' + (2.2 + (e % 3) * 0.5) + 's ease-in-out ' + (e * -0.4) + 's infinite';
+        else { style.background = '#9AA6B2'; style.boxShadow = 'none'; }   // pinned: dimmed, parked on the atoms
+        kids.push(h('div', { key: 'e' + g + '_' + e, style }));
+      }
+    }
+    // minus label on one electron
+    const W = pad * 2 + hc.w + (layers - 1) * dx + 24;
+    const H = pad * 2 + hc.h + (layers - 1) * dy + (v.slide ? (layers - 1) * 12 : 0) + 8;
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+
+  buildViz(visual) {
+    if (visual.type === 'tetrahedral') return this.drawTetrahedral();
+    return this.drawHexLayers(visual);
+  }
+
+  renderVals() {
+    const btnBase = { fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '14px', textAlign: 'left', cursor: 'pointer', borderRadius: '10px', padding: '11px 14px', transition: 'all .15s' };
+    const instances = CONFIGS.map((config, ci) => {
+      const idx = this.state.sel[ci];
+      const st = config.states[idx];
+      const tone = TONE[st.tone] || TONE.neutral;
+      const stateBtns = config.states.map((s, i) => ({
+        label: s.label, onClick: () => this.pick(ci, i),
+        style: { ...btnBase, color: i === idx ? '#fff' : '#4A4238', background: i === idx ? '#1A1714' : '#EFE7D8', border: '1px solid ' + (i === idx ? '#1A1714' : '#E4DCCB') },
+      }));
+      const props = st.props.map(p => { const t = TONE[p.tone] || TONE.neutral; return { k: p.k, v: p.v, color: t.chip, dot: t.dot }; });
+      return {
+        configLabel: config.configLabel, emoji: config.emoji, title: config.title, subtitle: config.subtitle,
+        stateEmoji: st.emoji, calloutColor: tone.color, calloutBg: tone.bg,
+        effectTitle: st.effectTitle, caption: st.caption, legend: st.legend,
+        viz: this.buildViz(st.visual), stateBtns, props, strap: config.strap,
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>

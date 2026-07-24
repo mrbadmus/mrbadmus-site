@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #E7E1D4; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #C0392B; text-decoration: none; }
+  a:hover { color: #8E2418; }
+  @keyframes pinPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(192,57,43,.5); } 50% { box-shadow: 0 0 0 8px rgba(192,57,43,0); } }
+  @keyframes eFloat { 0%,100% { transform: translate(0,0); } 25% { transform: translate(20px,-6px); } 50% { transform: translate(38px,4px); } 75% { transform: translate(16px,8px); } }
+</style>
+</helmet>
+
+<div style="max-width:1100px; margin:0 auto; padding:48px 24px 90px;">
+  <div style="font-family:'IBM Plex Mono',monospace; font-size:13px; font-weight:600; letter-spacing:.16em; color:#C0392B; margin-bottom:12px;">BONDING HERO LIBRARY · 04</div>
+  <h1 style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:40px; line-height:1.05; letter-spacing:-.02em; color:#1A1714; margin:0 0 8px;">Structure Hotspot</h1>
+  <p style="font-size:15px; line-height:1.6; color:#6B635A; max-width:76ch; margin:0 0 36px;">New archetype: tap a feature of a structure to reveal the property it explains. Two configs below prove the parametrisation. <a href="Bonding Tokens + Page Template.dc.html">← Tokens &amp; template</a></p>
+
+  <sc-for list="{{ instances }}" as="ins" hint-placeholder-count="2">
+    <div style="margin-bottom:44px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; letter-spacing:.12em; color:#8A8074; margin-bottom:10px;">{{ ins.configLabel }}</div>
+      <div style="background:#FFFDF8; border:1px solid #E4DCCB; border-radius:22px; box-shadow:0 22px 50px -35px rgba(60,30,20,.5); overflow:hidden;">
+        <div style="display:flex; align-items:center; gap:10px; padding:16px 24px; border-bottom:1px solid #EFE7D8; flex-wrap:wrap;">
+          <span style="font-size:20px;">{{ ins.emoji }}</span>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px; color:#1A1714;">{{ ins.title }}</div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8A8074;">— {{ ins.subtitle }}</span>
+        </div>
+        <div style="display:grid; grid-template-columns:1.5fr .9fr;">
+          <div style="padding:16px; background:linear-gradient(180deg,#FFFDF8,#FBF4EF); overflow-x:auto; border-right:1px solid #EFE7D8; display:flex; align-items:center; justify-content:center;">{{ ins.viz }}</div>
+          <div style="padding:20px 22px; display:flex; flex-direction:column; gap:12px;">
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.1em; color:#9A9082;">TAP A FEATURE</div>
+            <div style="background:#F7F2E8; border-radius:12px; padding:16px 18px; flex:1;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-weight:600; letter-spacing:.1em; color:#EAE3D6; background:#1A1714; padding:4px 10px; border-radius:999px;">{{ ins.activeTag }}</span>
+              <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:16px; color:#1A1714; margin:12px 0 6px;">{{ ins.activeTitle }}</div>
+              <div style="font-size:13px; line-height:1.55; color:#5A5248;">{{ ins.activeBody }}</div>
+              <div style="margin-top:14px; display:flex; align-items:center; gap:9px; flex-wrap:wrap;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600; letter-spacing:.1em; color:#9A9082;">RESULT</span>
+                <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:#B5341A; background:#FBE0D6; border:1px solid #F0BBA9; padding:4px 12px; border-radius:999px;">{{ ins.activeProperty }}</span>
+              </div>
+            </div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:#9A9082; line-height:1.5;">Tap the numbered points ① ② ③ on the structure.</div>
+          </div>
+        </div>
+        <div style="padding:13px 24px; background:#1A1714; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:#EAE3D6;">{{ ins.strap }}</div>
+      </div>
+    </div>
+  </sc-for>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+/* ============================================================
+   HERO 04 — STRUCTURE HOTSPOT
+   A structure diagram with tappable numbered pins. Tapping a pin
+   highlights the matching feature in the diagram and reveals a
+   card that links that feature to a property.
+
+   CONFIG SCHEMA (CONFIGS holds two to prove parametrisation):
+   {
+     configLabel: string    // demo label only, not shown on real pages
+     emoji, title, subtitle: string   // hero header
+     strap: string          // fixed dark-bar line for the whole hero
+     diagram: 'diamond' | 'graphite',   // which pure renderer to use
+     hotspots: [ {          // 2–4 per structure, in tap order
+       key: string,         // unique id
+       focus: string,       // token the renderer emphasises:
+                            //   diamond: 'bonds' | 'hard' | 'noConduct'
+                            //   graphite: 'threeBonds' | 'conduct' | 'slide'
+       x: int, y: int,      // pin centre, in the diagram's own px coords
+       tag: string,         // small dark mono chip, e.g. 'BONDING'
+       title: string,       // reveal heading
+       body: string,        // reveal paragraph (the feature)
+       property: string     // resulting property chip, e.g. 'Very hard'
+     } ]
+   }
+   The renderers (drawDiamond, drawGraphite) are pure functions of
+   (focus, pins); the state machine only tracks which hotspot is
+   selected, so the whole thing ports cleanly.
+============================================================ */
+const CONFIGS = [
+  {
+    configLabel: 'CONFIG A — DIAMOND, DIAGRAM: diamond',
+    emoji: '💎', title: 'Diamond', subtitle: 'why it is hard and does not conduct',
+    strap: 'Diamond — a giant covalent structure of carbon. Tap each feature to link it to a property.',
+    diagram: 'diamond',
+    hotspots: [
+      { key: 'bonds', focus: 'bonds', x: 250, y: 150, tag: 'BONDING',
+        title: 'Four covalent bonds', body: 'Every carbon atom forms four strong covalent bonds to four other carbon atoms, pointing to the corners of a tetrahedron.',
+        property: 'Rigid in every direction' },
+      { key: 'hard', focus: 'hard', x: 330, y: 296, tag: 'PROPERTY',
+        title: 'One giant covalent lattice', body: 'Those bonds repeat right through the crystal as a single 3D network. To melt or scratch it you must break a huge number of strong bonds.',
+        property: 'Very hard · m.p. ≈ 3700 °C' },
+      { key: 'noConduct', focus: 'noConduct', x: 132, y: 250, tag: 'CONDUCTION',
+        title: 'No free electrons', body: 'All four outer electrons on each carbon are held in bonds — none are delocalised or free to move through the structure.',
+        property: 'Does not conduct electricity' },
+    ],
+  },
+  {
+    configLabel: 'CONFIG B — GRAPHITE, DIAGRAM: graphite',
+    emoji: '✏️', title: 'Graphite', subtitle: 'why it conducts and works as a lubricant',
+    strap: 'Graphite — carbon in layers of hexagons. Tap each feature to link it to a property.',
+    diagram: 'graphite',
+    hotspots: [
+      { key: 'threeBonds', focus: 'threeBonds', x: 150, y: 96, tag: 'BONDING',
+        title: 'Three bonds, flat layers', body: 'Each carbon bonds to only three others, building flat sheets of hexagonal rings. That uses only three of its four outer electrons.',
+        property: 'One spare electron per atom' },
+      { key: 'conduct', focus: 'conduct', x: 262, y: 176, tag: 'CONDUCTION',
+        title: 'One delocalised electron', body: 'The spare fourth electron from every atom is delocalised and free to drift along the layers, carrying charge.',
+        property: 'Conducts electricity & heat' },
+      { key: 'slide', focus: 'slide', x: 120, y: 250, tag: 'PROPERTY',
+        title: 'Weak forces between layers', body: 'Only weak intermolecular forces hold the layers together, so whole layers can slide over one another easily.',
+        property: 'Soft · works as a lubricant' },
+    ],
+  },
+];
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: CONFIGS.map(() => 0) };
+  }
+  pick(ci, i) { const sel = this.state.sel.slice(); sel[ci] = i; this.setState({ sel }); }
+
+  /* ---------- primitive builders (pure) ---------- */
+  atomEl(key, x, y, r, fill, label, dim) {
+    const h = React.createElement;
+    return h('div', { key, style: {
+      position: 'absolute', left: (x - r) + 'px', top: (y - r) + 'px', width: (2 * r) + 'px', height: (2 * r) + 'px',
+      borderRadius: '50%', background: fill, boxShadow: '0 3px 8px -2px rgba(0,0,0,.3)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: (r > 15 ? '13px' : '10px'), color: '#3A2A1E',
+      opacity: dim ? 0.28 : 1, transition: 'all .45s cubic-bezier(.4,0,.2,1)',
+    } }, label || '');
+  }
+  bondEl(key, x1, y1, x2, y2, color, thick, dim, dashed) {
+    const h = React.createElement;
+    const len = Math.hypot(x2 - x1, y2 - y1), ang = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+    return h('div', { key, style: {
+      position: 'absolute', left: x1 + 'px', top: (y1 - thick / 2) + 'px', width: len + 'px', height: thick + 'px',
+      transformOrigin: '0 50%', transform: 'rotate(' + ang + 'deg)', borderRadius: thick + 'px',
+      opacity: dim ? 0.22 : 1, transition: 'all .45s',
+      background: dashed ? ('repeating-linear-gradient(90deg,' + color + ' 0 5px,transparent 5px 10px)') : color,
+    } });
+  }
+  chip(key, x, y, text) {
+    const h = React.createElement;
+    return h('div', { key, style: {
+      position: 'absolute', left: x + 'px', top: y + 'px', transform: 'translateX(-50%)',
+      fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '12.5px', color: '#B5341A',
+      background: '#FBE0D6', border: '1px solid #F0BBA9', padding: '4px 12px', borderRadius: '999px',
+      whiteSpace: 'nowrap', boxShadow: '0 5px 12px -5px rgba(0,0,0,.25)', zIndex: 5,
+    } }, text);
+  }
+  pinEls(pins) {
+    const h = React.createElement;
+    return pins.map(p => h('button', { key: 'pin' + p.label, onClick: p.onClick, style: {
+      position: 'absolute', left: (p.x - 15) + 'px', top: (p.y - 15) + 'px', width: '30px', height: '30px', borderRadius: '50%',
+      cursor: 'pointer', fontFamily: "'IBM Plex Mono',monospace", fontWeight: 600, fontSize: '13px',
+      display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform .15s, background .2s, color .2s',
+      color: p.active ? '#fff' : '#B5341A', background: p.active ? '#C0392B' : '#FFFDF8',
+      border: '2px solid ' + (p.active ? '#C0392B' : '#E0897B'), zIndex: 6,
+      boxShadow: p.active ? '0 6px 14px -5px rgba(192,57,43,.8)' : '0 3px 8px -3px rgba(0,0,0,.25)',
+      animation: p.active ? 'none' : 'pinPulse 1.8s ease-in-out infinite',
+    } }, p.label));
+  }
+
+  /* ---------- diagram renderers (pure) ---------- */
+  drawDiamond(focus, pins) {
+    const h = React.createElement;
+    const W = 420, H = 360, cx = 205, cy = 182;
+    const bonds = focus === 'bonds', hard = focus === 'hard', noC = focus === 'noConduct';
+    const nb = [ { x: cx, y: cy - 96 }, { x: cx - 88, y: cy + 74 }, { x: cx + 88, y: cy + 74 }, { x: cx + 60, y: cy - 44 } ];
+    const stubs = [ { f: 0, x: cx - 58, y: cy - 168 }, { f: 0, x: cx + 60, y: cy - 168 }, { f: 1, x: cx - 158, y: cy + 128 }, { f: 2, x: cx + 158, y: cy + 128 }, { f: 3, x: cx + 138, y: cy - 100 } ];
+    const bondColor = (bonds || hard) ? '#C0392B' : '#B0A08C', bondThick = (bonds || hard) ? 7 : 5;
+    const kids = [];
+    stubs.forEach((s, i) => { const n = nb[s.f]; kids.push(this.bondEl('sb' + i, n.x, n.y, s.x, s.y, hard ? '#C0392B' : '#CFC3AE', hard ? 5 : 4, !hard, false)); });
+    nb.forEach((n, i) => kids.push(this.bondEl('cb' + i, cx, cy, n.x, n.y, bondColor, bondThick, false, i === 3)));
+    stubs.forEach((s, i) => kids.push(this.atomEl('sa' + i, s.x, s.y, 14, 'radial-gradient(circle at 35% 30%,#EDE4D2,#C9BCA2)', 'C', !hard)));
+    nb.forEach((n, i) => kids.push(this.atomEl('na' + i, n.x, n.y, i === 3 ? 18 : 22, 'radial-gradient(circle at 35% 30%,#E6DAC2,#BBAB8F)', 'C', false)));
+    kids.push(this.atomEl('cc', cx, cy, 24, 'radial-gradient(circle at 35% 30%,#D9CBB0,#9A8A70)', 'C', false));
+    if (noC) {
+      nb.forEach((n, i) => { [0.42, 0.58].forEach((t, k) => { const ex = cx + (n.x - cx) * t, ey = cy + (n.y - cy) * t;
+        kids.push(h('div', { key: 'be' + i + '_' + k, style: { position: 'absolute', left: (ex - 5) + 'px', top: (ey - 5) + 'px', width: '10px', height: '10px', borderRadius: '50%', background: '#2A241E', border: '1.5px solid #1A1714', zIndex: 4 } })); }); });
+    }
+    if (bonds) kids.push(this.chip('cbo', cx + 66, cy - 4, '× 4 bonds'));
+    if (hard) kids.push(this.chip('chd', W / 2, H - 30, 'one giant rigid network'));
+    if (noC) kids.push(this.chip('cnc', W / 2, H - 30, 'all electrons locked in bonds'));
+    kids.push(...this.pinEls(pins));
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+
+  buildSheet(cx, cy, R) {
+    const key = (x, y) => Math.round(x) + ',' + Math.round(y);
+    const hex = (hx, hy) => { const vs = []; for (let k = 0; k < 6; k++) { const a = (30 + 60 * k) * Math.PI / 180; vs.push({ x: hx + R * Math.cos(a), y: hy - R * Math.sin(a) }); } return vs; };
+    const centers = [ { x: cx, y: cy }, { x: cx + Math.sqrt(3) * R, y: cy } ];
+    const map = {}, bonds = [];
+    centers.forEach(c => { const vs = hex(c.x, c.y); vs.forEach(v => { map[key(v.x, v.y)] = v; }); for (let k = 0; k < 6; k++) bonds.push([vs[k], vs[(k + 1) % 6]]); });
+    return { atoms: Object.values(map), bonds };
+  }
+
+  drawGraphite(focus, pins) {
+    const h = React.createElement;
+    const W = 460, H = 360, R = 46;
+    const three = focus === 'threeBonds', cond = focus === 'conduct', slide = focus === 'slide';
+    const dx = 54, dy = 82, shift = slide ? 34 : 0;
+    const fcx = 116, fcy = 118;
+    const front = this.buildSheet(fcx, fcy, R);
+    const kids = [];
+    // back (lower) layer — ghosted
+    front.bonds.forEach((b, i) => kids.push(this.bondEl('bb' + i, b[0].x + dx, b[0].y + dy, b[1].x + dx, b[1].y + dy, '#CFC3AE', 5, true, false)));
+    front.atoms.forEach((a, i) => kids.push(this.atomEl('ba' + i, a.x + dx, a.y + dy, 12, 'radial-gradient(circle at 35% 30%,#E7DDC9,#C7BAA0)', '', true)));
+    // weak inter-layer forces (dashed) from a few front atoms to the layer below
+    [0, 2, 4].forEach((idx, k) => { const a = front.atoms[idx]; if (!a) return;
+      kids.push(this.bondEl('wf' + k, a.x + shift, a.y, a.x + dx, a.y + dy, slide ? '#C0392B' : '#B7A990', 3, !slide && !three ? false : false, true)); });
+    // front (upper) layer
+    front.bonds.forEach((b, i) => { const hot = three && i < 3; kids.push(this.bondEl('fb' + i, b[0].x + shift, b[0].y, b[1].x + shift, b[1].y, hot ? '#C0392B' : '#8A7A62', hot ? 7 : 6, false, false)); });
+    front.atoms.forEach((a, i) => kids.push(this.atomEl('fa' + i, a.x + shift, a.y, 14, 'radial-gradient(circle at 35% 30%,#D9CBB0,#A8977B)', 'C', false)));
+    // delocalised electrons drifting in the interlayer space
+    const eSpots = [ [150, 168], [214, 150], [280, 172], [128, 196], [244, 200], [304, 150], [186, 210] ];
+    eSpots.forEach((p, i) => kids.push(h('div', { key: 'e' + i, style: {
+      position: 'absolute', left: p[0] + 'px', top: p[1] + 'px', width: '12px', height: '12px', borderRadius: '50%',
+      background: '#2E7DD1', boxShadow: '0 0 8px #2E7DD1', zIndex: 3, opacity: cond ? 1 : 0.32, transition: 'opacity .4s',
+      animation: cond ? ('eFloat ' + (2.4 + i * 0.35) + 's ease-in-out ' + (i * -0.45) + 's infinite') : 'none',
+    } })));
+    if (slide) kids.push(h('div', { key: 'sl', style: { position: 'absolute', left: (fcx + shift + 30) + 'px', top: (fcy - 74) + 'px', fontFamily: "'IBM Plex Mono',monospace", fontWeight: 600, fontSize: '11.5px', letterSpacing: '.06em', color: '#B5341A', zIndex: 5 } }, 'layers slide →'));
+    if (three) kids.push(this.chip('c3b', W / 2, H - 26, '3 covalent bonds per atom'));
+    if (cond) kids.push(this.chip('ccd', W / 2, H - 26, 'delocalised electrons free to move'));
+    if (slide) kids.push(this.chip('csl', W / 2, H - 26, 'weak forces between layers'));
+    kids.push(...this.pinEls(pins));
+    return h('div', { style: { position: 'relative', width: W + 'px', height: H + 'px' } }, kids);
+  }
+
+  buildDiagram(config, focus, pins) {
+    if (config.diagram === 'diamond') return this.drawDiamond(focus, pins);
+    return this.drawGraphite(focus, pins);
+  }
+
+  renderVals() {
+    const instances = CONFIGS.map((config, ci) => {
+      const idx = this.state.sel[ci];
+      const active = config.hotspots[idx];
+      const pins = config.hotspots.map((hp, i) => ({ label: String(i + 1), x: hp.x, y: hp.y, active: i === idx, onClick: () => this.pick(ci, i) }));
+      return {
+        configLabel: config.configLabel, emoji: config.emoji, title: config.title, subtitle: config.subtitle, strap: config.strap,
+        viz: this.buildDiagram(config, active.focus, pins),
+        activeTag: active.tag, activeTitle: active.title, activeBody: active.body, activeProperty: active.property,
+      };
+    });
+    return { instances };
+  }
+}
+</script>
+</body>
+</html>
