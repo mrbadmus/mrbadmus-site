@@ -29,11 +29,9 @@
 
 ## Read these first, in this order
 
-1. **`docs/ks3/architecture.md`** — committed here at `07da73795`, 71KB, sha256 `cf3448b56685a997`.
-   Authoritative and self-contained. Read it in full before touching anything.
-   *Note:* an untracked copy also sits in the main worktree at `~/Documents/GitHub/mrbadmus-site/docs/ks3/`.
-   They were byte-identical at commit time. If main's copy has since changed, the parallel session
-   revised it — re-sync from there and say so in your report.
+1. **`docs/ks3/architecture.md`** — 71KB, sha256 `cf3448b56685a997`. Authoritative and self-contained.
+   Read it in full before touching anything. It is now committed on `main` (`490bacb14`) and merged
+   into this branch, so there is one canonical copy and no sync question to worry about.
 2. **`docs/redesign/architecture_v2.md`** — the bonding v2 doctrine. Inherited *in spirit* and
    explicitly overridden where KS4 assumptions don't serve 11–14 year olds. Every override is named
    in architecture.md §3. Do not apply v2 laws to KS3 without checking §3 first.
