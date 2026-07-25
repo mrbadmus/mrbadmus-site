@@ -5263,18 +5263,34 @@ CHEMISTRY_SUBTOPICS_ALL = {
                  'hydrogen fuel cells work and evaluate their advantages and disadvantages compared to rechargeable '
                  'batteries.',
   'variables': []}],
-"rates-equilibrium": [{'common_mistake': 'The rate DECREASES over time in a closed system as REACTANTS ARE USED UP — fewer reactant '
-                    'particles mean fewer collisions. The graph flattens out when the reaction is complete (all '
-                    'reactants used). A steeper initial gradient = faster initial rate.',
+"rates-equilibrium": [{'common_mistake': 'Students often think the rate of a reaction stays the same from start to finish. It does not: as '
+                    'the reactants are used up there are fewer reactant particles, so fewer collisions happen each '
+                    'second and the rate falls. On a volume–time graph this is why the line is steepest at the very '
+                    'start (fastest rate) and gradually becomes less steep, going flat only when the reaction has '
+                    'finished and a reactant has run out.',
   'equations': ['Rate = quantity of product formed (or reactant used) ÷ time',
                 'Rate = gradient of graph of quantity vs time'],
-  'fifas': [{'label': 'Rate Calculation',
-             'question': 'A reaction between calcium carbonate and HCl produces 84 cm³ of CO₂ in 60 seconds. Calculate '
-                         'the mean rate of reaction.',
-             'steps': [('F', 'Rate = quantity of product ÷ time'),
+  'fifas': [{'label': 'Mean rate from gas volume',
+             'question': 'A reaction between calcium carbonate and hydrochloric acid gives off 84 cm³ of carbon '
+                         'dioxide in 60 s. Calculate the mean rate of reaction.',
+             'steps': [('F', 'Rate = quantity of gas ÷ time'),
                        ('I', 'Rate = 84 cm³ ÷ 60 s'),
                        ('F', 'Rate = 1.4'),
-                       ('A', 'Rate = 1.4 cm³/s')]}],
+                       ('A', 'Rate = 1.4 cm³/s')]},
+            {'label': 'Mean rate from mass loss',
+             'question': 'A flask of reacting acid and marble chips loses 4 g of mass in 50 s as CO₂ escapes. '
+                         'Calculate the mean rate of reaction.',
+             'steps': [('F', 'Rate = mass lost ÷ time'),
+                       ('I', 'Rate = 4 g ÷ 50 s'),
+                       ('F', 'Rate = 0.08'),
+                       ('A', 'Rate = 0.08 g/s')]},
+            {'label': 'Mean rate in cm³/min',
+             'question': 'A reaction collects 150 cm³ of hydrogen in 5 minutes. Calculate the mean rate of reaction in '
+                         'cm³/min.',
+             'steps': [('F', 'Rate = volume of gas ÷ time'),
+                       ('I', 'Rate = 150 cm³ ÷ 5 min'),
+                       ('F', 'Rate = 30'),
+                       ('A', 'Rate = 30 cm³/min')]}],
   'higher': None,
   'id': 'calculating-rates',
   'key_note': 'Rate = quantity ÷ time. Units: cm³/s, g/s, mol/dm³/s. Rate = gradient of quantity-vs-time graph. '
@@ -5288,27 +5304,128 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Mean rate', 'Total quantity produced ÷ total time taken for reaction'),
                          ('Instantaneous rate', 'Gradient of tangent drawn at a specific point on the curve')],
                'title': 'Rate of Reaction Concepts'},
-  'quiz': [{'opts': [('0.5 cm³/s — rate = 120 ÷ (4 × 60) = 120 ÷ 240', True),
-                     ('30 cm³/s — rate = 120 ÷ 4', False),
-                     ('480 cm³/s — rate = 120 × 4', False),
-                     ('2 cm³/s — rate = 120 ÷ 60', False)],
-            'q': 'A reaction produces 120 cm³ of gas in 4 minutes. What is the mean rate of reaction in cm³/s?',
-            'wrong_explanations': {1: '4 minutes = 4 minutes — not converted to seconds. Rate in cm³/s requires time '
-                                      'in seconds: 4 × 60 = 240 s.',
-                                   2: 'This multiplies instead of divides.',
-                                   3: 'This divides by 60 (seconds in a minute) but should divide by total seconds = 4 '
-                                      '× 60 = 240.'}},
-           {'opts': [('A faster rate of reaction — more product is being formed per unit time', True),
-                     ('A slower rate — steeper means the reaction is taking longer', False),
-                     ('The reaction is complete — no more gas is produced', False),
-                     ('More reactant has been added — the amount of gas increases', False)],
-            'q': 'On a graph of gas volume vs time, what does a steeper gradient indicate?',
-            'wrong_explanations': {1: 'Steeper gradient = larger volume change per unit time = FASTER, not slower '
-                                      'rate.',
-                                   2: 'A FLAT (horizontal) gradient means the reaction is complete — no more gas being '
-                                      'produced.',
-                                   3: 'Adding more reactant might increase total gas produced — but gradient '
-                                      '(steepness) represents RATE, not quantity.'}}],
+  'quiz': [{'opts': [('0.8 cm³/s — rate = 48 ÷ 60', True),
+                     ('2880 cm³/s — rate = 48 × 60', False),
+                     ('1.25 cm³/s — rate = 60 ÷ 48', False),
+                     ('48 cm³/s — the volume of gas collected', False)],
+            'q': 'A gas syringe collects 48 cm³ of gas in 60 s. Calculate the mean rate of reaction.',
+            'wrong_explanations': {1: 'This multiplies the volume by the time. Mean rate = quantity ÷ time, so you '
+                                      'divide.',
+                                   2: 'This divides time by volume — the wrong way round. Rate = volume ÷ time = 48 ÷ '
+                                      '60.',
+                                   3: 'This just reads off the volume and ignores the time. Rate must be a quantity '
+                                      'per second.'}},
+           {'opts': [('The reaction is faster there — more gas is being produced each second', True),
+                     ('The reaction is slower there — a steep line means it is struggling', False),
+                     ('The reaction has finished — no more gas is being made', False),
+                     ('More gas has been collected in total, but the rate is unchanged', False)],
+            'q': 'On a graph of gas volume against time, describe what a steeper part of the curve tells you about the '
+                 'reaction.',
+            'wrong_explanations': {1: 'A steeper gradient means MORE volume per second, which is a faster rate, not '
+                                      'slower.',
+                                   2: 'A FLAT (horizontal) line means the reaction has finished; a steep line means it '
+                                      'is going quickly.',
+                                   3: 'The steepness (gradient) represents the RATE, not the total amount collected.'}},
+           {'opts': [('The reactants are being used up, so there are fewer collisions each second (slower rate); flat '
+                      'means the reaction has finished',
+                      True),
+                     ('More product keeps forming, which speeds the reaction up over time', False),
+                     ('The reaction runs out of time, so it is forced to slow down', False),
+                     ('The temperature drops as the reaction goes on, flattening the line', False)],
+            'q': 'Explain why the curve on a volume–time graph becomes less steep and eventually flattens as the '
+                 'reaction proceeds.',
+            'wrong_explanations': {1: 'The rate DECREASES over time as reactants run out — the line gets less steep, '
+                                      'not steeper.',
+                                   2: 'Time does not limit the rate; the falling rate is caused by reactant particles '
+                                      'being used up.',
+                                   3: 'The slowing is due to reactants being used up (fewer collisions), not a '
+                                      'temperature change.'}},
+           {'opts': [('The volume of carbon dioxide gas given off, or the loss in mass of the flask', True),
+                     ('The colour of the acid and the temperature of the room', False),
+                     ('The mass of the marble chips only, weighed once at the end', False),
+                     ('The volume of the acid and the volume of the flask', False)],
+            'q': 'Describe two things you could measure over time to follow the rate of the reaction between marble '
+                 'chips and hydrochloric acid.',
+            'wrong_explanations': {1: 'The acid stays colourless and room temperature is not a product — neither '
+                                      'tracks how fast CO₂ forms.',
+                                   2: 'A single end measurement gives no rate — you must record how a quantity changes '
+                                      'over TIME.',
+                                   3: 'These do not change as the reaction proceeds, so they cannot measure the '
+                                      'rate.'}},
+           {'opts': [('0.05 g/s — rate = 6 ÷ 120', True),
+                     ('20 g/s — rate = 120 ÷ 6', False),
+                     ('720 g/s — rate = 6 × 120', False),
+                     ('0.5 g/s — rate = 6 ÷ 12', False)],
+            'q': 'A reaction flask loses 6 g of mass in 120 s as gas escapes. Calculate the mean rate of reaction in '
+                 'g/s.',
+            'wrong_explanations': {1: 'This divides time by mass — the wrong way round. Rate = mass lost ÷ time = 6 ÷ '
+                                      '120.',
+                                   2: 'This multiplies instead of dividing. Mean rate = quantity ÷ time.',
+                                   3: 'The time is 120 s, not 12 s. Rate = 6 ÷ 120 = 0.05 g/s.'}},
+           {'opts': [('How quickly reactants are used up or products are formed', True),
+                     ('How much product is made in total by the end', False),
+                     ('How much energy is released by the reaction', False),
+                     ('Whether the reaction is reversible or not', False)],
+            'q': "State what is meant by the 'rate' of a chemical reaction.",
+            'wrong_explanations': {1: 'That is the total yield, not the rate. Rate is about how QUICKLY, per unit '
+                                      'time.',
+                                   2: 'That is the energy change, not the rate. Rate measures speed, not energy.',
+                                   3: 'That describes the reaction type, not how fast it goes.'}},
+           {'opts': [('The quantity of reactant used or product formed, divided by the time taken', True),
+                     ('The mass of reactant divided by the mass of product', False),
+                     ('The volume of gas multiplied by the time taken', False),
+                     ('The temperature rise divided by the concentration', False)],
+            'q': 'State the two quantities you divide to calculate the mean rate of a reaction.',
+            'wrong_explanations': {1: 'Rate compares an amount with TIME, not one mass with another.',
+                                   2: 'Rate is quantity ÷ time (a division), not a multiplication.',
+                                   3: 'Neither of these is used to calculate rate; rate = quantity ÷ time.'}},
+           {'opts': [('cm³/s (cubic centimetres per second)', True),
+                     ('cm³ (cubic centimetres)', False),
+                     ('s (seconds)', False),
+                     ('g/cm³ (grams per cubic centimetre)', False)],
+            'q': 'Give a suitable unit for the rate of a reaction in which the gas produced is collected in a syringe.',
+            'wrong_explanations': {1: 'cm³ is a volume, not a rate. A rate needs a quantity PER unit of time, e.g. '
+                                      'cm³/s.',
+                                   2: 'Seconds is a time, not a rate. The unit must combine the gas volume with time.',
+                                   3: 'That is a density. For gas volume over time the unit is cm³/s.'}},
+           {'opts': [('At least one reactant has been completely used up, so the reaction has stopped', True),
+                     ('The reactants are reacting as fast as possible', False),
+                     ('The reactants have just been added to the flask', False),
+                     ('The temperature has reached its highest point', False)],
+            'q': 'A volume–time graph becomes flat (horizontal). State what this tells you about the reactants.',
+            'wrong_explanations': {1: 'The fastest rate is the STEEPEST part (the start); a flat line means the '
+                                      'reaction has stopped.',
+                                   2: 'Adding reactants would start a steep rise, not a flat line.',
+                                   3: 'A flat line shows no more product is forming — a reactant has run out, not a '
+                                      'temperature peak.'}},
+           {'opts': [('The rusting of an iron gate over several months', True),
+                     ('A firework exploding', False),
+                     ('Magnesium ribbon burning in air', False),
+                     ('An indigestion tablet fizzing in water', False)],
+            'q': 'Identify which of these is the slowest reaction.',
+            'wrong_explanations': {1: 'An explosion is one of the FASTEST reactions — over in a fraction of a second.',
+                                   2: 'Burning magnesium is a fast reaction, giving out light and heat quickly.',
+                                   3: 'Fizzing happens in seconds — much faster than rusting, which takes months.'}},
+           {'opts': [('30 cm³/min — rate = 90 ÷ 3', True),
+                     ('270 cm³/min — rate = 90 × 3', False),
+                     ('0.5 cm³/min — rate = 90 ÷ 180', False),
+                     ('3 cm³/min — the time taken', False)],
+            'q': 'A reaction produces 90 cm³ of gas in 3 minutes. Calculate the mean rate of reaction in cm³/min.',
+            'wrong_explanations': {1: 'This multiplies instead of dividing. Mean rate = quantity ÷ time = 90 ÷ 3.',
+                                   2: 'The unit asked for is cm³/min, so keep the time in minutes (3), not seconds '
+                                      '(180).',
+                                   3: '3 is the time in minutes, not the rate. Rate = 90 ÷ 3 = 30 cm³/min.'}},
+           {'opts': [('Reaction A — a steeper line means more gas is produced each second', True),
+                     ('Reaction B — the less steep line lasts longer so makes more gas', False),
+                     ('Both are the same — they are on the same axes', False),
+                     ('Reaction B — flatter lines always show faster reactions', False)],
+            'q': 'Two reactions, A and B, are plotted on the same volume–time axes. Line A is steeper than line B at '
+                 'the start. State which reaction is faster at the start and give a reason.',
+            'wrong_explanations': {1: 'How long a line lasts is not the rate; the STEEPER line (A) is the faster '
+                                      'reaction at the start.',
+                                   2: 'Being on the same axes does not make the rates equal; A is steeper, so A is '
+                                      'faster.',
+                                   3: 'This is backwards: a flatter line is a SLOWER rate; steeper (A) is faster.'}}],
   'rp': 'RP6 (Chemistry) — Investigate the effect of concentration on the rate of reaction between sodium thiosulfate '
         'and hydrochloric acid (cross disappears). Alternatively: rate of reaction between marble chips and HCl by '
         'mass loss or gas collection.',
@@ -5372,10 +5489,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Rate of Reaction and Calculations',
   'triple_only': None,
   'variables': [('rate', 'Rate of reaction', 'cm³/s or g/s', '')]},
- {'common_mistake': 'All four factors (temperature, concentration, surface area, pressure for gases) increase rate by '
-                    'increasing the NUMBER OF SUCCESSFUL COLLISIONS. Temperature is special — it also increases the '
-                    'PROPORTION of particles with sufficient energy (≥ activation energy), making it particularly '
-                    'effective. Always explain in terms of collisions.',
+ {'common_mistake': "Students often say a reaction is faster at a higher temperature simply because 'the particles "
+                    "move faster'. On its own this is not enough for full marks, because it only explains part of the "
+                    'effect. The full answer is that faster particles collide MORE OFTEN, and — just as importantly — '
+                    'a greater proportion of them now have energy above the activation energy, so a greater fraction '
+                    'of collisions are successful. Always link a rate change back to the frequency of successful '
+                    'collisions.',
   'equations': [],
   'fifas': [],
   'higher': None,
@@ -5397,32 +5516,147 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Decrease temperature',
                           'Rate decreases — fewer particles have enough energy to react successfully')],
                'title': 'Factor → Effect on Rate'},
-  'quiz': [{'opts': [('A greater proportion of particles now have energy ≥ the activation energy — so more collisions '
-                      'are successful',
+  'quiz': [{'opts': [('The rate increases — there are more acid particles in the same volume, so collisions happen '
+                      'more often',
                       True),
-                     ('Higher temperature makes particles larger — they collide more easily', False),
-                     ('Higher temperature dissolves more of the solid reactants — increasing concentration', False),
-                     ('Temperature has no extra effect — it only increases collision frequency', False)],
-            'q': 'Why does increasing temperature increase reaction rate more than just increasing the frequency of '
-                 'collisions?',
-            'wrong_explanations': {1: "Particles don't change size with temperature — they move faster.",
-                                   2: 'This might apply in some specific cases but is not the general reason why '
-                                      'temperature increases rate — the key is the energy distribution.',
-                                   3: 'Temperature does more than increase frequency — it shifts the energy '
-                                      'distribution so MORE particles exceed the activation energy threshold.'}},
-           {'opts': [('Rate increases — powder has much greater surface area, more particle collisions per unit time',
+                     ("The rate decreases — the acid particles get in each other's way", False),
+                     ('The rate stays the same — concentration does not affect rate', False),
+                     ('The rate increases — the particles are given more energy', False)],
+            'q': 'Predict the effect of increasing the concentration of the acid on the rate of its reaction with '
+                 'magnesium, and give a reason.',
+            'wrong_explanations': {1: 'More particles do not block each other; they collide MORE often, so the rate '
+                                      'increases.',
+                                   2: 'Concentration is one of the main factors: more concentrated means more frequent '
+                                      'collisions, so faster.',
+                                   3: "Concentration does not change the particles' energy (that is temperature); it "
+                                      'changes how OFTEN they collide.'}},
+           {'opts': [('The rate increases — powder has a larger surface area, so more particles are exposed to collide '
+                      'with the acid',
                       True),
-                     ('Rate stays the same — same mass of marble is used', False),
-                     ('Rate decreases — powder dissolves faster so there are fewer particles overall', False),
-                     ('Rate increases because powder has less activation energy than chips', False)],
-            'q': 'Marble chips (CaCO₃) react with HCl. The experiment is repeated with the same mass of powdered '
-                 'marble. How does the rate change?',
-            'wrong_explanations': {1: 'Same MASS does not mean same rate — rate depends on SURFACE AREA. Powder has '
-                                      'enormously more surface area than chips.',
-                                   2: 'Powder dissolving faster IS the result of faster rate — the mechanism is '
-                                      'increased surface area for collisions.',
-                                   3: 'Activation energy is a property of the reaction, not the physical form of the '
-                                      'reactant. Powder and chips have the same activation energy.'}}],
+                     ('The rate decreases — powder has less surface area than chips', False),
+                     ('The rate stays the same — it is the same substance and mass', False),
+                     ('The rate increases — powder is a stronger form of marble', False)],
+            'q': 'Predict the effect of using powdered marble instead of large marble chips on the rate of reaction '
+                 'with acid, and explain why.',
+            'wrong_explanations': {1: 'Powder has a much LARGER total surface area than lumps, so the rate increases, '
+                                      'not decreases.',
+                                   2: 'Same substance and mass, but breaking it up exposes more surface, so more '
+                                      'collisions and a faster rate.',
+                                   3: "Powder is not 'stronger'; it simply has more exposed surface area for "
+                                      'collisions.'}},
+           {'opts': [('The rate increases — particles move faster and more of them have enough energy, so collisions '
+                      'are more frequent and more successful',
+                      True),
+                     ('The rate increases — the particles get bigger with heat', False),
+                     ('The rate decreases — heat makes particles spread out and miss each other', False),
+                     ('The rate stays the same — temperature only changes the amount of product', False)],
+            'q': 'Predict the effect of raising the temperature on the rate of a reaction, and explain your answer.',
+            'wrong_explanations': {1: 'Particles do not change size; they move faster and more have energy above the '
+                                      'activation energy.',
+                                   2: 'Higher temperature makes particles collide MORE often and more energetically, '
+                                      'so the rate increases.',
+                                   3: 'Temperature changes the RATE (how fast), and here it increases it; the amount '
+                                      'of product is a separate idea.'}},
+           {'opts': [('The rate increases — the gas particles are squeezed into a smaller volume, so they collide more '
+                      'often',
+                      True),
+                     ('The rate decreases — high pressure holds the particles still', False),
+                     ('The rate stays the same — pressure has no effect on gases', False),
+                     ('The rate increases — pressure gives each particle more energy', False)],
+            'q': 'For a reaction between two gases, predict the effect of increasing the pressure on the rate, and '
+                 'give a reason.',
+            'wrong_explanations': {1: 'Higher pressure does not hold particles still; it packs them closer so they '
+                                      'collide MORE often.',
+                                   2: 'Pressure is a key factor for GAS reactions: more pressure means more frequent '
+                                      'collisions, so faster.',
+                                   3: 'Pressure does not change particle energy (that is temperature); it increases '
+                                      'how OFTEN they collide.'}},
+           {'opts': [('They all increase the frequency of successful collisions between the reacting particles', True),
+                     ('They all give the particles more energy', False),
+                     ('They all increase the amount of product that can form', False),
+                     ('They all lower the activation energy of the reaction', False)],
+            'q': 'All four factors — temperature, concentration, surface area and pressure — can speed a reaction up. '
+                 'Explain what they all have in common in terms of collisions.',
+            'wrong_explanations': {1: 'Only temperature increases particle energy; concentration, surface area and '
+                                      'pressure change how OFTEN particles collide.',
+                                   2: 'They change how FAST the product forms, not the maximum amount — that depends '
+                                      'on how much reactant there is.',
+                                   3: 'Only a catalyst lowers the activation energy; these four increase the number of '
+                                      'successful collisions instead.'}},
+           {'opts': [('Temperature, concentration, surface area, and a catalyst', True),
+                     ('Colour, smell, mass and volume', False),
+                     ('Time, cost, size of flask and stirring speed', False),
+                     ('The amount of product, the type of glassware and the day of the week', False)],
+            'q': 'Name four factors that can increase the rate of a chemical reaction.',
+            'wrong_explanations': {1: 'These are properties you might observe, not factors that change the rate.',
+                                   2: 'Only stirring has any effect; the recognised factors are temperature, '
+                                      'concentration, surface area and a catalyst.',
+                                   3: 'None of these change the rate; the factors are temperature, concentration, '
+                                      'surface area and a catalyst.'}},
+           {'opts': [('The rate decreases (the reaction goes more slowly)', True),
+                     ('The rate increases', False),
+                     ('The rate stays exactly the same', False),
+                     ('The reaction stops completely and cannot restart', False)],
+            'q': 'State what happens to the rate of most reactions when the temperature is decreased.',
+            'wrong_explanations': {1: 'Lower temperature means slower particles and fewer successful collisions, so '
+                                      'the rate DECREASES.',
+                                   2: 'Temperature is a major factor; lowering it slows the reaction down.',
+                                   3: 'It slows down but does not usually stop completely; warming it again would '
+                                      'speed it back up.'}},
+           {'opts': [('The zinc powder', True),
+                     ('The large lump of zinc', False),
+                     ('Both react at exactly the same rate', False),
+                     ('Neither will react with acid', False)],
+            'q': 'Identify which will react faster with acid: a single large lump of zinc, or the same mass of zinc '
+                 'powder.',
+            'wrong_explanations': {1: 'The lump has less exposed surface, so it reacts more slowly than the powder.',
+                                   2: 'Same mass, but the powder has far more surface area, so it reacts faster.',
+                                   3: 'Zinc does react with acid; the powder simply reacts faster because of its '
+                                      'larger surface area.'}},
+           {'opts': [('It increases (speeds up) the rate', True),
+                     ('It decreases the rate', False),
+                     ('It has no effect on the rate', False),
+                     ('It stops the reaction happening', False)],
+            'q': 'State the effect of adding a suitable catalyst on the rate of a reaction.',
+            'wrong_explanations': {1: 'A catalyst speeds a reaction up, it does not slow it down.',
+                                   2: 'A catalyst increases the rate — that is its whole purpose.',
+                                   3: 'A catalyst speeds a reaction up; it does not stop it.'}},
+           {'opts': [('Lower the temperature (or use a more dilute acid, or use larger lumps of metal)', True),
+                     ('Raise the temperature', False),
+                     ('Crush the metal into a powder', False),
+                     ('Use a more concentrated acid', False)],
+            'q': 'A student wants a reaction between acid and a metal to go more slowly. Suggest one change they could '
+                 'make.',
+            'wrong_explanations': {1: 'Raising the temperature speeds a reaction UP; to slow it down you would lower '
+                                      'the temperature.',
+                                   2: 'Powder has more surface area, which speeds the reaction up — the opposite of '
+                                      'what is wanted.',
+                                   3: 'More concentrated acid speeds the reaction up; a more dilute acid would slow it '
+                                      'down.'}},
+           {'opts': [('The lower temperature in the fridge slows the reactions down — the particles move more slowly '
+                      'and collide less often and with less energy',
+                      True),
+                     ('The fridge removes all the bacteria from the milk', False),
+                     ('The cold makes the milk particles bigger so they cannot react', False),
+                     ('Milk only goes off in warm places, never in the cold', False)],
+            'q': 'Explain why milk turns sour more slowly when kept in a fridge than when left out on a warm kitchen '
+                 'table.',
+            'wrong_explanations': {1: 'The fridge does not remove bacteria; it lowers the temperature, which slows the '
+                                      'reactions that spoil the milk.',
+                                   2: 'Particles do not change size; the cold simply makes them move more slowly, so '
+                                      'they react less quickly.',
+                                   3: 'Milk still goes off in the fridge, just much more slowly, because the reactions '
+                                      'are slower at low temperature.'}},
+           {'opts': [('Diluting the acid with water', True),
+                     ('Warming the acid before adding the chips', False),
+                     ('Crushing the marble chips into a powder', False),
+                     ('Using more concentrated acid', False)],
+            'q': 'Identify the change that would slow down the reaction between marble chips and hydrochloric acid.',
+            'wrong_explanations': {1: 'Warming the acid speeds the reaction up, because the particles collide more '
+                                      'often and more successfully.',
+                                   2: 'Crushing increases the surface area, which speeds the reaction up, not down.',
+                                   3: 'More concentrated acid has more particles per volume, so it speeds the reaction '
+                                      'up.'}}],
   'rp': 'RP6 (Chemistry) — Investigate effect of concentration on rate (Na₂S₂O₃ + HCl). Can also investigate surface '
         'area (marble chips vs powder with HCl) or temperature effects.',
   'spec': '5.6.1.2',
@@ -5485,10 +5719,11 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Factors Affecting the Rate of Reaction',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Increasing concentration or surface area increases the FREQUENCY of collisions but does NOT '
-                    'change the activation energy. Only a CATALYST changes the activation energy. Temperature '
-                    'increases both frequency AND the proportion above activation energy. These are different '
-                    'mechanisms.',
+ {'common_mistake': 'Students often think that every collision between reactant particles leads to a reaction. In fact '
+                    'most collisions do nothing, because the particles either do not have enough energy or hit in the '
+                    'wrong orientation. Only a collision with energy greater than or equal to the activation energy, '
+                    "and with the correct orientation, is 'successful' and leads to a reaction — and these make up "
+                    'only a small fraction of all the collisions taking place.',
   'equations': [],
   'fifas': [],
   'higher': None,
@@ -5509,34 +5744,154 @@ CHEMISTRY_SUBTOPICS_ALL = {
                           'Petrol is stable at room temperature — needs activation energy (spark) to initiate '
                           'combustion')],
                'title': 'Collision Theory Concepts'},
-  'quiz': [{'opts': [("Most collisions don't have sufficient energy — the particles must have energy ≥ the activation "
-                      'energy',
+  'quiz': [{'opts': [('The particles must collide with energy greater than or equal to the activation energy, AND '
+                      'collide in the correct orientation',
                       True),
-                     ('Most collisions are too fast — particles bounce off before bonds can form', False),
-                     ('Most collisions involve too many particles — only two particles can react at once', False),
-                     ('Most collisions happen between the same type of particle — same reactant colliding with itself',
-                      False)],
-            'q': 'Why do most collisions between reactant particles NOT result in a reaction?',
-            'wrong_explanations': {1: "Collision speed doesn't determine success directly — it's whether the ENERGY "
-                                      'meets the activation energy threshold.',
-                                   2: "Many reactions are bimolecular (two particles) but this isn't why most "
-                                      'collisions fail — energy below Ea is the main reason.',
-                                   3: 'Particles of the same type do collide, but in a mixture, most collisions do '
-                                      'involve different reactant species — the issue is energy, not species.'}},
-           {'opts': [('The reaction will be slow — only a small proportion of collisions will have enough energy to '
-                      'succeed',
+                     ('The particles must collide gently and slowly', False),
+                     ('The particles must simply touch each other at any speed', False),
+                     ('The particles must be at the same temperature and the same size', False)],
+            'q': 'Explain the two conditions that must be met for a collision between reactant particles to lead to a '
+                 'reaction.',
+            'wrong_explanations': {1: 'A successful collision needs ENOUGH energy (≥ the activation energy), not a '
+                                      'gentle one.',
+                                   2: 'Just touching is not enough — the collision must have energy ≥ the activation '
+                                      'energy and the right orientation.',
+                                   3: 'Neither matching temperature nor size is required; the collision needs enough '
+                                      'energy and the correct orientation.'}},
+           {'opts': [('The particles move faster so collide more frequently, and more of them have energy ≥ the '
+                      'activation energy, so more collisions are successful',
                       True),
-                     ('The reaction will be fast — high activation energy means particles are very energetic', False),
-                     ('The reaction will be exothermic — high activation energy means lots of energy released', False),
-                     ('The reaction will not occur at all — nothing can overcome high activation energy', False)],
-            'q': 'A reaction has a very high activation energy. What does this predict about the reaction?',
-            'wrong_explanations': {1: "High activation energy doesn't mean particles are energetic — it means the "
-                                      'THRESHOLD is high, so few particles exceed it.',
-                                   2: 'Activation energy and ΔH are independent — a reaction can have high Ea and '
-                                      'still be endothermic, or low Ea and highly exothermic.',
-                                   3: 'Reactions with high Ea can still occur — just slowly. Temperature can always '
-                                      'provide the energy. Explosives often have high Ea but react violently once '
-                                      'started.'}}],
+                     ('The particles get larger, so they are easier to hit', False),
+                     ('The particles collide less often but each collision is stronger', False),
+                     ('The activation energy of the reaction is lowered', False)],
+            'q': 'Explain, in terms of collisions, why increasing the temperature increases the rate of a reaction.',
+            'wrong_explanations': {1: 'Particles do not change size; higher temperature makes them move faster and '
+                                      'gives more of them enough energy.',
+                                   2: 'Higher temperature makes collisions MORE frequent (as well as more energetic), '
+                                      'not less frequent.',
+                                   3: 'Temperature does not lower the activation energy; it raises the energy of the '
+                                      'particles so more clear the barrier.'}},
+           {'opts': [('There are more reactant particles in the same volume, so collisions happen more frequently, '
+                      'giving more successful collisions each second',
+                      True),
+                     ('The particles each carry more energy at higher concentration', False),
+                     ('The reaction needs fewer collisions when the concentration is higher', False),
+                     ('Higher concentration lowers the activation energy', False)],
+            'q': 'Explain, in terms of collision theory, why a higher concentration of a dissolved reactant increases '
+                 'the rate.',
+            'wrong_explanations': {1: 'Concentration does not change particle energy; it increases how OFTEN particles '
+                                      'collide.',
+                                   2: 'The reaction still needs collisions; higher concentration simply makes them '
+                                      'happen more often.',
+                                   3: 'Only a catalyst lowers the activation energy; concentration increases collision '
+                                      'frequency.'}},
+           {'opts': [('They do not react — they simply bounce apart unchanged', True),
+                     ('They react slowly but still form some product', False),
+                     ('They stick together and wait until they gain more energy', False),
+                     ('They always react, because any collision causes a reaction', False)],
+            'q': 'Describe what happens when two reactant particles collide with less energy than the activation '
+                 'energy.',
+            'wrong_explanations': {1: 'Below the activation energy no reaction occurs at all — the particles bounce '
+                                      'apart unchanged.',
+                                   2: 'They do not stick; a collision without enough energy just bounces apart with no '
+                                      'reaction.',
+                                   3: 'Not every collision reacts — only those with energy ≥ the activation energy '
+                                      '(and the right orientation).'}},
+           {'opts': [('More particles are exposed at the surface, so collisions with the other reactant happen more '
+                      'frequently',
+                      True),
+                     ('The exposed particles are given more energy', False),
+                     ('A larger surface lowers the activation energy', False),
+                     ('The solid dissolves faster, adding new particles to the mixture', False)],
+            'q': 'Explain, using collision theory, why increasing the surface area of a solid reactant increases the '
+                 'rate.',
+            'wrong_explanations': {1: 'Surface area does not change particle energy; it exposes more particles to '
+                                      'collide.',
+                                   2: 'Surface area does not change the activation energy; it increases the frequency '
+                                      'of collisions.',
+                                   3: 'No new particles are added; breaking the solid up simply exposes more of its '
+                                      'existing particles to collide.'}},
+           {'opts': [('They must collide with each other', True),
+                     ('They must be heated until they melt', False),
+                     ('They must be the same size', False),
+                     ('They must be pushed apart', False)],
+            'q': 'State what must happen between reactant particles before a reaction can occur.',
+            'wrong_explanations': {1: 'Particles do not need to melt; they need to COLLIDE (with enough energy).',
+                                   2: 'Size does not matter; particles simply have to collide with enough energy.',
+                                   3: 'Pushing apart prevents reaction; particles must come together and collide.'}},
+           {'opts': [('The minimum energy that colliding particles must have for a reaction to occur', True),
+                     ('The energy given out by a reaction', False),
+                     ('The total energy of all the particles added together', False),
+                     ('The energy needed to melt the reactants', False)],
+            'q': "Define the term 'activation energy'.",
+            'wrong_explanations': {1: 'That is the energy released; activation energy is the minimum energy NEEDED to '
+                                      'start the reaction.',
+                                   2: 'Activation energy is a minimum threshold per collision, not the total energy of '
+                                      'every particle.',
+                                   3: 'Activation energy is about starting the reaction, not melting; it is the '
+                                      'minimum energy for a successful collision.'}},
+           {'opts': [('Enough energy (at least the activation energy) and the correct orientation', True),
+                     ('A low temperature and a large container', False),
+                     ('A catalyst and a high pressure', False),
+                     ('Two particles of exactly equal mass', False)],
+            'q': 'State the two things a collision needs in order to be successful.',
+            'wrong_explanations': {1: 'Neither helps; a successful collision needs enough energy and the correct '
+                                      'orientation.',
+                                   2: 'These can change the rate, but a single successful collision itself just needs '
+                                      'enough energy and the right orientation.',
+                                   3: 'Equal mass is not required; the collision needs enough energy and the correct '
+                                      'orientation.'}},
+           {'opts': [('The fast-moving particle, because it has more energy', True),
+                     ('The slow-moving particle, because it has more time to react', False),
+                     ('Both are equally likely, because they are the same substance', False),
+                     ('Neither, because speed has no effect on reactions', False)],
+            'q': 'Identify which particle is more likely to react in a collision: a fast-moving particle or a '
+                 'slow-moving particle (in the same reaction).',
+            'wrong_explanations': {1: 'More energy, not more time, makes a collision successful — the faster particle '
+                                      'is more likely to react.',
+                                   2: 'Being the same substance does not matter; the faster particle has more energy, '
+                                      'so it is more likely to react.',
+                                   3: 'Speed affects the energy of a collision; a faster particle is more likely to '
+                                      'have enough energy to react.'}},
+           {'opts': [('The rate of reaction increases', True),
+                     ('The rate of reaction decreases', False),
+                     ('The rate stays the same', False),
+                     ('The reaction stops', False)],
+            'q': 'State what happens to the rate of reaction if the number of successful collisions each second '
+                 'increases.',
+            'wrong_explanations': {1: 'More successful collisions each second means a FASTER reaction, so the rate '
+                                      'increases.',
+                                   2: 'Rate depends directly on how many successful collisions happen each second, so '
+                                      'it increases.',
+                                   3: 'More successful collisions speed the reaction up; they do not stop it.'}},
+           {'opts': [('At the low temperature the particles move more slowly, so they collide less often and with less '
+                      'energy, making the reactions that spoil food much slower',
+                      True),
+                     ('The freezer kills all the reactions permanently', False),
+                     ('The cold gives the particles more energy to react', False),
+                     ('Freezing removes the particles that cause food to spoil', False)],
+            'q': 'Use collision theory to explain why food stored in a freezer keeps for much longer than food left at '
+                 'room temperature.',
+            'wrong_explanations': {1: 'The reactions are slowed, not permanently stopped; the food would still spoil '
+                                      'eventually, just far more slowly.',
+                                   2: 'Cold gives particles LESS energy, so they react more slowly — that is why the '
+                                      'food keeps longer.',
+                                   3: 'Freezing does not remove particles; it lowers their energy and collision '
+                                      'frequency, slowing the spoiling reactions.'}},
+           {'opts': [("Crushing exposes more of the solid's particles at the surface, so there are more collisions "
+                      'each second with the other reactant',
+                      True),
+                     ('Crushing gives each particle more energy to collide', False),
+                     ('Crushing lowers the activation energy of the reaction', False),
+                     ('Crushing turns the solid into a gas so it reacts faster', False)],
+            'q': 'A reaction speeds up when the solid reactant is crushed into a fine powder. Describe, in terms of '
+                 'particles colliding, why this works.',
+            'wrong_explanations': {1: 'Crushing does not change particle energy; it exposes more particles to collide, '
+                                      'increasing the collision frequency.',
+                                   2: 'Crushing does not change the activation energy; it increases how many particles '
+                                      'are exposed to collide.',
+                                   3: 'Crushing does not change the state; it simply exposes more surface particles to '
+                                      'collide with the other reactant.'}}],
   'rp': None,
   'spec': '5.6.1.3',
   'summary': 'Explain collision theory and how activation energy determines whether a reaction occurs.',
@@ -5604,9 +5959,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Collision Theory and Activation Energy',
   'triple_only': None,
   'variables': [('Ea', 'Activation energy', 'kJ/mol', 'kJ/mol')]},
- {'common_mistake': 'A catalyst is NOT used up — it is the same at the END of the reaction as at the START. It does '
-                    'NOT change the products or the overall energy change (ΔH). It ONLY provides an alternative '
-                    'pathway with LOWER ACTIVATION ENERGY — making the reaction faster, not different.',
+ {'common_mistake': 'Students often think a catalyst is used up during a reaction, or that it increases the amount of '
+                    'product made. Neither is true: a catalyst is chemically unchanged at the end and does not appear '
+                    'in the balanced equation, and it does not change how much product forms or the position of any '
+                    'equilibrium. What a catalyst actually does is speed the reaction up by providing an alternative '
+                    'pathway with a lower activation energy — you get the same amount of product, just sooner, and the '
+                    'catalyst is left over ready to be used again.',
   'equations': [],
   'fifas': [],
   'higher': None,
@@ -5622,31 +5980,135 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Nickel', 'Hydrogenation — converting unsaturated oils to solid fats (margarine)'),
                          ('Amylase (enzyme)', 'Biological catalyst — breaks down starch to sugars in digestion')],
                'title': 'Match the Catalyst to its Reaction'},
-  'quiz': [{'opts': [('The rate increases because the activation energy is lowered — the products and ΔH are unchanged',
+  'quiz': [{'opts': [('It provides an alternative reaction pathway with a lower activation energy, so a greater '
+                      'proportion of collisions are successful',
                       True),
-                     ('The products change — the catalyst reacts with some reactants to form new products', False),
-                     ('The overall energy change (ΔH) decreases — less energy is released or absorbed', False),
-                     ('The catalyst is used up proportionally to the amount of reactant that reacts', False)],
-            'q': 'A catalyst is added to a reaction. Which of the following is true?',
-            'wrong_explanations': {1: 'A catalyst provides an ALTERNATIVE PATHWAY to the same products — it does not '
-                                      'change what products form.',
-                                   2: 'ΔH is the difference in energy between reactants and products — the catalyst '
-                                      "doesn't change what the reactants or products ARE, so ΔH stays the same.",
-                                   3: 'A catalyst is NOT consumed in the reaction — by definition it is regenerated. A '
-                                      'substance that is used up is a REACTANT, not a catalyst.'}},
-           {'opts': [('The catalyst lowers activation energy — more particles have sufficient energy at lower '
-                      'temperature — fast enough rate without needing extra heat',
+                     ('It gives all the reactant particles more energy', False),
+                     ('It increases the number of reactant particles in the mixture', False),
+                     ('It makes the particles collide more often by pushing them together', False)],
+            'q': 'Explain how a catalyst increases the rate of a chemical reaction.',
+            'wrong_explanations': {1: 'A catalyst does not add energy to the particles; it lowers the activation '
+                                      'energy they need to react.',
+                                   2: 'A catalyst adds no reactant particles; it lowers the activation energy so more '
+                                      'collisions succeed.',
+                                   3: 'A catalyst does not increase collision frequency; it lowers the activation '
+                                      'energy so more of the existing collisions succeed.'}},
+           {'opts': [('It is not used up — it is chemically unchanged at the end, so the same mass is present before '
+                      'and after',
                       True),
-                     ('Catalysts generate heat themselves — reducing the need for external heating', False),
-                     ('Lower temperatures produce better quality products when catalysts are used', False),
-                     ('Catalysts compress the reactant gases — raising pressure reduces the need for temperature',
-                      False)],
-            'q': 'Why can industrial processes use lower temperatures when a catalyst is present?',
-            'wrong_explanations': {1: "Catalysts don't generate heat — they lower the energy barrier. If they released "
-                                      'heat, they would be acting as reactants.',
-                                   2: 'Product quality is not directly related to catalyst presence — the reason for '
-                                      'lower temperature is purely kinetic (enough particles above the new lower Ea).',
-                                   3: "Catalysts don't affect the pressure of reactant gases."}}],
+                     ('It is used up, so there is no point writing it', False),
+                     ('It is a gas, so it escapes before the equation is written', False),
+                     ('It turns into one of the products during the reaction', False)],
+            'q': 'Explain why a catalyst is not included in the balanced equation for a reaction.',
+            'wrong_explanations': {1: 'The opposite is true: a catalyst is NOT used up, which is exactly why it is '
+                                      'left out of the equation.',
+                                   2: 'Whether it is left out has nothing to do with state; it is left out because it '
+                                      'is unchanged by the reaction.',
+                                   3: 'A catalyst does not turn into a product; it is recovered chemically unchanged, '
+                                      'so it is not in the equation.'}},
+           {'opts': [('No change — a catalyst changes only how fast the product forms, not how much is formed', True),
+                     ('More product is made, because the catalyst adds extra reactant', False),
+                     ('Less product is made, because some is used to regenerate the catalyst', False),
+                     ('The amount of product depends on how much catalyst is added', False)],
+            'q': 'A catalyst speeds up a reaction. Predict its effect on the total amount of product finally made, and '
+                 'explain.',
+            'wrong_explanations': {1: 'A catalyst adds no reactant; it only speeds the reaction up, so the final '
+                                      'amount of product is unchanged.',
+                                   2: 'The catalyst is not consumed and uses up no product; the final amount of '
+                                      'product is unchanged.',
+                                   3: 'The amount of product depends on the amount of reactant, not the catalyst; the '
+                                      'catalyst only changes the speed.'}},
+           {'opts': [('They speed up reactions in living organisms without being used up, by providing a pathway with '
+                      'a lower activation energy',
+                      True),
+                     ('They are catalysts made only in factories for use in living things', False),
+                     ('They are reactants that are used up as the body reacts', False),
+                     ('They provide the energy that living reactions need', False)],
+            'q': 'Explain why enzymes are described as biological catalysts.',
+            'wrong_explanations': {1: 'Enzymes are made BY living organisms; they are natural catalysts, not '
+                                      'manufactured ones.',
+                                   2: 'Enzymes are catalysts, so they are not used up; they can be reused many times.',
+                                   3: 'Enzymes do not provide energy; like all catalysts they lower the activation '
+                                      'energy needed for the reaction.'}},
+           {'opts': [("The activation energy 'hump' is lower, but the energy levels of the reactants and products (and "
+                      'ΔH) are unchanged',
+                      True),
+                     ('The whole curve is lower, including the reactant and product energy levels', False),
+                     ('The products end up at a lower energy, releasing more energy overall', False),
+                     ('The hump is taller because the reaction goes faster', False)],
+            'q': 'On a reaction profile diagram, describe how the curve for a catalysed reaction differs from the '
+                 'uncatalysed one.',
+            'wrong_explanations': {1: 'Only the activation energy hump is lowered; the reactant and product energy '
+                                      'levels stay exactly the same.',
+                                   2: 'A catalyst does not change the product energy or ΔH; it only lowers the '
+                                      'activation energy barrier.',
+                                   3: 'A catalyst LOWERS the activation energy hump; a lower barrier is why the '
+                                      'reaction goes faster.'}},
+           {'opts': [('It increases (speeds up) the rate', True),
+                     ('It decreases the rate', False),
+                     ('It has no effect on the rate', False),
+                     ('It changes the rate only if the reaction is reversible', False)],
+            'q': 'State what a catalyst does to the rate of a reaction.',
+            'wrong_explanations': {1: 'A catalyst speeds a reaction up, not down.',
+                                   2: "A catalyst's purpose is to increase the rate.",
+                                   3: 'A catalyst speeds up reactions whether or not they are reversible.'}},
+           {'opts': [('It is unchanged — the same mass of catalyst remains', True),
+                     ('It decreases, because the catalyst is used up', False),
+                     ('It increases, because product sticks to it', False),
+                     ('It falls to zero by the end of the reaction', False)],
+            'q': 'State what happens to the mass of a catalyst by the end of a reaction.',
+            'wrong_explanations': {1: 'A catalyst is NOT used up; the same mass remains at the end.',
+                                   2: 'A catalyst is recovered chemically unchanged; its mass is the same at the end.',
+                                   3: 'A catalyst is not consumed, so its mass does not fall — it is unchanged.'}},
+           {'opts': [('Enzymes', True), ('Hormones', False), ('Minerals', False), ('Antibodies', False)],
+            'q': 'Name the type of catalyst found in living organisms.',
+            'wrong_explanations': {1: 'Hormones are chemical messengers, not catalysts; the biological catalysts are '
+                                      'enzymes.',
+                                   2: 'Minerals are not catalysts; biological reactions are catalysed by enzymes.',
+                                   3: 'Antibodies fight infection; the catalysts in living things are enzymes.'}},
+           {'opts': [('The reaction happens faster, often at a lower temperature, which saves energy and money', True),
+                     ('It increases the amount of product that can be made from the reactants', False),
+                     ('It removes the need for any reactants', False),
+                     ('It makes the product purer by removing impurities', False)],
+            'q': 'Identify the main advantage of using a catalyst in an industrial process.',
+            'wrong_explanations': {1: 'A catalyst does not increase the amount of product; its advantage is making the '
+                                      'reaction faster and cheaper.',
+                                   2: 'Reactants are still needed; the catalyst only speeds the reaction up.',
+                                   3: 'A catalyst speeds the reaction up; it is not there to purify the product.'}},
+           {'opts': [('No — a catalyst is not used up', True),
+                     ('Yes — it is used up like a reactant', False),
+                     ('Only some of it is used up each time', False),
+                     ('It is used up only in reversible reactions', False)],
+            'q': 'State whether a catalyst is used up during a reaction.',
+            'wrong_explanations': {1: 'A catalyst is not used up; it is recovered unchanged and can be reused.',
+                                   2: 'None of the catalyst is used up; it is chemically unchanged at the end.',
+                                   3: 'A catalyst is never used up, whether the reaction is reversible or not.'}},
+           {'opts': [('It speeds the reaction up and is chemically unchanged at the end, which is exactly what a '
+                      'catalyst does',
+                      True),
+                     ('It is a reactant, because it takes part in the reaction', False),
+                     ('It is a product, because it is collected at the end', False),
+                     ('It is a catalyst because it turns the hydrogen peroxide blue', False)],
+            'q': 'A small amount of manganese(IV) oxide makes hydrogen peroxide decompose much faster, and it can be '
+                 'recovered unchanged afterwards. Explain why manganese(IV) oxide is acting as a catalyst here.',
+            'wrong_explanations': {1: 'Because it is recovered unchanged and not used up, it is a catalyst, not a '
+                                      'reactant.',
+                                   2: 'It was present at the start and is unchanged at the end, so it is a catalyst, '
+                                      'not a product.',
+                                   3: 'Being a catalyst is about speeding the reaction up while staying unchanged, not '
+                                      'about any colour change.'}},
+           {'opts': [('The reaction can run faster and at a lower temperature, so less energy (fuel) is needed and '
+                      'more product is made per hour',
+                      True),
+                     ('The catalyst replaces the reactants, so less raw material is bought', False),
+                     ('The catalyst is used up, so it does not need storing', False),
+                     ('The catalyst increases the maximum amount of product from the reactants', False)],
+            'q': 'Suggest why using a catalyst can make an industrial process cheaper.',
+            'wrong_explanations': {1: 'The catalyst does not replace reactants; it saves money by letting the reaction '
+                                      'run faster and at lower temperature.',
+                                   2: 'A catalyst is not used up — it is reused, which is part of why it saves money.',
+                                   3: 'A catalyst does not increase the maximum yield; it saves money by speeding the '
+                                      'reaction up and lowering the temperature needed.'}}],
   'rp': None,
   'spec': '5.6.1.4',
   'summary': 'Describe how catalysts work, give examples and explain their industrial importance.',
@@ -5711,9 +6173,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Catalysts',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'At equilibrium, the reaction has NOT stopped — it is DYNAMIC. Both forward and reverse reactions '
-                    'continue at equal rates. Concentrations are CONSTANT but not necessarily EQUAL. Students often '
-                    "say 'equilibrium means equal concentrations' — this is wrong. It means equal RATES.",
+ {'common_mistake': 'Students often think that at equilibrium the reaction has stopped, or that the amounts of '
+                    'reactants and products must be equal. Neither is right: at equilibrium the forward and reverse '
+                    'reactions are both still going, they simply happen at the same rate, so nothing appears to '
+                    "change. And 'constant' does not mean 'equal' — the concentrations stay steady but are usually "
+                    'different, because the position of equilibrium can lie mostly towards the reactants or mostly '
+                    'towards the products.',
   'equations': ['NH₄Cl(s) ⇌ NH₃(g) + HCl(g)  (reversible reaction)',
                 'CuSO₄·5H₂O(s) ⇌ CuSO₄(s) + 5H₂O(l)  (reversible reaction)'],
   'fifas': [],
@@ -5733,31 +6198,146 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Test for water',
                           'White anhydrous CuSO₄ turns blue in the presence of water — reversible hydration')],
                'title': 'Reversible Reaction Concepts'},
-  'quiz': [{'opts': [('The forward and reverse reactions are still occurring at equal rates — concentrations of all '
-                      'species are constant',
+  'quiz': [{'opts': [('One that can go both ways — the products can react to reform the reactants, e.g. hydrated '
+                      'copper(II) sulfate ⇌ anhydrous copper(II) sulfate + water',
                       True),
-                     ('The reaction has stopped — no more forward or reverse reaction takes place', False),
-                     ('Concentrations of reactants and products are equal', False),
-                     ('Only the forward reaction occurs — the reverse reaction has stopped', False)],
-            'q': 'At dynamic equilibrium, which of the following is true?',
-            'wrong_explanations': {1: "'Dynamic' means BOTH reactions are still occurring — it is NOT static. "
-                                      "'Equilibrium' means rates are balanced, not that the reaction stopped.",
-                                   2: 'Concentrations are CONSTANT but NOT necessarily equal. The ratio of products to '
-                                      'reactants can be anything — it depends on the specific reaction and conditions.',
-                                   3: 'If only the forward reaction occurred, it would be a one-way reaction — '
-                                      'equilibrium requires BOTH directions continuing at equal rates.'}},
-           {'opts': [('Absorbs 50 kJ/mol — the reverse reaction is endothermic with the same energy magnitude', True),
-                     ('Releases 50 kJ/mol — the reverse reaction also releases the same energy', False),
-                     ('Absorbs 100 kJ/mol — double the forward reaction energy', False),
-                     ('Zero — the reverse reaction has no energy change', False)],
-            'q': 'The forward reaction A ⇌ B releases 50 kJ/mol. How much energy does the reverse reaction B → A '
-                 'involve?',
-            'wrong_explanations': {1: 'If the reverse also released energy, energy would be created from nothing — '
-                                      'violating conservation of energy.',
-                                   2: 'The energy is the SAME magnitude (50 kJ/mol) but the direction is reversed — '
-                                      'forward exothermic means reverse endothermic.',
-                                   3: 'Energy changes in reversible reactions are always equal and opposite — the '
-                                      'reverse cannot have zero energy change if the forward has a non-zero change.'}}],
+                     ('One that gives out energy and then takes it back in at the end', False),
+                     ('One that can only go forwards but very quickly', False),
+                     ('One that produces a gas which then escapes', False)],
+            'q': 'Describe what is meant by a reversible reaction, using an example.',
+            'wrong_explanations': {1: 'That describes energy transfer, not reversibility. A reversible reaction is one '
+                                      'whose products can reform the reactants.',
+                                   2: 'A reversible reaction goes BOTH ways; a reaction that only goes forwards is not '
+                                      'reversible.',
+                                   3: "Escaping gas is not what 'reversible' means; it means the products can react to "
+                                      'reform the reactants.'}},
+           {'opts': [('The forward and reverse reactions are still happening, but at equal rates, so the '
+                      'concentrations of reactants and products stay constant',
+                      True),
+                     ('Both reactions have stopped, so nothing changes', False),
+                     ('Only the forward reaction is happening, but very slowly', False),
+                     ('The reactants and products are present in exactly equal amounts', False)],
+            'q': "Explain what is meant by 'dynamic equilibrium' in a reversible reaction.",
+            'wrong_explanations': {1: 'The reactions have not stopped — they continue at EQUAL rates, which is why it '
+                                      'is called dynamic.',
+                                   2: 'At equilibrium both the forward and reverse reactions occur, at equal rates — '
+                                      'not just the forward one.',
+                                   3: "'Constant' does not mean 'equal' — the amounts stay steady but are usually not "
+                                      'equal.'}},
+           {'opts': [('A closed system, where no reactants or products can enter or leave', True),
+                     ('An open container, so gases can escape freely', False),
+                     ('A vacuum, with no air present', False),
+                     ('A constantly heated flask', False)],
+            'q': 'State the condition a reversible reaction must be kept in for it to reach equilibrium.',
+            'wrong_explanations': {1: 'In an open container products escape and cannot react back, so equilibrium '
+                                      'cannot be reached — it must be closed.',
+                                   2: 'It is not about air; the system must be CLOSED so nothing can enter or leave.',
+                                   3: 'Heating is not the requirement; the system must be closed so the reverse '
+                                      'reaction can balance the forward one.'}},
+           {'opts': [('It is endothermic, and exactly the same amount of energy is transferred', True),
+                     ('It is also exothermic, giving out energy both ways', False),
+                     ('It is endothermic, but it takes in twice as much energy', False),
+                     ('No energy change happens in the reverse direction', False)],
+            'q': 'A reversible reaction is exothermic in the forward direction. Predict the energy change in the '
+                 'reverse direction.',
+            'wrong_explanations': {1: 'If the forward reaction gives out energy, the reverse must TAKE IN the same '
+                                      'amount — it is endothermic.',
+                                   2: 'The energy transferred is the SAME size in both directions, not doubled.',
+                                   3: 'The reverse direction transfers the same amount of energy as the forward, but '
+                                      'in the opposite sense (endothermic).'}},
+           {'opts': [('The change can be reversed — heating drives water off to form the white solid, and adding water '
+                      'reforms the blue solid',
+                      True),
+                     ('Because heating always makes a reaction reversible', False),
+                     ('Because the copper sulfate is used up and cannot come back', False),
+                     ('Because a gas is given off when it is heated', False)],
+            'q': 'When blue hydrated copper(II) sulfate is heated it turns white; adding water turns it blue again. '
+                 'Explain why this is described as a reversible reaction.',
+            'wrong_explanations': {1: 'Heating does not make reactions reversible; this one is reversible because the '
+                                      'change can be undone by adding water.',
+                                   2: 'The copper sulfate is not used up — it changes back to blue when water is '
+                                      'added, which is why it is reversible.',
+                                   3: 'Giving off a gas does not make it reversible; it is reversible because adding '
+                                      'water reforms the original blue solid.'}},
+           {'opts': [('⇌ (two half-arrows pointing in opposite directions)', True),
+                     ('→ (a single arrow pointing right)', False),
+                     ('= (an equals sign)', False),
+                     ('↓ (a downward arrow)', False)],
+            'q': 'State the symbol used to show that a reaction is reversible.',
+            'wrong_explanations': {1: 'A single arrow shows a reaction that goes only one way; reversible reactions '
+                                      'use ⇌.',
+                                   2: 'An equals sign is used in maths, not to show a reversible reaction; the symbol '
+                                      'is ⇌.',
+                                   3: 'A downward arrow shows a precipitate forming; a reversible reaction is shown by '
+                                      '⇌.'}},
+           {'opts': [('The forward and reverse reactions are happening at the same rate', True),
+                     ('The forward reaction is faster than the reverse reaction', False),
+                     ('Both reactions have completely stopped', False),
+                     ('The reactants have all turned into products', False)],
+            'q': "State what 'equilibrium' means in terms of the forward and reverse reaction rates.",
+            'wrong_explanations': {1: 'At equilibrium the two rates are EQUAL; if the forward were faster it would not '
+                                      'yet be at equilibrium.',
+                                   2: 'The reactions have not stopped; they continue at equal rates.',
+                                   3: 'At equilibrium both reactants and products are present; the reactions simply '
+                                      'proceed at equal rates.'}},
+           {'opts': [('The blue crystals turn white as water is driven off', True),
+                     ('The blue crystals turn black', False),
+                     ('The crystals stay blue but get bigger', False),
+                     ('The crystals dissolve into a colourless liquid', False)],
+            'q': 'Identify what you would observe when blue hydrated copper(II) sulfate crystals are heated.',
+            'wrong_explanations': {1: 'Heating hydrated copper sulfate turns it WHITE (anhydrous), not black.',
+                                   2: 'Heating drives off the water and turns the crystals white; they do not stay '
+                                      'blue.',
+                                   3: 'No liquid forms; the water is driven off as vapour and the solid turns white.'}},
+           {'opts': [('One in which no reactants or products can escape or be added', True),
+                     ('One that is kept in the dark', False),
+                     ('One that has no reactants left in it', False),
+                     ('One that is completely full of gas', False)],
+            'q': "State what is meant by a 'closed system'.",
+            'wrong_explanations': {1: 'Light has nothing to do with it; a closed system is one where nothing can enter '
+                                      'or leave.',
+                                   2: 'A closed system can be full of reactants; the point is that nothing can enter '
+                                      'or leave it.',
+                                   3: 'It does not have to be full of gas; a closed system simply prevents anything '
+                                      'entering or leaving.'}},
+           {'opts': [('They can react together again to reform ammonium chloride', True),
+                     ('They escape from the tube as gases', False),
+                     ('They stay as ammonia and hydrogen chloride and never react again', False),
+                     ('They turn into a completely different compound', False)],
+            'q': 'Ammonium chloride ⇌ ammonia + hydrogen chloride is a reversible reaction. State what can happen to '
+                 'the products if they are trapped together in a closed tube.',
+            'wrong_explanations': {1: 'In a CLOSED tube they cannot escape; instead they can recombine to reform '
+                                      'ammonium chloride.',
+                                   2: 'Because the reaction is reversible, the products can react back together to '
+                                      'reform ammonium chloride.',
+                                   3: 'They reform the original reactant, ammonium chloride, because the reaction is '
+                                      'reversible.'}},
+           {'opts': [('The forward and reverse reactions are happening at the same rate, so as fast as products form '
+                      'they are turned back into reactants',
+                      True),
+                     ('The reaction has stopped, so nothing can change', False),
+                     ('All the reactants have been used up, leaving only products', False),
+                     ('The products escape as fast as they form', False)],
+            'q': 'Explain why the amounts of reactants and products stay constant once a reversible reaction has '
+                 'reached equilibrium.',
+            'wrong_explanations': {1: 'The reactions have not stopped; they continue at equal rates, which keeps the '
+                                      'amounts constant.',
+                                   2: 'Both reactants and products are still present; the amounts stay constant '
+                                      'because the two rates are equal.',
+                                   3: 'In a closed system nothing escapes; the amounts stay constant because the '
+                                      'forward and reverse rates are equal.'}},
+           {'opts': [('The forward reaction takes in energy; the reverse reaction gives out the same amount of energy',
+                      True),
+                     ('The reverse reaction takes in energy; the forward gives it out', False),
+                     ('Both directions take in energy', False),
+                     ('The reverse reaction gives out twice as much energy as the forward takes in', False)],
+            'q': 'A reversible reaction is endothermic in the forward direction. State whether the forward or reverse '
+                 'reaction takes in energy, and how much energy the reverse reaction gives out.',
+            'wrong_explanations': {1: 'It is the forward reaction that is endothermic (takes in energy); the reverse '
+                                      'gives out the same amount.',
+                                   2: 'Energy cannot be taken in both ways; if the forward takes energy in, the '
+                                      'reverse gives the same amount out.',
+                                   3: 'The energy is the SAME size in both directions, not doubled.'}}],
   'rp': None,
   'spec': '5.6.2.1–5.6.2.3',
   'summary': 'Describe reversible reactions and explain what is meant by dynamic equilibrium.',
@@ -5821,6 +6401,7 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Reversible Reactions and Equilibrium',
   'triple_only': None,
   'variables': []}],
+
 "organic": [{'common_mistake': 'Alkanes are SATURATED — they have only SINGLE bonds and do NOT decolourise bromine water. ALKENES '
                     'are UNSATURATED (have a C=C double bond) and DO decolourise bromine water. The bromine water test '
                     'distinguishes saturated (no change) from unsaturated (decolourises).',
