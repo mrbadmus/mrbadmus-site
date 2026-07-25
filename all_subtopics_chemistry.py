@@ -3103,9 +3103,11 @@ CHEMISTRY_SUBTOPICS_ALL = {
                 ('m', 'Mass of solute', 'grams', 'g'),
                 ('V', 'Volume of solution', 'dm³', 'dm³')]}],
 
-"chemical-changes": [{'common_mistake': 'A metal can only displace another metal that is BELOW it in the reactivity series. Copper cannot '
-                    'displace iron from iron sulfate — copper is less reactive than iron. The more reactive metal '
-                    'always displaces the less reactive one, not the other way around.',
+"chemical-changes": [{'common_mistake': 'Students often get the direction of displacement the wrong way round — they see iron and copper '
+                    'sulfate and write that copper displaces the iron. It is always the MORE reactive metal that '
+                    'pushes the less reactive one out of its compound, never the reverse. So iron (more reactive) '
+                    'displaces copper from copper sulfate; copper cannot displace iron from iron sulfate because '
+                    'copper sits below iron in the reactivity series.',
   'equations': ['Fe + CuSO₄ → FeSO₄ + Cu  (displacement)',
                 'Metal + oxygen → metal oxide',
                 'Metal + water → metal hydroxide + hydrogen',
@@ -3113,8 +3115,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'fifas': [],
   'higher': None,
   'id': 'reactivity-series',
-  'key_note': 'Reactivity series: K, Na, Li, Ca, Mg, Al, (C), Zn, Fe, Sn, Pb, (H), Cu, Ag, Au, Pt. More reactive metal '
-              'displaces less reactive from solution or oxide. Evidence from reactions with water, acid and '
+  'key_note': 'Reactivity series: K, Na, Li, Ca, Mg, Al, (C), Zn, Fe, Sn, Pb, (H), Cu, Ag, Au, Pt. More reactive '
+              'metal displaces less reactive from solution or oxide. Evidence from reactions with water, acid and '
               'displacement reactions.',
   'matching': {'instruction': 'Predict whether each displacement reaction occurs.',
                'pairs': [('Reaction occurs',
@@ -3126,34 +3128,113 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Reaction occurs',
                           'Iron + copper sulfate → iron sulfate + copper (Fe more reactive than Cu)')],
                'title': 'Displacement — Reaction or No Reaction?'},
-  'quiz': [{'opts': [('The blue solution fades and copper metal deposits on the zinc — zinc displaces copper', True),
-                     ('No change — zinc and copper have similar reactivity', False),
-                     ('The zinc dissolves and the solution turns orange', False),
-                     ('Zinc sulfate crystals form in the blue solution', False)],
-            'q': 'A strip of zinc is placed in copper sulfate solution. What is observed?',
-            'wrong_explanations': {1: 'Zinc IS more reactive than copper — a reaction occurs. The solution changes '
-                                      'from blue (Cu²⁺) to colourless/pale (Zn²⁺).',
-                                   2: 'The solution turns pale/colourless as Cu²⁺ ions are replaced by Zn²⁺ — orange '
-                                      'is not the colour of any of these solutions.',
-                                   3: "Zinc sulfate is formed in solution (dissolved) — it doesn't crystallise out "
-                                      'immediately under these conditions.'}},
-           {'opts': [('Copper is BELOW hydrogen in the reactivity series — it cannot displace hydrogen from the acid',
+  'quiz': [{'q': 'State what the reactivity series of metals shows.',
+            'opts': [('A list of metals in order of how reactive they are, from most reactive to least reactive',
                       True),
-                     ('Copper is too dense to react with liquids', False),
-                     ('Hydrochloric acid is not strong enough to react with any metals', False),
-                     ('Copper reacts with acid but the product is insoluble', False)],
-            'q': 'Why does copper not react with dilute hydrochloric acid?',
-            'wrong_explanations': {1: "Density doesn't determine reactivity — gold is denser than magnesium but far "
-                                      'less reactive.',
-                                   2: 'HCl reacts with many metals — magnesium, zinc, iron all react vigorously with '
-                                      "HCl. Only metals BELOW hydrogen in the series don't react.",
-                                   3: "Copper doesn't react with dilute HCl at all — it doesn't produce any "
-                                      'product.'}}],
+                     ('A list of metals in order of their density', False),
+                     ('A list of metals in order of when they were discovered', False),
+                     ('A list of metals in order of their melting points', False)],
+            'wrong_explanations': {1: 'The series orders metals by reactivity, not density — lead is dense but not '
+                                      'very reactive.',
+                                   2: 'Discovery date is a rough consequence of reactivity, not what the series '
+                                      'measures directly.',
+                                   3: 'Melting point is a physical property unrelated to the reactivity order.'}},
+           {'q': 'A piece of magnesium is placed in blue copper(II) sulfate solution. Predict what you would '
+                 'observe.',
+            'opts': [('The magnesium becomes coated in reddish-brown copper and the blue colour fades', True),
+                     ('No change — magnesium is too stable to react', False),
+                     ('The magnesium becomes coated in a silvery layer and the solution stays blue', False),
+                     ('The solution turns from colourless to blue', False)],
+            'wrong_explanations': {1: 'Magnesium is MORE reactive than copper, so it displaces it — a reaction does '
+                                      'happen.',
+                                   2: 'The displaced metal is copper (reddish-brown), not silvery, and the blue '
+                                      'fades as Cu²⁺ leaves solution.',
+                                   3: 'The solution is already blue; as copper is displaced the blue actually '
+                                      'fades.'}},
+           {'q': 'Predict whether copper will react when placed in magnesium sulfate solution.',
+            'opts': [('No reaction — copper is less reactive than magnesium, so it cannot displace it', True),
+                     ('Yes — copper displaces the magnesium because copper is a metal', False),
+                     ('Yes — the copper dissolves and magnesium metal forms', False),
+                     ('Yes — a gas is given off', False)],
+            'wrong_explanations': {1: 'Being a metal is not enough; copper is BELOW magnesium, so it cannot displace '
+                                      'it.',
+                                   2: 'That would need copper to be more reactive than magnesium, which it is not.',
+                                   3: 'No reaction occurs at all, so no gas is produced.'}},
+           {'q': 'Metal X fizzes slowly in dilute acid; metal Y fizzes vigorously. Deduce which metal is more '
+                 'reactive.',
+            'opts': [('Metal Y — the more vigorous the reaction with acid, the more reactive the metal', True),
+                     ('Metal X — slower bubbling means the reaction lasts longer so it is more reactive', False),
+                     ('They are equally reactive because both produce bubbles', False),
+                     ('Neither — fizzing shows the metals are unreactive', False)],
+            'wrong_explanations': {1: 'Rate, not duration, indicates reactivity; vigorous fizzing means MORE '
+                                      'reactive.',
+                                   2: 'Both react, but the rate differs, so their reactivities are not equal.',
+                                   3: 'Fizzing (hydrogen gas) is exactly the sign of a reactive metal reacting with '
+                                      'acid.'}},
+           {'q': 'Name the two products formed when a reactive metal reacts with a dilute acid.',
+            'opts': [('A salt and hydrogen', True),
+                     ('A salt and water', False),
+                     ('A salt, water and carbon dioxide', False),
+                     ('A metal oxide and hydrogen', False)],
+            'wrong_explanations': {1: 'Salt + water is the product of an acid with a metal OXIDE or hydroxide, not '
+                                      'with the metal itself.',
+                                   2: 'That set of products comes from an acid reacting with a metal CARBONATE.',
+                                   3: 'The metal forms a salt (dissolved in solution), not a metal oxide, when it '
+                                      'reacts with acid.'}},
+           {'q': 'Using the reactivity series, place potassium, iron and copper in order from most to least '
+                 'reactive.',
+            'opts': [('Potassium, iron, copper', True),
+                     ('Copper, iron, potassium', False),
+                     ('Iron, potassium, copper', False),
+                     ('Potassium, copper, iron', False)],
+            'wrong_explanations': {1: 'This is reversed — potassium is one of the most reactive metals, copper one '
+                                      'of the least.',
+                                   2: 'Potassium is far more reactive than iron, so it must come first.',
+                                   3: 'Iron is more reactive than copper, so iron comes before copper.'}},
+           {'q': 'Explain why gold is found in the Earth as the pure metal rather than as a compound.',
+            'opts': [('Gold is very unreactive, so it does not react with oxygen, water or other substances to form '
+                      'compounds',
+                      True),
+                     ('Gold is so dense that it sinks to where no chemicals can reach it', False),
+                     ('Gold melts easily and separates from its compounds naturally', False),
+                     ('Gold reacts so quickly that it immediately turns back into the metal', False)],
+            'wrong_explanations': {1: 'Density does not stop chemical reactions; gold stays as the element because '
+                                      'it is unreactive.',
+                                   2: 'Melting point is irrelevant; gold is uncombined because it does not react to '
+                                      'form compounds.',
+                                   3: 'Unreactive metals do not react at all — the opposite of reacting quickly.'}},
+           {'q': 'When magnesium is heated in air it burns brightly. Name the product formed.',
+            'opts': [('Magnesium oxide', True),
+                     ('Magnesium hydroxide', False),
+                     ('Magnesium carbonate', False),
+                     ('Magnesium chloride', False)],
+            'wrong_explanations': {1: 'Hydroxide forms when magnesium reacts with water, not when it burns in '
+                                      'oxygen.',
+                                   2: 'Carbonate would need carbon dioxide; burning in air combines magnesium with '
+                                      'oxygen.',
+                                   3: 'Chloride would need chlorine or hydrochloric acid, not oxygen from the air.'}},
+           {'q': 'In which pair will a displacement reaction occur when the metal is added to the solution?',
+            'opts': [('Zinc added to copper(II) sulfate solution', True),
+                     ('Copper added to zinc sulfate solution', False),
+                     ('Silver added to copper(II) sulfate solution', False),
+                     ('Copper added to iron(II) sulfate solution', False)],
+            'wrong_explanations': {1: 'Copper is less reactive than zinc, so it cannot displace it — no reaction.',
+                                   2: 'Silver is less reactive than copper, so it cannot displace copper.',
+                                   3: 'Copper is less reactive than iron, so no displacement happens.'}},
+           {'q': 'Which metal could be used to displace iron from iron(II) sulfate solution?',
+            'opts': [('Zinc, because it is more reactive than iron', True),
+                     ('Copper, because it is a good conductor', False),
+                     ('Silver, because it is a precious metal', False),
+                     ('Gold, because it is very stable', False)],
+            'wrong_explanations': {1: 'Conductivity is irrelevant; copper is less reactive than iron so cannot '
+                                      'displace it.',
+                                   2: 'Silver is far less reactive than iron and cannot displace it.',
+                                   3: 'Gold is the least reactive of these and cannot displace iron.'}}],
   'rp': None,
   'spec': '5.4.1.1–5.4.1.2',
   'summary': 'Describe the reactivity series of metals and use it to predict reactions.',
-  'theory': [{'content': 'The REACTIVITY SERIES is a list of metals in order of their reactivity — from most reactive '
-                         'to least reactive.\n'
+  'theory': [{'content': 'The REACTIVITY SERIES is a list of metals in order of their reactivity — from most '
+                         'reactive to least reactive.\n'
                          '\n'
                          'Most reactive (top) to least reactive (bottom):\n'
                          'Potassium (K)\n'
@@ -3222,58 +3303,136 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Reactivity of Metals and Metal Oxides',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Aluminium is above carbon in the reactivity series — carbon CANNOT reduce aluminium oxide. '
-                    'Students often try to apply carbon reduction to all metals. Only metals BELOW carbon in the '
-                    'reactivity series can be extracted by carbon reduction. Metals above carbon (including aluminium) '
-                    'require electrolysis.',
+ {'common_mistake': 'Students often try to extract every metal by heating its ore with carbon, and so write that '
+                    'aluminium oxide is reduced by carbon. It cannot be. Carbon only works for metals BELOW carbon '
+                    'in the reactivity series (such as iron, zinc and copper), because carbon can take the oxygen '
+                    'from those oxides. Aluminium sits ABOVE carbon, so carbon cannot pull the oxygen off — '
+                    'aluminium must be extracted by electrolysis instead.',
   'equations': ['Fe₂O₃ + 3CO → 2Fe + 3CO₂  (iron extraction)',
                 'ZnO + C → Zn + CO₂',
                 '2Al₂O₃ → 4Al + 3O₂  (electrolysis of aluminium oxide)'],
   'fifas': [],
   'higher': None,
   'id': 'extraction-of-metals',
-  'key_note': 'Extraction method depends on reactivity. Above carbon in series → electrolysis (Al, Mg, Na etc.). Below '
-              'carbon → reduction with carbon/CO (Fe, Zn etc.). Unreactive metals → found native or simple reduction. '
-              'Iron: blast furnace with CO. Aluminium: electrolysis of molten Al₂O₃ in cryolite.',
+  'key_note': 'Extraction method depends on reactivity. Above carbon in series → electrolysis (Al, Mg, Na etc.). '
+              'Below carbon → reduction with carbon/CO (Fe, Zn etc.). Unreactive metals → found native or simple '
+              'reduction. Iron: blast furnace with CO. Aluminium: electrolysis of molten Al₂O₃ in cryolite.',
   'matching': {'instruction': 'Match each metal to how it is extracted from its ore.',
                'pairs': [('Iron',
                           'Reduced with carbon monoxide in a blast furnace — below carbon in reactivity series'),
-                         ('Aluminium', 'Electrolysis of molten Al₂O₃ in cryolite — above carbon in reactivity series'),
+                         ('Aluminium',
+                          'Electrolysis of molten Al₂O₃ in cryolite — above carbon in reactivity series'),
                          ('Gold', 'Found as the pure element — too unreactive to form stable compounds'),
                          ('Zinc', 'Heated with carbon/coke — ZnO + C → Zn + CO₂'),
                          ('Sodium', 'Electrolysis of molten NaCl — far too reactive for carbon reduction')],
                'title': 'Match the Metal to its Extraction Method'},
-  'quiz': [{'opts': [('Aluminium is more reactive than carbon — carbon cannot displace it from aluminium oxide', True),
-                     ("Aluminium oxide doesn't contain enough oxygen for the carbon to react with", False),
-                     ('Carbon would contaminate the aluminium, making it too brittle to use', False),
-                     ('Electrolysis is cheaper than heating with carbon for all metals', False)],
-            'q': 'Why is aluminium extracted by electrolysis rather than by reduction with carbon?',
-            'wrong_explanations': {1: 'Aluminium oxide has plenty of oxygen — but carbon can only REDUCE metal oxides '
-                                      'when the metal is LESS reactive than carbon.',
-                                   2: 'Carbon and aluminium do not form harmful alloys under these conditions — purity '
-                                      'concerns are a separate issue.',
-                                   3: 'Electrolysis is actually VERY EXPENSIVE — it requires huge amounts of '
-                                      'electrical energy. The reason is purely reactivity-based.'}},
-           {'opts': [('Reduction — the iron oxide loses oxygen; the carbon monoxide gains oxygen (and is oxidised)',
+  'quiz': [{'q': 'State what is meant by an ore.',
+            'opts': [('A rock that contains enough of a metal or metal compound to make extracting the metal '
+                      'worthwhile',
                       True),
-                     ('Oxidation — the iron oxide gains electrons from the carbon monoxide', False),
-                     ('Neutralisation — the acid iron oxide is neutralised by the basic carbon', False),
-                     ('Electrolysis — electrical energy breaks apart the iron oxide', False)],
-            'q': 'Carbon monoxide reduces iron oxide in the blast furnace. What type of reaction is this?',
-            'wrong_explanations': {1: 'The IRON OXIDE loses oxygen (is REDUCED). The CO gains oxygen (is OXIDISED). '
-                                      'These are simultaneous — the reaction is both a reduction AND an oxidation.',
-                                   2: 'Neutralisation involves an acid and a base — iron oxide and carbon monoxide are '
-                                      'not an acid-base pair.',
-                                   3: 'The blast furnace uses heat (combustion), not electricity. Electrolysis is used '
-                                      'for reactive metals like aluminium.'}}],
+                     ('Any rock that contains a metal in any amount', False),
+                     ('A pure lump of metal found in the ground', False),
+                     ('A rock that has been heated to release its metal', False)],
+            'wrong_explanations': {1: 'It must contain ENOUGH metal to be worth extracting — otherwise it is not '
+                                      'called an ore.',
+                                   2: 'That is a native metal (like gold); an ore is a compound-bearing rock, not '
+                                      'pure metal.',
+                                   3: 'An ore is the raw rock before extraction, not the product of heating it.'}},
+           {'q': 'Iron is below carbon in the reactivity series. Predict the method used to extract iron from iron '
+                 'oxide.',
+            'opts': [('Reduction by heating with carbon', True),
+                     ('Electrolysis of the molten oxide', False),
+                     ('Reacting the oxide with an acid', False),
+                     ('Simply filtering the metal out of the rock', False)],
+            'wrong_explanations': {1: 'Electrolysis is used for metals ABOVE carbon; iron is below carbon so carbon '
+                                      'reduction works.',
+                                   2: 'Acids make salts, they do not extract the metal from its oxide.',
+                                   3: 'The metal is chemically combined as an oxide and must be reduced, not '
+                                      'filtered.'}},
+           {'q': 'Aluminium is above carbon in the reactivity series. Predict the method used to extract it.',
+            'opts': [('Electrolysis of the molten aluminium oxide', True),
+                     ('Heating the oxide with carbon', False),
+                     ('Heating the oxide on its own', False),
+                     ('Reacting it with hydrochloric acid', False)],
+            'wrong_explanations': {1: 'Aluminium is more reactive than carbon, so carbon cannot remove the oxygen — '
+                                      'electrolysis is needed.',
+                                   2: 'Simply heating aluminium oxide does not break it down; electrolysis is '
+                                      'required.',
+                                   3: 'That would make a salt, not extract aluminium metal.'}},
+           {'q': 'Define reduction in terms of oxygen.',
+            'opts': [('The loss of oxygen from a substance', True),
+                     ('The gain of oxygen by a substance', False),
+                     ('The gain of hydrogen by a substance', False),
+                     ('The loss of electrons from a substance', False)],
+            'wrong_explanations': {1: 'That describes oxidation; reduction is the LOSS of oxygen.',
+                                   2: 'In this topic reduction is defined by loss of oxygen, not gain of hydrogen.',
+                                   3: 'Loss of electrons is oxidation; reduction in terms of electrons is a GAIN.'}},
+           {'q': 'In the extraction reaction Fe₂O₃ + 3CO → 2Fe + 3CO₂, identify the substance that is reduced.',
+            'opts': [('Iron(III) oxide — it loses its oxygen to become iron', True),
+                     ('Carbon monoxide — it loses oxygen', False),
+                     ('Carbon dioxide — it is the product', False),
+                     ('Iron — it is the metal', False)],
+            'wrong_explanations': {1: 'Carbon monoxide GAINS oxygen (CO → CO₂), so it is oxidised, not reduced.',
+                                   2: 'Carbon dioxide is the oxidised product of the reducing agent, not the '
+                                      'substance reduced.',
+                                   3: 'Iron is what is produced BY the reduction; the oxide is the thing reduced.'}},
+           {'q': 'Which of these metals must be extracted by electrolysis rather than by carbon reduction?',
+            'opts': [('Aluminium', True), ('Iron', False), ('Zinc', False), ('Copper', False)],
+            'wrong_explanations': {1: 'Iron is below carbon, so it is extracted by cheaper carbon reduction.',
+                                   2: 'Zinc is below carbon and is extracted by carbon reduction.',
+                                   3: 'Copper is well below carbon, so carbon reduction (or other cheap methods) '
+                                      'works.'}},
+           {'q': 'Explain why extracting aluminium is more expensive than extracting iron.',
+            'opts': [('Aluminium needs electrolysis, which uses a large amount of electrical energy, whereas iron is '
+                      'reduced by cheaper carbon',
+                      True),
+                     ('Aluminium ore is much rarer than iron ore', False),
+                     ('Aluminium has a much higher melting point than iron', False),
+                     ('Aluminium reacts with carbon to form a poison', False)],
+            'wrong_explanations': {1: 'Aluminium ore (bauxite) is abundant; the cost is the electrical energy for '
+                                      'electrolysis.',
+                                   2: 'The main cost is the electricity for electrolysis, not melting point '
+                                      'differences.',
+                                   3: 'The reason carbon is not used is that it cannot reduce aluminium oxide at '
+                                      'all, and electrolysis is costly.'}},
+           {'q': 'Name the process used to extract zinc from zinc oxide.',
+            'opts': [('Heating with carbon (carbon reduction)', True),
+                     ('Electrolysis of molten zinc oxide', False),
+                     ('Reacting zinc oxide with water', False),
+                     ('Distillation of the ore', False)],
+            'wrong_explanations': {1: 'Zinc is below carbon, so the cheaper carbon reduction is used, not '
+                                      'electrolysis.',
+                                   2: 'Zinc oxide does not react with water to give the metal.',
+                                   3: 'Distillation separates liquids by boiling point; it does not reduce an '
+                                      'oxide.'}},
+           {'q': 'In the reaction ZnO + C → Zn + CO₂, state the job that carbon does.',
+            'opts': [('It removes the oxygen from the zinc oxide — it is the reducing agent', True),
+                     ('It adds oxygen to the zinc', False),
+                     ('It melts the zinc so it can be poured out', False),
+                     ('It colours the zinc so it can be seen', False)],
+            'wrong_explanations': {1: 'Carbon takes oxygen AWAY from zinc oxide; it does not add oxygen to zinc.',
+                                   2: 'Carbon reacts chemically to remove oxygen; it is not just a heat source.',
+                                   3: "Carbon's role is chemical reduction, not colouring."}},
+           {'q': 'Explain why gold can be found in the ground as the metal itself and needs no chemical extraction.',
+            'opts': [('Gold is so unreactive that it does not combine with oxygen or other elements to form '
+                      'compounds',
+                      True),
+                     ('Gold is too valuable to leave combined with other elements', False),
+                     ('Gold decomposes any compound it forms', False),
+                     ('Gold is always found dissolved in underground water', False)],
+            'wrong_explanations': {1: 'Value has nothing to do with it; gold is uncombined because it is chemically '
+                                      'unreactive.',
+                                   2: 'Gold simply does not form compounds under normal conditions; it is not '
+                                      'decomposing them.',
+                                   3: 'Gold is found as the solid metal, not dissolved, because it is unreactive.'}}],
   'rp': None,
   'spec': '5.4.1.3',
   'summary': 'Explain how metals are extracted from their ores and how the method depends on reactivity.',
-  'theory': [{'content': 'Most metals are found in nature as ORES — rocks containing metal compounds (usually oxides, '
-                         'sulfides or carbonates) rather than pure metals.\n'
+  'theory': [{'content': 'Most metals are found in nature as ORES — rocks containing metal compounds (usually '
+                         'oxides, sulfides or carbonates) rather than pure metals.\n'
                          '\n'
-                         'Only very UNREACTIVE metals (gold, platinum, silver) are found as pure elements in nature — '
-                         'they are too unreactive to form compounds with oxygen or sulfur.\n'
+                         'Only very UNREACTIVE metals (gold, platinum, silver) are found as pure elements in nature '
+                         '— they are too unreactive to form compounds with oxygen or sulfur.\n'
                          '\n'
                          'All other metals must be EXTRACTED from their ores — the metal compound must be converted '
                          'back to a pure metal.\n'
@@ -3282,14 +3441,14 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'VERY REACTIVE metals (K, Na, Ca, Mg, Al) — cannot be extracted by carbon reduction because '
                          'they are more reactive than carbon. Must use ELECTROLYSIS of molten compounds.\n'
                          '\n'
-                         'MODERATELY REACTIVE metals BELOW carbon in the series (Zn, Fe, Sn, Pb) — can be extracted by '
-                         'heating their oxide with CARBON (reduction).\n'
+                         'MODERATELY REACTIVE metals BELOW carbon in the series (Zn, Fe, Sn, Pb) — can be extracted '
+                         'by heating their oxide with CARBON (reduction).\n'
                          '\n'
                          'UNREACTIVE metals (Cu, Ag, Au) — found native (as pure elements) or can be extracted by '
                          'simple reduction or displacement.',
               'heading': 'Why Metals Need to be Extracted'},
-             {'content': 'REDUCTION WITH CARBON (also called SMELTING) works for metals below carbon in the reactivity '
-                         'series.\n'
+             {'content': 'REDUCTION WITH CARBON (also called SMELTING) works for metals below carbon in the '
+                         'reactivity series.\n'
                          '\n'
                          'Carbon displaces these metals from their oxides because carbon is MORE REACTIVE than these '
                          'metals.\n'
@@ -3311,7 +3470,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'ALUMINIUM CANNOT be extracted this way — it is above carbon in the reactivity series and '
                          'must use electrolysis.',
               'heading': 'Reduction with Carbon — Blast Furnace'},
-             {'content': 'ELECTROLYSIS is used for metals that are MORE REACTIVE than carbon (K, Na, Li, Ca, Mg, Al).\n'
+             {'content': 'ELECTROLYSIS is used for metals that are MORE REACTIVE than carbon (K, Na, Li, Ca, Mg, '
+                         'Al).\n'
                          '\n'
                          'These metals form very stable compounds — carbon cannot reduce them.\n'
                          'Instead, electrical energy is used to decompose the molten compound.\n'
@@ -3335,19 +3495,20 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Extraction of Metals and Reduction',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'In a redox reaction, the REDUCING AGENT is OXIDISED (it gives away electrons/oxygen). The '
-                    'OXIDISING AGENT is REDUCED (it receives electrons/gains oxygen). This is counterintuitive — an '
-                    "oxidising agent doesn't stay oxidised, it gets reduced. Remember: agents do the opposite of what "
-                    "they're called.",
+ {'common_mistake': "Students often think oxidation only ever means 'gaining oxygen', so they get stuck the moment "
+                    'there is no oxygen in the equation. Gaining oxygen is only one case. The deeper meaning is '
+                    'about electrons: OIL RIG — Oxidation Is Loss of electrons, Reduction Is Gain of electrons. So '
+                    'when magnesium loses electrons to form Mg²⁺, it is oxidised even though no oxygen is written, '
+                    'and gaining oxygen simply happens to be one way a substance loses electrons.',
   'equations': ['Oxidation = gain of oxygen / loss of electrons',
                 'Reduction = loss of oxygen / gain of electrons',
                 'OIL RIG: Oxidation Is Loss, Reduction Is Gain (electrons)'],
   'fifas': [],
   'higher': None,
   'id': 'oxidation-reduction',
-  'key_note': 'Oxidation: gain O / lose electrons. Reduction: lose O / gain electrons. OIL RIG. Always happen together '
-              '(redox). Reducing agent: donates electrons → gets oxidised. Oxidising agent: accepts electrons → gets '
-              'reduced. Carbon and hydrogen are common reducing agents.',
+  'key_note': 'Oxidation: gain O / lose electrons. Reduction: lose O / gain electrons. OIL RIG. Always happen '
+              'together (redox). Reducing agent: donates electrons → gets oxidised. Oxidising agent: accepts '
+              'electrons → gets reduced. Carbon and hydrogen are common reducing agents.',
   'matching': {'instruction': 'Identify whether each substance is oxidised or reduced in the reaction.',
                'pairs': [('Oxidised', 'Mg in Mg + O₂ → MgO — magnesium gains oxygen'),
                          ('Reduced', 'CuO in CuO + H₂ → Cu + H₂O — copper oxide loses oxygen'),
@@ -3355,30 +3516,99 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Reduced', 'Fe₂O₃ in Fe₂O₃ + 3CO → 2Fe + 3CO₂ — iron oxide loses oxygen'),
                          ('Oxidised', 'Na in Na → Na⁺ + e⁻ — sodium loses an electron (OIL RIG)')],
                'title': 'Oxidised or Reduced?'},
-  'quiz': [{'opts': [('Hydrogen (H₂) — it reduces the copper oxide by removing its oxygen, and is itself oxidised to '
-                      'water',
+  'quiz': [{'q': 'Define oxidation in terms of oxygen.',
+            'opts': [('The gain of oxygen by a substance', True),
+                     ('The loss of oxygen by a substance', False),
+                     ('The gain of hydrogen by a substance', False),
+                     ('The loss of mass by a substance', False)],
+            'wrong_explanations': {1: 'Losing oxygen is reduction; oxidation is a GAIN of oxygen.',
+                                   2: 'Oxidation here is defined by oxygen, not hydrogen — and gaining hydrogen is '
+                                      'not it.',
+                                   3: 'Oxidation is about oxygen transfer; mass may even increase as oxygen is '
+                                      'added.'}},
+           {'q': 'Define reduction in terms of oxygen.',
+            'opts': [('The loss of oxygen from a substance', True),
+                     ('The gain of oxygen by a substance', False),
+                     ('The gain of mass by a substance', False),
+                     ('The loss of electrons from a substance', False)],
+            'wrong_explanations': {1: 'Gaining oxygen is oxidation; reduction is the LOSS of oxygen.',
+                                   2: 'Reduction removes oxygen, which tends to lower mass, and it is defined by '
+                                      'oxygen not mass.',
+                                   3: 'Loss of electrons is oxidation; reduction in terms of electrons is a GAIN.'}},
+           {'q': 'In the reaction 2Mg + O₂ → 2MgO, identify the substance that is oxidised.',
+            'opts': [('Magnesium — it gains oxygen to form magnesium oxide', True),
+                     ('Oxygen — it joins with the magnesium', False),
+                     ('Magnesium oxide — it is the product', False),
+                     ('Neither — no oxidation occurs', False)],
+            'wrong_explanations': {1: 'Oxygen is the substance being added; it is magnesium that gains oxygen and is '
+                                      'oxidised.',
+                                   2: 'Magnesium oxide is the result of the oxidation, not the thing being oxidised.',
+                                   3: 'Magnesium clearly gains oxygen, so it is oxidised.'}},
+           {'q': 'In the reaction Fe₂O₃ + 3CO → 2Fe + 3CO₂, identify the substance that is reduced.',
+            'opts': [('Iron(III) oxide — it loses oxygen to become iron', True),
+                     ('Carbon monoxide — it loses oxygen', False),
+                     ('Iron — it is the metal produced', False),
+                     ('Carbon dioxide — it holds the oxygen', False)],
+            'wrong_explanations': {1: 'Carbon monoxide GAINS oxygen to become CO₂, so it is oxidised, not reduced.',
+                                   2: 'Iron is the product of the reduction, not the substance reduced.',
+                                   3: 'Carbon dioxide is the oxidised product; the reduced substance is the iron '
+                                      'oxide.'}},
+           {'q': 'Explain why the rusting of iron is described as an oxidation.',
+            'opts': [('The iron gains oxygen (and water) to form hydrated iron(III) oxide', True),
+                     ('The iron loses oxygen to the air', False),
+                     ('The iron loses electrons to become lighter', False),
+                     ('The iron melts and reforms', False)],
+            'wrong_explanations': {1: 'Rusting adds oxygen to iron; losing oxygen would be reduction.',
+                                   2: 'Rust actually adds mass; rusting is oxidation because iron gains oxygen.',
+                                   3: 'Rusting is a chemical reaction with oxygen, not a physical melting.'}},
+           {'q': 'In CuO + H₂ → Cu + H₂O, identify the substance that is oxidised.',
+            'opts': [('Hydrogen — it gains oxygen to form water', True),
+                     ('Copper oxide — it gains oxygen', False),
+                     ('Copper — it is produced', False),
+                     ('Water — it contains oxygen', False)],
+            'wrong_explanations': {1: 'Copper oxide LOSES oxygen to become copper, so it is reduced, not oxidised.',
+                                   2: 'Copper is the reduced product; the substance oxidised is the hydrogen.',
+                                   3: 'Water is the product formed when hydrogen is oxidised; it is not itself being '
+                                      'oxidised.'}},
+           {'q': "State what the phrase 'OIL RIG' helps you remember.",
+            'opts': [('Oxidation Is Loss of electrons, Reduction Is Gain of electrons', True),
+                     ('Oxidation Is Gain of electrons, Reduction Is Loss of electrons', False),
+                     ('Oxidation Involves Liquids, Reduction Involves Gases', False),
+                     ('Oxygen In Liquid, Reduces In Gas', False)],
+            'wrong_explanations': {1: 'This is reversed — oxidation is LOSS and reduction is GAIN of electrons.',
+                                   2: 'OIL RIG is about electron loss and gain, not about states of matter.',
+                                   3: 'OIL RIG stands for the electron definitions of oxidation and reduction.'}},
+           {'q': 'A metal oxide loses its oxygen during a reaction. State whether the oxide has been oxidised or '
+                 'reduced.',
+            'opts': [('Reduced — it has lost oxygen', True),
+                     ('Oxidised — it has reacted', False),
+                     ('Neither — losing oxygen is not a redox change', False),
+                     ('Both at the same time', False)],
+            'wrong_explanations': {1: 'Reacting is not the same as being oxidised; losing oxygen is specifically '
+                                      'reduction.',
+                                   2: 'Losing oxygen is exactly reduction, which is one half of a redox change.',
+                                   3: 'A single substance losing oxygen is reduced; it cannot be both for that '
+                                      'change.'}},
+           {'q': 'Explain why oxidation and reduction always happen together in these reactions.',
+            'opts': [('If one substance loses oxygen (is reduced), another substance must gain that oxygen (is '
+                      'oxidised)',
                       True),
-                     ('Copper oxide — it causes the hydrogen to become water', False),
-                     ('Copper — it is the product of reduction', False),
-                     ('Water — it is formed when hydrogen is reduced', False)],
-            'q': 'In the reaction CuO + H₂ → Cu + H₂O, what is the reducing agent?',
-            'wrong_explanations': {1: 'Copper oxide is the OXIDISING AGENT — it provides the oxygen that oxidises '
-                                      'hydrogen. It is itself reduced.',
-                                   2: 'Copper is the PRODUCT of the reduction of CuO — it is not a reducing agent.',
-                                   3: 'Water is a PRODUCT — reducing agents are reactants that cause reduction of '
-                                      'another substance.'}},
-           {'opts': [('Oxidation Is Loss (of electrons), Reduction Is Gain (of electrons)', True),
-                     ('Oxidation Involves Losing Reactants, Reduction Involves Gaining', False),
-                     ('Oxygen In Liquid, Reactions In Gas', False),
-                     ('Only In Liquids Reactions Involve Gases', False)],
-            'q': 'What does OIL RIG stand for?',
-            'wrong_explanations': {1: 'OIL RIG specifically refers to ELECTRONS — Oxidation Is Loss of electrons, '
-                                      "Reduction Is Gain of electrons. The words 'reactants' and 'gaining' are "
-                                      'incorrect.',
-                                   2: 'OIL RIG is a memory aid specifically about electron transfer in redox reactions '
-                                      '— not about phases or states of matter.',
-                                   3: 'OIL RIG is entirely about electrons in redox reactions — not about the physical '
-                                      'state of substances.'}}],
+                     ('Because oxidation causes a separate reduction to start later', False),
+                     ('Because every reaction needs oxygen to take part', False),
+                     ('Because heat from oxidation drives reduction', False)],
+            'wrong_explanations': {1: 'They occur at the same time in the same reaction, not one after another.',
+                                   2: 'Many redox reactions involve no oxygen at all — the pairing is about electron '
+                                      'transfer.',
+                                   3: 'The link is the transfer of oxygen or electrons, not heat.'}},
+           {'q': 'During combustion, carbon reacts to form carbon dioxide. Classify this change as oxidation or '
+                 'reduction.',
+            'opts': [('Oxidation — the carbon gains oxygen', True),
+                     ('Reduction — the carbon is broken down', False),
+                     ('Neither — burning is only a physical change', False),
+                     ('Both — it is oxidised then reduced', False)],
+            'wrong_explanations': {1: 'Carbon gains oxygen to form CO₂, which is oxidation, not reduction.',
+                                   2: 'Combustion is a chemical reaction in which carbon is oxidised.',
+                                   3: 'The carbon only gains oxygen here, so it is simply oxidised.'}}],
   'rp': None,
   'spec': '5.4.1.4',
   'summary': 'Define oxidation and reduction in terms of oxygen gain/loss and use OIL RIG.',
@@ -3430,8 +3660,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'oxidised to CO₂).\n'
                          'Hydrogen: reduces copper oxide — hydrogen is the REDUCING AGENT (gets oxidised to H₂O).\n'
                          '\n'
-                         'OXIDISING AGENT — causes oxidation of another substance by accepting electrons (it is itself '
-                         'REDUCED):\n'
+                         'OXIDISING AGENT — causes oxidation of another substance by accepting electrons (it is '
+                         'itself REDUCED):\n'
                          'Oxygen: oxidises metals (is itself reduced to O²⁻).\n'
                          'Copper oxide: oxidises hydrogen (is itself reduced to Cu).\n'
                          '\n'
@@ -3447,10 +3677,10 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Oxidation and Reduction',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Acid + metal carbonate produces THREE products: salt + water + carbon DIOXIDE. Students often '
-                    'forget the water or forget the CO₂. Also: the SALT name comes from the METAL and the ACID — '
-                    'sulfuric acid always gives sulfate salts, hydrochloric acid gives chloride salts, nitric acid '
-                    'gives nitrate salts.',
+ {'common_mistake': "When an acid reacts with a metal carbonate, students often write only 'salt + water' and forget "
+                    "the carbon dioxide, or write 'salt + carbon dioxide' and drop the water. A carbonate always "
+                    'gives THREE products: salt + water + carbon dioxide. The fizzing you see is that carbon dioxide '
+                    'escaping — so if bubbles form, the CO₂ must be in your equation.',
   'equations': ['Acid + metal → salt + hydrogen',
                 'Acid + metal oxide → salt + water',
                 'Acid + metal hydroxide → salt + water',
@@ -3460,49 +3690,111 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'fifas': [],
   'higher': None,
   'id': 'reactions-of-acids',
-  'key_note': 'Acid + metal → salt + H₂ (metals above H only). Acid + metal oxide → salt + H₂O. Acid + metal hydroxide '
-              '→ salt + H₂O (neutralisation). Acid + carbonate → salt + H₂O + CO₂. H₂: squeaky pop. CO₂: turns '
-              'limewater milky. Salt name = metal + acid anion.',
+  'key_note': 'Acid + metal → salt + H₂ (metals above H only). Acid + metal oxide → salt + H₂O. Acid + metal '
+              'hydroxide → salt + H₂O (neutralisation). Acid + carbonate → salt + H₂O + CO₂. H₂: squeaky pop. CO₂: '
+              'turns limewater milky. Salt name = metal + acid anion.',
   'matching': {'instruction': 'Match each type of reaction to the products formed.',
                'pairs': [('Acid + metal', 'Salt + hydrogen gas — test with lit splint gives squeaky pop'),
                          ('Acid + metal oxide', 'Salt + water only — no gas produced'),
                          ('Acid + metal hydroxide', 'Salt + water — neutralisation reaction'),
                          ('Acid + metal carbonate', 'Salt + water + carbon dioxide — CO₂ turns limewater milky')],
                'title': 'Match the Acid Reaction to its Products'},
-  'quiz': [{'opts': [('Zinc sulfate + water + carbon dioxide', True),
-                     ('Zinc sulfate + hydrogen', False),
-                     ('Zinc oxide + water + carbon dioxide', False),
-                     ('Zinc sulfate + water only', False)],
-            'q': 'What are the products when zinc carbonate reacts with sulfuric acid?',
-            'wrong_explanations': {1: 'Zinc + sulfuric acid → zinc sulfate + hydrogen. Carbonates produce CO₂, not H₂.',
-                                   2: 'Zinc carbonate is a CARBONATE — the products of acid + carbonate are salt + '
-                                      'water + CO₂, not zinc oxide.',
-                                   3: 'Carbonates produce salt + water + CO₂ — not just salt + water. The CO₂ is '
-                                      'essential.'}},
-           {'opts': [('Magnesium chloride (MgCl₂) — HCl produces chloride salts', True),
-                     ('Magnesium sulfate — all acids produce sulfate salts', False),
-                     ('Magnesium oxide — magnesium reacts with hydrogen to form the oxide', False),
-                     ('Magnesium hydroxide — the hydrogen from HCl bonds to the magnesium', False)],
-            'q': 'Magnesium reacts with hydrochloric acid. What salt is produced?',
-            'wrong_explanations': {1: 'Sulfuric acid (H₂SO₄) produces SULFATE salts. Hydrochloric acid (HCl) always '
-                                      'produces CHLORIDE salts.',
-                                   2: 'The acid does NOT supply oxygen — magnesium oxide would form from Mg reacting '
-                                      'with O₂. The reaction with HCl gives a chloride salt.',
-                                   3: 'The acid produces H⁺ ions which react to form H₂ gas — they do NOT combine with '
-                                      'the metal to form a hydroxide.'}}],
+  'quiz': [{'q': 'Name the two products formed when a dilute acid reacts with a metal.',
+            'opts': [('A salt and hydrogen', True),
+                     ('A salt and water', False),
+                     ('A salt and carbon dioxide', False),
+                     ('A metal oxide and water', False)],
+            'wrong_explanations': {1: 'Salt + water comes from an acid with a metal oxide or hydroxide, not with the '
+                                      'metal itself.',
+                                   2: 'Carbon dioxide is released only when the acid reacts with a carbonate.',
+                                   3: 'The metal forms a dissolved salt and hydrogen gas, not an oxide.'}},
+           {'q': 'Name the three products formed when a dilute acid reacts with a metal carbonate.',
+            'opts': [('A salt, water and carbon dioxide', True),
+                     ('A salt and hydrogen', False),
+                     ('A salt and water only', False),
+                     ('A salt and carbon dioxide only', False)],
+            'wrong_explanations': {1: 'Hydrogen comes from acid + metal; a carbonate gives water and carbon dioxide '
+                                      'instead.',
+                                   2: 'This forgets the carbon dioxide — the gas that makes the mixture fizz.',
+                                   3: 'This forgets the water — a carbonate gives all three products.'}},
+           {'q': 'Name the salt produced when hydrochloric acid reacts with magnesium.',
+            'opts': [('Magnesium chloride', True),
+                     ('Magnesium sulfate', False),
+                     ('Magnesium nitrate', False),
+                     ('Magnesium hydroxide', False)],
+            'wrong_explanations': {1: 'Sulfate salts come from sulfuric acid; hydrochloric acid makes chlorides.',
+                                   2: 'Nitrate salts come from nitric acid; hydrochloric acid makes chlorides.',
+                                   3: 'A hydroxide is a base, not the salt; the salt from HCl is a chloride.'}},
+           {'q': 'Name the salt produced when sulfuric acid reacts with zinc oxide.',
+            'opts': [('Zinc sulfate', True),
+                     ('Zinc chloride', False),
+                     ('Zinc nitrate', False),
+                     ('Zinc oxide', False)],
+            'wrong_explanations': {1: 'Chloride salts come from hydrochloric acid; sulfuric acid makes sulfates.',
+                                   2: 'Nitrate salts come from nitric acid; sulfuric acid makes sulfates.',
+                                   3: 'Zinc oxide is the reactant base; the salt formed is zinc sulfate.'}},
+           {'q': 'A gas given off when magnesium reacts with dilute acid gives a squeaky pop with a lit splint. '
+                 'Identify the gas.',
+            'opts': [('Hydrogen', True), ('Carbon dioxide', False), ('Oxygen', False), ('Chlorine', False)],
+            'wrong_explanations': {1: 'Carbon dioxide turns limewater cloudy and puts out a splint; it does not pop.',
+                                   2: 'Oxygen relights a glowing splint; it does not give a squeaky pop.',
+                                   3: 'Chlorine bleaches litmus and has a sharp smell; the pop test identifies '
+                                      'hydrogen.'}},
+           {'q': 'A gas given off when a carbonate reacts with acid turns limewater cloudy. Identify the gas.',
+            'opts': [('Carbon dioxide', True), ('Hydrogen', False), ('Oxygen', False), ('Water vapour', False)],
+            'wrong_explanations': {1: 'Hydrogen gives a squeaky pop; it does not turn limewater cloudy.',
+                                   2: 'Oxygen relights a glowing splint; it does not turn limewater cloudy.',
+                                   3: 'Water vapour is not a test gas here; the limewater test identifies carbon '
+                                      'dioxide.'}},
+           {'q': 'Explain why bubbles are seen when a metal carbonate is added to a dilute acid.',
+            'opts': [('Carbon dioxide gas is produced and escapes from the mixture as bubbles', True),
+                     ('Hydrogen gas is produced and escapes', False),
+                     ('The acid is boiling', False),
+                     ('Oxygen is released from the carbonate', False)],
+            'wrong_explanations': {1: 'Carbonates release carbon dioxide, not hydrogen; hydrogen comes from acid + '
+                                      'metal.',
+                                   2: 'The bubbles are a gas made in the reaction, not boiling — the mixture need '
+                                      'not be hot.',
+                                   3: 'The gas released is carbon dioxide, not oxygen.'}},
+           {'q': 'Name the two products formed when a dilute acid reacts with a metal hydroxide.',
+            'opts': [('A salt and water', True),
+                     ('A salt and hydrogen', False),
+                     ('A salt, water and carbon dioxide', False),
+                     ('A base and water', False)],
+            'wrong_explanations': {1: 'Hydrogen comes from acid + metal; a hydroxide (a base) gives salt + water.',
+                                   2: 'Carbon dioxide appears only with carbonates, not with hydroxides.',
+                                   3: 'The acid and base react to form a salt and water, not another base.'}},
+           {'q': 'Which acid must be used to produce a nitrate salt?',
+            'opts': [('Nitric acid', True),
+                     ('Hydrochloric acid', False),
+                     ('Sulfuric acid', False),
+                     ('Carbonic acid', False)],
+            'wrong_explanations': {1: 'Hydrochloric acid produces chloride salts, not nitrates.',
+                                   2: 'Sulfuric acid produces sulfate salts, not nitrates.',
+                                   3: 'Carbonic acid is a weak acid and does not give nitrate salts; nitrates come '
+                                      'from nitric acid.'}},
+           {'q': 'Complete the products: copper carbonate + sulfuric acid → ?',
+            'opts': [('Copper sulfate + water + carbon dioxide', True),
+                     ('Copper sulfate + hydrogen', False),
+                     ('Copper sulfate + water only', False),
+                     ('Copper chloride + water + carbon dioxide', False)],
+            'wrong_explanations': {1: 'A carbonate gives water and carbon dioxide, not hydrogen.',
+                                   2: 'This forgets the carbon dioxide that a carbonate always releases.',
+                                   3: 'Sulfuric acid gives a sulfate salt, not a chloride.'}}],
   'rp': None,
   'spec': '5.4.2.1–5.4.2.2',
   'summary': 'Describe reactions of acids with metals, metal oxides, metal hydroxides and carbonates.',
   'theory': [{'content': 'An ACID is a substance that produces H⁺ ions (hydrogen ions) when dissolved in water.\n'
                          'Common acids: hydrochloric acid (HCl), sulfuric acid (H₂SO₄), nitric acid (HNO₃).\n'
                          '\n'
-                         'A BASE is a substance that neutralises an acid. Bases are metal oxides or metal hydroxides.\n'
+                         'A BASE is a substance that neutralises an acid. Bases are metal oxides or metal '
+                         'hydroxides.\n'
                          'An ALKALI is a base that dissolves in water — it produces OH⁻ ions in solution.\n'
                          'Common alkalis: sodium hydroxide (NaOH), potassium hydroxide (KOH), calcium hydroxide '
                          '(Ca(OH)₂).\n'
                          '\n'
-                         'All acid reactions produce a SALT — formed from the positive metal ion and the negative ion '
-                         'from the acid:\n'
+                         'All acid reactions produce a SALT — formed from the positive metal ion and the negative '
+                         'ion from the acid:\n'
                          'Hydrochloric acid → CHLORIDE salts (e.g. NaCl, MgCl₂)\n'
                          'Sulfuric acid → SULFATE salts (e.g. ZnSO₄, CuSO₄)\n'
                          'Nitric acid → NITRATE salts (e.g. Ca(NO₃)₂, KNO₃)',
@@ -3540,8 +3832,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'Test for CO₂: bubble through limewater → turns milky/cloudy.\n'
                          '\n'
-                         'Observation: fizzing/effervescence as CO₂ gas is produced. The solid carbonate dissolves as '
-                         'the reaction proceeds.\n'
+                         'Observation: fizzing/effervescence as CO₂ gas is produced. The solid carbonate dissolves '
+                         'as the reaction proceeds.\n'
                          '\n'
                          'Summary of products:\n'
                          'Acid + metal → salt + hydrogen\n'
@@ -3552,9 +3844,11 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Reactions of Acids with Metals and Bases',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'When making a salt by adding excess solid to acid — you MUST use EXCESS solid to ensure ALL the '
-                    "acid reacts. If you don't use excess, some acid remains and the final product will be "
-                    'contaminated with acid. Then filter off the excess unreacted solid — the salt is in the filtrate.',
+ {'common_mistake': 'When making a soluble salt from an acid and an insoluble base, students often stop adding the '
+                    'base as soon as it starts to disappear, but then some acid is left unreacted and contaminates '
+                    'the salt. You must add the base in EXCESS — keep adding until no more dissolves — so that ALL '
+                    'the acid is used up. Then filter off the leftover excess base; the pure salt is dissolved in '
+                    'the filtrate.',
   'equations': ['H⁺(aq) + OH⁻(aq) → H₂O(l)  (ionic equation for neutralisation)',
                 'Acid + alkali → salt + water',
                 'BaCl₂(aq) + Na₂SO₄(aq) → BaSO₄(s) + 2NaCl(aq)'],
@@ -3570,37 +3864,107 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Sodium chloride (NaCl)',
                           'Titration — NaOH + HCl — find exact volume needed, then evaporate'),
                          ('Barium sulfate (BaSO₄)', 'Precipitation — mix BaCl₂(aq) + Na₂SO₄(aq) — filter and dry'),
-                         ('Zinc chloride (ZnCl₂)', 'Add excess zinc carbonate to HCl — filter off excess — evaporate')],
+                         ('Zinc chloride (ZnCl₂)',
+                          'Add excess zinc carbonate to HCl — filter off excess — evaporate')],
                'title': 'Method for Making Each Salt'},
-  'quiz': [{'opts': [('To ensure all the acid reacts — any remaining acid would contaminate the final salt', True),
-                     ('To speed up the reaction — more solid increases the rate', False),
-                     ('To increase the yield of salt — more reactant gives more product', False),
-                     ('The excess solid acts as a catalyst', False)],
-            'q': 'Why must excess solid be added when making a salt by reacting a metal oxide with an acid?',
-            'wrong_explanations': {1: 'Excess solid does increase the surface area and reaction rate — but the MAIN '
-                                      'reason is to guarantee complete neutralisation of all the acid.',
-                                   2: 'You cannot add more solid than the acid can react with — excess produces the '
-                                      'same yield. The reason is to ensure complete reaction.',
-                                   3: "The excess solid is REMOVED by filtration — it doesn't catalyse the reaction."}},
-           {'opts': [('H⁺(aq) + OH⁻(aq) → H₂O(l)', True),
-                     ('Acid + alkali → salt + water', False),
-                     ('Na⁺(aq) + Cl⁻(aq) → NaCl(s)', False),
-                     ('H₂ + O₂ → H₂O', False)],
-            'q': 'What is the ionic equation for neutralisation?',
-            'wrong_explanations': {1: 'This is the WORD equation — an ionic equation uses symbols and charges. The '
-                                      'ionic equation H⁺ + OH⁻ → H₂O shows the actual ions involved.',
-                                   2: 'This is a precipitation ionic equation — it describes salt formation, not '
-                                      'neutralisation.',
-                                   3: 'This is the equation for burning hydrogen in oxygen — not neutralisation.'}}],
-  'rp': 'RP3 (Chemistry) — Prepare a sample of a pure, dry hydrated copper sulfate salt starting from copper oxide and '
-        'sulfuric acid using add-excess-solid method.',
+  'quiz': [{'q': 'Name the two products formed when an acid reacts with an alkali.',
+            'opts': [('A salt and water', True),
+                     ('A salt and hydrogen', False),
+                     ('A salt and carbon dioxide', False),
+                     ('An alkali and water', False)],
+            'wrong_explanations': {1: 'Hydrogen comes from acid + metal; acid + alkali gives salt + water.',
+                                   2: 'Carbon dioxide comes from carbonates, not from an acid-alkali reaction.',
+                                   3: 'The acid and alkali react to form a salt, not another alkali.'}},
+           {'q': 'Describe the first step in making copper sulfate crystals from copper oxide and sulfuric acid.',
+            'opts': [('Add copper oxide to warm dilute sulfuric acid until no more will dissolve (excess)', True),
+                     ('Add a few drops of copper oxide and stop straight away', False),
+                     ('Add sodium hydroxide to the acid first', False),
+                     ('Boil the acid dry before adding anything', False)],
+            'wrong_explanations': {1: 'You must add EXCESS copper oxide so all the acid reacts, not just a few '
+                                      'drops.',
+                                   2: 'Sodium hydroxide is not part of making copper sulfate from copper oxide.',
+                                   3: 'The acid must stay in solution to react with the copper oxide.'}},
+           {'q': 'Explain why the mixture is filtered after the acid has reacted with the excess base.',
+            'opts': [('To remove the leftover excess solid base, leaving the salt dissolved in the filtrate', True),
+                     ('To remove the salt from the water', False),
+                     ('To add more acid to the mixture', False),
+                     ('To cool the mixture down quickly', False)],
+            'wrong_explanations': {1: 'The salt stays dissolved in the filtrate; filtering removes the undissolved '
+                                      'excess base.',
+                                   2: 'Filtering separates a solid from a liquid; it does not add acid.',
+                                   3: 'Filtering is to remove excess solid, not to cool the mixture.'}},
+           {'q': 'Name the process used to obtain pure dry salt crystals from the salt solution.',
+            'opts': [('Crystallisation', True),
+                     ('Filtration', False),
+                     ('Distillation', False),
+                     ('Chromatography', False)],
+            'wrong_explanations': {1: 'Filtration removes the excess solid earlier; crystals are obtained by '
+                                      'crystallisation.',
+                                   2: 'Distillation collects the evaporated water, not the salt crystals.',
+                                   3: 'Chromatography separates dissolved colours, not salt crystals from '
+                                      'solution.'}},
+           {'q': 'State what is meant by neutralisation.',
+            'opts': [('The reaction of an acid with a base or alkali to form a salt and water', True),
+                     ('The reaction of an acid with a metal to form hydrogen', False),
+                     ('The evaporation of water from a salt solution', False),
+                     ('The mixing of two salts to form a solid', False)],
+            'wrong_explanations': {1: 'That is acid + metal; neutralisation is acid + base forming salt + water.',
+                                   2: 'That is crystallisation, not neutralisation.',
+                                   3: 'That is precipitation; neutralisation is an acid-base reaction.'}},
+           {'q': 'Explain why the dilute acid is warmed gently before the base is added.',
+            'opts': [('Warming speeds up the reaction between the acid and the base', True),
+                     ('Warming makes the salt change colour', False),
+                     ('Warming turns the acid into an alkali', False),
+                     ('Warming removes the hydrogen gas', False)],
+            'wrong_explanations': {1: 'Warming is to speed up the reaction, not to change colour.',
+                                   2: 'Warming does not change an acid into an alkali; it only speeds the reaction.',
+                                   3: 'No hydrogen is produced here; warming simply speeds up the reaction.'}},
+           {'q': 'Name the salt made when nitric acid reacts with copper oxide.',
+            'opts': [('Copper nitrate', True),
+                     ('Copper sulfate', False),
+                     ('Copper chloride', False),
+                     ('Copper oxide', False)],
+            'wrong_explanations': {1: 'Sulfate salts come from sulfuric acid; nitric acid makes nitrates.',
+                                   2: 'Chloride salts come from hydrochloric acid; nitric acid makes nitrates.',
+                                   3: 'Copper oxide is the base reactant; the salt formed is copper nitrate.'}},
+           {'q': 'State what is meant by an alkali.',
+            'opts': [('A soluble base — a base that dissolves in water', True),
+                     ('An acid that is very concentrated', False),
+                     ('Any solid that neutralises water', False),
+                     ('A metal that reacts with acid', False)],
+            'wrong_explanations': {1: 'An alkali is a soluble base, the opposite of an acid.',
+                                   2: 'An alkali neutralises acids, and it is specifically a soluble base.',
+                                   3: 'That is a reactive metal; an alkali is a soluble base such as sodium '
+                                      'hydroxide.'}},
+           {'q': 'Place these steps in the correct order for making a pure dry salt: filter, add excess base to '
+                 'acid, crystallise.',
+            'opts': [('Add excess base to acid, filter, crystallise', True),
+                     ('Filter, add excess base to acid, crystallise', False),
+                     ('Crystallise, filter, add excess base to acid', False),
+                     ('Add excess base to acid, crystallise, filter', False)],
+            'wrong_explanations': {1: 'You must react the acid with excess base first; there is nothing to filter '
+                                      'before that.',
+                                   2: 'Crystallisation is the last step, once the pure salt solution is ready.',
+                                   3: 'You filter off the excess base BEFORE crystallising the salt.'}},
+           {'q': 'Explain why the salt solution is left to crystallise slowly rather than boiled completely dry.',
+            'opts': [('Slow crystallisation produces good, pure crystals; boiling dry can make the crystals '
+                      'decompose or trap impurities',
+                      True),
+                     ('Boiling dry would turn the salt back into acid', False),
+                     ('Slow crystallisation makes the salt dissolve again', False),
+                     ('Boiling dry is dangerous because the salt is explosive', False)],
+            'wrong_explanations': {1: 'Boiling dry does not reform the acid; it simply damages the crystals.',
+                                   2: 'Slow crystallisation forms solid crystals; it does not redissolve them.',
+                                   3: 'The salt is not explosive; boiling dry just gives poorer crystals.'}}],
+  'rp': 'RP3 (Chemistry) — Prepare a sample of a pure, dry hydrated copper sulfate salt starting from copper oxide '
+        'and sulfuric acid using add-excess-solid method.',
   'spec': '5.4.2.2–5.4.2.3',
   'summary': 'Describe methods for making pure dry salts from acids and how neutralisation works.',
   'theory': [{'content': 'The method for making a salt depends on whether it is SOLUBLE or INSOLUBLE.\n'
                          '\n'
                          'METHOD 1 — Acid + excess metal/metal oxide/carbonate (for soluble salts):\n'
-                         '1. Add excess solid (metal, metal oxide or carbonate) to the acid — ensures all acid is used '
-                         'up.\n'
+                         '1. Add excess solid (metal, metal oxide or carbonate) to the acid — ensures all acid is '
+                         'used up.\n'
                          '2. FILTER off the excess unreacted solid (the salt remains in solution).\n'
                          '3. EVAPORATE the filtrate to crystallise the salt, or leave to crystallise slowly.\n'
                          '4. Filter and dry the crystals.\n'
@@ -3614,7 +3978,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'METHOD 2 — Titration (for soluble salts from soluble starting materials):\n'
                          'Used when both reactants are soluble (e.g. NaOH + HCl → NaCl + H₂O).\n'
                          'Cannot use Method 1 — cannot filter off excess solid.\n'
-                         'Instead, use a TITRATION to find the exact volume of acid needed to neutralise the alkali.\n'
+                         'Instead, use a TITRATION to find the exact volume of acid needed to neutralise the '
+                         'alkali.\n'
                          'Then repeat without indicator → evaporate to get pure salt crystals.',
               'heading': 'Methods of Making Salts'},
              {'content': 'INSOLUBLE SALTS cannot be made from evaporation — they would never crystallise from '
@@ -3633,8 +3998,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'Precipitation reactions are also used to:\n'
                          'Remove unwanted ions from solution (e.g. water treatment).\n'
-                         'Test for specific ions (e.g. adding AgNO₃ to test for chloride ions — white AgCl precipitate '
-                         'forms).',
+                         'Test for specific ions (e.g. adding AgNO₃ to test for chloride ions — white AgCl '
+                         'precipitate forms).',
               'heading': 'Making Insoluble Salts — Precipitation'},
              {'content': 'NEUTRALISATION is the reaction between an ACID and a BASE (or alkali) to form a SALT and '
                          'WATER.\n'
@@ -3650,7 +4015,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '1. Pipette a known volume (e.g. 25.00 cm³) of alkali into a conical flask.\n'
                          '2. Add a few drops of INDICATOR (e.g. phenolphthalein — pink in alkali, colourless in '
                          'acid).\n'
-                         '3. Slowly add acid from a BURETTE until the indicator just changes colour (the END POINT).\n'
+                         '3. Slowly add acid from a BURETTE until the indicator just changes colour (the END '
+                         'POINT).\n'
                          '4. Record the volume of acid used (the TITRE).\n'
                          '5. Repeat to get concordant (consistent) results.\n'
                          '6. Calculate mean titre from concordant results.\n'
@@ -3662,16 +4028,17 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Making Salts and Neutralisation',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Lower pH = MORE ACIDIC = MORE H⁺ ions. Higher pH = MORE ALKALINE = FEWER H⁺ ions (more OH⁻). '
-                    'Students often confuse pH 2 and pH 12 — pH 2 is strongly acidic, pH 12 is strongly alkaline. pH 7 '
-                    'is neutral — pure water. NOT all solutions at pH 7 are water.',
+ {'common_mistake': "Students often think a bigger pH number means more acidic, so they label pH 12 as 'strongly "
+                    "acidic'. It is the other way round. LOW pH (near 0) means strongly ACIDIC, with lots of H⁺ "
+                    'ions; HIGH pH (near 14) means strongly ALKALINE, with lots of OH⁻ ions; pH 7 is neutral. So pH '
+                    '2 is a strong acid and pH 12 is a strong alkali — the further from 7, the stronger.',
   'equations': [],
   'fifas': [],
   'higher': None,
   'id': 'ph-scale',
   'key_note': 'pH 0–6: acidic. pH 7: neutral. pH 8–14: alkaline. Lower pH = more H⁺ ions. pH scale is logarithmic — '
-              'each unit = 10× change in H⁺. Universal indicator: shows range of colours. Phenolphthalein: colourless '
-              'in acid, pink in alkali. pH meter: most accurate.',
+              'each unit = 10× change in H⁺. Universal indicator: shows range of colours. Phenolphthalein: '
+              'colourless in acid, pink in alkali. pH meter: most accurate.',
   'matching': {'instruction': 'Match each pH value to the correct description.',
                'pairs': [('pH 1', 'Strongly acidic — high concentration of H⁺ ions'),
                          ('pH 7', 'Neutral — equal H⁺ and OH⁻ ions — pure water at 25°C'),
@@ -3679,27 +4046,93 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('pH 4', 'Weakly acidic — e.g. black coffee or tomato juice'),
                          ('pH 10', 'Weakly alkaline — e.g. baking soda solution')],
                'title': 'Match the pH to the Description'},
-  'quiz': [{'opts': [('pH 2 has 100 times more H⁺ than pH 4 — each unit on the log scale is 10×', True),
-                     ('pH 2 has twice as many H⁺ ions as pH 4', False),
-                     ('pH 4 has more H⁺ ions — higher pH means more hydrogen', False),
-                     ('They have the same H⁺ concentration — both are acidic', False)],
-            'q': 'A solution has a pH of 2. Another has a pH of 4. How do their H⁺ ion concentrations compare?',
-            'wrong_explanations': {1: 'The pH scale is LOGARITHMIC — each unit represents a 10× change, not a 2× '
-                                      'change. pH 2 vs pH 4 = 10² = 100× difference.',
-                                   2: 'LOWER pH means MORE H⁺ ions — pH 2 is more acidic than pH 4, not less.',
-                                   3: 'Both are acidic (below 7) but have very different H⁺ concentrations — pH 2 is '
-                                      'much more acidic.'}},
-           {'opts': [('The pH increases towards 7 — dilution reduces H⁺ concentration, making it less acidic', True),
-                     ('The pH decreases — water is neutral so it makes the acid stronger', False),
-                     ("The pH stays the same — water doesn't affect the acid", False),
-                     ('The pH jumps immediately to 7 — water always neutralises acids', False)],
-            'q': 'An acid is diluted by adding water. What happens to its pH?',
-            'wrong_explanations': {1: 'Water does not make acid stronger — adding water DILUTES the acid, reducing H⁺ '
-                                      'concentration and raising pH.',
-                                   2: 'Water does affect the acid — it reduces the concentration of H⁺ ions (dilutes '
-                                      'them). The pH INCREASES.',
-                                   3: 'Unless you add enormous amounts of water, the pH approaches 7 gradually but '
-                                      'never quite reaches it — you are diluting, not neutralising.'}}],
+  'quiz': [{'q': 'State what the pH scale measures.',
+            'opts': [('How acidic or alkaline a solution is', True),
+                     ('How concentrated a solution is', False),
+                     ('How much salt is dissolved in a solution', False),
+                     ('The temperature of a solution', False)],
+            'wrong_explanations': {1: 'Concentration is a separate idea; pH measures acidity/alkalinity.',
+                                   2: 'pH is about acidity/alkalinity, not the amount of salt.',
+                                   3: 'Temperature is measured with a thermometer; pH measures acidity/alkalinity.'}},
+           {'q': 'State the pH of a neutral solution.',
+            'opts': [('7', True), ('0', False), ('14', False), ('1', False)],
+            'wrong_explanations': {1: 'pH 0 is strongly acidic, not neutral.',
+                                   2: 'pH 14 is strongly alkaline, not neutral.',
+                                   3: 'pH 1 is strongly acidic; a neutral solution is pH 7.'}},
+           {'q': 'A solution has a pH of 2. Classify it as acidic, neutral or alkaline.',
+            'opts': [('Strongly acidic', True),
+                     ('Strongly alkaline', False),
+                     ('Neutral', False),
+                     ('Weakly acidic', False)],
+            'wrong_explanations': {1: 'pH below 7 is acidic; alkaline solutions have pH above 7.',
+                                   2: 'Only pH 7 is neutral; pH 2 is well into the acidic range.',
+                                   3: 'pH 2 is close to the bottom of the scale, so it is strongly, not weakly, '
+                                      'acidic.'}},
+           {'q': 'A solution has a pH of 13. Classify it as acidic, neutral or alkaline.',
+            'opts': [('Strongly alkaline', True),
+                     ('Strongly acidic', False),
+                     ('Neutral', False),
+                     ('Weakly alkaline', False)],
+            'wrong_explanations': {1: 'pH above 7 is alkaline; acidic solutions have pH below 7.',
+                                   2: 'Only pH 7 is neutral; pH 13 is near the top of the alkaline range.',
+                                   3: 'pH 13 is close to the top of the scale, so it is strongly, not weakly, '
+                                      'alkaline.'}},
+           {'q': 'Name a method used to measure the pH of a solution.',
+            'opts': [('Universal indicator (matching its colour to a chart) or a pH probe', True),
+                     ('Litmus paper, which gives an exact pH number', False),
+                     ('A thermometer', False),
+                     ('A balance', False)],
+            'wrong_explanations': {1: 'Litmus only shows acid or alkali, not an exact pH; universal indicator or a '
+                                      'probe gives pH.',
+                                   2: 'A thermometer measures temperature, not pH.',
+                                   3: 'A balance measures mass, not pH.'}},
+           {'q': 'Explain why universal indicator turns red when added to a strong acid.',
+            'opts': [('A strong acid has a very low pH and a high concentration of H⁺ ions, which gives the red '
+                      'colour',
+                      True),
+                     ('The acid is hot, which turns the indicator red', False),
+                     ('The acid contains lots of OH⁻ ions', False),
+                     ('Red simply means a liquid is present', False)],
+            'wrong_explanations': {1: 'Colour depends on pH (H⁺ concentration), not on temperature.',
+                                   2: 'OH⁻ ions make solutions alkaline (purple); acids have H⁺ ions and turn it '
+                                      'red.',
+                                   3: 'The red colour specifically signals a low pH / strong acid, not just any '
+                                      'liquid.'}},
+           {'q': 'Identify the ion that makes a solution acidic.',
+            'opts': [('The hydrogen ion, H⁺', True),
+                     ('The hydroxide ion, OH⁻', False),
+                     ('The sodium ion, Na⁺', False),
+                     ('The chloride ion, Cl⁻', False)],
+            'wrong_explanations': {1: 'Hydroxide ions make a solution alkaline, not acidic.',
+                                   2: 'Sodium ions are spectator ions and do not make a solution acidic.',
+                                   3: 'Chloride ions are spectators; acidity comes from H⁺ ions.'}},
+           {'q': 'Identify the ion that makes a solution alkaline.',
+            'opts': [('The hydroxide ion, OH⁻', True),
+                     ('The hydrogen ion, H⁺', False),
+                     ('The chloride ion, Cl⁻', False),
+                     ('The oxygen molecule, O₂', False)],
+            'wrong_explanations': {1: 'Hydrogen ions make a solution acidic, not alkaline.',
+                                   2: 'Chloride ions are spectators and do not make a solution alkaline.',
+                                   3: 'Dissolved oxygen does not control alkalinity; OH⁻ ions do.'}},
+           {'q': 'A student states that every solution with a pH of 7 must be pure water. Evaluate this statement.',
+            'opts': [('It is incorrect — many salt solutions (such as sodium chloride solution) are also neutral at '
+                      'pH 7, not just pure water',
+                      True),
+                     ('It is correct — only pure water can ever be neutral', False),
+                     ('It is correct — water is the only liquid with any pH', False),
+                     ('It is incorrect — pure water is actually acidic', False)],
+            'wrong_explanations': {1: 'Neutral salt solutions such as sodium chloride are also pH 7, so this is '
+                                      'wrong.',
+                                   2: 'All aqueous solutions have a pH; pH 7 is not unique to water.',
+                                   3: 'Pure water is neutral (pH 7); the error is claiming ONLY water is neutral.'}},
+           {'q': 'Three solutions have pH values 1, 6 and 9. Place them in order from most acidic to most alkaline.',
+            'opts': [('pH 1, then pH 6, then pH 9', True),
+                     ('pH 9, then pH 6, then pH 1', False),
+                     ('pH 6, then pH 1, then pH 9', False),
+                     ('pH 1, then pH 9, then pH 6', False)],
+            'wrong_explanations': {1: 'This is reversed — the lowest pH (1) is the most acidic, not the least.',
+                                   2: 'pH 1 is more acidic than pH 6, so pH 1 must come first.',
+                                   3: 'pH 6 is more acidic than pH 9, so pH 6 comes before pH 9.'}}],
   'rp': None,
   'spec': '5.4.2.4',
   'summary': 'Describe the pH scale, what it measures and how indicators are used.',
@@ -3712,7 +4145,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'pH 7: NEUTRAL (equal H⁺ and OH⁻ — pure water at 25°C)\n'
                          'pH 8–14: ALKALINE (more OH⁻ ions than H⁺ ions)\n'
                          '\n'
-                         'The pH scale is LOGARITHMIC — each unit change represents a 10× change in H⁺ concentration:\n'
+                         'The pH scale is LOGARITHMIC — each unit change represents a 10× change in H⁺ '
+                         'concentration:\n'
                          'pH 3 has 10× more H⁺ than pH 4.\n'
                          'pH 3 has 100× more H⁺ than pH 5.\n'
                          '\n'
@@ -3746,7 +4180,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'THE RELATIONSHIP BETWEEN pH AND CONCENTRATION:\n'
                          'The MORE H⁺ ions in solution → LOWER pH (more acidic).\n'
                          'The MORE OH⁻ ions in solution → HIGHER pH (more alkaline).\n'
-                         'Adding water DILUTES the solution → concentration of H⁺ decreases → pH INCREASES towards 7.',
+                         'Adding water DILUTES the solution → concentration of H⁺ decreases → pH INCREASES towards '
+                         '7.',
               'heading': 'Indicators and Measuring pH'},
              {'content': 'Adding a BASE to an ACID gradually increases the pH (makes it less acidic).\n'
                          'Adding an ACID to an ALKALI gradually decreases the pH (makes it less alkaline).\n'
@@ -3767,9 +4202,11 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'The pH Scale and Neutralisation',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'CATHODE is NEGATIVE — positive ions are attracted to it and gain electrons (reduced). ANODE is '
-                    'POSITIVE — negative ions are attracted to it and lose electrons (oxidised). Students often '
-                    'confuse these. Remember: AN OX (Anode Oxidation) and RED CAT (Reduction at Cathode).',
+ {'common_mistake': 'Students often mix up which electrode is which, guessing the cathode is positive because '
+                    "'cations go to it'. The cathode is the NEGATIVE electrode — it is exactly because it is "
+                    'negative that the positive ions (cations) are drawn to it. The anode is the POSITIVE electrode, '
+                    'which attracts the negative ions (anions). A useful check: AN OX (ANode = OXidation) and RED '
+                    'CAT (REDuction at the CAThode).',
   'equations': [],
   'fifas': [],
   'higher': None,
@@ -3785,30 +4222,97 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Reduction (at cathode)', 'Cations gain electrons — metal deposited or H₂ gas produced'),
                          ('Oxidation (at anode)', 'Anions lose electrons — non-metal gas produced (O₂, Cl₂)')],
                'title': 'Electrolysis Key Terms'},
-  'quiz': [{'opts': [('In the solid, ions are fixed in the lattice — they cannot move to carry charge. Molten NaCl has '
-                      'free-moving ions.',
+  'quiz': [{'q': 'State what is meant by electrolysis.',
+            'opts': [('Using an electric current to break down an ionic compound into its elements', True),
+                     ('Using heat to break down a compound', False),
+                     ('Dissolving a compound in water', False),
+                     ('Mixing two solutions to form a solid', False)],
+            'wrong_explanations': {1: 'Breaking down by heat is thermal decomposition; electrolysis uses an electric '
+                                      'current.',
+                                   2: 'Dissolving alone is not electrolysis; electrolysis passes a current to break '
+                                      'the compound down.',
+                                   3: 'That is precipitation; electrolysis splits a compound using electricity.'}},
+           {'q': 'Name the negative electrode used in electrolysis.',
+            'opts': [('The cathode', True), ('The anode', False), ('The electrolyte', False), ('The cation', False)],
+            'wrong_explanations': {1: 'The anode is the POSITIVE electrode; the negative one is the cathode.',
+                                   2: 'The electrolyte is the substance being broken down, not an electrode.',
+                                   3: 'A cation is a positive ion, not an electrode.'}},
+           {'q': 'Name the positive electrode used in electrolysis.',
+            'opts': [('The anode', True), ('The cathode', False), ('The electrolyte', False), ('The anion', False)],
+            'wrong_explanations': {1: 'The cathode is the NEGATIVE electrode; the positive one is the anode.',
+                                   2: 'The electrolyte is the substance broken down, not an electrode.',
+                                   3: 'An anion is a negative ion, not an electrode.'}},
+           {'q': 'State what is meant by an electrolyte.',
+            'opts': [('A molten or dissolved ionic compound that conducts electricity and is broken down', True),
+                     ('A metal wire that carries the current', False),
+                     ('A gas produced at an electrode', False),
+                     ('A solid ionic compound', False)],
+            'wrong_explanations': {1: 'The wires are conductors; the electrolyte is the ionic liquid being broken '
+                                      'down.',
+                                   2: 'The electrolyte is the starting substance, not a product gas.',
+                                   3: 'A solid ionic compound cannot conduct; the electrolyte must be molten or '
+                                      'dissolved.'}},
+           {'q': 'Explain why an ionic compound must be molten or dissolved before it can be electrolysed.',
+            'opts': [('Its ions must be free to move to the electrodes, which only happens when it is molten or '
+                      'dissolved',
                       True),
-                     ("Solid NaCl doesn't contain ions — they only form when the compound melts.", False),
-                     ('Solid NaCl is too hard for electricity to pass through.', False),
-                     ('Electrolysis only works on liquids — all solids resist decomposition.', False)],
-            'q': 'Why can solid sodium chloride not be electrolysed, but molten sodium chloride can?',
-            'wrong_explanations': {1: 'NaCl is always ionic — Na⁺ and Cl⁻ ions exist in both solid and molten states. '
-                                      'The issue is whether they can MOVE.',
-                                   2: 'Hardness affects mechanical properties, not ionic conductivity — the issue is '
-                                      'ion mobility, not physical hardness.',
-                                   3: 'Some solids are electrolysed — e.g. electrolysis of a metal anode in '
-                                      'electroplating. The issue specifically with NaCl solid is fixed ions.'}},
-           {'opts': [('At the anode — negative ions lose electrons here (OIL: Oxidation Is Loss)', True),
-                     ('At the cathode — positive ions gain electrons here', False),
-                     ('In the electrolyte — ions are oxidised as they move through the solution', False),
-                     ('At both electrodes simultaneously', False)],
-            'q': 'During electrolysis, where does oxidation take place?',
-            'wrong_explanations': {1: 'The CATHODE is where REDUCTION occurs (positive ions GAIN electrons). Remember: '
-                                      'RED CAT (Reduction at Cathode).',
-                                   2: 'Ions move through the solution but are not oxidised or reduced until they reach '
-                                      'an electrode.',
-                                   3: 'Oxidation (at anode) and reduction (at cathode) occur at DIFFERENT electrodes — '
-                                      'at the same time, but not at the same place.'}}],
+                     ('The heat is needed to start the current', False),
+                     ('Water is always needed to break the bonds', False),
+                     ('Solid compounds have no ions', False)],
+            'wrong_explanations': {1: 'It is the freeing of the ions, not heat itself, that allows electrolysis.',
+                                   2: 'Molten compounds contain no water yet can be electrolysed; the key is mobile '
+                                      'ions.',
+                                   3: 'Solids do contain ions, but the ions are locked in place and cannot move.'}},
+           {'q': 'State which electrode positive ions move towards during electrolysis.',
+            'opts': [('The cathode (the negative electrode)', True),
+                     ('The anode (the positive electrode)', False),
+                     ('Neither — positive ions do not move', False),
+                     ('Both electrodes equally', False)],
+            'wrong_explanations': {1: 'Positive ions are attracted to the NEGATIVE electrode, the cathode, not the '
+                                      'anode.',
+                                   2: 'Positive ions do move; they are attracted to the negative cathode.',
+                                   3: 'Opposite charges attract, so positive ions move specifically to the negative '
+                                      'cathode.'}},
+           {'q': 'State which electrode negative ions move towards during electrolysis.',
+            'opts': [('The anode (the positive electrode)', True),
+                     ('The cathode (the negative electrode)', False),
+                     ('Neither — negative ions stay still', False),
+                     ('Both electrodes equally', False)],
+            'wrong_explanations': {1: 'Negative ions are attracted to the POSITIVE electrode, the anode, not the '
+                                      'cathode.',
+                                   2: 'Negative ions do move; they are attracted to the positive anode.',
+                                   3: 'Opposite charges attract, so negative ions move specifically to the positive '
+                                      'anode.'}},
+           {'q': 'Explain why solid sodium chloride does not conduct electricity but molten sodium chloride does.',
+            'opts': [('In the solid the ions are locked in a fixed lattice; when molten the ions are free to move '
+                      'and carry charge',
+                      True),
+                     ('Solid sodium chloride has no ions until it melts', False),
+                     ('Melting adds electrons that carry the current', False),
+                     ('Solid sodium chloride is a metal', False)],
+            'wrong_explanations': {1: 'The ions exist in the solid too; they are simply not free to move.',
+                                   2: 'No electrons are added; melting frees the existing ions to move.',
+                                   3: 'Sodium chloride is an ionic compound, not a metal; conduction needs mobile '
+                                      'ions.'}},
+           {'q': 'State what type of substance is produced at the electrodes during electrolysis.',
+            'opts': [('Elements', True),
+                     ('More of the same compound', False),
+                     ('Only gases', False),
+                     ('New compounds with the electrodes', False)],
+            'wrong_explanations': {1: 'Electrolysis breaks the compound down into its elements, not more compound.',
+                                   2: 'The products are elements, which may be solids (metals) as well as gases.',
+                                   3: 'The products are the elements of the electrolyte, not new compounds.'}},
+           {'q': 'Identify what carries the electric charge through the molten or dissolved electrolyte.',
+            'opts': [('Moving ions', True),
+                     ('Moving electrons', False),
+                     ('Moving atoms', False),
+                     ('The electrodes themselves', False)],
+            'wrong_explanations': {1: 'Electrons carry charge in the wires; inside the electrolyte the charge is '
+                                      'carried by moving ions.',
+                                   2: 'Neutral atoms carry no charge; it is the charged ions that move through the '
+                                      'electrolyte.',
+                                   3: 'The electrodes stay in place; the charge through the liquid is carried by '
+                                      'ions.'}}],
   'rp': None,
   'spec': '5.4.3.1',
   'summary': 'Describe what electrolysis is, how it works and the key terms used.',
@@ -3863,15 +4367,17 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'the solution.\n'
                          'Using inert electrodes (graphite or platinum) gives consistent, predictable products.\n'
                          '\n'
-                         'NB — In aluminium extraction, the CARBON ANODES slowly BURN in the oxygen produced and must '
-                         'be regularly replaced. This is one reason aluminium extraction is expensive.',
+                         'NB — In aluminium extraction, the CARBON ANODES slowly BURN in the oxygen produced and '
+                         'must be regularly replaced. This is one reason aluminium extraction is expensive.',
               'heading': 'Electrodes — Inert vs Reactive'}],
   'title': 'The Process of Electrolysis',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'In molten ionic compounds, the METAL is always produced at the CATHODE (the negative electrode). '
-                    'This is reduction — metal ions GAIN electrons. The NON-METAL is always produced at the ANODE '
-                    '(positive electrode). This is oxidation — non-metal ions LOSE electrons.',
+ {'common_mistake': 'Students often guess the products the wrong way round, putting the non-metal at the cathode. In '
+                    'a molten ionic compound the METAL always forms at the CATHODE (the negative electrode), because '
+                    'the positive metal ions are attracted there and gain electrons. The NON-METAL always forms at '
+                    'the ANODE (the positive electrode), because the negative non-metal ions are attracted there and '
+                    'lose electrons.',
   'equations': ['2NaCl(l) → 2Na(l) + Cl₂(g)  (electrolysis of molten NaCl)',
                 'PbBr₂(l) → Pb(l) + Br₂(g)  (electrolysis of molten lead bromide)',
                 'Cathode: Na⁺ + e⁻ → Na',
@@ -3888,29 +4394,94 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Cathode — molten PbBr₂', 'Lead metal (liquid) — Pb²⁺ ions gain 2 electrons each'),
                          ('Anode — molten PbBr₂', 'Bromine liquid/vapour (brown) — Br⁻ ions lose electrons')],
                'title': 'Products at Each Electrode'},
-  'quiz': [{'opts': [('Calcium metal — Ca²⁺ ions are reduced at the negative cathode', True),
-                     ('Chlorine gas — Cl⁻ ions are discharged at the cathode', False),
-                     ('Calcium chloride — no decomposition occurs at the cathode', False),
-                     ('Calcium oxide — the calcium combines with oxygen from the air', False)],
-            'q': 'Molten calcium chloride (CaCl₂) is electrolysed. What is produced at the cathode?',
-            'wrong_explanations': {1: 'Cl⁻ is NEGATIVE — it moves to the POSITIVE ANODE, not the cathode. The cathode '
-                                      'attracts positive Ca²⁺ ions.',
-                                   2: 'Electrolysis DOES decompose the compound — that is its purpose.',
-                                   3: "Electrolysis is done in an enclosed container — calcium doesn't react with air "
-                                      'at this stage. The product is pure calcium metal.'}},
-           {'opts': [('In the solid, Pb²⁺ and Br⁻ ions are fixed — they cannot move to carry charge. Melting gives the '
-                      'ions freedom to move.',
+  'quiz': [{'q': 'Predict the product formed at the cathode when molten lead bromide is electrolysed.',
+            'opts': [('Lead (the metal)', True),
+                     ('Bromine (the non-metal)', False),
+                     ('Hydrogen', False),
+                     ('Lead bromide', False)],
+            'wrong_explanations': {1: 'Bromine, the non-metal, forms at the ANODE; the metal lead forms at the '
+                                      'cathode.',
+                                   2: 'There is no water in a molten compound, so no hydrogen forms; the metal lead '
+                                      'is produced.',
+                                   3: 'Electrolysis breaks the compound down; lead metal, not lead bromide, forms at '
+                                      'the cathode.'}},
+           {'q': 'Predict the product formed at the anode when molten lead bromide is electrolysed.',
+            'opts': [('Bromine (the non-metal)', True),
+                     ('Lead (the metal)', False),
+                     ('Oxygen', False),
+                     ('Hydrogen', False)],
+            'wrong_explanations': {1: 'The metal lead forms at the CATHODE; the non-metal bromine forms at the '
+                                      'anode.',
+                                   2: 'There is no oxygen source in molten lead bromide; the non-metal bromine is '
+                                      'produced.',
+                                   3: 'There is no water present, so no hydrogen forms; bromine forms at the '
+                                      'anode.'}},
+           {'q': 'State where the metal is always produced when a molten ionic compound is electrolysed.',
+            'opts': [('At the cathode (the negative electrode)', True),
+                     ('At the anode (the positive electrode)', False),
+                     ('In the electrolyte, not at an electrode', False),
+                     ('At both electrodes', False)],
+            'wrong_explanations': {1: 'The anode produces the non-metal; the metal forms at the negative cathode.',
+                                   2: 'The metal is deposited at the cathode surface, not in the middle of the '
+                                      'liquid.',
+                                   3: 'The metal forms only at the cathode; the non-metal forms at the anode.'}},
+           {'q': 'State where the non-metal is always produced when a molten ionic compound is electrolysed.',
+            'opts': [('At the anode (the positive electrode)', True),
+                     ('At the cathode (the negative electrode)', False),
+                     ('In the wires of the circuit', False),
+                     ('At both electrodes', False)],
+            'wrong_explanations': {1: 'The cathode produces the metal; the non-metal forms at the positive anode.',
+                                   2: 'The non-metal forms at the anode surface, not in the wires.',
+                                   3: 'The non-metal forms only at the anode; the metal forms at the cathode.'}},
+           {'q': 'Predict the product at the cathode when molten sodium chloride is electrolysed.',
+            'opts': [('Sodium', True), ('Chlorine', False), ('Hydrogen', False), ('Sodium chloride', False)],
+            'wrong_explanations': {1: 'Chlorine, the non-metal, forms at the anode; sodium (the metal) forms at the '
+                                      'cathode.',
+                                   2: 'There is no water in molten sodium chloride, so sodium metal forms, not '
+                                      'hydrogen.',
+                                   3: 'The compound is broken down; sodium metal is produced at the cathode.'}},
+           {'q': 'Predict the product at the anode when molten sodium chloride is electrolysed.',
+            'opts': [('Chlorine', True), ('Sodium', False), ('Oxygen', False), ('Hydrogen', False)],
+            'wrong_explanations': {1: 'Sodium, the metal, forms at the cathode; chlorine (the non-metal) forms at '
+                                      'the anode.',
+                                   2: 'Molten sodium chloride contains no oxygen; chlorine forms at the anode.',
+                                   3: 'There is no water present, so hydrogen cannot form; chlorine forms at the '
+                                      'anode.'}},
+           {'q': 'Explain why the ionic compound must be molten for this electrolysis to work.',
+            'opts': [('Melting frees the ions so they can move to the electrodes and be discharged', True),
+                     ('Melting adds electrons that carry the current', False),
+                     ('Melting turns the compound into a metal', False),
+                     ('Melting removes the non-metal first', False)],
+            'wrong_explanations': {1: 'No electrons are added; melting simply frees the existing ions to move.',
+                                   2: 'Melting does not change it into a metal; it frees the ions to move.',
+                                   3: 'Both ions remain; melting just allows them to move to the electrodes.'}},
+           {'q': 'Predict the two elements formed when molten potassium iodide is electrolysed.',
+            'opts': [('Potassium at the cathode and iodine at the anode', True),
+                     ('Iodine at the cathode and potassium at the anode', False),
+                     ('Hydrogen and oxygen', False),
+                     ('Potassium iodide at both electrodes', False)],
+            'wrong_explanations': {1: 'This is reversed — the metal (potassium) forms at the cathode, the non-metal '
+                                      '(iodine) at the anode.',
+                                   2: 'There is no water in a molten compound, so hydrogen and oxygen do not form.',
+                                   3: 'The compound is broken down into its elements, not reformed.'}},
+           {'q': 'Explain why lead forms at the cathode when molten lead bromide is electrolysed.',
+            'opts': [('Lead ions are positive, so they are attracted to the negative cathode, where they gain '
+                      'electrons to form lead',
                       True),
-                     ('Melting changes the chemical formula of lead bromide, making electrolysis possible.', False),
-                     ('The electrodes cannot penetrate a solid — they need a liquid to make contact.', False),
-                     ("Solid lead bromide doesn't contain ions — they form when it melts.", False)],
-            'q': 'Why must lead bromide be melted before it can be electrolysed?',
-            'wrong_explanations': {1: 'Melting does NOT change the chemical formula — PbBr₂ is still PbBr₂ whether '
-                                      'solid or molten.',
-                                   2: "In a proper setup, electrodes can contact a solid — but the solid still won't "
-                                      "conduct electricity because the ions can't move.",
-                                   3: 'Lead bromide is ionic in BOTH solid and molten states — Na⁺ and Cl⁻ (or Pb²⁺ '
-                                      "and Br⁻) ions exist in the solid too. They just can't move."}}],
+                     ('Lead is heavier, so it sinks to the cathode', False),
+                     ('Lead ions are negative and attracted to the cathode', False),
+                     ('Lead is a non-metal that collects at the cathode', False)],
+            'wrong_explanations': {1: 'Product formation is due to ion charge and discharge, not weight.',
+                                   2: 'Lead ions are POSITIVE; that is why they go to the negative cathode.',
+                                   3: 'Lead is a metal, and metals form at the cathode because their ions are '
+                                      'positive.'}},
+           {'q': 'Predict the product formed at the cathode when molten aluminium oxide is electrolysed.',
+            'opts': [('Aluminium', True), ('Oxygen', False), ('Aluminium oxide', False), ('Carbon dioxide', False)],
+            'wrong_explanations': {1: 'Oxygen, the non-metal, forms at the anode; aluminium (the metal) forms at the '
+                                      'cathode.',
+                                   2: 'The compound is broken down; aluminium metal forms at the cathode.',
+                                   3: 'Carbon dioxide can form at the carbon anode, not at the cathode where '
+                                      'aluminium forms.'}}],
   'rp': 'RP4 (Chemistry) — Carry out electrolysis of lead(II) bromide. Observe products at each electrode. Safety: '
         'work in fume cupboard — bromine is toxic.',
   'spec': '5.4.3.2',
@@ -3920,8 +4491,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'This makes prediction simple:\n'
                          'At the CATHODE (negative): the POSITIVE METAL ION is discharged → metal is deposited.\n'
-                         'At the ANODE (positive): the NEGATIVE NON-METAL ION is discharged → non-metal element (often '
-                         'a gas) is produced.\n'
+                         'At the ANODE (positive): the NEGATIVE NON-METAL ION is discharged → non-metal element '
+                         '(often a gas) is produced.\n'
                          '\n'
                          'Example — electrolysis of molten sodium chloride (NaCl):\n'
                          'Ions present: Na⁺ and Cl⁻ only.\n'
@@ -3943,8 +4514,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'Special equipment and safety measures required.\n'
                          'This is why electrolysis is expensive for very reactive metal production.\n'
                          '\n'
-                         'For ALUMINIUM: the compound is DISSOLVED in molten cryolite (not just melted on its own) to '
-                         'lower the operating temperature from ~2050°C to ~950°C — still very high, but more '
+                         'For ALUMINIUM: the compound is DISSOLVED in molten cryolite (not just melted on its own) '
+                         'to lower the operating temperature from ~2050°C to ~950°C — still very high, but more '
                          'practically manageable.',
               'heading': 'Why Molten Rather Than Solid?'},
              {'content': 'Lead bromide is commonly used in school demonstrations:\n'
@@ -3968,9 +4539,11 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Electrolysis of Molten Ionic Compounds',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'In copper purification, the IMPURE copper is the ANODE (it dissolves). The PURE copper builds up '
-                    'on the CATHODE. Students often get these the wrong way round. The anions in the electrolyte '
-                    '(SO₄²⁻) do not move to either electrode in copper purification — only copper ions are discharged.',
+ {'common_mistake': 'Students often put the impure copper as the cathode when purifying copper by electrolysis. It '
+                    'is the other way round. The IMPURE copper must be the ANODE (positive): it dissolves as the '
+                    'copper is oxidised to Cu²⁺ ions. The PURE copper builds up on the CATHODE (negative), where the '
+                    'Cu²⁺ ions gain electrons. The impurities simply drop off the anode and collect as a sludge '
+                    'below it.',
   'equations': ['Al³⁺ + 3e⁻ → Al  (cathode — aluminium extraction)',
                 '2O²⁻ → O₂ + 4e⁻  (anode — aluminium extraction)',
                 'Cu → Cu²⁺ + 2e⁻  (anode — copper purification)',
@@ -3978,10 +4551,10 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'fifas': [],
   'higher': None,
   'id': 'electrolysis-extraction',
-  'key_note': 'Aluminium extraction: molten Al₂O₃ in cryolite (lowers MP to ~950°C), graphite electrodes, Al deposited '
-              'at cathode, O₂ at anode burns graphite anodes. Copper purification: impure Cu anode dissolves, pure Cu '
-              'deposits at cathode, anode sludge contains precious metals. Electroplating: coat object (cathode) with '
-              'thin metal layer.',
+  'key_note': 'Aluminium extraction: molten Al₂O₃ in cryolite (lowers MP to ~950°C), graphite electrodes, Al '
+              'deposited at cathode, O₂ at anode burns graphite anodes. Copper purification: impure Cu anode '
+              'dissolves, pure Cu deposits at cathode, anode sludge contains precious metals. Electroplating: coat '
+              'object (cathode) with thin metal layer.',
   'matching': {'instruction': 'Match each industrial use to the correct electrode behaviour.',
                'pairs': [('Aluminium extraction — cathode',
                           'Al³⁺ ions reduced → molten aluminium deposited and tapped off'),
@@ -3991,34 +4564,111 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Copper purification — cathode', 'Pure copper deposits — Cu²⁺ + 2e⁻ → Cu'),
                          ('Electroplating — cathode', 'Object being plated — metal ions deposit onto its surface')],
                'title': 'Match the Electrolysis Application'},
-  'quiz': [{'opts': [('Oxygen produced at the anode reacts with the hot graphite: C + O₂ → CO₂ — the anode burns away',
+  'quiz': [{'q': 'Name the metal that is extracted by the electrolysis of its molten oxide.',
+            'opts': [('Aluminium', True), ('Iron', False), ('Copper', False), ('Gold', False)],
+            'wrong_explanations': {1: 'Iron is below carbon, so it is extracted by cheaper carbon reduction, not '
+                                      'electrolysis.',
+                                   2: 'Most copper is not extracted by electrolysis of its oxide; aluminium is the '
+                                      'metal extracted this way.',
+                                   3: 'Gold is unreactive and found native; it needs no electrolysis.'}},
+           {'q': 'State the electrode at which aluminium forms during its extraction.',
+            'opts': [('The cathode (the negative electrode)', True),
+                     ('The anode (the positive electrode)', False),
+                     ('Both electrodes', False),
+                     ('Neither — it stays dissolved', False)],
+            'wrong_explanations': {1: 'Oxygen forms at the anode; the aluminium metal forms at the negative cathode.',
+                                   2: 'Aluminium forms only at the cathode; oxygen forms at the anode.',
+                                   3: 'The aluminium is deposited as molten metal at the cathode.'}},
+           {'q': 'Explain why cryolite is mixed with the aluminium oxide before electrolysis.',
+            'opts': [('It lowers the melting point of the aluminium oxide, so less energy is needed to keep it '
+                      'molten',
                       True),
-                     ('The anode dissolves into the aluminium oxide melt', False),
-                     ('The high temperature melts and destroys the graphite', False),
-                     ('Aluminium deposits on the anode, blocking it', False)],
-            'q': 'Why does the graphite anode in aluminium extraction need to be replaced regularly?',
-            'wrong_explanations': {1: 'Graphite does not dissolve ionically — it reacts CHEMICALLY with the oxygen '
-                                      'produced at the anode.',
-                                   2: 'Graphite melts at ~3600°C — well above the operating temperature of ~950°C. '
-                                      'Physical melting is not the issue.',
-                                   3: 'Aluminium is produced at the CATHODE (the graphite lining at the bottom) — it '
-                                      "doesn't deposit on the anode."}},
-           {'opts': [('Pure copper deposits — Cu²⁺ ions from solution gain electrons and form solid copper', True),
-                     ('Impure copper dissolves — copper atoms lose electrons and enter solution', False),
-                     ('Oxygen gas is produced — water is oxidised at the cathode', False),
-                     ('Gold and silver from the anode deposit at the cathode', False)],
-            'q': 'In copper purification by electrolysis, what happens at the cathode?',
-            'wrong_explanations': {1: 'Impure copper DISSOLVING is what happens at the ANODE — Cu → Cu²⁺ + 2e⁻. The '
-                                      'cathode is where Cu DEPOSITS.',
-                                   2: 'Oxygen is produced at anodes when water is oxidised — in copper purification '
-                                      'the anode reaction is Cu dissolving, not water oxidation.',
-                                   3: 'Less reactive metals (Au, Ag) from the anode do NOT dissolve into solution — '
-                                      'they fall as anode sludge. Only copper enters solution.'}}],
+                     ('It makes the aluminium more reactive', False),
+                     ('It adds extra aluminium to the mixture', False),
+                     ('It colours the mixture so it can be seen', False)],
+            'wrong_explanations': {1: "Cryolite lowers the melting point; it does not change the aluminium's "
+                                      'reactivity.',
+                                   2: 'Cryolite is a separate compound used to lower the melting point, not a source '
+                                      'of aluminium.',
+                                   3: "Cryolite's job is to lower the melting point and save energy, not to add "
+                                      'colour.'}},
+           {'q': 'Explain why the carbon (graphite) anodes in aluminium extraction must be replaced regularly.',
+            'opts': [('The oxygen produced at the anode reacts with the hot carbon, so the anodes gradually burn '
+                      'away',
+                      True),
+                     ('The aluminium sticks to them and cannot be removed', False),
+                     ('They dissolve in the cryolite', False),
+                     ('They cool down and stop working', False)],
+            'wrong_explanations': {1: 'The anodes wear away because oxygen burns the carbon, not because aluminium '
+                                      'sticks.',
+                                   2: 'The anodes are lost because oxygen reacts with the carbon, not by dissolving '
+                                      'in cryolite.',
+                                   3: 'They are consumed by reaction with oxygen; cooling is not the reason.'}},
+           {'q': 'State the product formed at the anode during aluminium extraction.',
+            'opts': [('Oxygen', True), ('Aluminium', False), ('Carbon', False), ('Hydrogen', False)],
+            'wrong_explanations': {1: 'Aluminium forms at the cathode; oxygen forms at the anode.',
+                                   2: 'The carbon is the electrode material, not a product; the anode product is '
+                                      'oxygen.',
+                                   3: 'There is no water in molten aluminium oxide, so no hydrogen forms; oxygen is '
+                                      'produced.'}},
+           {'q': 'State why aluminium is extracted by electrolysis rather than by heating with carbon.',
+            'opts': [('Aluminium is more reactive than carbon, so carbon cannot remove the oxygen from aluminium '
+                      'oxide',
+                      True),
+                     ('Aluminium is cheaper to extract by electrolysis', False),
+                     ('Carbon would make the aluminium impure', False),
+                     ('Aluminium melts at too low a temperature for carbon', False)],
+            'wrong_explanations': {1: 'Electrolysis is actually more expensive; it is used because carbon cannot '
+                                      'reduce aluminium oxide.',
+                                   2: 'The real reason is that carbon cannot reduce aluminium oxide at all, as '
+                                      'aluminium is above carbon.',
+                                   3: 'The reason is reactivity: aluminium is above carbon, so carbon cannot remove '
+                                      'its oxygen.'}},
+           {'q': 'Explain why extracting aluminium by electrolysis is expensive.',
+            'opts': [('It uses a large amount of electrical energy to melt the oxide and to run the electrolysis',
+                      True),
+                     ('Aluminium ore is extremely rare', False),
+                     ('Cryolite is very difficult to obtain', False),
+                     ('Aluminium reacts violently and wastes material', False)],
+            'wrong_explanations': {1: 'Aluminium ore is abundant; the cost comes from the large amount of '
+                                      'electricity used.',
+                                   2: 'The main cost is the electrical energy, not the cryolite.',
+                                   3: 'The high cost is the energy demand of electrolysis, not wasted material.'}},
+           {'q': 'In the purification of copper by electrolysis, state which electrode is made of impure copper.',
+            'opts': [('The anode (the positive electrode)', True),
+                     ('The cathode (the negative electrode)', False),
+                     ('Both electrodes', False),
+                     ('Neither — both are carbon', False)],
+            'wrong_explanations': {1: 'The pure copper forms on the cathode; the impure copper is the anode, which '
+                                      'dissolves.',
+                                   2: 'Only the anode is impure copper; the cathode is pure copper.',
+                                   3: 'In copper purification the electrodes are copper: impure at the anode, pure '
+                                      'at the cathode.'}},
+           {'q': 'In the purification of copper, state where the pure copper is deposited.',
+            'opts': [('On the cathode (the negative electrode)', True),
+                     ('On the anode (the positive electrode)', False),
+                     ('In the electrolyte as a powder', False),
+                     ('On both electrodes equally', False)],
+            'wrong_explanations': {1: 'The anode is the impure copper that dissolves; pure copper forms on the '
+                                      'cathode.',
+                                   2: 'Pure copper is deposited as a solid on the cathode, not left as powder in '
+                                      'solution.',
+                                   3: 'Pure copper builds up only on the cathode; the anode loses copper.'}},
+           {'q': 'Explain why the aluminium oxide is melted before it is electrolysed.',
+            'opts': [('Melting frees the ions so they can move to the electrodes and be discharged', True),
+                     ('Melting removes the impurities first', False),
+                     ('Melting adds electrons to the aluminium ions', False),
+                     ('Melting turns the oxide into a metal directly', False)],
+            'wrong_explanations': {1: 'Melting is to free the ions; cryolite and the process handle the setup, not '
+                                      'impurity removal by melting.',
+                                   2: 'Melting frees the ions to move; it does not add electrons.',
+                                   3: 'Melting alone does not extract the metal; electrolysis of the molten oxide '
+                                      'does.'}}],
   'rp': None,
   'spec': '5.4.3.3',
   'summary': 'Describe how electrolysis is used to extract aluminium and purify copper.',
-  'theory': [{'content': "Aluminium is the most abundant metal in the Earth's crust — but it is very reactive, making "
-                         'it difficult to extract.\n'
+  'theory': [{'content': "Aluminium is the most abundant metal in the Earth's crust — but it is very reactive, "
+                         'making it difficult to extract.\n'
                          '\n'
                          'Aluminium cannot be extracted by carbon reduction (it is above carbon in the reactivity '
                          'series).\n'
@@ -4093,11 +4743,11 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Using Electrolysis to Extract Metals',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'In aqueous solutions, WATER provides H⁺ and OH⁻ ions that compete with the ions from the '
-                    'dissolved salt. At the cathode: metals above hydrogen → H₂ is produced (not the metal). At the '
-                    'anode: if no halide ions present → O₂ is produced (from OH⁻). Students often predict the wrong '
-                    'product for Na⁺ at the cathode — sodium is so reactive it is NEVER deposited from aqueous '
-                    'solution; hydrogen is produced instead.',
+ {'common_mistake': 'Students often predict that the metal is always deposited at the cathode, so they say sodium '
+                    'forms when sodium chloride SOLUTION is electrolysed. In water it does not. Sodium is more '
+                    'reactive than hydrogen, so HYDROGEN is produced at the cathode instead, from the water. The '
+                    'rule: at the cathode you get the metal ONLY if it is LESS reactive than hydrogen (like copper); '
+                    'if it is more reactive, you get hydrogen.',
   'equations': ['Cathode: 2H⁺ + 2e⁻ → H₂  (hydrogen from water/dilute acid)',
                 'Anode: 4OH⁻ → O₂ + 2H₂O + 4e⁻  (oxygen from water)',
                 'Anode: 2Cl⁻ → Cl₂ + 2e⁻  (chlorine from brine)',
@@ -4111,33 +4761,94 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'matching': {'instruction': 'Match each aqueous solution to its products at cathode and anode.',
                'pairs': [('Dilute H₂SO₄', 'Cathode: H₂ gas. Anode: O₂ gas. (No metal ions below H, no halide ions)'),
                          ('CuSO₄ solution', 'Cathode: Cu metal deposited. Anode: O₂ gas. (Cu below H; no halide)'),
-                         ('Concentrated NaCl (brine)', 'Cathode: H₂ gas. Anode: Cl₂ gas. (Na above H; high Cl⁻ conc)'),
-                         ('Dilute NaCl', 'Cathode: H₂ gas. Anode: O₂ gas. (Na above H; low Cl⁻ conc → O₂ preferred)')],
+                         ('Concentrated NaCl (brine)',
+                          'Cathode: H₂ gas. Anode: Cl₂ gas. (Na above H; high Cl⁻ conc)'),
+                         ('Dilute NaCl',
+                          'Cathode: H₂ gas. Anode: O₂ gas. (Na above H; low Cl⁻ conc → O₂ preferred)')],
                'title': 'Predict the Electrolysis Products'},
-  'quiz': [{'opts': [('Copper metal — Cu²⁺ ions are below hydrogen in the reactivity series and are preferentially '
-                      'discharged',
+  'quiz': [{'q': 'Explain why electrolysing a solution is more complicated than electrolysing a molten compound.',
+            'opts': [("The water also provides H⁺ and OH⁻ ions, which compete with the salt's ions to be discharged",
                       True),
-                     ('Hydrogen gas — water provides H⁺ ions which are always discharged at the cathode', False),
-                     ('Sulfur dioxide — SO₄²⁻ ions are discharged at the cathode', False),
-                     ('Oxygen — OH⁻ ions from water are discharged at the cathode', False)],
-            'q': 'Copper sulfate solution is electrolysed with inert electrodes. What is produced at the cathode?',
-            'wrong_explanations': {1: 'H⁺ ions ARE present — but Cu²⁺ is LESS REACTIVE than H⁺ (copper is below '
-                                      'hydrogen in the series), so Cu²⁺ is preferentially discharged.',
-                                   2: 'SO₄²⁻ is a very stable ion — it is NOT discharged at the cathode or anode under '
-                                      'normal conditions.',
-                                   3: 'O₂ is produced at the ANODE (from OH⁻ oxidation), not the cathode.'}},
-           {'opts': [('Chlorine gas — high concentration of Cl⁻ ions means they are preferentially discharged over OH⁻',
+                     ('The solution is colder, so the ions move more slowly', False),
+                     ("Dissolving destroys the salt's ions", False),
+                     ('Water stops the current from flowing', False)],
+            'wrong_explanations': {1: "The added complexity is the water's ions competing, not temperature.",
+                                   2: "The salt's ions remain; the extra factor is the water's own ions.",
+                                   3: 'Water actually helps conduct by adding ions; the complication is that its '
+                                      'ions can be discharged.'}},
+           {'q': 'Predict the product at the cathode when sodium chloride solution is electrolysed.',
+            'opts': [('Hydrogen', True), ('Sodium', False), ('Chlorine', False), ('Oxygen', False)],
+            'wrong_explanations': {1: 'Sodium is more reactive than hydrogen, so hydrogen is produced at the '
+                                      'cathode, not sodium.',
+                                   2: 'Chlorine forms at the anode; the cathode produces hydrogen here.',
+                                   3: 'Oxygen would form at the anode if no halide were present; the cathode '
+                                      'produces hydrogen.'}},
+           {'q': 'Predict the product at the anode when sodium chloride solution is electrolysed.',
+            'opts': [('Chlorine', True), ('Oxygen', False), ('Hydrogen', False), ('Sodium', False)],
+            'wrong_explanations': {1: 'Oxygen forms only when no halide is present; chloride ions are present here, '
+                                      'so chlorine forms.',
+                                   2: 'Hydrogen forms at the cathode, not the anode; the anode gives chlorine.',
+                                   3: 'Sodium is a metal formed (if at all) at the cathode; the anode gives '
+                                      'chlorine.'}},
+           {'q': 'Predict the product at the cathode when copper sulfate solution is electrolysed.',
+            'opts': [('Copper', True), ('Hydrogen', False), ('Oxygen', False), ('Sulfur', False)],
+            'wrong_explanations': {1: 'Copper is LESS reactive than hydrogen, so the copper metal is deposited, not '
+                                      'hydrogen.',
+                                   2: 'Oxygen forms at the anode; the cathode deposits copper here.',
+                                   3: 'Sulfur is not discharged; the cathode deposits copper.'}},
+           {'q': 'Predict the product at the anode when copper sulfate solution is electrolysed.',
+            'opts': [('Oxygen', True), ('Chlorine', False), ('Copper', False), ('Hydrogen', False)],
+            'wrong_explanations': {1: 'There are no chloride ions in copper sulfate solution, so oxygen forms, not '
+                                      'chlorine.',
+                                   2: 'Copper is deposited at the cathode; the anode gives oxygen.',
+                                   3: 'Hydrogen forms at the cathode; the anode gives oxygen when no halide is '
+                                      'present.'}},
+           {'q': 'State the rule for what forms at the cathode in aqueous electrolysis.',
+            'opts': [('The metal forms if it is less reactive than hydrogen; otherwise hydrogen is produced', True),
+                     ('The metal always forms at the cathode', False),
+                     ('Hydrogen always forms at the cathode', False),
+                     ('Oxygen forms at the cathode', False)],
+            'wrong_explanations': {1: 'In water, a reactive metal is not deposited; hydrogen forms instead.',
+                                   2: 'A less-reactive metal such as copper IS deposited; it is not always hydrogen.',
+                                   3: 'Oxygen forms at the anode; the cathode gives a metal or hydrogen.'}},
+           {'q': 'State the rule for what forms at the anode in aqueous electrolysis.',
+            'opts': [('A halogen forms if a halide ion is present; otherwise oxygen is produced', True),
+                     ('Oxygen always forms at the anode', False),
+                     ('A halogen always forms at the anode', False),
+                     ('Hydrogen forms at the anode', False)],
+            'wrong_explanations': {1: 'If a halide (Cl⁻, Br⁻, I⁻) is present, the halogen forms instead of oxygen.',
+                                   2: 'Without a halide, oxygen forms; the halogen only forms when a halide is '
+                                      'present.',
+                                   3: 'Hydrogen forms at the cathode; the anode gives a halogen or oxygen.'}},
+           {'q': 'Predict the two products when dilute sulfuric acid is electrolysed.',
+            'opts': [('Hydrogen at the cathode and oxygen at the anode', True),
+                     ('Oxygen at the cathode and hydrogen at the anode', False),
+                     ('Sulfur and hydrogen', False),
+                     ('Chlorine and hydrogen', False)],
+            'wrong_explanations': {1: 'This is reversed — hydrogen forms at the cathode and oxygen at the anode.',
+                                   2: 'Sulfur is not discharged; the products are hydrogen and oxygen (from the '
+                                      'water).',
+                                   3: 'There are no chloride ions in sulfuric acid; oxygen forms at the anode, not '
+                                      'chlorine.'}},
+           {'q': 'Explain why sodium is not produced at the cathode when sodium chloride solution is electrolysed.',
+            'opts': [('Sodium is more reactive than hydrogen, so hydrogen from the water is discharged instead of '
+                      'the sodium',
                       True),
-                     ('Oxygen gas — OH⁻ ions from water are always discharged at the anode', False),
-                     ('Sodium metal — Na⁺ ions are discharged at the anode', False),
-                     ('Hydrogen gas — H⁺ ions from water are discharged at the anode', False)],
-            'q': 'Concentrated brine (sodium chloride solution) is electrolysed. What is produced at the anode?',
-            'wrong_explanations': {1: 'O₂ IS produced if the Cl⁻ concentration is LOW — but in CONCENTRATED brine, the '
-                                      'high Cl⁻ concentration favours Cl₂ production.',
-                                   2: 'Na⁺ is a positive ion — it moves to the CATHODE (negative electrode), not the '
-                                      'anode.',
-                                   3: 'H⁺ is discharged at the CATHODE (negative) — positive ions always move to the '
-                                      'cathode.'}}],
+                     ('Sodium ions are too large to reach the cathode', False),
+                     ('There are no sodium ions in the solution', False),
+                     ('Sodium reacts with the anode first', False)],
+            'wrong_explanations': {1: 'Sodium ions do reach the cathode; hydrogen is discharged because sodium is '
+                                      'too reactive.',
+                                   2: 'Sodium ions are present; they simply stay in solution because hydrogen is '
+                                      'discharged instead.',
+                                   3: 'The reason is that sodium is more reactive than hydrogen, so hydrogen is '
+                                      'discharged at the cathode.'}},
+           {'q': 'Predict the product at the cathode when potassium nitrate solution is electrolysed.',
+            'opts': [('Hydrogen', True), ('Potassium', False), ('Oxygen', False), ('Nitrogen', False)],
+            'wrong_explanations': {1: 'Potassium is more reactive than hydrogen, so hydrogen is produced at the '
+                                      'cathode, not potassium.',
+                                   2: 'Oxygen forms at the anode; the cathode gives hydrogen here.',
+                                   3: 'Nitrogen is not discharged; the cathode gives hydrogen.'}}],
   'rp': 'RP4 (Chemistry) — Investigate the electrolysis of aqueous solutions. Test products: H₂ with lit splint '
         '(squeaky pop), O₂ with glowing splint (relights), Cl₂ with damp litmus (bleaches it).',
   'spec': '5.4.3.4',
