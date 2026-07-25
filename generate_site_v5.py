@@ -3542,28 +3542,12 @@ def make_new_quiz(quiz, color, pilot=False):
   <div class="quiz-fb" id="qfb-{i}"></div>
 </div>"""
 
-    score_messages = [
-        "Keep going — re-read the theory and try again. You'll get there! 📖",
-        "Not bad — review the sections you missed and have another go. 💪",
-        "Decent effort! A bit more revision and you'll nail it. 🔄",
-        "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-        "Excellent! You've really got this topic down. 🏆",
-    ]
-    score_msgs_json = json.dumps(score_messages, ensure_ascii=False)
-
     return f"""<div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of {len(quiz)}</div>
   {cards_html}
   <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
-</div>
-<script>
-(function(){{
-  const scoreMessages = {score_msgs_json};
-  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{{}});
-  // handled by global quiz JS below
-}})();
-</script>"""
+</div>"""
 
 
 def make_star_rating(st_id):
