@@ -28,6 +28,12 @@ authored content onto them. The content is done and signed off; this lane is eng
 
 ## Read these first
 
+0. **MRB-136 in Linear.** Linear was authenticated on 25 Jul 2026, so you should have Linear MCP
+   tools available — the session that wrote this queue did not. MRB-136 is the ticket this authored
+   content was produced under. Read it, plus **MRB-135** (the MCQ banks your misconception slugs join
+   to). **Where a ticket and this queue disagree, the ticket wins** — note the difference in your
+   report. Check MRB-136's comments specifically for any ruling that supersedes the "Mide's rulings"
+   section below.
 1. `~/Documents/mrb-authoring/phase2-exam/engine_content_spec.md` — **read before anything else.**
    Defines the three engines and holds the authored items. The five page HTML/RTF files alongside it
    are the authored content per page.
@@ -119,6 +125,7 @@ The lane brief describes **83** authored items. `engine_content_spec.md` totals 
 (WriteThenMark 26 + BeTheExaminer 10 + ChainBuilder 15 + FormulaDeducer 27), with the 6-item
 polyatomic set marked `[CHECK]`. Count the items in the five authored files yourself and treat the
 **authored files as the authority**. Report the number you actually wired, and note the gap.
+MRB-136 may resolve this outright — check it before spending long on the reconciliation.
 
 ---
 
