@@ -1,0 +1,1086 @@
+# KS3 Science — Canonical Architecture
+
+**Status:** law for all KS3 builds. This document is authoritative and self-contained. If you are
+opening it cold with no other context, you can build any KS3 topic from it.
+
+**Scope:** Key Stage 3 science (Years 7–9), all three disciplines, on the MrBadmusAI platform.
+
+**Authority order.** Where sources disagree:
+
+1. **The statutory programme of study** — *National curriculum in England: science programmes of
+   study, Key Stage 3* (DfE, 2014, still in force). This is the spine. Every lesson traces to it.
+2. **This document.**
+3. **`docs/redesign/architecture_v2.md`** (the bonding v2 doctrine) — inherited in spirit, and
+   explicitly overridden where KS4 assumptions don't serve 11–14 year olds. Every override is
+   named in §3.
+4. Everything else — schemes of work, prior drafts, habit.
+
+**What this document is not.** It contains no lesson content, no science, no code. It defines the
+architecture that content and code must satisfy.
+
+---
+
+## 0. Provenance and known gaps
+
+| Input | Status |
+|---|---|
+| Statutory KS3 programme of study (gov.uk, 2014) | **Read in full.** Primary source for §7. |
+| `docs/redesign/architecture_v2.md` — bonding v2 doctrine | **Read in full.** Inherited per §3. |
+| Existing generator, data-file pattern, design tokens, schools layer | **Surveyed.** See §8. |
+| **Linear MRB-103 — previously ratified KS3 architecture** | **NOT AVAILABLE.** The Linear MCP connector is unauthenticated and no local copy exists anywhere in the repo, on the Desktop, or in project memory. |
+| Rainford scheme of work | **Not available as a document** — no formal SoW exists; the sequence is implicit in folder structure. Classroom resources at `~/Desktop/Rainford` were surveyed as evidence only. Findings in §8.9. |
+
+> ⚠️ **MRB-103 reconciliation is an open action.** This architecture was reasoned from the statutory
+> spine directly, as the brief requires. When Linear access is restored, someone must diff MRB-103
+> against this document and record the delta in §11. Anything in MRB-103 that this document
+> contradicts was contradicted *without having seen it* — treat those as genuine open questions, not
+> as settled reversals.
+
+**Convention used throughout:** ⊕ marks a design element that is the architect's addition beyond the
+original brief, so a reviewer can see what was invented here versus what was asked for.
+
+---
+
+## 1. What KS3 is, and why it cannot be KS4 with easier words
+
+KS4 on this platform is organised around an exam specification. AQA names the content, names the
+tier, names the pathway, and — crucially — names the *reward*: marks, in a terminal exam, against
+published mark schemes. The KS4 architecture is correct to be exam-shaped, because the student's
+actual problem is an exam.
+
+KS3 has none of that. There is no exam board, no specification, no tier, no pathway, no terminal
+assessment. The statutory programme of study is roughly 120 short bullet points for three years of
+three sciences — an order of magnitude less prescriptive than AQA. That is not a gap to be filled by
+importing KS4 structure downward. It is a different job.
+
+**The KS3 job, stated plainly:** build the conceptual equipment that KS4 will later demand, in
+students who are 11–14, many of whom have not yet decided whether science is for them.
+
+Three consequences drive everything below.
+
+**KS3 students are novices in the technical sense.** They have little domain knowledge to hang new
+ideas on, so they cannot skim, cannot infer what matters, and cannot self-correct a wrong model.
+Long continuous prose is not merely boring to them — it is close to useless, because they have no
+schema to file it against. This is why the prose-blob architecture must not be reused, and it is a
+stronger argument at KS3 than it ever was at KS4.
+
+**The obstacle at KS3 is rarely the new idea. It is the old wrong idea.** Every KS3 topic collides
+with a well-documented intuitive belief — heavier things fall faster, plants take food from the
+soil, a moving object needs a continuous force, heat and temperature are the same thing, particles
+themselves expand when heated. Teaching *around* a misconception leaves it intact; the student
+learns the words and keeps the belief. KS3 content must confront these head-on, by name. This is
+the single biggest content-architecture difference from KS4, and it is why §5.3 makes the
+misconception a required, structured field rather than a prose aside.
+
+**Sequence is a school's decision, not ours.** There is no statutory ordering of KS3 content, and
+schools order it wildly differently — some spiral all three sciences every year, some teach
+disciplinary blocks, some follow a published scheme. A platform serving many schools that hard-codes
+one order is broken for most of them. Hence the invariant in §4.5: **year and sequence are soft,
+overridable metadata and never appear in structure.**
+
+---
+
+## 2. Anti-goals ⊕
+
+Stated explicitly so nobody rebuilds the thing we are moving away from.
+
+| Anti-goal | Why |
+|---|---|
+| **The prose blob.** A page that is 1,200 words of theory with a quiz stapled on. | The named thing being moved away from. Fails novice learners hardest. |
+| **Tier/pathway at KS3.** | There is no Foundation/Higher at KS3, and the database already forbids it (`profiles_tier_only_ks4_check`). Depth is handled by layers (§5.6), which is a different axis. |
+| **Year baked into structure.** Folders named `year-7/`, URLs containing `/y8/`, content that branches on year. | Makes reordering a rebuild. Kills multi-school fit. |
+| **A separate "Working Scientifically" unit.** | The statutory document is explicit that WS is taught *through* the content. A bolt-on unit gets skipped. See §5.7. |
+| **Duplicating a lesson across two disciplines.** e.g. writing "diffusion" once for Chemistry and again for Physics. | Two copies drift. One owner, cross-referenced (§4.6). |
+| **Gamification that punishes.** Streaks, guilt copy, XP, page leaderboards. | Inherited from bonding Law 8. Doubly important for 11-year-olds. |
+| **Emoji doing content labour.** | Inherited from bonding Law 7. Drawn primitives carry meaning; emoji decorate at most. |
+| **Building all three sciences at once.** | See the vertical slice, §9. |
+
+---
+
+## 3. Inheritance from bonding v2 — what carries, what changes
+
+The bonding v2 doctrine is the best thinking this platform has produced about how a page should
+teach. KS3 inherits its spirit wholesale. Five things change — the prose budget, the interactive
+ceiling, the ladder's purpose, the frozen-field set, and the family list — and each change is
+justified by the age of the learner or the absence of an exam board. Everything else carries.
+
+| Bonding v2 | KS3 |
+|---|---|
+| Law 1 — demand-driven structure | **Inherited**, with a KS3 family set (§6): the demands differ across three sciences. |
+| Law 2 — 150-word encode–act spine | **Tightened to ~90 words** (§5.2). Lower reading age, shorter attention. |
+| Law 3 — three interactive scales at demand peaks | **Inherited**, ceiling lowered to one flagship + one mid + micros. |
+| Law 4 — predict before reveal | **Inherited unchanged.** Serves novices *more* than experts: commitment is what makes a misconception visible to its owner. |
+| Law 5 — watch/do duality | **Inherited unchanged.** |
+| Law 6 — production-ending **exam** ladder | **Becomes the mastery ladder** (§5.8). Same four rungs, retuned: rung 4 is transfer and explanation, not AQA tariff. No exam board to tag against. |
+| Law 7 — one design language | **Inherited unchanged**, with the KS3 accent already stubbed in the token layer. |
+| Law 8 — persistence, never punish | **Inherited unchanged.** |
+| Law 9 — motion is meaning | **Inherited unchanged.** |
+| Law 10 — every activity exercises its claimed demand | **Inherited unchanged.** The sharpest review tool we have. |
+| The 8 frozen science fields | **Replaced** by the KS3 review model (§5.10) — different fields, same discipline: science-bearing content is examiner-reviewed and then frozen; activities are built *from* frozen science. |
+| Five architecture families | **Seven families** (§6). KS4 chemistry's set doesn't cover biological systems or investigation lessons. |
+
+Everything not listed above — tokens, WCAG AA, full keyboard access, reduced-motion, vanilla JS, no
+build step, generator determinism, the instrument-panel anatomy, tone tints, the end-matter ritual —
+carries over unchanged. **KS3 is a new content architecture on the same design and delivery
+system**, not a new platform.
+
+---
+
+## 4. The content model
+
+### 4.1 The hierarchy
+
+```
+Discipline        biology | chemistry | physics          (3)
+  └── Unit        a teachable sequence, 3–9 lessons      (33)
+        └── Lesson  THE ATOM — one page, one idea        (185)
+```
+
+Three levels, deliberately. The statutory document has an inconsistent two-level structure
+(Biology and Physics have area → sub-heading; Chemistry is flat). Normalising to Discipline → Unit →
+Lesson makes all three disciplines the same shape. The statutory area is preserved as metadata on
+the unit (`statutory_area`), not as a navigation level.
+
+**Discipline is retained at KS3 even though most schools teach "Science".** Two reasons: the KS4
+handoff is disciplinary, so the bridge edges (§4.7) need a disciplinary target; and content
+ownership needs an unambiguous home. How this is *presented* to students is a separate, reversible
+choice — see the open decision in §11.
+
+### 4.2 The Lesson is the atom
+
+**A lesson is one idea, one page, one sitting.** Target 25–40 minutes of student time, sized so a
+teacher can set exactly one as homework, cover work, pre-teaching, or catch-up.
+
+This is the most consequential sizing decision in the document, so the reasoning is explicit:
+
+- **It matches how schools actually consume content.** The schedulable unit in a school is a lesson.
+  A page that is half a lesson wastes a homework slot; a page that is three lessons cannot be set.
+- **It matches novice working memory.** One idea per page means the page has one thing to be about,
+  and the mastery ladder at the bottom can genuinely test *that idea* rather than sampling a blob.
+- **It makes the prerequisite graph meaningful.** "Photosynthesis requires the particle model" is
+  useless at page granularity if the page is the whole of chemistry.
+- **It makes coverage auditable.** Statutory statements attach to lessons; coverage is then a
+  computable property (§4.4), not a claim.
+
+A lesson that cannot state its idea in one sentence is not a lesson; it is two.
+
+### 4.3 Unit
+
+A unit is the **release increment** and the **schedulable block**. Units are what a school's scheme
+of work points at, what gets built and reviewed together, and what ships together.
+
+A statutory strand may split into several units where it is too big to teach as one — "Chemical
+reactions" is eight statutory bullets covering combustion, acids, pH, salts and catalysts, and
+splits into three units. Splitting is a pedagogical judgement and must be recorded in the unit's
+`split_rationale` field so it isn't silently re-litigated.
+
+### 4.4 Statutory statement IDs ⊕ — the rigour mechanism
+
+**Every statutory bullet gets a stable ID. Every lesson declares which statements it covers.**
+
+This is the KS3 analogue of AQA spec points, and it is what makes the whole architecture defensible
+rather than a matter of taste. Without it, "does our KS3 cover the national curriculum?" is a
+question no one can answer.
+
+**ID scheme:** `KS3.<D>.<STRAND>.<nn>`
+
+- `<D>` — `B` | `C` | `P`
+- `<STRAND>` — a short stable strand code (e.g. `PNM` = particulate nature of matter, `CR` =
+  chemical reactions, `CELLS`, `FORCES`)
+- `<nn>` — the bullet's ordinal within that strand **as printed in the 2014 document**, zero-padded
+
+Example: `KS3.C.PNM.02` = the second bullet under Chemistry → The particulate nature of matter.
+
+**Rules.**
+
+1. IDs are **permanent**. Once assigned, an ID never changes meaning. If the statutory document is
+   ever revised, new IDs are added and old ones marked `superseded`; they are never reused.
+2. Every lesson has `covers: []` — the statements it is responsible for teaching — and may have
+   `touches: []` for statements it supports but does not own.
+3. **Every statement must be owned by exactly one lesson.** Zero owners is a coverage hole; two
+   owners is duplicated content. Both are build-blocking defects.
+4. The full enumeration lives in a companion file, **`docs/ks3/statutory-register.md`**, produced as
+   the first task of the first build (§10.1). It is data; this document is architecture.
+
+**What this buys us:** a coverage report per discipline; a defensible answer to a head of department
+asking "what does this cover?"; safe reordering (statements move with lessons); and a rebuild path if
+the statutory document is ever revised.
+
+### 4.5 Invariant: year and sequence are metadata, never structure
+
+**Binding rule. A violation is a defect, not a style choice.**
+
+- A lesson carries `typical_year: 7 | 8 | 9` — **advisory only**. It seeds a sensible default order
+  for a school that hasn't configured anything, and it may appear as a hint in authoring tools.
+- `typical_year` **must never** determine a URL, a folder, a file name, a navigation structure, a
+  content branch, or which lesson a student is served.
+- Real ordering for a real school comes from `scheme_of_work_entries`, which already exists in the
+  schools layer and is already keyed on `(key_stage, year_group, …, academic_week)`. **It needs two
+  constraint fixes before it can hold KS3 rows — see §8.7.** Until those land, this invariant is a
+  promise the database cannot keep.
+- Reordering a school's entire KS3 curriculum must require **zero content changes and zero
+  regeneration** — it is a data change in that school's scheme of work.
+
+The platform additionally publishes one **default sequence** (a named, versioned mapping of lessons
+to year and week) so that a school with no scheme configured still gets a coherent journey. The
+default sequence is *a* scheme of work stored the same way as any school's — not a privileged
+structure.
+
+### 4.6 Cross-discipline lessons: single source, referenced ⊕
+
+The statutory document deliberately teaches some ideas twice — the particle model appears under both
+Chemistry ("The particulate nature of matter") and Physics ("Matter"); diffusion appears in
+Chemistry and in Biology's cell transport; energy appears in Physics and in Biology's nutrition.
+
+**Rule: one owning lesson, referenced from elsewhere. Never two copies.**
+
+- Each lesson has exactly one `discipline` — its owner.
+- Other units link to it via `references: [lesson_ids]`, which renders as a genuine cross-link in
+  the unit page ("Physics: Matter — this unit uses *The particle model* from Chemistry").
+- Where the second discipline needs a genuinely different *treatment* rather than the same content
+  (Physics wants Brownian motion and internal energy; Chemistry wants states and changes of state),
+  those are separate lessons owning separate statements — not duplicates.
+
+Ownership decisions for the contested ideas are fixed in the topic map (§7) so this is not
+re-argued per unit.
+
+### 4.7 Threads and the KS4 bridge ⊕
+
+Two more edge types on the lesson, both cheap to author and high value.
+
+**Threads — the big ideas that run vertically.** Eight threads cross discipline and year:
+
+`particles` · `energy` · `forces-and-fields` · `cells-and-systems` · `interdependence` ·
+`substances-and-reactions` · `genes-and-evolution` · `earth-and-universe`
+
+Each lesson declares `threads: [{id, level}]` where level is `1 encounter` / `2 develop` /
+`3 secure`. This expresses the spiral **without hard-coding years**: a school can reorder freely and
+the thread structure still describes what is being built. It also drives a genuinely useful student
+view — "everything you know about energy, in the order you met it".
+
+**KS4 bridge.** Each lesson declares `ks4_links: [KS4 subtopic slugs]`. This is the on-ramp to the
+site's existing strength. It gives KS3 a visible destination ("this becomes *States of matter* in
+GCSE Chemistry"), gives Year 9 a real transition surface, and later enables KS4 pages to call back
+("you met this in Year 8") without KS4 needing to know KS3's structure.
+
+### 4.8 The lesson record — canonical field list
+
+Authoritative. Fields not listed here do not exist without an amendment to this document.
+
+```python
+{
+  # ---- identity -------------------------------------------------------
+  "slug":            "particle-model",             # stable, kebab-case, unique within unit
+  "title":           "The particle model",
+  "discipline":      "chemistry",                  # biology | chemistry | physics
+  "unit":            "particles-and-their-behaviour",
+  "family":          "MODEL",                      # one of the seven, §6
+
+  # ---- curriculum position -------------------------------------------
+  "covers":          ["KS3.C.PNM.01", "KS3.C.PNM.03"],
+  "touches":         ["KS3.P.MAT.05"],
+  "threads":         [{"id": "particles", "level": 1}],
+  "typical_year":    7,                            # ADVISORY ONLY — never routes (§4.5)
+  "typical_minutes": 35,
+
+  # ---- progression edges ---------------------------------------------
+  "requires":        [],                           # hard prerequisites, lesson ids (§4.9)
+  "assumes":         [],                           # softer knowledge deps, statement ids
+  "references":      [],                           # cross-discipline reuse (§4.6)
+  "ks4_links":       ["chemistry/bonding/states-of-matter"],
+
+  # ---- the teaching payload ------------------------------------------
+  "big_question":    "Why does a solid keep its shape but a liquid doesn't?",
+  "phenomenon":      {...},                        # the opening hook, Law 1 (§5.1)
+  "misconceptions":  [{"id", "statement", "confronted_by"}],   # required, §5.3
+  "vocabulary":      [{"term", "definition", "note"}],          # required, §5.4
+  "core":            [...blocks...],               # every student
+  "stretch":         [...blocks...],               # depth layer, §5.6
+  "support":         [...blocks...],               # scaffold layer, §5.6
+  "activities":      [...],                        # §5.5, families §6
+  "ladder":          {...},                        # the four rungs, §5.8
+  "key_note":        "...",                        # revision card, last
+
+  # ---- working scientifically ----------------------------------------
+  "ws":              ["analysis-and-evaluation"],  # §5.7
+
+  # ---- governance ------------------------------------------------------
+  "review_state":    "draft",                      # draft | examiner-reviewed | frozen (§5.10)
+}
+```
+
+And the unit record that wraps them — one per module in `ks3_data/` (§8.3):
+
+```python
+UNIT = {
+  "code":            "C1",
+  "slug":            "particles-and-their-behaviour",
+  "title":           "Particles and their behaviour",
+  "discipline":      "chemistry",
+  "statutory_area":  "The particulate nature of matter",
+  "split_rationale": None,          # required if this unit is one of several from one strand (§4.3)
+  "lessons":         [ ... ],       # lesson records, in default teaching order within the unit
+}
+```
+
+### 4.9 How prerequisites are expressed
+
+Prerequisites are **conceptual, not chronological**. They are a directed acyclic graph over lessons,
+authored as edges on the dependent lesson.
+
+- **`requires`** — hard edges. "You cannot understand this lesson without having understood that
+  one." Use sparingly; a graph where everything requires everything is a graph with no information.
+  Rule of thumb: 0–3 edges per lesson.
+- **`assumes`** — soft edges to *statements*, not lessons. Knowledge the lesson leans on but could
+  survive without.
+
+**The graph must be acyclic.** A cycle is a build-blocking defect and the generator must fail on
+one. ⊕
+
+**What the graph is for** — four concrete uses, which is why it earns its authoring cost:
+
+1. **Scheme-of-work validation.** When a school orders its KS3, the platform can warn: "You have
+   placed *Photosynthesis* in week 4 but its prerequisite *Cells and organisation* in week 19."
+   Warn, never block — the school may have taught it elsewhere.
+2. **Student-facing prerequisites.** "Before this, make sure you're solid on …" with links.
+3. **Recovery routes.** A student who fails the ladder is routed to the prerequisite that most
+   plausibly explains the failure, not just told to reread.
+4. **Safe reordering.** The graph, not the sequence, is the real structure — which is exactly what
+   §4.5 requires.
+
+Prerequisites may cross disciplines freely (Biology's *Breathing* requires Physics' *Pressure*) —
+and the fact that the graph makes those crossings visible is one of its main benefits.
+
+---
+
+## 5. How a KS3 lesson is composed
+
+### 5.0 The ten laws
+
+Every KS3 page is judged against these. A page that violates one is a defect, not a style choice.
+
+**Law 1 — Phenomenon first.** ⊕
+Every lesson opens with something *observed*, never something *defined*. A demonstration, a
+photograph, a surprising result, a question about the everyday world. The definition arrives after
+the student wants it. Novices have no reason to care about an abstraction they have not yet seen do
+any work.
+
+**Law 2 — The 90-word encode–act spine.**
+Never more than ~90 words of continuous prose before the student must commit to something — a
+prediction, a construction, a classification, a written answer. A lesson is a chain of encode→act
+cycles ending in consolidation. (Bonding's 150 tightened for reading age and attention.) Any static
+block whose content an interactive now teaches is deleted from the composition.
+
+**Law 3 — Misconception-targeted.** ⊕
+Every lesson names its target misconception(s) as structured data, and **at least one activity must
+confront one head-on** — by eliciting it, making its wrongness visible, and replacing it. A lesson
+with an empty `misconceptions` list must justify itself at review; almost none legitimately can.
+
+**Law 4 — Predict before reveal.**
+No interactive shows a verdict the student hasn't wagered on. Every stateful reveal is gated by a
+committed prediction, and the reveal answers the prediction right/wrong in tone tokens. At KS3 this
+is not just engagement: an unspoken wrong belief is invisible to its holder, and prediction is what
+drags it into the open.
+
+**Law 5 — Watch/do duality.**
+A worked sequence is legitimate only when paired with a do-it-yourself counterpart producing the
+same artifact. Neither ships alone.
+
+**Law 6 — Concrete → representational → abstract.** ⊕
+Within a lesson, ideas travel in that order: real phenomenon → model/diagram → symbol, word
+equation, or formula. A lesson that opens at the abstract layer is a defect. A lesson that never
+reaches the abstract layer has under-taught.
+
+**Law 7 — Vocabulary is taught, not assumed.** ⊕
+Technical terms are introduced explicitly, defined in student language, and recalled at least once
+in the lesson. Body prose targets a reading age *below* chronological age; the technical terms are
+the exception and get carried deliberately. KS3 science failure is very often a reading failure
+wearing a science costume.
+
+**Law 8 — Production-ending mastery ladder.**
+Every lesson ends in the four-rung ladder (§5.8): recall → apply → explain → produce/transfer. With
+per-question persistence and "retry my misses".
+
+**Law 9 — Motion is meaning.**
+Any transfer, movement or state change is animated as visible movement, never a frame swap.
+Reduced-motion users get the instant swap.
+
+**Law 10 — Every activity exercises the demand it claims.**
+Name the intended cognitive demand first, then check the activity delivers it. The defect is an
+activity whose surface features answer it. Every distractor encodes a named misconception and its
+feedback corrects that specific misconception.
+
+### 5.1 Anatomy of a lesson page
+
+Block order is fixed at the ends and demand-driven in the middle — the same principle as bonding
+Law 1.
+
+| # | Block | Fixed? | Notes |
+|---|---|---|---|
+| 1 | **Big question** | Fixed | One sentence. The idea of the lesson, as a question. |
+| 2 | **Phenomenon hook** | Fixed | Law 1. Visual or interactive. Ends in a commitment. |
+| 3 | **First prediction** | Fixed | Within the first ~90 words. Law 2, Law 4. |
+| 4–n | **Encode→act cycles** | **Demand-driven** | Arrangement set by the family (§6). Instruments at demand peaks, not parked at the top. |
+| — | *Misconception confrontation* | Fixed *that* it appears, free *where* | Law 3. Placed at the moment the error is born. |
+| — | *Vocabulary check* | Fixed *that*, free *where* | Law 7. |
+| n+1 | **Mastery ladder** | Fixed | §5.8. Four rungs. |
+| n+2 | **Key note** | Fixed | Photographable revision card. Static, last. |
+| n+3 | **End matter** | Fixed | Score + delta, AI tutor, prev/next. Identical ritual to KS4. |
+
+Interactive budget per lesson: **one flagship, one mid-size, micro-widgets ad lib**, plus the
+ladder. (Lower than bonding's ceiling — shorter page, younger learner.)
+
+### 5.2 The prose budget
+
+~90 words of continuous prose maximum before a commitment. Whole-lesson body prose target: **under
+450 words**, excluding activity copy, ladder questions and the key note. If a lesson needs more than
+that to make its point, the point is two lessons.
+
+### 5.3 The misconception register ⊕
+
+Misconceptions are structured data, not prose asides, and they are **cross-referenced across the
+whole key stage** in a companion file `docs/ks3/misconception-register.md`.
+
+```python
+{"id": "PART-03",
+ "statement": "The particles themselves get bigger when a substance is heated.",
+ "elicited_by": "predict-expansion",     # the activity that surfaces it
+ "confronted_by": "expansion-lab",       # the activity that kills it
+ "reappears_in": ["thermal-expansion", "gas-pressure", "density"]}
+```
+
+**Why a register rather than per-lesson prose:** the same wrong belief resurfaces across years and
+disciplines. A register lets a later lesson say "this is the same wrong idea you met in Year 7" and
+lets us check we are actually killing misconceptions rather than dodging them in twelve places.
+It also gives the AI tutor something precise to work with.
+
+Every distractor in every ladder question and quiz should map to a register entry or be a
+non-diagnostic distractor by explicit choice.
+
+### 5.4 Vocabulary and reading ⊕
+
+Each lesson carries `vocabulary: [{term, definition, note}]`:
+
+- **`definition`** — student-facing, plain, one sentence, no undefined technical terms inside it.
+- **`note`** — optional: etymology, a near-miss word it's confused with, or a false friend
+  ("*mass* is not *weight*"). Etymology is disproportionately effective at this age
+  (*photo*-light, *synthesis*-making).
+
+Rendering: terms are visibly marked on first use with a tap/hover definition, and the lesson
+includes at least one vocabulary recall mechanic. Target body-prose reading age is below
+chronological age; **technical vocabulary is the deliberate exception**, not something to write
+around. We are teaching students to read science, not protecting them from it.
+
+### 5.5 Activities
+
+Same commit-and-reveal discipline as bonding. Micro-widgets weave into prose; mid-size activities
+sit at demand peaks; the flagship carries the lesson's central idea.
+
+Every activity record names its intended demand (`demand: recall | apply | explain | classify |
+construct | investigate`), which is what Law 10 is checked against.
+
+### 5.6 Depth layers: support / core / stretch ⊕ — the replacement for tier
+
+KS3 has no tier and must not grow one. But KS3 classes are enormously mixed. The answer is a
+different axis:
+
+| Layer | Who sees it | Nature |
+|---|---|---|
+| **core** | Every student, always | The lesson. Non-optional, non-hidden. |
+| **stretch** | Anyone who wants it | Depth and challenge. **Visible and opt-in to all** — never allocated by the teacher, never gated by prior attainment. |
+| **support** | Anyone who wants it | Scaffolding on demand: worked example, sentence starters, vocabulary pre-teach, a simpler parallel question. Available in-place, never a separate lesser route. |
+
+**Why this is not tier in disguise.** Tier is a syllabus split decided *for* a student in advance,
+and it caps what they can be examined on. Layers are decided *by* the student, in the moment, per
+lesson, and cap nothing. No student is ever routed away from core. Nothing is ever hidden because of
+who the system thinks they are.
+
+Support and stretch are **optional at authoring time** — core alone is a shippable lesson. See the
+open decision in §11 about whether support ships at launch.
+
+### 5.7 Working Scientifically ⊕
+
+The statutory document is explicit that WS is taught *through* content. So:
+
+1. **Every lesson may tag `ws: []`** with the strands it exercises — `scientific-attitudes`,
+   `experimental-skills`, `analysis-and-evaluation`, `measurement`.
+2. **Every unit must contain at least one genuine WS moment** — an activity where the WS skill is
+   the thing being learned, not incidental.
+3. **A small number of lessons are WS-primary** — family `INVESTIGATION` (§6), where the subject
+   *is* variables, or graphing, or error. These live inside host units, never in a WS unit of their
+   own, and are listed in §7.
+4. WS coverage is auditable the same way statutory coverage is.
+
+### 5.8 The mastery ladder — KS4's exam ladder, retuned
+
+Four rungs, always, at the end of every lesson:
+
+| Rung | Demand | KS3 form |
+|---|---|---|
+| ① | **Recall** | Retrieval and vocabulary. Fast, confidence-building, genuinely required. |
+| ② | **Apply** | Use the idea on a new case; calculate; deduce. |
+| ③ | **Explain** | Chain assembly — build a causal explanation from parts. The KS3 version of the 6-marker skill, without the tariff. |
+| ④ | **Produce / transfer** | Write-then-self-mark against a plain-English success list; or predict a genuinely new situation; or design an investigation. |
+
+**Why production still tops the ladder with no exam to pay for it:** writing a causal explanation is
+the hardest and most transferable thing a KS3 scientist does, and it is precisely what KS4 will
+demand. Rung ③ and ④ are where KS3 earns its keep.
+
+Rung ④ marking is **plain-English success criteria**, not mark schemes — "did you say the particles
+move faster? did you say they spread out?" — because there is no board to award marks and pretending
+otherwise teaches a false model of assessment.
+
+Persistence, "retry my misses", score + delta vs best: inherited unchanged. Never punish: no
+streaks, no guilt copy, no XP, opt-in timers only. Low scores get a diagnosis and a route — and with
+the prerequisite graph (§4.9), the route can be a real lesson rather than "try again".
+
+### 5.9 The AI tutor at KS3
+
+Same engine, different register. The tutor must know it is talking to an 11–14 year old and must be
+told the lesson's misconceptions so it can recognise and correct them rather than validate them.
+Concretely: KS3 pages pass a KS3 system prompt with the lesson's `big_question`, `vocabulary`,
+`misconceptions` and `covers`; the FIFA method carries over wherever a calculation appears; the
+Higher ⭐ / Triple 🔬 labelling has no meaning at KS3 and must not appear.
+
+### 5.10 Science review and the freeze ⊕
+
+KS4's eight frozen fields exist because examiner-approved content must not drift. KS3 needs the same
+discipline over different fields.
+
+**Science-bearing fields** — `big_question`, `vocabulary[].definition`, `misconceptions[].statement`,
+all `core`/`stretch`/`support` explanation text, all ladder questions, answers and success criteria,
+`key_note`.
+
+- These require **Mide's examiner review** before publish. Science accuracy is his sole gate.
+- Once reviewed, they are **frozen**: `review_state: frozen`. Interactives are built *from* frozen
+  science.
+- Any net-new science introduced while building an activity is flagged **⚑** for review, never
+  quietly shipped.
+- Non-science copy (button labels, encouragement, layout) is freely editable.
+
+`review_state` transitions: `draft` → `examiner-reviewed` → `frozen`. Only frozen lessons publish.
+
+---
+
+## 6. The seven architecture families
+
+Each lesson belongs to exactly one family. The family fixes the lesson's skeletal rhythm; the
+component catalogue fills in the instruments. Bonding's five are retuned and extended to two more,
+because KS3 spans biological systems and investigation lessons that KS4 chemistry never had to
+model.
+
+**MODEL — "one idea explains a whole class of behaviour"**
+*e.g. the particle model, the ray model, magnetic fields, the atom.*
+Lead → flagship parameter instrument with predict-gates at each regime change → property blocks each
+anchored back to the model → ladder. The model instrument is the centre of gravity; prose orbits it.
+
+**PROCESS — "a mechanism unfolds in steps"**
+*e.g. photosynthesis, digestion, the rock cycle, the menstrual cycle, breathing.*
+Lead → worked stepper with predict-gates → do-mode construction of the same sequence → what follows
+from the mechanism → ladder. The static block that narrates what the stepper shows is deleted.
+
+**SYSTEM — "parts working together, and what happens when one fails"** ⊕
+*e.g. the digestive system, gas exchange, circuits, ecosystems, the skeleton.*
+KS4 chemistry never needed this; KS3 biology and electricity are full of it. Lead → the system
+assembled part-by-part, each part earning its place → **perturbation as the flagship**: break or
+change one part, predict the knock-on, reveal → ladder. The characteristic KS3 error is knowing the
+parts and not the interaction, so the flagship must be perturbation, never labelling.
+
+**CONTRAST — "two things, one discriminating difference"**
+*e.g. mass vs weight, chemical vs physical change, series vs parallel, aerobic vs anaerobic.*
+Lead → predict-gated A/B instrument → parallel compare-cards as static reference → explanation-chain
+builders forcing the *linked* comparison → ladder. Contrast lessons carry the heaviest rung ③.
+
+**CLASSIFY — "decide which category, fast, and know why"**
+*e.g. acid/alkali, element/compound/mixture, metal/non-metal, living/non-living.*
+Lead → decision instrument (commit a prediction, watch resolution) → the reference table →
+classification drills at rising stakes → ladder. Ends with the rule stated in the student's words.
+
+**QUANTITATIVE — "a calculation carries the concept"**
+*e.g. speed, pressure = F/A, energy cost, density, food energy.*
+Lead → the phenomenon behind the number → concept-calculation pair: a simulation feeding directly
+into FIFA worked/practice (Law 5) → ladder with production. FIFA follows the sim immediately.
+Units and their meaning are content, not formatting.
+
+**INVESTIGATION — "the science skill is the subject"** ⊕
+*e.g. variables and fair testing, measuring and uncertainty, tables and graphs, evaluating error,
+sampling.*
+Lead with a flawed or ambiguous investigation → **critique before construct**: judge someone else's
+method, then build your own → run it in simulation, get messy data → analyse and evaluate → ladder
+ending in a designed investigation. These lessons live inside host content units (§5.7).
+
+**Family assignment is a design decision recorded per lesson in §7.** Two lessons with identical
+block lineups should be a coincidence of need, never a default.
+
+---
+
+## 7. The proposed topic map
+
+Derived from the 2014 statutory programme of study, normalised to Discipline → Unit → Lesson.
+
+**How to read this.** `Y` = `typical_year`, advisory only (§4.5) — it is a *starting suggestion for
+a school with no scheme configured*, nothing more. `F` = architecture family. Lesson counts are
+indicative; the authoring team may merge or split within a unit provided statutory coverage stays
+exactly-once (§4.4). Units marked **⇄** contain a lesson owned by another discipline (§4.6).
+
+**Totals: 33 units, 185 lessons** (Biology 11/60, Chemistry 10/55, Physics 12/70).
+
+That is a large authoring commitment — larger than anything attempted at KS4 so far — and it is
+stated honestly rather than shaded down. Across three years and three sciences it works out at
+roughly 60 lessons per year group, against the 100–120 science lessons a typical school actually
+teaches per year, so it is a lean curriculum, not a bloated one. It is nonetheless the single
+biggest number in this document and it drives the build-order question in §11 decision 8.
+
+### 7.1 Biology — 11 units, 60 lessons
+
+| Unit | Statutory area | Y | Lessons |
+|---|---|---|---|
+| **B1 Cells and organisation** | Structure and function of living organisms | 7 | Life processes and what living things are made of *(CLASSIFY)* · Using a microscope *(INVESTIGATION)* · Animal and plant cells *(MODEL)* · Specialised cells *(SYSTEM)* · Levels of organisation *(SYSTEM)* · Unicellular organisms *(CONTRAST)* · Stem cells and meristems *(PROCESS)* · Enzymes and what changes their rate *(MODEL)* |
+| **B2 Movement: skeleton and muscles** | Structure and function | 7 | What the skeleton does *(SYSTEM)* · Joints *(MODEL)* · Antagonistic muscle pairs *(SYSTEM)* · Biomechanics: forces in the body *(QUANTITATIVE)* ⇄ *requires P4 Forces* |
+| **B3 Nutrition and digestion** | Structure and function | 7 | A balanced diet *(CLASSIFY)* · Food tests *(INVESTIGATION)* · Energy in food and what you need *(QUANTITATIVE)* ⇄ *shares statements with P2* · When diet goes wrong *(CONTRAST)* · The digestive system *(SYSTEM)* · Enzymes in digestion *(PROCESS)* · Absorption and the small intestine *(MODEL)* · Bacteria in the gut *(SYSTEM)* |
+| **B4 Breathing and gas exchange** | Structure and function | 8 | The gas exchange system *(SYSTEM)* · How breathing works *(MODEL)* ⇄ *requires P5 Pressure* · Alveoli: built for exchange *(MODEL)* · Exercise, asthma and smoking *(SYSTEM)* · Stomata and gas exchange in plants *(CONTRAST)* |
+| **B5 Reproduction** | Structure and function | 8 | Human reproductive systems *(SYSTEM)* · Gametes and fertilisation *(PROCESS)* · The menstrual cycle *(PROCESS)* · Gestation, the placenta and birth *(PROCESS)* · Lifestyle and the developing foetus *(SYSTEM)* · Flowers and pollination *(SYSTEM)* · Fertilisation, seeds and fruit *(PROCESS)* · Seed dispersal *(CLASSIFY)* |
+| **B6 Health and drugs** | Structure and function → Health | 9 | What drugs do to the body *(SYSTEM)* · Alcohol and smoking *(SYSTEM)* · Substance misuse and decisions *(INVESTIGATION — evaluating claims and evidence)* |
+| **B7 Photosynthesis** | Material cycles and energy | 8 | The photosynthesis reaction *(PROCESS)* · Leaves built for the job *(MODEL)* · Testing a leaf for starch *(INVESTIGATION)* · Why almost all life depends on it *(SYSTEM)* |
+| **B8 Respiration** | Material cycles and energy | 8 | Aerobic respiration *(PROCESS)* · Why every cell respires *(SYSTEM)* · Anaerobic respiration in humans *(PROCESS)* · Fermentation and what we use it for *(PROCESS)* · Aerobic vs anaerobic *(CONTRAST)* |
+| **B9 Ecosystems and interdependence** | Interactions and interdependencies | 9 | Food chains and food webs *(SYSTEM)* · Predator and prey *(MODEL)* · Disturbing a food web *(SYSTEM)* · Pollinators and food security *(SYSTEM)* · Toxic build-up in a food chain *(PROCESS)* · Sampling an ecosystem *(INVESTIGATION)* |
+| **B10 Inheritance and DNA** | Genetics and evolution | 9 | Variation: continuous and discontinuous *(INVESTIGATION — data and graphs)* · Chromosomes, genes and DNA *(MODEL)* · How we worked out DNA's structure *(INVESTIGATION — nature of science)* · Passing it on: heredity *(PROCESS)* · What makes a species *(CLASSIFY)* |
+| **B11 Evolution, extinction and biodiversity** | Genetics and evolution | 9 | Variation and competitive success *(SYSTEM)* · Natural selection *(PROCESS)* · When the environment changes: extinction *(SYSTEM)* · Biodiversity and gene banks *(SYSTEM)* |
+
+*B10/B11 split from one statutory heading — `split_rationale`: inheritance mechanism and evolutionary
+consequence are separately assessable ideas and are almost universally taught apart.*
+
+### 7.2 Chemistry — 10 units, 55 lessons
+
+| Unit | Statutory area | Y | Lessons |
+|---|---|---|---|
+| **C1 Particles and their behaviour** | The particulate nature of matter | 7 | The particle model *(MODEL)* · Solids, liquids and gases *(CONTRAST)* · Changes of state *(PROCESS)* · Gas pressure *(MODEL)* · Diffusion *(MODEL)* · Testing the model: does it explain everything? *(INVESTIGATION)* |
+| **C2 Atoms, elements and compounds** | Atoms, elements and compounds | 7 | The atom: Dalton's model *(MODEL)* · Elements *(CLASSIFY)* · Compounds *(CONTRAST)* · Chemical symbols *(CLASSIFY)* · Formulae *(MODEL)* · Conservation of mass *(QUANTITATIVE)* |
+| **C3 Mixtures and separation** | Pure and impure substances | 7 | Pure or mixture? *(CLASSIFY)* · Dissolving and solutions *(MODEL)* · Filtration *(PROCESS)* · Evaporation and crystallisation *(PROCESS)* · Distillation *(PROCESS)* · Chromatography *(PROCESS)* · Proving something is pure *(INVESTIGATION)* |
+| **C4 Chemical reactions** | Chemical reactions | 8 | Chemical change vs physical change *(CONTRAST)* ⇄ *shares statements with P11* · Reactions rearrange atoms *(MODEL)* · Word equations *(MODEL)* · Mass in a reaction *(QUANTITATIVE)* · Symbol equations and balancing *(MODEL — stretch-heavy)* |
+| **C5 Types of reaction** | Chemical reactions | 8 | Combustion *(PROCESS)* · Thermal decomposition *(PROCESS)* · Oxidation *(PROCESS)* · Displacement *(PROCESS)* · Which reaction is this? *(CLASSIFY)* |
+| **C6 Acids and alkalis** | Chemical reactions | 8 | Acids and alkalis *(CLASSIFY)* · The pH scale and indicators *(MODEL)* · Neutralisation *(PROCESS)* · Acid + metal *(PROCESS)* · Acid + alkali: making a salt *(PROCESS)* · Making a pure dry salt *(INVESTIGATION)* · Catalysts *(MODEL)* |
+| **C7 Energy changes in reactions** | Energetics | 9 | Energy and changes of state *(MODEL)* ⇄ *requires C1* · Exothermic reactions *(PROCESS)* · Endothermic reactions *(CONTRAST)* · Measuring a temperature change *(INVESTIGATION)* |
+| **C8 The periodic table** | The periodic table | 8 | Metals and non-metals *(CONTRAST)* · Mendeleev and the table that predicted *(INVESTIGATION — nature of science)* · Groups and periods *(MODEL)* · Patterns you can predict: Groups 1, 7 and 0 *(MODEL)* · Metal and non-metal oxides *(CONTRAST)* |
+| **C9 Metals and materials** | Materials | 9 | The reactivity series *(CLASSIFY)* · Predicting displacement *(MODEL)* · Getting metals out of rocks *(PROCESS)* · Ceramics, polymers and composites *(CONTRAST)* |
+| **C10 The Earth and its atmosphere** | Earth and atmosphere | 9 | Inside the Earth *(MODEL)* · Three ways to make a rock *(CLASSIFY)* · The rock cycle *(PROCESS)* · A planet with limits: resources and recycling *(SYSTEM)* · What's in the air *(MODEL)* · Carbon dioxide, humans and climate *(SYSTEM)* |
+
+*C4/C5/C6 split from one statutory heading — `split_rationale`: eight statutory bullets spanning
+representation, reaction types and acid chemistry; universally taught as separate units and too
+large to schedule as one.*
+
+### 7.3 Physics — 12 units, 70 lessons
+
+| Unit | Statutory area | Y | Lessons |
+|---|---|---|---|
+| **P1 Energy transfers** | Energy | 8 | Energy stores *(CLASSIFY)* · Energy transfers: before and after *(MODEL)* · Conservation of energy *(MODEL)* · Heating and thermal equilibrium *(MODEL)* · Conduction *(PROCESS)* · Radiation *(PROCESS)* · Keeping energy in: insulation *(INVESTIGATION)* · Simple machines: force for distance *(QUANTITATIVE)* |
+| **P2 Energy at home** | Energy | 9 | Energy in food *(QUANTITATIVE)* ⇄ *shares statements with B3* · Power ratings in watts *(QUANTITATIVE)* · Calculating energy transferred *(QUANTITATIVE)* · Reading a fuel bill *(QUANTITATIVE)* · Fuels and energy resources *(CLASSIFY)* |
+| **P3 Describing motion** | Motion and forces | 7 | Speed *(QUANTITATIVE)* · Distance–time graphs *(INVESTIGATION)* · Relative motion *(MODEL)* |
+| **P4 Forces** | Motion and forces | 7 | What a force is *(MODEL)* · Drawing and adding forces *(MODEL)* · Balanced and unbalanced *(CONTRAST)* · What forces do to motion *(MODEL)* · Friction *(PROCESS)* · Air and water resistance *(SYSTEM)* · Moments: the turning effect *(QUANTITATIVE)* · Springs and Hooke's law *(INVESTIGATION)* · Non-contact forces *(CLASSIFY)* |
+| **P5 Pressure** | Motion and forces | 8 | Pressure = force ÷ area *(QUANTITATIVE)* · Pressure in liquids *(MODEL)* · Upthrust, floating and sinking *(MODEL)* · Atmospheric pressure *(SYSTEM)* |
+| **P6 Waves and sound** | Waves | 8 | Waves on water: what a wave is *(MODEL)* · Transverse waves, reflection and superposition *(MODEL)* · How sound is made *(PROCESS)* · Sound is longitudinal *(CONTRAST)* · Frequency, pitch and loudness *(QUANTITATIVE)* · Sound needs a medium *(INVESTIGATION)* · Echoes, reflection and absorption *(PROCESS)* · Hearing and auditory range *(SYSTEM)* · Ultrasound at work *(SYSTEM)* |
+| **P7 Light** | Waves | 8 | Light travels *(MODEL)* · Reflection: mirrors and scattering *(MODEL)* · Refraction *(PROCESS)* · Lenses and images *(MODEL)* · The eye and the camera *(SYSTEM)* · Colour and the spectrum *(MODEL)* · Why things look coloured *(CONTRAST)* |
+| **P8 Electric circuits** | Electricity and electromagnetism | 8 | Current and circuits *(MODEL)* · Series and parallel *(CONTRAST)* · Current at a junction *(SYSTEM)* · Potential difference *(MODEL)* · Resistance *(QUANTITATIVE)* · Conductors and insulators *(CLASSIFY)* · Building and measuring a circuit *(INVESTIGATION)* |
+| **P9 Static electricity** | Electricity and electromagnetism | 9 | Charging by rubbing *(PROCESS)* · Forces between charges *(MODEL)* · Electric fields *(MODEL)* |
+| **P10 Magnetism and electromagnetism** | Electricity and electromagnetism | 9 | Magnets and poles *(CONTRAST)* · Magnetic fields *(INVESTIGATION)* · The Earth is a magnet *(SYSTEM)* · Electromagnets *(MODEL)* · How a motor works *(SYSTEM)* |
+| **P11 Matter and the particle model** ⇄ | Matter | 7 | Density *(QUANTITATIVE)* · Brownian motion *(MODEL)* · Temperature, particle motion and internal energy *(MODEL)* · Why ice floats *(CONTRAST)* · *references C1 (particle model, changes of state, diffusion) and C4 (chemical vs physical change)* |
+| **P12 Space** | Space physics | 9 | Gravity and weight *(QUANTITATIVE)* · Mass vs weight *(CONTRAST)* · Gravity between Earth, Moon and Sun *(MODEL)* · The Sun, stars and galaxies *(SYSTEM)* · Seasons and the tilt *(MODEL)* · How far is a light year? *(QUANTITATIVE)* |
+
+*P11 is a **referencing unit**: it owns four lessons of its own and pulls the rest of its statutory
+coverage from Chemistry C1 under the single-source rule (§4.6). It is the first real test of that
+rule, which is why §10.1 schedules it as the opening physics unit.*
+
+### 7.4 Cross-discipline ownership decisions (fixed)
+
+| Idea | Owner | Referenced by |
+|---|---|---|
+| Particle model, states, changes of state, diffusion | **Chemistry C1** | Physics P11, Biology B3/B4 |
+| Density, Brownian motion, internal energy, ice anomaly | **Physics P11** | Chemistry C1 |
+| Chemical vs physical change | **Chemistry C4** | Physics P11 |
+| Energy in food, energy calculations | **Physics P2** | Biology B3 |
+| Pressure | **Physics P5** | Biology B4 (breathing) |
+| Forces | **Physics P4** | Biology B2 (biomechanics) |
+
+### 7.5 Working Scientifically distribution
+
+WS-primary (`INVESTIGATION`) lessons are distributed so every year meets every WS strand:
+`Using a microscope` (B1) · `Food tests` (B3) · `Testing a leaf for starch` (B7) ·
+`Sampling an ecosystem` (B9) · `Variation: data and graphs` (B10) · `How we worked out DNA` (B10) ·
+`Testing the model` (C1) · `Proving something is pure` (C3) · `Making a pure dry salt` (C6) ·
+`Measuring a temperature change` (C7) · `Mendeleev` (C8) · `Insulation` (P1) ·
+`Distance–time graphs` (P3) · `Springs and Hooke's law` (P4) · `Sound needs a medium` (P6) ·
+`Building and measuring a circuit` (P8) · `Magnetic fields` (P10).
+
+Coverage of the four WS strands is auditable per year and per discipline once `ws` tags are authored.
+
+---
+
+## 8. How KS3 plugs into the existing platform
+
+KS3 is a **new content architecture on the existing delivery system**. Nothing below asks for new
+infrastructure; it asks for a parallel path through infrastructure that already works.
+
+### 8.1 What already exists (verified in the codebase)
+
+| Thing | State |
+|---|---|
+| `generate_site_v5.py` (~5,225 lines, `build_site()` at ~L4901–5224) | Builds all topic pages. **Zero KS3 awareness.** |
+| `all_subtopics_<subject>[_variant].py` × 12 | KS4 data modules, one per (subject × pathway × tier). |
+| `bonding_redesign.py` + `BONDING_REDESIGN` | The v2 block vocabulary and per-page config. Branch at generator ~L4396. |
+| `shared/tokens.css` | Loaded by **every** page. Contains a `[data-mode="ks3"]` block (~L157–165) — accent `#C4490F`, hover `#A63C12`, radii bumped to 12/18/26px. Described in-file as dials only, no styling. |
+| `shared/quiz.js`, `shared/tap-match.js`, `shared/predict-wrapper.js`, `shared/heroes/theory-blocks.js` | Extracted, working, subject-agnostic. |
+| `profiles.key_stage` + `profiles_tier_only_ks4_check` | KS3 profiles **already forbidden** from holding tier/pathway. The §2 anti-goal is enforced by the database. |
+| `scheme_of_work_entries` (migration `20260501212106_schools_layer.sql`, L156–178) | Exists, keyed on `(key_stage, year_group, tier, pathway, subject_id, exam_board, academic_week)`. **Unused by the frontend.** See §8.7 — it has two KS3 defects. |
+| `subjects` table | Seeded with Biology / Chemistry / Physics, department `Science`. |
+
+### 8.2 Generator integration
+
+**Rule: KS3 gets its own build path. It must not be threaded through the KS4 loop.**
+
+The KS4 pipeline is parameterised by `(pathway, tier, subject, topic, subtopic)` and driven by the
+hardcoded `SITE_DATA` and `PATHWAY_TOPIC_MAP`. The tempting shortcut — give KS3 a synthetic pathway
+and tier so it can ride the existing loop — **is forbidden.** It would reintroduce tier into KS3
+through the back door and violate §2 within a week of shipping.
+
+Instead:
+
+- A new `build_ks3(output_dir)` function, called from `build_site()` alongside the KS4 build.
+- Its own registry (`ks3_data/`, §8.3). **Do not extend `SITE_DATA` or `PATHWAY_TOPIC_MAP`.**
+- Its own page template — the KS4 subtopic template is prose-blob shaped and is the thing being
+  moved away from. The bonding v2 branch (generator ~L4396) is the correct model to follow: a
+  distinct renderer selected by data, emitting v2-grammar blocks.
+- **Determinism holds:** iterate units and lessons in sorted order; two runs must produce
+  byte-identical output. This is inherited, non-negotiable, and testable.
+- **Zero KS4 drift:** a KS3 build must change zero bytes under the KS4 output paths. Verify by diff,
+  every build.
+
+### 8.3 Data files
+
+KS4 uses twelve monolithic modules. **KS3 uses a package with one module per unit:**
+
+```
+ks3_data/
+  __init__.py                     # builds KS3_UNITS by importing modules in sorted order
+  chemistry_c1_particles.py       # exports UNIT = {...}
+  chemistry_c2_atoms.py
+  physics_p4_forces.py
+  biology_b1_cells.py
+  ...
+```
+
+Each module exports a single `UNIT` dict: `{code, slug, title, discipline, statutory_area,
+split_rationale, lessons: [<lesson records per §4.8>]}`.
+
+**Why not the KS4 pattern:** ~185 lessons across three files would be unreviewable, unmergeable, and
+impossible to gate. One module per unit matches the release increment (§4.3) and the review gate
+(§5.10) — a unit is authored, reviewed, frozen and shipped as one file.
+
+### 8.4 URL and output taxonomy
+
+```
+/ks3/index.html                                     KS3 landing
+/ks3/<discipline>/index.html                        discipline hub
+/ks3/<discipline>/<unit-slug>/index.html            unit index
+/ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson
+```
+
+Compare KS4: `/<pathway>/<tier>/<subject>/<topic>/<subtopic>.html`. KS3 is shallower because it has
+no pathway and no tier — which is the point.
+
+- **No year appears in any path**, ever (§4.5).
+- Paths are **disciplinary even if navigation is integrated** (§11 decision 2). Presentation is
+  reversible; URLs are not.
+- **Slugs are permanent.** Renaming a lesson changes its title, never its slug — scheme-of-work rows,
+  progress records and `requires` edges all point at slugs.
+- Output lands in `mrbadmus_site/ks3/…`, which Cloudflare serves. Root-level hand-written pages and
+  the `/teacher/` and `/student/` trees continue to be copied as they are today.
+
+### 8.5 Tokens and the KS3 look
+
+**KS3 pages carry both `class="rd"` and `data-mode="ks3"` on `<body>`.**
+
+- `.rd` opts into the redesign locked token system (Space Grotesk / IBM Plex Sans / IBM Plex Mono,
+  the panel/callout radii, `--rd-fs-scale: 1.25`). This is the platform's current design language and
+  Law 7 says there is only one.
+- `data-mode="ks3"` supplies the differentiating dials that already exist in `tokens.css`: a brighter
+  accent and rounder corners. That is the entire visual difference at launch, and it is enough — KS3
+  should read as *the same site, tuned younger*, not as a different product.
+- Anything KS3 needs beyond those dials is **an addition to the `[data-mode="ks3"]` block in
+  `tokens.css`**, never a new stylesheet.
+- Subject identity colours (`--biology`, `--chemistry`, `--physics`) already exist and apply
+  unchanged.
+- ⚠️ **Verify at build:** the KS3 accent `#C4490F` has not been contrast-checked against the cream
+  ground for body-text use. Check it against WCAG AA before it carries text, and adjust the token if
+  it fails.
+- Brand rule: KS3 pages are external/public, so they take the **orange chevron SVG + "MrBadmusAI"**
+  nav brand per `CLAUDE.md`, not the dashboard text brand.
+- Breadcrumbs: `nav_html(subject, pathway, tier)` is KS4-shaped. KS3 needs its own crumb builder
+  rendering `KS3 › Chemistry › Particles and their behaviour`.
+
+### 8.6 Component reuse — what KS3 inherits, and what doesn't transfer
+
+**Inherit directly:**
+
+| Component | Use at KS3 |
+|---|---|
+| `shared/quiz.js` | Ladder rungs ① and ②. |
+| `shared/tap-match.js` | Classification and matching. Touch-safe; HTML5 drag-and-drop stays retired. |
+| `shared/predict-wrapper.js` | Law 4. **Mandatory on every stateful reveal.** |
+| `shared/heroes/theory-blocks.js` | Block renderer. |
+| `bonding_redesign.py` block vocabulary | Starting library: `lead`, `feature-cards`, `compare-cards`, `step-sequence`, `example-callout`, `aside-callout`, `mistake-check`, `compare-reveal`. Subject-agnostic grammar. |
+| ChainBuilder, WriteThenMark | Ladder rungs ③ and ④. |
+| `shared/mrbadmus.v2.js` | AI tutor, with the KS3 prompt from §5.9. |
+
+**Does not transfer — and must not appear on a KS3 page:**
+
+| KS4 element | Why | KS3 replacement |
+|---|---|---|
+| `examiner-tip` block | No exam board, no examiner. | A "say it like a scientist" block — how to word an explanation. ⊕ |
+| Spec pill (`5.2.1.2`) | No specification. | Statutory-coverage indicator + thread chips (§4.7). ⊕ |
+| Tier pill (Higher / Foundation) | No tier at KS3. | Nothing. Depth is layers (§5.6), not a badge. |
+| ⭐ Higher / 🔬 Triple labels | Meaningless at KS3. | Nothing. |
+| Mark-scheme tariffs | No board awards marks. | Plain-English success criteria (§5.8). |
+
+### 8.7 Supabase — two real defects to fix before the default sequence ships ⊕
+
+`scheme_of_work_entries` is the right home for the soft ordering that §4.5 requires. It is currently
+**unused by the frontend**, and inspection shows two problems that are build-blocking for KS3:
+
+1. **`exam_board` is `NOT NULL` with a CHECK restricted to real boards** (`'AQA'`, `'Edexcel'`,
+   `'OCR'`, …). **KS3 has no exam board.** Every KS3 row would have to lie. Fix: a migration
+   allowing `exam_board IS NULL` when `key_stage = 'KS3'`. A `'None'` sentinel is the wrong fix — it
+   pollutes the domain and every consumer then has to special-case it.
+2. **The unique constraint is ineffective for KS3.** It spans
+   `(key_stage, year_group, tier, pathway, subject_id, exam_board, academic_week)`, and `tier` and
+   `pathway` are `NULL` on every KS3 row. Postgres treats NULLs as distinct in a unique index, so
+   **duplicate KS3 scheme rows are currently allowed.** Fix: `NULLS NOT DISTINCT` (PG15+) or a
+   partial unique index scoped to `key_stage = 'KS3'`.
+
+Also note:
+
+- `topic` / `subtopic` are free text. KS3 rows should carry the **lesson slug** in `subtopic`, and
+  ideally gain a real foreign key once a lesson registry table exists. Free text will drift.
+- The `subjects` seed (Biology / Chemistry / Physics) supports disciplinary ownership (§4.1) with no
+  change. A KS3 "Science" subject row is only needed if the product wants integrated *class
+  assignment* — see §11 decision 2.
+- Score persistence: bonding v2 uses `localStorage` (`quiz_best_<id>`, `lab_best_<id>`). KS3
+  inherits that at minimum. Server-side progress is a Phase 5 question, not a Phase 1 blocker.
+
+These are migration-time problems, not architecture problems — but they must be fixed before the
+default sequence ships, or §4.5 is a promise the database cannot keep.
+
+### 8.8 What a KS3 student can reach today: nothing
+
+Verified current state:
+
+- `profile-setup.html` — a KS3 student is shown a "you're all set" panel and correctly skipped past
+  the pathway/tier wizard. There is **no onward destination**.
+- `weekly-challenge.html` — shows "Weekly Challenges are coming soon for KS3".
+- `leaderboard.html` — keyed on pathway and tier, so it is empty for KS3.
+- The generator emits **no KS3 routes at all**.
+
+A KS3 student who signs up today has nowhere to go. That is the strongest practical argument for the
+vertical slice in §9: `/ks3/` plus one real unit is the first thing that gives them a destination.
+
+### 8.9 Evidence from a real school ⊕
+
+Rainford High School's KS3 materials were surveyed as reference evidence — never as a template. Three
+observations that bear on this architecture:
+
+1. **Rainford teaches combustion, oxidation and thermal decomposition in Year 7, and states of matter
+   and particles in Year 8** — the reverse of this document's `typical_year` defaults (C1 particles
+   in Y7, C5 reactions in Y8). Neither ordering is wrong. This is exactly the case §4.5 exists for: a
+   school reorders, and **nothing rebuilds**. If that had cost a rebuild, the platform would already
+   be a poor fit for its own pilot school.
+2. **Rainford runs split science (separate Biology, Chemistry, Physics) across Years 7–9** — evidence
+   supporting the disciplinary structure of §4.1, and a useful data point for §11 decision 2.
+3. **Rainford differentiates with "LA"/"HA" variants of individual worksheets**, applied per-resource
+   rather than as a tier. That is precisely the shape of the support/stretch layers in §5.6, and
+   confirms the layer axis reflects real classroom practice rather than a platform invention.
+
+There is no formal Rainford scheme-of-work document; the sequence is implicit in folder structure.
+So no scheme was copied, and none could have been.
+
+---
+
+## 9. The vertical slice: build C1 first
+
+**Recommendation: build Unit C1 — *Particles and their behaviour* — as the complete first slice, end
+to end, before authoring anything else.** Six lessons, one unit index, full plumbing.
+
+**Why C1 and not something else:**
+
+1. **It is the most load-bearing idea in KS3.** The particle model underpins the whole of KS3
+   chemistry, physics matter and energy, and reaches into biology via diffusion and gas exchange. If
+   the architecture can carry C1 well, it can carry anything. If it can't, we want to know now.
+2. **It is Year 7 in essentially every school**, so it is the first thing a pilot school would
+   actually use, and the first thing that can be tested with real students.
+3. **It is the densest misconception field in KS3** — particles expand when heated, there is air
+   between particles, particles in a gas are "hot", a gas weighs nothing. This is the hardest test
+   of Law 3, which is the newest and least proven law in this document.
+4. **It has a proven KS4 counterpart.** The bonding v2 `states-of-matter` page already exists, which
+   gives us a real `ks4_links` edge to prove the bridge, and existing components (parameter-sweep
+   instruments, heating-curve-style labs) to reuse rather than invent.
+5. **It exercises the cross-discipline model immediately.** C1 is the owner in the §7.4 table and
+   P11 is its first referencer, so the single-source rule gets tested in the first slice instead of
+   being discovered as a problem in month four.
+6. **It spans four of the seven families** — MODEL, CONTRAST, PROCESS, INVESTIGATION — so the family
+   system gets a real workout without needing three units.
+7. **It is fast for Mide to examiner-check.** The science is unambiguous and he has taught it many
+   times; the review gate won't bottleneck the first slice while the process is still being learned.
+
+**Runner-up, and why it lost:** P4 *Forces* is the other candidate — equally misconception-rich, more
+mathematically interesting. It loses on dependency (nine lessons, several requiring prior work) and
+on breadth of downstream leverage: nothing outside physics depends on it, whereas half the key stage
+depends on particles.
+
+**What "done" means for the slice — the slice is not complete until all of these hold:**
+
+- Six lessons authored, examiner-reviewed, `review_state: frozen`.
+- `docs/ks3/statutory-register.md` exists, at least for Chemistry, with C1's statements owned
+  exactly once.
+- All ten laws demonstrably satisfied on every page, checked page by page.
+- The prerequisite graph validates: acyclic, and the generator fails loudly on a cycle.
+- Cross-reference to P11 renders correctly *before* P11 exists (graceful pending state).
+- `ks4_links` to the bonding v2 states-of-matter page resolves.
+- The default sequence contains C1 and a school can reorder it with a data change only — proven by
+  actually doing it, not by assertion.
+- Full verification pass, inherited from bonding: keyboard walk, touch model, reduced-motion, WCAG
+  AA contrast on any new tints, determinism double-run (two generator runs → byte-identical output),
+  and **zero KS4 pages changed**.
+
+**Then stop and review before authoring unit two.** The slice exists to find what is wrong with this
+document.
+
+---
+
+## 10. Build order and working method
+
+### 10.1 Order
+
+| Phase | Work | Gate |
+|---|---|---|
+| **0 — Register** | Produce `docs/ks3/statutory-register.md`: every statutory bullet, ID'd per §4.4. Produce the empty `misconception-register.md`. | Mide confirms the register is a faithful transcription of the statutory document. |
+| **1 — Slice** | Build C1 end to end (§9): `build_ks3()`, KS3 page template, `ks3_data/` package, tokens, routing, `/ks3/` landing. Plus the `scheme_of_work_entries` migration from §8.7 — without it, §4.5 cannot be honoured. | Full §9 done-list. Mide reviews the science and two complete pages. |
+| **2 — Chemistry** | C2, C3, then C4–C6 (the reactions block). | Per-unit examiner review. |
+| **3 — Physics** | P11 (proves the reference model), then P3/P4/P5, then the rest. | Per-unit. |
+| **4 — Biology** | B1 first (feeds most of biology), then the rest. | Per-unit. |
+| **5 — Systems** | Progress tracking, scheme-of-work editor, coverage reporting, KS3 challenge/leaderboard if adopted (§11). | Product gate. |
+
+Chemistry before physics before biology, because chemistry contains the most load-bearing shared
+ideas and biology has the most lessons — we want the architecture proven before the biggest
+authoring commitment.
+
+### 10.2 Definition of done, per lesson ⊕
+
+A lesson ships only when every line is true:
+
+- [ ] One idea, statable in one sentence.
+- [ ] `covers` non-empty; every listed statement owned by this lesson and no other.
+- [ ] Opens with a phenomenon, not a definition (Law 1).
+- [ ] First commitment within ~90 words (Law 2); total body prose under ~450 words.
+- [ ] `misconceptions` non-empty and at least one confronted by an activity (Law 3).
+- [ ] Every stateful reveal gated by a prediction (Law 4).
+- [ ] Any worked sequence paired with a do-mode (Law 5).
+- [ ] Concrete → representational → abstract, in that order (Law 6).
+- [ ] `vocabulary` authored, marked on first use, recalled once (Law 7).
+- [ ] Four-rung ladder with persistence and retry-my-misses (Law 8).
+- [ ] Motion animated; reduced-motion fallback (Law 9).
+- [ ] Each activity's claimed demand audited against what it actually requires (Law 10).
+- [ ] `typical_year` present and used nowhere in structure (§4.5).
+- [ ] `requires` edges authored; graph still acyclic.
+- [ ] `ks4_links` authored or deliberately empty.
+- [ ] Keyboard-complete, WCAG AA, touch-tested.
+- [ ] Science examiner-reviewed; `review_state: frozen`; any net-new science flagged ⚑.
+
+### 10.3 Review method
+
+Inherited from bonding: **name the intended cognitive demand first, then check the activity delivers
+it** (Law 10). At KS3 add one question to every review: *"which wrong idea does this lesson kill, and
+would a student holding that idea be forced to notice?"* If the answer is no, the lesson is not
+finished, however attractive it looks.
+
+---
+
+## 11. Open decisions — Mide's calls
+
+Ordered by how much downstream work they block.
+
+**1. MRB-103 reconciliation.** *(Blocking-ish, cheap to resolve.)* This architecture was written
+without sight of the previously ratified KS3 architecture, because Linear is unauthenticated in the
+session that produced it and no local copy exists. Someone must diff the two and record the delta
+here. **Recommendation:** restore Linear access, diff, and treat any conflict as a genuine open
+question rather than assuming this document wins.
+
+**2. Integrated or disciplinary presentation?** Most schools teach KS3 as "Science", not as three
+subjects; the database models KS3 as a single Science subject; but content ownership and the KS4
+bridge are disciplinary. **Recommendation:** disciplinary URLs and ownership (as specified in §4.1),
+with navigation that can present either an integrated view or three subject views — a school
+setting, defaulting to integrated. This is reversible; the underlying structure is not, which is why
+the structure is disciplinary.
+
+**3. Does KS3 get the weekly challenge and leaderboard?** The current system is built on
+`(subject, pathway, tier)` and KS3 has neither pathway nor tier. A KS3 track would need its own
+shape — probably `(discipline)` or a single mixed-science challenge. **Recommendation:** yes, but not
+before Phase 5, and as a single mixed-science weekly challenge rather than three, because KS3
+students mostly experience one Science.
+
+**4. Does the `support` layer ship at launch?** It roughly doubles authoring effort on the parts of a
+lesson that need most care. **Recommendation:** author `core` + `stretch` at launch; design the
+support slots into the template from day one so they can be filled later without a re-author.
+
+**5. The default sequence.** Someone must decide the platform's published default ordering. Rainford's
+sequence is evidence of one school's choice, explicitly not a template — and it already diverges from
+the §7 defaults (they teach reactions in Year 7 and particles in Year 8; this document suggests the
+reverse). **Recommendation:** publish the §7 `typical_year` mapping as "MrBadmusAI default sequence
+v1", and treat the Rainford divergence as the first live test of §4.5 rather than a reason to change
+the default. If honouring their order costs anything more than a data change, the invariant has
+failed and we want to find that out on unit one.
+
+**6. Statutory ID scheme.** §4.4 invents `KS3.C.PNM.02`. Once lessons reference these IDs they are
+effectively permanent. Needs explicit blessing before Phase 0. **Recommendation:** adopt as
+specified.
+
+**7. Reading-age target.** §5.4 says "below chronological age" without a number. A specific target
+(e.g. readability age 9–10 for body prose) makes it checkable. **Recommendation:** set 9–10 and
+measure it, with technical vocabulary excluded from the measure.
+
+**8. Authoring capacity and scope.** **185 lessons** is a large commitment — larger than anything
+attempted at KS4 so far — and §10.1 assumes it happens over many months. There is a real alternative:
+build **Year 7 across all three disciplines** first (a "first year, whole curriculum" cut, roughly 60
+lessons) rather than "all of chemistry". That gives a pilot school something completely usable for a
+whole year group in a third of the time, at the cost of proving the architecture on a narrower range
+of content. **Recommendation:** this is a product and commercial call, not an architecture one — the
+architecture supports either. If schools are waiting, take the Year 7 cut. If the priority is getting
+the architecture right, take the §10.1 order. Either way, C1 is still the first unit built (§9).
+
+**9. Is P9 *Static electricity* its own unit?** It is only three lessons, and it could fold into P8
+*Electric circuits* or into P10 *Magnetism and electromagnetism*. **Recommendation:** keep it
+separate — static electricity is conceptually distinct from current electricity and merging them is
+a known source of the "current is stored in the battery" confusion. But this is a physics-authoring
+call, and either answer is architecturally fine. Decide it at Phase 3, not now.
+
+**10. AI tutor scope at KS3.** Should the tutor answer beyond the lesson, as it does at KS4? A Year 7
+asking about radioactivity gets an answer that may confuse more than help. **Recommendation:** answer
+anything, but anchor to KS3 language and flag when something is "something you'll meet at GCSE".
+
+---
+
+## 12. Change control
+
+This document is law. Changing it changes what gets built.
+
+- Amendments are made **here**, in this file, with a dated line in the log below — never by a local
+  decision in a build session.
+- Where a build discovers this document is wrong, the fix is an amendment plus a note of what the
+  build actually did.
+- Where this document and the bonding v2 doctrine conflict, §3 is the reconciliation record; add to
+  it rather than improvising.
+- Where this document and the statutory programme of study conflict, **the statutory document wins**
+  and this one is wrong.
+
+### Amendment log
+
+| Date | Change | By |
+|---|---|---|
+| 2026-07-25 | Initial architecture. Written from the statutory spine, the bonding v2 doctrine, and the existing platform. MRB-103 unavailable — see §0. | Claude (Fable 5) |
