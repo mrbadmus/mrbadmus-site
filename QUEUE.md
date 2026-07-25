@@ -29,6 +29,16 @@
 
 **Do this one first, and finish it (committed) before starting Task 2.**
 
+### Step zero: read the ticket
+
+**Linear was authenticated on 25 Jul 2026 — you should have Linear MCP tools available.** Read
+**MRB-141** in Linear, in full, including comments, *before* you touch the code.
+
+Everything below was reconstructed by reading the generator, not from the ticket, because the session
+that wrote this queue had no Linear access. **Where the ticket and this queue disagree, the ticket
+wins** — note the difference in your report. If the ticket adds acceptance criteria beyond what is
+here, honour them.
+
 ### What is known
 
 `generate_site_v5.py` emits an inline `<script>` block containing a legacy quiz stub. Around
@@ -95,13 +105,6 @@ git status --porcelain -- mrbadmus_site/ | grep -i bond   # expect: no output
 
 If any bonding page shows a diff, you have over-reached. Investigate before committing.
 
-### Note on the ticket itself
-
-Linear MCP is **not authenticated** in the background session that set this lane up, and MRB-141 is
-not mirrored in any local file — so the ticket text above is reconstructed from reading the code,
-not from Linear. If your session has Linear access, read MRB-141 first and reconcile: if the ticket
-asks for something different from the above, **the ticket wins** — note the difference in your report.
-
 ---
 
 ## Task 2 — MRB-130: dead font link and dead CSS rule on `.rd` pages
@@ -114,7 +117,8 @@ usage of the font family and of the selector before removing — a rule that mat
 may still be load-bearing for a page type you have not looked at), remove them, regenerate, and
 verify no visual regression on an `.rd` page.
 
-Same Linear caveat as Task 1: read MRB-130 if you have Linear access, and let the ticket win.
+**Read MRB-130 in Linear first**, same as Task 1 — the ticket wins over this description, and it may
+name the exact font and selector, which would save you the hunt.
 
 ---
 
