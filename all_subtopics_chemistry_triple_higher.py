@@ -5442,19 +5442,34 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"energy-changes": [{'common_mistake': 'EXOTHERMIC reactions make the surroundings HOTTER (temperature rises). ENDOTHERMIC reactions make '
-                    'the surroundings COLDER (temperature falls). The reaction itself releases or absorbs energy — but '
-                    'the SURROUNDINGS show the opposite effect to what the reaction does. Also: ΔH is NEGATIVE for '
-                    "exothermic (releases energy) — students often think negative means the reaction is 'losing "
-                    "energy' in a bad way — it just means energy is released.",
+"energy-changes": [{'common_mistake': "Students often think that because an endothermic reaction takes energy IN, it must make the surroundings feel hotter — and that a negative ΔH means the reaction has 'lost' energy and gone wrong. Both are back to front. An endothermic reaction absorbs energy FROM the surroundings, so the surroundings get COLDER (the temperature falls); an exothermic reaction releases energy TO the surroundings, so they get HOTTER. And a negative ΔH is simply the label for exothermic — energy released — not a sign that anything is lost or wrong; a positive ΔH means energy absorbed (endothermic).",
   'equations': ['Q = m × c × ΔT'],
-  'fifas': [{'label': 'Calorimetry Calculation',
-             'question': '50 g of water is heated by a reaction. The temperature rises from 20°C to 34°C. Calculate '
-                         'the energy released. (c = 4.18 J/g°C)',
-             'steps': [('F', 'Q = m × c × ΔT'),
-                       ('I', 'm = 50 g, c = 4.18 J/g°C, ΔT = 34 − 20 = 14°C'),
-                       ('F', 'Q = 50 × 4.18 × 14 = 50 × 58.52'),
-                       ('A', 'Q = 2926 J ≈ 2930 J (exothermic — temperature rose)')]}],
+  'fifas': [
+      {'label': 'Energy released, in kilojoules',
+       'question': 'A reaction raises the temperature of 150 g of water by 20 °C. Calculate the energy released, in kJ. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT'),
+           ('I', 'm = 150 g, c = 4.18 J/g °C, ΔT = 20 °C, so Q = 150 × 4.18 × 20'),
+           ('F', 'Q = 12 540 J; convert to kJ by dividing by 1000'),
+           ('A', 'Q = 12.54 kJ'),
+       ]},
+      {'label': 'Molar enthalpy of combustion',
+       'question': 'Burning 0.020 mol of a liquid fuel raises the temperature of 200 g of water by 43 °C. Calculate the molar enthalpy change, in kJ/mol. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT, then ΔH = Q ÷ number of moles'),
+           ('I', 'Q = 200 × 4.18 × 43 = 35 948 J = 35.948 kJ'),
+           ('F', 'ΔH = 35.948 ÷ 0.020, and it is negative because combustion is exothermic'),
+           ('A', 'ΔH = −1797 kJ/mol (to 4 significant figures)'),
+       ]},
+      {'label': 'Working backwards to a temperature rise',
+       'question': 'A reaction releases 6270 J of energy to 100 g of water. Calculate the temperature rise of the water. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT, rearranged to ΔT = Q ÷ (m × c)'),
+           ('I', 'ΔT = 6270 ÷ (100 × 4.18) = 6270 ÷ 418'),
+           ('F', 'divide'),
+           ('A', 'ΔT = 15 °C'),
+       ]},
+     ],
   'higher': 'Q = mcΔT for calorimetry. Calculate molar enthalpy change: ΔH (kJ/mol) = −Q ÷ moles of limiting reactant. '
             'Negative ΔH = exothermic. Evaluate sources of error in calorimetry (heat loss to surroundings, incomplete '
             'reaction). Compare experimental with literature values.',
@@ -5470,29 +5485,152 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Exothermic', 'Respiration — glucose + oxygen releases energy in cells'),
                          ('Endothermic', 'Photosynthesis — absorbs light energy to make glucose')],
                'title': 'Exothermic or Endothermic?'},
-  'quiz': [{'opts': [('Exothermic — energy is released to the surroundings, raising the temperature', True),
-                     ('Endothermic — energy is absorbed, warming the hand from within', False),
-                     ('Neither — hand warmers use electrical energy, not chemical reactions', False),
-                     ('Endothermic — the hand warmer absorbs heat from the hand', False)],
-            'q': 'A hand warmer gets hot when activated. What type of reaction is occurring inside?',
-            'wrong_explanations': {1: 'Endothermic reactions take IN heat from the surroundings — they make things '
-                                      'colder, not warmer. Hand warmers get hot because they are exothermic.',
-                                   2: 'Most disposable hand warmers use a chemical reaction (e.g. iron oxidation) — '
-                                      'not electricity.',
-                                   3: 'A hand warmer RELEASES heat to the hand — the reaction inside is exothermic '
-                                      '(releases energy).'}},
-           {'opts': [('3344 J — Q = 100 × 4.18 × 8', True),
-                     ('836 J — Q = 100 × 4.18 × 2', False),
-                     ('3340 J — temperature change forgotten, used 8.18 instead', False),
-                     ('41800 J — forgot to use the temperature change', False)],
-            'q': '100 g of solution is heated in a calorimetry experiment. Temperature rises from 22°C to 30°C. Using '
-                 'c = 4.18 J/g°C, how much energy was released?',
-            'wrong_explanations': {1: 'ΔT = 30 − 22 = 2 — not 8. The temperature change is the difference: 30 − 22 = '
-                                      '8°C.',
-                                   2: 'Calculation partially correct but wrong ΔT value used — not a standard error in '
-                                      'the formula.',
-                                   3: 'Must use Q = m × c × ΔT = 100 × 4.18 × 8 = 3344 J. Cannot use just mass × '
-                                      'specific heat capacity.'}}],
+  'quiz': [
+      {'q': 'A camping stove burns butane and the surroundings get hotter. Deduce whether the reaction is exothermic or endothermic, and give a reason.',
+       'opts': [
+           ('Exothermic — it releases energy to the surroundings, so their temperature rises', True),
+           ('Endothermic — energy is taken in, which is what makes the surroundings feel hot', False),
+           ('Endothermic — burning always absorbs energy from the air', False),
+           ('Neither — the heat comes from the match, not the reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'This reverses the idea: endothermic reactions take energy IN and make the surroundings COLDER. Releasing energy (exothermic) is what warms them.',
+           2: 'Burning (combustion) RELEASES energy — it is exothermic. It needs a little energy to start, but far more is given out.',
+           3: 'The match only supplies the energy to start it; the sustained heat is released by the exothermic combustion itself.',
+       }},
+      {'q': 'When ammonium nitrate is stirred into water the beaker feels cold. Predict whether dissolving it is exothermic or endothermic, and explain the temperature change.',
+       'opts': [
+           ("Endothermic — it absorbs energy from the water, so the water's temperature falls", True),
+           ('Exothermic — the cold shows energy is being released', False),
+           ('Endothermic — energy is released, cooling the water', False),
+           ('Neither — dissolving is never an energy change', False),
+       ],
+       'wrong_explanations': {
+           1: 'A temperature FALL means energy is being absorbed FROM the surroundings — that is endothermic, not exothermic.',
+           2: 'Endothermic is the right label, but the reason is wrong: endothermic means energy is ABSORBED, not released.',
+           3: 'Dissolving does involve energy changes; here energy is absorbed, which is exactly how instant cold packs work.',
+       }},
+      {'q': 'Describe what happens to the energy of the surroundings during an exothermic reaction and during an endothermic reaction.',
+       'opts': [
+           ('Exothermic: energy is transferred TO the surroundings (they heat up). Endothermic: energy is taken FROM the surroundings (they cool down)', True),
+           ('Exothermic: the surroundings cool. Endothermic: the surroundings heat up', False),
+           ('Both transfer energy to the surroundings, warming them', False),
+           ('Both take energy from the surroundings, cooling them', False),
+       ],
+       'wrong_explanations': {
+           1: 'This is the wrong way round — exothermic HEATS the surroundings; endothermic COOLS them.',
+           2: 'Only exothermic warms the surroundings; endothermic absorbs energy and cools them.',
+           3: 'Only endothermic cools the surroundings; exothermic releases energy and warms them.',
+       }},
+      {'q': 'Explain why the temperature of the reaction mixture rises during the neutralisation of an acid with an alkali.',
+       'opts': [
+           ('Neutralisation is exothermic — it releases energy to the mixture, so its temperature rises', True),
+           ('The mixture absorbs energy from the surroundings as it reacts', False),
+           ('The acid and alkali are already hot before they are mixed', False),
+           ('Stirring the mixture adds energy and heats it up', False),
+       ],
+       'wrong_explanations': {
+           1: 'Absorbing energy would make it COLDER; a temperature rise shows energy is being released (exothermic).',
+           2: 'The rise is caused by the reaction releasing energy, not by the starting temperature of the reactants.',
+           3: 'Stirring adds a negligible amount of energy; the heating is due to the exothermic neutralisation reaction.',
+       }},
+      {'q': 'A student adds a reactant to a solution and the temperature falls by 6 °C. Determine the type of reaction and state the sign of its enthalpy change, ΔH.',
+       'opts': [
+           ('Endothermic, ΔH is positive — energy was absorbed from the solution, so it cooled', True),
+           ('Exothermic, ΔH is negative — energy was released, cooling the solution', False),
+           ('Endothermic, ΔH is negative — energy was absorbed', False),
+           ('Exothermic, ΔH is positive — energy was released', False),
+       ],
+       'wrong_explanations': {
+           1: 'A temperature FALL means energy was absorbed (endothermic, positive ΔH); releasing energy would warm the solution.',
+           2: 'Endothermic is right, but a positive ΔH goes with endothermic; a negative ΔH is exothermic.',
+           3: 'Both parts are wrong: a temperature fall is endothermic, and exothermic reactions have a NEGATIVE ΔH.',
+       }},
+      {'q': 'In a calorimetry experiment, 25.0 g of solution rises in temperature by 12.0 °C. Using c = 4.18 J/g °C, calculate the energy released, in kJ.',
+       'opts': [
+           ('1.254 kJ (Q = 25.0 × 4.18 × 12.0 = 1254 J = 1.254 kJ)', True),
+           ('1254 kJ', False),
+           ('0.1045 kJ', False),
+           ('125.4 kJ', False),
+       ],
+       'wrong_explanations': {
+           1: 'This is the answer in joules (1254 J) wrongly labelled kJ; convert J→kJ by dividing by 1000, giving 1.254 kJ.',
+           2: 'The temperature change was left out (25.0 × 4.18 = 104.5 J only). Q = m × c × ΔT needs the ×12.0 as well.',
+           3: 'A place-value slip in the J→kJ conversion: 1254 J ÷ 1000 = 1.254 kJ, not 125.4 kJ.',
+       }},
+      {'q': 'A reaction transfers 2090 J of energy to 100 g of water (c = 4.18 J/g °C). Calculate the temperature rise of the water.',
+       'opts': [
+           ('5.0 °C (rearrange to ΔT = Q ÷ (m × c) = 2090 ÷ 418)', True),
+           ('873 620 °C — multiplied all three values', False),
+           ('20.9 °C — divided Q by the mass only', False),
+           ('0.2 °C — divided (m × c) by Q', False),
+       ],
+       'wrong_explanations': {
+           1: 'To find ΔT you must REARRANGE to ΔT = Q ÷ (m × c); multiplying gives a nonsensical value.',
+           2: 'You must divide by m × c (100 × 4.18 = 418), not by mass alone; 2090 ÷ 418 = 5.0 °C.',
+           3: 'The rearrangement is ΔT = Q ÷ (m × c), i.e. 2090 ÷ 418, not 418 ÷ 2090.',
+       }},
+      {'q': 'Two reactions have ΔH = −120 kJ/mol and ΔH = +65 kJ/mol. Compare them in terms of energy transfer and the temperature change you would observe.',
+       'opts': [
+           ('The −120 kJ/mol reaction is exothermic (releases energy, temperature rises); the +65 kJ/mol reaction is endothermic (absorbs energy, temperature falls)', True),
+           ('The −120 kJ/mol reaction is endothermic because its value is more negative', False),
+           ('Both are exothermic because both involve an energy change', False),
+           ('The +65 kJ/mol reaction releases more energy because its number looks larger', False),
+       ],
+       'wrong_explanations': {
+           1: 'A negative ΔH is exothermic regardless of size; −120 kJ/mol releases energy and warms the surroundings.',
+           2: 'Only the negative ΔH is exothermic; the +65 kJ/mol reaction has a positive ΔH, so it is endothermic.',
+           3: 'A positive ΔH means energy is ABSORBED, not released; the +65 kJ/mol reaction takes energy in (endothermic).',
+       }},
+      {'q': 'Explain why the energy change measured in a school calorimetry experiment is usually smaller than the true value.',
+       'opts': [
+           ('Some energy is lost to the surroundings and the apparatus (heat escapes), so the measured temperature rise is smaller than it should be', True),
+           ('The reaction stops before it is finished every time', False),
+           ('The thermometer adds energy to the solution', False),
+           ('The specific heat capacity increases during the reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'The main cause is heat loss to the surroundings, not the reaction stopping early.',
+           2: 'A thermometer does not add a significant amount of energy; the loss is heat escaping to the surroundings and apparatus.',
+           3: 'c is taken as constant (4.18 J/g °C for water); the shortfall is due to heat loss, not a change in c.',
+       }},
+      {'q': 'Burning 0.010 mol of a fuel releases 6.7 kJ of energy. Calculate the molar enthalpy change, in kJ/mol, and state its sign.',
+       'opts': [
+           ('−670 kJ/mol (6.7 ÷ 0.010 = 670; negative because combustion releases energy)', True),
+           ('+670 kJ/mol', False),
+           ('−0.067 kJ/mol — multiplied instead of divided', False),
+           ('−6.7 kJ/mol — did not divide by the number of moles', False),
+       ],
+       'wrong_explanations': {
+           1: 'The magnitude is right (6.7 ÷ 0.010 = 670) but combustion RELEASES energy, so ΔH is negative, not positive.',
+           2: 'Energy per mole is energy ÷ moles (6.7 ÷ 0.010 = 670), not energy × moles.',
+           3: 'The 6.7 kJ is for 0.010 mol; dividing by 0.010 scales it up to 670 kJ per mole.',
+       }},
+      {'q': 'Burning 1.5 g of a fuel raises the temperature of 200 g of water by 25 °C (c = 4.18 J/g °C). Calculate the energy released, in kJ.',
+       'opts': [
+           ('20.9 kJ (Q = 200 × 4.18 × 25 = 20 900 J = 20.9 kJ)', True),
+           ('20 900 kJ — did not convert joules to kilojoules', False),
+           ('0.157 kJ — used the fuel mass (1.5 g) instead of the water mass', False),
+           ('0.836 kJ — left out the temperature change (×25)', False),
+       ],
+       'wrong_explanations': {
+           1: '200 × 4.18 × 25 = 20 900 J; dividing by 1000 gives 20.9 kJ.',
+           2: 'In Q = mcΔT, m is the mass of WATER being heated (200 g), not the mass of fuel burned.',
+           3: 'Q = m × c × ΔT needs all three: 200 × 4.18 × 25 = 20 900 J = 20.9 kJ.',
+       }},
+      {'q': 'A student claims that because a reaction has a very negative ΔH it must happen quickly. Evaluate this claim.',
+       'opts': [
+           ('The claim is wrong — ΔH tells you how much energy is released (how exothermic), not how fast; rate depends on the activation energy and conditions, not on ΔH', True),
+           ('The claim is correct — a more negative ΔH always means a faster reaction', False),
+           ('The claim is correct because releasing more energy pushes the reaction along faster', False),
+           ('The claim is wrong because a negative ΔH means the reaction is endothermic and slow', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH is about energy released, not speed; a very exothermic reaction can still be slow (for example, rusting).',
+           2: 'The energy released (ΔH) does not set the rate; the activation energy and the conditions do.',
+           3: 'A negative ΔH is exothermic, not endothermic; and the real point is that ΔH does not determine rate at all.',
+       }},
+     ],
   'rp': 'RP5 (Chemistry) — Investigate the variables that affect temperature changes in reactions: e.g. neutralisation '
         'of NaOH with HCl, or dissolving ammonium chloride in water.',
   'spec': '5.5.1.1',
@@ -5557,12 +5695,35 @@ CHEMISTRY_SUBTOPICS_ALL = {
                 ('m', 'Mass of solution', 'grams', 'g'),
                 ('c', 'Specific heat capacity', 'J/g°C', 'J/g°C'),
                 ('ΔT', 'Temperature change', '°C', '°C')]},
- {'common_mistake': 'The activation energy is measured from the REACTANT level to the PEAK — NOT from the reactant '
-                    'level to the product level. The overall energy change (ΔH) is from reactants to PRODUCTS. These '
-                    'are two different measurements on the same diagram. Students often confuse them.',
+ {'common_mistake': 'Students often confuse the activation energy with the overall energy change on a reaction profile, and read both from the same two points. They are different measurements: the activation energy (Ea) is the climb from the REACTANT level up to the PEAK of the curve, while the overall energy change (ΔH) is the step from the REACTANT level across to the PRODUCT level. A second common slip is to think a downhill profile (products lower than reactants) is endothermic — it is the opposite: products lower means energy was released, so the reaction is exothermic.',
   'equations': ['ΔH = energy of products − energy of reactants',
                 'Activation energy = energy of peak − energy of reactants'],
-  'fifas': [],
+  'fifas': [
+      {'label': 'Both Ea and ΔH from one profile',
+       'question': 'A reaction profile has reactants at 400 kJ, a peak at 560 kJ and products at 290 kJ. Calculate the activation energy and ΔH, and classify the reaction.',
+       'steps': [
+           ('F', 'Ea = energy of peak − energy of reactants;  ΔH = energy of products − energy of reactants'),
+           ('I', 'Ea = 560 − 400;  ΔH = 290 − 400'),
+           ('F', 'Ea = 160 kJ;  ΔH = −110 kJ'),
+           ('A', 'Ea = 160 kJ, ΔH = −110 kJ — exothermic (ΔH is negative)'),
+       ]},
+      {'label': 'Reverse activation energy',
+       'question': 'For the same profile (peak 560 kJ, products 290 kJ), calculate the activation energy of the reverse reaction.',
+       'steps': [
+           ('F', 'Ea(reverse) = energy of peak − energy of products'),
+           ('I', '= 560 − 290'),
+           ('F', 'subtract'),
+           ('A', 'Ea(reverse) = 270 kJ (larger than the forward 160 kJ, as expected for an exothermic reaction)'),
+       ]},
+      {'label': 'Working backwards to the product energy',
+       'question': 'A reaction has reactants at 500 kJ and ΔH = +90 kJ. Calculate the energy of the products.',
+       'steps': [
+           ('F', 'ΔH = energy of products − energy of reactants, so energy of products = reactants + ΔH'),
+           ('I', 'energy of products = 500 + 90'),
+           ('F', 'add'),
+           ('A', 'energy of products = 590 kJ (higher than the reactants, confirming it is endothermic)'),
+       ]},
+     ],
   'higher': 'Label all features on a reaction profile: reactant energy level, product energy level, activation energy '
             '(Ea), ΔH. Sketch profiles for exothermic and endothermic reactions both with and without a catalyst. '
             'Explain that a catalyst lowers Ea without changing ΔH or the energy of reactants/products.',
@@ -5577,29 +5738,152 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Effect of catalyst',
                           'Lowers the peak — lower activation energy — same ΔH — faster reaction')],
                'title': 'Reaction Profile Features'},
-  'quiz': [{'opts': [('−30 kJ — products (50) − reactants (80) = −30 kJ — exothermic reaction', True),
-                     ('+30 kJ — reactants (80) − products (50) = +30 kJ', False),
-                     ('+130 kJ — adding reactant and product energies', False),
-                     ('−80 kJ — the reactant energy is lost', False)],
-            'q': 'On a reaction profile, the reactants are at 80 kJ and the products are at 50 kJ. What is ΔH?',
-            'wrong_explanations': {1: 'ΔH = products − reactants = 50 − 80 = −30. Positive 30 would mean products are '
-                                      'HIGHER than reactants — but here products (50) are lower than reactants (80).',
-                                   2: 'Adding energies gives a meaningless value — ΔH = products MINUS reactants.',
-                                   3: "The reactant energy of 80 kJ is not 'lost' — ΔH shows the NET energy change "
-                                      'from reactants to products.'}},
-           {'opts': [('The activation energy peak is lower — but reactant and product energy levels and ΔH stay the '
-                      'same',
-                      True),
-                     ('The reactant energy level increases — they become more energetic', False),
-                     ('Both the activation energy and ΔH decrease', False),
-                     ('The product energy level increases — products formed are higher energy', False)],
-            'q': 'A catalyst is added to a reaction. What changes on the reaction profile?',
-            'wrong_explanations': {1: 'Catalysts do not give reactants more energy — they provide an ALTERNATIVE '
-                                      'PATHWAY with a lower energy barrier.',
-                                   2: 'ΔH (the overall energy change) is NOT changed by a catalyst — only the '
-                                      'activation energy peak is lowered.',
-                                   3: 'Products are the same compounds regardless of whether a catalyst is used — '
-                                      "their energy level doesn't change."}}],
+  'quiz': [
+      {'q': 'On a reaction profile the products are drawn LOWER than the reactants. Deduce whether the reaction is exothermic or endothermic, and give the sign of ΔH.',
+       'opts': [
+           ('Exothermic, ΔH is negative — energy is released, so the products end up at a lower energy than the reactants', True),
+           ('Endothermic, ΔH is positive — the products are lower because they absorbed energy', False),
+           ('Exothermic, ΔH is positive — energy is released', False),
+           ('It cannot be decided without knowing the activation energy', False),
+       ],
+       'wrong_explanations': {
+           1: 'Products LOWER than reactants means energy was released (exothermic, ΔH negative); absorbing energy would raise the products.',
+           2: 'Exothermic is right, but exothermic reactions have a NEGATIVE ΔH, not positive.',
+           3: 'The relative heights of reactants and products alone show the reaction is exothermic; the activation energy is a separate feature.',
+       }},
+      {'q': 'On a reaction profile the products are drawn HIGHER than the reactants. Deduce whether the reaction is exothermic or endothermic, and explain how the diagram shows this.',
+       'opts': [
+           ('Endothermic — the products are at a higher energy than the reactants, so energy was absorbed from the surroundings', True),
+           ('Exothermic — the products are higher because energy was released', False),
+           ('Endothermic — because the activation energy is very large', False),
+           ('Neither — the heights of the lines do not matter', False),
+       ],
+       'wrong_explanations': {
+           1: 'Releasing energy LOWERS the products; products higher than reactants means energy was absorbed (endothermic).',
+           2: 'A large activation energy does not make a reaction endothermic; it is the products being HIGHER than the reactants that shows it.',
+           3: 'The relative heights are exactly what the profile shows: products higher than reactants means endothermic.',
+       }},
+      {'q': 'Describe what the activation energy represents on a reaction profile.',
+       'opts': [
+           ('The minimum energy the reactants must gain to react — shown as the climb from the reactant level up to the peak of the curve', True),
+           ('The energy difference between the reactants and the products', False),
+           ('The energy released when the products form', False),
+           ('The total energy stored in the reactants', False),
+       ],
+       'wrong_explanations': {
+           1: 'That is the overall energy change (ΔH); the activation energy is the climb up to the PEAK, not the reactant-to-product step.',
+           2: 'Energy released relates to ΔH for an exothermic reaction; the activation energy is the barrier that must be climbed to start the reaction.',
+           3: "The activation energy is not the reactants' total energy; it is the extra energy needed to reach the peak so the reaction can proceed.",
+       }},
+      {'q': 'Explain why every reaction, even an exothermic one, needs a minimum amount of energy to get started.',
+       'opts': [
+           ('Existing bonds in the reactants must be broken before new ones can form, and breaking bonds needs energy — this is the activation energy', True),
+           ('Because all reactions absorb energy overall', False),
+           ('Because the products always have more energy than the reactants', False),
+           ('Because energy can be created only at the start of a reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'Not all reactions absorb energy overall (exothermic ones release it); the start-up energy is the activation energy needed to break bonds.',
+           2: 'In an exothermic reaction the products have LESS energy; the start-up energy is still needed to break the reactant bonds first.',
+           3: 'Energy is conserved (neither created nor destroyed); the reason a reaction needs a push is the activation energy to break bonds.',
+       }},
+      {'q': 'A catalyst is added to a reaction. Describe its effect on the reaction profile and explain how this speeds up the reaction.',
+       'opts': [
+           ('It provides a different pathway with a lower activation energy (a lower peak), so more colliding particles have enough energy to react', True),
+           ('It lowers the energy of the products, making ΔH more negative', False),
+           ('It raises the activation energy so the reaction releases more energy', False),
+           ('It removes the activation energy completely', False),
+       ],
+       'wrong_explanations': {
+           1: 'A catalyst does not change ΔH (the reactant and product levels are unchanged); it lowers the activation-energy peak.',
+           2: 'A catalyst LOWERS the activation energy, and it does not change how much energy is released (ΔH).',
+           3: 'A catalyst lowers the activation energy but does not remove it; some energy is still needed to react.',
+       }},
+      {'q': 'On a reaction profile the reactants are at 350 kJ, the peak is at 500 kJ and the products are at 220 kJ. Calculate the activation energy and the overall energy change, ΔH.',
+       'opts': [
+           ('Ea = 500 − 350 = 150 kJ; ΔH = 220 − 350 = −130 kJ (exothermic)', True),
+           ('Ea = 500 − 220 = 280 kJ; ΔH = −130 kJ', False),
+           ('Ea = 150 kJ; ΔH = 350 − 220 = +130 kJ', False),
+           ('Ea = 500 kJ; ΔH = 220 kJ', False),
+       ],
+       'wrong_explanations': {
+           1: 'Activation energy is measured from the REACTANTS (350), not the products: Ea = 500 − 350 = 150 kJ.',
+           2: 'ΔH = products − reactants = 220 − 350 = −130 kJ; doing reactants − products gives the wrong sign.',
+           3: 'Both are differences: Ea = peak − reactants = 150 kJ and ΔH = products − reactants = −130 kJ, not the raw peak and product values.',
+       }},
+      {'q': 'For the same profile (reactants 350 kJ, peak 500 kJ, products 220 kJ), calculate the activation energy of the reverse reaction (products → reactants).',
+       'opts': [
+           ('280 kJ (Ea reverse = peak − product level = 500 − 220)', True),
+           ('150 kJ — the same as the forward reaction', False),
+           ('130 kJ — the size of ΔH', False),
+           ('720 kJ — added the peak and the products', False),
+       ],
+       'wrong_explanations': {
+           1: 'The reverse reaction starts from the PRODUCTS (220), so its barrier is 500 − 220 = 280 kJ, larger than the forward 150 kJ.',
+           2: 'That is the overall energy change, not the reverse activation energy; the reverse Ea is peak − products = 280 kJ.',
+           3: 'The reverse activation energy is the DIFFERENCE peak − products = 500 − 220 = 280 kJ, not their sum.',
+       }},
+      {'q': 'Explain why a catalyst changes the activation energy of a reaction but does not change the value of ΔH.',
+       'opts': [
+           ('A catalyst provides an alternative pathway with a lower peak (lower Ea), but the reactant and product energy levels are unchanged, so their difference (ΔH) stays the same', True),
+           ('A catalyst lowers the product level, so both Ea and ΔH decrease', False),
+           ('A catalyst is used up, releasing energy that changes ΔH', False),
+           ('A catalyst raises the reactant level up towards the peak', False),
+       ],
+       'wrong_explanations': {
+           1: 'A catalyst does not move the product level; it only lowers the peak, so ΔH is unchanged.',
+           2: 'A catalyst is not used up and does not change the energy of the reactants or products, so ΔH is unchanged.',
+           3: 'A catalyst does not raise the reactants; it lowers the activation-energy barrier by offering a new pathway.',
+       }},
+      {'q': 'A reaction has a small activation energy but a large positive ΔH. Deduce what this tells you about how easily it starts and its overall energy change.',
+       'opts': [
+           ('It starts easily (a low barrier to overcome) but is strongly endothermic overall (the products are much higher in energy than the reactants)', True),
+           ('It is hard to start and exothermic overall', False),
+           ('It starts easily and is exothermic overall', False),
+           ('The two quantities are the same thing measured twice', False),
+       ],
+       'wrong_explanations': {
+           1: 'A SMALL activation energy means it starts easily, and a POSITIVE ΔH is endothermic, not exothermic.',
+           2: 'A positive ΔH is endothermic (energy absorbed), not exothermic.',
+           3: 'Activation energy (the barrier) and ΔH (the overall change) are different features of the profile, measured between different points.',
+       }},
+      {'q': 'Describe how the reaction profile of an endothermic reaction differs from that of an exothermic reaction.',
+       'opts': [
+           ('In an endothermic profile the products are HIGHER than the reactants (ΔH positive); in an exothermic profile the products are LOWER than the reactants (ΔH negative)', True),
+           ('Both have products lower than the reactants, but the endothermic one has a bigger peak', False),
+           ('The endothermic profile has no activation-energy peak', False),
+           ('The exothermic profile has products higher than the reactants', False),
+       ],
+       'wrong_explanations': {
+           1: 'An endothermic reaction has products HIGHER than the reactants; peak height (the activation energy) is a separate feature.',
+           2: 'Both types have an activation-energy peak; the difference is the product level relative to the reactants.',
+           3: 'That is the endothermic case; exothermic profiles have products LOWER than the reactants.',
+       }},
+      {'q': 'A reaction profile shows reactants at 80 kJ, a peak at 340 kJ and products at 300 kJ. Calculate the forward activation energy, the reverse activation energy, and ΔH.',
+       'opts': [
+           ('Ea forward = 340 − 80 = 260 kJ; Ea reverse = 340 − 300 = 40 kJ; ΔH = 300 − 80 = +220 kJ (endothermic)', True),
+           ('Ea forward = 260 kJ; Ea reverse = 260 kJ; ΔH = +220 kJ', False),
+           ('Ea forward = 340 − 300 = 40 kJ; Ea reverse = 260 kJ; ΔH = +220 kJ', False),
+           ('Ea forward = 260 kJ; Ea reverse = 40 kJ; ΔH = 80 − 300 = −220 kJ', False),
+       ],
+       'wrong_explanations': {
+           1: 'The reverse barrier is measured from the PRODUCTS: 340 − 300 = 40 kJ, not the same as the forward barrier.',
+           2: 'Forward and reverse are swapped: forward is peak − reactants = 260 kJ; reverse is peak − products = 40 kJ.',
+           3: 'ΔH = products − reactants = 300 − 80 = +220 kJ (endothermic); doing reactants − products gives the wrong sign.',
+       }},
+      {'q': 'Two reactions have the same ΔH, but reaction A has a much larger activation energy than reaction B. Predict which is likely to be slower at room temperature, and explain why.',
+       'opts': [
+           ('Reaction A — its larger activation energy means fewer colliding particles have enough energy to react, so it goes more slowly', True),
+           ('Reaction B, because a smaller activation energy releases less energy', False),
+           ('They react at the same rate because they have the same ΔH', False),
+           ('Reaction A, because a large activation energy means it is very exothermic', False),
+       ],
+       'wrong_explanations': {
+           1: 'A smaller activation energy makes B FASTER, not slower; and activation energy is not about how much energy is released.',
+           2: 'ΔH sets the overall energy change, not the rate; the different activation energies mean different rates.',
+           3: 'Reaction A is slower because of the high barrier, but activation-energy size does not tell you how exothermic a reaction is (that is ΔH).',
+       }},
+     ],
   'rp': None,
   'spec': '5.5.1.2',
   'summary': 'Draw and interpret reaction profile diagrams for exothermic and endothermic reactions.',
@@ -5660,9 +5944,7 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': [('Ea', 'Activation energy', 'kJ/mol', 'kJ/mol'),
                 ('ΔH', 'Overall energy change (enthalpy change)', 'kJ/mol', 'kJ/mol')]},
- {'common_mistake': 'A BATTERY is two or more cells connected in series — a single cell is NOT a battery. The voltage '
-                    'increases when cells are added in series. The greater the difference in reactivity of the two '
-                    'metals in a cell, the greater the voltage produced.',
+ {'common_mistake': "Students often call a single cell a 'battery' and think that adding more cells makes each one produce a bigger voltage. Neither is right: a battery is two or more cells joined in SERIES, and it is the voltages of the separate cells that ADD together — each individual cell still produces the same voltage. A second common error is to think a rechargeable cell never runs down; it does, but its reactions can be reversed by passing an external current through it, unlike a non-rechargeable cell whose reactions are irreversible.",
   'equations': [],
   'fifas': [],
   'higher': 'Explain how the voltage of a cell depends on the difference in reactivity between the electrode metals. '
@@ -5682,32 +5964,152 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Rechargeable',
                           'Secondary cell — reversible reactions, external electricity restores original reactants')],
                'title': 'Cells and Batteries'},
-  'quiz': [{'opts': [('Greater difference in reactivity between the two metals → greater voltage produced', True),
-                     ('Using more reactive metals always reduces the voltage — reactive metals react too quickly',
-                      False),
-                     ('The metal reactivity has no effect on voltage — only electrolyte concentration matters', False),
-                     ('Using two metals with the same reactivity gives the highest voltage', False)],
-            'q': 'A simple cell is made from zinc and copper electrodes in sulfuric acid. How does changing to more '
-                 'reactive metals affect the voltage?',
-            'wrong_explanations': {1: 'More reactive metals react more vigorously but the key factor for voltage is '
-                                      'the DIFFERENCE in reactivity between the two electrodes.',
-                                   2: 'Reactivity difference is one of the key factors affecting voltage — it cannot '
-                                      'be ignored.',
-                                   3: 'If both metals have the same reactivity, no potential difference exists — the '
-                                      'voltage would be zero.'}},
-           {'opts': [('The redox reactions are reversed by the external electricity supply — restoring the original '
-                      'reactants',
-                      True),
-                     ('New chemicals are added to the battery to replace the used reactants', False),
-                     ('The battery temperature increases — heat energy is stored for later use', False),
-                     ('The battery simply resets — no chemical change occurs during charging', False)],
-            'q': 'What happens chemically when a rechargeable battery is being charged?',
-            'wrong_explanations': {1: 'Charging does not physically add new chemicals — the same chemicals inside are '
-                                      'chemically restored by reversing the redox reactions.',
-                                   2: 'Charging is an electrochemical process — it reverses the reactions, not a '
-                                      'heat-storage process.',
-                                   3: 'Significant chemical changes DO occur during charging — the products of '
-                                      'discharge are converted back to reactants.'}}],
+  'quiz': [
+      {'q': 'Explain how a simple chemical cell produces a voltage.',
+       'opts': [
+           ('Two different metals (the electrodes) are placed in an electrolyte; the difference in their reactivity drives a flow of electrons through the external circuit, producing a voltage', True),
+           ('The electrolyte is heated, which pushes electrons around the circuit', False),
+           ('Two identical metals in the electrolyte create a large voltage', False),
+           ('Light shining on the metals releases the electrons', False),
+       ],
+       'wrong_explanations': {
+           1: 'The voltage comes from the reactivity DIFFERENCE between the two metals, not from heating the electrolyte.',
+           2: 'The metals must be DIFFERENT; two identical metals have no reactivity difference and produce almost no voltage.',
+           3: 'A chemical cell is not light-powered; the voltage comes from the reactivity difference between two different metals.',
+       }},
+      {'q': 'Predict what happens to the voltage of a cell if the two metals chosen are further apart in the reactivity series.',
+       'opts': [
+           ('The voltage increases — a bigger difference in reactivity produces a bigger voltage', True),
+           ('The voltage decreases', False),
+           ('The voltage stays the same, whatever the metals', False),
+           ('The cell stops working completely', False),
+       ],
+       'wrong_explanations': {
+           1: 'A LARGER reactivity difference gives a LARGER voltage, not a smaller one.',
+           2: 'The voltage depends on the metals; a bigger reactivity gap gives a bigger voltage.',
+           3: 'The cell still works; a wider reactivity gap simply increases the voltage.',
+       }},
+      {'q': 'A single cell produces 1.5 V. Determine the voltage of a battery made from four of these cells connected in series.',
+       'opts': [
+           ('6.0 V — the voltages of cells in series add together (4 × 1.5 V)', True),
+           ('1.5 V — connecting cells in series does not change the voltage', False),
+           ('0.375 V — the voltage is shared between the four cells', False),
+           ('3.0 V — only two of the cells count', False),
+       ],
+       'wrong_explanations': {
+           1: 'In series the voltages ADD, so four 1.5 V cells give 6.0 V.',
+           2: 'Voltages in series add, they do not divide; 4 × 1.5 = 6.0 V.',
+           3: 'All four cells in series add: 4 × 1.5 = 6.0 V, not 2 × 1.5.',
+       }},
+      {'q': 'Describe the difference between a rechargeable cell and a non-rechargeable cell in terms of their reactions.',
+       'opts': [
+           ('In a rechargeable cell the reactions can be reversed by passing an external current through it; in a non-rechargeable cell the reactions are irreversible, so it cannot be recharged', True),
+           ('A rechargeable cell never uses up its chemicals; a non-rechargeable one does', False),
+           ('A non-rechargeable cell can be recharged more times than a rechargeable one', False),
+           ('Rechargeable cells produce a voltage without any reactions', False),
+       ],
+       'wrong_explanations': {
+           1: 'A rechargeable cell does use up its chemicals as it runs, but an external current REVERSES the reactions to restore it.',
+           2: 'This is back to front — only the rechargeable cell can be recharged (its reactions are reversible).',
+           3: 'All chemical cells rely on reactions; the difference is whether those reactions can be reversed.',
+       }},
+      {'q': 'Explain why a battery gives a higher voltage than a single one of the cells inside it.',
+       'opts': [
+           ('A battery is two or more cells connected in series, and the voltages of cells in series add together', True),
+           ('The cells inside a battery are bigger than a single cell', False),
+           ('A battery reverses its reactions to boost the voltage', False),
+           ('The battery is connected to the mains, which raises the voltage', False),
+       ],
+       'wrong_explanations': {
+           1: 'It is not size but the number of cells in series; their voltages add together.',
+           2: 'Reversing reactions is recharging; the higher voltage comes from adding cells in series.',
+           3: 'A battery is not mains-powered; its voltage is the sum of its cells in series.',
+       }},
+      {'q': 'Suggest why a cell made from magnesium and copper produces a larger voltage than one made from zinc and copper.',
+       'opts': [
+           ('Magnesium is further from copper in the reactivity series than zinc is, so the bigger reactivity difference gives a bigger voltage', True),
+           ('Magnesium is a better electrical conductor than zinc', False),
+           ('Copper becomes more reactive when it is paired with magnesium', False),
+           ('Magnesium cells are always larger in size', False),
+       ],
+       'wrong_explanations': {
+           1: 'The voltage depends on the reactivity DIFFERENCE between the electrodes, not on how well the metal conducts.',
+           2: "Copper's reactivity does not change; magnesium simply has a bigger reactivity gap from copper than zinc does.",
+           3: 'Size is not the reason; the larger voltage comes from the greater reactivity difference.',
+       }},
+      {'q': 'State what a simple chemical cell is made from.',
+       'opts': [
+           ('Two different metals (electrodes) dipped in an electrolyte', True),
+           ('Two identical metals in pure water', False),
+           ('A single metal connected to a light bulb', False),
+           ('Two non-metals dipped in an electrolyte', False),
+       ],
+       'wrong_explanations': {
+           1: 'The metals must be DIFFERENT, and pure water is a poor electrolyte.',
+           2: 'A cell needs TWO different metals in an electrolyte, not one metal alone.',
+           3: 'The electrodes are metals with different reactivities, not non-metals.',
+       }},
+      {'q': 'Name the metal used in the rechargeable batteries found in most phones and laptops.',
+       'opts': [
+           ('Lithium (lithium-ion batteries)', True),
+           ('Sodium, as sodium chloride', False),
+           ('Copper', False),
+           ('Iron', False),
+       ],
+       'wrong_explanations': {
+           1: 'Sodium chloride is table salt (an electrolyte), not the metal used in phone batteries — that is lithium.',
+           2: 'Copper is used in wiring; modern rechargeable phone and laptop batteries are lithium-ion.',
+           3: 'Iron is not the basis of modern phone batteries; lithium-ion cells are used.',
+       }},
+      {'q': 'Explain, in terms of its reactions, why a rechargeable lithium-ion cell can be used many times but an alkaline cell cannot.',
+       'opts': [
+           ('In the lithium-ion cell the reactions are reversible, so passing an external current reverses them and restores the reactants; in the alkaline cell the reactions are irreversible, so once the reactants are used up it cannot be restored', True),
+           ('The lithium-ion cell makes new reactants from the air as it runs', False),
+           ('The alkaline cell has no reactions, so there is nothing to reverse', False),
+           ('Both cells are recharged in the same way, by resting them', False),
+       ],
+       'wrong_explanations': {
+           1: 'It does not make reactants from air; recharging reverses its reactions to restore the original reactants.',
+           2: 'The alkaline cell does have reactions — they are simply irreversible, so it cannot be recharged.',
+           3: 'Only the lithium-ion cell recharges, and only by an external current, not by resting.',
+       }},
+      {'q': 'A student connects two identical cells so that their voltages oppose each other (positive terminal joined to positive terminal). Predict the effect on the overall voltage and explain.',
+       'opts': [
+           ('The voltages cancel to give zero overall, because the two equal cells push in opposite directions', True),
+           ('The voltages still add to give the largest possible voltage', False),
+           ('The overall voltage doubles because there are two cells', False),
+           ('The cells explode because the voltages fight each other', False),
+       ],
+       'wrong_explanations': {
+           1: 'Voltages add only when cells face the same way; opposing them makes the voltages subtract.',
+           2: 'Two cells double the voltage only when connected the same way; opposing them cancels rather than adds.',
+           3: 'The voltages simply subtract; connecting them in opposition reduces the net voltage, it does not cause an explosion.',
+       }},
+      {'q': 'Using the reactivity series, predict which pair of metals gives the largest voltage in a cell: (a) zinc and iron, (b) magnesium and silver, (c) copper and silver. Justify your choice.',
+       'opts': [
+           ('(b) magnesium and silver — magnesium is very reactive and silver very unreactive, so this pair has the largest reactivity difference and the largest voltage', True),
+           ('(a) zinc and iron, because they are both fairly reactive', False),
+           ('(c) copper and silver, because they are both shiny metals', False),
+           ('All three pairs would give exactly the same voltage', False),
+       ],
+       'wrong_explanations': {
+           1: 'Zinc and iron are close together in the reactivity series, so their small difference gives a small voltage.',
+           2: 'Copper and silver are both unreactive and close together, so the reactivity difference (and voltage) is small.',
+           3: 'Voltage depends on the reactivity gap, which is largest for magnesium and silver, so they are not all the same.',
+       }},
+      {'q': 'Evaluate one advantage and one disadvantage of rechargeable batteries compared with non-rechargeable ones.',
+       'opts': [
+           ('Advantage: they can be recharged and reused many times, reducing waste and long-term cost. Disadvantage: they usually cost more to buy at first and lose some capacity (hold less charge) as they age', True),
+           ('Advantage: they never need charging. Disadvantage: they are cheaper to buy', False),
+           ('Advantage: they hold their full capacity forever. Disadvantage: they cannot be reused', False),
+           ('Advantage: they produce no chemicals. Disadvantage: they give a lower voltage', False),
+       ],
+       'wrong_explanations': {
+           1: 'Rechargeable batteries DO need charging (that is the point), and being cheaper would be an advantage, not a disadvantage.',
+           2: 'Rechargeable batteries lose some capacity over time and CAN be reused — that reuse is their main advantage.',
+           3: 'They still rely on chemical reactions, and the trade-off is upfront cost and ageing, not voltage.',
+       }},
+     ],
   'rp': None,
   'spec': '4.5.2.1',
   'summary': 'Describe how chemical cells and batteries produce electrical energy and factors affecting voltage.',
@@ -5780,9 +6182,7 @@ CHEMISTRY_SUBTOPICS_ALL = {
                  'construction of simple cells, factors affecting voltage, distinction between primary and secondary '
                  'cells, and environmental considerations.',
   'variables': []},
- {'common_mistake': 'Fuel cells are NOT the same as batteries. A battery stores fixed reactants and runs out. A fuel '
-                    'cell is continuously supplied with fuel — it runs as long as hydrogen and oxygen are provided. '
-                    'The ONLY product of a hydrogen fuel cell is water — no CO₂ is produced during operation.',
+ {'common_mistake': 'Students often think a hydrogen fuel cell is just a kind of battery that eventually runs flat, and that it releases carbon dioxide like burning a fuel. Both are wrong. A fuel cell does not store its reactants and run down — it is continuously supplied with hydrogen and oxygen, so it keeps working as long as the fuel is provided. And the only product of a hydrogen fuel cell is WATER; no carbon dioxide is made at the point of use, because there is no carbon in the reaction.',
   'equations': ['2H₂ + O₂ → 2H₂O  (overall fuel cell reaction)'],
   'fifas': [],
   'higher': 'Write half equations for the hydrogen fuel cell: negative electrode (anode): H₂ − 2e⁻ → 2H⁺; positive '
@@ -5800,29 +6200,152 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Disadvantage', 'Platinum catalyst is rare and expensive — increases fuel cell cost'),
                          ('Disadvantage', 'Hydrogen is highly flammable and requires high-pressure storage')],
                'title': 'Fuel Cell Pros and Cons'},
-  'quiz': [{'opts': [('Water (H₂O) — hydrogen is oxidised and oxygen is reduced; the only product is water', True),
-                     ('Carbon dioxide — hydrogen combustion always produces CO₂', False),
-                     ('Hydrogen peroxide — formed from the combination of H₂ and O₂', False),
-                     ('Oxygen — unreacted oxygen is released as a by-product', False)],
-            'q': 'What is the only chemical product of a hydrogen fuel cell during operation?',
-            'wrong_explanations': {1: 'Hydrogen fuel cells do NOT combust hydrogen — they electrochemically oxidise '
-                                      'it. No carbon is present so no CO₂ is produced.',
-                                   2: 'H₂O₂ is not the product — the electrochemical reaction produces water (H₂O), '
-                                      'not hydrogen peroxide.',
-                                   3: 'Oxygen is a REACTANT in a fuel cell — it is consumed at the cathode, not '
-                                      'produced.'}},
-           {'opts': [('Most hydrogen is produced from natural gas (steam reforming) which releases CO₂ — the emissions '
-                      'occur during hydrogen production not operation',
-                      True),
-                     ('The fuel cell itself produces CO₂ as a waste product alongside water', False),
-                     ('Platinum used in the catalyst is a carbon compound that releases CO₂', False),
-                     ('Hydrogen fuel cells require electricity to start, which comes from fossil fuels', False)],
-            'q': "Why are hydrogen fuel cells not yet truly 'zero carbon' in most current applications?",
-            'wrong_explanations': {1: 'The fuel cell ITSELF only produces water — no CO₂ at all. The issue is the '
-                                      'CARBON FOOTPRINT OF HYDROGEN PRODUCTION.',
-                                   2: 'Platinum is a metal element (not a carbon compound) — it does not produce CO₂.',
-                                   3: 'The start-up electricity is a minor consideration — the main carbon footprint '
-                                      'comes from steam reforming during hydrogen manufacture.'}}],
+  'quiz': [
+      {'q': 'State the only product formed when a hydrogen fuel cell operates.',
+       'opts': [
+           ('Water', True),
+           ('Carbon dioxide', False),
+           ('Hydrogen', False),
+           ('Oxygen and carbon dioxide', False),
+       ],
+       'wrong_explanations': {
+           1: 'There is no carbon in the reaction, so no CO₂ is made; the only product is water.',
+           2: 'Hydrogen is a reactant (the fuel), not a product; the product is water.',
+           3: 'Oxygen is a reactant and no CO₂ is produced; the only product is water.',
+       }},
+      {'q': 'State the overall reaction that takes place in a hydrogen fuel cell, in words.',
+       'opts': [
+           ('Hydrogen + oxygen → water', True),
+           ('Hydrogen + carbon → carbon dioxide', False),
+           ('Water → hydrogen + oxygen', False),
+           ('Hydrogen + oxygen → hydrogen peroxide', False),
+       ],
+       'wrong_explanations': {
+           1: 'A hydrogen fuel cell uses oxygen, not carbon, and makes water, not CO₂.',
+           2: 'That is the reverse process (electrolysis of water); a fuel cell combines hydrogen and oxygen to make water.',
+           3: 'The product is water (H₂O), not hydrogen peroxide (H₂O₂).',
+       }},
+      {'q': 'Explain why a hydrogen fuel cell can keep producing electricity for as long as it is needed, unlike an ordinary battery.',
+       'opts': [
+           ("A fuel cell is continuously supplied with hydrogen and oxygen from outside, so its reactants do not run out the way a battery's fixed store of chemicals does", True),
+           ('A fuel cell recharges itself from the mains as it runs', False),
+           ('A fuel cell contains an unlimited store of chemicals sealed inside', False),
+           ('A fuel cell does not use up any reactants at all', False),
+       ],
+       'wrong_explanations': {
+           1: 'It is not recharged from the mains; it keeps working because fuel is continuously supplied.',
+           2: 'The reactants are supplied from OUTSIDE continuously; they are not an unlimited internal store.',
+           3: 'It does use up hydrogen and oxygen, but they are continuously replaced, so it does not run down.',
+       }},
+      {'q': 'Suggest one advantage of using a hydrogen fuel cell instead of a petrol engine in a vehicle.',
+       'opts': [
+           ('The only product is water, so there are no carbon dioxide or other polluting emissions at the point of use', True),
+           ('It produces carbon dioxide more cleanly than petrol does', False),
+           ('The hydrogen is completely free to produce', False),
+           ('It never needs any fuel to be supplied', False),
+       ],
+       'wrong_explanations': {
+           1: 'A hydrogen fuel cell produces NO carbon dioxide at all — only water.',
+           2: 'Producing hydrogen costs energy and money; the real advantage is that only water is emitted.',
+           3: 'It does need a supply of hydrogen; the advantage is that it emits only water.',
+       }},
+      {'q': 'Suggest one disadvantage of hydrogen fuel cells that limits their everyday use in cars.',
+       'opts': [
+           ('Hydrogen is difficult and potentially dangerous to store and transport (very flammable and low density), and there are few refuelling stations', True),
+           ('They release large amounts of carbon dioxide', False),
+           ('They can only ever be used once and then thrown away', False),
+           ('They produce a poisonous gas as they run', False),
+       ],
+       'wrong_explanations': {
+           1: 'Fuel cells release only water, not CO₂; the real problems are hydrogen storage and supply.',
+           2: 'A fuel cell works continuously while fuelled; the difficulty is storing and supplying the hydrogen.',
+           3: 'The only product is water; the challenges are hydrogen storage, cost and refuelling infrastructure.',
+       }},
+      {'q': 'Describe how a hydrogen fuel cell differs from simply burning hydrogen as a fuel.',
+       'opts': [
+           ('In a fuel cell the reaction produces electrical energy directly (and more efficiently), whereas burning hydrogen releases the energy as heat and light; both make only water', True),
+           ('Burning hydrogen makes water but a fuel cell makes carbon dioxide', False),
+           ('A fuel cell burns the hydrogen with a flame inside it', False),
+           ('There is no difference — they are exactly the same process', False),
+       ],
+       'wrong_explanations': {
+           1: 'Neither makes CO₂ (no carbon is involved); the difference is that a fuel cell produces electricity directly.',
+           2: "A fuel cell does not burn the hydrogen; it converts the reaction's energy into electricity electrochemically.",
+           3: 'They differ: a fuel cell produces electricity directly and efficiently, while burning releases heat and light.',
+       }},
+      {'q': 'Explain why hydrogen fuel cells are described as environmentally friendly at the point of use.',
+       'opts': [
+           ('They emit only water at the point of use, releasing no carbon dioxide or other pollutants, unlike fossil-fuel engines which release CO₂ and other gases', True),
+           ('They use no energy at all to run', False),
+           ('They remove carbon dioxide from the air as they run', False),
+           ('They are silent, which stops all air pollution', False),
+       ],
+       'wrong_explanations': {
+           1: 'They do use energy (from hydrogen); the environmental point is that only water is emitted at the point of use.',
+           2: 'They do not remove CO₂; they simply do not produce any, emitting only water.',
+           3: 'Being quiet reduces noise, not air pollution; the clean point is that only water is emitted.',
+       }},
+      {'q': 'Suggest why a hydrogen fuel cell may not be as environmentally friendly overall as it first appears.',
+       'opts': [
+           ('The hydrogen itself is often produced from fossil fuels (such as natural gas) or by electrolysis using electricity, which can release carbon dioxide elsewhere', True),
+           ('The fuel cell releases carbon dioxide while it runs', False),
+           ('Water is a harmful pollutant', False),
+           ('Fuel cells always use more petrol than a normal engine', False),
+       ],
+       'wrong_explanations': {
+           1: 'The fuel cell itself releases only water; the emissions come from PRODUCING the hydrogen, not from running the cell.',
+           2: 'Water is harmless; the environmental catch is how the hydrogen is made.',
+           3: 'Fuel cells do not use petrol; the concern is the energy and fossil fuels used to make the hydrogen.',
+       }},
+      {'q': 'Write the balanced overall equation for the reaction in a hydrogen fuel cell, and state what it shows about the products.',
+       'opts': [
+           ('2H₂ + O₂ → 2H₂O — the only product is water, and no carbon-containing gases are formed', True),
+           ('2H₂ + O₂ → 2H₂O₂ — the product is hydrogen peroxide', False),
+           ('H₂ + O₂ → H₂O — the equation is already balanced', False),
+           ('CH₄ + 2O₂ → CO₂ + 2H₂O — the products are carbon dioxide and water', False),
+       ],
+       'wrong_explanations': {
+           1: 'The product is water (H₂O), not hydrogen peroxide (H₂O₂).',
+           2: 'This is not balanced (the oxygen and hydrogen do not balance); the correct equation is 2H₂ + O₂ → 2H₂O.',
+           3: 'That is the combustion of methane; a hydrogen fuel cell uses hydrogen and makes only water.',
+       }},
+      {'q': "At the negative electrode of a hydrogen fuel cell, hydrogen is oxidised. Deduce what 'oxidised' means here in terms of electrons.",
+       'opts': [
+           ('The hydrogen loses electrons (oxidation is loss of electrons), and these flow through the external circuit as the current', True),
+           ('The hydrogen gains electrons from the circuit', False),
+           ('The hydrogen simply reacts with oxygen at that electrode', False),
+           ('The hydrogen gains oxygen atoms directly', False),
+       ],
+       'wrong_explanations': {
+           1: 'Oxidation is LOSS of electrons; hydrogen at the negative electrode loses electrons (gaining them would be reduction).',
+           2: 'Oxidation here means losing electrons; at the negative electrode the hydrogen loses electrons, which then travel round the circuit.',
+           3: 'In this electron-transfer sense, oxidation means loss of electrons, not gaining oxygen atoms.',
+       }},
+      {'q': 'Evaluate the use of a hydrogen fuel cell compared with a rechargeable battery for powering a long-distance vehicle.',
+       'opts': [
+           ('A fuel cell can be refuelled quickly and gives a long range for its weight, but needs a hydrogen supply and storage; a battery recharges easily from electricity but is heavy and slow to charge — so a fuel cell can suit long distances where hydrogen is available', True),
+           ('A battery is always better because a fuel cell produces carbon dioxide', False),
+           ('A fuel cell is always worse because it must be recharged from the mains', False),
+           ('There is no difference between the two for a vehicle', False),
+       ],
+       'wrong_explanations': {
+           1: 'A fuel cell produces only water, not CO₂; the real trade-offs are refuelling speed, range, weight and hydrogen supply.',
+           2: 'A fuel cell is refuelled with hydrogen, not recharged from the mains; that quick refuelling is one of its advantages.',
+           3: 'They differ in refuelling method, range, weight and infrastructure, so the best choice depends on the use.',
+       }},
+      {'q': 'Explain why hydrogen fuel cells are often described as more efficient than burning hydrogen in an engine.',
+       'opts': [
+           ('A fuel cell converts the energy of the reaction directly into electrical energy, so less energy is wasted as heat than in an engine that burns the fuel first', True),
+           ('Burning hydrogen produces no heat, so it wastes more energy', False),
+           ('A fuel cell produces more hydrogen than it uses', False),
+           ('An engine turns all of its heat into motion with no waste', False),
+       ],
+       'wrong_explanations': {
+           1: 'Burning hydrogen releases a lot of heat, much of which is wasted; a fuel cell avoids this by making electricity directly.',
+           2: 'A fuel cell cannot make more fuel than it uses; its efficiency comes from converting energy directly into electricity.',
+           3: 'Engines waste a large fraction of the energy as heat; that inefficiency is why fuel cells can be more efficient.',
+       }},
+     ],
   'rp': None,
   'spec': '4.5.2.2',
   'summary': 'Describe how hydrogen fuel cells work and evaluate their advantages and disadvantages.',
@@ -5894,19 +6417,36 @@ CHEMISTRY_SUBTOPICS_ALL = {
                  'hydrogen fuel cells work and evaluate their advantages and disadvantages compared to rechargeable '
                  'batteries.',
   'variables': []},
- {'common_mistake': 'ΔH = energy IN (breaking) MINUS energy OUT (forming). Not the other way round. If you subtract '
-                    "the wrong way, you'll get the wrong sign. Remember: breaking bonds costs energy (positive "
-                    'contribution to ΔH); forming bonds releases energy (negative contribution). ΔH negative = '
-                    'exothermic.',
+ {'common_mistake': 'Students often mix up which way round to subtract in a bond-energy calculation, writing ΔH = (energy to make bonds) − (energy to break bonds). It is the other way round: ΔH = (energy IN to BREAK the reactant bonds) − (energy OUT to MAKE the product bonds). A second frequent slip is to forget that breaking bonds is endothermic (takes energy in) while making bonds is exothermic (gives energy out), then to drop the minus sign — so an exothermic reaction, where the bonds made release more than the bonds broken absorb, gets wrongly reported as positive.',
   'equations': ['ΔH = energy in (bonds broken) − energy out (bonds formed)',
                 'Exothermic: energy out > energy in → ΔH negative',
                 'Endothermic: energy in > energy out → ΔH positive'],
-  'fifas': [{'label': 'Bond Energy Calculation',
-             'question': 'Calculate ΔH for H₂ + Cl₂ → 2HCl. Bond energies: H-H=436, Cl-Cl=243, H-Cl=432 kJ/mol.',
-             'steps': [('F', 'ΔH = energy in (bonds broken) − energy out (bonds formed)'),
-                       ('I', 'Broken: 1×H-H(436) + 1×Cl-Cl(243) = 679 kJ. Formed: 2×H-Cl(432) = 864 kJ'),
-                       ('F', 'ΔH = 679 − 864 = −185'),
-                       ('A', 'ΔH = −185 kJ/mol (exothermic)')]}],
+  'fifas': [
+      {'label': 'A simple diatomic reaction',
+       'question': 'Hydrogen reacts with chlorine: H₂ + Cl₂ → 2HCl. Bond energies (kJ/mol): H–H = 436, Cl–Cl = 242, H–Cl = 431. Calculate ΔH.',
+       'steps': [
+           ('F', 'ΔH = (energy to break the reactant bonds) − (energy to make the product bonds)'),
+           ('I', 'break = 436 + 242 = 678;  make = 2 × 431 = 862'),
+           ('F', 'ΔH = 678 − 862'),
+           ('A', 'ΔH = −184 kJ/mol (exothermic — more energy is released making bonds than is absorbed breaking them)'),
+       ]},
+      {'label': 'A molecule with several bonds (combustion)',
+       'question': 'Methane burns completely: CH₄ + 2O₂ → CO₂ + 2H₂O. Bond energies (kJ/mol): C–H = 412, O=O = 498, C=O = 743, O–H = 463. Calculate ΔH.',
+       'steps': [
+           ('F', 'ΔH = (bonds broken) − (bonds made)'),
+           ('I', 'break = (4 × 412) + (2 × 498) = 1648 + 996 = 2644;  make = (2 × 743) + (4 × 463) = 1486 + 1852 = 3338'),
+           ('F', 'ΔH = 2644 − 3338'),
+           ('A', 'ΔH = −694 kJ/mol (exothermic)'),
+       ]},
+      {'label': 'Working backwards to a missing bond energy',
+       'question': 'For H₂ + Br₂ → 2HBr, ΔH = −103 kJ/mol. Bond energies (kJ/mol): H–H = 436, Br–Br = 193. Calculate the H–Br bond energy.',
+       'steps': [
+           ('F', 'ΔH = (H–H + Br–Br) − (2 × H–Br), so rearrange for H–Br'),
+           ('I', '−103 = (436 + 193) − (2 × H–Br) = 629 − 2 × H–Br'),
+           ('F', '2 × H–Br = 629 + 103 = 732, so H–Br = 732 ÷ 2'),
+           ('A', 'H–Br = 366 kJ/mol'),
+       ]},
+     ],
   'higher': None,
   'id': 'bond-energy-calculations',
   'key_note': 'Bond breaking: endothermic (energy in). Bond forming: exothermic (energy out). ΔH = energy in − energy '
@@ -5921,35 +6461,152 @@ CHEMISTRY_SUBTOPICS_ALL = {
                           'Endothermic — more energy absorbed in bond breaking than released in forming'),
                          ('Bond energy', 'Energy needed to break 1 mole of a specific bond — in kJ/mol')],
                'title': 'Bond Energy Concepts'},
-  'quiz': [{'opts': [('ΔH = −250 kJ/mol — exothermic because more energy is released (forming) than absorbed '
-                      '(breaking)',
-                      True),
-                     ('ΔH = +250 kJ/mol — endothermic because the products have more energy', False),
-                     ('ΔH = +1850 kJ/mol — add both bond energies together', False),
-                     ('ΔH = −250 kJ/mol — endothermic because the surroundings lose energy', False)],
-            'q': 'A reaction has bond breaking energy of 800 kJ/mol and bond forming energy of 1050 kJ/mol. What is ΔH '
-                 'and is the reaction exothermic or endothermic?',
-            'wrong_explanations': {1: 'ΔH = 800 − 1050 = −250 kJ/mol. The reaction IS exothermic (ΔH negative) — '
-                                      'energy is released to surroundings.',
-                                   2: 'Adding energies gives a meaningless total. ΔH = energy IN minus energy OUT = '
-                                      '800 − 1050 = −250 kJ/mol.',
-                                   3: 'ΔH = −250 means EXOTHERMIC — the surroundings gain energy (get warmer). '
-                                      'Endothermic would be ΔH positive.'}},
-           {'opts': [('Bond energies are average values — the exact energy depends on the molecular environment of the '
-                      'bond',
-                      True),
-                     ('Bond energy values change with temperature — room temperature values are inaccurate', False),
-                     ('The Avogadro constant introduces rounding errors into the calculations', False),
-                     ('Bond energies are measured in kJ but enthalpy changes are in J — unit conversion errors occur',
-                      False)],
-            'q': 'Why are bond energy calculations only approximate?',
-            'wrong_explanations': {1: 'Temperature does affect bond energies slightly, but the main reason for '
-                                      'approximation is that bond energy tables give AVERAGE values across many '
-                                      'different molecules.',
-                                   2: 'Both bond energies and ΔH values are typically given in kJ/mol — no unit '
-                                      'conversion is needed.',
-                                   3: 'The Avogadro constant is used for mole calculations — bond energy calculations '
-                                      'work directly with kJ/mol values.'}}],
+  'quiz': [
+      {'q': 'Hydrogen reacts with chlorine: H₂ + Cl₂ → 2HCl. Bond energies (kJ/mol): H–H = 436, Cl–Cl = 242, H–Cl = 431. Calculate ΔH.',
+       'opts': [
+           ('−184 kJ/mol (break 436 + 242 = 678; make 2 × 431 = 862; ΔH = 678 − 862)', True),
+           ('+184 kJ/mol — subtracted the wrong way round (made − broken)', False),
+           ('+1540 kJ/mol — added broken and made', False),
+           ('+247 kJ/mol — counted only one H–Cl bond made', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = bonds broken − bonds made = 678 − 862 = −184 kJ/mol; doing made − broken flips the sign.',
+           2: 'You must SUBTRACT (broken − made): 678 − 862 = −184 kJ/mol, not add them (678 + 862 = 1540).',
+           3: '2 mol of HCl form, so two H–Cl bonds are made (2 × 431 = 862 kJ); using one gives the wrong answer.',
+       }},
+      {'q': 'Explain, in terms of bond breaking and bond making, why some reactions are exothermic overall.',
+       'opts': [
+           ('More energy is released making the new bonds in the products than is taken in breaking the bonds in the reactants, so there is a net release of energy (ΔH negative)', True),
+           ('Breaking the reactant bonds releases energy, which heats the surroundings', False),
+           ('The products always contain more bonds than the reactants', False),
+           ('No energy is needed to break bonds in an exothermic reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'Breaking bonds ABSORBS energy (endothermic); the net release comes from making bonds giving out more than breaking takes in.',
+           2: 'It is not the number of bonds but the balance of energy: bonds made release more than bonds broken absorb.',
+           3: 'Energy is always needed to break bonds; a reaction is exothermic when making bonds releases MORE than breaking them absorbs.',
+       }},
+      {'q': 'Describe the energy change when bonds are broken and when bonds are made, and state the sign each contributes to ΔH.',
+       'opts': [
+           ('Breaking bonds is endothermic (takes energy in — a positive contribution); making bonds is exothermic (gives energy out — a negative contribution)', True),
+           ('Breaking bonds is exothermic; making bonds is endothermic', False),
+           ('Both breaking and making bonds release energy', False),
+           ('Both breaking and making bonds absorb energy', False),
+       ],
+       'wrong_explanations': {
+           1: 'This is reversed — breaking bonds takes energy IN (endothermic); making bonds gives energy OUT (exothermic).',
+           2: 'Only making bonds releases energy; breaking bonds absorbs it.',
+           3: 'Only breaking bonds absorbs energy; making bonds releases it.',
+       }},
+      {'q': 'Hydrogen reacts with bromine: H₂ + Br₂ → 2HBr. Bond energies (kJ/mol): H–H = 436, Br–Br = 193, H–Br = 366. Calculate ΔH.',
+       'opts': [
+           ('−103 kJ/mol (break 436 + 193 = 629; make 2 × 366 = 732; ΔH = 629 − 732)', True),
+           ('+103 kJ/mol — worked out made − broken', False),
+           ('+1361 kJ/mol — added broken and made', False),
+           ('+263 kJ/mol — counted only one H–Br bond made', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 629 − 732 = −103 kJ/mol; reversing the subtraction flips the sign.',
+           2: 'ΔH is broken − made = 629 − 732, not the sum (629 + 732 = 1361).',
+           3: '2 mol of HBr form, so two H–Br bonds are made (2 × 366 = 732 kJ); using one gives the wrong answer.',
+       }},
+      {'q': 'In a reaction the total energy needed to break the reactant bonds is 1650 kJ and the total energy released making the product bonds is 1806 kJ. Calculate ΔH and state whether the reaction is exothermic or endothermic.',
+       'opts': [
+           ('ΔH = 1650 − 1806 = −156 kJ; exothermic (more energy released making bonds than absorbed breaking them)', True),
+           ('ΔH = 1806 − 1650 = +156 kJ; endothermic', False),
+           ('ΔH = 1650 + 1806 = 3456 kJ; exothermic', False),
+           ('ΔH = −156 kJ; endothermic', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = energy to break − energy to make = 1650 − 1806 = −156 kJ; the reaction is exothermic.',
+           2: 'ΔH is the DIFFERENCE (break − make), not the sum of the two totals.',
+           3: 'The value is right, but a negative ΔH is exothermic, not endothermic.',
+       }},
+      {'q': 'Methane burns completely: CH₄ + 2O₂ → CO₂ + 2H₂O. Bond energies (kJ/mol): C–H = 412, O=O = 498, C=O = 743, O–H = 463. Calculate ΔH.',
+       'opts': [
+           ('−694 kJ/mol (break 4×412 + 2×498 = 2644; make 2×743 + 4×463 = 3338; ΔH = 2644 − 3338)', True),
+           ('+694 kJ/mol — subtracted the wrong way round (made − broken)', False),
+           ('+232 kJ/mol — counted only 2 O–H bonds instead of 4', False),
+           ('+5982 kJ/mol — added broken and made instead of subtracting', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 2644 − 3338 = −694 kJ/mol; reversing the subtraction flips the sign.',
+           2: '2 H₂O molecules form, each with 2 O–H bonds, so 4 O–H bonds are made (4 × 463); using 2 gives the wrong answer.',
+           3: 'ΔH is broken − made = 2644 − 3338, not the sum (2644 + 3338 = 5982).',
+       }},
+      {'q': 'For H₂ + Br₂ → 2HBr the enthalpy change is ΔH = −103 kJ/mol. Bond energies (kJ/mol): H–H = 436, Br–Br = 193. Calculate the bond energy of the H–Br bond.',
+       'opts': [
+           ('366 kJ/mol (ΔH = 629 − 2 × H–Br = −103, so 2 × H–Br = 732, H–Br = 366)', True),
+           ('732 kJ/mol — forgot that two H–Br bonds form', False),
+           ('263 kJ/mol — subtracted ΔH instead of adding it', False),
+           ('314.5 kJ/mol — averaged the two reactant bond energies', False),
+       ],
+       'wrong_explanations': {
+           1: '2 mol of HBr form, so ΔH = 629 − 2 × (H–Br); dividing by 2 gives H–Br = 366, not 732.',
+           2: 'Rearranging 629 − 2X = −103 gives 2X = 629 + 103 = 732, so X = 366; subtracting 103 gives 263.',
+           3: 'The H–Br bond energy comes from rearranging the ΔH equation (X = 366), not from averaging the reactant bonds.',
+       }},
+      {'q': 'The Haber process: N₂ + 3H₂ → 2NH₃. Bond energies (kJ/mol): N≡N = 945, H–H = 436, N–H = 391. Calculate ΔH.',
+       'opts': [
+           ('−93 kJ/mol (break 945 + 3×436 = 2253; make 6×391 = 2346; ΔH = 2253 − 2346)', True),
+           ('+93 kJ/mol — subtracted made − broken', False),
+           ('+1080 kJ/mol — used only 3 N–H bonds instead of 6', False),
+           ('−4599 kJ/mol — added broken and made', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 2253 − 2346 = −93 kJ/mol; reversing the subtraction flips the sign.',
+           2: '2 NH₃ molecules form, each with 3 N–H bonds, so 6 N–H bonds are made (6 × 391); using 3 gives the wrong answer.',
+           3: 'ΔH is broken − made = 2253 − 2346, not the sum (2253 + 2346 = 4599).',
+       }},
+      {'q': 'In a bond-energy calculation a student finds the energy to break the reactant bonds is greater than the energy released making the product bonds. Deduce the sign of ΔH and the type of reaction.',
+       'opts': [
+           ('ΔH is positive and the reaction is endothermic — more energy is absorbed breaking bonds than is released making them', True),
+           ('ΔH is negative and the reaction is exothermic', False),
+           ('ΔH is positive and the reaction is exothermic', False),
+           ('ΔH is zero because the two roughly cancel', False),
+       ],
+       'wrong_explanations': {
+           1: 'If breaking takes MORE energy than making releases, the net is energy absorbed → a positive ΔH, endothermic.',
+           2: 'A positive ΔH is endothermic, not exothermic.',
+           3: 'They do not cancel here — breaking needs more than making releases, so there is a net positive ΔH.',
+       }},
+      {'q': 'Ethene is hydrogenated: C₂H₄ + H₂ → C₂H₆. Bond energies (kJ/mol): C–H = 412, C=C = 612, H–H = 436, C–C = 347. (Ethene has 4 C–H and 1 C=C; ethane has 6 C–H and 1 C–C.) Calculate ΔH.',
+       'opts': [
+           ('−123 kJ/mol (break 4×412 + 612 + 436 = 2696; make 6×412 + 347 = 2819; ΔH = 2696 − 2819)', True),
+           ('+123 kJ/mol — subtracted made − broken', False),
+           ('−388 kJ/mol — used a C–C single-bond value (347) for the C=C double bond', False),
+           ('+5515 kJ/mol — added broken and made instead of subtracting', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 2696 − 2819 = −123 kJ/mol; reversing the subtraction flips the sign.',
+           2: 'Ethene has a C=C DOUBLE bond (612 kJ/mol); using the single-bond value understates the energy needed to break it.',
+           3: 'ΔH is broken − made = 2696 − 2819, not the sum (2696 + 2819 = 5515).',
+       }},
+      {'q': 'Hydrogen burns as a fuel: 2H₂ + O₂ → 2H₂O. Bond energies (kJ/mol): H–H = 436, O=O = 498, O–H = 463. Calculate ΔH.',
+       'opts': [
+           ('−482 kJ/mol (break 2×436 + 498 = 1370; make 4×463 = 1852; ΔH = 1370 − 1852)', True),
+           ('+482 kJ/mol — subtracted made − broken', False),
+           ('+444 kJ/mol — used only 2 O–H bonds instead of 4', False),
+           ('−918 kJ/mol — counted only one H–H bond (forgot 2H₂)', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 1370 − 1852 = −482 kJ/mol; reversing the subtraction flips the sign.',
+           2: '2 H₂O molecules form, each with 2 O–H bonds, so 4 O–H bonds are made (4 × 463); using 2 gives the wrong answer.',
+           3: '2 mol of H₂ react, so two H–H bonds are broken (2 × 436 = 872 kJ); using one gives the wrong answer.',
+       }},
+      {'q': 'The combustion of hydrogen has ΔH = −482 kJ/mol and the combustion of methane has ΔH = −694 kJ/mol (per mole of fuel). Evaluate the claim that methane releases more energy per mole, and give one limitation of judging a fuel by ΔH alone.',
+       'opts': [
+           ("The claim is supported — methane's ΔH (−694) is more negative than hydrogen's (−482), so it releases more energy per mole; but ΔH per mole ignores energy per gram, cost, and the products formed (methane makes CO₂, hydrogen makes only water)", True),
+           ('Hydrogen releases more energy per mole, because −482 is a smaller number', False),
+           ('The two cannot be compared because both values are negative', False),
+           ('Energy per mole is the only thing that matters when choosing a fuel', False),
+       ],
+       'wrong_explanations': {
+           1: '−694 is MORE negative than −482, so methane releases more energy per mole; −482 releases less.',
+           2: 'Both being negative just means both are exothermic; you compare their sizes — −694 is larger than −482.',
+           3: 'Energy per mole is one factor; energy per gram, cost, availability and the products (CO₂ versus water) also matter.',
+       }},
+     ],
   'rp': None,
   'spec': '5.5.1.3',
   'summary': 'Use bond energies to calculate the energy change of a reaction.',

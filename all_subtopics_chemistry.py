@@ -4206,19 +4206,34 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"energy-changes": [{'common_mistake': 'EXOTHERMIC reactions make the surroundings HOTTER (temperature rises). ENDOTHERMIC reactions make '
-                    'the surroundings COLDER (temperature falls). The reaction itself releases or absorbs energy — but '
-                    'the SURROUNDINGS show the opposite effect to what the reaction does. Also: ΔH is NEGATIVE for '
-                    "exothermic (releases energy) — students often think negative means the reaction is 'losing "
-                    "energy' in a bad way — it just means energy is released.",
+"energy-changes": [{'common_mistake': "Students often think that because an endothermic reaction takes energy IN, it must make the surroundings feel hotter — and that a negative ΔH means the reaction has 'lost' energy and gone wrong. Both are back to front. An endothermic reaction absorbs energy FROM the surroundings, so the surroundings get COLDER (the temperature falls); an exothermic reaction releases energy TO the surroundings, so they get HOTTER. And a negative ΔH is simply the label for exothermic — energy released — not a sign that anything is lost or wrong; a positive ΔH means energy absorbed (endothermic).",
   'equations': ['Q = m × c × ΔT'],
-  'fifas': [{'label': 'Calorimetry Calculation',
-             'question': '50 g of water is heated by a reaction. The temperature rises from 20°C to 34°C. Calculate '
-                         'the energy released. (c = 4.18 J/g°C)',
-             'steps': [('F', 'Q = m × c × ΔT'),
-                       ('I', 'm = 50 g, c = 4.18 J/g°C, ΔT = 34 − 20 = 14°C'),
-                       ('F', 'Q = 50 × 4.18 × 14 = 50 × 58.52'),
-                       ('A', 'Q = 2926 J ≈ 2930 J (exothermic — temperature rose)')]}],
+  'fifas': [
+      {'label': 'Energy released heating water',
+       'question': 'A reaction heats 50 g of water. The temperature rises from 20 °C to 30 °C. Calculate the energy transferred. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT'),
+           ('I', 'm = 50 g, c = 4.18 J/g °C, ΔT = 30 − 20 = 10 °C'),
+           ('F', 'Q = 50 × 4.18 × 10'),
+           ('A', 'Q = 2090 J (exothermic — the temperature rose)'),
+       ]},
+      {'label': 'A larger mass of water',
+       'question': 'A reaction heats 100 g of water from 18 °C to 28 °C. Calculate the energy transferred. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT'),
+           ('I', 'm = 100 g, c = 4.18 J/g °C, ΔT = 28 − 18 = 10 °C'),
+           ('F', 'Q = 100 × 4.18 × 10'),
+           ('A', 'Q = 4180 J'),
+       ]},
+      {'label': 'An endothermic change (temperature falls)',
+       'question': 'Dissolving a salt cools 40 g of water from 25 °C to 19 °C. Calculate the energy absorbed. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT'),
+           ('I', 'm = 40 g, c = 4.18 J/g °C, ΔT = 25 − 19 = 6 °C'),
+           ('F', 'Q = 40 × 4.18 × 6'),
+           ('A', 'Q = 1003.2 J (endothermic — the temperature fell)'),
+       ]},
+     ],
   'higher': None,
   'id': 'exothermic-endothermic',
   'key_note': 'Exothermic: releases heat → temperature rises → examples: combustion, neutralisation, respiration. '
@@ -4232,29 +4247,128 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Exothermic', 'Respiration — glucose + oxygen releases energy in cells'),
                          ('Endothermic', 'Photosynthesis — absorbs light energy to make glucose')],
                'title': 'Exothermic or Endothermic?'},
-  'quiz': [{'opts': [('Exothermic — energy is released to the surroundings, raising the temperature', True),
-                     ('Endothermic — energy is absorbed, warming the hand from within', False),
-                     ('Neither — hand warmers use electrical energy, not chemical reactions', False),
-                     ('Endothermic — the hand warmer absorbs heat from the hand', False)],
-            'q': 'A hand warmer gets hot when activated. What type of reaction is occurring inside?',
-            'wrong_explanations': {1: 'Endothermic reactions take IN heat from the surroundings — they make things '
-                                      'colder, not warmer. Hand warmers get hot because they are exothermic.',
-                                   2: 'Most disposable hand warmers use a chemical reaction (e.g. iron oxidation) — '
-                                      'not electricity.',
-                                   3: 'A hand warmer RELEASES heat to the hand — the reaction inside is exothermic '
-                                      '(releases energy).'}},
-           {'opts': [('3344 J — Q = 100 × 4.18 × 8', True),
-                     ('836 J — Q = 100 × 4.18 × 2', False),
-                     ('3340 J — temperature change forgotten, used 8.18 instead', False),
-                     ('41800 J — forgot to use the temperature change', False)],
-            'q': '100 g of solution is heated in a calorimetry experiment. Temperature rises from 22°C to 30°C. Using '
-                 'c = 4.18 J/g°C, how much energy was released?',
-            'wrong_explanations': {1: 'ΔT = 30 − 22 = 2 — not 8. The temperature change is the difference: 30 − 22 = '
-                                      '8°C.',
-                                   2: 'Calculation partially correct but wrong ΔT value used — not a standard error in '
-                                      'the formula.',
-                                   3: 'Must use Q = m × c × ΔT = 100 × 4.18 × 8 = 3344 J. Cannot use just mass × '
-                                      'specific heat capacity.'}}],
+  'quiz': [
+      {'q': 'A camping stove burns butane and the surroundings get hotter. Deduce whether the reaction is exothermic or endothermic, and give a reason.',
+       'opts': [
+           ('Exothermic — it releases energy to the surroundings, so their temperature rises', True),
+           ('Endothermic — energy is taken in, which is what makes the surroundings feel hot', False),
+           ('Endothermic — burning always absorbs energy from the air', False),
+           ('Neither — the heat comes from the match, not the reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'This reverses the idea: endothermic reactions take energy IN and make the surroundings COLDER. Releasing energy (exothermic) is what warms them.',
+           2: 'Burning (combustion) RELEASES energy — it is exothermic. It needs a little energy to start, but far more is given out.',
+           3: 'The match only supplies the energy to start it; the sustained heat is released by the exothermic combustion itself.',
+       }},
+      {'q': 'When ammonium nitrate is stirred into water the beaker feels cold. Predict whether dissolving it is exothermic or endothermic, and explain the temperature change.',
+       'opts': [
+           ("Endothermic — it absorbs energy from the water, so the water's temperature falls", True),
+           ('Exothermic — the cold shows energy is being released', False),
+           ('Endothermic — energy is released, cooling the water', False),
+           ('Neither — dissolving is never an energy change', False),
+       ],
+       'wrong_explanations': {
+           1: 'A temperature FALL means energy is being absorbed FROM the surroundings — that is endothermic, not exothermic.',
+           2: 'Endothermic is the right label, but the reason is wrong: endothermic means energy is ABSORBED, not released.',
+           3: 'Dissolving does involve energy changes; here energy is absorbed, which is exactly how instant cold packs work.',
+       }},
+      {'q': 'Describe what happens to the energy of the surroundings during an exothermic reaction and during an endothermic reaction.',
+       'opts': [
+           ('Exothermic: energy is transferred TO the surroundings (they heat up). Endothermic: energy is taken FROM the surroundings (they cool down)', True),
+           ('Exothermic: the surroundings cool. Endothermic: the surroundings heat up', False),
+           ('Both transfer energy to the surroundings, warming them', False),
+           ('Both take energy from the surroundings, cooling them', False),
+       ],
+       'wrong_explanations': {
+           1: 'This is the wrong way round — exothermic HEATS the surroundings; endothermic COOLS them.',
+           2: 'Only exothermic warms the surroundings; endothermic absorbs energy and cools them.',
+           3: 'Only endothermic cools the surroundings; exothermic releases energy and warms them.',
+       }},
+      {'q': 'Explain why the temperature of the reaction mixture rises during the neutralisation of an acid with an alkali.',
+       'opts': [
+           ('Neutralisation is exothermic — it releases energy to the mixture, so its temperature rises', True),
+           ('The mixture absorbs energy from the surroundings as it reacts', False),
+           ('The acid and alkali are already hot before they are mixed', False),
+           ('Stirring the mixture adds energy and heats it up', False),
+       ],
+       'wrong_explanations': {
+           1: 'Absorbing energy would make it COLDER; a temperature rise shows energy is being released (exothermic).',
+           2: 'The rise is caused by the reaction releasing energy, not by the starting temperature of the reactants.',
+           3: 'Stirring adds a negligible amount of energy; the heating is due to the exothermic neutralisation reaction.',
+       }},
+      {'q': 'A student adds a reactant to a solution and the temperature falls by 6 °C. Determine the type of reaction and state the sign of its enthalpy change, ΔH.',
+       'opts': [
+           ('Endothermic, ΔH is positive — energy was absorbed from the solution, so it cooled', True),
+           ('Exothermic, ΔH is negative — energy was released, cooling the solution', False),
+           ('Endothermic, ΔH is negative — energy was absorbed', False),
+           ('Exothermic, ΔH is positive — energy was released', False),
+       ],
+       'wrong_explanations': {
+           1: 'A temperature FALL means energy was absorbed (endothermic, positive ΔH); releasing energy would warm the solution.',
+           2: 'Endothermic is right, but a positive ΔH goes with endothermic; a negative ΔH is exothermic.',
+           3: 'Both parts are wrong: a temperature fall is endothermic, and exothermic reactions have a NEGATIVE ΔH.',
+       }},
+      {'q': 'State what happens to the temperature of the surroundings during an exothermic reaction.',
+       'opts': [
+           ('It increases (the surroundings get hotter)', True),
+           ('It decreases (the surroundings get colder)', False),
+           ('It stays exactly the same', False),
+           ('It falls to below 0 °C every time', False),
+       ],
+       'wrong_explanations': {
+           1: 'A temperature decrease is endothermic; exothermic reactions release energy and warm the surroundings.',
+           2: 'Exothermic reactions release energy, which raises the temperature of the surroundings.',
+           3: 'Exothermic reactions raise the temperature; they do not cool anything, let alone below freezing.',
+       }},
+      {'q': 'State the sign of the enthalpy change, ΔH, for an exothermic reaction.',
+       'opts': [
+           ('Negative', True),
+           ('Positive', False),
+           ('Zero', False),
+           ('It has no sign', False),
+       ],
+       'wrong_explanations': {
+           1: 'A positive ΔH is endothermic (energy absorbed); an exothermic reaction releases energy, so ΔH is negative.',
+           2: 'ΔH is zero only if there is no energy change; an exothermic reaction releases energy, so ΔH is negative.',
+           3: 'ΔH always carries a sign: negative for exothermic, positive for endothermic.',
+       }},
+      {'q': 'Name an everyday product that works by an endothermic change.',
+       'opts': [
+           ('An instant cold pack (for example, for a sports injury)', True),
+           ('A hand warmer', False),
+           ('A self-heating food can', False),
+           ('A burning candle', False),
+       ],
+       'wrong_explanations': {
+           1: 'A hand warmer gets HOT, so it is exothermic — the opposite of endothermic.',
+           2: 'Self-heating cans release energy to warm the food, so they are exothermic, not endothermic.',
+           3: 'A burning candle releases heat and light — combustion is exothermic.',
+       }},
+      {'q': 'Name the piece of equipment used to reduce heat loss when measuring a temperature change in a school calorimetry experiment.',
+       'opts': [
+           ('A polystyrene (expanded-foam) cup', True),
+           ('A glass beaker', False),
+           ('A metal can', False),
+           ('A gas syringe', False),
+       ],
+       'wrong_explanations': {
+           1: 'Glass conducts heat away quickly; a polystyrene cup insulates far better and reduces heat loss.',
+           2: 'Metal is a good conductor, so it would lose heat rapidly — the opposite of what is wanted.',
+           3: 'A gas syringe measures the volume of gas, not a temperature change; a polystyrene cup is used for calorimetry.',
+       }},
+      {'q': 'A thermometer reading rises from 21 °C to 29 °C during a reaction. Calculate the temperature change and state whether the reaction is exothermic or endothermic.',
+       'opts': [
+           ('ΔT = 8 °C; exothermic (the temperature rose)', True),
+           ('ΔT = 8 °C; endothermic (the temperature rose)', False),
+           ('ΔT = 50 °C; exothermic', False),
+           ('ΔT = 29 °C; exothermic', False),
+       ],
+       'wrong_explanations': {
+           1: 'The temperature change is right, but a RISE in temperature means exothermic, not endothermic.',
+           2: 'ΔT is the DIFFERENCE, 29 − 21 = 8 °C, not the two readings added together.',
+           3: 'ΔT is the change (29 − 21 = 8 °C), not the final reading.',
+       }},
+     ],
   'rp': 'RP5 (Chemistry) — Investigate the variables that affect temperature changes in reactions: e.g. neutralisation '
         'of NaOH with HCl, or dissolving ammonium chloride in water.',
   'spec': '5.5.1.1',
@@ -4319,12 +4433,35 @@ CHEMISTRY_SUBTOPICS_ALL = {
                 ('m', 'Mass of solution', 'grams', 'g'),
                 ('c', 'Specific heat capacity', 'J/g°C', 'J/g°C'),
                 ('ΔT', 'Temperature change', '°C', '°C')]},
- {'common_mistake': 'The activation energy is measured from the REACTANT level to the PEAK — NOT from the reactant '
-                    'level to the product level. The overall energy change (ΔH) is from reactants to PRODUCTS. These '
-                    'are two different measurements on the same diagram. Students often confuse them.',
+ {'common_mistake': 'Students often confuse the activation energy with the overall energy change on a reaction profile, and read both from the same two points. They are different measurements: the activation energy (Ea) is the climb from the REACTANT level up to the PEAK of the curve, while the overall energy change (ΔH) is the step from the REACTANT level across to the PRODUCT level. A second common slip is to think a downhill profile (products lower than reactants) is endothermic — it is the opposite: products lower means energy was released, so the reaction is exothermic.',
   'equations': ['ΔH = energy of products − energy of reactants',
                 'Activation energy = energy of peak − energy of reactants'],
-  'fifas': [],
+  'fifas': [
+      {'label': 'Overall energy change from a profile',
+       'question': 'On a reaction profile the reactants are at 250 kJ and the products at 190 kJ. Calculate the overall energy change, ΔH, and state whether the reaction is exothermic or endothermic.',
+       'steps': [
+           ('F', 'ΔH = energy of products − energy of reactants'),
+           ('I', 'ΔH = 190 − 250'),
+           ('F', 'subtract'),
+           ('A', 'ΔH = −60 kJ (exothermic — the products are lower)'),
+       ]},
+      {'label': 'Activation energy from a profile',
+       'question': 'On the same profile the peak of the curve is at 320 kJ and the reactants are at 250 kJ. Calculate the activation energy.',
+       'steps': [
+           ('F', 'activation energy = energy of peak − energy of reactants'),
+           ('I', 'Ea = 320 − 250'),
+           ('F', 'subtract'),
+           ('A', 'Ea = 70 kJ'),
+       ]},
+      {'label': 'An endothermic profile',
+       'question': 'On another profile the reactants are at 100 kJ and the products at 175 kJ. Calculate ΔH and state the type of reaction.',
+       'steps': [
+           ('F', 'ΔH = energy of products − energy of reactants'),
+           ('I', 'ΔH = 175 − 100'),
+           ('F', 'subtract'),
+           ('A', 'ΔH = +75 kJ (endothermic — the products are higher)'),
+       ]},
+     ],
   'higher': None,
   'id': 'reaction-profiles',
   'key_note': 'Reaction profile: x = reaction progress, y = energy. Exothermic: products LOWER than reactants (ΔH '
@@ -4337,29 +4474,128 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Effect of catalyst',
                           'Lowers the peak — lower activation energy — same ΔH — faster reaction')],
                'title': 'Reaction Profile Features'},
-  'quiz': [{'opts': [('−30 kJ — products (50) − reactants (80) = −30 kJ — exothermic reaction', True),
-                     ('+30 kJ — reactants (80) − products (50) = +30 kJ', False),
-                     ('+130 kJ — adding reactant and product energies', False),
-                     ('−80 kJ — the reactant energy is lost', False)],
-            'q': 'On a reaction profile, the reactants are at 80 kJ and the products are at 50 kJ. What is ΔH?',
-            'wrong_explanations': {1: 'ΔH = products − reactants = 50 − 80 = −30. Positive 30 would mean products are '
-                                      'HIGHER than reactants — but here products (50) are lower than reactants (80).',
-                                   2: 'Adding energies gives a meaningless value — ΔH = products MINUS reactants.',
-                                   3: "The reactant energy of 80 kJ is not 'lost' — ΔH shows the NET energy change "
-                                      'from reactants to products.'}},
-           {'opts': [('The activation energy peak is lower — but reactant and product energy levels and ΔH stay the '
-                      'same',
-                      True),
-                     ('The reactant energy level increases — they become more energetic', False),
-                     ('Both the activation energy and ΔH decrease', False),
-                     ('The product energy level increases — products formed are higher energy', False)],
-            'q': 'A catalyst is added to a reaction. What changes on the reaction profile?',
-            'wrong_explanations': {1: 'Catalysts do not give reactants more energy — they provide an ALTERNATIVE '
-                                      'PATHWAY with a lower energy barrier.',
-                                   2: 'ΔH (the overall energy change) is NOT changed by a catalyst — only the '
-                                      'activation energy peak is lowered.',
-                                   3: 'Products are the same compounds regardless of whether a catalyst is used — '
-                                      "their energy level doesn't change."}}],
+  'quiz': [
+      {'q': 'On a reaction profile the products are drawn LOWER than the reactants. Deduce whether the reaction is exothermic or endothermic, and give the sign of ΔH.',
+       'opts': [
+           ('Exothermic, ΔH is negative — energy is released, so the products end up at a lower energy than the reactants', True),
+           ('Endothermic, ΔH is positive — the products are lower because they absorbed energy', False),
+           ('Exothermic, ΔH is positive — energy is released', False),
+           ('It cannot be decided without knowing the activation energy', False),
+       ],
+       'wrong_explanations': {
+           1: 'Products LOWER than reactants means energy was released (exothermic, ΔH negative); absorbing energy would raise the products.',
+           2: 'Exothermic is right, but exothermic reactions have a NEGATIVE ΔH, not positive.',
+           3: 'The relative heights of reactants and products alone show the reaction is exothermic; the activation energy is a separate feature.',
+       }},
+      {'q': 'On a reaction profile the products are drawn HIGHER than the reactants. Deduce whether the reaction is exothermic or endothermic, and explain how the diagram shows this.',
+       'opts': [
+           ('Endothermic — the products are at a higher energy than the reactants, so energy was absorbed from the surroundings', True),
+           ('Exothermic — the products are higher because energy was released', False),
+           ('Endothermic — because the activation energy is very large', False),
+           ('Neither — the heights of the lines do not matter', False),
+       ],
+       'wrong_explanations': {
+           1: 'Releasing energy LOWERS the products; products higher than reactants means energy was absorbed (endothermic).',
+           2: 'A large activation energy does not make a reaction endothermic; it is the products being HIGHER than the reactants that shows it.',
+           3: 'The relative heights are exactly what the profile shows: products higher than reactants means endothermic.',
+       }},
+      {'q': 'Describe what the activation energy represents on a reaction profile.',
+       'opts': [
+           ('The minimum energy the reactants must gain to react — shown as the climb from the reactant level up to the peak of the curve', True),
+           ('The energy difference between the reactants and the products', False),
+           ('The energy released when the products form', False),
+           ('The total energy stored in the reactants', False),
+       ],
+       'wrong_explanations': {
+           1: 'That is the overall energy change (ΔH); the activation energy is the climb up to the PEAK, not the reactant-to-product step.',
+           2: 'Energy released relates to ΔH for an exothermic reaction; the activation energy is the barrier that must be climbed to start the reaction.',
+           3: "The activation energy is not the reactants' total energy; it is the extra energy needed to reach the peak so the reaction can proceed.",
+       }},
+      {'q': 'Explain why every reaction, even an exothermic one, needs a minimum amount of energy to get started.',
+       'opts': [
+           ('Existing bonds in the reactants must be broken before new ones can form, and breaking bonds needs energy — this is the activation energy', True),
+           ('Because all reactions absorb energy overall', False),
+           ('Because the products always have more energy than the reactants', False),
+           ('Because energy can be created only at the start of a reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'Not all reactions absorb energy overall (exothermic ones release it); the start-up energy is the activation energy needed to break bonds.',
+           2: 'In an exothermic reaction the products have LESS energy; the start-up energy is still needed to break the reactant bonds first.',
+           3: 'Energy is conserved (neither created nor destroyed); the reason a reaction needs a push is the activation energy to break bonds.',
+       }},
+      {'q': 'A catalyst is added to a reaction. Describe its effect on the reaction profile and explain how this speeds up the reaction.',
+       'opts': [
+           ('It provides a different pathway with a lower activation energy (a lower peak), so more colliding particles have enough energy to react', True),
+           ('It lowers the energy of the products, making ΔH more negative', False),
+           ('It raises the activation energy so the reaction releases more energy', False),
+           ('It removes the activation energy completely', False),
+       ],
+       'wrong_explanations': {
+           1: 'A catalyst does not change ΔH (the reactant and product levels are unchanged); it lowers the activation-energy peak.',
+           2: 'A catalyst LOWERS the activation energy, and it does not change how much energy is released (ΔH).',
+           3: 'A catalyst lowers the activation energy but does not remove it; some energy is still needed to react.',
+       }},
+      {'q': 'State what the vertical (y) axis represents on a reaction profile.',
+       'opts': [
+           ('Energy', True),
+           ('Time', False),
+           ('Temperature', False),
+           ('Mass', False),
+       ],
+       'wrong_explanations': {
+           1: 'Time is not shown on a reaction profile; the vertical axis is energy and the horizontal axis is the progress of the reaction.',
+           2: 'The vertical axis is energy, not temperature; profiles compare the energy of reactants and products.',
+           3: 'Mass is not plotted on a reaction profile; the vertical axis shows energy.',
+       }},
+      {'q': 'State where the activation energy is measured from and to on a reaction profile.',
+       'opts': [
+           ('From the reactant level up to the peak (top) of the curve', True),
+           ('From the reactant level across to the product level', False),
+           ('From the peak down to the product level', False),
+           ('From the bottom of the axis up to the product level', False),
+       ],
+       'wrong_explanations': {
+           1: 'That is the overall energy change (ΔH); the activation energy is measured up to the PEAK.',
+           2: 'That distance is the energy released as products form, not the activation energy, which is measured UP to the peak from the reactants.',
+           3: 'Activation energy is measured from the reactants to the peak, not from the axis origin.',
+       }},
+      {'q': 'State the name given to the overall energy difference between the reactants and the products.',
+       'opts': [
+           ('The enthalpy change, ΔH', True),
+           ('The activation energy', False),
+           ('The specific heat capacity', False),
+           ('The rate of reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'The activation energy is the barrier up to the peak; the reactant-to-product difference is the enthalpy change, ΔH.',
+           2: 'Specific heat capacity is a property of a substance used in calorimetry, not the reactant-to-product energy difference.',
+           3: 'Rate is how fast a reaction goes; the energy difference between reactants and products is ΔH.',
+       }},
+      {'q': 'State what happens to the height of the activation-energy peak when a catalyst is used.',
+       'opts': [
+           ('It becomes lower', True),
+           ('It becomes higher', False),
+           ('It stays exactly the same', False),
+           ('It disappears completely', False),
+       ],
+       'wrong_explanations': {
+           1: 'A catalyst LOWERS the activation-energy peak, providing an easier pathway.',
+           2: 'The whole point of a catalyst is to LOWER the activation-energy peak.',
+           3: 'A catalyst lowers the peak but does not remove it; some activation energy is still needed.',
+       }},
+      {'q': 'On a reaction profile the reactants are at 200 kJ and the products are at 150 kJ. Calculate the overall energy change and state whether the reaction is exothermic or endothermic.',
+       'opts': [
+           ('ΔH = 150 − 200 = −50 kJ; exothermic (the products are lower)', True),
+           ('ΔH = 200 − 150 = +50 kJ; endothermic', False),
+           ('ΔH = 200 + 150 = 350 kJ; exothermic', False),
+           ('ΔH = −50 kJ; endothermic', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = energy of products − energy of reactants = 150 − 200 = −50 kJ; products lower means exothermic.',
+           2: 'ΔH is the DIFFERENCE (products − reactants), not the sum of the two levels.',
+           3: 'The value is right, but a negative ΔH (products lower) is exothermic, not endothermic.',
+       }},
+     ],
   'rp': None,
   'spec': '5.5.1.2',
   'summary': 'Draw and interpret reaction profile diagrams for exothermic and endothermic reactions.',

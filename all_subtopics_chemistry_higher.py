@@ -4809,19 +4809,34 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"energy-changes": [{'common_mistake': 'EXOTHERMIC reactions make the surroundings HOTTER (temperature rises). ENDOTHERMIC reactions make '
-                    'the surroundings COLDER (temperature falls). The reaction itself releases or absorbs energy — but '
-                    'the SURROUNDINGS show the opposite effect to what the reaction does. Also: ΔH is NEGATIVE for '
-                    "exothermic (releases energy) — students often think negative means the reaction is 'losing "
-                    "energy' in a bad way — it just means energy is released.",
+"energy-changes": [{'common_mistake': "Students often think that because an endothermic reaction takes energy IN, it must make the surroundings feel hotter — and that a negative ΔH means the reaction has 'lost' energy and gone wrong. Both are back to front. An endothermic reaction absorbs energy FROM the surroundings, so the surroundings get COLDER (the temperature falls); an exothermic reaction releases energy TO the surroundings, so they get HOTTER. And a negative ΔH is simply the label for exothermic — energy released — not a sign that anything is lost or wrong; a positive ΔH means energy absorbed (endothermic).",
   'equations': ['Q = m × c × ΔT'],
-  'fifas': [{'label': 'Calorimetry Calculation',
-             'question': '50 g of water is heated by a reaction. The temperature rises from 20°C to 34°C. Calculate '
-                         'the energy released. (c = 4.18 J/g°C)',
-             'steps': [('F', 'Q = m × c × ΔT'),
-                       ('I', 'm = 50 g, c = 4.18 J/g°C, ΔT = 34 − 20 = 14°C'),
-                       ('F', 'Q = 50 × 4.18 × 14 = 50 × 58.52'),
-                       ('A', 'Q = 2926 J ≈ 2930 J (exothermic — temperature rose)')]}],
+  'fifas': [
+      {'label': 'Energy released, in kilojoules',
+       'question': 'A reaction raises the temperature of 150 g of water by 20 °C. Calculate the energy released, in kJ. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT'),
+           ('I', 'm = 150 g, c = 4.18 J/g °C, ΔT = 20 °C, so Q = 150 × 4.18 × 20'),
+           ('F', 'Q = 12 540 J; convert to kJ by dividing by 1000'),
+           ('A', 'Q = 12.54 kJ'),
+       ]},
+      {'label': 'Molar enthalpy of combustion',
+       'question': 'Burning 0.020 mol of a liquid fuel raises the temperature of 200 g of water by 43 °C. Calculate the molar enthalpy change, in kJ/mol. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT, then ΔH = Q ÷ number of moles'),
+           ('I', 'Q = 200 × 4.18 × 43 = 35 948 J = 35.948 kJ'),
+           ('F', 'ΔH = 35.948 ÷ 0.020, and it is negative because combustion is exothermic'),
+           ('A', 'ΔH = −1797 kJ/mol (to 4 significant figures)'),
+       ]},
+      {'label': 'Working backwards to a temperature rise',
+       'question': 'A reaction releases 6270 J of energy to 100 g of water. Calculate the temperature rise of the water. (c = 4.18 J/g °C)',
+       'steps': [
+           ('F', 'Q = m × c × ΔT, rearranged to ΔT = Q ÷ (m × c)'),
+           ('I', 'ΔT = 6270 ÷ (100 × 4.18) = 6270 ÷ 418'),
+           ('F', 'divide'),
+           ('A', 'ΔT = 15 °C'),
+       ]},
+     ],
   'higher': 'Q = mcΔT for calorimetry. Calculate molar enthalpy change: ΔH (kJ/mol) = −Q ÷ moles of limiting reactant. '
             'Negative ΔH = exothermic. Evaluate sources of error in calorimetry (heat loss to surroundings, incomplete '
             'reaction). Compare experimental with literature values.',
@@ -4837,29 +4852,128 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Exothermic', 'Respiration — glucose + oxygen releases energy in cells'),
                          ('Endothermic', 'Photosynthesis — absorbs light energy to make glucose')],
                'title': 'Exothermic or Endothermic?'},
-  'quiz': [{'opts': [('Exothermic — energy is released to the surroundings, raising the temperature', True),
-                     ('Endothermic — energy is absorbed, warming the hand from within', False),
-                     ('Neither — hand warmers use electrical energy, not chemical reactions', False),
-                     ('Endothermic — the hand warmer absorbs heat from the hand', False)],
-            'q': 'A hand warmer gets hot when activated. What type of reaction is occurring inside?',
-            'wrong_explanations': {1: 'Endothermic reactions take IN heat from the surroundings — they make things '
-                                      'colder, not warmer. Hand warmers get hot because they are exothermic.',
-                                   2: 'Most disposable hand warmers use a chemical reaction (e.g. iron oxidation) — '
-                                      'not electricity.',
-                                   3: 'A hand warmer RELEASES heat to the hand — the reaction inside is exothermic '
-                                      '(releases energy).'}},
-           {'opts': [('3344 J — Q = 100 × 4.18 × 8', True),
-                     ('836 J — Q = 100 × 4.18 × 2', False),
-                     ('3340 J — temperature change forgotten, used 8.18 instead', False),
-                     ('41800 J — forgot to use the temperature change', False)],
-            'q': '100 g of solution is heated in a calorimetry experiment. Temperature rises from 22°C to 30°C. Using '
-                 'c = 4.18 J/g°C, how much energy was released?',
-            'wrong_explanations': {1: 'ΔT = 30 − 22 = 2 — not 8. The temperature change is the difference: 30 − 22 = '
-                                      '8°C.',
-                                   2: 'Calculation partially correct but wrong ΔT value used — not a standard error in '
-                                      'the formula.',
-                                   3: 'Must use Q = m × c × ΔT = 100 × 4.18 × 8 = 3344 J. Cannot use just mass × '
-                                      'specific heat capacity.'}}],
+  'quiz': [
+      {'q': 'A camping stove burns butane and the surroundings get hotter. Deduce whether the reaction is exothermic or endothermic, and give a reason.',
+       'opts': [
+           ('Exothermic — it releases energy to the surroundings, so their temperature rises', True),
+           ('Endothermic — energy is taken in, which is what makes the surroundings feel hot', False),
+           ('Endothermic — burning always absorbs energy from the air', False),
+           ('Neither — the heat comes from the match, not the reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'This reverses the idea: endothermic reactions take energy IN and make the surroundings COLDER. Releasing energy (exothermic) is what warms them.',
+           2: 'Burning (combustion) RELEASES energy — it is exothermic. It needs a little energy to start, but far more is given out.',
+           3: 'The match only supplies the energy to start it; the sustained heat is released by the exothermic combustion itself.',
+       }},
+      {'q': 'When ammonium nitrate is stirred into water the beaker feels cold. Predict whether dissolving it is exothermic or endothermic, and explain the temperature change.',
+       'opts': [
+           ("Endothermic — it absorbs energy from the water, so the water's temperature falls", True),
+           ('Exothermic — the cold shows energy is being released', False),
+           ('Endothermic — energy is released, cooling the water', False),
+           ('Neither — dissolving is never an energy change', False),
+       ],
+       'wrong_explanations': {
+           1: 'A temperature FALL means energy is being absorbed FROM the surroundings — that is endothermic, not exothermic.',
+           2: 'Endothermic is the right label, but the reason is wrong: endothermic means energy is ABSORBED, not released.',
+           3: 'Dissolving does involve energy changes; here energy is absorbed, which is exactly how instant cold packs work.',
+       }},
+      {'q': 'Describe what happens to the energy of the surroundings during an exothermic reaction and during an endothermic reaction.',
+       'opts': [
+           ('Exothermic: energy is transferred TO the surroundings (they heat up). Endothermic: energy is taken FROM the surroundings (they cool down)', True),
+           ('Exothermic: the surroundings cool. Endothermic: the surroundings heat up', False),
+           ('Both transfer energy to the surroundings, warming them', False),
+           ('Both take energy from the surroundings, cooling them', False),
+       ],
+       'wrong_explanations': {
+           1: 'This is the wrong way round — exothermic HEATS the surroundings; endothermic COOLS them.',
+           2: 'Only exothermic warms the surroundings; endothermic absorbs energy and cools them.',
+           3: 'Only endothermic cools the surroundings; exothermic releases energy and warms them.',
+       }},
+      {'q': 'Explain why the temperature of the reaction mixture rises during the neutralisation of an acid with an alkali.',
+       'opts': [
+           ('Neutralisation is exothermic — it releases energy to the mixture, so its temperature rises', True),
+           ('The mixture absorbs energy from the surroundings as it reacts', False),
+           ('The acid and alkali are already hot before they are mixed', False),
+           ('Stirring the mixture adds energy and heats it up', False),
+       ],
+       'wrong_explanations': {
+           1: 'Absorbing energy would make it COLDER; a temperature rise shows energy is being released (exothermic).',
+           2: 'The rise is caused by the reaction releasing energy, not by the starting temperature of the reactants.',
+           3: 'Stirring adds a negligible amount of energy; the heating is due to the exothermic neutralisation reaction.',
+       }},
+      {'q': 'A student adds a reactant to a solution and the temperature falls by 6 °C. Determine the type of reaction and state the sign of its enthalpy change, ΔH.',
+       'opts': [
+           ('Endothermic, ΔH is positive — energy was absorbed from the solution, so it cooled', True),
+           ('Exothermic, ΔH is negative — energy was released, cooling the solution', False),
+           ('Endothermic, ΔH is negative — energy was absorbed', False),
+           ('Exothermic, ΔH is positive — energy was released', False),
+       ],
+       'wrong_explanations': {
+           1: 'A temperature FALL means energy was absorbed (endothermic, positive ΔH); releasing energy would warm the solution.',
+           2: 'Endothermic is right, but a positive ΔH goes with endothermic; a negative ΔH is exothermic.',
+           3: 'Both parts are wrong: a temperature fall is endothermic, and exothermic reactions have a NEGATIVE ΔH.',
+       }},
+      {'q': 'In a calorimetry experiment, 25.0 g of solution rises in temperature by 12.0 °C. Using c = 4.18 J/g °C, calculate the energy released, in kJ.',
+       'opts': [
+           ('1.254 kJ (Q = 25.0 × 4.18 × 12.0 = 1254 J = 1.254 kJ)', True),
+           ('1254 kJ', False),
+           ('0.1045 kJ', False),
+           ('125.4 kJ', False),
+       ],
+       'wrong_explanations': {
+           1: 'This is the answer in joules (1254 J) wrongly labelled kJ; convert J→kJ by dividing by 1000, giving 1.254 kJ.',
+           2: 'The temperature change was left out (25.0 × 4.18 = 104.5 J only). Q = m × c × ΔT needs the ×12.0 as well.',
+           3: 'A place-value slip in the J→kJ conversion: 1254 J ÷ 1000 = 1.254 kJ, not 125.4 kJ.',
+       }},
+      {'q': 'A reaction transfers 2090 J of energy to 100 g of water (c = 4.18 J/g °C). Calculate the temperature rise of the water.',
+       'opts': [
+           ('5.0 °C (rearrange to ΔT = Q ÷ (m × c) = 2090 ÷ 418)', True),
+           ('873 620 °C — multiplied all three values', False),
+           ('20.9 °C — divided Q by the mass only', False),
+           ('0.2 °C — divided (m × c) by Q', False),
+       ],
+       'wrong_explanations': {
+           1: 'To find ΔT you must REARRANGE to ΔT = Q ÷ (m × c); multiplying gives a nonsensical value.',
+           2: 'You must divide by m × c (100 × 4.18 = 418), not by mass alone; 2090 ÷ 418 = 5.0 °C.',
+           3: 'The rearrangement is ΔT = Q ÷ (m × c), i.e. 2090 ÷ 418, not 418 ÷ 2090.',
+       }},
+      {'q': 'Two reactions have ΔH = −120 kJ/mol and ΔH = +65 kJ/mol. Compare them in terms of energy transfer and the temperature change you would observe.',
+       'opts': [
+           ('The −120 kJ/mol reaction is exothermic (releases energy, temperature rises); the +65 kJ/mol reaction is endothermic (absorbs energy, temperature falls)', True),
+           ('The −120 kJ/mol reaction is endothermic because its value is more negative', False),
+           ('Both are exothermic because both involve an energy change', False),
+           ('The +65 kJ/mol reaction releases more energy because its number looks larger', False),
+       ],
+       'wrong_explanations': {
+           1: 'A negative ΔH is exothermic regardless of size; −120 kJ/mol releases energy and warms the surroundings.',
+           2: 'Only the negative ΔH is exothermic; the +65 kJ/mol reaction has a positive ΔH, so it is endothermic.',
+           3: 'A positive ΔH means energy is ABSORBED, not released; the +65 kJ/mol reaction takes energy in (endothermic).',
+       }},
+      {'q': 'Explain why the energy change measured in a school calorimetry experiment is usually smaller than the true value.',
+       'opts': [
+           ('Some energy is lost to the surroundings and the apparatus (heat escapes), so the measured temperature rise is smaller than it should be', True),
+           ('The reaction stops before it is finished every time', False),
+           ('The thermometer adds energy to the solution', False),
+           ('The specific heat capacity increases during the reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'The main cause is heat loss to the surroundings, not the reaction stopping early.',
+           2: 'A thermometer does not add a significant amount of energy; the loss is heat escaping to the surroundings and apparatus.',
+           3: 'c is taken as constant (4.18 J/g °C for water); the shortfall is due to heat loss, not a change in c.',
+       }},
+      {'q': 'Burning 0.010 mol of a fuel releases 6.7 kJ of energy. Calculate the molar enthalpy change, in kJ/mol, and state its sign.',
+       'opts': [
+           ('−670 kJ/mol (6.7 ÷ 0.010 = 670; negative because combustion releases energy)', True),
+           ('+670 kJ/mol', False),
+           ('−0.067 kJ/mol — multiplied instead of divided', False),
+           ('−6.7 kJ/mol — did not divide by the number of moles', False),
+       ],
+       'wrong_explanations': {
+           1: 'The magnitude is right (6.7 ÷ 0.010 = 670) but combustion RELEASES energy, so ΔH is negative, not positive.',
+           2: 'Energy per mole is energy ÷ moles (6.7 ÷ 0.010 = 670), not energy × moles.',
+           3: 'The 6.7 kJ is for 0.010 mol; dividing by 0.010 scales it up to 670 kJ per mole.',
+       }},
+     ],
   'rp': 'RP5 (Chemistry) — Investigate the variables that affect temperature changes in reactions: e.g. neutralisation '
         'of NaOH with HCl, or dissolving ammonium chloride in water.',
   'spec': '5.5.1.1',
@@ -4924,12 +5038,35 @@ CHEMISTRY_SUBTOPICS_ALL = {
                 ('m', 'Mass of solution', 'grams', 'g'),
                 ('c', 'Specific heat capacity', 'J/g°C', 'J/g°C'),
                 ('ΔT', 'Temperature change', '°C', '°C')]},
- {'common_mistake': 'The activation energy is measured from the REACTANT level to the PEAK — NOT from the reactant '
-                    'level to the product level. The overall energy change (ΔH) is from reactants to PRODUCTS. These '
-                    'are two different measurements on the same diagram. Students often confuse them.',
+ {'common_mistake': 'Students often confuse the activation energy with the overall energy change on a reaction profile, and read both from the same two points. They are different measurements: the activation energy (Ea) is the climb from the REACTANT level up to the PEAK of the curve, while the overall energy change (ΔH) is the step from the REACTANT level across to the PRODUCT level. A second common slip is to think a downhill profile (products lower than reactants) is endothermic — it is the opposite: products lower means energy was released, so the reaction is exothermic.',
   'equations': ['ΔH = energy of products − energy of reactants',
                 'Activation energy = energy of peak − energy of reactants'],
-  'fifas': [],
+  'fifas': [
+      {'label': 'Both Ea and ΔH from one profile',
+       'question': 'A reaction profile has reactants at 400 kJ, a peak at 560 kJ and products at 290 kJ. Calculate the activation energy and ΔH, and classify the reaction.',
+       'steps': [
+           ('F', 'Ea = energy of peak − energy of reactants;  ΔH = energy of products − energy of reactants'),
+           ('I', 'Ea = 560 − 400;  ΔH = 290 − 400'),
+           ('F', 'Ea = 160 kJ;  ΔH = −110 kJ'),
+           ('A', 'Ea = 160 kJ, ΔH = −110 kJ — exothermic (ΔH is negative)'),
+       ]},
+      {'label': 'Reverse activation energy',
+       'question': 'For the same profile (peak 560 kJ, products 290 kJ), calculate the activation energy of the reverse reaction.',
+       'steps': [
+           ('F', 'Ea(reverse) = energy of peak − energy of products'),
+           ('I', '= 560 − 290'),
+           ('F', 'subtract'),
+           ('A', 'Ea(reverse) = 270 kJ (larger than the forward 160 kJ, as expected for an exothermic reaction)'),
+       ]},
+      {'label': 'Working backwards to the product energy',
+       'question': 'A reaction has reactants at 500 kJ and ΔH = +90 kJ. Calculate the energy of the products.',
+       'steps': [
+           ('F', 'ΔH = energy of products − energy of reactants, so energy of products = reactants + ΔH'),
+           ('I', 'energy of products = 500 + 90'),
+           ('F', 'add'),
+           ('A', 'energy of products = 590 kJ (higher than the reactants, confirming it is endothermic)'),
+       ]},
+     ],
   'higher': 'Label all features on a reaction profile: reactant energy level, product energy level, activation energy '
             '(Ea), ΔH. Sketch profiles for exothermic and endothermic reactions both with and without a catalyst. '
             'Explain that a catalyst lowers Ea without changing ΔH or the energy of reactants/products.',
@@ -4944,29 +5081,128 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Effect of catalyst',
                           'Lowers the peak — lower activation energy — same ΔH — faster reaction')],
                'title': 'Reaction Profile Features'},
-  'quiz': [{'opts': [('−30 kJ — products (50) − reactants (80) = −30 kJ — exothermic reaction', True),
-                     ('+30 kJ — reactants (80) − products (50) = +30 kJ', False),
-                     ('+130 kJ — adding reactant and product energies', False),
-                     ('−80 kJ — the reactant energy is lost', False)],
-            'q': 'On a reaction profile, the reactants are at 80 kJ and the products are at 50 kJ. What is ΔH?',
-            'wrong_explanations': {1: 'ΔH = products − reactants = 50 − 80 = −30. Positive 30 would mean products are '
-                                      'HIGHER than reactants — but here products (50) are lower than reactants (80).',
-                                   2: 'Adding energies gives a meaningless value — ΔH = products MINUS reactants.',
-                                   3: "The reactant energy of 80 kJ is not 'lost' — ΔH shows the NET energy change "
-                                      'from reactants to products.'}},
-           {'opts': [('The activation energy peak is lower — but reactant and product energy levels and ΔH stay the '
-                      'same',
-                      True),
-                     ('The reactant energy level increases — they become more energetic', False),
-                     ('Both the activation energy and ΔH decrease', False),
-                     ('The product energy level increases — products formed are higher energy', False)],
-            'q': 'A catalyst is added to a reaction. What changes on the reaction profile?',
-            'wrong_explanations': {1: 'Catalysts do not give reactants more energy — they provide an ALTERNATIVE '
-                                      'PATHWAY with a lower energy barrier.',
-                                   2: 'ΔH (the overall energy change) is NOT changed by a catalyst — only the '
-                                      'activation energy peak is lowered.',
-                                   3: 'Products are the same compounds regardless of whether a catalyst is used — '
-                                      "their energy level doesn't change."}}],
+  'quiz': [
+      {'q': 'On a reaction profile the products are drawn LOWER than the reactants. Deduce whether the reaction is exothermic or endothermic, and give the sign of ΔH.',
+       'opts': [
+           ('Exothermic, ΔH is negative — energy is released, so the products end up at a lower energy than the reactants', True),
+           ('Endothermic, ΔH is positive — the products are lower because they absorbed energy', False),
+           ('Exothermic, ΔH is positive — energy is released', False),
+           ('It cannot be decided without knowing the activation energy', False),
+       ],
+       'wrong_explanations': {
+           1: 'Products LOWER than reactants means energy was released (exothermic, ΔH negative); absorbing energy would raise the products.',
+           2: 'Exothermic is right, but exothermic reactions have a NEGATIVE ΔH, not positive.',
+           3: 'The relative heights of reactants and products alone show the reaction is exothermic; the activation energy is a separate feature.',
+       }},
+      {'q': 'On a reaction profile the products are drawn HIGHER than the reactants. Deduce whether the reaction is exothermic or endothermic, and explain how the diagram shows this.',
+       'opts': [
+           ('Endothermic — the products are at a higher energy than the reactants, so energy was absorbed from the surroundings', True),
+           ('Exothermic — the products are higher because energy was released', False),
+           ('Endothermic — because the activation energy is very large', False),
+           ('Neither — the heights of the lines do not matter', False),
+       ],
+       'wrong_explanations': {
+           1: 'Releasing energy LOWERS the products; products higher than reactants means energy was absorbed (endothermic).',
+           2: 'A large activation energy does not make a reaction endothermic; it is the products being HIGHER than the reactants that shows it.',
+           3: 'The relative heights are exactly what the profile shows: products higher than reactants means endothermic.',
+       }},
+      {'q': 'Describe what the activation energy represents on a reaction profile.',
+       'opts': [
+           ('The minimum energy the reactants must gain to react — shown as the climb from the reactant level up to the peak of the curve', True),
+           ('The energy difference between the reactants and the products', False),
+           ('The energy released when the products form', False),
+           ('The total energy stored in the reactants', False),
+       ],
+       'wrong_explanations': {
+           1: 'That is the overall energy change (ΔH); the activation energy is the climb up to the PEAK, not the reactant-to-product step.',
+           2: 'Energy released relates to ΔH for an exothermic reaction; the activation energy is the barrier that must be climbed to start the reaction.',
+           3: "The activation energy is not the reactants' total energy; it is the extra energy needed to reach the peak so the reaction can proceed.",
+       }},
+      {'q': 'Explain why every reaction, even an exothermic one, needs a minimum amount of energy to get started.',
+       'opts': [
+           ('Existing bonds in the reactants must be broken before new ones can form, and breaking bonds needs energy — this is the activation energy', True),
+           ('Because all reactions absorb energy overall', False),
+           ('Because the products always have more energy than the reactants', False),
+           ('Because energy can be created only at the start of a reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'Not all reactions absorb energy overall (exothermic ones release it); the start-up energy is the activation energy needed to break bonds.',
+           2: 'In an exothermic reaction the products have LESS energy; the start-up energy is still needed to break the reactant bonds first.',
+           3: 'Energy is conserved (neither created nor destroyed); the reason a reaction needs a push is the activation energy to break bonds.',
+       }},
+      {'q': 'A catalyst is added to a reaction. Describe its effect on the reaction profile and explain how this speeds up the reaction.',
+       'opts': [
+           ('It provides a different pathway with a lower activation energy (a lower peak), so more colliding particles have enough energy to react', True),
+           ('It lowers the energy of the products, making ΔH more negative', False),
+           ('It raises the activation energy so the reaction releases more energy', False),
+           ('It removes the activation energy completely', False),
+       ],
+       'wrong_explanations': {
+           1: 'A catalyst does not change ΔH (the reactant and product levels are unchanged); it lowers the activation-energy peak.',
+           2: 'A catalyst LOWERS the activation energy, and it does not change how much energy is released (ΔH).',
+           3: 'A catalyst lowers the activation energy but does not remove it; some energy is still needed to react.',
+       }},
+      {'q': 'On a reaction profile the reactants are at 350 kJ, the peak is at 500 kJ and the products are at 220 kJ. Calculate the activation energy and the overall energy change, ΔH.',
+       'opts': [
+           ('Ea = 500 − 350 = 150 kJ; ΔH = 220 − 350 = −130 kJ (exothermic)', True),
+           ('Ea = 500 − 220 = 280 kJ; ΔH = −130 kJ', False),
+           ('Ea = 150 kJ; ΔH = 350 − 220 = +130 kJ', False),
+           ('Ea = 500 kJ; ΔH = 220 kJ', False),
+       ],
+       'wrong_explanations': {
+           1: 'Activation energy is measured from the REACTANTS (350), not the products: Ea = 500 − 350 = 150 kJ.',
+           2: 'ΔH = products − reactants = 220 − 350 = −130 kJ; doing reactants − products gives the wrong sign.',
+           3: 'Both are differences: Ea = peak − reactants = 150 kJ and ΔH = products − reactants = −130 kJ, not the raw peak and product values.',
+       }},
+      {'q': 'For the same profile (reactants 350 kJ, peak 500 kJ, products 220 kJ), calculate the activation energy of the reverse reaction (products → reactants).',
+       'opts': [
+           ('280 kJ (Ea reverse = peak − product level = 500 − 220)', True),
+           ('150 kJ — the same as the forward reaction', False),
+           ('130 kJ — the size of ΔH', False),
+           ('720 kJ — added the peak and the products', False),
+       ],
+       'wrong_explanations': {
+           1: 'The reverse reaction starts from the PRODUCTS (220), so its barrier is 500 − 220 = 280 kJ, larger than the forward 150 kJ.',
+           2: 'That is the overall energy change, not the reverse activation energy; the reverse Ea is peak − products = 280 kJ.',
+           3: 'The reverse activation energy is the DIFFERENCE peak − products = 500 − 220 = 280 kJ, not their sum.',
+       }},
+      {'q': 'Explain why a catalyst changes the activation energy of a reaction but does not change the value of ΔH.',
+       'opts': [
+           ('A catalyst provides an alternative pathway with a lower peak (lower Ea), but the reactant and product energy levels are unchanged, so their difference (ΔH) stays the same', True),
+           ('A catalyst lowers the product level, so both Ea and ΔH decrease', False),
+           ('A catalyst is used up, releasing energy that changes ΔH', False),
+           ('A catalyst raises the reactant level up towards the peak', False),
+       ],
+       'wrong_explanations': {
+           1: 'A catalyst does not move the product level; it only lowers the peak, so ΔH is unchanged.',
+           2: 'A catalyst is not used up and does not change the energy of the reactants or products, so ΔH is unchanged.',
+           3: 'A catalyst does not raise the reactants; it lowers the activation-energy barrier by offering a new pathway.',
+       }},
+      {'q': 'A reaction has a small activation energy but a large positive ΔH. Deduce what this tells you about how easily it starts and its overall energy change.',
+       'opts': [
+           ('It starts easily (a low barrier to overcome) but is strongly endothermic overall (the products are much higher in energy than the reactants)', True),
+           ('It is hard to start and exothermic overall', False),
+           ('It starts easily and is exothermic overall', False),
+           ('The two quantities are the same thing measured twice', False),
+       ],
+       'wrong_explanations': {
+           1: 'A SMALL activation energy means it starts easily, and a POSITIVE ΔH is endothermic, not exothermic.',
+           2: 'A positive ΔH is endothermic (energy absorbed), not exothermic.',
+           3: 'Activation energy (the barrier) and ΔH (the overall change) are different features of the profile, measured between different points.',
+       }},
+      {'q': 'Describe how the reaction profile of an endothermic reaction differs from that of an exothermic reaction.',
+       'opts': [
+           ('In an endothermic profile the products are HIGHER than the reactants (ΔH positive); in an exothermic profile the products are LOWER than the reactants (ΔH negative)', True),
+           ('Both have products lower than the reactants, but the endothermic one has a bigger peak', False),
+           ('The endothermic profile has no activation-energy peak', False),
+           ('The exothermic profile has products higher than the reactants', False),
+       ],
+       'wrong_explanations': {
+           1: 'An endothermic reaction has products HIGHER than the reactants; peak height (the activation energy) is a separate feature.',
+           2: 'Both types have an activation-energy peak; the difference is the product level relative to the reactants.',
+           3: 'That is the endothermic case; exothermic profiles have products LOWER than the reactants.',
+       }},
+     ],
   'rp': None,
   'spec': '5.5.1.2',
   'summary': 'Draw and interpret reaction profile diagrams for exothermic and endothermic reactions.',
@@ -5027,19 +5263,36 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': [('Ea', 'Activation energy', 'kJ/mol', 'kJ/mol'),
                 ('ΔH', 'Overall energy change (enthalpy change)', 'kJ/mol', 'kJ/mol')]},
- {'common_mistake': 'ΔH = energy IN (breaking) MINUS energy OUT (forming). Not the other way round. If you subtract '
-                    "the wrong way, you'll get the wrong sign. Remember: breaking bonds costs energy (positive "
-                    'contribution to ΔH); forming bonds releases energy (negative contribution). ΔH negative = '
-                    'exothermic.',
+ {'common_mistake': 'Students often mix up which way round to subtract in a bond-energy calculation, writing ΔH = (energy to make bonds) − (energy to break bonds). It is the other way round: ΔH = (energy IN to BREAK the reactant bonds) − (energy OUT to MAKE the product bonds). A second frequent slip is to forget that breaking bonds is endothermic (takes energy in) while making bonds is exothermic (gives energy out), then to drop the minus sign — so an exothermic reaction, where the bonds made release more than the bonds broken absorb, gets wrongly reported as positive.',
   'equations': ['ΔH = energy in (bonds broken) − energy out (bonds formed)',
                 'Exothermic: energy out > energy in → ΔH negative',
                 'Endothermic: energy in > energy out → ΔH positive'],
-  'fifas': [{'label': 'Bond Energy Calculation',
-             'question': 'Calculate ΔH for H₂ + Cl₂ → 2HCl. Bond energies: H-H=436, Cl-Cl=243, H-Cl=432 kJ/mol.',
-             'steps': [('F', 'ΔH = energy in (bonds broken) − energy out (bonds formed)'),
-                       ('I', 'Broken: 1×H-H(436) + 1×Cl-Cl(243) = 679 kJ. Formed: 2×H-Cl(432) = 864 kJ'),
-                       ('F', 'ΔH = 679 − 864 = −185'),
-                       ('A', 'ΔH = −185 kJ/mol (exothermic)')]}],
+  'fifas': [
+      {'label': 'A simple diatomic reaction',
+       'question': 'Hydrogen reacts with chlorine: H₂ + Cl₂ → 2HCl. Bond energies (kJ/mol): H–H = 436, Cl–Cl = 242, H–Cl = 431. Calculate ΔH.',
+       'steps': [
+           ('F', 'ΔH = (energy to break the reactant bonds) − (energy to make the product bonds)'),
+           ('I', 'break = 436 + 242 = 678;  make = 2 × 431 = 862'),
+           ('F', 'ΔH = 678 − 862'),
+           ('A', 'ΔH = −184 kJ/mol (exothermic — more energy is released making bonds than is absorbed breaking them)'),
+       ]},
+      {'label': 'A molecule with several bonds (combustion)',
+       'question': 'Methane burns completely: CH₄ + 2O₂ → CO₂ + 2H₂O. Bond energies (kJ/mol): C–H = 412, O=O = 498, C=O = 743, O–H = 463. Calculate ΔH.',
+       'steps': [
+           ('F', 'ΔH = (bonds broken) − (bonds made)'),
+           ('I', 'break = (4 × 412) + (2 × 498) = 1648 + 996 = 2644;  make = (2 × 743) + (4 × 463) = 1486 + 1852 = 3338'),
+           ('F', 'ΔH = 2644 − 3338'),
+           ('A', 'ΔH = −694 kJ/mol (exothermic)'),
+       ]},
+      {'label': 'Working backwards to a missing bond energy',
+       'question': 'For H₂ + Br₂ → 2HBr, ΔH = −103 kJ/mol. Bond energies (kJ/mol): H–H = 436, Br–Br = 193. Calculate the H–Br bond energy.',
+       'steps': [
+           ('F', 'ΔH = (H–H + Br–Br) − (2 × H–Br), so rearrange for H–Br'),
+           ('I', '−103 = (436 + 193) − (2 × H–Br) = 629 − 2 × H–Br'),
+           ('F', '2 × H–Br = 629 + 103 = 732, so H–Br = 732 ÷ 2'),
+           ('A', 'H–Br = 366 kJ/mol'),
+       ]},
+     ],
   'higher': None,
   'id': 'bond-energy-calculations',
   'key_note': 'Bond breaking: endothermic (energy in). Bond forming: exothermic (energy out). ΔH = energy in − energy '
@@ -5054,35 +5307,128 @@ CHEMISTRY_SUBTOPICS_ALL = {
                           'Endothermic — more energy absorbed in bond breaking than released in forming'),
                          ('Bond energy', 'Energy needed to break 1 mole of a specific bond — in kJ/mol')],
                'title': 'Bond Energy Concepts'},
-  'quiz': [{'opts': [('ΔH = −250 kJ/mol — exothermic because more energy is released (forming) than absorbed '
-                      '(breaking)',
-                      True),
-                     ('ΔH = +250 kJ/mol — endothermic because the products have more energy', False),
-                     ('ΔH = +1850 kJ/mol — add both bond energies together', False),
-                     ('ΔH = −250 kJ/mol — endothermic because the surroundings lose energy', False)],
-            'q': 'A reaction has bond breaking energy of 800 kJ/mol and bond forming energy of 1050 kJ/mol. What is ΔH '
-                 'and is the reaction exothermic or endothermic?',
-            'wrong_explanations': {1: 'ΔH = 800 − 1050 = −250 kJ/mol. The reaction IS exothermic (ΔH negative) — '
-                                      'energy is released to surroundings.',
-                                   2: 'Adding energies gives a meaningless total. ΔH = energy IN minus energy OUT = '
-                                      '800 − 1050 = −250 kJ/mol.',
-                                   3: 'ΔH = −250 means EXOTHERMIC — the surroundings gain energy (get warmer). '
-                                      'Endothermic would be ΔH positive.'}},
-           {'opts': [('Bond energies are average values — the exact energy depends on the molecular environment of the '
-                      'bond',
-                      True),
-                     ('Bond energy values change with temperature — room temperature values are inaccurate', False),
-                     ('The Avogadro constant introduces rounding errors into the calculations', False),
-                     ('Bond energies are measured in kJ but enthalpy changes are in J — unit conversion errors occur',
-                      False)],
-            'q': 'Why are bond energy calculations only approximate?',
-            'wrong_explanations': {1: 'Temperature does affect bond energies slightly, but the main reason for '
-                                      'approximation is that bond energy tables give AVERAGE values across many '
-                                      'different molecules.',
-                                   2: 'Both bond energies and ΔH values are typically given in kJ/mol — no unit '
-                                      'conversion is needed.',
-                                   3: 'The Avogadro constant is used for mole calculations — bond energy calculations '
-                                      'work directly with kJ/mol values.'}}],
+  'quiz': [
+      {'q': 'Hydrogen reacts with chlorine: H₂ + Cl₂ → 2HCl. Bond energies (kJ/mol): H–H = 436, Cl–Cl = 242, H–Cl = 431. Calculate ΔH.',
+       'opts': [
+           ('−184 kJ/mol (break 436 + 242 = 678; make 2 × 431 = 862; ΔH = 678 − 862)', True),
+           ('+184 kJ/mol — subtracted the wrong way round (made − broken)', False),
+           ('+1540 kJ/mol — added broken and made', False),
+           ('+247 kJ/mol — counted only one H–Cl bond made', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = bonds broken − bonds made = 678 − 862 = −184 kJ/mol; doing made − broken flips the sign.',
+           2: 'You must SUBTRACT (broken − made): 678 − 862 = −184 kJ/mol, not add them (678 + 862 = 1540).',
+           3: '2 mol of HCl form, so two H–Cl bonds are made (2 × 431 = 862 kJ); using one gives the wrong answer.',
+       }},
+      {'q': 'Explain, in terms of bond breaking and bond making, why some reactions are exothermic overall.',
+       'opts': [
+           ('More energy is released making the new bonds in the products than is taken in breaking the bonds in the reactants, so there is a net release of energy (ΔH negative)', True),
+           ('Breaking the reactant bonds releases energy, which heats the surroundings', False),
+           ('The products always contain more bonds than the reactants', False),
+           ('No energy is needed to break bonds in an exothermic reaction', False),
+       ],
+       'wrong_explanations': {
+           1: 'Breaking bonds ABSORBS energy (endothermic); the net release comes from making bonds giving out more than breaking takes in.',
+           2: 'It is not the number of bonds but the balance of energy: bonds made release more than bonds broken absorb.',
+           3: 'Energy is always needed to break bonds; a reaction is exothermic when making bonds releases MORE than breaking them absorbs.',
+       }},
+      {'q': 'Describe the energy change when bonds are broken and when bonds are made, and state the sign each contributes to ΔH.',
+       'opts': [
+           ('Breaking bonds is endothermic (takes energy in — a positive contribution); making bonds is exothermic (gives energy out — a negative contribution)', True),
+           ('Breaking bonds is exothermic; making bonds is endothermic', False),
+           ('Both breaking and making bonds release energy', False),
+           ('Both breaking and making bonds absorb energy', False),
+       ],
+       'wrong_explanations': {
+           1: 'This is reversed — breaking bonds takes energy IN (endothermic); making bonds gives energy OUT (exothermic).',
+           2: 'Only making bonds releases energy; breaking bonds absorbs it.',
+           3: 'Only breaking bonds absorbs energy; making bonds releases it.',
+       }},
+      {'q': 'Hydrogen reacts with bromine: H₂ + Br₂ → 2HBr. Bond energies (kJ/mol): H–H = 436, Br–Br = 193, H–Br = 366. Calculate ΔH.',
+       'opts': [
+           ('−103 kJ/mol (break 436 + 193 = 629; make 2 × 366 = 732; ΔH = 629 − 732)', True),
+           ('+103 kJ/mol — worked out made − broken', False),
+           ('+1361 kJ/mol — added broken and made', False),
+           ('+263 kJ/mol — counted only one H–Br bond made', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 629 − 732 = −103 kJ/mol; reversing the subtraction flips the sign.',
+           2: 'ΔH is broken − made = 629 − 732, not the sum (629 + 732 = 1361).',
+           3: '2 mol of HBr form, so two H–Br bonds are made (2 × 366 = 732 kJ); using one gives the wrong answer.',
+       }},
+      {'q': 'In a reaction the total energy needed to break the reactant bonds is 1650 kJ and the total energy released making the product bonds is 1806 kJ. Calculate ΔH and state whether the reaction is exothermic or endothermic.',
+       'opts': [
+           ('ΔH = 1650 − 1806 = −156 kJ; exothermic (more energy released making bonds than absorbed breaking them)', True),
+           ('ΔH = 1806 − 1650 = +156 kJ; endothermic', False),
+           ('ΔH = 1650 + 1806 = 3456 kJ; exothermic', False),
+           ('ΔH = −156 kJ; endothermic', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = energy to break − energy to make = 1650 − 1806 = −156 kJ; the reaction is exothermic.',
+           2: 'ΔH is the DIFFERENCE (break − make), not the sum of the two totals.',
+           3: 'The value is right, but a negative ΔH is exothermic, not endothermic.',
+       }},
+      {'q': 'Methane burns completely: CH₄ + 2O₂ → CO₂ + 2H₂O. Bond energies (kJ/mol): C–H = 412, O=O = 498, C=O = 743, O–H = 463. Calculate ΔH.',
+       'opts': [
+           ('−694 kJ/mol (break 4×412 + 2×498 = 2644; make 2×743 + 4×463 = 3338; ΔH = 2644 − 3338)', True),
+           ('+694 kJ/mol — subtracted the wrong way round (made − broken)', False),
+           ('+232 kJ/mol — counted only 2 O–H bonds instead of 4', False),
+           ('+5982 kJ/mol — added broken and made instead of subtracting', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 2644 − 3338 = −694 kJ/mol; reversing the subtraction flips the sign.',
+           2: '2 H₂O molecules form, each with 2 O–H bonds, so 4 O–H bonds are made (4 × 463); using 2 gives the wrong answer.',
+           3: 'ΔH is broken − made = 2644 − 3338, not the sum (2644 + 3338 = 5982).',
+       }},
+      {'q': 'For H₂ + Br₂ → 2HBr the enthalpy change is ΔH = −103 kJ/mol. Bond energies (kJ/mol): H–H = 436, Br–Br = 193. Calculate the bond energy of the H–Br bond.',
+       'opts': [
+           ('366 kJ/mol (ΔH = 629 − 2 × H–Br = −103, so 2 × H–Br = 732, H–Br = 366)', True),
+           ('732 kJ/mol — forgot that two H–Br bonds form', False),
+           ('263 kJ/mol — subtracted ΔH instead of adding it', False),
+           ('314.5 kJ/mol — averaged the two reactant bond energies', False),
+       ],
+       'wrong_explanations': {
+           1: '2 mol of HBr form, so ΔH = 629 − 2 × (H–Br); dividing by 2 gives H–Br = 366, not 732.',
+           2: 'Rearranging 629 − 2X = −103 gives 2X = 629 + 103 = 732, so X = 366; subtracting 103 gives 263.',
+           3: 'The H–Br bond energy comes from rearranging the ΔH equation (X = 366), not from averaging the reactant bonds.',
+       }},
+      {'q': 'The Haber process: N₂ + 3H₂ → 2NH₃. Bond energies (kJ/mol): N≡N = 945, H–H = 436, N–H = 391. Calculate ΔH.',
+       'opts': [
+           ('−93 kJ/mol (break 945 + 3×436 = 2253; make 6×391 = 2346; ΔH = 2253 − 2346)', True),
+           ('+93 kJ/mol — subtracted made − broken', False),
+           ('+1080 kJ/mol — used only 3 N–H bonds instead of 6', False),
+           ('−4599 kJ/mol — added broken and made', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 2253 − 2346 = −93 kJ/mol; reversing the subtraction flips the sign.',
+           2: '2 NH₃ molecules form, each with 3 N–H bonds, so 6 N–H bonds are made (6 × 391); using 3 gives the wrong answer.',
+           3: 'ΔH is broken − made = 2253 − 2346, not the sum (2253 + 2346 = 4599).',
+       }},
+      {'q': 'In a bond-energy calculation a student finds the energy to break the reactant bonds is greater than the energy released making the product bonds. Deduce the sign of ΔH and the type of reaction.',
+       'opts': [
+           ('ΔH is positive and the reaction is endothermic — more energy is absorbed breaking bonds than is released making them', True),
+           ('ΔH is negative and the reaction is exothermic', False),
+           ('ΔH is positive and the reaction is exothermic', False),
+           ('ΔH is zero because the two roughly cancel', False),
+       ],
+       'wrong_explanations': {
+           1: 'If breaking takes MORE energy than making releases, the net is energy absorbed → a positive ΔH, endothermic.',
+           2: 'A positive ΔH is endothermic, not exothermic.',
+           3: 'They do not cancel here — breaking needs more than making releases, so there is a net positive ΔH.',
+       }},
+      {'q': 'Ethene is hydrogenated: C₂H₄ + H₂ → C₂H₆. Bond energies (kJ/mol): C–H = 412, C=C = 612, H–H = 436, C–C = 347. (Ethene has 4 C–H and 1 C=C; ethane has 6 C–H and 1 C–C.) Calculate ΔH.',
+       'opts': [
+           ('−123 kJ/mol (break 4×412 + 612 + 436 = 2696; make 6×412 + 347 = 2819; ΔH = 2696 − 2819)', True),
+           ('+123 kJ/mol — subtracted made − broken', False),
+           ('−388 kJ/mol — used a C–C single-bond value (347) for the C=C double bond', False),
+           ('+5515 kJ/mol — added broken and made instead of subtracting', False),
+       ],
+       'wrong_explanations': {
+           1: 'ΔH = broken − made = 2696 − 2819 = −123 kJ/mol; reversing the subtraction flips the sign.',
+           2: 'Ethene has a C=C DOUBLE bond (612 kJ/mol); using the single-bond value understates the energy needed to break it.',
+           3: 'ΔH is broken − made = 2696 − 2819, not the sum (2696 + 2819 = 5515).',
+       }},
+     ],
   'rp': None,
   'spec': '5.5.1.3',
   'summary': 'Use bond energies to calculate the energy change of a reaction.',

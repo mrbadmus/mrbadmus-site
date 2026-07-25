@@ -47,14 +47,6 @@ chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,higher,fifa,2-t
 chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
 chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,higher,quiz,1-triple-depth,major,Test Yourself identical to Combined higher — no Triple-only depth questions (rule 1 asks for ≥2)
 chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""EXOTHERMIC reactions make the surroundings HOTTER (temperature rises)."""
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,fifa,2-tier-duplication,major,FIFA block identical to Foundation variant — fake differentiation
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,quiz,1-triple-depth,major,Test Yourself identical to Combined higher — no Triple-only depth questions (rule 1 asks for ≥2)
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/quantitative/chemical-measurements,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/quantitative/chemical-measurements,chemistry,triple,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
 chemistry/quantitative/chemical-measurements,chemistry,triple,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
@@ -408,13 +400,6 @@ chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,higher,common
 chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,higher,fifa,2-tier-duplication,major,FIFA block identical to Foundation variant — fake differentiation
 chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
 chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""EXOTHERMIC reactions make the surroundings HOTTER (temperature rises)."""
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,fifa,2-tier-duplication,major,FIFA block identical to Foundation variant — fake differentiation
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/quantitative/chemical-measurements,chemistry,combined,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/quantitative/chemical-measurements,chemistry,combined,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
 chemistry/quantitative/chemical-measurements,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
@@ -662,12 +647,6 @@ chemistry/chemical-changes/half-equations,chemistry,triple,higher,fifa,2-practic
 chemistry/chemical-changes/half-equations,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Electrons are written on the LEFT of cathode half equations (gained) and on the RIGHT of a"""
 chemistry/chemical-changes/half-equations,chemistry,triple,higher,quiz,1-triple-depth,major,Test Yourself identical to Combined higher — no Triple-only depth questions (rule 1 asks for ≥2)
 chemistry/chemical-changes/half-equations,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/bond-energy-calculations,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/bond-energy-calculations,chemistry,triple,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
-chemistry/energy-changes/bond-energy-calculations,chemistry,triple,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
-chemistry/energy-changes/bond-energy-calculations,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""ΔH = energy IN (breaking) MINUS energy OUT (forming)."""
-chemistry/energy-changes/bond-energy-calculations,chemistry,triple,higher,quiz,1-triple-depth,major,Test Yourself identical to Combined higher — no Triple-only depth questions (rule 1 asks for ≥2)
-chemistry/energy-changes/bond-energy-calculations,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/quantitative/amounts-in-equations,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/quantitative/amounts-in-equations,chemistry,triple,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
 chemistry/quantitative/amounts-in-equations,chemistry,triple,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
@@ -734,12 +713,6 @@ chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,foundation,fifa
 chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Ar is a WEIGHTED average — not a simple average."""
 chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,foundation,quiz,1-triple-depth,major,Test Yourself identical to Combined foundation — no Triple-only depth questions (rule 1 asks for ≥2)
 chemistry/atomic-structure/relative-atomic-mass,chemistry,triple,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,foundation,fifa,2-example-count,major,1 worked example(s) — minimum 3
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""EXOTHERMIC reactions make the surroundings HOTTER (temperature rises)."""
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,foundation,quiz,1-triple-depth,major,Test Yourself identical to Combined foundation — no Triple-only depth questions (rule 1 asks for ≥2)
-chemistry/energy-changes/exothermic-endothermic,chemistry,triple,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/quantitative/chemical-measurements,chemistry,triple,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/quantitative/chemical-measurements,chemistry,triple,foundation,fifa,2-example-count,major,1 worked example(s) — minimum 3
 chemistry/quantitative/chemical-measurements,chemistry,triple,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
@@ -1382,12 +1355,6 @@ chemistry/chemical-changes/salts-neutralisation,chemistry,triple,higher,quiz,5-t
 chemistry/chemical-changes/salts-neutralisation,chemistry,triple,higher,quiz,1-triple-depth,major,Test Yourself identical to Combined higher — no Triple-only depth questions (rule 1 asks for ≥2)
 chemistry/chemical-changes/salts-neutralisation,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/chemical-changes/salts-neutralisation,chemistry,triple,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
-chemistry/energy-changes/reaction-profiles,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/reaction-profiles,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""The activation energy is measured from the REACTANT level to the PEAK — NOT from the react"""
-chemistry/energy-changes/reaction-profiles,chemistry,triple,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
-chemistry/energy-changes/reaction-profiles,chemistry,triple,higher,quiz,1-triple-depth,major,Test Yourself identical to Combined higher — no Triple-only depth questions (rule 1 asks for ≥2)
-chemistry/energy-changes/reaction-profiles,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/reaction-profiles,chemistry,triple,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
 chemistry/organic/cracking-alkenes,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/organic/cracking-alkenes,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Cracking always produces at least one ALKENE — alkenes are ALWAYS one of the products."""
 chemistry/organic/cracking-alkenes,chemistry,triple,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
@@ -1595,11 +1562,6 @@ chemistry/chemical-changes/half-equations,chemistry,combined,higher,fifa,2-examp
 chemistry/chemical-changes/half-equations,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
 chemistry/chemical-changes/half-equations,chemistry,combined,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Electrons are written on the LEFT of cathode half equations (gained) and on the RIGHT of a"""
 chemistry/chemical-changes/half-equations,chemistry,combined,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/bond-energy-calculations,chemistry,combined,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/bond-energy-calculations,chemistry,combined,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
-chemistry/energy-changes/bond-energy-calculations,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
-chemistry/energy-changes/bond-energy-calculations,chemistry,combined,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""ΔH = energy IN (breaking) MINUS energy OUT (forming)."""
-chemistry/energy-changes/bond-energy-calculations,chemistry,combined,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/quantitative/amounts-in-equations,chemistry,combined,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/quantitative/amounts-in-equations,chemistry,combined,higher,fifa,2-example-count,major,1 worked example(s) — minimum 3
 chemistry/quantitative/amounts-in-equations,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
@@ -1680,11 +1642,6 @@ chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,foundation,fi
 chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
 chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Ar is a WEIGHTED average — not a simple average."""
 chemistry/atomic-structure/relative-atomic-mass,chemistry,combined,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,foundation,fifa,2-example-count,major,1 worked example(s) — minimum 3
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""EXOTHERMIC reactions make the surroundings HOTTER (temperature rises)."""
-chemistry/energy-changes/exothermic-endothermic,chemistry,combined,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/quantitative/chemical-measurements,chemistry,combined,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/quantitative/chemical-measurements,chemistry,combined,foundation,fifa,2-example-count,major,1 worked example(s) — minimum 3
 chemistry/quantitative/chemical-measurements,chemistry,combined,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
@@ -2028,15 +1985,6 @@ chemistry/chemical-changes/strong-weak-acids,chemistry,triple,higher,common_mist
 chemistry/chemical-changes/strong-weak-acids,chemistry,triple,higher,quiz,1-triple-depth,major,Test Yourself identical to Combined higher — no Triple-only depth questions (rule 1 asks for ≥2)
 chemistry/chemical-changes/strong-weak-acids,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/chemical-changes/strong-weak-acids,chemistry,triple,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
-chemistry/energy-changes/cells-and-batteries,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/cells-and-batteries,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""A BATTERY is two or more cells connected in series — a single cell is NOT a battery."""
-chemistry/energy-changes/cells-and-batteries,chemistry,triple,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
-chemistry/energy-changes/cells-and-batteries,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/fuel-cells,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/fuel-cells,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Fuel cells are NOT the same as batteries."""
-chemistry/energy-changes/fuel-cells,chemistry,triple,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
-chemistry/energy-changes/fuel-cells,chemistry,triple,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/fuel-cells,chemistry,triple,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
 chemistry/organic/alcohols,chemistry,triple,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/organic/alcohols,chemistry,triple,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Ethanol (not methanol) is the alcohol in drinks."""
 chemistry/organic/alcohols,chemistry,triple,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
@@ -2839,16 +2787,6 @@ chemistry/chemical-changes/salts-neutralisation,chemistry,combined,higher,quiz,1
 chemistry/chemical-changes/salts-neutralisation,chemistry,triple,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/chemical-changes/salts-neutralisation,chemistry,combined,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
 chemistry/chemical-changes/salts-neutralisation,chemistry,triple,foundation,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
-chemistry/energy-changes/reaction-profiles,chemistry,combined,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/reaction-profiles,chemistry,triple,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/reaction-profiles,chemistry,combined,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""The activation energy is measured from the REACTANT level to the PEAK — NOT from the react"""
-chemistry/energy-changes/reaction-profiles,chemistry,triple,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""The activation energy is measured from the REACTANT level to the PEAK — NOT from the react"""
-chemistry/energy-changes/reaction-profiles,chemistry,combined,higher,quiz,5-tier-integrity,major,"Test Yourself identical to Foundation variant — same page, harder badge"
-chemistry/energy-changes/reaction-profiles,chemistry,triple,foundation,quiz,1-triple-depth,major,Test Yourself identical to Combined foundation — no Triple-only depth questions (rule 1 asks for ≥2)
-chemistry/energy-changes/reaction-profiles,chemistry,combined,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/reaction-profiles,chemistry,triple,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/reaction-profiles,chemistry,combined,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
-chemistry/energy-changes/reaction-profiles,chemistry,triple,foundation,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
 chemistry/organic/cracking-alkenes,chemistry,combined,higher,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/organic/cracking-alkenes,chemistry,triple,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/organic/cracking-alkenes,chemistry,combined,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Cracking always produces at least one ALKENE — alkenes are ALWAYS one of the products."""
@@ -3353,13 +3291,6 @@ chemistry/chemical-changes/strong-weak-acids,chemistry,combined,higher,quiz,1-co
 chemistry/chemical-changes/strong-weak-acids,chemistry,combined,higher,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Strong acid ≠ concentrated acid."""
 chemistry/chemical-changes/strong-weak-acids,chemistry,combined,higher,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/chemical-changes/strong-weak-acids,chemistry,combined,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
-chemistry/energy-changes/cells-and-batteries,chemistry,triple,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/cells-and-batteries,chemistry,triple,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""A BATTERY is two or more cells connected in series — a single cell is NOT a battery."""
-chemistry/energy-changes/cells-and-batteries,chemistry,triple,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/fuel-cells,chemistry,triple,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/fuel-cells,chemistry,triple,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Fuel cells are NOT the same as batteries."""
-chemistry/energy-changes/fuel-cells,chemistry,triple,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/fuel-cells,chemistry,triple,foundation,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
 chemistry/organic/alcohols,chemistry,triple,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/organic/alcohols,chemistry,triple,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Ethanol (not methanol) is the alcohol in drinks."""
 chemistry/organic/alcohols,chemistry,triple,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
@@ -3714,10 +3645,6 @@ chemistry/chemical-changes/salts-neutralisation,chemistry,combined,foundation,qu
 chemistry/chemical-changes/salts-neutralisation,chemistry,combined,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""When making a salt by adding excess solid to acid — you MUST use EXCESS solid to ensure AL"""
 chemistry/chemical-changes/salts-neutralisation,chemistry,combined,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
 chemistry/chemical-changes/salts-neutralisation,chemistry,combined,foundation,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
-chemistry/energy-changes/reaction-profiles,chemistry,combined,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
-chemistry/energy-changes/reaction-profiles,chemistry,combined,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""The activation energy is measured from the REACTANT level to the PEAK — NOT from the react"""
-chemistry/energy-changes/reaction-profiles,chemistry,combined,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
-chemistry/energy-changes/reaction-profiles,chemistry,combined,foundation,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
 chemistry/organic/cracking-alkenes,chemistry,combined,foundation,quiz,1-count,critical,2 questions — below absolute floor of 5
 chemistry/organic/cracking-alkenes,chemistry,combined,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Cracking always produces at least one ALKENE — alkenes are ALWAYS one of the products."""
 chemistry/organic/cracking-alkenes,chemistry,combined,foundation,quiz,1-register,minor,0/2 stems use an AQA command word (AI review)
@@ -3944,3 +3871,15 @@ biology/organisation/digestive-system,biology,combined,foundation,quiz,1-registe
 biology/organisation/enzymes,biology,combined,foundation,quiz,1-count,major,5 questions — below target 10 (6-7 acceptable only if page is 'genuinely light')
 biology/organisation/enzymes,biology,combined,foundation,common_mistake,3-mistake-first,major,"first sentence states info, not a student mistake (AI review): ""Enzymes are DENATURED at high temperatures — NOT killed."""
 biology/organisation/enzymes,biology,combined,foundation,quiz,1-register,minor,0/5 stems use an AQA command word (AI review)
+chemistry/energy-changes/bond-energy-calculations,chemistry,triple,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/exothermic-endothermic,chemistry,triple,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/reaction-profiles,chemistry,triple,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/bond-energy-calculations,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/exothermic-endothermic,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/exothermic-endothermic,chemistry,triple,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/reaction-profiles,chemistry,combined,higher,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/reaction-profiles,chemistry,triple,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/exothermic-endothermic,chemistry,combined,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/reaction-profiles,chemistry,combined,foundation,fifa,2-practice-absent,major,no interactive practice mode (systemic: current template renders static steps only)
+chemistry/energy-changes/fuel-cells,chemistry,triple,higher,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
+chemistry/energy-changes/fuel-cells,chemistry,triple,foundation,fifa,4-menu,info,page has equations but no FIFA block — deliberate-choice check when unit is ported
