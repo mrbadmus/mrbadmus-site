@@ -2536,70 +2536,170 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"quantitative": [{'common_mistake': 'Never change the SUBSCRIPT numbers in a formula when balancing — only add or change the large '
-                    'numbers (coefficients) IN FRONT of formulas. Changing H₂O to H₂O₂ would create a different '
-                    'compound (hydrogen peroxide, not water). Always balance by adjusting coefficients only.',
+"quantitative": [{'common_mistake': 'Students often think they can balance an equation by changing the small subscript '
+                    'numbers inside a formula — writing H₂O as H₂O₂ to get an extra oxygen, for instance. '
+                    'This does not balance the equation, it changes the chemical: H₂O₂ is hydrogen peroxide, '
+                    'not water, so the equation no longer describes the same reaction. Balance only by '
+                    'putting large numbers (coefficients) in FRONT of each formula — never change a '
+                    'subscript.',
   'equations': [],
-  'fifas': [],
+  'fifas': [{'label': 'Mass of a product (add the reactants)',
+             'question': 'Carbon burns in oxygen: C + O₂ → CO₂. 12 g of carbon reacts completely with 32 g '
+                         'of oxygen. Calculate the mass of carbon dioxide formed.',
+             'steps': [('F', 'total mass of products = total mass of reactants'),
+                       ('I', 'mass of CO₂ = mass of C + mass of O₂ = 12 + 32'),
+                       ('F', '12 + 32 = 44'),
+                       ('A', 'mass of CO₂ = 44 g')]},
+            {'label': 'Mass of a reactant (subtract)',
+             'question': 'Magnesium burns in air: 2Mg + O₂ → 2MgO. 48 g of magnesium forms 80 g of magnesium '
+                         'oxide. Calculate the mass of oxygen that reacted.',
+             'steps': [('F', 'total mass of reactants = total mass of products'),
+                       ('I', 'mass of O₂ = mass of MgO − mass of Mg = 80 − 48'),
+                       ('F', '80 − 48 = 32'),
+                       ('A', 'mass of oxygen = 32 g')]},
+            {'label': 'A decimal mass in a sealed tube',
+             'question': 'Calcium carbonate decomposes in a sealed tube: CaCO₃ → CaO + CO₂. 10.0 g of '
+                         'calcium carbonate produces 5.6 g of calcium oxide. Calculate the mass of carbon '
+                         'dioxide produced.',
+             'steps': [('F', 'mass of reactants = mass of products'),
+                       ('I', 'mass of CO₂ = mass of CaCO₃ − mass of CaO = 10.0 − 5.6'),
+                       ('F', '10.0 − 5.6 = 4.4'),
+                       ('A', 'mass of CO₂ = 4.4 g')]}],
   'higher': None,
   'id': 'conservation-of-mass',
-  'key_note': 'Conservation of mass: atoms are rearranged, never created or destroyed → total mass reactants = total '
-              'mass products. Balance equations by adjusting coefficients only — never change chemical formulae. Check '
-              'all atoms balance on both sides.',
+  'key_note': 'Conservation of mass: atoms are rearranged, never created or destroyed → total mass reactants '
+              '= total mass products. Balance equations by adjusting coefficients only — never change '
+              'chemical formulae. Check all atoms balance on both sides.',
   'matching': {'instruction': 'Match each unbalanced equation to the correct balanced version.',
                'pairs': [('Na + Cl₂ → NaCl', '2Na + Cl₂ → 2NaCl (need 2 Na to balance the 2 Cl)'),
                          ('H₂ + O₂ → H₂O', '2H₂ + O₂ → 2H₂O (need 2 H₂ and 2 H₂O to balance all atoms)'),
                          ('Fe + O₂ → Fe₂O₃', '4Fe + 3O₂ → 2Fe₂O₃ (4 Fe and 6 O each side)'),
                          ('Ca + H₂O → Ca(OH)₂ + H₂', 'Ca + 2H₂O → Ca(OH)₂ + H₂ (need 2 water molecules)')],
                'title': 'Balance these Equations'},
-  'quiz': [{'opts': [('Atoms cannot be created or destroyed — the same atoms must appear on both sides of the equation',
-                      True),
-                     ('Balanced equations are easier to read and understand', False),
-                     ('Unbalanced equations produce different products', False),
-                     ('Equations must be balanced to follow international chemical naming rules', False)],
-            'q': 'Why must chemical equations be balanced?',
-            'wrong_explanations': {1: 'Readability is a benefit but not the fundamental reason — conservation of mass '
-                                      'is.',
-                                   2: 'An unbalanced equation can still show the correct reactants and products — it '
-                                      "just doesn't correctly represent the quantitative relationship between them.",
-                                   3: 'Balancing is a scientific law requirement (conservation of mass), not a naming '
-                                      'convention.'}},
-           {'opts': [('16 g — conservation of mass: mass of O₂ = 40 − 24 = 16 g', True),
-                     ('40 g — the oxygen has the same mass as the product', False),
-                     ('64 g — double the mass of magnesium', False),
-                     ('Cannot be determined without the balanced equation', False)],
-            'q': '24 g of magnesium reacts completely with oxygen to form magnesium oxide. 40 g of magnesium oxide is '
-                 'produced. How much oxygen reacted?',
-            'wrong_explanations': {1: 'Mass in = mass out. If 40 g MgO is made from 24 g Mg, the remaining 40 − 24 = '
-                                      '16 g must have come from oxygen.',
-                                   2: 'The mass of oxygen is only part of the product mass — the product contains both '
-                                      'magnesium AND oxygen.',
-                                   3: 'Conservation of mass allows this calculation: mass O₂ = mass product − mass Mg '
-                                      '= 40 − 24 = 16 g.'}},
+  'quiz': [{'opts': [('16 g — by conservation of mass, mass of oxygen = 40 − 24 = 16 g', True),
+                     ('40 g — the oxygen has the same mass as the magnesium oxide', False),
+                     ('64 g — add the two masses, 40 + 24', False),
+                     ('24 g — the oxygen has the same mass as the magnesium', False)],
+            'q': '24 g of magnesium reacts completely with oxygen to form 40 g of magnesium oxide. Calculate '
+                 'the mass of oxygen that reacted.',
+            'wrong_explanations': {1: '40 g is the mass of the PRODUCT, which contains both the magnesium '
+                                      'and the oxygen — the oxygen alone is 40 − 24 = 16 g.',
+                                   2: 'Adding product and reactant double-counts. The oxygen that reacted is '
+                                      'product − magnesium = 40 − 24 = 16 g.',
+                                   3: 'There is no reason the two reactants have equal mass. Conservation '
+                                      'gives mass of oxygen = 40 − 24 = 16 g.'}},
            {'opts': [('4Fe + 3O₂ → 2Fe₂O₃', True),
                      ('Fe + O₂ → Fe₂O₃', False),
                      ('2Fe + O₂ → Fe₂O₃', False),
                      ('Fe + 3O₂ → 2Fe₂O₃', False)],
-            'q': 'Which of these is a correctly balanced equation?',
-            'wrong_explanations': {1: 'Fe + O₂ → Fe₂O₃: left has 1 Fe, 2 O; right has 2 Fe, 3 O — not balanced.',
-                                   2: '2Fe + O₂ → Fe₂O₃: left has 2 Fe, 2 O; right has 2 Fe, 3 O — oxygen not '
-                                      'balanced.',
-                                   3: 'Fe + 3O₂ → 2Fe₂O₃: left has 1 Fe, 6 O; right has 4 Fe, 6 O — iron not '
-                                      'balanced.'}}],
+            'q': 'Identify which of these equations is correctly balanced.',
+            'wrong_explanations': {1: 'Left: 1 Fe, 2 O. Right: 2 Fe, 3 O. Neither element balances.',
+                                   2: 'Left: 2 Fe, 2 O. Right: 2 Fe, 3 O. Oxygen does not balance.',
+                                   3: 'Left: 1 Fe, 6 O. Right: 4 Fe, 6 O. Iron does not balance.'}},
+           {'opts': [('No atoms are created or destroyed — they are only rearranged, so the same atoms, and '
+                      'therefore the same total mass, are present before and after',
+                      True),
+                     ('The reactants are simply renamed as products, so the mass label stays the same',
+                      False),
+                     ('A reaction always makes the same number of molecules as it uses up', False),
+                     ('Energy is conserved, and mass is the same thing as energy in a reaction', False)],
+            'q': 'Explain why the total mass of the products equals the total mass of the reactants in a '
+                 'chemical reaction.',
+            'wrong_explanations': {1: 'A reaction genuinely rearranges atoms into new substances — mass is '
+                                      'conserved because the ATOMS are conserved, not because of naming.',
+                                   2: 'The number of molecules often changes (2H₂ + O₂ → 2H₂O goes from 3 '
+                                      'molecules to 2). It is the number of ATOMS of each element that is '
+                                      'conserved.',
+                                   3: 'Conservation of mass here is about atoms being rearranged; at GCSE it '
+                                      'is not an energy argument.'}},
+           {'opts': [('44 g — mass is conserved, so 12 + 32 = 44 g', True),
+                     ('20 g — the difference, 32 − 12', False),
+                     ('32 g — the product has the same mass as the oxygen', False),
+                     ('12 g — the product has the same mass as the carbon', False)],
+            'q': 'In a sealed container, 12 g of carbon reacts completely with 32 g of oxygen. Calculate the '
+                 'mass of carbon dioxide produced.',
+            'wrong_explanations': {1: 'The reactants COMBINE, so their masses add: 12 + 32 = 44 g. '
+                                      'Subtracting is only used to find a missing reactant or product.',
+                                   2: 'The carbon dioxide contains the carbon as well: 12 + 32 = 44 g.',
+                                   3: 'The carbon dioxide contains the oxygen as well: 12 + 32 = 44 g.'}},
+           {'opts': [('2H₂ + O₂ → 2H₂O', True),
+                     ('H₂ + O₂ → H₂O', False),
+                     ('2H₂ + 2O₂ → 2H₂O', False),
+                     ('H₂ + O₂ → 2H₂O', False)],
+            'q': 'Deduce the numbers needed to balance this equation: __H₂ + O₂ → __H₂O.',
+            'wrong_explanations': {1: 'The left has 2 O but the right has only 1 O. Use 2H₂O, then 2H₂ to '
+                                      'rebalance the hydrogen.',
+                                   2: 'This gives 4 O on the left but only 2 O on the right. One O₂ is '
+                                      'enough: 2H₂ + O₂ → 2H₂O.',
+                                   3: 'The right now has 4 H and 2 O but the left has only 2 H. Balance the '
+                                      'hydrogen with 2H₂: 2H₂ + O₂ → 2H₂O.'}},
+           {'opts': [('The total mass of the products is equal to the total mass of the reactants', True),
+                     ('Mass is always lost during a chemical reaction', False),
+                     ('The mass of each product equals the mass of each reactant', False),
+                     ('Both mass and energy are destroyed as a reaction proceeds', False)],
+            'q': 'State the law of conservation of mass.',
+            'wrong_explanations': {1: 'Mass is never lost overall — the reactant mass equals the product '
+                                      'mass.',
+                                   2: 'It is the TOTAL mass that is conserved, not the mass of each '
+                                      'individual substance.',
+                                   3: 'Neither mass nor energy is destroyed — mass is conserved.'}},
+           {'opts': [('They are rearranged into new substances — none are created or destroyed', True),
+                     ('Some atoms are destroyed and new atoms are created', False),
+                     ('The atoms are converted into energy', False),
+                     ('The atoms combine to form larger atoms', False)],
+            'q': 'State what happens to the atoms during a chemical reaction.',
+            'wrong_explanations': {1: 'Atoms are never created or destroyed in a chemical reaction — they '
+                                      'are only rearranged.',
+                                   2: 'Atoms are not turned into energy in a chemical reaction; they are '
+                                      'rearranged.',
+                                   3: 'Atoms do not merge into larger atoms — they bond together into '
+                                      'molecules and compounds.'}},
+           {'opts': [('Only the large numbers written in front of each formula (the coefficients)', True),
+                     ('The small subscript numbers inside a formula', False),
+                     ('Any of the numbers, as long as the equation ends up balanced', False),
+                     ('The subscripts, but not the coefficients', False)],
+            'q': 'When balancing an equation, state which numbers you are allowed to change.',
+            'wrong_explanations': {1: 'Changing a subscript changes the substance itself (H₂O → H₂O₂). Only '
+                                      'the coefficients in front may be changed.',
+                                   2: 'You may not change subscripts — that would change the chemicals. Only '
+                                      'the coefficients may be adjusted.',
+                                   3: 'This is the wrong way round: coefficients may be changed, subscripts '
+                                      'may not.'}},
+           {'opts': [('72 g — 8 + 64 = 72 g', True),
+                     ('56 g — the difference, 64 − 8', False),
+                     ('64 g — the water has the same mass as the oxygen', False),
+                     ('8 g — the water has the same mass as the hydrogen', False)],
+            'q': '8 g of hydrogen reacts completely with 64 g of oxygen to form water. State the mass of '
+                 'water formed.',
+            'wrong_explanations': {1: 'The reactants combine, so add them: 8 + 64 = 72 g.',
+                                   2: 'The water also contains the hydrogen: 8 + 64 = 72 g.',
+                                   3: 'The water also contains the oxygen: 8 + 64 = 72 g.'}},
+           {'opts': [('2Na + Cl₂ → 2NaCl', True),
+                     ('Na + Cl₂ → NaCl', False),
+                     ('Na + Cl → NaCl', False),
+                     ('2Na + 2Cl₂ → 2NaCl', False)],
+            'q': 'Identify the correctly balanced equation for sodium reacting with chlorine.',
+            'wrong_explanations': {1: 'The left has 2 Cl but the right has 1 Cl, and the sodium is '
+                                      'unbalanced too. 2Na + Cl₂ → 2NaCl balances both.',
+                                   2: 'Chlorine exists as Cl₂ molecules, not single Cl atoms. The balanced '
+                                      'equation is 2Na + Cl₂ → 2NaCl.',
+                                   3: 'This gives 4 Cl on the left but only 2 on the right. One Cl₂ is '
+                                      'enough: 2Na + Cl₂ → 2NaCl.'}}],
   'rp': None,
   'spec': '5.3.1.1',
   'summary': 'Explain the law of conservation of mass and balance symbol equations.',
   'theory': [{'content': 'The LAW OF CONSERVATION OF MASS states:\n'
-                         'In a chemical reaction, the TOTAL MASS OF REACTANTS equals the TOTAL MASS OF PRODUCTS.\n'
+                         'In a chemical reaction, the TOTAL MASS OF REACTANTS equals the TOTAL MASS OF '
+                         'PRODUCTS.\n'
                          '\n'
                          'Mass is always CONSERVED — it is neither created nor destroyed.\n'
                          '\n'
                          'Why? Because atoms are simply REARRANGED during a chemical reaction:\n'
                          'No atoms are gained or lost.\n'
-                         'The same atoms that were in the reactants end up in the products, just in different '
-                         'arrangements.\n'
-                         "Since mass depends only on the number and type of atoms present, and these don't change, "
-                         'total mass stays the same.\n'
+                         'The same atoms that were in the reactants end up in the products, just in '
+                         'different arrangements.\n'
+                         "Since mass depends only on the number and type of atoms present, and these don't "
+                         'change, total mass stays the same.\n'
                          '\n'
                          'Example:\n'
                          'Magnesium + oxygen → magnesium oxide\n'
@@ -2607,11 +2707,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'If 24 g of Mg reacts with 16 g of O₂ → 40 g of MgO is produced.\n'
                          '24 + 16 = 40 ✓ Mass is conserved.',
               'heading': 'The Law of Conservation of Mass'},
-             {'content': 'A BALANCED equation has the same number of each type of atom on both sides — reflecting '
-                         'conservation of mass.\n'
+             {'content': 'A BALANCED equation has the same number of each type of atom on both sides — '
+                         'reflecting conservation of mass.\n'
                          '\n'
                          'RULES:\n'
-                         '1. Write the correct formulae for reactants and products (do NOT change formulae).\n'
+                         '1. Write the correct formulae for reactants and products (do NOT change '
+                         'formulae).\n'
                          '2. Count atoms on each side.\n'
                          '3. Add LARGE NUMBERS (coefficients) in front of formulae to balance — never change '
                          'subscripts within a formula.\n'
@@ -2639,9 +2740,9 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'Mg(s) + 2HCl(aq) → MgCl₂(aq) + H₂(g)\n'
                          '(s) = solid, (l) = liquid, (g) = gas, (aq) = aqueous (dissolved in water)\n'
                          '\n'
-                         'IMPORTANT: The coefficients in a balanced equation tell us the RATIO in which substances '
-                         'react and are produced — not the number of grams, but the number of formula units (atoms, '
-                         'molecules or formula units for ionic compounds).\n'
+                         'IMPORTANT: The coefficients in a balanced equation tell us the RATIO in which '
+                         'substances react and are produced — not the number of grams, but the number of '
+                         'formula units (atoms, molecules or formula units for ionic compounds).\n'
                          '\n'
                          '2H₂ + O₂ → 2H₂O means:\n'
                          '2 molecules of H₂ react with 1 molecule of O₂ to give 2 molecules of H₂O.\n'
@@ -2650,20 +2751,39 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Conservation of Mass and Balanced Equations',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'When a formula has BRACKETS with a subscript, MULTIPLY all atoms inside the bracket by the '
-                    'subscript. Ca(OH)₂ has 2 oxygen atoms and 2 hydrogen atoms — not 1 of each. Write out the count '
-                    'carefully: Ca(OH)₂ = Ca + 2O + 2H = 40 + 32 + 2 = 74.',
+ {'common_mistake': 'Students often forget to multiply the atoms inside a bracket by the subscript outside '
+                    'it — reading Ca(OH)₂ as one oxygen and one hydrogen instead of two of each. That '
+                    'undercounts the mass, because the ₂ applies to the WHOLE group: Ca(OH)₂ really contains '
+                    '2 O and 2 H. Work the bracket out first (2 × O and 2 × H), then add every Ar: 40 + 32 + '
+                    '2 = 74.',
   'equations': ['Mr = sum of all Ar values in the formula'],
-  'fifas': [{'label': 'Mr Calculation — H₂SO₄',
-             'question': 'Calculate the relative formula mass of sulfuric acid (H₂SO₄). Ar: H=1, S=32, O=16.',
-             'steps': [('F', 'Mr = sum of all Ar values × number of atoms'),
-                       ('I', 'H: 1 × 2 = 2. S: 32 × 1 = 32. O: 16 × 4 = 64'),
+  'fifas': [{'label': 'Add up the relative atomic masses',
+             'question': 'Calculate the relative formula mass of sulfuric acid (H₂SO₄). Ar: H = 1, S = 32, O '
+                         '= 16.',
+             'steps': [('F', 'Mr = sum of (Ar × number of each atom)'),
+                       ('I', 'H: 2 × 1 = 2;  S: 1 × 32 = 32;  O: 4 × 16 = 64'),
                        ('F', 'Mr = 2 + 32 + 64'),
-                       ('A', 'Mr = 98')]}],
+                       ('A', 'Mr = 98')]},
+            {'label': 'A compound with three of one atom',
+             'question': 'Calculate the relative formula mass of calcium carbonate (CaCO₃). Ar: Ca = 40, C = '
+                         '12, O = 16.',
+             'steps': [('F', 'Mr = sum of (Ar × number of each atom)'),
+                       ('I', 'Ca: 1 × 40 = 40;  C: 1 × 12 = 12;  O: 3 × 16 = 48'),
+                       ('F', 'Mr = 40 + 12 + 48'),
+                       ('A', 'Mr = 100')]},
+            {'label': 'A formula with a bracket',
+             'question': 'Calculate the relative formula mass of calcium hydroxide, Ca(OH)₂. Ar: Ca = 40, O '
+                         '= 16, H = 1.',
+             'steps': [('F',
+                        'multiply the atoms inside the bracket by the subscript outside, then add every Ar'),
+                       ('I', 'Ca: 40;  O: 2 × 16 = 32;  H: 2 × 1 = 2'),
+                       ('F', 'Mr = 40 + 32 + 2'),
+                       ('A', 'Mr = 74')]}],
   'higher': None,
   'id': 'relative-formula-mass',
-  'key_note': 'Mr = sum of all Ar values in the formula. Use Ar from periodic table. Brackets: multiply atoms inside '
-              'by the subscript outside. Mr is used to calculate mass ratios in reactions. Mr has no units.',
+  'key_note': 'Mr = sum of all Ar values in the formula. Use Ar from periodic table. Brackets: multiply '
+              'atoms inside by the subscript outside. Mr is used to calculate mass ratios in reactions. Mr '
+              'has no units.',
   'matching': {'instruction': 'Match each formula to its correct relative formula mass.',
                'pairs': [('H₂O', 'Mr = 18 — (2 × 1) + (1 × 16)'),
                          ('CO₂', 'Mr = 44 — (1 × 12) + (2 × 16)'),
@@ -2671,36 +2791,106 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('CaCO₃', 'Mr = 100 — (1 × 40) + (1 × 12) + (3 × 16)'),
                          ('Ca(OH)₂', 'Mr = 74 — (1 × 40) + (2 × 16) + (2 × 1)')],
                'title': 'Calculate the Mr'},
-  'quiz': [{'opts': [('100 — (40) + (12) + (3 × 16) = 40 + 12 + 48', True),
-                     ('68 — (40) + (12) + (16) — counting only one oxygen', False),
-                     ('116 — (40) + (12) + (4 × 16) — counting four oxygens', False),
-                     ('52 — (40) + (12) — forgetting the oxygens', False)],
-            'q': 'What is the relative formula mass of calcium carbonate (CaCO₃)? Ar: Ca=40, C=12, O=16.',
-            'wrong_explanations': {1: 'CaCO₃ has only ONE oxygen — but the subscript 3 after O means THREE oxygens: 3 '
-                                      '× 16 = 48.',
-                                   2: 'CO₃ means 3 oxygen atoms, not 4. Only CO₄ would have 4 oxygens.',
-                                   3: 'The oxygen cannot be ignored — CaCO₃ has a carbon AND three oxygens.'}},
-           {'opts': [('148 — Mg(24) + 2N(28) + 6O(96)', True),
-                     ('86 — Mg(24) + N(14) + 3O(48)', False),
-                     ('100 — Mg(24) + 2N(28) + 3O(48)', False),
-                     ('116 — Mg(24) + 2N(28) + 4O(64)', False)],
-            'q': 'What is the Mr of Mg(NO₃)₂? Ar: Mg=24, N=14, O=16.',
-            'wrong_explanations': {1: 'The subscript 2 outside the bracket means the entire NO₃ group is repeated '
-                                      'twice. So there is 1 N, NOT 2 — wait: NO₃ has 1 N and 3 O, multiplied by 2 = 2N '
-                                      'and 6O.',
-                                   2: 'Mg(NO₃)₂ means 2 groups of NO₃: so 2N and 6O total. Only counting 3O ignores '
-                                      'the ×2 multiplier.',
-                                   3: 'Each NO₃ has 3 O; multiplied by 2 = 6 O total, not 4.'}}],
+  'quiz': [{'opts': [('100 — 40 + 12 + (3 × 16) = 40 + 12 + 48', True),
+                     ('68 — 40 + 12 + 16, counting only one oxygen', False),
+                     ('116 — 40 + 12 + (4 × 16), counting four oxygens', False),
+                     ('52 — 40 + 12, forgetting the oxygens', False)],
+            'q': 'Calculate the relative formula mass (Mr) of calcium carbonate (CaCO₃). Ar: Ca = 40, C = '
+                 '12, O = 16.',
+            'wrong_explanations': {1: 'The subscript 3 after O means THREE oxygens: 3 × 16 = 48, not 16.',
+                                   2: 'CO₃ has 3 oxygens, not 4. Only a CO₄ group would have four.',
+                                   3: 'The three oxygens cannot be ignored: 3 × 16 = 48 must be added.'}},
+           {'opts': [('74 — 40 + (2 × 16) + (2 × 1) = 40 + 32 + 2', True),
+                     ('57 — 40 + 16 + 1, taking one O and one H', False),
+                     ('58 — 40 + 16 + (2 × 1), doubling only the hydrogen', False),
+                     ('112 — (40 + 16 + 1) × 2, doubling the calcium as well', False)],
+            'q': 'Calculate the relative formula mass of calcium hydroxide, Ca(OH)₂. Ar: Ca = 40, O = 16, H '
+                 '= 1.',
+            'wrong_explanations': {1: 'The ₂ outside the bracket doubles BOTH the O and the H: 2 × 16 and 2 '
+                                      '× 1.',
+                                   2: 'The subscript applies to the whole (OH) group, so the oxygen is '
+                                      'doubled too: 2 × 16 = 32.',
+                                   3: 'The ₂ applies only to the (OH) group in the bracket, not to the '
+                                      'calcium outside it.'}},
+           {'opts': [('98 — (2 × 1) + 32 + (4 × 16) = 2 + 32 + 64', True),
+                     ('49 — (1) + 32 + 16, taking one of each atom', False),
+                     ('50 — 2 + 32 + 16, forgetting the O subscript', False),
+                     ('130 — 2 + 32 + (6 × 16), counting six oxygens', False)],
+            'q': 'Calculate the relative formula mass of sulfuric acid, H₂SO₄. Ar: H = 1, S = 32, O = 16.',
+            'wrong_explanations': {1: 'H₂SO₄ has 2 H and 4 O: 2 × 1 = 2 and 4 × 16 = 64.',
+                                   2: 'The 4 after O means 4 × 16 = 64, not 16.',
+                                   3: 'There are 4 oxygens in H₂SO₄, so 4 × 16 = 64.'}},
+           {'opts': [('95 — 24 + (2 × 35.5) = 24 + 71', True),
+                     ('59.5 — 24 + 35.5, counting only one chlorine', False),
+                     ('119 — (24 + 35.5) × 2, doubling the magnesium too', False),
+                     ('120 — 24 + (2 × 48), using 48 for chlorine', False)],
+            'q': 'Calculate the relative formula mass of magnesium chloride, MgCl₂. Ar: Mg = 24, Cl = 35.5.',
+            'wrong_explanations': {1: 'The ₂ after Cl means two chlorines: 2 × 35.5 = 71.',
+                                   2: 'Only the chlorine is doubled: Mg + (2 × Cl) = 24 + 71 = 95.',
+                                   3: 'The Ar of chlorine is 35.5, not 48: 2 × 35.5 = 71.'}},
+           {'opts': [('180 — (6 × 12) + (12 × 1) + (6 × 16) = 72 + 12 + 96', True),
+                     ('34 — 12 + 1 + 16, ignoring all the subscripts', False),
+                     ('29 — 6 + 12 + 6, adding the subscripts instead of using Ar', False),
+                     ('168 — 72 + 96, forgetting the hydrogen', False)],
+            'q': 'Glucose has the formula C₆H₁₂O₆. Calculate its relative formula mass. Ar: C = 12, H = 1, O '
+                 '= 16.',
+            'wrong_explanations': {1: 'Each atom is multiplied by its subscript: 6 C, 12 H and 6 O.',
+                                   2: 'The subscripts count the atoms; multiply each by its Ar: (6 × 12) + '
+                                      '(12 × 1) + (6 × 16).',
+                                   3: 'The 12 hydrogens add 12 × 1 = 12 to the total.'}},
+           {'opts': [('The sum of the relative atomic masses of all the atoms shown in its formula', True),
+                     ('The mass of one molecule in grams', False),
+                     ('The number of atoms in the formula', False),
+                     ('The relative atomic mass of the heaviest atom only', False)],
+            'q': 'State what the relative formula mass (Mr) of a compound tells you.',
+            'wrong_explanations': {1: 'Mr is a relative number with no units, not a mass in grams — that is '
+                                      'the molar mass.',
+                                   2: 'Mr adds up the atomic MASSES, not the number of atoms.',
+                                   3: 'Every atom in the formula is included, not just the heaviest one.'}},
+           {'opts': [('18 — (2 × 1) + 16', True),
+                     ('17 — 1 + 16, counting only one hydrogen', False),
+                     ('34 — (1 + 16) × 2, doubling everything', False),
+                     ('19 — 2 + 16 + 1, adding an extra hydrogen', False)],
+            'q': 'Calculate the relative formula mass of water, H₂O. Ar: H = 1, O = 16.',
+            'wrong_explanations': {1: 'The ₂ after H means two hydrogens: 2 × 1 = 2.',
+                                   2: 'Only the hydrogen is doubled: (2 × 1) + 16 = 18.',
+                                   3: 'H₂O has exactly 2 H and 1 O: 2 + 16 = 18.'}},
+           {'opts': [('It has no units — it is a ratio of masses', True),
+                     ('Grams (g)', False),
+                     ('Grams per mole (g/mol)', False),
+                     ('Moles (mol)', False)],
+            'q': 'State the units of relative formula mass.',
+            'wrong_explanations': {1: 'Grams is the unit of actual mass or molar mass; relative formula mass '
+                                      'itself has no units.',
+                                   2: 'That is the unit of molar mass; Mr is just a number with no units.',
+                                   3: 'Moles measure amount of substance; Mr has no units.'}},
+           {'opts': [('32 — 2 × 16', True),
+                     ('16 — one oxygen atom', False),
+                     ('18 — 16 + 2', False),
+                     ('8 — 16 ÷ 2', False)],
+            'q': 'Calculate the relative formula mass of oxygen gas, O₂. Ar: O = 16.',
+            'wrong_explanations': {1: 'Oxygen gas exists as O₂ molecules, so 2 × 16 = 32.',
+                                   2: 'The ₂ multiplies the oxygen, it is not added: 2 × 16 = 32.',
+                                   3: 'Two atoms means you multiply by 2, not divide: 2 × 16 = 32.'}},
+           {'opts': [('40 — 23 + 16 + 1', True),
+                     ('39 — 23 + 16, forgetting the hydrogen', False),
+                     ('24 — 23 + 1, forgetting the oxygen', False),
+                     ('58 — 23 + 16 + 1 + 18, adding water', False)],
+            'q': 'Calculate the relative formula mass of sodium hydroxide, NaOH. Ar: Na = 23, O = 16, H = 1.',
+            'wrong_explanations': {1: 'NaOH contains one H, adding 1 to the total: 23 + 16 + 1 = 40.',
+                                   2: 'The oxygen (16) must be included: 23 + 16 + 1 = 40.',
+                                   3: 'NaOH has no water of crystallisation here: just 23 + 16 + 1 = 40.'}}],
   'rp': None,
   'spec': '5.3.1.2',
   'summary': 'Calculate relative formula mass (Mr) from relative atomic masses and use it in calculations.',
-  'theory': [{'content': 'The RELATIVE FORMULA MASS (Mr) of a compound is the sum of the RELATIVE ATOMIC MASSES (Ar) '
-                         'of all atoms in its formula.\n'
+  'theory': [{'content': 'The RELATIVE FORMULA MASS (Mr) of a compound is the sum of the RELATIVE ATOMIC '
+                         'MASSES (Ar) of all atoms in its formula.\n'
                          '\n'
                          'Mr has no units — it is a ratio (relative to carbon-12).\n'
                          '\n'
                          'You need the Ar values from the periodic table:\n'
-                         'H = 1, C = 12, N = 14, O = 16, Na = 23, Mg = 24, S = 32, Cl = 35.5, Ca = 40, Fe = 56\n'
+                         'H = 1, C = 12, N = 14, O = 16, Na = 23, Mg = 24, S = 32, Cl = 35.5, Ca = 40, Fe = '
+                         '56\n'
                          '\n'
                          'EXAMPLES:\n'
                          'H₂O: (2 × 1) + (1 × 16) = 2 + 16 = 18\n'
@@ -2710,8 +2900,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'H₂SO₄: (2 × 1) + (1 × 32) + (4 × 16) = 2 + 32 + 64 = 98\n'
                          'CaCO₃: (1 × 40) + (1 × 12) + (3 × 16) = 40 + 12 + 48 = 100',
               'heading': 'Relative Formula Mass (Mr)'},
-             {'content': 'When a formula contains BRACKETS, multiply everything inside the brackets by the number '
-                         'outside.\n'
+             {'content': 'When a formula contains BRACKETS, multiply everything inside the brackets by the '
+                         'number outside.\n'
                          '\n'
                          'Examples:\n'
                          'Ca(OH)₂:\n'
@@ -2735,8 +2925,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
              {'content': 'Mr allows us to calculate MASSES in reactions from a balanced equation.\n'
                          '\n'
                          'FUNDAMENTAL PRINCIPLE:\n'
-                         'The RATIO of masses of reactants and products in a reaction equals the RATIO of their Mr '
-                         'values (multiplied by the coefficients in the balanced equation).\n'
+                         'The RATIO of masses of reactants and products in a reaction equals the RATIO of '
+                         'their Mr values (multiplied by the coefficients in the balanced equation).\n'
                          '\n'
                          'Example:\n'
                          '2Mg + O₂ → 2MgO\n'
@@ -2754,79 +2944,186 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Relative Formula Mass',
   'triple_only': None,
   'variables': [('Mr', 'Relative formula mass', '', ''), ('Ar', 'Relative atomic mass', '', '')]},
- {'common_mistake': 'When a metal burns in air, the solid GAINS mass (oxygen is added from the air to form the oxide). '
-                    "Students often expect the solid to lose mass because 'burning destroys things' — but mass is "
-                    'always conserved. The apparent gain is real because you are adding oxygen from the atmosphere to '
-                    'the solid product.',
+ {'common_mistake': 'Students often expect a metal to LOSE mass when it burns, because burning seems to '
+                    'destroy things. In fact the solid gains mass: oxygen from the air combines with the '
+                    'metal and becomes part of the solid oxide. Mass is still conserved — the gain in the '
+                    'solid is exactly equal to the mass of oxygen taken from the air.',
   'equations': [],
-  'fifas': [{'label': 'Mass Change Prediction',
-             'question': '4.8 g of magnesium burns completely in air: 2Mg + O₂ → 2MgO. Calculate the mass of MgO '
-                         'produced. Ar: Mg=24, O=16.',
-             'steps': [('F', 'Use ratio from balanced equation: 2 × Mr(Mg) : 2 × Mr(MgO) = 48 : 80'),
-                       ('I', 'Scale: 4.8 g of Mg. Scale factor = 4.8 ÷ 48 = 0.1'),
-                       ('F', 'Mass of MgO = 80 × 0.1 = 8.0 g'),
-                       ('A', '8.0 g of MgO produced (mass increases by 3.2 g — the absorbed oxygen)')]}],
+  'fifas': [{'label': 'Mass gained = mass of gas added',
+             'question': 'A 40 g sample of copper is heated in air and forms 50 g of copper oxide. Calculate '
+                         'the mass of oxygen that combined with the copper.',
+             'steps': [('F', 'mass gained by the solid = mass of oxygen added'),
+                       ('I', 'mass of O₂ = mass of oxide − mass of metal = 50 − 40'),
+                       ('F', '50 − 40 = 10'),
+                       ('A', 'mass of oxygen = 10 g')]},
+            {'label': 'Mass lost = mass of gas escaped',
+             'question': 'When 25 g of a metal carbonate is heated in an open tube, 16 g of solid oxide is '
+                         'left. Calculate the mass of carbon dioxide that escaped.',
+             'steps': [('F', 'mass lost by the solid = mass of gas that escaped'),
+                       ('I', 'mass of CO₂ = 25 − 16'),
+                       ('F', '25 − 16 = 9'),
+                       ('A', 'mass of carbon dioxide = 9 g')]},
+            {'label': 'A decimal mass gain',
+             'question': '3.0 g of magnesium is burned and forms 5.0 g of magnesium oxide. Calculate the '
+                         'mass of oxygen taken from the air.',
+             'steps': [('F', 'mass gained by the solid = mass of oxygen added'),
+                       ('I', 'mass of O₂ = 5.0 − 3.0'),
+                       ('F', '5.0 − 3.0 = 2.0'),
+                       ('A', 'mass of oxygen = 2.0 g')]}],
   'higher': None,
   'id': 'mass-changes-reactions',
-  'key_note': 'Mass is always conserved. Apparent decrease: gas escapes (e.g. CO₂ from acid + carbonate). Apparent '
-              'increase: gas absorbed from air (e.g. O₂ absorbed when Mg burns). Closed container: mass always stays '
-              'the same. Look for gases when mass appears to change.',
+  'key_note': 'Mass is always conserved. Apparent decrease: gas escapes (e.g. CO₂ from acid + carbonate). '
+              'Apparent increase: gas absorbed from air (e.g. O₂ absorbed when Mg burns). Closed container: '
+              'mass always stays the same. Look for gases when mass appears to change.',
   'matching': {'instruction': 'Predict what happens to the measured mass in each scenario.',
-               'pairs': [('Mass decreases', 'CaCO₃ + HCl in an open flask — CO₂ gas escapes into the atmosphere'),
+               'pairs': [('Mass decreases',
+                          'CaCO₃ + HCl in an open flask — CO₂ gas escapes into the atmosphere'),
                          ('Mass increases',
                           'Magnesium burning in air — oxygen from air absorbed into MgO solid product'),
-                         ('Mass stays same', 'Precipitation reaction in a sealed flask — no gas escapes or enters'),
+                         ('Mass stays same',
+                          'Precipitation reaction in a sealed flask — no gas escapes or enters'),
                          ('Mass decreases', 'Zinc + sulfuric acid in an open tube — H₂ gas escapes'),
                          ('Mass stays same', 'CaCO₃ heated in a sealed tube — CO₂ trapped inside')],
                'title': 'Mass Increases, Decreases or Stays Same?'},
-  'quiz': [{'opts': [('The mass decreases — CO₂ gas escapes from the open crucible', True),
-                     ('The mass increases — oxygen from air is absorbed', False),
-                     ('The mass stays the same — conservation of mass', False),
-                     ('The mass first increases, then decreases', False)],
-            'q': 'A student heats calcium carbonate in an open crucible. CaCO₃ → CaO + CO₂. What happens to the '
-                 'measured mass?',
-            'wrong_explanations': {1: 'Oxygen is not absorbed here — CaCO₃ is decomposing, not combusting. A gas (CO₂) '
-                                      'is PRODUCED and escapes.',
-                                   2: 'Conservation of mass applies to the TOTAL system. In an open container, the '
-                                      'mass of the CONTAINER contents decreases because CO₂ leaves. Conservation is '
-                                      'still upheld if you include the escaped CO₂.',
-                                   3: 'There is no initial increase phase — CO₂ is produced and escapes from the start '
-                                      'of heating.'}},
-           {'opts': [('Oxygen from the air combines with the iron — the oxygen adds to the mass of the solid product '
-                      '(iron oxide)',
+  'quiz': [{'opts': [('The mass decreases — carbon dioxide gas is produced and escapes from the open '
+                      'crucible',
                       True),
-                     ('Water from humidity condenses on the rust — adding extra mass', False),
-                     ('The iron becomes denser as it rusts — same volume but more mass', False),
+                     ('The mass increases — oxygen from the air is absorbed', False),
+                     ('The mass stays the same — mass is always conserved', False),
+                     ('The mass first rises, then falls', False)],
+            'q': 'A student heats calcium carbonate in an open crucible: CaCO₃ → CaO + CO₂. Predict what '
+                 'happens to the measured mass and explain why.',
+            'wrong_explanations': {1: 'No oxygen is absorbed here: the carbonate is decomposing, not '
+                                      'burning. A gas (CO₂) is released and escapes.',
+                                   2: 'Mass is conserved for the whole system, but in an OPEN crucible the '
+                                      'CO₂ leaves, so the mass remaining falls.',
+                                   3: 'There is no initial rise — CO₂ is produced and escapes from the '
+                                      'moment heating begins.'}},
+           {'opts': [('Oxygen from the air combines with the iron and becomes part of the solid iron oxide, '
+                      'adding to its mass',
+                      True),
+                     ('Water condenses on the rust, adding extra mass', False),
+                     ('The iron becomes denser, so the same volume has more mass', False),
                      ('Iron oxide has more atoms per formula unit than iron', False)],
-            'q': 'Why does the mass of iron increase when it rusts in air?',
-            'wrong_explanations': {1: 'Humidity can contribute, but the primary reason is oxygen being ABSORBED from '
-                                      'the air. The reaction is 4Fe + 3O₂ → 2Fe₂O₃ — the oxygen becomes part of the '
-                                      'solid.',
-                                   2: 'Density changes do not increase total mass — mass = density × volume. If both '
-                                      'change proportionally, mass stays the same. More mass comes from more matter '
-                                      '(oxygen absorbed).',
-                                   3: 'Atom count per formula unit is irrelevant — it is the MASS of oxygen absorbed '
-                                      'from air that increases the total mass.'}}],
+            'q': 'Explain why the mass of iron increases when it rusts in air.',
+            'wrong_explanations': {1: 'Moisture speeds up rusting, but the mass gain is oxygen from the air '
+                                      'becoming part of the solid: 4Fe + 3O₂ → 2Fe₂O₃.',
+                                   2: 'Density changes do not add matter. The extra mass is oxygen absorbed '
+                                      'from the air.',
+                                   3: 'It is the MASS of oxygen combined with the iron that increases the '
+                                      'total, not the atom count.'}},
+           {'opts': [('It increases — oxygen from the air joins the magnesium to form solid magnesium oxide',
+                      True),
+                     ('It decreases — the magnesium is burned away', False),
+                     ('It stays the same — burning does not change the mass', False),
+                     ('It decreases — light and heat carry mass away', False)],
+            'q': 'A piece of magnesium ribbon is burned in an open crucible. Predict what happens to the '
+                 'mass of the solid and explain why.',
+            'wrong_explanations': {1: 'Burning does not destroy the magnesium; oxygen is added to it, so the '
+                                      'solid gains mass.',
+                                   2: 'The solid gains the mass of the oxygen that combines with it: the '
+                                      'reading rises.',
+                                   3: 'Light and heat are energy, not mass. The solid gains mass because '
+                                      'oxygen is added.'}},
+           {'opts': [('It decreases — carbon dioxide gas is given off and leaves the open tube', True),
+                     ('It increases — a gas is taken in from the air', False),
+                     ('It stays the same — no gas is involved', False),
+                     ('It increases — the oxide formed is heavier than the carbonate', False)],
+            'q': 'Predict what happens to the measured mass when a metal carbonate is thermally decomposed '
+                 'in an open tube.',
+            'wrong_explanations': {1: 'Decomposition releases CO₂; no gas is taken in. The mass falls.',
+                                   2: 'Thermal decomposition of a carbonate releases CO₂ gas, so the open '
+                                      'tube loses mass.',
+                                   3: 'The oxide left behind is LIGHTER than the carbonate, because the CO₂ '
+                                      'has escaped.'}},
+           {'opts': [('32 g — mass of oxygen = mass of oxide − mass of metal = 80 − 48', True),
+                     ('128 g — 80 + 48, adding the masses', False),
+                     ('80 g — the oxygen equals the mass of the oxide', False),
+                     ('48 g — the oxygen equals the mass of the magnesium', False)],
+            'q': '48 g of magnesium reacts with oxygen and the mass of the solid rises to 80 g of magnesium '
+                 'oxide. Calculate the mass of oxygen added from the air.',
+            'wrong_explanations': {1: 'The oxygen added is the GAIN in mass: 80 − 48 = 32 g. Adding would '
+                                      'exceed the product mass.',
+                                   2: 'The oxide also contains the magnesium; the oxygen alone is 80 − 48 = '
+                                      '32 g.',
+                                   3: 'There is no reason these are equal. The oxygen added is 80 − 48 = 32 '
+                                      'g.'}},
+           {'opts': [('It stays the same — the gas cannot escape from a sealed container', True),
+                     ('It decreases, because a gas is made', False),
+                     ('It increases, because a gas is made', False),
+                     ('It depends on which gas is made', False)],
+            'q': 'A reaction that produces a gas is carried out in a SEALED container. State what happens to '
+                 'the measured mass.',
+            'wrong_explanations': {1: 'In a SEALED container the gas stays inside, so the total mass does '
+                                      'not change.',
+                                   2: 'Making a gas from the reactants adds no mass; and nothing enters a '
+                                      'sealed container.',
+                                   3: 'In a sealed container the mass is unchanged whatever the gas, because '
+                                      'nothing leaves.'}},
+           {'opts': [('Oxygen', True), ('Carbon dioxide', False), ('Nitrogen', False), ('Hydrogen', False)],
+            'q': 'Name the gas from the air that is absorbed when a metal such as magnesium is burned.',
+            'wrong_explanations': {1: 'Metals burn by combining with oxygen, not carbon dioxide.',
+                                   2: 'Nitrogen is fairly unreactive; it is oxygen that combines with the '
+                                      'metal.',
+                                   3: 'Hydrogen is not the gas absorbed from air; burning adds oxygen to the '
+                                      'metal.'}},
+           {'opts': [('A gas (carbon dioxide) is produced and escapes into the air', True),
+                     ('The acid is used up and disappears', False),
+                     ('Mass is destroyed during the reaction', False),
+                     ('The flask absorbs some of the liquid', False)],
+            'q': 'State why the measured mass appears to decrease when a carbonate reacts with acid in an '
+                 'open flask.',
+            'wrong_explanations': {1: 'The acid reacts but does not disappear; the mass falls because CO₂ '
+                                      'gas escapes.',
+                                   2: 'Mass is never destroyed; the loss is CO₂ gas leaving the open flask.',
+                                   3: 'The flask does not absorb the liquid; the fall is due to CO₂ gas '
+                                      'escaping.'}},
+           {'opts': [('Up — the magnesium gains oxygen from the air', True),
+                     ('Down — the magnesium is burned away', False),
+                     ('It stays the same', False),
+                     ('It cannot be predicted', False)],
+            'q': 'A piece of magnesium ribbon is burned in a crucible. Predict whether the mass of the solid '
+                 'goes up or down.',
+            'wrong_explanations': {1: 'Burning adds oxygen to the magnesium, so the solid gains mass.',
+                                   2: 'The solid gains the mass of oxygen that combines with it, so it goes '
+                                      'up.',
+                                   3: "Burning a metal in air always adds oxygen, so the solid's mass "
+                                      'rises.'}},
+           {'opts': [('Carry out the reaction in a closed (sealed) container so the gas cannot escape', True),
+                     ('Heat the reaction more strongly', False),
+                     ('Use more of each reactant', False),
+                     ('Weigh the mixture more quickly', False)],
+            'q': 'A reaction produces a gas. State what you could do so that the measured mass does NOT '
+                 'decrease.',
+            'wrong_explanations': {1: 'Heating harder does not stop gas escaping; using a sealed container '
+                                      'does.',
+                                   2: 'Using more reactant makes more gas, which still escapes from an open '
+                                      'container.',
+                                   3: 'Weighing faster does not change the result; a sealed container keeps '
+                                      'the gas in.'}}],
   'rp': None,
   'spec': '5.3.1.3',
-  'summary': 'Explain why the measured mass sometimes appears to change in a reaction and predict mass changes.',
-  'theory': [{'content': 'Conservation of mass tells us total mass never changes. Yet in some experiments, the '
-                         'MEASURED mass appears to increase or decrease. This is NOT a violation of conservation of '
-                         'mass — it is because a GAS enters or leaves the reaction vessel.\n'
+  'summary': 'Explain why the measured mass sometimes appears to change in a reaction and predict mass '
+             'changes.',
+  'theory': [{'content': 'Conservation of mass tells us total mass never changes. Yet in some experiments, '
+                         'the MEASURED mass appears to increase or decrease. This is NOT a violation of '
+                         'conservation of mass — it is because a GAS enters or leaves the reaction vessel.\n'
                          '\n'
                          'WHEN MASS APPEARS TO DECREASE:\n'
                          'A GAS is PRODUCED and escapes into the atmosphere.\n'
                          'The gas molecules leave the container and are no longer weighed.\n'
                          'Example: CaCO₃(s) + 2HCl(aq) → CaCl₂(aq) + H₂O(l) + CO₂(g)\n'
                          'CO₂ gas escapes → measured mass decreases.\n'
-                         'Example: Mg ribbon burning — ash (MgO) seems lighter than the ribbon, but this is because '
-                         'oxygen from AIR was added. Without accounting for the oxygen, mass appears lost.\n'
+                         'Example: Mg ribbon burning — ash (MgO) seems lighter than the ribbon, but this is '
+                         'because oxygen from AIR was added. Without accounting for the oxygen, mass appears '
+                         'lost.\n'
                          '\n'
                          'WHEN MASS APPEARS TO INCREASE:\n'
                          'A GAS is ABSORBED or ADDED from the atmosphere.\n'
                          'Example: Magnesium burning in air:\n'
                          '2Mg(s) + O₂(g) → 2MgO(s)\n'
-                         'Oxygen from the air is absorbed into the solid product → measured mass of solid INCREASES.\n'
+                         'Oxygen from the air is absorbed into the solid product → measured mass of solid '
+                         'INCREASES.\n'
                          'The oxygen molecules join the solid — weighed mass goes up.',
               'heading': 'When Mass Appears to Change'},
              {'content': 'You can predict mass changes using the balanced equation and Mr values.\n'
@@ -2850,15 +3147,16 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'Check: 0.2 mol MgO × 40 = 8.0 g ✓',
               'heading': 'Predicting Mass Changes'},
-             {'content': 'Students sometimes observe apparent non-conservation — these all have explanations:\n'
+             {'content': 'Students sometimes observe apparent non-conservation — these all have '
+                         'explanations:\n'
                          '\n'
                          'PRECIPITATION REACTIONS in closed containers:\n'
                          'No gas escapes or enters → mass stays exactly the same. ✓\n'
                          '\n'
                          'HEATING A METAL IN AIR (open container):\n'
                          'Mass INCREASES — oxygen from air is absorbed.\n'
-                         'If weighed in a closed container with air, mass stays constant (oxygen absorbed from sealed '
-                         'air pocket).\n'
+                         'If weighed in a closed container with air, mass stays constant (oxygen absorbed '
+                         'from sealed air pocket).\n'
                          '\n'
                          'DECOMPOSITION reactions producing gas (e.g. CaCO₃ → CaO + CO₂):\n'
                          'In open container: mass DECREASES (CO₂ escapes).\n'
@@ -2867,62 +3165,179 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'BURNING HYDROCARBONS in open container:\n'
                          'CO₂ and H₂O vapour escape → apparent mass decreases.\n'
                          '\n'
-                         'KEY INSIGHT: If you cannot account for a mass change, look for a gas being produced or '
-                         'absorbed — conservation of mass is ALWAYS upheld in the universe, even if your experiment '
-                         "doesn't show it.",
+                         'KEY INSIGHT: If you cannot account for a mass change, look for a gas being '
+                         'produced or absorbed — conservation of mass is ALWAYS upheld in the universe, even '
+                         "if your experiment doesn't show it.",
               'heading': 'Non-conservation Apparent Effects'}],
   'title': 'Mass Changes in Reactions',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Read the volume from the BOTTOM of the meniscus — not the top. Water curves downward in a glass '
-                    'tube, creating a concave meniscus. Reading from the top overestimates the volume. Also: zeroing '
-                    'the balance (taring) before each measurement is essential — failing to do so introduces a '
-                    'systematic error.',
+ {'common_mistake': 'Students often use the TOP of the curved surface (the meniscus) when they read a '
+                    'burette or measuring cylinder, which gives a volume reading that is too large. The '
+                    'scale is calibrated to the BOTTOM of the meniscus, because water curves downwards in a '
+                    'glass tube. Line your eye up level with the bottom of the meniscus and read the scale '
+                    'from there.',
   'equations': ['% uncertainty = (uncertainty ÷ measured value) × 100'],
-  'fifas': [{'label': 'Percentage Uncertainty',
-             'question': 'A student measures 25.0 cm³ of solution using a measuring cylinder with an uncertainty of '
-                         '±0.5 cm³. Calculate the percentage uncertainty.',
+  'fifas': [{'label': 'Percentage uncertainty of one reading',
+             'question': 'A student measures 25.0 cm³ using a measuring cylinder with an uncertainty of ±0.5 '
+                         'cm³. Calculate the percentage uncertainty.',
              'steps': [('F', '% uncertainty = (uncertainty ÷ measured value) × 100'),
-                       ('I', '% uncertainty = (0.5 ÷ 25.0) × 100'),
-                       ('F', '% uncertainty = 0.02 × 100'),
-                       ('A', '% uncertainty = 2.0%')]}],
+                       ('I', '= (0.5 ÷ 25.0) × 100'),
+                       ('F', '= 0.02 × 100'),
+                       ('A', '= 2.0%')]},
+            {'label': 'A mass on a balance',
+             'question': 'A balance with an uncertainty of ±0.01 g is used to weigh 5.00 g of solid. '
+                         'Calculate the percentage uncertainty.',
+             'steps': [('F', '% uncertainty = (uncertainty ÷ measured value) × 100'),
+                       ('I', '= (0.01 ÷ 5.00) × 100'),
+                       ('F', '= 0.002 × 100'),
+                       ('A', '= 0.2%')]},
+            {'label': 'A temperature reading',
+             'question': 'A thermometer with an uncertainty of ±0.5 °C reads a temperature of 50.0 °C. '
+                         'Calculate the percentage uncertainty.',
+             'steps': [('F', '% uncertainty = (uncertainty ÷ measured value) × 100'),
+                       ('I', '= (0.5 ÷ 50.0) × 100'),
+                       ('F', '= 0.01 × 100'),
+                       ('A', '= 1.0%')]}],
   'higher': None,
   'id': 'chemical-measurements',
-  'key_note': 'Accuracy: how close to true value. Precision: how reproducible. Burette: ±0.05 cm³ — most precise for '
-              'volumes. Pipette: exact fixed volume. Read from bottom of meniscus at eye level. % uncertainty = '
-              '(uncertainty ÷ measured value) × 100. Larger measurement → smaller % uncertainty.',
+  'key_note': 'Accuracy: how close to true value. Precision: how reproducible. Burette: ±0.05 cm³ — most '
+              'precise for volumes. Pipette: exact fixed volume. Read from bottom of meniscus at eye level. '
+              '% uncertainty = (uncertainty ÷ measured value) × 100. Larger measurement → smaller % '
+              'uncertainty.',
   'matching': {'instruction': 'Match each piece of equipment to its use and precision.',
                'pairs': [('Burette',
-                          'Accurately delivers variable volumes of solution — read to ±0.05 cm³ — used in titrations'),
-                         ('Pipette', 'Delivers one precise fixed volume — e.g. exactly 25.00 cm³ of solution'),
-                         ('Measuring cylinder', 'Less precise volume measurement — read from bottom of meniscus'),
-                         ('Digital balance', 'Measures mass precisely — typically ±0.01 g — zero before each use'),
+                          'Accurately delivers variable volumes of solution — read to ±0.05 cm³ — used in '
+                          'titrations'),
+                         ('Pipette',
+                          'Delivers one precise fixed volume — e.g. exactly 25.00 cm³ of solution'),
+                         ('Measuring cylinder',
+                          'Less precise volume measurement — read from bottom of meniscus'),
+                         ('Digital balance',
+                          'Measures mass precisely — typically ±0.01 g — zero before each use'),
                          ('Thermometer', 'Measures temperature — typically ±0.5°C or ±1°C')],
                'title': 'Match the Measuring Equipment'},
-  'quiz': [{'opts': [('The burette — % uncertainty = (0.05 ÷ 25) × 100 = 0.2%, vs the cylinder at 4%', True),
-                     ('The measuring cylinder — larger equipment is always more accurate', False),
+  'quiz': [{'opts': [('The burette — % uncertainty = (0.05 ÷ 25) × 100 = 0.2%, against 4% for the cylinder',
+                      True),
+                     ('The measuring cylinder — larger apparatus is always more accurate', False),
                      ('They are the same — both deliver 25 cm³', False),
-                     ('The measuring cylinder — it has a smaller absolute uncertainty', False)],
-            'q': 'A student measures a volume using a burette and a measuring cylinder. The burette has an uncertainty '
-                 'of ±0.05 cm³ and the cylinder ±1 cm³. Both deliver 25 cm³. Which gives the lower percentage '
-                 'uncertainty?',
-            'wrong_explanations': {1: "Equipment size doesn't determine accuracy — precision depends on the "
-                                      'uncertainty relative to the measurement.',
-                                   2: 'Both deliver the same VOLUME but with different UNCERTAINTIES — the burette '
-                                      '(±0.05) is far more precise than the measuring cylinder (±1).',
-                                   3: 'The measuring cylinder has a LARGER absolute uncertainty (±1 cm³ vs ±0.05 cm³) '
-                                      '— it is LESS precise, not more.'}},
-           {'opts': [('From the bottom of the meniscus — water curves downward, creating a concave surface', True),
-                     ('From the top of the meniscus — this gives the largest volume reading', False),
-                     ('From the middle of the meniscus — splitting the difference', False),
-                     ("It doesn't matter — the meniscus reading is always correct", False)],
-            'q': 'When reading a burette or measuring cylinder containing water, where should you read the volume?',
-            'wrong_explanations': {1: 'Reading from the TOP of the meniscus gives an overestimate — the markings are '
-                                      'calibrated for the bottom of the meniscus.',
-                                   2: 'Reading from the middle introduces error — always read from the BOTTOM '
-                                      'consistently to match calibration.',
-                                   3: 'Reading from the wrong part of the meniscus introduces a systematic error — it '
-                                      'DOES matter and affects accuracy.'}}],
+                     ('The measuring cylinder — it has the smaller absolute uncertainty', False)],
+            'q': 'A burette (uncertainty ±0.05 cm³) and a measuring cylinder (uncertainty ±1 cm³) both '
+                 'deliver 25 cm³. Determine which gives the lower percentage uncertainty.',
+            'wrong_explanations': {1: 'Size does not set precision; the smaller uncertainty relative to the '
+                                      'reading does. The burette wins at 0.2%.',
+                                   2: 'Same volume, but different uncertainties: 0.05 cm³ vs 1 cm³. The '
+                                      'burette is far more precise.',
+                                   3: "The cylinder's uncertainty (±1 cm³) is LARGER than the burette's "
+                                      '(±0.05 cm³), so it is less precise.'}},
+           {'opts': [('0.5% — (0.01 ÷ 2.00) × 100', True),
+                     ('2.0% — (0.01 ÷ 0.5) × 100, using the wrong value', False),
+                     ('0.005% — (0.01 ÷ 2.00) without the × 100', False),
+                     ('0.02% — dividing 2.00 by 0.01 and misplacing the point', False)],
+            'q': 'A balance reads to ±0.01 g. A student weighs 2.00 g of solid on it. Calculate the '
+                 'percentage uncertainty in this mass.',
+            'wrong_explanations': {1: 'Divide the uncertainty by the measured value, 2.00 g: (0.01 ÷ 2.00) × '
+                                      '100 = 0.5%.',
+                                   2: 'Percentage uncertainty must be multiplied by 100: 0.005 × 100 = 0.5%.',
+                                   3: 'The calculation is uncertainty ÷ value: 0.01 ÷ 2.00 = 0.005, then × '
+                                      '100 = 0.5%.'}},
+           {'opts': [('A burette has a much smaller uncertainty (about ±0.05 cm³) because its graduations '
+                      'are finer, so each reading is closer to the true volume',
+                      True),
+                     ('A burette holds a larger volume, so it must be more precise', False),
+                     ('A burette is made of thicker glass, which reduces errors', False),
+                     ('A measuring cylinder cannot measure volumes accurately at all', False)],
+            'q': 'Explain why a burette gives a more precise volume measurement than a measuring cylinder.',
+            'wrong_explanations': {1: 'Precision depends on the size of the uncertainty, not the capacity; '
+                                      "the burette's fine graduations give ±0.05 cm³.",
+                                   2: 'Glass thickness is irrelevant; it is the fine graduations and small '
+                                      'uncertainty that make it precise.',
+                                   3: 'A measuring cylinder does measure volume, just less precisely (±0.5 '
+                                      'to ±1 cm³) than a burette.'}},
+           {'opts': [('The pipette user — a smaller uncertainty (±0.06 cm³) means the reading is more '
+                      'tightly reproducible',
+                      True),
+                     ('The measuring cylinder user — it is easier to read', False),
+                     ('Neither — both measured 25.0 cm³', False),
+                     ('The measuring cylinder user — a bigger uncertainty means a bigger, clearer scale',
+                      False)],
+            'q': 'Two students measure the same 25.0 cm³ volume: one with a pipette (±0.06 cm³), one with a '
+                 'measuring cylinder (±0.5 cm³). Identify who has the more precise measurement and justify '
+                 'your choice.',
+            'wrong_explanations': {1: "Ease of reading is not precision; the pipette's smaller uncertainty "
+                                      '(±0.06 cm³) makes it more precise.',
+                                   2: 'They measured the same volume but with different uncertainties; the '
+                                      'pipette (±0.06 cm³) is more precise.',
+                                   3: 'A bigger uncertainty means LESS precision, not more. The pipette is '
+                                      'the more precise instrument.'}},
+           {'opts': [('2.5% — (0.5 ÷ 20.0) × 100', True),
+                     ('0.025% — (0.5 ÷ 20.0) without the × 100', False),
+                     ('40% — (20.0 ÷ 0.5), dividing the wrong way', False),
+                     ('10% — (0.5 ÷ 5.0) × 100, using the wrong value', False)],
+            'q': 'A student measures a temperature rise of 20.0 °C with a thermometer of uncertainty ±0.5 '
+                 '°C. Calculate the percentage uncertainty in this reading.',
+            'wrong_explanations': {1: 'Percentage uncertainty must be multiplied by 100: 0.025 × 100 = 2.5%.',
+                                   2: 'Divide the uncertainty by the value: (0.5 ÷ 20.0) × 100 = 2.5%.',
+                                   3: 'Use the measured value of 20.0 °C: (0.5 ÷ 20.0) × 100 = 2.5%.'}},
+           {'opts': [('From the bottom of the meniscus, with your eye level with it', True),
+                     ('From the top of the meniscus', False),
+                     ('From the middle of the meniscus', False),
+                     ('From wherever is easiest to see', False)],
+            'q': 'State where you should read the volume on a burette or measuring cylinder that contains '
+                 'water.',
+            'wrong_explanations': {1: 'Reading from the top gives a value that is too large; the scale is '
+                                      'set to the bottom of the meniscus.',
+                                   2: 'Read consistently from the BOTTOM of the meniscus to match the '
+                                      'calibration.',
+                                   3: 'The reading point matters: always use the bottom of the meniscus to '
+                                      'avoid a systematic error.'}},
+           {'opts': [('Accuracy is how close a reading is to the true value; precision is how close repeated '
+                      'readings are to each other',
+                      True),
+                     ('They mean the same thing', False),
+                     ('Accuracy is reproducibility; precision is closeness to the true value', False),
+                     ('Accuracy is the size of the equipment; precision is its cost', False)],
+            'q': 'State the difference between the accuracy and the precision of a measurement.',
+            'wrong_explanations': {1: 'They are different: accuracy is closeness to the true value, '
+                                      'precision is reproducibility of repeats.',
+                                   2: 'This is the wrong way round: accuracy = close to true value, '
+                                      'precision = repeats close together.',
+                                   3: 'Neither relates to size or cost: accuracy = closeness to true value, '
+                                      'precision = reproducibility.'}},
+           {'opts': [('A burette', True),
+                     ('A measuring cylinder', False),
+                     ('A conical flask', False),
+                     ('A beaker', False)],
+            'q': 'Name the piece of apparatus used to add an accurately measured, variable volume of '
+                 'solution during a titration.',
+            'wrong_explanations': {1: 'A measuring cylinder is far less precise; a titration uses a burette '
+                                      '(±0.05 cm³).',
+                                   2: 'The conical flask holds the solution being tested; the measured '
+                                      'volume is added from a burette.',
+                                   3: 'A beaker gives only a rough volume; accurate variable volumes come '
+                                      'from a burette.'}},
+           {'opts': [('A pipette', True),
+                     ('A burette', False),
+                     ('A measuring cylinder', False),
+                     ('A dropper', False)],
+            'q': 'Name the piece of apparatus used to measure out one fixed, accurate volume, such as '
+                 'exactly 25.0 cm³.',
+            'wrong_explanations': {1: 'A burette delivers variable volumes; a pipette is used for one fixed '
+                                      'accurate volume.',
+                                   2: 'A measuring cylinder is less precise; a fixed accurate volume is '
+                                      'measured with a pipette.',
+                                   3: 'A dropper cannot measure an accurate fixed volume; a pipette can.'}},
+           {'opts': [('So that the mass of the container is not included, avoiding a systematic error', True),
+                     ('So the reading changes faster', False),
+                     ('So the balance uses less power', False),
+                     ('So the solid does not stick to the pan', False)],
+            'q': 'State why a digital balance should be set to zero (tared) before a mass is measured.',
+            'wrong_explanations': {1: "Taring does not affect speed; it removes the container's mass so it "
+                                      'is not counted.',
+                                   2: "Taring is about accuracy, not power: it stops the container's mass "
+                                      'being included.',
+                                   3: "Taring does not stop sticking; it sets the container's mass to zero "
+                                      'first.'}}],
   'rp': None,
   'spec': '5.3.1.4',
   'summary': 'Describe the importance of precise measurements in chemistry and sources of uncertainty.',
@@ -2931,13 +3346,13 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'ACCURACY — how close a measurement is to the TRUE value.\n'
                          'PRECISION — how reproducible/consistent measurements are (close to each other).\n'
                          '\n'
-                         'A measurement can be precise but not accurate (consistently wrong), or accurate but not '
-                         'precise (correct on average but variable).\n'
+                         'A measurement can be precise but not accurate (consistently wrong), or accurate '
+                         'but not precise (correct on average but variable).\n'
                          '\n'
                          'In chemistry, measurements include:\n'
                          'MASSES — measured using a balance (in grams, g).\n'
-                         'VOLUMES of solutions — measured using a burette, pipette or measuring cylinder (in cm³ or '
-                         'dm³).\n'
+                         'VOLUMES of solutions — measured using a burette, pipette or measuring cylinder (in '
+                         'cm³ or dm³).\n'
                          'TEMPERATURES — measured using a thermometer (in °C).\n'
                          'TIMES — measured using a stopwatch (in seconds).\n'
                          '\n'
@@ -2945,39 +3360,41 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '1 dm³ = 1 litre = 1000 cm³\n'
                          '1 cm³ = 0.001 dm³ = 1 mL',
               'heading': 'Why Measurements Matter in Chemistry'},
-             {'content': 'Every measurement has some UNCERTAINTY — a range within which the true value lies.\n'
+             {'content': 'Every measurement has some UNCERTAINTY — a range within which the true value '
+                         'lies.\n'
                          '\n'
                          'Sources of uncertainty:\n'
-                         'READING ERROR — difficulty in reading exact values from scales (e.g. reading a burette '
-                         'between markings).\n'
-                         'SYSTEMATIC ERROR — a consistent bias in one direction (e.g. a balance not zeroed correctly, '
-                         'a calibration error).\n'
-                         'RANDOM ERROR — unpredictable variations that scatter measurements around the true value.\n'
+                         'READING ERROR — difficulty in reading exact values from scales (e.g. reading a '
+                         'burette between markings).\n'
+                         'SYSTEMATIC ERROR — a consistent bias in one direction (e.g. a balance not zeroed '
+                         'correctly, a calibration error).\n'
+                         'RANDOM ERROR — unpredictable variations that scatter measurements around the true '
+                         'value.\n'
                          '\n'
                          'Reduce uncertainty by:\n'
-                         'Using more precise equipment (e.g. a 25 cm³ pipette is more precise than a 100 cm³ measuring '
-                         'cylinder).\n'
+                         'Using more precise equipment (e.g. a 25 cm³ pipette is more precise than a 100 cm³ '
+                         'measuring cylinder).\n'
                          'Taking REPEAT measurements and calculating a MEAN.\n'
                          'Using appropriate measuring equipment for the scale of measurement.\n'
                          '\n'
                          'Percentage uncertainty = (uncertainty ÷ measured value) × 100\n'
                          '\n'
-                         'The percentage uncertainty of a small measurement is higher than that of a large measurement '
-                         'with the same absolute uncertainty — this is why measuring small volumes with a large '
-                         'cylinder is poor practice.',
+                         'The percentage uncertainty of a small measurement is higher than that of a large '
+                         'measurement with the same absolute uncertainty — this is why measuring small '
+                         'volumes with a large cylinder is poor practice.',
               'heading': 'Uncertainty in Measurements'},
              {'content': 'Common measuring equipment and their precision:\n'
                          '\n'
                          'BALANCE (digital): typically ±0.01 g or ±0.001 g — high precision.\n'
                          '\n'
-                         'BURETTE: 50 cm³ burette with 0.1 cm³ markings. Read to ±0.05 cm³ (between markings). Used '
-                         'for accurate volume delivery in titrations.\n'
+                         'BURETTE: 50 cm³ burette with 0.1 cm³ markings. Read to ±0.05 cm³ (between '
+                         'markings). Used for accurate volume delivery in titrations.\n'
                          '\n'
-                         'PIPETTE: fixed volume (e.g. exactly 25.00 cm³). Very high precision for delivering one '
-                         'specific volume. Used to deliver precise volumes of solutions.\n'
+                         'PIPETTE: fixed volume (e.g. exactly 25.00 cm³). Very high precision for delivering '
+                         'one specific volume. Used to deliver precise volumes of solutions.\n'
                          '\n'
-                         'MEASURING CYLINDER: less precise than a burette or pipette. Read from the BOTTOM of the '
-                         'MENISCUS (the curved water surface).\n'
+                         'MEASURING CYLINDER: less precise than a burette or pipette. Read from the BOTTOM '
+                         'of the MENISCUS (the curved water surface).\n'
                          '\n'
                          'THERMOMETER: typically ±1°C or ±0.5°C depending on type.\n'
                          '\n'
@@ -2990,54 +3407,155 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Chemical Measurements',
   'triple_only': None,
   'variables': [('% uncertainty', 'Percentage uncertainty', '%', '')]},
- {'common_mistake': 'Volume MUST be in dm³ when using the concentration formula. If given in cm³, divide by 1000 '
-                    'first. 250 cm³ = 0.250 dm³. Students frequently forget this conversion and get answers 1000 times '
-                    'too large or too small.',
+ {'common_mistake': 'Students frequently forget to convert the volume from cm³ into dm³ before using the '
+                    'concentration formula, so their answer comes out 1000 times too big or too small. The '
+                    'formula needs the volume in dm³: divide any volume in cm³ by 1000 first (250 cm³ = '
+                    '0.250 dm³). Convert the volume before you divide, every single time.',
   'equations': ['concentration (g/dm³) = mass (g) ÷ volume (dm³)',
                 'mass (g) = concentration (g/dm³) × volume (dm³)',
                 'volume (dm³) = mass (g) ÷ concentration (g/dm³)'],
-  'fifas': [{'label': 'Concentration Calculation',
-             'question': '15 g of sodium hydroxide (NaOH) is dissolved to make 500 cm³ of solution. Calculate the '
-                         'concentration in g/dm³.',
+  'fifas': [{'label': 'Concentration from mass and volume',
+             'question': '15 g of sodium hydroxide (NaOH) is dissolved to make 500 cm³ of solution. '
+                         'Calculate the concentration in g/dm³.',
              'steps': [('F', 'concentration (g/dm³) = mass (g) ÷ volume (dm³)'),
-                       ('I', 'volume = 500 cm³ ÷ 1000 = 0.5 dm³. Mass = 15 g'),
+                       ('I', 'volume = 500 ÷ 1000 = 0.5 dm³;  mass = 15 g'),
                        ('F', 'concentration = 15 ÷ 0.5'),
-                       ('A', 'concentration = 30 g/dm³')]}],
+                       ('A', 'concentration = 30 g/dm³')]},
+            {'label': 'A smaller volume',
+             'question': '8 g of salt is dissolved to make 250 cm³ of solution. Calculate the concentration '
+                         'in g/dm³.',
+             'steps': [('F', 'concentration (g/dm³) = mass (g) ÷ volume (dm³)'),
+                       ('I', 'volume = 250 ÷ 1000 = 0.25 dm³;  mass = 8 g'),
+                       ('F', 'concentration = 8 ÷ 0.25'),
+                       ('A', 'concentration = 32 g/dm³')]},
+            {'label': 'Rearranging for the mass',
+             'question': 'Calculate the mass of solute in 2 dm³ of a solution whose concentration is 15 '
+                         'g/dm³.',
+             'steps': [('F', 'mass (g) = concentration (g/dm³) × volume (dm³)'),
+                       ('I', '= 15 × 2'),
+                       ('F', '= 30'),
+                       ('A', 'mass = 30 g')]}],
   'higher': None,
   'id': 'concentration-of-solutions',
-  'key_note': 'Concentration (g/dm³) = mass (g) ÷ volume (dm³). Convert cm³ to dm³: ÷ 1000. Concentrated = lots of '
-              'solute per volume. Dilute = little solute per volume. Dilution: same mass, larger volume, lower '
-              'concentration. c₁V₁ = c₂V₂.',
+  'key_note': 'Concentration (g/dm³) = mass (g) ÷ volume (dm³). Convert cm³ to dm³: ÷ 1000. Concentrated = '
+              'lots of solute per volume. Dilute = little solute per volume. Dilution: same mass, larger '
+              'volume, lower concentration. c₁V₁ = c₂V₂.',
   'matching': {'instruction': 'Match each calculation to the correct answer.',
                'pairs': [('5 g NaCl in 0.5 dm³', 'Concentration = 10 g/dm³'),
                          ('20 g/dm³, volume = 250 cm³ (0.25 dm³)', 'Mass = 20 × 0.25 = 5 g'),
                          ('8 g solute, concentration 40 g/dm³', 'Volume = 8 ÷ 40 = 0.2 dm³ = 200 cm³'),
                          ('100 cm³ of 60 g/dm³ diluted to 300 cm³', 'New concentration = 20 g/dm³')],
                'title': 'Concentration Calculations'},
-  'quiz': [{'opts': [('50 g/dm³ — volume = 500 ÷ 1000 = 0.5 dm³, concentration = 25 ÷ 0.5 = 50', True),
-                     ('0.05 g/dm³ — concentration = 25 ÷ 500', False),
-                     ('12500 g/dm³ — concentration = 25 × 500', False),
-                     ('2.5 g/dm³ — concentration = 25 ÷ 10', False)],
-            'q': '25 g of glucose is dissolved in 500 cm³ of water. What is the concentration in g/dm³?',
-            'wrong_explanations': {1: 'This uses 500 cm³ directly without converting to dm³ — gives an answer 1000× '
-                                      'too small. Must convert: 500 cm³ = 0.5 dm³.',
-                                   2: 'This multiplies instead of divides — and still fails to convert units.',
-                                   3: 'This divides by 10 instead of 0.5 — an incorrect conversion. 500 cm³ = 0.5 dm³, '
-                                      'not 10 dm³.'}},
-           {'opts': [('20 g — mass = 80 × 0.25 dm³ = 20 g', True),
-                     ('20000 g — mass = 80 × 250 (forgetting to convert cm³ to dm³)', False),
-                     ('0.32 g — mass = 80 ÷ 250', False),
-                     ('320 g — mass = 80 × (250 ÷ 10)', False)],
-            'q': 'A solution has a concentration of 80 g/dm³. What mass of solute is in 250 cm³ of this solution?',
-            'wrong_explanations': {1: 'Using 250 directly without converting gives 80 × 250 = 20,000 — not 20. Always '
-                                      'convert: 250 cm³ = 0.25 dm³.',
-                                   2: 'Dividing gives volume, not mass. mass = concentration × volume.',
-                                   3: '250 ÷ 10 = 25 — but the conversion is 250 ÷ 1000 = 0.25 dm³.'}}],
+  'quiz': [{'opts': [('50 g/dm³ — volume = 500 ÷ 1000 = 0.5 dm³, so concentration = 25 ÷ 0.5', True),
+                     ('0.05 g/dm³ — 25 ÷ 500, without converting to dm³', False),
+                     ('12 500 g/dm³ — 25 × 500', False),
+                     ('2.5 g/dm³ — 25 ÷ 10', False)],
+            'q': '25 g of glucose is dissolved in water to make 500 cm³ of solution. Calculate the '
+                 'concentration in g/dm³.',
+            'wrong_explanations': {1: 'The volume must be in dm³: 500 cm³ = 0.5 dm³, giving 25 ÷ 0.5 = 50 '
+                                      'g/dm³ (this answer is 1000× too small).',
+                                   2: 'Concentration is mass ÷ volume, not mass × volume, and the volume '
+                                      'must be in dm³.',
+                                   3: '500 cm³ converts to 0.5 dm³ (÷1000), not 10 dm³: 25 ÷ 0.5 = 50 '
+                                      'g/dm³.'}},
+           {'opts': [('20 g — mass = concentration × volume = 80 × 0.25 dm³', True),
+                     ('20 000 g — 80 × 250, without converting to dm³', False),
+                     ('0.32 g — 80 ÷ 250', False),
+                     ('320 g — 80 × (250 ÷ 10)', False)],
+            'q': 'A solution has a concentration of 80 g/dm³. Calculate the mass of solute in 250 cm³ of it.',
+            'wrong_explanations': {1: 'Convert 250 cm³ to 0.25 dm³ first: 80 × 0.25 = 20 g.',
+                                   2: 'Dividing gives a volume, not a mass. Mass = concentration × volume = '
+                                      '80 × 0.25 = 20 g.',
+                                   3: '250 cm³ = 0.25 dm³ (÷1000), not 25 dm³: 80 × 0.25 = 20 g.'}},
+           {'opts': [('20 g/dm³ — 40 ÷ 2', True),
+                     ('80 g/dm³ — 40 × 2', False),
+                     ('0.05 g/dm³ — 2 ÷ 40', False),
+                     ('42 g/dm³ — 40 + 2', False)],
+            'q': '40 g of copper sulfate is dissolved to make 2 dm³ of solution. Calculate the concentration '
+                 'in g/dm³.',
+            'wrong_explanations': {1: 'Concentration is mass ÷ volume, not mass × volume: 40 ÷ 2 = 20 g/dm³.',
+                                   2: 'Divide mass by volume, not volume by mass: 40 ÷ 2 = 20 g/dm³.',
+                                   3: 'Concentration is a division, not an addition: 40 ÷ 2 = 20 g/dm³.'}},
+           {'opts': [('The concentration decreases — the same mass of solute is now spread through a larger '
+                      'volume',
+                      True),
+                     ('It increases — there is more liquid so more solute', False),
+                     ('It stays the same — dilution does not change concentration', False),
+                     ('It increases — water is a solute as well', False)],
+            'q': 'A solution is diluted by adding more water. Predict what happens to its concentration and '
+                 'explain why.',
+            'wrong_explanations': {1: 'Adding water adds no solute; the fixed mass in a larger volume means '
+                                      'a lower concentration.',
+                                   2: 'Dilution increases the volume without adding solute, so the '
+                                      'concentration falls.',
+                                   3: 'Water is the solvent here, not the solute; adding it lowers the '
+                                      'concentration of the dissolved solid.'}},
+           {'opts': [('0.4 dm³ — volume = mass ÷ concentration = 10 ÷ 25', True),
+                     ('250 dm³ — 10 × 25', False),
+                     ('2.5 dm³ — 25 ÷ 10', False),
+                     ('15 dm³ — 25 − 10', False)],
+            'q': 'A solution has a concentration of 25 g/dm³. Calculate the volume, in dm³, that contains 10 '
+                 'g of solute.',
+            'wrong_explanations': {1: 'Volume is mass ÷ concentration, not mass × concentration: 10 ÷ 25 = '
+                                      '0.4 dm³.',
+                                   2: 'Divide the mass by the concentration, not the other way round: 10 ÷ '
+                                      '25 = 0.4 dm³.',
+                                   3: 'Volume comes from a division, not a subtraction: 10 ÷ 25 = 0.4 dm³.'}},
+           {'opts': [('The mass (or amount) of solute dissolved in a given volume of solution', True),
+                     ('The total volume of the solution', False),
+                     ('The mass of the solvent used', False),
+                     ('The temperature at which a solid dissolves', False)],
+            'q': 'Define the concentration of a solution.',
+            'wrong_explanations': {1: 'Concentration is not just the volume; it is how much solute is '
+                                      'present per unit volume.',
+                                   2: 'Concentration is about the SOLUTE per volume of solution, not the '
+                                      'mass of solvent.',
+                                   3: 'That is solubility-related; concentration is solute mass per unit '
+                                      'volume of solution.'}},
+           {'opts': [('Grams per cubic decimetre (g/dm³)', True),
+                     ('Grams (g)', False),
+                     ('Cubic decimetres (dm³)', False),
+                     ('Grams per gram (g/g)', False)],
+            'q': 'State the units of concentration used most often in this topic.',
+            'wrong_explanations': {1: 'Grams alone measure mass; concentration is a mass per volume, g/dm³.',
+                                   2: 'dm³ measures volume; concentration is mass per volume, g/dm³.',
+                                   3: 'Concentration relates mass of solute to VOLUME of solution: g/dm³.'}},
+           {'opts': [('Divide the volume in cm³ by 1000', True),
+                     ('Multiply the volume in cm³ by 1000', False),
+                     ('Divide the volume in cm³ by 100', False),
+                     ('Multiply the volume in cm³ by 10', False)],
+            'q': 'State how you convert a volume measured in cm³ into dm³.',
+            'wrong_explanations': {1: 'That makes the number bigger; to go from cm³ to dm³ you divide by '
+                                      '1000.',
+                                   2: 'There are 1000 cm³ in 1 dm³, so divide by 1000, not 100.',
+                                   3: 'The conversion factor is 1000: divide cm³ by 1000 to get dm³.'}},
+           {'opts': [('10 g/dm³ — 5 ÷ 0.5', True),
+                     ('2.5 g/dm³ — 5 × 0.5', False),
+                     ('0.1 g/dm³ — 0.5 ÷ 5', False),
+                     ('5 g/dm³ — the mass of salt used', False)],
+            'q': '5 g of salt is dissolved to make 0.5 dm³ of solution. State the concentration in g/dm³.',
+            'wrong_explanations': {1: 'Concentration is mass ÷ volume: 5 ÷ 0.5 = 10 g/dm³.',
+                                   2: 'Divide the mass by the volume, not the volume by the mass: 5 ÷ 0.5 = '
+                                      '10 g/dm³.',
+                                   3: 'The volume is only 0.5 dm³, so the concentration is 5 ÷ 0.5 = 10 '
+                                      'g/dm³.'}},
+           {'opts': [('More solute per dm³', True),
+                     ('Less solute per dm³', False),
+                     ('The same amount, but in a larger volume', False),
+                     ('It depends only on the temperature', False)],
+            'q': 'State whether a concentrated solution contains more or less solute per dm³ than a dilute '
+                 'one.',
+            'wrong_explanations': {1: "'Concentrated' means MORE solute per unit volume; 'dilute' means "
+                                      'less.',
+                                   2: 'A concentrated solution has more solute per dm³, not the same amount '
+                                      'spread out.',
+                                   3: 'Concentration is about solute per volume; concentrated = more solute '
+                                      'per dm³.'}}],
   'rp': None,
   'spec': '5.3.2.5',
   'summary': 'Define concentration and calculate it from mass and volume.',
-  'theory': [{'content': 'The CONCENTRATION of a solution tells us how much solute is dissolved per unit volume of '
-                         'solution.\n'
+  'theory': [{'content': 'The CONCENTRATION of a solution tells us how much solute is dissolved per unit '
+                         'volume of solution.\n'
                          '\n'
                          'A CONCENTRATED solution has a LOT of solute dissolved in a given volume.\n'
                          'A DILUTE solution has a LITTLE solute dissolved in the same volume.\n'
@@ -3074,8 +3592,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '3. 8 g of glucose gives a concentration of 16 g/dm³. What volume was used?\n'
                          'Volume = 8 ÷ 16 = 0.5 dm³ = 500 cm³',
               'heading': 'Calculating Concentration'},
-             {'content': 'DILUTION means adding more solvent (usually water) to reduce the concentration of a '
-                         'solution.\n'
+             {'content': 'DILUTION means adding more solvent (usually water) to reduce the concentration of '
+                         'a solution.\n'
                          '\n'
                          'When you dilute a solution:\n'
                          'The AMOUNT of solute stays the SAME.\n'
@@ -3086,7 +3604,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'concentration₁ × volume₁ = concentration₂ × volume₂\n'
                          '\n'
                          'Example:\n'
-                         '100 cm³ of 40 g/dm³ solution is diluted to 400 cm³. What is the new concentration?\n'
+                         '100 cm³ of 40 g/dm³ solution is diluted to 400 cm³. What is the new '
+                         'concentration?\n'
                          'c₁V₁ = c₂V₂\n'
                          '40 × 0.1 = c₂ × 0.4\n'
                          '4 = c₂ × 0.4\n'
@@ -3102,7 +3621,6 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'variables': [('c', 'Concentration', 'g/dm³', 'g/dm³'),
                 ('m', 'Mass of solute', 'grams', 'g'),
                 ('V', 'Volume of solution', 'dm³', 'dm³')]}],
-
 "chemical-changes": [{'common_mistake': 'A metal can only displace another metal that is BELOW it in the reactivity series. Copper cannot '
                     'displace iron from iron sulfate — copper is less reactive than iron. The more reactive metal '
                     'always displaces the less reactive one, not the other way around.',

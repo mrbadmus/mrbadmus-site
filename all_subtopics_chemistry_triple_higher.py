@@ -2818,72 +2818,208 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': []}],
 
-"quantitative": [{'common_mistake': 'Never change the SUBSCRIPT numbers in a formula when balancing — only add or change the large '
-                    'numbers (coefficients) IN FRONT of formulas. Changing H₂O to H₂O₂ would create a different '
-                    'compound (hydrogen peroxide, not water). Always balance by adjusting coefficients only.',
+"quantitative": [{'common_mistake': 'Students often think they can balance an equation by changing the small subscript '
+                    'numbers inside a formula — writing H₂O as H₂O₂ to get an extra oxygen, for instance. '
+                    'This does not balance the equation, it changes the chemical: H₂O₂ is hydrogen peroxide, '
+                    'not water, so the equation no longer describes the same reaction. Balance only by '
+                    'putting large numbers (coefficients) in FRONT of each formula — never change a '
+                    'subscript.',
   'equations': [],
-  'fifas': [],
-  'higher': 'Calculate theoretical yield using moles. Atom economy = (Mr desired products ÷ Mr all products) × 100. '
-            'Addition reactions have 100% atom economy. High atom economy = less waste, more sustainable, more '
-            'economical. Evaluate different reaction routes on the basis of atom economy.',
+  'fifas': [{'label': 'Find a missing reactant mass',
+             'question': 'Nitrogen reacts with hydrogen: N₂ + 3H₂ → 2NH₃. 14 g of nitrogen reacts with '
+                         'hydrogen to form 17 g of ammonia. Calculate the mass of hydrogen that reacted.',
+             'steps': [('F',
+                        'mass of reactants = mass of products, so mass of H₂ = mass of NH₃ − mass of N₂'),
+                       ('I', 'mass of H₂ = 17 − 14'),
+                       ('F', '17 − 14 = 3'),
+                       ('A', 'mass of hydrogen = 3 g')]},
+            {'label': 'Two reactants, two products',
+             'question': 'Aluminium reduces copper(II) oxide: 2Al + 3CuO → Al₂O₃ + 3Cu. 5.4 g of aluminium '
+                         'reacts with 24.0 g of copper(II) oxide to form 10.2 g of aluminium oxide. '
+                         'Calculate the mass of copper formed.',
+             'steps': [('F',
+                        'total product mass = total reactant mass, so mass of Cu = (mass Al + mass CuO) − '
+                        'mass Al₂O₃'),
+                       ('I', 'mass of Cu = (5.4 + 24.0) − 10.2'),
+                       ('F', '29.4 − 10.2 = 19.2'),
+                       ('A', 'mass of copper = 19.2 g')]},
+            {'label': 'An open flask losing gas',
+             'question': 'Marble chips (CaCO₃) react with hydrochloric acid in an open flask on a balance. '
+                         'The flask and contents fall from 152.4 g to 148.0 g. Calculate the mass of carbon '
+                         'dioxide gas that escaped.',
+             'steps': [('F', 'the fall in mass equals the mass of gas that has left the flask'),
+                       ('I', 'mass of CO₂ = 152.4 − 148.0'),
+                       ('F', '152.4 − 148.0 = 4.4'),
+                       ('A', 'mass of carbon dioxide = 4.4 g')]}],
+  'higher': 'Calculate theoretical yield using moles. Atom economy = (Mr desired products ÷ Mr all products) '
+            '× 100. Addition reactions have 100% atom economy. High atom economy = less waste, more '
+            'sustainable, more economical. Evaluate different reaction routes on the basis of atom economy.',
   'id': 'conservation-of-mass',
-  'key_note': 'Conservation of mass: atoms are rearranged, never created or destroyed → total mass reactants = total '
-              'mass products. Balance equations by adjusting coefficients only — never change chemical formulae. Check '
-              'all atoms balance on both sides.',
+  'key_note': 'Conservation of mass: atoms are rearranged, never created or destroyed → total mass reactants '
+              '= total mass products. Balance equations by adjusting coefficients only — never change '
+              'chemical formulae. Check all atoms balance on both sides.',
   'matching': {'instruction': 'Match each unbalanced equation to the correct balanced version.',
                'pairs': [('Na + Cl₂ → NaCl', '2Na + Cl₂ → 2NaCl (need 2 Na to balance the 2 Cl)'),
                          ('H₂ + O₂ → H₂O', '2H₂ + O₂ → 2H₂O (need 2 H₂ and 2 H₂O to balance all atoms)'),
                          ('Fe + O₂ → Fe₂O₃', '4Fe + 3O₂ → 2Fe₂O₃ (4 Fe and 6 O each side)'),
                          ('Ca + H₂O → Ca(OH)₂ + H₂', 'Ca + 2H₂O → Ca(OH)₂ + H₂ (need 2 water molecules)')],
                'title': 'Balance these Equations'},
-  'quiz': [{'opts': [('Atoms cannot be created or destroyed — the same atoms must appear on both sides of the equation',
-                      True),
-                     ('Balanced equations are easier to read and understand', False),
-                     ('Unbalanced equations produce different products', False),
-                     ('Equations must be balanced to follow international chemical naming rules', False)],
-            'q': 'Why must chemical equations be balanced?',
-            'wrong_explanations': {1: 'Readability is a benefit but not the fundamental reason — conservation of mass '
-                                      'is.',
-                                   2: 'An unbalanced equation can still show the correct reactants and products — it '
-                                      "just doesn't correctly represent the quantitative relationship between them.",
-                                   3: 'Balancing is a scientific law requirement (conservation of mass), not a naming '
-                                      'convention.'}},
-           {'opts': [('16 g — conservation of mass: mass of O₂ = 40 − 24 = 16 g', True),
-                     ('40 g — the oxygen has the same mass as the product', False),
-                     ('64 g — double the mass of magnesium', False),
-                     ('Cannot be determined without the balanced equation', False)],
-            'q': '24 g of magnesium reacts completely with oxygen to form magnesium oxide. 40 g of magnesium oxide is '
-                 'produced. How much oxygen reacted?',
-            'wrong_explanations': {1: 'Mass in = mass out. If 40 g MgO is made from 24 g Mg, the remaining 40 − 24 = '
-                                      '16 g must have come from oxygen.',
-                                   2: 'The mass of oxygen is only part of the product mass — the product contains both '
-                                      'magnesium AND oxygen.',
-                                   3: 'Conservation of mass allows this calculation: mass O₂ = mass product − mass Mg '
-                                      '= 40 − 24 = 16 g.'}},
+  'quiz': [{'opts': [('16 g — by conservation of mass, mass of oxygen = 40 − 24 = 16 g', True),
+                     ('40 g — the oxygen has the same mass as the magnesium oxide', False),
+                     ('64 g — add the two masses, 40 + 24', False),
+                     ('24 g — the oxygen has the same mass as the magnesium', False)],
+            'q': '24 g of magnesium reacts completely with oxygen to form 40 g of magnesium oxide. Calculate '
+                 'the mass of oxygen that reacted.',
+            'wrong_explanations': {1: '40 g is the mass of the PRODUCT, which contains both the magnesium '
+                                      'and the oxygen — the oxygen alone is 40 − 24 = 16 g.',
+                                   2: 'Adding product and reactant double-counts. The oxygen that reacted is '
+                                      'product − magnesium = 40 − 24 = 16 g.',
+                                   3: 'There is no reason the two reactants have equal mass. Conservation '
+                                      'gives mass of oxygen = 40 − 24 = 16 g.'}},
            {'opts': [('4Fe + 3O₂ → 2Fe₂O₃', True),
                      ('Fe + O₂ → Fe₂O₃', False),
                      ('2Fe + O₂ → Fe₂O₃', False),
                      ('Fe + 3O₂ → 2Fe₂O₃', False)],
-            'q': 'Which of these is a correctly balanced equation?',
-            'wrong_explanations': {1: 'Fe + O₂ → Fe₂O₃: left has 1 Fe, 2 O; right has 2 Fe, 3 O — not balanced.',
-                                   2: '2Fe + O₂ → Fe₂O₃: left has 2 Fe, 2 O; right has 2 Fe, 3 O — oxygen not '
-                                      'balanced.',
-                                   3: 'Fe + 3O₂ → 2Fe₂O₃: left has 1 Fe, 6 O; right has 4 Fe, 6 O — iron not '
-                                      'balanced.'}}],
+            'q': 'Identify which of these equations is correctly balanced.',
+            'wrong_explanations': {1: 'Left: 1 Fe, 2 O. Right: 2 Fe, 3 O. Neither element balances.',
+                                   2: 'Left: 2 Fe, 2 O. Right: 2 Fe, 3 O. Oxygen does not balance.',
+                                   3: 'Left: 1 Fe, 6 O. Right: 4 Fe, 6 O. Iron does not balance.'}},
+           {'opts': [('No atoms are created or destroyed — they are only rearranged, so the same atoms, and '
+                      'therefore the same total mass, are present before and after',
+                      True),
+                     ('The reactants are simply renamed as products, so the mass label stays the same',
+                      False),
+                     ('A reaction always makes the same number of molecules as it uses up', False),
+                     ('Energy is conserved, and mass is the same thing as energy in a reaction', False)],
+            'q': 'Explain why the total mass of the products equals the total mass of the reactants in a '
+                 'chemical reaction.',
+            'wrong_explanations': {1: 'A reaction genuinely rearranges atoms into new substances — mass is '
+                                      'conserved because the ATOMS are conserved, not because of naming.',
+                                   2: 'The number of molecules often changes (2H₂ + O₂ → 2H₂O goes from 3 '
+                                      'molecules to 2). It is the number of ATOMS of each element that is '
+                                      'conserved.',
+                                   3: 'Conservation of mass here is about atoms being rearranged; at GCSE it '
+                                      'is not an energy argument.'}},
+           {'opts': [('44 g — mass is conserved, so 12 + 32 = 44 g', True),
+                     ('20 g — the difference, 32 − 12', False),
+                     ('32 g — the product has the same mass as the oxygen', False),
+                     ('12 g — the product has the same mass as the carbon', False)],
+            'q': 'In a sealed container, 12 g of carbon reacts completely with 32 g of oxygen. Calculate the '
+                 'mass of carbon dioxide produced.',
+            'wrong_explanations': {1: 'The reactants COMBINE, so their masses add: 12 + 32 = 44 g. '
+                                      'Subtracting is only used to find a missing reactant or product.',
+                                   2: 'The carbon dioxide contains the carbon as well: 12 + 32 = 44 g.',
+                                   3: 'The carbon dioxide contains the oxygen as well: 12 + 32 = 44 g.'}},
+           {'opts': [('2H₂ + O₂ → 2H₂O', True),
+                     ('H₂ + O₂ → H₂O', False),
+                     ('2H₂ + 2O₂ → 2H₂O', False),
+                     ('H₂ + O₂ → 2H₂O', False)],
+            'q': 'Deduce the numbers needed to balance this equation: __H₂ + O₂ → __H₂O.',
+            'wrong_explanations': {1: 'The left has 2 O but the right has only 1 O. Use 2H₂O, then 2H₂ to '
+                                      'rebalance the hydrogen.',
+                                   2: 'This gives 4 O on the left but only 2 O on the right. One O₂ is '
+                                      'enough: 2H₂ + O₂ → 2H₂O.',
+                                   3: 'The right now has 4 H and 2 O but the left has only 2 H. Balance the '
+                                      'hydrogen with 2H₂: 2H₂ + O₂ → 2H₂O.'}},
+           {'opts': [('3 g — by conservation of mass, mass of hydrogen = 17 − 14 = 3 g', True),
+                     ('31 g — add the masses, 17 + 14', False),
+                     ('17 g — the hydrogen has the same mass as the ammonia', False),
+                     ('14 g — the hydrogen has the same mass as the nitrogen', False)],
+            'q': '14 g of nitrogen reacts with hydrogen to form 17 g of ammonia (NH₃). Calculate the mass of '
+                 'hydrogen that reacted.',
+            'wrong_explanations': {1: 'Hydrogen is a reactant; its mass is the product minus the other '
+                                      'reactant: 17 − 14 = 3 g. Adding would exceed the product mass.',
+                                   2: 'The ammonia contains the nitrogen too — the hydrogen alone is 17 − 14 '
+                                      '= 3 g.',
+                                   3: 'There is no reason the two reactants are equal. Mass of hydrogen = 17 '
+                                      '− 14 = 3 g.'}},
+           {'opts': [('Fe₂O₃ + 3CO → 2Fe + 3CO₂', True),
+                     ('Fe₂O₃ + CO → 2Fe + CO₂', False),
+                     ('Fe₂O₃ + 3CO → 2Fe + 2CO₂', False),
+                     ('2Fe₂O₃ + 3CO → 4Fe + 3CO₂', False)],
+            'q': 'Deduce the coefficients that balance: Fe₂O₃ + __CO → __Fe + __CO₂.',
+            'wrong_explanations': {1: 'Oxygen does not balance: left 3 + 1 = 4 O, right 2 O. You need 3CO '
+                                      'and 3CO₂.',
+                                   2: 'Carbon does not balance: 3 C on the left, 2 C on the right. Use 3CO₂.',
+                                   3: 'Oxygen does not balance: left 6 + 3 = 9 O, right 6 O. The simplest '
+                                      'balance is Fe₂O₃ + 3CO → 2Fe + 3CO₂.'}},
+           {'opts': [('The reaction makes carbon dioxide gas, which escapes from the open flask into the air '
+                      '— the gas still has mass, so the mass left in the flask falls while the total mass of '
+                      'the system is unchanged',
+                      True),
+                     ('Some of the reactant mass is destroyed as the reaction happens', False),
+                     ('The acid evaporates, so the liquid becomes lighter', False),
+                     ('Gases have no mass, so making a gas reduces the total mass', False)],
+            'q': 'A student reacts marble chips with acid in an open flask standing on a balance. Explain '
+                 'why the balance reading decreases, even though mass is conserved.',
+            'wrong_explanations': {1: 'Mass is never destroyed — the reading falls because CO₂ gas leaves '
+                                      'the flask, carrying its mass away.',
+                                   2: 'The loss is due to CO₂ gas produced by the reaction escaping, not '
+                                      'simple evaporation of the acid.',
+                                   3: 'Gases DO have mass. The reading falls only because that gas has left '
+                                      'the open flask.'}},
+           {'opts': [('19.2 g — total reactant mass 5.4 + 24 = 29.4 g, so mass of copper = 29.4 − 10.2 = '
+                      '19.2 g',
+                      True),
+                     ('29.4 g — the total mass of the two reactants', False),
+                     ('13.8 g — 24 − 10.2, using only the copper oxide', False),
+                     ('34.2 g — 24 + 10.2', False)],
+            'q': 'Aluminium reduces copper(II) oxide: 2Al + 3CuO → Al₂O₃ + 3Cu. When 5.4 g of aluminium '
+                 'reacts with 24 g of copper(II) oxide, 10.2 g of aluminium oxide forms. Calculate the mass '
+                 'of copper produced.',
+            'wrong_explanations': {1: 'That is the mass of BOTH products together. The copper is 29.4 − 10.2 '
+                                      '(the aluminium oxide) = 19.2 g.',
+                                   2: 'You must use the TOTAL reactant mass: (5.4 + 24) − 10.2 = 19.2 g.',
+                                   3: 'The products cannot exceed the 29.4 g of reactants. Mass of copper = '
+                                      '29.4 − 10.2 = 19.2 g.'}},
+           {'opts': [('2Al + 3H₂SO₄ → Al₂(SO₄)₃ + 3H₂', True),
+                     ('Al + H₂SO₄ → Al₂(SO₄)₃ + H₂', False),
+                     ('2Al + 3H₂SO₄ → Al₂(SO₄)₃ + H₂', False),
+                     ('2Al + H₂SO₄ → Al₂(SO₄)₃ + 3H₂', False)],
+            'q': 'Deduce the coefficients that balance: __Al + __H₂SO₄ → Al₂(SO₄)₃ + __H₂.',
+            'wrong_explanations': {1: 'Aluminium and the sulfate group are unbalanced: the product needs 2 '
+                                      'Al and 3 SO₄, so use 2Al and 3H₂SO₄.',
+                                   2: 'Hydrogen does not balance: 6 H on the left (3 × H₂SO₄) but only 2 H '
+                                      'on the right. You need 3H₂.',
+                                   3: 'The sulfate group is unbalanced: the product has 3 SO₄ but the left '
+                                      'has only 1. Use 3H₂SO₄.'}},
+           {'opts': [('34 g — by conservation of mass, 28 + 6 = 34 g', True),
+                     ('22 g — the difference, 28 − 6', False),
+                     ('17 g — the mass of one mole of ammonia', False),
+                     ('28 g — the ammonia has the same mass as the nitrogen', False)],
+            'q': 'In the Haber process, N₂ + 3H₂ → 2NH₃. 28 g of nitrogen reacts completely with 6 g of '
+                 'hydrogen. Calculate the maximum mass of ammonia that can be produced.',
+            'wrong_explanations': {1: 'The reactants combine, so their masses add: 28 + 6 = 34 g.',
+                                   2: 'Both reactants are fully converted, so all 28 + 6 = 34 g ends up as '
+                                      'ammonia.',
+                                   3: 'The ammonia contains the hydrogen too: 28 + 6 = 34 g.'}},
+           {'opts': [('2C₂H₆ + 7O₂ → 4CO₂ + 6H₂O', True),
+                     ('C₂H₆ + O₂ → CO₂ + H₂O', False),
+                     ('2C₂H₆ + 5O₂ → 4CO₂ + 6H₂O', False),
+                     ('C₂H₆ + 7O₂ → 2CO₂ + 3H₂O', False)],
+            'q': 'Deduce the coefficients that balance the complete combustion of ethane: __C₂H₆ + __O₂ → '
+                 '__CO₂ + __H₂O.',
+            'wrong_explanations': {1: 'Nothing balances: 2 C and 6 H on the left need 2CO₂ and 3H₂O for one '
+                                      'C₂H₆; doubling then clears the odd oxygen.',
+                                   2: 'Oxygen is short: the right has 8 + 6 = 14 O, which needs 7O₂, not '
+                                      '5O₂.',
+                                   3: 'With 7O₂ (14 O) you must double the carbons and hydrogens: 2C₂H₆ → '
+                                      '4CO₂ + 6H₂O.'}}],
   'rp': None,
   'spec': '5.3.1.1',
   'summary': 'Explain the law of conservation of mass and balance symbol equations.',
   'theory': [{'content': 'The LAW OF CONSERVATION OF MASS states:\n'
-                         'In a chemical reaction, the TOTAL MASS OF REACTANTS equals the TOTAL MASS OF PRODUCTS.\n'
+                         'In a chemical reaction, the TOTAL MASS OF REACTANTS equals the TOTAL MASS OF '
+                         'PRODUCTS.\n'
                          '\n'
                          'Mass is always CONSERVED — it is neither created nor destroyed.\n'
                          '\n'
                          'Why? Because atoms are simply REARRANGED during a chemical reaction:\n'
                          'No atoms are gained or lost.\n'
-                         'The same atoms that were in the reactants end up in the products, just in different '
-                         'arrangements.\n'
-                         "Since mass depends only on the number and type of atoms present, and these don't change, "
-                         'total mass stays the same.\n'
+                         'The same atoms that were in the reactants end up in the products, just in '
+                         'different arrangements.\n'
+                         "Since mass depends only on the number and type of atoms present, and these don't "
+                         'change, total mass stays the same.\n'
                          '\n'
                          'Example:\n'
                          'Magnesium + oxygen → magnesium oxide\n'
@@ -2891,11 +3027,12 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'If 24 g of Mg reacts with 16 g of O₂ → 40 g of MgO is produced.\n'
                          '24 + 16 = 40 ✓ Mass is conserved.',
               'heading': 'The Law of Conservation of Mass'},
-             {'content': 'A BALANCED equation has the same number of each type of atom on both sides — reflecting '
-                         'conservation of mass.\n'
+             {'content': 'A BALANCED equation has the same number of each type of atom on both sides — '
+                         'reflecting conservation of mass.\n'
                          '\n'
                          'RULES:\n'
-                         '1. Write the correct formulae for reactants and products (do NOT change formulae).\n'
+                         '1. Write the correct formulae for reactants and products (do NOT change '
+                         'formulae).\n'
                          '2. Count atoms on each side.\n'
                          '3. Add LARGE NUMBERS (coefficients) in front of formulae to balance — never change '
                          'subscripts within a formula.\n'
@@ -2923,9 +3060,9 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'Mg(s) + 2HCl(aq) → MgCl₂(aq) + H₂(g)\n'
                          '(s) = solid, (l) = liquid, (g) = gas, (aq) = aqueous (dissolved in water)\n'
                          '\n'
-                         'IMPORTANT: The coefficients in a balanced equation tell us the RATIO in which substances '
-                         'react and are produced — not the number of grams, but the number of formula units (atoms, '
-                         'molecules or formula units for ionic compounds).\n'
+                         'IMPORTANT: The coefficients in a balanced equation tell us the RATIO in which '
+                         'substances react and are produced — not the number of grams, but the number of '
+                         'formula units (atoms, molecules or formula units for ionic compounds).\n'
                          '\n'
                          '2H₂ + O₂ → 2H₂O means:\n'
                          '2 molecules of H₂ react with 1 molecule of O₂ to give 2 molecules of H₂O.\n'
@@ -2934,22 +3071,40 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Conservation of Mass and Balanced Equations',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'When a formula has BRACKETS with a subscript, MULTIPLY all atoms inside the bracket by the '
-                    'subscript. Ca(OH)₂ has 2 oxygen atoms and 2 hydrogen atoms — not 1 of each. Write out the count '
-                    'carefully: Ca(OH)₂ = Ca + 2O + 2H = 40 + 32 + 2 = 74.',
+ {'common_mistake': 'Students often forget to multiply the atoms inside a bracket by the subscript outside '
+                    'it — reading Ca(OH)₂ as one oxygen and one hydrogen instead of two of each. That '
+                    'undercounts the mass, because the ₂ applies to the WHOLE group: Ca(OH)₂ really contains '
+                    '2 O and 2 H. Work the bracket out first (2 × O and 2 × H), then add every Ar: 40 + 32 + '
+                    '2 = 74.',
   'equations': ['Mr = sum of all Ar values in the formula'],
-  'fifas': [{'label': 'Mr Calculation — H₂SO₄',
-             'question': 'Calculate the relative formula mass of sulfuric acid (H₂SO₄). Ar: H=1, S=32, O=16.',
-             'steps': [('F', 'Mr = sum of all Ar values × number of atoms'),
-                       ('I', 'H: 1 × 2 = 2. S: 32 × 1 = 32. O: 16 × 4 = 64'),
-                       ('F', 'Mr = 2 + 32 + 64'),
-                       ('A', 'Mr = 98')]}],
-  'higher': 'Calculate percentage mass of an element in a compound: (Ar × number of atoms ÷ Mr) × 100. Calculate '
-            'empirical formula from percentage composition. Convert empirical to molecular formula using Mr. These '
-            'skills are foundations for mole calculations.',
+  'fifas': [{'label': 'A bracket around a polyatomic group',
+             'question': 'Calculate the relative formula mass of magnesium nitrate, Mg(NO₃)₂. Ar: Mg = 24, N '
+                         '= 14, O = 16.',
+             'steps': [('F', 'multiply the whole NO₃ group by 2, then add every Ar'),
+                       ('I', 'Mg: 24;  N: 2 × 14 = 28;  O: 6 × 16 = 96'),
+                       ('F', 'Mr = 24 + 28 + 96'),
+                       ('A', 'Mr = 148')]},
+            {'label': 'Two brackets to keep track of',
+             'question': 'Calculate the relative formula mass of aluminium sulfate, Al₂(SO₄)₃. Ar: Al = 27, '
+                         'S = 32, O = 16.',
+             'steps': [('F', 'multiply the whole SO₄ group by 3, then add every Ar'),
+                       ('I', 'Al: 2 × 27 = 54;  S: 3 × 32 = 96;  O: 12 × 16 = 192'),
+                       ('F', 'Mr = 54 + 96 + 192'),
+                       ('A', 'Mr = 342')]},
+            {'label': 'A hydrated salt (water of crystallisation)',
+             'question': 'Calculate the relative formula mass of hydrated copper(II) sulfate, CuSO₄·5H₂O. '
+                         'Ar: Cu = 63.5, S = 32, O = 16, H = 1.',
+             'steps': [('F', 'find the Mr of CuSO₄, then add 5 × Mr(H₂O)'),
+                       ('I', 'CuSO₄ = 63.5 + 32 + 64 = 159.5;  5 × H₂O = 5 × 18 = 90'),
+                       ('F', 'Mr = 159.5 + 90'),
+                       ('A', 'Mr = 249.5')]}],
+  'higher': 'Calculate percentage mass of an element in a compound: (Ar × number of atoms ÷ Mr) × 100. '
+            'Calculate empirical formula from percentage composition. Convert empirical to molecular formula '
+            'using Mr. These skills are foundations for mole calculations.',
   'id': 'relative-formula-mass',
-  'key_note': 'Mr = sum of all Ar values in the formula. Use Ar from periodic table. Brackets: multiply atoms inside '
-              'by the subscript outside. Mr is used to calculate mass ratios in reactions. Mr has no units.',
+  'key_note': 'Mr = sum of all Ar values in the formula. Use Ar from periodic table. Brackets: multiply '
+              'atoms inside by the subscript outside. Mr is used to calculate mass ratios in reactions. Mr '
+              'has no units.',
   'matching': {'instruction': 'Match each formula to its correct relative formula mass.',
                'pairs': [('H₂O', 'Mr = 18 — (2 × 1) + (1 × 16)'),
                          ('CO₂', 'Mr = 44 — (1 × 12) + (2 × 16)'),
@@ -2957,36 +3112,136 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('CaCO₃', 'Mr = 100 — (1 × 40) + (1 × 12) + (3 × 16)'),
                          ('Ca(OH)₂', 'Mr = 74 — (1 × 40) + (2 × 16) + (2 × 1)')],
                'title': 'Calculate the Mr'},
-  'quiz': [{'opts': [('100 — (40) + (12) + (3 × 16) = 40 + 12 + 48', True),
-                     ('68 — (40) + (12) + (16) — counting only one oxygen', False),
-                     ('116 — (40) + (12) + (4 × 16) — counting four oxygens', False),
-                     ('52 — (40) + (12) — forgetting the oxygens', False)],
-            'q': 'What is the relative formula mass of calcium carbonate (CaCO₃)? Ar: Ca=40, C=12, O=16.',
-            'wrong_explanations': {1: 'CaCO₃ has only ONE oxygen — but the subscript 3 after O means THREE oxygens: 3 '
-                                      '× 16 = 48.',
-                                   2: 'CO₃ means 3 oxygen atoms, not 4. Only CO₄ would have 4 oxygens.',
-                                   3: 'The oxygen cannot be ignored — CaCO₃ has a carbon AND three oxygens.'}},
-           {'opts': [('148 — Mg(24) + 2N(28) + 6O(96)', True),
-                     ('86 — Mg(24) + N(14) + 3O(48)', False),
-                     ('100 — Mg(24) + 2N(28) + 3O(48)', False),
-                     ('116 — Mg(24) + 2N(28) + 4O(64)', False)],
-            'q': 'What is the Mr of Mg(NO₃)₂? Ar: Mg=24, N=14, O=16.',
-            'wrong_explanations': {1: 'The subscript 2 outside the bracket means the entire NO₃ group is repeated '
-                                      'twice. So there is 1 N, NOT 2 — wait: NO₃ has 1 N and 3 O, multiplied by 2 = 2N '
-                                      'and 6O.',
-                                   2: 'Mg(NO₃)₂ means 2 groups of NO₃: so 2N and 6O total. Only counting 3O ignores '
-                                      'the ×2 multiplier.',
-                                   3: 'Each NO₃ has 3 O; multiplied by 2 = 6 O total, not 4.'}}],
+  'quiz': [{'opts': [('100 — 40 + 12 + (3 × 16) = 40 + 12 + 48', True),
+                     ('68 — 40 + 12 + 16, counting only one oxygen', False),
+                     ('116 — 40 + 12 + (4 × 16), counting four oxygens', False),
+                     ('52 — 40 + 12, forgetting the oxygens', False)],
+            'q': 'Calculate the relative formula mass (Mr) of calcium carbonate (CaCO₃). Ar: Ca = 40, C = '
+                 '12, O = 16.',
+            'wrong_explanations': {1: 'The subscript 3 after O means THREE oxygens: 3 × 16 = 48, not 16.',
+                                   2: 'CO₃ has 3 oxygens, not 4. Only a CO₄ group would have four.',
+                                   3: 'The three oxygens cannot be ignored: 3 × 16 = 48 must be added.'}},
+           {'opts': [('74 — 40 + (2 × 16) + (2 × 1) = 40 + 32 + 2', True),
+                     ('57 — 40 + 16 + 1, taking one O and one H', False),
+                     ('58 — 40 + 16 + (2 × 1), doubling only the hydrogen', False),
+                     ('112 — (40 + 16 + 1) × 2, doubling the calcium as well', False)],
+            'q': 'Calculate the relative formula mass of calcium hydroxide, Ca(OH)₂. Ar: Ca = 40, O = 16, H '
+                 '= 1.',
+            'wrong_explanations': {1: 'The ₂ outside the bracket doubles BOTH the O and the H: 2 × 16 and 2 '
+                                      '× 1.',
+                                   2: 'The subscript applies to the whole (OH) group, so the oxygen is '
+                                      'doubled too: 2 × 16 = 32.',
+                                   3: 'The ₂ applies only to the (OH) group in the bracket, not to the '
+                                      'calcium outside it.'}},
+           {'opts': [('98 — (2 × 1) + 32 + (4 × 16) = 2 + 32 + 64', True),
+                     ('49 — (1) + 32 + 16, taking one of each atom', False),
+                     ('50 — 2 + 32 + 16, forgetting the O subscript', False),
+                     ('130 — 2 + 32 + (6 × 16), counting six oxygens', False)],
+            'q': 'Calculate the relative formula mass of sulfuric acid, H₂SO₄. Ar: H = 1, S = 32, O = 16.',
+            'wrong_explanations': {1: 'H₂SO₄ has 2 H and 4 O: 2 × 1 = 2 and 4 × 16 = 64.',
+                                   2: 'The 4 after O means 4 × 16 = 64, not 16.',
+                                   3: 'There are 4 oxygens in H₂SO₄, so 4 × 16 = 64.'}},
+           {'opts': [('95 — 24 + (2 × 35.5) = 24 + 71', True),
+                     ('59.5 — 24 + 35.5, counting only one chlorine', False),
+                     ('119 — (24 + 35.5) × 2, doubling the magnesium too', False),
+                     ('120 — 24 + (2 × 48), using 48 for chlorine', False)],
+            'q': 'Calculate the relative formula mass of magnesium chloride, MgCl₂. Ar: Mg = 24, Cl = 35.5.',
+            'wrong_explanations': {1: 'The ₂ after Cl means two chlorines: 2 × 35.5 = 71.',
+                                   2: 'Only the chlorine is doubled: Mg + (2 × Cl) = 24 + 71 = 95.',
+                                   3: 'The Ar of chlorine is 35.5, not 48: 2 × 35.5 = 71.'}},
+           {'opts': [('180 — (6 × 12) + (12 × 1) + (6 × 16) = 72 + 12 + 96', True),
+                     ('34 — 12 + 1 + 16, ignoring all the subscripts', False),
+                     ('29 — 6 + 12 + 6, adding the subscripts instead of using Ar', False),
+                     ('168 — 72 + 96, forgetting the hydrogen', False)],
+            'q': 'Glucose has the formula C₆H₁₂O₆. Calculate its relative formula mass. Ar: C = 12, H = 1, O '
+                 '= 16.',
+            'wrong_explanations': {1: 'Each atom is multiplied by its subscript: 6 C, 12 H and 6 O.',
+                                   2: 'The subscripts count the atoms; multiply each by its Ar: (6 × 12) + '
+                                      '(12 × 1) + (6 × 16).',
+                                   3: 'The 12 hydrogens add 12 × 1 = 12 to the total.'}},
+           {'opts': [('148 — 24 + 2 × (14 + 48) = 24 + (2 × 62)', True),
+                     ('86 — 24 + 14 + 48, ignoring the bracket subscript', False),
+                     ('100 — 24 + (2 × 14) + 48, doubling only the nitrogen', False),
+                     ('124 — 2 × (14 + 48), forgetting the magnesium', False)],
+            'q': 'Calculate the relative formula mass of magnesium nitrate, Mg(NO₃)₂. Ar: Mg = 24, N = 14, O '
+                 '= 16.',
+            'wrong_explanations': {1: 'The ₂ outside the bracket doubles the whole NO₃ group: 2 N and 6 O, '
+                                      'i.e. 2 × 62 = 124.',
+                                   2: 'The ₂ doubles the oxygens as well: 6 × 16 = 96, so 2 × (14 + 48) = '
+                                      '124.',
+                                   3: 'The magnesium (24) is outside the bracket and must be added: 24 + 124 '
+                                      '= 148.'}},
+           {'opts': [('342 — (2 × 27) + 3 × (32 + 64) = 54 + (3 × 96)', True),
+                     ('150 — 27 + 32 + (3 × 16) + ..., ignoring the bracket subscript', False),
+                     ('246 — 54 + (3 × 32) + (2 × 16 × 3), miscounting the oxygens', False),
+                     ('288 — 3 × (32 + 64), forgetting the aluminium', False)],
+            'q': 'Calculate the relative formula mass of aluminium sulfate, Al₂(SO₄)₃. Ar: Al = 27, S = 32, '
+                 'O = 16.',
+            'wrong_explanations': {1: 'The ₃ multiplies the whole SO₄ group: 3 S and 12 O, i.e. 3 × 96 = '
+                                      '288.',
+                                   2: 'Each SO₄ has 4 O, and there are 3 of them: 12 × 16 = 192, so (SO₄)₃ = '
+                                      '288.',
+                                   3: 'The two aluminiums add 2 × 27 = 54: total 54 + 288 = 342.'}},
+           {'opts': [('249.5 — CuSO₄ (159.5) + 5 × H₂O (5 × 18 = 90)', True),
+                     ('159.5 — CuSO₄ only, ignoring the water', False),
+                     ('177.5 — CuSO₄ + 18, adding only one water', False),
+                     ('249.5 g — the value is right but stated with units', False)],
+            'q': 'Calculate the relative formula mass of hydrated copper(II) sulfate, CuSO₄·5H₂O. Ar: Cu = '
+                 '63.5, S = 32, O = 16, H = 1.',
+            'wrong_explanations': {1: 'The ·5H₂O adds five water molecules: 5 × 18 = 90, giving 249.5.',
+                                   2: 'There are FIVE waters: 5 × 18 = 90, not 18.',
+                                   3: 'The value 249.5 is correct, but relative formula mass has no units.'}},
+           {'opts': [('39 — (94 − 16) ÷ 2 = 78 ÷ 2', True),
+                     ('78 — 94 − 16, forgetting there are two X atoms', False),
+                     ('55 — 94 ÷ 2 + 16 ÷ ..., mixing up the steps', False),
+                     ('47 — 94 ÷ 2, halving the whole Mr', False)],
+            'q': 'A metal oxide has the formula X₂O and a relative formula mass of 94. Ar(O) = 16. Deduce '
+                 'the relative atomic mass of X.',
+            'wrong_explanations': {1: 'There are 2 X atoms sharing the 78, so Ar(X) = 78 ÷ 2 = 39.',
+                                   2: 'Subtract the oxygen first, then halve: (94 − 16) ÷ 2 = 39.',
+                                   3: 'Only the two X atoms are halved after removing the oxygen: (94 − 16) '
+                                      '÷ 2 = 39.'}},
+           {'opts': [('132 — 2 × (14 + 4) + 32 + 64 = 36 + 96', True),
+                     ('114 — (14 + 4) + 32 + 64, ignoring the bracket subscript', False),
+                     ('50 — (14 + 4) + 32, forgetting the four oxygens', False),
+                     ('168 — 2 × (14 + 4) + 2 × (32 + 64), doubling the sulfate too', False)],
+            'q': 'Calculate the relative formula mass of ammonium sulfate, (NH₄)₂SO₄. Ar: N = 14, H = 1, S = '
+                 '32, O = 16.',
+            'wrong_explanations': {1: 'The ₂ doubles the whole NH₄ group: 2 × (14 + 4) = 36.',
+                                   2: 'SO₄ contains 4 O: 4 × 16 = 64 must be included.',
+                                   3: 'The ₂ applies only to the NH₄ group; there is just one SO₄: 36 + 96 = '
+                                      '132.'}},
+           {'opts': [('286 — Na₂CO₃ (106) + 10 × H₂O (10 × 18 = 180)', True),
+                     ('106 — Na₂CO₃ only, ignoring the water', False),
+                     ('124 — Na₂CO₃ + 18, adding only one water', False),
+                     ('196 — Na₂CO₃ + (10 × 9), using 9 for water', False)],
+            'q': 'Calculate the relative formula mass of hydrated sodium carbonate, Na₂CO₃·10H₂O. Ar: Na = '
+                 '23, C = 12, O = 16, H = 1.',
+            'wrong_explanations': {1: 'The ·10H₂O adds ten waters: 10 × 18 = 180, giving 286.',
+                                   2: 'There are TEN waters: 10 × 18 = 180, not 18.',
+                                   3: 'The Mr of water is 18, not 9: 10 × 18 = 180.'}},
+           {'opts': [('Magnesium — Ar(M) = 40 − 16 = 24', True),
+                     ('Calcium — Ar = 40', False),
+                     ('Beryllium — Ar = 9', False),
+                     ('Calcium — because CaO is a common oxide', False)],
+            'q': 'A Group 2 metal M forms an oxide MO with a relative formula mass of 40. Ar(O) = 16. Deduce '
+                 'the metal M. Ar: Be = 9, Mg = 24, Ca = 40.',
+            'wrong_explanations': {1: '40 is the Mr of the whole oxide; Ar(M) = 40 − 16 = 24, which is '
+                                      'magnesium.',
+                                   2: 'Ar(M) = 40 − 16 = 24, not 9; the metal is magnesium.',
+                                   3: 'The relative formula mass fixes the answer: Ar(M) = 40 − 16 = 24 = '
+                                      'magnesium.'}}],
   'rp': None,
   'spec': '5.3.1.2',
   'summary': 'Calculate relative formula mass (Mr) from relative atomic masses and use it in calculations.',
-  'theory': [{'content': 'The RELATIVE FORMULA MASS (Mr) of a compound is the sum of the RELATIVE ATOMIC MASSES (Ar) '
-                         'of all atoms in its formula.\n'
+  'theory': [{'content': 'The RELATIVE FORMULA MASS (Mr) of a compound is the sum of the RELATIVE ATOMIC '
+                         'MASSES (Ar) of all atoms in its formula.\n'
                          '\n'
                          'Mr has no units — it is a ratio (relative to carbon-12).\n'
                          '\n'
                          'You need the Ar values from the periodic table:\n'
-                         'H = 1, C = 12, N = 14, O = 16, Na = 23, Mg = 24, S = 32, Cl = 35.5, Ca = 40, Fe = 56\n'
+                         'H = 1, C = 12, N = 14, O = 16, Na = 23, Mg = 24, S = 32, Cl = 35.5, Ca = 40, Fe = '
+                         '56\n'
                          '\n'
                          'EXAMPLES:\n'
                          'H₂O: (2 × 1) + (1 × 16) = 2 + 16 = 18\n'
@@ -2996,8 +3251,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'H₂SO₄: (2 × 1) + (1 × 32) + (4 × 16) = 2 + 32 + 64 = 98\n'
                          'CaCO₃: (1 × 40) + (1 × 12) + (3 × 16) = 40 + 12 + 48 = 100',
               'heading': 'Relative Formula Mass (Mr)'},
-             {'content': 'When a formula contains BRACKETS, multiply everything inside the brackets by the number '
-                         'outside.\n'
+             {'content': 'When a formula contains BRACKETS, multiply everything inside the brackets by the '
+                         'number outside.\n'
                          '\n'
                          'Examples:\n'
                          'Ca(OH)₂:\n'
@@ -3021,8 +3276,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
              {'content': 'Mr allows us to calculate MASSES in reactions from a balanced equation.\n'
                          '\n'
                          'FUNDAMENTAL PRINCIPLE:\n'
-                         'The RATIO of masses of reactants and products in a reaction equals the RATIO of their Mr '
-                         'values (multiplied by the coefficients in the balanced equation).\n'
+                         'The RATIO of masses of reactants and products in a reaction equals the RATIO of '
+                         'their Mr values (multiplied by the coefficients in the balanced equation).\n'
                          '\n'
                          'Example:\n'
                          '2Mg + O₂ → 2MgO\n'
@@ -3040,79 +3295,227 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Relative Formula Mass',
   'triple_only': None,
   'variables': [('Mr', 'Relative formula mass', '', ''), ('Ar', 'Relative atomic mass', '', '')]},
- {'common_mistake': 'When a metal burns in air, the solid GAINS mass (oxygen is added from the air to form the oxide). '
-                    "Students often expect the solid to lose mass because 'burning destroys things' — but mass is "
-                    'always conserved. The apparent gain is real because you are adding oxygen from the atmosphere to '
-                    'the solid product.',
+ {'common_mistake': 'Students often expect a metal to LOSE mass when it burns, because burning seems to '
+                    'destroy things. In fact the solid gains mass: oxygen from the air combines with the '
+                    'metal and becomes part of the solid oxide. Mass is still conserved — the gain in the '
+                    'solid is exactly equal to the mass of oxygen taken from the air.',
   'equations': [],
-  'fifas': [{'label': 'Mass Change Prediction',
-             'question': '4.8 g of magnesium burns completely in air: 2Mg + O₂ → 2MgO. Calculate the mass of MgO '
-                         'produced. Ar: Mg=24, O=16.',
-             'steps': [('F', 'Use ratio from balanced equation: 2 × Mr(Mg) : 2 × Mr(MgO) = 48 : 80'),
-                       ('I', 'Scale: 4.8 g of Mg. Scale factor = 4.8 ÷ 48 = 0.1'),
-                       ('F', 'Mass of MgO = 80 × 0.1 = 8.0 g'),
-                       ('A', '8.0 g of MgO produced (mass increases by 3.2 g — the absorbed oxygen)')]}],
+  'fifas': [{'label': 'Reacting mass: mass → moles → mass',
+             'question': 'Calculate the mass of magnesium oxide formed when 6 g of magnesium burns '
+                         'completely. 2Mg + O₂ → 2MgO. Ar: Mg = 24, O = 16.',
+             'steps': [('F', 'mass → moles (÷ Mr) → use the equation ratio → moles → mass (× Mr)'),
+                       ('I',
+                        'n(Mg) = 6 ÷ 24 = 0.25 mol;  ratio Mg:MgO = 1:1 so n(MgO) = 0.25 mol;  Mr(MgO) = 40'),
+                       ('F', 'mass(MgO) = 0.25 × 40'),
+                       ('A', 'mass of magnesium oxide = 10 g')]},
+            {'label': 'Reacting mass for a decomposition',
+             'question': 'Calculate the mass of carbon dioxide released when 25 g of calcium carbonate '
+                         'decomposes. CaCO₃ → CaO + CO₂. Mr: CaCO₃ = 100, CO₂ = 44.',
+             'steps': [('F', 'mass → moles (÷ Mr) → ratio → moles → mass (× Mr)'),
+                       ('I',
+                        'n(CaCO₃) = 25 ÷ 100 = 0.25 mol;  ratio 1:1 so n(CO₂) = 0.25 mol;  Mr(CO₂) = 44'),
+                       ('F', 'mass(CO₂) = 0.25 × 44'),
+                       ('A', 'mass of carbon dioxide = 11 g')]},
+            {'label': 'Using a 2:1 ratio',
+             'question': 'Calculate the mass of oxygen needed to burn 4.8 g of magnesium completely. 2Mg + '
+                         'O₂ → 2MgO. Ar: Mg = 24, O = 16.',
+             'steps': [('F', 'mass → moles (÷ Mr) → use the 2:1 ratio → moles → mass (× Mr)'),
+                       ('I',
+                        'n(Mg) = 4.8 ÷ 24 = 0.2 mol;  ratio Mg:O₂ = 2:1 so n(O₂) = 0.1 mol;  Mr(O₂) = 32'),
+                       ('F', 'mass(O₂) = 0.1 × 32'),
+                       ('A', 'mass of oxygen = 3.2 g')]}],
   'higher': None,
   'id': 'mass-changes-reactions',
-  'key_note': 'Mass is always conserved. Apparent decrease: gas escapes (e.g. CO₂ from acid + carbonate). Apparent '
-              'increase: gas absorbed from air (e.g. O₂ absorbed when Mg burns). Closed container: mass always stays '
-              'the same. Look for gases when mass appears to change.',
+  'key_note': 'Mass is always conserved. Apparent decrease: gas escapes (e.g. CO₂ from acid + carbonate). '
+              'Apparent increase: gas absorbed from air (e.g. O₂ absorbed when Mg burns). Closed container: '
+              'mass always stays the same. Look for gases when mass appears to change.',
   'matching': {'instruction': 'Predict what happens to the measured mass in each scenario.',
-               'pairs': [('Mass decreases', 'CaCO₃ + HCl in an open flask — CO₂ gas escapes into the atmosphere'),
+               'pairs': [('Mass decreases',
+                          'CaCO₃ + HCl in an open flask — CO₂ gas escapes into the atmosphere'),
                          ('Mass increases',
                           'Magnesium burning in air — oxygen from air absorbed into MgO solid product'),
-                         ('Mass stays same', 'Precipitation reaction in a sealed flask — no gas escapes or enters'),
+                         ('Mass stays same',
+                          'Precipitation reaction in a sealed flask — no gas escapes or enters'),
                          ('Mass decreases', 'Zinc + sulfuric acid in an open tube — H₂ gas escapes'),
                          ('Mass stays same', 'CaCO₃ heated in a sealed tube — CO₂ trapped inside')],
                'title': 'Mass Increases, Decreases or Stays Same?'},
-  'quiz': [{'opts': [('The mass decreases — CO₂ gas escapes from the open crucible', True),
-                     ('The mass increases — oxygen from air is absorbed', False),
-                     ('The mass stays the same — conservation of mass', False),
-                     ('The mass first increases, then decreases', False)],
-            'q': 'A student heats calcium carbonate in an open crucible. CaCO₃ → CaO + CO₂. What happens to the '
-                 'measured mass?',
-            'wrong_explanations': {1: 'Oxygen is not absorbed here — CaCO₃ is decomposing, not combusting. A gas (CO₂) '
-                                      'is PRODUCED and escapes.',
-                                   2: 'Conservation of mass applies to the TOTAL system. In an open container, the '
-                                      'mass of the CONTAINER contents decreases because CO₂ leaves. Conservation is '
-                                      'still upheld if you include the escaped CO₂.',
-                                   3: 'There is no initial increase phase — CO₂ is produced and escapes from the start '
-                                      'of heating.'}},
-           {'opts': [('Oxygen from the air combines with the iron — the oxygen adds to the mass of the solid product '
-                      '(iron oxide)',
+  'quiz': [{'opts': [('The mass decreases — carbon dioxide gas is produced and escapes from the open '
+                      'crucible',
                       True),
-                     ('Water from humidity condenses on the rust — adding extra mass', False),
-                     ('The iron becomes denser as it rusts — same volume but more mass', False),
+                     ('The mass increases — oxygen from the air is absorbed', False),
+                     ('The mass stays the same — mass is always conserved', False),
+                     ('The mass first rises, then falls', False)],
+            'q': 'A student heats calcium carbonate in an open crucible: CaCO₃ → CaO + CO₂. Predict what '
+                 'happens to the measured mass and explain why.',
+            'wrong_explanations': {1: 'No oxygen is absorbed here: the carbonate is decomposing, not '
+                                      'burning. A gas (CO₂) is released and escapes.',
+                                   2: 'Mass is conserved for the whole system, but in an OPEN crucible the '
+                                      'CO₂ leaves, so the mass remaining falls.',
+                                   3: 'There is no initial rise — CO₂ is produced and escapes from the '
+                                      'moment heating begins.'}},
+           {'opts': [('Oxygen from the air combines with the iron and becomes part of the solid iron oxide, '
+                      'adding to its mass',
+                      True),
+                     ('Water condenses on the rust, adding extra mass', False),
+                     ('The iron becomes denser, so the same volume has more mass', False),
                      ('Iron oxide has more atoms per formula unit than iron', False)],
-            'q': 'Why does the mass of iron increase when it rusts in air?',
-            'wrong_explanations': {1: 'Humidity can contribute, but the primary reason is oxygen being ABSORBED from '
-                                      'the air. The reaction is 4Fe + 3O₂ → 2Fe₂O₃ — the oxygen becomes part of the '
-                                      'solid.',
-                                   2: 'Density changes do not increase total mass — mass = density × volume. If both '
-                                      'change proportionally, mass stays the same. More mass comes from more matter '
-                                      '(oxygen absorbed).',
-                                   3: 'Atom count per formula unit is irrelevant — it is the MASS of oxygen absorbed '
-                                      'from air that increases the total mass.'}}],
+            'q': 'Explain why the mass of iron increases when it rusts in air.',
+            'wrong_explanations': {1: 'Moisture speeds up rusting, but the mass gain is oxygen from the air '
+                                      'becoming part of the solid: 4Fe + 3O₂ → 2Fe₂O₃.',
+                                   2: 'Density changes do not add matter. The extra mass is oxygen absorbed '
+                                      'from the air.',
+                                   3: 'It is the MASS of oxygen combined with the iron that increases the '
+                                      'total, not the atom count.'}},
+           {'opts': [('It increases — oxygen from the air joins the magnesium to form solid magnesium oxide',
+                      True),
+                     ('It decreases — the magnesium is burned away', False),
+                     ('It stays the same — burning does not change the mass', False),
+                     ('It decreases — light and heat carry mass away', False)],
+            'q': 'A piece of magnesium ribbon is burned in an open crucible. Predict what happens to the '
+                 'mass of the solid and explain why.',
+            'wrong_explanations': {1: 'Burning does not destroy the magnesium; oxygen is added to it, so the '
+                                      'solid gains mass.',
+                                   2: 'The solid gains the mass of the oxygen that combines with it: the '
+                                      'reading rises.',
+                                   3: 'Light and heat are energy, not mass. The solid gains mass because '
+                                      'oxygen is added.'}},
+           {'opts': [('It decreases — carbon dioxide gas is given off and leaves the open tube', True),
+                     ('It increases — a gas is taken in from the air', False),
+                     ('It stays the same — no gas is involved', False),
+                     ('It increases — the oxide formed is heavier than the carbonate', False)],
+            'q': 'Predict what happens to the measured mass when a metal carbonate is thermally decomposed '
+                 'in an open tube.',
+            'wrong_explanations': {1: 'Decomposition releases CO₂; no gas is taken in. The mass falls.',
+                                   2: 'Thermal decomposition of a carbonate releases CO₂ gas, so the open '
+                                      'tube loses mass.',
+                                   3: 'The oxide left behind is LIGHTER than the carbonate, because the CO₂ '
+                                      'has escaped.'}},
+           {'opts': [('32 g — mass of oxygen = mass of oxide − mass of metal = 80 − 48', True),
+                     ('128 g — 80 + 48, adding the masses', False),
+                     ('80 g — the oxygen equals the mass of the oxide', False),
+                     ('48 g — the oxygen equals the mass of the magnesium', False)],
+            'q': '48 g of magnesium reacts with oxygen and the mass of the solid rises to 80 g of magnesium '
+                 'oxide. Calculate the mass of oxygen added from the air.',
+            'wrong_explanations': {1: 'The oxygen added is the GAIN in mass: 80 − 48 = 32 g. Adding would '
+                                      'exceed the product mass.',
+                                   2: 'The oxide also contains the magnesium; the oxygen alone is 80 − 48 = '
+                                      '32 g.',
+                                   3: 'There is no reason these are equal. The oxygen added is 80 − 48 = 32 '
+                                      'g.'}},
+           {'opts': [('The reaction makes carbon dioxide particles; these gas particles leave the open '
+                      'flask, and because they still have mass, the mass remaining in the flask falls (the '
+                      'total mass is unchanged)',
+                      True),
+                     ('The reacting particles shrink, lowering the mass', False),
+                     ('Some particles are destroyed in the reaction', False),
+                     ('The gas particles are weightless once formed', False)],
+            'q': 'Explain, in terms of particles, why the mass inside an open flask decreases when a '
+                 'carbonate reacts with acid.',
+            'wrong_explanations': {1: 'Particles do not shrink. The mass falls because CO₂ gas particles '
+                                      'leave the flask.',
+                                   2: 'Particles are never destroyed; they are rearranged into CO₂ which '
+                                      'escapes.',
+                                   3: 'Gas particles have mass. The fall in reading equals the mass of gas '
+                                      'that has left.'}},
+           {'opts': [('10 g — n(Mg) = 6 ÷ 24 = 0.25 mol; ratio Mg:MgO = 1:1; mass = 0.25 × 40', True),
+                     ('6 g — the oxide has the same mass as the magnesium', False),
+                     ('240 g — 6 × 40, using mass instead of moles', False),
+                     ('15 g — using Mr(MgO) = 60', False)],
+            'q': 'Calculate the mass of magnesium oxide formed when 6 g of magnesium burns completely. 2Mg + '
+                 'O₂ → 2MgO. Ar: Mg = 24, O = 16.',
+            'wrong_explanations': {1: 'Oxygen is added, so the oxide is heavier: 0.25 mol × 40 = 10 g.',
+                                   2: 'You must convert to moles first: n = 6 ÷ 24 = 0.25 mol, then × '
+                                      'Mr(MgO) = 40.',
+                                   3: 'The Mr of MgO is 24 + 16 = 40, not 60: 0.25 × 40 = 10 g.'}},
+           {'opts': [('11 g — n(CaCO₃) = 25 ÷ 100 = 0.25 mol; ratio 1:1; mass = 0.25 × 44', True),
+                     ('25 g — the CO₂ has the same mass as the carbonate', False),
+                     ('14 g — the mass of CaO left behind', False),
+                     ('1100 g — 25 × 44, using mass instead of moles', False)],
+            'q': 'Calculate the mass of carbon dioxide released when 25 g of calcium carbonate decomposes '
+                 'completely. CaCO₃ → CaO + CO₂. Mr: CaCO₃ = 100, CO₂ = 44.',
+            'wrong_explanations': {1: 'Only part of the carbonate becomes CO₂: n = 0.25 mol, mass = 0.25 × '
+                                      '44 = 11 g.',
+                                   2: 'The question asks for the CO₂, which is 0.25 × 44 = 11 g (and 25 − 11 '
+                                      '= 14 g of CaO remains).',
+                                   3: 'Convert to moles first: 25 ÷ 100 = 0.25 mol, then × 44 = 11 g.'}},
+           {'opts': [('The gas cannot leave the sealed flask, so every atom that was present at the start is '
+                      'still inside at the end — no mass enters or leaves, so the total is unchanged',
+                      True),
+                     ('The gas has no mass, so making it changes nothing', False),
+                     ('The gas turns back into the reactants', False),
+                     ('Mass is created to replace the gas that forms', False)],
+            'q': 'A reaction that makes a gas is carried out in a sealed flask, which is weighed before and '
+                 'after. Explain why the reading is unchanged even though a gas is formed.',
+            'wrong_explanations': {1: 'The gas does have mass; the reading is unchanged because the gas '
+                                      'stays sealed inside.',
+                                   2: 'The reaction still occurs; the mass is unchanged simply because '
+                                      'nothing can leave the sealed flask.',
+                                   3: 'No mass is created. The total is unchanged because the sealed flask '
+                                      'keeps all the atoms inside.'}},
+           {'opts': [('It does not break the law — the gain equals the mass of oxygen taken from the air, so '
+                      'the total mass of the magnesium plus the air it reacts with is unchanged',
+                      True),
+                     ('Yes — mass is created when the oxide forms', False),
+                     ('Yes — the solid ends up heavier than the reactant', False),
+                     ('No — because no gas is involved in burning', False)],
+            'q': 'Burning magnesium in an open crucible makes the solid appear to gain mass. Evaluate '
+                 'whether this breaks the law of conservation of mass.',
+            'wrong_explanations': {1: 'No mass is created; the solid gains the oxygen that was already '
+                                      'present in the air.',
+                                   2: 'The solid is heavier only because oxygen has been added to it; '
+                                      'counting the air too, mass is conserved.',
+                                   3: 'A gas IS involved: oxygen from the air. Its mass is added to the '
+                                      'solid, so the total is conserved.'}},
+           {'opts': [('3.2 g — n(Mg) = 4.8 ÷ 24 = 0.2 mol; ratio Mg:O₂ = 2:1 so n(O₂) = 0.1 mol; mass = 0.1 '
+                      '× 32',
+                      True),
+                     ('6.4 g — using a 1:1 ratio for Mg:O₂', False),
+                     ('1.6 g — using Mr(O₂) = 16', False),
+                     ('0.1 g — stopping at the moles of O₂', False)],
+            'q': 'Calculate the mass of oxygen needed to burn 4.8 g of magnesium completely. 2Mg + O₂ → '
+                 '2MgO. Ar: Mg = 24, O = 16.',
+            'wrong_explanations': {1: 'The ratio is 2Mg:1O₂, so n(O₂) = 0.2 ÷ 2 = 0.1 mol, giving 0.1 × 32 = '
+                                      '3.2 g.',
+                                   2: 'Oxygen gas is O₂ with Mr = 32, not 16: 0.1 × 32 = 3.2 g.',
+                                   3: '0.1 mol must be multiplied by Mr(O₂) = 32 to get the mass: 3.2 g.'}},
+           {'opts': [('The gain equals the mass of oxygen that has combined with the iron to form iron '
+                      'oxide, a new compound; if no reaction had happened the mass would have stayed the '
+                      'same',
+                      True),
+                     ('The heat makes the metal expand, raising its mass', False),
+                     ('Hot metal always weighs more than cold metal', False),
+                     ('The steel wool absorbs moisture from the air', False)],
+            'q': 'When steel wool is heated in air its mass increases. Explain why this increase is evidence '
+                 'that a new substance has been made.',
+            'wrong_explanations': {1: 'Expansion changes volume, not mass. The gain is oxygen chemically '
+                                      'combining to make a new compound.',
+                                   2: 'Temperature does not change mass. The rise is due to oxygen joining '
+                                      'the iron to form iron oxide.',
+                                   3: 'The gain is oxygen forming iron oxide, a new substance — a chemical '
+                                      'change, not just absorbed water.'}}],
   'rp': None,
   'spec': '5.3.1.3',
-  'summary': 'Explain why the measured mass sometimes appears to change in a reaction and predict mass changes.',
-  'theory': [{'content': 'Conservation of mass tells us total mass never changes. Yet in some experiments, the '
-                         'MEASURED mass appears to increase or decrease. This is NOT a violation of conservation of '
-                         'mass — it is because a GAS enters or leaves the reaction vessel.\n'
+  'summary': 'Explain why the measured mass sometimes appears to change in a reaction and predict mass '
+             'changes.',
+  'theory': [{'content': 'Conservation of mass tells us total mass never changes. Yet in some experiments, '
+                         'the MEASURED mass appears to increase or decrease. This is NOT a violation of '
+                         'conservation of mass — it is because a GAS enters or leaves the reaction vessel.\n'
                          '\n'
                          'WHEN MASS APPEARS TO DECREASE:\n'
                          'A GAS is PRODUCED and escapes into the atmosphere.\n'
                          'The gas molecules leave the container and are no longer weighed.\n'
                          'Example: CaCO₃(s) + 2HCl(aq) → CaCl₂(aq) + H₂O(l) + CO₂(g)\n'
                          'CO₂ gas escapes → measured mass decreases.\n'
-                         'Example: Mg ribbon burning — ash (MgO) seems lighter than the ribbon, but this is because '
-                         'oxygen from AIR was added. Without accounting for the oxygen, mass appears lost.\n'
+                         'Example: Mg ribbon burning — ash (MgO) seems lighter than the ribbon, but this is '
+                         'because oxygen from AIR was added. Without accounting for the oxygen, mass appears '
+                         'lost.\n'
                          '\n'
                          'WHEN MASS APPEARS TO INCREASE:\n'
                          'A GAS is ABSORBED or ADDED from the atmosphere.\n'
                          'Example: Magnesium burning in air:\n'
                          '2Mg(s) + O₂(g) → 2MgO(s)\n'
-                         'Oxygen from the air is absorbed into the solid product → measured mass of solid INCREASES.\n'
+                         'Oxygen from the air is absorbed into the solid product → measured mass of solid '
+                         'INCREASES.\n'
                          'The oxygen molecules join the solid — weighed mass goes up.',
               'heading': 'When Mass Appears to Change'},
              {'content': 'You can predict mass changes using the balanced equation and Mr values.\n'
@@ -3136,15 +3539,16 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '\n'
                          'Check: 0.2 mol MgO × 40 = 8.0 g ✓',
               'heading': 'Predicting Mass Changes'},
-             {'content': 'Students sometimes observe apparent non-conservation — these all have explanations:\n'
+             {'content': 'Students sometimes observe apparent non-conservation — these all have '
+                         'explanations:\n'
                          '\n'
                          'PRECIPITATION REACTIONS in closed containers:\n'
                          'No gas escapes or enters → mass stays exactly the same. ✓\n'
                          '\n'
                          'HEATING A METAL IN AIR (open container):\n'
                          'Mass INCREASES — oxygen from air is absorbed.\n'
-                         'If weighed in a closed container with air, mass stays constant (oxygen absorbed from sealed '
-                         'air pocket).\n'
+                         'If weighed in a closed container with air, mass stays constant (oxygen absorbed '
+                         'from sealed air pocket).\n'
                          '\n'
                          'DECOMPOSITION reactions producing gas (e.g. CaCO₃ → CaO + CO₂):\n'
                          'In open container: mass DECREASES (CO₂ escapes).\n'
@@ -3153,62 +3557,209 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'BURNING HYDROCARBONS in open container:\n'
                          'CO₂ and H₂O vapour escape → apparent mass decreases.\n'
                          '\n'
-                         'KEY INSIGHT: If you cannot account for a mass change, look for a gas being produced or '
-                         'absorbed — conservation of mass is ALWAYS upheld in the universe, even if your experiment '
-                         "doesn't show it.",
+                         'KEY INSIGHT: If you cannot account for a mass change, look for a gas being '
+                         'produced or absorbed — conservation of mass is ALWAYS upheld in the universe, even '
+                         "if your experiment doesn't show it.",
               'heading': 'Non-conservation Apparent Effects'}],
   'title': 'Mass Changes in Reactions',
   'triple_only': None,
   'variables': []},
- {'common_mistake': 'Read the volume from the BOTTOM of the meniscus — not the top. Water curves downward in a glass '
-                    'tube, creating a concave meniscus. Reading from the top overestimates the volume. Also: zeroing '
-                    'the balance (taring) before each measurement is essential — failing to do so introduces a '
-                    'systematic error.',
+ {'common_mistake': 'Students often use the TOP of the curved surface (the meniscus) when they read a '
+                    'burette or measuring cylinder, which gives a volume reading that is too large. The '
+                    'scale is calibrated to the BOTTOM of the meniscus, because water curves downwards in a '
+                    'glass tube. Line your eye up level with the bottom of the meniscus and read the scale '
+                    'from there.',
   'equations': ['% uncertainty = (uncertainty ÷ measured value) × 100'],
-  'fifas': [{'label': 'Percentage Uncertainty',
-             'question': 'A student measures 25.0 cm³ of solution using a measuring cylinder with an uncertainty of '
-                         '±0.5 cm³. Calculate the percentage uncertainty.',
-             'steps': [('F', '% uncertainty = (uncertainty ÷ measured value) × 100'),
-                       ('I', '% uncertainty = (0.5 ÷ 25.0) × 100'),
-                       ('F', '% uncertainty = 0.02 × 100'),
-                       ('A', '% uncertainty = 2.0%')]}],
+  'fifas': [{'label': 'Titre and its percentage uncertainty',
+             'question': 'A burette is read at the start (0.00 cm³) and end (25.00 cm³), each to ±0.05 cm³. '
+                         'Calculate the titre and its percentage uncertainty.',
+             'steps': [('F',
+                        'titre = final − initial; total uncertainty = 2 × 0.05; % uncertainty = (uncertainty '
+                        '÷ titre) × 100'),
+                       ('I', 'titre = 25.00 − 0.00 = 25.00 cm³; uncertainty = 0.10 cm³'),
+                       ('F', '% uncertainty = (0.10 ÷ 25.00) × 100'),
+                       ('A', 'titre = 25.00 cm³; percentage uncertainty = 0.40%')]},
+            {'label': 'Mean of concordant titres',
+             'question': "A student's concordant titres are 23.10, 23.20 and 23.15 cm³. Calculate the mean "
+                         'titre to use in a concentration calculation.',
+             'steps': [('F', 'mean = sum of concordant titres ÷ number of titres'),
+                       ('I', '= (23.10 + 23.20 + 23.15) ÷ 3'),
+                       ('F', '= 69.45 ÷ 3'),
+                       ('A', 'mean titre = 23.15 cm³')]},
+            {'label': 'Uncertainty in a measured change',
+             'question': 'A temperature rise of 8.0 °C is measured with a thermometer read to ±0.5 °C at the '
+                         'start and end. Calculate the percentage uncertainty in the temperature change.',
+             'steps': [('F',
+                        'uncertainty in a change = 2 × (uncertainty of one reading); % uncertainty = '
+                        '(uncertainty ÷ change) × 100'),
+                       ('I', 'uncertainty = 2 × 0.5 = 1.0 °C; % uncertainty = (1.0 ÷ 8.0) × 100'),
+                       ('F', '= 0.125 × 100'),
+                       ('A', '= 12.5%')]}],
   'higher': None,
   'id': 'chemical-measurements',
-  'key_note': 'Accuracy: how close to true value. Precision: how reproducible. Burette: ±0.05 cm³ — most precise for '
-              'volumes. Pipette: exact fixed volume. Read from bottom of meniscus at eye level. % uncertainty = '
-              '(uncertainty ÷ measured value) × 100. Larger measurement → smaller % uncertainty.',
+  'key_note': 'Accuracy: how close to true value. Precision: how reproducible. Burette: ±0.05 cm³ — most '
+              'precise for volumes. Pipette: exact fixed volume. Read from bottom of meniscus at eye level. '
+              '% uncertainty = (uncertainty ÷ measured value) × 100. Larger measurement → smaller % '
+              'uncertainty.',
   'matching': {'instruction': 'Match each piece of equipment to its use and precision.',
                'pairs': [('Burette',
-                          'Accurately delivers variable volumes of solution — read to ±0.05 cm³ — used in titrations'),
-                         ('Pipette', 'Delivers one precise fixed volume — e.g. exactly 25.00 cm³ of solution'),
-                         ('Measuring cylinder', 'Less precise volume measurement — read from bottom of meniscus'),
-                         ('Digital balance', 'Measures mass precisely — typically ±0.01 g — zero before each use'),
+                          'Accurately delivers variable volumes of solution — read to ±0.05 cm³ — used in '
+                          'titrations'),
+                         ('Pipette',
+                          'Delivers one precise fixed volume — e.g. exactly 25.00 cm³ of solution'),
+                         ('Measuring cylinder',
+                          'Less precise volume measurement — read from bottom of meniscus'),
+                         ('Digital balance',
+                          'Measures mass precisely — typically ±0.01 g — zero before each use'),
                          ('Thermometer', 'Measures temperature — typically ±0.5°C or ±1°C')],
                'title': 'Match the Measuring Equipment'},
-  'quiz': [{'opts': [('The burette — % uncertainty = (0.05 ÷ 25) × 100 = 0.2%, vs the cylinder at 4%', True),
-                     ('The measuring cylinder — larger equipment is always more accurate', False),
+  'quiz': [{'opts': [('The burette — % uncertainty = (0.05 ÷ 25) × 100 = 0.2%, against 4% for the cylinder',
+                      True),
+                     ('The measuring cylinder — larger apparatus is always more accurate', False),
                      ('They are the same — both deliver 25 cm³', False),
-                     ('The measuring cylinder — it has a smaller absolute uncertainty', False)],
-            'q': 'A student measures a volume using a burette and a measuring cylinder. The burette has an uncertainty '
-                 'of ±0.05 cm³ and the cylinder ±1 cm³. Both deliver 25 cm³. Which gives the lower percentage '
-                 'uncertainty?',
-            'wrong_explanations': {1: "Equipment size doesn't determine accuracy — precision depends on the "
-                                      'uncertainty relative to the measurement.',
-                                   2: 'Both deliver the same VOLUME but with different UNCERTAINTIES — the burette '
-                                      '(±0.05) is far more precise than the measuring cylinder (±1).',
-                                   3: 'The measuring cylinder has a LARGER absolute uncertainty (±1 cm³ vs ±0.05 cm³) '
-                                      '— it is LESS precise, not more.'}},
-           {'opts': [('From the bottom of the meniscus — water curves downward, creating a concave surface', True),
-                     ('From the top of the meniscus — this gives the largest volume reading', False),
-                     ('From the middle of the meniscus — splitting the difference', False),
-                     ("It doesn't matter — the meniscus reading is always correct", False)],
-            'q': 'When reading a burette or measuring cylinder containing water, where should you read the volume?',
-            'wrong_explanations': {1: 'Reading from the TOP of the meniscus gives an overestimate — the markings are '
-                                      'calibrated for the bottom of the meniscus.',
-                                   2: 'Reading from the middle introduces error — always read from the BOTTOM '
-                                      'consistently to match calibration.',
-                                   3: 'Reading from the wrong part of the meniscus introduces a systematic error — it '
-                                      'DOES matter and affects accuracy.'}}],
+                     ('The measuring cylinder — it has the smaller absolute uncertainty', False)],
+            'q': 'A burette (uncertainty ±0.05 cm³) and a measuring cylinder (uncertainty ±1 cm³) both '
+                 'deliver 25 cm³. Determine which gives the lower percentage uncertainty.',
+            'wrong_explanations': {1: 'Size does not set precision; the smaller uncertainty relative to the '
+                                      'reading does. The burette wins at 0.2%.',
+                                   2: 'Same volume, but different uncertainties: 0.05 cm³ vs 1 cm³. The '
+                                      'burette is far more precise.',
+                                   3: "The cylinder's uncertainty (±1 cm³) is LARGER than the burette's "
+                                      '(±0.05 cm³), so it is less precise.'}},
+           {'opts': [('0.5% — (0.01 ÷ 2.00) × 100', True),
+                     ('2.0% — (0.01 ÷ 0.5) × 100, using the wrong value', False),
+                     ('0.005% — (0.01 ÷ 2.00) without the × 100', False),
+                     ('0.02% — dividing 2.00 by 0.01 and misplacing the point', False)],
+            'q': 'A balance reads to ±0.01 g. A student weighs 2.00 g of solid on it. Calculate the '
+                 'percentage uncertainty in this mass.',
+            'wrong_explanations': {1: 'Divide the uncertainty by the measured value, 2.00 g: (0.01 ÷ 2.00) × '
+                                      '100 = 0.5%.',
+                                   2: 'Percentage uncertainty must be multiplied by 100: 0.005 × 100 = 0.5%.',
+                                   3: 'The calculation is uncertainty ÷ value: 0.01 ÷ 2.00 = 0.005, then × '
+                                      '100 = 0.5%.'}},
+           {'opts': [('A burette has a much smaller uncertainty (about ±0.05 cm³) because its graduations '
+                      'are finer, so each reading is closer to the true volume',
+                      True),
+                     ('A burette holds a larger volume, so it must be more precise', False),
+                     ('A burette is made of thicker glass, which reduces errors', False),
+                     ('A measuring cylinder cannot measure volumes accurately at all', False)],
+            'q': 'Explain why a burette gives a more precise volume measurement than a measuring cylinder.',
+            'wrong_explanations': {1: 'Precision depends on the size of the uncertainty, not the capacity; '
+                                      "the burette's fine graduations give ±0.05 cm³.",
+                                   2: 'Glass thickness is irrelevant; it is the fine graduations and small '
+                                      'uncertainty that make it precise.',
+                                   3: 'A measuring cylinder does measure volume, just less precisely (±0.5 '
+                                      'to ±1 cm³) than a burette.'}},
+           {'opts': [('The pipette user — a smaller uncertainty (±0.06 cm³) means the reading is more '
+                      'tightly reproducible',
+                      True),
+                     ('The measuring cylinder user — it is easier to read', False),
+                     ('Neither — both measured 25.0 cm³', False),
+                     ('The measuring cylinder user — a bigger uncertainty means a bigger, clearer scale',
+                      False)],
+            'q': 'Two students measure the same 25.0 cm³ volume: one with a pipette (±0.06 cm³), one with a '
+                 'measuring cylinder (±0.5 cm³). Identify who has the more precise measurement and justify '
+                 'your choice.',
+            'wrong_explanations': {1: "Ease of reading is not precision; the pipette's smaller uncertainty "
+                                      '(±0.06 cm³) makes it more precise.',
+                                   2: 'They measured the same volume but with different uncertainties; the '
+                                      'pipette (±0.06 cm³) is more precise.',
+                                   3: 'A bigger uncertainty means LESS precision, not more. The pipette is '
+                                      'the more precise instrument.'}},
+           {'opts': [('2.5% — (0.5 ÷ 20.0) × 100', True),
+                     ('0.025% — (0.5 ÷ 20.0) without the × 100', False),
+                     ('40% — (20.0 ÷ 0.5), dividing the wrong way', False),
+                     ('10% — (0.5 ÷ 5.0) × 100, using the wrong value', False)],
+            'q': 'A student measures a temperature rise of 20.0 °C with a thermometer of uncertainty ±0.5 '
+                 '°C. Calculate the percentage uncertainty in this reading.',
+            'wrong_explanations': {1: 'Percentage uncertainty must be multiplied by 100: 0.025 × 100 = 2.5%.',
+                                   2: 'Divide the uncertainty by the value: (0.5 ÷ 20.0) × 100 = 2.5%.',
+                                   3: 'Use the measured value of 20.0 °C: (0.5 ÷ 20.0) × 100 = 2.5%.'}},
+           {'opts': [('24.40 cm³ — titre = final − initial = 24.90 − 0.50', True),
+                     ('25.40 cm³ — 24.90 + 0.50, adding the readings', False),
+                     ('24.90 cm³ — the final reading only', False),
+                     ('0.50 cm³ — the initial reading only', False)],
+            'q': 'In a titration the initial burette reading is 0.50 cm³ and the final reading is 24.90 cm³. '
+                 'Calculate the volume of solution added (the titre).',
+            'wrong_explanations': {1: 'The titre is the DIFFERENCE between the readings: 24.90 − 0.50 = '
+                                      '24.40 cm³.',
+                                   2: 'The burette did not start at zero; subtract the initial reading: '
+                                      '24.90 − 0.50 = 24.40 cm³.',
+                                   3: 'That is where the burette started; the titre is 24.90 − 0.50 = 24.40 '
+                                      'cm³.'}},
+           {'opts': [('24.15 cm³ — (24.10 + 24.20 + 24.15) ÷ 3 = 72.45 ÷ 3', True),
+                     ('72.45 cm³ — the sum, without dividing by 3', False),
+                     ('36.23 cm³ — dividing the sum by 2', False),
+                     ('24.20 cm³ — just the largest titre', False)],
+            'q': "A student's concordant titres are 24.10, 24.20 and 24.15 cm³. Calculate the mean titre.",
+            'wrong_explanations': {1: 'A mean divides the total by the number of values: 72.45 ÷ 3 = 24.15 '
+                                      'cm³.',
+                                   2: 'There are three titres, so divide by 3: 72.45 ÷ 3 = 24.15 cm³.',
+                                   3: 'The mean uses all three concordant results: 72.45 ÷ 3 = 24.15 cm³.'}},
+           {'opts': [('0.40% — (0.10 ÷ 25.00) × 100', True),
+                     ('0.20% — using only one 0.05 cm³ reading', False),
+                     ('0.80% — using 0.20 cm³ for the uncertainty', False),
+                     ('4.0% — dividing by 2.5 instead of 25.00', False)],
+            'q': 'In a titration a burette is read twice, each to ±0.05 cm³, giving a titre of 25.00 cm³. '
+                 'The uncertainty in the titre is 2 × 0.05 = 0.10 cm³. Calculate the percentage uncertainty '
+                 'in the titre.',
+            'wrong_explanations': {1: 'Two readings are taken, so the uncertainty is 2 × 0.05 = 0.10 cm³, '
+                                      'giving 0.40%.',
+                                   2: 'Two readings give 0.10 cm³, not 0.20 cm³: (0.10 ÷ 25.00) × 100 = '
+                                      '0.40%.',
+                                   3: 'Divide by the titre, 25.00 cm³: (0.10 ÷ 25.00) × 100 = 0.40%.'}},
+           {'opts': [('Repeats that agree closely (concordant) show the results are reliable; using only the '
+                      'concordant titres removes anomalies, so the mean is more accurate',
+                      True),
+                     ('Repeating uses up the leftover solutions', False),
+                     ('A single accurate reading is impossible with a burette', False),
+                     ('Averaging every titre, including rough ones, is always best', False)],
+            'q': 'Explain why a titration is repeated until concordant results are obtained and only those '
+                 'results are used to calculate the mean.',
+            'wrong_explanations': {1: 'The purpose is reliability, not using up solution: concordant repeats '
+                                      'give a more accurate mean.',
+                                   2: 'One careful reading can be accurate, but repeats that agree confirm '
+                                      'reliability and improve the mean.',
+                                   3: 'Anomalous (non-concordant) titres are excluded; only concordant '
+                                      'results are averaged.'}},
+           {'opts': [('Measure a larger mass — the same absolute uncertainty is then a smaller fraction of '
+                      'the reading',
+                      True),
+                     ('Measure a smaller mass', False),
+                     ('Repeat the same measurement several times', False),
+                     ('Round the reading to fewer decimal places', False)],
+            'q': 'A student measures a mass on a balance of fixed resolution and wants a smaller percentage '
+                 'uncertainty. Suggest how they could achieve this.',
+            'wrong_explanations': {1: 'A smaller mass makes the fixed uncertainty a LARGER fraction, '
+                                      'increasing the percentage uncertainty.',
+                                   2: 'Repeating the identical measurement on the same balance does not '
+                                      'reduce its fixed resolution uncertainty; a larger mass does.',
+                                   3: 'Rounding discards precision and does not lower the true percentage '
+                                      'uncertainty; measuring a larger mass does.'}},
+           {'opts': [('12.5% — (1.0 ÷ 8.0) × 100', True),
+                     ('6.25% — using only one 0.5 °C reading', False),
+                     ('1.25% — (1.0 ÷ 8.0) without the × 100', False),
+                     ('16% — using 1.28 °C uncertainty', False)],
+            'q': "A reaction's temperature is measured as rising by 8.0 °C, with the thermometer read to "
+                 '±0.5 °C at both the start and the end. The uncertainty in the change is 2 × 0.5 = 1.0 °C. '
+                 'Calculate the percentage uncertainty in the temperature change.',
+            'wrong_explanations': {1: 'A change uses two readings, so the uncertainty is 2 × 0.5 = 1.0 °C, '
+                                      'giving 12.5%.',
+                                   2: 'Multiply by 100 for a percentage: 0.125 × 100 = 12.5%.',
+                                   3: 'The uncertainty is 2 × 0.5 = 1.0 °C: (1.0 ÷ 8.0) × 100 = 12.5%.'}},
+           {'opts': [('Burette A — uncertainty 2 × 0.05 = 0.10 cm³, so (0.10 ÷ 20.00) × 100 = 0.5%', True),
+                     ('Burette B, 0.5% — its uncertainty is smaller', False),
+                     ("Burette A, 0.25% — using one reading's 0.05 cm³", False),
+                     ('Both the same — they deliver the same titre', False)],
+            'q': 'Two burettes each deliver a 20.00 cm³ titre. Burette A has ±0.05 cm³ per reading, burette '
+                 'B ±0.10 cm³ per reading (two readings each). Deduce which gives the lower percentage '
+                 'uncertainty and calculate it.',
+            'wrong_explanations': {1: 'Burette B has the LARGER uncertainty (±0.10 per reading); A gives the '
+                                      'lower value, 0.5%.',
+                                   2: 'Two readings give 0.10 cm³, so (0.10 ÷ 20.00) × 100 = 0.5%, not '
+                                      '0.25%.',
+                                   3: 'Same titre, but A has the smaller uncertainty (0.10 vs 0.20 cm³), so '
+                                      "A gives 0.5% vs B's 1.0%."}}],
   'rp': None,
   'spec': '5.3.1.4',
   'summary': 'Describe the importance of precise measurements in chemistry and sources of uncertainty.',
@@ -3217,13 +3768,13 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'ACCURACY — how close a measurement is to the TRUE value.\n'
                          'PRECISION — how reproducible/consistent measurements are (close to each other).\n'
                          '\n'
-                         'A measurement can be precise but not accurate (consistently wrong), or accurate but not '
-                         'precise (correct on average but variable).\n'
+                         'A measurement can be precise but not accurate (consistently wrong), or accurate '
+                         'but not precise (correct on average but variable).\n'
                          '\n'
                          'In chemistry, measurements include:\n'
                          'MASSES — measured using a balance (in grams, g).\n'
-                         'VOLUMES of solutions — measured using a burette, pipette or measuring cylinder (in cm³ or '
-                         'dm³).\n'
+                         'VOLUMES of solutions — measured using a burette, pipette or measuring cylinder (in '
+                         'cm³ or dm³).\n'
                          'TEMPERATURES — measured using a thermometer (in °C).\n'
                          'TIMES — measured using a stopwatch (in seconds).\n'
                          '\n'
@@ -3231,39 +3782,41 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '1 dm³ = 1 litre = 1000 cm³\n'
                          '1 cm³ = 0.001 dm³ = 1 mL',
               'heading': 'Why Measurements Matter in Chemistry'},
-             {'content': 'Every measurement has some UNCERTAINTY — a range within which the true value lies.\n'
+             {'content': 'Every measurement has some UNCERTAINTY — a range within which the true value '
+                         'lies.\n'
                          '\n'
                          'Sources of uncertainty:\n'
-                         'READING ERROR — difficulty in reading exact values from scales (e.g. reading a burette '
-                         'between markings).\n'
-                         'SYSTEMATIC ERROR — a consistent bias in one direction (e.g. a balance not zeroed correctly, '
-                         'a calibration error).\n'
-                         'RANDOM ERROR — unpredictable variations that scatter measurements around the true value.\n'
+                         'READING ERROR — difficulty in reading exact values from scales (e.g. reading a '
+                         'burette between markings).\n'
+                         'SYSTEMATIC ERROR — a consistent bias in one direction (e.g. a balance not zeroed '
+                         'correctly, a calibration error).\n'
+                         'RANDOM ERROR — unpredictable variations that scatter measurements around the true '
+                         'value.\n'
                          '\n'
                          'Reduce uncertainty by:\n'
-                         'Using more precise equipment (e.g. a 25 cm³ pipette is more precise than a 100 cm³ measuring '
-                         'cylinder).\n'
+                         'Using more precise equipment (e.g. a 25 cm³ pipette is more precise than a 100 cm³ '
+                         'measuring cylinder).\n'
                          'Taking REPEAT measurements and calculating a MEAN.\n'
                          'Using appropriate measuring equipment for the scale of measurement.\n'
                          '\n'
                          'Percentage uncertainty = (uncertainty ÷ measured value) × 100\n'
                          '\n'
-                         'The percentage uncertainty of a small measurement is higher than that of a large measurement '
-                         'with the same absolute uncertainty — this is why measuring small volumes with a large '
-                         'cylinder is poor practice.',
+                         'The percentage uncertainty of a small measurement is higher than that of a large '
+                         'measurement with the same absolute uncertainty — this is why measuring small '
+                         'volumes with a large cylinder is poor practice.',
               'heading': 'Uncertainty in Measurements'},
              {'content': 'Common measuring equipment and their precision:\n'
                          '\n'
                          'BALANCE (digital): typically ±0.01 g or ±0.001 g — high precision.\n'
                          '\n'
-                         'BURETTE: 50 cm³ burette with 0.1 cm³ markings. Read to ±0.05 cm³ (between markings). Used '
-                         'for accurate volume delivery in titrations.\n'
+                         'BURETTE: 50 cm³ burette with 0.1 cm³ markings. Read to ±0.05 cm³ (between '
+                         'markings). Used for accurate volume delivery in titrations.\n'
                          '\n'
-                         'PIPETTE: fixed volume (e.g. exactly 25.00 cm³). Very high precision for delivering one '
-                         'specific volume. Used to deliver precise volumes of solutions.\n'
+                         'PIPETTE: fixed volume (e.g. exactly 25.00 cm³). Very high precision for delivering '
+                         'one specific volume. Used to deliver precise volumes of solutions.\n'
                          '\n'
-                         'MEASURING CYLINDER: less precise than a burette or pipette. Read from the BOTTOM of the '
-                         'MENISCUS (the curved water surface).\n'
+                         'MEASURING CYLINDER: less precise than a burette or pipette. Read from the BOTTOM '
+                         'of the MENISCUS (the curved water surface).\n'
                          '\n'
                          'THERMOMETER: typically ±1°C or ±0.5°C depending on type.\n'
                          '\n'
@@ -3276,72 +3829,209 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'title': 'Chemical Measurements',
   'triple_only': None,
   'variables': [('% uncertainty', 'Percentage uncertainty', '%', '')]},
- {'common_mistake': 'The theoretical yield must be calculated from the balanced equation — not just assumed. Use '
-                    'moles: find moles of limiting reactant → use molar ratio → calculate mass of product. Then divide '
-                    'actual mass by this calculated theoretical mass.',
+ {'common_mistake': 'Students often divide the theoretical yield by the actual yield, getting a percentage '
+                    'bigger than 100% and not noticing anything is wrong. Percentage yield can never be more '
+                    'than 100%, because you cannot collect more product than the balanced equation predicts. '
+                    'Always divide the ACTUAL yield by the THEORETICAL yield, then multiply by 100.',
   'equations': ['Percentage yield (%) = (actual yield ÷ theoretical yield) × 100'],
-  'fifas': [{'label': 'Percentage Yield',
-             'question': 'A student expects to make 8.0 g of copper sulfate but only collects 6.2 g. Calculate the '
-                         'percentage yield.',
-             'steps': [('F', 'Percentage yield = (actual yield ÷ theoretical yield) × 100'),
-                       ('I', 'Actual = 6.2 g, theoretical = 8.0 g'),
-                       ('F', '% yield = (6.2 ÷ 8.0) × 100 = 0.775 × 100'),
-                       ('A', 'Percentage yield = 77.5%')]}],
-  'higher': 'Calculate theoretical yield using moles: convert reactant mass → moles → use molar ratio from equation → '
-            'convert to product mass. Calculate percentage yield from these values. Evaluate the economic and '
-            'environmental importance of maximising percentage yield. Identify the limiting reactant in a reaction and '
-            'use it to calculate maximum theoretical yield.',
+  'fifas': [{'label': 'Theoretical yield first, then percentage yield',
+             'question': 'Magnesium burns: 2Mg + O₂ → 2MgO. 4.8 g of magnesium is burned and 6.4 g of '
+                         'magnesium oxide is collected. Calculate the percentage yield. Ar: Mg = 24, O = 16.',
+             'steps': [('F',
+                        'find the theoretical yield from the equation, then % yield = (actual ÷ theoretical) '
+                        '× 100'),
+                       ('I',
+                        'n(Mg) = 4.8 ÷ 24 = 0.2 mol;  n(MgO) = 0.2 mol;  theoretical = 0.2 × 40 = 8.0 g;  '
+                        'actual = 6.4 g'),
+                       ('F', '% yield = (6.4 ÷ 8.0) × 100'),
+                       ('A', 'percentage yield = 80%')]},
+            {'label': 'Rearranging to find the actual yield',
+             'question': 'A reaction has a theoretical yield of 25 g and a percentage yield of 60%. '
+                         'Calculate the actual yield.',
+             'steps': [('F', 'actual yield = (percentage yield ÷ 100) × theoretical yield'),
+                       ('I', '= (60 ÷ 100) × 25'),
+                       ('F', '= 0.6 × 25'),
+                       ('A', 'actual yield = 15 g')]},
+            {'label': 'A decomposition, two steps',
+             'question': 'Calcium carbonate decomposes: CaCO₃ → CaO + CO₂. 25 g of CaCO₃ gives 11.2 g of '
+                         'CaO. Calculate the percentage yield. Mr: CaCO₃ = 100, CaO = 56.',
+             'steps': [('F',
+                        'find the theoretical yield of CaO, then % yield = (actual ÷ theoretical) × 100'),
+                       ('I',
+                        'n(CaCO₃) = 25 ÷ 100 = 0.25 mol;  n(CaO) = 0.25 mol;  theoretical = 0.25 × 56 = 14 '
+                        'g'),
+                       ('F', '% yield = (11.2 ÷ 14) × 100'),
+                       ('A', 'percentage yield = 80%')]}],
+  'higher': 'Calculate theoretical yield using moles: convert reactant mass → moles → use molar ratio from '
+            'equation → convert to product mass. Calculate percentage yield from these values. Evaluate the '
+            'economic and environmental importance of maximising percentage yield. Identify the limiting '
+            'reactant in a reaction and use it to calculate maximum theoretical yield.',
   'id': 'percentage-yield',
-  'key_note': '% yield = (actual ÷ theoretical) × 100. Always less than 100% in practice. Reasons: reversible '
-              'reactions, side reactions, practical losses, impurities. High yield = less waste, lower cost, more '
-              'sustainable. Chemistry-only spec point.',
+  'key_note': '% yield = (actual ÷ theoretical) × 100. Always less than 100% in practice. Reasons: '
+              'reversible reactions, side reactions, practical losses, impurities. High yield = less waste, '
+              'lower cost, more sustainable. Chemistry-only spec point.',
   'matching': {'instruction': 'Match each scenario to the correct percentage yield or reason for low yield.',
                'pairs': [('76%', 'Actual yield 38 g, theoretical yield 50 g — (38÷50) × 100'),
-                         ('Reversible reaction', "Products re-form reactants — reaction doesn't go to completion"),
-                         ('Practical losses', 'Product sticks to glassware or lost during filtration and transfer'),
-                         ('High yield is desirable', 'Less waste, lower raw material cost, more sustainable process')],
+                         ('Reversible reaction',
+                          "Products re-form reactants — reaction doesn't go to completion"),
+                         ('Practical losses',
+                          'Product sticks to glassware or lost during filtration and transfer'),
+                         ('High yield is desirable',
+                          'Less waste, lower raw material cost, more sustainable process')],
                'title': 'Percentage Yield'},
-  'quiz': [{'opts': [('70% — (14 ÷ 20) × 100 = 70%', True),
-                     ('43% — (14 ÷ 20) × 3 = 42%', False),
-                     ('143% — (20 ÷ 14) × 100 = 143% (inverted the fraction)', False),
-                     ('30% — 100% minus 70% (calculated the loss not the yield)', False)],
-            'q': 'A reaction has a theoretical yield of 20 g but only 14 g is obtained. What is the percentage yield?',
-            'wrong_explanations': {1: '% yield = actual ÷ theoretical × 100 = 14 ÷ 20 × 100 = 70%, not 43%.',
-                                   2: 'Must divide actual by theoretical — not theoretical by actual. That gives a '
-                                      'value over 100%, which is impossible for yield.',
-                                   3: '30% is the percentage LOSS — the question asks for the percentage YIELD, which '
-                                      'is 70%.'}},
-           {'opts': [('Practical losses during separation, incomplete reactions, side reactions and reversible '
-                      'reactions all reduce the amount of product collected',
+  'quiz': [{'opts': [('70% — (actual ÷ theoretical) × 100 = (14 ÷ 20) × 100', True),
+                     ('143% — (20 ÷ 14) × 100, dividing the wrong way', False),
+                     ('30% — 100% minus 70%, giving the loss', False),
+                     ('14% — using the actual yield in grams as the percentage', False)],
+            'q': 'A reaction has a theoretical yield of 20 g, but only 14 g of product is obtained. '
+                 'Calculate the percentage yield.',
+            'wrong_explanations': {1: 'Percentage yield cannot exceed 100%. Divide actual by theoretical: '
+                                      '(14 ÷ 20) × 100 = 70%.',
+                                   2: '30% is the percentage LOST; the yield is (14 ÷ 20) × 100 = 70%.',
+                                   3: '14 g is a mass, not a percentage; divide by the theoretical yield: '
+                                      '70%.'}},
+           {'opts': [('Some product is lost in practice (on glassware, in filtering or transferring), '
+                      'reactions may be reversible or incomplete, and side reactions can make other products',
                       True),
-                     ('The law of conservation of mass means mass must be lost during reactions', False),
-                     ('Theoretical yield calculations always overestimate because chemists round up', False),
-                     ('Products decompose after forming — all products eventually revert to reactants', False)],
-            'q': 'Why is the actual yield of a reaction almost always less than the theoretical yield?',
-            'wrong_explanations': {1: 'Conservation of mass means total mass is conserved — but some mass ends up as '
-                                      'by-products, waste or losses, not the desired product.',
-                                   2: "Theoretical yield calculations are based on exact stoichiometry — they don't "
-                                      'systematically overestimate.',
-                                   3: 'Not all products decompose — the reasons are specific: losses, incomplete '
-                                      'reactions, reversibility, side reactions.'}}],
+                     ('The law of conservation of mass means mass is lost in every reaction', False),
+                     ('Theoretical yields are always calculated too high by rounding', False),
+                     ('All of the product decomposes back into the reactants', False)],
+            'q': 'Explain why the actual yield of a reaction is almost always less than the theoretical '
+                 'yield.',
+            'wrong_explanations': {1: 'Mass is conserved; the desired product is just less than the maximum '
+                                      'because of losses and side reactions.',
+                                   2: 'Theoretical yield comes from exact stoichiometry, not rounding; the '
+                                      'shortfall is from real losses.',
+                                   3: 'Not all product reverts; the shortfall is from practical losses, '
+                                      'incomplete or side reactions.'}},
+           {'opts': [('80% — (40 ÷ 50) × 100', True),
+                     ('125% — (50 ÷ 40) × 100, dividing the wrong way', False),
+                     ('20% — 100% minus 80%, giving the loss', False),
+                     ('40% — using the actual yield in grams', False)],
+            'q': 'A reaction has a theoretical yield of 50 g and an actual yield of 40 g. Calculate the '
+                 'percentage yield.',
+            'wrong_explanations': {1: 'Yield cannot exceed 100%: (40 ÷ 50) × 100 = 80%.',
+                                   2: '20% is the loss; the yield is (40 ÷ 50) × 100 = 80%.',
+                                   3: '40 g is a mass; divide by the theoretical yield: (40 ÷ 50) × 100 = '
+                                      '80%.'}},
+           {'opts': [('The maximum mass of product that the balanced equation predicts, assuming the '
+                      'reaction is complete with no losses',
+                      True),
+                     ('The mass of product actually collected in the experiment', False),
+                     ('The mass of the limiting reactant used', False),
+                     ('The percentage of reactant converted to product', False)],
+            'q': 'State what is meant by the theoretical yield of a reaction.',
+            'wrong_explanations': {1: 'That is the ACTUAL yield; the theoretical yield is the maximum '
+                                      'predicted by the equation.',
+                                   2: 'The theoretical yield is the product mass predicted, not the mass of '
+                                      'a reactant.',
+                                   3: 'That is closer to percentage yield; theoretical yield is a maximum '
+                                      'product mass.'}},
+           {'opts': [('75% — (18 ÷ 24) × 100', True),
+                     ('133% — (24 ÷ 18) × 100, dividing the wrong way', False),
+                     ('25% — 100% minus 75%, giving the loss', False),
+                     ('6% — using the 6 g difference', False)],
+            'q': 'A student obtains 18 g of product from a reaction whose theoretical yield is 24 g. '
+                 'Calculate the percentage yield.',
+            'wrong_explanations': {1: 'Yield cannot exceed 100%: (18 ÷ 24) × 100 = 75%.',
+                                   2: '25% is the loss; the yield is (18 ÷ 24) × 100 = 75%.',
+                                   3: 'The 6 g shortfall is not the yield; (18 ÷ 24) × 100 = 75%.'}},
+           {'opts': [('More of the reactants are turned into useful product, so less is wasted and the raw '
+                      'materials are used more efficiently and cheaply',
+                      True),
+                     ('A high yield always means the reaction is faster', False),
+                     ('A high yield means the product is always purer', False),
+                     ('A high yield reduces the atom economy of the process', False)],
+            'q': 'Explain why a high percentage yield is desirable in an industrial process.',
+            'wrong_explanations': {1: 'Yield is about how much product is made, not the rate; a fast '
+                                      'reaction can still have a low yield.',
+                                   2: 'Yield measures quantity, not purity; a high yield does not guarantee '
+                                      'a pure product.',
+                                   3: 'Yield and atom economy are separate measures; a high yield does not '
+                                      'lower atom economy.'}},
+           {'opts': [('8 g — n(Mg) = 4.8 ÷ 24 = 0.2 mol; ratio 1:1; mass = 0.2 × 40', True),
+                     ('4.8 g — the oxide equals the mass of the metal', False),
+                     ('192 g — 4.8 × 40, skipping the moles', False),
+                     ('0.2 g — stopping at the moles', False)],
+            'q': 'Magnesium burns in oxygen: 2Mg + O₂ → 2MgO. Calculate the theoretical yield of magnesium '
+                 'oxide when 4.8 g of magnesium is burned. Ar: Mg = 24, O = 16.',
+            'wrong_explanations': {1: 'Oxygen is added, so the oxide is heavier: 0.2 mol × 40 = 8 g.',
+                                   2: 'Convert to moles first: 4.8 ÷ 24 = 0.2 mol, then × 40 = 8 g.',
+                                   3: '0.2 mol × Mr(MgO) = 0.2 × 40 = 8 g.'}},
+           {'opts': [('80% — (6.4 ÷ 8.0) × 100', True),
+                     ('125% — (8.0 ÷ 6.4) × 100, dividing the wrong way', False),
+                     ('20% — 100% minus 80%, giving the loss', False),
+                     ('64% — using the actual yield in grams', False)],
+            'q': 'When 4.8 g of magnesium is burned (theoretical yield of magnesium oxide = 8.0 g), 6.4 g of '
+                 'magnesium oxide is actually collected. Calculate the percentage yield.',
+            'wrong_explanations': {1: 'Yield cannot exceed 100%: (6.4 ÷ 8.0) × 100 = 80%.',
+                                   2: '20% is the loss; the yield is (6.4 ÷ 8.0) × 100 = 80%.',
+                                   3: '6.4 g is a mass; divide by the theoretical yield: (6.4 ÷ 8.0) × 100 = '
+                                      '80%.'}},
+           {'opts': [('15 g — actual yield = (60 ÷ 100) × 25', True),
+                     ('41.7 g — 25 ÷ 0.60, dividing instead of multiplying', False),
+                     ('60 g — using the percentage as a mass', False),
+                     ('10 g — 25 minus 60% of something', False)],
+            'q': 'A reaction has a theoretical yield of 25 g and a percentage yield of 60%. Calculate the '
+                 'actual yield obtained.',
+            'wrong_explanations': {1: 'Actual yield = (% ÷ 100) × theoretical = 0.6 × 25 = 15 g.',
+                                   2: '60 is a percentage; the actual yield is 0.6 × 25 = 15 g.',
+                                   3: 'Multiply the theoretical yield by 0.6: 0.6 × 25 = 15 g.'}},
+           {'opts': [('30 g — theoretical = actual ÷ (percentage ÷ 100) = 21 ÷ 0.70', True),
+                     ('14.7 g — 21 × 0.70, multiplying instead of dividing', False),
+                     ('70 g — using the percentage as a mass', False),
+                     ('15 g — 21 × 0.70 then rounding', False)],
+            'q': 'A student obtains an actual yield of 21 g at a percentage yield of 70%. Calculate the '
+                 'theoretical yield.',
+            'wrong_explanations': {1: 'Theoretical yield = actual ÷ 0.70 = 21 ÷ 0.70 = 30 g.',
+                                   2: '70 is a percentage; theoretical = 21 ÷ 0.70 = 30 g.',
+                                   3: 'Divide, do not multiply: 21 ÷ 0.70 = 30 g.'}},
+           {'opts': [('80% — theoretical CaO = 0.25 mol × 56 = 14 g; (11.2 ÷ 14) × 100', True),
+                     ('44.8% — dividing 11.2 by 25 (the carbonate mass)', False),
+                     ('125% — (14 ÷ 11.2) × 100, dividing the wrong way', False),
+                     ('20% — 100% minus 80%, giving the loss', False)],
+            'q': 'Calcium carbonate decomposes: CaCO₃ → CaO + CO₂. 25 g of calcium carbonate is heated and '
+                 '11.2 g of calcium oxide is collected. Calculate the percentage yield. Mr: CaCO₃ = 100, CaO '
+                 '= 56.',
+            'wrong_explanations': {1: 'Compare with the theoretical CaO (14 g), not the carbonate: (11.2 ÷ '
+                                      '14) × 100 = 80%.',
+                                   2: 'Yield cannot exceed 100%: (11.2 ÷ 14) × 100 = 80%.',
+                                   3: '20% is the loss; the yield is (11.2 ÷ 14) × 100 = 80%.'}},
+           {'opts': [('Because the reaction is reversible and reaches an equilibrium, so ammonia breaks back '
+                      'down and not all of the nitrogen and hydrogen is converted to ammonia',
+                      True),
+                     ('Because ammonia is a gas that always escapes the reactor', False),
+                     ('Because the nitrogen and hydrogen are impure', False),
+                     ('Because ammonia has a very high atom economy', False)],
+            'q': 'The Haber process, N₂ + 3H₂ ⇌ 2NH₃, is reversible. Explain why its yield of ammonia is '
+                 'always less than 100%.',
+            'wrong_explanations': {1: 'The key reason is reversibility and equilibrium, not gas escaping; '
+                                      'the reaction does not go to completion.',
+                                   2: 'Even with pure reactants the yield is limited, because the reaction '
+                                      'reaches equilibrium.',
+                                   3: 'Atom economy is a separate measure; the yield is limited because the '
+                                      'reaction is reversible.'}}],
   'rp': None,
   'spec': '4.3.3.1',
-  'summary': 'Calculate percentage yield and explain why the actual yield is often less than the theoretical yield.',
-  'theory': [{'content': 'In any chemical reaction, the amount of product you calculate from the equation is the '
-                         'THEORETICAL YIELD — the maximum possible amount.\n'
+  'summary': 'Calculate percentage yield and explain why the actual yield is often less than the theoretical '
+             'yield.',
+  'theory': [{'content': 'In any chemical reaction, the amount of product you calculate from the equation is '
+                         'the THEORETICAL YIELD — the maximum possible amount.\n'
                          '\n'
                          'The ACTUAL YIELD is the amount of product you actually collect in the lab.\n'
                          '\n'
                          'In practice, actual yield is almost always LESS than theoretical yield.\n'
                          '\n'
                          'REASONS FOR LOWER ACTUAL YIELD:\n'
-                         '1. REVERSIBLE REACTIONS — the reaction may not go to completion; products form reactants '
-                         'again.\n'
-                         '2. SIDE REACTIONS — reactants may form unexpected by-products, using up starting materials.\n'
-                         '3. PRACTICAL LOSSES — product sticks to glassware, lost during filtration, evaporation or '
-                         'transfer.\n'
+                         '1. REVERSIBLE REACTIONS — the reaction may not go to completion; products form '
+                         'reactants again.\n'
+                         '2. SIDE REACTIONS — reactants may form unexpected by-products, using up starting '
+                         'materials.\n'
+                         '3. PRACTICAL LOSSES — product sticks to glassware, lost during filtration, '
+                         'evaporation or transfer.\n'
                          '4. IMPURE REACTANTS — some reactants may not react if they contain impurities.\n'
-                         '5. INCOMPLETE REACTIONS — insufficient time, temperature or contact between reactants.',
+                         '5. INCOMPLETE REACTIONS — insufficient time, temperature or contact between '
+                         'reactants.',
               'heading': 'Theoretical Yield vs Actual Yield'},
              {'content': 'EQUATION:\n'
                          '\n'
@@ -3356,7 +4046,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'Actual yield collected = 38 g\n'
                          'Percentage yield = (38 ÷ 50) × 100 = 76%\n'
                          '\n'
-                         'A percentage yield of 100% would mean no product was lost — impossible in practice.\n'
+                         'A percentage yield of 100% would mean no product was lost — impossible in '
+                         'practice.\n'
                          'A high percentage yield is desirable — means less waste and lower costs.\n'
                          '\n'
                          'INDUSTRIAL IMPORTANCE:\n'
@@ -3387,73 +4078,226 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'Recycle unreacted starting materials where possible.',
               'heading': 'Why Maximising Yield Matters'}],
   'title': 'Percentage Yield',
-  'triple_only': 'Percentage yield (4.3.3.1) is chemistry-only — not in Combined Science. Students must calculate '
-                 'percentage yield and explain why actual yield is less than theoretical yield.',
+  'triple_only': 'Percentage yield (4.3.3.1) is chemistry-only — not in Combined Science. Students must '
+                 'calculate percentage yield and explain why actual yield is less than theoretical yield.',
   'variables': []},
- {'common_mistake': 'Atom economy uses the relative formula masses of the PRODUCTS (from the equation) — not the '
-                    'reactants. Divide the Mr of the DESIRED product by the sum of Mr of ALL products. Do not confuse '
-                    'with percentage yield — atom economy is about the equation; percentage yield is about the actual '
-                    'experiment.',
+ {'common_mistake': 'Students often confuse atom economy with percentage yield, or work it out from the '
+                    'reactants instead of the products. Atom economy uses only the products: it is the Mr of '
+                    'the DESIRED product divided by the sum of the Mr of ALL the products, × 100. Percentage '
+                    'yield is about how much product you actually collect; atom economy is a property of the '
+                    'balanced equation itself.',
   'equations': ['Atom economy (%) = (Mr of desired products ÷ sum of Mr of ALL products) × 100'],
-  'fifas': [{'label': 'Atom Economy Calculation',
-             'question': 'Calculate the atom economy for making ethanol (C₂H₅OH, Mr = 46) from the reaction: C₂H₄ + '
-                         'H₂O → C₂H₅OH',
-             'steps': [('F', 'Atom economy = (Mr desired product ÷ sum Mr all products) × 100'),
-                       ('I', 'Only one product: C₂H₅OH, Mr = 46. Sum of all products = 46'),
-                       ('F', 'Atom economy = (46 ÷ 46) × 100'),
-                       ('A', 'Atom economy = 100% — addition reaction, one product only')]}],
-  'higher': 'Calculate atom economy using Mr values. Compare atom economy of different synthetic routes to the same '
-            'product. Evaluate the economic and environmental importance of high atom economy in industrial chemistry. '
-            'Explain why pharmaceutical manufacturers are encouraged to use reactions with high atom economy.',
+  'fifas': [{'label': 'Atom economy from a full equation',
+             'question': 'Calculate the atom economy for making calcium oxide by heating limestone: CaCO₃ → '
+                         'CaO + CO₂. Mr: CaO = 56, CO₂ = 44.',
+             'steps': [('F', 'atom economy = (Mr of desired product ÷ sum of Mr of all products) × 100'),
+                       ('I', 'desired = CaO = 56;  all products = 56 + 44 = 100'),
+                       ('F', '= (56 ÷ 100) × 100'),
+                       ('A', 'atom economy = 56%')]},
+            {'label': 'Products with coefficients',
+             'question': 'Calculate the atom economy for making iron: Fe₂O₃ + 3CO → 2Fe + 3CO₂. Mr: Fe = 56, '
+                         'CO₂ = 44.',
+             'steps': [('F',
+                        "multiply each product's Mr by its coefficient; atom economy = (desired ÷ all "
+                        'products) × 100'),
+                       ('I', 'desired = 2 × 56 = 112;  all products = 112 + (3 × 44) = 112 + 132 = 244'),
+                       ('F', '= (112 ÷ 244) × 100'),
+                       ('A', 'atom economy = 45.9%')]},
+            {'label': 'A fermentation route',
+             'question': 'Calculate the atom economy for making ethanol by fermentation: C₆H₁₂O₆ → 2C₂H₅OH + '
+                         '2CO₂. Mr: C₂H₅OH = 46, CO₂ = 44.',
+             'steps': [('F',
+                        "multiply each product's Mr by its coefficient; atom economy = (desired ÷ all "
+                        'products) × 100'),
+                       ('I', 'desired = 2 × 46 = 92;  all products = 92 + (2 × 44) = 92 + 88 = 180'),
+                       ('F', '= (92 ÷ 180) × 100'),
+                       ('A', 'atom economy = 51.1%')]}],
+  'higher': 'Calculate atom economy using Mr values. Compare atom economy of different synthetic routes to '
+            'the same product. Evaluate the economic and environmental importance of high atom economy in '
+            'industrial chemistry. Explain why pharmaceutical manufacturers are encouraged to use reactions '
+            'with high atom economy.',
   'id': 'atom-economy',
-  'key_note': 'Atom economy = (Mr desired product ÷ sum Mr all products) × 100. High atom economy = less waste = '
-              'sustainable. Addition reactions: 100% atom economy (one product). Low atom economy = more waste '
-              'by-products. Distinct from % yield — atom economy is a property of the reaction equation.',
+  'key_note': 'Atom economy = (Mr desired product ÷ sum Mr all products) × 100. High atom economy = less '
+              'waste = sustainable. Addition reactions: 100% atom economy (one product). Low atom economy = '
+              'more waste by-products. Distinct from % yield — atom economy is a property of the reaction '
+              'equation.',
   'matching': {'instruction': 'Match each scenario to atom economy or a related concept.',
                'pairs': [('100% atom economy',
                           'Addition polymerisation — only one product formed, all atoms go into the polymer'),
-                         ('Lower atom economy', 'Decomposition of CaCO₃ → CaO + CO₂ — 44% of mass becomes CO₂ waste'),
+                         ('Lower atom economy',
+                          'Decomposition of CaCO₃ → CaO + CO₂ — 44% of mass becomes CO₂ waste'),
                          ('Why high atom economy matters',
                           'Less waste, lower disposal costs, more sustainable use of raw materials'),
                          ('Atom economy vs % yield',
                           'Atom economy: efficiency of the equation. % yield: how much product is actually '
                           'collected.')],
                'title': 'Atom Economy'},
-  'quiz': [{'opts': [('80% — desired product Mr = 80, total products = 80 + 20 = 100; (80 ÷ 100) × 100 = 80%', True),
-                     ('20% — (20 ÷ 100) × 100 (calculated waste not yield)', False),
-                     ('400% — (80 ÷ 20) × 100 (divided desired by waste)', False),
-                     ('75% — calculated incorrectly', False)],
-            'q': 'A reaction produces 80 g of desired product and 20 g of waste product. What is the atom economy?',
-            'wrong_explanations': {1: '20% is the proportion of WASTE — atom economy = desired ÷ total = 80 ÷ 100 = '
+  'quiz': [{'opts': [('80% — (80 ÷ (80 + 20)) × 100 = (80 ÷ 100) × 100', True),
+                     ('20% — using the waste product (20 ÷ 100)', False),
+                     ('400% — (80 ÷ 20) × 100, dividing by the waste only', False),
+                     ('100% — assuming all reactions are 100%', False)],
+            'q': 'A reaction makes a desired product of Mr 80 and a waste product of Mr 20. Calculate the '
+                 'atom economy.',
+            'wrong_explanations': {1: 'Atom economy uses the DESIRED product: 80 ÷ 100 × 100 = 80%.',
+                                   2: 'Divide by the TOTAL of all products (80 + 20 = 100): 80 ÷ 100 × 100 = '
                                       '80%.',
-                                   2: 'Must divide desired by TOTAL (desired + waste) — not by waste alone.',
-                                   3: 'No standard formula gives 75% here — atom economy = (80 ÷ 100) × 100 = 80%.'}},
-           {'opts': [('Only one product is formed — all atoms from the reactants end up in the single product with no '
-                      'by-products',
+                                   3: 'There is a waste product here, so the atom economy is 80 ÷ 100 × 100 '
+                                      '= 80%.'}},
+           {'opts': [('There is only one product, so all of the atoms from the reactants end up in it and '
+                      'none are wasted',
                       True),
-                     ('Addition reactions are always complete — 100% of reactants are converted to products', False),
-                     ('Addition reactions release energy — energy counts as a product increasing the total', False),
-                     ('The reactants have the same Mr as the products — so the ratio is always 1', False)],
-            'q': 'Why do addition reactions always have an atom economy of 100%?',
-            'wrong_explanations': {1: '100% atom economy relates to NO by-products — not to whether the reaction is '
-                                      'complete. A complete reaction with by-products still has less than 100% atom '
-                                      'economy.',
-                                   2: 'Energy is not counted as a chemical product in atom economy calculations.',
-                                   3: 'In addition reactions the product Mr equals the sum of reactant Mr exactly — '
-                                      'but the key reason is that ALL atoms go into the ONE product.'}}],
+                     ('Because addition reactions always go to completion', False),
+                     ('Because the reactants and products have the same Mr by coincidence', False),
+                     ('Because addition reactions release energy', False)],
+            'q': 'Explain why an addition reaction has an atom economy of 100%.',
+            'wrong_explanations': {1: 'Going to completion is about yield; 100% atom economy is because '
+                                      'there is only one product and no waste.',
+                                   2: 'It is not coincidence: with a single product, every reactant atom '
+                                      'must be in it, so 100%.',
+                                   3: 'Energy is not a product counted in atom economy; the 100% comes from '
+                                      'having no by-products.'}},
+           {'opts': [('A large proportion of the reactant atoms end up in the desired product, so little is '
+                      'wasted',
+                      True),
+                     ('The reaction produces a very pure product', False),
+                     ('The reaction has a very high percentage yield', False),
+                     ('The reaction is very fast', False)],
+            'q': 'State what a high atom economy tells you about a reaction.',
+            'wrong_explanations': {1: 'Atom economy is about proportion of atoms in the desired product, not '
+                                      'purity.',
+                                   2: 'Atom economy and yield are different; a high atom economy does not '
+                                      'guarantee a high yield.',
+                                   3: 'Atom economy says nothing about rate; it measures how much of the '
+                                      'reactant mass is useful product.'}},
+           {'opts': [('Atom economy is the proportion of reactant atoms that end up in the desired product '
+                      '(from the equation); percentage yield is how much product is actually collected '
+                      'compared with the maximum',
+                      True),
+                     ('They are two names for the same quantity', False),
+                     ('Atom economy is measured in the lab; percentage yield is calculated from the equation',
+                      False),
+                     ('Atom economy is always larger than percentage yield', False)],
+            'q': 'State the difference between atom economy and percentage yield.',
+            'wrong_explanations': {1: 'They are different: atom economy comes from the equation, percentage '
+                                      'yield from the experiment.',
+                                   2: 'It is the other way round: atom economy is from the equation, '
+                                      'percentage yield from the experiment.',
+                                   3: 'Neither is always larger; they measure different things.'}},
+           {'opts': [('44% — (44 ÷ (44 + 56)) × 100 = (44 ÷ 100) × 100', True),
+                     ('56% — using the by-product instead', False),
+                     ('79% — (44 ÷ 56) × 100, dividing by the by-product', False),
+                     ('100% — assuming one product', False)],
+            'q': 'A reaction produces a desired product of Mr 44 and a by-product of Mr 56. Calculate the '
+                 'atom economy.',
+            'wrong_explanations': {1: 'Atom economy uses the DESIRED product: 44 ÷ 100 × 100 = 44%.',
+                                   2: 'Divide by the total of all products (44 + 56 = 100): 44 ÷ 100 × 100 = '
+                                      '44%.',
+                                   3: 'There is a by-product here, so atom economy is 44 ÷ 100 × 100 = '
+                                      '44%.'}},
+           {'opts': [('Less waste is produced, so raw materials are used more efficiently and fewer '
+                      'by-products need disposing of — cheaper and more sustainable',
+                      True),
+                     ('The product is always formed faster', False),
+                     ('The percentage yield is automatically 100%', False),
+                     ('Less energy is always needed to start the reaction', False)],
+            'q': 'Give one reason why chemists prefer reactions with a high atom economy.',
+            'wrong_explanations': {1: 'Rate is unrelated to atom economy; the benefit is less waste and '
+                                      'better use of raw materials.',
+                                   2: 'Atom economy does not fix the yield; its benefit is efficient use of '
+                                      'atoms and less waste.',
+                                   3: 'Activation energy is separate; a high atom economy means less waste, '
+                                      'not lower activation energy.'}},
+           {'opts': [('56% — (56 ÷ (56 + 44)) × 100 = (56 ÷ 100) × 100', True),
+                     ('44% — using the carbon dioxide as the desired product', False),
+                     ('127% — (56 ÷ 44) × 100, dividing by the CO₂ only', False),
+                     ('100% — assuming one product', False)],
+            'q': 'Calcium oxide is made by heating limestone: CaCO₃ → CaO + CO₂. Calculate the atom economy '
+                 'for making calcium oxide. Mr: CaO = 56, CO₂ = 44.',
+            'wrong_explanations': {1: 'The desired product is CaO: 56 ÷ 100 × 100 = 56%.',
+                                   2: 'Divide by the total of all products (56 + 44 = 100): 56%.',
+                                   3: 'There are two products (CaO and CO₂), so atom economy is 56 ÷ 100 × '
+                                      '100 = 56%.'}},
+           {'opts': [('1.2% — (2 ÷ (2 + 161)) × 100 = (2 ÷ 163) × 100', True),
+                     ('98.8% — using the zinc sulfate as the desired product', False),
+                     ('50% — assuming the two products share the mass equally', False),
+                     ('100% — assuming one product', False)],
+            'q': 'Hydrogen can be made by reacting zinc with sulfuric acid: Zn + H₂SO₄ → ZnSO₄ + H₂. '
+                 'Calculate the atom economy for making hydrogen. Mr: H₂ = 2, ZnSO₄ = 161.',
+            'wrong_explanations': {1: 'The desired product is hydrogen (Mr 2): 2 ÷ 163 × 100 ≈ 1.2%.',
+                                   2: 'The products have very different Mr (2 and 161): 2 ÷ 163 × 100 ≈ '
+                                      '1.2%.',
+                                   3: 'There are two products; the hydrogen is a tiny fraction: 2 ÷ 163 × '
+                                      '100 ≈ 1.2%.'}},
+           {'opts': [('Hydration of ethene — it is an addition reaction with only one product, so its atom '
+                      'economy is 100%, higher than fermentation which also makes CO₂',
+                      True),
+                     ('Fermentation, because glucose is a large molecule', False),
+                     ('They have the same atom economy', False),
+                     ('Fermentation, because it does not need high temperatures', False)],
+            'q': 'Ethanol can be made by fermentation (C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂) or by the hydration of '
+                 'ethene (C₂H₄ + H₂O → C₂H₅OH). Deduce which route has the higher atom economy.',
+            'wrong_explanations': {1: 'Fermentation makes CO₂ as well, so its atom economy is below 100%; '
+                                      'hydration (one product) is 100%.',
+                                   2: 'Hydration makes only ethanol (100%); fermentation also makes CO₂, so '
+                                      'it is lower.',
+                                   3: 'Conditions do not set atom economy; hydration has one product (100%), '
+                                      'higher than fermentation.'}},
+           {'opts': [('51.1% — desired = 2 × 46 = 92; all products = 92 + (2 × 44) = 180; (92 ÷ 180) × 100',
+                      True),
+                     ('52% — using one ethanol molecule (46 ÷ 88)', False),
+                     ('104% — (92 ÷ 88) × 100, dividing by the CO₂ only', False),
+                     ('100% — assuming one product', False)],
+            'q': 'Ethanol is made by fermentation: C₆H₁₂O₆ → 2C₂H₅OH + 2CO₂. Calculate the atom economy for '
+                 'producing ethanol. Mr: C₂H₅OH = 46, CO₂ = 44.',
+            'wrong_explanations': {1: 'There are TWO ethanol molecules (2 × 46 = 92) and two CO₂; 92 ÷ 180 × '
+                                      '100 = 51.1%.',
+                                   2: 'Divide by the total of all products (92 + 88 = 180): 92 ÷ 180 × 100 = '
+                                      '51.1%.',
+                                   3: 'Fermentation also makes CO₂, so the atom economy is 92 ÷ 180 × 100 = '
+                                      '51.1%.'}},
+           {'opts': [('Percentage yield measures how much of the possible product is collected, while atom '
+                      'economy measures how much of the reactant mass becomes the desired product; a '
+                      'reaction can convert almost completely (high yield) yet still make a large waste '
+                      'by-product (low atom economy)',
+                      True),
+                     ('It cannot — a high yield always means a high atom economy', False),
+                     ('Because a high yield destroys some of the atoms', False),
+                     ('Because atom economy falls as the temperature rises', False)],
+            'q': 'Explain how a reaction can have a high percentage yield but a low atom economy.',
+            'wrong_explanations': {1: 'They are independent: a reaction can collect nearly all its product '
+                                      '(high yield) yet make lots of waste (low atom economy).',
+                                   2: 'Atoms are conserved; the low atom economy is due to a large '
+                                      'by-product, not destroyed atoms.',
+                                   3: 'Atom economy is fixed by the equation, not temperature; it is low '
+                                      'when there is a big by-product.'}},
+           {'opts': [('100% — there is only one product, so every atom from the reactants ends up in the '
+                      'ethanol with no waste',
+                      True),
+                     ('Less than 100%, because two reactants are used', False),
+                     ('50%, because water is also a product', False),
+                     ('It cannot be found without the yield', False)],
+            'q': 'The hydration of ethene is C₂H₄ + H₂O → C₂H₅OH. State its atom economy and explain your '
+                 'answer.',
+            'wrong_explanations': {1: 'The number of reactants does not matter; with a single product, all '
+                                      'atoms are used, so 100%.',
+                                   2: 'Water is a reactant here, not a product; the only product is ethanol, '
+                                      'so 100%.',
+                                   3: 'Atom economy comes from the equation alone; one product means '
+                                      '100%.'}}],
   'rp': None,
   'spec': '4.3.3.2',
   'summary': 'Calculate atom economy and explain its importance for sustainable and efficient chemistry.',
-  'theory': [{'content': 'ATOM ECONOMY measures how efficiently atoms from reactants are converted into the desired '
-                         'product — how much of the mass of reactants ends up in the useful product vs waste '
-                         'products.\n'
+  'theory': [{'content': 'ATOM ECONOMY measures how efficiently atoms from reactants are converted into the '
+                         'desired product — how much of the mass of reactants ends up in the useful product '
+                         'vs waste products.\n'
                          '\n'
                          'EQUATION:\n'
                          '\n'
-                         'Atom economy (%) = (sum of relative formula masses of desired products ÷ sum of relative '
-                         'formula masses of ALL products) × 100\n'
+                         'Atom economy (%) = (sum of relative formula masses of desired products ÷ sum of '
+                         'relative formula masses of ALL products) × 100\n'
                          '\n'
-                         'Note: this uses ALL products from the reaction (including waste), not just the desired one.\n'
+                         'Note: this uses ALL products from the reaction (including waste), not just the '
+                         'desired one.\n'
                          '\n'
                          'ALTERNATIVELY:\n'
                          'Atom economy (%) = (Mr of desired product ÷ sum of Mr of all products) × 100\n'
@@ -3479,8 +4323,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'ONLY ONE PRODUCT formed — all atoms go into the polymer.\n'
                          'Atom economy = 100%\n'
                          '\n'
-                         'Reason: addition reactions always have 100% atom economy because ALL reactant atoms form the '
-                         'single product with no by-products.\n'
+                         'Reason: addition reactions always have 100% atom economy because ALL reactant '
+                         'atoms form the single product with no by-products.\n'
                          '\n'
                          'EXAMPLE 3 — low atom economy:\n'
                          'Production of calcium oxide: CaCO₃ → CaO + CO₂\n'
@@ -3507,8 +4351,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'ATOM ECONOMY vs PERCENTAGE YIELD:\n'
                          'These are different measures:\n'
                          'Atom economy: a property of the EQUATION — how efficient the chemistry is.\n'
-                         'Percentage yield: a property of how the EXPERIMENT is carried out — how much is actually '
-                         'obtained.\n'
+                         'Percentage yield: a property of how the EXPERIMENT is carried out — how much is '
+                         'actually obtained.\n'
                          'Both should be maximised for efficient, sustainable chemistry.\n'
                          '\n'
                          'ADDITION vs SUBSTITUTION reactions:\n'
@@ -3516,59 +4360,187 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'Substitution/elimination reactions (multiple products): lower atom economy.',
               'heading': 'Why Atom Economy Matters'}],
   'title': 'Atom Economy',
-  'triple_only': 'Atom economy (4.3.3.2) is chemistry-only — not in Combined Science. Students must calculate atom '
-                 'economy and explain its importance for sustainable and economically efficient chemistry.',
+  'triple_only': 'Atom economy (4.3.3.2) is chemistry-only — not in Combined Science. Students must '
+                 'calculate atom economy and explain its importance for sustainable and economically '
+                 'efficient chemistry.',
   'variables': []},
- {'common_mistake': 'Volume MUST be in dm³ when using the concentration formula. If given in cm³, divide by 1000 '
-                    'first. 250 cm³ = 0.250 dm³. Students frequently forget this conversion and get answers 1000 times '
-                    'too large or too small.',
+ {'common_mistake': 'Students frequently forget to convert the volume from cm³ into dm³ before using the '
+                    'concentration formula, so their answer comes out 1000 times too big or too small. The '
+                    'formula needs the volume in dm³: divide any volume in cm³ by 1000 first (250 cm³ = '
+                    '0.250 dm³). Convert the volume before you divide, every single time.',
   'equations': ['concentration (g/dm³) = mass (g) ÷ volume (dm³)',
                 'mass (g) = concentration (g/dm³) × volume (dm³)',
                 'volume (dm³) = mass (g) ÷ concentration (g/dm³)'],
-  'fifas': [{'label': 'Concentration Calculation',
-             'question': '15 g of sodium hydroxide (NaOH) is dissolved to make 500 cm³ of solution. Calculate the '
-                         'concentration in g/dm³.',
-             'steps': [('F', 'concentration (g/dm³) = mass (g) ÷ volume (dm³)'),
-                       ('I', 'volume = 500 cm³ ÷ 1000 = 0.5 dm³. Mass = 15 g'),
-                       ('F', 'concentration = 15 ÷ 0.5'),
-                       ('A', 'concentration = 30 g/dm³')]}],
-  'higher': 'Convert between g/dm³ and mol/dm³ using molar mass. c (mol/dm³) = mass (g) ÷ (Mr × V (dm³)). Use '
-            'titration data to calculate unknown concentrations. Understand that mol/dm³ is the standard unit in '
-            'Higher-level calculations.',
+  'fifas': [{'label': 'Concentration in mol/dm³',
+             'question': 'Calculate the concentration in mol/dm³ of a solution containing 0.25 mol of HCl in '
+                         '500 cm³ of solution.',
+             'steps': [('F', 'concentration (mol/dm³) = moles ÷ volume (dm³)'),
+                       ('I', 'volume = 500 ÷ 1000 = 0.5 dm³'),
+                       ('F', 'concentration = 0.25 ÷ 0.5'),
+                       ('A', 'concentration = 0.5 mol/dm³')]},
+            {'label': 'Converting g/dm³ to mol/dm³',
+             'question': 'A sodium hydroxide solution has a concentration of 80 g/dm³. Calculate its '
+                         'concentration in mol/dm³. Mr of NaOH = 40.',
+             'steps': [('F', 'concentration (mol/dm³) = concentration (g/dm³) ÷ Mr'),
+                       ('I', '= 80 ÷ 40'),
+                       ('F', '= 2'),
+                       ('A', 'concentration = 2 mol/dm³')]},
+            {'label': 'A dilution',
+             'question': '50 cm³ of a 100 g/dm³ solution is diluted with water to a total volume of 250 cm³. '
+                         'Calculate the new concentration in g/dm³.',
+             'steps': [('F', 'the mass of solute is unchanged, so new concentration = mass ÷ new volume'),
+                       ('I', 'mass = 100 × 0.050 = 5 g;  new volume = 250 ÷ 1000 = 0.25 dm³'),
+                       ('F', 'concentration = 5 ÷ 0.25'),
+                       ('A', 'concentration = 20 g/dm³')]}],
+  'higher': 'Convert between g/dm³ and mol/dm³ using molar mass. c (mol/dm³) = mass (g) ÷ (Mr × V (dm³)). '
+            'Use titration data to calculate unknown concentrations. Understand that mol/dm³ is the standard '
+            'unit in Higher-level calculations.',
   'id': 'concentration-of-solutions',
-  'key_note': 'Concentration (g/dm³) = mass (g) ÷ volume (dm³). Convert cm³ to dm³: ÷ 1000. Concentrated = lots of '
-              'solute per volume. Dilute = little solute per volume. Dilution: same mass, larger volume, lower '
-              'concentration. c₁V₁ = c₂V₂.',
+  'key_note': 'Concentration (g/dm³) = mass (g) ÷ volume (dm³). Convert cm³ to dm³: ÷ 1000. Concentrated = '
+              'lots of solute per volume. Dilute = little solute per volume. Dilution: same mass, larger '
+              'volume, lower concentration. c₁V₁ = c₂V₂.',
   'matching': {'instruction': 'Match each calculation to the correct answer.',
                'pairs': [('5 g NaCl in 0.5 dm³', 'Concentration = 10 g/dm³'),
                          ('20 g/dm³, volume = 250 cm³ (0.25 dm³)', 'Mass = 20 × 0.25 = 5 g'),
                          ('8 g solute, concentration 40 g/dm³', 'Volume = 8 ÷ 40 = 0.2 dm³ = 200 cm³'),
                          ('100 cm³ of 60 g/dm³ diluted to 300 cm³', 'New concentration = 20 g/dm³')],
                'title': 'Concentration Calculations'},
-  'quiz': [{'opts': [('50 g/dm³ — volume = 500 ÷ 1000 = 0.5 dm³, concentration = 25 ÷ 0.5 = 50', True),
-                     ('0.05 g/dm³ — concentration = 25 ÷ 500', False),
-                     ('12500 g/dm³ — concentration = 25 × 500', False),
-                     ('2.5 g/dm³ — concentration = 25 ÷ 10', False)],
-            'q': '25 g of glucose is dissolved in 500 cm³ of water. What is the concentration in g/dm³?',
-            'wrong_explanations': {1: 'This uses 500 cm³ directly without converting to dm³ — gives an answer 1000× '
-                                      'too small. Must convert: 500 cm³ = 0.5 dm³.',
-                                   2: 'This multiplies instead of divides — and still fails to convert units.',
-                                   3: 'This divides by 10 instead of 0.5 — an incorrect conversion. 500 cm³ = 0.5 dm³, '
-                                      'not 10 dm³.'}},
-           {'opts': [('20 g — mass = 80 × 0.25 dm³ = 20 g', True),
-                     ('20000 g — mass = 80 × 250 (forgetting to convert cm³ to dm³)', False),
-                     ('0.32 g — mass = 80 ÷ 250', False),
-                     ('320 g — mass = 80 × (250 ÷ 10)', False)],
-            'q': 'A solution has a concentration of 80 g/dm³. What mass of solute is in 250 cm³ of this solution?',
-            'wrong_explanations': {1: 'Using 250 directly without converting gives 80 × 250 = 20,000 — not 20. Always '
-                                      'convert: 250 cm³ = 0.25 dm³.',
-                                   2: 'Dividing gives volume, not mass. mass = concentration × volume.',
-                                   3: '250 ÷ 10 = 25 — but the conversion is 250 ÷ 1000 = 0.25 dm³.'}}],
+  'quiz': [{'opts': [('50 g/dm³ — volume = 500 ÷ 1000 = 0.5 dm³, so concentration = 25 ÷ 0.5', True),
+                     ('0.05 g/dm³ — 25 ÷ 500, without converting to dm³', False),
+                     ('12 500 g/dm³ — 25 × 500', False),
+                     ('2.5 g/dm³ — 25 ÷ 10', False)],
+            'q': '25 g of glucose is dissolved in water to make 500 cm³ of solution. Calculate the '
+                 'concentration in g/dm³.',
+            'wrong_explanations': {1: 'The volume must be in dm³: 500 cm³ = 0.5 dm³, giving 25 ÷ 0.5 = 50 '
+                                      'g/dm³ (this answer is 1000× too small).',
+                                   2: 'Concentration is mass ÷ volume, not mass × volume, and the volume '
+                                      'must be in dm³.',
+                                   3: '500 cm³ converts to 0.5 dm³ (÷1000), not 10 dm³: 25 ÷ 0.5 = 50 '
+                                      'g/dm³.'}},
+           {'opts': [('20 g — mass = concentration × volume = 80 × 0.25 dm³', True),
+                     ('20 000 g — 80 × 250, without converting to dm³', False),
+                     ('0.32 g — 80 ÷ 250', False),
+                     ('320 g — 80 × (250 ÷ 10)', False)],
+            'q': 'A solution has a concentration of 80 g/dm³. Calculate the mass of solute in 250 cm³ of it.',
+            'wrong_explanations': {1: 'Convert 250 cm³ to 0.25 dm³ first: 80 × 0.25 = 20 g.',
+                                   2: 'Dividing gives a volume, not a mass. Mass = concentration × volume = '
+                                      '80 × 0.25 = 20 g.',
+                                   3: '250 cm³ = 0.25 dm³ (÷1000), not 25 dm³: 80 × 0.25 = 20 g.'}},
+           {'opts': [('20 g/dm³ — 40 ÷ 2', True),
+                     ('80 g/dm³ — 40 × 2', False),
+                     ('0.05 g/dm³ — 2 ÷ 40', False),
+                     ('42 g/dm³ — 40 + 2', False)],
+            'q': '40 g of copper sulfate is dissolved to make 2 dm³ of solution. Calculate the concentration '
+                 'in g/dm³.',
+            'wrong_explanations': {1: 'Concentration is mass ÷ volume, not mass × volume: 40 ÷ 2 = 20 g/dm³.',
+                                   2: 'Divide mass by volume, not volume by mass: 40 ÷ 2 = 20 g/dm³.',
+                                   3: 'Concentration is a division, not an addition: 40 ÷ 2 = 20 g/dm³.'}},
+           {'opts': [('The concentration decreases — the same mass of solute is now spread through a larger '
+                      'volume',
+                      True),
+                     ('It increases — there is more liquid so more solute', False),
+                     ('It stays the same — dilution does not change concentration', False),
+                     ('It increases — water is a solute as well', False)],
+            'q': 'A solution is diluted by adding more water. Predict what happens to its concentration and '
+                 'explain why.',
+            'wrong_explanations': {1: 'Adding water adds no solute; the fixed mass in a larger volume means '
+                                      'a lower concentration.',
+                                   2: 'Dilution increases the volume without adding solute, so the '
+                                      'concentration falls.',
+                                   3: 'Water is the solvent here, not the solute; adding it lowers the '
+                                      'concentration of the dissolved solid.'}},
+           {'opts': [('0.4 dm³ — volume = mass ÷ concentration = 10 ÷ 25', True),
+                     ('250 dm³ — 10 × 25', False),
+                     ('2.5 dm³ — 25 ÷ 10', False),
+                     ('15 dm³ — 25 − 10', False)],
+            'q': 'A solution has a concentration of 25 g/dm³. Calculate the volume, in dm³, that contains 10 '
+                 'g of solute.',
+            'wrong_explanations': {1: 'Volume is mass ÷ concentration, not mass × concentration: 10 ÷ 25 = '
+                                      '0.4 dm³.',
+                                   2: 'Divide the mass by the concentration, not the other way round: 10 ÷ '
+                                      '25 = 0.4 dm³.',
+                                   3: 'Volume comes from a division, not a subtraction: 10 ÷ 25 = 0.4 dm³.'}},
+           {'opts': [('2 mol/dm³ — volume = 0.25 dm³, so concentration = 0.5 ÷ 0.25', True),
+                     ('0.002 mol/dm³ — 0.5 ÷ 250, without converting to dm³', False),
+                     ('125 mol/dm³ — 0.5 × 250', False),
+                     ('0.5 mol/dm³ — using the moles as the concentration', False)],
+            'q': 'Calculate the concentration in mol/dm³ of a solution containing 0.5 mol of HCl in 250 cm³ '
+                 'of solution.',
+            'wrong_explanations': {1: 'Convert 250 cm³ to 0.25 dm³ first: 0.5 ÷ 0.25 = 2 mol/dm³.',
+                                   2: 'Concentration is moles ÷ volume, and the volume must be in dm³: 0.5 ÷ '
+                                      '0.25 = 2 mol/dm³.',
+                                   3: 'Divide the moles by the volume in dm³: 0.5 ÷ 0.25 = 2 mol/dm³.'}},
+           {'opts': [('2 mol/dm³ — concentration (mol/dm³) = concentration (g/dm³) ÷ Mr = 80 ÷ 40', True),
+                     ('3200 mol/dm³ — 80 × 40', False),
+                     ('40 mol/dm³ — 80 ÷ 2', False),
+                     ('0.5 mol/dm³ — 40 ÷ 80, dividing the wrong way', False)],
+            'q': 'A sodium hydroxide solution has a concentration of 80 g/dm³. Calculate its concentration '
+                 'in mol/dm³. Mr of NaOH = 40.',
+            'wrong_explanations': {1: 'Divide by the Mr, do not multiply: 80 ÷ 40 = 2 mol/dm³.',
+                                   2: 'Divide by the Mr of NaOH (40), not by 2: 80 ÷ 40 = 2 mol/dm³.',
+                                   3: 'Concentration in mol/dm³ = g/dm³ ÷ Mr = 80 ÷ 40 = 2 mol/dm³.'}},
+           {'opts': [('8 g — moles = 2.0 × 0.100 = 0.2 mol; mass = 0.2 × 40', True),
+                     ('80 g — 2.0 × 40, forgetting the volume', False),
+                     ('0.2 g — stopping at the moles', False),
+                     ('800 g — using 100 cm³ as 100 dm³', False)],
+            'q': 'Calculate the mass of sodium hydroxide in 100 cm³ of a 2.0 mol/dm³ solution. Mr of NaOH = '
+                 '40.',
+            'wrong_explanations': {1: 'First find the moles: n = c × V = 2.0 × 0.100 = 0.2 mol, then × 40 = '
+                                      '8 g.',
+                                   2: '0.2 mol must be multiplied by the Mr (40) to get the mass: 0.2 × 40 = '
+                                      '8 g.',
+                                   3: '100 cm³ = 0.100 dm³, so n = 2.0 × 0.100 = 0.2 mol and mass = 8 g.'}},
+           {'opts': [('20 g/dm³ — mass of solute stays 60 × 0.100 = 6 g; new concentration = 6 ÷ 0.300',
+                      True),
+                     ('180 g/dm³ — 60 × 3, multiplying by the dilution factor', False),
+                     ('60 g/dm³ — dilution does not change concentration', False),
+                     ('6 g/dm³ — using the mass of solute as the concentration', False)],
+            'q': '100 cm³ of a 60 g/dm³ solution is diluted with water to a total volume of 300 cm³. '
+                 'Calculate the new concentration.',
+            'wrong_explanations': {1: 'Diluting LOWERS the concentration. Mass is fixed at 6 g; 6 ÷ 0.300 = '
+                                      '20 g/dm³.',
+                                   2: 'Adding water triples the volume, so the concentration falls to one '
+                                      'third: 20 g/dm³.',
+                                   3: '6 g is the mass of solute; divide by the new volume 0.300 dm³ to get '
+                                      '20 g/dm³.'}},
+           {'opts': [('Adding water increases the volume without adding any solute, so the same mass is '
+                      'spread through more solution and concentration (mass ÷ volume) falls',
+                      True),
+                     ('Some solute leaves the solution when water is added', False),
+                     ('The added water reacts with the solute and reduces its mass', False),
+                     ('Both the mass and the concentration double', False)],
+            'q': 'Explain why diluting a solution changes its concentration but not the mass of solute '
+                 'present.',
+            'wrong_explanations': {1: 'No solute leaves; the mass stays the same. Only the volume, and '
+                                      'therefore the concentration, changes.',
+                                   2: 'Water does not react away the solute here; the mass is unchanged and '
+                                      'the concentration simply falls.',
+                                   3: 'The mass is unchanged; adding water lowers the concentration, it does '
+                                      'not raise it.'}},
+           {'opts': [('0.2 mol/dm³ — volume = 0.5 dm³, so 0.10 ÷ 0.5', True),
+                     ('0.0002 mol/dm³ — 0.10 ÷ 500, without converting', False),
+                     ('50 mol/dm³ — 0.10 × 500', False),
+                     ('0.10 mol/dm³ — using the moles as the concentration', False)],
+            'q': 'Calculate the concentration in mol/dm³ of a solution made by dissolving 0.10 mol of solute '
+                 'in 500 cm³ of solution.',
+            'wrong_explanations': {1: 'Convert 500 cm³ to 0.5 dm³ first: 0.10 ÷ 0.5 = 0.2 mol/dm³.',
+                                   2: 'Concentration is moles ÷ volume in dm³: 0.10 ÷ 0.5 = 0.2 mol/dm³.',
+                                   3: 'Divide the moles by the volume in dm³: 0.10 ÷ 0.5 = 0.2 mol/dm³.'}},
+           {'opts': [('84 g/dm³ — concentration (g/dm³) = concentration (mol/dm³) × Mr = 1.5 × 56', True),
+                     ('0.027 g/dm³ — 1.5 ÷ 56', False),
+                     ('37.3 g/dm³ — 56 ÷ 1.5', False),
+                     ('56 g/dm³ — the Mr on its own', False)],
+            'q': 'A potassium hydroxide solution has a concentration of 1.5 mol/dm³. Calculate its '
+                 'concentration in g/dm³. Mr of KOH = 56.',
+            'wrong_explanations': {1: 'Multiply by the Mr to go from mol/dm³ to g/dm³: 1.5 × 56 = 84 g/dm³.',
+                                   2: 'Multiply, do not divide: 1.5 × 56 = 84 g/dm³.',
+                                   3: 'Multiply the Mr by the concentration in mol/dm³: 1.5 × 56 = 84 '
+                                      'g/dm³.'}}],
   'rp': None,
   'spec': '5.3.2.5',
   'summary': 'Define concentration and calculate it from mass and volume.',
-  'theory': [{'content': 'The CONCENTRATION of a solution tells us how much solute is dissolved per unit volume of '
-                         'solution.\n'
+  'theory': [{'content': 'The CONCENTRATION of a solution tells us how much solute is dissolved per unit '
+                         'volume of solution.\n'
                          '\n'
                          'A CONCENTRATED solution has a LOT of solute dissolved in a given volume.\n'
                          'A DILUTE solution has a LITTLE solute dissolved in the same volume.\n'
@@ -3605,8 +4577,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          '3. 8 g of glucose gives a concentration of 16 g/dm³. What volume was used?\n'
                          'Volume = 8 ÷ 16 = 0.5 dm³ = 500 cm³',
               'heading': 'Calculating Concentration'},
-             {'content': 'DILUTION means adding more solvent (usually water) to reduce the concentration of a '
-                         'solution.\n'
+             {'content': 'DILUTION means adding more solvent (usually water) to reduce the concentration of '
+                         'a solution.\n'
                          '\n'
                          'When you dilute a solution:\n'
                          'The AMOUNT of solute stays the SAME.\n'
@@ -3617,7 +4589,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'concentration₁ × volume₁ = concentration₂ × volume₂\n'
                          '\n'
                          'Example:\n'
-                         '100 cm³ of 40 g/dm³ solution is diluted to 400 cm³. What is the new concentration?\n'
+                         '100 cm³ of 40 g/dm³ solution is diluted to 400 cm³. What is the new '
+                         'concentration?\n'
                          'c₁V₁ = c₂V₂\n'
                          '40 × 0.1 = c₂ × 0.4\n'
                          '4 = c₂ × 0.4\n'
@@ -3633,23 +4606,38 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'variables': [('c', 'Concentration', 'g/dm³', 'g/dm³'),
                 ('m', 'Mass of solute', 'grams', 'g'),
                 ('V', 'Volume of solution', 'dm³', 'dm³')]},
- {'common_mistake': 'Make sure mass is in GRAMS before dividing by Mr. If given mass in kg, multiply by 1000 first. '
-                    'Also: 1 mole of H₂O contains 6.02 × 10²³ MOLECULES — but 3 × 6.02 × 10²³ ATOMS (2 H + 1 O per '
-                    'molecule). Always be clear about what particles are being counted.',
+ {'common_mistake': 'Students often divide the Mr by the mass instead of the mass by the Mr when finding the '
+                    'number of moles, which turns the answer upside down. The rule is moles = mass ÷ Mr, so '
+                    'for 9.8 g of a substance with Mr 98 the answer is 9.8 ÷ 98 = 0.1 mol, not 10 mol. Also '
+                    'make sure the mass is in GRAMS first — if it is given in kilograms, multiply by 1000 '
+                    'before dividing.',
   'equations': ['moles (mol) = mass (g) ÷ Mr',
                 'mass (g) = moles (mol) × Mr',
                 'number of particles = moles × 6.02 × 10²³',
                 '% mass = (Ar × number of atoms ÷ Mr) × 100'],
-  'fifas': [{'label': 'Moles from Mass',
+  'fifas': [{'label': 'Moles from a mass',
              'question': 'Calculate the number of moles in 27 g of aluminium (Ar = 27).',
              'steps': [('F', 'moles = mass ÷ Mr'),
                        ('I', 'moles = 27 ÷ 27'),
-                       ('F', 'moles = 1'),
-                       ('A', '1 mol of aluminium')]}],
+                       ('F', '= 1'),
+                       ('A', '1 mol of aluminium')]},
+            {'label': 'Mass from a number of moles',
+             'question': 'Calculate the mass of 0.5 mol of carbon dioxide (CO₂). Mr = 44.',
+             'steps': [('F', 'mass = moles × Mr'),
+                       ('I', 'mass = 0.5 × 44'),
+                       ('F', '= 22'),
+                       ('A', '22 g of carbon dioxide')]},
+            {'label': 'Number of particles',
+             'question': 'Calculate the number of molecules in 2 mol of water. (Avogadro constant = 6.02 × '
+                         '10²³ per mol.)',
+             'steps': [('F', 'number of particles = moles × Avogadro constant'),
+                       ('I', '= 2 × 6.02 × 10²³'),
+                       ('F', '= 12.04 × 10²³'),
+                       ('A', '= 1.204 × 10²⁴ molecules')]}],
   'higher': None,
   'id': 'moles',
-  'key_note': '1 mole = 6.02 × 10²³ particles (Avogadro constant). n = m ÷ Mr. The molar mass = Mr in g/mol. % mass = '
-              '(Ar × atoms ÷ Mr) × 100.',
+  'key_note': '1 mole = 6.02 × 10²³ particles (Avogadro constant). n = m ÷ Mr. The molar mass = Mr in g/mol. '
+              '% mass = (Ar × atoms ÷ Mr) × 100.',
   'matching': {'instruction': 'Match each calculation to the correct answer.',
                'pairs': [('Moles in 40 g NaOH (Mr=40)', '1 mol — n = 40 ÷ 40 = 1'),
                          ('Mass of 2 mol CO₂ (Mr=44)', '88 g — mass = 2 × 44 = 88'),
@@ -3657,43 +4645,152 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          ('Particles in 0.5 mol', '3.01 × 10²³ — 0.5 × 6.02 × 10²³'),
                          ('% mass of Ca in CaCO₃ (Mr=100)', '40% — (40 ÷ 100) × 100 = 40%')],
                'title': 'Moles Calculations'},
-  'quiz': [{'opts': [('0.1 mol — n = 9.8 ÷ 98 = 0.1', True),
-                     ('10 mol — n = 98 ÷ 9.8 = 10', False),
-                     ('960.4 mol — n = 9.8 × 98 = 960.4', False),
-                     ('0.01 mol — n = 9.8 ÷ 980 = 0.01', False)],
-            'q': 'How many moles are in 9.8 g of sulfuric acid (H₂SO₄)? Mr = 98.',
-            'wrong_explanations': {1: 'Dividing the WRONG way: n = mass ÷ Mr not Mr ÷ mass. n = 9.8 ÷ 98 = 0.1 mol.',
-                                   2: 'Multiplying mass and Mr gives a meaningless large number — always DIVIDE mass '
-                                      'by Mr.',
-                                   3: 'The Mr of H₂SO₄ is 98, not 980. n = 9.8 ÷ 98 = 0.1 mol.'}},
-           {'opts': [('50 g — 3.01 × 10²³ ÷ 6.02 × 10²³ = 0.5 mol; mass = 0.5 × 100 = 50 g', True),
-                     ('100 g — 1 mole has mass 100 g regardless of particle count', False),
-                     ('30100 g — multiplying particle count by Mr', False),
+  'quiz': [{'opts': [('0.1 mol — n = mass ÷ Mr = 9.8 ÷ 98', True),
+                     ('10 mol — 98 ÷ 9.8, dividing the wrong way', False),
+                     ('960.4 mol — 9.8 × 98', False),
+                     ('0.01 mol — 9.8 ÷ 980, using the wrong Mr', False)],
+            'q': 'Calculate the number of moles in 9.8 g of sulfuric acid (H₂SO₄). Mr = 98.',
+            'wrong_explanations': {1: 'Moles = mass ÷ Mr, not Mr ÷ mass: 9.8 ÷ 98 = 0.1 mol.',
+                                   2: 'Multiplying mass by Mr gives a meaningless number; divide instead: '
+                                      '9.8 ÷ 98 = 0.1 mol.',
+                                   3: 'The Mr of H₂SO₄ is 98, not 980: 9.8 ÷ 98 = 0.1 mol.'}},
+           {'opts': [('2 mol — n = 80 ÷ 40', True),
+                     ('0.5 mol — 40 ÷ 80, dividing the wrong way', False),
+                     ('3200 mol — 80 × 40', False),
+                     ('40 mol — using the Mr as the answer', False)],
+            'q': 'Calculate the number of moles in 80 g of sodium hydroxide (NaOH). Mr = 40.',
+            'wrong_explanations': {1: 'Moles = mass ÷ Mr: 80 ÷ 40 = 2 mol, not 0.5.',
+                                   2: 'Divide the mass by the Mr, do not multiply: 80 ÷ 40 = 2 mol.',
+                                   3: 'The Mr is the mass of one mole; here there are 80 ÷ 40 = 2 mol.'}},
+           {'opts': [('25 g — mass = moles × Mr = 0.25 × 100', True),
+                     ('0.0025 g — 0.25 ÷ 100', False),
+                     ('400 g — 100 ÷ 0.25', False),
+                     ('100 g — the Mr on its own', False)],
+            'q': 'Calculate the mass of 0.25 mol of calcium carbonate (CaCO₃). Mr = 100.',
+            'wrong_explanations': {1: 'Mass = moles × Mr, not moles ÷ Mr: 0.25 × 100 = 25 g.',
+                                   2: 'Multiply the moles by the Mr: 0.25 × 100 = 25 g.',
+                                   3: '0.25 mol is a quarter of a mole, so 0.25 × 100 = 25 g.'}},
+           {'opts': [('50 g — 3.01 × 10²³ ÷ 6.02 × 10²³ = 0.5 mol, so mass = 0.5 × 100', True),
+                     ('100 g — one mole regardless of the particle count', False),
+                     ('30 100 g — multiplying the particle count by the Mr', False),
                      ('0.5 g — confusing moles with grams', False)],
-            'q': 'What mass of calcium carbonate (CaCO₃, Mr = 100) contains 3.01 × 10²³ formula units?',
-            'wrong_explanations': {1: '3.01 × 10²³ is HALF the Avogadro constant — so this represents 0.5 mol. Mass = '
-                                      '0.5 × 100 = 50 g.',
-                                   2: 'The Mr gives mass PER MOLE — 3.01 × 10²³ is only 0.5 mol, not 1 mol.',
-                                   3: '0.5 is the number of moles — multiply by Mr (100) to get mass: 0.5 × 100 = 50 '
-                                      'g.'}}],
+            'q': 'Calculate the mass of calcium carbonate (Mr = 100) that contains 3.01 × 10²³ formula '
+                 'units. (Avogadro constant = 6.02 × 10²³ per mol.)',
+            'wrong_explanations': {1: "3.01 × 10²³ is HALF of Avogadro's number, so 0.5 mol; mass = 0.5 × "
+                                      '100 = 50 g.',
+                                   2: 'First convert particles to moles (0.5 mol), then × Mr: 0.5 × 100 = 50 '
+                                      'g.',
+                                   3: '0.5 is the number of moles; multiply by the Mr (100) to get 50 g.'}},
+           {'opts': [('3.01 × 10²³ — number of particles = moles × Avogadro constant = 0.5 × 6.02 × 10²³',
+                      True),
+                     ("6.02 × 10²³ — one mole's worth, ignoring the 0.5", False),
+                     ('1.204 × 10²⁴ — 2 × 6.02 × 10²³', False),
+                     ('12.04 × 10²³ — dividing 6.02 × 10²³ by 0.5', False)],
+            'q': 'Calculate the number of molecules in 0.5 mol of water. (Avogadro constant = 6.02 × 10²³ '
+                 'per mol.)',
+            'wrong_explanations': {1: "0.5 mol contains half of Avogadro's number: 0.5 × 6.02 × 10²³ = 3.01 "
+                                      '× 10²³.',
+                                   2: 'Multiply the Avogadro constant by the moles (0.5), not by 2: 3.01 × '
+                                      '10²³.',
+                                   3: 'Multiply by the moles: 0.5 × 6.02 × 10²³ = 3.01 × 10²³.'}},
+           {'opts': [("The amount of substance that contains 6.02 × 10²³ particles (Avogadro's number)",
+                      True),
+                     ('The mass of one molecule of the substance', False),
+                     ('Exactly one gram of the substance', False),
+                     ('The volume occupied by a gas at room temperature', False)],
+            'q': 'State what is meant by one mole of a substance.',
+            'wrong_explanations': {1: 'A mole is an AMOUNT (a fixed number of particles), not the mass of '
+                                      'one molecule.',
+                                   2: 'A mole is not one gram; its mass in grams equals the Mr, which varies '
+                                      'with the substance.',
+                                   3: 'That is molar gas volume; a mole is defined by the number of '
+                                      'particles, 6.02 × 10²³.'}},
+           {'opts': [('6.02 × 10²³ particles per mole', True),
+                     ('6.02 × 10²³ grams per mole', False),
+                     ('1000 particles per mole', False),
+                     ('6.02 × 10²³ moles per particle', False)],
+            'q': 'State the value of the Avogadro constant.',
+            'wrong_explanations': {1: 'The Avogadro constant counts particles, not grams: 6.02 × 10²³ '
+                                      'particles per mole.',
+                                   2: 'One mole contains far more: 6.02 × 10²³ particles.',
+                                   3: 'It is the number of particles PER mole: 6.02 × 10²³ particles per '
+                                      'mole.'}},
+           {'opts': [('1 mol — convert to grams (0.024 kg = 24 g), then n = 24 ÷ 24', True),
+                     ('0.001 mol — 0.024 ÷ 24, without converting kg to g', False),
+                     ('1000 mol — 24 000 ÷ 24, using grams as milligrams', False),
+                     ('576 mol — 24 × 24', False)],
+            'q': 'Calculate the number of moles in 0.024 kg of magnesium. Ar = 24.',
+            'wrong_explanations': {1: 'Convert the mass to grams first: 0.024 kg = 24 g, so n = 24 ÷ 24 = 1 '
+                                      'mol.',
+                                   2: '0.024 kg is 24 g, not 24 000 g: n = 24 ÷ 24 = 1 mol.',
+                                   3: 'Divide the mass in grams by the Ar: 24 ÷ 24 = 1 mol.'}},
+           {'opts': [('40 — Mr = mass ÷ moles = 8 ÷ 0.2', True),
+                     ('1.6 — 8 × 0.2', False),
+                     ('0.025 — 0.2 ÷ 8, dividing the wrong way', False),
+                     ('8 — using the mass as the Mr', False)],
+            'q': 'A sample contains 0.2 mol of a compound and has a mass of 8 g. Calculate the relative '
+                 'formula mass (Mr) of the compound.',
+            'wrong_explanations': {1: 'Rearranging moles = mass ÷ Mr gives Mr = mass ÷ moles = 8 ÷ 0.2 = 40.',
+                                   2: 'Mr = mass ÷ moles = 8 ÷ 0.2 = 40, not 0.025.',
+                                   3: 'The mass is 8 g for 0.2 mol; one mole would be 8 ÷ 0.2 = 40 g, so Mr '
+                                      '= 40.'}},
+           {'opts': [('40% — (Ar of Ca ÷ Mr) × 100 = (40 ÷ 100) × 100', True),
+                     ('12% — using the carbon instead of the calcium', False),
+                     ('2.5% — (1 ÷ 40) × 100, using one atom over the Ar', False),
+                     ('40% of 100 g = 4 g, so 4%', False)],
+            'q': 'Calculate the percentage by mass of calcium in calcium carbonate (CaCO₃). Ar: Ca = 40, C = '
+                 '12, O = 16.',
+            'wrong_explanations': {1: 'The question asks for calcium: (40 ÷ 100) × 100 = 40%.',
+                                   2: 'Use (Ar of the element ÷ Mr of the compound) × 100: (40 ÷ 100) × 100 '
+                                      '= 40%.',
+                                   3: 'The percentage IS 40%; do not take a percentage of a percentage.'}},
+           {'opts': [('35% — Mr = 80, nitrogen = 2 × 14 = 28, so (28 ÷ 80) × 100', True),
+                     ('17.5% — using only one nitrogen atom', False),
+                     ('28% — using the mass of nitrogen as the percentage', False),
+                     ('14% — using one nitrogen over 100', False)],
+            'q': 'Ammonium nitrate (NH₄NO₃) is used as a fertiliser because it is rich in nitrogen. '
+                 'Calculate the percentage by mass of nitrogen in ammonium nitrate. Ar: N = 14, H = 1, O = '
+                 '16.',
+            'wrong_explanations': {1: 'NH₄NO₃ contains TWO nitrogen atoms: 2 × 14 = 28, so (28 ÷ 80) × 100 = '
+                                      '35%.',
+                                   2: '28 is the mass of nitrogen; divide by the Mr (80) and × 100: 35%.',
+                                   3: 'Use both nitrogens (28) over the correct Mr (80): (28 ÷ 80) × 100 = '
+                                      '35%.'}},
+           {'opts': [('1.806 × 10²³ — 0.1 mol has 0.1 × 6.02 × 10²³ = 6.02 × 10²² molecules, each with 3 '
+                      'atoms',
+                      True),
+                     ('6.02 × 10²² — the number of molecules, not atoms', False),
+                     ("6.02 × 10²³ — one mole's worth of particles", False),
+                     ('2 × 6.02 × 10²² — counting only the hydrogen atoms', False)],
+            'q': 'Calculate the total number of atoms in 0.1 mol of water (H₂O). (Avogadro constant = 6.02 × '
+                 '10²³ per mol.)',
+            'wrong_explanations': {1: 'Each water molecule has 3 atoms (2 H + 1 O), so multiply the '
+                                      'molecules by 3: 1.806 × 10²³.',
+                                   2: '0.1 mol is a tenth: 0.1 × 6.02 × 10²³ = 6.02 × 10²² molecules, then × '
+                                      '3 atoms = 1.806 × 10²³.',
+                                   3: 'Count all 3 atoms per molecule (2 H + 1 O): 3 × 6.02 × 10²² = 1.806 × '
+                                      '10²³.'}}],
   'rp': None,
   'spec': '5.3.2.1',
   'summary': 'Define the mole, use the Avogadro constant and calculate moles from mass and Mr.',
-  'theory': [{'content': 'Atoms and molecules are far too small to count individually — there are billions of billions '
-                         'of them in even a tiny sample.\n'
+  'theory': [{'content': 'Atoms and molecules are far too small to count individually — there are billions '
+                         'of billions of them in even a tiny sample.\n'
                          '\n'
                          'Chemists use the MOLE (symbol: mol) as a counting unit for particles.\n'
                          '\n'
-                         'One MOLE of any substance contains the SAME NUMBER of particles (atoms, molecules or ions):\n'
+                         'One MOLE of any substance contains the SAME NUMBER of particles (atoms, molecules '
+                         'or ions):\n'
                          '6.02 × 10²³ particles — this is the AVOGADRO CONSTANT (Nₐ).\n'
                          '\n'
                          'This number is chosen because:\n'
                          '1 mole of carbon-12 atoms has a mass of exactly 12 grams.\n'
-                         'So 1 mole of any substance has a mass equal to its relative formula mass in grams.\n'
+                         'So 1 mole of any substance has a mass equal to its relative formula mass in '
+                         'grams.\n'
                          '\n'
                          'Examples:\n'
                          '1 mole of water (H₂O, Mr = 18) has mass 18 g and contains 6.02 × 10²³ molecules.\n'
-                         '1 mole of NaCl (Mr = 58.5) has mass 58.5 g and contains 6.02 × 10²³ formula units.\n'
+                         '1 mole of NaCl (Mr = 58.5) has mass 58.5 g and contains 6.02 × 10²³ formula '
+                         'units.\n'
                          '1 mole of Fe (Ar = 56) has mass 56 g and contains 6.02 × 10²³ atoms.',
               'heading': 'The Mole — A Counting Unit for Chemistry'},
              {'content': 'The key equation linking moles, mass and Mr:\n'
@@ -3743,24 +4840,41 @@ CHEMISTRY_SUBTOPICS_ALL = {
                 ('m', 'Mass', 'grams', 'g'),
                 ('Mr', 'Relative formula mass', '', ''),
                 ('Nₐ', 'Avogadro constant', 'mol⁻¹', '6.02 × 10²³')]},
- {'common_mistake': 'Always use the MOLAR RATIO from the balanced equation when converting between moles of different '
-                    'substances. If 2 mol of A produces 1 mol of B, then 0.4 mol of A produces 0.2 mol of B — not 0.4 '
-                    'mol of B. The ratio comes from the COEFFICIENTS in the balanced equation.',
+ {'common_mistake': 'Students often assume the moles of one substance equal the moles of another, forgetting '
+                    'to use the ratio from the balanced equation — writing that 0.4 mol of A makes 0.4 mol '
+                    'of B when the equation says 2A → B. In fact you must scale by the coefficients: 2 mol '
+                    'of A makes 1 mol of B, so 0.4 mol of A makes only 0.2 mol of B. Always read the ratio '
+                    'off the big numbers in the balanced equation before you convert.',
   'equations': ['n = m ÷ Mr',
                 '% yield = (actual yield ÷ theoretical yield) × 100',
                 'atom economy = (Mr desired products ÷ Mr all products) × 100'],
-  'fifas': [{'label': 'Mass Calculation from Equation',
-             'question': 'Calculate the mass of hydrogen produced when 1.2 g of magnesium reacts with excess HCl. Mg + '
-                         '2HCl → MgCl₂ + H₂. Ar: Mg=24, H=1.',
-             'steps': [('F', 'n = mass ÷ Mr; then use molar ratio; then mass = n × Mr'),
-                       ('I', 'n(Mg) = 1.2 ÷ 24 = 0.05 mol. Ratio Mg:H₂ = 1:1, so n(H₂) = 0.05 mol. Mr(H₂) = 2'),
-                       ('F', 'mass(H₂) = 0.05 × 2 = 0.1'),
-                       ('A', '0.1 g of hydrogen produced')]}],
+  'fifas': [{'label': 'Mass of a product with a 1:1 ratio',
+             'question': 'Calculate the mass of hydrogen produced when 1.2 g of magnesium reacts with excess '
+                         'hydrochloric acid. Mg + 2HCl → MgCl₂ + H₂. Ar: Mg = 24, H = 1.',
+             'steps': [('F', 'mass → moles (÷ Mr); use the equation ratio; mass = moles × Mr'),
+                       ('I',
+                        'n(Mg) = 1.2 ÷ 24 = 0.05 mol;  ratio Mg:H₂ = 1:1 so n(H₂) = 0.05 mol;  Mr(H₂) = 2'),
+                       ('F', 'mass(H₂) = 0.05 × 2'),
+                       ('A', '0.1 g of hydrogen')]},
+            {'label': 'A larger mass',
+             'question': 'Calculate the mass of carbon dioxide made when 24 g of carbon burns completely. C '
+                         '+ O₂ → CO₂. Ar: C = 12, O = 16.',
+             'steps': [('F', 'mass → moles (÷ Mr); use the ratio; mass = moles × Mr'),
+                       ('I', 'n(C) = 24 ÷ 12 = 2 mol;  ratio C:CO₂ = 1:1 so n(CO₂) = 2 mol;  Mr(CO₂) = 44'),
+                       ('F', 'mass(CO₂) = 2 × 44'),
+                       ('A', '88 g of carbon dioxide')]},
+            {'label': 'Using a non-1:1 ratio',
+             'question': 'Calculate the mass of ammonia (NH₃) formed when 0.5 mol of nitrogen reacts '
+                         'completely with hydrogen. N₂ + 3H₂ → 2NH₃. Mr of NH₃ = 17.',
+             'steps': [('F', 'use the equation ratio, then mass = moles × Mr'),
+                       ('I', 'ratio N₂:NH₃ = 1:2 so n(NH₃) = 0.5 × 2 = 1 mol;  Mr(NH₃) = 17'),
+                       ('F', 'mass(NH₃) = 1 × 17'),
+                       ('A', '17 g of ammonia')]}],
   'higher': None,
   'id': 'amounts-in-equations',
-  'key_note': 'Balanced equation coefficients = molar ratios. Method: mass → moles (÷Mr) → use ratio → moles → mass '
-              '(×Mr). % yield = (actual ÷ theoretical) × 100. Atom economy = (Mr desired ÷ Mr all products) × 100. '
-              'High atom economy = less waste.',
+  'key_note': 'Balanced equation coefficients = molar ratios. Method: mass → moles (÷Mr) → use ratio → moles '
+              '→ mass (×Mr). % yield = (actual ÷ theoretical) × 100. Atom economy = (Mr desired ÷ Mr all '
+              'products) × 100. High atom economy = less waste.',
   'matching': {'instruction': 'Match each equation to the correct molar ratio statement.',
                'pairs': [('2Mg + O₂ → 2MgO', '2 mol Mg reacts with 1 mol O₂ — Mg:MgO ratio is 1:1'),
                          ('N₂ + 3H₂ → 2NH₃', '1 mol N₂ reacts with 3 mol H₂ — N₂:NH₃ ratio is 1:2'),
@@ -3768,31 +4882,133 @@ CHEMISTRY_SUBTOPICS_ALL = {
                           '1 mol Mg reacts with 2 mol HCl to produce 1 mol MgCl₂ and 1 mol H₂'),
                          ('CaCO₃ → CaO + CO₂', '1 mol CaCO₃ produces 1 mol CaO and 1 mol CO₂')],
                'title': 'Molar Ratios from Equations'},
-  'quiz': [{'opts': [('0.4 mol — ratio H₂:NH₃ = 3:2, so 0.6 × (2/3) = 0.4 mol', True),
-                     ('0.6 mol — same moles as H₂ used', False),
-                     ('0.9 mol — multiply 0.6 by the coefficient 3/2', False),
-                     ('1.2 mol — double the H₂ moles', False)],
-            'q': 'N₂ + 3H₂ → 2NH₃. How many moles of NH₃ are produced from 0.6 mol of H₂?',
-            'wrong_explanations': {1: 'The molar ratio must be used — 3 mol H₂ produces 2 mol NH₃, so 0.6 mol H₂ '
-                                      'produces 0.6 × (2/3) = 0.4 mol NH₃.',
-                                   2: '0.6 × (3/2) = 0.9 — this inverts the ratio. H₂:NH₃ = 3:2, so NH₃ = H₂ × (2/3).',
-                                   3: 'Doubling would only apply if the ratio were 1:2 — but H₂:NH₃ = 3:2.'}},
-           {'opts': [('80% — % yield = (20 ÷ 25) × 100 = 80%', True),
-                     ('125% — % yield = (25 ÷ 20) × 100', False),
-                     ('5% — % yield = (5 ÷ 25) × 100 (using the difference)', False),
-                     ('20% — using 20 directly as the percentage', False)],
-            'q': 'The theoretical yield of a product is 25 g but only 20 g is obtained. What is the percentage yield?',
-            'wrong_explanations': {1: 'Dividing theoretical ÷ actual gives a value over 100% — meaningless for yield. '
-                                      'Always divide ACTUAL ÷ THEORETICAL.',
-                                   2: 'The 5 g difference is the LOST yield, not the yield itself. % yield = actual ÷ '
-                                      'theoretical × 100.',
-                                   3: '20 is the actual yield in grams — not the percentage. Must divide by '
-                                      'theoretical yield.'}}],
+  'quiz': [{'opts': [('0.4 mol — ratio H₂:NH₃ = 3:2, so 0.6 × (2 ÷ 3)', True),
+                     ('0.6 mol — the same number of moles as the hydrogen', False),
+                     ('0.9 mol — 0.6 × (3 ÷ 2), inverting the ratio', False),
+                     ('1.2 mol — doubling the hydrogen', False)],
+            'q': 'N₂ + 3H₂ → 2NH₃. Calculate the number of moles of ammonia produced from 0.6 mol of '
+                 'hydrogen.',
+            'wrong_explanations': {1: 'The ratio H₂:NH₃ is 3:2, not 1:1, so 0.6 × (2/3) = 0.4 mol.',
+                                   2: 'The ratio must be applied as NH₃ = H₂ × (2/3): 0.6 × (2/3) = 0.4 mol.',
+                                   3: 'Doubling would need a 1:2 ratio; here H₂:NH₃ = 3:2, giving 0.4 mol.'}},
+           {'opts': [('0.3 mol — ratio Mg:MgO = 2:2 = 1:1', True),
+                     ('0.6 mol — doubling the magnesium', False),
+                     ('0.15 mol — halving the magnesium', False),
+                     ('0.3 mol of O₂ instead', False)],
+            'q': '2Mg + O₂ → 2MgO. Calculate the number of moles of magnesium oxide formed from 0.3 mol of '
+                 'magnesium.',
+            'wrong_explanations': {1: 'The ratio Mg:MgO is 1:1, so 0.3 mol of Mg gives 0.3 mol of MgO.',
+                                   2: 'The ratio is 1:1 (2:2), not 2:1, so 0.3 mol of Mg gives 0.3 mol of '
+                                      'MgO.',
+                                   3: 'The question asks for MgO; the ratio Mg:MgO = 1:1 gives 0.3 mol of '
+                                      'MgO.'}},
+           {'opts': [('8 g — n(Mg) = 4.8 ÷ 24 = 0.2 mol; ratio 1:1; mass = 0.2 × 40', True),
+                     ('4.8 g — the oxide has the same mass as the metal', False),
+                     ('192 g — 4.8 × 40, skipping the moles', False),
+                     ('0.2 g — stopping at the moles', False)],
+            'q': 'Calculate the mass of magnesium oxide formed when 4.8 g of magnesium reacts completely '
+                 'with oxygen. 2Mg + O₂ → 2MgO. Ar: Mg = 24, O = 16.',
+            'wrong_explanations': {1: 'Oxygen is added, so the oxide is heavier: 0.2 mol × 40 = 8 g.',
+                                   2: 'Convert to moles first: n = 4.8 ÷ 24 = 0.2 mol, then × Mr(MgO) = 40 → '
+                                      '8 g.',
+                                   3: '0.2 mol must be multiplied by Mr(MgO) = 40 to give the mass: 8 g.'}},
+           {'opts': [('4.4 g — n(CaCO₃) = 10 ÷ 100 = 0.1 mol; ratio 1:1; mass = 0.1 × 44', True),
+                     ('10 g — the CO₂ equals the mass of the carbonate', False),
+                     ('440 g — 10 × 44, skipping the moles', False),
+                     ('5.6 g — the mass of CaO left behind', False)],
+            'q': 'Calculate the mass of carbon dioxide produced when 10 g of calcium carbonate decomposes '
+                 'completely. CaCO₃ → CaO + CO₂. Mr: CaCO₃ = 100, CO₂ = 44.',
+            'wrong_explanations': {1: 'Only part of the carbonate becomes CO₂: 0.1 mol × 44 = 4.4 g.',
+                                   2: 'Convert to moles first: 10 ÷ 100 = 0.1 mol, then × 44 = 4.4 g.',
+                                   3: 'That is the residue; the CO₂ is 0.1 × 44 = 4.4 g.'}},
+           {'opts': [('14.6 g — ratio H₂:HCl = 1:2 so n(HCl) = 0.4 mol; mass = 0.4 × 36.5', True),
+                     ('7.3 g — using a 1:1 ratio', False),
+                     ('0.4 g — stopping at the moles of HCl', False),
+                     ('73 g — using 0.2 mol × 36.5 × ..., misplacing a factor', False)],
+            'q': 'H₂ + Cl₂ → 2HCl. Calculate the mass of hydrogen chloride formed from 0.2 mol of hydrogen. '
+                 'Mr of HCl = 36.5.',
+            'wrong_explanations': {1: 'The ratio H₂:HCl is 1:2, so n(HCl) = 0.4 mol, giving 0.4 × 36.5 = '
+                                      '14.6 g.',
+                                   2: '0.4 mol must be multiplied by Mr(HCl) = 36.5: 14.6 g.',
+                                   3: 'n(HCl) = 2 × 0.2 = 0.4 mol; 0.4 × 36.5 = 14.6 g.'}},
+           {'opts': [('They give the ratio of the number of moles of each substance that react and form',
+                      True),
+                     ('They give the masses of each substance in grams', False),
+                     ('They give the number of atoms in each formula', False),
+                     ('They give the percentage yield of the reaction', False)],
+            'q': 'State what the large numbers (coefficients) in a balanced equation tell you about the '
+                 'amounts reacting.',
+            'wrong_explanations': {1: 'Coefficients give the mole RATIO, not the masses; convert to mass '
+                                      'using Mr.',
+                                   2: 'The subscripts give atoms per formula; the coefficients give the mole '
+                                      'ratio.',
+                                   3: 'Coefficients set the mole ratio; percentage yield comes from an '
+                                      'experiment.'}},
+           {'opts': [('4.8 g — n(MgO) = 8.0 ÷ 40 = 0.2 mol; ratio 1:1; mass = 0.2 × 24', True),
+                     ('8.0 g — the metal equals the mass of the oxide', False),
+                     ('192 g — 8.0 × 24, skipping the moles', False),
+                     ('0.2 g — stopping at the moles', False)],
+            'q': 'Calculate the mass of magnesium needed to make 8.0 g of magnesium oxide. 2Mg + O₂ → 2MgO. '
+                 'Ar: Mg = 24, O = 16.',
+            'wrong_explanations': {1: 'The oxide is heavier than the metal: n(MgO) = 0.2 mol, so mass(Mg) = '
+                                      '0.2 × 24 = 4.8 g.',
+                                   2: 'Convert to moles first: 8.0 ÷ 40 = 0.2 mol, then × 24 = 4.8 g.',
+                                   3: '0.2 mol × Ar(Mg) = 0.2 × 24 = 4.8 g.'}},
+           {'opts': [('6 mol — ratio N₂:H₂ = 1:3, so 2 × 3', True),
+                     ('2 mol — the same as the nitrogen', False),
+                     ('0.67 mol — 2 ÷ 3, inverting the ratio', False),
+                     ('5 mol — adding the coefficients', False)],
+            'q': 'N₂ + 3H₂ → 2NH₃. Calculate the number of moles of hydrogen needed to react completely with '
+                 '2 mol of nitrogen.',
+            'wrong_explanations': {1: 'The ratio N₂:H₂ is 1:3, so 2 mol of N₂ needs 6 mol of H₂.',
+                                   2: 'Multiply by the ratio: 2 × 3 = 6 mol of H₂.',
+                                   3: 'Use the 1:3 ratio: 2 × 3 = 6 mol of H₂.'}},
+           {'opts': [('18 g — n(H₂) = 2 ÷ 2 = 1 mol; ratio H₂:H₂O = 1:1; mass = 1 × 18', True),
+                     ('2 g — the water equals the mass of the hydrogen', False),
+                     ('36 g — using a 1:2 ratio', False),
+                     ('9 g — using Mr(H₂O) = 9', False)],
+            'q': 'Calculate the mass of water formed when 2 g of hydrogen burns completely in oxygen. 2H₂ + '
+                 'O₂ → 2H₂O. Ar: H = 1, O = 16.',
+            'wrong_explanations': {1: 'Oxygen is added, so the water is heavier: 1 mol × 18 = 18 g.',
+                                   2: 'The ratio H₂:H₂O is 1:1 (2:2), so n(H₂O) = 1 mol and mass = 18 g.',
+                                   3: 'The Mr of water is 18, not 9: 1 × 18 = 18 g.'}},
+           {'opts': [('16 g — n(C) = 6 ÷ 12 = 0.5 mol; ratio C:O₂ = 1:1; mass = 0.5 × 32', True),
+                     ('6 g — the oxygen equals the mass of the carbon', False),
+                     ('8 g — using Mr(O₂) = 16', False),
+                     ('0.5 g — stopping at the moles', False)],
+            'q': 'Deduce the mass of oxygen required to react completely with 6 g of carbon. C + O₂ → CO₂. '
+                 'Ar: C = 12, O = 16.',
+            'wrong_explanations': {1: 'Their masses differ: n(O₂) = 0.5 mol, so mass = 0.5 × 32 = 16 g.',
+                                   2: 'Oxygen gas is O₂ with Mr = 32, not 16: 0.5 × 32 = 16 g.',
+                                   3: '0.5 mol × Mr(O₂) = 0.5 × 32 = 16 g.'}},
+           {'opts': [('10.2 g — n(Al) = 5.4 ÷ 27 = 0.2 mol; ratio Al:Al₂O₃ = 4:2 so n(Al₂O₃) = 0.1 mol; mass '
+                      '= 0.1 × 102',
+                      True),
+                     ('20.4 g — using a 1:1 ratio for Al:Al₂O₃', False),
+                     ('0.1 g — stopping at the moles of Al₂O₃', False),
+                     ('5.4 g — the oxide equals the mass of the metal', False)],
+            'q': 'Calculate the mass of aluminium oxide formed when 5.4 g of aluminium reacts completely '
+                 'with oxygen. 4Al + 3O₂ → 2Al₂O₃. Ar: Al = 27, O = 16.',
+            'wrong_explanations': {1: 'The ratio is 4:2 = 2:1, so n(Al₂O₃) = 0.2 ÷ 2 = 0.1 mol, giving 10.2 '
+                                      'g.',
+                                   2: '0.1 mol × Mr(Al₂O₃) = 0.1 × 102 = 10.2 g.',
+                                   3: 'Oxygen is added, and the ratio is 2:1: 0.1 × 102 = 10.2 g.'}},
+           {'opts': [('11.2 g — n(Fe₂O₃) = 16 ÷ 160 = 0.1 mol; ratio Fe₂O₃:Fe = 1:2 so n(Fe) = 0.2 mol; mass '
+                      '= 0.2 × 56',
+                      True),
+                     ('5.6 g — using a 1:1 ratio', False),
+                     ('0.2 g — stopping at the moles of iron', False),
+                     ('16 g — the iron equals the mass of the oxide', False)],
+            'q': 'Calculate the mass of iron produced when 16 g of iron(III) oxide is reduced completely. '
+                 'Fe₂O₃ + 3CO → 2Fe + 3CO₂. Mr: Fe₂O₃ = 160, Ar Fe = 56.',
+            'wrong_explanations': {1: 'Each Fe₂O₃ gives 2 Fe, so n(Fe) = 0.2 mol, giving 0.2 × 56 = 11.2 g.',
+                                   2: '0.2 mol × Ar(Fe) = 0.2 × 56 = 11.2 g.',
+                                   3: 'Oxygen is removed, so the iron is lighter: 0.2 × 56 = 11.2 g.'}}],
   'rp': None,
   'spec': '5.3.2.2',
   'summary': 'Use balanced equations and moles to calculate masses of reactants and products.',
-  'theory': [{'content': 'A BALANCED equation gives the MOLAR RATIO of reactants and products — the coefficients show '
-                         'the ratio of moles.\n'
+  'theory': [{'content': 'A BALANCED equation gives the MOLAR RATIO of reactants and products — the '
+                         'coefficients show the ratio of moles.\n'
                          '\n'
                          'Examples:\n'
                          '2Mg + O₂ → 2MgO\n'
@@ -3805,8 +5021,8 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'N₂ + 3H₂ → 2NH₃\n'
                          'Means: 1 mol N₂ reacts with 3 mol H₂ to produce 2 mol NH₃.\n'
                          '\n'
-                         'Key principle: the molar ratio in the balanced equation is always maintained, whatever the '
-                         'actual quantities used.',
+                         'Key principle: the molar ratio in the balanced equation is always maintained, '
+                         'whatever the actual quantities used.',
               'heading': 'Molar Ratios from Balanced Equations'},
              {'content': 'STANDARD METHOD for calculating masses in reactions:\n'
                          '\n'
@@ -3851,62 +5067,192 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'variables': [('n', 'Amount in moles', 'mol', 'mol'),
                 ('m', 'Mass', 'grams', 'g'),
                 ('Mr', 'Relative formula mass', '', '')]},
- {'common_mistake': 'The LIMITING REACTANT is the one that runs out — not the one in smaller quantity. You must '
-                    'compare the RATIO of moles available to the RATIO NEEDED from the equation. A large excess of one '
-                    'reactant does not make it the limiting reactant — only the molar comparison matters.',
+ {'common_mistake': 'Students often pick the limiting reactant simply as the one with the smaller number of '
+                    "moles, ignoring the equation's ratio. That can be wrong: a reactant present in fewer "
+                    'moles may still be in excess if the equation needs less of it. Compare the moles you '
+                    'HAVE with the moles the balanced equation NEEDS — the reactant that runs out first, '
+                    'relative to the ratio, is the limiting one.',
   'equations': ['c (mol/dm³) = n (mol) ÷ V (dm³)',
                 'n = c × V',
                 'Empirical formula: divide masses by Ar → find simplest ratio'],
-  'fifas': [{'label': 'Limiting Reactant',
-             'question': '2.4 g Mg reacts with 3.65 g HCl. Mg + 2HCl → MgCl₂ + H₂. Identify the limiting reactant and '
-                         'calculate mass of H₂ produced. Ar: Mg=24, H=1, Cl=35.5.',
-             'steps': [('F', 'n = mass ÷ Mr for each reactant; compare to equation ratio'),
+  'fifas': [{'label': 'Limiting reactant and product mass',
+             'question': '2.4 g of magnesium reacts with 3.65 g of hydrochloric acid. Mg + 2HCl → MgCl₂ + '
+                         'H₂. Identify the limiting reactant and calculate the mass of hydrogen produced. '
+                         'Ar: Mg = 24, H = 1, Cl = 35.5.',
+             'steps': [('F',
+                        'convert each reactant to moles; compare with the equation ratio; the one that runs '
+                        'out is limiting'),
                        ('I',
-                        'n(Mg) = 2.4 ÷ 24 = 0.1 mol. n(HCl) = 3.65 ÷ 36.5 = 0.1 mol. Equation needs Mg:HCl = 1:2. 0.1 '
-                        'mol Mg needs 0.2 mol HCl — only 0.1 available.'),
-                       ('F', 'HCl is limiting. n(H₂) = 0.1 ÷ 2 = 0.05 mol. mass(H₂) = 0.05 × 2'),
-                       ('A', '0.1 g of H₂ produced. HCl is the limiting reactant.')]}],
+                        'n(Mg) = 2.4 ÷ 24 = 0.1 mol;  n(HCl) = 3.65 ÷ 36.5 = 0.1 mol;  0.1 mol Mg needs 0.2 '
+                        'mol HCl but only 0.1 mol is present'),
+                       ('F', 'HCl limits;  n(H₂) = 0.1 ÷ 2 = 0.05 mol;  mass = 0.05 × 2'),
+                       ('A', 'HCl is limiting;  0.1 g of hydrogen')]},
+            {'label': 'Empirical formula from masses',
+             'question': 'A compound contains 2.4 g of carbon and 0.8 g of hydrogen. Determine its empirical '
+                         'formula. Ar: C = 12, H = 1.',
+             'steps': [('F', 'moles of each = mass ÷ Ar; then find the simplest whole-number ratio'),
+                       ('I', 'n(C) = 2.4 ÷ 12 = 0.2 mol;  n(H) = 0.8 ÷ 1 = 0.8 mol'),
+                       ('F', 'ratio C:H = 0.2 : 0.8 = 1 : 4'),
+                       ('A', 'empirical formula = CH₄')]},
+            {'label': 'Concentration in mol/dm³',
+             'question': 'Calculate the concentration in mol/dm³ of a solution made by dissolving 0.3 mol of '
+                         'KOH in 300 cm³ of solution.',
+             'steps': [('F', 'concentration (mol/dm³) = moles ÷ volume (dm³)'),
+                       ('I', 'volume = 300 ÷ 1000 = 0.3 dm³'),
+                       ('F', 'concentration = 0.3 ÷ 0.3'),
+                       ('A', '1 mol/dm³')]}],
   'higher': None,
   'id': 'using-moles-calculations',
-  'key_note': 'c (mol/dm³) = n ÷ V (V in dm³). Limiting reactant: convert to moles → compare to equation ratio → '
-              'whichever runs out first limits yield. Empirical formula: masses → moles → simplest ratio. Molecular '
-              'formula: divide Mr by empirical mass → multiply.',
+  'key_note': 'c (mol/dm³) = n ÷ V (V in dm³). Limiting reactant: convert to moles → compare to equation '
+              'ratio → whichever runs out first limits yield. Empirical formula: masses → moles → simplest '
+              'ratio. Molecular formula: divide Mr by empirical mass → multiply.',
   'matching': {'instruction': 'Match each calculation to the correct answer.',
                'pairs': [('c = ? mol/dm³: 0.2 mol in 500 cm³', '0.4 mol/dm³ — c = 0.2 ÷ 0.5'),
                          ('n = ? mol: 2 mol/dm³, 250 cm³', '0.5 mol — n = 2 × 0.25'),
                          ('Limiting reactant: Mg + 2HCl; 0.1 mol Mg, 0.1 mol HCl',
                           'HCl is limiting — 0.1 mol Mg needs 0.2 mol HCl, only 0.1 available'),
                          ('Empirical formula: S 50%, O 50% by mass',
-                          'SO — n(S)=50/32=1.56, n(O)=50/16=3.12, ratio 1:2 → SO₂ wait: 1.56:3.12 = 1:2 → SO₂')],
+                          'SO — n(S)=50/32=1.56, n(O)=50/16=3.12, ratio 1:2 → SO₂ wait: 1.56:3.12 = 1:2 → '
+                          'SO₂')],
                'title': 'Moles Calculations Match'},
-  'quiz': [{'opts': [('1 mol/dm³ — c = 0.3 ÷ 0.3 dm³ = 1 mol/dm³', True),
-                     ('0.001 mol/dm³ — c = 0.3 ÷ 300 = 0.001', False),
-                     ('90 mol/dm³ — c = 0.3 × 300 = 90', False),
-                     ('0.3 mol/dm³ — using the moles directly as concentration', False)],
-            'q': 'What is the concentration of a solution made by dissolving 0.3 mol of KOH in 300 cm³ of water?',
-            'wrong_explanations': {1: '300 cm³ must be converted to dm³ first: 300 ÷ 1000 = 0.3 dm³. Then c = 0.3 ÷ '
-                                      '0.3 = 1 mol/dm³.',
-                                   2: 'This multiplies instead of divides — and uses cm³ instead of dm³.',
-                                   3: 'Concentration requires dividing moles by VOLUME IN DM³. 0.3 mol ÷ 0.3 dm³ = 1 '
-                                      'mol/dm³.'}},
-           {'opts': [('Neither — both are present in exactly the right ratio: 0.1 mol Na needs 0.05 mol Cl₂ (2:1 '
-                      'ratio)',
+  'quiz': [{'opts': [('1 mol/dm³ — volume = 0.3 dm³, so c = 0.3 ÷ 0.3', True),
+                     ('0.001 mol/dm³ — 0.3 ÷ 300, without converting', False),
+                     ('90 mol/dm³ — 0.3 × 300', False),
+                     ('0.3 mol/dm³ — using the moles as the concentration', False)],
+            'q': 'Calculate the concentration in mol/dm³ of a solution made by dissolving 0.3 mol of KOH in '
+                 '300 cm³ of solution.',
+            'wrong_explanations': {1: 'Convert 300 cm³ to 0.3 dm³ first: 0.3 ÷ 0.3 = 1 mol/dm³.',
+                                   2: 'Concentration is moles ÷ volume in dm³, not moles × volume: 0.3 ÷ 0.3 '
+                                      '= 1 mol/dm³.',
+                                   3: 'Divide the moles by the volume in dm³: 0.3 ÷ 0.3 = 1 mol/dm³.'}},
+           {'opts': [('Neither — 0.1 mol Na needs exactly 0.05 mol Cl₂ (a 2:1 ratio), so both run out '
+                      'together',
                       True),
-                     ('Sodium — there is more Cl₂ than Na in molar terms', False),
-                     ('Chlorine — there is less Cl₂ (0.05 mol) than Na (0.1 mol)', False),
-                     ('Cannot determine without knowing the masses', False)],
-            'q': 'A student mixes 0.1 mol Na with 0.05 mol Cl₂. 2Na + Cl₂ → 2NaCl. Which is the limiting reactant?',
-            'wrong_explanations': {1: 'Cl₂ is not in excess — the equation ratio is 2Na:1Cl₂. So 0.1 mol Na exactly '
-                                      'needs 0.05 mol Cl₂. Both are in exactly stoichiometric amounts — neither is '
-                                      'limiting.',
-                                   2: 'The raw molar amounts cannot be directly compared — they must be compared '
-                                      'relative to the EQUATION RATIO. 0.05 mol Cl₂ is exactly the right amount for '
-                                      '0.1 mol Na.',
-                                   3: "Moles are all that's needed — masses would just be converted to moles "
-                                      'anyway.'}}],
+                     ('Sodium, because there is more chlorine in molar terms', False),
+                     ('Chlorine, because 0.05 mol is fewer than 0.1 mol', False),
+                     ('Cannot be decided without the masses', False)],
+            'q': '0.1 mol of sodium is mixed with 0.05 mol of chlorine. 2Na + Cl₂ → 2NaCl. Deduce the '
+                 'limiting reactant.',
+            'wrong_explanations': {1: 'The 2:1 ratio means 0.1 mol Na needs exactly 0.05 mol Cl₂ — both are '
+                                      'used up exactly.',
+                                   2: 'Raw moles cannot be compared directly; against the 2:1 ratio, 0.05 '
+                                      'mol Cl₂ is exactly right.',
+                                   3: 'Moles and the equation ratio are enough: 0.1 mol Na : 0.05 mol Cl₂ is '
+                                      'exactly 2:1.'}},
+           {'opts': [('Hydrochloric acid — 0.1 mol Mg needs 0.2 mol HCl, but only 0.15 mol is present', True),
+                     ('Magnesium, because it is a solid', False),
+                     ('Neither, because 0.1 and 0.15 are close', False),
+                     ('Magnesium, because there is less of it', False)],
+            'q': 'Mg + 2HCl → MgCl₂ + H₂. 0.1 mol of magnesium is added to 0.15 mol of hydrochloric acid. '
+                 'Identify the limiting reactant.',
+            'wrong_explanations': {1: 'State does not decide it: 0.1 mol Mg needs 0.2 mol HCl and only 0.15 '
+                                      'is present, so HCl limits.',
+                                   2: 'The ratio is 1:2, so 0.1 mol Mg needs 0.2 mol HCl; only 0.15 mol is '
+                                      'present, so HCl limits.',
+                                   3: 'There are fewer moles of Mg, but it needs 0.2 mol HCl, more than the '
+                                      '0.15 available — HCl limits.'}},
+           {'opts': [('CH₄ — n(C) = 0.2 mol, n(H) = 0.8 mol, ratio 0.2:0.8 = 1:4', True),
+                     ('CH — using the masses directly as the ratio', False),
+                     ('C₄H — inverting the ratio', False),
+                     ('C₃H — using 2.4 and 0.8 without dividing by Ar', False)],
+            'q': 'A compound contains 2.4 g of carbon and 0.8 g of hydrogen. Determine its empirical '
+                 'formula. Ar: C = 12, H = 1.',
+            'wrong_explanations': {1: 'Convert masses to moles first: C = 2.4÷12 = 0.2, H = 0.8÷1 = 0.8, '
+                                      'ratio 1:4 → CH₄.',
+                                   2: 'The moles are C 0.2 : H 0.8, i.e. 1 C to 4 H → CH₄, not C₄H.',
+                                   3: 'Divide each mass by its Ar first: 0.2 : 0.8 = 1:4 → CH₄.'}},
+           {'opts': [('0.05 mol — n = c × V = 0.20 × 0.25', True),
+                     ('50 mol — 0.20 × 250, without converting to dm³', False),
+                     ('0.8 mol — 0.20 ÷ 0.25, dividing instead of multiplying', False),
+                     ('0.20 mol — using the concentration as the moles', False)],
+            'q': 'Calculate the number of moles of HCl in 250 cm³ of a 0.20 mol/dm³ solution.',
+            'wrong_explanations': {1: 'Convert 250 cm³ to 0.25 dm³ first: 0.20 × 0.25 = 0.05 mol.',
+                                   2: 'Moles = concentration × volume: 0.20 × 0.25 = 0.05 mol.',
+                                   3: 'Multiply the concentration by the volume in dm³: 0.20 × 0.25 = 0.05 '
+                                      'mol.'}},
+           {'opts': [("Convert each reactant to moles, compare with the equation's mole ratio, and find the "
+                      'one that runs out first',
+                      True),
+                     ('The reactant with the smallest mass is always limiting', False),
+                     ('The reactant with the smallest number of moles is always limiting', False),
+                     ('The reactant that is a gas is always limiting', False)],
+            'q': 'State how you identify the limiting reactant in a reaction.',
+            'wrong_explanations': {1: 'Mass alone does not decide it; you must compare moles against the '
+                                      'equation ratio.',
+                                   2: 'Only after comparing with the ratio; a reactant in fewer moles can '
+                                      'still be in excess.',
+                                   3: "State is irrelevant; compare moles with the balanced equation's "
+                                      'ratio.'}},
+           {'opts': [('CaCO₃ — in 100 g: Ca 40÷40 = 1, C 12÷12 = 1, O 48÷16 = 3, ratio 1:1:3', True),
+                     ('CaCO — dropping the oxygen ratio', False),
+                     ('Ca₄C₁₂O₄₈ — using the percentages as the atom counts', False),
+                     ('CaC₃O — mixing up the carbon and oxygen', False)],
+            'q': 'A compound is 40% calcium, 12% carbon and 48% oxygen by mass. Determine its empirical '
+                 'formula. Ar: Ca = 40, C = 12, O = 16.',
+            'wrong_explanations': {1: 'The oxygen gives 48÷16 = 3, so the ratio is 1:1:3 → CaCO₃.',
+                                   2: 'Divide each percentage by the Ar first: 1:1:3 → CaCO₃.',
+                                   3: 'Carbon is 1 (12÷12) and oxygen is 3 (48÷16): CaCO₃.'}},
+           {'opts': [('50 cm³ — V = n ÷ c = 0.10 ÷ 2.0 = 0.05 dm³', True),
+                     ('0.2 cm³ — 0.10 × 2.0, multiplying instead of dividing', False),
+                     ('20 cm³ — 2.0 ÷ 0.10, dividing the wrong way', False),
+                     ('0.05 cm³ — forgetting to convert dm³ to cm³', False)],
+            'q': 'Calculate the volume, in cm³, of 2.0 mol/dm³ hydrochloric acid that contains 0.10 mol of '
+                 'HCl.',
+            'wrong_explanations': {1: 'Volume = moles ÷ concentration = 0.10 ÷ 2.0 = 0.05 dm³ = 50 cm³.',
+                                   2: 'Divide the moles by the concentration: 0.10 ÷ 2.0 = 0.05 dm³ = 50 '
+                                      'cm³.',
+                                   3: '0.05 dm³ × 1000 = 50 cm³.'}},
+           {'opts': [('Oxygen — 0.4 mol H₂ needs only 0.2 mol O₂, but 0.3 mol is present, so oxygen is in '
+                      'excess',
+                      True),
+                     ('Hydrogen, because there is more of it', False),
+                     ('Neither, because 0.4 and 0.3 are close', False),
+                     ('Oxygen is limiting, because 0.3 is fewer than 0.4', False)],
+            'q': '2H₂ + O₂ → 2H₂O. 0.4 mol of hydrogen reacts with 0.3 mol of oxygen. Deduce which reactant '
+                 'is in excess.',
+            'wrong_explanations': {1: 'Hydrogen is the limiting reactant: it needs 0.2 mol O₂ and 0.3 mol is '
+                                      'available, so oxygen is in excess.',
+                                   2: 'Against the 2:1 ratio, 0.4 mol H₂ needs 0.2 mol O₂; the extra 0.1 mol '
+                                      'O₂ is in excess.',
+                                   3: 'Raw moles do not decide it: 0.4 mol H₂ needs only 0.2 mol O₂, so '
+                                      'oxygen is in excess.'}},
+           {'opts': [('0.25 mol/dm³ — volume = 0.2 dm³, so 0.05 ÷ 0.2', True),
+                     ('0.00025 mol/dm³ — 0.05 ÷ 200, without converting', False),
+                     ('10 mol/dm³ — 0.05 × 200', False),
+                     ('0.05 mol/dm³ — using the moles as the concentration', False)],
+            'q': 'Calculate the concentration in mol/dm³ of a solution containing 0.05 mol of NaOH in 200 '
+                 'cm³ of solution.',
+            'wrong_explanations': {1: 'Convert 200 cm³ to 0.2 dm³ first: 0.05 ÷ 0.2 = 0.25 mol/dm³.',
+                                   2: 'Concentration is moles ÷ volume in dm³: 0.05 ÷ 0.2 = 0.25 mol/dm³.',
+                                   3: 'Divide the moles by the volume in dm³: 0.05 ÷ 0.2 = 0.25 mol/dm³.'}},
+           {'opts': [('C₃H₆ — empirical mass of CH₂ = 14; 42 ÷ 14 = 3, so multiply the formula by 3', True),
+                     ('CH₂ — assuming the molecular formula equals the empirical formula', False),
+                     ('C₂H₄ — using a factor of 2', False),
+                     ('C₄₂H₈₄ — multiplying by the Mr itself', False)],
+            'q': 'A compound has the empirical formula CH₂ and a relative formula mass of 42. Determine its '
+                 'molecular formula. Ar: C = 12, H = 1.',
+            'wrong_explanations': {1: 'The Mr (42) is 3 times the empirical mass (14), so the molecular '
+                                      'formula is C₃H₆.',
+                                   2: '42 ÷ 14 = 3, not 2, so the formula is (CH₂)₃ = C₃H₆.',
+                                   3: 'Divide the Mr by the empirical mass first: 42 ÷ 14 = 3 → C₃H₆.'}},
+           {'opts': [('Hydrochloric acid — n(Mg) = 0.125 mol needs 0.25 mol HCl, but only n(HCl) = 2.0 × 0.1 '
+                      '= 0.2 mol is present',
+                      True),
+                     ('Magnesium, because 0.125 mol is a small amount', False),
+                     ('Neither, because both are 0.2 mol', False),
+                     ('Magnesium, because it is the solid reactant', False)],
+            'q': '3.0 g of magnesium is added to 100 cm³ of 2.0 mol/dm³ hydrochloric acid. Mg + 2HCl → MgCl₂ '
+                 '+ H₂. Deduce the limiting reactant. Ar: Mg = 24.',
+            'wrong_explanations': {1: '0.125 mol Mg would need 0.25 mol HCl; only 0.2 mol HCl is present, so '
+                                      'HCl is limiting.',
+                                   2: 'n(Mg) = 3.0 ÷ 24 = 0.125 mol, not 0.2 mol; the HCl (0.2 mol) runs out '
+                                      'first.',
+                                   3: 'State is irrelevant; comparing moles with the 1:2 ratio shows HCl is '
+                                      'limiting.'}}],
   'rp': None,
   'spec': '5.3.2.3–5.3.2.4',
-  'summary': 'Use moles to balance equations, calculate concentration in mol/dm³ and identify limiting reactants.',
+  'summary': 'Use moles to balance equations, calculate concentration in mol/dm³ and identify limiting '
+             'reactants.',
   'theory': [{'content': 'CONCENTRATION in mol/dm³ (molar concentration):\n'
                          '\n'
                          'concentration (mol/dm³) = moles (mol) ÷ volume (dm³)\n'
@@ -3933,15 +5279,16 @@ CHEMISTRY_SUBTOPICS_ALL = {
                          'n(NaOH) = 0.002 mol\n'
                          'c(NaOH) = 0.002 ÷ 0.025 = 0.08 mol/dm³',
               'heading': 'Using Moles to Calculate Concentration'},
-             {'content': 'In a reaction, the LIMITING REACTANT is the reactant that is completely used up first — it '
-                         'determines how much product forms.\n'
+             {'content': 'In a reaction, the LIMITING REACTANT is the reactant that is completely used up '
+                         'first — it determines how much product forms.\n'
                          '\n'
                          'The other reactant is in EXCESS — some of it remains unreacted.\n'
                          '\n'
                          'IDENTIFYING THE LIMITING REACTANT:\n'
                          'Calculate moles of each reactant.\n'
                          'Compare to the molar ratio from the balanced equation.\n'
-                         'The reactant that runs out first (relative to the ratio) is the LIMITING reactant.\n'
+                         'The reactant that runs out first (relative to the ratio) is the LIMITING '
+                         'reactant.\n'
                          '\n'
                          'EXAMPLE:\n'
                          'Mg + 2HCl → MgCl₂ + H₂\n'
@@ -3980,8 +5327,225 @@ CHEMISTRY_SUBTOPICS_ALL = {
   'triple_only': None,
   'variables': [('c', 'Concentration', 'mol/dm³', 'mol/dm³'),
                 ('n', 'Moles', 'mol', 'mol'),
-                ('V', 'Volume', 'dm³', 'dm³')]}],
-
+                ('V', 'Volume', 'dm³', 'dm³')]},
+ {'common_mistake': 'Students often divide by 24 when they should multiply, or forget that 24 dm³ is 24 000 '
+                    'cm³ and end up 1000 times out. To go from moles to a volume in dm³ you MULTIPLY by 24; '
+                    'to go from a volume back to moles you DIVIDE by 24. And watch the units: 24 dm³ = 24 '
+                    '000 cm³, so a volume given in cm³ must be divided by 1000 before you use it as dm³.',
+  'equations': ['volume of gas (dm³) = moles × 24 (at RTP)',
+                'moles = volume of gas (dm³) ÷ 24 (at RTP)',
+                'volume of gas (cm³) = moles × 24 000 (at RTP)'],
+  'fifas': [{'label': 'Moles to gas volume',
+             'question': 'Calculate the volume of 0.5 mol of oxygen gas at RTP.',
+             'steps': [('F', 'volume of gas (dm³) = moles × 24 (at RTP)'),
+                       ('I', '= 0.5 × 24'),
+                       ('F', '= 12'),
+                       ('A', 'volume = 12 dm³')]},
+            {'label': 'Mass to gas volume (two steps)',
+             'question': 'Calculate the volume occupied at RTP by 11 g of carbon dioxide. Mr of CO₂ = 44.',
+             'steps': [('F', 'first moles = mass ÷ Mr, then volume = moles × 24'),
+                       ('I', 'moles = 11 ÷ 44 = 0.25 mol;  volume = 0.25 × 24'),
+                       ('F', '= 0.25 × 24 = 6'),
+                       ('A', 'volume = 6 dm³')]},
+            {'label': 'Gas volume from a reacting mass, in cm³',
+             'question': 'Calculate the volume of hydrogen, in cm³, produced at RTP when 0.48 g of magnesium '
+                         'reacts with excess acid. Mg + 2HCl → MgCl₂ + H₂. Ar: Mg = 24.',
+             'steps': [('F',
+                        'moles Mg = mass ÷ Ar; use the 1:1 ratio for H₂; volume (dm³) = moles × 24; then × '
+                        '1000 for cm³'),
+                       ('I',
+                        'n(Mg) = 0.48 ÷ 24 = 0.02 mol;  n(H₂) = 0.02 mol;  volume = 0.02 × 24 = 0.48 dm³'),
+                       ('F', '0.48 dm³ × 1000 = 480'),
+                       ('A', 'volume = 480 cm³')]}],
+  'higher': 'Use volume = moles × 24 (at RTP) and its rearrangement moles = volume ÷ 24. Combine with moles '
+            '= mass ÷ Mr and the balanced-equation ratio to find the volume of a gas produced or required in '
+            "a reaction. Apply Avogadro's law — equal volumes of gases at the same temperature and pressure "
+            'contain equal numbers of molecules — to work out gas volume ratios directly from the equation.',
+  'id': 'molar-gas-volume',
+  'key_note': '1 mole of ANY gas occupies 24 dm³ at RTP (room temperature and pressure: 20°C and 1 '
+              'atmosphere). Volume (dm³) = moles × 24. Moles = volume (dm³) ÷ 24. Remember 24 dm³ = 24 000 '
+              'cm³. Equal volumes of different gases at the same temperature and pressure contain equal '
+              "numbers of moles (Avogadro's law).",
+  'matching': {'instruction': 'Match each gas calculation to its correct answer (all volumes at RTP).',
+               'pairs': [('Volume of 2 mol of any gas at RTP', '48 dm³ — 2 × 24'),
+                         ('Volume of 0.5 mol of CO₂ at RTP', '12 dm³ — 0.5 × 24'),
+                         ('Moles of gas in 72 dm³ at RTP', '3 mol — 72 ÷ 24'),
+                         ('24 dm³ written in cm³', '24 000 cm³ — × 1000'),
+                         ('Volume of 0.25 mol of H₂ at RTP', '6 dm³ — 0.25 × 24')],
+               'title': 'Molar Gas Volume Calculations'},
+  'quiz': [{'opts': [('24 dm³', True),
+                     ('1 dm³ — one mole occupies one unit of volume', False),
+                     ('24 cm³ — the molar volume in cm³', False),
+                     ('22.4 dm³ — the value at STP, not RTP', False)],
+            'q': 'State the volume occupied by one mole of any gas at room temperature and pressure (RTP).',
+            'wrong_explanations': {1: 'One mole is a fixed NUMBER of particles, not one unit of volume; at '
+                                      'RTP any gas occupies 24 dm³.',
+                                   2: 'The molar gas volume is 24 dm³, which is 24 000 cm³ — not 24 cm³.',
+                                   3: '22.4 dm³ is the older STP value; AQA uses 24 dm³ at RTP.'}},
+           {'opts': [('48 dm³ — volume = moles × 24 = 2 × 24', True),
+                     ('0.083 dm³ — 2 ÷ 24, dividing instead of multiplying', False),
+                     ('88 dm³ — 2 × 44, using the Mr of CO₂', False),
+                     ('26 dm³ — 2 + 24, adding instead of multiplying', False)],
+            'q': 'Calculate the volume of 2 mol of carbon dioxide at RTP.',
+            'wrong_explanations': {1: 'Moles to volume is a MULTIPLICATION: 2 × 24 = 48 dm³. Dividing is '
+                                      'used to go from volume back to moles.',
+                                   2: 'The molar gas volume (24), not the Mr (44), converts moles to volume: '
+                                      '2 × 24 = 48 dm³.',
+                                   3: 'Multiply the moles by 24: 2 × 24 = 48 dm³.'}},
+           {'opts': [('3 mol — moles = volume ÷ 24 = 72 ÷ 24', True),
+                     ('1728 mol — 72 × 24, multiplying instead of dividing', False),
+                     ('0.33 mol — 24 ÷ 72, dividing the wrong way', False),
+                     ('2.25 mol — 72 ÷ 32, using the Mr of O₂', False)],
+            'q': 'Calculate the amount, in moles, of gas in 72 dm³ of oxygen at RTP.',
+            'wrong_explanations': {1: 'Volume to moles is a DIVISION: 72 ÷ 24 = 3 mol.',
+                                   2: 'Divide the volume by 24, not 24 by the volume: 72 ÷ 24 = 3 mol.',
+                                   3: 'Use the molar gas volume (24), not the Mr (32): 72 ÷ 24 = 3 mol.'}},
+           {'opts': [('12 000 cm³ — 0.5 × 24 = 12 dm³, then × 1000', True),
+                     ('12 cm³ — 0.5 × 24 but not converted to cm³', False),
+                     ('24 000 cm³ — used 1 mol instead of 0.5 mol', False),
+                     ('6 cm³ — 0.5 × 12, using 12 as the molar volume', False)],
+            'q': 'Calculate the volume, in cm³, of 0.5 mol of hydrogen at RTP.',
+            'wrong_explanations': {1: '0.5 × 24 = 12 dm³; convert to cm³ by × 1000, giving 12 000 cm³.',
+                                   2: '0.5 mol occupies half of 24 dm³: 0.5 × 24 = 12 dm³ = 12 000 cm³.',
+                                   3: 'The molar gas volume is 24 dm³: 0.5 × 24 = 12 dm³ = 12 000 cm³.'}},
+           {'opts': [('6 dm³ — moles = 8 ÷ 32 = 0.25 mol; volume = 0.25 × 24', True),
+                     ('192 dm³ — 8 × 24, using the mass instead of the moles', False),
+                     ('0.33 dm³ — 8 ÷ 24, treating the mass as a volume', False),
+                     ('12 dm³ — using Mr = 16 for oxygen', False)],
+            'q': 'Calculate the volume occupied at RTP by 8 g of oxygen gas (O₂). Ar: O = 16.',
+            'wrong_explanations': {1: 'Convert the mass to moles first: 8 ÷ 32 = 0.25 mol, then × 24 = 6 '
+                                      'dm³.',
+                                   2: 'Find the moles first (8 ÷ 32 = 0.25 mol), then × 24 = 6 dm³.',
+                                   3: 'Oxygen gas is O₂ with Mr = 32, not 16: moles = 8 ÷ 32 = 0.25 mol, '
+                                      'volume = 6 dm³.'}},
+           {'opts': [('2.4 dm³ — ratio 1:1 so 0.1 mol CO₂; volume = 0.1 × 24', True),
+                     ('0.0042 dm³ — 0.1 ÷ 24, dividing instead of multiplying', False),
+                     ('4.4 dm³ — 0.1 × 44, using the Mr of CO₂', False),
+                     ('24 dm³ — using 1 mol instead of 0.1 mol', False)],
+            'q': 'Calculate the volume of carbon dioxide produced at RTP when 0.1 mol of calcium carbonate '
+                 'decomposes completely. CaCO₃ → CaO + CO₂.',
+            'wrong_explanations': {1: 'Moles to volume multiplies by 24: 0.1 × 24 = 2.4 dm³.',
+                                   2: 'Use the molar gas volume (24), not the Mr (44): 0.1 × 24 = 2.4 dm³.',
+                                   3: 'Only 0.1 mol of CO₂ is made: 0.1 × 24 = 2.4 dm³.'}},
+           {'opts': [('0.24 dm³ — moles Mg = 0.24 ÷ 24 = 0.01 mol; ratio 1:1; volume = 0.01 × 24', True),
+                     ('5.76 dm³ — 0.24 × 24, using the mass instead of the moles', False),
+                     ('0.01 dm³ — stopping at the moles of hydrogen', False),
+                     ('0.48 dm³ — using a 1:2 ratio for Mg:H₂', False)],
+            'q': 'Calculate the volume of hydrogen produced at RTP when 0.24 g of magnesium reacts '
+                 'completely with excess acid. Mg + 2HCl → MgCl₂ + H₂. Ar: Mg = 24.',
+            'wrong_explanations': {1: 'Convert the mass to moles first: 0.24 ÷ 24 = 0.01 mol, then × 24 = '
+                                      '0.24 dm³.',
+                                   2: '0.01 mol must be multiplied by 24: 0.01 × 24 = 0.24 dm³.',
+                                   3: 'The ratio Mg:H₂ is 1:1, so moles of H₂ = 0.01 mol and volume = 0.24 '
+                                      'dm³.'}},
+           {'opts': [("They contain equal numbers of moles (and molecules) — this is Avogadro's law", True),
+                     ('They must have equal masses', False),
+                     ('They must have equal relative formula masses', False),
+                     ('They must contain equal numbers of atoms', False)],
+            'q': 'Equal volumes of two different gases are measured at the same temperature and pressure. '
+                 'Deduce what must be equal about the two samples.',
+            'wrong_explanations': {1: 'Equal volumes have equal MOLES, but the masses differ because the '
+                                      'gases have different Mr values.',
+                                   2: 'Their Mr values can differ; what is equal is the number of moles '
+                                      "(Avogadro's law).",
+                                   3: 'They have equal numbers of MOLECULES, but not necessarily atoms — the '
+                                      'molecules can have different numbers of atoms.'}},
+           {'opts': [('60 cm³ — equal volumes contain equal moles, so the volume ratio is 1:3: 20 × 3', True),
+                     ('6.67 cm³ — 20 ÷ 3, inverting the ratio', False),
+                     ('20 cm³ — assuming a 1:1 ratio', False),
+                     ('40 cm³ — using the 1:2 ammonia ratio', False)],
+            'q': 'In N₂ + 3H₂ → 2NH₃, all gas volumes are measured at RTP. Calculate the volume of hydrogen '
+                 'needed to react completely with 20 cm³ of nitrogen.',
+            'wrong_explanations': {1: 'Hydrogen is in a 3:1 ratio to nitrogen, so multiply: 20 × 3 = 60 cm³.',
+                                   2: 'The ratio N₂:H₂ is 1:3, so 20 cm³ of N₂ needs 60 cm³ of H₂.',
+                                   3: '1:2 is the N₂:NH₃ ratio; for hydrogen the ratio is 1:3, giving 60 '
+                                      'cm³.'}},
+           {'opts': [('1.2 dm³ — volume = moles × 24 = 0.05 × 24', True),
+                     ('0.0021 dm³ — 0.05 ÷ 24, dividing instead of multiplying', False),
+                     ('0.8 dm³ — 0.05 × 16, using the Mr of methane', False),
+                     ('24 dm³ — the molar volume regardless of the moles', False)],
+            'q': 'Calculate the volume, in dm³, of 0.05 mol of methane (CH₄) at RTP.',
+            'wrong_explanations': {1: 'Moles to volume multiplies by 24: 0.05 × 24 = 1.2 dm³.',
+                                   2: 'Use the molar gas volume (24), not the Mr (16): 0.05 × 24 = 1.2 dm³.',
+                                   3: '24 dm³ is for one mole; 0.05 mol occupies 0.05 × 24 = 1.2 dm³.'}},
+           {'opts': [('11 g — moles = 6 ÷ 24 = 0.25 mol; mass = 0.25 × 44', True),
+                     ('264 g — 6 × 44, using the volume as the moles', False),
+                     ('0.25 g — stopping at the moles', False),
+                     ('6 g — using the volume as the mass', False)],
+            'q': 'A sample of carbon dioxide has a volume of 6 dm³ at RTP. Calculate its mass. Mr of CO₂ = '
+                 '44.',
+            'wrong_explanations': {1: 'Convert the volume to moles first: 6 ÷ 24 = 0.25 mol, then × 44 = 11 '
+                                      'g.',
+                                   2: '0.25 mol must be multiplied by the Mr (44): 0.25 × 44 = 11 g.',
+                                   3: 'The volume must be converted through moles: 6 ÷ 24 = 0.25 mol, mass = '
+                                      '11 g.'}},
+           {'opts': [('1.2 dm³ — moles = 5 ÷ 100 = 0.05 mol; ratio 1:1; volume = 0.05 × 24', True),
+                     ('120 dm³ — 5 × 24, using the mass instead of the moles', False),
+                     ('0.05 dm³ — stopping at the moles', False),
+                     ('2.2 dm³ — 0.05 × 44, using the Mr of CO₂', False)],
+            'q': 'Calculate the volume of carbon dioxide produced at RTP when 5 g of calcium carbonate '
+                 'decomposes completely. CaCO₃ → CaO + CO₂. Mr of CaCO₃ = 100.',
+            'wrong_explanations': {1: 'Convert the mass to moles first: 5 ÷ 100 = 0.05 mol, then × 24 = 1.2 '
+                                      'dm³.',
+                                   2: '0.05 mol must be multiplied by 24: 0.05 × 24 = 1.2 dm³.',
+                                   3: 'Use the molar gas volume (24), not the Mr (44): 0.05 × 24 = 1.2 '
+                                      'dm³.'}}],
+  'rp': None,
+  'spec': '4.3.5',
+  'summary': 'Use the molar gas volume (24 dm³ at RTP) to convert between the amount of a gas in moles and '
+             'its volume, and to find gas volumes in reactions.',
+  'theory': [{'content': 'At RTP (room temperature and pressure — taken as 20°C and 1 atmosphere), ONE MOLE '
+                         'of ANY gas occupies the same volume: 24 dm³ (which is 24 000 cm³).\n'
+                         '\n'
+                         'This is called the MOLAR GAS VOLUME. It is the same for every gas — hydrogen, '
+                         'carbon dioxide, oxygen — because the particles in a gas are so far apart that the '
+                         'size of the individual molecules makes almost no difference to the total volume.\n'
+                         '\n'
+                         "AVOGADRO'S LAW:\n"
+                         'Equal volumes of different gases, measured at the same temperature and pressure, '
+                         'contain equal numbers of molecules (and therefore equal numbers of moles).\n'
+                         '\n'
+                         'This is a Higher-tier, chemistry-only (Triple) idea (AQA 4.3.5).',
+              'heading': 'The Molar Gas Volume'},
+             {'content': 'TWO KEY REARRANGEMENTS (at RTP):\n'
+                         'volume of gas (dm³) = moles × 24\n'
+                         'moles = volume of gas (dm³) ÷ 24\n'
+                         '\n'
+                         'EXAMPLE 1 — moles to volume:\n'
+                         'Volume of 0.5 mol of oxygen = 0.5 × 24 = 12 dm³.\n'
+                         '\n'
+                         'EXAMPLE 2 — volume to moles:\n'
+                         'Moles in 72 dm³ of gas = 72 ÷ 24 = 3 mol.\n'
+                         '\n'
+                         'EXAMPLE 3 — mass to volume (two steps):\n'
+                         'Volume of 11 g of CO₂ (Mr = 44): first moles = 11 ÷ 44 = 0.25 mol, then volume = '
+                         '0.25 × 24 = 6 dm³.\n'
+                         '\n'
+                         'UNITS: 24 dm³ = 24 000 cm³. If a volume is given in cm³, divide by 1000 to get dm³ '
+                         'before using it; multiply a dm³ answer by 1000 to give cm³.',
+              'heading': 'Converting Between Moles and Gas Volume'},
+             {'content': 'To find the volume of a gas made or used in a reaction:\n'
+                         '1. Convert any mass to moles (moles = mass ÷ Mr).\n'
+                         '2. Use the balanced equation ratio to find the moles of the gas.\n'
+                         '3. Convert moles of gas to a volume (volume = moles × 24 at RTP).\n'
+                         '\n'
+                         'EXAMPLE — gas volume from a mass:\n'
+                         '0.24 g of magnesium reacts with excess acid: Mg + 2HCl → MgCl₂ + H₂.\n'
+                         'moles of Mg = 0.24 ÷ 24 = 0.01 mol; ratio Mg:H₂ = 1:1, so moles of H₂ = 0.01 mol; '
+                         'volume of H₂ = 0.01 × 24 = 0.24 dm³ (= 240 cm³).\n'
+                         '\n'
+                         'REACTIONS BETWEEN GASES:\n'
+                         "Because equal volumes of gases contain equal moles (Avogadro's law), the VOLUME "
+                         'ratio of gases in a reaction equals the MOLE ratio. In N₂ + 3H₂ → 2NH₃, 20 cm³ of '
+                         'nitrogen reacts with 3 × 20 = 60 cm³ of hydrogen.',
+              'heading': 'Gas Volumes in Reactions'}],
+  'title': 'Volumes of Gases (Molar Gas Volume)',
+  'triple_only': 'The molar gas volume (4.3.5) is chemistry-only and Higher tier — not in Combined Science. '
+                 'At room temperature and pressure one mole of any gas occupies 24 dm³; students use this to '
+                 'convert between the amount of a gas in moles and its volume.',
+  'variables': [('V', 'Volume of gas at RTP', 'dm³', 'dm³'),
+                ('n', 'Amount of gas', 'moles', 'mol'),
+                ('Vm', 'Molar gas volume at RTP', '24 dm³ per mole', '24 dm³/mol')]}],
 "chemical-changes": [{'common_mistake': 'A metal can only displace another metal that is BELOW it in the reactivity series. Copper cannot '
                     'displace iron from iron sulfate — copper is less reactive than iron. The more reactive metal '
                     'always displaces the less reactive one, not the other way around.',
