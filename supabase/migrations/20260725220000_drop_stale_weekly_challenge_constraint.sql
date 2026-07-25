@@ -1,0 +1,55 @@
+-- P0 INCIDENT FIX — Weekly Challenge unavailable for one pathway per week
+--
+-- ⚠️  NOT YET APPLIED. Awaiting Mide's approval (schema change).
+--
+-- WHAT IS WRONG
+-- `weekly_challenges` carries TWO unique constraints:
+--
+--   weekly_challenges_week_start_subject_pathway_tier_key
+--       UNIQUE (week_start, subject, pathway, tier)   <- correct, v3.0 12-track
+--   weekly_challenges_week_subject_tier_key
+--       UNIQUE (week_start, subject, tier)            <- STALE, pre-pathway era
+--
+-- The stale one has no `pathway` column, so it permits only ONE pathway per
+-- (week_start, subject, tier). The system has 12 tracks; the table can only
+-- ever hold 6 per week. Whichever pathway a student requests FIRST each week
+-- claims the slot, and every student on the other pathway is locked out for
+-- the rest of that week.
+--
+-- The stale constraint predates the migrations toolchain (it is in no
+-- checked-in migration — created by hand during the original 6-track build,
+-- before `pathway` existed). The v3.0 rollout added the correct 4-column
+-- constraint but never dropped this one.
+--
+-- HOW IT SURFACES TO STUDENTS
+-- generateWeeklyChallenge() upserts with
+--   ON CONFLICT (week_start, subject, pathway, tier)
+-- That target does not match the stale constraint, so Postgres attempts a
+-- plain INSERT and raises 23505 against weekly_challenges_week_subject_tier_key.
+-- The upsert error path returns false, and the route returns
+--   404 {"error":"No challenge available. Check back soon!"}
+-- which is the exact message students reported.
+--
+-- Proven on production 2026-07-25 with a deliberately rolled-back INSERT:
+--   sqlstate=23505 constraint=weekly_challenges_week_subject_tier_key
+--
+-- SAFETY
+-- Dropping this constraint REMOVES a restriction; it cannot cause a uniqueness
+-- violation in existing data. The correct 4-column constraint stays in force,
+-- so (week_start, subject, pathway, tier) remains unique. No rows are read,
+-- written, or deleted. Reversible via supabase/rollbacks/.
+--
+-- Verify BEFORE applying (must return 0 rows — proves no data depends on the
+-- stale constraint being narrower than the correct one):
+--   SELECT week_start, subject, pathway, tier, count(*)
+--   FROM weekly_challenges
+--   GROUP BY 1,2,3,4 HAVING count(*) > 1;
+
+ALTER TABLE public.weekly_challenges
+  DROP CONSTRAINT IF EXISTS weekly_challenges_week_subject_tier_key;
+
+-- Verify AFTER applying: exactly one unique constraint should remain, and it
+-- must include `pathway`.
+--   SELECT conname, pg_get_constraintdef(oid)
+--   FROM pg_constraint
+--   WHERE conrelid = 'public.weekly_challenges'::regclass AND contype = 'u';

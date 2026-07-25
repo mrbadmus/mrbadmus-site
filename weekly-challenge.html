@@ -222,6 +222,14 @@
       You're taking: <strong id="track-label"></strong>
     </div>
 
+    <!-- Inline load status. Replaces alert() so a failure can never stack up
+         into a wall of dialogs. Single node, overwritten in place. -->
+    <div id="load-status" role="status" aria-live="polite"
+         style="display:none;margin:16px auto 0;max-width:520px;padding:14px 16px;border-radius:14px;font-size:0.95rem;line-height:1.5;text-align:left;">
+      <strong id="load-status-title" style="display:block;margin-bottom:4px;"></strong>
+      <span id="load-status-body"></span>
+    </div>
+
     <div class="intro-rules">
       <h3>⚡ Rules</h3>
       <p><strong>15 questions</strong>, matched to your course pathway and tier</p>
@@ -246,6 +254,10 @@
       <span class="q-difficulty" id="q-difficulty">Easy</span>
       <div class="q-text" id="q-text"></div>
       <div class="q-options" id="q-options"></div>
+      <div id="answer-hint" role="status" aria-live="polite"
+           style="display:none;margin-top:12px;color:var(--danger);font-weight:600;font-size:0.95rem;">
+        Pick an answer to carry on.
+      </div>
     </div>
     <div id="submit-error" style="display:none;text-align:center;color:var(--danger);font-weight:700;margin-top:14px;">
       Something went wrong. Try submitting again.
@@ -307,6 +319,7 @@
     document.getElementById('results').style.display = 'none';
     document.getElementById('quiz').style.display = 'none';
     document.getElementById('picker').style.display = 'block';
+    clearLoadStatus();
     selectedSubject = null;
     document.querySelectorAll('.subject-card').forEach(function(c) { c.classList.remove('selected'); });
     updateStartButton();
@@ -318,6 +331,7 @@
     selectedSubject = subj;
     document.querySelectorAll('.subject-card').forEach(function(c) { c.classList.remove('selected'); });
     el.classList.add('selected');
+    clearLoadStatus();
     updateStartButton();
   }
 
@@ -404,50 +418,125 @@
   }
   init();
 
+  // Generation can legitimately take ~30-60s on a cold track, plus Render
+  // cold start. Beyond this we stop waiting rather than spin forever.
+  var LOAD_TIMEOUT_MS = 90000;
+  var loadInFlight = false;
+  var slowMessageTimer = null;
+
+  // Single inline status node, always overwritten in place — a failure can
+  // never stack into repeated dialogs the way alert() did.
+  function showLoadStatus(kind, title, body) {
+    var el = document.getElementById('load-status');
+    var isError = kind === 'error';
+    el.style.background = isError ? 'rgba(255,107,53,0.10)' : 'var(--sunken)';
+    el.style.border = '1px solid ' + (isError ? 'var(--danger)' : 'var(--line, rgba(255,255,255,0.12))');
+    el.style.color = isError ? 'var(--danger)' : 'var(--muted)';
+    document.getElementById('load-status-title').textContent = title;
+    document.getElementById('load-status-body').textContent = body;
+    el.style.display = 'block';
+  }
+
+  function clearLoadStatus() {
+    document.getElementById('load-status').style.display = 'none';
+  }
+
+  // Return to the picker and report what happened, in one place.
+  function failToPicker(title, body) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('picker').style.display = 'block';
+    showLoadStatus('error', title, body);
+  }
+
   async function startChallenge() {
     if (!selectedSubject) return;
+    // Guard against double-submit (double tap, impatient re-tap). Without it
+    // each tap fires its own request and its own failure message.
+    if (loadInFlight) return;
+    loadInFlight = true;
+    document.getElementById('btn-start').disabled = true;
 
+    clearLoadStatus();
     document.getElementById('picker').style.display = 'none';
     document.getElementById('loading').style.display = 'block';
-    document.querySelector('#loading p').textContent = 'Loading ' + selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1) + ' challenge...';
+    var subjName = selectedSubject.charAt(0).toUpperCase() + selectedSubject.slice(1);
+    document.querySelector('#loading p').textContent = 'Loading ' + subjName + ' challenge...';
+
+    // If it is taking a while, say why rather than showing a silent spinner.
+    slowMessageTimer = setTimeout(function () {
+      var p = document.querySelector('#loading p');
+      if (p) p.textContent = 'Building this week’s ' + subjName + ' questions — this can take up to a minute the first time.';
+    }, 8000);
+
+    var controller = new AbortController();
+    var timedOut = false;
+    var timeoutId = setTimeout(function () {
+      timedOut = true;
+      controller.abort();
+    }, LOAD_TIMEOUT_MS);
 
     try {
       var sessResult = await sb.auth.getSession();
       var token = sessResult.data.session ? sessResult.data.session.access_token : session.access_token;
 
       var res = await fetch(RENDER_URL + '/api/weekly-challenge?subject=' + selectedSubject, {
-        headers: { 'Authorization': 'Bearer ' + token }
+        headers: { 'Authorization': 'Bearer ' + token },
+        signal: controller.signal
       });
 
+      // Body may not be JSON (proxy error page, empty 502). Never let that
+      // masquerade as a different failure.
+      var payload = null;
+      try { payload = await res.json(); } catch (e) { payload = null; }
+
       if (res.status === 400) {
-        var err = await res.json();
-        if (err.error && err.error.toLowerCase().includes('profile')) {
+        if (payload && payload.error && payload.error.toLowerCase().indexOf('profile') !== -1) {
           window.location.href = '/profile-setup.html';
           return;
         }
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('picker').style.display = 'block';
-        alert(err.error || 'Could not load challenge.');
+        failToPicker('We couldn’t start that challenge',
+          (payload && payload.error) || 'Something about your request wasn’t right. Try another subject.');
+        return;
+      }
+
+      if (res.status === 401) {
+        failToPicker('You’ve been signed out',
+          'Your session expired while loading. Please sign in again, then retry.');
         return;
       }
 
       if (!res.ok) {
-        var err = await res.json();
-        document.getElementById('loading').style.display = 'none';
-        document.getElementById('picker').style.display = 'block';
-        alert(err.error || 'Could not load challenge.');
+        // The backend distinguishes a permanent setup fault from a transient
+        // one. Pass that distinction through instead of flattening it.
+        var code = payload && payload.code;
+        if (code === 'CHALLENGE_SLOT_CONFLICT') {
+          failToPicker('This week’s ' + subjName + ' challenge isn’t available',
+            (payload && payload.error) || 'A setup problem on our side is blocking it. Retrying won’t help — please try a different subject, it has been logged.');
+        } else if (res.status === 503 || code === 'CHALLENGE_GENERATION_FAILED') {
+          failToPicker('We couldn’t build your challenge',
+            (payload && payload.error) || 'This is a problem on our side, not yours. Please try again in a few minutes.');
+        } else {
+          failToPicker('We couldn’t load your challenge',
+            (payload && payload.error) || ('The server returned an unexpected error (' + res.status + '). Please try again shortly.'));
+        }
         return;
       }
 
-      var data = await res.json();
-      challenge = data.challenge;
+      if (!payload || !payload.challenge || !Array.isArray(payload.challenge.questions) || !payload.challenge.questions.length) {
+        // 200 but nothing usable — treat as a real failure, not a blank quiz.
+        failToPicker('That challenge came back empty',
+          'We got a reply but it had no questions in it. Please try again shortly.');
+        return;
+      }
+
+      challenge = payload.challenge;
       questions = challenge.questions;
 
       document.getElementById('loading').style.display = 'none';
 
-      if (data.already_attempted) {
+      if (payload.already_attempted) {
         document.getElementById('already-done').style.display = 'block';
-        document.getElementById('prev-score').textContent = data.previous_score.score + ' / ' + data.previous_score.max_score;
+        document.getElementById('prev-score').textContent = payload.previous_score.score + ' / ' + payload.previous_score.max_score;
         return;
       }
 
@@ -460,10 +549,20 @@
       timerInterval = setInterval(updateTimer, 1000);
 
     } catch (err) {
-      console.error(err);
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('picker').style.display = 'block';
-      alert('Connection error. Try again.');
+      if (timedOut || (err && err.name === 'AbortError')) {
+        console.error('Weekly challenge load timed out after ' + LOAD_TIMEOUT_MS + 'ms', err);
+        failToPicker('That took too long',
+          'Your challenge didn’t load within 90 seconds, so we stopped waiting. This is usually a slow connection or our server waking up — please try again.');
+      } else {
+        console.error('Weekly challenge load failed', err);
+        failToPicker('We couldn’t reach the server',
+          'Check your connection and try again. If you’re on mobile data, moving to a stronger signal often fixes it.');
+      }
+    } finally {
+      clearTimeout(timeoutId);
+      clearTimeout(slowMessageTimer);
+      loadInFlight = false;
+      updateStartButton();
     }
   }
 
@@ -512,6 +611,7 @@
         '<span class="letter">' + letter + '</span><span>' + q.options[letter] + '</span></div>';
     }
     document.getElementById('q-options').innerHTML = optHtml;
+    document.getElementById('answer-hint').style.display = 'none';
     document.getElementById('btn-prev').disabled = currentQ === 0;
     document.getElementById('btn-next').textContent = currentQ === questions.length - 1 ? 'Submit ✅' : 'Next →';
   }
@@ -520,10 +620,16 @@
     answers[currentQ] = letter;
     document.querySelectorAll('.q-option').forEach(function(o) { o.classList.remove('selected'); });
     el.classList.add('selected');
+    document.getElementById('answer-hint').style.display = 'none';
   }
   function prevQuestion() { if (currentQ > 0) { currentQ--; renderQuestion(); } }
   function nextQuestion() {
-    if (answers[currentQ] === null) { alert('Please select an answer.'); return; }
+    // Inline, in place — repeated taps rewrite one node instead of stacking
+    // dialogs (which is what prompts iOS to offer "Suppress Dialogs").
+    if (answers[currentQ] === null) {
+      document.getElementById('answer-hint').style.display = 'block';
+      return;
+    }
     if (currentQ < questions.length - 1) { currentQ++; renderQuestion(); window.scrollTo(0, 0); }
     else { submitQuiz(); }
   }
