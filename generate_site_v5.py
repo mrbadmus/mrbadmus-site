@@ -17,6 +17,23 @@ from bonding_redesign import (
 )
 
 # ─────────────────────────────────────────────
+#  EXAM LADDER (Phase 2B · MRB-136 · architecture_v2 Law 6)
+# ─────────────────────────────────────────────
+# The bonding pages carrying the authored production layer: marking-point
+# decompositions, causal chains, be-the-examiner items and the formula
+# deducer bank. Content lives in shared/exam-content/<slug>.js, joined to
+# the page by slug and rendered by shared/exam-ladder.js — deliberately
+# OUTSIDE the eight frozen content fields (quiz, matching, common_mistake,
+# key_note, theory, fifas, higher, triple_only), which stay byte-identical.
+EXAM_LADDER_PAGES = {
+    "properties-ionic-compounds",
+    "giant-covalent-structures",
+    "metals-alloys",
+    "properties-small-molecules",
+    "ionic-bonding",
+}
+
+# ─────────────────────────────────────────────
 #  SITE DATA — all topics, subtopics, equations,
 #  required practicals, flags
 # ─────────────────────────────────────────────
@@ -4460,6 +4477,18 @@ try {{
         # shared root scripts (/shared/): quiz engine (0d), page chrome (1d);
         # predict-wrapper (1a) is appended on hero pages below.
         _shared_scripts = ["quiz.js", "rd-page.js"]
+
+        # ── Exam ladder (Phase 2B, MRB-136) — architecture_v2 Law 6 ──
+        # The five pages where AQA's production marks actually sit. The
+        # kernel must load BEFORE the engines (they register into it) and
+        # the authored content module is joined by slug. The authored items
+        # are net-new: they live only in shared/exam-content/, never in the
+        # eight frozen fields.
+        _has_ladder = st_id in EXAM_LADDER_PAGES
+        if _has_ladder:
+            _shared_scripts += ["exam-ladder.js", "write-then-mark.js",
+                                "chain-builder.js", "formula-deducer.js",
+                                "exam-content/%s.js" % st_id]
         _inits = []     # inline init snippets (each wrapped in an IIFE)
         _needs_configs = False   # any hero/activity reading MrbHeroConfigs
 
@@ -4622,13 +4651,27 @@ html { background: var(--surface-page); }
             # note is SPLIT into mark-scheme steps (never edited); rd-page.js
             # walks cover -> reveal step 1 -> ... -> all shown.
             quiz_html += make_rd_keycard(st['key_note'])
+        # Phase 2B (MRB-136): the page ENDS in the four-rung ladder (Law 6).
+        # Recognition — the quiz above — is rung ①; the module builds rungs
+        # ②–④ from the authored content module. Empty mount by design: the
+        # engines render everything, so nothing authored is baked into HTML.
+        if st_id in EXAM_LADDER_PAGES:
+            quiz_html += f"""
+  <div class="section" id="rd-ladder">
+    <div class="rd-sec-kicker">Exam ladder · recognition got you here, production takes you up</div>
+    <div class="mrb-ladder" data-page="{st_id}" data-tier="{tier}" data-pathway="{pathway}"></div>
+  </div>"""
         # Phase 1e: mode chooser — three anchors under the page kicker, serving
         # the 10-minute bus session and the 40-minute desk session alike.
-        mode_chooser_html = """
+        # Phase 2B adds a fourth on ladder pages: production is where the
+        # marks are, so it gets its own way in.
+        _ladder_mode = ('\n    <a href="#rd-ladder">✍️ Write it</a>'
+                        if st_id in EXAM_LADDER_PAGES else '')
+        mode_chooser_html = f"""
   <nav class="rd-modes" aria-label="Choose how to use this page">
     <a href="#rd-teach">📖 Teach me</a>
     <a href="#rd-labs">🎮 Labs</a>
-    <a href="#rd-test">🎯 Test me</a>
+    <a href="#rd-test">🎯 Test me</a>{_ladder_mode}
   </nav>"""
         # Phase 1g: mono kickers replace emoji section titles
         theory_sec_open = '<div class="section" id="rd-teach">'
