@@ -2,8 +2,11 @@
 
 **Worktree:** `~/Documents/GitHub/mrbadmus-worktrees/ks3`
 **Branch:** `content/ks3` (cut from `main` @ `14d9d405d`, 25 Jul 2026)
-**Purpose:** build KS3 Science — Years 7 to 9, all three sciences. This lane starts with **one topic
-only**, built end to end, as the vertical slice every remaining topic will replicate.
+**Purpose:** build KS3 Science — Years 7 to 9, all three disciplines.
+
+> **Updated 25 Jul 2026, 19:30.** `docs/ks3/architecture.md` has landed and is committed here
+> (`07da73795`). Linear is now authenticated. Both facts changed this queue — an earlier version told
+> you to stop if the architecture was missing. It is no longer missing. Read on.
 
 ---
 
@@ -15,88 +18,114 @@ only**, built end to end, as the vertical slice every remaining topic will repli
 2. **One session per worktree.** If another Code session is already open here, do not start a second.
 3. **Commit freely.** You do not need permission to commit.
 4. **NEVER push.** Mide pushes via GitHub Desktop, always.
-5. **Follow the AUTONOMY CONTRACT** at the top of `CLAUDE.md` — act, don't ask. Stop only for
-   irreversible loss, science/content accuracy, the production push, or genuine blockage.
+5. **Follow the AUTONOMY CONTRACT** at the top of `CLAUDE.md` — act, don't ask.
 6. **Science accuracy is Mide's gate, not yours.** Whether a KS3 explanation is correct, and whether
-   it lands at the right level for Year 7 vs Year 9, is his call. Draft it; flag anything you are
-   unsure of rather than quietly deciding.
-7. **Deviations go in the final report, one line each** — not mid-run.
+   it lands right for Year 7 vs Year 9, is his call. Draft it; flag what you are unsure of.
+7. **`docs/ks3/architecture.md` is law** (its own §12: "Changing it changes what gets built").
+   Amendments go **in that file with a dated log line**, never as a local decision in a build session.
+8. **Deviations go in the final report, one line each** — not mid-run.
 
 ---
 
 ## Read these first, in this order
 
-### 1. `docs/ks3/architecture.md` — the authoritative architecture
-
-**As of 25 Jul 2026 this file DOES NOT EXIST in this worktree.** It is being written right now in a
-parallel session.
-
-**If it is still missing when you start: do not improvise. Report and stop.** Improvising a KS3
-architecture and then having the real one land is the single most expensive mistake available in
-this lane — it produces a slice that has to be thrown away, and a "pattern" document that teaches
-the wrong pattern to every topic after it.
-
-Before concluding it is missing, check whether it has landed since this worktree was cut:
-
-```bash
-git fetch                                   # if there is anything to fetch
-git log --oneline --all -- docs/ks3/        # has any branch touched it?
-ls ~/Documents/GitHub/mrbadmus-site/docs/ks3/ 2>/dev/null   # has it landed on main's checkout?
-```
-
-If it exists on `main` or another branch, bring it in (`git merge main`, or cherry-pick / checkout
-just that path) and proceed. If it genuinely does not exist anywhere yet, write a one-line report
-saying so and stop — that is the correct outcome, not a failure.
-
-### 2. `docs/redesign/architecture_v2.md` — its laws apply here too
-
-Ten laws. They govern the redesigned GCSE pages and they govern KS3 as well. The ones that will
-shape your slice hardest:
-
-- **Law 2** — the 150-word encode–act spine
-- **Law 3** — three interactive scales, placed at demand peaks
-- **Law 4** — predict before reveal
-- **Law 6** — the production-ending exam ladder (① recall → ② apply → ③ explain → ④ extended response)
-- **Law 7** — one design language
-- **Law 10** — every activity exercises the demand it claims
-
-Read the file; do not work from this summary.
+1. **`docs/ks3/architecture.md`** — committed here at `07da73795`, 71KB, sha256 `cf3448b56685a997`.
+   Authoritative and self-contained. Read it in full before touching anything.
+   *Note:* an untracked copy also sits in the main worktree at `~/Documents/GitHub/mrbadmus-site/docs/ks3/`.
+   They were byte-identical at commit time. If main's copy has since changed, the parallel session
+   revised it — re-sync from there and say so in your report.
+2. **`docs/redesign/architecture_v2.md`** — the bonding v2 doctrine. Inherited *in spirit* and
+   explicitly overridden where KS4 assumptions don't serve 11–14 year olds. Every override is named
+   in architecture.md §3. Do not apply v2 laws to KS3 without checking §3 first.
+3. The statutory programme of study (*National curriculum in England: science, Key Stage 3*, DfE 2014)
+   outranks both documents. It is the spine.
 
 ---
 
-## Task 1 — build ONE topic end to end (the vertical slice)
+## ⚠️ Read this before you plan your work
 
-**Which topic:** follow `docs/ks3/architecture.md`'s own recommendation. If it names a first topic,
-build that one.
+The original brief for this lane said "build one topic end to end". **The architecture says you cannot
+start there**, and the architecture wins (it is law; the brief predates it). Specifically:
 
-If it does **not** name one, build **Particle Model**. Reasoning, so you can re-derive it if the
-architecture disagrees: the existing schematic SVG library already covers particles, but has nothing
-for cells, organs or body systems. Starting on a biology topic would force you to solve an unresolved
-asset dependency *and* invent the pattern at the same time. Particle Model lets the slice be about
-the pattern, which is the actual point.
+- **§10.1 puts Phase 0 before Phase 1.** Phase 0 is the statutory register, and it carries its own
+  Mide gate: *"Mide confirms the register is a faithful transcription of the statutory document."*
+  Phase 1 — the C1 slice — comes after that gate.
+- **§11 decision 6 (statutory ID scheme) explicitly "needs explicit blessing before Phase 0."**
+  §4.4 invents the `KS3.C.PNM.02` form, and once lessons reference those IDs they are permanent.
+- **§11 lists ten open decisions that are Mide's calls**, several of which shape Phase 0/1 output.
 
-**What "end to end" means here — all four, or the slice is not a slice:**
+So the honest state is: **the C1 slice is gated, but there is real unattended work ahead of it.**
+Tasks 1 and 2 below are that work. Task 3 is the gate. Do not jump to task 3.
 
-1. **The data structure** — how a KS3 topic is represented (whatever the architecture prescribes:
-   a `.py` data module in the style of `all_subtopics_*.py`, or something new if the architecture
-   says so). It must be able to express every other KS3 topic, not just this one.
-2. **The renderer** — the code that turns that data into pages, consistent with how
-   `generate_site_v5.py` works today. Extend rather than fork unless the architecture says otherwise.
-3. **The rendered pages** — actually generated, actually opened in a browser, actually working.
-   Interactions run, the exam ladder persists, no console errors.
-4. **The pattern write-up** — a document (suggested: `docs/ks3/vertical_slice.md`) that turns the
-   remaining topics into *assembly rather than invention*. It should tell the next session: where
-   data goes, what fields mean, what the renderer expects, which parts are boilerplate, which parts
-   need genuine authoring, and what the review checklist is. Write it as if for someone who has not
-   read any of your reasoning — because they will not have.
+---
 
-**Stop after this one topic.** Do not start a second. Mide reviews the slice before the rest is
-built on top of it — that review is the whole reason it is a slice.
+## Task 1 — MRB-103 reconciliation *(now unblocked — do this first)*
+
+Architecture.md §0 flags this as an **open action**, and §11 ranks it decision #1: "blocking-ish,
+cheap to resolve." The whole document was reasoned from the statutory spine **without sight of
+MRB-103**, the previously ratified KS3 architecture, because Linear was unauthenticated when it was
+written. **Linear is authenticated now.** You should have Linear MCP tools available.
+
+1. Read **MRB-103** in Linear, in full, including comments.
+2. Diff it against `docs/ks3/architecture.md` — structure, topic map, content model, naming, sequence.
+3. Record the delta **in §11 of architecture.md**, under decision 1, with a dated line per §12.
+
+**Treat every conflict as a genuine open question, not a settled reversal.** §0 is explicit:
+"Anything in MRB-103 that this document contradicts was contradicted *without having seen it*."
+Where they disagree, write up both positions and what each would cost. Do not silently rewrite the
+architecture to match MRB-103, and do not dismiss MRB-103 because the newer document is more detailed.
+Mide decides.
+
+If MRB-103 turns out not to exist, or to be a stub, say so plainly — that resolves the decision too.
+
+---
+
+## Task 2 — Phase 0: the statutory register
+
+Per §10.1, Phase 0 produces:
+
+- **`docs/ks3/statutory-register.md`** — every statutory bullet from the DfE KS3 programme of study,
+  ID'd per §4.4, with each statement **owned exactly once** (the single-source rule).
+- **`docs/ks3/misconception-register.md`** — created empty, ready to fill during authoring.
+
+This is transcription and structuring, not invention, so it is genuinely doable unattended. Two things
+to be careful about:
+
+- **The ID scheme is not blessed yet** (§11 decision 6). Build the register using §4.4's scheme as
+  specified — the recommendation is "adopt as specified" — but generate the IDs so they can be
+  **mechanically reissued** if Mide rules differently. Do not hand-scatter IDs in prose you would have
+  to rewrite by hand.
+- **Faithful transcription is the gate.** Do not paraphrase, merge, or "tidy" statutory bullets.
+  Mide is checking it against the source document.
+
+Chemistry at minimum (§9 requires C1's statements owned). All three disciplines is better if the
+transcription goes cleanly.
+
+---
+
+## Task 3 — the C1 vertical slice ⛔ GATED — do not start unattended
+
+§9 names it: **Unit C1 — *Particles and their behaviour***. Six lessons, one unit index, full plumbing.
+The seven reasons it beats the P4 *Forces* runner-up are in §9; read them, because they tell you what
+the slice is meant to prove.
+
+**Do not start this until both hold:**
+- Mide has confirmed the Phase 0 register (§10.1 gate), **and**
+- Mide has ruled on §11's open decisions — at minimum #6 (ID scheme), and ideally #2, #4 and #8,
+  which change what a lesson contains and how many you build.
+
+When it is unblocked, §9's done-list is the acceptance criteria — all of it, including: six lessons
+examiner-reviewed at `review_state: frozen`; the prerequisite graph acyclic with the generator failing
+loudly on a cycle; the P11 cross-reference rendering a graceful pending state *before* P11 exists;
+`ks4_links` resolving to the bonding v2 states-of-matter page; a school reordering the default sequence
+**by data change only, proven by doing it**; determinism double-run (two generator runs → byte-identical
+output); and **zero KS4 pages changed**.
+
+Then **stop and review before unit two.** §9: "The slice exists to find what is wrong with this document."
 
 ---
 
 ## When you are done
 
-Write a short report: which topic you built and why, how the data structure generalises, the browser
-verification you ran, where the pattern write-up lives, and any one-line deviations. Leave the work
-committed on `content/ks3`. **Do not push.**
+Report: the MRB-103 delta and where you recorded it, the state of the register, which §11 decisions
+are blocking, and any one-line deviations. Leave the work committed on `content/ks3`. **Do not push.**
