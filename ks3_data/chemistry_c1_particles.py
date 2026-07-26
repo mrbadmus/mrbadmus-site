@@ -20,16 +20,18 @@ content clause below is owned exactly once:
     L5 diffusion                 KS3.C.PIS.03, KS3.P.PHYC.04
     L6 testing-the-model         KS3.WS.ATT.02
 
-⚑ **Design decision, flagged for Mide — WS-primary lessons anchor `covers` on a
-Working Scientifically statement.** L6 is an INVESTIGATION lesson (§7.5 lists 17
-of them across KS3). It teaches no new subject content by design: it tests the
-model built in L1–L5. But §10.2 requires `covers` non-empty. Anchoring it on
+**WS-primary lessons anchor `covers` on a Working Scientifically statement —
+now a rule, architecture.md §5.7.1.** L6 is an INVESTIGATION lesson (§7.5 lists
+18 of them across KS3). It teaches no new subject content by design: it tests
+the model built in L1–L5. But §10.2 requires `covers` non-empty. Anchoring it on
 `KS3.WS.ATT.02` — *theories develop as earlier explanations are modified to take
 account of new evidence* — is honest (it is exactly what the lesson does) and
-legal (WS is exempt from the exactly-once rule, §5.7). **This will apply to all
-17 INVESTIGATION lessons**, so it is a general rule discovered by the slice
-rather than a one-off, and it is the kind of thing §9 says the slice exists to
-find.
+legal (WS is exempt from the exactly-once rule, §5.7).
+
+Raised by this slice as a design decision; **ruled 26 Jul 2026 and promoted to a
+general rule in §5.7.1**, so all 18 INVESTIGATION lessons follow one pattern
+instead of each author re-deciding. Exactly the kind of finding §9 says the
+slice exists to produce.
 """
 
 UNIT = {
@@ -1086,8 +1088,9 @@ UNIT = {
     "unit":        "particles-and-their-behaviour",
     "family":      "INVESTIGATION",
 
-    # ⚑ WS-anchored `covers` — see the module docstring. WS is exempt from the
-    #   exactly-once rule (§5.7), so this does not collide with any other lesson.
+    # WS-anchored `covers` per §5.7.1 — the standing rule for all 18
+    # INVESTIGATION lessons, not a decision taken here. WS is exempt from the
+    # exactly-once rule (§5.7), so this does not collide with any other lesson.
     "covers":      ["KS3.WS.ATT.02"],
     "touches":     ["KS3.C.PNM.01a", "KS3.C.PNM.02", "KS3.C.PIS.03"],
     "threads":     [{"id": "particles", "level": 3}],

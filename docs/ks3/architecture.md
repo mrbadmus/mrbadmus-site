@@ -596,6 +596,46 @@ The statutory document is explicit that WS is taught *through* content. So:
    own, and are listed in §7.
 4. WS coverage is auditable the same way statutory coverage is.
 
+#### 5.7.1 RULE — an INVESTIGATION lesson anchors `covers` on the WS statement it teaches ⊕
+
+**Every `INVESTIGATION` lesson declares `covers: []` as one or more `KS3.WS.*` statements — the
+Working Scientifically statement the lesson actually teaches — and declares no subject statement it
+does not genuinely own.** This is the general rule for all 18 of them (§7.5), not a per-lesson
+judgement call.
+
+Why the rule is needed. A WS-primary lesson teaches no new subject content by design: `Testing the
+model` (C1 L6) tests the particle model built across L1–L5, and `Mendeleev` (C8) teaches how a
+prediction earns trust. Yet §10.2 requires `covers` non-empty, and §4.4 requires exactly-once
+ownership of subject statements. Without this rule the author has two bad options — invent a subject
+statement the lesson does not teach, and break exactly-once ownership by duplicating a statement
+another lesson already owns; or leave `covers` empty and fail the done-list.
+
+Why anchoring on WS is the right answer rather than a loophole:
+
+- It is **honest**. `Testing the model` covers `KS3.WS.ATT.02` — *theories develop as earlier
+  explanations are modified to take account of new evidence* — because that is precisely and only
+  what the lesson does.
+- It is **legal**. WS statements are exempt from the exactly-once ownership rule (§5.7 above, and
+  the note in `ks3_statutory.py`), because WS is taught *through* content and many lessons tap the
+  same strand via `ws: []`.
+- It keeps the **audit meaningful**. Subject coverage stays a true partition — every subject
+  statement owned once, by the lesson that teaches it — and WS coverage becomes auditable at
+  statement grain on exactly the lessons where WS *is* the content.
+
+How to apply it, per INVESTIGATION lesson:
+
+1. Name the WS statement the lesson teaches, at statement grain, and put it in `covers`.
+2. Keep the broader `ws: []` strand tags as well — `covers` is the statement this lesson is
+   *responsible for*; `ws` is every strand it *exercises*. They answer different questions.
+3. Add a subject statement to `covers` only if the lesson genuinely owns it and no other lesson
+   does. A WS-primary lesson usually owns none.
+4. `covers` must still resolve against `statutory-register.md` (§10.2) — a WS ID is a real
+   registered ID, so this check is unchanged.
+
+*Provenance: discovered by the C1 vertical slice (§9) on `testing-the-model` and ruled 26 Jul 2026.
+Recorded here as a rule so all 18 INVESTIGATION lessons follow one pattern rather than each author
+re-deciding. This is the kind of finding §9 says the slice exists to produce.*
+
 ### 5.8 The mastery ladder — KS4's exam ladder, retuned
 
 Four rungs, always, at the end of every lesson:
@@ -643,7 +683,48 @@ all `core`/`stretch`/`support` explanation text, all ladder questions, answers a
   quietly shipped.
 - Non-science copy (button labels, encouragement, layout) is freely editable.
 
-`review_state` transitions: `draft` → `examiner-reviewed` → `frozen`. Only frozen lessons publish.
+`review_state` transitions: `draft` → `examiner-reviewed` → `frozen`. Only frozen lessons publish —
+**except during the pre-launch carve-out below.**
+
+#### 5.10.1 CARVE-OUT — draft lessons may publish before real students return ⊕
+
+**For the pre-launch period only, a lesson with `review_state: draft` MAY publish, provided the page
+carries a visible marker saying the content is under review.**
+
+Why. Right now the site has no real students on it — it is the summer break, and the only accounts
+are test users Mide placed himself. The frozen-only rule exists to protect students from unreviewed
+science; with no students to protect, it protects nothing and costs a great deal. Holding the whole
+KS3 build behind a review queue would mean nothing is visible to review *in situ*, nothing can be
+smoke-tested on a real device, and the review itself gets harder because Mide has to read data files
+instead of pages. Publishing drafts makes the work reviewable. That is the entire justification, and
+it evaporates the moment a student can land on the page.
+
+The marker is mandatory, not advisory. A draft lesson renders
+`<p class="ks3-review-flag">Draft — not yet science-reviewed.</p>` in the lesson header — emitted by
+`build_ks3.py` for any lesson whose `review_state` is not `frozen`, and styled to be legible rather
+than decorative. A draft page with no marker is a defect, not a draft.
+
+What the carve-out does NOT change:
+
+- **Mide is still the sole science gate.** Publishing a draft is not approval and never counts as it.
+  `draft` → `examiner-reviewed` → `frozen` runs exactly as before.
+- **Net-new science is still flagged ⚑** for review rather than quietly shipped.
+- **The done-list (§10.2) still applies in full.** A draft lesson meets every automatable gate; the
+  carve-out is about the science review, not about build quality.
+
+**EXPIRY — this carve-out is time-limited and the limit is explicit.**
+
+> **It expires when real students return: the first day of the autumn term, 1 September 2026.**
+> On that date the frozen-only rule in §5.10 resumes with no further amendment needed, and any lesson
+> still at `review_state: draft` must stop publishing — it reverts to a "coming soon" slot until it
+> is frozen. Nothing about this carve-out survives the date. If the build is not ready by then, the
+> answer is to freeze the reviewed lessons and hide the rest, **not** to extend the carve-out
+> silently — extending it requires an explicit amendment logged in §12 with Mide's decision on the
+> record.
+
+*The 1 September 2026 date is the stated assumption for "real students return"; if Mide opens the
+site to students earlier, the carve-out expires on that earlier date instead — the trigger is the
+first real student, and the date is only the backstop.*
 
 ---
 
@@ -802,15 +883,21 @@ rule, which is why §10.1 schedules it as the opening physics unit.*
 
 ### 7.5 Working Scientifically distribution
 
-WS-primary (`INVESTIGATION`) lessons are distributed so every year meets every WS strand:
-`Using a microscope` (B1) · `Food tests` (B3) · `Testing a leaf for starch` (B7) ·
-`Sampling an ecosystem` (B9) · `Variation: data and graphs` (B10) · `How we worked out DNA` (B10) ·
+WS-primary (`INVESTIGATION`) lessons are distributed so every year meets every WS strand. **There
+are 18**, and each one anchors its `covers` on a WS statement per the rule in §5.7.1:
+`Using a microscope` (B1) · `Food tests` (B3) · `Substance misuse and decisions` (B6) ·
+`Testing a leaf for starch` (B7) · `Sampling an ecosystem` (B9) ·
+`Variation: continuous and discontinuous` (B10) · `How we worked out DNA` (B10) ·
 `Testing the model` (C1) · `Proving something is pure` (C3) · `Making a pure dry salt` (C6) ·
 `Measuring a temperature change` (C7) · `Mendeleev` (C8) · `Insulation` (P1) ·
 `Distance–time graphs` (P3) · `Springs and Hooke's law` (P4) · `Sound needs a medium` (P6) ·
 `Building and measuring a circuit` (P8) · `Magnetic fields` (P10).
 
 Coverage of the four WS strands is auditable per year and per discipline once `ws` tags are authored.
+
+*Count corrected 26 Jul 2026: this list said 17 and omitted `Substance misuse and decisions` (B6),
+which `ks3_data/structure.py` has carried as `INVESTIGATION` since Phase 1. The structure data was
+right; the prose was one short.*
 
 ---
 
@@ -1662,3 +1749,7 @@ This document is law. Changing it changes what gets built.
 | 2026-07-26 | **§11 decisions 3, 7, 9, 10 RULED**, all adopting the stated recommendation: KS3 weekly challenge yes at Phase 5 as a single mixed-science track; reading age 9–10 measured with technical vocabulary excluded; P9 stays its own unit pending Phase 3 confirmation; tutor answers anything, anchored to KS3 language, flagging "you'll meet this at GCSE". | Claude (Opus 5) |
 | 2026-07-26 | **§10.2 done-list extended** with the five checks the above rulings make testable: reading-age measure, `support` key present, `figures` in manifest, blocks from the §5.1.1 vocabulary, `covers` resolving against the register. | Claude (Opus 5) |
 | 2026-07-26 | **§11 fully resolved.** All eleven decisions and all eight MRB-103 conflicts are closed. Open follow-ups are scheduled, not undecided: P9 confirmation and the Year 9 bridge-unit question, both at Phase 3. | Claude (Opus 5) |
+| 2026-07-26 | **§5.7.1 added — RULE: an `INVESTIGATION` lesson anchors `covers` on the WS statement it teaches.** Discovered by the C1 slice on `testing-the-model`, where a WS-primary lesson owns no subject statement yet §10.2 requires `covers` non-empty. Recorded as a general rule for all 18 INVESTIGATION lessons rather than a per-lesson judgement, so the pattern is decided once. Subject coverage stays a true exactly-once partition; WS is exempt (§5.7) and so can carry the anchor honestly. | Claude (Opus 5) |
+| 2026-07-26 | **§7.5 count corrected: 17 → 18 INVESTIGATION lessons.** `Substance misuse and decisions` (B6) was carried as `INVESTIGATION` in `ks3_data/structure.py` but omitted from the §7.5 prose list. The structure data was right. | Claude (Opus 5) |
+| 2026-07-26 | **§5.10.1 added — CARVE-OUT: draft lessons may publish before real students return**, provided the page carries the visible under-review marker (`.ks3-review-flag`, already emitted by `build_ks3.py` for any non-frozen lesson). Rationale: with no real students on the site, frozen-only protects nobody and makes the build unreviewable in situ. **Expires 1 September 2026** — or earlier, on the first real student — after which §5.10's frozen-only rule resumes with no further amendment. Mide remains the sole science gate throughout; publishing a draft is not approval. Enforced, not merely documented: `verify_ks3.py` checks the marker on every published draft and FAILS once `CARVE_OUT_EXPIRY` passes while any draft still publishes, so the carve-out cannot lapse silently. Extending it requires an explicit amendment logged here. | Claude (Opus 5) |
+| 2026-07-26 | **Misconception register: `PART-12`/`PART-13` RULED to stay as they are.** Both are nature-of-science misconceptions sitting in a particles family by accident of build order, but IDs are permanent (§5.3) and both are already referenced. A candidate `NOS` family is recorded, with the decision point set **before `B10 how-we-worked-out-dna` and `C8 mendeleev` are authored**; opening it would still not move these two. | Claude (Opus 5) |

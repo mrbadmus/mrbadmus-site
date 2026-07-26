@@ -70,6 +70,11 @@ Suggested starting families, from the misconception fields architecture.md §1 a
 `FORCE` (forces and motion), `ENERGY` (energy and temperature), `PLANT` (plant nutrition and
 photosynthesis), `CIRC` (current and circuits).
 
+`NOS` (nature of science — how models, evidence and theories actually work) is a **candidate family,
+not yet opened**. The call belongs before `B10 how-we-worked-out-dna` and `C8 mendeleev` are
+authored; see the ruling under the `PART` entries below. Note that opening it would not move
+`PART-12`/`PART-13` — IDs are permanent.
+
 ---
 
 ## Entries
@@ -114,11 +119,34 @@ before any of these freeze.
   B10 `how-we-worked-out-dna`. These are the nature-of-science pair and they recur in every
   INVESTIGATION lesson.
 
-⚑ **For Mide's review.** `PART-12` and `PART-13` are not misconceptions about *particles* — they are
-about how science works. They sit under `PART` because C1 opened them, which is arguably the wrong
-home. A separate `NOS` (nature of science) family may be the better call before B10 and C8 are
-authored. Flagged rather than decided, because renaming an ID after it is referenced is exactly what
-§5.3 says must not happen.
+### `PART-12` / `PART-13` — RULED: stay as they are; a `NOS` family may be wanted later
+
+**Decision, 26 Jul 2026 — `PART-12` and `PART-13` keep their IDs permanently. They are not renamed,
+not renumbered, and not moved.** IDs are permanent once assigned (§5.3, and the `id` row in the entry
+format above); an ID that has been referenced anywhere cannot be reissued, and these two are already
+referenced by `testing-the-model`'s authored activities. Renaming to tidy a taxonomy is precisely the
+failure §5.3 exists to prevent — it breaks the join silently, with no error anywhere.
+
+The observation behind the flag stands and is worth recording: neither one is a misconception about
+*particles*. `PART-12` ("a model is either true or false") and `PART-13` ("scientists' models never
+change") are misconceptions about **how science works** — nature of science, not matter. They sit
+under `PART` only because C1 was the unit that opened the register, which is an accident of build
+order rather than a conceptual claim.
+
+**What this means for future authoring, not for these two entries:**
+
+- A separate **`NOS` (nature of science) family may be wanted**, and the moment to decide is **before
+  `B10 how-we-worked-out-dna` and `C8 mendeleev` are authored** — those are the next two lessons
+  whose central wrong ideas are nature-of-science ones, and they are where a `NOS` family would
+  either earn its place or prove unnecessary. Deciding then costs nothing; deciding after they are
+  authored means either a third home for the same idea or a rename that §5.3 forbids.
+- If `NOS` is opened, `PART-12` and `PART-13` **still do not move**. They stay where they are, and
+  the register carries a cross-reference instead. A family boundary that is slightly wrong is a much
+  smaller problem than an ID that means two different things depending on when you read it.
+- Until that call is made, nature-of-science misconceptions discovered while authoring should be
+  noted here rather than assigned an ID, so nothing is minted into the wrong family in the meantime.
+
+This is recorded as a decision rather than a question so the next author does not re-open it.
 
 ---
 

@@ -18,6 +18,13 @@ import shutil
 import subprocess
 import sys
 import tempfile
+from datetime import date
+
+# architecture.md §5.10.1 — the pre-launch carve-out that lets draft lessons
+# publish expires when real students return. Hard-coded so the expiry is a
+# fact the harness enforces, not a promise in a document. Moving this date
+# requires an explicit §12 amendment with Mide's decision on the record.
+CARVE_OUT_EXPIRY = date(2026, 9, 1)
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
@@ -105,6 +112,36 @@ def main():
           "states=%s" % sorted(states))
     manual("examiner-reviewed → frozen",
            "Mide's science gate (§5.10). Cannot be automated; the slice stops here.")
+
+    # §5.10.1 pre-launch carve-out — draft lessons may publish, but only until
+    # real students return, and only with a visible marker. Both halves are
+    # checked here so the carve-out cannot lapse silently: after the expiry the
+    # rule flips and this check starts failing on any unfrozen published lesson.
+    unfrozen = [l for l in authored if l.get("review_state") != "frozen"]
+    if unfrozen:
+        missing_marker = []
+        for l in unfrozen:
+            page = ("mrbadmus_site/ks3/%s/%s/%s.html"
+                    % (c1["discipline"], c1["slug"], l["slug"]))
+            html = open(page).read() if os.path.exists(page) else ""
+            if "ks3-review-flag" not in html:
+                missing_marker.append(l["slug"])
+        check("every published draft lesson carries the under-review marker",
+              not missing_marker,
+              "missing on %s" % missing_marker if missing_marker
+              else "%d draft lessons, all marked" % len(unfrozen))
+
+        if date.today() < CARVE_OUT_EXPIRY:
+            days = (CARVE_OUT_EXPIRY - date.today()).days
+            check("§5.10.1 carve-out still in force — draft publishing allowed",
+                  True, "expires %s (%d days)" % (CARVE_OUT_EXPIRY, days))
+        else:
+            check("§5.10.1 carve-out EXPIRED — only frozen lessons may publish",
+                  False,
+                  "expired %s; %d lesson(s) still draft and still publishing: %s. "
+                  "Freeze them or revert them to coming-soon slots (architecture "
+                  "§5.10). Extending the carve-out needs an explicit §12 amendment."
+                  % (CARVE_OUT_EXPIRY, len(unfrozen), [l["slug"] for l in unfrozen]))
 
     # 2. Register exists with C1's statements owned exactly once.
     check("statutory register exists",
