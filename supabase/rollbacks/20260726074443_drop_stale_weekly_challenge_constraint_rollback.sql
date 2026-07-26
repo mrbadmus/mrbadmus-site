@@ -1,4 +1,4 @@
--- ROLLBACK for 20260725220000_drop_stale_weekly_challenge_constraint.sql
+-- ROLLBACK for 20260726074443_drop_stale_weekly_challenge_constraint.sql
 -- Apply manually only. Never run via `supabase db push`.
 --
 -- Restores the stale UNIQUE (week_start, subject, tier) constraint.

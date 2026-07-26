@@ -1,4 +1,4 @@
--- Rollback for 20260726120000_ks3_scheme_of_work_entries.sql
+-- Rollback for 20260726174004_ks3_scheme_of_work_entries.sql
 -- Apply MANUALLY only. The Supabase CLI never reads this folder.
 --
 -- ⚠️ This restores exam_board NOT NULL. If any KS3 rows exist they have
@@ -27,7 +27,9 @@ alter table public.scheme_of_work_entries
 
 alter table public.scheme_of_work_entries
   add constraint scheme_of_work_entries_exam_board_check
-  check (exam_board in ('AQA', 'Edexcel', 'OCR', 'WJEC', 'CCEA'));
+  check (exam_board in (
+    'AQA', 'Edexcel', 'OCR', 'WJEC', 'CCEA', 'Eduqas', 'CIE', 'SQA'
+  ));
 
 alter table public.scheme_of_work_entries
   alter column exam_board set not null;

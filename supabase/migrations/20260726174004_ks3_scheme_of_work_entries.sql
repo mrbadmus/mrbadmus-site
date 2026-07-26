@@ -34,6 +34,12 @@ alter table public.scheme_of_work_entries
 
 -- Replace the board CHECK so it tolerates NULL. The original constraint name
 -- is looked up rather than assumed, because it may have been auto-generated.
+--
+-- The board list below must stay identical to the one in
+-- 20260501212106_schools_layer.sql (both scheme_of_work_entries and
+-- school_subject_settings): eight boards, not five. Tolerating NULL is the
+-- ONLY change this constraint makes — narrowing the domain would silently
+-- lock out any school on Eduqas, CIE or SQA.
 do $$
 declare
   c record;
@@ -55,7 +61,9 @@ end $$;
 
 alter table public.scheme_of_work_entries
   add constraint scheme_of_work_entries_exam_board_check
-  check (exam_board is null or exam_board in ('AQA', 'Edexcel', 'OCR', 'WJEC', 'CCEA'));
+  check (exam_board is null or exam_board in (
+    'AQA', 'Edexcel', 'OCR', 'WJEC', 'CCEA', 'Eduqas', 'CIE', 'SQA'
+  ));
 
 -- The domain rule, stated once, in the database: KS3 has no board; KS4 must
 -- have one. This is what stops a KS3 row quietly acquiring 'AQA' later.
