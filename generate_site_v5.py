@@ -3542,28 +3542,12 @@ def make_new_quiz(quiz, color, pilot=False):
   <div class="quiz-fb" id="qfb-{i}"></div>
 </div>"""
 
-    score_messages = [
-        "Keep going — re-read the theory and try again. You'll get there! 📖",
-        "Not bad — review the sections you missed and have another go. 💪",
-        "Decent effort! A bit more revision and you'll nail it. 🔄",
-        "Good work! Just a couple of gaps to fill. Nearly there! 🌟",
-        "Excellent! You've really got this topic down. 🏆",
-    ]
-    score_msgs_json = json.dumps(score_messages, ensure_ascii=False)
-
     return f"""<div class="section">
   <div class="section-title">🎯 Test Yourself</div>
   <div class="quiz-progress" id="quizProgress">Question 1 of {len(quiz)}</div>
   {cards_html}
   <div class="quiz-end-msg" id="quizEndMsg" style="display:none;margin-top:16px;padding:16px 20px;border-radius:12px;font-size:0.95rem;font-weight:700;text-align:center;"></div>
-</div>
-<script>
-(function(){{
-  const scoreMessages = {score_msgs_json};
-  document.querySelectorAll('#qcard-0, #qcard-1, #qcard-2, #qcard-3, #qcard-4').forEach(():{{}});
-  // handled by global quiz JS below
-}})();
-</script>"""
+</div>"""
 
 
 def make_star_rating(st_id):
@@ -4593,7 +4577,6 @@ html { background: var(--surface-page); }
 .rd .mistake-title { color: var(--accent-deep); font-family: var(--font-display); }
 .rd .keynote-box { background: linear-gradient(90deg,#FBE7E0,#F6EFE2); border: 1px solid var(--border); border-left: 5px solid var(--accent-strong); }
 /* MRB-123 — old-prose elements (exemplar) whose size is a site-wide literal, not a --fs token: scale them on .rd pages too. !important beats the inline font-size on the Common Mistake <p>. */
-.rd .theory-line { font-size: calc(0.95rem * var(--rd-fs-scale, 1)); }
 .rd .mistake-box p { font-size: calc(0.9rem * var(--rd-fs-scale, 1)) !important; }
 .rd .quiz-opt.selected { border-color: var(--accent-strong,#E0531F); background: #FBEAE1; color: var(--accent-deep,#B5341A); box-shadow: 0 6px 16px -8px rgba(224,83,31,.5); }
 .rd .quiz-opt:disabled { pointer-events: none; }
