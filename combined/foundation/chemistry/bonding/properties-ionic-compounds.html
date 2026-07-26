@@ -46,6 +46,8 @@ html { background: var(--surface-page); }
 .rd .rd-blk-lead b { color: var(--ink,#1A1714); }
 /* feature-cards */
 .rd .rd-blk-feature { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+/* Phase 2B revision #4/5: the trio says what it is about before the three cards. */
+.rd .rd-blk-feature__h { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(17px * var(--rd-fs-scale, 1)); line-height: 1.3; color: var(--ink,#1A1714); margin: 0 0 12px; }
 .rd .rd-fcard { border-radius: 14px; padding: 16px 18px; border: 1px solid; }
 .rd .rd-fcard__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .rd .rd-fcard__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); line-height: 1.3; }
@@ -154,9 +156,16 @@ html { background: var(--surface-page); }
 .rd .rd-exam__actions { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
 /* Key Note revision card (§5.6) — last, static, photographable; cover-and-recall */
 .rd .rd-keycard { background: var(--surface-inset,#F7F2E8); border: 1px solid var(--border,#E4DCCB); border-top: 3px solid var(--accent-strong,#C0392B); border-radius: 16px; padding: 18px 24px 20px; }
-.rd .rd-keycard__hd { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.rd .rd-keycard__hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.rd .rd-keycard__id { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .rd .rd-keycard__lbl { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #716A60; }
-.rd .rd-keycard__cover { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+/* Phase 2B revision #4/5: the card is meant to be photographed and revised from
+   later, so it names its subtopic inside the card, not just in the section above. */
+.rd .rd-keycard__title { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(16px * var(--rd-fs-scale, 1)); line-height: 1.3; color: var(--ink,#1A1714); }
+/* flex:none + nowrap: with the subtopic title now sharing the header row, a
+   shrinkable button collapsed into a three-line blob at 390px. */
+.rd .rd-keycard__cover { flex: none; white-space: nowrap; font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+@media (max-width: 560px) { .rd .rd-keycard__hd { flex-direction: column; align-items: flex-start; gap: 10px; } }
 .rd .rd-keycard__cover:focus-visible { outline: 2px solid var(--accent-strong,#C0392B); outline-offset: 2px; }
 .rd .rd-keycard__text { font-family: var(--font-mono,monospace); font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.75; color: #211B15; margin: 0; }
 .rd .rd-keycard.is-covered .rd-keycard__text { filter: blur(9px); user-select: none; }
@@ -202,6 +211,7 @@ html { background: var(--surface-page); }
     <a href="#rd-teach">📖 Teach me</a>
     <a href="#rd-labs">🎮 Labs</a>
     <a href="#rd-test">🎯 Test me</a>
+    <a href="#rd-ladder">✍️ Write it</a>
   </nav>
 </div>
 
@@ -218,7 +228,7 @@ html { background: var(--surface-page); }
 <button class="quiz-opt" type="button" data-wrong-exp="That describes a polymer-like arrangement, not an ionic lattice.">Long chains of ions joined by weak intermolecular forces</button>
 </div>
   <div class="quiz-fb"></div>
-</div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">💥</span><b>Hard but brittle</b></div><div class="rd-fcard__body">A force shifts the layers so like charges align and repel — the crystal shatters rather than bending.</div></div><div class="rd-fcard rd-fcard--limit"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🚫</span><b>No conduction when solid</b></div><div class="rd-fcard__body">Ions are fixed in the lattice, so nothing can carry charge.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚡</span><b>Conducts molten or dissolved</b></div><div class="rd-fcard__body">The ions become free to move and carry the current.</div></div></div><div class="rd-checkpoint" id="cp-properties-ionic-compounds-1">
+</div><div class="rd-blk-feature__h">Properties of ionic compounds</div><div class="rd-blk-feature"><div class="rd-fcard rd-fcard--neutral"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">💥</span><b>Hard but brittle</b></div><div class="rd-fcard__body">A force shifts the layers so like charges align and repel — the crystal shatters rather than bending.</div></div><div class="rd-fcard rd-fcard--limit"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">🚫</span><b>No conduction when solid</b></div><div class="rd-fcard__body">Ions are fixed in the lattice, so nothing can carry charge.</div></div><div class="rd-fcard rd-fcard--good"><div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">⚡</span><b>Conducts molten or dissolved</b></div><div class="rd-fcard__body">The ions become free to move and carry the current.</div></div></div><div class="rd-checkpoint" id="cp-properties-ionic-compounds-1">
   <div class="rd-checkpoint__kicker">Checkpoint · quick check</div>
   <div class="q-text">Explain why ionic compounds conduct electricity when molten or dissolved, but not when solid.</div>
   <div class="quiz-options"><button class="quiz-opt" type="button" data-correct="1">When molten or dissolved the ions are free to move and carry charge; in the solid they are held in fixed positions</button>
@@ -341,12 +351,19 @@ html { background: var(--surface-page); }
   <div class="rd-sec-kicker">Key note · cover it, say it, check it</div>
   <div class="rd-keycard" data-steps="6">
     <div class="rd-keycard__hd">
-      <span class="rd-keycard__lbl">Revision card · 6 steps</span>
+      <div class="rd-keycard__id">
+        <span class="rd-keycard__lbl">Revision card · 6 steps</span>
+      <span class="rd-keycard__title">Structure and Properties of Ionic Compounds</span>
+      </div>
       <button class="rd-keycard__cover" type="button" aria-pressed="false">Cover &amp; recall</button>
     </div>
     <ol class="rd-keycard__steps"><li class="rd-keycard__step"><span class="rd-keycard__step-n">01</span><span class="rd-keycard__step-text">Giant ionic lattice → high MP/BP (strong electrostatic forces).</span></li><li class="rd-keycard__step"><span class="rd-keycard__step-n">02</span><span class="rd-keycard__step-text">Brittle (layer shift → repulsion → shatters).</span></li><li class="rd-keycard__step"><span class="rd-keycard__step-n">03</span><span class="rd-keycard__step-text">Solid: no conduction.</span></li><li class="rd-keycard__step"><span class="rd-keycard__step-n">04</span><span class="rd-keycard__step-text">Molten/dissolved: conducts (mobile ions).</span></li><li class="rd-keycard__step"><span class="rd-keycard__step-n">05</span><span class="rd-keycard__step-text">Higher ionic charge → stronger forces → higher MP.</span></li><li class="rd-keycard__step"><span class="rd-keycard__step-n">06</span><span class="rd-keycard__step-text">Many dissolve in water.</span></li></ol>
   </div>
 </div>
+  <div class="section" id="rd-ladder">
+    <div class="rd-sec-kicker">Exam ladder · Structure and Properties of Ionic Compounds</div>
+    <div class="mrb-ladder" data-page="properties-ionic-compounds" data-tier="foundation" data-pathway="combined"></div>
+  </div>
   <div class="section">
   <div class="rd-sec-kicker">Rate your confidence · then let the quiz check it</div>
   <div class="card star-rating-card">
@@ -427,6 +444,12 @@ try {
   
   <script src="/shared/quiz.js"></script>
   <script src="/shared/rd-page.js"></script>
+  <script src="/shared/periodic-table.js"></script>
+  <script src="/shared/exam-ladder.js"></script>
+  <script src="/shared/write-then-mark.js"></script>
+  <script src="/shared/chain-builder.js"></script>
+  <script src="/shared/formula-deducer.js"></script>
+  <script src="/shared/exam-content/properties-ionic-compounds.js"></script>
   <script src="/shared/heroes/categorise-bins.js"></script>
   <script src="/shared/heroes/theory-blocks.js"></script>
   <script src="/shared/heroes/bonding-configs.js"></script>
