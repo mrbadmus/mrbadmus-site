@@ -63,7 +63,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 
 | Prefix | Domain | Opened |
 |---|---|---|
-| _(none yet)_ | | |
+| `PART` | Particles, states and the particle model | 2026-07-26, by C1 (Phase 1 slice) |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: `PART` (particles and states),
@@ -74,11 +74,51 @@ photosynthesis), `CIRC` (current and circuits).
 
 ## Entries
 
-_None yet._
-
 Add entries below, grouped by family, as lessons are authored. Every distractor in every ladder
 question and quiz should map to an entry here or be a non-diagnostic distractor by explicit choice
 (§5.3).
+
+### `PART` — particles, states and the particle model
+
+Opened by **C1 *Particles and their behaviour*** (Phase 1 slice, 2026-07-26). All thirteen are
+`review_state: draft` — the `statement` field is science-bearing (§5.10) and needs Mide's review
+before any of these freeze.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `PART-01` | Matter is continuous — you could keep cutting something in half forever and never reach a smallest piece. | `keep-cutting` | `mixing-volumes` | `particle-model` |
+| `PART-02` | There is air (or dust, or something) in the gaps between particles. | `what-is-in-the-gap` | `gap-reveal` | `particle-model` |
+| `PART-03` | The particles themselves change — they melt, or get softer, or expand — when a substance changes state. | `what-changed` | `same-particles-reveal` | `solids-liquids-and-gases` |
+| `PART-04` | Particles in a solid are completely still. | `predict-solid-motion` | `vibration-sim` | `solids-liquids-and-gases` |
+| `PART-05` | When a substance melts or evaporates, some of it is lost or destroyed. | `predict-mass` | `sealed-bag-weigh` | `changes-of-state` |
+| `PART-06` | Melting and dissolving are the same thing. | `sort-melting-dissolving` | `two-routes-compare` | `changes-of-state` |
+| `PART-07` | Bubbles in boiling water are made of air, or of nothing. | `what-is-in-the-bubble` | `bubble-reveal` | `changes-of-state` |
+| `PART-08` | Gas pressure is the particles pushing against each other. | `what-causes-pressure` | `collision-count-sim` | `gas-pressure` |
+| `PART-09` | Heating a gas makes the particles themselves get bigger, which is why the pressure rises. | `predict-heated-can` | `speed-not-size` | `gas-pressure` |
+| `PART-10` | Diffusion needs a draught, a current, or someone to waft it — something has to push the particles along. | `predict-still-room` | `random-walk-sim` | `diffusion` |
+| `PART-11` | Particles move in order to spread out — they 'want' to fill the space. | `why-spread` | `both-directions-sim` | `diffusion` |
+| `PART-12` | A scientific model is either true or false, and one exception proves it wrong. | `verdict-vote` | `model-limits-sort` | `testing-the-model` |
+| `PART-13` | Scientists' models never change once they are agreed. | `predict-history` | `model-history-timeline` | `testing-the-model` |
+
+**Where these are expected to resurface** (`reappears_in`, filled as the units are authored):
+
+- `PART-03` (particles change size/state) → P11 `temperature-and-internal-energy`, P1
+  `heating-and-thermal-equilibrium`, C7 `energy-and-changes-of-state`. This is the single most
+  persistent wrong idea in KS3 physical science and it should be re-confronted, not just re-stated.
+- `PART-05` (matter is destroyed) → C4 `mass-in-a-reaction`, C2 `conservation-of-mass`. It changes
+  costume from "the puddle dried up" to "the mass went down when it burned"; it is the same belief.
+- `PART-09` (heating makes particles bigger) → P5 `pressure-in-liquids`, P11 `density`.
+- `PART-10`/`PART-11` (diffusion needs a push / particles intend to spread) → B1 `animal-and-plant-cells`
+  and B4 `alveoli-built-for-exchange`, where diffusion does real biological work.
+- `PART-12`/`PART-13` (how models and theories work) → C2 `the-atom-daltons-model`, C8 `mendeleev`,
+  B10 `how-we-worked-out-dna`. These are the nature-of-science pair and they recur in every
+  INVESTIGATION lesson.
+
+⚑ **For Mide's review.** `PART-12` and `PART-13` are not misconceptions about *particles* — they are
+about how science works. They sit under `PART` because C1 opened them, which is arguably the wrong
+home. A separate `NOS` (nature of science) family may be the better call before B10 and C8 are
+authored. Flagged rather than decided, because renaming an ID after it is referenced is exactly what
+§5.3 says must not happen.
 
 ---
 

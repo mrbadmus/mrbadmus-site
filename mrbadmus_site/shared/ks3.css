@@ -1,0 +1,348 @@
+/* ═══════════════════════════════════════════════════════════════
+   KS3 — page styles.  architecture.md §8.5.
+
+   KS3 pages carry class="rd" AND data-mode="ks3" on <body>:
+     .rd            opts into the redesign locked token system
+     data-mode      supplies the KS3 dials (brighter accent, rounder
+                    corners) already defined in tokens.css
+
+   This file consumes tokens. It must not re-declare palette values.
+   Anything KS3 needs beyond the existing dials is an addition to the
+   [data-mode="ks3"] block in tokens.css, never a new colour here.
+
+   ⚠️ --accent fails WCAG AA for body-size text on three of the four
+   cream grounds (measured 2026-07-26, see tokens.css). Body-size text
+   in an accent colour uses --accent-text. --accent is used here only
+   for large text, rules, fills and borders.
+   ═══════════════════════════════════════════════════════════════ */
+
+.ks3-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  background: var(--surface-panel);
+}
+.ks3-nav-link {
+  margin-left: auto;
+  font-weight: 600;
+  color: var(--accent-text);
+  text-decoration: none;
+}
+.ks3-nav-link:hover { text-decoration: underline; }
+
+.ks3-main {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
+}
+
+/* ── breadcrumbs ── */
+.ks3-crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-bottom: 1.5rem;
+}
+.ks3-crumbs a { color: var(--accent-text); text-decoration: none; }
+.ks3-crumbs a:hover { text-decoration: underline; }
+.ks3-crumb-sep { color: var(--ink-faint); }
+
+/* ── headings ── */
+.ks3-eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+  margin: 0 0 0.35rem;
+}
+.ks3-lesson-head h1,
+.ks3-unit-head h1,
+.ks3-hub-head h1,
+.ks3-landing-head h1 {
+  margin: 0 0 0.5rem;
+  line-height: 1.15;
+  color: var(--ink);
+}
+.ks3-bigq {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--accent-text);
+  margin: 0 0 1rem;
+}
+.ks3-intro { color: var(--ink-body); margin: 0 0 0.75rem; }
+.ks3-meta { font-size: 0.85rem; color: var(--ink-muted); margin: 0; }
+
+.ks3-review-flag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-tint-border);
+  color: var(--ink);
+  margin: 0.5rem 0 0;
+}
+
+/* ── blocks ── */
+.ks3-block {
+  margin: 1.75rem 0;
+  padding: 1.1rem 1.25rem;
+  background: var(--surface-card);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+}
+.ks3-block > h2, .ks3-block > h3 { margin-top: 0; }
+.ks3-explainer {
+  background: transparent;
+  border: 0;
+  padding: 0 0 0 1rem;
+  border-left: 3px solid var(--accent);
+}
+.ks3-hook { background: var(--surface-panel); border-color: var(--accent-tint-border); }
+.ks3-hook-prompt { margin: 0 0 0.75rem; }
+.ks3-commit { margin: 0; color: var(--accent-text); }
+
+.ks3-misconception { border-left: 4px solid var(--accent); }
+.ks3-keynote { background: var(--surface-inset); }
+
+/* ── options / predictions (Law 4) ── */
+.ks3-options { list-style: none; margin: 0.75rem 0 0; padding: 0; display: grid; gap: 0.5rem; }
+.ks3-option {
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  padding: 0.65rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--rule);
+  background: var(--surface-panel);
+  color: var(--ink-body);
+  cursor: pointer;
+}
+.ks3-option:hover { border-color: var(--accent); }
+.ks3-option:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.ks3-option[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-wash); }
+.ks3-option.is-correct { border-color: var(--ok-border); background: var(--ok-bg); }
+.ks3-option.is-wrong  { border-color: var(--err-border); background: var(--err-bg); }
+
+.ks3-reveal {
+  margin-top: 0.85rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent-wash);
+  border: 1px solid var(--accent-tint-border);
+}
+.ks3-feedback {
+  margin-top: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--ink-body);
+}
+
+.ks3-fifa {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.75rem 0 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  border: 1px solid var(--rule);
+}
+.ks3-fifa p { margin: 0; }
+
+.ks3-success { margin-top: 0.85rem; }
+.ks3-success summary { cursor: pointer; font-weight: 600; color: var(--accent-text); }
+.ks3-success ul { margin: 0.6rem 0 0; padding-left: 1.2rem; }
+
+/* ── vocabulary (Law 7) ── */
+.ks3-vocab-list { margin: 0; }
+.ks3-vocab { margin: 0 0 0.85rem; }
+.ks3-vocab dt { font-weight: 700; color: var(--ink); }
+.ks3-vocab dd { margin: 0.15rem 0 0; color: var(--ink-body); }
+.ks3-vocab-note { font-size: 0.85rem; color: var(--ink-muted); margin: 0.25rem 0 0; }
+
+/* ── figures (§4.10) ── */
+.ks3-figure { margin: 1.75rem 0; }
+.ks3-figure img { max-width: 100%; height: auto; border-radius: var(--radius); }
+.ks3-figure figcaption {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-top: 0.5rem;
+}
+.ks3-figure-slot {
+  display: grid;
+  place-items: center;
+  min-height: 8rem;
+  border: 2px dashed var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface-inset);
+}
+.ks3-figure-tag {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+/* ── ladder (Law 8) ── */
+.ks3-ladder { background: var(--surface-panel); }
+.ks3-rung { padding: 1rem 0; border-top: 1px solid var(--rule); }
+.ks3-rung:first-of-type { border-top: 0; }
+.ks3-rung h3 { margin: 0 0 0.4rem; color: var(--accent-text); }
+
+.ks3-ladder-summary {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--rule);
+  font-weight: 600;
+  color: var(--ink-body);
+}
+.ks3-retry {
+  margin-top: 0.75rem;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 0.95rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent);
+  background: var(--surface-panel);
+  color: var(--accent-text);
+  cursor: pointer;
+}
+.ks3-retry:hover { background: var(--accent-wash); }
+.ks3-retry:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* ── layers (§5.6) ── */
+.ks3-layer { margin: 2.5rem 0; }
+.ks3-layer > h2 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.4rem;
+}
+
+/* ── lists: units and lessons ── */
+.ks3-lesson-list { margin: 1.5rem 0 0; padding: 0; list-style: none; counter-reset: none; }
+.ks3-lesson-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.5rem;
+  border-bottom: 1px solid var(--rule);
+}
+.ks3-lesson-row a { color: var(--ink); text-decoration: none; font-weight: 600; }
+.ks3-lesson-row a:hover { color: var(--accent-text); text-decoration: underline; }
+.ks3-num {
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-inset);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+}
+.ks3-family {
+  margin-left: auto;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+.ks3-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--ink-muted);
+  border: 1px solid var(--rule);
+}
+.ks3-badge.is-soon { margin-left: 0.5rem; }
+.ks3-lesson-row.is-ref { opacity: 0.95; }
+
+.ks3-unit-grid, .ks3-disc-grid {
+  list-style: none;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+.ks3-unit-card a, .ks3-disc-card a {
+  display: block;
+  height: 100%;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  background: var(--surface-card);
+  text-decoration: none;
+  color: var(--ink);
+}
+.ks3-unit-card a:hover, .ks3-disc-card a:hover { border-color: var(--accent); }
+.ks3-unit-card h2, .ks3-disc-card h2 { margin: 0.3rem 0 0.4rem; font-size: 1.05rem; }
+.ks3-code {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--accent-text);
+}
+
+/* ── coming soon (structure-first, §11 decision 8) ── */
+.ks3-coming-soon { background: var(--surface-inset); }
+.ks3-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-panel);
+  border: 1px solid var(--rule);
+  color: var(--ink-muted);
+  margin: 0 0 0.75rem;
+}
+.ks3-family-note { font-size: 0.9rem; color: var(--ink-muted); font-style: italic; }
+
+/* ── cross-references (§4.6) — pending state must read as deliberate ── */
+.ks3-pending { color: var(--ink-muted); }
+.ks3-pending em { font-style: normal; font-size: 0.85rem; }
+.ks3-refs ul, .ks3-prereqs ul, .ks3-ks4 ul { margin: 0.5rem 0 0; padding-left: 1.2rem; }
+
+.ks3-note {
+  font-size: 0.9rem;
+  color: var(--ink-body);
+  background: var(--surface-inset);
+  border-left: 3px solid var(--rule);
+  padding: 0.6rem 0.85rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.ks3-footer {
+  border-top: 1px solid var(--rule);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
+/* ── Law 9: motion is meaning, with a reduced-motion fallback ── */
+@media (prefers-reduced-motion: no-preference) {
+  .ks3-reveal[data-reveal] { animation: ks3-fade 220ms ease-out; }
+  @keyframes ks3-fade {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ks3-reveal[data-reveal] { animation: none; }
+  * { scroll-behavior: auto !important; }
+}

@@ -1329,6 +1329,26 @@ beyond-statutory bridge unit. Do not let bridge content enter through the covera
 > *acknowledged* beyond-statutory addition, never by quietly widening what "covers" means.
 > **Bridge content must not enter through the coverage register** — that is the operative
 > prohibition, and it survives whatever Phase 3 decides. **Conflict closed, with a Phase 3 follow-up.**
+>
+> ⚠️ **Quantified 2026-07-26, when the locked map was encoded as `ks3_data/default_sequence.py`.**
+> This ruling and the decision-5 ruling interact, and the size of the interaction was not visible
+> when either was taken. Mapping Rainford's locked map onto the 33 units gives:
+>
+> | Year | Units | Lessons |
+> |---|---|---|
+> | Y7 | 16 | 92 |
+> | Y8 | 16 | 90 |
+> | **Y9** | **1** | **3** |
+>
+> **Year 9 is one unit — B6 *Health and drugs*.** Rainford's Y9 names three topics and two of them
+> (rate of reaction, fusion / star life cycle) are exactly the beyond-statutory content this conflict
+> excludes. That is not an error in either ruling: Rainford's Y9 is explicitly "short, part-year then
+> GCSE bridge", so a thin statutory Y9 is a faithful reflection of a real school's real year.
+>
+> **But it sharpens the Phase 3 question considerably.** "Does Year 9 get a bridge unit?" is not a
+> nice-to-have under this map — without one, the published default sequence offers a Year 9 class
+> three lessons. Phase 3 should treat this as the primary Y9 design question, not a footnote. It
+> does not block Phase 1 or Phase 2, both of which are Y7-weighted.
 
 **Conflict 1h — figures and diagrams.** MRB-103 flags an **anatomical/structural diagram gap** and
 proposes figure-slots plus a diagram manifest so the slice is not blocked. **The lesson record in
