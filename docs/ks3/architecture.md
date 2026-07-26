@@ -27,14 +27,15 @@ architecture that content and code must satisfy.
 | Statutory KS3 programme of study (gov.uk, 2014) | **Read in full.** Primary source for §7. |
 | `docs/redesign/architecture_v2.md` — bonding v2 doctrine | **Read in full.** Inherited per §3. |
 | Existing generator, data-file pattern, design tokens, schools layer | **Surveyed.** See §8. |
-| **Linear MRB-103 — previously ratified KS3 architecture** | **NOT AVAILABLE.** The Linear MCP connector is unauthenticated and no local copy exists anywhere in the repo, on the Desktop, or in project memory. |
-| Rainford scheme of work | **Not available as a document** — no formal SoW exists; the sequence is implicit in folder structure. Classroom resources at `~/Desktop/Rainford` were surveyed as evidence only. Findings in §8.9. |
+| **Linear MRB-103 — previously ratified KS3 architecture** | **READ IN FULL, 2026-07-25.** Ticket body plus the 6 Jul 2026 ratification comment. Diffed against this document; delta recorded in §11 decision 1. |
+| Rainford scheme of work | **Disputed.** This document was written believing no formal SoW exists (sequence implicit in folder structure at `~/Desktop/Rainford`, surveyed as evidence only, §8.9). MRB-103 states Ayo ruled the year map "against Rainford's actual SOW". See §11 decision 1, correction 1 — **§8.9 observation 1 is unreliable until Mide confirms.** |
 
-> ⚠️ **MRB-103 reconciliation is an open action.** This architecture was reasoned from the statutory
-> spine directly, as the brief requires. When Linear access is restored, someone must diff MRB-103
-> against this document and record the delta in §11. Anything in MRB-103 that this document
-> contradicts was contradicted *without having seen it* — treat those as genuine open questions, not
-> as settled reversals.
+> ✅ **MRB-103 reconciliation: the diff is done** (2026-07-25), and the delta is in §11 decision 1.
+> Nothing from MRB-103 has been applied to this document. Each conflict is written up as two
+> positions with costs, per the rule below — Mide rules, then the amendment follows.
+>
+> ⚠️ Anything in MRB-103 that this document contradicts was contradicted *without having seen it* —
+> those remain genuine open questions, not settled reversals.
 
 **Convention used throughout:** ⊕ marks a design element that is the architect's addition beyond the
 original brief, so a reviewer can see what was invented here versus what was asked for.
@@ -49,9 +50,13 @@ published mark schemes. The KS4 architecture is correct to be exam-shaped, becau
 actual problem is an exam.
 
 KS3 has none of that. There is no exam board, no specification, no tier, no pathway, no terminal
-assessment. The statutory programme of study is roughly 120 short bullet points for three years of
-three sciences — an order of magnitude less prescriptive than AQA. That is not a gap to be filled by
-importing KS4 structure downward. It is a different job.
+assessment. The statutory programme of study is 137 short bullet points of subject content (plus 18
+Working Scientifically statements) for three years of three sciences — an order of magnitude less
+prescriptive than AQA. That is not a gap to be filled by importing KS4 structure downward. It is a
+different job.
+
+*(Corrected 2026-07-25 from "roughly 120" once Phase 0 counted them —* `docs/ks3/statutory-register.md`.
+*The exact figure matters: see §11 decision 11, where it collides with §7's lesson count.)*
 
 **The KS3 job, stated plainly:** build the conceptual equipment that KS4 will later demand, in
 students who are 11–14, many of whom have not yet decided whether science is for them.
@@ -248,10 +253,17 @@ re-argued per unit.
 
 Two more edge types on the lesson, both cheap to author and high value.
 
-**Threads — the big ideas that run vertically.** Eight threads cross discipline and year:
+**Threads — the big ideas that run vertically.** Nine threads cross discipline and year:
 
 `particles` · `energy` · `forces-and-fields` · `cells-and-systems` · `interdependence` ·
-`substances-and-reactions` · `genes-and-evolution` · `earth-and-universe`
+`substances-and-reactions` · `genes-and-evolution` · `earth-and-universe` · `structure-function`
+
+> **Amended 2026-07-26 (§11 "also noted", ruled).** `structure-function` is the ninth thread, added
+> on Mide's ruling. It is a genuine KS3 big idea named in the statutory preamble — *how a thing is
+> built explains what it does* — and it runs from cell adaptations and leaf structure through alveoli
+> and the digestive system to the reactivity of metals. This document originally named eight and
+> missed it; MRB-103 caught it. **Working Scientifically is deliberately NOT a thread** — it is a
+> separate axis, handled per §5.7 via `ws: []` tags.
 
 Each lesson declares `threads: [{id, level}]` where level is `1 encounter` / `2 develop` /
 `3 secure`. This expresses the spiral **without hard-coding years**: a school can reorder freely and
@@ -277,8 +289,8 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   "family":          "MODEL",                      # one of the seven, §6
 
   # ---- curriculum position -------------------------------------------
-  "covers":          ["KS3.C.PNM.01", "KS3.C.PNM.03"],
-  "touches":         ["KS3.P.MAT.05"],
+  "covers":          ["KS3.C.PNM.01", "KS3.C.PNM.02"],
+  "touches":         ["KS3.P.PHYC.05"],
   "threads":         [{"id": "particles", "level": 1}],
   "typical_year":    7,                            # ADVISORY ONLY — never routes (§4.5)
   "typical_minutes": 35,
@@ -294,6 +306,7 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   "phenomenon":      {...},                        # the opening hook, Law 1 (§5.1)
   "misconceptions":  [{"id", "statement", "confronted_by"}],   # required, §5.3
   "vocabulary":      [{"term", "definition", "note"}],          # required, §5.4
+  "figures":         [{"id", "kind", "caption", "status"}],     # ⊕ §4.10, may be empty
   "core":            [...blocks...],               # every student
   "stretch":         [...blocks...],               # depth layer, §5.6
   "support":         [...blocks...],               # scaffold layer, §5.6
@@ -350,6 +363,35 @@ one. ⊕
 
 Prerequisites may cross disciplines freely (Biology's *Breathing* requires Physics' *Pressure*) —
 and the fact that the graph makes those crossings visible is one of its main benefits.
+
+### 4.10 Figures and the diagram manifest ⊕
+
+*Added 2026-07-26 (§11 conflict 1h, ruled ADOPT). This was a gap in this document that MRB-103
+caught: the lesson record had nowhere to put a diagram, so a missing asset could only be discovered
+at build time.*
+
+Each lesson declares `figures: []`. A figure entry is:
+
+```python
+{"id":      "c1-particle-arrangement",   # stable, unique across KS3, permanent once referenced
+ "kind":    "schematic",                 # schematic | graph | photo | apparatus
+ "caption": "Particle arrangement in a solid, a liquid and a gas.",
+ "status":  "needed"}                    # needed | drafted | final
+```
+
+- **`status` is the whole point.** A lesson may ship with figures at `needed` — it is not a build
+  blocker — but the need is then **recorded and countable** rather than invisible.
+- **Every entry appears in `docs/ks3/diagram-manifest.md`**, which is the sourcing worklist. The
+  manifest is generated from the lesson data, so it cannot drift from what the lessons actually ask
+  for.
+- **`figures` may be empty**, and legitimately is for lessons carried entirely by interactives. Empty
+  is a statement that none is needed, not an omission.
+
+**Schematic, not photographic.** A Platform Backlog ticket already covers real-life photography
+across all subjects. The KS3 diagram need is related but **distinct**: particle arrangements, ray
+diagrams, circuit diagrams, field lines and labelled biological structures are *schematic* assets,
+and a photograph does not substitute for one. The two sourcing efforts must not be merged — see the
+manifest's own note.
 
 ---
 
@@ -414,6 +456,45 @@ feedback corrects that specific misconception.
 
 Block order is fixed at the ends and demand-driven in the middle — the same principle as bonding
 Law 1.
+
+#### 5.1.1 Segments are the vocabulary; families are the grammar ⊕
+
+*Added 2026-07-26 — the ruled reconciliation of §11 conflict 1b. MRB-103 fixed the lesson as an
+ordered deck of typed segments rendered as a stepper; this document made the middle demand-driven
+and family-arranged. Neither wins outright.*
+
+**The canonical block vocabulary** — adopted from MRB-103, and closed. A lesson is assembled from
+these types and no others; a new type requires an amendment to this document.
+
+| Segment | What it is |
+|---|---|
+| `hook` | The phenomenon. Law 1. Opens every lesson. |
+| `explainer` | Body prose. Bounded by Law 2 (~90 words) and §5.2 (~450 total). |
+| `figure` | A diagram or image, declared in `figures` (§4.10). |
+| `worked-example` | A modelled sequence. Never ships without its `check` counterpart (Law 5). |
+| `check` | A do-it-yourself counterpart producing the same artifact. |
+| `keyword` | Vocabulary introduction or recall. Law 7. |
+| `practical` | A hands-on or simulated investigation. |
+| `misconception` | The confrontation activity. Law 3. Required. |
+| `summary` | Consolidation. |
+| `quiz` | The mastery ladder (§5.8) and micro-checks. |
+
+**The grammar** — the seven families (§6) decide **which** segments a lesson uses, **how many**, and
+**in what order** the middle runs. The families are unchanged.
+
+**What this buys, and what each side gave up.** The renderer only ever has to know ten block types,
+which is what made MRB-103's deck buildable — so the generator is finite and testable. But the
+*lineup is not fixed*: a MODEL lesson and a PROCESS lesson draw different segments in a different
+order, which is what keeps Law 1 and Law 10 alive and stops §6's warning ("two lessons with
+identical block lineups should be a coincidence of need, never a default") from being violated by
+construction.
+
+**The stepper is a rendering choice, not the structure.** MRB-103's stepper may be used where a
+family calls for a stepped sequence — PROCESS lessons especially — but it is not imposed on every
+lesson. The order comes from the family; the stepper is one way to present it.
+
+**Rule:** the fixed blocks below (1–3, n+1, n+2, n+3) are mandatory in every lesson and in this
+order. Everything between them is drawn from the vocabulary above and arranged by the family.
 
 | # | Block | Fixed? | Notes |
 |---|---|---|---|
@@ -495,8 +576,12 @@ and it caps what they can be examined on. Layers are decided *by* the student, i
 lesson, and cap nothing. No student is ever routed away from core. Nothing is ever hidden because of
 who the system thinks they are.
 
-Support and stretch are **optional at authoring time** — core alone is a shippable lesson. See the
-open decision in §11 about whether support ships at launch.
+Support and stretch are **optional at authoring time** — core alone is a shippable lesson.
+
+> **Ruled 2026-07-26 (§11 decision 4, now closed).** At launch, lessons are authored `core` +
+> `stretch`; **`support` content is deferred, but the `support` slot is designed in from day one** and
+> must be present (and schema-valid) on every lesson, even when empty. "Optional at authoring time"
+> means *may be empty*, never *may be absent* — an absent slot is what forces a re-author later.
 
 ### 5.7 Working Scientifically ⊕
 
@@ -612,11 +697,25 @@ ending in a designed investigation. These lessons live inside host content units
 **Family assignment is a design decision recorded per lesson in §7.** Two lessons with identical
 block lineups should be a coincidence of need, never a default.
 
+> **Amended 2026-07-26 (§11 conflict 1b, ruled).** The families are the **grammar**; the ten typed
+> segments in §5.1.1 are the **vocabulary**. A family does not invent block types — it draws from the
+> closed list and decides which, how many, and in what order. Read each family description above as
+> a sentence written in that vocabulary: MODEL's "flagship parameter instrument with predict-gates"
+> is `hook → explainer → practical → check → …`; PROCESS's "worked stepper then do-mode
+> construction" is `worked-example → check`, which is Law 5 expressed as grammar. This is what makes
+> the renderer finite while keeping the arrangement demand-driven.
+
 ---
 
 ## 7. The proposed topic map
 
 Derived from the 2014 statutory programme of study, normalised to Discipline → Unit → Lesson.
+
+> ⚠️ **Amended 2026-07-26 (§11 decision 5 + conflict 1d, ruled).** The `Y` column below is **no
+> longer the published default sequence.** MRB-103's locked Rainford year map is
+> **"MrBadmusAI default sequence v1"**, and it ships in `ks3_data/default_sequence.py`. The `Y`
+> column is now the **advisory fallback**, consulted only where the locked map is silent. Both remain
+> data, never structure (§4.5). Where the two differ, the locked map wins.
 
 **How to read this.** `Y` = `typical_year`, advisory only (§4.5) — it is a *starting suggestion for
 a school with no scheme configured*, nothing more. `F` = architecture family. Lesson counts are
@@ -887,11 +986,21 @@ vertical slice in §9: `/ks3/` plus one real unit is the first thing that gives 
 Rainford High School's KS3 materials were surveyed as reference evidence — never as a template. Three
 observations that bear on this architecture:
 
-1. **Rainford teaches combustion, oxidation and thermal decomposition in Year 7, and states of matter
-   and particles in Year 8** — the reverse of this document's `typical_year` defaults (C1 particles
-   in Y7, C5 reactions in Y8). Neither ordering is wrong. This is exactly the case §4.5 exists for: a
-   school reorders, and **nothing rebuilds**. If that had cost a rebuild, the platform would already
-   be a poor fit for its own pilot school.
+1. ⚠️ **Unreliable — see §11 decision 1, correction 1.** As written: "Rainford teaches combustion,
+   oxidation and thermal decomposition in Year 7, and states of matter and particles in Year 8 — the
+   reverse of this document's `typical_year` defaults (C1 particles in Y7, C5 reactions in Y8)."
+   MRB-103's locked year map, ruled by Ayo against Rainford's actual scheme, says something
+   different and self-consistent: **Chemistry states of matter in Year 7**, with the *Physics*
+   particle model in Year 8 as the second half of a deliberate deepening pair. Only the reactions
+   half of the observation survives.
+   > ✅ **RESOLVED 2026-07-26 (§11 decision 5 / conflict 1d, ruled).** Mide ruled in MRB-103's
+   > favour. This observation is no longer "unreliable pending confirmation" — it is **settled
+   > against**, on the half that conflicts. **MRB-103's reading is now the record:** Chemistry states
+   > of matter in Year 7, Physics particle model in Year 8, as a deliberate deepening pair. The
+   > reactions half of the observation stands. Do not re-litigate this from §8.9.
+   The *point* of the observation stands either way, and is why it was included: a school reorders,
+   and **nothing rebuilds**. This is exactly the case §4.5 exists for. If that had cost a rebuild,
+   the platform would already be a poor fit for its own pilot school.
 2. **Rainford runs split science (separate Biology, Chemistry, Physics) across Years 7–9** — evidence
    supporting the disciplinary structure of §4.1, and a useful data point for §11 decision 2.
 3. **Rainford differentiates with "LA"/"HA" variants of individual worksheets**, applied per-resource
@@ -971,6 +1080,25 @@ Chemistry before physics before biology, because chemistry contains the most loa
 ideas and biology has the most lessons — we want the architecture proven before the biggest
 authoring commitment.
 
+> ⚠️ **Superseded 2026-07-26 (§11 decision 8, ruled FULL BUILD).** The phase table above sorts
+> authoring by **discipline**. The scope ruling re-sorts it by **year first, discipline second**:
+>
+> | Phase | Work | Gate |
+> |---|---|---|
+> | **1 — Slice** | C1 end to end (§9). Unchanged. | Full §9 done-list. |
+> | **2 — Year 7** | All remaining Year 7 units, all three disciplines, in the default sequence order. | Per-unit examiner review. |
+> | **3 — Year 8** | All Year 8 units, all three disciplines. Confirm §11 decision 9 (P9). Decide the Year 9 bridge-unit question (conflict 1g). | Per-unit. |
+> | **4 — Year 9** | All Year 9 units, all three disciplines. | Per-unit. |
+> | **5 — Systems** | Unchanged: progress tracking, scheme-of-work editor, coverage reporting, KS3 challenge (decision 3). | Product gate. |
+>
+> **Why:** the ruling keeps full scope but takes the Year-7-first cut's benefit — a pilot school gets
+> a complete, usable year early. The original reasoning (chemistry's shared ideas first) is preserved
+> *within* each year: C1 is still first overall, and chemistry still leads its year band.
+>
+> **Structure-first applies from Phase 1.** All 33 units and 185 lesson slots exist as routable
+> structure from the slice onward; unauthored lessons render an honest "coming soon" state and are
+> never broken links. The build order above is an **authoring** order, not a structure order.
+
 ### 10.2 Definition of done, per lesson ⊕
 
 A lesson ships only when every line is true:
@@ -993,6 +1121,19 @@ A lesson ships only when every line is true:
 - [ ] Keyboard-complete, WCAG AA, touch-tested.
 - [ ] Science examiner-reviewed; `review_state: frozen`; any net-new science flagged ⚑.
 
+*Added 2026-07-26, from the ruled decisions:*
+
+- [ ] **Body prose measures at reading age 9–10**, technical vocabulary excluded from the measure
+      (§11 decision 7).
+- [ ] **`support` key present and schema-valid**, even when empty (§11 decision 4). Empty is allowed;
+      absent is a defect.
+- [ ] **`figures` authored or deliberately empty**; every entry present in the diagram manifest
+      (§4.10, §11 conflict 1h).
+- [ ] **Blocks drawn only from the §5.1.1 segment vocabulary**, arranged by the lesson's family
+      (§11 conflict 1b).
+- [ ] **`covers` entries resolve** against `statutory-register.md` — parent IDs, or sub-IDs minted
+      per §11 decision 11 — and no statement or clause is owned twice.
+
 ### 10.3 Review method
 
 Inherited from bonding: **name the intended cognitive demand first, then check the activity delivers
@@ -1004,13 +1145,257 @@ finished, however attractive it looks.
 
 ## 11. Open decisions — Mide's calls
 
+> ✅ **ALL CLOSED, 2026-07-26.** Every decision below and every MRB-103 conflict has been ruled by
+> Mide. Each carries its ruling inline, and each has a dated line in the §12 amendment log. **This
+> section is now a decision record, not a queue.** Nothing here blocks the build.
+>
+> Two items are *scheduled* rather than undecided, and both are Phase 3: confirming decision 9 (P9 as
+> its own unit) against authored physics, and deciding whether Year 9 gets an explicit
+> beyond-statutory GCSE-bridge unit (conflict 1g). Neither blocks Phase 1 or Phase 2.
+>
+> **Reopening any of these requires an amendment under §12**, not a build-session decision. The
+> rulings are kept in place with their original reasoning above them so that the *cost* of each
+> choice stays visible — a closed decision whose trade-offs were erased is one nobody can revisit
+> intelligently.
+
 Ordered by how much downstream work they block.
 
-**1. MRB-103 reconciliation.** *(Blocking-ish, cheap to resolve.)* This architecture was written
-without sight of the previously ratified KS3 architecture, because Linear is unauthenticated in the
-session that produced it and no local copy exists. Someone must diff the two and record the delta
-here. **Recommendation:** restore Linear access, diff, and treat any conflict as a genuine open
-question rather than assuming this document wins.
+**1. MRB-103 reconciliation.** *(Diff completed 2026-07-25. The action is closed; the conflicts it
+surfaced are open and are Mide's calls.)*
+
+Linear access was restored and MRB-103 was read in full. **It is not a stub.** The ticket body is a
+scoping note, but it carries a substantial ratification comment — *"KS3 architecture ratified — year
+map locked"*, 6 Jul 2026, by Ayo — recording two independent Opus 4.8 passes plus Ayo's own
+sequencing ruling. That comment is the previously ratified architecture referred to in §0.
+
+**Nothing below has been applied to this document.** §0 is explicit that anything MRB-103 says which
+this document contradicts was contradicted *without having seen it*, so each conflict is written up
+as two positions with costs. Mide decides; the amendment follows the decision.
+
+**Where the two converge** (recorded so it is not re-litigated): year is soft overridable metadata,
+never structure (`year_band` there, `typical_year` here); disciplinary/subject-first ownership;
+tier and pathway null at KS3, enforced by `profiles_tier_only_ks4_check`; spiral carried by
+prerequisite edges and thread tags rather than duplicated content; the KS4 prose blob explicitly
+replaced; a `/ks3/*` generator path; a KS3 tutor persona; the `[data-mode="ks3"]` token variant;
+reuse of `profiles`, `subjects` and a sequencing overlay; FIFA retained for calculations; and
+AI-draft-then-Ayo-review as the authoring pipeline. On the architecture's spine, the two documents
+agree.
+
+**Conflict 1a — which unit is the vertical slice.** *Highest impact: it changes what gets built
+next.* MRB-103 closes with "build Cells & Organisation (Bio 1, Y7) end-to-end as the demo vertical
+slice". §9 of this document argues for C1 *Particles* on seven grounds and §10.1 makes it Phase 1.
+**Cost either way:** B1 is what a Year 7 class meets first, so it is the more natural pilot opener —
+but MRB-103 itself flags that B1 sits on an unresolved anatomical-diagram gap and is "on the critical
+path". C1 has no such gap (the existing schematic library covers particles), has a proven KS4
+counterpart to prove `ks4_links` against, and is the owner in the §7.4 cross-discipline table. Note
+that MRB-103's own risk note is evidence *for* C1, not against it. **No recommendation offered — this
+is a product-sequencing call and it is genuinely open.**
+
+> ✅ **RULED by Mide, 2026-07-26. C1 *Particles*, not B1 *Cells*.**
+>
+> **This reverses MRB-103's ratified close, and the reversal is recorded deliberately rather than
+> quietly.** MRB-103's 6 Jul 2026 ratification comment ends "build Cells & Organisation (Bio 1, Y7)
+> end-to-end as the demo vertical slice". That is now overridden. Because MRB-103 was a *ratified*
+> decision, the grounds are stated in full:
+>
+> 1. **It is reversed on MRB-103's own evidence.** MRB-103 itself flags B1 as sitting on an
+>    unresolved anatomical-diagram gap and puts that gap on the critical path. Choosing B1 would mean
+>    opening the build on the one unit its own author marked as blocked for assets.
+> 2. **C1 has no asset gap** — the existing schematic library covers particles.
+> 3. **C1 has a KS4 counterpart** (bonding v2 `states-of-matter`), so `ks4_links` gets proven against
+>    something real in the first slice instead of being stubbed.
+> 4. **C1 owns the §7.4 cross-discipline table**, so the single-source rule (§4.6) is tested on unit
+>    one rather than discovered as a problem in month four.
+>
+> §9's seven grounds stand alongside these. **Nothing else in MRB-103's ratification is disturbed** —
+> the year map from the same comment is *adopted* (conflict 1d), which is the clearest evidence this
+> is a targeted reversal on evidence and not a preference for the newer document. **Conflict closed.**
+
+**Conflict 1b — how a lesson is composed.** MRB-103 fixes the lesson as an *ordered deck of typed
+segments* (hook, explainer, figure, worked-example, check, keyword, practical, misconception,
+summary, quiz) *rendered as a stepper*. §5.1 and §6 of this document fix the block order only at the
+ends and make the middle demand-driven, with the arrangement set by one of seven families — and §6
+says outright that "two lessons with identical block lineups should be a coincidence of need, never a
+default". **These are incompatible as written.** A uniform segment deck is exactly the uniform
+lineup §6 rejects; conversely the family system is more expensive to author and to build a renderer
+for. **Cost:** MRB-103's model ships a generator sooner and is far easier to author against;
+this document's model is the one that carries Law 1 and Law 10, which are the reasons the prose blob
+is being abandoned in the first place. A middle path exists — typed segments as the *vocabulary*,
+families as the *grammar* that arranges them — and it is probably what both passes were reaching for.
+
+> ✅ **RULED by Mide, 2026-07-26. The middle path — neither document wins outright.**
+>
+> **Typed segments are the VOCABULARY. The seven families are the GRAMMAR that arranges them.**
+> MRB-103's segment type list is adopted as the **canonical block vocabulary**; §6's families are
+> retained as the **arrangement rule**. The reconciliation is written into §5.1 and §6 rather than
+> left here as a note — see the ⊕ blocks added to both, 2026-07-26.
+>
+> What each side gives up: MRB-103 gives up the *uniform stepper* — the deck is no longer a fixed
+> lineup rendered in a fixed order. This document gives up the idea that the middle is *unconstrained*
+> — blocks are now drawn from a closed, typed list rather than invented per lesson. What both keep is
+> the thing each was protecting: MRB-103 keeps a buildable renderer with a finite set of block types,
+> and this document keeps Law 1 and Law 10, because the *order* remains demand-driven.
+> **Conflict closed.**
+
+**Conflict 1c — misconceptions in v1 or v2.** MRB-103 ships a 6-type core first (hook, explainer,
+figure, check, keyword, quiz) and defers `misconception` and `practical` to v2. Law 3 here makes
+misconceptions a **required** field and at least one confrontation activity a **build gate** (§10.2).
+**This is a direct contradiction and it matters more than its size suggests**, because §1 argues the
+misconception is the whole reason KS3 content cannot be KS4 with easier words. **Cost:** deferring is
+cheaper per lesson and gets the pipeline moving; but every lesson authored under the v1 cut would
+need re-authoring, not just extending, since Law 3 changes what activities a lesson contains.
+
+> ✅ **RULED by Mide, 2026-07-26. Misconceptions are v1, required, non-negotiable. Law 3 stands.**
+>
+> MRB-103's deferral to v2 is rejected on two grounds, both already on the table:
+>
+> 1. **Deferring costs more, not less.** Law 3 changes what *activities* a lesson contains, so
+>    lessons authored without misconceptions would need **re-authoring, not extending** — 185 of
+>    them. The apparent saving is a debt taken out at the worst possible interest rate.
+> 2. **It is the stated reason KS3 is not KS4 with easier words** (§1). Deferring the misconception
+>    layer defers the entire thesis of this document; what shipped in the meantime would be exactly
+>    the thing §2 names as the anti-goal.
+>
+> `misconceptions` stays a **required** field and at least one confrontation activity stays a
+> **build gate** (§10.2). A lesson with an empty `misconceptions` list must justify itself at review,
+> and §10.3's review question — *"which wrong idea does this lesson kill, and would a student holding
+> it be forced to notice?"* — is the test. **Conflict closed.** `practical`, the other type MRB-103
+> deferred, is not covered by this ruling and remains a v2 candidate.
+
+**Conflict 1d — the year map.** MRB-103 **locks** a year map to Rainford's actual placements, on
+Ayo's explicit call to follow the pilot school. §7's `typical_year` column is a different map.
+Material divergences: Chemistry reactions and materials/reactivity (Rainford Y7, here Y8/Y9); atoms
+and the periodic table (Rainford Y8, here Y7/Y8); Earth and atmosphere (Rainford Y8, here Y9);
+electricity and magnetism (Rainford Y7, here Y8/Y9); reproduction, ecosystems and genetics (Rainford
+Y7/Y8, here Y8/Y9). Both documents also agree Energy is Y8. **Cost is genuinely low either way** —
+this is precisely what §4.5 makes soft, and §11 decision 5 already frames it as data, not structure.
+The real question is which map ships as "MrBadmusAI default sequence v1". **Recommendation: adopt
+MRB-103's locked map as the published default**, because it is a real school's real sequence and
+Ayo already ruled on it, and treat §7's column as the advisory fallback. If honouring it costs
+anything beyond a data change, §4.5 has failed and we want to know on unit one.
+
+> ✅ **RULED by Mide, 2026-07-26, jointly with decision 5.** Recommendation adopted: **MRB-103's
+> locked Rainford map becomes "MrBadmusAI default sequence v1"**; §7's `typical_year` column is the
+> advisory fallback. §8.9 observation 1 is marked **resolved** in MRB-103's favour, not merely
+> unreliable. Full ruling recorded at decision 5 above. **Conflict closed.**
+
+**Conflict 1e — the KS4 relationship.** MRB-103: "Subject + topic are the shared spine with KS4."
+§8.2 here forbids threading KS3 through the KS4 loop and §4.7 handles the relationship with explicit
+`ks4_links` edges to a separate registry instead. **Cost:** a shared spine makes cross-key-stage
+queries (coverage, progression, a student's whole journey) trivial and is the cheaper data model;
+a separate registry is what keeps a synthetic tier or pathway from leaking back into KS3, which §2
+names as an anti-goal and §8.2 calls a within-a-week failure. **Recommendation: keep them separate
+as specified**, and treat "shared spine" as satisfied by the `ks4_links` edge rather than by shared
+tables — but note this is the one place the two documents disagree about *infrastructure*, not
+pedagogy, so it is the cheapest to get wrong and the most annoying to reverse.
+
+> ✅ **RULED by Mide, 2026-07-26. Keep them separate.** Recommendation adopted: **`ks4_links` edges
+> satisfy "shared spine"**; KS3 and KS4 do not share tables. The deciding risk is the one §2 names as
+> an anti-goal and §8.2 calls a within-a-week failure — **a synthetic tier or pathway leaking back
+> into KS3**. A shared spine is the cheaper data model right up until the moment KS4's
+> `(subject, pathway, tier)` shape reaches into a key stage that has neither, and then it is very
+> expensive. §4.7 and §8.2 stand unchanged. **Conflict closed.**
+
+**Conflict 1f — progress persistence.** MRB-103 provisions a `content_progress` table (text
+`content_id`, no FK, modelled on `weekly_scores`) as part of the v1 data model. §8.7 here puts
+server-side progress in Phase 5 and starts on `localStorage`. **This is a timing disagreement, not a
+direction one** — both end in the same place. **Recommendation:** follow §8.7 (localStorage first),
+but create the table early if the pilot needs cross-device continuity, since adding it later costs
+nothing already built.
+
+> ✅ **RULED by Mide, 2026-07-26. localStorage first, per §8.7.** Server-side progress stays in
+> Phase 5. **`content_progress` is created early only if the pilot needs cross-device continuity** —
+> a real, observed need, not an anticipated one. Both documents agree on the destination, so nothing
+> is lost by arriving at it later, and adding the table afterwards costs nothing already built.
+> **Conflict closed.**
+
+**Conflict 1g — scope beyond the statutory spine.** Phase 0 transcription (see
+`docs/ks3/statutory-register.md`) settles three of these on the evidence. MRB-103's map includes
+**circulation** (Y8 Bio), **rate of reaction** (Y9 Chem) and **fusion / star life cycle** (Y9 Phys).
+**None of the three appears anywhere in the 2014 KS3 programme of study** — all are KS4 content. This
+document omits all three, and per the authority order in §12 the statutory document wins, so the
+omissions are correct *as statutory coverage*. **But MRB-103 may be right anyway** for a different
+reason: its Y9 is explicitly "short, part-year then GCSE bridge", and deliberately teaching three
+KS4-facing topics is a defensible bridge design. **Recommendation:** keep them out of statutory
+coverage and out of `covers`, and decide separately whether Year 9 gets an explicit
+beyond-statutory bridge unit. Do not let bridge content enter through the coverage register.
+
+> ✅ **RULED by Mide, 2026-07-26.** Recommendation adopted in full. **Circulation, rate of reaction
+> and fusion / star life cycle stay OUT of statutory coverage and OUT of `covers[]`.** None appears
+> in the 2014 KS3 programme of study; per §12's authority order the statutory document wins.
+>
+> **Whether Year 9 gets an explicit GCSE-bridge unit is deferred to Phase 3.** The two questions are
+> kept apart deliberately: a bridge unit is a legitimate design idea, but it must arrive as an
+> *acknowledged* beyond-statutory addition, never by quietly widening what "covers" means.
+> **Bridge content must not enter through the coverage register** — that is the operative
+> prohibition, and it survives whatever Phase 3 decides. **Conflict closed, with a Phase 3 follow-up.**
+>
+> ⚠️ **Quantified 2026-07-26, when the locked map was encoded as `ks3_data/default_sequence.py`.**
+> This ruling and the decision-5 ruling interact, and the size of the interaction was not visible
+> when either was taken. Mapping Rainford's locked map onto the 33 units gives:
+>
+> | Year | Units | Lessons |
+> |---|---|---|
+> | Y7 | 16 | 92 |
+> | Y8 | 16 | 90 |
+> | **Y9** | **1** | **3** |
+>
+> **Year 9 is one unit — B6 *Health and drugs*.** Rainford's Y9 names three topics and two of them
+> (rate of reaction, fusion / star life cycle) are exactly the beyond-statutory content this conflict
+> excludes. That is not an error in either ruling: Rainford's Y9 is explicitly "short, part-year then
+> GCSE bridge", so a thin statutory Y9 is a faithful reflection of a real school's real year.
+>
+> **But it sharpens the Phase 3 question considerably.** "Does Year 9 get a bridge unit?" is not a
+> nice-to-have under this map — without one, the published default sequence offers a Year 9 class
+> three lessons. Phase 3 should treat this as the primary Y9 design question, not a footnote. It
+> does not block Phase 1 or Phase 2, both of which are Y7-weighted.
+
+**Conflict 1h — figures and diagrams.** MRB-103 flags an **anatomical/structural diagram gap** and
+proposes figure-slots plus a diagram manifest so the slice is not blocked. **The lesson record in
+§4.8 has no figure or diagram field at all.** This is not a conflict — it is a gap in *this*
+document that MRB-103 caught and this one missed. **Recommendation: adopt it.** Whichever unit is
+built first, it needs somewhere to put a figure, and a manifest is the difference between a known
+sourcing task and a silent blocker.
+
+> ✅ **RULED by Mide, 2026-07-26. ADOPT.** This is recorded as **a gap in this document that MRB-103
+> caught**, not as a conflict this document won or lost. Two changes, both applied 2026-07-26:
+>
+> 1. **§4.8 gains a `figures` field** — the lesson record can now declare the diagrams it needs.
+> 2. **A diagram manifest exists**: `docs/ks3/diagram-manifest.md`. It turns every figure a lesson
+>    declares into a tracked sourcing task with a status, so a missing asset is a known blocker
+>    rather than a silent one discovered at build time.
+>
+> **Recorded in the manifest:** a Platform Backlog ticket already exists for **real-life photography
+> across all subjects**. The KS3 diagram need is **related but distinct — schematic, not
+> photographic**. The two must not be merged: a photograph of a beaker does not do the job of a
+> particle diagram, and satisfying one ticket will not satisfy the other. **Conflict closed.**
+
+**Also noted, minor.** MRB-103 names four threads (particle model, energy, structure↔function,
+Working Scientifically); §4.7 names eight and handles WS on a separate axis (§5.7) rather than as a
+thread. The eight are a superset except for **structure↔function**, which is a genuine KS3 big idea
+named in the statutory preamble and is missing here — worth adding. Treating WS as an axis rather
+than a thread is the better call and needs no change.
+
+> ✅ **RULED by Mide, 2026-07-26.** **`structure↔function` is added as a ninth thread** (§4.7,
+> amended 2026-07-26). It is a genuine KS3 big idea, named in the statutory preamble, and this
+> document missed it — recorded as our gap, caught by MRB-103. **Working Scientifically stays an
+> axis, not a thread** (§5.7), which was already the better call and needs no change. **Closed.**
+
+**Two factual corrections to this document, arising from the diff.**
+
+1. **§0 says no Rainford scheme of work exists as a document; MRB-103 says Ayo ruled the sequencing
+   "against Rainford's actual SOW".** One of the two is wrong, and MRB-103 is the more likely to be
+   right, since Ayo had access this document's author did not. **§8.9's evidence base is therefore
+   weaker than it presents itself**, and its observation 1 — that Rainford teaches states and
+   particles in Year 8 — conflicts with MRB-103's locked map, which puts Chemistry states of matter
+   in Year 7 and the *Physics* particle model in Year 8. MRB-103's reading is self-consistent (it
+   describes the two as a deliberate deepening pair) and should be preferred. **§8.9 observation 1
+   and the part of §11 decision 5 that rests on it should be treated as unreliable until Mide
+   confirms Rainford's actual order.**
+2. **§1 says the programme of study is "roughly 120 short bullet points".** The Phase 0 transcription
+   counts **137 subject-content statements plus 18 Working Scientifically statements — 155 in all**.
+   The understatement is material, because §7's lesson count is justified partly against it. See
+   decision 11.
 
 **2. Integrated or disciplinary presentation?** Most schools teach KS3 as "Science", not as three
 subjects; the database models KS3 as a single Science subject; but content ownership and the KS4
@@ -1019,15 +1404,37 @@ with navigation that can present either an integrated view or three subject view
 setting, defaulting to integrated. This is reversible; the underlying structure is not, which is why
 the structure is disciplinary.
 
+> ✅ **RULED by Mide, 2026-07-26 (Phase 0 gate).** Recommendation adopted: **disciplinary URLs and
+> ownership**, with integrated navigation. The **integrated/disciplinary view as a school setting is
+> deferred** — build the disciplinary structure now; the navigation toggle lands later. Nothing in
+> Phase 0 or the C1 slice depends on the toggle existing, and §4.1 is unchanged by this ruling.
+> **Decision closed.**
+
 **3. Does KS3 get the weekly challenge and leaderboard?** The current system is built on
 `(subject, pathway, tier)` and KS3 has neither pathway nor tier. A KS3 track would need its own
 shape — probably `(discipline)` or a single mixed-science challenge. **Recommendation:** yes, but not
 before Phase 5, and as a single mixed-science weekly challenge rather than three, because KS3
 students mostly experience one Science.
 
+> ✅ **RULED by Mide, 2026-07-26.** Recommendation adopted in full: **yes, at Phase 5, as a single
+> mixed-science track.** Not before Phase 5 — the KS3 challenge waits on authored content to draw
+> from. **Decision closed.**
+
 **4. Does the `support` layer ship at launch?** It roughly doubles authoring effort on the parts of a
 lesson that need most care. **Recommendation:** author `core` + `stretch` at launch; design the
 support slots into the template from day one so they can be filled later without a re-author.
+
+> ✅ **RULED by Mide, 2026-07-26 (Phase 0 gate).** Recommendation adopted: **all three depth-layer
+> slots — `support`, `core`, `stretch` — are designed into the template now; `support` *content* is
+> deferred.** A lesson ships with `core` + `stretch` authored and `support` present-but-empty, so
+> filling it later is an addition, never a re-author.
+>
+> **No structural change is required by this ruling** — §4.8's lesson record already carries both
+> `stretch` and `support` keys, and §5.6 already makes both optional at authoring time. What the
+> ruling fixes is the *authoring* contract, so it belongs in the §10.2 build gates: `support` may be
+> empty, but the key must be present and schema-valid on every lesson. **Do not let an authoring
+> shortcut delete the slot** — a missing key is what forces a re-author later, which is the exact
+> cost this decision was taken to avoid. **Decision closed.**
 
 **5. The default sequence.** Someone must decide the platform's published default ordering. Rainford's
 sequence is evidence of one school's choice, explicitly not a template — and it already diverges from
@@ -1037,13 +1444,76 @@ v1", and treat the Rainford divergence as the first live test of §4.5 rather th
 the default. If honouring their order costs anything more than a data change, the invariant has
 failed and we want to find that out on unit one.
 
+> ⚠️ **Superseded in part, 2026-07-25.** The parenthetical above ("they teach reactions in Year 7 and
+> particles in Year 8") comes from §8.9 observation 1, which §11 decision 1 correction 1 marks
+> unreliable. MRB-103 carries a **locked** year map ruled by Ayo against Rainford's actual scheme,
+> which decision 1d recommends adopting as the published default instead of §7's column. **Decide 1d
+> and this decision together** — they are the same question asked twice.
+
+> ✅ **RULED by Mide, 2026-07-26, jointly with conflict 1d.** **MRB-103's locked Rainford year map is
+> adopted as "MrBadmusAI default sequence v1".** Mide already ruled it against the school's real
+> scheme of work, and a real school's real sequence beats a desk-derived one as a *default*.
+>
+> - §7's `typical_year` column is **demoted to advisory fallback** — it applies only where the locked
+>   map is silent.
+> - Where §8.9 observation 1 conflicts with MRB-103, **MRB-103's reading wins**; §8.9 obs 1 is now
+>   marked **resolved**, not merely unreliable.
+> - This remains data, not structure (§4.5). Adopting a different default must stay a data change;
+>   if it ever costs more than that, the invariant has failed and we want to know on unit one.
+>
+> **Decision closed, and conflict 1d closed with it.**
+
 **6. Statutory ID scheme.** §4.4 invents `KS3.C.PNM.02`. Once lessons reference these IDs they are
 effectively permanent. Needs explicit blessing before Phase 0. **Recommendation:** adopt as
 specified.
 
+> **Status, 2026-07-25.** Phase 0 ran ahead of this blessing, as the build queue directed, and
+> `docs/ks3/statutory-register.md` now assigns all 155 IDs under the §4.4 scheme. **Nothing
+> references them yet** — no lesson exists — so the cost of ruling differently is currently one
+> command: IDs are minted in a single function (`statement_id()` in `ks3_statutory.py`) from one
+> strand-code table, so the register regenerates wholesale. That window closes the moment C1 is
+> authored. Two details Phase 0 had to settle, both flagged for the same ruling:
+> **(i)** `<STRAND>` is read as *the heading that directly owns the bullets* — the only reading under
+> which §4.4's own three examples (`PNM`, `CELLS`, `FORCES`) all resolve; the broader statutory area
+> is kept separately as the unit's `statutory_area`. **(ii)** Working Scientifically statements are
+> given `KS3.WS.<STRAND>.<nn>` ⊕, extending `<D>` beyond `B|C|P`, because §4.4 says *every* bullet
+> gets an ID and §5.7.4 requires WS coverage to be auditable — but they are exempt from the
+> exactly-once rule, since §5.7 taps them through `ws: []` tags on many lessons by design.
+> Note also that §4.8's illustrative `KS3.P.MAT.05` does not resolve under (i); its intended target
+> is `KS3.P.PHYC.05`, "the difference between chemical and physical changes".
+
+> ✅ **RULED by Mide, 2026-07-26 (Phase 0 gate).** **The §4.4 ID scheme is adopted exactly as
+> specified** — the `KS3.C.PNM.02` form. Both details Phase 0 flagged for the same ruling are
+> blessed with it: **(i)** `<STRAND>` is the heading that directly owns the bullets, with the
+> broader statutory area kept separately as the unit's `statutory_area`; **(ii)** Working
+> Scientifically statements carry `KS3.WS.<STRAND>.<nn>`, extending `<D>` beyond `B|C|P`, and remain
+> exempt from the exactly-once rule.
+>
+> **The 155 IDs in `docs/ks3/statutory-register.md` are therefore permanent from today.** §4.4 rule 1
+> now binds: an ID never changes meaning, and a superseded ID is never reused. The reissue window
+> described above is **closed by choice, not by expiry** — the mechanism (`statement_id()` in
+> `ks3_statutory.py`) stays in place, but from here a re-mint is a breaking change, not a command.
+>
+> **Consequential fixes, applied 2026-07-26.** With the scheme blessed, every `KS3.*` ID cited
+> anywhere in this document was validated against the register. Two in §4.8's illustrative lesson
+> record did not resolve and have been corrected in place: `touches: ["KS3.P.MAT.05"]` →
+> `["KS3.P.PHYC.05"]`, and `covers: [..., "KS3.C.PNM.03"]` → `[..., "KS3.C.PNM.02"]` (PNM has only
+> two bullets, so `.03` never existed). Both were examples in prose, not references from a lesson,
+> so nothing was broken by them — but an unresolvable ID in the worked example *of the ID system* is
+> exactly the drift §4.4 exists to prevent. The only remaining non-resolving ID in this document is
+> `KS3.P.ECT.02a` in decision 11, which is deliberate: it illustrates a sub-ID that has not been
+> minted. **Decision closed.**
+
 **7. Reading-age target.** §5.4 says "below chronological age" without a number. A specific target
 (e.g. readability age 9–10 for body prose) makes it checkable. **Recommendation:** set 9–10 and
 measure it, with technical vocabulary excluded from the measure.
+
+> ✅ **RULED by Mide, 2026-07-26.** Recommendation adopted: **reading age 9–10 for body prose,
+> measured, with technical vocabulary excluded from the measure.** "Measured" is the operative word —
+> this is a checkable build property, not an aspiration, and it belongs in the §10.2 per-lesson
+> done-list. Excluding technical vocabulary is what makes the target honest: Law 7 says the technical
+> terms are carried deliberately, so counting them as difficulty would penalise doing Law 7 properly.
+> **Decision closed.**
 
 **8. Authoring capacity and scope.** **185 lessons** is a large commitment — larger than anything
 attempted at KS4 so far — and §10.1 assumes it happens over many months. There is a real alternative:
@@ -1054,15 +1524,98 @@ of content. **Recommendation:** this is a product and commercial call, not an ar
 architecture supports either. If schools are waiting, take the Year 7 cut. If the priority is getting
 the architecture right, take the §10.1 order. Either way, C1 is still the first unit built (§9).
 
+> ✅ **RULED by Mide, 2026-07-26. FULL BUILD.** All **33 units, 185 lessons**, three disciplines, the
+> whole programme of study. The Year-7-first cut is **not** taken as a scope reduction — but its
+> insight is kept, as an *authoring order*:
+>
+> - **Structure-first.** Every unit and every lesson slot exists from the start. The topic map in §7
+>   is built out as real routable structure on day one, not accreted unit by unit.
+> - **Unauthored lessons present honestly as "coming soon"** — never a broken link, never a 404,
+>   never a silently missing entry. An unauthored lesson is a visible, deliberate placeholder.
+> - **Authoring order prioritises Year 7 across all three sciences first**, so a pilot school gets a
+>   complete, usable year early; then Year 8; then Year 9.
+>
+> This supersedes the either/or the decision was written as: scope is the full programme, sequencing
+> takes the Year 7 cut's benefit. **Note this changes §10.1's phase order** — phases 2–4 were
+> "chemistry, then physics, then biology"; the ruling makes the primary sort **year**, with
+> discipline the secondary sort within a year. C1 remains the first unit built (§9) under both.
+> **Decision closed.**
+
 **9. Is P9 *Static electricity* its own unit?** It is only three lessons, and it could fold into P8
 *Electric circuits* or into P10 *Magnetism and electromagnetism*. **Recommendation:** keep it
 separate — static electricity is conceptually distinct from current electricity and merging them is
 a known source of the "current is stored in the battery" confusion. But this is a physics-authoring
 call, and either answer is architecturally fine. Decide it at Phase 3, not now.
 
+> ✅ **RULED by Mide, 2026-07-26.** **P9 stays its own unit**, on the reasoning given — merging static
+> into current electricity is a known source of the "current is stored in the battery" confusion.
+> **To be confirmed at Phase 3** when the physics is actually authored and the merge question can be
+> judged against real lessons rather than a lesson count. **Decision closed, with a Phase 3
+> confirmation checkpoint.**
+
 **10. AI tutor scope at KS3.** Should the tutor answer beyond the lesson, as it does at KS4? A Year 7
 asking about radioactivity gets an answer that may confuse more than help. **Recommendation:** answer
 anything, but anchor to KS3 language and flag when something is "something you'll meet at GCSE".
+
+> ✅ **RULED by Mide, 2026-07-26.** Recommendation adopted: **the tutor answers anything**, anchored
+> to KS3 language, and **flags "you'll meet this at GCSE"** when the answer runs ahead of the key
+> stage. Curiosity is never refused; it is answered at the right altitude and signposted. This binds
+> the KS3 system prompt in §5.9. **Decision closed.**
+
+**11. There are not enough statutory statements to go round.** ⊕ *(Raised by Phase 0, 2026-07-25.
+Build-blocking for the slice, because it decides what `covers` means on lesson one.)*
+
+The transcription in `docs/ks3/statutory-register.md` counts **137 subject-content statements**. §7
+specifies **185 lessons**. Two rules in this document then cannot both hold:
+
+- **§4.4 rule 3** — every statement is owned by **exactly one** lesson.
+- **§10.2** — every lesson has **`covers` non-empty**.
+
+Under both, at least **48 lessons must own nothing**, which §10.2 forbids. The register's coverage
+appendix shows this is not a rounding problem: **26 of 33 units** have more lessons than statements.
+The extremes are C5 *Types of reaction* (5 lessons, 1 statement — the whole unit hangs off
+`KS3.C.CR.03`), B5 *Reproduction* (8 lessons, 2 statements) and B6 *Health and drugs* (3 lessons,
+1 statement). The cause is structural, not sloppy: the statutory bullets are **compound**.
+`KS3.P.ECT.02` alone contains thermal equilibrium, conduction, radiation *and* insulators, which §7
+quite reasonably teaches as four lessons.
+
+Three ways out:
+
+- **(a) Split compound bullets into clause-level sub-IDs** — `KS3.P.ECT.02a`, `.02b`, `.02c`. The
+  parent ID and its verbatim text are untouched, so the transcription stays faithful and Mide's gate
+  still works; exactly-once then bites at the grain lessons are actually written at. Cost: one
+  careful pass over the compound bullets, and sub-IDs are permanent once referenced.
+- **(b) Relax §10.2** so a lesson may own nothing provided it `touches` something. Cheapest, but it
+  guts the coverage report — "what does this cover?" stops being answerable per lesson, which §4.4
+  says is the whole point of the ID scheme.
+- **(c) Cut §7 to ~137 lessons.** Restores the invariant exactly and shrinks the authoring
+  commitment, but merges ideas that are genuinely separate sittings and pushes lessons back toward
+  the blob §2 is moving away from.
+
+**Recommendation: (a).** It is the only option that keeps both rules intact and the register
+faithful, and the compound bullets are a fact about the source document rather than a problem with
+§7. Do the split lazily — per unit, at authoring time, not as a big bang — so sub-IDs are only minted
+where a real lesson needs one. **This needs Mide's ruling before Phase 1**, because C1's six lessons
+own five statements and will hit it immediately.
+
+> ✅ **RULED by Mide, 2026-07-26. Option (a) — clause-level sub-IDs.** Adopted with its lazy-minting
+> discipline intact. The operative rules:
+>
+> 1. **The parent ID and its verbatim text are never touched.** A sub-ID is an additional, finer
+>    handle on a clause *of* the parent, not a replacement for it. The transcription gate therefore
+>    still works — `statutory-register.md` remains a faithful copy of the source document, and the
+>    sub-IDs live alongside it rather than inside it.
+> 2. **Exactly-once (§4.4 rule 3) bites at sub-ID grain.** Where a bullet is split, its *clauses* are
+>    owned exactly once each; the parent is then covered exactly once by construction. Where a bullet
+>    is not split, the parent is owned exactly once as before.
+> 3. **Mint lazily — per unit, at authoring time. Never big-bang.** A sub-ID exists only because a
+>    real lesson needed one. This keeps the permanent-ID surface as small as it can be.
+> 4. **Sub-IDs are permanent once referenced**, exactly as parent IDs are (§4.4 rule 1, blessed under
+>    decision 6). Lazy minting is about *when* an ID is created, never about whether it can later be
+>    renumbered. It cannot.
+>
+> Form: `KS3.P.ECT.02a`, `.02b`, `.02c` — parent ID plus a lowercase letter, allocated in the clause
+> order the bullet prints. **Decision closed.**
 
 ---
 
@@ -1084,3 +1637,28 @@ This document is law. Changing it changes what gets built.
 | Date | Change | By |
 |---|---|---|
 | 2026-07-25 | Initial architecture. Written from the statutory spine, the bonding v2 doctrine, and the existing platform. MRB-103 unavailable — see §0. | Claude (Fable 5) |
+| 2026-07-25 | **MRB-103 reconciliation (§11 decision 1 rewritten).** Linear restored; MRB-103 read in full including its 6 Jul 2026 ratification comment. Delta recorded as eight conflicts (1a–1h) with two positions and costs each, plus convergences and two factual corrections. **No MRB-103 position applied** — all await Mide's ruling. §0 provenance table updated. | Claude (Opus 5) |
+| 2026-07-25 | **Phase 0 register produced.** `docs/ks3/statutory-register.md` (155 statements, generated by `ks3_statutory.py`) and an empty `docs/ks3/misconception-register.md`. Awaiting the §10.1 gate. | Claude (Opus 5) |
+| 2026-07-25 | **§1 corrected:** "roughly 120 short bullet points" → 137 subject-content statements plus 18 Working Scientifically. Counted in Phase 0; §12 makes the statutory document authoritative on its own contents. | Claude (Opus 5) |
+| 2026-07-25 | **§8.9 observation 1 marked unreliable**, and the §0 Rainford row changed from "not available" to "disputed", per §11 decision 1 correction 1. Claim not deleted — Mide confirms which reading is right. | Claude (Opus 5) |
+| 2026-07-25 | **§11 decision 11 added** (new, ⊕): 137 statutory statements cannot supply 185 lessons under §4.4 rule 3 + §10.2 simultaneously. Three options costed; clause-level sub-IDs recommended. Blocks Phase 1. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 6 RULED (closed).** Mide blessed the §4.4 ID scheme exactly as specified, including both Phase 0 details: strand = the heading that directly owns the bullets, and `KS3.WS.*` for Working Scientifically. **The register's 155 IDs are permanent from this date**; the reissue window is closed by choice. | Claude (Opus 5) |
+| 2026-07-26 | **§4.8 illustrative IDs corrected** (consequence of decision 6): `KS3.P.MAT.05` → `KS3.P.PHYC.05` and `KS3.C.PNM.03` → `KS3.C.PNM.02`. All `KS3.*` IDs cited in this document were validated against the register; the only remaining non-resolving one is decision 11's deliberately unminted `KS3.P.ECT.02a`. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 2 RULED (closed).** Disciplinary URLs and ownership adopted per §4.1; integrated-vs-disciplinary navigation as a school setting **deferred**. No change to §4.1. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 4 RULED (closed).** `support`/`core`/`stretch` slots designed into the template now; `support` **content** deferred. §5.6 amended: the slot must be present and schema-valid even when empty. No structural change needed — §4.8 already carries both keys. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 8 (scope) explicitly left open** at the Phase 0 gate. Recorded as deliberate: Phase 0 is scope-independent, and C1 is the first unit under either cut, so it blocks Phase 2 rather than Phase 1. | Claude (Opus 5) |
+| 2026-07-26 | **Phase 0 register independently verified** against the live DfE HTML: 155/155 bullets matched, 153 byte-identical, 2 differing only by collapsed double-spaces present in the published source. Per-discipline counts (B39/C36/P62/WS18) confirmed against the source. Verification method and the two whitespace normalisations recorded in the register. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 8 (scope) RULED: FULL BUILD.** All 33 units / 185 lessons / three disciplines. Structure-first — every unit and lesson slot exists from the start, unauthored lessons render an honest "coming soon", never a broken link. Authoring order prioritises Year 7 across all three sciences, then Y8, then Y9. **§10.1 phase table superseded**: primary sort is now year, secondary sort discipline. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 11 RULED: option (a), clause-level sub-IDs.** Parent ID and verbatim text untouched so the transcription gate still works; exactly-once bites at sub-ID grain; minted lazily per unit at authoring time; permanent once referenced. Form `KS3.P.ECT.02a`. | Claude (Opus 5) |
+| 2026-07-26 | **§11 conflict 1a RULED: C1 *Particles*, not B1 *Cells*.** Explicitly reverses MRB-103's ratified close, on MRB-103's own evidence (it flags B1's anatomical-diagram gap as critical-path). Grounds recorded in full at 1a. No other part of MRB-103's ratification disturbed. | Claude (Opus 5) |
+| 2026-07-26 | **§11 conflict 1b RULED: the middle path.** Typed segments are the vocabulary, the seven families are the grammar. MRB-103's segment list adopted as the canonical closed block vocabulary. **New §5.1.1** written as the reconciliation; §6 amended to read the families as grammar over that vocabulary. Stepper demoted to a rendering choice. | Claude (Opus 5) |
+| 2026-07-26 | **§11 conflict 1c RULED: misconceptions are v1, required, non-negotiable.** Law 3 stands; MRB-103's v2 deferral rejected — deferring means re-authoring 185 lessons rather than extending them. `practical` remains a v2 candidate, uncovered by this ruling. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 5 + conflict 1d RULED jointly: MRB-103's locked Rainford year map becomes "MrBadmusAI default sequence v1".** §7's `Y` column demoted to advisory fallback. **§8.9 observation 1 marked RESOLVED** in MRB-103's favour (was: unreliable). | Claude (Opus 5) |
+| 2026-07-26 | **§11 conflict 1e RULED: keep KS3 and KS4 separate.** `ks4_links` edges satisfy "shared spine"; no shared tables, because that is the path by which tier/pathway leaks back into KS3 (§2 anti-goal). §4.7 and §8.2 unchanged. | Claude (Opus 5) |
+| 2026-07-26 | **§11 conflict 1f RULED: localStorage first per §8.7.** `content_progress` created early only if the pilot needs cross-device continuity. | Claude (Opus 5) |
+| 2026-07-26 | **§11 conflict 1g RULED: circulation, rate of reaction and fusion stay out of statutory coverage and out of `covers[]`.** Whether Year 9 gets an explicit GCSE-bridge unit deferred to Phase 3. Standing prohibition: bridge content must never enter through the coverage register. | Claude (Opus 5) |
+| 2026-07-26 | **§11 conflict 1h RULED: ADOPT.** Recorded as a gap in this document that MRB-103 caught. **§4.8 gains `figures`; new §4.10** defines it; `docs/ks3/diagram-manifest.md` created, generated from lesson data. Manifest records that the existing Platform Backlog photography ticket is related but distinct — schematic ≠ photographic. | Claude (Opus 5) |
+| 2026-07-26 | **Ninth thread added: `structure-function`** (§4.7). A genuine KS3 big idea named in the statutory preamble, missed here and caught by MRB-103. WS confirmed as an axis (§5.7), not a thread. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decisions 3, 7, 9, 10 RULED**, all adopting the stated recommendation: KS3 weekly challenge yes at Phase 5 as a single mixed-science track; reading age 9–10 measured with technical vocabulary excluded; P9 stays its own unit pending Phase 3 confirmation; tutor answers anything, anchored to KS3 language, flagging "you'll meet this at GCSE". | Claude (Opus 5) |
+| 2026-07-26 | **§10.2 done-list extended** with the five checks the above rulings make testable: reading-age measure, `support` key present, `figures` in manifest, blocks from the §5.1.1 vocabulary, `covers` resolving against the register. | Claude (Opus 5) |
+| 2026-07-26 | **§11 fully resolved.** All eleven decisions and all eight MRB-103 conflicts are closed. Open follow-ups are scheduled, not undecided: P9 confirmation and the Year 9 bridge-unit question, both at Phase 3. | Claude (Opus 5) |

@@ -162,6 +162,27 @@
   --radius-sm: 12px;
   --radius:    18px;
   --radius-lg: 26px;
+
+  /* ⚠️ Contrast-checked 2026-07-26 (architecture.md §8.5 required this
+     before the accent carried text). Measured WCAG AA ratios for
+     --accent #C4490F on the redesign cream grounds:
+
+       --surface-page  #E7E1D4 → 3.74  ✗ body   ✓ large
+       --surface-inset #F7F2E8 → 4.37  ✗ body   ✓ large
+       --surface-card  #F5F1E8 → 4.33  ✗ body   ✓ large
+       --surface-panel #FFFDF8 → 4.80  ✓ body   ✓ large
+
+     So --accent FAILS AA for body-size text on three of the four
+     grounds, including the main page ground. It is fine for large
+     text (≥18.66px bold / 24px), icons, rules, fills and borders.
+
+     --accent-text is the token to use whenever an accent colour
+     carries body-size text. It reuses the existing hover value,
+     which clears AA on every ground (worst case 4.92 on
+     --surface-page). Do not swap --accent itself: it is load-bearing
+     for fills and large display type, where the brighter value is
+     the point. */
+  --accent-text:   #A63C12;
 }
 
 /* ═══════════════════════════════════════════════════════════════
