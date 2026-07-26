@@ -23,10 +23,11 @@ import importlib
 import pkgutil
 
 from . import structure
-from .default_sequence import DEFAULT_SEQUENCE_V1, NOTES
+from .default_sequence import DEFAULT_SEQUENCE_V1
 
 # Modules in this package that are NOT unit modules.
-_NON_UNIT_MODULES = {"structure", "default_sequence", "substatements"}
+_NON_UNIT_MODULES = {"structure", "default_sequence", "school_schemes",
+                     "substatements"}
 
 
 def _authored_modules():
@@ -110,9 +111,19 @@ def build_units():
             "statutory_area":  sk["statutory_area"],
             "split_rationale": sk["split_rationale"],
             "references":      sk["references"],
-            "typical_year":    DEFAULT_SEQUENCE_V1.get(code, sk["typical_year"]),
-            "fallback_year":   sk["typical_year"],
-            "sequence_note":   NOTES.get(code),
+            # The published default (§7, ruled 2026-07-26). There is no
+            # fallback layer any more: `default_sequence.py` asserts at import
+            # that DEFAULT_SEQUENCE_V1 and structure.py's typical_year are the
+            # same mapping for all 33 units, so reading either gives the same
+            # answer and a `.get(code, sk["typical_year"])` would be theatre.
+            # It is read from the default because the default is the artifact.
+            #
+            # Still advisory (§4.5): a school's real order comes from
+            # scheme_of_work_overrides, and no page path or byte depends on
+            # this value. School schemes live in `school_schemes.py` and are
+            # deliberately NOT merged in here — a Rainford note must never
+            # render on a platform page.
+            "typical_year":    DEFAULT_SEQUENCE_V1[code],
             "intro":           (auth or {}).get("intro"),
             "lessons":         lessons,
             "authored_count":  sum(1 for l in lessons if l["authored"]),
