@@ -57,6 +57,8 @@ BLOCK_CSS = """
 .rd .rd-blk-lead b { color: var(--ink,#1A1714); }
 /* feature-cards */
 .rd .rd-blk-feature { display: grid; grid-template-columns: repeat(auto-fit,minmax(210px,1fr)); gap: 12px; }
+/* Phase 2B revision #4/5: the trio says what it is about before the three cards. */
+.rd .rd-blk-feature__h { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(17px * var(--rd-fs-scale, 1)); line-height: 1.3; color: var(--ink,#1A1714); margin: 0 0 12px; }
 .rd .rd-fcard { border-radius: 14px; padding: 16px 18px; border: 1px solid; }
 .rd .rd-fcard__hd { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
 .rd .rd-fcard__hd b { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(15px * var(--rd-fs-scale, 1)); line-height: 1.3; }
@@ -165,9 +167,16 @@ BLOCK_CSS = """
 .rd .rd-exam__actions { display: flex; gap: 12px; margin-top: 14px; flex-wrap: wrap; }
 /* Key Note revision card (§5.6) — last, static, photographable; cover-and-recall */
 .rd .rd-keycard { background: var(--surface-inset,#F7F2E8); border: 1px solid var(--border,#E4DCCB); border-top: 3px solid var(--accent-strong,#C0392B); border-radius: 16px; padding: 18px 24px 20px; }
-.rd .rd-keycard__hd { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.rd .rd-keycard__hd { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.rd .rd-keycard__id { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .rd .rd-keycard__lbl { font-family: var(--font-mono,monospace); font-size: calc(11px * var(--rd-fs-scale, 1)); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #716A60; }
-.rd .rd-keycard__cover { font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+/* Phase 2B revision #4/5: the card is meant to be photographed and revised from
+   later, so it names its subtopic inside the card, not just in the section above. */
+.rd .rd-keycard__title { font-family: var(--font-display,sans-serif); font-weight: 700; font-size: calc(16px * var(--rd-fs-scale, 1)); line-height: 1.3; color: var(--ink,#1A1714); }
+/* flex:none + nowrap: with the subtopic title now sharing the header row, a
+   shrinkable button collapsed into a three-line blob at 390px. */
+.rd .rd-keycard__cover { flex: none; white-space: nowrap; font-family: var(--font-display,sans-serif); font-weight: 600; font-size: calc(13px * var(--rd-fs-scale, 1)); color: #4A4238; background: var(--surface-panel,#FFFDF8); border: 1px solid var(--border,#E4DCCB); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+@media (max-width: 560px) { .rd .rd-keycard__hd { flex-direction: column; align-items: flex-start; gap: 10px; } }
 .rd .rd-keycard__cover:focus-visible { outline: 2px solid var(--accent-strong,#C0392B); outline-offset: 2px; }
 .rd .rd-keycard__text { font-family: var(--font-mono,monospace); font-size: calc(13.5px * var(--rd-fs-scale, 1)); line-height: 1.75; color: #211B15; margin: 0; }
 .rd .rd-keycard.is-covered .rd-keycard__text { filter: blur(9px); user-select: none; }
@@ -203,6 +212,9 @@ def _r_lead(b):
 
 
 def _r_feature(b):
+    # Phase 2B revision #4/5: a feature trio that does not first say what it is
+    # about reads as three loose facts. An optional `title` names the set.
+    head = ('<div class="rd-blk-feature__h">%s</div>' % _esc(b["title"])) if b.get("title") else ""
     cards = ""
     for c in b["cards"]:
         tone = c.get("tone", "neutral")
@@ -211,7 +223,7 @@ def _r_feature(b):
             '<div class="rd-fcard__hd"><span style="font-size: calc(17px * var(--rd-fs-scale, 1));">%s</span><b>%s</b></div>'
             '<div class="rd-fcard__body">%s</div></div>'
         ) % (tone, _esc(c.get("emoji", "")), _esc(c["title"]), _esc(c["body"]))
-    return '<div class="rd-blk-feature">%s</div>' % cards
+    return '%s<div class="rd-blk-feature">%s</div>' % (head, cards)
 
 
 def _r_compare(b):
@@ -546,7 +558,7 @@ BONDING_REDESIGN = {
             {"type": "lead",
              "text": "Giant covalent structures (also called macromolecular) are substances where a huge number of atoms are all joined by covalent bonds throughout the whole structure — there are no separate molecules. Examples: diamond, graphite and silicon dioxide (SiO₂).",
              "bold": ["covalent bonds throughout"]},
-            {"type": "feature-cards", "cards": [
+            {"type": "feature-cards", "title": "Properties of giant covalent structures", "cards": [
                 {"emoji": "🌡️", "title": "Very high melting point", "tone": "neutral",
                  "body": "Melting means breaking millions of strong covalent bonds, which takes a lot of energy."},
                 {"emoji": "💎", "title": "Very hard & rigid", "tone": "neutral",
@@ -574,7 +586,7 @@ BONDING_REDESIGN = {
             # files; this feature-cards block surfaces it in the redesigned theory for ALL
             # tiers (Foundation included). Cards are the same authored presentation already
             # shipped on the nanoparticles page. AQA 5.2.3.3 carries no HT marker.
-            {"type": "feature-cards", "cards": [
+            {"type": "feature-cards", "title": "Other forms of carbon", "cards": [
                 {"emoji": "▦", "title": "Graphene", "tone": "neutral",
                  "body": "A single layer of graphite, one atom thick — extremely strong, very light, and conducts electricity."},
                 {"emoji": "⚽", "title": "Buckminsterfullerene (C₆₀)", "tone": "neutral",
@@ -670,7 +682,7 @@ BONDING_REDESIGN = {
                 ]},
             ], "highlight": 2,
              "verdict": "Melting overcomes the WEAK forces between molecules — not the strong bonds inside them. That is why the melting point is low."},
-            {"type": "feature-cards", "cards": [
+            {"type": "feature-cards", "title": "Properties of small molecules", "cards": [
                 {"emoji": "🚫", "title": "Do not conduct electricity", "tone": "limit",
                  "body": "Molecules have no overall charge and no free electrons or ions to carry current."},
                 {"emoji": "🌡️", "title": "Bigger molecule → higher melting point", "tone": "neutral",
@@ -771,7 +783,7 @@ BONDING_REDESIGN = {
             {"type": "lead",
              "text": "Ionic bonding happens between a metal and a non-metal. The metal transfers its outer electrons to the non-metal, and the oppositely charged ions that form attract one another.",
              "bold": ["metal and a non-metal"]},
-            {"type": "feature-cards", "cards": [
+            {"type": "feature-cards", "title": "Which ion does an atom form?", "cards": [
                 {"emoji": "➕", "title": "Metals → positive ions", "tone": "neutral",
                  "body": "Group 1 → +1 (Na⁺), Group 2 → +2 (Mg²⁺), Group 3 → +3 (Al³⁺)."},
                 {"emoji": "➖", "title": "Non-metals → negative ions", "tone": "neutral",
@@ -842,7 +854,7 @@ BONDING_REDESIGN = {
                 ]},
             ], "highlight": 2,
              "verdict": "Higher ion charges → stronger attraction → higher melting point. That is why MgO melts far above NaCl."},
-            {"type": "feature-cards", "cards": [
+            {"type": "feature-cards", "title": "Properties of ionic compounds", "cards": [
                 {"emoji": "💥", "title": "Hard but brittle", "tone": "neutral",
                  "body": "A force shifts the layers so like charges align and repel — the crystal shatters rather than bending."},
                 {"emoji": "🚫", "title": "No conduction when solid", "tone": "limit",
@@ -934,7 +946,7 @@ BONDING_REDESIGN = {
             {"type": "lead",
              "text": "Metals have giant metallic structures — a regular lattice of positive metal ions surrounded by a sea of delocalised electrons. That structure explains all their properties.",
              "bold": ["giant metallic structures"]},
-            {"type": "feature-cards", "cards": [
+            {"type": "feature-cards", "title": "Properties of metals", "cards": [
                 {"emoji": "🌡️", "title": "High melting & boiling point", "tone": "neutral",
                  "body": "Strong forces between the positive ions and the electron sea (exceptions: mercury and gallium are liquid near room temperature)."},
                 {"emoji": "🔨", "title": "Malleable & ductile", "tone": "neutral",

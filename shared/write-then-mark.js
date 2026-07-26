@@ -58,13 +58,13 @@
       '.mrb-wtm,.mrb-wtm *{box-sizing:border-box}',
       '.mrb-wtm{font-family:var(--font-body,system-ui,sans-serif);color:var(--ink-body,#2A241E)}',
 
-      /* framing */
-      '.mrb-wtm__eyebrow{font-family:var(--font-mono,monospace);font-size:calc(10.5px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#716A60;margin:0 0 8px}',
+      /* framing (the old __eyebrow rule went with the heading it styled —
+         the heading now leads the .mrb-lc__subject sub-heading instead) */
       '.mrb-wtm__frame{font-size:calc(13.5px * var(--rd-fs-scale,1));line-height:1.55;color:var(--ink-body,#2A241E);background:var(--surface-inset,#F7F2E8);border-left:4px solid var(--accent-deep,#B5341A);border-radius:12px;padding:11px 15px;margin:0 0 14px;max-width:68ch}',
       '.mrb-wtm__q-lbl{font-family:var(--font-mono,monospace);font-size:calc(10.5px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#716A60;margin:0 0 6px}',
 
       /* the write surface */
-      '.mrb-wtm__lbl{display:block;font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(13.5px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);margin:14px 0 7px}',
+      '.mrb-wtm__lbl{display:block;font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(13.5px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);margin:22px 0 7px}',
       '.mrb-wtm__ta{display:block;width:100%;min-height:150px;resize:vertical;font-family:var(--font-body,system-ui,sans-serif);font-size:calc(14.5px * var(--rd-fs-scale,1));line-height:1.6;color:var(--ink-body,#2A241E);background:var(--surface-panel,#FFFDF8);border:1px solid var(--border,#E4DCCB);border-radius:14px;padding:13px 15px}',
       '.mrb-wtm__ta:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
       '.mrb-wtm__gate{font-size:calc(12.5px * var(--rd-fs-scale,1));line-height:1.5;color:#716A60;margin:8px 0 0}',
@@ -78,8 +78,8 @@
       '.mrb-wtm__answer-by{display:block;font-family:var(--font-mono,monospace);font-size:calc(10.5px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#716A60;margin-bottom:7px}',
 
       /* scheme sections */
-      '.mrb-wtm__scheme{margin-top:20px;border-top:1px solid var(--surface-inset,#EFE7D8);padding-top:18px}',
-      '.mrb-wtm__sec{margin-top:18px}',
+      '.mrb-wtm__scheme{margin-top:22px;border-top:1px solid var(--surface-inset,#EFE7D8);padding-top:22px}',
+      '.mrb-wtm__sec{margin-top:22px}',
       '.mrb-wtm__sec-h{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);margin:0 0 9px}',
       '.mrb-wtm__strand{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-deep,#B5341A);margin:14px 0 7px}',
       '.mrb-wtm__strand:first-child{margin-top:0}',
@@ -104,11 +104,11 @@
       '.mrb-wtm__key{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));line-height:1.7;color:#716A60;margin:9px 0 0}',
 
       /* the running self-award */
-      '.mrb-wtm__count{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(15px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);background:var(--surface-inset,#F7F2E8);border:1px solid var(--border,#E4DCCB);border-radius:12px;padding:12px 16px;margin-top:14px}',
+      '.mrb-wtm__count{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(15px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);background:var(--surface-inset,#F7F2E8);border:1px solid var(--border,#E4DCCB);border-radius:12px;padding:12px 16px;margin-top:18px}',
       '.mrb-wtm__count small{display:block;font-family:var(--font-body,system-ui,sans-serif);font-weight:400;font-size:calc(12px * var(--rd-fs-scale,1));line-height:1.5;color:#716A60;margin-top:4px}',
 
       /* levels */
-      '.mrb-wtm__level{margin-top:14px;border:1px solid var(--accent-tint-border,#F0BBA9);background:var(--accent-wash,#FBEEE9);border-radius:14px;padding:14px 17px}',
+      '.mrb-wtm__level{margin-top:0;border:1px solid var(--accent-tint-border,#F0BBA9);background:var(--accent-wash,#FBEEE9);border-radius:14px;padding:14px 17px}',
       '.mrb-wtm__level-n{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14.5px * var(--rd-fs-scale,1));color:var(--accent-deep,#B5341A);margin:0 0 6px}',
       '.mrb-wtm__level-d{font-size:calc(13.5px * var(--rd-fs-scale,1));line-height:1.55;color:var(--ink-body,#2A241E);margin:0;max-width:68ch}',
       '.mrb-wtm__bands{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}',
@@ -132,10 +132,107 @@
       '.mrb-wtm__num[disabled]{opacity:.5;cursor:default}',
       '.mrb-wtm__quote{margin:14px 0 0;border-left:4px solid var(--accent-deep,#B5341A);background:var(--surface-inset,#F7F2E8);border-radius:0 14px 14px 0;padding:13px 17px;font-size:calc(14px * var(--rd-fs-scale,1));line-height:1.6;color:var(--ink-body,#2A241E);max-width:68ch}',
       '.mrb-wtm__quote-by{display:block;font-family:var(--font-mono,monospace);font-size:calc(10.5px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#716A60;margin-bottom:6px}',
-      '.mrb-wtm__verdict{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));letter-spacing:.05em;color:#716A60;margin:14px 0 0}',
-      '.mrb-wtm__mis-s{display:block;margin-top:3px;color:var(--ink-body,#2A241E)}'
+      '.mrb-wtm__verdict{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));letter-spacing:.05em;color:#716A60;margin:18px 0 0}',
+      '.mrb-wtm__mis-s{display:block;margin-top:3px;color:var(--ink-body,#2A241E)}',
+
+      /* closing notes: every one leads with a heading naming what it is */
+      '.mrb-wtm__note-h{display:block;font-family:var(--font-display,sans-serif);font-weight:700;margin-bottom:5px}',
+      '.mrb-wtm__notes{margin-top:22px}',
+      '.mrb-wtm__notes .mrb-note:first-child{margin-top:0}'
     ].join('');
     document.head.appendChild(s);
+    ensureLadderFallback();
+  }
+
+  /* ---------- kernel-capability shims ----------
+     exam-ladder.js owns .mrb-lc__subject, .mrb-lc__task and the .mrb-reveal
+     accordion. This file must not edit that file, and must not break against
+     a kernel that does not carry them yet. So: probe the kernel's own
+     stylesheet per class and supply a local equivalent only for what is
+     genuinely missing. Every branch no-ops once the kernel ships the real
+     thing. (chain-builder.js carries the same shim behind the same element
+     id — whichever engine builds first injects it.) */
+  function kernelHas(sel) {
+    var s = document.getElementById('mrb-exam-ladder-styles');
+    return !!(s && s.textContent && s.textContent.indexOf(sel) !== -1);
+  }
+
+  var FALLBACK_ID = 'mrb-ladder-fallback-styles';
+  function ensureLadderFallback() {
+    if (document.getElementById(FALLBACK_ID)) return;
+    var rules = [];
+    if (!kernelHas('.mrb-lc__subject')) {
+      rules.push('.mrb-lc__subject{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#716A60;margin:0 0 10px;max-width:68ch}');
+    }
+    if (!kernelHas('.mrb-lc__task')) {
+      rules.push('.mrb-lc__task{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(18px * var(--rd-fs-scale,1));line-height:1.35;color:var(--ink,#1A1714);margin:0 0 8px;max-width:60ch}');
+    }
+    if (!kernelHas('.mrb-reveal')) {
+      rules.push('.mrb-reveal{display:flex;flex-direction:column;gap:9px}');
+      rules.push('.mrb-reveal__row{border:1px solid var(--border,#E4DCCB);border-radius:12px;overflow:hidden;background:var(--surface-panel,#FFFDF8)}');
+      rules.push('.mrb-reveal__btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;cursor:pointer;border:none;background:var(--surface-panel,#FFFDF8);padding:13px 16px;font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14.5px * var(--rd-fs-scale,1));color:var(--ink,#1A1714)}');
+      rules.push('.mrb-reveal__row.is-open .mrb-reveal__btn{background:var(--surface-inset,#F7F2E8)}');
+      rules.push('.mrb-reveal__btn:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}');
+      rules.push('.mrb-reveal__mark{font-family:var(--font-mono,monospace);font-size:calc(12px * var(--rd-fs-scale,1));font-weight:600;color:var(--accent-deep,#B5341A);flex:none}');
+      rules.push('.mrb-reveal__body{padding:4px 16px 15px}');
+    }
+    if (!rules.length) return;
+    var st = document.createElement('style');
+    st.id = FALLBACK_ID;
+    st.textContent = rules.join('');
+    document.head.appendChild(st);
+  }
+
+  /* Tap-to-reveal row, same shape as the compare-reveal theory block.
+     Used only when ctx.util.reveal is absent. */
+  function localReveal(label, body) {
+    var row = el('div', { className: 'mrb-reveal__row' });
+    var bodyWrap = el('div', { className: 'mrb-reveal__body' }, [body]);
+    bodyWrap.style.display = 'none';
+    var mark = el('span', { className: 'mrb-reveal__mark' }, 'show ▼');
+    var btn = el('button', {
+      className: 'mrb-reveal__btn',
+      attrs: { type: 'button', 'aria-expanded': 'false' },
+      on: { click: function () {
+        var open = bodyWrap.style.display === 'none';
+        bodyWrap.style.display = open ? '' : 'none';
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        mark.textContent = open ? 'hide ▲' : 'show ▼';
+        row.className = 'mrb-reveal__row' + (open ? ' is-open' : '');
+      } }
+    }, [el('span', null, label), mark]);
+    row.appendChild(btn);
+    row.appendChild(bodyWrap);
+    return row;
+  }
+
+  function revealRow(ctx, label, body) {
+    if (ctx && ctx.util && typeof ctx.util.reveal === 'function') return ctx.util.reveal(label, body);
+    return localReveal(label, body);
+  }
+
+  function revealWrap(ctx, rows) {
+    if (ctx && ctx.util && typeof ctx.util.revealGroup === 'function') return ctx.util.revealGroup(rows);
+    return el('div', { className: 'mrb-reveal' }, rows);
+  }
+
+  /* The subject sub-heading. The kernel is meant to render this itself from
+     the `subject` hook on the registration, but the engine cannot see whether
+     it did until its subtree is attached — and a card with no subject line is
+     the one outcome that must not happen. So: render it here, then stand down
+     once the DOM is settled if the kernel turns out to have rendered its own.
+     Exactly one subject line per card, on either kernel. */
+  function subjectLine(ctx, text) {
+    if (!text) return null;
+    var p = el('p', { className: 'mrb-lc__subject' }, text);
+    setTimeout(function () {
+      if (!p.parentNode || !p.closest) return;
+      var card = p.closest('.mrb-lc');
+      if (!card) return;
+      var all = card.querySelectorAll('.mrb-lc__subject');
+      if (all.length > 1 && all[0] !== p) p.parentNode.removeChild(p);
+    }, 0);
+    return p;
   }
 
   /* ---------- small read-only helpers ---------- */
@@ -151,13 +248,88 @@
   /* Both field shapes ship in the authored data: tierNote is a plain
      string (ionic-bonding, giant-covalent, metals-alloys) and tierNotes
      is a {foundation, higher} object (properties-*). Handle both; for the
-     object form show only the note matching the build tier. */
+     object form pick the note matching the build tier. This is note
+     SELECTION, not tier labelling — which note applies is decided here,
+     and the tier is never named to the student. */
   function tierNoteFor(item, tier) {
     if (typeof item.tierNote === 'string' && item.tierNote) return item.tierNote;
     var tn = item.tierNotes;
     if (!tn) return null;
     if (typeof tn === 'string') return tn;
     return tn[tier] || null;
+  }
+
+  /* Many of those notes open with a bare tier label and nothing else —
+     "Foundation-safe.", "Higher-only." — which is filing information for the
+     author, not teaching for the student. Strip that opener at render time
+     (never in the authored data). The opener only matches when it is the
+     complete label form, so a real sentence that happens to start with the
+     word ("Higher answers should name the attraction…") survives intact.
+     If nothing substantive is left, the caller renders no box at all —
+     an empty panel saying nothing is worse than no panel. */
+  var TIER_LABEL_OPENER = /^\s*(?:foundation|higher)[\s‐-―-]*(?:tier)?[\s‐-―-]*(?:only|safe|accessible)\b\s*[.:;!]?\s*/i;
+
+  function teachingNoteFor(item, tier) {
+    var raw = tierNoteFor(item, tier);
+    if (!raw) return null;
+    var out = String(raw).replace(TIER_LABEL_OPENER, '').trim();
+    return out ? out : null;
+  }
+
+  /* ---------- section identity ----------
+     Every card names its subject before its content, built from authored
+     fields only. For a write card that is the page title plus the item's own
+     heading. For a be-the-examiner card it is the page title plus the
+     question the answer was written for — never the card's own heading,
+     which grades the answer ("Partially right") and would give the exercise
+     away before the student has marked it. */
+  function pageTitle(ctx) { return (ctx && ctx.content && ctx.content.title) || ''; }
+
+  /* Authored headings carry leading editorial markers — "[HIGHER] Compare
+     melting points by charge", "COMPOSITE 6-MARKER [CHECK]". Both are notes to
+     the author, not to the student: [HIGHER] is a tier label (revision #6 —
+     the student is already inside their tier) and [CHECK] is an examiner-review
+     flag. Stripped at RENDER time only; the authored data keeps them verbatim,
+     because they are how Mide navigates his own source files. */
+  var EDITORIAL_MARKER = /\s*\[(?:higher|foundation|check|ht|triple)\]\s*/ig;
+
+  function cleanHeading(s) {
+    if (!s) return s;
+    return String(s).replace(EDITORIAL_MARKER, ' ').replace(/\s{2,}/g, ' ').trim();
+  }
+
+  function joinSubject(parts) {
+    var out = [];
+    parts.forEach(function (p) {
+      var v = cleanHeading(p);
+      if (v) out.push(v);
+    });
+    return out.join(' · ');
+  }
+
+  function writeSubject(item, ctx) {
+    return joinSubject([pageTitle(ctx), item.heading, item.headingNote]) || 'Write and self-mark';
+  }
+
+  /* The examiner card's target question: a sibling WriteThenMark item where
+     one exists, otherwise the inline targetPrompt. */
+  function resolveTarget(item, ctx) {
+    var found = null;
+    if (item.targetItemId) {
+      ((ctx && ctx.content && ctx.content.writeThenMark) || []).forEach(function (w) {
+        if (w.id === item.targetItemId) found = w;
+      });
+    }
+    return found;
+  }
+
+  function examinerSubject(item, ctx) {
+    var target = resolveTarget(item, ctx);
+    var topic = null;
+    if (target && target.heading) topic = String(target.heading);
+    else if (item.targetPrompt) topic = String(item.targetPrompt).split(' [')[0].trim();
+    var lead = 'marking another student’s answer' + (topic ? ' to: ' + topic : '');
+    return joinSubject([pageTitle(ctx), lead]);
   }
 
   /* Levels rows carry marks:[lo,hi] and are authored high-to-low, including
@@ -311,10 +483,12 @@
     var tariff = item.tariff || 1;
     var root = el('div', { className: 'mrb-wtm' });
 
-    if (item.heading) {
-      root.appendChild(el('p', { className: 'mrb-wtm__eyebrow' },
-        item.heading + (item.headingNote ? ' · ' + item.headingNote : '')));
-    }
+    /* The heading used to sit in its own eyebrow; it is now the second half
+       of the subject sub-heading, so it is said once and said first. */
+    var subj = subjectLine(ctx, writeSubject(item, ctx));
+    if (subj) root.appendChild(subj);
+
+    root.appendChild(el('p', { className: 'mrb-wtm__q-lbl' }, 'The question'));
     root.appendChild(el('p', { className: 'mrb-lc__stem' }, ctx.util.stripTariff(ctx.util.dequote(item.stem))));
     if (item.note) root.appendChild(el('p', { className: 'mrb-lc__meta' }, ctx.util.dequote(item.note)));
 
@@ -418,34 +592,48 @@
         scheme.appendChild(countEl);
       }
 
+      /* Reference material folds away; the thing being done stays open.
+         The tick list, the running self-award and the band the student has
+         actually reached are never collapsed. The allow list, the
+         do-not-accept list, the cap failures and the full band ladder are
+         all lookup — open them when you want them. */
+      function bandsList() {
+        var bands = el('ul', { className: 'mrb-wtm__bands' });
+        item.levels.forEach(function (b) {
+          bands.appendChild(el('li', { className: 'mrb-wtm__band' }, [
+            el('b', null, bandName(b) + ' · ' + b.marks[0] + '–' + b.marks[1] + ' marks'),
+            txt(' ' + b.descriptor)
+          ]));
+        });
+        return bands;
+      }
+
+      var folded = [];
+
       var allowNode = plainList(item.allow, 'mrb-wtm__li--ok');
-      if (allowNode) scheme.appendChild(section('An examiner would also accept…', allowNode));
+      if (allowNode) folded.push(revealRow(ctx, 'An examiner would also accept…', allowNode));
 
       var noNode = doNotAcceptList(item.doNotAccept);
-      if (noNode) scheme.appendChild(section('An examiner would NOT credit…', noNode));
+      if (noNode) folded.push(revealRow(ctx, 'An examiner would NOT credit…', noNode));
 
       if (item.levels && item.levels.length) {
         if (attempted) {
           levelSlot = el('div');
           scheme.appendChild(section('Where that puts you', levelSlot));
+          folded.push(revealRow(ctx, 'The full level ladder for this question', bandsList()));
         } else {
-          var bands = el('ul', { className: 'mrb-wtm__bands' });
-          item.levels.forEach(function (b) {
-            bands.appendChild(el('li', { className: 'mrb-wtm__band' }, [
-              el('b', null, bandName(b) + ' · ' + b.marks[0] + '–' + b.marks[1] + ' marks'),
-              txt(' ' + b.descriptor)
-            ]));
-          });
-          scheme.appendChild(section('The level bands for this question', bands));
+          scheme.appendChild(section('The level bands for this question', bandsList()));
         }
 
         var capNode = plainList(item.capFailures, 'mrb-wtm__li--no');
         if (capNode) {
-          scheme.appendChild(section(
+          folded.push(revealRow(ctx,
             item.capFailuresHeading || 'What would have stopped you reaching the top band',
             capNode));
         }
       }
+
+      if (folded.length) scheme.appendChild(section('Marking notes', revealWrap(ctx, folded)));
 
       if (attempted) {
         recordBtn = el('button', { className: 'mrb-btn', attrs: { type: 'button' } }, 'Record this mark');
@@ -461,26 +649,32 @@
         scheme.appendChild(done);
       }
 
-      /* tier notes, transfer notes and authoring checks close the card */
-      var tn = tierNoteFor(item, ctx.tier);
+      /* Teaching notes, transfer notes and authoring checks close the card.
+         Each leads with a heading naming what it is, and none of them names
+         a tier — the note that applies has already been chosen by tier, and
+         saying so out loud tells the student nothing they can use. */
+      var notes = el('div', { className: 'mrb-wtm__notes' });
+
+      var tn = teachingNoteFor(item, ctx.tier);
       if (tn) {
-        scheme.appendChild(el('div', { className: 'mrb-note mrb-note--plain' }, [
-          el('b', null, (ctx.tier === 'higher' ? 'Higher tier' : 'Foundation tier') + ' · '),
+        notes.appendChild(el('div', { className: 'mrb-note mrb-note--plain' }, [
+          el('b', { className: 'mrb-wtm__note-h' }, 'What earns the marks here'),
           txt(tn)
         ]));
       }
       if (item.transferNote) {
-        scheme.appendChild(el('div', { className: 'mrb-note mrb-note--plain' }, [
-          el('b', null, 'Transfers to · '),
+        notes.appendChild(el('div', { className: 'mrb-note mrb-note--plain' }, [
+          el('b', { className: 'mrb-wtm__note-h' }, 'Transfers to'),
           txt(item.transferNote)
         ]));
       }
       if (item.check === true && item.checkNote) {
-        scheme.appendChild(el('div', { className: 'mrb-note mrb-note--tip' }, [
-          el('b', null, 'Authoring note, flagged for examiner check · '),
+        notes.appendChild(el('div', { className: 'mrb-note mrb-note--tip' }, [
+          el('b', { className: 'mrb-wtm__note-h' }, 'Authoring note, flagged for examiner check'),
           txt(item.checkNote)
         ]));
       }
+      if (notes.childNodes.length) scheme.appendChild(notes);
 
       function sync() {
         var raw = list.count();
@@ -521,15 +715,13 @@
     var official = typeof item.officialMark === 'number' ? item.officialMark : 0;
 
     /* resolve the question this answer was written for */
-    var target = null;
-    if (item.targetItemId) {
-      ((ctx.content && ctx.content.writeThenMark) || []).forEach(function (w) {
-        if (w.id === item.targetItemId) target = w;
-      });
-    }
+    var target = resolveTarget(item, ctx);
     var points = (target && target.markingPoints) || null;
 
     var root = el('div', { className: 'mrb-wtm' });
+
+    var subj = subjectLine(ctx, examinerSubject(item, ctx));
+    if (subj) root.appendChild(subj);
 
     root.appendChild(el('p', { className: 'mrb-wtm__frame' },
       'You are the examiner. Below is another student’s answer. Decide what it earned, ' +
@@ -705,10 +897,11 @@
         'Avoided here, but not resolved — the answer sidesteps it rather than showing it is understood.');
       if (avoided) res.appendChild(section('Avoided, but not resolved', avoided));
 
-      var verdict = item.headingFull || item.heading;
+      var verdict = cleanHeading(item.headingFull || item.heading);
       if (verdict) {
         res.appendChild(el('p', { className: 'mrb-wtm__verdict' },
-          'Examiner’s filing: ' + verdict + (item.headingNote ? ' · ' + item.headingNote : '')));
+          'Examiner’s filing: ' + verdict +
+          (item.headingNote ? ' · ' + cleanHeading(item.headingNote) : '')));
       }
 
       ctx.report(item.id, award, outOf);
@@ -721,11 +914,13 @@
   /* ---------- registration ---------- */
   LADDER.register('write', {
     label: 'Write & self-mark',
+    subject: function (item, ctx) { return writeSubject(item, ctx); },
     build: buildWrite
   });
 
   LADDER.register('examiner', {
     label: 'Be the examiner',
+    subject: function (item, ctx) { return examinerSubject(item, ctx); },
     build: buildExaminer,
     tariff: function (item) { return item.outOf; }
   });

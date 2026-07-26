@@ -3408,15 +3408,21 @@ def split_key_note(text):
     return steps
 
 
-def make_rd_keycard(key_note):
+def make_rd_keycard(key_note, subtopic_title=""):
     """Key Note as a photographable revision card with STEPPED cover-and-recall
     (MRB-134 Fix 5): the frozen note is split into numbered steps; the card shows
     all steps by default and the button walks cover -> reveal step 1 -> ... ->
     all shown (rd-page.js). Steps numbered in mono. Frozen text is split, not
-    edited."""
+    edited.
+
+    Phase 2B revision #4/5: the card carries its subtopic as a title INSIDE the
+    card. It is meant to be photographed and revised from later, so a card that
+    does not say what it is about is a card you cannot use out of context."""
     steps = split_key_note(key_note)
     n = len(steps)
     lbl = "Revision card" + (" · %d steps" % n if n > 1 else "")
+    title_html = ('\n      <span class="rd-keycard__title">%s</span>'
+                  % _esc_html(subtopic_title) if subtopic_title else "")
     items = "".join(
         '<li class="rd-keycard__step">'
         '<span class="rd-keycard__step-n">%02d</span>'
@@ -3427,7 +3433,9 @@ def make_rd_keycard(key_note):
   <div class="rd-sec-kicker">Key note · cover it, say it, check it</div>
   <div class="rd-keycard" data-steps="{n}">
     <div class="rd-keycard__hd">
-      <span class="rd-keycard__lbl">{lbl}</span>
+      <div class="rd-keycard__id">
+        <span class="rd-keycard__lbl">{lbl}</span>{title_html}
+      </div>
       <button class="rd-keycard__cover" type="button" aria-pressed="false">Cover &amp; recall</button>
     </div>
     <ol class="rd-keycard__steps">{items}</ol>
@@ -4484,10 +4492,13 @@ try {{
         # the authored content module is joined by slug. The authored items
         # are net-new: they live only in shared/exam-content/, never in the
         # eight frozen fields.
+        # periodic-table.js first: the kernel calls MrbPeriodicTable.button()
+        # while rendering a card, so the component must already be defined.
         _has_ladder = st_id in EXAM_LADDER_PAGES
         if _has_ladder:
-            _shared_scripts += ["exam-ladder.js", "write-then-mark.js",
-                                "chain-builder.js", "formula-deducer.js",
+            _shared_scripts += ["periodic-table.js", "exam-ladder.js",
+                                "write-then-mark.js", "chain-builder.js",
+                                "formula-deducer.js",
                                 "exam-content/%s.js" % st_id]
         _inits = []     # inline init snippets (each wrapped in an IIFE)
         _needs_configs = False   # any hero/activity reading MrbHeroConfigs
@@ -4650,15 +4661,16 @@ html { background: var(--surface-page); }
             # Fix 5 (MRB-134): stepped cover-and-recall revision card. Frozen
             # note is SPLIT into mark-scheme steps (never edited); rd-page.js
             # walks cover -> reveal step 1 -> ... -> all shown.
-            quiz_html += make_rd_keycard(st['key_note'])
+            quiz_html += make_rd_keycard(st['key_note'], st.get('title', ''))
         # Phase 2B (MRB-136): the page ENDS in the four-rung ladder (Law 6).
         # Recognition — the quiz above — is rung ①; the module builds rungs
         # ②–④ from the authored content module. Empty mount by design: the
         # engines render everything, so nothing authored is baked into HTML.
+        # Revision #4/5: the section names its subject before its content.
         if st_id in EXAM_LADDER_PAGES:
             quiz_html += f"""
   <div class="section" id="rd-ladder">
-    <div class="rd-sec-kicker">Exam ladder · recognition got you here, production takes you up</div>
+    <div class="rd-sec-kicker">Exam ladder · {_esc_html(st['title'])}</div>
     <div class="mrb-ladder" data-page="{st_id}" data-tier="{tier}" data-pathway="{pathway}"></div>
   </div>"""
         # Phase 1e: mode chooser — three anchors under the page kicker, serving

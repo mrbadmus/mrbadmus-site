@@ -87,7 +87,46 @@
 
   function plural(n, one, many) { return n === 1 ? one : many; }
 
+  /* ---------- progressive disclosure (revision #7) ----------
+     One collapsed row: tap the label to open the body. Deliberately the same
+     shape and language as the compare-reveal theory block so the ladder reads
+     as part of the page, not a bolted-on widget. Reference material collapses;
+     the thing the student is actively doing never does. */
+  function reveal(label, body, openCue, shutCue) {
+    var open = false;
+    var cue = el('span', { className: 'mrb-reveal__cue' }, (shutCue || 'show') + ' ▼');
+    var wrap = el('div', { className: 'mrb-reveal__body' }, body);
+    var row = el('div', { className: 'mrb-reveal__row' });
+    var btn = el('button', {
+      className: 'mrb-reveal__btn',
+      attrs: { type: 'button', 'aria-expanded': 'false' },
+      on: {
+        click: function () {
+          open = !open;
+          btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+          cue.textContent = (open ? (openCue || 'hide') : (shutCue || 'show')) + (open ? ' ▲' : ' ▼');
+          row.classList.toggle('is-open', open);
+          if (open) row.appendChild(wrap); else if (wrap.parentNode) row.removeChild(wrap);
+        }
+      }
+    }, [el('span', null, label), cue]);
+    row.appendChild(btn);
+    return row;
+  }
+
+  function revealGroup(rows) {
+    return el('div', { className: 'mrb-reveal' }, rows);
+  }
+
   /* ---------- persistence ---------- */
+  /* v2 (revision round): FormulaDeducer changed from "check as many times as
+     you like" to "the first reveal is the one that counts", so a v1 formula
+     mark no longer means what it used to. Rather than migrate a score whose
+     meaning changed, v1 is invalidated cleanly — read returns {} and the next
+     write stamps v2. This is device-local practice data, not a graded record,
+     so a silent fresh start costs the student nothing and cannot crash the
+     new UI on stale keys. */
+  var STORE_V = 2;
   function ladderKey(page) { return 'mrb_ladder_' + page; }
 
   function readAll(page) {
@@ -95,12 +134,27 @@
       var raw = localStorage.getItem(ladderKey(page));
       if (!raw) return {};
       var o = JSON.parse(raw);
-      return (o && o.items) || {};
+      if (!o || o.v !== STORE_V || !o.items) return {};
+      return o.items;
     } catch (e) { return {}; }
   }
 
+  /* Drop a stale or unparseable key outright at boot rather than leaving it to
+     rot until the next write. readAll() already refuses to trust it, so this
+     is tidiness, not safety — but a key that says v1 forever is a key someone
+     will one day misread as live data. */
+  function purgeStale(page) {
+    try {
+      var raw = localStorage.getItem(ladderKey(page));
+      if (!raw) return;
+      var o = null;
+      try { o = JSON.parse(raw); } catch (e) { o = null; }
+      if (!o || o.v !== STORE_V || !o.items) localStorage.removeItem(ladderKey(page));
+    } catch (e) {}
+  }
+
   function writeAll(page, items) {
-    try { localStorage.setItem(ladderKey(page), JSON.stringify({ v: 1, items: items })); } catch (e) {}
+    try { localStorage.setItem(ladderKey(page), JSON.stringify({ v: STORE_V, items: items })); } catch (e) {}
   }
 
   function readItem(page, id) {
@@ -179,14 +233,15 @@
       '.mrb-ladder__step.is-done{border-color:var(--ok-border,#7FB98A);background:var(--ok-bg,#E7F3EA);color:var(--ok,#2E6B3A)}',
       '.mrb-ladder__step-n{font-size:calc(13px * var(--rd-fs-scale,1))}',
 
-      /* rung block */
-      '.mrb-ladder__rung{margin:0 0 30px}',
+      /* rung block — revision #7: more air between rungs and between cards */
+      '.mrb-ladder__rung{margin:0 0 52px}',
+      '.mrb-ladder__rung:last-of-type{margin-bottom:34px}',
       '.mrb-ladder__rung-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px}',
       '.mrb-ladder__rung-n{font-family:var(--font-display,sans-serif);font-size:calc(20px * var(--rd-fs-scale,1));color:var(--accent-deep,#B5341A);line-height:1}',
       '.mrb-ladder__rung-t{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(17px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);margin:0}',
       '.mrb-ladder__rung-count{font-family:var(--font-mono,monospace);font-size:calc(11.5px * var(--rd-fs-scale,1));color:#716A60;margin-left:auto}',
-      '.mrb-ladder__rung-blurb{margin:0 0 16px;font-size:calc(13.5px * var(--rd-fs-scale,1));line-height:1.5;color:#6B635A;max-width:66ch}',
-      '.mrb-ladder__items{display:flex;flex-direction:column;gap:16px}',
+      '.mrb-ladder__rung-blurb{margin:0 0 22px;font-size:calc(13.5px * var(--rd-fs-scale,1));line-height:1.5;color:#6B635A;max-width:66ch}',
+      '.mrb-ladder__items{display:flex;flex-direction:column;gap:28px}',
 
       /* recall rung is a pointer back to the question set, not a duplicate bank */
       '.mrb-ladder__recall{border:1px solid var(--border,#E4DCCB);border-radius:var(--r-panel,22px);background:var(--surface-inset,#F7F2E8);padding:18px 22px;font-size:calc(14px * var(--rd-fs-scale,1));line-height:1.55}',
@@ -199,16 +254,37 @@
       '.mrb-lc__head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:14px 22px;border-bottom:1px solid var(--surface-inset,#EFE7D8);background:var(--surface-card,#F5F1E8)}',
       '.mrb-lc__kind{font-family:var(--font-mono,monospace);font-size:calc(10.5px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-deep,#B5341A)}',
       '.mrb-lc__chip{font-family:var(--font-mono,monospace);font-size:calc(10.5px * var(--rd-fs-scale,1));font-weight:600;letter-spacing:.06em;color:#6B635A;border:1px solid var(--border,#E4DCCB);background:var(--surface-panel,#FFFDF8);border-radius:999px;padding:3px 10px}',
-      '.mrb-lc__chip--ht{color:#7A5A00;border-color:#E8CE86;background:#FDF4DC}',
+      /* revision #6: the Higher tier chip is gone. Tier FILTERING is unchanged
+         and lives in visible() — students are already inside their tier, so
+         the badge was noise. Do not reintroduce a tier label here. */
       '.mrb-lc__score{margin-left:auto;font-family:var(--font-mono,monospace);font-size:calc(12px * var(--rd-fs-scale,1));font-weight:700;padding:5px 12px;border-radius:999px;white-space:nowrap;background:var(--surface-inset,#EFE7D8);color:#6B635A}',
       '.mrb-lc__score.is-done{background:var(--ok-bg,#E7F3EA);color:var(--ok,#2E6B3A)}',
       '.mrb-lc__score.is-miss{background:var(--err-bg,#FBE4DE);color:var(--err,#A83824)}',
-      '.mrb-lc__body{padding:20px 22px}',
+      '.mrb-lc__body{padding:24px 24px 26px}',
+
+      /* revision #4/5: every card says what it is about before its content */
+      '.mrb-lc__subject{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-deep,#B5341A);margin:0 0 12px;padding-bottom:11px;border-bottom:1px solid var(--surface-inset,#EFE7D8)}',
+
+      /* revision #3: the task is the loudest thing on the card */
+      '.mrb-lc__task{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(19px * var(--rd-fs-scale,1));line-height:1.35;color:var(--ink,#1A1714);margin:0 0 10px;max-width:44ch}',
 
       /* shared inner furniture the engines reuse */
       '.mrb-lc__stem{font-size:calc(15px * var(--rd-fs-scale,1));line-height:1.6;color:var(--ink,#1A1714);margin:0 0 6px;max-width:68ch}',
-      '.mrb-lc__meta{font-size:calc(12.5px * var(--rd-fs-scale,1));line-height:1.5;color:#716A60;margin:0 0 16px;max-width:68ch}',
-      '.mrb-lc__actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}',
+      '.mrb-lc__meta{font-size:calc(12.5px * var(--rd-fs-scale,1));line-height:1.5;color:#716A60;margin:0 0 20px;max-width:68ch}',
+      '.mrb-lc__actions{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap}',
+
+      /* periodic-table toggle sits above everything the engine renders */
+      '.mrb-lc__tools{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}',
+
+      /* revision #7: progressive disclosure, matching the compare-reveal
+         theory block (.mrb-tb-reveal__* in shared/heroes/theory-blocks.js) */
+      '.mrb-reveal{display:flex;flex-direction:column;gap:9px;margin:16px 0}',
+      '.mrb-reveal__row{border:1px solid var(--border,#E4DCCB);border-radius:12px;overflow:hidden;background:var(--surface-panel,#FFFDF8)}',
+      '.mrb-reveal__btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;cursor:pointer;border:none;background:var(--surface-panel,#FFFDF8);padding:13px 16px;font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14px * var(--rd-fs-scale,1));color:var(--ink,#1A1714)}',
+      '.mrb-reveal__row.is-open .mrb-reveal__btn{background:var(--surface-inset,#F7F2E8)}',
+      '.mrb-reveal__btn:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:-2px}',
+      '.mrb-reveal__cue{font-family:var(--font-mono,monospace);font-size:calc(11.5px * var(--rd-fs-scale,1));font-weight:600;color:var(--accent-deep,#B5341A);flex:none}',
+      '.mrb-reveal__body{padding:4px 16px 15px;font-size:calc(13.5px * var(--rd-fs-scale,1));line-height:1.55;color:var(--ink-body,#2A241E)}',
       '.mrb-btn{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14.5px * var(--rd-fs-scale,1));color:#fff;background:var(--accent-deep,#B5341A);border:none;padding:12px 22px;border-radius:12px;cursor:pointer;box-shadow:0 8px 20px -8px rgba(181,52,26,.7)}',
       '.mrb-btn[disabled]{opacity:.45;cursor:default;box-shadow:none}',
       '.mrb-btn--quiet{color:#4A4238;background:var(--surface-inset,#EFE7D8);border:1px solid var(--border,#E4DCCB);box-shadow:none;font-weight:600}',
@@ -228,29 +304,35 @@
       '.mrb-ladder__end.is-mid{background:#FEF6E0;color:#4A3A12}',
       '.mrb-ladder__end.is-low{background:var(--err-bg,#FBE4DE);color:#7C2A19}',
       '.mrb-ladder__actions{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}',
-      '.mrb-ladder__optional{margin-top:16px;border:1px dashed var(--border,#E4DCCB);border-radius:var(--r-panel,22px);padding:6px 18px;background:var(--surface-inset,#F7F2E8)}',
-      '.mrb-ladder__optional > summary{cursor:pointer;font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14.5px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);padding:12px 0}',
+      /* The optional group carries no horizontal padding: its cards must line
+         up with the core cards above it, or the ladder reads as two columns.
+         Revision #7 asked for one consistent card width down the page. */
+      '.mrb-ladder__optional{margin-top:28px;border-top:1px dashed var(--border,#E4DCCB);padding:0;background:none}',
+      '.mrb-ladder__optional > summary{cursor:pointer;font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14.5px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);padding:18px 0 4px}',
       '.mrb-ladder__optional > summary::marker{color:var(--accent-deep,#B5341A)}',
-      '.mrb-ladder__optional .mrb-ladder__items{margin:6px 0 18px}'
+      '.mrb-ladder__optional .mrb-ladder__items{margin:18px 0 6px}'
     ].join('');
     document.head.appendChild(s);
   }
 
   /* ---------- card shell ---------- */
   function makeCard(opts) {
-    /* opts: kind, label, tariff, command, ao, higher, optional, itemId */
+    /* opts: kind, label, tariff, command, ao, subject, periodicTable, itemId.
+       No tier option — revision #6 removed the badge; tier still decides
+       WHICH items reach this function, via visible(). */
     var score = el('span', { className: 'mrb-lc__score' }, opts.tariff ? ('0 / ' + opts.tariff) : 'not started');
     var head = el('div', { className: 'mrb-lc__head' }, [
       el('span', { className: 'mrb-lc__kind' }, opts.kind),
       opts.label ? el('span', { className: 'mrb-lc__chip' }, opts.label) : null,
       opts.tariff ? el('span', { className: 'mrb-lc__chip' }, opts.tariff + ' ' + plural(opts.tariff, 'mark', 'marks')) : null,
       opts.command ? el('span', { className: 'mrb-lc__chip' }, opts.command + (opts.ao ? ' · ' + opts.ao : '')) : null,
-      opts.higher ? el('span', { className: 'mrb-lc__chip mrb-lc__chip--ht' }, 'Higher') : null,
       score
     ]);
     var body = el('div', { className: 'mrb-lc__body' });
     var root = el('article', { className: 'mrb-lc', attrs: { 'data-item': opts.itemId } }, [head, body]);
     return {
+      subject: opts.subject,
+      periodicTable: !!opts.periodicTable,
       root: root,
       body: body,
       setScore: function (award, outOf) {
@@ -303,6 +385,7 @@
     var content = (window.MrbExamContent || {})[page];
     if (!content) return;
 
+    purgeStale(page);
     ensureStyles();
 
     var entries = collect(content, tier);
@@ -330,7 +413,10 @@
       tier: tier,
       pathway: pathway,
       content: content,
-      util: { el: el, shuffle: shuffle, dequote: dequote, stripTariff: stripTariff, plural: plural },
+      util: {
+        el: el, shuffle: shuffle, dequote: dequote, stripTariff: stripTariff,
+        plural: plural, reveal: reveal, revealGroup: revealGroup
+      },
       store: {
         readItem: function (id) { return readItem(page, id); },
         readBest: function (prefix) { return readBest(prefix, page); }
@@ -354,7 +440,9 @@
         tariff: engine.tariff ? engine.tariff(item) : item.tariff,
         command: item.command,
         ao: item.ao,
-        higher: item.tier === 'higher',
+        /* engines declare these as functions, matching the tariff() shape */
+        subject: engine.subject ? engine.subject(item, ctx) : null,
+        periodicTable: engine.needsTable ? !!engine.needsTable(item, ctx) : false,
         itemId: item.id
       });
       cards[item.id] = { card: card, entry: entry, engine: engine };
@@ -368,6 +456,16 @@
       if (!c) return;
       c.card.body.innerHTML = '';
       c.card.reset();
+      /* revision #4/5: the card names its subject before anything else.
+         revision #2: the periodic table sits above the task, so it is there
+         when the student needs it rather than found after they are stuck. */
+      if (c.card.subject) {
+        c.card.body.appendChild(el('p', { className: 'mrb-lc__subject' }, String(c.card.subject)));
+      }
+      if (c.card.periodicTable && window.MrbPeriodicTable) {
+        c.card.body.appendChild(el('div', { className: 'mrb-lc__tools' },
+          window.MrbPeriodicTable.button()));
+      }
       var node = c.engine.build(c.entry.item, ctx);
       if (node) c.card.body.appendChild(node);
       var saved = readItem(page, itemId);

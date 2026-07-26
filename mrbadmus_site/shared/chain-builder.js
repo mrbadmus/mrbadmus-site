@@ -61,9 +61,16 @@
     s.textContent = [
       '.mrb-chain,.mrb-chain *{box-sizing:border-box}',
       '.mrb-chain{font-family:var(--font-body,system-ui,sans-serif);color:var(--ink-body,#2A241E)}',
-      '.mrb-chain__grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}',
+      '.mrb-chain__grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}',
       '@media (max-width:700px){.mrb-chain__grid{grid-template-columns:1fr}}',
       '.mrb-chain__lbl{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted,#6B635A);margin-bottom:10px}',
+
+      /* card head: kicker names the action, .mrb-lc__task carries the task */
+      '.mrb-chain__kicker{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted,#6B635A);margin:0 0 6px}',
+      '.mrb-chain__how-wrap{margin:0 0 22px}',
+      '.mrb-chain__how{font-size:calc(13px * var(--rd-fs-scale,1));line-height:1.55;color:var(--ink-body,#2A241E)}',
+      '.mrb-chain__how p{margin:0 0 6px}',
+      '.mrb-chain__how p:last-child{margin:0}',
 
       /* chain column */
       '.mrb-chain__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}',
@@ -91,16 +98,17 @@
       '.mrb-chain__txt:focus-visible,.mrb-chain__move:focus-visible,.mrb-chain__pick:focus-visible,.mrb-chain__toggle:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}',
 
       /* status + feedback */
-      '.mrb-chain__status{margin-top:14px;font-family:var(--font-mono,monospace);font-size:calc(12px * var(--rd-fs-scale,1));color:var(--ink-muted,#6B635A);min-height:1.2em}',
-      '.mrb-chain__prev{margin:0 0 14px;font-family:var(--font-mono,monospace);font-size:calc(12px * var(--rd-fs-scale,1));color:var(--ink-muted,#6B635A)}',
+      '.mrb-chain__status{margin-top:18px;font-family:var(--font-mono,monospace);font-size:calc(12px * var(--rd-fs-scale,1));color:var(--ink-muted,#6B635A);min-height:1.2em}',
+      '.mrb-chain__prev{margin:0 0 18px;font-family:var(--font-mono,monospace);font-size:calc(12px * var(--rd-fs-scale,1));color:var(--ink-muted,#6B635A)}',
       '.mrb-chain__fb-h{font-family:var(--font-display,sans-serif);font-weight:700;display:block;margin-bottom:6px}',
+      '.mrb-chain__fb-sub{font-family:var(--font-display,sans-serif);font-weight:700;display:block;margin:14px 0 6px}',
       '.mrb-chain__fb-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}',
       '.mrb-chain__fb-list li{padding-left:14px;position:relative}',
       '.mrb-chain__fb-list li::before{content:"·";position:absolute;left:2px}',
       '.mrb-chain__herring{margin-top:8px;padding-top:8px;border-top:1px solid var(--err-border,#E0897B)}',
 
       /* reveal */
-      '.mrb-chain__reveal{margin-top:14px;border:1px solid var(--border,#E4DCCB);border-radius:14px;background:var(--surface-inset,#F7F2E8);padding:14px 17px}',
+      '.mrb-chain__reveal{margin-top:18px;border:1px solid var(--border,#E4DCCB);border-radius:14px;background:var(--surface-inset,#F7F2E8);padding:14px 17px}',
       '.mrb-chain__reveal[hidden]{display:none}',
       '.mrb-chain__reveal h4{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);margin:0 0 10px}',
       '.mrb-chain__steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px;counter-reset:mrbchain}',
@@ -110,9 +118,117 @@
       '.mrb-chain__ann{display:block;font-size:calc(12px * var(--rd-fs-scale,1));color:var(--ink-muted,#6B635A);margin-top:2px}',
       '.mrb-chain__ordering{margin-top:12px;padding-top:10px;border-top:1px solid var(--border,#E4DCCB);font-size:calc(12.5px * var(--rd-fs-scale,1));line-height:1.55;color:var(--ink-body,#2A241E)}',
       '.mrb-chain__ordering b{font-family:var(--font-display,sans-serif)}',
-      '.mrb-chain__toggle{margin-top:12px;font-family:var(--font-display,sans-serif);font-weight:600;font-size:calc(13px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);background:var(--surface-inset,#EFE7D8);border:1px solid var(--border,#E4DCCB);border-radius:10px;padding:8px 14px;cursor:pointer}'
+      '.mrb-chain__toggle{margin-top:14px;font-family:var(--font-display,sans-serif);font-weight:600;font-size:calc(13px * var(--rd-fs-scale,1));color:var(--ink,#1A1714);background:var(--surface-inset,#EFE7D8);border:1px solid var(--border,#E4DCCB);border-radius:10px;padding:8px 14px;cursor:pointer}'
     ].join('');
     document.head.appendChild(s);
+    ensureLadderFallback();
+  }
+
+  /* ---------- kernel-capability shims ----------
+     exam-ladder.js is the owner of .mrb-lc__subject, .mrb-lc__task and the
+     .mrb-reveal accordion. This engine must not edit that file, and it must
+     not break if it is running against a kernel that does not carry them
+     yet. So: probe the kernel's own stylesheet for each class, and supply a
+     local equivalent only for what is genuinely missing. Every branch below
+     no-ops the moment the kernel ships the real thing. */
+  var LADDER = window.MrbExamLadder;
+  var UEL = LADDER.util.el;
+
+  function kernelHas(sel) {
+    var s = document.getElementById('mrb-exam-ladder-styles');
+    return !!(s && s.textContent && s.textContent.indexOf(sel) !== -1);
+  }
+
+  var FALLBACK_ID = 'mrb-ladder-fallback-styles';
+  function ensureLadderFallback() {
+    if (document.getElementById(FALLBACK_ID)) return;
+    var rules = [];
+    if (!kernelHas('.mrb-lc__subject')) {
+      rules.push('.mrb-lc__subject{font-family:var(--font-mono,monospace);font-size:calc(11px * var(--rd-fs-scale,1));font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#716A60;margin:0 0 10px;max-width:68ch}');
+    }
+    if (!kernelHas('.mrb-lc__task')) {
+      rules.push('.mrb-lc__task{font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(18px * var(--rd-fs-scale,1));line-height:1.35;color:var(--ink,#1A1714);margin:0 0 8px;max-width:60ch}');
+    }
+    if (!kernelHas('.mrb-reveal')) {
+      rules.push('.mrb-reveal{display:flex;flex-direction:column;gap:9px}');
+      rules.push('.mrb-reveal__row{border:1px solid var(--border,#E4DCCB);border-radius:12px;overflow:hidden;background:var(--surface-panel,#FFFDF8)}');
+      rules.push('.mrb-reveal__btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;cursor:pointer;border:none;background:var(--surface-panel,#FFFDF8);padding:13px 16px;font-family:var(--font-display,sans-serif);font-weight:700;font-size:calc(14.5px * var(--rd-fs-scale,1));color:var(--ink,#1A1714)}');
+      rules.push('.mrb-reveal__row.is-open .mrb-reveal__btn{background:var(--surface-inset,#F7F2E8)}');
+      rules.push('.mrb-reveal__btn:focus-visible{outline:2px solid var(--accent-strong,#C0392B);outline-offset:2px}');
+      rules.push('.mrb-reveal__mark{font-family:var(--font-mono,monospace);font-size:calc(12px * var(--rd-fs-scale,1));font-weight:600;color:var(--accent-deep,#B5341A);flex:none}');
+      rules.push('.mrb-reveal__body{padding:4px 16px 15px}');
+    }
+    if (!rules.length) return;
+    var s = document.createElement('style');
+    s.id = FALLBACK_ID;
+    s.textContent = rules.join('');
+    document.head.appendChild(s);
+  }
+
+  /* Tap-to-reveal row, same shape as the compare-reveal theory block. Used
+     only when ctx.util.reveal is absent. */
+  function localReveal(label, body) {
+    var row = UEL('div', { className: 'mrb-reveal__row' });
+    var bodyWrap = UEL('div', { className: 'mrb-reveal__body' }, [body]);
+    bodyWrap.style.display = 'none';
+    var mark = UEL('span', { className: 'mrb-reveal__mark' }, 'show ▼');
+    var btn = UEL('button', {
+      className: 'mrb-reveal__btn',
+      attrs: { type: 'button', 'aria-expanded': 'false' },
+      on: { click: function () {
+        var open = bodyWrap.style.display === 'none';
+        bodyWrap.style.display = open ? '' : 'none';
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        mark.textContent = open ? 'hide ▲' : 'show ▼';
+        row.className = 'mrb-reveal__row' + (open ? ' is-open' : '');
+      } }
+    }, [UEL('span', null, label), mark]);
+    row.appendChild(btn);
+    row.appendChild(bodyWrap);
+    return row;
+  }
+
+  function revealRow(ctx, label, body) {
+    if (ctx && ctx.util && typeof ctx.util.reveal === 'function') return ctx.util.reveal(label, body);
+    return localReveal(label, body);
+  }
+
+  function revealWrap(ctx, rows) {
+    if (ctx && ctx.util && typeof ctx.util.revealGroup === 'function') return ctx.util.revealGroup(rows);
+    return UEL('div', { className: 'mrb-reveal' }, rows);
+  }
+
+  /* ---------- section identity ----------
+     Every card names its subject before its content. Built from authored
+     fields only: the page title plus this chain's own title. The bracketed
+     gloss is dropped so the sub-heading does not simply restate the task
+     line sitting under it. */
+  function subjectFor(item, ctx) {
+    var page = (ctx && ctx.content && ctx.content.title) || '';
+    var raw = (ctx && ctx.util ? ctx.util.dequote(item.title || '') : (item.title || ''));
+    var topic = String(raw).replace(/\s*\([^)]*\)\s*$/, '').trim();
+    if (/^[A-Z][a-z]/.test(topic)) topic = topic.charAt(0).toLowerCase() + topic.slice(1);
+    if (page && topic) return page + ' · ' + topic;
+    return page || topic || 'Build the chain';
+  }
+
+  /* The kernel is meant to render this itself from the `subject` hook on the
+     registration, but the engine cannot see whether it did until its subtree
+     is attached — and a card with no subject line is the one outcome that
+     must not happen. So: render it here, then stand down once the DOM is
+     settled if the kernel turns out to have rendered its own. Exactly one
+     subject line per card, on either kernel. */
+  function subjectLine(text) {
+    if (!text) return null;
+    var p = UEL('p', { className: 'mrb-lc__subject' }, text);
+    setTimeout(function () {
+      if (!p.parentNode || !p.closest) return;
+      var card = p.closest('.mrb-lc');
+      if (!card) return;
+      var all = card.querySelectorAll('.mrb-lc__subject');
+      if (all.length > 1 && all[0] !== p) p.parentNode.removeChild(p);
+    }, 0);
+    return p;
   }
 
   /* ---------- tiny helpers (ES5 only: no ES6 array or spread syntax) ---------- */
@@ -278,6 +394,12 @@
     rung: 3,
     tariff: function (item) { return tariffOf(item); },
 
+    /* The kernel renders this as .mrb-lc__subject under the chips. When it is
+       running a kernel that does not yet read it, build() renders the same
+       string itself — see the kernelHas('.mrb-lc__subject') guard there, so
+       it appears exactly once either way. */
+    subject: function (item, ctx) { return subjectFor(item, ctx); },
+
     build: function (item, ctx) {
       ensureStyles();
 
@@ -301,15 +423,34 @@
       herrings.forEach(function (h) { poolOrder.push(h.id); });
       poolOrder = ctx.util.shuffle(poolOrder);   /* Fisher–Yates, every build */
 
-      /* --- chrome --- */
+      /* --- chrome ---
+         The task is the dominant line on the card. A one-phrase kicker names
+         the action, .mrb-lc__task carries the authored title verbatim, and
+         .mrb-lc__meta keeps only what is exam information: the tariff and the
+         fact that distractors are in the pool. The input mechanics are real
+         instructions but they are not the question, so they sit behind a
+         tap-to-reveal — available, not shouting. */
       var root = el('div', { className: 'mrb-chain' });
 
-      root.appendChild(el('p', { className: 'mrb-lc__stem' },
-        'Order the reasoning — ' + ctx.util.dequote(item.title || '')));
+      var subj = subjectLine(subjectFor(item, ctx));
+      if (subj) root.appendChild(subj);
+
+      root.appendChild(el('p', { className: 'mrb-chain__kicker' }, 'Order the reasoning'));
+      root.appendChild(el('p', { className: 'mrb-lc__task' }, ctx.util.dequote(item.title || '')));
       root.appendChild(el('p', { className: 'mrb-lc__meta' },
-        'Tap a link to add it to the end of your chain. Tap a placed link to send it back. Use ↑ and ↓ to reorder. ' +
-        'Some of these links are wrong-model distractors — leaving one out is part of the skill. ' +
-        tariff + ' ' + plural(tariff, 'mark', 'marks') + ' available.'));
+        tariff + ' ' + plural(tariff, 'mark', 'marks') + ' available. ' +
+        'Some of these links are wrong-model distractors — leaving one out is part of the skill.'));
+
+      root.appendChild(el('div', { className: 'mrb-chain__how-wrap' }, [
+        revealWrap(ctx, [
+          revealRow(ctx, 'How this works', el('div', { className: 'mrb-chain__how' }, [
+            el('p', null, 'Tap a link in the Links column to add it to the end of your chain.'),
+            el('p', null, 'Tap a link already in your chain to send it back to the pool.'),
+            el('p', null, 'Use ↑ and ↓ on a placed link to move it one position up or down.'),
+            el('p', null, 'Nothing is marked until you press “Check my chain”, and you can clear and rebuild as often as you like.')
+          ]))
+        ])
+      ]));
 
       var previous = ctx.store.readItem(item.id);
       if (previous) {
@@ -528,7 +669,10 @@
           pts.appendChild(el('li', null,
             'Credited as a bonus, not required for the chain: ' + lk.text));
         });
-        if (pts.childNodes.length) note.appendChild(pts);
+        if (pts.childNodes.length) {
+          note.appendChild(el('b', { className: 'mrb-chain__fb-sub' }, 'Where the marks went, link by link'));
+          note.appendChild(pts);
+        }
 
         if (res.herrings.length) {
           var box = el('div', { className: 'mrb-chain__herring' });
