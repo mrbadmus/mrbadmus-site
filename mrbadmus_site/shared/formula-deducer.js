@@ -690,9 +690,13 @@
           rows.push(revealRow(ctx, 'Why that build does not work', el('div', null, correctionLines(res.slug, res))));
         }
 
-        if (res.distractor && res.distractor.note) {
+        /* These notes are the student-facing reason a wrong build is wrong
+           ("+1, not neutral"), but they share the `note` field name with the
+           author's filing tags, so they take the same sanitiser. */
+        var dNote = res.distractor ? ctx.util.studentNote(res.distractor.note) : null;
+        if (dNote) {
           rows.push(revealRow(ctx, 'Examiner’s note on this answer',
-            el('p', { className: 'mrb-fd__line mrb-fd__line--note' }, String(res.distractor.note))));
+            el('p', { className: 'mrb-fd__line mrb-fd__line--note' }, dNote)));
         }
         var group = revealGroup(ctx, rows);
         if (group) resultSlot.appendChild(group);

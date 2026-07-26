@@ -87,6 +87,122 @@
 
   function plural(n, one, many) { return n === 1 ? one : many; }
 
+  /* ---------- author-facing note suppression ----------
+     The authored files are working documents as well as content. Their note
+     fields mix two audiences: teaching the student is meant to read, and
+     filing the AUTHOR needs — where an item came from, which grade it
+     discriminates, what it cross-refers to in the source file. The second
+     kind must never render. This is the same class as the "[HIGHER]" leak
+     that cleanHeading() already fixes in write-then-mark.js; the rule is
+     generalised here so every engine gets it from one place.
+
+     Three passes, coarsest first, and all of them at RENDER time only — the
+     authored data keeps every word, because that filing is how Mide
+     navigates his own source files.
+
+       1. Whole-note provenance. A note that is nothing but a parenthesised
+          source tag — "(frozen Q1)", "(frozen Higher Q — bridges to
+          FormulaDeducer §5)", "(to 1D, [3 marks])" — is dropped entirely.
+          "(to: <the question> [4 marks])" goes too: buildExaminer already
+          prints the target question above it, so the note only ever
+          restates it and adds the author's mark split.
+
+       2. Inline cross-references. "(see §2)", "(see §2 levels)", "(see 1D)",
+          "(MP3)", "(frozen Triple-Higher)" point at places in the source
+          file or at mark-point numbers the student is never shown. Cut the
+          reference, keep the sentence around it.
+
+       3. Author-register sentences. A sentence that talks ABOUT the student
+          in the third person ("Tests whether the student can hold two force
+          types apart"), grades the item ("Grade 8/9 discriminator"), files
+          it ("Cross-page: this is also frozen Q on…", "Transfer variants:
+          …", "Directly examinable"), or cites a ticket (MRB-135) is
+          addressed to the author. Dropped at sentence granularity so a
+          mixed note keeps its teaching half.
+
+     If nothing substantive survives, the caller renders no box at all — an
+     empty panel saying nothing is worse than no panel. */
+
+  var PROVENANCE_NOTE = /^\s*\(\s*(?:frozen\b|to[\s:]|all three are the frozen\b|complements\s+MRB-|starter item\b)[\s\S]*\)\s*$/i;
+
+  var CROSS_REF = new RegExp([
+    '\\s*\\(\\s*see\\s+[^)]*\\)',                 /* (see §2) (see §2 levels) (see 1D) */
+    '\\s*[—–,;-]?\\s*see\\s+(?:§\\s*)?\\d+[A-Za-z]?\\b',  /* "— see 1D", "see §2" mid-sentence */
+    '\\s*\\(\\s*MP\\s*\\d+[^)]*\\)',              /* (MP3) (MP4) */
+    '\\s*\\(\\s*frozen[^)]*\\)',                  /* (frozen Triple-Higher) */
+    '\\s*\\(\\s*MRB-\\d+[^)]*\\)'                 /* (MRB-135 exemplar PIC-11) */
+  ].join('|'), 'ig');
+
+  /* One match anywhere in the sentence makes it author register. Deliberately
+     narrow: "the student" in the third person is the giveaway, whereas "you"
+     or an imperative is teaching. "Award any 6" and "Indicative content" are
+     NOT here — a student marking their own answer is doing exactly the job
+     that mark-scheme vocabulary is for. */
+  var AUTHOR_REGISTER = [
+    /\b(?:a|the)\s+student\b/i,                     /* "Tests whether the student…" */
+    /\bgrade[\s-]?\d(?:\s*[/-]\s*\d)?\b/i,          /* "Grade 8/9 discriminator" */
+    /\bcross-page\b/i,
+    /\btransfer variants\b/i,
+    /\bdirectly examinable\b/i,
+    /\bMRB-\d+/,
+    /\bfrozen\s+(?:q\d*|higher|triple|foundation|examiner|set)\b/i,
+    /\bthe council\b/i,                             /* the authoring review panel */
+    /\bmarquee\b/i,
+
+    /* Bare filing labels: a shorthand tag with no teaching in it, left where
+       a sentence would go. Observed in the authored set; extend this list
+       when a new one shows up rather than widening the rules above. */
+    /^\s*two-structure contrast\b/i
+  ];
+
+  function isAuthorSentence(s) {
+    for (var i = 0; i < AUTHOR_REGISTER.length; i++) {
+      if (AUTHOR_REGISTER[i].test(s)) return true;
+    }
+    return false;
+  }
+
+  /* Split on sentence ends, keeping the delimiter so a surviving sentence
+     keeps its full stop. A stop that closes a quotation ends the sentence
+     too — 'hide behind "covalent = strong = high MP." Award any 6.' is two
+     sentences with two different audiences, and splitting it is what lets
+     the second one survive. A stop mid-token (a decimal, "e.g.") is not a
+     boundary, because the next character is not space or a closing quote. */
+  function sentences(s) {
+    var out = [], buf = '', i, next;
+    for (i = 0; i < s.length; i++) {
+      buf += s.charAt(i);
+      if (!/[.!?;]/.test(s.charAt(i))) continue;
+      next = s.charAt(i + 1);
+      if (/["”'’]/.test(next)) { buf += next; i++; next = s.charAt(i + 1); }
+      if (next === '' || /\s/.test(next)) { out.push(buf); buf = ''; }
+    }
+    if (buf.trim()) out.push(buf);
+    return out;
+  }
+
+  /* studentNote(raw) -> a string safe to show, or null for "render nothing". */
+  function studentNote(raw) {
+    if (typeof raw !== 'string' || !raw.trim()) return null;
+    if (PROVENANCE_NOTE.test(raw.trim())) return null;
+
+    var kept = [];
+    sentences(raw.replace(CROSS_REF, '')).forEach(function (s) {
+      if (!isAuthorSentence(s)) kept.push(s.trim());
+    });
+
+    var out = kept.join(' ')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/\(\s*\)/g, '')            /* a parenthetical emptied by pass 2 */
+      .replace(/\s+([.,;:!?])/g, '$1')
+      .replace(/^[\s;:,.—-]+/, '')
+      .trim();
+
+    /* Nothing but punctuation or a bare connective left is not a note. */
+    if (!/[a-z0-9]/i.test(out)) return null;
+    return out;
+  }
+
   /* ---------- progressive disclosure (revision #7) ----------
      One collapsed row: tap the label to open the body. Deliberately the same
      shape and language as the compare-reveal theory block so the ladder reads
@@ -415,6 +531,7 @@
       content: content,
       util: {
         el: el, shuffle: shuffle, dequote: dequote, stripTariff: stripTariff,
+        studentNote: studentNote,
         plural: plural, reveal: reveal, revealGroup: revealGroup
       },
       store: {
@@ -655,7 +772,8 @@
   window.MrbExamLadder = {
     register: register,
     init: init,
-    util: { el: el, shuffle: shuffle, dequote: dequote, stripTariff: stripTariff, plural: plural }
+    util: { el: el, shuffle: shuffle, dequote: dequote, stripTariff: stripTariff,
+            studentNote: studentNote, plural: plural }
   };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

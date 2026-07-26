@@ -133,6 +133,7 @@
      no-ops the moment the kernel ships the real thing. */
   var LADDER = window.MrbExamLadder;
   var UEL = LADDER.util.el;
+  var studentNote = LADDER.util.studentNote;
 
   function kernelHas(sel) {
     var s = document.getElementById('mrb-exam-ladder-styles');
@@ -596,7 +597,8 @@
           if (res.rules.optional[id]) chip = chip ? chip + ' · may be omitted' : 'may be omitted';
           var body = el('span', null, [document.createTextNode(lk.text)]);
           if (chip) body.appendChild(el('span', { className: 'mrb-chain__role' }, chip));
-          if (lk.note) body.appendChild(el('span', { className: 'mrb-chain__ann' }, lk.note));
+          var lkNote = studentNote(lk.note);
+          if (lkNote) body.appendChild(el('span', { className: 'mrb-chain__ann' }, lkNote));
           steps.appendChild(el('li', { className: 'mrb-chain__step' }, [
             el('span', { className: 'mrb-chain__step-n', attrs: { 'aria-hidden': 'true' } }, String(i + 1) + '.'),
             body

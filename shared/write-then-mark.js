@@ -43,8 +43,9 @@
   if (!window.MrbExamLadder) return;
 
   var LADDER = window.MrbExamLadder;
-  var U = LADDER.util;          /* el, shuffle, dequote, stripTariff, plural */
+  var U = LADDER.util;          /* el, shuffle, dequote, stripTariff, studentNote, plural */
   var el = U.el;
+  var studentNote = U.studentNote;
 
   var MIN_CHARS = 20;           /* attempt gate — a token amount, not a quality bar */
 
@@ -269,11 +270,17 @@
      an empty panel saying nothing is worse than no panel. */
   var TIER_LABEL_OPENER = /^\s*(?:foundation|higher)[\s‐-―-]*(?:tier)?[\s‐-―-]*(?:only|safe|accessible)\b\s*[.:;!]?\s*/i;
 
+  /* Stripping the opener is not enough on its own: what follows it is often
+     filing too ("Tests whether the student can hold two force types apart.
+     Grade 8/9 discriminator.", "Cross-page: this is also frozen Q on…"). So
+     the remainder goes through the shared studentNote() sanitiser, which
+     drops author-register sentences and author cross-references and keeps the
+     teaching. Notes that are entirely filing come back null and no box is
+     rendered at all. */
   function teachingNoteFor(item, tier) {
     var raw = tierNoteFor(item, tier);
     if (!raw) return null;
-    var out = String(raw).replace(TIER_LABEL_OPENER, '').trim();
-    return out ? out : null;
+    return studentNote(String(raw).replace(TIER_LABEL_OPENER, '').trim());
   }
 
   /* ---------- section identity ----------
@@ -386,9 +393,13 @@
     items.forEach(function (d) {
       var row = el('li', { className: 'mrb-wtm__li mrb-wtm__li--no' });
       row.appendChild(txt(typeof d === 'string' ? d : d.text));
-      if (d && d.note) {
+      /* Row notes are corrections a student needs ("water actually has
+         fewer"), but the same field could carry filing, so it goes through
+         the sanitiser like every other note. */
+      var rowNote = d && d.note ? studentNote(d.note) : null;
+      if (rowNote) {
         row.appendChild(txt(' '));
-        row.appendChild(el('span', { className: 'mrb-wtm__li-note' }, '(' + d.note + ')'));
+        row.appendChild(el('span', { className: 'mrb-wtm__li-note' }, '(' + rowNote + ')'));
       }
       var slugs = [];
       if (d && d.slug) slugs.push(d.slug);
@@ -490,7 +501,10 @@
 
     root.appendChild(el('p', { className: 'mrb-wtm__q-lbl' }, 'The question'));
     root.appendChild(el('p', { className: 'mrb-lc__stem' }, ctx.util.stripTariff(ctx.util.dequote(item.stem))));
-    if (item.note) root.appendChild(el('p', { className: 'mrb-lc__meta' }, ctx.util.dequote(item.note)));
+    /* item.note is mixed-audience: "Award any 6…" is for the student marking
+       their own answer, "(frozen Q1)" is the author's provenance tag. */
+    var qNote = ctx.util.studentNote(ctx.util.dequote(item.note));
+    if (qNote) root.appendChild(el('p', { className: 'mrb-lc__meta' }, qNote));
 
     var prior = ctx.store.readItem(item.id);
     if (prior) {
@@ -740,8 +754,11 @@
       root.appendChild(el('p', { className: 'mrb-lc__stem' }, 'Question worth ' + outOf + ' ' + ctx.util.plural(outOf, 'mark', 'marks') + '.'));
     }
     /* ib-be2's note restates its targetPrompt word for word; printing both
-       reads as a rendering fault. Show the note only when it adds something. */
-    var meta = item.note ? ctx.util.dequote(item.note) : null;
+       reads as a rendering fault. Show the note only when it adds something.
+       studentNote() drops the whole "(to 1D, [3 marks])" family besides — the
+       target question is already printed above, so those notes are pure
+       author cross-reference. */
+    var meta = ctx.util.studentNote(ctx.util.dequote(item.note));
     if (meta && item.targetPrompt && meta.indexOf(item.targetPrompt) !== -1) meta = null;
     if (meta) root.appendChild(el('p', { className: 'mrb-lc__meta' }, meta));
 
