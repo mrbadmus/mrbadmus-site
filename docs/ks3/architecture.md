@@ -282,8 +282,8 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   "family":          "MODEL",                      # one of the seven, §6
 
   # ---- curriculum position -------------------------------------------
-  "covers":          ["KS3.C.PNM.01", "KS3.C.PNM.03"],
-  "touches":         ["KS3.P.MAT.05"],
+  "covers":          ["KS3.C.PNM.01", "KS3.C.PNM.02"],
+  "touches":         ["KS3.P.PHYC.05"],
   "threads":         [{"id": "particles", "level": 1}],
   "typical_year":    7,                            # ADVISORY ONLY — never routes (§4.5)
   "typical_minutes": 35,
@@ -500,8 +500,12 @@ and it caps what they can be examined on. Layers are decided *by* the student, i
 lesson, and cap nothing. No student is ever routed away from core. Nothing is ever hidden because of
 who the system thinks they are.
 
-Support and stretch are **optional at authoring time** — core alone is a shippable lesson. See the
-open decision in §11 about whether support ships at launch.
+Support and stretch are **optional at authoring time** — core alone is a shippable lesson.
+
+> **Ruled 2026-07-26 (§11 decision 4, now closed).** At launch, lessons are authored `core` +
+> `stretch`; **`support` content is deferred, but the `support` slot is designed in from day one** and
+> must be present (and schema-valid) on every lesson, even when empty. "Optional at authoring time"
+> means *may be empty*, never *may be absent* — an absent slot is what forces a re-author later.
 
 ### 5.7 Working Scientifically ⊕
 
@@ -1143,6 +1147,12 @@ with navigation that can present either an integrated view or three subject view
 setting, defaulting to integrated. This is reversible; the underlying structure is not, which is why
 the structure is disciplinary.
 
+> ✅ **RULED by Mide, 2026-07-26 (Phase 0 gate).** Recommendation adopted: **disciplinary URLs and
+> ownership**, with integrated navigation. The **integrated/disciplinary view as a school setting is
+> deferred** — build the disciplinary structure now; the navigation toggle lands later. Nothing in
+> Phase 0 or the C1 slice depends on the toggle existing, and §4.1 is unchanged by this ruling.
+> **Decision closed.**
+
 **3. Does KS3 get the weekly challenge and leaderboard?** The current system is built on
 `(subject, pathway, tier)` and KS3 has neither pathway nor tier. A KS3 track would need its own
 shape — probably `(discipline)` or a single mixed-science challenge. **Recommendation:** yes, but not
@@ -1152,6 +1162,18 @@ students mostly experience one Science.
 **4. Does the `support` layer ship at launch?** It roughly doubles authoring effort on the parts of a
 lesson that need most care. **Recommendation:** author `core` + `stretch` at launch; design the
 support slots into the template from day one so they can be filled later without a re-author.
+
+> ✅ **RULED by Mide, 2026-07-26 (Phase 0 gate).** Recommendation adopted: **all three depth-layer
+> slots — `support`, `core`, `stretch` — are designed into the template now; `support` *content* is
+> deferred.** A lesson ships with `core` + `stretch` authored and `support` present-but-empty, so
+> filling it later is an addition, never a re-author.
+>
+> **No structural change is required by this ruling** — §4.8's lesson record already carries both
+> `stretch` and `support` keys, and §5.6 already makes both optional at authoring time. What the
+> ruling fixes is the *authoring* contract, so it belongs in the §10.2 build gates: `support` may be
+> empty, but the key must be present and schema-valid on every lesson. **Do not let an authoring
+> shortcut delete the slot** — a missing key is what forces a re-author later, which is the exact
+> cost this decision was taken to avoid. **Decision closed.**
 
 **5. The default sequence.** Someone must decide the platform's published default ordering. Rainford's
 sequence is evidence of one school's choice, explicitly not a template — and it already diverges from
@@ -1186,6 +1208,28 @@ specified.
 > Note also that §4.8's illustrative `KS3.P.MAT.05` does not resolve under (i); its intended target
 > is `KS3.P.PHYC.05`, "the difference between chemical and physical changes".
 
+> ✅ **RULED by Mide, 2026-07-26 (Phase 0 gate).** **The §4.4 ID scheme is adopted exactly as
+> specified** — the `KS3.C.PNM.02` form. Both details Phase 0 flagged for the same ruling are
+> blessed with it: **(i)** `<STRAND>` is the heading that directly owns the bullets, with the
+> broader statutory area kept separately as the unit's `statutory_area`; **(ii)** Working
+> Scientifically statements carry `KS3.WS.<STRAND>.<nn>`, extending `<D>` beyond `B|C|P`, and remain
+> exempt from the exactly-once rule.
+>
+> **The 155 IDs in `docs/ks3/statutory-register.md` are therefore permanent from today.** §4.4 rule 1
+> now binds: an ID never changes meaning, and a superseded ID is never reused. The reissue window
+> described above is **closed by choice, not by expiry** — the mechanism (`statement_id()` in
+> `ks3_statutory.py`) stays in place, but from here a re-mint is a breaking change, not a command.
+>
+> **Consequential fixes, applied 2026-07-26.** With the scheme blessed, every `KS3.*` ID cited
+> anywhere in this document was validated against the register. Two in §4.8's illustrative lesson
+> record did not resolve and have been corrected in place: `touches: ["KS3.P.MAT.05"]` →
+> `["KS3.P.PHYC.05"]`, and `covers: [..., "KS3.C.PNM.03"]` → `[..., "KS3.C.PNM.02"]` (PNM has only
+> two bullets, so `.03` never existed). Both were examples in prose, not references from a lesson,
+> so nothing was broken by them — but an unresolvable ID in the worked example *of the ID system* is
+> exactly the drift §4.4 exists to prevent. The only remaining non-resolving ID in this document is
+> `KS3.P.ECT.02a` in decision 11, which is deliberate: it illustrates a sub-ID that has not been
+> minted. **Decision closed.**
+
 **7. Reading-age target.** §5.4 says "below chronological age" without a number. A specific target
 (e.g. readability age 9–10 for body prose) makes it checkable. **Recommendation:** set 9–10 and
 measure it, with technical vocabulary excluded from the measure.
@@ -1198,6 +1242,16 @@ whole year group in a third of the time, at the cost of proving the architecture
 of content. **Recommendation:** this is a product and commercial call, not an architecture one — the
 architecture supports either. If schools are waiting, take the Year 7 cut. If the priority is getting
 the architecture right, take the §10.1 order. Either way, C1 is still the first unit built (§9).
+
+> ⏳ **Considered and deliberately left OPEN at the Phase 0 gate, 2026-07-26.** Mide took the gate's
+> other decisions and did not rule on scope. **This is not an oversight and it did not block Phase 0**
+> — the statutory register covers the whole programme of study regardless of which cut is authored,
+> so Phase 0's output is identical under either answer. **Decision stays open.**
+>
+> It becomes blocking at Phase 2, not Phase 1: C1 is the first unit built under both readings (§9),
+> so the slice can proceed without it. What it does change is the *meaning* of decision 11 — under
+> the Year 7 cut, the 137-vs-185 shortfall is a smaller and differently-shaped problem, because the
+> Year 7 lesson subset has its own supply/demand ratio that the §7-wide totals hide.
 
 **9. Is P9 *Static electricity* its own unit?** It is only three lessons, and it could fold into P8
 *Electric circuits* or into P10 *Magnetism and electromagnetism*. **Recommendation:** keep it
@@ -1270,3 +1324,9 @@ This document is law. Changing it changes what gets built.
 | 2026-07-25 | **§1 corrected:** "roughly 120 short bullet points" → 137 subject-content statements plus 18 Working Scientifically. Counted in Phase 0; §12 makes the statutory document authoritative on its own contents. | Claude (Opus 5) |
 | 2026-07-25 | **§8.9 observation 1 marked unreliable**, and the §0 Rainford row changed from "not available" to "disputed", per §11 decision 1 correction 1. Claim not deleted — Mide confirms which reading is right. | Claude (Opus 5) |
 | 2026-07-25 | **§11 decision 11 added** (new, ⊕): 137 statutory statements cannot supply 185 lessons under §4.4 rule 3 + §10.2 simultaneously. Three options costed; clause-level sub-IDs recommended. Blocks Phase 1. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 6 RULED (closed).** Mide blessed the §4.4 ID scheme exactly as specified, including both Phase 0 details: strand = the heading that directly owns the bullets, and `KS3.WS.*` for Working Scientifically. **The register's 155 IDs are permanent from this date**; the reissue window is closed by choice. | Claude (Opus 5) |
+| 2026-07-26 | **§4.8 illustrative IDs corrected** (consequence of decision 6): `KS3.P.MAT.05` → `KS3.P.PHYC.05` and `KS3.C.PNM.03` → `KS3.C.PNM.02`. All `KS3.*` IDs cited in this document were validated against the register; the only remaining non-resolving one is decision 11's deliberately unminted `KS3.P.ECT.02a`. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 2 RULED (closed).** Disciplinary URLs and ownership adopted per §4.1; integrated-vs-disciplinary navigation as a school setting **deferred**. No change to §4.1. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 4 RULED (closed).** `support`/`core`/`stretch` slots designed into the template now; `support` **content** deferred. §5.6 amended: the slot must be present and schema-valid even when empty. No structural change needed — §4.8 already carries both keys. | Claude (Opus 5) |
+| 2026-07-26 | **§11 decision 8 (scope) explicitly left open** at the Phase 0 gate. Recorded as deliberate: Phase 0 is scope-independent, and C1 is the first unit under either cut, so it blocks Phase 2 rather than Phase 1. | Claude (Opus 5) |
+| 2026-07-26 | **Phase 0 register independently verified** against the live DfE HTML: 155/155 bullets matched, 153 byte-identical, 2 differing only by collapsed double-spaces present in the published source. Per-discipline counts (B39/C36/P62/WS18) confirmed against the source. Verification method and the two whitespace normalisations recorded in the register. | Claude (Opus 5) |
