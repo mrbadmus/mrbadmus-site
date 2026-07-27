@@ -414,16 +414,35 @@ def unit_index(unit, units_by_code, registry):
     rows = []
     for i, l in enumerate(unit["lessons"], 1):
         if l.get("reference_to"):
+            # §4.6 single-source: this slot is a cross-link, not a lesson. The
+            # pointer below is architecture.md §4.5 ruling 3 (2026-07-27) — the
+            # B3 → P2 forward reference is resolved as an explicit forward
+            # pointer rather than an ownership flip, so a student meeting a slot
+            # taught elsewhere is told so honestly instead of being dropped into
+            # another discipline's unit with no explanation.
+            #
+            # ⚠️ The wording deliberately does NOT name a year, and the pointer
+            # is NOT conditional on one. §4.5 forbids typical_year determining
+            # content, and the §9 reorder proof asserts that changing the whole
+            # sequence changes zero page bytes. "You'll meet this in Year 9"
+            # would break both: it is false for a school that teaches P2 in
+            # Year 8, and it would make the page text a function of the
+            # sequence. Naming the year is a Phase 5 job for a runtime scheme
+            # lookup, where the year is data at render time. Until then the
+            # pointer says WHERE, never WHEN — which is true under every
+            # possible ordering.
             owner = units_by_code.get(l["reference_to"])
             href = ("/ks3/%s/%s/%s.html" % (owner["discipline"], owner["slug"], l["slug"])
                     if owner else "#")
+            owner_disc = DISCIPLINE_TITLES[owner["discipline"]] if owner else ""
             rows.append(
                 '<li class="ks3-lesson-row is-ref"><span class="ks3-num">%d</span>'
                 '<a href="%s">%s</a>'
-                '<span class="ks3-badge">from %s %s</span></li>'
-                % (i, e(href), e(l["title"]),
-                   e(DISCIPLINE_TITLES[owner["discipline"]] if owner else ""),
-                   e(l["reference_to"])))
+                '<span class="ks3-badge">from %s %s</span>'
+                '<p class="ks3-ref-note">Taught in %s — <em>%s</em>. '
+                'You\'ll meet the full lesson there.</p></li>'
+                % (i, e(href), e(l["title"]), e(owner_disc), e(l["reference_to"]),
+                   e(owner_disc), e(owner["title"]) if owner else ""))
             continue
         href = "/ks3/%s/%s/%s.html" % (disc, unit["slug"], l["slug"])
         badge = ("" if l["authored"]

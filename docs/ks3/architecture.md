@@ -280,6 +280,43 @@ structure.
 > **Recommendation: (a) or (c), and (c) is cheaper.** (b) does not actually solve it. **Not acted on
 > — this touches curriculum sequencing and ownership, which is Mide's gate.** Recorded here so it is
 > a known, bounded, single case rather than something rediscovered during Year 7 authoring.
+>
+> ---
+>
+> ✅ **RULED by Mide, 2026-07-27. Option (c) — an explicit forward pointer, not an ownership flip.**
+>
+> **§7.4 is unchanged: P2 correctly owns energy calculations.** A Year 7 student told that the full
+> lesson lives in Physics is being dealt with honestly; a broken-feeling cross-link is the actual
+> defect, and that is what is fixed. The named allowance stays in `verify_ks3.py`, so a **second**
+> forward reference still fails the build.
+>
+> ⚠️ **One part of the ruling could not be implemented as worded, and the reason is this section's
+> own invariant.** The instruction was to frame it as *"you'll meet the calculation in Year 9"*.
+> **A year cannot appear in page text, and the pointer cannot be conditional on one:**
+>
+> - §4.5 forbids `typical_year` determining content. Text that reads "Year 9" *is* content determined
+>   by the sequence.
+> - §9's reorder proof asserts that applying a whole school's scheme changes **zero page bytes**.
+>   Under Rainford's map P2 is Year 8, so the words would have to change — the proof would fail, and
+>   correctly so.
+> - It would also simply be **false** for any school that teaches P2 earlier. The sentence is only
+>   true of the default, and a page is not allowed to assume the default.
+>
+> **Implemented instead: the pointer says WHERE, never WHEN** — *"Taught in Physics — Energy at home.
+> You'll meet the full lesson there."* That is true under every possible ordering, carries the same
+> honesty, and costs the invariant nothing. It is rendered on **every** §4.6 reference slot rather
+> than only the forward one, because conditioning its *presence* on year would break §4.5 exactly as
+> conditioning its wording would.
+>
+> **Scale, so this does not read as larger than it is: `energy-in-food` is currently the only
+> `reference_to` slot in the whole key stage**, so "every reference slot" means one page today. The
+> other ⇄ marks in §7 are unit-level `requires`/`references` edges, which are a different mechanism
+> and are unaffected. The rule is written for all of them because the next one should not need a
+> second ruling.
+>
+> **Naming the year is deferred to Phase 5**, where a runtime scheme lookup makes the year data at
+> render time rather than a build-time constant — which is the only way it can be both accurate and
+> compliant. Until then, WHERE is the honest half.
 
 ### 4.6 Cross-discipline lessons: single source, referenced ⊕
 
@@ -916,10 +953,19 @@ exemption is declared, named, and countable*:
 2. **`covers` MUST be empty.** Not "may be" — a bridge lesson that declares a `covers` entry is a
    **build failure**, not a warning. This is the operative half of conflict 1g's standing
    prohibition: *bridge content must never enter through the coverage register.*
-3. **`ks4_links` MUST be non-empty.** The inverse gate, and the one that makes a bridge a bridge. A
-   beyond-statutory lesson pointing nowhere is just off-spec content. `check_ks4_links()` already
-   exists and already fails the build on an unresolvable edge — bridge lessons get it as a
-   requirement rather than a courtesy.
+3. **`ks4_links` MUST be non-empty, and MUST resolve against `combined/foundation`.** The inverse
+   gate, and the one that makes a bridge a bridge. A beyond-statutory lesson pointing nowhere is just
+   off-spec content. `check_ks4_links()` already exists and already fails the build on an
+   unresolvable edge — bridge lessons get it as a requirement rather than a courtesy.
+   - **Combined, not Triple.** A target that exists only under `triple/` fails, deliberately: it
+     would bridge only for the part of a cohort heading to Triple. Triple-only content belongs in a
+     **`stretch` block**, which *may* carry a `triple/` edge if labelled as Triple content (ruled
+     2026-07-27).
+   - **One sanctioned exception: a deliberately dangling target.** Where the gate fails because the
+     KS4 page *should* exist and does not, the finding is a **KS4 gap, and the KS3 lesson stays**.
+     The dangling edge is the record of the gap and is what will consume the page once written. This
+     requires a raised KS4 ticket and a note here — it is never a way to quietly keep a bad link.
+     Currently exactly one: `exchange surfaces / SA:V` (**MRB-174**), removed when that ships.
 4. **They never appear in `docs/ks3/statutory-register.md`.** Exactly-once (§4.4) is computed over
    statutory lessons only and is untouched by their existence.
 5. **They are counted where they can be seen** — `docs/ks3/bridge-register.md`, generated from the
@@ -933,8 +979,9 @@ search result must know immediately that it is not KS3 curriculum.
 
 #### The proposed set — 3 units, 15 lessons
 
-Three units, one per discipline, sized as an autumn term. MRB-103's four candidates are all in it
-and are marked ⓶. The remaining eleven are proposed here: each is a KS4 idea that (a) sits directly
+Three units, one per discipline, sized as an autumn term. MRB-103's four candidates are all in it and
+are marked ⓶ — **two as core lessons, and two as `stretch` after ruling 1 (2026-07-27) found them to
+be Triple-only content.** The remaining lessons are proposed here: each is a KS4 idea that (a) sits directly
 on a KS3 lesson already in §7, and (b) is a place students demonstrably stall on entry to GCSE.
 
 **XB1 — *GCSE bridge: from cells to organisms*** (Biology, `gcse-bridge-organisms`)
@@ -957,26 +1004,77 @@ on a KS3 lesson already in §7, and (b) is a place students demonstrably stall o
 | Collision theory | MODEL | The explanatory half of rate, and it sits squarely on C1's particle model — the bridge closes the loop the vertical slice opened. | collision theory |
 | Rate of reaction: what changes it ⓶ | INVESTIGATION | MRB-103's candidate. Placed after collision theory so the investigation tests a model rather than collecting an unexplained pattern. | rate of reaction |
 
-**XP1 — *GCSE bridge: energy, radiation and the universe*** (Physics, `gcse-bridge-energy-and-space`)
+**XP1 — *GCSE bridge: energy, radiation and electricity*** (Physics, `gcse-bridge-energy-and-radiation`)
+
+> ✅ **Amended 2026-07-27 (ruling 1).** The unit was `…-energy-and-space` and closed on two space
+> lessons. **Nuclear fusion and the life cycle of a star are demoted to `stretch`** and two core
+> replacements are **adopted** — see the ruling recorded below the tables. The unit no longer has a
+> space half, hence the rename.
 
 | Lesson | F | Why it bridges | `ks4_links` target |
 |---|---|---|---|
-| Efficiency: energy usefully transferred | QUANTITATIVE | P1 gives stores and transfers; GCSE wants the calculation within weeks. | efficiency |
-| The electromagnetic spectrum | CLASSIFY | P7 covers visible light only. The spectrum is the frame GCSE waves hangs on. | electromagnetic spectrum |
-| The nucleus and radioactive decay | MODEL | **Deliberately paired with XC1's *Inside the atom***: one model, two disciplines, two genuinely different treatments. This is §4.6 applied to bridge content, and it is why the two are not one lesson. | radioactive decay |
-| Nuclear fusion in stars ⓶ | PROCESS | MRB-103's candidate. Sits on P12 *The Sun, stars and galaxies*. | nuclear fusion |
-| The life cycle of a star ⓶ | PROCESS | MRB-103's candidate, and the natural close — the one place a KS3 student can see the whole periodic table get made. | life cycle of a star |
+| Efficiency: energy usefully transferred | QUANTITATIVE | P1 gives stores and transfers; GCSE wants the calculation within weeks. | `physics/energy/efficiency` |
+| The electromagnetic spectrum | CLASSIFY | P7 covers visible light only. The spectrum is the frame GCSE waves hangs on. | `physics/waves/types-of-em-waves` |
+| Atomic structure: the nuclear model | MODEL | **Deliberately paired with XC1's *Inside the atom***: one model, two disciplines, two genuinely different treatments. This is §4.6 applied to bridge content, and it is why the two are not one lesson. | `physics/atomic-structure/structure-of-atom` · `…/development-atomic-model` |
+| Radioactivity: decay and half-life | PROCESS | Where a GCSE physics course actually starts once the atom is in place, and nothing at KS3 prepares it. **Hosts both demoted space lessons as `stretch`** — decay → fusion → stars is the natural order. | `physics/atomic-structure/radioactive-decay` · `…/half-lives` |
+| Current, resistance and I–V characteristics | QUANTITATIVE | P8 gives resistance descriptively and stops. GCSE opens on Ohm's law and the I–V graphs of an ohmic conductor, a filament lamp and a diode — a named weak point on entry. | `physics/electricity/current-resistance-pd` · `physics/electricity/resistors` |
 
 `ks4_links` targets above are **named, not slugged**. Real slugs get resolved at authoring time
 against the live KS4 pages by the existing gate — writing guessed slugs into this document would
 create exactly the silent drift §4.10 was added to prevent.
 
-#### ⛔ Three of the 17 targets do not resolve — checked, not assumed
+#### ✅ Ruled 2026-07-27 — the three non-resolving targets, settled
+
+*The three findings below were raised to Mide and all three are now ruled. The findings are kept in
+full underneath, per §12's rule that a decision's reasoning stays visible.*
+
+**Ruling 1 — Triple-only physics.** **Nuclear fusion and the life cycle of a star are demoted to
+`stretch` (§5.6)**, and two core replacements are **adopted**: *atomic structure and radioactivity*,
+and *current, resistance and I–V characteristics*. Both are squarely AQA Combined, and both are
+places students arrive at GCSE weak.
+
+- ✅ **Both adopted targets verified against `combined/foundation` before wiring**, through
+  `ks4_bridge_href()` itself rather than by eye: `structure-of-atom`, `development-atomic-model`,
+  `radioactive-decay`, `half-lives`, `current-resistance-pd` and `resistors` **all resolve**. Nothing
+  was substituted. For the record, re-running the same check on the two demoted targets still
+  **fails** — which is the finding, confirmed rather than assumed away.
+- ⊕ **One ambiguity resolved, and it is flagged rather than buried.** "Atomic structure and
+  radioactivity" overlapped an XP1 lesson that already existed (*The nucleus and radioactive decay*).
+  Read as one replacement it would have left the unit at four core lessons. It is therefore taken as
+  **two lessons that absorb the old one** — *Atomic structure: the nuclear model* and *Radioactivity:
+  decay and half-life* — which keeps the unit at five and splits a genuinely two-part idea at the
+  join a GCSE course splits it. If that reading is wrong, it is one table row to change.
+- **Where the demoted content actually goes.** Both become `stretch` inside *Radioactivity: decay and
+  half-life*, because decay → fusion → stars is the order the physics itself runs in. **This is not
+  the link gate being gamed.** A `stretch` block is not a lesson, so §7.6's requirement that a bridge
+  *lesson* resolve to Combined content does not reach it — and the pedagogical reason is identical to
+  the gate's: a Combined student is not examined on this, so it must not consume core lesson time.
+  **The students it serves still reach it.**
+- ⊕ **New rule, needed by this ruling: a `stretch` block may carry a `ks4_links` edge to a
+  `triple/`-only page, provided it is labelled as Triple content.** Lesson-level `ks4_links` may not.
+  This keeps the demoted pages reachable without a tier re-entering KS3 through the back door (§2) —
+  depth layers are the whole mechanism KS3 has instead of tiers (§5.6), and this is exactly what they
+  are for.
+
+**Ruling 2 — exchange surfaces / SA:V.** **KS4 ticket raised — MRB-174, Platform Backlog — and the
+KS3 bridge lesson stays.** The gate found a real gap and that is the gate working. **The `ks4_links`
+target stays deliberately dangling** until the KS4 page exists, and the KS3 lesson is what will
+consume it. This is the one sanctioned exception to §7.6's resolve-or-fail rule, and it is sanctioned
+because the failure is pointing at the right thing. **When MRB-174 ships, this exception is deleted**
+— the rule goes back to zero exceptions, and MRB-174 says so on its own face so the obligation does
+not depend on anyone remembering to read this document.
+
+**Ruling 3 — the B3 → P2 forward reference.** Resolved as an **explicit forward pointer, not an
+ownership flip** — see §4.5, where the defect and its resolution are recorded together.
+
+#### The findings that produced those rulings
+
+⛔ **Three of the 17 targets did not resolve — checked, not assumed**
 
 *All 17 targets were looked up against the live KS4 pages on 2026-07-26, before authoring rather
-than during it. Fourteen resolve cleanly. Three do not, and two of those are MRB-103's own
-candidates. **These are Mide's calls — the first is a science/AQA-coverage question and the second
-is a KS4 content gap — so nothing has been changed in the set above.***
+than during it. Fourteen resolve cleanly. Three did not, and two of those are MRB-103's own
+candidates. **All three were referred to Mide and all three are ruled above (2026-07-27).** The
+findings are kept because they are the reasoning behind those rulings.*
 
 **`check_ks4_links()` resolves a link against `/combined/foundation/<link>.html`.** A page that
 exists only under `triple/` therefore **fails** the gate — and §7.6 makes a resolving `ks4_links`
@@ -999,12 +1097,17 @@ until he rules.
 > rather than as core lessons, and promote two Combined-reachable ideas into the core slots. That is
 > what §5.6's depth layers are for, and it is the move that does not smuggle a tier back into KS3
 > (§2). The physics unit would then need two replacement core lessons proposed.
+>
+> ✅ **ADOPTED 2026-07-27 (ruling 1), with Mide naming both replacements.** See the ruling above.
 
 **2. `exchange surfaces / surface area to volume` has no KS4 counterpart at all.** AQA GCSE Biology
 plainly covers it, so **this is a hole in the KS4 site**, found by designing the bridge — the bridge
 pointing at KS4 turns out to be a way of auditing KS4. **It should become its own KS4 content
 ticket**, not be solved by dropping the KS3 lesson: §7.6 names it "the single most common GCSE
 Biology stumble", which is an argument for fixing KS4, not for looking away.
+> ✅ **ADOPTED 2026-07-27 (ruling 2).** Ticket raised in Platform Backlog. **The KS3 lesson stays and
+> its `ks4_links` target stays dangling** until the KS4 page exists. Recorded on the ticket that the
+> KS3 bridge lesson is what will consume the new page.
 
 **This is the argument for designing the bridge before authoring it.** Fourteen targets are real and
 the design is sound; three would have been discovered one at a time, mid-authoring, as build
@@ -1015,7 +1118,9 @@ failures with no obvious cause.
 - **+15 lessons, taking the full commitment from 185 to 200.** That is a real scope increase and it
   is recorded here rather than absorbed. It is also the smallest honest version: four candidates
   came from MRB-103 and eleven were needed to make three teachable units rather than three
-  fragments.
+  fragments. **Ruling 1 did not change the count** — it moved two candidates from core lessons into
+  `stretch` and adopted three lessons in their place (an ambiguity resolved as a two-lesson split;
+  see the ruling), so the physics unit still ships five core lessons.
 - **It is the last thing authored, not the first.** Both Shape-A and Shape-B schools need Years 7
   and 8 first, and Shape B needs them *more* — an early-GCSE school compresses KS3 into two years,
   so Y7 and Y8 are its entire key stage.
@@ -2046,5 +2151,9 @@ This document is law. Changing it changes what gets built.
 | 2026-07-26 | ⛔ **KS4 content gap found by designing the bridge:** `exchange surfaces / surface area to volume` has **no KS4 page on any pathway or tier**, though AQA GCSE Biology covers it. Recorded as a KS4 ticket to raise, explicitly **not** to be solved by dropping the KS3 bridge lesson. | Claude (Opus 5) |
 | 2026-07-26 | ⛔ **§4.5: one forward reference found in the new default** — `B3 energy-in-food` (Y7) is a §4.6 reference slot pointing at `P2` (Y9). Not caused by the reversal, but widened by it (was Y7→Y8 under the superseded default). Three options costed at §4.5; **not acted on — curriculum sequencing and §7.4 ownership are Mide's gate.** The §4.5 claim that the default is "ordered by what the prerequisite graph makes possible" is corrected from an assertion to a checked, very-nearly-true statement. | Claude (Opus 5) |
 | 2026-07-26 | **`verify_ks3.py` gains a forward-reference gate** over the default sequence only (never over a school scheme — §4.5 makes a school's reorder their own business). The one known case is a **named allowance, not a suppression**: a new forward reference fails the build, and a stale allowance also fails, so the set can shrink only by a ruling. | Claude (Opus 5) |
+| 2026-07-27 | ✅ **§7.6 ruling 1 — Triple-only bridge lessons RULED.** **Nuclear fusion and star life cycle demoted to `stretch` (§5.6)**; two core replacements **adopted by Mide**: *atomic structure and radioactivity*, and *current, resistance and I–V characteristics*. Both verified to resolve against `combined/foundation` through `ks4_bridge_href()` before wiring, per the ruling's own instruction; **nothing substituted**. XP1 renamed `gcse-bridge-energy-and-radiation` — it no longer has a space half. ⊕ **Ambiguity flagged, not buried:** "atomic structure and radioactivity" overlapped an existing XP1 lesson, so it is read as **two lessons absorbing the old one**, keeping the unit at five core. Both demoted lessons become `stretch` inside *Radioactivity: decay and half-life*. **New rule:** a `stretch` block may carry a `ks4_links` edge to a `triple/`-only page if labelled as Triple content; a lesson-level edge may not. | Claude (Opus 5) |
+| 2026-07-27 | ✅ **§7.6 ruling 2 — exchange surfaces / SA:V RULED.** **KS4 ticket raised: MRB-174** (Platform Backlog). The KS3 bridge lesson **stays** and its `ks4_links` target **stays deliberately dangling**. Recorded as the single sanctioned exception to the resolve-or-fail rule, **deleted when MRB-174 ships** — an obligation stated on the ticket itself, not only here. | Claude (Opus 5) |
+| 2026-07-27 | ✅ **§4.5 ruling 3 — the B3 → P2 forward reference RULED: explicit forward pointer, not an ownership flip.** §7.4 unchanged; P2 correctly owns energy calculations. Named allowance kept in `verify_ks3.py`, so a **second** forward reference still fails. ⚠️ **One part of the ruling could not be implemented as worded, blocked by this document's own invariant:** the *"you'll meet the calculation in Year 9"* framing would put a year into page text, which §4.5 forbids, which §9's zero-bytes reorder proof would fail, and which is **false** for any school teaching P2 earlier. **Implemented instead: the pointer says WHERE, never WHEN** — true under every ordering — and is rendered on *every* §4.6 reference slot, because conditioning its presence on year breaks §4.5 exactly as conditioning its wording would. Naming the year is deferred to Phase 5, where a runtime scheme lookup makes it data at render time. | Claude (Opus 5) |
+| 2026-07-27 | **Latent flaw fixed in §9's reorder proof.** It snapshotted the baseline off disk instead of building it, so it silently compared an **old** build against a **new** one whenever the generator itself had changed — a false FAIL at best, a real reorder defect masked by unrelated generator drift at worst. Found when ruling 3's pointer made it fail spuriously. The baseline is now built in-test, isolating the one variable the proof is about. | Claude (Opus 5) |
 | 2026-07-26 | **§9's reorder proof strengthened and re-run against the new default.** Previously nudged two units to different years — a synthetic reorder and a weak test. Now applies **Rainford's entire real scheme across all 33 units** and rebuilds. Required result: zero page paths changed, zero page bytes changed. | Claude (Opus 5) |
 | 2026-07-26 | **§12 gains a reversal rule ⊕:** a superseded ruling is never deleted, the reasoning for the reversal is recorded, and whose ruling it was is stated plainly — including when it was Mide's own. | Claude (Opus 5) |
