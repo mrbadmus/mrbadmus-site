@@ -1316,7 +1316,7 @@ build-blocking for KS3.
    > table the default sequence lands in and the per-school table was not yet being written to.
    > Seeding one real school found it immediately — which is the argument for seeding real schemes
    > early rather than describing them. Fixed in
-   > `supabase/migrations/20260726180000_ks3_scheme_of_work_overrides.sql`.
+   > `supabase/migrations/20260727081530_ks3_scheme_of_work_overrides.sql`.
 
 Also note:
 

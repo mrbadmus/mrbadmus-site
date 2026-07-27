@@ -1,4 +1,4 @@
--- Rollback for 20260726180000_ks3_scheme_of_work_overrides.sql
+-- Rollback for 20260727081530_ks3_scheme_of_work_overrides.sql
 -- Apply MANUALLY only. The Supabase CLI never reads this folder.
 --
 -- ⚠️ This drops the only thing stopping duplicate KS3 override rows. Any

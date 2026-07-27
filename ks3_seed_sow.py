@@ -184,7 +184,7 @@ def header(path, what, tables, extra=""):
 -- that does not exist. Change the Python, re-run the generator.
 --
 -- Requires migrations 20260726120000_ks3_scheme_of_work_entries.sql and
--- 20260726180000_ks3_scheme_of_work_overrides.sql (architecture.md §8.7):
+-- 20260727081530_ks3_scheme_of_work_overrides.sql (architecture.md §8.7):
 -- without them KS3 rows either cannot be inserted or can be duplicated.
 --
 -- Idempotent: every KS3 row in scope is deleted and rewritten, inside one
