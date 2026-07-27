@@ -177,7 +177,69 @@ def main():
     missing = B.check_ks4_links(units)
     check("every ks4_links edge resolves", not missing, str(missing))
 
+    # 5b. The default sequence is internally coherent — no forward references.
+    #
+    # architecture.md §4.5 claims the default is "ordered by what §4.9's
+    # `requires` edges make possible". That claim was written before anything
+    # checked it, so it is checked here.
+    #
+    # A forward reference is a lesson that depends on — or cross-links to —
+    # content the DEFAULT schedules in a LATER year. Same year is fine: order
+    # within a year is the school's business, not ours.
+    #
+    # This is a property of the DEFAULT ONLY. §4.5 means a school may reorder
+    # into as many forward references as it likes; that is their call and not a
+    # defect in the platform. So this never runs against a school scheme.
+    #
+    # KNOWN_FORWARD holds the one case Mide has not yet ruled on (§4.5). It is
+    # an allowance, not a suppression: anything NOT in this set fails the build,
+    # so the set can only shrink by a ruling, never grow by an accident.
+    KNOWN_FORWARD = {("energy-in-food", "P2")}
+
+    year_of_unit = {u["code"]: u["typical_year"] for u in units}
+    slug_unit = {l["slug"]: u["code"] for u in units for l in u["lessons"]}
+
+    forward = set()
+    for u in units:
+        here = year_of_unit[u["code"]]
+        for l in u["lessons"]:
+            # hard prerequisites on authored lessons
+            for r in (l.get("requires") or []):
+                ru = slug_unit.get(r)
+                if ru and year_of_unit[ru] > here:
+                    forward.add((l["slug"], ru))
+            # §4.6 cross-discipline reference slots
+            owner = l.get("reference_to")
+            if owner:
+                ou = slug_unit.get(owner, owner)
+                if year_of_unit.get(ou, here) > here:
+                    forward.add((l["slug"], ou))
+
+    unexpected = forward - KNOWN_FORWARD
+    stale = KNOWN_FORWARD - forward
+    check("default sequence has no NEW forward reference", not unexpected,
+          "unexpected: %s" % sorted(unexpected) if unexpected
+          else "%d known, awaiting Mide's ruling (§4.5)" % len(forward))
+    check("known forward references still real (no stale allowance)", not stale,
+          "stale: %s — remove from KNOWN_FORWARD" % sorted(stale) if stale
+          else "")
+
     # 6. Reorder by data change only — proven by doing it.
+    #
+    # Not a synthetic nudge. This applies **Rainford High School's entire real
+    # scheme of work** over the platform default and rebuilds from scratch.
+    # Rainford diverges from the default on 16 of the 33 units — biology,
+    # chemistry and physics all move, in both directions, across all three
+    # years — and it is a real school's real sequence rather than something
+    # invented to pass a test.
+    #
+    # §4.5: "Reordering a school's entire KS3 curriculum must require zero
+    # content changes and zero regeneration." A two-unit swap could pass while
+    # the invariant was quietly broken for the general case. A whole school's
+    # scheme cannot.
+    #
+    # If this fails, the finding is that §4.5 has failed. It is not to be
+    # repaired by shrinking the reorder.
     before = {}
     for root, _, files in os.walk("mrbadmus_site/ks3"):
         for f in files:
@@ -185,10 +247,14 @@ def main():
             before[fp] = open(fp, encoding="utf-8").read()
 
     import ks3_data.default_sequence as ds
+    from ks3_data import school_schemes
+
+    SCHOOL = "rainford-high"
+    divergence = school_schemes.divergence_from_default(SCHOOL)
     original = dict(ds.DEFAULT_SEQUENCE_V1)
     try:
-        ds.DEFAULT_SEQUENCE_V1["C1"] = 9      # a school moves particles to Y9
-        ds.DEFAULT_SEQUENCE_V1["B1"] = 8
+        ds.DEFAULT_SEQUENCE_V1.clear()
+        ds.DEFAULT_SEQUENCE_V1.update(school_schemes.effective_sequence(SCHOOL))
         tmp = tempfile.mkdtemp()
         B.build_ks3(output_dir=tmp, mirror_to_root=False, repo_root=".")
         after = {}
@@ -204,9 +270,13 @@ def main():
         ds.DEFAULT_SEQUENCE_V1.clear()
         ds.DEFAULT_SEQUENCE_V1.update(original)
 
-    check("reordering the sequence changes NO page path", same_paths)
-    check("reordering the sequence changes NO page content", same_bytes,
-          "year is metadata, never structure (§4.5)")
+    detail = ("%s's real scheme applied over the default — %d of %d units "
+              "move" % (school_schemes.scheme(SCHOOL)["name"],
+                        len(divergence), len(original)))
+    check("a whole school's real reorder changes NO page path",
+          same_paths, detail)
+    check("a whole school's real reorder changes NO page content", same_bytes,
+          "year is metadata, never structure (§4.5) · " + detail)
 
     # Re-run to restore the canonical build after the experiment.
     B.build_ks3()

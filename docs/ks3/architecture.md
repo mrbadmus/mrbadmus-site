@@ -28,7 +28,8 @@ architecture that content and code must satisfy.
 | `docs/redesign/architecture_v2.md` — bonding v2 doctrine | **Read in full.** Inherited per §3. |
 | Existing generator, data-file pattern, design tokens, schools layer | **Surveyed.** See §8. |
 | **Linear MRB-103 — previously ratified KS3 architecture** | **READ IN FULL, 2026-07-25.** Ticket body plus the 6 Jul 2026 ratification comment. Diffed against this document; delta recorded in §11 decision 1. |
-| Rainford scheme of work | **Disputed.** This document was written believing no formal SoW exists (sequence implicit in folder structure at `~/Desktop/Rainford`, surveyed as evidence only, §8.9). MRB-103 states Ayo ruled the year map "against Rainford's actual SOW". See §11 decision 1, correction 1 — **§8.9 observation 1 is unreliable until Mide confirms.** |
+| Rainford scheme of work | **Reference evidence and seed data — never a template** (§8.9). Whether a formal SoW document exists is still disputed (this document saw only folder structure; MRB-103 states Ayo ruled against "Rainford's actual SOW"), but the dispute is **no longer load-bearing**: since the 2026-07-26 reversal of §11 decision 5, nothing about the platform default depends on it. Rainford's map now lives in `ks3_data/school_schemes.py` as one school's configured sequence. |
+| Westleigh scheme of work | **Outstanding — requested from Mide 2026-07-26.** The second school seed. Two divergent real schemes over identical lessons is the demonstration §4.5 exists for (§8.9). |
 
 > ✅ **MRB-103 reconciliation: the diff is done** (2026-07-25), and the delta is in §11 decision 1.
 > Nothing from MRB-103 has been applied to this document. Each conflict is written up as two
@@ -219,10 +220,12 @@ the statutory document is ever revised.
   for a school that hasn't configured anything, and it may appear as a hint in authoring tools.
 - `typical_year` **must never** determine a URL, a folder, a file name, a navigation structure, a
   content branch, or which lesson a student is served.
-- Real ordering for a real school comes from `scheme_of_work_entries`, which already exists in the
-  schools layer and is already keyed on `(key_stage, year_group, …, academic_week)`. **It needs two
-  constraint fixes before it can hold KS3 rows — see §8.7.** Until those land, this invariant is a
-  promise the database cannot keep.
+- Real ordering comes from the schools layer, which already exists and is already keyed on
+  `(key_stage, year_group, …, academic_week)`. **Two tables, and they are not interchangeable:**
+  `scheme_of_work_entries` is **global** — no `school_id` — and holds the platform default;
+  `scheme_of_work_overrides` is **per-school** and holds what a real school actually does. **Both
+  need constraint fixes before they can hold KS3 rows — see §8.7.** Until those land, this invariant
+  is a promise the database cannot keep.
 - Reordering a school's entire KS3 curriculum must require **zero content changes and zero
   regeneration** — it is a data change in that school's scheme of work.
 
@@ -230,6 +233,53 @@ The platform additionally publishes one **default sequence** (a named, versioned
 to year and week) so that a school with no scheme configured still gets a coherent journey. The
 default sequence is *a* scheme of work stored the same way as any school's — not a privileged
 structure.
+
+> ⊕ **Where the default comes from, and where it must not come from. Ruled 2026-07-26.**
+>
+> **The default is derived from the statutory spine and the prerequisite graph — never from a
+> school's timetable.** "MrBadmusAI default sequence v1" is §7's `typical_year` column, and it is
+> the default *because* it was built that way: it follows what the programme of study says, ordered
+> by what §4.9's `requires` edges make possible.
+>
+> ⚠️ **That second clause was asserted before it was checked, and it is very nearly true rather than
+> true.** Checked 2026-07-26: **zero** forward references among authored lesson `requires` edges, and
+> **exactly one** at unit level — see the defect recorded below. `verify_ks3.py` now enforces this
+> property, with that single case as a named allowance, so a *new* forward reference fails the build.
+>
+> This was ruled the other way earlier the same day and **reversed** — see §11 decision 5. The
+> reasoning behind the reversal is the reasoning behind this whole invariant. A default derived from
+> one school's sequence is that school's product with a platform's name on it. Every other school
+> then starts by disagreeing with us, and the divergence reads as *our* map being wrong rather than
+> as the override mechanism working as designed. **The platform is school-agnostic. Real schemes are
+> evidence and seed data (§8.9), never the template.**
+>
+> The strongest thing a real scheme can do for this invariant is *diverge* from the default and cost
+> nothing to honour. That is what §9's reorder proof now tests, and it is why two divergent real
+> schemes over identical lessons are worth more here than one adopted one.
+
+> ⛔ **KNOWN DEFECT IN THE DEFAULT — one forward reference. Mide's call, not the build's.**
+> *Found 2026-07-26 by the check described above, immediately after the default was ruled.*
+>
+> **`B3 Energy in food and what you need` (Biology, Y7) is a reference slot pointing at `P2 Energy at
+> home` (Physics, Y9).** §7.4 fixes P2 as the owner of "energy in food, energy calculations", so
+> under §4.6 B3's slot is a cross-link, not its own lesson. A Year 7 biology class therefore meets a
+> slot whose content is not taught until Year 9 — **two years forward.** Structure-first means the
+> page exists and nothing breaks; the problem is pedagogical, not technical.
+>
+> **This is not caused by the reversal, but the reversal widened it.** Under the superseded Rainford
+> default the same edge ran Y7 → Y8, one year. Under §7's map it runs Y7 → Y9.
+>
+> **It is one of exactly two things, and which one is a decision, not a fix:**
+>
+> | Option | Change | Cost |
+> |---|---|---|
+> | **(a) Flip ownership to B3** | Amend §7.4: Biology owns "energy in food"; P2 references it. | Amends a table §7.4 calls *fixed*. But it is arguably the truer reading — B3's lesson is nutrition (*what you need*), P2's is an energy calculation, and §4.6 explicitly allows two lessons where the treatment genuinely differs. |
+> | **(b) Move P2 earlier** | P2 → Y8. | Closes the gap to one year, does not eliminate it. P2 requires P1 *Energy* (Y8), so P2 cannot precede it, and **no placement of P2 removes the forward reference while B3 stays Y7.** |
+> | **(c) Accept and render it** | Keep both; render the cross-link as an explicit forward pointer — *"you'll meet the full calculation in Year 9"*. | Zero structural change. Turns a silent forward reference into a deliberate one, which is the same move §4.7's `ks4_links` already makes across the key-stage boundary. |
+>
+> **Recommendation: (a) or (c), and (c) is cheaper.** (b) does not actually solve it. **Not acted on
+> — this touches curriculum sequencing and ownership, which is Mide's gate.** Recorded here so it is
+> a known, bounded, single case rather than something rediscovered during Year 7 authoring.
 
 ### 4.6 Cross-discipline lessons: single source, referenced ⊕
 
@@ -291,6 +341,8 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   # ---- curriculum position -------------------------------------------
   "covers":          ["KS3.C.PNM.01", "KS3.C.PNM.02"],
   "touches":         ["KS3.P.PHYC.05"],
+  "beyond_statutory": False,                       # ⊕ §7.6 — True ⇒ covers MUST be empty
+                                                   #   and ks4_links MUST NOT be
   "threads":         [{"id": "particles", "level": 1}],
   "typical_year":    7,                            # ADVISORY ONLY — never routes (§4.5)
   "typical_minutes": 35,
@@ -792,18 +844,39 @@ block lineups should be a coincidence of need, never a default.
 
 Derived from the 2014 statutory programme of study, normalised to Discipline → Unit → Lesson.
 
-> ⚠️ **Amended 2026-07-26 (§11 decision 5 + conflict 1d, ruled).** The `Y` column below is **no
-> longer the published default sequence.** MRB-103's locked Rainford year map is
-> **"MrBadmusAI default sequence v1"**, and it ships in `ks3_data/default_sequence.py`. The `Y`
-> column is now the **advisory fallback**, consulted only where the locked map is silent. Both remain
-> data, never structure (§4.5). Where the two differ, the locked map wins.
+> ✅ **Amended 2026-07-26 (second amendment — the first is REVERSED).** The `Y` column below **is
+> "MrBadmusAI default sequence v1"**, and it ships in `ks3_data/default_sequence.py`.
+>
+> This reverses the amendment made earlier the same day, which had demoted this column to an
+> advisory fallback and promoted MRB-103's locked Rainford year map to the published default. **Mide
+> reversed that ruling** — see §11 decision 5 and conflict 1d, both of which now carry the reversal
+> and its reasoning. **Rainford's map is reference evidence, never a template**; it now lives in
+> `ks3_data/school_schemes.py` as one school's configured sequence (§8.9).
+>
+> The column earns the default because it was **derived from the statutory spine and the
+> prerequisite graph**, not from one school's timetable. There is no "fallback" layer any more —
+> the default and this column are the same object, asserted equal at import.
 
-**How to read this.** `Y` = `typical_year`, advisory only (§4.5) — it is a *starting suggestion for
-a school with no scheme configured*, nothing more. `F` = architecture family. Lesson counts are
+**How to read this.** `Y` = `typical_year`, the published default and still **data, never structure**
+(§4.5) — it is what a school with no scheme configured gets, and any school may override it with a
+data change. `F` = architecture family. Lesson counts are
 indicative; the authoring team may merge or split within a unit provided statutory coverage stays
 exactly-once (§4.4). Units marked **⇄** contain a lesson owned by another discipline (§4.6).
 
 **Totals: 33 units, 185 lessons** (Biology 11/60, Chemistry 10/55, Physics 12/70).
+
+**As a default sequence, that distributes as:**
+
+| Year | Units | Lessons |
+|---|---|---|
+| Y7 | 9 | 55 |
+| Y8 | 13 | 79 |
+| Y9 | 11 | 51 |
+
+Year 8 is the heavy year and that is stated rather than shaded — it carries four of the five
+physics units a school would rather not meet in Year 7. A school that finds it heavy moves a unit,
+which is a data change (§4.5). What matters for a *default* is that all three years are teachable
+years; the map this replaced offered Year 9 three lessons.
 
 That is a large authoring commitment — larger than anything attempted at KS4 so far — and it is
 stated honestly rather than shaded down. Across three years and three sciences it works out at
@@ -898,6 +971,147 @@ Coverage of the four WS strands is auditable per year and per discipline once `w
 *Count corrected 26 Jul 2026: this list said 17 and omitted `Substance misuse and decisions` (B6),
 which `ks3_data/structure.py` has carried as `INVESTIGATION` since Phase 1. The structure data was
 right; the prose was one short.*
+
+### 7.6 The Year 9 GCSE-bridge unit group ⊕ — design only, not yet authored
+
+*Added 2026-07-26 on Mide's instruction, alongside the default-sequence reversal. This settles the
+Phase 3 question left open by §11 conflict 1g — **whether** Year 9 gets a bridge group, and **what
+is in it**. Authoring stays deferred; nothing here is in `ks3_data/structure.py`, and the 185-lesson
+scope of §7 is unchanged by it.*
+
+**The problem the default has to solve.** A published default sequence has to serve two real shapes
+of school, and they want opposite things from Year 9:
+
+| Shape | What the school does | What Year 9 needs from us |
+|---|---|---|
+| **A — full KS3** | Teaches KS3 across Years 7, 8 and 9, starts GCSE in Year 10. | The **remaining statutory content**: the 11 units and 51 lessons §7 places in Y9. |
+| **B — early GCSE** | Starts GCSE in Year 9. Very common, and the reason Rainford's Y9 looked short. | An explicit **bridge set** — deliberate KS4-facing content that gets a KS3 student ready for a GCSE course starting now. |
+
+Shape A is served by the default as published, with no extra work. Shape B is served by this unit
+group. **Neither is the "real" default** — the default sequence covers Shape A because that is what
+the statutory programme of study describes, and the bridge group is what a Shape-B school swaps in.
+
+#### The exemption shape
+
+Bridge lessons teach **nothing in the KS3 programme of study**, and the architecture must say so
+loudly rather than let them leak into the coverage numbers. They take the same shape as the
+Working Scientifically exemption ruled at decision 6 — *the rule is not quietly relaxed; the
+exemption is declared, named, and countable*:
+
+1. **Every bridge unit and every bridge lesson carries `beyond_statutory: True`.** No lesson is
+   beyond-statutory by omission; it is beyond-statutory by declaration.
+2. **`covers` MUST be empty.** Not "may be" — a bridge lesson that declares a `covers` entry is a
+   **build failure**, not a warning. This is the operative half of conflict 1g's standing
+   prohibition: *bridge content must never enter through the coverage register.*
+3. **`ks4_links` MUST be non-empty.** The inverse gate, and the one that makes a bridge a bridge. A
+   beyond-statutory lesson pointing nowhere is just off-spec content. `check_ks4_links()` already
+   exists and already fails the build on an unresolvable edge — bridge lessons get it as a
+   requirement rather than a courtesy.
+4. **They never appear in `docs/ks3/statutory-register.md`.** Exactly-once (§4.4) is computed over
+   statutory lessons only and is untouched by their existence.
+5. **They are counted where they can be seen** — `docs/ks3/bridge-register.md`, generated from the
+   lesson data exactly as the diagram manifest is (§4.10), so the beyond-statutory surface is a
+   number anyone can read rather than something you have to grep for. *It does not exist yet and
+   should not be created empty; it lands with the first authored bridge lesson.*
+
+`typical_year: 9` on a bridge lesson is advisory in the ordinary way (§4.5). Its URL is
+`/ks3/<discipline>/gcse-bridge-…/` — the path says bridge, because a teacher landing on one from a
+search result must know immediately that it is not KS3 curriculum.
+
+#### The proposed set — 3 units, 15 lessons
+
+Three units, one per discipline, sized as an autumn term. MRB-103's four candidates are all in it
+and are marked ⓶. The remaining eleven are proposed here: each is a KS4 idea that (a) sits directly
+on a KS3 lesson already in §7, and (b) is a place students demonstrably stall on entry to GCSE.
+
+**XB1 — *GCSE bridge: from cells to organisms*** (Biology, `gcse-bridge-organisms`)
+
+| Lesson | F | Why it bridges | `ks4_links` target |
+|---|---|---|---|
+| The circulatory system ⓶ | SYSTEM | The organ system KS3 never teaches, and every GCSE organisation topic assumes. | the heart · blood vessels |
+| Blood and what it carries | CLASSIFY | Follows directly; four components, one lesson. | blood |
+| Exchange surfaces: surface area and volume | QUANTITATIVE | The single most common GCSE Biology stumble. Sits on B4 *Alveoli: built for exchange* and B1 *Animal and plant cells*, and asks for a ratio KS3 never asks for. | exchange surfaces |
+| Enzymes: lock and key, and what denatures them | MODEL | B1 teaches enzyme rate descriptively; GCSE wants the model and the pH/temperature curve. | enzymes |
+| Communicable disease and the immune response | SYSTEM | Sits on B6 *Health and drugs*, which is the one Y9 unit both shapes keep. | communicable diseases |
+
+**XC1 — *GCSE bridge: atoms, bonding and rates*** (Chemistry, `gcse-bridge-atoms-and-rates`)
+
+| Lesson | F | Why it bridges | `ks4_links` target |
+|---|---|---|---|
+| Inside the atom: the nuclear model | MODEL | **The biggest single KS3→KS4 chemistry step.** C2 stops at Dalton's indivisible sphere; GCSE opens on protons, neutrons and electrons. | the atom |
+| Electron shells, and why the groups behave as they do | MODEL | C8 gives the group patterns descriptively; this supplies the explanation underneath them. | electronic structure |
+| Ionic and covalent bonding: a first look | CONTRAST | **The strongest `ks4_links` in the set** — the bonding v2 pages already exist and are the platform's best content. | ionic bonding · covalent bonding |
+| Collision theory | MODEL | The explanatory half of rate, and it sits squarely on C1's particle model — the bridge closes the loop the vertical slice opened. | collision theory |
+| Rate of reaction: what changes it ⓶ | INVESTIGATION | MRB-103's candidate. Placed after collision theory so the investigation tests a model rather than collecting an unexplained pattern. | rate of reaction |
+
+**XP1 — *GCSE bridge: energy, radiation and the universe*** (Physics, `gcse-bridge-energy-and-space`)
+
+| Lesson | F | Why it bridges | `ks4_links` target |
+|---|---|---|---|
+| Efficiency: energy usefully transferred | QUANTITATIVE | P1 gives stores and transfers; GCSE wants the calculation within weeks. | efficiency |
+| The electromagnetic spectrum | CLASSIFY | P7 covers visible light only. The spectrum is the frame GCSE waves hangs on. | electromagnetic spectrum |
+| The nucleus and radioactive decay | MODEL | **Deliberately paired with XC1's *Inside the atom***: one model, two disciplines, two genuinely different treatments. This is §4.6 applied to bridge content, and it is why the two are not one lesson. | radioactive decay |
+| Nuclear fusion in stars ⓶ | PROCESS | MRB-103's candidate. Sits on P12 *The Sun, stars and galaxies*. | nuclear fusion |
+| The life cycle of a star ⓶ | PROCESS | MRB-103's candidate, and the natural close — the one place a KS3 student can see the whole periodic table get made. | life cycle of a star |
+
+`ks4_links` targets above are **named, not slugged**. Real slugs get resolved at authoring time
+against the live KS4 pages by the existing gate — writing guessed slugs into this document would
+create exactly the silent drift §4.10 was added to prevent.
+
+#### ⛔ Three of the 17 targets do not resolve — checked, not assumed
+
+*All 17 targets were looked up against the live KS4 pages on 2026-07-26, before authoring rather
+than during it. Fourteen resolve cleanly. Three do not, and two of those are MRB-103's own
+candidates. **These are Mide's calls — the first is a science/AQA-coverage question and the second
+is a KS4 content gap — so nothing has been changed in the set above.***
+
+**`check_ks4_links()` resolves a link against `/combined/foundation/<link>.html`.** A page that
+exists only under `triple/` therefore **fails** the gate — and §7.6 makes a resolving `ks4_links`
+a hard requirement for a bridge lesson. So these are build failures, not cosmetic gaps.
+
+| Target | State | What it means |
+|---|---|---|
+| **nuclear fusion** ⓶ | `physics/atomic-structure/nuclear-fusion` exists **under `triple/` only** | Not on the Combined pathway. |
+| **life cycle of a star** ⓶ | `physics/space/stellar-evolution` exists **under `triple/` only** | Not on the Combined pathway. |
+| **exchange surfaces / SA:V** | **No KS4 page anywhere** — not combined, not triple, not higher | A gap in KS4, not in KS3. |
+
+**1. MRB-103's two physics candidates are Triple-only GCSE content.** Space physics and nuclear
+fusion are not in AQA GCSE Combined Science. That is not a slug problem to be worked around by
+pointing the gate at `triple/` — **it means those two lessons bridge only for students heading to
+Triple Physics**, and roughly the majority of a cohort is not. A *default* bridge unit built on them
+would spend two of its five physics lessons on content most of its students will never be examined
+on. **⚑ Flagged for Mide as an AQA-coverage question** — this is his gate, and the whole set stands
+until he rules.
+> **Proposed fix, not applied:** keep both, but as **`stretch` within the physics bridge unit**
+> rather than as core lessons, and promote two Combined-reachable ideas into the core slots. That is
+> what §5.6's depth layers are for, and it is the move that does not smuggle a tier back into KS3
+> (§2). The physics unit would then need two replacement core lessons proposed.
+
+**2. `exchange surfaces / surface area to volume` has no KS4 counterpart at all.** AQA GCSE Biology
+plainly covers it, so **this is a hole in the KS4 site**, found by designing the bridge — the bridge
+pointing at KS4 turns out to be a way of auditing KS4. **It should become its own KS4 content
+ticket**, not be solved by dropping the KS3 lesson: §7.6 names it "the single most common GCSE
+Biology stumble", which is an argument for fixing KS4, not for looking away.
+
+**This is the argument for designing the bridge before authoring it.** Fourteen targets are real and
+the design is sound; three would have been discovered one at a time, mid-authoring, as build
+failures with no obvious cause.
+
+#### What this costs, stated plainly
+
+- **+15 lessons, taking the full commitment from 185 to 200.** That is a real scope increase and it
+  is recorded here rather than absorbed. It is also the smallest honest version: four candidates
+  came from MRB-103 and eleven were needed to make three teachable units rather than three
+  fragments.
+- **It is the last thing authored, not the first.** Both Shape-A and Shape-B schools need Years 7
+  and 8 first, and Shape B needs them *more* — an early-GCSE school compresses KS3 into two years,
+  so Y7 and Y8 are its entire key stage.
+- **One open audit, and it belongs to Phase 3:** *which Y9 statutory statements have no GCSE
+  successor?* A Shape-B school skips §7's 51 Y9 lessons, and most of that content — ecosystems,
+  inheritance, evolution, energetics, metals, Earth and atmosphere, static, magnetism, space — it
+  meets again at GCSE depth. Most is not all. The register and the KS4 spec together can answer this
+  exactly, and the answer is what a Shape-B school actually needs to know. **Do not assume the
+  answer is "none".**
 
 ---
 
@@ -1027,10 +1241,18 @@ no pathway and no tier — which is the point.
 | ⭐ Higher / 🔬 Triple labels | Meaningless at KS3. | Nothing. |
 | Mark-scheme tariffs | No board awards marks. | Plain-English success criteria (§5.8). |
 
-### 8.7 Supabase — two real defects to fix before the default sequence ships ⊕
+### 8.7 Supabase — three real defects to fix before the default sequence ships ⊕
 
-`scheme_of_work_entries` is the right home for the soft ordering that §4.5 requires. It is currently
-**unused by the frontend**, and inspection shows two problems that are build-blocking for KS3:
+**Two tables, and confusing them is the first mistake available here.** `scheme_of_work_entries` is
+**global** — it has no `school_id` — and is therefore the right home for the *platform default*.
+`scheme_of_work_overrides` is **per-school**, and is where a real school's real sequence goes. §4.5's
+claim that the default "is *a* scheme of work stored the same way as any school's" is true of the
+*shape* of the rows, not of the table: the default is global by definition, and a school's is not.
+
+Both are currently **unused by the frontend**. Inspection shows three problems that are
+build-blocking for KS3.
+
+**On `scheme_of_work_entries` (the global default):**
 
 1. **`exam_board` is `NOT NULL` with a CHECK restricted to real boards** (`'AQA'`, `'Edexcel'`,
    `'OCR'`, …). **KS3 has no exam board.** Every KS3 row would have to lie. Fix: a migration
@@ -1041,6 +1263,19 @@ no pathway and no tier — which is the point.
    `pathway` are `NULL` on every KS3 row. Postgres treats NULLs as distinct in a unique index, so
    **duplicate KS3 scheme rows are currently allowed.** Fix: `NULLS NOT DISTINCT` (PG15+) or a
    partial unique index scoped to `key_stage = 'KS3'`.
+
+**On `scheme_of_work_overrides` (per-school) — found 2026-07-26, when Rainford became seed data:**
+
+3. **The same NULLS-DISTINCT hole, and no KS3 guard at all.** Its UNIQUE spans
+   `(school_id, key_stage, year_group, tier, pathway, subject_id, academic_week)`, with `tier` and
+   `pathway` NULL on every KS3 row — so **duplicate KS3 override rows are allowed**, exactly as in
+   defect 2. It also has no constraint forcing `tier`/`pathway` NULL at KS3, and no shape constraint
+   on `subtopic`. It has **no `exam_board` column**, so defect 1 does not apply to it.
+   > ⚠️ **This was missed when defects 1 and 2 were written**, because the fix was scoped to the
+   > table the default sequence lands in and the per-school table was not yet being written to.
+   > Seeding one real school found it immediately — which is the argument for seeding real schemes
+   > early rather than describing them. Fixed in
+   > `supabase/migrations/20260726180000_ks3_scheme_of_work_overrides.sql`.
 
 Also note:
 
@@ -1068,34 +1303,68 @@ Verified current state:
 A KS3 student who signs up today has nowhere to go. That is the strongest practical argument for the
 vertical slice in §9: `/ks3/` plus one real unit is the first thing that gives them a destination.
 
-### 8.9 Evidence from a real school ⊕
+### 8.9 Evidence from real schools ⊕ — and where their schemes live
 
-Rainford High School's KS3 materials were surveyed as reference evidence — never as a template. Three
-observations that bear on this architecture:
+> ✅ **Rewritten 2026-07-26, with the default-sequence reversal (§11 decision 5).** Real schools'
+> schemes are **reference evidence and seed data. They are never a template, and never the default.**
+> This section previously read as though Rainford's sequence had a claim on the platform's. It does
+> not. **This is Mide's business, not any one school's**, and the platform is school-agnostic.
 
-1. ⚠️ **Unreliable — see §11 decision 1, correction 1.** As written: "Rainford teaches combustion,
-   oxidation and thermal decomposition in Year 7, and states of matter and particles in Year 8 — the
-   reverse of this document's `typical_year` defaults (C1 particles in Y7, C5 reactions in Y8)."
-   MRB-103's locked year map, ruled by Ayo against Rainford's actual scheme, says something
-   different and self-consistent: **Chemistry states of matter in Year 7**, with the *Physics*
-   particle model in Year 8 as the second half of a deliberate deepening pair. Only the reactions
-   half of the observation survives.
-   > ✅ **RESOLVED 2026-07-26 (§11 decision 5 / conflict 1d, ruled).** Mide ruled in MRB-103's
-   > favour. This observation is no longer "unreliable pending confirmation" — it is **settled
-   > against**, on the half that conflicts. **MRB-103's reading is now the record:** Chemistry states
-   > of matter in Year 7, Physics particle model in Year 8, as a deliberate deepening pair. The
-   > reactions half of the observation stands. Do not re-litigate this from §8.9.
-   The *point* of the observation stands either way, and is why it was included: a school reorders,
-   and **nothing rebuilds**. This is exactly the case §4.5 exists for. If that had cost a rebuild,
-   the platform would already be a poor fit for its own pilot school.
+**What a real scheme is for.** Three things, none of which is "tell us how to order the curriculum":
+it *validates* structural choices against practice; it *stress-tests* §4.5 by diverging from the
+default and costing nothing; and it *seeds* the override mechanism with something real, so the
+mechanism is demonstrated rather than described.
+
+#### Observations that bear on this architecture
+
+Rainford High School's KS3 materials were surveyed as reference evidence:
+
+1. **Rainford's sequence differs materially from the default**, which is the useful part. MRB-103
+   carries the locked year map, ruled by Ayo against Rainford's actual scheme: **Chemistry states of
+   matter in Year 7**, with the *Physics* particle model in Year 8 as the second half of a
+   deliberate deepening pair; reactions and materials in Year 7; electricity and magnetism in Year 7;
+   Earth and atmosphere in Year 8; a short Year 9 that runs into a GCSE bridge.
+   > **On the earlier dispute:** this section originally claimed Rainford taught states and particles
+   > in Year 8, which conflicted with MRB-103. **MRB-103's reading is the record** — it is
+   > self-consistent and Ayo had access this document's author did not. That settles *what Rainford
+   > teaches*. It settles nothing about *what the platform defaults to*; the two questions were
+   > briefly and wrongly treated as one (§11 decision 5).
+   >
+   > The *point* of the observation is unchanged, and is why it was included: a school reorders, and
+   > **nothing rebuilds**. §9's reorder proof now runs Rainford's entire real scheme over the
+   > default for exactly this reason.
 2. **Rainford runs split science (separate Biology, Chemistry, Physics) across Years 7–9** — evidence
    supporting the disciplinary structure of §4.1, and a useful data point for §11 decision 2.
 3. **Rainford differentiates with "LA"/"HA" variants of individual worksheets**, applied per-resource
    rather than as a tier. That is precisely the shape of the support/stretch layers in §5.6, and
    confirms the layer axis reflects real classroom practice rather than a platform invention.
+4. **Rainford's Year 9 is short — explicitly "part-year, then GCSE bridge".** Read as a template that
+   looked like a defect in the curriculum. Read as evidence, it is the observation that produced
+   §7.6: many schools start GCSE in Year 9, and a default sequence has to serve that shape
+   deliberately rather than by accident.
 
-There is no formal Rainford scheme-of-work document; the sequence is implicit in folder structure.
-So no scheme was copied, and none could have been.
+#### Where the schemes actually live
+
+| Layer | Table | Contents |
+|---|---|---|
+| Platform default | `scheme_of_work_entries` (global) | §7's map — "MrBadmusAI default sequence v1", derived from the statutory spine and the prerequisite graph (§4.5). |
+| A school's own scheme | `scheme_of_work_overrides` (per-school) | Rainford. Westleigh next. Any school after that. |
+
+Both are generated from Python by `ks3_seed_sow.py`, so the SQL cannot drift from the maps:
+`ks3_data/default_sequence.py` holds the default, and `ks3_data/school_schemes.py` holds the real
+schemes, one entry per school. Adding a school is adding a dict key.
+
+**Two divergent real schemes over identical lessons is the demonstration this architecture wants.**
+One school's scheme can be mistaken for the shape of the curriculum. Two that disagree — over the
+same 185 lessons, the same slugs, the same pages, with zero content difference between them — cannot
+be. **Westleigh's map is the second seed and is outstanding from Mide** (requested 2026-07-26); the
+slot for it is already in `school_schemes.py`.
+
+**On whether a formal Rainford scheme-of-work document exists:** this document was written believing
+none did, with the sequence implicit in folder structure; MRB-103 states Ayo ruled the year map
+"against Rainford's actual SOW". §0 records this as disputed and it stays disputed — it no longer
+matters much, because under the reversal nothing about the platform default depends on the answer.
+Either way, **no scheme was copied into the default**, which is the claim that had to hold.
 
 ---
 
@@ -1141,6 +1410,13 @@ depends on particles.
 - `ks4_links` to the bonding v2 states-of-matter page resolves.
 - The default sequence contains C1 and a school can reorder it with a data change only — proven by
   actually doing it, not by assertion.
+  > ⊕ **Strengthened 2026-07-26, with the default-sequence reversal.** The proof previously nudged
+  > two units to different years, which is a synthetic reorder and a weak test. It now applies
+  > **Rainford's entire real scheme** from `ks3_data/school_schemes.py` over the default and
+  > rebuilds. That is a real school's real divergent sequence across all 33 units — the hardest
+  > version of the claim §4.5 makes. The required result is **zero page paths changed and zero page
+  > bytes changed.** Anything else is not a bug in the test; it is §4.5 having failed, and that is
+  > the finding.
 - Full verification pass, inherited from bonding: keyboard walk, touch model, reduced-motion, WCAG
   AA contrast on any new tints, determinism double-run (two generator runs → byte-identical output),
   and **zero KS4 pages changed**.
@@ -1174,8 +1450,8 @@ authoring commitment.
 > |---|---|---|
 > | **1 — Slice** | C1 end to end (§9). Unchanged. | Full §9 done-list. |
 > | **2 — Year 7** | All remaining Year 7 units, all three disciplines, in the default sequence order. | Per-unit examiner review. |
-> | **3 — Year 8** | All Year 8 units, all three disciplines. Confirm §11 decision 9 (P9). Decide the Year 9 bridge-unit question (conflict 1g). | Per-unit. |
-> | **4 — Year 9** | All Year 9 units, all three disciplines. | Per-unit. |
+> | **3 — Year 8** | All Year 8 units, all three disciplines. Confirm §11 decision 9 (P9). Run the §7.6 audit: which Y9 statutory statements have no GCSE successor? | Per-unit. |
+> | **4 — Year 9** | All Year 9 units, all three disciplines (11 units, 51 lessons). **Then the §7.6 bridge group** — 3 units, 15 lessons, last because both school shapes need Years 7 and 8 first. | Per-unit, plus the `beyond_statutory` gates in §10.2. |
 > | **5 — Systems** | Unchanged: progress tracking, scheme-of-work editor, coverage reporting, KS3 challenge (decision 3). | Product gate. |
 >
 > **Why:** the ruling keeps full scope but takes the Year-7-first cut's benefit — a pilot school gets
@@ -1221,6 +1497,19 @@ A lesson ships only when every line is true:
 - [ ] **`covers` entries resolve** against `statutory-register.md` — parent IDs, or sub-IDs minted
       per §11 decision 11 — and no statement or clause is owned twice.
 
+*Added 2026-07-26, with the §7.6 bridge-group design. These apply to every lesson, not only bridge
+lessons — the point is that a lesson cannot end up beyond-statutory by accident:*
+
+- [ ] **`beyond_statutory` present and explicit** (§7.6). Absent is a defect, exactly as with
+      `support`.
+- [ ] **If `beyond_statutory` is True: `covers` is empty and `ks4_links` is not.** Both halves are
+      build failures, not warnings. A declared `covers` entry is conflict 1g's prohibition being
+      breached; an empty `ks4_links` is off-spec content wearing a bridge's name.
+- [ ] **If `beyond_statutory` is False: `covers` is non-empty**, which is the existing rule above,
+      now stated as the other half of a pair.
+- [ ] **Every `beyond_statutory` lesson appears in `docs/ks3/bridge-register.md`**, generated from
+      the lesson data (§7.6), so the beyond-statutory surface is countable.
+
 ### 10.3 Review method
 
 Inherited from bonding: **name the intended cognitive demand first, then check the activity delivers
@@ -1236,14 +1525,19 @@ finished, however attractive it looks.
 > Mide. Each carries its ruling inline, and each has a dated line in the §12 amendment log. **This
 > section is now a decision record, not a queue.** Nothing here blocks the build.
 >
-> Two items are *scheduled* rather than undecided, and both are Phase 3: confirming decision 9 (P9 as
-> its own unit) against authored physics, and deciding whether Year 9 gets an explicit
-> beyond-statutory GCSE-bridge unit (conflict 1g). Neither blocks Phase 1 or Phase 2.
+> ⛔ **One ruling has since been REVERSED: decision 5 / conflict 1d, the default sequence.** Mide
+> reversed his own ruling the same day. Both entries carry the superseded ruling, the reversal, and
+> the reasoning for each. **Read the reversal, not the ruling.** Nothing else is disturbed.
+>
+> Two items are *scheduled* rather than undecided. Confirming decision 9 (P9 as its own unit) against
+> authored physics is Phase 3. Conflict 1g's Year 9 bridge question is **answered in design** —
+> §7.6 — with authoring deferred and one audit outstanding. Neither blocks Phase 1 or Phase 2.
 >
 > **Reopening any of these requires an amendment under §12**, not a build-session decision. The
 > rulings are kept in place with their original reasoning above them so that the *cost* of each
 > choice stays visible — a closed decision whose trade-offs were erased is one nobody can revisit
-> intelligently.
+> intelligently. **That rule binds hardest on a reversal:** a superseded ruling is never deleted, and
+> whose it was is recorded.
 
 Ordered by how much downstream work they block.
 
@@ -1361,10 +1655,20 @@ MRB-103's locked map as the published default**, because it is a real school's r
 Ayo already ruled on it, and treat §7's column as the advisory fallback. If honouring it costs
 anything beyond a data change, §4.5 has failed and we want to know on unit one.
 
-> ✅ **RULED by Mide, 2026-07-26, jointly with decision 5.** Recommendation adopted: **MRB-103's
-> locked Rainford map becomes "MrBadmusAI default sequence v1"**; §7's `typical_year` column is the
-> advisory fallback. §8.9 observation 1 is marked **resolved** in MRB-103's favour, not merely
-> unreliable. Full ruling recorded at decision 5 above. **Conflict closed.**
+> ⛔ **RULED, then REVERSED — both on 2026-07-26. Read the reversal, not the ruling.**
+>
+> **First ruling (superseded).** Recommendation adopted: MRB-103's locked Rainford map becomes
+> "MrBadmusAI default sequence v1"; §7's `typical_year` column is the advisory fallback. Kept here
+> per §11's own rule that a closed decision's reasoning stays visible.
+>
+> ✅ **REVERSED by Mide, 2026-07-26, jointly with decision 5. §7's map is the default. Rainford's is
+> seed data.** Full reversal and reasoning recorded at decision 5 below — it is the same question and
+> the same reversal. **Conflict closed on the reversed ruling.**
+>
+> The recommendation above was wrong in a specific and instructive way, and the error is worth
+> naming rather than deleting: **it treated "a real school's real sequence" as automatically better
+> evidence than a derived one.** For a *description* of practice that is right. For a *default* it is
+> backwards — see decision 5.
 
 **Conflict 1e — the KS4 relationship.** MRB-103: "Subject + topic are the shared spine with KS4."
 §8.2 here forbids threading KS3 through the KS4 loop and §4.7 handles the relationship with explicit
@@ -1418,24 +1722,35 @@ beyond-statutory bridge unit. Do not let bridge content enter through the covera
 > prohibition, and it survives whatever Phase 3 decides. **Conflict closed, with a Phase 3 follow-up.**
 >
 > ⚠️ **Quantified 2026-07-26, when the locked map was encoded as `ks3_data/default_sequence.py`.**
-> This ruling and the decision-5 ruling interact, and the size of the interaction was not visible
-> when either was taken. Mapping Rainford's locked map onto the 33 units gives:
+> Mapping Rainford's locked map onto the 33 units gives Y7 16 units / 92 lessons, Y8 16 / 90, and
+> **Y9 one unit — B6 *Health and drugs*, three lessons.** Rainford's Y9 names three topics and two of
+> them (rate of reaction, fusion / star life cycle) are exactly the beyond-statutory content this
+> conflict excludes. That is not an error in Rainford's scheme: their Y9 is explicitly "short,
+> part-year then GCSE bridge", so a thin statutory Y9 faithfully reflects a real school's real year.
 >
-> | Year | Units | Lessons |
-> |---|---|---|
-> | Y7 | 16 | 92 |
-> | Y8 | 16 | 90 |
-> | **Y9** | **1** | **3** |
+> **It was, however, decisive evidence that the map should not have been the platform default** —
+> a default cannot silently assume every school starts GCSE in Year 9. That is one of the four
+> grounds for the decision-5 reversal recorded above. Under the reversed default (§7's map), Year 9
+> is **11 units and 51 lessons**, and the numbers above are now a fact about Rainford, not about the
+> platform.
+
+> ✅ **PHASE 3 FOLLOW-UP ANSWERED, 2026-07-26 — design only, authoring still deferred.** Mide
+> instructed that the default must serve two shapes of school, and that the Year 9 bridge be designed
+> now: schools running full KS3 to Year 9 get the remaining statutory content; schools starting GCSE
+> early get an explicit bridge set. **The design is §7.6** — three units, 15 lessons, one per
+> discipline, with all four MRB-103 candidates in it (circulation, rate of reaction, fusion, star
+> life cycle) plus eleven proposed here.
 >
-> **Year 9 is one unit — B6 *Health and drugs*.** Rainford's Y9 names three topics and two of them
-> (rate of reaction, fusion / star life cycle) are exactly the beyond-statutory content this conflict
-> excludes. That is not an error in either ruling: Rainford's Y9 is explicitly "short, part-year then
-> GCSE bridge", so a thin statutory Y9 is a faithful reflection of a real school's real year.
+> **This conflict's prohibition survives intact and is now mechanised**, which was the point of
+> keeping the two questions apart. Bridge lessons carry `beyond_statutory: True`; `covers` **must**
+> be empty and a declared entry is a build failure; `ks4_links` **must** be non-empty; they never
+> enter `statutory-register.md`; and they are counted in a `bridge-register.md` of their own. The
+> exemption has the same shape as the Working Scientifically exemption ruled at decision 6 — *named,
+> declared and countable, never a quietly relaxed rule.*
 >
-> **But it sharpens the Phase 3 question considerably.** "Does Year 9 get a bridge unit?" is not a
-> nice-to-have under this map — without one, the published default sequence offers a Year 9 class
-> three lessons. Phase 3 should treat this as the primary Y9 design question, not a footnote. It
-> does not block Phase 1 or Phase 2, both of which are Y7-weighted.
+> **What remains open is authoring, plus one real audit:** which Y9 statutory statements have no GCSE
+> successor, and are therefore genuinely lost to a school that skips Year 9 KS3. §7.6 states it; the
+> register and the KS4 spec can answer it exactly. **Do not assume the answer is "none".**
 
 **Conflict 1h — figures and diagrams.** MRB-103 flags an **anatomical/structural diagram gap** and
 proposes figure-slots plus a diagram manifest so the slice is not blocked. **The lesson record in
@@ -1479,6 +1794,12 @@ than a thread is the better call and needs no change.
    describes the two as a deliberate deepening pair) and should be preferred. **§8.9 observation 1
    and the part of §11 decision 5 that rests on it should be treated as unreliable until Mide
    confirms Rainford's actual order.**
+   > ✅ **Settled 2026-07-26, in two steps.** MRB-103's reading is the record for **what Rainford
+   > teaches** — that was the factual question and it is closed. The second sentence above is now
+   > moot: after the decision-5 reversal, **no part of the platform default rests on it**. §8.9 is
+   > rewritten accordingly. The correction was right that §8.9's evidence base was weaker than it
+   > presented itself; it was wrong only in assuming the stronger evidence should therefore become
+   > the default.
 2. **§1 says the programme of study is "roughly 120 short bullet points".** The Phase 0 transcription
    counts **137 subject-content statements plus 18 Working Scientifically statements — 155 in all**.
    The understatement is material, because §7's lesson count is justified partly against it. See
@@ -1537,18 +1858,65 @@ failed and we want to find that out on unit one.
 > which decision 1d recommends adopting as the published default instead of §7's column. **Decide 1d
 > and this decision together** — they are the same question asked twice.
 
-> ✅ **RULED by Mide, 2026-07-26, jointly with conflict 1d.** **MRB-103's locked Rainford year map is
-> adopted as "MrBadmusAI default sequence v1".** Mide already ruled it against the school's real
-> scheme of work, and a real school's real sequence beats a desk-derived one as a *default*.
+> ⛔ **First ruling, 2026-07-26 — SUPERSEDED. Kept for its reasoning; do not act on it.**
 >
-> - §7's `typical_year` column is **demoted to advisory fallback** — it applies only where the locked
->   map is silent.
-> - Where §8.9 observation 1 conflicts with MRB-103, **MRB-103's reading wins**; §8.9 obs 1 is now
->   marked **resolved**, not merely unreliable.
-> - This remains data, not structure (§4.5). Adopting a different default must stay a data change;
->   if it ever costs more than that, the invariant has failed and we want to know on unit one.
+> > **RULED by Mide, 2026-07-26, jointly with conflict 1d.** MRB-103's locked Rainford year map is
+> > adopted as "MrBadmusAI default sequence v1". Mide already ruled it against the school's real
+> > scheme of work, and a real school's real sequence beats a desk-derived one as a *default*.
+> > §7's `typical_year` column is demoted to advisory fallback. §8.9 observation 1 marked resolved
+> > in MRB-103's favour.
+
+---
+
+> ✅ **REVERSED by Mide, 2026-07-26 (same day). §7's `typical_year` map IS "MrBadmusAI default
+> sequence v1". Rainford's map is seed data.**
 >
-> **Decision closed, and conflict 1d closed with it.**
+> **The earlier ruling was Mide's, and Mide has recorded that it was wrong.** It is written here in
+> full, above, rather than deleted — §11's standing rule is that a decision whose trade-offs were
+> erased is one nobody can revisit intelligently, and that applies with more force to a reversal than
+> to anything else in this section.
+>
+> **Why it was wrong.**
+>
+> 1. **Rainford's SOW is reference evidence. It was never a template.** Mide supplied Rainford's map
+>    *and* Westleigh's together, and the reason he supplied two was to demonstrate that schools
+>    sequence the same curriculum differently. Adopting one of the two as the platform default
+>    inverts the point of sending both.
+> 2. **This is Mide's business, not Rainford's.** The platform must be school-agnostic. A default
+>    derived from one school's timetable is that school's product with a platform's name on it —
+>    every other school then opens by disagreeing with us, and the divergence reads as *our map being
+>    wrong* rather than as the override mechanism working exactly as designed.
+> 3. **"A real school's real sequence beats a desk-derived one" is the wrong test for a default.** It
+>    is the right test for a *description of practice*. A default is not a description; it is what a
+>    school with no information gets, and the only defensible basis for that is the **statutory spine
+>    and the prerequisite graph** — what the programme of study says, ordered by what can actually be
+>    taught before what. §7's column was built that way. Rainford's map was built around one school's
+>    timetable, staffing and lab availability, none of which generalises.
+> 4. **The first ruling made Year 9 unteachable in the published default.** Its own quantification
+>    (recorded at conflict 1g) gave Y7 92 lessons, Y8 90, and **Y9 three**. That was read at the time
+>    as a faithful reflection of a real school's real year — which it was. It is not a defensible
+>    *default*, because it silently assumes every school starts GCSE in Year 9. §7's map gives
+>    Y7 55 / Y8 79 / Y9 51, and §7.6 now serves the early-GCSE shape **explicitly** instead of by
+>    accident.
+>
+> **What this ruling establishes.**
+>
+> - **§7's `typical_year` column is the published default**, shipped in
+>   `ks3_data/default_sequence.py`. There is no "advisory fallback" layer any more — the default and
+>   the column are one object, asserted equal at import so they cannot drift.
+> - **Rainford's map moves to `ks3_data/school_schemes.py`** and is seeded into
+>   `scheme_of_work_overrides` — one school's configured sequence, proving the override mechanism
+>   works. **Westleigh is requested from Mide and becomes the second seed.** Two divergent real
+>   schemes over identical lessons is the strongest available demonstration of §4.5.
+> - **§8.9 is rewritten** around evidence-and-seed-data. Its observation 1 stays resolved in
+>   MRB-103's favour **as a statement about what Rainford teaches** — that was a factual question and
+>   MRB-103 answered it. What is reversed is the *consequence* drawn from it. The two were briefly
+>   treated as one question; they are not.
+> - **This still remains data, not structure (§4.5).** The reversal itself is the test: swapping the
+>   published default from one whole map to another must cost a data change and nothing else. §9's
+>   reorder proof was re-run against the new default for exactly this reason — see the amendment log.
+>
+> **Decision closed on the reversal, and conflict 1d closed with it.**
 
 **6. Statutory ID scheme.** §4.4 invents `KS3.C.PNM.02`. Once lessons reference these IDs they are
 effectively permanent. Needs explicit blessing before Phase 0. **Recommendation:** adopt as
@@ -1718,6 +2086,12 @@ This document is law. Changing it changes what gets built.
   it rather than improvising.
 - Where this document and the statutory programme of study conflict, **the statutory document wins**
   and this one is wrong.
+- ⊕ **Reversing a ruling, added 2026-07-26.** A reversal is an amendment like any other, with three
+  extra obligations. **The superseded ruling is never deleted** — it stays in place, marked ⛔, above
+  the reversal. **The reasoning for the reversal is recorded**, not just its outcome. **Whose ruling
+  it was is stated plainly**, including when it was Mide's own. A decision record that quietly
+  rewrites itself teaches nobody anything, and the *reason* a ruling was wrong is usually worth more
+  than the ruling that replaced it.
 
 ### Amendment log
 
@@ -1753,3 +2127,16 @@ This document is law. Changing it changes what gets built.
 | 2026-07-26 | **§7.5 count corrected: 17 → 18 INVESTIGATION lessons.** `Substance misuse and decisions` (B6) was carried as `INVESTIGATION` in `ks3_data/structure.py` but omitted from the §7.5 prose list. The structure data was right. | Claude (Opus 5) |
 | 2026-07-26 | **§5.10.1 added — CARVE-OUT: draft lessons may publish before real students return**, provided the page carries the visible under-review marker (`.ks3-review-flag`, already emitted by `build_ks3.py` for any non-frozen lesson). Rationale: with no real students on the site, frozen-only protects nobody and makes the build unreviewable in situ. **Expires 1 September 2026** — or earlier, on the first real student — after which §5.10's frozen-only rule resumes with no further amendment. Mide remains the sole science gate throughout; publishing a draft is not approval. Enforced, not merely documented: `verify_ks3.py` checks the marker on every published draft and FAILS once `CARVE_OUT_EXPIRY` passes while any draft still publishes, so the carve-out cannot lapse silently. Extending it requires an explicit amendment logged here. | Claude (Opus 5) |
 | 2026-07-26 | **Misconception register: `PART-12`/`PART-13` RULED to stay as they are.** Both are nature-of-science misconceptions sitting in a particles family by accident of build order, but IDs are permanent (§5.3) and both are already referenced. A candidate `NOS` family is recorded, with the decision point set **before `B10 how-we-worked-out-dna` and `C8 mendeleev` are authored**; opening it would still not move these two. | Claude (Opus 5) |
+
+| 2026-07-26 | ⛔ **§11 decision 5 + conflict 1d REVERSED — Mide reversed his own earlier ruling of the same day.** **§7's `typical_year` map is "MrBadmusAI default sequence v1"**, because it was derived from the statutory spine and the prerequisite graph rather than one school's timetable. MRB-103's locked Rainford map is **demoted from default to seed data**. Superseded ruling kept in place per the new reversal rule in §12. Four grounds recorded at decision 5: Rainford's SOW is reference evidence not a template; the platform is school-agnostic and this is Mide's business, not Rainford's; "real beats derived" is the right test for a description of practice and the wrong one for a default; and the old default gave Year 9 three lessons. §7 header amendment reversed; the advisory-fallback layer is **removed**, not re-pointed — default and column are now one object, asserted equal at import. | Claude (Opus 5) |
+| 2026-07-26 | **§4.5 amended:** where the default may and may not come from, stated as part of the invariant. Also corrects the table split — `scheme_of_work_entries` is **global** and holds the default; `scheme_of_work_overrides` is **per-school**. The section previously named only the first for both jobs. | Claude (Opus 5) |
+| 2026-07-26 | **§8.9 rewritten** as "Evidence from real schools — and where their schemes live". Rainford is reference evidence **and** seed data, never a template. Observation 1 stays resolved in MRB-103's favour **as a fact about Rainford**; the consequence drawn from it is reversed. New observation 4: Rainford's short Year 9 is the evidence that produced §7.6. **Westleigh requested from Mide** as the second seed; slot open in `school_schemes.py`. §0 provenance updated — the Rainford SoW dispute is recorded as no longer load-bearing, and a Westleigh row added. | Claude (Opus 5) |
+| 2026-07-26 | **§8.7 gains defect 3:** `scheme_of_work_overrides` has the same NULLS-DISTINCT uniqueness hole as defect 2, no KS3 tier/pathway guard, and no `subtopic` shape constraint. Missed when defects 1–2 were written because the fix was scoped to the table the default lands in. **Found by seeding one real school** — the argument for seeding schemes early rather than describing them. Title changed from "two real defects" to "three". | Claude (Opus 5) |
+| 2026-07-26 | **New §7.6 ⊕ — the Year 9 GCSE-bridge unit group, DESIGN ONLY.** Answers conflict 1g's deferred Phase 3 question. The default must serve two shapes: full KS3 to Y9 (gets §7's 11 Y9 units, 51 lessons) and early GCSE (gets the bridge set). **Three units, 15 lessons**, one per discipline, containing all four MRB-103 candidates plus eleven proposed here. Exemption shape mirrors the Working Scientifically exemption: `beyond_statutory: True` declared, `covers` **must** be empty (a declared entry is a build failure), `ks4_links` **must** be non-empty, never in `statutory-register.md`, counted in a new `bridge-register.md`. Scope cost stated: 185 → 200 lessons. **Not authored, and not in `structure.py`.** | Claude (Opus 5) |
+| 2026-07-26 | **§4.8 gains `beyond_statutory`; §10.2 gains four gates** making it testable — present-and-explicit on every lesson, and the paired covers/ks4_links rules in both directions. | Claude (Opus 5) |
+| 2026-07-26 | ⛔ **§7.6: three of the 17 proposed `ks4_links` targets do not resolve** — checked against live KS4 pages at design time. **Nuclear fusion and star life cycle (two of MRB-103's four candidates) exist under `triple/` only**, and `check_ks4_links()` resolves against `combined/foundation`, so both would fail §7.6's own hard gate. They are Triple-only AQA content, so they bridge only for future-Triple students. **⚑ Flagged for Mide as an AQA-coverage question; nothing changed.** Proposed fix recorded but not applied: demote both to `stretch` (§5.6) and propose two Combined-reachable core lessons. | Claude (Opus 5) |
+| 2026-07-26 | ⛔ **KS4 content gap found by designing the bridge:** `exchange surfaces / surface area to volume` has **no KS4 page on any pathway or tier**, though AQA GCSE Biology covers it. Recorded as a KS4 ticket to raise, explicitly **not** to be solved by dropping the KS3 bridge lesson. | Claude (Opus 5) |
+| 2026-07-26 | ⛔ **§4.5: one forward reference found in the new default** — `B3 energy-in-food` (Y7) is a §4.6 reference slot pointing at `P2` (Y9). Not caused by the reversal, but widened by it (was Y7→Y8 under the superseded default). Three options costed at §4.5; **not acted on — curriculum sequencing and §7.4 ownership are Mide's gate.** The §4.5 claim that the default is "ordered by what the prerequisite graph makes possible" is corrected from an assertion to a checked, very-nearly-true statement. | Claude (Opus 5) |
+| 2026-07-26 | **`verify_ks3.py` gains a forward-reference gate** over the default sequence only (never over a school scheme — §4.5 makes a school's reorder their own business). The one known case is a **named allowance, not a suppression**: a new forward reference fails the build, and a stale allowance also fails, so the set can shrink only by a ruling. | Claude (Opus 5) |
+| 2026-07-26 | **§9's reorder proof strengthened and re-run against the new default.** Previously nudged two units to different years — a synthetic reorder and a weak test. Now applies **Rainford's entire real scheme across all 33 units** and rebuilds. Required result: zero page paths changed, zero page bytes changed. | Claude (Opus 5) |
+| 2026-07-26 | **§12 gains a reversal rule ⊕:** a superseded ruling is never deleted, the reasoning for the reversal is recorded, and whose ruling it was is stated plainly — including when it was Mide's own. | Claude (Opus 5) |
