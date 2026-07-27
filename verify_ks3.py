@@ -299,6 +299,42 @@ def main():
            if not t.startswith("ks3/") and not t.startswith("mrbadmus_site/ks3/")]
     check("zero KS4 pages changed", not ks4, str(ks4[:5]))
 
+    # 9. The KS4 generator must not destroy the KS3 output.
+    #
+    # build_site() wipes mrbadmus_site/ and rebuilds it. It used to take
+    # mrbadmus_site/ks3/ with it, so running the two generators in the wrong
+    # order silently shipped a site with no KS3 on it — and nothing failed,
+    # because the KS4 build itself succeeded. generate_site_v5.py now lifts
+    # foreign output trees out before the wipe and restores them after
+    # (FOREIGN_OUTPUT_DIRS), which makes the order safe in both directions.
+    #
+    # This gate proves that is still true, by actually running the KS4
+    # generator after the KS3 one and checking the KS3 output survived. It is
+    # the check that would have caught the original hazard, so it is the check
+    # that stops it coming back.
+    ks3_pages_before = sorted(
+        os.path.join(dp, f)
+        for dp, _, fs in os.walk("mrbadmus_site/ks3") for f in fs)
+    ks4_gen = subprocess.run([sys.executable, "generate_site_v5.py"],
+                             capture_output=True, text=True)
+    ks3_pages_after = sorted(
+        os.path.join(dp, f)
+        for dp, _, fs in os.walk("mrbadmus_site/ks3") for f in fs)
+
+    check("KS4 generator ran clean", ks4_gen.returncode == 0,
+          ks4_gen.stderr[-200:] if ks4_gen.returncode else "exit 0")
+    check("running the KS4 generator AFTER build_ks3 does not destroy ks3/",
+          bool(ks3_pages_after) and ks3_pages_after == ks3_pages_before,
+          "%d KS3 files before, %d after%s"
+          % (len(ks3_pages_before), len(ks3_pages_after),
+             "" if ks3_pages_after == ks3_pages_before
+             else "  ← generator order is load-bearing again; see "
+                  "FOREIGN_OUTPUT_DIRS in generate_site_v5.py"))
+    check("repo-root ks3/ mirror survives the round-trip too",
+          os.path.isdir("ks3") and any(
+              f.endswith(".html") for _, _, fs in os.walk("ks3") for f in fs),
+          "root mirror present")
+
     print("\n§10.2 — per-lesson done-list (automatable subset)\n" + "=" * 60)
 
     for l in authored:

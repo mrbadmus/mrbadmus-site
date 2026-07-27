@@ -1144,7 +1144,8 @@ through the back door and violate §2 within a week of shipping.
 
 Instead:
 
-- A new `build_ks3(output_dir)` function, called from `build_site()` alongside the KS4 build.
+- A new `build_ks3(output_dir)` function in its own module, `build_ks3.py`. **It is NOT called from
+  `build_site()`** — see §8.2.1, which corrects an earlier version of this bullet.
 - Its own registry (`ks3_data/`, §8.3). **Do not extend `SITE_DATA` or `PATHWAY_TOPIC_MAP`.**
 - Its own page template — the KS4 subtopic template is prose-blob shaped and is the thing being
   moved away from. The bonding v2 branch (generator ~L4396) is the correct model to follow: a
@@ -1153,6 +1154,46 @@ Instead:
   byte-identical output. This is inherited, non-negotiable, and testable.
 - **Zero KS4 drift:** a KS3 build must change zero bytes under the KS4 output paths. Verify by diff,
   every build.
+
+#### 8.2.1 The two generators are independent, and their ORDER does not matter ⊕
+
+*Corrects the bullet above, which said `build_ks3()` is "called from `build_site()`". It never was, and
+it must not be. Recorded 27 Jul 2026 after the ordering hazard below shipped to `main`.*
+
+**`build_ks3.py` is standalone. `build_site()` does not call it, and must not.** Wiring them together
+would rebuild 300+ KS4 pages on every KS3 content change and make the "zero KS4 drift" gate directly
+above impossible to demonstrate. Keeping them apart makes that gate provable by construction.
+
+**The hazard that independence created, and how it is closed.** `build_site()` opens with
+`shutil.rmtree(output_dir)` and rebuilds `mrbadmus_site/` from scratch. That is correct for
+everything it generates and destructive for everything it does not — so whenever the KS4 generator
+ran *second*, it silently deleted every page under `mrbadmus_site/ks3/`. Nothing failed: the KS4
+build succeeded, exit code 0, and the deploy simply went out with no KS3 on it. A hazard that only
+manifests as *missing output* and never as an error is the worst shape a build bug can take.
+
+Documenting the order was not enough, because a document cannot be executed. Three changes, in
+order of how much they actually protect:
+
+1. **`build_site()` no longer destroys output trees it does not own.** A `FOREIGN_OUTPUT_DIRS` list
+   (currently just `ks3`) is lifted out before the wipe and restored after it, before the
+   copy-to-repo-root round-trip so the root mirror stays faithful. **Either order is now safe.**
+2. **The cache-bust pass skips those trees too**, for the same reason. It was rewriting KS3 pages'
+   `?v=` stamps whenever they happened to be present, so *whether* a KS3 page shipped stamped
+   depended on which generator ran last — 221 pages of spurious diff. With this, the two orders are
+   byte-identical, verified by a full `diff -r` of the served tree built both ways.
+3. **`build_all.py` is the entrypoint** — one command, both generators, KS4 first because that is
+   the order the deploy notes describe. Nobody needs to know any of the above to build the site.
+
+**`verify_ks3.py` gates it.** It runs the KS4 generator *after* `build_ks3()` and asserts the KS3
+output survived, count for count, plus that the repo-root mirror survived the round-trip. That is
+the check which would have caught the original hazard, so it is the check that stops it returning.
+
+**Anything not named in `FOREIGN_OUTPUT_DIRS` is still wiped** — that is the point of the list. Add
+a name to it whenever another standalone generator starts writing into `mrbadmus_site/`.
+
+*Known and deliberately left alone: KS3 pages link `/shared/tokens.css`, `styles.css` and `nav.css`
+**unstamped**, which is how they have always shipped and is a small cache-staleness risk of its own.
+Fixing that belongs in `build_ks3.py`, which owns those pages, not in the KS4 generator.*
 
 ### 8.3 Data files
 
@@ -2140,3 +2181,4 @@ This document is law. Changing it changes what gets built.
 | 2026-07-26 | **`verify_ks3.py` gains a forward-reference gate** over the default sequence only (never over a school scheme — §4.5 makes a school's reorder their own business). The one known case is a **named allowance, not a suppression**: a new forward reference fails the build, and a stale allowance also fails, so the set can shrink only by a ruling. | Claude (Opus 5) |
 | 2026-07-26 | **§9's reorder proof strengthened and re-run against the new default.** Previously nudged two units to different years — a synthetic reorder and a weak test. Now applies **Rainford's entire real scheme across all 33 units** and rebuilds. Required result: zero page paths changed, zero page bytes changed. | Claude (Opus 5) |
 | 2026-07-26 | **§12 gains a reversal rule ⊕:** a superseded ruling is never deleted, the reasoning for the reversal is recorded, and whose ruling it was is stated plainly — including when it was Mide's own. | Claude (Opus 5) |
+| 2026-07-27 | **§8.2 corrected + new §8.2.1 ⊕ — the two generators are independent and their order no longer matters.** §8.2 said `build_ks3()` is "called from `build_site()`"; it never was and must not be, or the zero-KS4-drift gate directly above it becomes undemonstrable. The independence had a sharp edge: `build_site()` rmtree's `mrbadmus_site/`, so a KS4 build running second silently deleted every KS3 page and still exited 0 — a bug that only ever showed up as missing output. Closed three ways: `build_site()` preserves `FOREIGN_OUTPUT_DIRS` (currently `ks3`) across the wipe and restores them before the root round-trip; the cache-bust pass skips those trees too, since it was rewriting KS3 `?v=` stamps depending on which generator ran last; and `build_all.py` is now the single ordered entrypoint. Both orders verified byte-identical by full `diff -r` of the served tree. `verify_ks3.py` gates it by running the KS4 generator after `build_ks3()` and asserting the KS3 output and root mirror both survive. | Claude (Opus 5) |

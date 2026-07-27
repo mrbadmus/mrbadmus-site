@@ -5,7 +5,7 @@ Run: python3 generate_site.py
 Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 """
 
-import os, shutil, json, glob, sys, re
+import os, shutil, json, glob, sys, re, tempfile
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -4978,6 +4978,34 @@ def build_site(output_dir="mrbadmus_site"):
 
     print(f"\n🏗️  Building MrBadmusAI v5 → {output_dir}/\n")
 
+    # ── Preserve sibling output trees this generator does not own ──────────
+    # build_site() wipes output_dir and rebuilds it from scratch. That is
+    # correct for everything it generates — and destructive for everything it
+    # does not. `mrbadmus_site/ks3/` is written by build_ks3.py, a deliberately
+    # separate generator (see its module docstring), so a plain rmtree here
+    # silently deleted every KS3 page whenever the KS4 generator happened to
+    # run second. Nothing complained: the KS4 build succeeded, the deploy just
+    # went out without KS3 on it.
+    #
+    # The fix is to remove the ordering hazard rather than document it. These
+    # trees are lifted out before the wipe and put back after, so
+    # generate_site_v5.py and build_ks3.py can be run in EITHER order and both
+    # outputs survive. build_ks3() still rmtree's its own subtree at the start
+    # of its run, so this cannot make KS3 output stale — it can only stop it
+    # being destroyed by a generator that has no business touching it.
+    #
+    # Add a name here whenever another standalone generator starts writing into
+    # mrbadmus_site/. Anything NOT listed is still wiped, which is the point.
+    FOREIGN_OUTPUT_DIRS = ["ks3"]
+
+    _preserved = tempfile.mkdtemp(prefix="mrb_preserve_")
+    _carried = []
+    for _name in FOREIGN_OUTPUT_DIRS:
+        _src = os.path.join(output_dir, _name)
+        if os.path.isdir(_src):
+            shutil.move(_src, os.path.join(_preserved, _name))
+            _carried.append(_name)
+
     if os.path.exists(output_dir):
         shutil.rmtree(output_dir)
 
@@ -5164,6 +5192,18 @@ def build_site(output_dir="mrbadmus_site"):
                         print(f"        ✅ .../{topic['id']}/{st['id']}.html")
                         total_pages += 1
 
+    # ── Put the foreign output trees back ──────────────────────────────────
+    # Restored BEFORE the copy-to-repo-root round-trip below, so ks3/ at the
+    # repo root stays a faithful mirror of mrbadmus_site/ks3/ exactly as it
+    # would be if this generator had never run.
+    for _name in _carried:
+        shutil.move(os.path.join(_preserved, _name),
+                    os.path.join(output_dir, _name))
+    shutil.rmtree(_preserved, ignore_errors=True)
+    if _carried:
+        print(f"  ✅ preserved foreign output: {', '.join(_carried)} "
+              f"(written by a separate generator, not wiped)")
+
     # ── Safety net — fail loudly if the round-trip would delete source files ──
     # The "Copy to repo root" round-trip below does shutil.rmtree(./<dir>) for
     # each top-level dir in mrbadmus_site/ before copytree-ing it back. If a
@@ -5220,6 +5260,21 @@ def build_site(output_dir="mrbadmus_site"):
             )
         _stamped = 0
         for _root, _subdirs, _files in os.walk(output_dir):
+            # Skip the foreign output trees for the same reason they are not
+            # wiped: this generator does not own those pages. Without this,
+            # whether a KS3 page shipped with a ?v= stamp depended purely on
+            # which generator happened to run last — the wrong order produced
+            # a spurious 221-file diff, and "either order is safe" would have
+            # been true for existence and false for content. Excluding them
+            # makes the two orders byte-identical.
+            #
+            # NOTE this leaves KS3 pages linking /shared/tokens.css,
+            # styles.css and nav.css UNSTAMPED, which is how they have always
+            # shipped and is a real (small) staleness risk of its own. Fixing
+            # it belongs in build_ks3.py, which owns those pages — not here.
+            if any(os.path.relpath(_root, output_dir).split(os.sep)[0] == _d
+                   for _d in FOREIGN_OUTPUT_DIRS):
+                continue
             for _fn in _files:
                 if not _fn.endswith(".html"):
                     continue
