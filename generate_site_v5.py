@@ -4940,8 +4940,27 @@ def build_site(output_dir="mrbadmus_site"):
 
     print(f"\n🏗️  Building MrBadmusAI v5 → {output_dir}/\n")
 
+    # Wipe the deploy tree — but NOT the KS3 subtree, which this generator does
+    # not build and must not destroy.
+    #
+    # This used to be a plain rmtree(output_dir), which deleted mrbadmus_site/ks3/
+    # wholesale on every run — demonstrated, not inferred: 221 KS3 pages before,
+    # 0 after. KS3 then vanished from the tree Cloudflare serves until
+    # build_ks3.py happened to be run again, so whether KS3 existed in production
+    # depended purely on which generator ran last. The repo-root copy made it
+    # worse rather than better: the round-trip below only rmtree's the top-level
+    # dirs it finds in output_dir, so with ks3/ gone from output_dir the stale
+    # ./ks3/ copy survived untouched — deployed output and source disagreeing
+    # silently, which is the state hardest to notice.
+    #
+    # build_ks3.py is standalone by design (see its module docstring); the
+    # counterpart of that promise is that this generator leaves its tree alone.
     if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)
+        for _entry in os.listdir(output_dir):
+            if _entry == "ks3":
+                continue
+            _p = os.path.join(output_dir, _entry)
+            shutil.rmtree(_p) if os.path.isdir(_p) else os.remove(_p)
 
     # Directory structure
     dirs = [
@@ -5182,6 +5201,15 @@ def build_site(output_dir="mrbadmus_site"):
             )
         _stamped = 0
         for _root, _subdirs, _files in os.walk(output_dir):
+            # Skip the KS3 tree. build_ks3.py owns it and stamps its own pages
+            # at write time, from the same source files by the same md5[:8]
+            # scheme, so the two agree. Stamping them here as well would mean
+            # whichever generator ran last decided the bytes of a KS3 page —
+            # and build_ks3.py's determinism and reorder proofs both compare
+            # KS3 output byte for byte, so a foreign writer makes them
+            # unreliable. One tree, one writer.
+            if os.path.abspath(_root) == os.path.abspath(output_dir) and "ks3" in _subdirs:
+                _subdirs.remove("ks3")
             for _fn in _files:
                 if not _fn.endswith(".html"):
                     continue

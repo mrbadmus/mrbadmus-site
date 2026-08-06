@@ -1043,7 +1043,10 @@ places students arrive at GCSE weak.
   Read as one replacement it would have left the unit at four core lessons. It is therefore taken as
   **two lessons that absorb the old one** — *Atomic structure: the nuclear model* and *Radioactivity:
   decay and half-life* — which keeps the unit at five and splits a genuinely two-part idea at the
-  join a GCSE course splits it. If that reading is wrong, it is one table row to change.
+  join a GCSE course splits it.
+  > ✅ **CONFIRMED by Mide, 2026-07-30.** The two-lesson reading is correct: atomic structure and
+  > radioactivity split in every GCSE course, and collapsing them would have dropped the unit to four
+  > core lessons. Both titles stand as written. **No longer an open reading.**
 - **Where the demoted content actually goes.** Both become `stretch` inside *Radioactivity: decay and
   half-life*, because decay → fusion → stars is the order the physics itself runs in. **This is not
   the link gate being gamed.** A `stretch` block is not a lesson, so §7.6's requirement that a bridge
@@ -1172,6 +1175,29 @@ Instead:
 - **Zero KS4 drift:** a KS3 build must change zero bytes under the KS4 output paths. Verify by diff,
   every build.
 
+> ⊕ **The generator boundary, made real — 2026-07-30.** `build_ks3()` ships as a **standalone**
+> generator rather than being called from `build_site()`, so that "zero KS4 drift" is provable by
+> construction rather than by discipline. That promise has a counterpart the original text missed,
+> and it cost a real defect:
+>
+> **One tree, one writer. Each generator owns a tree and must not write into the other's.**
+>
+> 1. **`generate_site_v5.py` opened with `shutil.rmtree(output_dir)`, which deleted
+>    `mrbadmus_site/ks3/` wholesale on every run.** Demonstrated, not inferred: **221 KS3 pages
+>    before, 0 after.** KS3 disappeared from the tree Cloudflare serves until `build_ks3.py` was next
+>    run, so whether KS3 existed in production depended on which generator ran last. The repo-root
+>    round-trip made it *harder* to notice, not easier: it only wipes top-level dirs it finds in
+>    `output_dir`, so with `ks3/` gone the stale `./ks3/` copy survived — deployed output and source
+>    silently disagreeing. **Fixed:** the wipe now preserves `ks3/`.
+> 2. **The KS4 cache-bust pass walked the whole output tree, including KS3.** Fixed: it now skips
+>    `ks3/` at top level. KS3 stamps its own pages (see §8.5), so a foreign writer would have made
+>    the determinism and reorder proofs depend on run order.
+>
+> **The acceptance test is order-independence**, and it is the one to re-run after touching either
+> generator: running them in *either* order must produce byte-identical output in every tree —
+> `mrbadmus_site/ks3`, `./ks3`, `combined`, `triple`, `shared`, `teacher`, `student`. Verified
+> 2026-07-30.
+
 ### 8.3 Data files
 
 KS4 uses twelve monolithic modules. **KS3 uses a package with one module per unit:**
@@ -1232,6 +1258,27 @@ no pathway and no tier — which is the point.
   it fails.
 - Brand rule: KS3 pages are external/public, so they take the **orange chevron SVG + "MrBadmusAI"**
   nav brand per `CLAUDE.md`, not the dashboard text brand.
+- ⊕ **Cache-bust stamps are mandatory on KS3 pages — added 2026-07-30.** KS3 shipped linking
+  `tokens.css`, `styles.css` and `nav.css` with **no `?v=` stamp at all**, while every KS4 page
+  carried one. A device can then serve a stale `tokens.css` indefinitely — it survives hard-refresh
+  and incognito when the stale copy is upstream — which is how a token fix goes live everywhere
+  except one laptop.
+  - **Same scheme, same source, so a token change invalidates both trees:** `md5(bytes)[:8]`,
+    matching `generate_site_v5.py` exactly. `ks3.css` is stamped too; KS4 does not know about it,
+    but it has the identical staleness problem and fixing three of four would be an odd place to
+    stop.
+  - **Hashed from the source tree (`shared/`), never from `output_dir`.** `build_ks3()` is called
+    with several output directories — `mrbadmus_site/` for the real build, a fresh tmp dir for §9's
+    reorder and determinism proofs — and those tmp dirs never contain `styles.css` or `nav.css`.
+    Hashing the output copy would make the stamp a function of *where we happen to be writing*, and
+    §9's reorder proof, which compares a `mrbadmus_site/` build against a tmp build byte for byte,
+    would fail on a difference that has nothing to do with sequence.
+  - **Stamped at write time**, not in a second pass, so a page is never briefly on disk unstamped.
+  - ⚠️ **A KS3 change to `tokens.css` leaves KS4's stamps stale until `generate_site_v5.py` is
+    re-run.** Observed: KS4 pages pointed at `?v=f21cf111` while the file hashed to `cdaa5621`.
+    This is a **deploy-sequence obligation, not a code defect** — it is already step 3 of the
+    sequence in `CLAUDE.md`. Regenerating ~1,900 live KS4 pages is Mide's call, so a KS3 commit
+    must not carry it.
 - Breadcrumbs: `nav_html(subject, pathway, tier)` is KS4-shaped. KS3 needs its own crumb builder
   rendering `KS3 › Chemistry › Particles and their behaviour`.
 
@@ -2154,6 +2201,9 @@ This document is law. Changing it changes what gets built.
 | 2026-07-27 | ✅ **§7.6 ruling 1 — Triple-only bridge lessons RULED.** **Nuclear fusion and star life cycle demoted to `stretch` (§5.6)**; two core replacements **adopted by Mide**: *atomic structure and radioactivity*, and *current, resistance and I–V characteristics*. Both verified to resolve against `combined/foundation` through `ks4_bridge_href()` before wiring, per the ruling's own instruction; **nothing substituted**. XP1 renamed `gcse-bridge-energy-and-radiation` — it no longer has a space half. ⊕ **Ambiguity flagged, not buried:** "atomic structure and radioactivity" overlapped an existing XP1 lesson, so it is read as **two lessons absorbing the old one**, keeping the unit at five core. Both demoted lessons become `stretch` inside *Radioactivity: decay and half-life*. **New rule:** a `stretch` block may carry a `ks4_links` edge to a `triple/`-only page if labelled as Triple content; a lesson-level edge may not. | Claude (Opus 5) |
 | 2026-07-27 | ✅ **§7.6 ruling 2 — exchange surfaces / SA:V RULED.** **KS4 ticket raised: MRB-174** (Platform Backlog). The KS3 bridge lesson **stays** and its `ks4_links` target **stays deliberately dangling**. Recorded as the single sanctioned exception to the resolve-or-fail rule, **deleted when MRB-174 ships** — an obligation stated on the ticket itself, not only here. | Claude (Opus 5) |
 | 2026-07-27 | ✅ **§4.5 ruling 3 — the B3 → P2 forward reference RULED: explicit forward pointer, not an ownership flip.** §7.4 unchanged; P2 correctly owns energy calculations. Named allowance kept in `verify_ks3.py`, so a **second** forward reference still fails. ⚠️ **One part of the ruling could not be implemented as worded, blocked by this document's own invariant:** the *"you'll meet the calculation in Year 9"* framing would put a year into page text, which §4.5 forbids, which §9's zero-bytes reorder proof would fail, and which is **false** for any school teaching P2 earlier. **Implemented instead: the pointer says WHERE, never WHEN** — true under every ordering — and is rendered on *every* §4.6 reference slot, because conditioning its presence on year breaks §4.5 exactly as conditioning its wording would. Naming the year is deferred to Phase 5, where a runtime scheme lookup makes it data at render time. | Claude (Opus 5) |
+| 2026-07-30 | ✅ **§7.6 ruling 1's open reading CONFIRMED by Mide.** "Atomic structure and radioactivity" is **two lessons absorbing the old one** — they split in every GCSE course, and collapsing them would have dropped XP1 to four core lessons. *Atomic structure: the nuclear model* and *Radioactivity: decay and half-life* stand as written. No longer an open reading. | Claude (Opus 5) |
+| 2026-07-30 | **§8.5: KS3 pages now carry cache-bust stamps.** They shipped linking `tokens.css`, `styles.css` and `nav.css` **entirely unstamped** while every KS4 page carried `?v=<hash>` — a stale stylesheet could be served indefinitely. Fixed in `build_ks3.py` (not the KS4 generator): same `md5[:8]` scheme, **hashed from the source tree** so the stamp is not a function of which `output_dir` is being written, which would have broken §9's reorder proof. `ks3.css` stamped too. Stamped at write time. Verified: KS3 and KS4 pages carry **identical** stamps for all three shared files, and **zero** unstamped pages remain in either tree. | Claude (Opus 5) |
+| 2026-07-30 | ⛔ **§8.2: two generator-boundary defects found and fixed — one of them serious.** `generate_site_v5.py` opened with `shutil.rmtree(output_dir)`, **deleting `mrbadmus_site/ks3/` on every run** — demonstrated, 221 pages before, 0 after — so whether KS3 existed in production depended on which generator ran last, while the stale `./ks3/` mirror survived to disguise it. Its cache-bust pass also walked the KS3 tree. Both fixed; new stated rule: **one tree, one writer.** Acceptance test is **order-independence**, verified: either order now yields byte-identical output across `mrbadmus_site/ks3`, `./ks3`, `combined`, `triple`, `shared`, `teacher`, `student`. | Claude (Opus 5) |
 | 2026-07-27 | **Latent flaw fixed in §9's reorder proof.** It snapshotted the baseline off disk instead of building it, so it silently compared an **old** build against a **new** one whenever the generator itself had changed — a false FAIL at best, a real reorder defect masked by unrelated generator drift at worst. Found when ruling 3's pointer made it fail spuriously. The baseline is now built in-test, isolating the one variable the proof is about. | Claude (Opus 5) |
 | 2026-07-26 | **§9's reorder proof strengthened and re-run against the new default.** Previously nudged two units to different years — a synthetic reorder and a weak test. Now applies **Rainford's entire real scheme across all 33 units** and rebuilds. Required result: zero page paths changed, zero page bytes changed. | Claude (Opus 5) |
 | 2026-07-26 | **§12 gains a reversal rule ⊕:** a superseded ruling is never deleted, the reasoning for the reversal is recorded, and whose ruling it was is stated plainly — including when it was Mide's own. | Claude (Opus 5) |

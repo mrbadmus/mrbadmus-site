@@ -24,8 +24,10 @@ Output taxonomy (§8.4) — no year appears in any path, ever (§4.5):
     /ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson
 """
 
+import hashlib
 import html
 import os
+import re
 import shutil
 import sys
 
@@ -44,6 +46,58 @@ KS3_DIR = "ks3"
 # entry point into GCSE. §4.7.
 KS4_BRIDGE_PATHWAY = "combined"
 KS4_BRIDGE_TIER = "foundation"
+
+# ── Cache-bust stamps for shared stylesheets ─────────────────────────────
+# KS3 pages link the same shared CSS as KS4 and must carry the same ?v=<hash>
+# stamps, so a token change invalidates both trees at once. Without this, a
+# device can keep serving an old cached tokens.css indefinitely — the exact bug
+# generate_site_v5.py's cache-bust pass exists to prevent, and KS3 pages were
+# shipping without it.
+#
+# **Hashed from the SOURCE tree (repo_root/shared/), never from output_dir.**
+# generate_site_v5.py hashes its own output copy, and the two agree because the
+# round-trip keeps source and deployed byte-identical. But build_ks3() is called
+# with several different output_dir values — mrbadmus_site/ for the real build
+# and a fresh tmp dir for §9's reorder and determinism proofs — and those tmp
+# dirs never contain styles.css or nav.css at all. Hashing the output copy would
+# make the stamp a function of which directory we happen to be writing to, and
+# the reorder proof (which compares a mrbadmus_site/ build against a tmp build,
+# byte for byte) would fail on a difference that has nothing to do with
+# sequence. The source tree is the one input that is identical in every case.
+#
+# ks3.css is stamped too. KS4 does not know about it, but it is a shared
+# stylesheet with exactly the same staleness problem, and fixing three of four
+# would be an odd place to stop.
+VERSIONED_CSS = ("tokens.css", "styles.css", "nav.css", "ks3.css")
+
+
+def asset_versions(repo_root="."):
+    """name → 8-char content hash, matching generate_site_v5.py's scheme."""
+    versions = {}
+    for name in VERSIONED_CSS:
+        path = os.path.join(repo_root, "shared", name)
+        if os.path.exists(path):
+            with open(path, "rb") as fh:
+                versions[name] = hashlib.md5(fh.read()).hexdigest()[:8]
+    return versions
+
+
+def stamp_versions(page_html, versions):
+    """Rewrite /shared/<css> links to carry ?v=<hash>.
+
+    Idempotent: the pattern matches whether or not a stale stamp is present, so
+    re-stamping an already-stamped page moves it to the current hash rather than
+    freezing it or doubling the query.
+    """
+    if not versions:
+        return page_html
+    pattern = re.compile(
+        r'/shared/(' + '|'.join(re.escape(n) for n in versions) +
+        r')(?:\?v=[a-f0-9]+)?"')
+    return pattern.sub(
+        lambda m: '/shared/%s?v=%s"' % (m.group(1), versions[m.group(1)]),
+        page_html)
+
 
 SUBJECT_TOKEN = {
     "biology": "--biology",
@@ -695,11 +749,16 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
         shutil.rmtree(ks3_out)
     os.makedirs(ks3_out)
 
+    # Stamped at write time rather than in a second pass over the tree: a page
+    # is never briefly on disk unstamped, and there is no walk to keep in sync
+    # with what write() produces.
+    versions = asset_versions(repo_root)
+
     def write(relpath, content):
         full = os.path.join(ks3_out, relpath)
         os.makedirs(os.path.dirname(full), exist_ok=True)
         with open(full, "w", encoding="utf-8") as f:
-            f.write(content)
+            f.write(stamp_versions(content, versions))
 
     n = 0
     write("index.html", landing(units))
@@ -735,6 +794,7 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
         if os.path.exists(src):
             shutil.copy2(src, os.path.join(shared_dst, asset))
     print("  ✅ synced shared assets (ks3.css, ks3.js, tokens.css)")
+    print("  ✅ cache-bust: stamped %d pages — %s" % (n, versions))
 
     with open(os.path.join(repo_root, "docs", "ks3", "diagram-manifest.md"),
               "w", encoding="utf-8") as f:
