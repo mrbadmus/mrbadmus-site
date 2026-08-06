@@ -240,6 +240,13 @@ def main():
     #
     # If this fails, the finding is that §4.5 has failed. It is not to be
     # repaired by shrinking the reorder.
+    #
+    # The baseline is built HERE rather than read off disk. It used to snapshot
+    # whatever mrbadmus_site/ks3 already held, which silently compared an OLD
+    # build against a NEW one whenever the generator itself had changed — a
+    # false FAIL at best, and at worst a real reorder defect masked by unrelated
+    # generator drift. The comparison must isolate one variable: the sequence.
+    B.build_ks3()
     before = {}
     for root, _, files in os.walk("mrbadmus_site/ks3"):
         for f in files:

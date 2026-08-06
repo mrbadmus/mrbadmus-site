@@ -5,7 +5,7 @@ Run: python3 generate_site.py
 Output: ./mrbadmus_site/ (ready to deploy on Cloudflare)
 """
 
-import os, shutil, json, glob, sys, re, tempfile
+import os, shutil, json, glob, sys, re
 
 # Bonding redesign (MRB-113 Phase B) — theory-block decomposition for the
 # redesigned bonding pages. Frozen source fields are never edited; blocks are
@@ -4978,36 +4978,39 @@ def build_site(output_dir="mrbadmus_site"):
 
     print(f"\n🏗️  Building MrBadmusAI v5 → {output_dir}/\n")
 
-    # ── Preserve sibling output trees this generator does not own ──────────
-    # build_site() wipes output_dir and rebuilds it from scratch. That is
-    # correct for everything it generates — and destructive for everything it
-    # does not. `mrbadmus_site/ks3/` is written by build_ks3.py, a deliberately
-    # separate generator (see its module docstring), so a plain rmtree here
-    # silently deleted every KS3 page whenever the KS4 generator happened to
-    # run second. Nothing complained: the KS4 build succeeded, the deploy just
-    # went out without KS3 on it.
+    # ── Wipe the deploy tree — except output this generator does not own ───
+    # build_site() rebuilds output_dir from scratch. That is correct for
+    # everything it generates and destructive for everything it does not.
+    # `mrbadmus_site/ks3/` is written by build_ks3.py, a deliberately separate
+    # generator (see its module docstring), so the plain rmtree that used to be
+    # here deleted every KS3 page whenever this generator ran second —
+    # demonstrated, not inferred: 221 KS3 pages before, 0 after. Nothing
+    # complained. The KS4 build succeeded, exit 0, and KS3 simply vanished from
+    # the tree Cloudflare serves until build_ks3.py next ran, so whether KS3
+    # existed in production depended purely on which generator ran last.
     #
-    # The fix is to remove the ordering hazard rather than document it. These
-    # trees are lifted out before the wipe and put back after, so
-    # generate_site_v5.py and build_ks3.py can be run in EITHER order and both
-    # outputs survive. build_ks3() still rmtree's its own subtree at the start
-    # of its run, so this cannot make KS3 output stale — it can only stop it
-    # being destroyed by a generator that has no business touching it.
+    # The repo-root round-trip disguised it rather than catching it: that loop
+    # only rmtree's top-level dirs it finds in output_dir, so with ks3/ already
+    # gone the stale ./ks3/ mirror survived untouched — deployed output and
+    # source disagreeing silently, which is the state hardest to notice.
+    #
+    # Deleting entry-by-entry and skipping the foreign trees is deliberate: an
+    # earlier fix moved them aside and restored them afterwards, which works but
+    # strands the KS3 output in a temp dir if the build raises in between. This
+    # never moves them at all, so there is no window in which they are anywhere
+    # but where they belong. Either generator order is safe.
     #
     # Add a name here whenever another standalone generator starts writing into
-    # mrbadmus_site/. Anything NOT listed is still wiped, which is the point.
+    # mrbadmus_site/. Anything NOT listed is still wiped, which is the point:
+    # one tree, one writer.
     FOREIGN_OUTPUT_DIRS = ["ks3"]
 
-    _preserved = tempfile.mkdtemp(prefix="mrb_preserve_")
-    _carried = []
-    for _name in FOREIGN_OUTPUT_DIRS:
-        _src = os.path.join(output_dir, _name)
-        if os.path.isdir(_src):
-            shutil.move(_src, os.path.join(_preserved, _name))
-            _carried.append(_name)
-
     if os.path.exists(output_dir):
-        shutil.rmtree(output_dir)
+        for _entry in os.listdir(output_dir):
+            if _entry in FOREIGN_OUTPUT_DIRS:
+                continue
+            _p = os.path.join(output_dir, _entry)
+            shutil.rmtree(_p) if os.path.isdir(_p) else os.remove(_p)
 
     # Directory structure
     dirs = [
@@ -5260,21 +5263,21 @@ def build_site(output_dir="mrbadmus_site"):
             )
         _stamped = 0
         for _root, _subdirs, _files in os.walk(output_dir):
-            # Skip the foreign output trees for the same reason they are not
-            # wiped: this generator does not own those pages. Without this,
-            # whether a KS3 page shipped with a ?v= stamp depended purely on
-            # which generator happened to run last — the wrong order produced
-            # a spurious 221-file diff, and "either order is safe" would have
-            # been true for existence and false for content. Excluding them
-            # makes the two orders byte-identical.
+            # Skip the foreign trees, for the same reason they are not wiped.
+            # build_ks3.py owns its pages and stamps them itself at write time,
+            # from the same source files by the same md5[:8] scheme, so the two
+            # trees agree. Stamping them here as well would mean whichever
+            # generator ran last decided the bytes of a KS3 page — and
+            # build_ks3.py's determinism and reorder proofs compare KS3 output
+            # byte for byte, so a foreign writer makes both unreliable.
+            # One tree, one writer.
             #
-            # NOTE this leaves KS3 pages linking /shared/tokens.css,
-            # styles.css and nav.css UNSTAMPED, which is how they have always
-            # shipped and is a real (small) staleness risk of its own. Fixing
-            # it belongs in build_ks3.py, which owns those pages — not here.
-            if any(os.path.relpath(_root, output_dir).split(os.sep)[0] == _d
-                   for _d in FOREIGN_OUTPUT_DIRS):
-                continue
+            # Pruning _subdirs is what stops os.walk descending at all, rather
+            # than testing every directory it reaches on the way down.
+            if os.path.abspath(_root) == os.path.abspath(output_dir):
+                for _d in FOREIGN_OUTPUT_DIRS:
+                    if _d in _subdirs:
+                        _subdirs.remove(_d)
             for _fn in _files:
                 if not _fn.endswith(".html"):
                     continue

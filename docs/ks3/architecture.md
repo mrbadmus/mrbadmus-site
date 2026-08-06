@@ -280,6 +280,43 @@ structure.
 > **Recommendation: (a) or (c), and (c) is cheaper.** (b) does not actually solve it. **Not acted on
 > — this touches curriculum sequencing and ownership, which is Mide's gate.** Recorded here so it is
 > a known, bounded, single case rather than something rediscovered during Year 7 authoring.
+>
+> ---
+>
+> ✅ **RULED by Mide, 2026-07-27. Option (c) — an explicit forward pointer, not an ownership flip.**
+>
+> **§7.4 is unchanged: P2 correctly owns energy calculations.** A Year 7 student told that the full
+> lesson lives in Physics is being dealt with honestly; a broken-feeling cross-link is the actual
+> defect, and that is what is fixed. The named allowance stays in `verify_ks3.py`, so a **second**
+> forward reference still fails the build.
+>
+> ⚠️ **One part of the ruling could not be implemented as worded, and the reason is this section's
+> own invariant.** The instruction was to frame it as *"you'll meet the calculation in Year 9"*.
+> **A year cannot appear in page text, and the pointer cannot be conditional on one:**
+>
+> - §4.5 forbids `typical_year` determining content. Text that reads "Year 9" *is* content determined
+>   by the sequence.
+> - §9's reorder proof asserts that applying a whole school's scheme changes **zero page bytes**.
+>   Under Rainford's map P2 is Year 8, so the words would have to change — the proof would fail, and
+>   correctly so.
+> - It would also simply be **false** for any school that teaches P2 earlier. The sentence is only
+>   true of the default, and a page is not allowed to assume the default.
+>
+> **Implemented instead: the pointer says WHERE, never WHEN** — *"Taught in Physics — Energy at home.
+> You'll meet the full lesson there."* That is true under every possible ordering, carries the same
+> honesty, and costs the invariant nothing. It is rendered on **every** §4.6 reference slot rather
+> than only the forward one, because conditioning its *presence* on year would break §4.5 exactly as
+> conditioning its wording would.
+>
+> **Scale, so this does not read as larger than it is: `energy-in-food` is currently the only
+> `reference_to` slot in the whole key stage**, so "every reference slot" means one page today. The
+> other ⇄ marks in §7 are unit-level `requires`/`references` edges, which are a different mechanism
+> and are unaffected. The rule is written for all of them because the next one should not need a
+> second ruling.
+>
+> **Naming the year is deferred to Phase 5**, where a runtime scheme lookup makes the year data at
+> render time rather than a build-time constant — which is the only way it can be both accurate and
+> compliant. Until then, WHERE is the honest half.
 
 ### 4.6 Cross-discipline lessons: single source, referenced ⊕
 
@@ -1003,10 +1040,19 @@ exemption is declared, named, and countable*:
 2. **`covers` MUST be empty.** Not "may be" — a bridge lesson that declares a `covers` entry is a
    **build failure**, not a warning. This is the operative half of conflict 1g's standing
    prohibition: *bridge content must never enter through the coverage register.*
-3. **`ks4_links` MUST be non-empty.** The inverse gate, and the one that makes a bridge a bridge. A
-   beyond-statutory lesson pointing nowhere is just off-spec content. `check_ks4_links()` already
-   exists and already fails the build on an unresolvable edge — bridge lessons get it as a
-   requirement rather than a courtesy.
+3. **`ks4_links` MUST be non-empty, and MUST resolve against `combined/foundation`.** The inverse
+   gate, and the one that makes a bridge a bridge. A beyond-statutory lesson pointing nowhere is just
+   off-spec content. `check_ks4_links()` already exists and already fails the build on an
+   unresolvable edge — bridge lessons get it as a requirement rather than a courtesy.
+   - **Combined, not Triple.** A target that exists only under `triple/` fails, deliberately: it
+     would bridge only for the part of a cohort heading to Triple. Triple-only content belongs in a
+     **`stretch` block**, which *may* carry a `triple/` edge if labelled as Triple content (ruled
+     2026-07-27).
+   - **One sanctioned exception: a deliberately dangling target.** Where the gate fails because the
+     KS4 page *should* exist and does not, the finding is a **KS4 gap, and the KS3 lesson stays**.
+     The dangling edge is the record of the gap and is what will consume the page once written. This
+     requires a raised KS4 ticket and a note here — it is never a way to quietly keep a bad link.
+     Currently exactly one: `exchange surfaces / SA:V` (**MRB-174**), removed when that ships.
 4. **They never appear in `docs/ks3/statutory-register.md`.** Exactly-once (§4.4) is computed over
    statutory lessons only and is untouched by their existence.
 5. **They are counted where they can be seen** — `docs/ks3/bridge-register.md`, generated from the
@@ -1020,8 +1066,9 @@ search result must know immediately that it is not KS3 curriculum.
 
 #### The proposed set — 3 units, 15 lessons
 
-Three units, one per discipline, sized as an autumn term. MRB-103's four candidates are all in it
-and are marked ⓶. The remaining eleven are proposed here: each is a KS4 idea that (a) sits directly
+Three units, one per discipline, sized as an autumn term. MRB-103's four candidates are all in it and
+are marked ⓶ — **two as core lessons, and two as `stretch` after ruling 1 (2026-07-27) found them to
+be Triple-only content.** The remaining lessons are proposed here: each is a KS4 idea that (a) sits directly
 on a KS3 lesson already in §7, and (b) is a place students demonstrably stall on entry to GCSE.
 
 **XB1 — *GCSE bridge: from cells to organisms*** (Biology, `gcse-bridge-organisms`)
@@ -1044,26 +1091,80 @@ on a KS3 lesson already in §7, and (b) is a place students demonstrably stall o
 | Collision theory | MODEL | The explanatory half of rate, and it sits squarely on C1's particle model — the bridge closes the loop the vertical slice opened. | collision theory |
 | Rate of reaction: what changes it ⓶ | INVESTIGATION | MRB-103's candidate. Placed after collision theory so the investigation tests a model rather than collecting an unexplained pattern. | rate of reaction |
 
-**XP1 — *GCSE bridge: energy, radiation and the universe*** (Physics, `gcse-bridge-energy-and-space`)
+**XP1 — *GCSE bridge: energy, radiation and electricity*** (Physics, `gcse-bridge-energy-and-radiation`)
+
+> ✅ **Amended 2026-07-27 (ruling 1).** The unit was `…-energy-and-space` and closed on two space
+> lessons. **Nuclear fusion and the life cycle of a star are demoted to `stretch`** and two core
+> replacements are **adopted** — see the ruling recorded below the tables. The unit no longer has a
+> space half, hence the rename.
 
 | Lesson | F | Why it bridges | `ks4_links` target |
 |---|---|---|---|
-| Efficiency: energy usefully transferred | QUANTITATIVE | P1 gives stores and transfers; GCSE wants the calculation within weeks. | efficiency |
-| The electromagnetic spectrum | CLASSIFY | P7 covers visible light only. The spectrum is the frame GCSE waves hangs on. | electromagnetic spectrum |
-| The nucleus and radioactive decay | MODEL | **Deliberately paired with XC1's *Inside the atom***: one model, two disciplines, two genuinely different treatments. This is §4.6 applied to bridge content, and it is why the two are not one lesson. | radioactive decay |
-| Nuclear fusion in stars ⓶ | PROCESS | MRB-103's candidate. Sits on P12 *The Sun, stars and galaxies*. | nuclear fusion |
-| The life cycle of a star ⓶ | PROCESS | MRB-103's candidate, and the natural close — the one place a KS3 student can see the whole periodic table get made. | life cycle of a star |
+| Efficiency: energy usefully transferred | QUANTITATIVE | P1 gives stores and transfers; GCSE wants the calculation within weeks. | `physics/energy/efficiency` |
+| The electromagnetic spectrum | CLASSIFY | P7 covers visible light only. The spectrum is the frame GCSE waves hangs on. | `physics/waves/types-of-em-waves` |
+| Atomic structure: the nuclear model | MODEL | **Deliberately paired with XC1's *Inside the atom***: one model, two disciplines, two genuinely different treatments. This is §4.6 applied to bridge content, and it is why the two are not one lesson. | `physics/atomic-structure/structure-of-atom` · `…/development-atomic-model` |
+| Radioactivity: decay and half-life | PROCESS | Where a GCSE physics course actually starts once the atom is in place, and nothing at KS3 prepares it. **Hosts both demoted space lessons as `stretch`** — decay → fusion → stars is the natural order. | `physics/atomic-structure/radioactive-decay` · `…/half-lives` |
+| Current, resistance and I–V characteristics | QUANTITATIVE | P8 gives resistance descriptively and stops. GCSE opens on Ohm's law and the I–V graphs of an ohmic conductor, a filament lamp and a diode — a named weak point on entry. | `physics/electricity/current-resistance-pd` · `physics/electricity/resistors` |
 
 `ks4_links` targets above are **named, not slugged**. Real slugs get resolved at authoring time
 against the live KS4 pages by the existing gate — writing guessed slugs into this document would
 create exactly the silent drift §4.10 was added to prevent.
 
-#### ⛔ Three of the 17 targets do not resolve — checked, not assumed
+#### ✅ Ruled 2026-07-27 — the three non-resolving targets, settled
+
+*The three findings below were raised to Mide and all three are now ruled. The findings are kept in
+full underneath, per §12's rule that a decision's reasoning stays visible.*
+
+**Ruling 1 — Triple-only physics.** **Nuclear fusion and the life cycle of a star are demoted to
+`stretch` (§5.6)**, and two core replacements are **adopted**: *atomic structure and radioactivity*,
+and *current, resistance and I–V characteristics*. Both are squarely AQA Combined, and both are
+places students arrive at GCSE weak.
+
+- ✅ **Both adopted targets verified against `combined/foundation` before wiring**, through
+  `ks4_bridge_href()` itself rather than by eye: `structure-of-atom`, `development-atomic-model`,
+  `radioactive-decay`, `half-lives`, `current-resistance-pd` and `resistors` **all resolve**. Nothing
+  was substituted. For the record, re-running the same check on the two demoted targets still
+  **fails** — which is the finding, confirmed rather than assumed away.
+- ⊕ **One ambiguity resolved, and it is flagged rather than buried.** "Atomic structure and
+  radioactivity" overlapped an XP1 lesson that already existed (*The nucleus and radioactive decay*).
+  Read as one replacement it would have left the unit at four core lessons. It is therefore taken as
+  **two lessons that absorb the old one** — *Atomic structure: the nuclear model* and *Radioactivity:
+  decay and half-life* — which keeps the unit at five and splits a genuinely two-part idea at the
+  join a GCSE course splits it.
+  > ✅ **CONFIRMED by Mide, 2026-07-30.** The two-lesson reading is correct: atomic structure and
+  > radioactivity split in every GCSE course, and collapsing them would have dropped the unit to four
+  > core lessons. Both titles stand as written. **No longer an open reading.**
+- **Where the demoted content actually goes.** Both become `stretch` inside *Radioactivity: decay and
+  half-life*, because decay → fusion → stars is the order the physics itself runs in. **This is not
+  the link gate being gamed.** A `stretch` block is not a lesson, so §7.6's requirement that a bridge
+  *lesson* resolve to Combined content does not reach it — and the pedagogical reason is identical to
+  the gate's: a Combined student is not examined on this, so it must not consume core lesson time.
+  **The students it serves still reach it.**
+- ⊕ **New rule, needed by this ruling: a `stretch` block may carry a `ks4_links` edge to a
+  `triple/`-only page, provided it is labelled as Triple content.** Lesson-level `ks4_links` may not.
+  This keeps the demoted pages reachable without a tier re-entering KS3 through the back door (§2) —
+  depth layers are the whole mechanism KS3 has instead of tiers (§5.6), and this is exactly what they
+  are for.
+
+**Ruling 2 — exchange surfaces / SA:V.** **KS4 ticket raised — MRB-174, Platform Backlog — and the
+KS3 bridge lesson stays.** The gate found a real gap and that is the gate working. **The `ks4_links`
+target stays deliberately dangling** until the KS4 page exists, and the KS3 lesson is what will
+consume it. This is the one sanctioned exception to §7.6's resolve-or-fail rule, and it is sanctioned
+because the failure is pointing at the right thing. **When MRB-174 ships, this exception is deleted**
+— the rule goes back to zero exceptions, and MRB-174 says so on its own face so the obligation does
+not depend on anyone remembering to read this document.
+
+**Ruling 3 — the B3 → P2 forward reference.** Resolved as an **explicit forward pointer, not an
+ownership flip** — see §4.5, where the defect and its resolution are recorded together.
+
+#### The findings that produced those rulings
+
+⛔ **Three of the 17 targets did not resolve — checked, not assumed**
 
 *All 17 targets were looked up against the live KS4 pages on 2026-07-26, before authoring rather
-than during it. Fourteen resolve cleanly. Three do not, and two of those are MRB-103's own
-candidates. **These are Mide's calls — the first is a science/AQA-coverage question and the second
-is a KS4 content gap — so nothing has been changed in the set above.***
+than during it. Fourteen resolve cleanly. Three did not, and two of those are MRB-103's own
+candidates. **All three were referred to Mide and all three are ruled above (2026-07-27).** The
+findings are kept because they are the reasoning behind those rulings.*
 
 **`check_ks4_links()` resolves a link against `/combined/foundation/<link>.html`.** A page that
 exists only under `triple/` therefore **fails** the gate — and §7.6 makes a resolving `ks4_links`
@@ -1086,12 +1187,17 @@ until he rules.
 > rather than as core lessons, and promote two Combined-reachable ideas into the core slots. That is
 > what §5.6's depth layers are for, and it is the move that does not smuggle a tier back into KS3
 > (§2). The physics unit would then need two replacement core lessons proposed.
+>
+> ✅ **ADOPTED 2026-07-27 (ruling 1), with Mide naming both replacements.** See the ruling above.
 
 **2. `exchange surfaces / surface area to volume` has no KS4 counterpart at all.** AQA GCSE Biology
 plainly covers it, so **this is a hole in the KS4 site**, found by designing the bridge — the bridge
 pointing at KS4 turns out to be a way of auditing KS4. **It should become its own KS4 content
 ticket**, not be solved by dropping the KS3 lesson: §7.6 names it "the single most common GCSE
 Biology stumble", which is an argument for fixing KS4, not for looking away.
+> ✅ **ADOPTED 2026-07-27 (ruling 2).** Ticket raised in Platform Backlog. **The KS3 lesson stays and
+> its `ks4_links` target stays dangling** until the KS4 page exists. Recorded on the ticket that the
+> KS3 bridge lesson is what will consume the new page.
 
 **This is the argument for designing the bridge before authoring it.** Fourteen targets are real and
 the design is sound; three would have been discovered one at a time, mid-authoring, as build
@@ -1102,7 +1208,9 @@ failures with no obvious cause.
 - **+15 lessons, taking the full commitment from 185 to 200.** That is a real scope increase and it
   is recorded here rather than absorbed. It is also the smallest honest version: four candidates
   came from MRB-103 and eleven were needed to make three teachable units rather than three
-  fragments.
+  fragments. **Ruling 1 did not change the count** — it moved two candidates from core lessons into
+  `stretch` and adopted three lessons in their place (an ambiguity resolved as a two-lesson split;
+  see the ruling), so the physics unit still ships five core lessons.
 - **It is the last thing authored, not the first.** Both Shape-A and Shape-B schools need Years 7
   and 8 first, and Shape B needs them *more* — an early-GCSE school compresses KS3 into two years,
   so Y7 and Y8 are its entire key stage.
@@ -1155,45 +1263,57 @@ Instead:
 - **Zero KS4 drift:** a KS3 build must change zero bytes under the KS4 output paths. Verify by diff,
   every build.
 
-#### 8.2.1 The two generators are independent, and their ORDER does not matter ⊕
+#### 8.2.1 One tree, one writer — the generator boundary ⊕
 
 *Corrects the bullet above, which said `build_ks3()` is "called from `build_site()`". It never was, and
-it must not be. Recorded 27 Jul 2026 after the ordering hazard below shipped to `main`.*
+it must not be. Two sessions found this same defect independently, from opposite ends — one via the
+ordering hazard, one via the stamping question — and both fixes are reconciled here. Recorded
+27 Jul 2026, amended 6 Aug 2026.*
 
 **`build_ks3.py` is standalone. `build_site()` does not call it, and must not.** Wiring them together
 would rebuild 300+ KS4 pages on every KS3 content change and make the "zero KS4 drift" gate directly
 above impossible to demonstrate. Keeping them apart makes that gate provable by construction.
 
-**The hazard that independence created, and how it is closed.** `build_site()` opens with
-`shutil.rmtree(output_dir)` and rebuilds `mrbadmus_site/` from scratch. That is correct for
-everything it generates and destructive for everything it does not — so whenever the KS4 generator
-ran *second*, it silently deleted every page under `mrbadmus_site/ks3/`. Nothing failed: the KS4
-build succeeded, exit code 0, and the deploy simply went out with no KS3 on it. A hazard that only
-manifests as *missing output* and never as an error is the worst shape a build bug can take.
+**The rule that promise implies, and that the original text missed:**
 
-Documenting the order was not enough, because a document cannot be executed. Three changes, in
-order of how much they actually protect:
+> **One tree, one writer. Each generator owns a tree and must not write into the other's.**
 
-1. **`build_site()` no longer destroys output trees it does not own.** A `FOREIGN_OUTPUT_DIRS` list
-   (currently just `ks3`) is lifted out before the wipe and restored after it, before the
-   copy-to-repo-root round-trip so the root mirror stays faithful. **Either order is now safe.**
-2. **The cache-bust pass skips those trees too**, for the same reason. It was rewriting KS3 pages'
-   `?v=` stamps whenever they happened to be present, so *whether* a KS3 page shipped stamped
-   depended on which generator ran last — 221 pages of spurious diff. With this, the two orders are
-   byte-identical, verified by a full `diff -r` of the served tree built both ways.
-3. **`build_all.py` is the entrypoint** — one command, both generators, KS4 first because that is
-   the order the deploy notes describe. Nobody needs to know any of the above to build the site.
+It cost two real defects, one serious:
+
+1. **`generate_site_v5.py` opened with `shutil.rmtree(output_dir)`, deleting `mrbadmus_site/ks3/`
+   wholesale on every run.** Demonstrated, not inferred: **221 KS3 pages before, 0 after.** Nothing
+   failed — the KS4 build succeeded, exit code 0 — and KS3 simply disappeared from the tree
+   Cloudflare serves until `build_ks3.py` next ran, so whether KS3 existed in production depended on
+   which generator ran last. A hazard that manifests only as *missing output* and never as an error
+   is the worst shape a build bug can take. The repo-root round-trip made it *harder* to notice, not
+   easier: it only wipes top-level dirs it finds in `output_dir`, so with `ks3/` already gone the
+   stale `./ks3/` mirror survived — deployed output and source silently disagreeing.
+2. **The KS4 cache-bust pass walked the whole output tree, including KS3.** So *whether* a KS3 page
+   shipped stamped depended on which generator ran last — 221 pages of spurious diff. Worse, KS3
+   stamps its own pages (§8.5), and `build_ks3.py`'s determinism and reorder proofs compare KS3
+   output byte for byte, so a foreign writer made both proofs unreliable.
+
+**How they are closed.** Documenting the order was not enough, because a document cannot be executed.
+
+1. **`build_site()` no longer destroys or rewrites output trees it does not own.** A
+   `FOREIGN_OUTPUT_DIRS` list (currently just `ks3`) is skipped by the wipe, entry by entry, and
+   pruned from the cache-bust walk. **Either order is now safe.** Deleting in place rather than
+   moving the tree aside and restoring it is deliberate: the move-and-restore version works, but
+   strands the KS3 output in a temp dir if the build raises in between. This never moves it at all.
+2. **`build_all.py` is the entrypoint** — one command, both generators, KS4 first because that is the
+   order the deploy notes describe. Nobody needs to know any of the above to build the site.
+
+**Anything not named in `FOREIGN_OUTPUT_DIRS` is still wiped** — that is the point of the list. Add a
+name to it whenever another standalone generator starts writing into `mrbadmus_site/`.
+
+**The acceptance test is order-independence**, and it is the one to re-run after touching either
+generator: running them in *either* order must produce byte-identical output in every tree —
+`mrbadmus_site/ks3`, `./ks3`, `combined`, `triple`, `shared`, `teacher`, `student`. Verified by full
+recursive diff.
 
 **`verify_ks3.py` gates it.** It runs the KS4 generator *after* `build_ks3()` and asserts the KS3
-output survived, count for count, plus that the repo-root mirror survived the round-trip. That is
-the check which would have caught the original hazard, so it is the check that stops it returning.
-
-**Anything not named in `FOREIGN_OUTPUT_DIRS` is still wiped** — that is the point of the list. Add
-a name to it whenever another standalone generator starts writing into `mrbadmus_site/`.
-
-*Known and deliberately left alone: KS3 pages link `/shared/tokens.css`, `styles.css` and `nav.css`
-**unstamped**, which is how they have always shipped and is a small cache-staleness risk of its own.
-Fixing that belongs in `build_ks3.py`, which owns those pages, not in the KS4 generator.*
+output survived, count for count, plus that the repo-root mirror survived the round-trip. That is the
+check which would have caught the original hazard, so it is the check that stops it returning.
 
 ### 8.3 Data files
 
@@ -1255,6 +1375,27 @@ no pathway and no tier — which is the point.
   it fails.
 - Brand rule: KS3 pages are external/public, so they take the **orange chevron SVG + "MrBadmusAI"**
   nav brand per `CLAUDE.md`, not the dashboard text brand.
+- ⊕ **Cache-bust stamps are mandatory on KS3 pages — added 2026-07-30.** KS3 shipped linking
+  `tokens.css`, `styles.css` and `nav.css` with **no `?v=` stamp at all**, while every KS4 page
+  carried one. A device can then serve a stale `tokens.css` indefinitely — it survives hard-refresh
+  and incognito when the stale copy is upstream — which is how a token fix goes live everywhere
+  except one laptop.
+  - **Same scheme, same source, so a token change invalidates both trees:** `md5(bytes)[:8]`,
+    matching `generate_site_v5.py` exactly. `ks3.css` is stamped too; KS4 does not know about it,
+    but it has the identical staleness problem and fixing three of four would be an odd place to
+    stop.
+  - **Hashed from the source tree (`shared/`), never from `output_dir`.** `build_ks3()` is called
+    with several output directories — `mrbadmus_site/` for the real build, a fresh tmp dir for §9's
+    reorder and determinism proofs — and those tmp dirs never contain `styles.css` or `nav.css`.
+    Hashing the output copy would make the stamp a function of *where we happen to be writing*, and
+    §9's reorder proof, which compares a `mrbadmus_site/` build against a tmp build byte for byte,
+    would fail on a difference that has nothing to do with sequence.
+  - **Stamped at write time**, not in a second pass, so a page is never briefly on disk unstamped.
+  - ⚠️ **A KS3 change to `tokens.css` leaves KS4's stamps stale until `generate_site_v5.py` is
+    re-run.** Observed: KS4 pages pointed at `?v=f21cf111` while the file hashed to `cdaa5621`.
+    This is a **deploy-sequence obligation, not a code defect** — it is already step 3 of the
+    sequence in `CLAUDE.md`. Regenerating ~1,900 live KS4 pages is Mide's call, so a KS3 commit
+    must not carry it.
 - Breadcrumbs: `nav_html(subject, pathway, tier)` is KS4-shaped. KS3 needs its own crumb builder
   rendering `KS3 › Chemistry › Particles and their behaviour`.
 
@@ -2179,6 +2320,14 @@ This document is law. Changing it changes what gets built.
 | 2026-07-26 | ⛔ **KS4 content gap found by designing the bridge:** `exchange surfaces / surface area to volume` has **no KS4 page on any pathway or tier**, though AQA GCSE Biology covers it. Recorded as a KS4 ticket to raise, explicitly **not** to be solved by dropping the KS3 bridge lesson. | Claude (Opus 5) |
 | 2026-07-26 | ⛔ **§4.5: one forward reference found in the new default** — `B3 energy-in-food` (Y7) is a §4.6 reference slot pointing at `P2` (Y9). Not caused by the reversal, but widened by it (was Y7→Y8 under the superseded default). Three options costed at §4.5; **not acted on — curriculum sequencing and §7.4 ownership are Mide's gate.** The §4.5 claim that the default is "ordered by what the prerequisite graph makes possible" is corrected from an assertion to a checked, very-nearly-true statement. | Claude (Opus 5) |
 | 2026-07-26 | **`verify_ks3.py` gains a forward-reference gate** over the default sequence only (never over a school scheme — §4.5 makes a school's reorder their own business). The one known case is a **named allowance, not a suppression**: a new forward reference fails the build, and a stale allowance also fails, so the set can shrink only by a ruling. | Claude (Opus 5) |
+| 2026-07-27 | ✅ **§7.6 ruling 1 — Triple-only bridge lessons RULED.** **Nuclear fusion and star life cycle demoted to `stretch` (§5.6)**; two core replacements **adopted by Mide**: *atomic structure and radioactivity*, and *current, resistance and I–V characteristics*. Both verified to resolve against `combined/foundation` through `ks4_bridge_href()` before wiring, per the ruling's own instruction; **nothing substituted**. XP1 renamed `gcse-bridge-energy-and-radiation` — it no longer has a space half. ⊕ **Ambiguity flagged, not buried:** "atomic structure and radioactivity" overlapped an existing XP1 lesson, so it is read as **two lessons absorbing the old one**, keeping the unit at five core. Both demoted lessons become `stretch` inside *Radioactivity: decay and half-life*. **New rule:** a `stretch` block may carry a `ks4_links` edge to a `triple/`-only page if labelled as Triple content; a lesson-level edge may not. | Claude (Opus 5) |
+| 2026-07-27 | ✅ **§7.6 ruling 2 — exchange surfaces / SA:V RULED.** **KS4 ticket raised: MRB-174** (Platform Backlog). The KS3 bridge lesson **stays** and its `ks4_links` target **stays deliberately dangling**. Recorded as the single sanctioned exception to the resolve-or-fail rule, **deleted when MRB-174 ships** — an obligation stated on the ticket itself, not only here. | Claude (Opus 5) |
+| 2026-07-27 | ✅ **§4.5 ruling 3 — the B3 → P2 forward reference RULED: explicit forward pointer, not an ownership flip.** §7.4 unchanged; P2 correctly owns energy calculations. Named allowance kept in `verify_ks3.py`, so a **second** forward reference still fails. ⚠️ **One part of the ruling could not be implemented as worded, blocked by this document's own invariant:** the *"you'll meet the calculation in Year 9"* framing would put a year into page text, which §4.5 forbids, which §9's zero-bytes reorder proof would fail, and which is **false** for any school teaching P2 earlier. **Implemented instead: the pointer says WHERE, never WHEN** — true under every ordering — and is rendered on *every* §4.6 reference slot, because conditioning its presence on year breaks §4.5 exactly as conditioning its wording would. Naming the year is deferred to Phase 5, where a runtime scheme lookup makes it data at render time. | Claude (Opus 5) |
+| 2026-07-30 | ✅ **§7.6 ruling 1's open reading CONFIRMED by Mide.** "Atomic structure and radioactivity" is **two lessons absorbing the old one** — they split in every GCSE course, and collapsing them would have dropped XP1 to four core lessons. *Atomic structure: the nuclear model* and *Radioactivity: decay and half-life* stand as written. No longer an open reading. | Claude (Opus 5) |
+| 2026-07-30 | **§8.5: KS3 pages now carry cache-bust stamps.** They shipped linking `tokens.css`, `styles.css` and `nav.css` **entirely unstamped** while every KS4 page carried `?v=<hash>` — a stale stylesheet could be served indefinitely. Fixed in `build_ks3.py` (not the KS4 generator): same `md5[:8]` scheme, **hashed from the source tree** so the stamp is not a function of which `output_dir` is being written, which would have broken §9's reorder proof. `ks3.css` stamped too. Stamped at write time. Verified: KS3 and KS4 pages carry **identical** stamps for all three shared files, and **zero** unstamped pages remain in either tree. | Claude (Opus 5) |
+| 2026-07-30 | ⛔ **§8.2: two generator-boundary defects found and fixed — one of them serious.** `generate_site_v5.py` opened with `shutil.rmtree(output_dir)`, **deleting `mrbadmus_site/ks3/` on every run** — demonstrated, 221 pages before, 0 after — so whether KS3 existed in production depended on which generator ran last, while the stale `./ks3/` mirror survived to disguise it. Its cache-bust pass also walked the KS3 tree. Both fixed; new stated rule: **one tree, one writer.** Acceptance test is **order-independence**, verified: either order now yields byte-identical output across `mrbadmus_site/ks3`, `./ks3`, `combined`, `triple`, `shared`, `teacher`, `student`. | Claude (Opus 5) |
+| 2026-07-27 | **Latent flaw fixed in §9's reorder proof.** It snapshotted the baseline off disk instead of building it, so it silently compared an **old** build against a **new** one whenever the generator itself had changed — a false FAIL at best, a real reorder defect masked by unrelated generator drift at worst. Found when ruling 3's pointer made it fail spuriously. The baseline is now built in-test, isolating the one variable the proof is about. | Claude (Opus 5) |
 | 2026-07-26 | **§9's reorder proof strengthened and re-run against the new default.** Previously nudged two units to different years — a synthetic reorder and a weak test. Now applies **Rainford's entire real scheme across all 33 units** and rebuilds. Required result: zero page paths changed, zero page bytes changed. | Claude (Opus 5) |
 | 2026-07-26 | **§12 gains a reversal rule ⊕:** a superseded ruling is never deleted, the reasoning for the reversal is recorded, and whose ruling it was is stated plainly — including when it was Mide's own. | Claude (Opus 5) |
 | 2026-07-27 | **§8.2 corrected + new §8.2.1 ⊕ — the two generators are independent and their order no longer matters.** §8.2 said `build_ks3()` is "called from `build_site()`"; it never was and must not be, or the zero-KS4-drift gate directly above it becomes undemonstrable. The independence had a sharp edge: `build_site()` rmtree's `mrbadmus_site/`, so a KS4 build running second silently deleted every KS3 page and still exited 0 — a bug that only ever showed up as missing output. Closed three ways: `build_site()` preserves `FOREIGN_OUTPUT_DIRS` (currently `ks3`) across the wipe and restores them before the root round-trip; the cache-bust pass skips those trees too, since it was rewriting KS3 `?v=` stamps depending on which generator ran last; and `build_all.py` is now the single ordered entrypoint. Both orders verified byte-identical by full `diff -r` of the served tree. `verify_ks3.py` gates it by running the KS4 generator after `build_ks3()` and asserting the KS3 output and root mirror both survive. | Claude (Opus 5) |
+| 2026-08-06 | **§8.2.1 reconciled into one section.** Two sessions found the same generator-boundary defect independently and fixed it differently — one reached it via the ordering hazard (KS3 output deleted by the KS4 wipe), one via the stamping question (KS4 rewriting KS3 pages). Both were right; the merge keeps the better half of each. **Wipe:** delete entry-by-entry skipping `FOREIGN_OUTPUT_DIRS`, rather than moving the tree aside and restoring it — the move version works but strands KS3 output in a temp dir if the build raises in between. **Cache-bust:** prune `_subdirs` so `os.walk` never descends, rather than testing each directory on the way down. Generalised to the `FOREIGN_OUTPUT_DIRS` list in both places, so a future standalone generator is one edit rather than four. The earlier note that KS3 pages were "deliberately left unstamped" is **deleted, not amended** — §8.5 now stamps them, so that note was actively wrong. | Claude (Opus 5) |
