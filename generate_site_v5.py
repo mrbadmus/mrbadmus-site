@@ -5195,17 +5195,10 @@ def build_site(output_dir="mrbadmus_site"):
                         print(f"        ✅ .../{topic['id']}/{st['id']}.html")
                         total_pages += 1
 
-    # ── Put the foreign output trees back ──────────────────────────────────
-    # Restored BEFORE the copy-to-repo-root round-trip below, so ks3/ at the
-    # repo root stays a faithful mirror of mrbadmus_site/ks3/ exactly as it
-    # would be if this generator had never run.
-    for _name in _carried:
-        shutil.move(os.path.join(_preserved, _name),
-                    os.path.join(output_dir, _name))
-    shutil.rmtree(_preserved, ignore_errors=True)
-    if _carried:
-        print(f"  ✅ preserved foreign output: {', '.join(_carried)} "
-              f"(written by a separate generator, not wiped)")
+    # No "put the foreign trees back" step here any more: nothing was moved.
+    # The wipe above skips FOREIGN_OUTPUT_DIRS in place, so ks3/ never leaves
+    # output_dir and the copy-to-repo-root round-trip below finds it exactly
+    # where it belongs — the root ks3/ mirror stays faithful without help.
 
     # ── Safety net — fail loudly if the round-trip would delete source files ──
     # The "Copy to repo root" round-trip below does shutil.rmtree(./<dir>) for
