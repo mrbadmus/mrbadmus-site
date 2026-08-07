@@ -806,11 +806,121 @@ def page_shell(title, subject, body_html, topic_id="", topic_title="", pathway="
 
 
 # ─────────────────────────────────────────────
-#  LANDING PAGE — new structure
+#  ROOT LANDING — the key-stage chooser  (/index.html)
 # ─────────────────────────────────────────────
+#
+# MRB-176 ruling 1. The site now serves two key stages, so the first thing a
+# visitor sees is which one they are in — not a GCSE pathway picker that a Year
+# 7 has no way to answer.
+#
+# `/index.html` stays the site's home and the nav-brand target (CLAUDE.md's
+# brand rule is unchanged); what MOVED is the GCSE landing experience, which now
+# lives at `/ks4.html` behind the GCSE card. MRB-137's landing redesign — the
+# `landing-band` two-column layout with the Top Stars rail — is carried across
+# verbatim by `make_ks4_landing()` below. It is In Review and is reconciled
+# behind the card, not re-implemented.
 
 def make_landing():
+    """The key-stage chooser. Two cards, and nothing else to decide."""
     body = """
+<section class="hero">
+  <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
+  <p>Free science revision for Years 7 to 11 — Biology, Chemistry and Physics, with an AI tutor that never tires of the same question. Start by picking where you are.</p>
+</section>
+
+<div class="pathway-grid keystage-grid">
+  <a class="pathway-card keystage-card" href="/ks3/index.html" style="border-top:3px solid var(--accent);">
+    <div class="pathway-icon">🌱</div>
+    <h2 style="color:var(--accent)">KS3 Science</h2>
+    <p>Years 7 to 9. Biology, Chemistry and Physics across the whole national curriculum programme of study — the science everything at GCSE is built on.</p>
+    <div class="pathway-badge-row">
+      <span class="keystage-badge">Year 7</span>
+      <span class="keystage-badge">Year 8</span>
+      <span class="keystage-badge">Year 9</span>
+    </div>
+    <div><span class="pathway-go" style="background:var(--accent);">Start KS3 Science →</span></div>
+  </a>
+
+  <a class="pathway-card keystage-card" href="/ks4.html" style="border-top:3px solid var(--combined);">
+    <div class="pathway-icon">🎓</div>
+    <h2 style="color:var(--combined)">GCSE Science</h2>
+    <p>Years 10 and 11. Combined Science and Triple Science, Foundation and Higher — full topic notes, worked examples, quizzes, past papers and the weekly challenge.</p>
+    <div class="pathway-badge-row">
+      <span class="keystage-badge">Combined</span>
+      <span class="keystage-badge">Triple</span>
+    </div>
+    <div><span class="pathway-go" style="background:var(--combined);">Start GCSE Science →</span></div>
+  </a>
+</div>
+
+<p class="keystage-help">Not sure which one? Years 7, 8 and 9 are <strong>KS3</strong>. Years 10 and 11 are <strong>GCSE</strong>.</p>
+
+<style>
+/* Chooser cards. Deliberately thin: everything structural is reused from
+   .pathway-grid / .pathway-card in shared/styles.css, so the chooser and the
+   GCSE landing behind it stay one design rather than two.
+
+   Contrast measured, not eyeballed (grounds: --bg #F7F1E5, --card #FFFFFF,
+   --sunken #EFE7D6):
+     --accent   #A63C12 on white card   6.41  AA
+     --combined #1D6FB8 on white card   5.23  AA
+     white on --accent fill             6.41  AA
+     white on --combined fill           5.23  AA
+     --text     #241C14 on --sunken    13.64  AA
+     --muted    #6B5F51 on --bg         5.52  AA                            */
+.keystage-grid { max-width: 900px; }
+/* Equal-height cards: the grid stretches both to the tallest, each card is a
+   flex column, and the description absorbs the slack — so the badge rows and
+   the Start buttons pin to the same baseline whatever the copy length. Same
+   technique as .courses-col on the GCSE landing. */
+.keystage-card { display: flex; flex-direction: column; }
+.keystage-card p { flex: 1 0 auto; }
+.keystage-badge {
+  padding: 4px 12px; border-radius: 999px;
+  font-size: var(--fs-label); font-weight: 600;
+  background: var(--sunken); color: var(--text);
+}
+.keystage-help {
+  max-width: 640px; margin: 0 auto var(--sp-8); padding: 0 var(--sp-5);
+  text-align: center; color: var(--muted); font-size: var(--fs-small);
+}
+.keystage-help strong { color: var(--text); }
+</style>
+"""
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="{THEME_COLOR}"/>
+  <title>MrBadmusAI — Free KS3 &amp; GCSE Science Revision</title>
+  <meta name="description" content="Free science revision for Years 7 to 11. KS3 Science for Years 7–9 and GCSE Combined and Triple Science for Years 10–11, with an AI tutor, quizzes and full topic notes."/>
+  {HEAD_ASSETS}
+</head>
+<body>
+  {nav_html()}
+  {body}
+  {chat_html()}
+  <script src="/shared/mrbadmus.v2.js"></script>
+  <script>MrBadmus.init({{ subject: 'physics' }});</script>
+</body>
+</html>"""
+
+
+# ─────────────────────────────────────────────
+#  GCSE LANDING — /ks4.html
+# ─────────────────────────────────────────────
+#
+# This was `/index.html` until MRB-176 ruling 1. **The experience is unchanged**
+# — MRB-137's hero, the `landing-band` two-column layout, the Combined/Triple
+# pathway cards, the Top Stars rail and all its leaderboard JS moved here
+# verbatim. The only addition is the breadcrumb back to the chooser.
+
+def make_ks4_landing():
+    body = """
+<div class="ks4-back-row"><a class="back-link" href="/index.html">← All courses</a></div>
+
 <section class="hero">
   <h1>Welcome to <span class="hero-gradient">MrBadmusAI</span></h1>
   <p>Your GCSE Science revision hub — Physics, Chemistry &amp; Biology. Choose your course below.</p>
@@ -886,6 +996,11 @@ def make_landing():
 </section>
 
 <style>
+/* ── Back to the key-stage chooser (MRB-176) ─────────────────────────── */
+/* Same max-width and gutter as .landing-band below, so the affordance lines
+   up with the left edge of the course cards rather than floating. */
+.ks4-back-row { max-width: 1240px; margin: 0 auto; padding: var(--sp-4) var(--sp-5) 0; }
+
 /* ── Landing band layout ─────────────────────────────────────────────── */
 .landing-band {
   display: grid;
@@ -1125,7 +1240,10 @@ def make_pathway_page(pathway):
 
     body = f"""
 <div class="hub-header">
-  <a class="back-link" href="/index.html">← Back to Home</a>
+  <!-- MRB-176: this page's parent is the GCSE landing, which moved to
+       /ks4.html when /index.html became the key-stage chooser. Pointing it at
+       / would skip a level and drop a GCSE student back out to "KS3 or GCSE?". -->
+  <a class="back-link" href="/ks4.html">← Back to GCSE Science</a>
   <h1 style="color:{pc}">{emoji} {label}</h1>
   <p>{description}</p>
 </div>
@@ -5110,10 +5228,18 @@ def build_site(output_dir="mrbadmus_site"):
     else:
         print(f"  ⚠️  student/ directory not found — skipping")
 
-    # ── Landing page ──
+    # ── Landing pages ──
+    # /index.html is the key-stage chooser; /ks4.html is the GCSE landing that
+    # used to be at /. Both are written here and both round-trip to the repo
+    # root via the copy loop at the end of this function (MRB-176 ruling 1).
     with open(f"{output_dir}/index.html", "w") as f:
         f.write(make_landing())
-    print("  ✅ index.html")
+    print("  ✅ index.html (key-stage chooser)")
+    total_pages += 1
+
+    with open(f"{output_dir}/ks4.html", "w") as f:
+        f.write(make_ks4_landing())
+    print("  ✅ ks4.html (GCSE landing)")
     total_pages += 1
 
     # ── Pathway pages ──

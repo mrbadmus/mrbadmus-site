@@ -16,12 +16,24 @@ impossible to demonstrate. Keeping them separate makes that gate provable by
 construction. See the note at the bottom of this file for how to wire it in when
 that trade-off is worth making.
 
-Output taxonomy (§8.4) — no year appears in any path, ever (§4.5):
+Output taxonomy (§8.4). **No year appears in a LESSON path, ever (§4.5).**
 
-    /ks3/index.html                                     KS3 landing
+    /ks3/index.html                                     KS3 landing — both routes in
     /ks3/<discipline>/index.html                        discipline hub
     /ks3/<discipline>/<unit-slug>/index.html            unit index
-    /ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson
+    /ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson    ← no year, ever
+
+    the browse layer (§4.5.2, MRB-176 ruling 1) — index pages only:
+
+    /ks3/year-<n>/index.html                            six half-term cards
+    /ks3/year-<n>/<half-term>/index.html                subject cards for that half term
+    /ks3/year-<n>/<half-term>/<discipline>/index.html   the lessons placed there
+
+§4.5.2 splits §4.5's prohibition rather than relaxing it: year and half term are
+the organising axis of the browse layer and remain absent from every lesson URL,
+folder and byte. The browse layer is a pure projection of ``half_terms.py``'s
+derived placement — reordering the sequence regenerates these index pages and
+changes nothing else, which is the property §9's reorder proof already tests.
 """
 
 import hashlib
@@ -34,8 +46,20 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import ks3_data
-from ks3_data.structure import DISCIPLINE_TITLES
+from ks3_data.structure import DISCIPLINES, DISCIPLINE_TITLES
 from ks3_data.substatements import all_sub_ids, parent_of
+
+# The browse layer's only data source. Slugs and display names live in
+# half_terms.py rather than here on purpose: a second copy in the generator
+# would be free to drift, and a drifted slug is a 404 that appears for exactly
+# one half term of one year — the kind nobody finds by clicking around.
+from ks3_data.half_terms import (
+    HALF_TERMS,
+    YEARS,
+    half_term_name,
+    half_term_slug,
+    slots_by_year_half_term,
+)
 
 OUT_ROOT = "mrbadmus_site"
 KS3_DIR = "ks3"
@@ -47,7 +71,7 @@ KS3_DIR = "ks3"
 KS4_BRIDGE_PATHWAY = "combined"
 KS4_BRIDGE_TIER = "foundation"
 
-# ── Cache-bust stamps for shared stylesheets ─────────────────────────────
+# ── Cache-bust stamps for shared assets ──────────────────────────────────
 # KS3 pages link the same shared CSS as KS4 and must carry the same ?v=<hash>
 # stamps, so a token change invalidates both trees at once. Without this, a
 # device can keep serving an old cached tokens.css indefinitely — the exact bug
@@ -68,13 +92,22 @@ KS4_BRIDGE_TIER = "foundation"
 # ks3.css is stamped too. KS4 does not know about it, but it is a shared
 # stylesheet with exactly the same staleness problem, and fixing three of four
 # would be an odd place to stop.
-VERSIONED_CSS = ("tokens.css", "styles.css", "nav.css", "ks3.css")
+#
+# ⚠️ §8.5's rationale is about CACHING, not about CSS, so it extends to JS
+# unchanged — the tuple used to be named VERSIONED_CSS and ks3.js was linked
+# with no stamp at all. That was survivable while ks3.js was a stub; it is not
+# now that the file carries the prediction gate, the flip cards and the particle
+# labs. A device holding an old cached copy would render a lesson whose labs
+# never run and whose cards never flip, with no error and nothing to tell the
+# student the page is broken. Any future shared asset a KS3 page links goes in
+# this tuple — the name is deliberately no longer about stylesheets.
+VERSIONED_ASSETS = ("tokens.css", "styles.css", "nav.css", "ks3.css", "ks3.js")
 
 
 def asset_versions(repo_root="."):
     """name → 8-char content hash, matching generate_site_v5.py's scheme."""
     versions = {}
-    for name in VERSIONED_CSS:
+    for name in VERSIONED_ASSETS:
         path = os.path.join(repo_root, "shared", name)
         if os.path.exists(path):
             with open(path, "rb") as fh:
@@ -83,11 +116,16 @@ def asset_versions(repo_root="."):
 
 
 def stamp_versions(page_html, versions):
-    """Rewrite /shared/<css> links to carry ?v=<hash>.
+    """Rewrite /shared/<asset> links to carry ?v=<hash>.
 
     Idempotent: the pattern matches whether or not a stale stamp is present, so
     re-stamping an already-stamped page moves it to the current hash rather than
     freezing it or doubling the query.
+
+    The trailing `"` in the pattern is what keeps `ks3.css` from matching inside
+    a longer name. It also means the match is agnostic about which attribute the
+    path sits in, so `<script src="/shared/ks3.js" defer>` is caught by exactly
+    the same rule as a `<link href=…>` — no separate JS pass needed.
     """
     if not versions:
         return page_html
@@ -104,6 +142,19 @@ SUBJECT_TOKEN = {
     "chemistry": "--chemistry",
     "physics": "--physics",
 }
+
+# ── §4.6 reference-slot wording, in one place ────────────────────────────
+#
+# Both the unit index and the browse layer render reference slots, and the two
+# must never end up saying different things about the same slot. The long
+# comment in unit_index() is the reasoning; these are the words it produced.
+#
+# ⚠️ The pointer says WHERE, never WHEN. Do not add a year here — §4.5 forbids
+# the sequence determining page text, and the §9 reorder proof asserts that
+# applying a whole school's scheme changes zero page bytes.
+REF_BADGE = '<span class="ks3-badge">from %s %s</span>'
+REF_POINTER = ('<p class="ks3-ref-note">Taught in %s — <em>%s</em>. '
+               'You\'ll meet the full lesson there.</p>')
 
 FAMILY_BLURB = {
     "MODEL": "One idea explains a whole class of behaviour",
@@ -247,6 +298,137 @@ def _activity(lesson, act_id):
     return next((a for a in lesson.get("activities", []) if a["id"] == act_id), None)
 
 
+# ── activity-level interactions (NOT new §5.1.1 block types) ─────────────
+#
+# The block vocabulary is closed at ten. Flip cards and particle labs are
+# authored as ACTIVITY keys (`cards`, `sim`) precisely so they can appear
+# inside an existing check / practical / misconception block without widening
+# that vocabulary — an activity is already the unit that owns a prompt, options
+# and a reveal, and these are two more ways of answering the same prompt.
+
+def r_cards(cards):
+    """Click-to-reveal cards.  Contract: shared/ks3.js `wireCards`.
+
+    The back is emitted with `hidden` so the answer is not on screen in the
+    window between first paint and ks3.js running — a card that shows its back
+    for 200ms has given the game away, and on a slow phone that window is not
+    200ms. ks3.js owns `aria-expanded` and `.is-flipped` from then on.
+
+    role="list" matches .ks3-options: both are `list-style: none`, which drops
+    list semantics in Safari/VoiceOver unless the role is restated.
+    """
+    items = []
+    for c in cards:
+        items.append(
+            '<li><button type="button" class="ks3-card-btn">'
+            '<span class="ks3-card-front">%s</span>'
+            '<span class="ks3-card-back" hidden>%s</span>'
+            '</button></li>'
+            % (e(c.get("front", "")), e(c.get("back", ""))))
+    if not items:
+        return ""
+    return ('<ul class="ks3-cards" data-cards role="list">%s</ul>'
+            % "".join(items))
+
+
+# A canvas is a blank rectangle to a screen reader, so aria-label is the ONLY
+# description of a lab that a non-sighted student gets. "Particle simulation"
+# would be technically an alt text and practically nothing, so the label
+# narrates what the animation actually does — one description per sim kind,
+# because the three sims genuinely differ in what there is to see.
+#
+# The authored caption is appended, which makes each of the seven labels
+# distinct and self-contained. It repeats the visible <p class="ks3-sim-caption">
+# for a screen-reader user; that is a deliberate trade — an aria-label is read
+# out of context (element lists, rotor) where the neighbouring caption isn't
+# there to supply it.
+# The controls a lab may declare. Mirrors CONTROL_LABELS in shared/ks3.js —
+# the two must agree, and r_sim() fails the build if a lesson names anything
+# else. See the comment in r_sim for why this is validated rather than passed
+# through.
+SIM_CONTROLS = ("temperature", "volume", "particles", "medium")
+
+SIM_ARIA = {
+    "particle-states":
+        "Animation: a box of particles that responds to a temperature slider. "
+        "Cold, the particles sit touching in a regular pattern and vibrate on "
+        "the spot. Warmer, they are still touching but jumbled, sliding past "
+        "each other. Hotter still, they are far apart and moving freely in "
+        "every direction. The readout below the animation says the same thing "
+        "in words.",
+    "gas-pressure":
+        "Animation: gas particles bouncing inside a box with a movable wall. "
+        "Every time a particle strikes a wall it counts as one push, and "
+        "squeezing the box or heating the gas makes those hits more frequent. "
+        "The readout below the animation gives the wall hits per second in "
+        "words.",
+    "diffusion":
+        "Animation: two groups of particles, orange starting on the left and "
+        "blue starting on the right, each wandering on its own random path. "
+        "Orange particles cross to the right while blue ones cross to the "
+        "left, both at once, until the two groups are mixed. The readout "
+        "below the animation counts the crossings in each direction in words.",
+}
+
+
+def r_sim(sim, act_id):
+    """A particle lab.  Contract: shared/ks3.js `wireSim`.
+
+    Emitted INSIDE the activity's [data-activity] section, alongside the
+    options — that adjacency is what Law 4 gating runs on. ks3.js walks up to
+    the enclosing [data-activity], finds the .ks3-option buttons and holds the
+    sim frozen until one is clicked. A separate wrapper round the sim would
+    quietly disable the gate and the lesson would give its answer away.
+
+    .ks3-sim-controls and .ks3-sim-readout are emitted EMPTY on purpose: the JS
+    builds the sliders from data-controls and writes the readout. Putting
+    placeholder text in either would be a claim the page cannot honour if the
+    script fails to load.
+    """
+    kind = sim.get("kind", "")
+    if kind not in SIM_ARIA:
+        raise ValueError(
+            "Activity %r declares sim kind %r. shared/ks3.js implements only "
+            "%s, and there is no aria-label written for it — a new sim kind "
+            "needs both before it can be rendered."
+            % (act_id, kind, ", ".join(sorted(SIM_ARIA))))
+    caption = sim.get("caption", "")
+
+    # Controls are VALIDATED, not passed through. An earlier version emitted
+    # whatever was authored on the reasoning that ks3.js would ignore names it
+    # did not implement — which is true, and is exactly the problem: five
+    # authored dials across five of the seven labs (`state`, `medium`,
+    # `release`, `number of particles`) rendered an empty or half-populated
+    # control panel and nothing anywhere said so. A dial a student can see and
+    # cannot move is worse than one that was never promised.
+    #
+    # This list is the same one `CONTROL_LABELS` declares in shared/ks3.js.
+    # They must agree; a mismatch is a build failure, exactly as an unknown
+    # sim kind is.
+    unknown = [c for c in (sim.get("controls") or []) if c not in SIM_CONTROLS]
+    if unknown:
+        raise ValueError(
+            "Activity %r declares sim control(s) %s, which shared/ks3.js does "
+            "not implement. Implemented: %s. Either add the control to "
+            "CONTROL_LABELS and wireSim in shared/ks3.js, or drop it from the "
+            "lesson — a control that renders and does nothing is a defect."
+            % (act_id, ", ".join(repr(u) for u in unknown),
+               ", ".join(sorted(SIM_CONTROLS))))
+    controls = ",".join(str(c) for c in (sim.get("controls") or []))
+    label = (SIM_ARIA[kind] + " " + caption).strip()
+    return (
+        '<div class="ks3-sim" data-sim="%s" data-controls="%s">'
+        '<canvas class="ks3-sim-canvas" width="560" height="200" role="img" '
+        'aria-label="%s"></canvas>'
+        '<p class="ks3-sim-cover">Make your prediction first — then the lab '
+        'runs.</p>'
+        '<div class="ks3-sim-controls"></div>'
+        '<p class="ks3-sim-readout" role="status"></p>'
+        '<p class="ks3-sim-caption">%s</p>'
+        '</div>'
+        % (e(kind), e(controls), e(label), e(caption)))
+
+
 def r_activity(lesson, act_id, kind_class, heading):
     a = _activity(lesson, act_id)
     if not a:
@@ -261,6 +443,12 @@ def r_activity(lesson, act_id, kind_class, heading):
             '<li><button type="button" class="ks3-option" data-i="%d">%s</button></li>'
             % (i, e(o)) for i, o in enumerate(a["options"]))
         parts.append('<ul class="ks3-options" role="list">%s</ul>' % opts)
+    # After the options, before the reveal: the prediction is committed first,
+    # then the thing that tests it, then the words that settle it.
+    if a.get("cards"):
+        parts.append(r_cards(a["cards"]))
+    if a.get("sim"):
+        parts.append(r_sim(a["sim"], act_id))
     if a.get("fifa"):
         f = a["fifa"]
         parts.append(
@@ -490,11 +678,8 @@ def unit_index(unit, units_by_code, registry):
                     if owner else "#")
             owner_disc = DISCIPLINE_TITLES[owner["discipline"]] if owner else ""
             rows.append(
-                '<li class="ks3-lesson-row is-ref"><span class="ks3-num">%d</span>'
-                '<a href="%s">%s</a>'
-                '<span class="ks3-badge">from %s %s</span>'
-                '<p class="ks3-ref-note">Taught in %s — <em>%s</em>. '
-                'You\'ll meet the full lesson there.</p></li>'
+                ('<li class="ks3-lesson-row is-ref"><span class="ks3-num">%d</span>'
+                 '<a href="%s">%s</a>' + REF_BADGE + REF_POINTER + '</li>')
                 % (i, e(href), e(l["title"]), e(owner_disc), e(l["reference_to"]),
                    e(owner_disc), e(owner["title"]) if owner else ""))
             continue
@@ -547,8 +732,300 @@ def discipline_hub(disc, units):
     return shell("KS3 %s" % DISCIPLINE_TITLES[disc], body, crumb, disc)
 
 
-def landing(units):
+# ── the browse layer (§4.5.2) ────────────────────────────────────────────
+#
+# Year → half term → subject → lessons. These are index pages and nothing else:
+# they link to lesson pages that already exist at their existing URLs, and they
+# are the ONLY place in the KS3 tree where a year or a half term is allowed to
+# appear. §4.5's prohibition is split, not relaxed — a lesson page still carries
+# neither, in its path or in its bytes.
+#
+# Everything below is a pure projection of half_terms.derive(). Change the
+# sequence and these pages change; nothing else does. That is the property §9's
+# reorder proof tests, and it is what makes a browse layer legal here at all.
+
+# §4.5.2: "the browse layer renders the platform default sequence, so it is
+# labelled as such on the page." Every browse page carries this. It is the same
+# say-WHERE-never-assume discipline §4.5 settled for reference slots: the page
+# states whose route it is instead of presenting one school's order as the only
+# one. A school that has overridden its sequence is not yet served a browse
+# layer matching its own scheme — that is the Phase 5 runtime scheme lookup,
+# already deferred, not a new deferral.
+BROWSE_NOTE = (
+    '<p class="ks3-browse-note"><strong>This is the MrBadmusAI default '
+    'sequence.</strong> It is the order we suggest teaching KS3 in, worked out '
+    'from the national curriculum and from what each lesson needs you to know '
+    'first. Your school may teach these same lessons in a different year or a '
+    'different half term — that is completely normal, and it changes nothing '
+    'about the lessons themselves.</p>')
+
+
+def season_of(half_term):
+    """`autumn` / `spring` / `summer`, read off the half-term slug.
+
+    Derived rather than tabulated so there is no second list to keep in step
+    with half_terms.py — `autumn-1` is already the season and the index.
+    """
+    return half_term_slug(half_term).split("-", 1)[0]
+
+
+def browse_slots(units):
+    """``(year, half_term, discipline) → [(unit, lesson, position_in_unit), …]``.
+
+    **Keyed on (unit_code, lesson_slug), never on the slug alone.** There are
+    185 lesson slots and 184 distinct slugs: `energy-in-food` is declared twice
+    — once in B3 as a §4.6 reference slot, once in P2 as the lesson itself — and
+    a slug-keyed lookup silently drops one of them into the wrong year.
+
+    `position_in_unit` is the lesson's number within its whole unit, not within
+    the half term, so a unit sliced across a half-term boundary shows as
+    "lessons 4 to 7 of C6" rather than restarting at 1. Half_terms.py treats
+    unit coherence as a tie-break rather than a rule, so slicing is expected and
+    the numbering should make it legible instead of hiding it.
+    """
+    slots = {}
+    for u in units:
+        for i, l in enumerate(u["lessons"], 1):
+            slots[(u["code"], l["slug"])] = (u, l, i)
+
+    out = {}
+    for (year, half_term), keys in slots_by_year_half_term().items():
+        for key in keys:
+            u, l, i = slots[key]
+            out.setdefault((year, half_term, u["discipline"]), []).append((u, l, i))
+    return out
+
+
+def _entries(browse, year, half_term=None, discipline=None):
+    """Flat list of slot records matching the filter, in teaching order."""
+    out = []
+    for (y, ht, disc), rows in sorted(browse.items()):
+        if y != year:
+            continue
+        if half_term is not None and ht != half_term:
+            continue
+        if discipline is not None and disc != discipline:
+            continue
+        out.extend(rows)
+    return out
+
+
+def _counts(entries):
+    """(units, lessons) for a set of slot records."""
+    return len({u["code"] for u, _l, _i in entries}), len(entries)
+
+
+def _plural(n, word):
+    return "%d %s%s" % (n, word, "" if n == 1 else "s")
+
+
+def browse_lesson_row(unit, lesson, position, units_by_code):
+    """One lesson row on a browse page — the same shape as a unit index row.
+
+    Links to the lesson's EXISTING page. The browse layer never mints a lesson
+    URL; if it did, §4.5.2's whole justification would collapse.
+    """
+    if lesson.get("reference_to"):
+        # §4.6 single-source: link to the OWNER's page, with the same pointer
+        # the unit index uses. WHERE, never WHEN — see REF_POINTER.
+        owner = units_by_code.get(lesson["reference_to"])
+        href = ("/ks3/%s/%s/%s.html"
+                % (owner["discipline"], owner["slug"], lesson["slug"])
+                if owner else "#")
+        owner_disc = DISCIPLINE_TITLES[owner["discipline"]] if owner else ""
+        return (('<li class="ks3-lesson-row is-ref"><span class="ks3-num">%d</span>'
+                 '<a href="%s">%s</a>' + REF_BADGE + REF_POINTER + '</li>')
+                % (position, e(href), e(lesson["title"]), e(owner_disc),
+                   e(lesson["reference_to"]), e(owner_disc),
+                   e(owner["title"]) if owner else ""))
+
+    href = "/ks3/%s/%s/%s.html" % (unit["discipline"], unit["slug"], lesson["slug"])
+    if not lesson["authored"]:
+        # Structure-first (§11 decision 8) — the slot is routable and honest.
+        badge = '<span class="ks3-badge is-soon">Coming soon</span>'
+    elif lesson.get("review_state") != "frozen":
+        # §5.10.1 carve-out: a draft may publish, but only with a visible
+        # marker. The lesson page carries `Draft — not yet science-reviewed.`;
+        # this is the same fact, at list size, saying the same thing.
+        badge = ('<span class="ks3-badge is-draft" title="Draft — not yet '
+                 'science-reviewed.">Draft</span>')
+    else:
+        badge = ""
+    return ('<li class="ks3-lesson-row"><span class="ks3-num">%d</span>'
+            '<a href="%s">%s</a>'
+            '<span class="ks3-family">%s</span>%s</li>'
+            % (position, e(href), e(lesson["title"]), e(lesson["family"]), badge))
+
+
+def year_index(year, browse):
+    """/ks3/year-<n>/index.html — the six half terms of one year."""
+    crumb = crumbs([("KS3", "/ks3/index.html"), ("Year %d" % year, None)])
+
+    cards = []
+    for ht in HALF_TERMS:
+        per_disc = [(d, browse.get((year, ht, d), [])) for d in DISCIPLINES]
+        entries = [r for _d, rows in per_disc for r in rows]
+        units, lessons = _counts(entries)
+        split = " · ".join("%s %d" % (DISCIPLINE_TITLES[d], len(rows))
+                           for d, rows in per_disc if rows)
+        cards.append(
+            '<li class="ks3-unit-card ks3-browse-ht" data-season="%s">'
+            '<a href="/ks3/year-%d/%s/index.html">'
+            '<span class="ks3-code">Half term %d</span><h2>%s</h2>'
+            '<p class="ks3-meta">%s · %s</p>'
+            '<p class="ks3-browse-split">%s</p></a></li>'
+            % (e(season_of(ht)), year, e(half_term_slug(ht)), ht,
+               e(half_term_name(ht)), e(_plural(lessons, "lesson")),
+               e(_plural(units, "unit")), e(split)))
+
+    units, lessons = _counts(_entries(browse, year))
+    body = """<header class="ks3-landing-head">
+  <p class="ks3-eyebrow">Key Stage 3</p>
+  <h1>Year %d</h1>
+  <p class="ks3-intro">%s across %s, split into the six half terms of the school
+     year. Pick a half term to see what each science covers.</p>
+</header>
+%s
+<ul class="ks3-unit-grid ks3-browse-terms">%s</ul>
+<p class="ks3-browse-alt"><a href="/ks3/index.html">Browse by subject instead →</a></p>""" % (
+        year, e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
+        BROWSE_NOTE, "".join(cards))
+    return shell("Year %d Science" % year, body, crumb, None,
+                 "KS3 Year %d Science — the MrBadmusAI default sequence, half "
+                 "term by half term." % year)
+
+
+def half_term_index(year, half_term, browse):
+    """/ks3/year-<n>/<half-term>/index.html — the sciences in one half term."""
+    slug = half_term_slug(half_term)
+    name = half_term_name(half_term)
+    crumb = crumbs([("KS3", "/ks3/index.html"),
+                    ("Year %d" % year, "/ks3/year-%d/index.html" % year),
+                    (name, None)])
+
+    cards = []
+    for disc in DISCIPLINES:
+        rows = browse.get((year, half_term, disc), [])
+        if not rows:
+            # half_terms.py guarantees all three sciences in every half term,
+            # and asserts it at import. Rendering only what is present anyway
+            # costs one line and means a future exemption degrades to a missing
+            # card rather than a crash.
+            continue
+        units, lessons = _counts(rows)
+        unit_titles = []
+        for u, _l, _i in rows:
+            if u["title"] not in unit_titles:
+                unit_titles.append(u["title"])
+        cards.append(
+            '<li class="ks3-unit-card ks3-browse-subject" data-discipline="%s">'
+            '<a href="/ks3/year-%d/%s/%s/index.html">'
+            '<span class="ks3-browse-dot" aria-hidden="true"></span>'
+            '<h2>%s</h2><p class="ks3-meta">%s · %s</p>'
+            '<p class="ks3-browse-split">%s</p></a></li>'
+            % (e(disc), year, e(slug), e(disc), e(DISCIPLINE_TITLES[disc]),
+               e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
+               e(" · ".join(unit_titles))))
+
+    units, lessons = _counts(_entries(browse, year, half_term))
+    body = """<header class="ks3-landing-head" data-season="%s">
+  <p class="ks3-eyebrow">Year %d · Half term %d</p>
+  <h1>%s</h1>
+  <p class="ks3-intro">%s across %s. All three sciences run together through
+     every half term — pick one to see the lessons.</p>
+</header>
+%s
+<ul class="ks3-unit-grid ks3-browse-subjects">%s</ul>
+<p class="ks3-browse-alt"><a href="/ks3/year-%d/index.html">← All six half terms of Year %d</a></p>""" % (
+        e(season_of(half_term)), year, half_term, e(name),
+        e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
+        BROWSE_NOTE, "".join(cards), year, year)
+    return shell("%s · Year %d" % (name, year), body, crumb, None,
+                 "KS3 Year %d, %s — the MrBadmusAI default sequence."
+                 % (year, name))
+
+
+def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
+    """/ks3/year-<n>/<half-term>/<discipline>/index.html — the lessons placed there."""
+    slug = half_term_slug(half_term)
+    name = half_term_name(half_term)
+    crumb = crumbs([("KS3", "/ks3/index.html"),
+                    ("Year %d" % year, "/ks3/year-%d/index.html" % year),
+                    (name, "/ks3/year-%d/%s/index.html" % (year, slug)),
+                    (DISCIPLINE_TITLES[disc], None)])
+
+    rows = browse.get((year, half_term, disc), [])
+
+    # Consecutive grouping, not a dict: the entries already arrive in teaching
+    # order, and a unit that genuinely appears twice in one half term should
+    # render twice rather than be silently merged.
+    groups = []
+    for u, l, i in rows:
+        if not groups or groups[-1][0]["code"] != u["code"]:
+            groups.append((u, []))
+        groups[-1][1].append((l, i))
+
+    sections = []
+    for u, lessons in groups:
+        items = "".join(browse_lesson_row(u, l, i, units_by_code)
+                        for l, i in lessons)
+        span = ("lesson %d" % lessons[0][1] if len(lessons) == 1
+                else "lessons %d to %d" % (lessons[0][1], lessons[-1][1]))
+        sections.append(
+            '<section class="ks3-browse-unit">'
+            '<p class="ks3-eyebrow">%s · %s of %d</p>'
+            '<h2><a href="/ks3/%s/%s/index.html">%s</a></h2>'
+            '<ol class="ks3-lesson-list">%s</ol></section>'
+            % (e(u["code"]), e(span), len(u["lessons"]),
+               e(disc), e(u["slug"]), e(u["title"]), items))
+
+    units, lessons = _counts(rows)
+    body = """<header class="ks3-landing-head">
+  <p class="ks3-eyebrow">Year %d · %s</p>
+  <h1>%s</h1>
+  <p class="ks3-intro">%s from %s.</p>
+</header>
+%s
+%s
+<p class="ks3-browse-alt"><a href="/ks3/year-%d/%s/index.html">← All three sciences this half term</a>
+   · <a href="/ks3/%s/index.html">The whole KS3 %s course →</a></p>""" % (
+        year, e(name), e(DISCIPLINE_TITLES[disc]),
+        e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
+        BROWSE_NOTE, "".join(sections), year, e(slug),
+        e(disc), e(DISCIPLINE_TITLES[disc]))
+    return shell("%s · %s · Year %d" % (DISCIPLINE_TITLES[disc], name, year),
+                 body, crumb, disc,
+                 "KS3 Year %d %s, %s — the MrBadmusAI default sequence."
+                 % (year, DISCIPLINE_TITLES[disc], name))
+
+
+def landing(units, browse):
+    """/ks3/index.html — both routes in (§8.4).
+
+    Leads with the year route because that is how a teacher and a Year 8 student
+    both actually think ("what am I doing this term?"). The subject route is
+    kept, unchanged and clearly labelled, because §11 decision 2 ruled
+    disciplinary structure with integrated navigation and §4.5.2 is explicit
+    that the browse layer is an additional way in, not a migration.
+    """
     crumb = crumbs([("KS3", None)])
+
+    years = []
+    for year in YEARS:
+        units_n, lessons_n = _counts(_entries(browse, year))
+        years.append(
+            '<li class="ks3-unit-card ks3-browse-year">'
+            '<a href="/ks3/year-%d/index.html">'
+            '<span class="ks3-code">Key Stage 3</span><h2>Year %d</h2>'
+            '<p class="ks3-meta">%s · %s</p>'
+            '<span class="ks3-browse-strip" aria-hidden="true">%s</span>'
+            '<span class="ks3-browse-cta">Browse by half term →</span>'
+            '</a></li>'
+            % (year, year, e(_plural(units_n, "unit")),
+               e(_plural(lessons_n, "lesson")),
+               "".join('<span data-season="%s"></span>' % e(season_of(ht))
+                       for ht in HALF_TERMS)))
+
     secs = []
     for disc in ("biology", "chemistry", "physics"):
         du = [u for u in units if u["discipline"] == disc]
@@ -558,6 +1035,7 @@ def landing(units):
             '<li class="ks3-disc-card"><a href="/ks3/%s/index.html">'
             '<h2>%s</h2><p class="ks3-meta">%d units · %d of %d lessons written</p>'
             '</a></li>' % (e(disc), e(DISCIPLINE_TITLES[disc]), len(du), done, total))
+
     total_lessons = sum(len(u["lessons"]) for u in units)
     total_done = sum(u["authored_count"] for u in units)
     body = """<header class="ks3-landing-head">
@@ -566,7 +1044,16 @@ def landing(units):
      national curriculum programme of study, built lesson by lesson.</p>
   <p class="ks3-meta">%d of %d lessons written so far.</p>
 </header>
-<ul class="ks3-disc-grid">%s</ul>""" % (total_done, total_lessons, "".join(secs))
+<ul class="ks3-unit-grid ks3-browse-years">%s</ul>
+%s
+<section class="ks3-browse-secondary">
+  <h2>Prefer to browse by subject?</h2>
+  <p class="ks3-intro">Every lesson also sits in its subject and its unit, in
+     the order the science builds up. Same lessons, same pages — a different way
+     in.</p>
+  <ul class="ks3-disc-grid">%s</ul>
+</section>""" % (total_done, total_lessons, "".join(years), BROWSE_NOTE,
+                 "".join(secs))
     return shell("KS3 Science", body, crumb, None,
                  "Free KS3 Science revision — Years 7 to 9, all three sciences.")
 
@@ -760,8 +1247,10 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
         with open(full, "w", encoding="utf-8") as f:
             f.write(stamp_versions(content, versions))
 
+    browse = browse_slots(units)
+
     n = 0
-    write("index.html", landing(units))
+    write("index.html", landing(units, browse))
     n += 1
     for disc in ("biology", "chemistry", "physics"):
         du = [u for u in units if u["discipline"] == disc]
@@ -778,7 +1267,35 @@ def build_ks3(output_dir=OUT_ROOT, mirror_to_root=True, repo_root="."):
                         if l["authored"] else coming_soon_page(u, l))
                 write("%s/%s/%s.html" % (disc, u["slug"], l["slug"]), page)
                 n += 1
-    print("  ✅ wrote %d pages → %s/" % (n, ks3_out))
+    lesson_tree = n
+
+    # ── the browse layer (§4.5.2) ────────────────────────────────────────
+    # Index pages only. Every href above is a lesson URL that already exists and
+    # is untouched by anything below; year and half term reach these paths and
+    # go no further. They go through the same write(), so they carry the same
+    # cache-bust stamps — there is exactly one stamping pass in this generator.
+    browse_pages = 0
+    for year in YEARS:
+        write("year-%d/index.html" % year, year_index(year, browse))
+        browse_pages += 1
+        for ht in HALF_TERMS:
+            slug = half_term_slug(ht)
+            write("year-%d/%s/index.html" % (year, slug),
+                  half_term_index(year, ht, browse))
+            browse_pages += 1
+            for disc in DISCIPLINES:
+                if not browse.get((year, ht, disc)):
+                    continue
+                write("year-%d/%s/%s/index.html" % (year, slug, disc),
+                      half_term_discipline_index(year, ht, disc, browse,
+                                                 units_by_code))
+                browse_pages += 1
+    n += browse_pages
+    placed = sum(len(v) for v in browse.values())
+    print("  ✅ wrote %d pages → %s/  (%d lesson tree + %d browse layer)"
+          % (n, ks3_out, lesson_tree, browse_pages))
+    print("  ✅ browse layer covers %d lesson slots across %d years"
+          % (placed, len(YEARS)))
 
     # Shared assets. Cloudflare serves from mrbadmus_site/, so a KS3 page that
     # links /shared/ks3.css gets a 404 unless the file is copied there.
