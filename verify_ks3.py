@@ -30,6 +30,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import ks3_data
 import build_ks3 as B
+# Imported at module top ON PURPOSE. half_terms derives its placement at import
+# time from DEFAULT_SEQUENCE_V1, and check 6 below temporarily swaps that dict
+# for Rainford's map. Importing it lazily would derive half terms from a school
+# scheme mid-experiment; importing it here derives them from the default, once.
+from ks3_data import half_terms as HT
 
 FAILS = []
 MANUAL = []
@@ -246,12 +251,35 @@ def main():
     # build against a NEW one whenever the generator itself had changed — a
     # false FAIL at best, and at worst a real reorder defect masked by unrelated
     # generator drift. The comparison must isolate one variable: the sequence.
+    # Scoped to the LESSON TREE, deliberately. Browse-layer pages are excluded
+    # because this check cannot say anything true about them: the placement is
+    # computed at import and the substitution below happens after, so browse
+    # pages here are rendered from the original sequence either way. Comparing
+    # them would be measuring nothing and reporting a pass. Check 6b covers the
+    # browse layer properly.
+    # What counts as "the browse layer" for the §4.5.2 split. Two things, and
+    # the second is easy to miss: the year/half-term/subject tree under
+    # `year-<n>/`, AND `/ks3/index.html` itself, which now renders the three
+    # year cards with their unit and lesson counts. That page is the browse
+    # layer's front door, so it moves with the sequence by design. Filing it
+    # under "lesson tree" made check 6b fail and look like a §4.5 breach when
+    # the only thing that had changed was a unit count on a nav card.
+    def _is_browse(rel):
+        return rel.split(os.sep)[0].startswith("year-") or rel == "index.html"
+
+    def _lesson_tree(root_dir):
+        out = {}
+        for root, _, files in os.walk(root_dir):
+            for f in files:
+                fp = os.path.join(root, f)
+                rel = os.path.relpath(fp, root_dir)
+                if _is_browse(rel):
+                    continue
+                out[rel] = open(fp, encoding="utf-8").read()
+        return out
+
     B.build_ks3()
-    before = {}
-    for root, _, files in os.walk("mrbadmus_site/ks3"):
-        for f in files:
-            fp = os.path.join(root, f)
-            before[fp] = open(fp, encoding="utf-8").read()
+    before = _lesson_tree("mrbadmus_site/ks3")
 
     import ks3_data.default_sequence as ds
     from ks3_data import school_schemes
@@ -264,12 +292,7 @@ def main():
         ds.DEFAULT_SEQUENCE_V1.update(school_schemes.effective_sequence(SCHOOL))
         tmp = tempfile.mkdtemp()
         B.build_ks3(output_dir=tmp, mirror_to_root=False, repo_root=".")
-        after = {}
-        for root, _, files in os.walk(os.path.join(tmp, "ks3")):
-            for f in files:
-                fp = os.path.join(root, f)
-                after[fp.replace(tmp, "mrbadmus_site")] = open(
-                    fp, encoding="utf-8").read()
+        after = _lesson_tree(os.path.join(tmp, "ks3"))
         same_paths = set(before) == set(after)
         same_bytes = all(before[k] == after.get(k) for k in before)
         shutil.rmtree(tmp)
@@ -280,10 +303,87 @@ def main():
     detail = ("%s's real scheme applied over the default — %d of %d units "
               "move" % (school_schemes.scheme(SCHOOL)["name"],
                         len(divergence), len(original)))
-    check("a whole school's real reorder changes NO page path",
+    check("a whole school's real reorder changes NO lesson page path",
           same_paths, detail)
-    check("a whole school's real reorder changes NO page content", same_bytes,
-          "year is metadata, never structure (§4.5) · " + detail)
+    check("a whole school's real reorder changes NO lesson page content",
+          same_bytes, "year is metadata, never structure (§4.5) · " + detail)
+
+    # 6b. The browse layer is genuinely DERIVED from the sequence.
+    #
+    # ⚠️ Why this check has to exist, and why 6 above cannot be it.
+    #
+    # architecture.md §4.5.2 splits the invariant in two: lesson pages must not
+    # move when the sequence changes, and browse-layer index pages MUST, because
+    # they are the rendered sequence. Check 6 proves the first half. It cannot
+    # prove the second, for a reason worth stating so nobody "simplifies" this
+    # back: lesson pages never read half_terms at all, so check 6 would pass
+    # even if the browse layer were hard-coded — and for a while it did exactly
+    # that, because the placement is computed once at import and check 6
+    # substitutes the sequence afterwards. The browse pages it compared were
+    # rendered from the ORIGINAL placement, so "same bytes" was guaranteed by
+    # construction and measured nothing.
+    #
+    # That is the same shape of latent flaw §12 already records once, when this
+    # proof snapshotted its baseline off disk instead of building it. A proof
+    # that cannot fail is not evidence.
+    #
+    # The perturbation is deliberately NOT Rainford's whole scheme. Rainford's
+    # Year 9 biology is three lessons, which cannot be spread across six half
+    # terms — half_terms.split_sizes raises, correctly, and weakening that guard
+    # to make a test run would be the tail wagging the dog. Serving a school its
+    # own browse layer is the Phase 5 runtime lookup (§4.5.2). So this uses the
+    # smallest perturbation the default's own contract can hold: move Chemistry
+    # C3 from Year 7 to Year 8. Every lane stays above the six-lesson floor
+    # (Y7 chemistry 19 → 12, Y8 chemistry 22 → 29) and no SAME_YEAR_PREREQS edge
+    # touches C3.
+    from ks3_data import half_terms as HT
+
+    def _split(tree_root):
+        lessons, browse = {}, {}
+        for root, _, files in os.walk(tree_root):
+            for f in files:
+                fp = os.path.join(root, f)
+                rel = os.path.relpath(fp, tree_root)
+                body = open(fp, encoding="utf-8").read()
+                (browse if _is_browse(rel) else lessons)[rel] = body
+        return lessons, browse
+
+    base_dir = tempfile.mkdtemp()
+    B.build_ks3(output_dir=base_dir, mirror_to_root=False, repo_root=".")
+    base_lessons, base_browse = _split(os.path.join(base_dir, "ks3"))
+
+    moved_dir = tempfile.mkdtemp()
+    try:
+        ds.DEFAULT_SEQUENCE_V1["C3"] = 8
+        HT.recompute()
+        B.build_ks3(output_dir=moved_dir, mirror_to_root=False, repo_root=".")
+        moved_lessons, moved_browse = _split(os.path.join(moved_dir, "ks3"))
+    finally:
+        ds.DEFAULT_SEQUENCE_V1.clear()
+        ds.DEFAULT_SEQUENCE_V1.update(original)
+        HT.recompute()
+
+    lessons_same = (set(base_lessons) == set(moved_lessons)
+                    and all(base_lessons[k] == moved_lessons[k]
+                            for k in base_lessons))
+    browse_changed = base_browse != moved_browse
+    changed_n = sum(1 for k in base_browse
+                    if base_browse[k] != moved_browse.get(k))
+    shutil.rmtree(base_dir)
+    shutil.rmtree(moved_dir)
+
+    check("moving a unit between years changes NO lesson page", lessons_same,
+          "%d lesson-tree pages compared (§4.5.2)" % len(base_lessons))
+    check("moving a unit between years DOES change the browse layer",
+          browse_changed,
+          "%d of %d browse pages differ — the browse layer is derived from the "
+          "sequence, not hard-coded" % (changed_n, len(base_browse))
+          if browse_changed else
+          "browse layer is IDENTICAL after a reorder — it is not reading the "
+          "sequence, so §4.5.2's second half is unproven")
+
+    # Restore the canonical placement for everything downstream.
+    HT.recompute()
 
     # Re-run to restore the canonical build after the experiment.
     B.build_ks3()
@@ -298,13 +398,34 @@ def main():
           diff.stdout.decode()[:200])
     shutil.rmtree(t1); shutil.rmtree(t2)
 
-    # 8. Zero KS4 pages changed.
+    # 8. Zero KS4 pages changed — except the four the entry-point ruling
+    #    deliberately changes.
+    #
+    # MRB-176 ruling 1 makes the landing a KS3/KS4 chooser and moves the old
+    # landing to /ks4.html, so these four HAVE to change. They are named
+    # individually rather than the check being loosened to "root pages": this
+    # is an allowance, not a suppression, and any OTHER KS4 page appearing
+    # here still fails, which is the property §8.2 actually wants.
+    #
+    # Not stale-checked, unlike KNOWN_FORWARD — this reads `git status`, so the
+    # list legitimately empties the moment the work is committed.
+    KS4_INTENDED = {
+        "index.html",            # now the two-card chooser
+        "ks4.html",              # the previous landing, verbatim, behind the KS4 card
+        "combined/index.html",   # "back to home" re-pointed at /ks4.html
+        "triple/index.html",     # same
+    }
+
     git = subprocess.run(["git", "status", "--porcelain"],
                          capture_output=True, text=True).stdout.splitlines()
     touched = [l[3:] for l in git if l[3:].endswith(".html")]
     ks4 = [t for t in touched
-           if not t.startswith("ks3/") and not t.startswith("mrbadmus_site/ks3/")]
-    check("zero KS4 pages changed", not ks4, str(ks4[:5]))
+           if not t.startswith("ks3/")
+           and not t.startswith("mrbadmus_site/ks3/")
+           and t.replace("mrbadmus_site/", "", 1) not in KS4_INTENDED]
+    check("zero UNINTENDED KS4 pages changed", not ks4,
+          str(ks4[:5]) if ks4
+          else "only the %d pages MRB-176 ruling 1 moves" % len(KS4_INTENDED))
 
     # 9. The KS4 generator must not destroy the KS3 output.
     #
@@ -341,6 +462,97 @@ def main():
           os.path.isdir("ks3") and any(
               f.endswith(".html") for _, _, fs in os.walk("ks3") for f in fs),
           "root mirror present")
+
+    # 10. Half-term placement (MRB-176 ruling 2).
+    #
+    # `ks3_data/half_terms.py` asserts most of this at import, so a broken
+    # placement cannot even load. That is not a substitute for a gate: an
+    # import assertion proves the module is self-consistent, and these checks
+    # prove it is consistent with the curriculum the rest of the build sees —
+    # the 185 slots build_units() actually produced, and the authored `requires`
+    # edges the module deliberately cannot read (circular import).
+    #
+    # Everything here is recomputed rather than delegated back to the module's
+    # own assertions, because a check that only re-runs the thing it is checking
+    # verifies nothing.
+    #
+    # Half term is METADATA (§4.5), exactly as year is. Check 8 above already
+    # proves no page changed; nothing below may ever become a reason for one to.
+    placement = HT.placement()
+
+    declared_slots = [(u["code"], l["slug"]) for u in units for l in u["lessons"]]
+    expected_slots = ks3_data.structure.totals()["lessons"]
+    missing = [s for s in declared_slots if s not in placement]
+    extra = [s for s in placement if s not in set(declared_slots)]
+    check("every lesson slot has a half term, exactly once",
+          len(declared_slots) == expected_slots
+          and len(placement) == expected_slots
+          and not missing and not extra,
+          "%d slots, %d placed%s%s"
+          % (len(declared_slots), len(placement),
+             "; unplaced: %s" % missing[:5] if missing else "",
+             "; placed but undeclared: %s" % extra[:5] if extra else ""))
+
+    counts = HT.counts_by_half_term()
+    empty = ["Y%d %s HT%d" % (y, d, ht)
+             for (y, d), row in sorted(counts.items())
+             for ht, n in zip(HT.HALF_TERMS, row) if n == 0]
+    check("every discipline appears in every half term of every year",
+          not empty,
+          "empty: %s" % empty if empty
+          else "%d (year, discipline) streams × 6 half terms, none empty"
+               % len(counts))
+
+    backwards = []
+    for (year, disc), codes in sorted(HT.INTRA_YEAR_UNIT_ORDER.items()):
+        last = 0
+        for code in codes:
+            for l in by_code[code]["lessons"]:
+                ht = placement[(code, l["slug"])][1]
+                if ht < last:
+                    backwards.append("Y%d %s %s/%s HT%d after HT%d"
+                                     % (year, disc, code, l["slug"], ht, last))
+                last = ht
+    check("half term never goes backwards along a teaching stream",
+          not backwards, str(backwards[:3]) if backwards else "9 streams monotonic")
+
+    owner = {l["slug"]: u["code"] for u in units for l in u["lessons"]
+             if not l.get("reference_to")}
+    broken = []
+    for dependent, prereq, why in HT.SAME_YEAR_PREREQS:
+        dy, dht = placement[(owner[dependent], dependent)]
+        py, pht = placement[(owner[prereq], prereq)]
+        if dy != py or dht < pht:
+            broken.append("%s (Y%d HT%d) requires %s (Y%d HT%d) — %s"
+                          % (dependent, dy, dht, prereq, py, pht, why))
+    check("every cross-discipline same-year prerequisite is reachable in time",
+          not broken, str(broken[:2]) if broken
+          else "%d ⇄ edges, all satisfied" % len(HT.SAME_YEAR_PREREQS))
+
+    # The one check half_terms.py cannot make itself: reading authored lessons
+    # means importing the package that would import it back.
+    req_problems = HT.check_authored_requires(units)
+    check("every authored `requires` edge inside one year is satisfied",
+          not req_problems, str(req_problems[:3]) if req_problems
+          else "checked against %d units" % len(units))
+
+    print("\n  Lessons per half term — the distribution, stated so it is looked at:")
+    print("        %s" % "  ".join("HT%d" % h for h in HT.HALF_TERMS))
+    report = HT.search_report()
+    for year in (7, 8, 9):
+        for disc in ks3_data.structure.DISCIPLINES:
+            row = counts.get((year, disc))
+            if not row:
+                continue
+            print("    Y%d %-10s %s   (%d)"
+                  % (year, ks3_data.structure.DISCIPLINE_TITLES[disc],
+                     "  ".join("%2d" % n for n in row), sum(row)))
+        r = report[year]
+        print("    Y%d %-10s %s   (%d)   spread %d · %d of %d cuts snapped"
+              % (year, "all three", "  ".join("%2d" % n for n in r["totals"]),
+                 sum(r["totals"]), r["spread"], r["snapped"], r["available"]))
+    print("        balance beats unit coherence — see RULED TRADE-OFF in "
+          "ks3_data/half_terms.py")
 
     print("\n§10.2 — per-lesson done-list (automatable subset)\n" + "=" * 60)
 
