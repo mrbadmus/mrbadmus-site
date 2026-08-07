@@ -91,7 +91,7 @@ before any of these freeze.
 
 | ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
 |---|---|---|---|---|
-| `PART-01` | Matter is continuous — you could keep cutting something in half forever and never reach a smallest piece. | `keep-cutting` | `mixing-volumes` | `particle-model` |
+| `PART-01` | Matter is continuous — you could keep cutting something in half forever and never reach a smallest piece. | `mixing-volumes` | `keep-cutting` | `particle-model` |
 | `PART-02` | There is air (or dust, or something) in the gaps between particles. | `what-is-in-the-gap` | `gap-reveal` | `particle-model` |
 | `PART-03` | The particles themselves change — they melt, or get softer, or expand — when a substance changes state. | `what-changed` | `same-particles-reveal` | `solids-liquids-and-gases` |
 | `PART-04` | Particles in a solid are completely still. | `predict-solid-motion` | `vibration-sim` | `solids-liquids-and-gases` |
