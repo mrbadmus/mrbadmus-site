@@ -318,6 +318,76 @@ structure.
 > render time rather than a build-time constant — which is the only way it can be both accurate and
 > compliant. Until then, WHERE is the honest half.
 
+#### 4.5.1 Half term joins year as sequence metadata ⊕
+
+> ✅ **AMENDED 2026-08-06 on Mide's ruling (MRB-176 ruling 2).** The published default sequence gains
+> **half-term placement**: every one of the 185 lesson slots carries `(year, half_term)` where
+> `half_term` is 1–6, Autumn First Half through Summer Second Half.
+
+`half_term` is **exactly as soft as `typical_year`, and is bound by the same invariant.** Everything
+§4.5 says about year applies to it word for word: it is advisory, it is data, it is what a school
+with no scheme configured gets, and it may never determine which lesson a student is served or what
+a lesson page says. Reordering remains a data change.
+
+**Where it comes from.** The same place the year does — the statutory spine and the prerequisite
+graph (§4.5's ruling above), never a school's timetable. It is derived in `ks3_data/half_terms.py`
+under three rules in strict priority order:
+
+1. **Prerequisite order wins outright.** No lesson is placed in an earlier half term than any of its
+   prerequisites in the same year. Cross-discipline edges count — they are the ones that bite, and
+   they are declared as data (`SAME_YEAR_PREREQS`) with each edge citing the §7 ⇄ marker it comes
+   from.
+2. **All three sciences appear in every half term.** Both real schools surveyed (§8.9) interleave
+   rather than teaching disciplinary blocks a term at a time, and a default that stacked one science
+   into one half term would be wrong for almost everyone.
+3. **Lesson counts balance across the six half terms**, as evenly as rules 1 and 2 permit.
+
+Keeping whole units inside one half term is **not** a rule. It is a tie-break, applied only among
+placements that are already equally balanced. That ordering is deliberate and was corrected during
+the build: an earlier version snapped cuts to unit boundaries unconditionally and produced a Year 8
+carrying 16 lessons in one half term against 10 in another. Unit coherence is a convenience; load
+balance is what a school actually feels.
+
+**Year 9 and the GCSE bridge.** §7.6's bridge unit group is taught **last in Year 9** — half term 6 —
+consistent with both real schools starting GCSE material late in that year. The rule is implemented
+now, though it currently places zero lessons, because §7.6 is design-only and no bridge unit exists
+in `structure.py`. It is written ahead of the content so the first bridge unit does not need a second
+ruling.
+
+#### 4.5.2 The browse layer — where year and half term MAY appear ⊕
+
+> ✅ **AMENDED 2026-08-06 on Mide's ruling (MRB-176 ruling 1).** KS3 gains a **browse layer**: a set of
+> generated index pages organised Year → Half term → Subject → lessons. This amendment is required
+> because §4.5 as written forbids year from determining "a URL, a folder, a file name, a navigation
+> structure", and the browse layer is a navigation structure determined by year. The prohibition is
+> therefore **split rather than relaxed**, and the half that matters is strengthened.
+
+**The line, stated once:**
+
+| Surface | Year / half term |
+|---|---|
+| **Lesson pages** — `/ks3/<discipline>/<unit>/<lesson>.html` | **Never.** Not in the URL, not in the folder, not in a single byte of the page. Unchanged, and now proven per build rather than promised. |
+| **Browse-layer index pages** — `/ks3/year-<n>/<half-term>/…` | **Yes — it is the organising axis.** These pages *are* the rendered sequence. |
+
+**Why this is not the anti-goal in §2 returning.** §2 forbids "year baked into structure" because it
+"makes reordering a rebuild" and "kills multi-school fit". A browse layer is a **pure projection of
+sequence data**: reordering the sequence regenerates the browse pages and changes nothing else. The
+test §9 already runs is the one that proves it — applying a whole real school's scheme over the
+default must change **zero lesson page paths and zero lesson page bytes**. That test is unchanged by
+this amendment, and it is now the load-bearing statement of the invariant rather than the URL rule,
+which was only ever a proxy for it.
+
+**What the browse layer is honest about.** It renders the **platform default sequence**, so it is
+labelled as such on the page. A school that has overridden the sequence is not yet served a browse
+layer matching its own scheme — that needs the runtime scheme lookup already deferred to Phase 5
+(§4.5 ruling 3), and it is the same deferral, not a new one. Until then the browse layer says whose
+route it is, which is the same *say WHERE, never assume* discipline §4.5 settled for reference slots.
+
+**Discipline hubs are not replaced.** `/ks3/<discipline>/index.html` and the unit indexes remain, and
+`/ks3/index.html` links to both routes. The browse layer is an additional way in, not a migration:
+§11 decision 2 ruled disciplinary structure with integrated navigation, and two coexisting routes
+over one set of pages is exactly that ruling working.
+
 ### 4.6 Cross-discipline lessons: single source, referenced ⊕
 
 The statutory document deliberately teaches some ideas twice — the particle model appears under both
@@ -1339,11 +1409,19 @@ impossible to gate. One module per unit matches the release increment (§4.3) an
 ### 8.4 URL and output taxonomy
 
 ```
-/ks3/index.html                                     KS3 landing
+/ks3/index.html                                     KS3 landing — both routes in
 /ks3/<discipline>/index.html                        discipline hub
 /ks3/<discipline>/<unit-slug>/index.html            unit index
-/ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson
+/ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson          ← NO year, ever
+
+  the browse layer (§4.5.2, added 2026-08-06) — index pages only:
+/ks3/year-<n>/index.html                            six half-term cards
+/ks3/year-<n>/<half-term-slug>/index.html           subject cards for that half term
+/ks3/year-<n>/<half-term-slug>/<discipline>/index.html   lessons placed there
 ```
+
+Half-term slugs are `autumn-1`, `autumn-2`, `spring-1`, `spring-2`, `summer-1`, `summer-2`.
+`year-<n>` cannot collide with a discipline hub because no discipline is slugged `year-7`.
 
 Compare KS4: `/<pathway>/<tier>/<subject>/<topic>/<subtopic>.html`. KS3 is shallower because it has
 no pathway and no tier — which is the point.
@@ -2330,4 +2408,6 @@ This document is law. Changing it changes what gets built.
 | 2026-07-26 | **§9's reorder proof strengthened and re-run against the new default.** Previously nudged two units to different years — a synthetic reorder and a weak test. Now applies **Rainford's entire real scheme across all 33 units** and rebuilds. Required result: zero page paths changed, zero page bytes changed. | Claude (Opus 5) |
 | 2026-07-26 | **§12 gains a reversal rule ⊕:** a superseded ruling is never deleted, the reasoning for the reversal is recorded, and whose ruling it was is stated plainly — including when it was Mide's own. | Claude (Opus 5) |
 | 2026-07-27 | **§8.2 corrected + new §8.2.1 ⊕ — the two generators are independent and their order no longer matters.** §8.2 said `build_ks3()` is "called from `build_site()`"; it never was and must not be, or the zero-KS4-drift gate directly above it becomes undemonstrable. The independence had a sharp edge: `build_site()` rmtree's `mrbadmus_site/`, so a KS4 build running second silently deleted every KS3 page and still exited 0 — a bug that only ever showed up as missing output. Closed three ways: `build_site()` preserves `FOREIGN_OUTPUT_DIRS` (currently `ks3`) across the wipe and restores them before the root round-trip; the cache-bust pass skips those trees too, since it was rewriting KS3 `?v=` stamps depending on which generator ran last; and `build_all.py` is now the single ordered entrypoint. Both orders verified byte-identical by full `diff -r` of the served tree. `verify_ks3.py` gates it by running the KS4 generator after `build_ks3()` and asserting the KS3 output and root mirror both survive. | Claude (Opus 5) |
+| 2026-08-06 | ✅ **New §4.5.1 ⊕ — half term joins year as sequence metadata. RULED by Mide, 6 Aug 2026, MRB-176 ruling 2.** All 185 lesson slots in the published default now carry `(year, half_term)`, 1–6. Bound by §4.5 exactly as `typical_year` is: advisory, data, never structure. Derived in `ks3_data/half_terms.py` from the statutory spine and the prerequisite graph under three rules in strict priority — prerequisite order (cross-discipline edges declared as data, each citing its §7 ⇄ marker), all three sciences present in every half term (both real schools interleave), then balanced lesson counts. **Unit coherence is a tie-break, not a rule**, and is explicitly ranked below balance: an earlier build snapped cuts to unit boundaries unconditionally and gave Year 8 sixteen lessons in one half term against ten in another. §7.6's Year 9 bridge group takes half term 6; the rule is implemented now and places zero lessons today, so the first bridge unit needs no second ruling. Lands in `scheme_of_work_entries` (global) only — `scheme_of_work_overrides` and the school seeds are untouched and byte-identical. | Claude (Opus 5) |
+| 2026-08-06 | ✅ **New §4.5.2 ⊕ — the browse layer, and where year MAY appear. RULED by Mide, 6 Aug 2026, MRB-176 ruling 1.** KS3 gains generated index pages organised Year → Half term → Subject → lessons. **This needed an amendment rather than an implementation**: §4.5 forbade year determining "a URL, a folder, a file name, a navigation structure", and a year-shaped browse layer is exactly that. The prohibition is **split, not relaxed** — lesson pages carry no year in URL, folder or byte (unchanged, and now proven per build); browse index pages take year and half term as their organising axis, because they *are* the rendered sequence. The load-bearing invariant moves from the URL rule, which was only ever a proxy, to §9's reorder proof: applying a real school's whole scheme changes **zero lesson page paths and zero lesson page bytes**. That test is unchanged and still passes. The browse layer renders the **platform default** and says so on the page; matching it to a school's own scheme is the Phase 5 runtime lookup already deferred at §4.5 ruling 3, not a new deferral. Discipline hubs are unchanged and both routes are linked from `/ks3/index.html` — §11 decision 2's "disciplinary structure, integrated navigation" working as ruled. §8.4 taxonomy extended. | Claude (Opus 5) |
 | 2026-08-06 | **§8.2.1 reconciled into one section.** Two sessions found the same generator-boundary defect independently and fixed it differently — one reached it via the ordering hazard (KS3 output deleted by the KS4 wipe), one via the stamping question (KS4 rewriting KS3 pages). Both were right; the merge keeps the better half of each. **Wipe:** delete entry-by-entry skipping `FOREIGN_OUTPUT_DIRS`, rather than moving the tree aside and restoring it — the move version works but strands KS3 output in a temp dir if the build raises in between. **Cache-bust:** prune `_subdirs` so `os.walk` never descends, rather than testing each directory on the way down. Generalised to the `FOREIGN_OUTPUT_DIRS` list in both places, so a future standalone generator is one edit rather than four. The earlier note that KS3 pages were "deliberately left unstamped" is **deleted, not amended** — §8.5 now stamps them, so that note was actively wrong. | Claude (Opus 5) |

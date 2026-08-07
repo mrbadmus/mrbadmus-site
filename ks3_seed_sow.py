@@ -28,10 +28,29 @@ owning unit renders it — but a teacher *does* teach that slot in that week, an
 a scheme of work describes teaching, not pages. Those rows carry the
 cross-reference in ``notes`` so nobody reads them as a duplicate.
 
-Within one ``(year_group, subject)`` block, rows are ordered by unit
-declaration order then lesson order, and ``academic_week`` runs 1..n. That is a
-teaching *order*, not a calendar: week 1 is the first lesson of that subject in
-that year, whenever the school actually starts it.
+Within one ``(year_group, subject)`` block, rows are ordered by unit order then
+lesson order, and ``academic_week`` runs 1..n. That is a teaching *order*, not a
+calendar: week 1 is the first lesson of that subject in that year, whenever the
+school actually starts it.
+
+**Half terms, and the one behavioural change they brought (MRB-176 ruling 2).**
+Default-sequence rows now also carry ``half_term`` (1–6), derived by
+``ks3_data/half_terms.py``. The change worth stating is not the extra column,
+it is that **the DEFAULT block's unit order — and therefore its
+``academic_week`` numbering — now follows ``half_terms.INTRA_YEAR_UNIT_ORDER``
+rather than raw ``structure.py`` declaration order.** In practice that moves one
+thing: Year 8 physics teaches P5 Pressure before P1 Energy, because Year 8
+biology meets breathing in half term 1 and breathing requires pressure. Half
+term and academic week have to agree about teaching order or the row contradicts
+itself, so they are numbered from the same list.
+
+**School-scheme rows are untouched by all of that.** They carry no
+``half_term``, and their ``academic_week`` still comes from declaration order.
+``build_rows`` takes an explicit ``with_half_terms`` flag rather than inferring
+it, because a school's sequence puts different units in different years and the
+default's half-term map simply does not describe it. The generated
+``20260726182000_ks3_school_schemes.sql`` is byte-identical to what it was
+before half terms existed.
 
 **The 39-week ceiling.** ``academic_week`` carries
 ``CHECK (academic_week BETWEEN 1 AND 39)``. Every block is asserted against it
@@ -45,7 +64,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from ks3_data import structure
+from ks3_data import half_terms, structure
 from ks3_data.default_sequence import DEFAULT_SEQUENCE_V1
 from ks3_data.school_schemes import SCHOOL_SCHEMES, effective_sequence
 
@@ -87,12 +106,55 @@ def school_id_sql(slug):
 
 # ── the rows ─────────────────────────────────────────────────────────────
 
-def build_rows(sequence, unit_notes=None):
+def unit_order(sequence, with_half_terms):
+    """The order units are laid out in, as a flat list of unit codes.
+
+    Two orders, and which one applies is a caller's decision rather than
+    something guessed from the shape of `sequence`:
+
+    * **Declaration order** (`with_half_terms=False`) — `structure.py`'s own
+      order, filtered to the units this sequence places. §7's tables are
+      written in teaching order, so declaration order IS a teaching order, and
+      it is the only one available for a school whose year map we did not
+      derive anything from.
+    * **`half_terms.INTRA_YEAR_UNIT_ORDER`** (`with_half_terms=True`) — the
+      same order with the ruled prerequisite deviations applied. Rows numbered
+      any other way would disagree with the half term stamped on them.
+    """
+    if not with_half_terms:
+        return [u[0] for u in structure.UNITS if sequence.get(u[0]) is not None]
+
+    # INTRA_YEAR_UNIT_ORDER is derived from the published default and describes
+    # only the published default. Applying it to a school's sequence would put
+    # units in years that school does not teach them in — silently, because
+    # both are just dicts of unit code → year. Refuse loudly instead.
+    if dict(sequence) != dict(DEFAULT_SEQUENCE_V1):
+        differ = sorted(c for c in set(sequence) | set(DEFAULT_SEQUENCE_V1)
+                        if sequence.get(c) != DEFAULT_SEQUENCE_V1.get(c))
+        raise ValueError(
+            "ks3_seed_sow: with_half_terms=True is only meaningful for the "
+            "published default sequence, and this sequence diverges from it on "
+            "%d unit(s): %s. Half terms are derived from the default's own "
+            "intra-year order (ks3_data/half_terms.py); a school that teaches "
+            "different units in different years needs its own derivation, not "
+            "this one." % (len(differ), ", ".join(differ)))
+
+    out = []
+    for key in sorted(half_terms.INTRA_YEAR_UNIT_ORDER):
+        out.extend(half_terms.INTRA_YEAR_UNIT_ORDER[key])
+    return out
+
+
+def build_rows(sequence, unit_notes=None, with_half_terms=False):
     """Lesson slots laid out as scheme-of-work rows for one sequence.
 
     `sequence` is unit code → year. `unit_notes` is an optional unit code →
     note, used for school schemes so a school's own commentary rides on that
     school's rows and nowhere else.
+
+    `with_half_terms` says whether these rows carry a half term — see
+    `unit_order` for why it is a parameter and not something inferred. It is
+    True for exactly one caller: the platform default.
 
     Returns {(year_group, discipline): [row, ...]}, each row a dict ready to
     render, with academic_week already assigned 1..n in teaching order.
@@ -101,13 +163,13 @@ def build_rows(sequence, unit_notes=None):
     unit_notes = unit_notes or {}
     blocks = {}
 
-    # Unit declaration order is the teaching order within a year. Iterating
-    # structure.UNITS rather than the sequence dict keeps that deterministic —
-    # dict order would make the output depend on how the map was written.
-    for code, _slug, title, disc, _area, _year, _lessons in structure.UNITS:
-        year = sequence.get(code)
-        if year is None:
-            continue
+    # Iterating a unit list rather than the sequence dict keeps this
+    # deterministic — dict order would make the output depend on how the map
+    # was written.
+    for code in unit_order(sequence, with_half_terms):
+        year = sequence[code]
+        title = idx[code]["title"]
+        disc = idx[code]["discipline"]
         rows = blocks.setdefault((year, disc), [])
         for n, slot in enumerate(idx[code]["lesson_slots"]):
             notes = []
@@ -130,14 +192,20 @@ def build_rows(sequence, unit_notes=None):
             # correct instead of one.
             if n == 0 and code in unit_notes:
                 notes.append(unit_notes[code])
-            rows.append({
+            row = {
                 "year_group": year,
                 "discipline": disc,
                 "unit_code": code,
                 "topic": title,
                 "subtopic": slot["slug"],
                 "notes": " · ".join(notes) if notes else None,
-            })
+            }
+            if with_half_terms:
+                # By (unit, slug), never by slug alone: `energy-in-food` is
+                # declared in two units — B3's §4.6 reference slot and P2's own
+                # lesson — and they are taught two years apart.
+                row["half_term"] = half_terms.half_term_of(slot["slug"], code)
+            rows.append(row)
 
     for rows in blocks.values():
         for i, row in enumerate(rows, start=1):
@@ -214,6 +282,41 @@ def block_comment(blocks):
     return "\n".join(lines) + "\n"
 
 
+def half_term_comment(blocks):
+    """Lessons per half term, stated in the file rather than inferrable from it.
+
+    The distribution is the whole point of the column, and it is the first
+    thing anyone reviewing this seed wants to see. Reading it off 185 INSERT
+    tuples is not review, it is arithmetic.
+    """
+    lines = ["-- Lessons per half term (HT1 … HT6), generated:", "--"]
+    for year in YEARS:
+        year_counts = [0] * 6
+        for disc in structure.DISCIPLINES:
+            rows = blocks.get((year, disc))
+            if not rows:
+                continue
+            counts = [0] * 6
+            for r in rows:
+                counts[r["half_term"] - 1] += 1
+            for i, n in enumerate(counts):
+                year_counts[i] += n
+            lines.append("--   Y%d %-10s %s   (%d)"
+                         % (year, structure.DISCIPLINE_TITLES[disc],
+                            " ".join("%2d" % n for n in counts), sum(counts)))
+        if any(year_counts):
+            lines.append("--   Y%d %-10s %s   (%d)"
+                         % (year, "ALL",
+                            " ".join("%2d" % n for n in year_counts),
+                            sum(year_counts)))
+    lines.append("--")
+    lines.append("-- Every discipline appears in every half term of every year "
+                 "— that is")
+    lines.append("-- asserted in ks3_data/half_terms.py, not hoped for here.")
+    lines.append("--")
+    return "\n".join(lines) + "\n"
+
+
 def render_default(blocks):
     out = [header(
         os.path.join(SEED_DIR, DEFAULT_SEED),
@@ -229,7 +332,13 @@ def render_default(blocks):
               "-- KS3 has no exam board, no tier and no pathway: all three are NULL\n"
               "-- on every row here, which the §8.7 migration both permits and\n"
               "-- requires.\n"
-              "--\n" + block_comment(blocks))]
+              "--\n"
+              "-- half_term (1-6) is where in the year the lesson falls. It is\n"
+              "-- METADATA under §4.5 exactly as year_group is, derived by\n"
+              "-- ks3_data/half_terms.py from this same default sequence, and it\n"
+              "-- reaches no URL and no page byte. Requires migration\n"
+              "-- 20260806230345_ks3_scheme_of_work_half_term.sql.\n"
+              "--\n" + block_comment(blocks) + half_term_comment(blocks))]
 
     out.append("begin;\n")
     out.append("""
@@ -259,7 +368,8 @@ delete from public.scheme_of_work_entries where key_stage = 'KS3';
             out.append(
                 "insert into public.scheme_of_work_entries\n"
                 "  (key_stage, year_group, tier, pathway, subject_id, "
-                "exam_board, academic_week, topic, subtopic, notes, active)\n"
+                "exam_board, academic_week, half_term, topic, subtopic, notes, "
+                "active)\n"
                 "values\n")
             vals = []
             unit = None
@@ -268,10 +378,11 @@ delete from public.scheme_of_work_entries where key_stage = 'KS3';
                     unit = r["unit_code"]
                     vals.append("  -- %s %s" % (unit, r["topic"]))
                 vals.append(
-                    "  ('KS3', %d, null, null, %s, null, %d, %s, %s, %s, true)"
+                    "  ('KS3', %d, null, null, %s, null, %d, %d, %s, %s, %s, "
+                    "true)"
                     % (r["year_group"], subject_id_sql(disc),
-                       r["academic_week"], q(r["topic"]), q(r["subtopic"]),
-                       q(r["notes"])))
+                       r["academic_week"], r["half_term"], q(r["topic"]),
+                       q(r["subtopic"]), q(r["notes"])))
             out.append(_join_values(vals) + ";\n")
 
     out.append("\ncommit;\n")
@@ -387,13 +498,15 @@ def main():
 
     os.makedirs(SEED_DIR, exist_ok=True)
 
-    default_blocks = build_rows(DEFAULT_SEQUENCE_V1)
+    default_blocks = build_rows(DEFAULT_SEQUENCE_V1, with_half_terms=True)
     check_ceiling(default_blocks, "MrBadmusAI default sequence v1")
 
+    # School rows deliberately carry no half term — see the module docstring.
     school_blocks = {}
     for slug in SCHOOL_SCHEMES:
         sch = SCHOOL_SCHEMES[slug]
-        blocks = build_rows(effective_sequence(slug), unit_notes=sch["notes"])
+        blocks = build_rows(effective_sequence(slug), unit_notes=sch["notes"],
+                            with_half_terms=False)
         check_ceiling(blocks, "%s (%s)" % (sch["name"], slug))
         school_blocks[slug] = blocks
 
@@ -426,6 +539,18 @@ def _report(label, path, blocks):
             print("    Y%d  %s" % (year, "   ".join(parts)))
     print("    %d rows · max academic_week %d (ceiling %d)"
           % (total, peak, MAX_ACADEMIC_WEEK))
+
+    if any("half_term" in r for rows in blocks.values() for r in rows):
+        print("    lessons per half term (HT1…HT6):")
+        for year in YEARS:
+            counts = [0] * 6
+            for disc in structure.DISCIPLINES:
+                for r in blocks.get((year, disc)) or []:
+                    counts[r["half_term"] - 1] += 1
+            if any(counts):
+                print("      Y%d  %s   (%d)"
+                      % (year, " ".join("%2d" % n for n in counts),
+                         sum(counts)))
 
 
 if __name__ == "__main__":
