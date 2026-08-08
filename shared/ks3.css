@@ -1,19 +1,33 @@
 /* ═══════════════════════════════════════════════════════════════
    KS3 — page styles.  architecture.md §8.5.
 
-   KS3 pages carry class="rd" AND data-mode="ks3" on <body>:
+   KS3 pages carry class="rd" AND data-mode="ks3" on <body>. BOTH are
+   required — the KS3 token block is selected by `.rd[data-mode="ks3"]`
+   so that it outranks `.rd`, so an element with only one of them gets
+   no KS3 dials at all. verify_ks3.py gates this per page.
      .rd            opts into the redesign locked token system
-     data-mode      supplies the KS3 dials (brighter accent, rounder
-                    corners) already defined in tokens.css
+     data-mode      supplies the KS3 dials, defined in tokens.css
 
    This file consumes tokens. It must not re-declare palette values.
    Anything KS3 needs beyond the existing dials is an addition to the
-   [data-mode="ks3"] block in tokens.css, never a new colour here.
+   KS3 block in tokens.css, never a new colour here.
 
-   ⚠️ --accent fails WCAG AA for body-size text on three of the four
-   cream grounds (measured 2026-07-26, see tokens.css). Body-size text
-   in an accent colour uses --accent-text. --accent is used here only
-   for large text, rules, fills and borders.
+   ⚠️ --accent (#C4490F) fails WCAG AA for body-size text on three of
+   the four cream grounds — page 3.74, card 4.33, inset 4.37, panel
+   4.80. Body-size text in an accent colour uses --accent-text
+   (#A63C12). --accent is used here only for large text, rules, fills
+   and borders. Re-measured 2026-08-07 under MRB-179, against the
+   values the page now actually resolves.
+
+   ⊕ The radii dial DOWN, not up. The KS3 block sets 12/18/26 where
+   `.rd` sets 12/22/28, so a KS3 card is very slightly squarer than a
+   KS4 redesign card — the opposite of the "rounder corners" this file
+   used to claim. The dials were authored against the original :root
+   scale (8/12/18), where they were rounder; `.rd`'s scale then landed
+   underneath them and nobody re-checked, because the dials were dead
+   until MRB-179 and the claim cost nothing. Left as authored: the
+   values are Mide's to set and the KS3 visual redesign is held under
+   MRB-182. Flagged there rather than silently retuned here.
    ═══════════════════════════════════════════════════════════════ */
 
 .ks3-nav {
@@ -50,7 +64,10 @@
 }
 .ks3-crumbs a { color: var(--accent-text); text-decoration: none; }
 .ks3-crumbs a:hover { text-decoration: underline; }
-.ks3-crumb-sep { color: var(--ink-faint); }
+/* --ink-faint #8A8074 measures 2.97 on the page ground — it fails AA for
+   body-size text on the only surface it is ever used on (MRB-179 re-measure,
+   2026-08-07). --ink-muted is 4.53 there and clears it. */
+.ks3-crumb-sep { color: var(--ink-muted); }
 
 /* ── headings ── */
 .ks3-eyebrow {
@@ -78,6 +95,16 @@
 .ks3-intro { color: var(--ink-body); margin: 0 0 0.75rem; }
 .ks3-meta { font-size: 0.85rem; color: var(--ink-muted); margin: 0; }
 
+/* §5.10.1's under-review marker. It is the thing standing between a
+   student and unreviewed science, so it has to READ as a marker.
+   Border is --accent, not --accent-tint-border: the tint border measures
+   1.35 against its own fill and 1.30 against the page ground, so the flag
+   had no perceptible edge at all and dissolved into the page. --accent
+   gives 3.89 on the fill and 3.74 on the ground, clearing WCAG 1.4.11's
+   3:1 for a mark that carries state. This is the same correction already
+   made for its list-size sibling .ks3-badge.is-draft, which the block
+   comment below reasons through in full — the two were inconsistent, and
+   this is the one that got missed. MRB-179 re-measure, 2026-08-07. */
 .ks3-review-flag {
   display: inline-block;
   font-size: 0.75rem;
@@ -85,7 +112,7 @@
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
   background: var(--accent-tint);
-  border: 1px solid var(--accent-tint-border);
+  border: 1px solid var(--accent);
   color: var(--ink);
   margin: 0.5rem 0 0;
 }
@@ -131,12 +158,20 @@
 .ks3-option.is-correct { border-color: var(--ok-border); background: var(--ok-bg); }
 .ks3-option.is-wrong  { border-color: var(--err-border); background: var(--err-bg); }
 
+/* The answer, arriving after the commitment — so its existence IS a state,
+   and 1.4.11 applies to whatever identifies it. --accent-wash #FBEEE9 sits
+   at 1.03 against the block ground it appears on, i.e. the fill alone marks
+   out nothing; the edge was doing all the work at 1.49. --accent gives 4.30
+   on the fill and 4.33 on the ground, and it makes the reveal speak the same
+   visual language as the two other post-commitment states — a committed
+   .ks3-option and a flipped .ks3-card-btn both already edge in --accent.
+   MRB-179 re-measure, 2026-08-07. */
 .ks3-reveal {
   margin-top: 0.85rem;
   padding: 0.75rem 0.9rem;
   border-radius: var(--radius-sm);
   background: var(--accent-wash);
-  border: 1px solid var(--accent-tint-border);
+  border: 1px solid var(--accent);
 }
 .ks3-feedback {
   margin-top: 0.6rem;
@@ -254,7 +289,9 @@
   margin-left: auto;
   font-size: 0.7rem;
   letter-spacing: 0.06em;
-  color: var(--ink-faint);
+  /* was --ink-faint: 2.97 on the page ground at 11px, a straight AA fail.
+     --ink-muted is 4.53. Same reasoning as .ks3-crumb-sep above. */
+  color: var(--ink-muted);
 }
 .ks3-badge {
   font-size: 0.7rem;
@@ -483,9 +520,12 @@
    is the same fact at list size, in .ks3-review-flag's colour family.
    Border is --accent, not --accent-tint-border: the tint border measures
    1.35:1 against its own fill, which fails WCAG 1.4.11's 3:1 for a mark
-   carrying state. --accent gives 4.33 against the fill and 4.17 against the
+   carrying state. --accent gives 3.89 against the fill and 3.74 against the
    page ground, and it also separates "Draft" (written, under review) from
-   "Coming soon" (not written), which keeps its neutral --rule border. */
+   "Coming soon" (not written), which keeps its neutral --rule border.
+   (Ratios re-measured 2026-08-07 under MRB-179: --accent now actually
+   resolves to #C4490F rather than #C0392B, so the numbers here moved from
+   4.33/4.17 to 3.89/3.74. Still clear of 3:1, with less headroom.) */
 .ks3-badge.is-draft {
   margin-left: 0.5rem;
   background: var(--accent-tint);
@@ -558,31 +598,43 @@
 
    ⚠️ MEASURED AGAINST THE RESOLVED VALUES, not the authored ones.
    On a KS3 page the body carries BOTH `.rd` and data-mode="ks3".
-   The two blocks in tokens.css have equal specificity (0,1,0) and
-   `.rd` is later in the file, so `--accent: var(--accent-strong)`
-   WINS and resolves to #C0392B — not the #C4490F written in the
-   [data-mode="ks3"] block. --accent-text is only declared in the
-   KS3 block, so it does resolve to #A63C12 as written.
 
-   New pairs introduced here, WCAG 2.1 ratios:
+   ⛔ SUPERSEDED 2026-08-07 (MRB-179), and kept because the correction
+   is the point. This block used to record that the two tokens.css
+   blocks had equal specificity (0,1,0), that `.rd` came later and so
+   won every collision, and that --accent therefore resolved #C0392B
+   rather than the #C4490F the KS3 block asked for. That was an
+   accurate reading of a real defect — and it was then treated as the
+   ground truth to measure against, instead of as a bug to fix. The
+   KS3 block is now `.rd[data-mode="ks3"]` (0,2,0) and the authored
+   dials apply: --accent #C4490F, --radius 18px, --chemistry #B02342.
+
+   Re-measured in a browser against the NOW-resolved palette. Every
+   accent-derived ratio fell, because #C4490F is lighter than #C0392B.
+   All still clear their threshold, with less headroom:
 
      card front  --ink #1A1714 on --surface-panel #FFFDF8   17.56  ✓
      card front  --ink on --accent-wash #FBEEE9 (flipped)   15.73  ✓
      card back   --ink-body #2A241E on --accent-wash        13.51  ✓
-     dog-ear     --accent #C0392B on --surface-panel         5.35  ✓ 3:1
-     flip border --accent on --accent-wash                   4.79  ✓ 3:1
-     flip border --accent on --surface-card                  4.82  ✓ 3:1
-     focus ring  --accent on --surface-panel                 5.35  ✓ 3:1
+     dog-ear     --accent #C4490F on --surface-panel         4.80  ✓ 3:1  (was 5.35)
+     flip border --accent on --accent-wash                   4.30  ✓ 3:1  (was 4.79)
+     flip border --accent on --surface-card                  4.33  ✓ 3:1  (was 4.82)
+     focus ring  --accent on --surface-panel                 4.80  ✓ 3:1  (was 5.35)
      control lbl --ink-body on --surface-card                13.60 ✓
      readout     --ink-body on --surface-card                13.60 ✓
      caption     --ink-muted #6B635A on --surface-card        5.24 ✓
-     slider fill --accent on --surface-card                   4.82 ✓ 3:1
-     cover text  --ink on the 85% veil, worst case            12.81 ✓
+     slider fill --accent on --surface-card                   4.33 ✓ 3:1  (was 4.82)
+     cover text  --ink on the 85% veil (#FEFBF6)             17.29 ✓
+
+   --accent-text is declared ONLY in the KS3 block, so it resolved to
+   #A63C12 as written even while every other dial was dead. That is
+   why the defect stayed invisible for so long: the one token that
+   happened to work was the one carrying all the body-size text.
 
    The resting card border is --rule (1.37 on the block ground) —
    the same 1px --rule hairline .ks3-option already uses, and it is
    NOT what identifies the control or carries its state. The 3:1
-   identifying mark is the accent dog-ear (5.35), and the state is
+   identifying mark is the accent dog-ear (4.80), and the state is
    carried by the back text appearing, by aria-expanded, and by a
    2px accent ring. --accent-border was the obvious candidate for
    the card border and is rejected for the reason already recorded
