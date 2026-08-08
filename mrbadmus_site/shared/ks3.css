@@ -1,19 +1,33 @@
 /* ═══════════════════════════════════════════════════════════════
    KS3 — page styles.  architecture.md §8.5.
 
-   KS3 pages carry class="rd" AND data-mode="ks3" on <body>:
+   KS3 pages carry class="rd" AND data-mode="ks3" on <body>. BOTH are
+   required — the KS3 token block is selected by `.rd[data-mode="ks3"]`
+   so that it outranks `.rd`, so an element with only one of them gets
+   no KS3 dials at all. verify_ks3.py gates this per page.
      .rd            opts into the redesign locked token system
-     data-mode      supplies the KS3 dials (brighter accent, rounder
-                    corners) already defined in tokens.css
+     data-mode      supplies the KS3 dials, defined in tokens.css
 
    This file consumes tokens. It must not re-declare palette values.
    Anything KS3 needs beyond the existing dials is an addition to the
-   [data-mode="ks3"] block in tokens.css, never a new colour here.
+   KS3 block in tokens.css, never a new colour here.
 
-   ⚠️ --accent fails WCAG AA for body-size text on three of the four
-   cream grounds (measured 2026-07-26, see tokens.css). Body-size text
-   in an accent colour uses --accent-text. --accent is used here only
-   for large text, rules, fills and borders.
+   ⚠️ --accent (#C4490F) fails WCAG AA for body-size text on three of
+   the four cream grounds — page 3.74, card 4.33, inset 4.37, panel
+   4.80. Body-size text in an accent colour uses --accent-text
+   (#A63C12). --accent is used here only for large text, rules, fills
+   and borders. Re-measured 2026-08-07 under MRB-179, against the
+   values the page now actually resolves.
+
+   ⊕ The radii dial DOWN, not up. The KS3 block sets 12/18/26 where
+   `.rd` sets 12/22/28, so a KS3 card is very slightly squarer than a
+   KS4 redesign card — the opposite of the "rounder corners" this file
+   used to claim. The dials were authored against the original :root
+   scale (8/12/18), where they were rounder; `.rd`'s scale then landed
+   underneath them and nobody re-checked, because the dials were dead
+   until MRB-179 and the claim cost nothing. Left as authored: the
+   values are Mide's to set and the KS3 visual redesign is held under
+   MRB-182. Flagged there rather than silently retuned here.
    ═══════════════════════════════════════════════════════════════ */
 
 .ks3-nav {
@@ -50,7 +64,10 @@
 }
 .ks3-crumbs a { color: var(--accent-text); text-decoration: none; }
 .ks3-crumbs a:hover { text-decoration: underline; }
-.ks3-crumb-sep { color: var(--ink-faint); }
+/* --ink-faint #8A8074 measures 2.97 on the page ground — it fails AA for
+   body-size text on the only surface it is ever used on (MRB-179 re-measure,
+   2026-08-07). --ink-muted is 4.53 there and clears it. */
+.ks3-crumb-sep { color: var(--ink-muted); }
 
 /* ── headings ── */
 .ks3-eyebrow {
@@ -78,6 +95,16 @@
 .ks3-intro { color: var(--ink-body); margin: 0 0 0.75rem; }
 .ks3-meta { font-size: 0.85rem; color: var(--ink-muted); margin: 0; }
 
+/* §5.10.1's under-review marker. It is the thing standing between a
+   student and unreviewed science, so it has to READ as a marker.
+   Border is --accent, not --accent-tint-border: the tint border measures
+   1.35 against its own fill and 1.30 against the page ground, so the flag
+   had no perceptible edge at all and dissolved into the page. --accent
+   gives 3.89 on the fill and 3.74 on the ground, clearing WCAG 1.4.11's
+   3:1 for a mark that carries state. This is the same correction already
+   made for its list-size sibling .ks3-badge.is-draft, which the block
+   comment below reasons through in full — the two were inconsistent, and
+   this is the one that got missed. MRB-179 re-measure, 2026-08-07. */
 .ks3-review-flag {
   display: inline-block;
   font-size: 0.75rem;
@@ -85,7 +112,7 @@
   padding: 0.2rem 0.55rem;
   border-radius: var(--radius-sm);
   background: var(--accent-tint);
-  border: 1px solid var(--accent-tint-border);
+  border: 1px solid var(--accent);
   color: var(--ink);
   margin: 0.5rem 0 0;
 }
@@ -131,12 +158,20 @@
 .ks3-option.is-correct { border-color: var(--ok-border); background: var(--ok-bg); }
 .ks3-option.is-wrong  { border-color: var(--err-border); background: var(--err-bg); }
 
+/* The answer, arriving after the commitment — so its existence IS a state,
+   and 1.4.11 applies to whatever identifies it. --accent-wash #FBEEE9 sits
+   at 1.03 against the block ground it appears on, i.e. the fill alone marks
+   out nothing; the edge was doing all the work at 1.49. --accent gives 4.30
+   on the fill and 4.33 on the ground, and it makes the reveal speak the same
+   visual language as the two other post-commitment states — a committed
+   .ks3-option and a flipped .ks3-card-btn both already edge in --accent.
+   MRB-179 re-measure, 2026-08-07. */
 .ks3-reveal {
   margin-top: 0.85rem;
   padding: 0.75rem 0.9rem;
   border-radius: var(--radius-sm);
   background: var(--accent-wash);
-  border: 1px solid var(--accent-tint-border);
+  border: 1px solid var(--accent);
 }
 .ks3-feedback {
   margin-top: 0.6rem;
@@ -254,7 +289,9 @@
   margin-left: auto;
   font-size: 0.7rem;
   letter-spacing: 0.06em;
-  color: var(--ink-faint);
+  /* was --ink-faint: 2.97 on the page ground at 11px, a straight AA fail.
+     --ink-muted is 4.53. Same reasoning as .ks3-crumb-sep above. */
+  color: var(--ink-muted);
 }
 .ks3-badge {
   font-size: 0.7rem;
@@ -325,21 +362,21 @@
   color: var(--ink-muted);
   margin: 0 0 0.75rem;
 }
-.ks3-family-note { font-size: 0.9rem; color: var(--ink-muted); font-style: italic; }
+/* ⛔ `.ks3-family-note` REMOVED 2026-08-07 — MRB-181, architecture.md §8.10.
+   It styled the §6 architecture-family gloss on coming-soon pages. Markup
+   removed in build_ks3.py; the rule would otherwise sit here matching nothing. */
 
 /* ── cross-references (§4.6) — pending state must read as deliberate ── */
 .ks3-pending { color: var(--ink-muted); }
 .ks3-pending em { font-style: normal; font-size: 0.85rem; }
 .ks3-refs ul, .ks3-prereqs ul, .ks3-ks4 ul { margin: 0.5rem 0 0; padding-left: 1.2rem; }
 
-.ks3-note {
-  font-size: 0.9rem;
-  color: var(--ink-body);
-  background: var(--surface-inset);
-  border-left: 3px solid var(--rule);
-  padding: 0.6rem 0.85rem;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-}
+/* ⛔ `.ks3-note` REMOVED 2026-08-07 — MRB-181, architecture.md §8.10.
+   Its only consumer was the unit-index "Why this is its own unit:" note,
+   which is gone from build_ks3.py. Deleted rather than left behind: an
+   unclaimed callout style is an invitation to put a callout back. A future
+   note that genuinely earns a place under §8.10 gets a rule written for the
+   job it is actually doing. */
 
 .ks3-footer {
   border-top: 1px solid var(--rule);
@@ -347,6 +384,187 @@
   text-align: center;
   font-size: 0.85rem;
   color: var(--ink-muted);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   BROWSE LAYER — architecture.md §4.5.2 (MRB-176 ruling 1)
+
+   Year → half term → subject → lessons. These are index pages: pure
+   navigation, no learning content. §4.5.2 is explicit that this is
+   where KS3 may carry the most personality, because nothing here is
+   competing with a student's attention on an idea.
+
+   COLOUR RULE, applied throughout and deliberately narrow:
+
+     colour is used for FILLS, BORDERS, RULES and DOTS only.
+     every piece of text is --ink / --ink-body / --ink-muted /
+     --accent-text.
+
+   Measured, not guessed. On the redesign cream grounds, --biology
+   (4.11) and --physics (4.01) FAIL WCAG AA for body-size text
+   directly on --surface-page #E7E1D4, and --context-blue fails on
+   all four grounds. Rather than track which coloured text sits on
+   which surface, no browse text is coloured at all — subject and
+   season identity are carried by a border and a dot, which have no
+   contrast obligation beyond the 3:1 non-text minimum. See the port
+   report for the full table.
+
+   NO NEW PALETTE VALUES. §8.5 says anything beyond the KS3 dials is
+   an addition to tokens.css, never a new colour in a stylesheet. So
+   the seasonal tints are derived from tokens that already exist, via
+   one color-mix recipe, and this file declares no hex.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Seasonal identity. Autumn warm, spring fresh, summer bright — playful
+   AND meaningful, because it maps to the real school year a child is
+   actually living in, which is what earns it a place on a nav page.
+   The three inks are existing tokens; the wash is 8% of the ink over
+   --surface-panel, one recipe for all three so they read as a set. */
+[data-season="autumn"] { --ks3-season: var(--accent-strong); }
+[data-season="spring"] { --ks3-season: var(--ok); }
+[data-season="summer"] { --ks3-season: var(--context-blue); }
+
+/* ⛔ `.ks3-browse-note` REMOVED 2026-08-07 — MRB-181, architecture.md §8.10.
+   It styled the browse-layer callout as a full-width accent-barred panel
+   directly under the page heading, which is the loudest slot a browse page
+   has, spent on the platform explaining its own sequencing. The markup went
+   with it (build_ks3.py), so this is a dead-rule removal, not a hiding. */
+
+/* A half-term page is itself seasonal — same dial, one rule. */
+.ks3-landing-head[data-season] {
+  border-top: 4px solid var(--ks3-season);
+  padding-top: 1rem;
+}
+
+/* Cards reuse .ks3-unit-card wholesale; these add only the browse bits. */
+.ks3-browse-years a,
+.ks3-browse-terms a,
+.ks3-browse-subjects a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.ks3-browse-years h2,
+.ks3-browse-terms h2,
+.ks3-browse-subjects h2 { margin: 0.15rem 0 0.3rem; }
+
+/* ── year cards (/ks3/index.html) ── */
+.ks3-browse-year a { border-top: 4px solid var(--accent); }
+.ks3-browse-cta {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--accent-text);
+}
+/* Six blocks, one per half term, in season order. Decoration that says
+   something: it shows the shape of the year before you click into it.
+   aria-hidden — the counts underneath carry the meaning. */
+.ks3-browse-strip {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.7rem;
+}
+.ks3-browse-strip > span {
+  flex: 1;
+  height: 0.4rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface-panel);
+  background: color-mix(in srgb, var(--ks3-season) 45%, var(--surface-panel));
+}
+
+/* ── half-term cards (/ks3/year-<n>/) ── */
+.ks3-browse-ht a {
+  border-top: 4px solid var(--rule);
+  border-top-color: var(--ks3-season);
+  background: var(--surface-card);
+  background: color-mix(in srgb, var(--ks3-season) 8%, var(--surface-panel));
+}
+/* .ks3-code is accent-orange by default, which would fight a spring or
+   summer card. Neutral here; the season is the border's job. */
+.ks3-browse-ht .ks3-code { color: var(--ink-muted); }
+.ks3-browse-split {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--ink-body);
+}
+
+/* ── subject cards (/ks3/year-<n>/<half-term>/) ── */
+.ks3-browse-subject[data-discipline="biology"]   { --ks3-card: var(--biology); }
+.ks3-browse-subject[data-discipline="chemistry"] { --ks3-card: var(--chemistry); }
+.ks3-browse-subject[data-discipline="physics"]   { --ks3-card: var(--physics); }
+.ks3-browse-subject a { border-top: 4px solid var(--ks3-card); }
+.ks3-browse-subject a:hover { border-color: var(--ks3-card); }
+.ks3-browse-dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--ks3-card);
+}
+
+/* ── the lesson list page (/ks3/year-<n>/<half-term>/<discipline>/) ── */
+.ks3-browse-unit { margin: 2rem 0 0; }
+.ks3-browse-unit h2 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+.ks3-browse-unit h2 a { color: var(--ink); text-decoration: none; }
+.ks3-browse-unit h2 a:hover { color: var(--accent-text); text-decoration: underline; }
+.ks3-browse-unit .ks3-lesson-list { margin-top: 0.5rem; }
+
+/* §5.10.1 — the lesson page says "Draft — not yet science-reviewed."; this
+   is the same fact at list size, in .ks3-review-flag's colour family.
+   Border is --accent, not --accent-tint-border: the tint border measures
+   1.35:1 against its own fill, which fails WCAG 1.4.11's 3:1 for a mark
+   carrying state. --accent gives 3.89 against the fill and 3.74 against the
+   page ground, and it also separates "Draft" (written, under review) from
+   "Coming soon" (not written), which keeps its neutral --rule border.
+   (Ratios re-measured 2026-08-07 under MRB-179: --accent now actually
+   resolves to #C4490F rather than #C0392B, so the numbers here moved from
+   4.33/4.17 to 3.89/3.74. Still clear of 3:1, with less headroom.) */
+.ks3-badge.is-draft {
+  margin-left: 0.5rem;
+  background: var(--accent-tint);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+/* ── the other route out ── */
+.ks3-browse-alt {
+  margin: 2.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--ink-muted);
+}
+.ks3-browse-alt a { color: var(--accent-text); text-decoration: none; font-weight: 600; }
+.ks3-browse-alt a:hover { text-decoration: underline; }
+
+/* §4.5.2: "discipline hubs are not replaced". The subject route keeps its
+   full billing on the landing page — set apart from the year route, not
+   demoted out of sight. */
+.ks3-browse-secondary {
+  margin: 3rem 0 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+}
+.ks3-browse-secondary h2 { margin: 0 0 0.4rem; font-size: 1.15rem; }
+
+/* Three across when they fit — there are three years and three sciences, and
+   a 2 + 1 wrap makes the third look like an afterthought. */
+.ks3-browse-years,
+.ks3-browse-subjects { grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr)); }
+
+/* Two across, and pinned rather than auto — with six cards in season order,
+   two columns puts autumn on one row, spring on the next and summer on the
+   last. That is the school year's actual shape, and letting the grid reflow
+   to three would scramble it. */
+.ks3-browse-terms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (max-width: 34rem) { .ks3-browse-terms { grid-template-columns: 1fr; } }
+
+/* Down to ~390px: one column throughout. Measured at a real 390px layout
+   viewport — document scrollWidth is 390 on every browse page, i.e. no
+   horizontal page scroll. */
+@media (max-width: 26rem) {
+  .ks3-unit-grid, .ks3-disc-grid,
+  .ks3-browse-years, .ks3-browse-subjects,
+  .ks3-browse-terms { grid-template-columns: 1fr; }
+  .ks3-browse-split { font-size: 0.82rem; }
 }
 
 /* ── Law 9: motion is meaning, with a reduced-motion fallback ── */
@@ -359,5 +577,233 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ks3-reveal[data-reveal] { animation: none; }
+  .ks3-card-btn { transition: none; }
   * { scroll-behavior: auto !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ACTIVITY INTERACTIONS — flip cards and particle labs (MRB-177)
+
+   Both are renderings of an ACTIVITY, not new §5.1.1 blocks, so they
+   sit inside .ks3-check / .ks3-practical / .ks3-misconception and
+   inherit that block's ground: --surface-card #F5F1E8. Every ratio
+   below is measured against that, or against the card's own fill.
+
+   ⚠️ MEASURED AGAINST THE RESOLVED VALUES, not the authored ones.
+   On a KS3 page the body carries BOTH `.rd` and data-mode="ks3".
+
+   ⛔ SUPERSEDED 2026-08-07 (MRB-179), and kept because the correction
+   is the point. This block used to record that the two tokens.css
+   blocks had equal specificity (0,1,0), that `.rd` came later and so
+   won every collision, and that --accent therefore resolved #C0392B
+   rather than the #C4490F the KS3 block asked for. That was an
+   accurate reading of a real defect — and it was then treated as the
+   ground truth to measure against, instead of as a bug to fix. The
+   KS3 block is now `.rd[data-mode="ks3"]` (0,2,0) and the authored
+   dials apply: --accent #C4490F, --radius 18px, --chemistry #B02342.
+
+   Re-measured in a browser against the NOW-resolved palette. Every
+   accent-derived ratio fell, because #C4490F is lighter than #C0392B.
+   All still clear their threshold, with less headroom:
+
+     card front  --ink #1A1714 on --surface-panel #FFFDF8   17.56  ✓
+     card front  --ink on --accent-wash #FBEEE9 (flipped)   15.73  ✓
+     card back   --ink-body #2A241E on --accent-wash        13.51  ✓
+     dog-ear     --accent #C4490F on --surface-panel         4.80  ✓ 3:1  (was 5.35)
+     flip border --accent on --accent-wash                   4.30  ✓ 3:1  (was 4.79)
+     flip border --accent on --surface-card                  4.33  ✓ 3:1  (was 4.82)
+     focus ring  --accent on --surface-panel                 4.80  ✓ 3:1  (was 5.35)
+     control lbl --ink-body on --surface-card                13.60 ✓
+     readout     --ink-body on --surface-card                13.60 ✓
+     caption     --ink-muted #6B635A on --surface-card        5.24 ✓
+     slider fill --accent on --surface-card                   4.33 ✓ 3:1  (was 4.82)
+     cover text  --ink on the 85% veil (#FEFBF6)             17.29 ✓
+
+   --accent-text is declared ONLY in the KS3 block, so it resolved to
+   #A63C12 as written even while every other dial was dead. That is
+   why the defect stayed invisible for so long: the one token that
+   happened to work was the one carrying all the body-size text.
+
+   The resting card border is --rule (1.37 on the block ground) —
+   the same 1px --rule hairline .ks3-option already uses, and it is
+   NOT what identifies the control or carries its state. The 3:1
+   identifying mark is the accent dog-ear (4.80), and the state is
+   carried by the back text appearing, by aria-expanded, and by a
+   2px accent ring. --accent-border was the obvious candidate for
+   the card border and is rejected for the reason already recorded
+   at .ks3-badge.is-draft: it resolves to --accent-tint-border
+   #F0BBA9, which measures 1.67 on the card fill and cannot carry
+   state.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── flip cards (Law 4 at word level: commit, then check) ──
+   The card is a <button>, so focus, Enter/Space and the AT semantics
+   come free. aria-expanded is the state; .is-flipped is only ever a
+   visual consequence of it, never the source of truth. */
+.ks3-cards {
+  list-style: none;
+  margin: 0.9rem 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: 0.7rem;
+}
+
+.ks3-card-btn {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 5.5rem;
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface-panel);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+.ks3-card-btn:hover { border-color: var(--accent); }
+.ks3-card-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+/* The dog-ear is what makes it read as a card rather than a paragraph
+   with a box round it: there is a corner turned up, so there is
+   something underneath. content:"" — it is decoration, and a screen
+   reader must not be made to announce a glyph for it. */
+.ks3-card-btn::after {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 1rem 1rem 0;
+  border-color: transparent var(--accent) transparent transparent;
+}
+.ks3-card-btn.is-flipped::after { border-right-color: transparent; }
+
+.ks3-card-front {
+  display: block;
+  font-weight: 700;
+  font-size: 1.05rem;
+  /* clear of the dog-ear, so a long front never runs under it */
+  padding-right: 1.1rem;
+}
+.ks3-card-back {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--ink-body);
+}
+/* ⚠️ Load-bearing, and it looks redundant: `hidden` is already on the
+   element and ks3.js toggles it. But an AUTHOR `display` beats the UA
+   stylesheet's [hidden] { display: none } regardless of specificity, so
+   the line above silently un-hides every answer — the whole card grid
+   renders face-up. Caught in the 1280px screenshot, not by the DOM
+   probe, which reported .hidden === true while the text was on screen.
+   Any future `display` on a hidden element needs the same restatement. */
+.ks3-card-back[hidden] { display: none; }
+
+/* Flipped is the same visual language .ks3-reveal already speaks —
+   accent wash behind, accent at the edge — because it is the same
+   act: the answer arriving after the commitment. The inset shadow
+   doubles the border to 2px without a reflow. */
+.ks3-card-btn.is-flipped {
+  background: var(--accent-wash);
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+/* ── particle labs (Law 9 — motion is meaning) ── */
+.ks3-sim {
+  position: relative;
+  margin: 1rem 0 0;
+}
+
+.ks3-sim-canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--surface-panel);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-sm);
+}
+
+.ks3-sim-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  margin: 0.7rem 0 0;
+}
+.ks3-sim-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--ink-body);
+}
+.ks3-sim-control input[type="range"] {
+  accent-color: var(--accent);
+  min-width: 8rem;
+  max-width: 12rem;
+}
+
+/* The readout is not a caption — under reduced motion it IS the lab,
+   because ks3.js draws one frame and then says the result in words.
+   It must never be styled down towards decoration. */
+.ks3-sim-readout {
+  margin: 0.6rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: var(--ink-body);
+}
+.ks3-sim-caption {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+}
+
+/* Law 4 — locked until a prediction is committed. The cover sits over
+   the frozen first frame, so the reader can see there IS something to
+   predict about without seeing the answer move.
+
+   The message is a real <p> in the HTML, not a CSS `content` string:
+   it is content, it tells the student what to do next, and generated
+   content is exposed to assistive tech inconsistently (and not at all
+   if the stylesheet fails). It is display:none until ks3.js sets
+   data-locked, so it never appears on a page where nothing is locked
+   — including a page with JS disabled, where the gate does not exist.
+
+   Sized to the canvas, not to inset:0 — the caption underneath is
+   instructions for the prediction and stays readable. */
+.ks3-sim-cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  aspect-ratio: 560 / 200;
+  margin: 0;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--surface-panel);
+  background: color-mix(in srgb, var(--surface-panel) 85%, transparent);
+  border-radius: var(--radius-sm);
+}
+.ks3-sim[data-locked="1"] .ks3-sim-cover { display: flex; }
+.ks3-sim[data-locked="1"] .ks3-sim-canvas { filter: blur(2px) saturate(0.65); }
+.ks3-sim[data-locked="1"] .ks3-sim-controls { display: none; }
+
+/* One column on a phone; 11rem cards would otherwise pack two to a row
+   at ~350px and hyphenate a six-word front. */
+@media (max-width: 26rem) {
+  .ks3-cards { grid-template-columns: 1fr; }
+  .ks3-card-btn { min-height: 0; }
 }

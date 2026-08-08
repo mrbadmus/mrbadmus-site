@@ -318,6 +318,86 @@ structure.
 > render time rather than a build-time constant — which is the only way it can be both accurate and
 > compliant. Until then, WHERE is the honest half.
 
+#### 4.5.1 Half term joins year as sequence metadata ⊕
+
+> ✅ **AMENDED 2026-08-06 on Mide's ruling (MRB-176 ruling 2).** The published default sequence gains
+> **half-term placement**: every one of the 185 lesson slots carries `(year, half_term)` where
+> `half_term` is 1–6, Autumn First Half through Summer Second Half.
+
+`half_term` is **exactly as soft as `typical_year`, and is bound by the same invariant.** Everything
+§4.5 says about year applies to it word for word: it is advisory, it is data, it is what a school
+with no scheme configured gets, and it may never determine which lesson a student is served or what
+a lesson page says. Reordering remains a data change.
+
+**Where it comes from.** The same place the year does — the statutory spine and the prerequisite
+graph (§4.5's ruling above), never a school's timetable. It is derived in `ks3_data/half_terms.py`
+under three rules in strict priority order:
+
+1. **Prerequisite order wins outright.** No lesson is placed in an earlier half term than any of its
+   prerequisites in the same year. Cross-discipline edges count — they are the ones that bite, and
+   they are declared as data (`SAME_YEAR_PREREQS`) with each edge citing the §7 ⇄ marker it comes
+   from.
+2. **All three sciences appear in every half term.** Both real schools surveyed (§8.9) interleave
+   rather than teaching disciplinary blocks a term at a time, and a default that stacked one science
+   into one half term would be wrong for almost everyone.
+3. **Lesson counts balance across the six half terms**, as evenly as rules 1 and 2 permit.
+
+Keeping whole units inside one half term is **not** a rule. It is a tie-break, applied only among
+placements that are already equally balanced. That ordering is deliberate and was corrected during
+the build: an earlier version snapped cuts to unit boundaries unconditionally and produced a Year 8
+carrying 16 lessons in one half term against 10 in another. Unit coherence is a convenience; load
+balance is what a school actually feels.
+
+**Year 9 and the GCSE bridge.** §7.6's bridge unit group is taught **last in Year 9** — half term 6 —
+consistent with both real schools starting GCSE material late in that year. The rule is implemented
+now, though it currently places zero lessons, because §7.6 is design-only and no bridge unit exists
+in `structure.py`. It is written ahead of the content so the first bridge unit does not need a second
+ruling.
+
+#### 4.5.2 The browse layer — where year and half term MAY appear ⊕
+
+> ✅ **AMENDED 2026-08-06 on Mide's ruling (MRB-176 ruling 1).** KS3 gains a **browse layer**: a set of
+> generated index pages organised Year → Half term → Subject → lessons. This amendment is required
+> because §4.5 as written forbids year from determining "a URL, a folder, a file name, a navigation
+> structure", and the browse layer is a navigation structure determined by year. The prohibition is
+> therefore **split rather than relaxed**, and the half that matters is strengthened.
+
+**The line, stated once:**
+
+| Surface | Year / half term |
+|---|---|
+| **Lesson pages** — `/ks3/<discipline>/<unit>/<lesson>.html` | **Never.** Not in the URL, not in the folder, not in a single byte of the page. Unchanged, and now proven per build rather than promised. |
+| **Browse-layer index pages** — `/ks3/year-<n>/<half-term>/…` | **Yes — it is the organising axis.** These pages *are* the rendered sequence. |
+
+**Why this is not the anti-goal in §2 returning.** §2 forbids "year baked into structure" because it
+"makes reordering a rebuild" and "kills multi-school fit". A browse layer is a **pure projection of
+sequence data**: reordering the sequence regenerates the browse pages and changes nothing else. The
+test §9 already runs is the one that proves it — applying a whole real school's scheme over the
+default must change **zero lesson page paths and zero lesson page bytes**. That test is unchanged by
+this amendment, and it is now the load-bearing statement of the invariant rather than the URL rule,
+which was only ever a proxy for it.
+
+**What the browse layer is honest about.** It renders the **platform default sequence**. A school
+that has overridden the sequence is not yet served a browse layer matching its own scheme — that
+needs the runtime scheme lookup already deferred to Phase 5 (§4.5 ruling 3), and it is the same
+deferral, not a new one.
+
+> ⛔ **AMENDED 2026-08-07 on Mide's ruling (MRB-181) — see §8.10.** This paragraph used to end
+> *"…so it is labelled as such on the page… the browse layer says whose route it is"*, and it was
+> implemented as a callout at the top of all 75 browse pages. **The obligation is now discharged
+> negatively: no browse page may CLAIM to be a particular school's scheme.** None does. The
+> superseded wording is kept per §12's reversal rule, and the reasoning is worth keeping too —
+> "say WHERE, never assume" is the right discipline for a **reference slot**, where the reader is
+> being pointed somewhere and needs to know where. It was over-applied here. A student on
+> `/ks3/year-7/` is not being pointed anywhere; they are looking at a list, and a disclaimer about
+> whose list it is answers a question they were never asked. Honesty is a constraint on what the
+> page **asserts**, not a quota of prose it must carry.
+
+**Discipline hubs are not replaced.** `/ks3/<discipline>/index.html` and the unit indexes remain, and
+`/ks3/index.html` links to both routes. The browse layer is an additional way in, not a migration:
+§11 decision 2 ruled disciplinary structure with integrated navigation, and two coexisting routes
+over one set of pages is exactly that ruling working.
+
 ### 4.6 Cross-discipline lessons: single source, referenced ⊕
 
 The statutory document deliberately teaches some ideas twice — the particle model appears under both
@@ -599,6 +679,53 @@ order. Everything between them is drawn from the vocabulary above and arranged b
 
 Interactive budget per lesson: **one flagship, one mid-size, micro-widgets ad lib**, plus the
 ladder. (Lower than bonding's ceiling — shorter page, younger learner.)
+
+#### 5.1.2 Two amendments from the C1 build ⊕ — both RULED by Mide, 7 August 2026 (MRB-177)
+
+Building the six C1 lessons put two of the ten laws under pressure at once. Both readings that
+caused the pressure were *strictly correct*, and both would have banned something worth having.
+
+**(a) A reveal-cards grid discharges Law 4 through a DECLARED prediction, not a recorded one.**
+
+Law 4 says no stateful reveal is shown until the student has committed to a prediction, and every
+other instrument on the page discharges it by *recording* the commitment — an option button is
+pressed, `aria-pressed` flips, the reveal unhides. **A card grid has no wagerable proposition.**
+"What word means *the tiny pieces that all stuff is made from*?" is not a claim to bet on; it is a
+recall with one right answer and no interesting wrong ones. There is nothing to record, because
+there is nothing to choose between. Under the strict reading the grid is illegal, and since a
+Law 7 vocabulary check is *required* in every lesson, the strict reading effectively bans card
+grids from KS3 entirely — which is not what Law 4 is for. Law 4 exists so that an unspoken wrong
+belief becomes visible to its holder, and saying the answer aloud before you turn the card does
+exactly that.
+
+**The renderer's obligation, and it is not weakened by this:** the answer must be unreachable
+without a deliberate, per-card act of commitment. Concretely — the back ships `hidden` in the HTML
+so no answer is ever on screen before the script runs, there is no hover reveal and no automatic
+flip, and the tap that flips one card flips only that card. **And the block must ask for the
+declaration in words**, because a declared prediction that nobody asked for does not happen.
+Enforced, not documented: `verify_ks3.py` fails the build if a card grid ships without a commitment
+prompt above it.
+
+**(b) A Law 5 worked-example / do-it-yourself pair is not an instrument, and does not count against
+the §5.1 interactive budget.**
+
+The budget is *one flagship, one mid-size, micro-widgets ad lib*. Read literally, a worked example
+plus its `check` counterpart is two more interactive things on the page, and a QUANTITATIVE lesson
+that needs a particle lab **and** a modelled calculation is over budget before it starts.
+
+**The budget counts stateful instruments only.** That is what it was always measuring, and the
+reason is what the budget is actually protecting against: an instrument holds state, so it has a
+before and an after, it can be got wrong, it can be abandoned half-finished, and it competes for
+the student's working memory with the idea the page is teaching. A worked example holds **no
+state**. It is prose with a shape — it does not respond, cannot be got wrong, and cannot be left
+in a bad state. Its `check` counterpart is the student doing the same thing on paper. Neither
+consumes the attention the budget rations, so neither is charged against it.
+
+**What still binds.** Law 5's own rule is untouched: a `worked-example` **never ships without its
+`check` counterpart**. The pair is exempt from the budget, not from Law 5. And the exemption is
+about state, not about being called a worked example — an "interactive worked example" that
+remembers where the student is, marks their entry, or gates a reveal is an instrument, and it
+counts.
 
 ### 5.2 The prose budget
 
@@ -1339,11 +1466,19 @@ impossible to gate. One module per unit matches the release increment (§4.3) an
 ### 8.4 URL and output taxonomy
 
 ```
-/ks3/index.html                                     KS3 landing
+/ks3/index.html                                     KS3 landing — both routes in
 /ks3/<discipline>/index.html                        discipline hub
 /ks3/<discipline>/<unit-slug>/index.html            unit index
-/ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson
+/ks3/<discipline>/<unit-slug>/<lesson-slug>.html    the lesson          ← NO year, ever
+
+  the browse layer (§4.5.2, added 2026-08-06) — index pages only:
+/ks3/year-<n>/index.html                            six half-term cards
+/ks3/year-<n>/<half-term-slug>/index.html           subject cards for that half term
+/ks3/year-<n>/<half-term-slug>/<discipline>/index.html   lessons placed there
 ```
+
+Half-term slugs are `autumn-1`, `autumn-2`, `spring-1`, `spring-2`, `summer-1`, `summer-2`.
+`year-<n>` cannot collide with a discipline hub because no discipline is slugged `year-7`.
 
 Compare KS4: `/<pathway>/<tier>/<subject>/<topic>/<subtopic>.html`. KS3 is shallower because it has
 no pathway and no tier — which is the point.
@@ -1547,6 +1682,62 @@ none did, with the sequence implicit in folder structure; MRB-103 states Ayo rul
 "against Rainford's actual SOW". §0 records this as disputed and it stays disputed — it no longer
 matters much, because under the reversal nothing about the platform default depends on the answer.
 Either way, **no scheme was copied into the default**, which is the claim that had to hold.
+
+### 8.10 Page copy: the platform does not explain itself on the page ⊕
+
+> ✅ **RULED by Mide, 7 August 2026 (MRB-181).** Student-facing pages must not carry explanatory
+> meta-text about how the platform works.
+
+**What produced this rule.** `/ks3/index.html` and every year, half-term and subject page opened with
+a full-width accent-barred callout beginning *"This is the MrBadmusAI default sequence. It is the
+order we suggest teaching KS3 in, worked out from the national curriculum and from what each lesson
+needs you to know first…"*. Three separate faults, and the third is the one that matters:
+
+1. It was **written to a teacher**, on pages read almost entirely by students.
+2. It **answered a question nobody had asked.** A student arriving at Year 7 wants the six half
+   terms. Nothing about their arrival implies curiosity about how the ordering was derived.
+3. It **took the prime slot** — the first thing under the heading, above the cards the page exists
+   to show. Attention spent on the platform is attention not spent on the science.
+
+**The rule is a test, not a list.** A banned-phrase list would be a design failure of the same
+species as the callout: a rule applied without thought, producing text nobody reasoned about. So the
+obligation is to reason per case, and the test is one question:
+
+> **Is this text telling the reader what to do with the thing in front of them — or is it the
+> platform explaining its own reasoning to someone who did not ask?**
+
+The first stays. The second goes. Applying it takes a sentence of thought per case, and that is the
+point: the cost of the rule is the thinking, and the thinking is what the callout skipped.
+
+**Working the test, from the pass that produced this section.** These are worked examples, not an
+exhaustive register — a new case gets the question asked afresh.
+
+| Copy | Verdict | Why |
+|---|---|---|
+| *"This is the MrBadmusAI default sequence…"* (`.ks3-browse-note`) | **Removed** | Pure self-explanation. The trigger for this rule. |
+| *"Why this is its own unit: eight statutory bullets spanning representation, reaction types and acid chemistry…"* (`.ks3-note`) | **Removed** | A curriculum-design argument, addressed to a curriculum designer, at the top of a page a Year 8 opens to find lessons. |
+| §6 family gloss — *"One idea explains a whole class of behaviour"* (`.ks3-family-note`) | **Removed** | §6 is this document's compositional grammar. It belongs to the people building lessons, not to the child reading one. |
+| *"This lesson is planned **and its place in the course is fixed**, but it has not been written yet."* | **Trimmed** to *"This lesson has not been written yet."* | The status is honest and useful; the middle clause is §11 decision 8's structure-first policy justifying itself. |
+| *"All three sciences run together through every half term —* pick one to see the lessons." | **Trimmed** to *"Pick a science to see the lessons."* | The leading clause states a `half_terms.py` derivation rule. The instruction was already doing the work. |
+| *"Taught in Chemistry — Particles and their behaviour. You'll meet the full lesson there."* (`REF_POINTER`) | **Kept** | Says WHERE the thing in front of them lives. Load-bearing under §4.5 ruling 3. |
+| *"Draft — not yet science-reviewed."* (`.ks3-review-flag`), `Draft` badge, `Coming soon` tag | **Kept** | §5.10.1. These protect a student from unreviewed science, which is the one thing on a page more important than the science. |
+| *"Prefer to browse by subject? Every lesson also sits in its subject and its unit… Same lessons, same pages — a different way in."* | **Kept** | Two navigation routes are visible on the page; this answers the question the reader is *actually* holding, which is whether the other route leads somewhere different. |
+| *"Not sure which one? Years 7, 8 and 9 are KS3. Years 10 and 11 are GCSE."* (the chooser) | **Kept** | Directional. It resolves the exact choice the page is asking the reader to make. |
+
+**Where a note genuinely earns its place** — legal, data protection, safeguarding, or an under-review
+marker — it stays, but **small, at the bottom edge, never a callout**. The one class of exception that
+outranks even that is §5.10.1's draft marker, which must stay visible enough to do its job; it is
+sized and coloured to be seen, and MRB-179 strengthened its border precisely so it could not fade out.
+
+**Consequence for §4.5.2.** That section required the browse layer to be *"labelled as such on the
+page"*. That obligation is **discharged differently from now on**: the requirement is that no browse
+page ever **claims** to be a particular school's scheme, not that every page carries a disclaimer
+saying it is not. Nothing in the browse layer makes such a claim. The sequencing rationale lives in
+§4.5.1 and §4.5.2, which is where a reader who wants it goes looking.
+
+**Scope.** This is a KS3 document, but the rule is not KS3-shaped and applies site-wide. The KS4
+tree was swept under the same test at the same time and nothing was found needing removal; that is
+a fact about the sweep, not a permanent exemption.
 
 ---
 
@@ -2330,4 +2521,10 @@ This document is law. Changing it changes what gets built.
 | 2026-07-26 | **§9's reorder proof strengthened and re-run against the new default.** Previously nudged two units to different years — a synthetic reorder and a weak test. Now applies **Rainford's entire real scheme across all 33 units** and rebuilds. Required result: zero page paths changed, zero page bytes changed. | Claude (Opus 5) |
 | 2026-07-26 | **§12 gains a reversal rule ⊕:** a superseded ruling is never deleted, the reasoning for the reversal is recorded, and whose ruling it was is stated plainly — including when it was Mide's own. | Claude (Opus 5) |
 | 2026-07-27 | **§8.2 corrected + new §8.2.1 ⊕ — the two generators are independent and their order no longer matters.** §8.2 said `build_ks3()` is "called from `build_site()`"; it never was and must not be, or the zero-KS4-drift gate directly above it becomes undemonstrable. The independence had a sharp edge: `build_site()` rmtree's `mrbadmus_site/`, so a KS4 build running second silently deleted every KS3 page and still exited 0 — a bug that only ever showed up as missing output. Closed three ways: `build_site()` preserves `FOREIGN_OUTPUT_DIRS` (currently `ks3`) across the wipe and restores them before the root round-trip; the cache-bust pass skips those trees too, since it was rewriting KS3 `?v=` stamps depending on which generator ran last; and `build_all.py` is now the single ordered entrypoint. Both orders verified byte-identical by full `diff -r` of the served tree. `verify_ks3.py` gates it by running the KS4 generator after `build_ks3()` and asserting the KS3 output and root mirror both survive. | Claude (Opus 5) |
+| 2026-08-06 | ✅ **New §4.5.1 ⊕ — half term joins year as sequence metadata. RULED by Mide, 6 Aug 2026, MRB-176 ruling 2.** All 185 lesson slots in the published default now carry `(year, half_term)`, 1–6. Bound by §4.5 exactly as `typical_year` is: advisory, data, never structure. Derived in `ks3_data/half_terms.py` from the statutory spine and the prerequisite graph under three rules in strict priority — prerequisite order (cross-discipline edges declared as data, each citing its §7 ⇄ marker), all three sciences present in every half term (both real schools interleave), then balanced lesson counts. **Unit coherence is a tie-break, not a rule**, and is explicitly ranked below balance: an earlier build snapped cuts to unit boundaries unconditionally and gave Year 8 sixteen lessons in one half term against ten in another. §7.6's Year 9 bridge group takes half term 6; the rule is implemented now and places zero lessons today, so the first bridge unit needs no second ruling. Lands in `scheme_of_work_entries` (global) only — `scheme_of_work_overrides` and the school seeds are untouched and byte-identical. | Claude (Opus 5) |
+| 2026-08-06 | ✅ **New §4.5.2 ⊕ — the browse layer, and where year MAY appear. RULED by Mide, 6 Aug 2026, MRB-176 ruling 1.** KS3 gains generated index pages organised Year → Half term → Subject → lessons. **This needed an amendment rather than an implementation**: §4.5 forbade year determining "a URL, a folder, a file name, a navigation structure", and a year-shaped browse layer is exactly that. The prohibition is **split, not relaxed** — lesson pages carry no year in URL, folder or byte (unchanged, and now proven per build); browse index pages take year and half term as their organising axis, because they *are* the rendered sequence. The load-bearing invariant moves from the URL rule, which was only ever a proxy, to §9's reorder proof: applying a real school's whole scheme changes **zero lesson page paths and zero lesson page bytes**. That test is unchanged and still passes. The browse layer renders the **platform default** and says so on the page; matching it to a school's own scheme is the Phase 5 runtime lookup already deferred at §4.5 ruling 3, not a new deferral. Discipline hubs are unchanged and both routes are linked from `/ks3/index.html` — §11 decision 2's "disciplinary structure, integrated navigation" working as ruled. §8.4 taxonomy extended. | Claude (Opus 5) |
 | 2026-08-06 | **§8.2.1 reconciled into one section.** Two sessions found the same generator-boundary defect independently and fixed it differently — one reached it via the ordering hazard (KS3 output deleted by the KS4 wipe), one via the stamping question (KS4 rewriting KS3 pages). Both were right; the merge keeps the better half of each. **Wipe:** delete entry-by-entry skipping `FOREIGN_OUTPUT_DIRS`, rather than moving the tree aside and restoring it — the move version works but strands KS3 output in a temp dir if the build raises in between. **Cache-bust:** prune `_subdirs` so `os.walk` never descends, rather than testing each directory on the way down. Generalised to the `FOREIGN_OUTPUT_DIRS` list in both places, so a future standalone generator is one edit rather than four. The earlier note that KS3 pages were "deliberately left unstamped" is **deleted, not amended** — §8.5 now stamps them, so that note was actively wrong. | Claude (Opus 5) |
+| 2026-08-07 | ✅ **New §8.10 ⊕ — the platform does not explain itself on the page. RULED by Mide, 7 Aug 2026, MRB-181.** Student-facing pages must not carry explanatory meta-text about how the platform works. The trigger was `.ks3-browse-note`, a full-width accent-barred callout at the top of all 75 browse pages opening *"This is the MrBadmusAI default sequence…"* — written to a teacher, on pages read almost entirely by students, answering a question nobody asked, in the prime slot above the cards the page exists to show. **Written as a discernment test, deliberately not as a banned-phrase list:** *is this text telling the reader what to do with the thing in front of them, or is it the platform explaining its own reasoning to someone who did not ask?* A blanket rule here would be the same failure as the callout — a rule applied without thought. The cost of this rule is the per-case thinking, and the thinking is what the callout skipped. Five strings removed or trimmed and five kept, each with its reasoning tabulated in §8.10. Load-bearing notes (legal, data protection, §5.10.1's under-review marker) stay, but small and at the bottom edge, never as a callout — §5.10.1's draft marker explicitly stays prominent, and MRB-179 strengthened its border so it could not fade. Rule is site-wide, not KS3-only; the KS4 tree was swept under the same test and nothing needed removing. | Claude (Opus 5) |
+| 2026-08-07 | ⛔ **§4.5.2's "labelled as such on the page" clause AMENDED — consequence of §8.10, Mide's ruling, MRB-181.** The honesty obligation is now discharged **negatively**: no browse page may CLAIM to be a particular school's scheme, rather than every browse page carrying a disclaimer that it is not. Superseded wording kept in place per §12's reversal rule. The reasoning is kept too, because it is the instructive part: *"say WHERE, never assume"* is right for a **reference slot**, where the reader is being pointed somewhere and needs to know where, and it was over-applied to a browse index, where the reader is looking at a list and was never asking whose list it is. Honesty constrains what a page **asserts**; it is not a quota of prose the page must carry. The sequencing rationale is unmoved — it lives in §4.5.1 and §4.5.2. | Claude (Opus 5) |
+| 2026-08-07 | ✅ **New §5.1.2 ⊕ — two amendments from the C1 build. BOTH RULED by Mide, 7 Aug 2026, MRB-177.** **(a) A reveal-cards grid discharges Law 4 through a DECLARED rather than a recorded prediction.** A card grid has no wagerable proposition — a vocabulary recall has one right answer and no interesting wrong ones — so there is nothing to record, and the strict reading of Law 4 would make card grids illegal at KS3 entirely, given that a Law 7 vocabulary check is required in every lesson. The renderer's obligation is undiminished and now stated precisely: back ships `hidden` so no answer is on screen before the script runs, no hover reveal, no automatic flip, one tap flips one card — **and the block must ask for the declaration in words.** Verified against the shipped renderer rather than assumed: `shared/ks3.js` `wireCards` and `r_cards` in `build_ks3.py` already satisfy every clause, and all five C1 card grids already carry a commitment prompt. **No renderer change was needed; a gate was.** `verify_ks3.py` now fails the build if a card grid ships without a commitment prompt above it, so the ruling holds for lessons nobody has written yet. **(b) A Law 5 worked-example / `check` pair is NOT an instrument and does not count against §5.1's "one flagship, one mid-size" budget.** The budget counts **stateful** instruments only — an instrument holds state, so it has a before and an after, can be got wrong, can be abandoned half-done, and competes for working memory; a worked example holds no state and does none of that. Law 5's own rule is untouched: a `worked-example` still never ships without its `check`. The exemption is about state, not the label — an "interactive worked example" that marks entries or gates a reveal is an instrument and counts. | Claude (Opus 5) |
+| 2026-08-07 | **§8.5: the KS3 token block was inert for its entire life — found and fixed (MRB-179).** `[data-mode="ks3"]` and `.rd` both had specificity (0,1,0) and `.rd` came later in `tokens.css`, so on a KS3 page — which §8.5 requires to carry **both** — `.rd` won every collision and **every KS3 dial was dead**. Measured in a browser, not read off the source: `--accent` resolved `#C0392B` not `#C4490F`, `--radius` 22px not 18px, `--chemistry` `#C0392B` not `#B02342`. Fixed with the minimal selector that outranks it, `.rd[data-mode="ks3"]` (0,2,0) — no `body` qualifier, no `!important` (which would also have clobbered the per-page inline `--subject`). Subject identity restored per §8.5's own "subject identity colours apply unchanged": `.rd` folds `--chemistry` into the accent for KS4, which would erase one third of the browse layer's three-way subject distinction, so the KS3 block points it back at a new single-source alias. **KS4 proven untouched** — 1,039 served files, 1,000 differ only by the `?v=` cache-bust stamp, the sole real byte change is `tokens.css` itself, and resolved computed styles are identical on 15 KS4 pages including all four families that carry `.rd`. **Every KS3 contrast pair re-measured against the new palette** (the previous table was measured against `#C0392B` and did not carry over): four colour-only failures found and fixed in `ks3.css` — `.ks3-crumb-sep` and `.ks3-family` were on `--ink-faint` at 2.97 against the page ground, and `.ks3-review-flag` (1.35) and `.ks3-reveal` (1.49) had state-bearing borders on `--accent-tint-border`. Every accent-derived ratio fell, because `#C4490F` is lighter than `#C0392B`; all still clear their thresholds, with less headroom, and the stale tables in `ks3.css` were rewritten with the measured values. Seasonal tints are unaffected — they derive from `--accent-strong`, `--ok` and `--context-blue`, none of which moved — and remain well separated (ΔE2000 24.7–35.5 between strip tints, 45+ between the season borders). ⊕ **Recorded, not silently fixed:** the KS3 radii dial 12/18/26 against `.rd`'s 12/22/28, so KS3 is now marginally *squarer* than KS4, the opposite of the "rounder corners" §8.5 claims. The dials were authored against the original `:root` scale, where they were rounder; `.rd`'s scale landed underneath them and nobody re-checked, because the dials were dead and the claim cost nothing. Left as authored — the values are Mide's to set and the KS3 visual redesign is held under MRB-182. `verify_ks3.py` now gates that every KS3 page carries both `class="rd"` and `data-mode="ks3"`, so the selector can never silently stop matching. | Claude (Opus 5) |

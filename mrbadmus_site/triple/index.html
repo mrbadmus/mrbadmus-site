@@ -7,7 +7,7 @@
   <title>Triple Science | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=cdaa5621"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=db0babb0"/>
   <link rel="stylesheet" href="/shared/styles.css?v=2da37530"/>
   <link rel="stylesheet" href="/shared/nav.css?v=2fd4a55f"/>
   <script src="/shared/search-index.js" defer></script>
@@ -30,7 +30,10 @@
 </nav>
   
 <div class="hub-header">
-  <a class="back-link" href="/index.html">← Back to Home</a>
+  <!-- MRB-176: this page's parent is the GCSE landing, which moved to
+       /ks4.html when /index.html became the key-stage chooser. Pointing it at
+       / would skip a level and drop a GCSE student back out to "KS3 or GCSE?". -->
+  <a class="back-link" href="/ks4.html">← Back to GCSE Science</a>
   <h1 style="color:#B02342">🧪 Triple Science</h1>
   <p>Triple Science covers separate Biology, Chemistry and Physics qualifications with extended content. Choose your tier below.</p>
 </div>

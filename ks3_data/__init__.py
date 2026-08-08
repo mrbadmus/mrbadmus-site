@@ -26,8 +26,8 @@ from . import structure
 from .default_sequence import DEFAULT_SEQUENCE_V1
 
 # Modules in this package that are NOT unit modules.
-_NON_UNIT_MODULES = {"structure", "default_sequence", "school_schemes",
-                     "substatements"}
+_NON_UNIT_MODULES = {"structure", "default_sequence", "half_terms",
+                     "school_schemes", "substatements"}
 
 
 def _authored_modules():
