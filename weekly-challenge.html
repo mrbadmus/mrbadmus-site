@@ -7,7 +7,7 @@
   <title>Weekly Challenge | MrBadmusAI</title>
   <link rel="preload" href="/shared/fonts/fraunces-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
   <link rel="preload" href="/shared/fonts/plus-jakarta-sans-var-latin.woff2" as="font" type="font/woff2" crossorigin/>
-  <link rel="stylesheet" href="/shared/tokens.css?v=cdaa5621"/>
+  <link rel="stylesheet" href="/shared/tokens.css?v=db0babb0"/>
   <link rel="stylesheet" href="/shared/nav.css?v=2fd4a55f"/>
   <script src="/shared/search-index.js" defer></script>
   <script src="/shared/search.js" defer></script>
@@ -190,8 +190,11 @@
   <div id="ks3-message" style="display:none;text-align:center;padding-top:60px;">
     <div style="font-size:3rem;">🌱</div>
     <h2 style="font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;font-size:1.5rem;margin:16px 0 8px;">Weekly Challenges are coming soon for KS3</h2>
-    <p style="color:var(--muted);margin-bottom:20px;">For now, explore topics and try the topic quizzes from the homepage.</p>
-    <a href="/index.html" style="padding:14px 32px;border-radius:14px;background:var(--accent);color:var(--on-accent);font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;text-decoration:none;display:inline-block;">Explore topics</a>
+    <p style="color:var(--muted);margin-bottom:20px;">For now, explore the KS3 topics and try the topic quizzes.</p>
+    <!-- MRB-180.1: was /index.html, which is now the key-stage CHOOSER, so a
+         KS3 student clicking "Explore topics" was bounced back to picking
+         KS3 or GCSE again. Goes straight to the KS3 landing page. -->
+    <a href="/ks3/index.html" style="padding:14px 32px;border-radius:14px;background:var(--accent);color:var(--on-accent);font-family:var(--font-serif);font-optical-sizing:auto;font-weight:600;text-decoration:none;display:inline-block;">Explore topics</a>
   </div>
 
   <!-- STEP 1: Pick subject -->
