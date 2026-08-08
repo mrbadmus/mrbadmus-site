@@ -414,18 +414,73 @@ def main():
         "ks4.html",              # the previous landing, verbatim, behind the KS4 card
         "combined/index.html",   # "back to home" re-pointed at /ks4.html
         "triple/index.html",     # same
+        # MRB-180.1 — the KS3 "Explore topics" CTA pointed at /index.html,
+        # which ruling 1 turned into the key-stage chooser, so a KS3 student
+        # was sent back to choose KS3 or GCSE again. Now /ks3/index.html.
+        # Same class of consequence as the four above: a KS4-tree page that
+        # the entry-point ruling obliges us to change.
+        "weekly-challenge.html",
     }
+
+    # ⚠️ GATE CORRECTED 2026-08-07 (MRB-179). As written, this compared a KS4
+    # page's *path* against an allow-list and failed on any other path that
+    # `git status` reported. That cannot distinguish the two very different
+    # things a KS4 page diff can mean:
+    #
+    #   (a) the page's CONTENT changed          — real KS4 drift, must fail
+    #   (b) only its `?v=` cache-bust stamp moved, because a SHARED asset
+    #       legitimately changed and generate_site_v5.py re-stamped every page
+    #
+    # (b) is not drift; it is the cache-busting machinery working as designed,
+    # and it is unavoidable for any change to tokens.css — which is a shared
+    # file KS3 is entitled to fix. Under the old gate, MRB-179's one-line
+    # selector fix reported 1,000 "changed KS4 pages" and the honest response
+    # would have been to loosen the gate, which is how a real regression gets
+    # waved through later.
+    #
+    # So the gate now compares each page against HEAD with the version query
+    # NORMALISED OUT. Stamp-only differences are counted and reported, never
+    # silently dropped; ANY other byte difference still fails, on any path
+    # outside KS4_INTENDED. This is strictly stronger than the path check it
+    # replaces — it now catches a content change to an ALLOWED page too.
+    VER = re.compile(rb"\?v=[0-9a-f]{8}")   # bytes: pages are compared raw
+
+    def head_bytes(path):
+        r = subprocess.run(["git", "show", "HEAD:%s" % path],
+                           capture_output=True)
+        return r.stdout if r.returncode == 0 else None
 
     git = subprocess.run(["git", "status", "--porcelain"],
                          capture_output=True, text=True).stdout.splitlines()
     touched = [l[3:] for l in git if l[3:].endswith(".html")]
-    ks4 = [t for t in touched
-           if not t.startswith("ks3/")
-           and not t.startswith("mrbadmus_site/ks3/")
-           and t.replace("mrbadmus_site/", "", 1) not in KS4_INTENDED]
-    check("zero UNINTENDED KS4 pages changed", not ks4,
-          str(ks4[:5]) if ks4
-          else "only the %d pages MRB-176 ruling 1 moves" % len(KS4_INTENDED))
+    candidates = [t for t in touched
+                  if not t.startswith("ks3/")
+                  and not t.startswith("mrbadmus_site/ks3/")]
+
+    stamp_only, content_changed = [], []
+    for t in candidates:
+        old = head_bytes(t)
+        try:
+            new = open(t, "rb").read()
+        except OSError:
+            new = None
+        if old is None or new is None:
+            content_changed.append(t)          # added or deleted — never a stamp
+            continue
+        if VER.sub(b"?v=NORM", old) == VER.sub(b"?v=NORM", new):
+            stamp_only.append(t)
+        else:
+            content_changed.append(t)
+
+    ks4 = [t for t in content_changed
+           if t.replace("mrbadmus_site/", "", 1) not in KS4_INTENDED]
+    check("zero UNINTENDED KS4 content changes "
+          "(cache-bust restamps do not count, and are reported)",
+          not ks4,
+          str(ks4[:5]) if ks4 else
+          "%d KS4 pages restamped (?v= only, no content change) · %d intended "
+          "content changes, all in the MRB-176 ruling-1 allow-list"
+          % (len(stamp_only), len(content_changed)))
 
     # 9. The KS4 generator must not destroy the KS3 output.
     #
@@ -591,6 +646,72 @@ def main():
             print("        ⚑ reading age above target — flag for review")
 
     print("\nAccessibility and device\n" + "=" * 60)
+
+    # ── §8.5 / MRB-179: both hooks, on every page, or the dials go dead again.
+    # The KS3 token block is selected by `.rd[data-mode="ks3"]` — raised to
+    # (0,2,0) so it outranks `.rd`, which had been silently winning and killing
+    # every KS3 dial. The cost of that selector is that BOTH hooks are now
+    # load-bearing: a page with only one gets no KS3 palette at all, and it
+    # would look almost right, which is how the original defect survived. So
+    # the pairing is asserted per page rather than trusted to the template.
+    ks3_pages, bad_shell = [], []
+    for dirpath, _dirs, files in os.walk("mrbadmus_site/ks3"):
+        for fn in files:
+            if not fn.endswith(".html"):
+                continue
+            p = os.path.join(dirpath, fn)
+            ks3_pages.append(p)
+            head = open(p, encoding="utf-8").read()
+            if 'class="rd" data-mode="ks3"' not in head:
+                bad_shell.append(p)
+    check("every KS3 page carries BOTH class=\"rd\" and data-mode=\"ks3\"",
+          ks3_pages and not bad_shell,
+          "%d pages, all paired" % len(ks3_pages) if not bad_shell
+          else "unpaired: %s" % bad_shell[:5])
+
+    # The selector itself, so a future tidy-up cannot quietly undo the fix.
+    tokens_css = open("shared/tokens.css", encoding="utf-8").read()
+    check("tokens.css KS3 block outranks .rd (selector .rd[data-mode=\"ks3\"])",
+          '.rd[data-mode="ks3"] {' in tokens_css
+          and '\n[data-mode="ks3"] {' not in tokens_css)
+
+    # ── §5.1.2(a) / MRB-177: a card grid discharges Law 4 by DECLARED
+    # prediction, which only happens if the block asks for it in words. The
+    # renderer cannot enforce a declaration — nothing is recorded — so the
+    # prompt is the whole mechanism, and an author who omits it turns a
+    # commitment device into a list of answers with a tap in the way.
+    COMMIT_CUES = ("say", "decide", "predict", "answer", "work out", "name",
+                   "think", "write")
+    cardless_prompt = []
+    for p in ks3_pages:
+        page = open(p, encoding="utf-8").read()
+        for m in re.finditer(r'<section\b[^>]*>(.*?)</section>', page, re.S):
+            block = m.group(1)
+            if 'class="ks3-cards"' not in block:
+                continue
+            before = block.split('<ul class="ks3-cards"')[0]
+            texts = [re.sub(r"<[^>]+>", "", t).lower()
+                     for t in re.findall(r"<p(?![^>]*\bhidden\b)[^>]*>(.*?)</p>",
+                                         before, re.S)]
+            prompt = " ".join(texts)
+            if not (any(c in prompt for c in COMMIT_CUES)
+                    and ("tap" in prompt or "check" in prompt
+                         or "flip" in prompt or "turn" in prompt)):
+                cardless_prompt.append(p)
+                break
+    n_grids = sum(1 for p in ks3_pages
+                  if 'class="ks3-cards"' in open(p, encoding="utf-8").read())
+    check("every reveal-card grid asks for a commitment before the tap",
+          not cardless_prompt,
+          "%d grids, all prompted" % n_grids if not cardless_prompt
+          else "no commit prompt on %s" % cardless_prompt[:5])
+
+    # ── MRB-181 / §8.10: the removed callout stays removed.
+    check("no .ks3-browse-note survives in the built tree",
+          not any("ks3-browse-note" in open(p, encoding="utf-8").read()
+                  for p in ks3_pages),
+          "%d pages clean" % len(ks3_pages))
+
     check("reduced-motion fallback present in ks3.css",
           "prefers-reduced-motion: reduce" in open("shared/ks3.css",
                                                    encoding="utf-8").read())
