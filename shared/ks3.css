@@ -362,21 +362,21 @@
   color: var(--ink-muted);
   margin: 0 0 0.75rem;
 }
-.ks3-family-note { font-size: 0.9rem; color: var(--ink-muted); font-style: italic; }
+/* ⛔ `.ks3-family-note` REMOVED 2026-08-07 — MRB-181, architecture.md §8.10.
+   It styled the §6 architecture-family gloss on coming-soon pages. Markup
+   removed in build_ks3.py; the rule would otherwise sit here matching nothing. */
 
 /* ── cross-references (§4.6) — pending state must read as deliberate ── */
 .ks3-pending { color: var(--ink-muted); }
 .ks3-pending em { font-style: normal; font-size: 0.85rem; }
 .ks3-refs ul, .ks3-prereqs ul, .ks3-ks4 ul { margin: 0.5rem 0 0; padding-left: 1.2rem; }
 
-.ks3-note {
-  font-size: 0.9rem;
-  color: var(--ink-body);
-  background: var(--surface-inset);
-  border-left: 3px solid var(--rule);
-  padding: 0.6rem 0.85rem;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-}
+/* ⛔ `.ks3-note` REMOVED 2026-08-07 — MRB-181, architecture.md §8.10.
+   Its only consumer was the unit-index "Why this is its own unit:" note,
+   which is gone from build_ks3.py. Deleted rather than left behind: an
+   unclaimed callout style is an invitation to put a callout back. A future
+   note that genuinely earns a place under §8.10 gets a rule written for the
+   job it is actually doing. */
 
 .ks3-footer {
   border-top: 1px solid var(--rule);
@@ -424,18 +424,11 @@
 [data-season="spring"] { --ks3-season: var(--ok); }
 [data-season="summer"] { --ks3-season: var(--context-blue); }
 
-/* The honesty line §4.5.2 requires on every browse page. */
-.ks3-browse-note {
-  margin: 1.25rem 0 0;
-  padding: 0.8rem 1rem;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  color: var(--ink-body);
-  background: var(--surface-inset);
-  border-left: 4px solid var(--accent);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-}
-.ks3-browse-note strong { color: var(--ink); }
+/* ⛔ `.ks3-browse-note` REMOVED 2026-08-07 — MRB-181, architecture.md §8.10.
+   It styled the browse-layer callout as a full-width accent-barred panel
+   directly under the page heading, which is the loudest slot a browse page
+   has, spent on the platform explaining its own sequencing. The markup went
+   with it (build_ks3.py), so this is a dead-rule removal, not a hiding. */
 
 /* A half-term page is itself seasonal — same dial, one rule. */
 .ks3-landing-head[data-season] {

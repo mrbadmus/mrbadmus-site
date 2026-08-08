@@ -156,15 +156,13 @@ REF_BADGE = '<span class="ks3-badge">from %s %s</span>'
 REF_POINTER = ('<p class="ks3-ref-note">Taught in %s — <em>%s</em>. '
                'You\'ll meet the full lesson there.</p>')
 
-FAMILY_BLURB = {
-    "MODEL": "One idea explains a whole class of behaviour",
-    "PROCESS": "A mechanism unfolds in steps",
-    "SYSTEM": "Parts working together, and what happens when one fails",
-    "CONTRAST": "Two things, one discriminating difference",
-    "CLASSIFY": "Decide which category, fast, and know why",
-    "QUANTITATIVE": "A calculation carries the concept",
-    "INVESTIGATION": "The science skill is the subject",
-}
+# ⛔ FAMILY_BLURB REMOVED 2026-08-07 — MRB-181, architecture.md §8.10.
+# It rendered §6's seven architecture families as a one-line gloss on every
+# coming-soon page ("One idea explains a whole class of behaviour"). That is
+# the platform describing its own compositional grammar to a twelve-year-old
+# who came looking for a lesson and found a placeholder. The families are real
+# and stay — in §6, in structure.py, and in what an authored lesson is shaped
+# like. They are not page copy.
 
 
 def e(s):
@@ -638,12 +636,10 @@ def coming_soon_page(unit, lesson):
 </header>
 <section class="ks3-block ks3-coming-soon">
   <p class="ks3-tag">Coming soon</p>
-  <p>This lesson is planned and its place in the course is fixed, but it has not
-     been written yet.</p>
-  <p class="ks3-family-note">%s</p>
+  <p>This lesson has not been written yet.</p>
   <p><a href="%s/index.html">Back to %s</a></p>
 </section>""" % (e(unit["title"]), e(lesson["family"]), e(lesson["title"]),
-                 e(FAMILY_BLURB.get(lesson["family"], "")), e(base), e(unit["title"]))
+                 e(base), e(unit["title"]))
     return shell(lesson["title"], body, crumb, disc,
                  "%s — coming soon" % lesson["title"])
 
@@ -691,10 +687,16 @@ def unit_index(unit, units_by_code, registry):
                     '<span class="ks3-family">%s</span>%s</li>'
                     % (i, e(href), e(l["title"]), e(l["family"]), badge))
 
+    # ⛔ The "Why this is its own unit:" note was REMOVED here 2026-08-07 —
+    # MRB-181, architecture.md §8.10. Its text ("Eight statutory bullets
+    # spanning representation, reaction types and acid chemistry; universally
+    # taught as separate units and too large to schedule as one") is a
+    # curriculum-design argument addressed to a curriculum designer, printed
+    # at the top of a unit page a Year 8 student opens to find lessons.
+    # `split_rationale` stays in structure.py: §4.3 requires the record, and
+    # keeping it is what lets the decision be reviewed. It just stops being
+    # rendered.
     note = ""
-    if unit["split_rationale"]:
-        note = ('<p class="ks3-note"><strong>Why this is its own unit:</strong> %s</p>'
-                % e(unit["split_rationale"]))
     intro = ('<p class="ks3-intro">%s</p>' % e(unit["intro"])) if unit.get("intro") else ""
 
     body = """<header class="ks3-unit-head">
@@ -744,20 +746,19 @@ def discipline_hub(disc, units):
 # sequence and these pages change; nothing else does. That is the property §9's
 # reorder proof tests, and it is what makes a browse layer legal here at all.
 
-# §4.5.2: "the browse layer renders the platform default sequence, so it is
-# labelled as such on the page." Every browse page carries this. It is the same
-# say-WHERE-never-assume discipline §4.5 settled for reference slots: the page
-# states whose route it is instead of presenting one school's order as the only
-# one. A school that has overridden its sequence is not yet served a browse
-# layer matching its own scheme — that is the Phase 5 runtime scheme lookup,
-# already deferred, not a new deferral.
-BROWSE_NOTE = (
-    '<p class="ks3-browse-note"><strong>This is the MrBadmusAI default '
-    'sequence.</strong> It is the order we suggest teaching KS3 in, worked out '
-    'from the national curriculum and from what each lesson needs you to know '
-    'first. Your school may teach these same lessons in a different year or a '
-    'different half term — that is completely normal, and it changes nothing '
-    'about the lessons themselves.</p>')
+# ⛔ THE BROWSE-LAYER HONESTY CALLOUT — REMOVED 2026-08-07 on Mide's ruling,
+# MRB-181; the rule it now falls under is architecture.md §8.10.
+# The paragraph that used to live here opened every browse page with a large
+# callout explaining how MrBadmusAI works out its teaching order. It was
+# written to a teacher, on pages read almost entirely by students, it answered
+# a question nobody had asked, and it took the prime slot above the cards the
+# page exists to show. The sequencing rationale is architecture, and it lives
+# in architecture.md §4.5.1 — which is where a reader who wants it looks.
+# §4.5.2's "labelled as such on the page" clause is amended accordingly: the
+# obligation is that the page never CLAIMS to be a school's own scheme, and
+# nothing on it does. The constant and all four of its render sites are gone,
+# not stubbed to "" — a stub leaves the plumbing behind and invites the next
+# person to refill it.
 
 
 def season_of(half_term):
@@ -885,11 +886,10 @@ def year_index(year, browse):
   <p class="ks3-intro">%s across %s, split into the six half terms of the school
      year. Pick a half term to see what each science covers.</p>
 </header>
-%s
 <ul class="ks3-unit-grid ks3-browse-terms">%s</ul>
 <p class="ks3-browse-alt"><a href="/ks3/index.html">Browse by subject instead →</a></p>""" % (
         year, e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-        BROWSE_NOTE, "".join(cards))
+        "".join(cards))
     return shell("Year %d Science" % year, body, crumb, None,
                  "KS3 Year %d Science — the MrBadmusAI default sequence, half "
                  "term by half term." % year)
@@ -931,15 +931,13 @@ def half_term_index(year, half_term, browse):
     body = """<header class="ks3-landing-head" data-season="%s">
   <p class="ks3-eyebrow">Year %d · Half term %d</p>
   <h1>%s</h1>
-  <p class="ks3-intro">%s across %s. All three sciences run together through
-     every half term — pick one to see the lessons.</p>
+  <p class="ks3-intro">%s across %s. Pick a science to see the lessons.</p>
 </header>
-%s
 <ul class="ks3-unit-grid ks3-browse-subjects">%s</ul>
 <p class="ks3-browse-alt"><a href="/ks3/year-%d/index.html">← All six half terms of Year %d</a></p>""" % (
         e(season_of(half_term)), year, half_term, e(name),
         e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-        BROWSE_NOTE, "".join(cards), year, year)
+        "".join(cards), year, year)
     return shell("%s · Year %d" % (name, year), body, crumb, None,
                  "KS3 Year %d, %s — the MrBadmusAI default sequence."
                  % (year, name))
@@ -986,12 +984,11 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
   <p class="ks3-intro">%s from %s.</p>
 </header>
 %s
-%s
 <p class="ks3-browse-alt"><a href="/ks3/year-%d/%s/index.html">← All three sciences this half term</a>
    · <a href="/ks3/%s/index.html">The whole KS3 %s course →</a></p>""" % (
         year, e(name), e(DISCIPLINE_TITLES[disc]),
         e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-        BROWSE_NOTE, "".join(sections), year, e(slug),
+        "".join(sections), year, e(slug),
         e(disc), e(DISCIPLINE_TITLES[disc]))
     return shell("%s · %s · Year %d" % (DISCIPLINE_TITLES[disc], name, year),
                  body, crumb, disc,
@@ -1045,14 +1042,13 @@ def landing(units, browse):
   <p class="ks3-meta">%d of %d lessons written so far.</p>
 </header>
 <ul class="ks3-unit-grid ks3-browse-years">%s</ul>
-%s
 <section class="ks3-browse-secondary">
   <h2>Prefer to browse by subject?</h2>
   <p class="ks3-intro">Every lesson also sits in its subject and its unit, in
      the order the science builds up. Same lessons, same pages — a different way
      in.</p>
   <ul class="ks3-disc-grid">%s</ul>
-</section>""" % (total_done, total_lessons, "".join(years), BROWSE_NOTE,
+</section>""" % (total_done, total_lessons, "".join(years),
                  "".join(secs))
     return shell("KS3 Science", body, crumb, None,
                  "Free KS3 Science revision — Years 7 to 9, all three sciences.")
