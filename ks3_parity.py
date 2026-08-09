@@ -265,6 +265,11 @@ TOL_PX = 1.0
 
 LESSON = "chemistry/particles-and-their-behaviour/gas-pressure.html"
 UNIT = "chemistry/particles-and-their-behaviour/index.html"
+# C1 is fully authored, so its index carries no Coming soon badge; and B3 is
+# the ONLY unit in the key stage with a §4.6 reference slot, so it is the only
+# page where the pointer can be measured at all.
+UNIT_SOON = "biology/cells-and-organisation/index.html"
+UNIT_REF = "biology/nutrition-and-digestion/index.html"
 LANDING = "index.html"
 YEAR = "year-7/index.html"
 
@@ -357,6 +362,12 @@ COMPONENTS = [
     # ── end matter ──
     dict(name="tutor card is accent", on=LESSON, sel=".ks3-tutor",
          props={"background-color": "#E4572E"}),
+    # These two are what license need=3.0 on the contrast pair above. If the
+    # size or weight drops, this assertion fails and the classification cannot
+    # quietly stop being true.
+    dict(name="tutor text is large-bold (licenses its 3:1)", on=LESSON,
+         sel=".ks3-endmatter .ks3-tutor p",
+         props={"font-size": "19px", "font-weight": "700"}),
 
     # ── browse layer ──
     dict(name="draft badge", on=UNIT, sel=".ks3-badge.is-draft",
@@ -419,6 +430,14 @@ CONTRAST = [
          fg='.ks3-rung[data-mode="self"] h3', bg=".ks3-ladder", need=4.5),
     dict(name="marked-rung heading on card", on=LESSON,
          fg='.ks3-rung[data-mode="marked"] h3', bg=".ks3-ladder", need=4.5),
+    dict(name="locked sim cover on amber block", on=LESSON,
+         fg=".ks3-misconception .ks3-sim-cover",
+         bg=".ks3-misconception .ks3-sim-cover", need=4.5),
+    dict(name="locked sim cover on ink-dark block", on=LESSON,
+         fg=".ks3-practical .ks3-sim-cover",
+         bg=".ks3-practical .ks3-sim-cover", need=4.5),
+    dict(name="sim caption on ink-dark block", on=LESSON,
+         fg=".ks3-practical .ks3-sim-caption", bg=".ks3-practical", need=4.5),
     dict(name="sim caption on card", on=LESSON,
          fg=".ks3-sim-caption", bg=".ks3-check", need=4.5),
     dict(name="stretch eyebrow on its tint", on=LESSON,
@@ -428,16 +447,34 @@ CONTRAST = [
          need=4.5),
     dict(name="legal line on page ground", on=LESSON,
          fg=".ks3-legal", bg="body", need=4.5),
-    dict(name="tutor card text on accent", on=LESSON,
-         fg=".ks3-tutor p", bg=".ks3-tutor", need=4.5),
+    # need=3.0 because this text is LARGE by WCAG's definition — 19px at
+    # weight 700, over the 18.66px-bold line. That is not the gate being
+    # loosened: ks3.css sets that size and weight precisely because ink on
+    # accent measures 4.49:1 and cannot clear the body threshold with any
+    # colour in Design's palette. The style assertion below pins the size and
+    # weight, so if either is ever reduced this pair becomes body text again
+    # and layer C fails first.
+    dict(name="tutor card text on accent (large-bold, 3:1)", on=LESSON,
+         fg=".ks3-endmatter .ks3-tutor p", bg=".ks3-endmatter .ks3-tutor",
+         need=3.0),
+    dict(name="tutor CTA on its own light ground", on=LESSON,
+         fg=".ks3-tutor-cta", bg=".ks3-tutor-cta", need=4.5),
+    dict(name="tutor heading on accent", on=LESSON,
+         fg=".ks3-endmatter .ks3-tutor h2", bg=".ks3-endmatter .ks3-tutor",
+         need=3.0),
     dict(name="draft badge text on its tint", on=UNIT,
          fg=".ks3-badge.is-draft", bg=".ks3-badge.is-draft", need=4.5),
-    dict(name="coming-soon badge text on its tint", on=UNIT,
+    dict(name="coming-soon badge text on its tint", on=UNIT_SOON,
          fg=".ks3-badge.is-soon", bg=".ks3-badge.is-soon", need=4.5),
+    dict(name="coming-soon row title on dimmed row", on=UNIT_SOON,
+         fg=".ks3-lesson-row.is-soon > a", bg=".ks3-lesson-row.is-soon", need=4.5),
     dict(name="family chip on its ground", on=UNIT,
          fg=".ks3-family", bg=".ks3-family", need=4.5),
-    dict(name="cross-reference pointer on card", on=UNIT,
+    dict(name="cross-reference pointer on card", on=UNIT_REF,
          fg=".ks3-ref-note", bg=".ks3-lesson-list", need=4.5),
+    dict(name="cross-reference badge on its tint", on=UNIT_REF,
+         fg=".ks3-lesson-row.is-ref .ks3-badge",
+         bg=".ks3-lesson-row.is-ref .ks3-badge", need=4.5),
     # identifying / state-bearing marks — 3:1 is the bar (R1)
     dict(name="MARK block border on page ground", on=LESSON,
          fg=".ks3-check", bg="body", need=3.0, prop="border-top-color"),
@@ -458,19 +495,45 @@ CONTRAST = [
 
 # ── colour maths ─────────────────────────────────────────────────────────
 
-def parse_rgb(s):
-    """'rgb(34, 30, 27)' / 'rgba(…)' / '#221E1B' → (r, g, b) or None."""
+def parse_rgba(s):
+    """Any colour Chrome may resolve to → ((r, g, b), alpha) or None.
+
+    Chrome returns `color(srgb 1 0.988 0.961 / 0.85)` for a `color-mix()`,
+    which no naive rgb() regex matches. The locked simulation veil is exactly
+    that, so a gate that cannot read it cannot check the one surface R5 is
+    about — and would silently score it as unmeasurable rather than failing.
+    """
     if not s:
         return None
     s = s.strip()
     m = re.match(r'#([0-9A-Fa-f]{6})$', s)
     if m:
         h = m.group(1)
-        return (int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16))
-    m = re.match(r'rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)', s)
+        return ((int(h[0:2], 16), int(h[2:4], 16), int(h[4:6], 16)), 1.0)
+    m = re.match(r'rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)'
+                 r'(?:[,\s/]+([\d.]+))?', s)
     if m:
-        return tuple(int(round(float(m.group(i)))) for i in (1, 2, 3))
+        a = float(m.group(4)) if m.group(4) is not None else 1.0
+        return (tuple(int(round(float(m.group(i)))) for i in (1, 2, 3)), a)
+    # color(srgb <0-1> <0-1> <0-1> [/ <alpha>])
+    m = re.match(r'color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)'
+                 r'(?:\s*/\s*([\d.]+))?', s)
+    if m:
+        a = float(m.group(4)) if m.group(4) is not None else 1.0
+        return (tuple(int(round(float(m.group(i)) * 255)) for i in (1, 2, 3)), a)
     return None
+
+
+def parse_rgb(s):
+    """Opaque (r, g, b), or None. Alpha is dropped — use parse_rgba to keep it."""
+    got = parse_rgba(s)
+    return got[0] if got else None
+
+
+def over(fg_rgba, behind):
+    """Composite a translucent colour over an opaque one."""
+    (r, g, b), a = fg_rgba
+    return tuple(int(round(a * c + (1 - a) * d)) for c, d in zip((r, g, b), behind))
 
 
 def _lin(c):
@@ -519,16 +582,20 @@ window.__ks3 = {
     var cs = getComputedStyle(el, pseudo || null);
     return cs.getPropertyValue(prop);
   },
-  ground: function (sel) {
+  // Returns the STACK of backgrounds from the element outwards, so Python can
+  // composite translucent layers instead of guessing. A veil at 0.85 alpha is
+  // not "opaque enough to ignore" — it shifts the ground it sits on, and the
+  // locked simulation cover is exactly that case.
+  groundStack: function (sel) {
     var el = document.querySelector(sel);
     if (!el) { return null; }
+    var out = [];
     while (el) {
-      var bg = getComputedStyle(el).backgroundColor;
-      var m = /rgba?\(\s*([\d.]+)[,\s]+([\d.]+)[,\s]+([\d.]+)(?:[,\s]+([\d.]+))?/.exec(bg);
-      if (m && (m[4] === undefined || parseFloat(m[4]) > 0.5)) { return bg; }
+      out.push(getComputedStyle(el).backgroundColor);
       el = el.parentElement;
     }
-    return getComputedStyle(document.body).backgroundColor;
+    out.push(getComputedStyle(document.body).backgroundColor);
+    return out;
   },
   token: function (sel, name) {
     var el = document.querySelector(sel) || document.body;
@@ -587,6 +654,22 @@ def check_rendered_glyphs(page):
     return (problems, info)
 
 
+
+def _flatten(stack):
+    """Composite a background stack (innermost first) into one opaque colour."""
+    if not stack:
+        return None
+    layers = [parse_rgba(s) for s in stack]
+    layers = [l for l in layers if l]
+    base = None
+    for l in reversed(layers):
+        if l[1] >= 0.999:
+            base = l[0]
+        elif base is not None:
+            base = over(l, base)
+    return base
+
+
 def _pages_needed():
     seen = []
     for spec in COMPONENTS + CONTRAST:
@@ -596,21 +679,59 @@ def _pages_needed():
 
 
 def run_browser_layers(ks3_root, browser_mod):
-    """Layers C and D. Returns (problems, style_rows, contrast_rows)."""
+    """Layers C and D. Returns (problems, style_rows, contrast_rows).
+
+    ⚠️ THE SERVER IS ROOTED AT THE PARENT OF ks3/, NOT AT ks3/ ITSELF.
+
+    Every KS3 page links `/shared/tokens.css`, `/shared/ks3.css` and
+    `/shared/ks3.js` as ABSOLUTE paths. Serving `mrbadmus_site/ks3` as the
+    document root makes all three 404, so the page loads with no CSS at all —
+    and then the gate does not report "stylesheet missing", it reports 82 style
+    mismatches and 23 contrast failures at 1.00:1 in Times New Roman. That is
+    the worst possible failure mode for a gate: a real defect in the harness
+    wearing the costume of a hundred defects in the work.
+
+    So it serves the parent and requests `/ks3/<rel>`, and it ASSERTS the
+    stylesheet actually applied before trusting a single measurement.
+    """
     problems = []
     style_rows = []
     contrast_rows = []
 
-    server, port = browser_mod.serve(ks3_root)
+    served_root = os.path.dirname(os.path.abspath(ks3_root))
+    prefix = os.path.basename(os.path.abspath(ks3_root))
+
+    server, port = browser_mod.serve(served_root)
     try:
         with browser_mod.Browser() as b:
             for rel in _pages_needed():
-                url = "http://127.0.0.1:%d/%s" % (port, rel)
+                url = "http://127.0.0.1:%d/%s/%s" % (port, prefix, rel)
                 page = b.page(url)
                 page.eval(_JS_HELPERS + "true")
 
-                errs = page.console_errors()
-                for e in errs:
+                # Sanity FIRST: did ks3.css actually load and apply? If not,
+                # every number below is measured against an unstyled document
+                # and the gate would blame the work for a plumbing fault.
+                applied = page.eval(
+                    "(function(){var s=getComputedStyle(document.body);"
+                    "return {sheets: document.styleSheets.length,"
+                    " ground: s.backgroundColor,"
+                    " token: s.getPropertyValue('--ks3-ground').trim(),"
+                    " font: s.fontFamily};})()")
+                if not applied["token"]:
+                    problems.append(
+                        "STYLESHEET DID NOT APPLY on /%s — %d sheets, ground %s, "
+                        "font %s. Every style and contrast number for this page "
+                        "would be meaningless, so they are not reported."
+                        % (rel, applied["sheets"], applied["ground"],
+                           applied["font"]))
+                    continue
+
+                # A favicon 404 is an artefact of serving a bare tree, not a
+                # defect in the page. Every other console error stays fatal.
+                for e in page.console_errors():
+                    if "favicon" in e.lower():
+                        continue
                     problems.append("console error on /%s: %s" % (rel, e))
 
                 # ── layer C ──
@@ -655,8 +776,9 @@ def run_browser_layers(ks3_root, browser_mod):
                     else:
                         fg = page.eval("window.__ks3.style(%r, %r)"
                                        % (fg_sel, spec.get("prop", "color")))
-                    bg = page.eval("window.__ks3.ground(%r)" % bg_sel)
-                    f, g = parse_rgb(fg), parse_rgb(bg)
+                    stack = page.eval("window.__ks3.groundStack(%r)" % bg_sel)
+                    bg = _flatten(stack)
+                    f, g = parse_rgb(fg), bg
                     if f is None or g is None:
                         problems.append("CONTRAST: %s — could not resolve (fg=%r bg=%r)"
                                         % (spec["name"], fg, bg))

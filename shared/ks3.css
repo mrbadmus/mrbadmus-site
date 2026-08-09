@@ -388,6 +388,26 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-on-dark);
 }
 
+/* ── vocabulary (Law 7) ──
+   The keywords block is SURFACE-LESS, like the explainer. In the reference
+   it is a bare section holding a heading, a lead line and the card grid —
+   the cards are the surfaces. Giving the block its own card ground would
+   nest bordered cards inside a bordered card, which is the one thing this
+   layout must not do. */
+.ks3-keywords {
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+}
+.ks3-keywords-lead {
+  margin: 0 0 18px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+  max-width: 52ch;
+}
+
 /* ── vocabulary cards (R4) ──
    The dog-ear is the ONLY affordance. When the card opens the dog-ear
    goes, because there is no longer anything underneath. */
@@ -716,6 +736,17 @@ body.rd[data-mode="ks3"] {
   flex-direction: column;
   gap: 10px;
 }
+/* ⚠️ LOAD-BEARING, and it looks redundant — same trap as
+   `.ks3-card-back[hidden]` above. An AUTHOR `display` beats the UA
+   stylesheet's `[hidden] { display: none }` regardless of specificity, so
+   without these two lines the success criteria and the tally render VISIBLE
+   before "Check my answer" is pressed. That is not a cosmetic slip: R8's
+   entire point is that the criteria are not on the page until the student has
+   written an answer, because a visible checklist is the answer. It would break
+   for exactly the readers who can least afford it — anyone arriving before
+   ks3.js runs, and anyone with JS off. */
+.ks3-ticks[hidden],
+.ks3-tally[hidden] { display: none; }
 .ks3-tick {
   display: flex;
   gap: 12px;
@@ -920,6 +951,14 @@ body.rd[data-mode="ks3"] {
   background: color-mix(in srgb, var(--ks3-card) 85%, transparent);
   border-radius: var(--ks3-r-panel);
 }
+/* ⚠️ The veil is LIGHT on every block, so its text is DARK on every block —
+   including the ink-dark ones. `.ks3-dark p` is (0,1,1) and `.ks3-sim-cover`
+   is a <p>, so without this the cover inherited on-dark cream text and
+   rendered light-on-light at 1.06:1 inside the practical block: the "make
+   your prediction first" instruction was invisible on precisely the lab R5
+   exists to gate. Found in a screenshot, then measured. The parity gate now
+   carries this pair on both block grounds so it cannot come back. */
+.ks3-dark .ks3-sim-cover { color: var(--ks3-ink); }
 .ks3-sim[data-locked="1"] .ks3-sim-cover { display: flex; }
 .ks3-sim[data-locked="1"] .ks3-sim-canvas { filter: blur(2px) saturate(.65); }
 .ks3-sim[data-locked="1"] .ks3-sim-controls { display: none; }
@@ -988,8 +1027,29 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-endmatter a:hover { color: var(--ks3-accent-hover); text-decoration: underline; }
 .ks3-endmatter p { margin: 0; font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body); }
-.ks3-tutor { background: var(--ks3-accent); color: var(--ks3-ink); }
-.ks3-tutor p { color: var(--ks3-ink); }
+/* ⚠️ `.ks3-endmatter .ks3-tutor`, not `.ks3-tutor` — it has to outrank
+   `.ks3-endmatter section` above, which is (0,1,1) and would otherwise keep
+   the tutor card on the ordinary card ground no matter what came later in the
+   file. Caught by the parity gate: the accent resolved to #FFFCF5. */
+.ks3-endmatter .ks3-tutor { background: var(--ks3-accent); color: var(--ks3-ink); }
+
+/* ⚠️ 19px/700 IS THE ACCESSIBILITY FIX, not a styling preference.
+   Measured: ink #221E1B on accent #E4572E is 4.491:1 — it misses AA for
+   body-size text by nine thousandths. Claude Design's reference ships this
+   card at 17px, so the flaw is in the reference and the gate caught it.
+   Nothing in Design's palette rescues it: on the accent ground, ink is the
+   BEST available at 4.49, --ks3-card gives 3.59 and --ks3-on-dark 3.34.
+   The two honest options were to abandon the accent ground — losing the one
+   card on the page that shouts, which is the whole point of it — or to make
+   the text genuinely large, where the WCAG threshold is 3:1 and 4.49 clears
+   it with room. 19px at weight 700 is over the 18.66px-bold line, so this is
+   a reclassification the text actually earns, not a waiver. Do not drop it
+   back to 17px without also changing the ground. */
+.ks3-endmatter .ks3-tutor p {
+  color: var(--ks3-ink);
+  font-size: 19px;
+  font-weight: 700;
+}
 .ks3-tutor-cta {
   display: inline-block;
   margin-top: 12px;
