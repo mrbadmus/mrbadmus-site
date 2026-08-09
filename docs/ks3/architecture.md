@@ -875,6 +875,43 @@ Persistence, "retry my misses", score + delta vs best: inherited unchanged. Neve
 streaks, no guilt copy, no XP, opt-in timers only. Low scores get a diagnosis and a route — and with
 the prerequisite graph (§4.9), the route can be a real lesson rather than "try again".
 
+#### 5.8.1 All four rungs count ⊕ — RULED by Mide, 9 August 2026 (MRB-184)
+
+*Provenance: found 8 Aug 2026 while producing the design coverage manifest, measured against real
+content. Rungs ③ and ④ carry no options in any authored lesson, and the score counted only rungs
+answered by button — so a student who completed the whole ladder saw **"You got 2 of 2."**, the two
+rungs carrying the highest cognitive demand never counted, and "retry my misses" could never reach
+them.*
+
+**The mechanism, as ruled:**
+
+1. A self-marked rung renders a **text area** for the student's answer, and nothing else.
+2. Below it, a **"Check my answer"** button. The criteria are **not on the page** until it is pressed,
+   because a visible checklist is the answer.
+3. Pressing it reveals the numbered criteria, **each with a real checkbox**.
+4. The rung counts as met when **every** criterion is ticked. Partial reads *"2 of 4 ticked — not
+   yet"*, which is honest and is **not** a punishment.
+5. **The score reads out of 4**, with one small line naming who marked what: *"You marked rungs 3 and
+   4 yourself."*
+6. **"Retry my misses" now reaches self-marked rungs** — it clears the ticks and **keeps the written
+   answer**, so the student revises rather than restarts.
+
+**Why option 1 rather than simply telling the truth about 2 of 2.** Claude Design independently
+arrived at that option and labelled the ladder *"Four rungs. Two the page marks, two you mark."* That
+is honest and it is kept as framing. But it still concedes that the hardest two rungs are unscored.
+Mide's correction is what resolves it: a box to write the answer in **before** self-marking. Once a
+written answer exists as an artefact, marking it against criteria is a real assessment rather than a
+claim.
+
+**The stored best becomes out-of-four, under a NEW key.** Existing stored bests are out of two;
+comparing them against a four-point scale would tell a student they got worse when they did not. The
+old key is left alone rather than migrated.
+
+*Design's Mastery Ladder artifact is the visual reference for this component. It was exported before
+this ruling and still implements the 2-of-2 behaviour, so it is authoritative on the look and
+superseded on the behaviour — recorded in SPEC.md §9.2 so the parity gate does not assert the wrong
+half.*
+
 ### 5.9 The AI tutor at KS3
 
 Same engine, different register. The tutor must know it is talking to an 11–14 year old and must be
@@ -1498,16 +1535,49 @@ no pathway and no tier — which is the point.
 - `.rd` opts into the redesign locked token system (Space Grotesk / IBM Plex Sans / IBM Plex Mono,
   the panel/callout radii, `--rd-fs-scale: 1.25`). This is the platform's current design language and
   Law 7 says there is only one.
-- `data-mode="ks3"` supplies the differentiating dials that already exist in `tokens.css`: a brighter
-  accent and rounder corners. That is the entire visual difference at launch, and it is enough — KS3
-  should read as *the same site, tuned younger*, not as a different product.
+> ⛔ **AMENDED 2026-08-09 on Mide's ruling (MRB-183) — KS3 IS ITS OWN VISUAL WORLD.** The three
+> bullets struck through below said `data-mode="ks3"` was "a brighter accent and rounder corners",
+> that this was "the entire visual difference at launch", and that KS3 "should read as *the same
+> site, tuned younger*, not as a different product". **All three are now wrong.** Claude Design
+> produced a KS3 system that Mide rates above the shipped browse layer and above Code's own design
+> work, and ruled it a **full replacement** of the KS3 palette and typography, not a variant. KS4 is
+> untouched and keeps the cream / burnt-orange system. Superseded wording kept per §12's reversal
+> rule, because the *reason* it was superseded is the instructive part: the dials were sized to a
+> claim about KS3 being KS4-tuned-younger, and that claim is the thing Mide reversed. Consequence
+> accepted on the ticket: **two design systems maintained side by side, split cleanly at the
+> key-stage boundary.**
+>
+> ~~`data-mode="ks3"` supplies the differentiating dials that already exist in `tokens.css`: a
+> brighter accent and rounder corners. That is the entire visual difference at launch, and it is
+> enough — KS3 should read as the same site, tuned younger, not as a different product.~~
+
+- `data-mode="ks3"` now supplies **the whole KS3 visual world** — 43 colour tokens, three type
+  families, its own radii, shadow and measure scales. The full extracted system, with Claude
+  Design's own measured contrast ratios, is `docs/ks3/design-reference/SPEC.md`; the frozen artifacts
+  it was read from sit beside it.
+- **The selector stays `.rd[data-mode="ks3"]`.** MRB-179's specificity fix is what makes any of these
+  dials apply at all (see the note below), so it must not be simplified back to a bare attribute
+  selector.
 - Anything KS3 needs beyond those dials is **an addition to the `[data-mode="ks3"]` block in
-  `tokens.css`**, never a new stylesheet.
-- Subject identity colours (`--biology`, `--chemistry`, `--physics`) already exist and apply
-  unchanged.
-- ⚠️ **Verify at build:** the KS3 accent `#C4490F` has not been contrast-checked against the cream
-  ground for body-text use. Check it against WCAG AA before it carries text, and adjust the token if
-  it fails.
+  `tokens.css`**, never a new stylesheet. **This rule survives the amendment unchanged and was
+  honoured:** `ks3.css` declares no palette value of its own and consumes tokens only.
+- Subject identity: Biology `#12A150`, Chemistry `#E4572E`, Physics `#2F5CE0`. Under Design's system
+  **Chemistry and the accent are deliberately the same hue**, which is why every browse card also
+  carries a hue dot and the subject's name — colour is never the only signal (R2).
+- **Three fonts, self-hosted:** Bricolage Grotesque (display), Instrument Sans (body), DM Mono
+  (numbers that change). Latin subsets, `woff2`, `font-display: swap`, in `shared/fonts/` alongside
+  the existing pair. No Google Fonts link. ⚠️ Those subsets contain **neither `→` nor `✓` nor `✕`**,
+  and Design's system leans on all three, so they are emitted as inline SVG (`.ks3-mark`) rather than
+  typed — see SPEC.md §9.3. This is the same defect class MRB-130 exists to fix.
+- ⊕ **The contrast obligation is now discharged by a build gate, not by a note.** `verify_ks3.py`
+  re-measures every KS3 text/ground pair in a real browser against the resolved grounds and fails the
+  build below 4.5:1 for body text or 3:1 for an identifying or state-bearing mark. The old warning
+  that `#C4490F` "has not been contrast-checked" is deleted rather than amended: that accent no
+  longer exists at KS3.
+- ⊕ **MRB-179's recorded oddity is resolved by this amendment.** It noted that the KS3 radii dialled
+  *squarer* than KS4 — the opposite of the "rounder corners" this section claimed — and left the
+  values as Mide's to set. Design's scale (blocks 28px, panels 20px, controls 14px, chips 999px) is
+  now the answer, and it is genuinely rounder.
 - Brand rule: KS3 pages are external/public, so they take the **orange chevron SVG + "MrBadmusAI"**
   nav brand per `CLAUDE.md`, not the dashboard text brand.
 - ⊕ **Cache-bust stamps are mandatory on KS3 pages — added 2026-07-30.** KS3 shipped linking
@@ -2528,3 +2598,7 @@ This document is law. Changing it changes what gets built.
 | 2026-08-07 | ⛔ **§4.5.2's "labelled as such on the page" clause AMENDED — consequence of §8.10, Mide's ruling, MRB-181.** The honesty obligation is now discharged **negatively**: no browse page may CLAIM to be a particular school's scheme, rather than every browse page carrying a disclaimer that it is not. Superseded wording kept in place per §12's reversal rule. The reasoning is kept too, because it is the instructive part: *"say WHERE, never assume"* is right for a **reference slot**, where the reader is being pointed somewhere and needs to know where, and it was over-applied to a browse index, where the reader is looking at a list and was never asking whose list it is. Honesty constrains what a page **asserts**; it is not a quota of prose the page must carry. The sequencing rationale is unmoved — it lives in §4.5.1 and §4.5.2. | Claude (Opus 5) |
 | 2026-08-07 | ✅ **New §5.1.2 ⊕ — two amendments from the C1 build. BOTH RULED by Mide, 7 Aug 2026, MRB-177.** **(a) A reveal-cards grid discharges Law 4 through a DECLARED rather than a recorded prediction.** A card grid has no wagerable proposition — a vocabulary recall has one right answer and no interesting wrong ones — so there is nothing to record, and the strict reading of Law 4 would make card grids illegal at KS3 entirely, given that a Law 7 vocabulary check is required in every lesson. The renderer's obligation is undiminished and now stated precisely: back ships `hidden` so no answer is on screen before the script runs, no hover reveal, no automatic flip, one tap flips one card — **and the block must ask for the declaration in words.** Verified against the shipped renderer rather than assumed: `shared/ks3.js` `wireCards` and `r_cards` in `build_ks3.py` already satisfy every clause, and all five C1 card grids already carry a commitment prompt. **No renderer change was needed; a gate was.** `verify_ks3.py` now fails the build if a card grid ships without a commitment prompt above it, so the ruling holds for lessons nobody has written yet. **(b) A Law 5 worked-example / `check` pair is NOT an instrument and does not count against §5.1's "one flagship, one mid-size" budget.** The budget counts **stateful** instruments only — an instrument holds state, so it has a before and an after, can be got wrong, can be abandoned half-done, and competes for working memory; a worked example holds no state and does none of that. Law 5's own rule is untouched: a `worked-example` still never ships without its `check`. The exemption is about state, not the label — an "interactive worked example" that marks entries or gates a reveal is an instrument and counts. | Claude (Opus 5) |
 | 2026-08-07 | **§8.5: the KS3 token block was inert for its entire life — found and fixed (MRB-179).** `[data-mode="ks3"]` and `.rd` both had specificity (0,1,0) and `.rd` came later in `tokens.css`, so on a KS3 page — which §8.5 requires to carry **both** — `.rd` won every collision and **every KS3 dial was dead**. Measured in a browser, not read off the source: `--accent` resolved `#C0392B` not `#C4490F`, `--radius` 22px not 18px, `--chemistry` `#C0392B` not `#B02342`. Fixed with the minimal selector that outranks it, `.rd[data-mode="ks3"]` (0,2,0) — no `body` qualifier, no `!important` (which would also have clobbered the per-page inline `--subject`). Subject identity restored per §8.5's own "subject identity colours apply unchanged": `.rd` folds `--chemistry` into the accent for KS4, which would erase one third of the browse layer's three-way subject distinction, so the KS3 block points it back at a new single-source alias. **KS4 proven untouched** — 1,039 served files, 1,000 differ only by the `?v=` cache-bust stamp, the sole real byte change is `tokens.css` itself, and resolved computed styles are identical on 15 KS4 pages including all four families that carry `.rd`. **Every KS3 contrast pair re-measured against the new palette** (the previous table was measured against `#C0392B` and did not carry over): four colour-only failures found and fixed in `ks3.css` — `.ks3-crumb-sep` and `.ks3-family` were on `--ink-faint` at 2.97 against the page ground, and `.ks3-review-flag` (1.35) and `.ks3-reveal` (1.49) had state-bearing borders on `--accent-tint-border`. Every accent-derived ratio fell, because `#C4490F` is lighter than `#C0392B`; all still clear their thresholds, with less headroom, and the stale tables in `ks3.css` were rewritten with the measured values. Seasonal tints are unaffected — they derive from `--accent-strong`, `--ok` and `--context-blue`, none of which moved — and remain well separated (ΔE2000 24.7–35.5 between strip tints, 45+ between the season borders). ⊕ **Recorded, not silently fixed:** the KS3 radii dial 12/18/26 against `.rd`'s 12/22/28, so KS3 is now marginally *squarer* than KS4, the opposite of the "rounder corners" §8.5 claims. The dials were authored against the original `:root` scale, where they were rounder; `.rd`'s scale landed underneath them and nobody re-checked, because the dials were dead and the claim cost nothing. Left as authored — the values are Mide's to set and the KS3 visual redesign is held under MRB-182. `verify_ks3.py` now gates that every KS3 page carries both `class="rd"` and `data-mode="ks3"`, so the selector can never silently stop matching. | Claude (Opus 5) |
+| 2026-08-09 | ⛔ **§8.5 AMENDED — KS3 IS ITS OWN VISUAL WORLD. RULED by Mide, 8 Aug 2026, MRB-183.** Claude Design's KS3 system is adopted as a **full replacement** of the KS3 palette and typography, not a variant of KS4's. §8.5's claim that `data-mode="ks3"` was "a brighter accent and rounder corners" and that this was "the entire visual difference at launch" is superseded and kept struck through per §12, because the reversed claim — that KS3 should read as "the same site, tuned younger" — is the instructive part. KS4 is untouched and keeps cream / burnt-orange; the consequence accepted on the ticket is two design systems side by side, split at the key-stage boundary. **43 colour tokens, two per hue** (a fill token at 3:1 for borders, rules, focus rings and text above 24px; a darker text token at 4.5:1 for body size), **three self-hosted families** (Bricolage Grotesque, Instrument Sans, DM Mono — latin `woff2`, `font-display: swap`, no Google Fonts link), Design's radii/shadow/measure scales, and the 46rem reading column with a 60rem break-out. The selector stays `.rd[data-mode="ks3"]`: MRB-179's specificity fix is what makes any dial apply. The rule that KS3 additions go in the token block and never in a new stylesheet **survives unchanged and was honoured** — `ks3.css` declares no palette value. **KS4 proven untouched, twice:** two full KS4 builds from old and new tokens gave 1,044 files each, none added or removed, 1,000 differing, and with the `?v=` stamp normalised out 999 collapse to identical, the sole real difference being `tokens.css` itself; separately, every changed line across the 988 restamped root pages was confirmed to be a `?v=` stamp and nothing else. Those restamped KS4 pages are deliberately **not** carried in the KS3 commit — §8.5 already makes regenerating the live KS4 tree a deploy-sequence obligation and Mide's call. ⚠️ **Recorded rather than quietly worked around:** Design's own latin subsets contain neither `→` (U+2192) nor `✓` (U+2713) nor `✕` (U+2715), read from each font's `cmap`, and its system leans on all three — R2 makes the tick and cross load-bearing. They are emitted as inline SVG rather than typed; typed, they fall back to a system font mid-badge. Same defect class MRB-130 exists to fix, found again in new fonts. ⊕ MRB-179's recorded oddity (KS3 radii dialling *squarer* than KS4, the opposite of what §8.5 claimed) is resolved: Design's scale is genuinely rounder. ⊕ The standing contrast obligation moves from a warning note to a **build gate** — see the parity gate row below. | Claude (Opus 5) |
+| 2026-08-09 | ✅ **New §5.8.1 ⊕ — ALL FOUR LADDER RUNGS COUNT. RULED by Mide, 9 Aug 2026, MRB-184.** The defect: rungs ③ and ④ carry no options in any authored lesson and the score counted only button-answered rungs, so completing the whole ladder showed **"You got 2 of 2."**, the two highest-demand rungs never counted, and "retry my misses" could never reach them. Ruled option 1 with Mide's own correction: a self-marked rung opens on a **text area and nothing else**; a **"Check my answer"** button then reveals the numbered criteria, **each with a real checkbox**, because a visible checklist is the answer; the rung is met only when every criterion is ticked, and a partial reads *"2 of 4 ticked — not yet"*, never as a failure; **the score reads out of 4** with one small line naming who marked what; and **"retry my misses" now reaches self-marked rungs**, clearing the ticks while **keeping the written answer** so the student revises rather than restarts. Option 2 (tell the truth about 2 of 2) was Design's independent answer and its framing — *"Four rungs. Two the page marks, two you mark."* — is kept, but it still concedes that the hardest two rungs are unscored. Option 3 (drop the score) was rejected: with no streaks, points or timers, §8.9's never-punish rule is not engaged, and a student finishing a lesson deserves to see that they finished it. **The stored best becomes out-of-four under a NEW key**; existing out-of-two bests are left alone rather than migrated, because comparing them against a four-point scale would tell a student they got worse when they did not. Design's ladder artifact predates this ruling and still implements 2-of-2, so it is authoritative on the look and superseded on the behaviour — recorded in SPEC.md §9.2 so the parity gate asserts the right half. | Claude (Opus 5) |
+| 2026-08-09 | ⊕ **New: the MRB-183 parity gate — "exactly what Design did" becomes checkable.** Design's four artifacts are frozen verbatim in `docs/ks3/design-reference/` with their md5s recorded, and `docs/ks3/design-reference/SPEC.md` is the transcription the build is written against. Because the artifacts are React prototypes with **zero CSS classes** and one hardcoded lesson, a byte diff is impossible and a DOM diff would need a hand-written node-to-selector mapping — so `verify_ks3.py` gates four layers instead: **(A) provenance** — every colour the KS3 token block declares must appear literally in a frozen artifact, which makes the expectation table self-policing and catches an invented or one-digit-drifted hex (43/43 pass; mutation-tested to prove it is not vacuous); **(B) structure** — R3, R12, R13, R14, R15 and the drawn-mark rule asserted against the built tree; **(C) computed style** — 33 components loaded from real generated pages in headless Chrome, resolved colour/background/border/radius/font/padding compared to Design's values, colours exact and lengths within 1px; **(D) contrast** — every KS3 text/ground pair re-measured against the **resolved** ground, walking up the tree for the effective background, at 4.5:1 for body text and 3:1 for identifying and state-bearing marks. C and D **degrade to a manual item** when Chrome is absent rather than printing PASS, because a skipped gate reporting success is worse than no gate. What the gate cannot catch is documented in `ks3_parity.py`'s docstring rather than left to be discovered: layout and composition, the hook's bespoke marshmallow artwork (hand-built for one lesson from 12 positioned drifting spans — artwork, not a generator component, and not faked), the ladder's superseded behaviour, and any viewport Design did not draw. `ks3_browser.py` is a stdlib-only headless-Chrome harness; its narrow-viewport method is load-bearing and verified, because headless floors the window at ~500px and a `--window-size=390` run lays out at 500 while cropping to 390. | Claude (Opus 5) |
+| 2026-08-09 | **R9 collapsed in the data.** Claude Design's R9 observed that `predict-then-reveal` carried an identical key set to `predict` and rendered identically — an authoring label masquerading as a component. Collapsed in `ks3_data` as R9 recommends, rather than special-cased in the stylesheet. One instance, no rendering change, one fewer kind for a renderer to know about. **R10 (per-option feedback on activities) and R17 (a stepper for PROCESS lessons) are NOT done** — both are flagged for Mide on Design's own classification, R10 because it changes what an activity is and R17 because it changes the block sequence. | Claude (Opus 5) |
