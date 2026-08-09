@@ -81,6 +81,20 @@ body.rd[data-mode="ks3"] {
   border-bottom: 2px solid var(--ks3-ink);
   background: var(--ks3-ground);
 }
+/* MRB-197: Design's mark — dimensions from the frozen reference's header
+   (30px chevron, 22px/800 Bricolage wordmark, 10px gap, ink on ground). */
+.ks3-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  color: var(--ks3-ink);
+  text-decoration: none;
+}
+.ks3-brand svg { flex: 0 0 auto; }
 .ks3-nav-link {
   margin-left: auto;
   font-weight: 700;

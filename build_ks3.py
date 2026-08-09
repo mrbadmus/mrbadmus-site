@@ -242,17 +242,17 @@ def family_label(family):
 
 # ── shell ────────────────────────────────────────────────────────────────
 
+# MRB-197 (ruled by Mide): KS3 takes Claude Design's mark — one bold #E4572E
+# chevron and the Bricolage wordmark, exactly as drawn in the frozen
+# reference's header. The KS4 gold-to-rust two-chevron mark stays mandatory on
+# every other external page; this is the same key-stage split already ruled
+# for the palette under MRB-183. `.ks3-brand` is styled in shared/ks3.css.
 NAV_BRAND = (
-    '<a class="nav-brand" href="/index.html">'
-    '<svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none">'
-    '<path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" '
+    '<a class="ks3-brand" href="/index.html">'
+    '<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">'
+    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
     'stroke-linecap="round" stroke-linejoin="round"/>'
-    '<path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" '
-    'stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/>'
-    '<defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" '
-    'gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/>'
-    '<stop offset="1" stop-color="#FF6B35"/></linearGradient></defs>'
-    '</svg> MrBadmusAI</a>'
+    '</svg>MrBadmusAI</a>'
 )
 
 

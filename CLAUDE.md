@@ -76,18 +76,19 @@ The name "MrBadmus" refers to Mide Badmus, the teacher who built this site for h
 
 ## Brand presentation rule
 
-The site has TWO brand presentations. Always check which applies before adding nav markup to a new page.
+The site has THREE brand presentations. Always check which applies before adding nav markup to a new page.
 
-**Why:** External pages need a visible brand for prospective students, parents, and schools (first impression, marketing). Dashboards stay clean and utilitarian — they're for authenticated users in a working context, no marketing surface needed.
+**Why:** External pages need a visible brand for prospective students, parents, and schools (first impression, marketing). Dashboards stay clean and utilitarian — they're for authenticated users in a working context, no marketing surface needed. KS3 pages take Claude Design's mark (MRB-197, ruled by Mide) — the same key-stage split already ruled for the palette under MRB-183.
 
 | Surface | Brand markup |
 |---|---|
-| **External / public pages** | Orange chevron SVG **+** "MrBadmusAI" text. Uses `nav-brand` + `brand-logo` classes from `shared/styles.css`. Applies to: `index.html`, `auth.html`, `combined/index.html`, `triple/index.html`, all generator-output topic pages, and any future external/public page. |
+| **External / public pages (KS4 + root)** | Gold-to-rust two-chevron SVG **+** "MrBadmusAI" text. Uses `nav-brand` + `brand-logo` classes from `shared/styles.css`. Applies to: `index.html`, `auth.html`, `combined/index.html`, `triple/index.html`, all generator-output KS4 topic pages, and any future external/public page **outside KS3**. |
+| **KS3 pages** | Claude Design's mark: a single bold `#E4572E` chevron + "MrBadmusAI" wordmark in Bricolage Grotesque 800, exactly as drawn in the frozen reference (`docs/ks3/design-reference/`). Emitted by `build_ks3.py` (`NAV_BRAND`), styled by `.ks3-brand` in `shared/ks3.css`. Never hand-copy it onto a page — KS3 pages are generated. |
 | **Dashboards / school-operations pages** | Plain white text "MrBadmusAI", **no logo asset**, with the exact styling pinned below. Applies to: all `/teacher/*` pages, and all current/future student / HoD / SLT / admin dashboards. |
 
-### Canonical external chevron markup
+### Canonical external chevron markup (KS4 + root — NOT KS3)
 
-Copy this verbatim into the nav of any external page:
+Copy this verbatim into the nav of any external page outside KS3:
 
 ```html
 <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/><stop offset="1" stop-color="#FF6B35"/></linearGradient></defs></svg> MrBadmusAI</a>

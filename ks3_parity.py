@@ -289,6 +289,12 @@ COMPONENTS = [
                 "text-transform": "uppercase", "color": "#5F564F"}),
     dict(name="breadcrumb is mono", on=LESSON, sel=".ks3-crumbs",
          props={"font-family": "DM Mono", "font-size": "14px"}),
+    # MRB-197: Design's nav mark. Pinned to the frozen reference's header —
+    # if the wordmark shrinks below display size, the chevron's 3:1 pair
+    # below stops being the whole story and this fails first.
+    dict(name="nav brand wordmark (MRB-197)", on=LESSON, sel=".ks3-brand",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "font-size": "22px", "color": "#221E1B"}),
 
     # ── blocks ──
     dict(name="standard block shell", on=LESSON, sel=".ks3-check",
@@ -406,6 +412,12 @@ CONTRAST = [
          fg=".ks3-bigq", bg="body", need=4.5),
     dict(name="breadcrumb link on page ground", on=LESSON,
          fg=".ks3-crumbs a", bg="body", need=4.5),
+    dict(name="nav brand wordmark on page ground", on=LESSON,
+         fg=".ks3-brand", bg=".ks3-nav", need=4.5),
+    # MRB-197: the chevron is an identifying mark, so R1's 3:1 applies. Read
+    # from the SVG stroke, not `color` — the mark is drawn, not typed.
+    dict(name="nav brand chevron on page ground (mark, 3:1)", on=LESSON,
+         fg=".ks3-brand svg path", bg=".ks3-nav", need=3.0, prop="stroke"),
     dict(name="body text on card", on=LESSON,
          fg=".ks3-check p", bg=".ks3-check", need=4.5),
     dict(name="draft marker text on its tint", on=LESSON,
