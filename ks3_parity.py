@@ -197,12 +197,23 @@ def check_structure(ks3_root):
 
         # Drawn marks — a literal glyph falls back to a system font because
         # Design's own subsets do not contain it.
+        #
+        # Scanned over TEXT NODES ONLY, with every tag (and therefore every
+        # attribute) stripped first. The distinction is real, not a loophole:
+        # a glyph sitting in the page's text is painted by the webfont and is
+        # a defect, whereas one sitting in a `data-feedback` attribute is
+        # authored science copy that ks3.js converts to an inline SVG when it
+        # injects it. Three of the C1 ladder corrections contain "liquid → gas"
+        # and the content must not be edited to satisfy a font subset. The
+        # rendered result is asserted separately, in the browser, where it can
+        # be checked AFTER the feedback is actually on screen.
+        text_only = re.sub(r"<[^>]+>", " ", html)
         for ch, label in UNDRAWABLE.items():
-            if ch in html:
+            if ch in text_only:
                 problems.append(
-                    "%s contains the literal character %s; it must be inline "
-                    "SVG (.ks3-mark) because the webfont subset lacks the "
-                    "glyph" % (rel, label))
+                    "%s renders the literal character %s as text; it must be "
+                    "inline SVG (.ks3-mark) because the webfont subset lacks "
+                    "the glyph" % (rel, label))
 
         # R15 — no clickable divs, no inline handlers.
         if re.search(r'<div[^>]*\son(?:click|keydown)\s*=', html, re.I):
@@ -532,6 +543,50 @@ window.__ks3 = {
 """
 
 
+# The runtime half of the drawn-mark rule. Layer B can only see the HTML as
+# written; this sees the DOM as painted, INCLUDING the ladder feedback, which
+# does not exist until a wrong option has been clicked. That feedback is where
+# the authored "liquid → gas" corrections land, so it is the one place the
+# static scan structurally cannot reach.
+_JS_GLYPH_AUDIT = r"""
+(function () {
+  var bad = /[\u2192\u2713\u2715]/g;
+  function scan() { return (document.body.innerText.match(bad) || []); }
+  var before = scan();
+  // Click one WRONG option in each page-marked rung to force the feedback.
+  var rungs = document.querySelectorAll('.ks3-rung[data-mode="marked"]');
+  for (var i = 0; i < rungs.length; i++) {
+    var opts = rungs[i].querySelectorAll('.ks3-option');
+    for (var j = 0; j < opts.length; j++) {
+      if (opts[j].getAttribute('data-correct') !== '1') { opts[j].click(); break; }
+    }
+  }
+  var after = scan();
+  var fb = document.querySelectorAll('.ks3-feedback').length;
+  return { before: before, after: after, feedbackShown: fb,
+           svgMarks: document.querySelectorAll('svg.ks3-mark').length };
+})()
+"""
+
+
+def check_rendered_glyphs(page):
+    """Returns (problems, info). Mutates the page — call it last."""
+    info = page.eval(_JS_GLYPH_AUDIT)
+    problems = []
+    if info["before"]:
+        problems.append("rendered text carries %d undrawable glyph(s) before "
+                        "interaction: %r" % (len(info["before"]), info["before"][:5]))
+    if info["after"]:
+        problems.append("rendered text carries %d undrawable glyph(s) AFTER the "
+                        "ladder feedback appears: %r — ks3.js must convert them "
+                        "to inline SVG when it injects authored text"
+                        % (len(info["after"]), info["after"][:5]))
+    if not info["feedbackShown"]:
+        problems.append("no .ks3-feedback appeared after clicking a wrong "
+                        "option — the runtime glyph audit did not actually run")
+    return (problems, info)
+
+
 def _pages_needed():
     seen = []
     for spec in COMPONENTS + CONTRAST:
@@ -614,6 +669,15 @@ def run_browser_layers(ks3_root, browser_mod):
                         problems.append(
                             "CONTRAST FAIL: %s — %.2f:1 against %.1f:1 required "
                             "(%s on %s)" % (spec["name"], ratio, need, fg, bg))
+                # Runtime glyph audit — LAST, because it clicks things.
+                if rel == LESSON:
+                    gl, ginfo = check_rendered_glyphs(page)
+                    problems.extend("GLYPH: " + g for g in gl)
+                    style_rows.append(("runtime glyph audit", "undrawable glyphs",
+                                       "0", "%d before / %d after (%d feedback, "
+                                       "%d svg marks)" % (len(ginfo["before"]),
+                                       len(ginfo["after"]), ginfo["feedbackShown"],
+                                       ginfo["svgMarks"]), not gl))
     finally:
         server.shutdown()
 
