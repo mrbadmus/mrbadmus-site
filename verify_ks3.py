@@ -26,6 +26,10 @@ from datetime import date
 # requires an explicit §12 amendment with Mide's decision on the record.
 CARVE_OUT_EXPIRY = date(2026, 9, 1)
 
+# The served KS3 tree. Cloudflare serves from mrbadmus_site/, so this is the
+# tree every gate below reads — never the ./ks3 root mirror, which is a copy.
+KS3_OUT = os.path.join("mrbadmus_site", "ks3")
+
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import ks3_data
@@ -722,9 +726,71 @@ def main():
     manual("keyboard walk + touch model on a real device",
            "needs a human and a phone; ladder and predict-gates are "
            "button-based and focusable, which is the precondition.")
-    manual("WCAG AA on new tints",
-           "--accent measured and --accent-text added (tokens.css); any NEW "
-           "tint added later must be re-checked.")
+
+    # ══ MRB-183 — the parity gate ══════════════════════════════════════
+    #
+    # Four layers, and what each does NOT catch is documented in
+    # ks3_parity.py's module docstring rather than left to be discovered.
+    # Layers A and B are cheap and always run. C and D need headless Chrome;
+    # if it is absent they DEGRADE TO A MANUAL ITEM rather than silently
+    # passing, because a skipped gate that prints PASS is worse than no gate.
+    print("\n── MRB-183 parity gate ──")
+
+    import ks3_parity as PARITY
+
+    prov_problems, n_tokens = PARITY.check_provenance(".")
+    check("A · every KS3 token colour traces to Design's frozen reference",
+          not prov_problems,
+          "%d colours checked" % n_tokens if not prov_problems
+          else "; ".join(prov_problems[:3]))
+
+    struct_problems, struct_notes = PARITY.check_structure(KS3_OUT)
+    check("B · structural rules hold in the built tree (R3 R12 R13 R14 R15)",
+          not struct_problems,
+          "; ".join(struct_notes) if not struct_problems
+          else "%d problem(s): %s" % (len(struct_problems),
+                                      "; ".join(struct_problems[:3])))
+
+    try:
+        import ks3_browser
+        _have_browser = os.path.exists(ks3_browser.CHROME)
+    except Exception as exc:                       # noqa: BLE001
+        ks3_browser, _have_browser = None, False
+        print("     (browser harness unavailable: %s)" % exc)
+
+    if not _have_browser:
+        manual("C+D · computed-style parity and contrast",
+               "headless Chrome not available on this machine; run "
+               "`python3 verify_ks3.py` where it is. NOT counted as a pass.")
+    else:
+        style_problems, style_rows, contrast_rows = \
+            PARITY.run_browser_layers(KS3_OUT, ks3_browser)
+        css_fails = [r for r in style_rows if not r[4]]
+        check("C · resolved computed style matches Design, ±%gpx on lengths"
+              % PARITY.TOL_PX,
+              not css_fails,
+              "%d assertions across %d components"
+              % (len(style_rows), len(PARITY.COMPONENTS)) if not css_fails
+              else "%d of %d assertions failed" % (len(css_fails),
+                                                   len(style_rows)))
+        cfails = [r for r in contrast_rows if not r[5]]
+        worst = min((r[3] for r in contrast_rows), default=0)
+        check("D · every KS3 contrast pair re-measured against real grounds",
+              not cfails,
+              "%d pairs, worst %.2f:1" % (len(contrast_rows), worst)
+              if not cfails else
+              "%d FAIL: %s" % (len(cfails), ", ".join(r[0] for r in cfails[:3])))
+
+        # The measured table is printed whether or not it passes — a number
+        # nobody can see is a number nobody re-checks.
+        print("\n     measured contrast (fg on resolved ground):")
+        for name, fg, bg, ratio, need, ok in contrast_rows:
+            print("       %-4s %-46s %6.2f:1  (needs %.1f)"
+                  % ("PASS" if ok else "FAIL", name[:46], ratio, need))
+
+        for p in style_problems:
+            if p not in FAILS:
+                print("       · %s" % p)
 
     print("\n" + "=" * 60)
     if FAILS:

@@ -168,21 +168,109 @@ REF_POINTER = ('<p class="ks3-ref-note">Taught in %s — <em>%s</em>. '
 def e(s):
     return html.escape(str(s if s is not None else ""), quote=True)
 
+# ── the drawn marks (SPEC.md §9.3) ───────────────────────────────────────
+#
+# ✓ ✕ → ARE DRAWN, NEVER TYPED. Design's own five latin woff2 subsets — the
+# exact bytes now in shared/fonts/ — contain none of U+2713, U+2715 or U+2192;
+# confirmed by reading the cmap of each file. Typed as characters all three
+# drop to a system font mid-glyph, and inside a 27px Bricolage-800 badge that
+# is a visible defect rather than a subtlety. R2 makes the marks load-bearing
+# (colour is never the only signal on a state), so they cannot simply be
+# dropped either. Inline SVG on `currentColor` satisfies both, and `.ks3-mark`
+# in shared/ks3.css sizes it to 1em of whatever it sits in.
+#
+# MARK_TICK and MARK_CROSS are the canonical paths for the ladder's ANSWERED
+# option states. shared/ks3.js draws them at runtime — a resting ladder badge
+# carries its letter, not a mark — so no renderer emits them today. They live
+# here so there is exactly one definition of each path in the system: if the
+# ladder ever needs a mark at build time it takes it from here rather than
+# growing a second copy that is free to drift.
+MARK_ARROW = ('<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" '
+              'aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>')
+MARK_TICK = ('<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">'
+             '<path d="M4 13l5 5L20 7"/></svg>')
+MARK_CROSS = ('<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">'
+              '<path d="M6 6l12 12M18 6L6 18"/></svg>')
+
+# Escaped TEXT, with the three marks DRAWN rather than typed.
+#
+# ⚠️ Text nodes only — never an attribute value. MARK_ARROW carries double
+# quotes, so substituting inside `data-feedback="…"` or an `aria-label` would
+# terminate the attribute and emit broken markup. `e()` stays the attribute
+# escaper for exactly that reason, and the split is the whole safety property:
+# if you cannot tell whether a slot is text or an attribute, it is an attribute.
+#
+# This matters because authored copy uses the arrow as chemistry notation —
+# "Solid → liquid", "warmer → faster", "smaller box → twice as many wall hits".
+# The content is not touched; the same character is simply rendered with a glyph
+# the fonts actually have.
+MARKS = (("\u2192", MARK_ARROW), ("\u2713", MARK_TICK), ("\u2715", MARK_CROSS))
+
+
+def t(s):
+    out = e(s)
+    for ch, mark in MARKS:
+        if ch in out:
+            out = out.replace(ch, mark)
+    return out
+
+
+# ⚠️ ← (U+2190) is absent from the same subsets, and the browse layer used to
+# open three back-links with one. Design's system has no left-arrow mark to
+# draw instead, so those links now say "Back to …" in words — which is what R2
+# would have asked for anyway.
+
+OPTION_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+
+def option_letter(i):
+    """A B C D … — the resting content of an option's mark badge."""
+    return OPTION_LETTERS[i] if i < len(OPTION_LETTERS) else str(i + 1)
+
+
+def family_label(family):
+    """`MODEL` → `Model`.
+
+    §6's seven families are SHOUTED in the data and title-case on the page.
+    `.ks3-eyebrow` already applies `text-transform: uppercase`, so this is not
+    a visual change — it is about the bytes. A literal run of capitals is read
+    out letter by letter by some screen readers, and it is the one place the
+    architecture's internal vocabulary would have leaked into a student's ear.
+    """
+    return str(family or "").title()
+
 
 # ── shell ────────────────────────────────────────────────────────────────
 
+# MRB-197 (ruled by Mide): KS3 takes Claude Design's mark — one bold #E4572E
+# chevron and the Bricolage wordmark, exactly as drawn in the frozen
+# reference's header. The KS4 gold-to-rust two-chevron mark stays mandatory on
+# every other external page; this is the same key-stage split already ruled
+# for the palette under MRB-183. `.ks3-brand` is styled in shared/ks3.css.
 NAV_BRAND = (
-    '<a class="nav-brand" href="/index.html">'
-    '<svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none">'
-    '<path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" '
+    '<a class="ks3-brand" href="/index.html">'
+    '<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">'
+    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
     'stroke-linecap="round" stroke-linejoin="round"/>'
-    '<path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" '
-    'stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/>'
-    '<defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" '
-    'gradientUnits="userSpaceOnUse"><stop stop-color="#FFD93D"/>'
-    '<stop offset="1" stop-color="#FF6B35"/></linearGradient></defs>'
-    '</svg> MrBadmusAI</a>'
+    '</svg>MrBadmusAI</a>'
 )
+
+
+# SPEC.md §2 requires the KS3 fonts preloaded. Two of the five, matching the
+# pattern the KS4 pages already use for Fraunces + Plus Jakarta: the display and
+# body romans are needed for first paint on every page, whereas the italic and
+# the two mono weights are used sparsely (captions, breadcrumbs, live numbers)
+# and preloading all five would spend the connection budget to no benefit. With
+# `font-display: swap` the unpreloaded three swap in a beat later, which is the
+# right trade for text that is not the first thing read.
+#
+# `crossorigin` is required even same-origin: a font fetched by a preload
+# without it is fetched a SECOND time by the CSS, silently doubling the bytes.
+FONT_PRELOADS = "".join(
+    '<link rel="preload" href="/shared/fonts/%s" as="font" '
+    'type="font/woff2" crossorigin/>\n' % name
+    for name in ("bricolage-grotesque-var-latin.woff2",
+                 "instrument-sans-var-latin.woff2"))
 
 
 def crumbs(parts):
@@ -190,9 +278,9 @@ def crumbs(parts):
     out = []
     for i, (label, href) in enumerate(parts):
         if href and i < len(parts) - 1:
-            out.append('<a href="%s">%s</a>' % (e(href), e(label)))
+            out.append('<a href="%s">%s</a>' % (e(href), t(label)))
         else:
-            out.append('<span aria-current="page">%s</span>' % e(label))
+            out.append('<span aria-current="page">%s</span>' % t(label))
     return ('<nav class="ks3-crumbs" aria-label="Breadcrumb">%s</nav>'
             % '<span class="ks3-crumb-sep" aria-hidden="true">›</span>'.join(out))
 
@@ -207,7 +295,7 @@ def shell(title, body, crumb_html="", discipline=None, description=""):
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>%(title)s · MrBadmusAI KS3</title>
 <meta name="description" content="%(desc)s"/>
-<link rel="stylesheet" href="/shared/tokens.css"/>
+%(preload)s<link rel="stylesheet" href="/shared/tokens.css"/>
 <link rel="stylesheet" href="/shared/styles.css"/>
 <link rel="stylesheet" href="/shared/nav.css"/>
 <link rel="stylesheet" href="/shared/ks3.css"/>
@@ -233,26 +321,40 @@ def shell(title, body, crumb_html="", discipline=None, description=""):
         "brand": NAV_BRAND,
         "crumbs": crumb_html,
         "body": body,
+        "preload": FONT_PRELOADS,
     }
 
 
 # ── segment renderers (§5.1.1 vocabulary) ────────────────────────────────
+#
+# Every class emitted below has a rule in shared/ks3.css, which is the class
+# contract for this generator. A renderer that needs a look the stylesheet does
+# not have reaches for an existing class; it does not invent one, because an
+# invented class is a silent no-op that looks like styling.
 
 def r_hook(lesson):
+    """Block 1 — ink dark. A phenomenon that ends in a commitment (R16)."""
     p = lesson.get("phenomenon") or {}
-    return ("""<section class="ks3-block ks3-hook">
+    return ("""<section class="ks3-block ks3-dark ks3-hook">
   <p class="ks3-eyebrow">Start here</p>
   <h2>%s</h2>
   <p class="ks3-hook-prompt">%s</p>
-  <p class="ks3-commit"><strong>%s</strong></p>
-</section>""" % (e(p.get("title", "")), e(p.get("prompt", "")), e(p.get("commit", ""))))
+  <p class="ks3-commit">%s</p>
+</section>""" % (t(p.get("title", "")), t(p.get("prompt", "")),
+                 t(p.get("commit", ""))))
 
 
 def r_explainer(lesson, block):
-    for b in lesson.get("core", []) + lesson.get("stretch", []):
-        pass
+    """Prose, carrying no card at all.
+
+    ⚠️ Must be a DIRECT child of `.ks3-lesson` — `.ks3-lesson > .ks3-explainer`
+    is the selector that caps prose at the 46rem reading measure (R11).
+    Wrapping the core blocks in anything silently widens every explainer on
+    every lesson to the 60rem break-out, which is the exact measure R11 exists
+    to prevent, and it would look almost right.
+    """
     return ('<section class="ks3-block ks3-explainer"><p>%s</p></section>'
-            % e(block.get("text", "")))
+            % t(block.get("text", "")))
 
 
 def r_figure(lesson, block):
@@ -269,31 +371,78 @@ def r_figure(lesson, block):
     <span class="ks3-figure-tag">Diagram coming soon</span>
   </div>
   <figcaption>%s</figcaption>
-</figure>""" % (e(fig["caption"]), e(fig["caption"])))
+</figure>""" % (e(fig["caption"]), t(fig["caption"])))
     return ('<figure class="ks3-figure"><img src="/ks3/figures/%s.svg" alt="%s"/>'
             '<figcaption>%s</figcaption></figure>'
-            % (e(fig["id"]), e(fig["caption"]), e(fig["caption"])))
+            % (e(fig["id"]), e(fig["caption"]), t(fig["caption"])))
 
 
 def r_keyword(lesson, block):
-    terms = block.get("terms", [])
+    """Vocabulary as flip cards (R4).
+
+    R4: the dog-ear is the only affordance, and the block must ASK for the
+    declaration in words — that ask is the whole mechanism, because nothing
+    records whether the student really said the meaning first. The lead
+    sentence reuses `.ks3-meta`, which is already the right size and colour,
+    rather than growing a class of its own.
+
+    The back is emitted `hidden` so the definition is not on screen in the
+    window between first paint and ks3.js running. A card that shows its back
+    for 200ms has given the game away, and on a slow phone that window is not
+    200ms. ks3.js owns `aria-expanded` and `.is-flipped` from then on.
+    """
     vocab = {v["term"]: v for v in lesson.get("vocabulary", [])}
-    rows = []
-    for t in terms:
-        v = vocab.get(t)
+    items = []
+    for term in block.get("terms", []):
+        v = vocab.get(term)
         if not v:
             continue
-        note = ('<p class="ks3-vocab-note">%s</p>' % e(v["note"])) if v.get("note") else ""
-        rows.append('<div class="ks3-vocab"><dt>%s</dt><dd>%s%s</dd></div>'
-                    % (e(v["term"]), e(v["definition"]), note))
-    if not rows:
+        # No note, no element. An empty .ks3-card-note still costs an 8px flex
+        # gap, so the card would sit taller than its neighbours for nothing.
+        note = ('<span class="ks3-card-note">%s</span>' % t(v["note"])
+                if v.get("note") else "")
+        items.append(
+            '<li><button type="button" class="ks3-card-btn" aria-expanded="false">'
+            '<span class="ks3-card-front">%s</span>'
+            '<span class="ks3-card-back" hidden>'
+            '<span class="ks3-card-def">%s</span>%s</span>'
+            '<span class="ks3-card-hint">Say it, then tap %s</span>'
+            '</button></li>'
+            % (t(v["term"]), t(v["definition"]), note, MARK_ARROW))
+    if not items:
         return ""
-    return ('<section class="ks3-block ks3-keywords"><h3>Words to know</h3>'
-            '<dl class="ks3-vocab-list">%s</dl></section>' % "".join(rows))
+    # The lead line is R4's declaration ask, in words: a card grid discharges
+    # Law 4 through a DECLARED prediction (§5.1.2a), and a declared prediction
+    # nobody asked for does not happen. verify_ks3.py fails the build if a card
+    # grid ships without it, so this sentence is a gate, not decoration.
+    return ('<section class="ks3-block ks3-keywords">'
+            '<h2>Words to know</h2>'
+            '<p class="ks3-keywords-lead">Say the meaning out loud before you '
+            'tap the card.</p>'
+            '<ul class="ks3-cards" data-cards role="list">%s</ul>'
+            '</section>' % "".join(items))
 
 
 def _activity(lesson, act_id):
     return next((a for a in lesson.get("activities", []) if a["id"] == act_id), None)
+
+
+def _misconception_quote(lesson, target_id):
+    """The wrong idea in a student's own words, from the register.
+
+    A misconception block confronts a specific entry in the lesson's
+    `misconceptions` list, named by the activity's `targets`. Printing the
+    statement is the first beat of the three-beat format the content standards
+    require: say the mistake out loud, then why it is wrong, then the right
+    version. If nothing matches, the block renders its prompt alone rather
+    than an empty quote.
+    """
+    if not target_id:
+        return ""
+    for m in lesson.get("misconceptions") or []:
+        if m.get("id") == target_id:
+            return m.get("statement") or ""
+    return ""
 
 
 # ── activity-level interactions (NOT new §5.1.1 block types) ─────────────
@@ -305,24 +454,22 @@ def _activity(lesson, act_id):
 # and a reveal, and these are two more ways of answering the same prompt.
 
 def r_cards(cards):
-    """Click-to-reveal cards.  Contract: shared/ks3.js `wireCards`.
+    """Click-to-reveal cards on an activity.  Contract: ks3.js `wireCards`.
 
-    The back is emitted with `hidden` so the answer is not on screen in the
-    window between first paint and ks3.js running — a card that shows its back
-    for 200ms has given the game away, and on a slow phone that window is not
-    200ms. ks3.js owns `aria-expanded` and `.is-flipped` from then on.
-
-    role="list" matches .ks3-options: both are `list-style: none`, which drops
-    list semantics in Safari/VoiceOver unless the role is restated.
+    The same shell the keyword block uses, so there is one card in the system
+    rather than two that drift. An activity card's back is a single answer, so
+    it takes `.ks3-card-def` and never a note.
     """
     items = []
     for c in cards:
         items.append(
-            '<li><button type="button" class="ks3-card-btn">'
+            '<li><button type="button" class="ks3-card-btn" aria-expanded="false">'
             '<span class="ks3-card-front">%s</span>'
-            '<span class="ks3-card-back" hidden>%s</span>'
+            '<span class="ks3-card-back" hidden>'
+            '<span class="ks3-card-def">%s</span></span>'
+            '<span class="ks3-card-hint">Say it, then tap %s</span>'
             '</button></li>'
-            % (e(c.get("front", "")), e(c.get("back", ""))))
+            % (t(c.get("front", "")), t(c.get("back", "")), MARK_ARROW))
     if not items:
         return ""
     return ('<ul class="ks3-cards" data-cards role="list">%s</ul>'
@@ -382,6 +529,10 @@ def r_sim(sim, act_id):
     builds the sliders from data-controls and writes the readout. Putting
     placeholder text in either would be a claim the page cannot honour if the
     script fails to load.
+
+    The canvas is 560 × 220. `.ks3-sim-cover` pins itself over the canvas with
+    `aspect-ratio: 560 / 220`, so the two are one number in two files: change
+    the height here and R5's veil stops covering the frame it is veiling.
     """
     kind = sim.get("kind", "")
     if kind not in SIM_ARIA:
@@ -416,7 +567,7 @@ def r_sim(sim, act_id):
     label = (SIM_ARIA[kind] + " " + caption).strip()
     return (
         '<div class="ks3-sim" data-sim="%s" data-controls="%s">'
-        '<canvas class="ks3-sim-canvas" width="560" height="200" role="img" '
+        '<canvas class="ks3-sim-canvas" width="560" height="220" role="img" '
         'aria-label="%s"></canvas>'
         '<p class="ks3-sim-cover">Make your prediction first — then the lab '
         'runs.</p>'
@@ -424,25 +575,102 @@ def r_sim(sim, act_id):
         '<p class="ks3-sim-readout" role="status"></p>'
         '<p class="ks3-sim-caption">%s</p>'
         '</div>'
-        % (e(kind), e(controls), e(label), e(caption)))
+        % (e(kind), e(controls), e(label), t(caption)))
 
 
-def r_activity(lesson, act_id, kind_class, heading):
+def _option_li(i, text, extra=""):
+    """One answer button. The letter badge is the resting mark (R2/§5).
+
+    Shared by activities and the ladder so the two are the same control, and
+    the ONLY difference between them is the attributes: an activity option
+    takes `aria-pressed` and shows that it was chosen; a ladder option takes
+    `data-correct` and `data-feedback` and gets marked. R3 lives in that gap —
+    if `data-correct` ever appears on an activity option, the student reads the
+    whole page as a test and committing before revealing loses its point.
+    """
+    return ('<li><button type="button" class="ks3-option" data-i="%d"%s>'
+            '<span class="ks3-opt-mark" aria-hidden="true">%s</span>'
+            '<span class="ks3-opt-label">%s</span></button></li>'
+            % (i, extra, option_letter(i), t(text)))
+
+
+def r_activity_options(options):
+    """R3: chosen, never correct. No data-correct, no green, never disabled."""
+    return ('<ul class="ks3-options" role="list">%s</ul>'
+            % "".join(_option_li(i, o, ' aria-pressed="false"')
+                      for i, o in enumerate(options)))
+
+
+def r_criteria(success):
+    """A button and a hidden panel — Design replaced the old <details>.
+
+    <details> gave the student a summary they could open before writing
+    anything and a marker triangle that reads as decoration. A real button with
+    `aria-expanded` says what it does, takes the same focus ring as every other
+    control (R15), and is the thing ks3.js toggles.
+    """
+    items = "".join(
+        '<li class="ks3-crit"><span class="ks3-crit-num" aria-hidden="true">%d'
+        '</span><span>%s</span></li>' % (i, t(s))
+        for i, s in enumerate(success, 1))
+    return ('<button type="button" class="ks3-reveal-btn" data-criteria-btn '
+            'aria-expanded="false">Check your answer</button>'
+            '<div class="ks3-crit-wrap" hidden data-criteria>'
+            '<p class="ks3-crit-lead">Did you say all of these?</p>'
+            '<ul class="ks3-crit-list" role="list">%s</ul></div>' % items)
+
+
+# The four activity shells: classes, eyebrow, and the element the prompt takes.
+#
+# `check` and `worked-example` set the prompt as the block's heading — Design's
+# canonical lesson renders it at 28px and `.ks3-check h2, .ks3-worked h2` in
+# ks3.css exists for exactly that. `practical` and `misconception` keep it as
+# prose: a practical prompt is a run-the-lab instruction rather than a
+# question, and a misconception block already leads with the quoted wrong idea.
+ACTIVITY_SHELLS = {
+    "check":          ("ks3-block ks3-check", "Your turn", "h2"),
+    "worked-example": ("ks3-block ks3-worked", "Worked example", "h2"),
+    "practical":      ("ks3-block ks3-dark ks3-practical", "Investigate", "p"),
+    "misconception":  ("ks3-block ks3-misconception", "Think again", "p"),
+}
+
+
+def r_activity(lesson, block_type, act_id):
+    """The one activity renderer, with a per-type shell.
+
+    Inner order is prompt → options → cards → sim → fifa → reveal → criteria:
+    commit first, then the thing that tests the commitment, then the words that
+    settle it. `data-activity` stays on the section because ks3.js walks up to
+    it for the Law 4 gate.
+    """
     a = _activity(lesson, act_id)
     if not a:
         return ""
-    parts = ['<section class="ks3-block %s" data-activity="%s">' % (kind_class, e(act_id))]
-    parts.append('<p class="ks3-eyebrow">%s</p>' % e(heading))
-    if a.get("demand"):
-        parts.append('<p class="ks3-demand" hidden>Demand: %s</p>' % e(a["demand"]))
-    parts.append("<p>%s</p>" % e(a.get("prompt", "")))
+    shell_cls, eyebrow, prompt_tag = ACTIVITY_SHELLS[block_type]
+    parts = ['<section class="%s" data-activity="%s">' % (shell_cls, e(act_id))]
+
+    if block_type == "misconception":
+        parts.append('<div class="ks3-mis-head">'
+                     '<span class="ks3-mis-badge" aria-hidden="true">!</span>'
+                     '<p class="ks3-eyebrow">%s</p></div>' % e(eyebrow))
+        quote = _misconception_quote(lesson, a.get("targets"))
+        if quote:
+            parts.append('<p class="ks3-mis-quote">“%s”</p>' % t(quote))
+    else:
+        parts.append('<p class="ks3-eyebrow">%s</p>' % e(eyebrow))
+
+    if a.get("prompt"):
+        # ⚠️ A card grid keeps its prompt as prose even in a `check`. The prompt
+        # IS R4's declaration ask ("say it, then tap"), and verify_ks3.py's
+        # §5.1.2(a) gate reads that ask out of the block's non-hidden <p>
+        # elements before the grid. Promoting it to a heading would leave the
+        # gate looking at the eyebrow alone and passing or failing on the
+        # wording of "Your turn" — a live check silently disarmed.
+        tag = "p" if a.get("cards") else prompt_tag
+        parts.append("<%s>%s</%s>" % (tag, t(a["prompt"]), tag))
+
     if a.get("options"):
-        opts = "".join(
-            '<li><button type="button" class="ks3-option" data-i="%d">%s</button></li>'
-            % (i, e(o)) for i, o in enumerate(a["options"]))
-        parts.append('<ul class="ks3-options" role="list">%s</ul>' % opts)
-    # After the options, before the reveal: the prediction is committed first,
-    # then the thing that tests it, then the words that settle it.
+        parts.append(r_activity_options(a["options"]))
     if a.get("cards"):
         parts.append(r_cards(a["cards"]))
     if a.get("sim"):
@@ -453,50 +681,148 @@ def r_activity(lesson, act_id, kind_class, heading):
             '<div class="ks3-fifa">'
             '<p><strong>Formula</strong> %s</p><p><strong>Insert</strong> %s</p>'
             '<p><strong>Fix</strong> %s</p><p><strong>Answer</strong> %s</p></div>'
-            % (e(f.get("formula")), e(f.get("insert")),
-               e(f.get("fix")), e(f.get("answer"))))
+            % (t(f.get("formula")), t(f.get("insert")),
+               t(f.get("fix")), t(f.get("answer"))))
     if a.get("reveal"):
         # Law 4: the reveal is gated behind the student's commitment.
         parts.append('<div class="ks3-reveal" hidden data-reveal>%s</div>'
-                     % e(a["reveal"]))
+                     % t(a["reveal"]))
     if a.get("success"):
-        items = "".join("<li>%s</li>" % e(s) for s in a["success"])
-        parts.append('<details class="ks3-success"><summary>Check your answer</summary>'
-                     '<ul>%s</ul></details>' % items)
+        parts.append(r_criteria(a["success"]))
     parts.append("</section>")
     return "".join(parts)
 
 
+# ── the mastery ladder (§5, MRB-184's ruling of 9 Aug) ───────────────────
+
+# Rung number is fixed to the rung, not to its position in what rendered. A
+# lesson missing one rung shows 1 · Recall, 3 · Explain, 4 · Produce — a gap
+# rather than a renumbering, because "3 · Explain" is the rung's name and a
+# student comparing two lessons should find the same name in both.
+#
+# The middle dot is U+00B7, which IS in the latin subset. The circled digits
+# this used to use (U+2460–2463) are not, and rendered as tofu inside a
+# Bricolage-800 heading.
+LADDER_RUNGS = (("recall", 1, "Recall"), ("apply", 2, "Apply"),
+                ("explain", 3, "Explain"), ("produce", 4, "Produce"))
+
+NUMBER_WORDS = ("no", "one", "two", "three", "four")
+
+
+def _count_word(n):
+    return NUMBER_WORDS[n] if n < len(NUMBER_WORDS) else str(n)
+
+
+def _rung_marked(key, num, name, q):
+    """Rungs the PAGE marks: options, one right answer, per-option correction.
+
+    This is the only place in the whole generator where `data-correct` appears.
+    R3 depends on that staying true.
+    """
+    opts = []
+    for i, o in enumerate(q["options"]):
+        fb = (q.get("feedback") or {}).get(i, "")
+        correct = "1" if i == q.get("answer") else "0"
+        opts.append(_option_li(
+            i, o, ' data-correct="%s" data-feedback="%s"' % (correct, e(fb))))
+    return ('<div class="ks3-rung" data-rung="%s" data-mode="marked">'
+            '<h3 tabindex="-1">%d · %s</h3>'
+            '<p class="ks3-rung-q">%s</p>'
+            '<ul class="ks3-options" role="list">%s</ul>'
+            '</div>'
+            % (e(key), num, e(name), t(q.get("q", "")), "".join(opts)))
+
+
+def _rung_self(slug, key, num, name, q):
+    """Rungs the STUDENT marks (R8): write, then check, then mark.
+
+    The criteria are not on the page yet — they arrive when ks3.js unhides
+    `[data-ticks]`, because a visible checklist IS the answer. Every tick is a
+    real `<input type="checkbox">` with a real label (R15, MRB-184), and the
+    rung counts as met only when all of them are ticked.
+
+    `tabindex="-1"` on the h3 is what "Retry my misses" moves focus to.
+    """
+    ticks = []
+    for i, s in enumerate(q["success"]):
+        cid = "ks3-crit-%s-%s-%d" % (slug, key, i)
+        ticks.append(
+            '<li class="ks3-tick">'
+            '<input type="checkbox" id="%s" data-crit>'
+            '<label for="%s"><span class="ks3-tick-num">%d</span> %s</label>'
+            '</li>' % (e(cid), e(cid), i + 1, t(s)))
+    aid = "ks3-ans-%s-%s" % (slug, key)
+    return ('<div class="ks3-rung ks3-rung-self" data-rung="%s" data-mode="self">'
+            '<h3 tabindex="-1">%d · %s</h3>'
+            '<p class="ks3-rung-q">%s</p>'
+            '<label class="ks3-answer-label" for="%s">Write your answer</label>'
+            '<textarea class="ks3-answer" id="%s" data-answer rows="5"></textarea>'
+            '<button type="button" class="ks3-check-btn" data-check '
+            'aria-expanded="false">Check my answer</button>'
+            '<ul class="ks3-ticks" hidden data-ticks role="list">%s</ul>'
+            '<p class="ks3-tally" hidden data-tally role="status"></p>'
+            '</div>'
+            % (e(key), num, e(name), t(q.get("q", "")), e(aid), e(aid),
+               "".join(ticks)))
+
+
 def r_ladder(lesson):
+    """§5's four-rung ladder. Two the page marks, two the student marks.
+
+    ⚠️ Which is which comes from the DATA, not from the rung's name or its
+    position: a rung with `options` is page-marked, a rung with `success` and no
+    options is self-marked, and a rung with neither is skipped. Hard-coding
+    "rungs 3 and 4 are self-marked" would be right for all six C1 lessons and
+    wrong the first time an author writes a written Apply rung — and it would
+    fail as a missing textarea, which looks like a data gap rather than a
+    renderer bug.
+
+    ks3.js appends the feedback line and the retry block; neither is emitted
+    here, because both are states of an answered ladder rather than parts of a
+    resting one.
+    """
     lad = lesson.get("ladder") or {}
-    rungs = [("recall", "① Recall"), ("apply", "② Apply"),
-             ("explain", "③ Explain"), ("produce", "④ Produce")]
-    out = ['<section class="ks3-block ks3-ladder" data-lesson="%s">' % e(lesson["slug"]),
-           "<h2>Mastery ladder</h2>"]
-    for key, label in rungs:
+    slug = lesson["slug"]
+    rungs, marked, self_marked = [], [], []
+    for key, num, name in LADDER_RUNGS:
         q = lad.get(key)
         if not q:
             continue
-        out.append('<div class="ks3-rung" data-rung="%s"><h3>%s</h3><p>%s</p>'
-                   % (e(key), e(label), e(q.get("q", ""))))
         if q.get("options"):
-            opts = []
-            for i, o in enumerate(q["options"]):
-                fb = (q.get("feedback") or {}).get(i, "")
-                correct = "1" if i == q.get("answer") else "0"
-                opts.append(
-                    '<li><button type="button" class="ks3-option" data-i="%d" '
-                    'data-correct="%s" data-feedback="%s">%s</button></li>'
-                    % (i, correct, e(fb), e(o)))
-            out.append('<ul class="ks3-options" role="list">%s</ul>' % "".join(opts))
-        if q.get("success"):
-            items = "".join("<li>%s</li>" % e(s) for s in q["success"])
-            out.append('<details class="ks3-success">'
-                       '<summary>Mark your answer against this list</summary>'
-                       '<ul>%s</ul></details>' % items)
-        out.append("</div>")
-    out.append("</section>")
-    return "".join(out)
+            rungs.append(_rung_marked(key, num, name, q))
+            marked.append(num)
+        elif q.get("success"):
+            rungs.append(_rung_self(slug, key, num, name, q))
+            self_marked.append(num)
+
+    # Both header lines are counted off what actually rendered, so neither can
+    # describe a ladder the page is not showing. With the standard 2 + 2 shape
+    # they read exactly as Design labelled the component: "Four rungs. Two the
+    # page marks, two you mark."
+    total = len(marked) + len(self_marked)
+    sub = ("%s rung%s. %s the page marks, %s you mark."
+           % (_count_word(total).capitalize(), "" if total == 1 else "s",
+              _count_word(len(marked)).capitalize(),
+              _count_word(len(self_marked))))
+    if not self_marked:
+        note = "The page marks every rung."
+    elif len(self_marked) == 1:
+        note = "Rung %d you mark yourself." % self_marked[0]
+    else:
+        note = ("Rungs %s and %d you mark yourself."
+                % (", ".join(str(n) for n in self_marked[:-1]), self_marked[-1]))
+
+    return ('<section class="ks3-block ks3-ladder" data-lesson="%s">'
+            '<div class="ks3-ladder-head">'
+            '<div><h2>Mastery ladder</h2>'
+            '<p class="ks3-ladder-sub">%s</p></div>'
+            '<div class="ks3-ladder-score" aria-live="polite">'
+            '<p class="ks3-score" data-score>Not started yet.</p>'
+            '<p class="ks3-score-note" data-score-note>%s</p></div>'
+            '</div>'
+            '<div class="ks3-rungs">%s</div>'
+            '</section>'
+            % (e(slug), e(sub), e(note), "".join(rungs)))
 
 
 BLOCK_RENDERERS = {
@@ -505,15 +831,16 @@ BLOCK_RENDERERS = {
     "figure": r_figure,
     "keyword": r_keyword,
     "quiz": lambda l, b: r_ladder(l),
+    # Ink dark, like the hook and the practical — the three blocks that invert.
+    # The label stays an <h2>: `.ks3-keynote p` sets 30px display 700 on every
+    # paragraph in the block, so an eyebrow here would be swallowed by it.
     "summary": lambda l, b: (
-        '<section class="ks3-block ks3-keynote"><h2>Key note</h2><p>%s</p></section>'
-        % e(l.get("key_note", ""))),
-    "misconception": lambda l, b: r_activity(
-        l, b.get("id"), "ks3-misconception", "Think again"),
-    "check": lambda l, b: r_activity(l, b.get("id"), "ks3-check", "Your turn"),
-    "worked-example": lambda l, b: r_activity(
-        l, b.get("id"), "ks3-worked", "Worked example"),
-    "practical": lambda l, b: r_activity(l, b.get("id"), "ks3-practical", "Investigate"),
+        '<section class="ks3-block ks3-dark ks3-keynote"><h2>Key note</h2>'
+        '<p>%s</p></section>' % t(l.get("key_note", ""))),
+    "misconception": lambda l, b: r_activity(l, "misconception", b.get("id")),
+    "check": lambda l, b: r_activity(l, "check", b.get("id")),
+    "worked-example": lambda l, b: r_activity(l, "worked-example", b.get("id")),
+    "practical": lambda l, b: r_activity(l, "practical", b.get("id")),
 }
 
 VALID_BLOCK_TYPES = set(BLOCK_RENDERERS)
@@ -522,15 +849,67 @@ VALID_BLOCK_TYPES = set(BLOCK_RENDERERS)
 def render_blocks(lesson, blocks):
     out = []
     for b in blocks:
-        t = b.get("type")
-        if t not in BLOCK_RENDERERS:
+        btype = b.get("type")
+        if btype not in BLOCK_RENDERERS:
             raise ValueError(
                 "Lesson %r uses block type %r, which is not in the §5.1.1 "
                 "segment vocabulary. Valid types: %s. A new type needs an "
                 "amendment to architecture.md, not a local addition."
-                % (lesson["slug"], t, sorted(VALID_BLOCK_TYPES)))
-        out.append(BLOCK_RENDERERS[t](lesson, b))
+                % (lesson["slug"], btype, sorted(VALID_BLOCK_TYPES)))
+        out.append(BLOCK_RENDERERS[btype](lesson, b))
     return "\n".join(x for x in out if x)
+
+
+# ── layers and end matter (§5.6, §4 blocks 10–13) ────────────────────────
+
+def r_layer(lesson, blocks, cls, eyebrow):
+    """A chosen layer. R12: empty means NOTHING — no heading, no rule, no gap.
+
+    Violet marks a layer the student chose, never a level they were put in.
+    KS3 has no tier and must not grow one.
+    """
+    if not blocks:
+        return ""
+    return ('<section class="ks3-layer %s">'
+            '<div class="ks3-layer-head"><p class="ks3-eyebrow">%s</p>'
+            '<span class="ks3-layer-rule" aria-hidden="true"></span></div>'
+            '<div class="ks3-layer-body">%s</div>'
+            '</section>'
+            % (cls, e(eyebrow), render_blocks(lesson, blocks)))
+
+
+LEGAL_LINE = ('<p class="ks3-legal">Lesson content © MrBadmusAI. Written by a '
+              'qualified science teacher; every scientific claim is checked '
+              'before a lesson leaves draft.</p>')
+
+
+def r_endmatter(cards):
+    """The end-matter grid. `cards` is [(heading, [<li>…]), …].
+
+    A card with no items is omitted — an empty "Before this lesson" is a
+    promise the lesson did not make. The tutor card has no items and always
+    renders, because it is an offer rather than a list.
+    """
+    out = []
+    for heading, items in cards:
+        if not items:
+            continue
+        out.append('<section><h2>%s</h2><ul>%s</ul></section>'
+                   % (e(heading), "".join(items)))
+    # ⚠️ A SPAN, NOT A LINK, AND DELIBERATELY SO.
+    # This was an <a href="#ks3-tutor">, and no KS3 page contains an element
+    # with that id — so it was a link that silently went nowhere, which is
+    # worse than no affordance at all. Claude Design's reference draws it as a
+    # <span> for exactly this reason: the tutor panel does not exist yet
+    # (§8.8 — a KS3 student can reach no tutor today), and the reference shows
+    # what the card will look like rather than pretending the destination is
+    # live. It becomes a real control when the KS3 tutor lands, not before.
+    out.append('<section class="ks3-tutor"><h2>Stuck? Ask Mr Badmus AI</h2>'
+               '<p>Ask anything about this lesson and get it explained another '
+               'way.</p>'
+               '<span class="ks3-tutor-cta">Start a question %s'
+               '</span></section>' % MARK_ARROW)
+    return '<div class="ks3-endmatter">%s</div>' % "".join(out)
 
 
 # ── pages ────────────────────────────────────────────────────────────────
@@ -548,77 +927,75 @@ def lesson_page(unit, lesson, registry, units_by_code):
                     (lesson["title"], None)])
 
     head = ['<header class="ks3-lesson-head">',
-            '<p class="ks3-eyebrow">%s · %s</p>' % (e(unit["title"]), e(lesson["family"])),
-            "<h1>%s</h1>" % e(lesson["title"])]
+            '<p class="ks3-eyebrow">%s · %s</p>'
+            % (t(unit["title"]), e(family_label(lesson["family"]))),
+            "<h1>%s</h1>" % t(lesson["title"])]
     if lesson.get("big_question"):
-        head.append('<p class="ks3-bigq">%s</p>' % e(lesson["big_question"]))
+        head.append('<p class="ks3-bigq">%s</p>' % t(lesson["big_question"]))
     if lesson.get("review_state") != "frozen":
-        head.append('<p class="ks3-review-flag">Draft — not yet science-reviewed.</p>')
+        # The dot before the text is a ::before in ks3.css. Do not emit a glyph.
+        head.append('<p class="ks3-review-flag">Draft — not yet '
+                    'science-reviewed.</p>')
     head.append("</header>")
 
-    body = ["".join(head), render_blocks(lesson, lesson.get("core", []))]
+    # §4's block order, inside the 60rem lesson column. Core blocks are DIRECT
+    # children of .ks3-lesson so `.ks3-lesson > .ks3-explainer` can cap prose
+    # at 46rem — see r_explainer.
+    body = ['<div class="ks3-lesson">', "".join(head),
+            render_blocks(lesson, lesson.get("core", []))]
 
-    stretch = lesson.get("stretch") or []
-    if stretch:
-        body.append('<section class="ks3-layer ks3-stretch">'
-                    '<h2>Going further</h2>%s</section>'
-                    % render_blocks(lesson, stretch))
-
-    # `support` is present-but-empty by design until the support layer is
-    # authored (§11 decision 4). The slot renders nothing; it is never absent
-    # from the data.
-    support = lesson.get("support") or []
-    if support:
-        body.append('<section class="ks3-layer ks3-support">'
-                    '<h2>Need a hand?</h2>%s</section>'
-                    % render_blocks(lesson, support))
+    body.append(r_layer(lesson, lesson.get("stretch") or [],
+                        "ks3-stretch", "Going further"))
+    # R12 — `support` is present-but-empty by design until the support layer is
+    # authored (§11 decision 4), and empty renders NOTHING AT ALL: no section,
+    # no heading, no rule, no placeholder. The dashed frame in Design's
+    # reference set exists only there. The slot is never absent from the data;
+    # it is simply never a hole in the page.
+    body.append(r_layer(lesson, lesson.get("support") or [],
+                        "ks3-support", "Need a hand?"))
 
     # Prerequisites (§4.9) — student-facing use of the graph.
-    reqs = [registry[s] for s in lesson.get("requires", []) if s in registry]
-    if reqs:
-        items = "".join(
-            '<li><a href="/ks3/%s/%s/%s.html">%s</a></li>'
-            % (e(registry[r["slug"]]["_disc"]), e(r["_unit_slug"]), e(r["slug"]),
-               e(r["title"])) for r in reqs)
-        body.append('<section class="ks3-block ks3-prereqs"><h2>Before this lesson</h2>'
-                    '<ul>%s</ul></section>' % items)
+    prereqs = []
+    for slug in lesson.get("requires", []):
+        r = registry.get(slug)
+        if not r:
+            continue
+        prereqs.append('<li><a href="/ks3/%s/%s/%s.html">%s %s</a></li>'
+                       % (e(r["_disc"]), e(r["_unit_slug"]), e(r["slug"]),
+                          t(r["title"]), MARK_ARROW))
 
     # Cross-discipline references (§4.6) — must render gracefully BEFORE the
     # referenced unit exists. This is a §9 slice gate.
-    refs = lesson.get("references") or []
-    if refs:
-        items = []
-        for r in refs:
-            tgt_unit = units_by_code.get(r["unit"])
-            tgt = registry.get(r["lesson"])
-            if tgt_unit and tgt and tgt.get("authored"):
-                items.append(
-                    '<li><a href="/ks3/%s/%s/%s.html">%s</a> — %s</li>'
-                    % (e(tgt_unit["discipline"]), e(tgt_unit["slug"]),
-                       e(r["lesson"]), e(tgt["title"]), e(r.get("why", ""))))
-            else:
-                label = tgt["title"] if tgt else r["lesson"]
-                unit_title = tgt_unit["title"] if tgt_unit else r["unit"]
-                items.append(
-                    '<li><span class="ks3-pending">%s <em>(%s — coming soon)</em>'
-                    '</span> — %s</li>'
-                    % (e(label), e(unit_title), e(r.get("why", ""))))
-        body.append('<section class="ks3-block ks3-refs">'
-                    '<h2>Connects to</h2><ul>%s</ul></section>' % "".join(items))
+    connects = []
+    for r in lesson.get("references") or []:
+        tgt_unit = units_by_code.get(r["unit"])
+        tgt = registry.get(r["lesson"])
+        why = ('<p>%s</p>' % t(r["why"])) if r.get("why") else ""
+        if tgt_unit and tgt and tgt.get("authored"):
+            connects.append(
+                '<li><a href="/ks3/%s/%s/%s.html">%s %s</a>%s</li>'
+                % (e(tgt_unit["discipline"]), e(tgt_unit["slug"]),
+                   e(r["lesson"]), t(tgt["title"]), MARK_ARROW, why))
+        else:
+            label = tgt["title"] if tgt else r["lesson"]
+            unit_title = tgt_unit["title"] if tgt_unit else r["unit"]
+            connects.append(
+                '<li><span class="ks3-pending">%s <em>(%s — coming soon)</em>'
+                '</span>%s</li>' % (t(label), t(unit_title), why))
 
     # KS4 bridge (§4.7).
-    links = lesson.get("ks4_links") or []
-    if links:
-        items = "".join('<li><a href="%s">%s</a></li>'
-                        % (e(ks4_bridge_href(l)), e(l.split("/")[-1].replace("-", " ")))
-                        for l in links)
-        body.append('<section class="ks3-block ks3-ks4"><h2>At GCSE this becomes</h2>'
-                    '<ul>%s</ul></section>' % items)
+    ks4 = ['<li><a href="%s">%s %s</a></li>'
+           % (e(ks4_bridge_href(l)), t(l.split("/")[-1].replace("-", " ")),
+              MARK_ARROW)
+           for l in lesson.get("ks4_links") or []]
 
-    body.append('<section class="ks3-block ks3-tutor"><h2>Stuck? Ask Mr Badmus AI</h2>'
-                '<p>Ask anything about this lesson.</p></section>')
+    body.append(r_endmatter([("Before this lesson", prereqs),
+                             ("Connects to", connects),
+                             ("At GCSE this becomes", ks4)]))
+    body.append(LEGAL_LINE)
+    body.append("</div>")
 
-    return shell(lesson["title"], "\n".join(body), crumb, disc,
+    return shell(lesson["title"], "\n".join(x for x in body if x), crumb, disc,
                  lesson.get("big_question", ""))
 
 
@@ -630,7 +1007,8 @@ def coming_soon_page(unit, lesson):
                     (DISCIPLINE_TITLES[disc], "/ks3/%s/index.html" % disc),
                     (unit["title"], base + "/index.html"),
                     (lesson["title"], None)])
-    body = """<header class="ks3-lesson-head">
+    body = """<div class="ks3-lesson">
+<header class="ks3-lesson-head">
   <p class="ks3-eyebrow">%s · %s</p>
   <h1>%s</h1>
 </header>
@@ -638,8 +1016,9 @@ def coming_soon_page(unit, lesson):
   <p class="ks3-tag">Coming soon</p>
   <p>This lesson has not been written yet.</p>
   <p><a href="%s/index.html">Back to %s</a></p>
-</section>""" % (e(unit["title"]), e(lesson["family"]), e(lesson["title"]),
-                 e(base), e(unit["title"]))
+</section>
+</div>""" % (t(unit["title"]), e(family_label(lesson["family"])),
+             t(lesson["title"]), e(base), t(unit["title"]))
     return shell(lesson["title"], body, crumb, disc,
                  "%s — coming soon" % lesson["title"])
 
@@ -649,43 +1028,13 @@ def unit_index(unit, units_by_code, registry):
     crumb = crumbs([("KS3", "/ks3/index.html"),
                     (DISCIPLINE_TITLES[disc], "/ks3/%s/index.html" % disc),
                     (unit["title"], None)])
-    rows = []
-    for i, l in enumerate(unit["lessons"], 1):
-        if l.get("reference_to"):
-            # §4.6 single-source: this slot is a cross-link, not a lesson. The
-            # pointer below is architecture.md §4.5 ruling 3 (2026-07-27) — the
-            # B3 → P2 forward reference is resolved as an explicit forward
-            # pointer rather than an ownership flip, so a student meeting a slot
-            # taught elsewhere is told so honestly instead of being dropped into
-            # another discipline's unit with no explanation.
-            #
-            # ⚠️ The wording deliberately does NOT name a year, and the pointer
-            # is NOT conditional on one. §4.5 forbids typical_year determining
-            # content, and the §9 reorder proof asserts that changing the whole
-            # sequence changes zero page bytes. "You'll meet this in Year 9"
-            # would break both: it is false for a school that teaches P2 in
-            # Year 8, and it would make the page text a function of the
-            # sequence. Naming the year is a Phase 5 job for a runtime scheme
-            # lookup, where the year is data at render time. Until then the
-            # pointer says WHERE, never WHEN — which is true under every
-            # possible ordering.
-            owner = units_by_code.get(l["reference_to"])
-            href = ("/ks3/%s/%s/%s.html" % (owner["discipline"], owner["slug"], l["slug"])
-                    if owner else "#")
-            owner_disc = DISCIPLINE_TITLES[owner["discipline"]] if owner else ""
-            rows.append(
-                ('<li class="ks3-lesson-row is-ref"><span class="ks3-num">%d</span>'
-                 '<a href="%s">%s</a>' + REF_BADGE + REF_POINTER + '</li>')
-                % (i, e(href), e(l["title"]), e(owner_disc), e(l["reference_to"]),
-                   e(owner_disc), e(owner["title"]) if owner else ""))
-            continue
-        href = "/ks3/%s/%s/%s.html" % (disc, unit["slug"], l["slug"])
-        badge = ("" if l["authored"]
-                 else '<span class="ks3-badge is-soon">Coming soon</span>')
-        rows.append('<li class="ks3-lesson-row"><span class="ks3-num">%d</span>'
-                    '<a href="%s">%s</a>'
-                    '<span class="ks3-family">%s</span>%s</li>'
-                    % (i, e(href), e(l["title"]), e(l["family"]), badge))
+
+    # Rows come from lesson_row(), the same renderer every browse page uses.
+    # §4.6's reference pointer has two render sites and they must never end up
+    # saying different things about the same slot; the surest way to guarantee
+    # that is for there to be one of them.
+    rows = "".join(lesson_row(unit, l, i, units_by_code)
+                   for i, l in enumerate(unit["lessons"], 1))
 
     # ⛔ The "Why this is its own unit:" note was REMOVED here 2026-08-07 —
     # MRB-181, architecture.md §8.10. Its text ("Eight statutory bullets
@@ -696,20 +1045,18 @@ def unit_index(unit, units_by_code, registry):
     # `split_rationale` stays in structure.py: §4.3 requires the record, and
     # keeping it is what lets the decision be reviewed. It just stops being
     # rendered.
-    note = ""
-    intro = ('<p class="ks3-intro">%s</p>' % e(unit["intro"])) if unit.get("intro") else ""
+    intro = ('<p class="ks3-intro">%s</p>' % t(unit["intro"])) if unit.get("intro") else ""
 
     body = """<header class="ks3-unit-head">
   <p class="ks3-eyebrow">%s · %s</p>
   <h1>%s</h1>
   %s
   <p class="ks3-meta">%d of %d lessons written · statutory area: %s</p>
-  %s
 </header>
 <ol class="ks3-lesson-list">%s</ol>""" % (
-        e(DISCIPLINE_TITLES[disc]), e(unit["code"]), e(unit["title"]), intro,
-        unit["authored_count"], len(unit["lessons"]), e(unit["statutory_area"]),
-        note, "".join(rows))
+        e(DISCIPLINE_TITLES[disc]), e(unit["code"]), t(unit["title"]), intro,
+        unit["authored_count"], len(unit["lessons"]), t(unit["statutory_area"]),
+        rows)
     return shell(unit["title"], body, crumb, disc, unit.get("intro") or unit["title"])
 
 
@@ -724,10 +1071,14 @@ def discipline_hub(disc, units):
             '<li class="ks3-unit-card"><a href="/ks3/%s/%s/index.html">'
             '<span class="ks3-code">%s</span><h2>%s</h2>'
             '<p class="ks3-meta">%d of %d lessons</p></a></li>'
-            % (e(disc), e(u["slug"]), e(u["code"]), e(u["title"]), done, total))
+            % (e(disc), e(u["slug"]), e(u["code"]), t(u["title"]), done, total))
+    # ⚠️ No year here. This page sits under /ks3/<discipline>/, which is the
+    # lesson tree — §4.5's prohibition covers every byte of it, and the intro
+    # used to read "N units across Years 7 to 9". The year route says that,
+    # legally, on /ks3/index.html and the browse pages.
     body = """<header class="ks3-hub-head">
   <h1>KS3 %s</h1>
-  <p class="ks3-intro">%d units across Years 7 to 9.</p>
+  <p class="ks3-intro">%d units, built lesson by lesson.</p>
 </header>
 <ul class="ks3-unit-grid">%s</ul>""" % (
         e(DISCIPLINE_TITLES[disc]), len(units), "".join(cards))
@@ -820,15 +1171,19 @@ def _plural(n, word):
     return "%d %s%s" % (n, word, "" if n == 1 else "s")
 
 
-def browse_lesson_row(unit, lesson, position, units_by_code):
-    """One lesson row on a browse page — the same shape as a unit index row.
+def lesson_row(unit, lesson, position, units_by_code):
+    """One lesson row, in the bordered list. §7's four row states.
 
-    Links to the lesson's EXISTING page. The browse layer never mints a lesson
-    URL; if it did, §4.5.2's whole justification would collapse.
+    Shared by the unit index and every browse page. Links to the lesson's
+    EXISTING page — the browse layer never mints a lesson URL; if it did,
+    §4.5.2's whole justification would collapse.
+
+    Every state carries a WORD as well as a colour (R2), so the list survives
+    being printed in greyscale: "Draft", "Coming soon", "Taught in …".
     """
     if lesson.get("reference_to"):
-        # §4.6 single-source: link to the OWNER's page, with the same pointer
-        # the unit index uses. WHERE, never WHEN — see REF_POINTER.
+        # §4.6 single-source: link to the OWNER's page, with the pointer both
+        # render sites share. WHERE, never WHEN — see REF_POINTER.
         owner = units_by_code.get(lesson["reference_to"])
         href = ("/ks3/%s/%s/%s.html"
                 % (owner["discipline"], owner["slug"], lesson["slug"])
@@ -836,26 +1191,33 @@ def browse_lesson_row(unit, lesson, position, units_by_code):
         owner_disc = DISCIPLINE_TITLES[owner["discipline"]] if owner else ""
         return (('<li class="ks3-lesson-row is-ref"><span class="ks3-num">%d</span>'
                  '<a href="%s">%s</a>' + REF_BADGE + REF_POINTER + '</li>')
-                % (position, e(href), e(lesson["title"]), e(owner_disc),
+                % (position, e(href), t(lesson["title"]), e(owner_disc),
                    e(lesson["reference_to"]), e(owner_disc),
-                   e(owner["title"]) if owner else ""))
+                   t(owner["title"]) if owner else ""))
 
     href = "/ks3/%s/%s/%s.html" % (unit["discipline"], unit["slug"], lesson["slug"])
     if not lesson["authored"]:
         # Structure-first (§11 decision 8) — the slot is routable and honest.
+        # The row dims, but it stays a real link to a real placeholder page: a
+        # row that looks like a link and does nothing is worse than a page that
+        # says "not written yet".
+        state = " is-soon"
         badge = '<span class="ks3-badge is-soon">Coming soon</span>'
     elif lesson.get("review_state") != "frozen":
         # §5.10.1 carve-out: a draft may publish, but only with a visible
         # marker. The lesson page carries `Draft — not yet science-reviewed.`;
         # this is the same fact, at list size, saying the same thing.
+        state = ""
         badge = ('<span class="ks3-badge is-draft" title="Draft — not yet '
                  'science-reviewed.">Draft</span>')
     else:
+        state = ""
         badge = ""
-    return ('<li class="ks3-lesson-row"><span class="ks3-num">%d</span>'
+    return ('<li class="ks3-lesson-row%s"><span class="ks3-num">%d</span>'
             '<a href="%s">%s</a>'
             '<span class="ks3-family">%s</span>%s</li>'
-            % (position, e(href), e(lesson["title"]), e(lesson["family"]), badge))
+            % (state, position, e(href), t(lesson["title"]),
+               e(family_label(lesson["family"])), badge))
 
 
 def year_index(year, browse):
@@ -869,10 +1231,13 @@ def year_index(year, browse):
         units, lessons = _counts(entries)
         split = " · ".join("%s %d" % (DISCIPLINE_TITLES[d], len(rows))
                            for d, rows in per_disc if rows)
+        # .ks3-code inside a .ks3-browse-ht card is a 42px square tile, so it
+        # holds the NUMBER and the heading holds the name. "Half term 3" in a
+        # 42px box was overflowing its own border.
         cards.append(
             '<li class="ks3-unit-card ks3-browse-ht" data-season="%s">'
             '<a href="/ks3/year-%d/%s/index.html">'
-            '<span class="ks3-code">Half term %d</span><h2>%s</h2>'
+            '<span class="ks3-code">%d</span><h2>%s</h2>'
             '<p class="ks3-meta">%s · %s</p>'
             '<p class="ks3-browse-split">%s</p></a></li>'
             % (e(season_of(ht)), year, e(half_term_slug(ht)), ht,
@@ -886,10 +1251,10 @@ def year_index(year, browse):
   <p class="ks3-intro">%s across %s, split into the six half terms of the school
      year. Pick a half term to see what each science covers.</p>
 </header>
-<ul class="ks3-unit-grid ks3-browse-terms">%s</ul>
-<p class="ks3-browse-alt"><a href="/ks3/index.html">Browse by subject instead →</a></p>""" % (
+<ul class="ks3-unit-grid">%s</ul>
+<p class="ks3-browse-alt"><a href="/ks3/index.html">Browse by subject instead %s</a></p>""" % (
         year, e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-        "".join(cards))
+        "".join(cards), MARK_ARROW)
     return shell("Year %d Science" % year, body, crumb, None,
                  "KS3 Year %d Science — the MrBadmusAI default sequence, half "
                  "term by half term." % year)
@@ -917,15 +1282,20 @@ def half_term_index(year, half_term, browse):
         for u, _l, _i in rows:
             if u["title"] not in unit_titles:
                 unit_titles.append(u["title"])
+        # data-discipline is what sets --ks3-hue, which colours both the dot and
+        # the card's shadow. Without it both fall back to the accent and all
+        # three subject cards look identical.
         cards.append(
             '<li class="ks3-unit-card ks3-browse-subject" data-discipline="%s">'
             '<a href="/ks3/year-%d/%s/%s/index.html">'
+            '<span class="ks3-browse-subject-head">'
             '<span class="ks3-browse-dot" aria-hidden="true"></span>'
-            '<h2>%s</h2><p class="ks3-meta">%s · %s</p>'
+            '<h2>%s</h2></span>'
+            '<p class="ks3-meta">%s · %s</p>'
             '<p class="ks3-browse-split">%s</p></a></li>'
             % (e(disc), year, e(slug), e(disc), e(DISCIPLINE_TITLES[disc]),
                e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-               e(" · ".join(unit_titles))))
+               t(" · ".join(unit_titles))))
 
     units, lessons = _counts(_entries(browse, year, half_term))
     body = """<header class="ks3-landing-head" data-season="%s">
@@ -933,8 +1303,8 @@ def half_term_index(year, half_term, browse):
   <h1>%s</h1>
   <p class="ks3-intro">%s across %s. Pick a science to see the lessons.</p>
 </header>
-<ul class="ks3-unit-grid ks3-browse-subjects">%s</ul>
-<p class="ks3-browse-alt"><a href="/ks3/year-%d/index.html">← All six half terms of Year %d</a></p>""" % (
+<ul class="ks3-unit-grid">%s</ul>
+<p class="ks3-browse-alt"><a href="/ks3/year-%d/index.html">Back to all six half terms of Year %d</a></p>""" % (
         e(season_of(half_term)), year, half_term, e(name),
         e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
         "".join(cards), year, year)
@@ -965,8 +1335,7 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
 
     sections = []
     for u, lessons in groups:
-        items = "".join(browse_lesson_row(u, l, i, units_by_code)
-                        for l, i in lessons)
+        items = "".join(lesson_row(u, l, i, units_by_code) for l, i in lessons)
         span = ("lesson %d" % lessons[0][1] if len(lessons) == 1
                 else "lessons %d to %d" % (lessons[0][1], lessons[-1][1]))
         sections.append(
@@ -975,7 +1344,7 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
             '<h2><a href="/ks3/%s/%s/index.html">%s</a></h2>'
             '<ol class="ks3-lesson-list">%s</ol></section>'
             % (e(u["code"]), e(span), len(u["lessons"]),
-               e(disc), e(u["slug"]), e(u["title"]), items))
+               e(disc), e(u["slug"]), t(u["title"]), items))
 
     units, lessons = _counts(rows)
     body = """<header class="ks3-landing-head">
@@ -984,12 +1353,12 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
   <p class="ks3-intro">%s from %s.</p>
 </header>
 %s
-<p class="ks3-browse-alt"><a href="/ks3/year-%d/%s/index.html">← All three sciences this half term</a>
-   · <a href="/ks3/%s/index.html">The whole KS3 %s course →</a></p>""" % (
+<p class="ks3-browse-alt"><a href="/ks3/year-%d/%s/index.html">Back to all three sciences this half term</a>
+   <a href="/ks3/%s/index.html">The whole KS3 %s course %s</a></p>""" % (
         year, e(name), e(DISCIPLINE_TITLES[disc]),
         e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
         "".join(sections), year, e(slug),
-        e(disc), e(DISCIPLINE_TITLES[disc]))
+        e(disc), e(DISCIPLINE_TITLES[disc]), MARK_ARROW)
     return shell("%s · %s · Year %d" % (DISCIPLINE_TITLES[disc], name, year),
                  body, crumb, disc,
                  "KS3 Year %d %s, %s — the MrBadmusAI default sequence."
@@ -1016,22 +1385,33 @@ def landing(units, browse):
             '<span class="ks3-code">Key Stage 3</span><h2>Year %d</h2>'
             '<p class="ks3-meta">%s · %s</p>'
             '<span class="ks3-browse-strip" aria-hidden="true">%s</span>'
-            '<span class="ks3-browse-cta">Browse by half term →</span>'
+            '<span class="ks3-browse-cta">Browse by half term %s</span>'
             '</a></li>'
             % (year, year, e(_plural(units_n, "unit")),
                e(_plural(lessons_n, "lesson")),
                "".join('<span data-season="%s"></span>' % e(season_of(ht))
-                       for ht in HALF_TERMS)))
+                       for ht in HALF_TERMS),
+               MARK_ARROW))
 
+    # The subject cards take .ks3-browse-subject alongside .ks3-disc-card purely
+    # for --ks3-hue: it is what gives each card its own subject shadow and its
+    # own dot colour. Biology green, Chemistry orange, Physics blue — the same
+    # three hues the half-term subject cards use, so a student learns one
+    # mapping and not two.
     secs = []
     for disc in ("biology", "chemistry", "physics"):
         du = [u for u in units if u["discipline"] == disc]
         done = sum(u["authored_count"] for u in du)
         total = sum(len(u["lessons"]) for u in du)
         secs.append(
-            '<li class="ks3-disc-card"><a href="/ks3/%s/index.html">'
-            '<h2>%s</h2><p class="ks3-meta">%d units · %d of %d lessons written</p>'
-            '</a></li>' % (e(disc), e(DISCIPLINE_TITLES[disc]), len(du), done, total))
+            '<li class="ks3-disc-card ks3-browse-subject" data-discipline="%s">'
+            '<a href="/ks3/%s/index.html">'
+            '<span class="ks3-browse-subject-head">'
+            '<span class="ks3-browse-dot" aria-hidden="true"></span>'
+            '<h2>%s</h2></span>'
+            '<p class="ks3-meta">%d units · %d of %d lessons written</p>'
+            '</a></li>'
+            % (e(disc), e(disc), e(DISCIPLINE_TITLES[disc]), len(du), done, total))
 
     total_lessons = sum(len(u["lessons"]) for u in units)
     total_done = sum(u["authored_count"] for u in units)
@@ -1041,7 +1421,7 @@ def landing(units, browse):
      national curriculum programme of study, built lesson by lesson.</p>
   <p class="ks3-meta">%d of %d lessons written so far.</p>
 </header>
-<ul class="ks3-unit-grid ks3-browse-years">%s</ul>
+<ul class="ks3-unit-grid">%s</ul>
 <section class="ks3-browse-secondary">
   <h2>Prefer to browse by subject?</h2>
   <p class="ks3-intro">Every lesson also sits in its subject and its unit, in

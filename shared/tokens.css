@@ -28,6 +28,66 @@
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
+/* ── KS3's three families (MRB-183, ruled 8 Aug 2026) ──
+   KS3 is its own visual world; these carry it and nothing else. KS4's
+   Space Grotesk / IBM Plex pair is untouched and still arrives via the
+   Google Fonts link in generate_site_v5.py — that swap is MRB-130 and is
+   deliberately NOT done here, because it would change the rendered bytes
+   of all 23 .rd bonding pages and the KS4-unchanged gate forbids it.
+
+   ⚠️ These are Claude Design's OWN font bytes, lifted out of the
+   reference-set bundle rather than re-fetched, so the glyphs are exactly
+   the ones the reference was designed against.
+
+   ⚠️ These latin subsets do NOT contain U+2192 →, U+2713 ✓ or U+2715 ✕
+   (read from each file's cmap: 208–226 glyphs, all three absent — the
+   Google latin subset carries U+2191 and U+2193 but skips U+2192).
+   Design's system leans on all three, and R2 makes the tick and cross
+   load-bearing because colour may never be the only signal. So ks3.css
+   draws them as inline SVG instead of typing them. Do not "fix" this by
+   putting the characters back — they will silently fall back to a system
+   font mid-badge. Same defect class MRB-130 exists to fix. */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/shared/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/shared/fonts/instrument-sans-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/shared/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/shared/fonts/dm-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/shared/fonts/dm-mono-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   /* ── Surfaces — cream page vs white card is a DELIBERATE pairing.
      The warmth of the whole design comes from this relationship:
@@ -186,45 +246,153 @@
    element exists — and `verify_ks3.py` now gates it, so none can appear
    without the build failing. ═══ */
 .rd[data-mode="ks3"] {
-  --accent:        #C4490F;   /* a notch brighter, still burnt */
-  --accent-hover:  #A63C12;
-  --radius-sm: 12px;
-  --radius:    18px;
-  --radius-lg: 26px;
+  /* ═══════════════════════════════════════════════════════════════
+     KS3 IS ITS OWN VISUAL WORLD.  MRB-183, ruled by Mide 8 Aug 2026.
 
-  /* Subject identity, restored. `.rd` folds --chemistry into the accent
-     ("one warm palette") because a KS4 redesign page shows one subject
-     at a time and does not need three. A KS3 browse page shows all three
-     side by side — the subject cards at ks3.css `.ks3-browse-subject`
-     carry biology / chemistry / physics as three distinct border colours
-     — so chemistry collapsing onto the accent would erase one third of
-     that distinction AND make chemistry cards indistinguishable from the
-     accent-topped year cards. §8.5: "subject identity colours already
-     exist and apply unchanged". --biology and --physics are untouched by
-     `.rd` and already resolve correctly; only chemistry needed saying. */
-  --chemistry:      var(--subject-chemistry);
-  --chemistry-soft: var(--subject-chemistry-soft);
+     What used to be here was four dials nudging the KS4 palette. That
+     is gone: Claude Design's system is a full REPLACEMENT for KS3, not
+     a variant of KS4. KS4 keeps the cream / burnt-orange system
+     untouched, and the split is clean at the key-stage boundary.
 
-  /* ⚠️ Contrast-checked 2026-07-26 (architecture.md §8.5 required this
-     before the accent carried text). Measured WCAG AA ratios for
-     --accent #C4490F on the redesign cream grounds:
+     Every ratio below is Claude Design's own measurement, carried
+     across verbatim so the number and the value can never drift apart.
+     Re-measured in a browser against the real rendered grounds during
+     integration — see docs/ks3/design-reference/SPEC.md §1.
 
-       --surface-page  #E7E1D4 → 3.74  ✗ body   ✓ large
-       --surface-inset #F7F2E8 → 4.37  ✗ body   ✓ large
-       --surface-card  #F5F1E8 → 4.33  ✗ body   ✓ large
-       --surface-panel #FFFDF8 → 4.80  ✓ body   ✓ large
+     Two tokens per hue, always (R1): a FILL token for borders, rules,
+     focus rings and text above 24px at 3:1, and a darker TEXT token for
+     anything at body size at 4.5:1. Body-size accent text ALWAYS takes
+     the darker one. R1 calls this "the single most common way an
+     accessible palette gets broken at integration" — so the fill
+     tokens are commented with what they may not do.
+     ═══════════════════════════════════════════════════════════════ */
 
-     So --accent FAILS AA for body-size text on three of the four
-     grounds, including the main page ground. It is fine for large
-     text (≥18.66px bold / 24px), icons, rules, fills and borders.
+  /* ── grounds and surfaces ── */
+  --ks3-ground:        #FBF3E6;  /* page ground */
+  --ks3-card:          #FFFCF5;  /* panels, cards, block surfaces */
+  --ks3-band:          #F4E9D8;  /* header bands, secondary buttons, number chips */
+  --ks3-inset:         #F7EFE1;  /* inset panels, criteria ground, canvas fill */
+  --ks3-row-dim:       #FBF6EC;  /* a dimmed row: coming-soon, spent option */
+  --ks3-rule:          #E0D2B9;  /* hairline rules, row dividers */
+  --ks3-rule-strong:   #C3B191;  /* dashed placeholder frames */
+  --ks3-option-border: #DDCFB6;  /* resting answer-button border */
+  --ks3-option-spent:  #EBDFCB;  /* answer button, question already spent */
 
-     --accent-text is the token to use whenever an accent colour
-     carries body-size text. It reuses the existing hover value,
-     which clears AA on every ground (worst case 4.92 on
-     --surface-page). Do not swap --accent itself: it is load-bearing
-     for fills and large display type, where the brighter value is
-     the point. */
-  --accent-text:   #A63C12;
+  /* ── ink ── */
+  --ks3-ink:           #221E1B;  /* 14.2:1 on ground ✓ AAA — body text, every 2px outline */
+  --ks3-ink-body:      #3B342E;  /* softened body copy inside panels */
+  --ks3-ink-muted:     #5F564F;  /* 5.6:1 on ground ✓ AA — captions, meta, eyebrows */
+  --ks3-ink-faint:     #6E655D;  /* dimmed row text */
+  --ks3-ink-ghost:     #9A8F86;  /* spent option badge glyph */
+  --ks3-on-dark:       #FBF3E6;  /* text on an ink-dark block */
+  --ks3-on-dark-body:  #E7DECE;  /* body copy on an ink-dark block */
+  --ks3-on-dark-muted: #C6B9A7;  /* captions on an ink-dark block */
+  --ks3-dark-panel:    #3E3730;  /* a panel nested inside an ink-dark block */
+  --ks3-dark-rule:     #3E3730;
+
+  /* ── accent · orange · the platform's own voice, and Chemistry ── */
+  --ks3-accent:        #E4572E;  /* 3.4:1 — LARGE TEXT ONLY. Never body size. */
+  --ks3-accent-text:   #A93411;  /* 6.0:1 on ground ✓ AA — the only orange under 24px */
+  --ks3-accent-tint:   #FCE7DE;
+  --ks3-accent-hover:  #7F2408;  /* link hover */
+
+  /* ── success · green · ONLY the ladder marks correctness ── */
+  --ks3-ok:            #12A150;  /* 3.0:1 — NEVER body text */
+  --ks3-ok-text:       #0A6B36;  /* 5.9:1 on tint ✓ AA — the word "Correct." */
+  --ks3-ok-tint:       #E4F7EB;
+
+  /* ── alert · amber · a wrong IDEA being confronted ──
+     Misconception blocks only. Never "you got it wrong" — the student
+     is not the error. Ink on the amber measures 11.4:1 ✓. */
+  --ks3-alert:         #FFC53D;
+  --ks3-alert-text:    #5A430A;
+  --ks3-alert-tint:    #FFF3D4;
+  --ks3-alert-border:  #D9821A;
+
+  /* ── stretch · violet · a layer the STUDENT chose ──
+     "Going further" and "Need a hand?" only. Never a level they were
+     put in — KS3 has no tier and must not grow one. */
+  --ks3-stretch:       #6B3FD4;
+  --ks3-stretch-text:  #5A31C0;  /* 6.4:1 ✓ AA */
+  --ks3-stretch-tint:  #F0EAFC;
+  --ks3-stretch-rule:  #D8CBF5;
+  --ks3-stretch-dash:  #B9A6E8;
+  --ks3-stretch-wash:  #FAF7FF;
+
+  /* ── physics blue · subject tint, and the cross-reference row ── */
+  --ks3-blue:          #2F5CE0;
+  --ks3-blue-text:     #2545A8;
+  --ks3-blue-tint:     #E1E8FE;
+  --ks3-blue-light:    #8FB7FF;  /* on ink-dark only */
+
+  /* ── subject identity ──
+     Biology shares the success hue and Chemistry shares the accent hue;
+     that is Design's choice, not an accident, and it is why the browse
+     cards also carry a hue DOT and a name (R2). */
+  --ks3-biology:       #12A150;
+  --ks3-chemistry:     #E4572E;
+  --ks3-physics:       #2F5CE0;
+
+  /* ── type ── */
+  --ks3-font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --ks3-font-body:    'Instrument Sans', system-ui, sans-serif;
+  --ks3-font-mono:    'DM Mono', ui-monospace, monospace;
+
+  /* ── shape ──
+     Hard offset shadows, no blur, no gradient: Design's reason is that
+     it renders identically on a five-year-old Chromebook. */
+  --ks3-r-block:   28px;
+  --ks3-r-dark:    30px;
+  --ks3-r-card:    22px;
+  --ks3-r-panel:   20px;
+  --ks3-r-control: 14px;
+  --ks3-r-option:  16px;
+  --ks3-r-pill:    999px;
+  --ks3-r-focus:   6px;
+  --ks3-shadow-block: 5px 5px 0 var(--ks3-ink);
+  --ks3-shadow-card:  4px 4px 0 var(--ks3-rule);
+  --ks3-tap: 44px;
+
+  /* ── measure (R11) ──
+     46rem for prose, 60rem for anything that is not prose. The old
+     44rem cap was set at a 16px base; at 19px it produced a narrow,
+     tiring column. */
+  --ks3-measure: 46rem;
+  --ks3-wide:    60rem;
+  --ks3-page:    1320px;
+
+  /* ── the shared chrome KS3 still borrows ──
+     KS3 pages also load styles.css and nav.css for the nav brand, so
+     the inherited names have to land on Design's values or the header
+     arrives in KS4's palette. */
+  --accent:        #E4572E;
+  --accent-hover:  #A93411;
+  --accent-text:   #A93411;
+  --brand-grad-a:  #FFC53D;
+  --brand-grad-b:  #E4572E;
+  --radius-sm: 14px;
+  --radius:    20px;
+  --radius-lg: 28px;
+
+  /* Subject identity for the shared chrome. `.rd` folds --chemistry into
+     the accent ("one warm palette") because a KS4 redesign page shows one
+     subject at a time. KS3 shows all three side by side, so the three
+     stay distinct — and under Design's system Chemistry and the accent
+     are deliberately the SAME hue, which is why every browse card also
+     carries a hue dot and the subject's name (R2: colour is never the
+     only signal). */
+  --biology:   var(--ks3-biology);
+  --chemistry: var(--ks3-chemistry);
+  --physics:   var(--ks3-physics);
+
+  /* ⛔ The 2026-07-26 contrast table that used to sit here is DELETED,
+     not amended. It measured --accent #C4490F against the four KS4
+     redesign cream grounds, and both sides of that comparison are gone:
+     the accent is now #E4572E and the KS3 grounds are Design's
+     #FBF3E6 / #FFFCF5 / #F4E9D8 / #F7EFE1. Keeping a stale table beside
+     live values is how a "measured" number becomes a lie. The current
+     measurements live against each token above and in full in
+     docs/ks3/design-reference/SPEC.md §1. */
 }
 
 /* ═══════════════════════════════════════════════════════════════
