@@ -36,3 +36,8 @@ node_modules/
 
 # Lane 3 secrets scan output (local only, never commit)
 SECRETS_SCAN_RESULT.md
+
+# 3D Studio (MRB-186) — build artifact is published by the generator at Stage 9,
+# never committed; dependencies are restored by npm install
+3d-studio/dist/
+3d-studio/node_modules/
