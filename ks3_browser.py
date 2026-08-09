@@ -497,10 +497,29 @@ class Page:
 
         clip_h = int(height)
         if full_page:
-            metrics = self.send("Page.getLayoutMetrics")
-            css = metrics.get("cssContentSize") or metrics.get("contentSize") or {}
-            clip_h = int(math.ceil(css.get("height") or height))
-            clip_h = max(1, min(clip_h, MAX_CLIP_HEIGHT))
+            # ⚠️ MEASURE UNTIL IT STOPS MOVING, then clip.
+            #
+            # Reading cssContentSize once, straight after the viewport
+            # override, is a race: the override triggers a re-layout, and a
+            # long page can report an intermediate height. Observed on a KS4
+            # bonding page — 5840 on one capture and 6354 on the next, from the
+            # same bytes, which made every full-page screenshot of it useless
+            # for comparison and looked exactly like a real rendering
+            # difference. The page was innocent; the measurement was early.
+            #
+            # So poll until two consecutive reads agree, then capture. Cheap,
+            # and it turns a flaky screenshot into a deterministic one.
+            last = None
+            for _ in range(20):
+                metrics = self.send("Page.getLayoutMetrics")
+                css = (metrics.get("cssContentSize")
+                       or metrics.get("contentSize") or {})
+                h = int(math.ceil(css.get("height") or height))
+                if h == last:
+                    break
+                last = h
+                time.sleep(0.1)
+            clip_h = max(1, min(last or int(height), MAX_CLIP_HEIGHT))
 
         res = self.send(
             "Page.captureScreenshot",
