@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div>
+<!-- design reference -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+<meta name="design_doc_mode" content="canvas">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;background:#EBDFC9;font-family:'Instrument Sans',system-ui,sans-serif;color:#1A140E;-webkit-font-smoothing:antialiased}
+  a{color:#A63A18;text-decoration:none}
+  a:hover{color:#E4572E}
+  @keyframes ping{0%{transform:translate(-50%,-50%) scale(1);opacity:.85}75%{transform:translate(-50%,-50%) scale(2.1);opacity:0}100%{transform:translate(-50%,-50%) scale(2.1);opacity:0}}
+  @keyframes caret{0%,49%{opacity:1}50%,100%{opacity:0}}
+</style>
+
+
+<div style="padding:70px 40px 130px;display:flex;flex-direction:column;align-items:center;gap:96px">
+
+  <div style="width:1440px;display:flex;align-items:flex-end;gap:28px;padding-bottom:22px;border-bottom:2px solid #1A140E">
+    <div>
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.2em;color:#E4572E">MRBADMUSAI &nbsp;/&nbsp; MRBADMUS.COM/3D</div>
+      <h1 style="margin:14px 0 0;font:600 52px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">3D Studio — shell</h1>
+    </div>
+    <p style="margin:0 0 6px auto;max-width:430px;font:400 15px/1.55 'Instrument Sans';color:#6E6255;text-wrap:pretty">Everything around the stage: library, tool rail, hotspot system, curriculum panel, retrieval mode, the sign-in moment, and the 2D fallback. All anatomy is placeholder.</p>
+  </div>
+
+  <!-- ══════════ 01 DESKTOP — EXPLORATION ══════════ -->
+  <div style="width:1440px">
+    <div style="display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid #D6C6A8;padding-bottom:13px;margin-bottom:24px">
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#E4572E;padding-bottom:5px">01</div>
+      <h2 style="margin:0;font:600 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">Desktop — exploration</h2>
+      <p style="margin:0 0 3px auto;font:400 13.5px/1.4 'Instrument Sans';color:#7A6D5D;max-width:470px;text-align:right">Default view at 1440. Library 232 / stage fluid / panel 372, 24px gutters.</p>
+    </div>
+
+    <div style="position:relative;width:1440px;background:#FBF3E6;border:1px solid #D9C9AC;border-radius:14px;overflow:hidden;box-shadow:0 26px 64px -32px rgba(40,26,10,.5)">
+
+      <header style="height:64px;padding:0 32px;display:flex;align-items:center;gap:30px;border-bottom:1px solid #E4D6BF">
+        <div style="display:flex;align-items:center;gap:9px">
+          <svg width="21" height="21" sc-camel-view-box="0 0 22 22"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <span style="font:600 18px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">MrBadmusAI</span>
+        </div>
+        <nav style="display:flex;gap:24px;font:500 15px/1 'Instrument Sans'">
+          <span style="color:#6E6255">Lessons</span>
+          <span style="color:#6E6255">Practice</span>
+          <span style="position:relative;color:#1A140E">3D Studio<span style="position:absolute;left:-2px;right:-2px;bottom:-23px;height:2.5px;background:#E4572E"></span></span>
+        </nav>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:16px">
+          <span style="font:500 15px/1 'Instrument Sans';color:#6E6255">Sign in</span>
+          <span style="font:600 14px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;padding:11px 16px;border-radius:8px">Create free account</span>
+        </div>
+      </header>
+
+      <div style="height:56px;padding:0 32px;display:flex;align-items:center;background:#F7EDDC;border-bottom:1px solid #E4D6BF">
+        <div style="font:400 12px/1 'DM Mono',monospace;letter-spacing:.08em;color:#8A7C6B">3D STUDIO<span style="color:#CBBA9E">&nbsp;&nbsp;/&nbsp;&nbsp;</span>CIRCULATORY<span style="color:#CBBA9E">&nbsp;&nbsp;/&nbsp;&nbsp;</span><span style="color:#1A140E">HUMAN HEART</span></div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+          <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.16em;color:#9C8E7B">MODE</span>
+          <div style="display:flex;gap:3px;padding:3px;background:#EBDDC5;border-radius:9px">
+            <span style="font:600 13.5px/1 'Instrument Sans';color:#1A140E;background:#FFFDF8;padding:9px 15px;border-radius:7px;box-shadow:0 1px 2px rgba(60,40,10,.16)">Explore</span>
+            <span style="font:500 13.5px/1 'Instrument Sans';color:#8A7C6B;padding:9px 15px;border-radius:7px">Retrieve</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:232px 1fr 372px;gap:24px;padding:24px 32px 32px">
+
+        <!-- LIBRARY -->
+        <div style="display:flex;flex-direction:column;height:740px">
+          <div style="display:flex;align-items:baseline;gap:8px;padding:0 4px 12px">
+            <span style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">LIBRARY</span>
+            <span style="margin-left:auto;font:400 11px/1 'DM Mono',monospace;color:#B0A18B">8</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:2px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;background:#FFFDF8;border:1.5px solid #E4572E;border-radius:10px">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#DFD1B7 0 4px,#EFE3CC 4px 8px);border:1px solid #D6C6A8;flex:none"></div>
+              <div style="min-width:0">
+                <div style="font:600 14.5px/1.2 'Instrument Sans';letter-spacing:-.01em">Human heart</div>
+                <div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.08em;color:#E4572E">VIEWING</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;border:1.5px solid transparent">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 14.5px/1.2 'Instrument Sans'">Lungs</div><div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">RESPIRATORY</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;border:1.5px solid transparent">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 14.5px/1.2 'Instrument Sans'">Liver</div><div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE</div></div>
+            </div>
+            <div style="height:1px;background:#E4D6BF;margin:8px 6px"></div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;opacity:.52">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 14.5px/1.2 'Instrument Sans'">Small intestine</div><div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;opacity:.52">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 14.5px/1.2 'Instrument Sans'">Stomach</div><div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;opacity:.52">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 14.5px/1.2 'Instrument Sans'">Kidney</div><div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">EXCRETORY · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;opacity:.52">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 14.5px/1.2 'Instrument Sans'">Brain</div><div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">NERVOUS · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:9px;border-radius:10px;opacity:.52">
+              <div style="width:52px;height:44px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 14.5px/1.2 'Instrument Sans'">Eye</div><div style="margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">NERVOUS · SOON</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STAGE -->
+        <div style="position:relative;height:740px;border-radius:12px;overflow:hidden;background:radial-gradient(90% 75% at 50% 38%,#2C261F 0%,#191510 55%,#100D0A 100%);border:1px solid #C9B896">
+          <div style="position:absolute;left:50%;top:63%;transform:translate(-50%,-50%);width:400px;height:60px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.62),rgba(0,0,0,0))"></div>
+          <div style="position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:344px;height:302px;border-radius:57% 43% 48% 52% / 46% 55% 45% 54%;background:radial-gradient(120% 105% at 33% 24%,#A9A198 0%,#857D73 40%,#565048 78%,#3D3830 100%);box-shadow:inset -20px -24px 48px rgba(0,0,0,.5),inset 16px 18px 34px rgba(255,255,255,.09)"></div>
+          <div style="position:absolute;left:44%;top:38%;transform:translate(-50%,-50%);width:120px;height:96px;border-radius:52% 48% 44% 56% / 50% 50% 50% 50%;background:radial-gradient(120% 100% at 35% 25%,rgba(255,255,255,.14),rgba(255,255,255,0) 70%)"></div>
+
+          <!-- hotspots -->
+          <div style="position:absolute;left:38%;top:29%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6),0 5px 12px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">01</div>
+          <div style="position:absolute;left:57%;top:25%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6),0 5px 12px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">02</div>
+          <div style="position:absolute;left:34%;top:52%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6),0 5px 12px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">04</div>
+          <div style="position:absolute;left:47%;top:64%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6),0 5px 12px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">05</div>
+          <div style="position:absolute;left:59%;top:71%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6),0 5px 12px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">06</div>
+
+          <div style="position:absolute;left:62.5%;top:47.4%;width:8%;height:1.5px;background:linear-gradient(90deg,#E4572E,rgba(228,87,46,.35))"></div>
+          <div style="position:absolute;left:61%;top:47%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#FBF3E6;border:3px solid #E4572E;box-shadow:0 0 0 4px rgba(8,6,4,.55),0 8px 20px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;font:500 14px/1 'DM Mono',monospace;color:#1A140E">03</div>
+
+          <div style="position:absolute;left:70.5%;top:36%;width:216px;background:rgba(16,13,10,.95);border:1px solid #4A4136;border-radius:11px;padding:13px 15px 15px;box-shadow:0 22px 44px -18px rgba(0,0,0,.95)">
+            <div style="display:flex;align-items:center;gap:7px">
+              <span style="width:14px;height:14px;border-radius:50%;background:#E4572E;border:1.5px solid #FBF3E6"></span>
+              <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.16em;color:#F0885F">STRUCTURE 03</span>
+            </div>
+            <div style="margin-top:9px;font:600 18px/1.2 'Bricolage Grotesque',sans-serif;color:#FBF3E6;letter-spacing:-.02em">Amet consectetur</div>
+            <div style="margin-top:7px;font:400 13px/1.5 'Instrument Sans';color:#A99B89;text-wrap:pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor.</div>
+            <div style="margin-top:11px;padding-top:10px;border-top:1px solid #332C24;font:500 11px/1 'DM Mono',monospace;letter-spacing:.1em;color:#7E7263">ISOLATE &nbsp;·&nbsp; HIDE LABEL</div>
+          </div>
+
+          <!-- tool rail -->
+          <div style="position:absolute;left:18px;top:50%;transform:translateY(-50%);width:48px;padding:6px;background:rgba(22,18,14,.9);border:1px solid #3E362C;border-radius:15px;display:flex;flex-direction:column;gap:2px;box-shadow:0 16px 36px -18px rgba(0,0,0,.9)">
+            <div style="position:relative;width:36px;height:36px;border-radius:10px;background:#E4572E;display:flex;align-items:center;justify-content:center;color:#FFFDF8">
+              <svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M16.5 10a6.5 6.5 0 1 1-2.1-4.8"></path><path d="M16.8 2.6v3.9h-3.9"></path></svg>
+              <div style="position:absolute;left:46px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:8px;background:#FBF3E6;color:#1A140E;padding:7px 10px;border-radius:8px;white-space:nowrap;box-shadow:0 10px 24px -10px rgba(0,0,0,.8)">
+                <span style="font:500 12.5px/1 'Instrument Sans'">Rotate</span>
+                <span style="font:400 10px/1 'DM Mono',monospace;color:#8A7C6B;border:1px solid #D6C6A8;border-radius:4px;padding:3px 5px">DRAG</span>
+              </div>
+            </div>
+            <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.4"></circle><path d="M12.6 12.6 17 17M6.4 8.5h4.2M8.5 6.4v4.2"></path></svg></div>
+            <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.6" y="2.6" width="14.8" height="14.8" rx="2.4" stroke-dasharray="3 2.6"></rect><rect x="7.2" y="7.2" width="5.6" height="5.6" rx="1.2" fill="currentColor" stroke="none"></rect></svg></div>
+            <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2.6 17.4 17.4 2.6 17.4 17.4Z" fill="currentColor" fill-opacity="0.35" stroke="none"></path><rect x="2.6" y="2.6" width="14.8" height="14.8" rx="2.4"></rect></svg></div>
+            <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M10 2.4 17.6 6.6 10 10.8 2.4 6.6Z"></path><path d="M2.4 11 10 15.2 17.6 11"></path></svg></div>
+            <div style="height:1px;background:#3E362C;margin:5px 7px"></div>
+            <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6.2"></circle><circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none"></circle><path d="M10 1.6v2.6M10 15.8v2.6M1.6 10h2.6M15.8 10h2.6" stroke-linecap="round"></path></svg></div>
+            <div style="margin-top:2px;height:36px;border-radius:10px;background:#241E18;border:1px solid #3E362C;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px">
+              <span style="width:20px;height:11px;border-radius:6px;background:#E4572E;position:relative"><span style="position:absolute;right:1.5px;top:1.5px;width:8px;height:8px;border-radius:50%;background:#FFFDF8"></span></span>
+              <span style="font:500 7.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#8E8272">AUTO</span>
+            </div>
+          </div>
+
+          <!-- quality tier chip -->
+          <div style="position:absolute;right:18px;bottom:18px;display:flex;align-items:center;gap:9px;padding:8px 11px;background:rgba(22,18,14,.86);border:1px solid #3E362C;border-radius:9px">
+            <span style="display:flex;align-items:flex-end;gap:2px">
+              <span style="width:3px;height:5px;background:#FBF3E6"></span>
+              <span style="width:3px;height:8px;background:#FBF3E6"></span>
+              <span style="width:3px;height:11px;background:#FBF3E6"></span>
+              <span style="width:3px;height:14px;background:#5C5347"></span>
+            </span>
+            <span style="font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#B7AA98">HIGH</span>
+          </div>
+
+          <div style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7E6E">DRAG TO ROTATE &nbsp;·&nbsp; CLICK A DOT TO LABEL</div>
+        </div>
+
+        <!-- PANEL -->
+        <div style="position:relative;height:740px;background:#FFFDF8;border:1px solid #E4D6BF;border-radius:12px;overflow:hidden;display:flex;flex-direction:column">
+          <div style="padding:22px 22px 0;overflow:hidden;flex:1">
+            <div style="display:flex;gap:6px">
+              <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7C6B;border:1px solid #E4D6BF;border-radius:5px;padding:5px 7px">KS3</span>
+              <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7C6B;border:1px solid #E4D6BF;border-radius:5px;padding:5px 7px">KS4 AQA</span>
+              <span style="margin-left:auto;font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#A63A18;border:1px solid #F0C9B8;background:#FCEFE9;border-radius:5px;padding:5px 7px">6 STRUCTURES</span>
+            </div>
+            <h3 style="margin:16px 0 0;font:600 36px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">Human heart</h3>
+            <p style="margin:9px 0 0;font:400 16px/1.35 'Instrument Sans';color:#8A7C6B;font-style:italic">Lorem ipsum dolor sit amet</p>
+            <p style="margin:14px 0 0;font:400 16.5px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim.</p>
+
+            <div style="margin-top:22px;display:flex;align-items:center;gap:8px">
+              <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">STRUCTURES</span>
+              <span style="flex:1;height:1px;background:#EBE0CC"></span>
+              <span style="font:400 10.5px/1 'DM Mono',monospace;color:#B0A18B">1 SHOWN</span>
+            </div>
+            <div style="margin-top:11px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">01</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Lorem ipsum</span></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">02</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Dolor sit</span></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 9px;border:1.5px solid #E4572E;background:#FCEFE9;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#E4572E;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#FFFDF8">03</span><span style="font:600 13.5px/1 'Instrument Sans';color:#1A140E">Amet consect.</span></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">04</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Adipiscing</span></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">05</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Sed eiusmod</span></div>
+              <div style="display:flex;align-items:center;gap:8px;padding:8px 9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">06</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Tempor</span></div>
+            </div>
+
+            <div style="margin-top:22px;display:flex;align-items:center;gap:8px">
+              <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">KEY FACTS</span>
+              <span style="flex:1;height:1px;background:#EBE0CC"></span>
+            </div>
+            <div style="margin-top:4px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#8A7C6B">LOREM</span><span style="font:500 14.5px/1 'Instrument Sans'">000 ipsum</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#8A7C6B">DOLOR SIT</span><span style="font:500 14.5px/1 'Instrument Sans'">0.0 × 0.0 amet</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#8A7C6B">CONSECTETUR</span><span style="font:500 14.5px/1 'Instrument Sans'">Lorem adipiscing</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0"><span style="font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#8A7C6B">EIUSMOD</span><span style="font:500 14.5px/1 'Instrument Sans'">00 tempor</span></div>
+            </div>
+
+            <div style="margin-top:14px;background:#1A140E;border-radius:11px;padding:14px 16px">
+              <div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#F2946E">WHY IT MATTERS</div>
+              <div style="margin-top:8px;font:400 13.5px/1.55 'Instrument Sans';color:#C9BDAC;text-wrap:pretty">Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod tempor incididunt.</div>
+            </div>
+            <div style="margin-top:8px;background:#F5EAD6;border:1px dashed #D8C7A9;border-radius:11px;padding:14px 16px">
+              <div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">DID YOU KNOW</div>
+              <div style="margin-top:8px;font:400 13.5px/1.55 'Instrument Sans';color:#4A4136;text-wrap:pretty">Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi.</div>
+            </div>
+          </div>
+
+          <div style="position:relative;padding:14px 22px 18px;background:#FFFDF8;border-top:1px solid #EBE0CC;display:flex;gap:8px">
+            <div style="position:absolute;left:0;right:0;top:-40px;height:40px;background:linear-gradient(rgba(255,253,248,0),#FFFDF8)"></div>
+            <span style="flex:1;text-align:center;font:600 14.5px/1 'Instrument Sans';color:#1A140E;background:#FFFDF8;border:1.5px solid #DECCAE;border-radius:9px;padding:13px 10px">Open lesson</span>
+            <span style="flex:1.25;text-align:center;font:600 14.5px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;border-radius:9px;padding:14px 10px">Start retrieval</span>
+          </div>
+        </div>
+      </div>
+
+      
+    </div>
+
+    
+      <div style="margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">HOTSPOTS</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">28px, 2.5px cream ring, 3px dark halo — legible on any model colour. Numeral carries identity, not hue.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">OPEN LABEL</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Dot grows to 38px and inverts to cream fill. One callout at a time; leader line keeps the link explicit.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">TOOL RAIL</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Rotate, zoom, isolate, cross-section, layers, reset, auto-rotate. Tooltips carry the keyboard/pointer verb.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">QUALITY TIER</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Bottom-right, four-bar meter + word. Deliberately the quietest element on the stage. Opens the override in §07.</p></div>
+      </div>
+    
+  </div>
+
+  <!-- ══════════ 02 DESKTOP — RETRIEVAL ══════════ -->
+  <div style="width:1440px">
+    <div style="display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid #D6C6A8;padding-bottom:13px;margin-bottom:24px">
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#E4572E;padding-bottom:5px">02</div>
+      <h2 style="margin:0;font:600 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">Desktop — retrieval</h2>
+      <p style="margin:0 0 3px auto;font:400 13.5px/1.4 'Instrument Sans';color:#7A6D5D;max-width:500px;text-align:right">The room goes dark. Library gone, panel becomes one question, hatch strip marks the mode.</p>
+    </div>
+
+    <div style="width:1440px;background:#15110C;border:1px solid #2E271F;border-radius:14px;overflow:hidden;box-shadow:0 26px 64px -32px rgba(20,12,4,.7)">
+      <header style="height:64px;padding:0 32px;display:flex;align-items:center;gap:30px;border-bottom:1px solid #2A241C">
+        <div style="display:flex;align-items:center;gap:9px">
+          <svg width="21" height="21" sc-camel-view-box="0 0 22 22"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <span style="font:600 18px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em;color:#FBF3E6">MrBadmusAI</span>
+        </div>
+        <div style="margin-left:auto;display:flex;align-items:center;gap:12px">
+          <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.16em;color:#7E7263">MODE</span>
+          <div style="display:flex;gap:3px;padding:3px;background:#241E17;border-radius:9px">
+            <span style="font:500 13.5px/1 'Instrument Sans';color:#8E8272;padding:9px 15px;border-radius:7px">Explore</span>
+            <span style="font:600 13.5px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;padding:9px 15px;border-radius:7px">Retrieve</span>
+          </div>
+          <span style="margin-left:6px;font:500 14px/1 'Instrument Sans';color:#B7AA98;border:1px solid #3E362C;border-radius:8px;padding:10px 14px">End round</span>
+        </div>
+      </header>
+      <div style="height:7px;background:repeating-linear-gradient(-45deg,#E4572E 0 9px,#B33E1C 9px 18px)"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 404px;gap:24px;padding:24px 32px 32px">
+        <div style="position:relative;height:700px;border-radius:12px;overflow:hidden;background:radial-gradient(90% 75% at 50% 40%,#2A241D 0%,#171310 55%,#0D0B08 100%);border:1px solid #3E362C">
+          <div style="position:absolute;left:50%;top:64%;transform:translate(-50%,-50%);width:420px;height:62px;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.6),rgba(0,0,0,0))"></div>
+          <div style="position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:352px;height:308px;border-radius:57% 43% 48% 52% / 46% 55% 45% 54%;background:radial-gradient(120% 105% at 33% 24%,#8F8880 0%,#6E6860 42%,#474138 80%,#332F29 100%);box-shadow:inset -20px -24px 48px rgba(0,0,0,.55),inset 16px 18px 34px rgba(255,255,255,.07)"></div>
+
+          <div style="position:absolute;left:37%;top:29%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(251,243,230,.42)"></div>
+          <div style="position:absolute;left:57%;top:25%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(251,243,230,.42)"></div>
+          <div style="position:absolute;left:33%;top:52%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(251,243,230,.42)"></div>
+          <div style="position:absolute;left:47%;top:65%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(251,243,230,.42)"></div>
+          <div style="position:absolute;left:59%;top:71%;transform:translate(-50%,-50%);width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(251,243,230,.42)"></div>
+
+          <div style="position:absolute;left:61%;top:47%;width:52px;height:52px;border-radius:50%;border:2px solid #E4572E;animation:ping 1.9s ease-out infinite"></div>
+          <div style="position:absolute;left:61%;top:47%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:#FBF3E6;border:4px solid #E4572E;box-shadow:0 0 0 5px rgba(8,6,4,.6),0 10px 26px rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;font:500 22px/1 'DM Mono',monospace;color:#1A140E">?</div>
+
+          <div style="position:absolute;left:18px;top:50%;transform:translateY(-50%);width:48px;padding:6px;background:rgba(22,18,14,.9);border:1px solid #3E362C;border-radius:15px;display:flex;flex-direction:column;gap:2px">
+            <div style="width:36px;height:36px;border-radius:10px;background:#3A322A;display:flex;align-items:center;justify-content:center;color:#FBF3E6"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M16.5 10a6.5 6.5 0 1 1-2.1-4.8"></path><path d="M16.8 2.6v3.9h-3.9"></path></svg></div>
+            <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.4"></circle><path d="M12.6 12.6 17 17M6.4 8.5h4.2M8.5 6.4v4.2"></path></svg></div>
+            <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6.2"></circle><circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none"></circle><path d="M10 1.6v2.6M10 15.8v2.6M1.6 10h2.6M15.8 10h2.6" stroke-linecap="round"></path></svg></div>
+          </div>
+
+          <div style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7E6E">ROTATE FREELY &nbsp;·&nbsp; LABELS RETURN AFTER THE ROUND</div>
+        </div>
+
+        <div style="height:700px;background:#1E1913;border:1px solid #3A322A;border-radius:12px;padding:26px;display:flex;flex-direction:column">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8E8272">ROUND 1</span>
+            <span style="flex:1;height:1px;background:#3A322A"></span>
+            <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#FBF3E6">3 OF 6</span>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:7px">
+            <span style="width:34px;height:34px;border-radius:7px;background:#FBF3E6;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" sc-camel-view-box="0 0 16 16" fill="none" stroke="#1A140E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4 6.4 11.2 12.5 4.8"></path></svg></span>
+            <span style="width:34px;height:34px;border-radius:7px;background:#FBF3E6;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" sc-camel-view-box="0 0 16 16" fill="none" stroke="#1A140E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4 6.4 11.2 12.5 4.8"></path></svg></span>
+            <span style="width:34px;height:34px;border-radius:7px;border:2px solid #E4572E;background:#2A2119;display:flex;align-items:center;justify-content:center;font:500 13px/1 'DM Mono',monospace;color:#FBF3E6">3</span>
+            <span style="width:34px;height:34px;border-radius:7px;border:1.5px solid #4A4036"></span>
+            <span style="width:34px;height:34px;border-radius:7px;border:1.5px solid #4A4036"></span>
+            <span style="width:34px;height:34px;border-radius:7px;border:1.5px solid #4A4036"></span>
+          </div>
+
+          <div style="margin-top:34px;font:500 11px/1 'DM Mono',monospace;letter-spacing:.2em;color:#F2946E">NAME THE HIGHLIGHTED STRUCTURE</div>
+          <div style="margin-top:16px;display:flex;align-items:center;gap:2px;height:64px;padding:0 18px;background:#120F0B;border:1.5px solid #4A4036;border-radius:11px">
+            <span style="font:400 21px/1 'Instrument Sans';color:#6B6055">Type your answer</span>
+            <span style="width:2px;height:26px;background:#E4572E;animation:caret 1.1s step-end infinite"></span>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <span style="flex:1;text-align:center;font:600 15px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;border-radius:10px;padding:15px 10px">Check</span>
+            <span style="text-align:center;font:500 15px/1 'Instrument Sans';color:#B7AA98;border:1.5px solid #4A4036;border-radius:10px;padding:14px 22px">Skip</span>
+          </div>
+          <div style="margin-top:16px;padding-top:16px;border-top:1px solid #332C24;display:flex;align-items:center;justify-content:space-between">
+            <span style="font:400 13.5px/1 'Instrument Sans';color:#8E8272">Can't recall it?</span>
+            <span style="font:500 13.5px/1 'Instrument Sans';color:#F2946E;border-bottom:1px solid #6E4A38;padding-bottom:2px">Reveal the label</span>
+          </div>
+
+          <div style="margin-top:auto;padding-top:20px;border-top:1px solid #332C24">
+            <div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8E8272">MISSED SO FAR</div>
+            <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px">
+              <span style="display:flex;align-items:center;gap:7px;padding:8px 11px;border:1px solid #4A4036;border-radius:8px;font:400 13px/1 'Instrument Sans';color:#B7AA98"><span style="width:16px;height:16px;border-radius:4px;background:#332C24;display:flex;align-items:center;justify-content:center;font:500 9px/1 'DM Mono',monospace;color:#8E8272">02</span>Dolor sit</span>
+            </div>
+            <div style="margin-top:14px;font:400 13px/1.5 'Instrument Sans';color:#7E7263;text-wrap:pretty">Missed structures come back at the end of the round.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+      <div style="margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">MODE READS AS A ROOM</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Ground inverts to ink, library is removed rather than dimmed, hatch strip runs the full width. Nothing about it is "explore minus labels".</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">TARGET</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">52px, cream fill, "?" glyph, one slow ring pulse. Other hotspots drop to 13px inert outlines so orientation survives.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">FREE RECALL FIRST</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Typed answer, not multiple choice. Reveal is present but demoted below the fold of the decision.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">PROGRESS</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Six squares: solid + tick = named, accent ring + numeral = current, hollow = ahead. Shape carries state, colour only reinforces.</p></div>
+      </div>
+    
+  </div>
+
+  <!-- ══════════ 03 THE SIGN-IN MOMENT ══════════ -->
+  <div style="width:1440px">
+    <div style="display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid #D6C6A8;padding-bottom:13px;margin-bottom:24px">
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#E4572E;padding-bottom:5px">03</div>
+      <h2 style="margin:0;font:600 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">The sign-in moment</h2>
+      <p style="margin:0 0 3px auto;font:400 13.5px/1.4 'Instrument Sans';color:#7A6D5D;max-width:520px;text-align:right">Round finished, result handed over first. The account is offered as a place to keep it — the door out is the same size as the door in.</p>
+    </div>
+
+    <div style="position:relative;width:1440px;height:820px;background:#15110C;border:1px solid #2E271F;border-radius:14px;overflow:hidden;box-shadow:0 26px 64px -32px rgba(20,12,4,.7)">
+      <div style="opacity:.3">
+        <header style="height:64px;padding:0 32px;display:flex;align-items:center;border-bottom:1px solid #2A241C">
+          <div style="display:flex;align-items:center;gap:9px">
+            <svg width="21" height="21" sc-camel-view-box="0 0 22 22"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span style="font:600 18px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em;color:#FBF3E6">MrBadmusAI</span>
+          </div>
+        </header>
+        <div style="height:7px;background:repeating-linear-gradient(-45deg,#E4572E 0 9px,#B33E1C 9px 18px)"></div>
+        <div style="display:grid;grid-template-columns:1fr 404px;gap:24px;padding:24px 32px">
+          <div style="position:relative;height:660px;border-radius:12px;background:radial-gradient(90% 75% at 50% 40%,#2A241D 0%,#171310 55%,#0D0B08 100%);border:1px solid #3E362C;overflow:hidden">
+            <div style="position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);width:352px;height:308px;border-radius:57% 43% 48% 52% / 46% 55% 45% 54%;background:radial-gradient(120% 105% at 33% 24%,#8F8880 0%,#6E6860 42%,#474138 80%,#332F29 100%)"></div>
+          </div>
+          <div style="height:660px;background:#1E1913;border:1px solid #3A322A;border-radius:12px"></div>
+        </div>
+      </div>
+      <div style="position:absolute;inset:0;background:rgba(13,11,8,.55)"></div>
+
+      <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:568px;background:#FBF3E6;border-radius:16px;box-shadow:0 40px 90px -30px rgba(0,0,0,.85)">
+        <div style="padding:30px 34px 26px;text-align:center">
+          <div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.22em;color:#8A7C6B">ROUND 1 &nbsp;·&nbsp; HUMAN HEART</div>
+          <div style="margin-top:20px;display:flex;align-items:flex-end;justify-content:center;gap:12px">
+            <span style="font:600 76px/0.82 'Bricolage Grotesque',sans-serif;letter-spacing:-.05em">5</span>
+            <span style="font:400 30px/1 'Bricolage Grotesque',sans-serif;color:#B0A18B;padding-bottom:5px">/ 6</span>
+            <span style="font:400 16px/1 'Instrument Sans';color:#6E6255;padding-bottom:9px">named</span>
+          </div>
+          <div style="margin-top:22px;display:flex;justify-content:center;gap:7px">
+            <span style="width:32px;height:32px;border-radius:7px;background:#1A140E;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" sc-camel-view-box="0 0 16 16" fill="none" stroke="#FBF3E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4 6.4 11.2 12.5 4.8"></path></svg></span>
+            <span style="width:32px;height:32px;border-radius:7px;border:1.5px solid #D6C6A8;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" sc-camel-view-box="0 0 16 16" fill="none" stroke="#A63A18" stroke-width="2.2" stroke-linecap="round"><path d="M4.5 11.5 11.5 4.5"></path></svg></span>
+            <span style="width:32px;height:32px;border-radius:7px;background:#1A140E;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" sc-camel-view-box="0 0 16 16" fill="none" stroke="#FBF3E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4 6.4 11.2 12.5 4.8"></path></svg></span>
+            <span style="width:32px;height:32px;border-radius:7px;background:#1A140E;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" sc-camel-view-box="0 0 16 16" fill="none" stroke="#FBF3E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4 6.4 11.2 12.5 4.8"></path></svg></span>
+            <span style="width:32px;height:32px;border-radius:7px;background:#1A140E;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" sc-camel-view-box="0 0 16 16" fill="none" stroke="#FBF3E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4 6.4 11.2 12.5 4.8"></path></svg></span>
+            <span style="width:32px;height:32px;border-radius:7px;background:#1A140E;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" sc-camel-view-box="0 0 16 16" fill="none" stroke="#FBF3E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.4 6.4 11.2 12.5 4.8"></path></svg></span>
+          </div>
+          <div style="margin-top:14px;font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:#8A7C6B">01:48 &nbsp;·&nbsp; ONE MISSED — DOLOR SIT</div>
+        </div>
+
+        <div style="position:relative;height:1px;background:repeating-linear-gradient(90deg,#D6C6A8 0 6px,rgba(0,0,0,0) 6px 12px)">
+          <span style="position:absolute;left:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:#1B1610"></span>
+          <span style="position:absolute;right:-9px;top:-9px;width:18px;height:18px;border-radius:50%;background:#1B1610"></span>
+        </div>
+
+        <div style="padding:28px 34px 32px">
+          <h3 style="margin:0;font:600 34px/1.05 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em;text-align:center">Keep this round.</h3>
+          <p style="margin:12px auto 0;max-width:400px;font:400 16.5px/1.55 'Instrument Sans';color:#4A4136;text-align:center;text-wrap:pretty">An account remembers what you missed, so the next round starts there instead of at the beginning.</p>
+          <div style="margin-top:24px;display:flex;flex-direction:column;gap:9px">
+            <span style="text-align:center;font:600 16px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;border-radius:10px;padding:17px 10px">Create a free account</span>
+            <span style="text-align:center;font:600 16px/1 'Instrument Sans';color:#1A140E;background:#FFFDF8;border:1.5px solid #DECCAE;border-radius:10px;padding:16px 10px">Carry on without one</span>
+          </div>
+          <div style="margin-top:22px;padding-top:18px;border-top:1px solid #E4D6BF;display:flex;align-items:center;justify-content:space-between">
+            <span style="font:400 13.5px/1 'Instrument Sans';color:#8A7C6B">Or go straight on to</span>
+            <span style="display:flex;align-items:center;gap:9px">
+              <span style="width:34px;height:26px;border-radius:5px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2"></span>
+              <span style="font:600 14.5px/1 'Instrument Sans';color:#A63A18">Lungs →</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+      <div style="margin-top:18px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">RESULT BEFORE ASK</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">The top half of the card is entirely theirs — score, per-structure marks, time. The invitation is below the perforation.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">NOT A WALL</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Scrim is 55%, the stage stays visible, "Carry on without one" is a full-width button — not a grey link under the fold.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">ONE REASON, CONCRETE</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">A single sentence about what the account does for the next round. No feature list, no benefit grid.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">A ROAD ONWARD</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">The next specimen sits in the footer, so the moment reads as a milestone in a sequence rather than a stop.</p></div>
+      </div>
+    
+  </div>
+
+  <!-- ══════════ 04 TABLET ══════════ -->
+  <div style="width:1440px">
+    <div style="display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid #D6C6A8;padding-bottom:13px;margin-bottom:24px">
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#E4572E;padding-bottom:5px">04</div>
+      <h2 style="margin:0;font:600 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">Tablet — 834pt portrait</h2>
+      <p style="margin:0 0 3px auto;font:400 13.5px/1.4 'Instrument Sans';color:#7A6D5D;max-width:470px;text-align:right">Library becomes a left drawer; stage keeps the full width and the panel flows beneath it.</p>
+    </div>
+
+    <div style="display:flex;gap:44px;align-items:flex-start">
+      <div style="position:relative;width:834px;height:1042px;background:#FBF3E6;border:1px solid #D9C9AC;border-radius:14px;overflow:hidden;box-shadow:0 26px 64px -32px rgba(40,26,10,.5);flex:none">
+        <header style="height:60px;padding:0 20px;display:flex;align-items:center;gap:14px;border-bottom:1px solid #E4D6BF">
+          <span style="display:flex;align-items:center;gap:9px;font:500 13.5px/1 'Instrument Sans';border:1.5px solid #DECCAE;background:#FFFDF8;border-radius:9px;padding:10px 13px">
+            <svg width="15" height="15" sc-camel-view-box="0 0 16 16" stroke="#1A140E" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"></path></svg>Specimens
+          </span>
+          <div style="display:flex;align-items:center;gap:8px">
+            <svg width="19" height="19" sc-camel-view-box="0 0 22 22"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.4" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span style="font:600 16px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">MrBadmusAI</span>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:3px;padding:3px;background:#EBDDC5;border-radius:9px">
+            <span style="font:600 13px/1 'Instrument Sans';background:#FFFDF8;padding:8px 13px;border-radius:7px;box-shadow:0 1px 2px rgba(60,40,10,.16)">Explore</span>
+            <span style="font:500 13px/1 'Instrument Sans';color:#8A7C6B;padding:8px 13px;border-radius:7px">Retrieve</span>
+          </div>
+        </header>
+
+        <div style="padding:16px 20px 20px">
+          <div style="position:relative;height:520px;border-radius:12px;overflow:hidden;background:radial-gradient(90% 78% at 50% 40%,#2C261F 0%,#191510 55%,#100D0A 100%);border:1px solid #C9B896">
+            <div style="position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);width:300px;height:264px;border-radius:57% 43% 48% 52% / 46% 55% 45% 54%;background:radial-gradient(120% 105% at 33% 24%,#A9A198 0%,#857D73 40%,#565048 78%,#3D3830 100%);box-shadow:inset -18px -20px 42px rgba(0,0,0,.5)"></div>
+            <div style="position:absolute;left:40%;top:31%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">01</div>
+            <div style="position:absolute;left:57%;top:27%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">02</div>
+            <div style="position:absolute;left:60%;top:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">03</div>
+            <div style="position:absolute;left:37%;top:56%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">04</div>
+            <div style="position:absolute;left:50%;top:69%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">05</div>
+
+            <div style="position:absolute;left:16px;top:50%;transform:translateY(-50%);width:46px;padding:5px;background:rgba(22,18,14,.9);border:1px solid #3E362C;border-radius:14px;display:flex;flex-direction:column;gap:2px">
+              <div style="width:36px;height:36px;border-radius:10px;background:#E4572E;display:flex;align-items:center;justify-content:center;color:#FFFDF8"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M16.5 10a6.5 6.5 0 1 1-2.1-4.8"></path><path d="M16.8 2.6v3.9h-3.9"></path></svg></div>
+              <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.4"></circle><path d="M12.6 12.6 17 17M6.4 8.5h4.2M8.5 6.4v4.2"></path></svg></div>
+              <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.6" y="2.6" width="14.8" height="14.8" rx="2.4" stroke-dasharray="3 2.6"></rect><rect x="7.2" y="7.2" width="5.6" height="5.6" rx="1.2" fill="currentColor" stroke="none"></rect></svg></div>
+              <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2.6 17.4 17.4 2.6 17.4 17.4Z" fill="currentColor" fill-opacity="0.35" stroke="none"></path><rect x="2.6" y="2.6" width="14.8" height="14.8" rx="2.4"></rect></svg></div>
+              <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M10 2.4 17.6 6.6 10 10.8 2.4 6.6Z"></path><path d="M2.4 11 10 15.2 17.6 11"></path></svg></div>
+              <div style="height:1px;background:#3E362C;margin:5px 7px"></div>
+              <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#C4B8A7"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6.2"></circle><circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none"></circle><path d="M10 1.6v2.6M10 15.8v2.6M1.6 10h2.6M15.8 10h2.6" stroke-linecap="round"></path></svg></div>
+            </div>
+            <div style="position:absolute;right:16px;bottom:16px;display:flex;align-items:center;gap:8px;padding:7px 10px;background:rgba(22,18,14,.86);border:1px solid #3E362C;border-radius:9px">
+              <span style="display:flex;align-items:flex-end;gap:2px"><span style="width:3px;height:5px;background:#FBF3E6"></span><span style="width:3px;height:8px;background:#FBF3E6"></span><span style="width:3px;height:11px;background:#5C5347"></span><span style="width:3px;height:14px;background:#5C5347"></span></span>
+              <span style="font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#B7AA98">BALANCED</span>
+            </div>
+            <div style="position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font:400 11px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7E6E">DRAG TO ROTATE &nbsp;·&nbsp; TAP A DOT TO LABEL</div>
+          </div>
+
+          <div style="margin-top:16px;background:#FFFDF8;border:1px solid #E4D6BF;border-radius:12px;padding:22px 24px">
+            <div style="display:flex;align-items:flex-start;gap:20px">
+              <div style="flex:1">
+                <div style="display:flex;gap:6px">
+                  <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7C6B;border:1px solid #E4D6BF;border-radius:5px;padding:5px 7px">KS3</span>
+                  <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7C6B;border:1px solid #E4D6BF;border-radius:5px;padding:5px 7px">KS4 AQA</span>
+                </div>
+                <h3 style="margin:14px 0 0;font:600 34px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">Human heart</h3>
+                <p style="margin:8px 0 0;font:400 16px/1.35 'Instrument Sans';color:#8A7C6B;font-style:italic">Lorem ipsum dolor sit amet</p>
+              </div>
+              <div style="display:flex;gap:8px;flex:none">
+                <span style="font:600 14.5px/1 'Instrument Sans';border:1.5px solid #DECCAE;background:#FFFDF8;border-radius:9px;padding:13px 16px">Open lesson</span>
+                <span style="font:600 14.5px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;border-radius:9px;padding:14px 18px">Start retrieval</span>
+              </div>
+            </div>
+            <p style="margin:16px 0 0;font:400 17px/1.6 'Instrument Sans';color:#3D352C;max-width:640px;text-wrap:pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua ut enim ad minim.</p>
+            <div style="margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px">
+              <div>
+                <div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">STRUCTURES</div>
+                <div style="margin-top:11px;display:grid;grid-template-columns:1fr 1fr;gap:6px">
+                  <div style="display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">01</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Lorem ipsum</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">02</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Dolor sit</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">03</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Amet consect.</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;padding:9px;border:1px solid #EBE0CC;border-radius:8px"><span style="width:19px;height:19px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 10px/1 'DM Mono',monospace;color:#8A7C6B">04</span><span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">Adipiscing</span></div>
+                </div>
+              </div>
+              <div>
+                <div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">KEY FACTS</div>
+                <div style="margin-top:2px">
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;color:#8A7C6B">LOREM</span><span style="font:500 14.5px/1 'Instrument Sans'">000 ipsum</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;color:#8A7C6B">DOLOR SIT</span><span style="font:500 14.5px/1 'Instrument Sans'">0.0 × 0.0 amet</span></div>
+                  <div style="display:flex;justify-content:space-between;align-items:baseline;padding:9px 0"><span style="font:400 11.5px/1 'DM Mono',monospace;color:#8A7C6B">EIUSMOD</span><span style="font:500 14.5px/1 'Instrument Sans'">00 tempor</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="position:absolute;inset:0;background:rgba(26,20,14,.42)"></div>
+        <div style="position:absolute;left:0;top:0;bottom:0;width:372px;background:#FBF3E6;border-right:1px solid #D9C9AC;box-shadow:26px 0 60px -20px rgba(26,16,4,.5);padding:20px">
+          <div style="display:flex;align-items:center;gap:10px;padding-bottom:16px;border-bottom:1px solid #E4D6BF">
+            <span style="font:600 22px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em">Library</span>
+            <span style="font:400 11px/1 'DM Mono',monospace;color:#B0A18B">8</span>
+            <span style="margin-left:auto;width:34px;height:34px;border-radius:9px;border:1px solid #DECCAE;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" sc-camel-view-box="0 0 16 16" stroke="#1A140E" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></span>
+          </div>
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;background:#FFFDF8;border:1.5px solid #E4572E;border-radius:10px">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#DFD1B7 0 4px,#EFE3CC 4px 8px);border:1px solid #D6C6A8;flex:none"></div>
+              <div><div style="font:600 16px/1.2 'Instrument Sans'">Human heart</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.08em;color:#E4572E">VIEWING</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Lungs</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">RESPIRATORY</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Liver</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE</div></div>
+            </div>
+            <div style="height:1px;background:#E4D6BF;margin:10px 8px"></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Small intestine</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Stomach</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Kidney</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">EXCRETORY · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Brain</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">NERVOUS · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Eye</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">NERVOUS · SOON</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+        <div style="flex:1;padding-top:8px">
+          <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">DRAWER</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">372pt, overlays from the left, scrim at 42%. Tapping a specimen loads it and closes the drawer in one action — no confirm step. Closed by default; the trigger sits first in the header so it reads before the brand.</p>
+          <div style="margin-top:28px;font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">STAGE</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Fixed 520pt tall, full content width. The rail stays vertical and keeps all seven tools — a tablet has the room and often is the teacher's device.</p>
+          <div style="margin-top:28px;font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">PANEL</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Reflows to two columns under the stage. Actions rise to sit beside the title where they stay above the fold; callouts continue below the visible cut.</p>
+          <div style="margin-top:28px;font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">HIT TARGETS</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Hotspots keep the 28px visual but carry a 48pt transparent touch area. Rail buttons are 36px in a 46pt column.</p>
+          <div style="margin-top:36px;padding:18px 20px;background:#F5EAD6;border:1px dashed #D8C7A9;border-radius:11px">
+            <div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">LANDSCAPE</div>
+            <p style="margin:9px 0 0;font:400 14px/1.55 'Instrument Sans';color:#4A4136;text-wrap:pretty">Above 1024pt wide the desktop three-column layout returns and the drawer trigger disappears.</p>
+          </div>
+        </div>
+      
+    </div>
+  </div>
+
+  <!-- ══════════ 05 PHONE ══════════ -->
+  <div style="width:1440px">
+    <div style="display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid #D6C6A8;padding-bottom:13px;margin-bottom:24px">
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#E4572E;padding-bottom:5px">05</div>
+      <h2 style="margin:0;font:600 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">Phone — 390pt</h2>
+      <p style="margin:0 0 3px auto;font:400 13.5px/1.4 'Instrument Sans';color:#7A6D5D;max-width:470px;text-align:right">Stage on top, panel as a draggable sheet, library behind the menu.</p>
+    </div>
+
+    <div style="display:flex;gap:44px;justify-content:center">
+
+      <!-- phone A: default -->
+      <div style="flex:none">
+        <div style="position:relative;width:390px;height:844px;background:#FBF3E6;border:1px solid #D9C9AC;border-radius:26px;overflow:hidden;box-shadow:0 26px 64px -32px rgba(40,26,10,.5)">
+          <div style="height:34px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px"><span style="font:500 11.5px/1 'DM Mono',monospace;color:#8A7C6B">9:41</span><span style="display:flex;gap:4px;align-items:center"><span style="width:15px;height:8px;border:1px solid #A99880;border-radius:2px"></span><span style="width:3px;height:8px;background:#A99880"></span></span></div>
+          <header style="height:52px;padding:0 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #E4D6BF">
+            <span style="width:38px;height:38px;border-radius:10px;border:1.5px solid #DECCAE;background:#FFFDF8;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" sc-camel-view-box="0 0 16 16" stroke="#1A140E" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"></path></svg></span>
+            <span style="display:flex;align-items:center;gap:7px"><svg width="17" height="17" sc-camel-view-box="0 0 22 22"><path d="M3.5 3.5 L11 11 L3.5 18.5" stroke="#E4572E" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 3.5 L19.5 11 L12 18.5" stroke="#E4572E" stroke-opacity="0.34" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path></svg><span style="font:600 15px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">MrBadmusAI</span></span>
+            <span style="margin-left:auto;font:600 13px/1 'Instrument Sans';color:#A63A18">Sign in</span>
+          </header>
+
+          <div style="position:relative;height:330px;background:radial-gradient(95% 80% at 50% 42%,#2C261F 0%,#191510 55%,#100D0A 100%)">
+            <div style="position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:216px;height:190px;border-radius:57% 43% 48% 52% / 46% 55% 45% 54%;background:radial-gradient(120% 105% at 33% 24%,#A9A198 0%,#857D73 40%,#565048 78%,#3D3830 100%);box-shadow:inset -14px -16px 34px rgba(0,0,0,.5)"></div>
+            <div style="position:absolute;left:41%;top:30%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 11px/1 'DM Mono',monospace;color:#FFFDF8">01</div>
+            <div style="position:absolute;left:59%;top:34%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 11px/1 'DM Mono',monospace;color:#FFFDF8">02</div>
+            <div style="position:absolute;left:44%;top:57%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 11px/1 'DM Mono',monospace;color:#FFFDF8">03</div>
+            <div style="position:absolute;right:12px;top:12px;display:flex;align-items:center;gap:7px;padding:6px 9px;background:rgba(22,18,14,.86);border:1px solid #3E362C;border-radius:8px">
+              <span style="display:flex;align-items:flex-end;gap:2px"><span style="width:2.5px;height:5px;background:#FBF3E6"></span><span style="width:2.5px;height:8px;background:#FBF3E6"></span><span style="width:2.5px;height:11px;background:#5C5347"></span><span style="width:2.5px;height:14px;background:#5C5347"></span></span>
+              <span style="font:400 9.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#B7AA98">BALANCED</span>
+            </div>
+            <div style="position:absolute;left:50%;bottom:64px;transform:translateX(-50%);font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7E6E">DRAG TO ROTATE · TAP A DOT</div>
+            <div style="position:absolute;left:0;right:0;bottom:0;height:54px;display:flex;align-items:center;gap:6px;padding:0 12px;background:linear-gradient(rgba(16,13,10,0),rgba(16,13,10,.92) 40%)">
+              <span style="width:40px;height:40px;border-radius:11px;background:#E4572E;display:flex;align-items:center;justify-content:center;color:#FFFDF8;flex:none"><svg width="19" height="19" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M16.5 10a6.5 6.5 0 1 1-2.1-4.8"></path><path d="M16.8 2.6v3.9h-3.9"></path></svg></span>
+              <span style="width:40px;height:40px;border-radius:11px;background:rgba(58,50,42,.85);display:flex;align-items:center;justify-content:center;color:#C4B8A7;flex:none"><svg width="19" height="19" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.4"></circle><path d="M12.6 12.6 17 17M6.4 8.5h4.2M8.5 6.4v4.2"></path></svg></span>
+              <span style="width:40px;height:40px;border-radius:11px;background:rgba(58,50,42,.85);display:flex;align-items:center;justify-content:center;color:#C4B8A7;flex:none"><svg width="19" height="19" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.6" y="2.6" width="14.8" height="14.8" rx="2.4" stroke-dasharray="3 2.6"></rect><rect x="7.2" y="7.2" width="5.6" height="5.6" rx="1.2" fill="currentColor" stroke="none"></rect></svg></span>
+              <span style="width:40px;height:40px;border-radius:11px;background:rgba(58,50,42,.85);display:flex;align-items:center;justify-content:center;color:#C4B8A7;flex:none"><svg width="19" height="19" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2.6 17.4 17.4 2.6 17.4 17.4Z" fill="currentColor" fill-opacity="0.35" stroke="none"></path><rect x="2.6" y="2.6" width="14.8" height="14.8" rx="2.4"></rect></svg></span>
+              <span style="width:40px;height:40px;border-radius:11px;background:rgba(58,50,42,.85);display:flex;align-items:center;justify-content:center;color:#C4B8A7;flex:none"><svg width="19" height="19" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="10" cy="10" r="6.2"></circle><circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none"></circle></svg></span>
+              <span style="width:20px;height:40px;flex:none;background:linear-gradient(90deg,rgba(16,13,10,0),rgba(16,13,10,.9))"></span>
+            </div>
+          </div>
+
+          <div style="position:relative;height:428px;background:#FFFDF8;border-top:1px solid #E4D6BF;border-radius:18px 18px 0 0;margin-top:-14px;padding:0 18px">
+            <div style="display:flex;justify-content:center;padding:9px 0 14px"><span style="width:44px;height:4px;border-radius:2px;background:#DECCAE"></span></div>
+            <div style="display:flex;gap:6px">
+              <span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7C6B;border:1px solid #E4D6BF;border-radius:5px;padding:5px 7px">KS3</span>
+              <span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8A7C6B;border:1px solid #E4D6BF;border-radius:5px;padding:5px 7px">KS4 AQA</span>
+            </div>
+            <h3 style="margin:12px 0 0;font:600 32px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.035em">Human heart</h3>
+            <p style="margin:7px 0 0;font:400 15px/1.35 'Instrument Sans';color:#8A7C6B;font-style:italic">Lorem ipsum dolor sit amet</p>
+            <p style="margin:12px 0 0;font:400 16px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</p>
+            <div style="margin-top:16px;display:flex;align-items:center;gap:8px"><span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">STRUCTURES</span><span style="flex:1;height:1px;background:#EBE0CC"></span></div>
+            <div style="margin-top:10px;display:flex;flex-wrap:wrap;gap:6px">
+              <span style="display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid #EBE0CC;border-radius:8px;font:400 13.5px/1 'Instrument Sans';color:#6E6255"><span style="width:18px;height:18px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 9.5px/1 'DM Mono',monospace;color:#8A7C6B">01</span>Lorem ipsum</span>
+              <span style="display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid #EBE0CC;border-radius:8px;font:400 13.5px/1 'Instrument Sans';color:#6E6255"><span style="width:18px;height:18px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 9.5px/1 'DM Mono',monospace;color:#8A7C6B">02</span>Dolor sit</span>
+              <span style="display:flex;align-items:center;gap:7px;padding:9px 11px;border:1px solid #EBE0CC;border-radius:8px;font:400 13.5px/1 'Instrument Sans';color:#6E6255"><span style="width:18px;height:18px;border-radius:4px;background:#F2E8D6;display:flex;align-items:center;justify-content:center;font:500 9.5px/1 'DM Mono',monospace;color:#8A7C6B">03</span>Amet consect.</span>
+            </div>
+            <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 18px 26px;background:#FFFDF8;border-top:1px solid #EBE0CC;display:flex;gap:8px">
+              <span style="width:52px;height:50px;border:1.5px solid #DECCAE;border-radius:10px;display:flex;align-items:center;justify-content:center"><svg width="19" height="19" sc-camel-view-box="0 0 20 20" fill="none" stroke="#1A140E" stroke-width="1.7" stroke-linejoin="round"><path d="M3 4.2h5.2a2 2 0 0 1 1.8 1.1 2 2 0 0 1 1.8-1.1H17v11h-5.2a2 2 0 0 0-1.8 1 2 2 0 0 0-1.8-1H3Z"></path></svg></span>
+              <span style="flex:1;text-align:center;font:600 16px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;border-radius:10px;padding:17px 10px">Start retrieval</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px;font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#8A7C6B;text-align:center">A &nbsp;·&nbsp; DEFAULT — SHEET AT REST</div>
+      </div>
+
+      <!-- phone B: sheet raised -->
+      <div style="flex:none">
+        <div style="position:relative;width:390px;height:844px;background:#FBF3E6;border:1px solid #D9C9AC;border-radius:26px;overflow:hidden;box-shadow:0 26px 64px -32px rgba(40,26,10,.5)">
+          <div style="height:34px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px"><span style="font:500 11.5px/1 'DM Mono',monospace;color:#8A7C6B">9:41</span><span style="display:flex;gap:4px;align-items:center"><span style="width:15px;height:8px;border:1px solid #A99880;border-radius:2px"></span><span style="width:3px;height:8px;background:#A99880"></span></span></div>
+          <header style="height:52px;padding:0 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #E4D6BF">
+            <span style="width:38px;height:38px;border-radius:10px;border:1.5px solid #DECCAE;background:#FFFDF8;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" sc-camel-view-box="0 0 16 16" stroke="#1A140E" stroke-width="1.8" stroke-linecap="round"><path d="M2.5 4h11M2.5 8h11M2.5 12h11"></path></svg></span>
+            <span style="font:600 15px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">Human heart</span>
+            <span style="margin-left:auto;font:600 13px/1 'Instrument Sans';color:#A63A18">Sign in</span>
+          </header>
+          <div style="position:relative;height:150px;background:radial-gradient(95% 130% at 50% 30%,#2C261F 0%,#191510 60%,#100D0A 100%);overflow:hidden">
+            <div style="position:absolute;left:50%;top:52%;transform:translate(-50%,-50%);width:196px;height:172px;border-radius:57% 43% 48% 52% / 46% 55% 45% 54%;background:radial-gradient(120% 105% at 33% 24%,#A9A198 0%,#857D73 40%,#565048 78%,#3D3830 100%)"></div>
+            <div style="position:absolute;left:41%;top:34%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 11px/1 'DM Mono',monospace;color:#FFFDF8">01</div>
+            <div style="position:absolute;left:60%;top:42%;transform:translate(-50%,-50%);width:26px;height:26px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 11px/1 'DM Mono',monospace;color:#FFFDF8">02</div>
+          </div>
+          <div style="position:relative;height:608px;background:#FFFDF8;border-top:1px solid #E4D6BF;border-radius:18px 18px 0 0;margin-top:-14px;padding:0 18px;box-shadow:0 -18px 40px -22px rgba(26,16,4,.55)">
+            <div style="display:flex;justify-content:center;padding:9px 0 14px"><span style="width:44px;height:4px;border-radius:2px;background:#C9B79A"></span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">KEY FACTS</span><span style="flex:1;height:1px;background:#EBE0CC"></span></div>
+            <div style="margin-top:2px">
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;color:#8A7C6B">LOREM</span><span style="font:500 15px/1 'Instrument Sans'">000 ipsum</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;color:#8A7C6B">DOLOR SIT</span><span style="font:500 15px/1 'Instrument Sans'">0.0 × 0.0 amet</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px solid #F0E6D3"><span style="font:400 11.5px/1 'DM Mono',monospace;color:#8A7C6B">CONSECTETUR</span><span style="font:500 15px/1 'Instrument Sans'">Lorem adipiscing</span></div>
+              <div style="display:flex;justify-content:space-between;align-items:baseline;padding:11px 0"><span style="font:400 11.5px/1 'DM Mono',monospace;color:#8A7C6B">EIUSMOD</span><span style="font:500 15px/1 'Instrument Sans'">00 tempor</span></div>
+            </div>
+            <div style="margin-top:14px;background:#1A140E;border-radius:11px;padding:15px 16px">
+              <div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#F2946E">WHY IT MATTERS</div>
+              <div style="margin-top:8px;font:400 14px/1.55 'Instrument Sans';color:#C9BDAC;text-wrap:pretty">Lorem ipsum dolor sit amet consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</div>
+            </div>
+            <div style="margin-top:8px;background:#F5EAD6;border:1px dashed #D8C7A9;border-radius:11px;padding:15px 16px">
+              <div style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">DID YOU KNOW</div>
+              <div style="margin-top:8px;font:400 14px/1.55 'Instrument Sans';color:#4A4136;text-wrap:pretty">Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip.</div>
+            </div>
+            <div style="margin-top:14px;display:flex;align-items:center;gap:8px"><span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">RELATED LESSON</span><span style="flex:1;height:1px;background:#EBE0CC"></span></div>
+            <div style="margin-top:10px;display:flex;align-items:center;gap:12px;padding:13px;border:1px solid #E4D6BF;border-radius:11px">
+              <span style="width:46px;height:38px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></span>
+              <span><span style="display:block;font:600 14.5px/1.25 'Instrument Sans'">Lorem ipsum dolor</span><span style="display:block;margin-top:3px;font:400 10.5px/1 'DM Mono',monospace;color:#9C8E7B">KS3 · 12 MIN</span></span>
+              <span style="margin-left:auto;font:500 18px/1 'Instrument Sans';color:#A63A18">→</span>
+            </div>
+            <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 18px 26px;background:#FFFDF8;border-top:1px solid #EBE0CC;display:flex;gap:8px">
+              <span style="flex:1;text-align:center;font:600 16px/1 'Instrument Sans';color:#FFFDF8;background:#E4572E;border-radius:10px;padding:17px 10px">Start retrieval</span>
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:14px;font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#8A7C6B;text-align:center">B &nbsp;·&nbsp; SHEET RAISED — STAGE KEEPS 150PT</div>
+      </div>
+
+      <!-- phone C: library -->
+      <div style="flex:none">
+        <div style="position:relative;width:390px;height:844px;background:#FBF3E6;border:1px solid #D9C9AC;border-radius:26px;overflow:hidden;box-shadow:0 26px 64px -32px rgba(40,26,10,.5)">
+          <div style="height:34px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 4px"><span style="font:500 11.5px/1 'DM Mono',monospace;color:#8A7C6B">9:41</span><span style="display:flex;gap:4px;align-items:center"><span style="width:15px;height:8px;border:1px solid #A99880;border-radius:2px"></span><span style="width:3px;height:8px;background:#A99880"></span></span></div>
+          <header style="height:52px;padding:0 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #E4D6BF">
+            <span style="width:38px;height:38px;border-radius:10px;background:#1A140E;display:flex;align-items:center;justify-content:center"><svg width="15" height="15" sc-camel-view-box="0 0 16 16" stroke="#FBF3E6" stroke-width="1.9" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></span>
+            <span style="font:600 20px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.03em">Library</span>
+            <span style="font:400 11px/1 'DM Mono',monospace;color:#B0A18B">8</span>
+          </header>
+          <div style="padding:14px 16px;display:flex;flex-direction:column;gap:2px">
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;background:#FFFDF8;border:1.5px solid #E4572E;border-radius:11px">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#DFD1B7 0 4px,#EFE3CC 4px 8px);border:1px solid #D6C6A8;flex:none"></div>
+              <div><div style="font:600 16px/1.2 'Instrument Sans'">Human heart</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.08em;color:#E4572E">VIEWING</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Lungs</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">RESPIRATORY</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Liver</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE</div></div>
+            </div>
+            <div style="height:1px;background:#E4D6BF;margin:10px 8px"></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Small intestine</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Stomach</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">DIGESTIVE · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Kidney</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">EXCRETORY · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Brain</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">NERVOUS · SOON</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;opacity:.5">
+              <div style="width:62px;height:50px;border-radius:6px;background:repeating-linear-gradient(45deg,#E3D7C1 0 4px,#F2E8D6 4px 8px);border:1px solid #DCCDB2;flex:none"></div>
+              <div><div style="font:500 16px/1.2 'Instrument Sans'">Eye</div><div style="margin-top:4px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.06em;color:#9C8E7B">NERVOUS · SOON</div></div>
+            </div>
+          </div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 18px 26px;background:#FBF3E6;border-top:1px solid #E4D6BF;display:flex;align-items:center;justify-content:space-between">
+            <span style="font:400 13.5px/1 'Instrument Sans';color:#6E6255">More specimens soon</span>
+            <span style="font:600 13.5px/1 'Instrument Sans';color:#A63A18">Create account</span>
+          </div>
+        </div>
+        <div style="margin-top:14px;font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#8A7C6B;text-align:center">C &nbsp;·&nbsp; LIBRARY BEHIND THE MENU</div>
+      </div>
+    </div>
+
+    
+      <div style="margin-top:34px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">SHEET</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Two detents: rest at 428pt, raised at 608pt. The stage never fully leaves — 150pt of it stays so the model keeps its context.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">RAIL GOES HORIZONTAL</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Five tools on a scrollable strip at the foot of the stage, 40pt targets, right edge faded to show there is more.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">ONE FIXED ACTION</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Start retrieval is pinned to the bottom of the sheet at every detent; the lesson link shrinks to a glyph beside it.</p></div>
+        <div><div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.14em;color:#A63A18">LIBRARY IS FULL-SCREEN</div><p style="margin:7px 0 0;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Not a half sheet — choosing a specimen is a deliberate move, and eight rows want the height.</p></div>
+      </div>
+    
+  </div>
+
+  <!-- ══════════ 06 2D FALLBACK ══════════ -->
+  <div style="width:1440px">
+    <div style="display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid #D6C6A8;padding-bottom:13px;margin-bottom:24px">
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#E4572E;padding-bottom:5px">06</div>
+      <h2 style="margin:0;font:600 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">Stage — 2D fallback</h2>
+      <p style="margin:0 0 3px auto;font:400 13.5px/1.4 'Instrument Sans';color:#7A6D5D;max-width:500px;text-align:right">No WebGL. Flat plate, same hotspots, same panel, same retrieval. Shorter rail.</p>
+    </div>
+
+    <div style="display:flex;gap:44px;align-items:flex-start">
+      <div style="position:relative;width:860px;height:600px;border-radius:12px;overflow:hidden;background:#FFFDF8;border:1px solid #D9C9AC;flex:none;box-shadow:0 26px 64px -32px rgba(40,26,10,.4)">
+        <div style="position:absolute;inset:0;background-image:linear-gradient(#F2E8D6 1px,rgba(0,0,0,0) 1px),linear-gradient(90deg,#F2E8D6 1px,rgba(0,0,0,0) 1px);background-size:36px 36px"></div>
+        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:330px;height:290px;border-radius:57% 43% 48% 52% / 46% 55% 45% 54%;background:#DED7CB;border:2px solid #B6AC9C"></div>
+        <div style="position:absolute;left:41%;top:38%;transform:translate(-50%,-50%);width:132px;height:112px;border-radius:50% 50% 46% 54% / 52% 48% 52% 48%;background:#CEC6B8;border:2px solid #B6AC9C"></div>
+        <div style="position:absolute;left:57%;top:60%;transform:translate(-50%,-50%);width:118px;height:104px;border-radius:48% 52% 52% 48% / 50% 50% 50% 50%;background:#C6BEAF;border:2px solid #B6AC9C"></div>
+
+        <div style="position:absolute;left:32%;top:29%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FFFDF8;box-shadow:0 0 0 2px #1A140E,0 4px 10px rgba(60,40,10,.35);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">01</div>
+        <div style="position:absolute;left:58%;top:26%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FFFDF8;box-shadow:0 0 0 2px #1A140E,0 4px 10px rgba(60,40,10,.35);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">02</div>
+        <div style="position:absolute;left:66%;top:47%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FFFDF8;box-shadow:0 0 0 2px #1A140E,0 4px 10px rgba(60,40,10,.35);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">03</div>
+        <div style="position:absolute;left:36%;top:58%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FFFDF8;box-shadow:0 0 0 2px #1A140E,0 4px 10px rgba(60,40,10,.35);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">05</div>
+        <div style="position:absolute;left:52%;top:74%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FFFDF8;box-shadow:0 0 0 2px #1A140E,0 4px 10px rgba(60,40,10,.35);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">06</div>
+
+        <div style="position:absolute;left:46.5%;top:44.4%;width:5.5%;height:1.5px;background:#E4572E"></div>
+        <div style="position:absolute;left:45%;top:44%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;background:#1A140E;border:3px solid #E4572E;box-shadow:0 6px 16px rgba(60,40,10,.4);display:flex;align-items:center;justify-content:center;font:500 14px/1 'DM Mono',monospace;color:#FBF3E6">04</div>
+        <div style="position:absolute;left:52.5%;top:33%;width:216px;background:#1A140E;border-radius:11px;padding:13px 15px 15px;box-shadow:0 22px 44px -18px rgba(40,26,10,.6)">
+          <div style="display:flex;align-items:center;gap:7px">
+            <span style="width:14px;height:14px;border-radius:50%;background:#E4572E;border:1.5px solid #FBF3E6"></span>
+            <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.16em;color:#F0885F">STRUCTURE 04</span>
+          </div>
+          <div style="margin-top:9px;font:600 18px/1.2 'Bricolage Grotesque',sans-serif;color:#FBF3E6;letter-spacing:-.02em">Adipiscing elit</div>
+          <div style="margin-top:7px;font:400 13px/1.5 'Instrument Sans';color:#A99B89;text-wrap:pretty">Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod.</div>
+        </div>
+
+        <div style="position:absolute;left:18px;top:50%;transform:translateY(-50%);width:48px;padding:6px;background:#FFFDF8;border:1px solid #DECCAE;border-radius:15px;display:flex;flex-direction:column;gap:2px;box-shadow:0 10px 26px -14px rgba(60,40,10,.5)">
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#4A4136"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.4"></circle><path d="M12.6 12.6 17 17M6.4 8.5h4.2M8.5 6.4v4.2"></path></svg></div>
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#4A4136"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.6" y="2.6" width="14.8" height="14.8" rx="2.4" stroke-dasharray="3 2.6"></rect><rect x="7.2" y="7.2" width="5.6" height="5.6" rx="1.2" fill="currentColor" stroke="none"></rect></svg></div>
+          <div style="width:36px;height:36px;border-radius:10px;background:#E4572E;display:flex;align-items:center;justify-content:center;color:#FFFDF8"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="2.4" y="5.4" width="15.2" height="9.2" rx="2"></rect><path d="M5.8 10h4.4" stroke-linecap="round"></path><circle cx="13.6" cy="10" r="1.5" fill="currentColor" stroke="none"></circle></svg></div>
+          <div style="height:1px;background:#E4D6BF;margin:5px 7px"></div>
+          <div style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#4A4136"><svg width="20" height="20" sc-camel-view-box="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="10" cy="10" r="6.2"></circle><circle cx="10" cy="10" r="1.6" fill="currentColor" stroke="none"></circle><path d="M10 1.6v2.6M10 15.8v2.6M1.6 10h2.6M15.8 10h2.6" stroke-linecap="round"></path></svg></div>
+        </div>
+
+        <div style="position:absolute;right:18px;top:18px;display:flex;align-items:center;gap:8px;padding:8px 11px;background:#F5EAD6;border:1px solid #D8C7A9;border-radius:9px">
+          <span style="width:8px;height:8px;background:#1A140E"></span>
+          <span style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.12em;color:#4A4136">FLAT DIAGRAM</span>
+        </div>
+        <div style="position:absolute;left:18px;bottom:16px;font:400 10.5px/1 'DM Mono',monospace;letter-spacing:.08em;color:#B0A18B">flat plate — placeholder artwork</div>
+        <div style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);font:400 11.5px/1 'DM Mono',monospace;letter-spacing:.1em;color:#9C8E7B">CLICK A DOT TO LABEL</div>
+      </div>
+
+      
+        <div style="flex:1;padding-top:8px">
+          <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">WHAT CHANGES</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">The plate is drawn on paper rather than in a dark viewport — a flat diagram has no depth to light, so the studio surround would be a costume. Everything outside this rectangle is identical to §01.</p>
+          <div style="margin-top:26px;font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">RAIL: FOUR TOOLS</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Zoom, isolate, labels, reset. Rotate, cross-section, layers and auto-rotate are <strong style="font-weight:600">absent</strong> — a disabled tool is a promise the device cannot keep. Labels earns its slot here because it is the only way to clear a busy plate.</p>
+          <div style="margin-top:26px;font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">NO QUALITY CHIP</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Tiers describe render load. With no renderer there is no tier, so the control goes rather than showing a fifth state.</p>
+          <div style="margin-top:26px;font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#A63A18">HOTSPOT ON PAPER</div>
+          <p style="margin:10px 0 0;font:400 15px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Same 28px dot; the halo flips to a 2px ink ring so it holds on a light ground. The open state inverts to ink fill instead of cream.</p>
+          <div style="margin-top:30px;padding:18px 20px;background:#F5EAD6;border:1px dashed #D8C7A9;border-radius:11px">
+            <div style="font:500 10.5px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">SHARED</div>
+            <p style="margin:9px 0 0;font:400 14px/1.55 'Instrument Sans';color:#4A4136;text-wrap:pretty">Hotspot ids, structure names, panel content and retrieval rounds come from one specimen record. Only the coordinates are authored per view.</p>
+          </div>
+        </div>
+      
+    </div>
+  </div>
+
+  <!-- ══════════ 07 PARTS ══════════ -->
+  
+  <div style="width:1440px">
+    <div style="display:flex;align-items:flex-end;gap:16px;border-bottom:1px solid #D6C6A8;padding-bottom:13px;margin-bottom:24px">
+      <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.16em;color:#E4572E;padding-bottom:5px">07</div>
+      <h2 style="margin:0;font:600 30px/1 'Bricolage Grotesque',sans-serif;letter-spacing:-.025em">Parts</h2>
+      <p style="margin:0 0 3px auto;font:400 13.5px/1.4 'Instrument Sans';color:#7A6D5D;max-width:470px;text-align:right">The pieces the three screens share, at full size.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+      <div style="background:#FFFDF8;border:1px solid #E4D6BF;border-radius:14px;padding:26px 28px">
+        <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">HOTSPOT STATES</div>
+        <div style="margin-top:20px;border-radius:11px;background:radial-gradient(90% 90% at 50% 40%,#2C261F,#131009);padding:28px 24px;display:flex;justify-content:space-around;align-items:center">
+          <div style="text-align:center">
+            <div style="height:56px;display:flex;align-items:center;justify-content:center"><span style="width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">01</span></div>
+            <div style="margin-top:6px;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8E8272">CLOSED</div>
+          </div>
+          <div style="text-align:center">
+            <div style="height:56px;display:flex;align-items:center;justify-content:center"><span style="width:32px;height:32px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6),0 0 0 9px rgba(251,243,230,.16);display:flex;align-items:center;justify-content:center;font:500 13px/1 'DM Mono',monospace;color:#FFFDF8">01</span></div>
+            <div style="margin-top:6px;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8E8272">HOVER</div>
+          </div>
+          <div style="text-align:center">
+            <div style="height:56px;display:flex;align-items:center;justify-content:center"><span style="width:38px;height:38px;border-radius:50%;background:#FBF3E6;border:3px solid #E4572E;box-shadow:0 0 0 4px rgba(8,6,4,.55);display:flex;align-items:center;justify-content:center;font:500 14px/1 'DM Mono',monospace;color:#1A140E">01</span></div>
+            <div style="margin-top:6px;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8E8272">OPEN</div>
+          </div>
+          <div style="text-align:center">
+            <div style="height:56px;display:flex;align-items:center;justify-content:center"><span style="width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(251,243,230,.42)"></span></div>
+            <div style="margin-top:6px;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8E8272">INERT</div>
+          </div>
+          <div style="text-align:center">
+            <div style="height:56px;display:flex;align-items:center;justify-content:center"><span style="width:52px;height:52px;border-radius:50%;background:#FBF3E6;border:4px solid #E4572E;box-shadow:0 0 0 5px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 22px/1 'DM Mono',monospace;color:#1A140E">?</span></div>
+            <div style="margin-top:6px;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#8E8272">TARGET</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;border-radius:11px;background:#FBF3E6;border:1px solid #E4D6BF;padding:22px 24px;display:flex;justify-content:space-around;align-items:center">
+          <div style="text-align:center">
+            <div style="height:48px;display:flex;align-items:center;justify-content:center"><span style="width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FFFDF8;box-shadow:0 0 0 2px #1A140E;display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">01</span></div>
+            <div style="margin-top:6px;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#9C8E7B">CLOSED / PAPER</div>
+          </div>
+          <div style="text-align:center">
+            <div style="height:48px;display:flex;align-items:center;justify-content:center"><span style="width:38px;height:38px;border-radius:50%;background:#1A140E;border:3px solid #E4572E;display:flex;align-items:center;justify-content:center;font:500 14px/1 'DM Mono',monospace;color:#FBF3E6">01</span></div>
+            <div style="margin-top:6px;font:400 10px/1 'DM Mono',monospace;letter-spacing:.1em;color:#9C8E7B">OPEN / PAPER</div>
+          </div>
+          <div style="max-width:250px;font:400 13px/1.5 'Instrument Sans';color:#6E6255;text-wrap:pretty">Size, fill inversion and the numeral do the work. Remove the orange entirely and every state is still distinct.</div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="background:#FFFDF8;border:1px solid #E4D6BF;border-radius:14px;padding:26px 28px">
+          <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">QUALITY OVERRIDE</div>
+          <div style="margin-top:18px;display:flex;gap:22px;align-items:flex-start">
+            <div style="width:262px;background:#15110C;border:1px solid #3E362C;border-radius:12px;padding:8px;flex:none;box-shadow:0 18px 40px -20px rgba(20,12,4,.8)">
+              <div style="padding:9px 10px 11px;display:flex;align-items:center;gap:8px">
+                <span style="font:500 10px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8E8272">RENDER QUALITY</span>
+                <span style="margin-left:auto;font:400 9.5px/1 'DM Mono',monospace;color:#6E6255">DETECTED · HIGH</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:9px;background:#2A2119">
+                <span style="width:15px;height:15px;border-radius:4px;border:1.5px solid #E4572E;background:#E4572E;display:flex;align-items:center;justify-content:center"><span style="width:5px;height:5px;background:#15110C"></span></span>
+                <span style="font:500 13.5px/1 'Instrument Sans';color:#FBF3E6">Auto</span>
+                <span style="margin-left:auto;font:400 10px/1 'DM Mono',monospace;color:#8E8272">RECOMMENDED</span>
+              </div>
+              <div style="height:1px;background:#332C24;margin:6px 10px"></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px"><span style="width:15px;height:15px;border-radius:4px;border:1.5px solid #4A4036"></span><span style="font:400 13.5px/1 'Instrument Sans';color:#C4B8A7">Ultra</span><span style="margin-left:auto;display:flex;align-items:flex-end;gap:2px"><span style="width:3px;height:5px;background:#8E8272"></span><span style="width:3px;height:8px;background:#8E8272"></span><span style="width:3px;height:11px;background:#8E8272"></span><span style="width:3px;height:14px;background:#8E8272"></span></span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px"><span style="width:15px;height:15px;border-radius:4px;border:1.5px solid #4A4036"></span><span style="font:400 13.5px/1 'Instrument Sans';color:#C4B8A7">High</span><span style="margin-left:auto;display:flex;align-items:flex-end;gap:2px"><span style="width:3px;height:5px;background:#8E8272"></span><span style="width:3px;height:8px;background:#8E8272"></span><span style="width:3px;height:11px;background:#8E8272"></span><span style="width:3px;height:14px;background:#332C24"></span></span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px"><span style="width:15px;height:15px;border-radius:4px;border:1.5px solid #4A4036"></span><span style="font:400 13.5px/1 'Instrument Sans';color:#C4B8A7">Balanced</span><span style="margin-left:auto;display:flex;align-items:flex-end;gap:2px"><span style="width:3px;height:5px;background:#8E8272"></span><span style="width:3px;height:8px;background:#8E8272"></span><span style="width:3px;height:11px;background:#332C24"></span><span style="width:3px;height:14px;background:#332C24"></span></span></div>
+              <div style="display:flex;align-items:center;gap:10px;padding:10px"><span style="width:15px;height:15px;border-radius:4px;border:1.5px solid #4A4036"></span><span style="font:400 13.5px/1 'Instrument Sans';color:#C4B8A7">Lite</span><span style="margin-left:auto;display:flex;align-items:flex-end;gap:2px"><span style="width:3px;height:5px;background:#8E8272"></span><span style="width:3px;height:8px;background:#332C24"></span><span style="width:3px;height:11px;background:#332C24"></span><span style="width:3px;height:14px;background:#332C24"></span></span></div>
+            </div>
+            <div style="flex:1">
+              <p style="margin:0;font:400 14.5px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">The chip on the stage is the whole affordance: a four-bar meter and one word, bottom-right, at the contrast of a caption. Tapping it opens this.</p>
+              <p style="margin:12px 0 0;font:400 14.5px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Auto is selected until a person overrides it, and the detected tier stays visible so the override is a choice against something known.</p>
+              <div style="margin-top:16px;padding-top:14px;border-top:1px solid #EBE0CC;font:400 12.5px/1.5 'DM Mono',monospace;color:#8A7C6B">no toast · no banner · no first-run tour</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background:#FFFDF8;border:1px solid #E4D6BF;border-radius:14px;padding:26px 28px;flex:1">
+          <div style="font:500 11px/1 'DM Mono',monospace;letter-spacing:.18em;color:#8A7C6B">PROJECTION FLOOR</div>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div style="border-radius:11px;background:radial-gradient(90% 90% at 50% 40%,#2C261F,#131009);padding:24px;display:flex;align-items:center;justify-content:center;gap:16px">
+              <span style="width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">01</span>
+              <span style="font:400 11px/1.4 'DM Mono',monospace;color:#8E8272">1:1</span>
+            </div>
+            <div style="position:relative;border-radius:11px;background:radial-gradient(90% 90% at 50% 40%,#2C261F,#131009);padding:24px;display:flex;align-items:center;justify-content:center;gap:16px;overflow:hidden">
+              <span style="width:28px;height:28px;border-radius:50%;background:#E4572E;border:2.5px solid #FBF3E6;box-shadow:0 0 0 3px rgba(8,6,4,.6);display:flex;align-items:center;justify-content:center;font:500 12px/1 'DM Mono',monospace;color:#FFFDF8">01</span>
+              <span style="font:400 11px/1.4 'DM Mono',monospace;color:#8E8272">WASHED</span>
+              <span style="position:absolute;inset:0;backdrop-filter:contrast(0.55) brightness(1.35) saturate(0.65);background:rgba(255,250,240,.14)"></span>
+            </div>
+          </div>
+          <p style="margin:14px 0 0;font:400 14.5px/1.6 'Instrument Sans';color:#3D352C;text-wrap:pretty">Right-hand tile is the same dot under a simulated washed-out projector. The cream ring survives because it is the lightest value in the frame and the dark halo is the darkest — the orange is decoration.</p>
+          <p style="margin:10px 0 0;font:400 13px/1.6 'Instrument Sans';color:#8A7C6B;text-wrap:pretty">Turn on the projector simulation over the full desktop screen from the tweaks panel.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+</div>
+
+</div>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;showAnnotations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Handoff&quot;},&quot;showParts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Handoff&quot;},&quot;projectionSim&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Handoff&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      showAnnotations: this.props.showAnnotations ?? true,
+      showParts: this.props.showParts ?? true,
+      projectionSim: this.props.projectionSim ?? false
+    };
+  }
+}
+</script>
+
+
+</body></html>
