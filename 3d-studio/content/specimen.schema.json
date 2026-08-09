@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mrbadmus.com/3d/content/specimen.schema.json",
+  "title": "Specimen record",
+  "description": "One file per specimen, versioned in the repo, editable without touching component code (3D Studio spec v1 §3.3). Placeholder convention: a string value beginning with 'TODO' is schema-legal and passes presence checks, but is counted separately by the validation harness so the Stage 8 science gate has a checklist of what still needs authoring. Non-TODO values must satisfy the stricter format alternatives.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "renderer", "name", "epithet", "system", "keyStages", "assets",
+    "description", "keyFacts", "callouts", "lessonUrl", "specPoints", "hotspots"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "description": "Stable kebab-case identifier. The single source of record: every surface (sidebar, stage, panel, retrieval) resolves through this one id."
+    },
+    "renderer": {
+      "type": "string",
+      "enum": ["mesh"],
+      "description": "In v1 this only ever holds 'mesh'. Future studios widen this enum; no plugin architecture is built for products that do not exist."
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "THE display name. Sidebar label, stage caption and panel heading all derive from this one field — no aliases exist and additionalProperties:false keeps it that way."
+    },
+    "epithet": { "$ref": "#/$defs/prose" },
+    "system": { "$ref": "#/$defs/prose" },
+    "keyStages": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["KS3", "KS4"] }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mesh", "fallback", "thumbnail", "licence", "source", "acquired"],
+      "properties": {
+        "mesh": { "$ref": "#/$defs/assetPath" },
+        "fallback": { "$ref": "#/$defs/assetPath" },
+        "thumbnail": { "$ref": "#/$defs/assetPath" },
+        "licence": { "$ref": "#/$defs/prose" },
+        "source": { "$ref": "#/$defs/prose" },
+        "acquired": {
+          "description": "ISO date of acquisition, or a TODO placeholder while the asset is not yet purchased. While this is a placeholder, the harness reports missing asset files as 'pending acquisition' instead of failing.",
+          "anyOf": [
+            { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
+            { "$ref": "#/$defs/placeholder" }
+          ]
+        }
+      }
+    },
+    "description": { "$ref": "#/$defs/prose" },
+    "keyFacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "value"],
+        "properties": {
+          "label": { "$ref": "#/$defs/prose" },
+          "value": { "$ref": "#/$defs/prose" }
+        }
+      }
+    },
+    "callouts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["importance", "didYouKnow"],
+      "properties": {
+        "importance": { "$ref": "#/$defs/prose" },
+        "didYouKnow": { "$ref": "#/$defs/prose" }
+      }
+    },
+    "lessonUrl": {
+      "description": "Must resolve to a real generated page under mrbadmus_site/ (build-time gate 3), or be a TODO placeholder until the lesson URL map lands (spec §11 open item).",
+      "anyOf": [
+        { "type": "string", "pattern": "^/.+\\.html$" },
+        { "$ref": "#/$defs/placeholder" }
+      ]
+    },
+    "specPoints": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "description": "Permanent statement IDs (e.g. KS4.B.ORG.04), or a TODO placeholder until spec point bindings land (spec §11 open item).",
+        "anyOf": [
+          { "type": "string", "pattern": "^KS[34]\\..+$" },
+          { "$ref": "#/$defs/placeholder" }
+        ]
+      }
+    },
+    "hotspots": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "detail", "position3d", "position2d", "tiers", "retrievable"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$",
+            "description": "Namespaced by specimen id, e.g. '<specimenId>.<item>'."
+          },
+          "label": { "$ref": "#/$defs/prose" },
+          "detail": { "$ref": "#/$defs/prose" },
+          "position3d": {
+            "type": "array",
+            "minItems": 3,
+            "maxItems": 3,
+            "items": { "type": "number" },
+            "description": "Model-space anchor for the mesh renderer. [0,0,0] is treated by the harness as 'not yet authored' (reported, not failed)."
+          },
+          "position2d": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": { "type": "number" },
+            "description": "Pixel anchor on the fallback diagram. [0,0] is treated by the harness as 'not yet authored' (reported, not failed)."
+          },
+          "tiers": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "enum": ["foundation", "higher"] },
+            "description": "Drives text differentiation and retrieval eligibility only — the mesh is tier-neutral."
+          },
+          "retrievable": {
+            "type": "boolean",
+            "description": "false allows a hotspot to be informative without being examinable."
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "prose": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Authored text. Every prose field requires Mide's personal sign-off at the Stage 8 science gate; until then it holds a TODO placeholder."
+    },
+    "placeholder": {
+      "type": "string",
+      "pattern": "^TODO"
+    },
+    "assetPath": {
+      "description": "Served path under /3d/assets/, or a TODO placeholder.",
+      "anyOf": [
+        { "type": "string", "pattern": "^/3d/assets/.+\\..+$" },
+        { "$ref": "#/$defs/placeholder" }
+      ]
+    }
+  }
+}

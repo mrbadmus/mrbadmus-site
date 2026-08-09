@@ -1,0 +1,49 @@
+{
+  "id": "heart",
+  "renderer": "mesh",
+  "name": "Heart",
+  "epithet": "TODO: epithet — science gate (Stage 8)",
+  "system": "TODO: body system — science gate (Stage 8)",
+  "keyStages": ["KS3", "KS4"],
+  "assets": {
+    "mesh": "/3d/assets/heart.glb",
+    "fallback": "/3d/assets/heart-2d.svg",
+    "thumbnail": "/3d/assets/heart-thumb.webp",
+    "licence": "TODO: licence type — filled from the provenance record at acquisition",
+    "source": "TODO: asset source — filled from the provenance record at acquisition",
+    "acquired": "TODO: acquisition date"
+  },
+  "description": "TODO: specimen description — science gate (Stage 8)",
+  "keyFacts": [
+    { "label": "TODO: key fact label — science gate (Stage 8)", "value": "TODO: key fact value — science gate (Stage 8)" },
+    { "label": "TODO: key fact label — science gate (Stage 8)", "value": "TODO: key fact value — science gate (Stage 8)" }
+  ],
+  "callouts": {
+    "importance": "TODO: medical importance — science gate (Stage 8)",
+    "didYouKnow": "TODO: did-you-know — science gate (Stage 8)"
+  },
+  "lessonUrl": "TODO: lesson URL — awaits the lesson URL map (spec §11 open item)",
+  "specPoints": [
+    "TODO: statement IDs — await spec point bindings (spec §11 open item)"
+  ],
+  "hotspots": [
+    {
+      "id": "heart.item-01",
+      "label": "TODO: hotspot label — science gate (Stage 8)",
+      "detail": "TODO: hotspot detail — science gate (Stage 8)",
+      "position3d": [0, 0, 0],
+      "position2d": [0, 0],
+      "tiers": ["foundation", "higher"],
+      "retrievable": true
+    },
+    {
+      "id": "heart.item-02",
+      "label": "TODO: hotspot label — science gate (Stage 8)",
+      "detail": "TODO: hotspot detail — science gate (Stage 8)",
+      "position3d": [0, 0, 0],
+      "position2d": [0, 0],
+      "tiers": ["higher"],
+      "retrievable": false
+    }
+  ]
+}
