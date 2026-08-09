@@ -210,7 +210,13 @@ UNIT = {
     "support": [],   # slot present, content deferred — §11 decision 4
 
     "activities": [
-        {"id": "mixing-volumes", "kind": "predict-then-reveal",
+        # ⊕ Was `predict-then-reveal` until 2026-08-09. Collapsed to `predict`
+        # on Claude Design's R9 (MRB-183): it carried an identical key set to
+        # `predict` and rendered identically, so it was an authoring label
+        # masquerading as a component. Collapsed in the DATA rather than
+        # special-cased in the stylesheet, which is what R9 recommends — one
+        # fewer kind for a renderer to know about, and no rendering change.
+        {"id": "mixing-volumes", "kind": "predict",
          "demand": "elicit PART-01 by forcing a commitment on the hook",
          "prompt": "Before anyone explains it — commit to an answer. Where did "
                    "the missing 3 cm³ go?",
