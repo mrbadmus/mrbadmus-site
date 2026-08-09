@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════════════
+   3D Studio tokens — lifted verbatim from the frozen reference
+   (3d-studio/reference/shell-v1.html). The studio inherits the
+   MRB-183 KS3 design system by ruling on MRB-186; values here that
+   are not yet in shared/tokens.css are Design's additions for this
+   surface and are recorded in the Stage 1 report.
+
+   Scoped with an --st- prefix: this app never loads shared/
+   tokens.css (it is a self-contained Vite build served at /3d/),
+   so nothing here can collide with or drift the site-wide file.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Self-hosted fonts — Claude Design's own font bytes, copied from
+   shared/fonts/ so the glyphs match the reference exactly. Same latin
+   subsets as KS3: U+2192 → / U+2713 ✓ / U+2715 ✕ are NOT in the cmap;
+   any tick, cross or arrow in this app is drawn as inline SVG, never
+   typed. /3d/ prefix is safe to hardcode — the base is architecturally
+   fixed (MRB-194). ── */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/3d/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/3d/fonts/instrument-sans-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/3d/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/3d/fonts/dm-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/3d/fonts/dm-mono-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* type */
+  --st-display: 'Bricolage Grotesque', sans-serif;
+  --st-ui: 'Instrument Sans', system-ui, sans-serif;
+  --st-mono: 'DM Mono', ui-monospace, monospace;
+
+  /* cream world (explore) */
+  --st-ground: #FBF3E6;      /* page ground */
+  --st-paper: #FFFDF8;       /* cards, panel, buttons on cream */
+  --st-ink: #1A140E;         /* near-black ink */
+  --st-body: #3D352C;        /* long-form body on paper */
+  --st-muted: #6E6255;       /* secondary text */
+  --st-caption: #8A7C6B;     /* captions, eyebrows, mono labels */
+  --st-faint: #9C8E7B;       /* library captions */
+  --st-ghost: #B0A18B;       /* counts, dimmest legible */
+  --st-rule: #E4D6BF;        /* hairlines on cream */
+  --st-rule-soft: #EBE0CC;   /* hairlines on paper */
+  --st-rule-fact: #F0E6D3;   /* key-fact row rules */
+  --st-rule-strong: #D6C6A8; /* section rules, kbd chips */
+  --st-edge: #D9C9AC;        /* frame borders */
+  --st-btn-border: #DECCAE;  /* outline buttons on paper */
+  --st-crumb-bg: #F7EDDC;    /* breadcrumb strip */
+  --st-crumb-sep: #CBBA9E;
+  --st-seg-bg: #EBDDC5;      /* segmented control trough */
+  --st-note-bg: #F5EAD6;     /* did-you-know / dashed notes */
+  --st-note-border: #D8C7A9;
+  --st-chip-tint: #FCEFE9;   /* accent-tinted chip fill */
+  --st-chip-tint-border: #F0C9B8;
+  --st-num-well: #F2E8D6;    /* numbered square wells */
+
+  /* accent */
+  --st-accent: #E4572E;      /* the orange — large/graphic use */
+  --st-accent-text: #A63A18; /* the only orange for small text */
+  --st-hatch-b: #B33E1C;     /* hatch strip second stripe */
+
+  /* dark room (retrieval + stage viewport) */
+  --st-room: #15110C;        /* retrieval page ground */
+  --st-room-panel: #1E1913;  /* question panel */
+  --st-room-well: #120F0B;   /* input trough */
+  --st-room-raise: #2A2119;  /* selected row in dark panel */
+  --st-room-border: #2E271F;
+  --st-room-line: #3E362C;   /* borders on dark */
+  --st-room-line-soft: #332C24;
+  --st-room-line-mid: #3A322A;
+  --st-room-line-strong: #4A4036;
+  --st-room-text: #B7AA98;   /* readable text on dark */
+  --st-room-muted: #8E8272;  /* captions on dark */
+  --st-room-faint: #7E7263;
+  --st-room-hint: #8A7E6E;   /* stage hint line */
+  --st-room-body: #A99B89;   /* callout detail text */
+  --st-room-note: #C9BDAC;   /* why-it-matters body */
+  --st-ember: #F2946E;       /* accent text on dark */
+  --st-ember-strong: #F0885F;
+  --st-cream: #FBF3E6;       /* cream as used ON dark surfaces */
+
+  /* stage dressing */
+  --st-viewport-edge: #C9B896;
+  --st-paper-grid: #F2E8D6;
+  --st-plate-line: #B6AC9C;
+
+  /* placeholder thumbs */
+  --st-thumb-a: #E3D7C1;
+  --st-thumb-b: #F2E8D6;
+  --st-thumb-active-a: #DFD1B7;
+  --st-thumb-active-b: #EFE3CC;
+  --st-thumb-border: #DCCDB2;
+
+  /* shape + shadow */
+  --st-r-frame: 14px;
+  --st-r-stage: 12px;
+  --st-r-card: 11px;
+  --st-r-control: 10px;
+  --st-r-chip: 9px;
+  --st-r-btn: 9px;
+  --st-shadow-frame: 0 26px 64px -32px rgba(40, 26, 10, 0.5);
+  --st-shadow-pop: 0 10px 24px -10px rgba(0, 0, 0, 0.8);
+  --st-shadow-callout: 0 22px 44px -18px rgba(0, 0, 0, 0.95);
+}
