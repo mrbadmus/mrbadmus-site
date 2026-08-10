@@ -1,3 +1,41 @@
 {
-  "projectId": "53dad5ae-951a-44a1-95e1-394b9762b2d1"
+  "projectId": "53dad5ae-951a-44a1-95e1-394b9762b2d1",
+  "shape": "package",
+  "pkg": "mrbadmus-3d-studio",
+  "globalName": "MrBadmusDS",
+  "srcDir": "src/components",
+  "cssEntry": "src/styles/studio.css",
+  "tokensPkg": "mrbadmus-3d-studio",
+  "tokensGlob": [
+    "src/styles/tokens.css",
+    "../../../shared/tokens.css",
+    "../../../shared/ks3.css"
+  ],
+  "extraFonts": ["../../../.design-sync/ds-fonts.css"],
+  "runtimeFontPrefixes": ["Space Grotesk", "IBM Plex"],
+  "extraEntries": ["./src/renderer/placeholder.ts"],
+  "guidelinesGlob": ["reference/design-notes.md"],
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "TopBar": { "cardMode": "column", "viewport": "1240x480" },
+    "PhoneSheet": { "cardMode": "column" }
+  },
+  "libOverrides": {
+    "css.mjs": "tokensGlob array-of-paths: token files live at site root (shared/), outside the app package"
+  },
+  "componentSrcMap": {
+    "App": null,
+    "PanelChips": null,
+    "TitleBlock": null,
+    "StructuresSection": null,
+    "KeyFactsSection": null,
+    "Callouts": null,
+    "LessonLink": null,
+    "ProvenanceSection": null,
+    "SheetContent": null,
+    "MenuIcon": null,
+    "CloseIcon": null,
+    "ArrowIcon": null,
+    "BookIcon": null
+  }
 }
