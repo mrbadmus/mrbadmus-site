@@ -1,6 +1,25 @@
-/* 3D Studio tokens — values lifted verbatim from the frozen reference.
-   Font-face rules live in fonts.css (split for MRB-186 design-sync: the
-   converter ships tokens; the app ships its own font URLs). */
+/* ═══════════════════════════════════════════════════════════════
+   3D Studio tokens — Design's palette from the frozen reference
+   (3d-studio/reference/shell-v1.html), RECONCILED against
+   shared/tokens.css (MRB-186, 10 Aug 2026). Seven values ship
+   differently from the reference: --st-ink, --st-muted, --st-rule
+   and --st-accent-text adopt the canonical values Design was
+   approximating by eye before /design-sync existed for this
+   surface; --st-caption, --st-faint and --st-ghost are darkened
+   because the reference's values fail WCAG 4.5:1 on the cream
+   ground at the sizes they carry text. The full old→new list,
+   with reasons and measured ratios, is in reference/design-notes.md
+   § "Divergences from the frozen reference". Every other value is
+   verbatim from the reference.
+
+   Scoped with an --st- prefix: this app never loads shared/
+   tokens.css (it is a self-contained Vite build served at /3d/),
+   so nothing here can collide with or drift the site-wide file.
+
+   Font-face rules live in fonts.css (split for MRB-186 design-
+   sync: the converter ships tokens; the app ships its own font
+   URLs).
+   ═══════════════════════════════════════════════════════════════ */
 
 :root {
   /* type */

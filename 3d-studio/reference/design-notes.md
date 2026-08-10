@@ -174,3 +174,49 @@ Projection floor:
   no such render tier exists to select. Flagged in the Stage 1 report.
 - No client-side router (MRB-194): one entry point, in-memory specimen state.
 - Copy discipline: the only prose in the UI is functional instruction, terse.
+
+## Divergences from the frozen reference (MRB-186 reconciliation, 10 Aug 2026)
+
+Everything above documents the reference as Design drew it, and the reference
+stays frozen — including its §07 table and in-situ colour citations. Seven
+colours ship differently in `src/styles/tokens.css`, ruled in the MRB-186
+Linear thread (Stage 1 report, Finding 1). Wherever this document or the
+reference names a value on the left, the app ships the value on the right.
+
+**Adopted canonical.** Design authored the reference before `/design-sync`
+existed for this surface, so its palette approximates the MRB-183 KS3 system
+by eye. These four are near-misses of real tokens; the canonical value is
+what Design was aiming at:
+
+| Reference | Ships as | Token | Canonical source (`shared/tokens.css`) |
+|---|---|---|---|
+| `#1A140E` | `#1A1714` | `--st-ink` | `--ink` |
+| `#6E6255` | `#6E655D` | `--st-muted` | `--ks3-ink-faint` |
+| `#E4D6BF` | `#E0D2B9` | `--st-rule` | `--ks3-rule` |
+| `#A63A18` | `#A93411` | `--st-accent-text` | `--ks3-accent-text` |
+
+**Darkened for contrast.** The reference's caption tier fails WCAG on the
+cream ground at the 10.5–12px sizes it carries text: faint `#9C8E7B` 2.90:1,
+ghost `#B0A18B` 2.29:1, caption `#8A7C6B` 3.68:1. Caption is also a
+near-miss of canonical `--ink-faint #8A8074`, but the canonical value is
+itself 3.81:1, so adoption could not fix it — all three were darkened at the
+same hue and saturation until they clear 4.5:1 on both light grounds
+(measured on ground `#FBF3E6` / paper `#FFFDF8`):
+
+| Reference | Ships as | Token | Measures |
+|---|---|---|---|
+| `#8A7C6B` | `#7A6E5F` | `--st-caption` | 4.51:1 / 4.89:1 |
+| `#9C8E7B` | `#7B6E5C` | `--st-faint` | 4.51:1 / 4.89:1 |
+| `#B0A18B` | `#7D6D55` | `--st-ghost` | 4.55:1 / 4.93:1 |
+
+The ink alpha forms follow the ink adoption: `rgba(26,20,14,…)` ships as
+`rgba(26,23,20,…)` — the §04 drawer scrim and the §07 paper-stage hotspot
+halo and inert ring. The §07 paper-stage ink fill and ink halo likewise ship
+at `#1A1714`.
+
+Enforced by the parity gate (`3d_parity.py` layer A): the shipped values are
+allow-listed there with these reasons, every other token must appear
+literally in the reference, and the superseded seven must not reappear
+anywhere in `src/` or `.design-sync/previews/`. Contrast is enforced
+separately by `tests/gates/contrast.test.ts`, which recomputes ratios from
+`tokens.css` on every run.

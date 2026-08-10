@@ -28,18 +28,18 @@ export function BrandMark({ size = 21 }: { size?: number }) {
   )
 }
 
-export function MenuIcon({ color = '#1A140E' }: { color?: string }) {
+export function MenuIcon({ color = 'var(--st-ink)' }: { color?: string }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
-      <path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke={color} strokeWidth="1.8" strokeLinecap="round" />
+    <svg width="16" height="16" viewBox="0 0 16 16" style={{ color }} aria-hidden="true">
+      <path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
     </svg>
   )
 }
 
-export function CloseIcon({ color = '#1A140E' }: { color?: string }) {
+export function CloseIcon({ color = 'var(--st-ink)' }: { color?: string }) {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
-      <path d="M4 4l8 8M12 4l-8 8" stroke={color} strokeWidth="1.9" strokeLinecap="round" />
+    <svg width="14" height="14" viewBox="0 0 16 16" style={{ color }} aria-hidden="true">
+      <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" />
     </svg>
   )
 }
@@ -61,7 +61,7 @@ export function ArrowIcon({ color = 'currentColor', size = 16 }: { color?: strin
 
 export function BookIcon() {
   return (
-    <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="#1A140E" strokeWidth="1.7" strokeLinejoin="round" aria-hidden="true">
+    <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" style={{ color: 'var(--st-ink)' }} strokeWidth="1.7" strokeLinejoin="round" aria-hidden="true">
       <path d="M3 4.2h5.2a2 2 0 0 1 1.8 1.1 2 2 0 0 1 1.8-1.1H17v11h-5.2a2 2 0 0 0-1.8 1 2 2 0 0 0-1.8-1H3Z" />
     </svg>
   )

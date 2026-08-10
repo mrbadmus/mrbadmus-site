@@ -1030,7 +1030,7 @@ a:hover { color: var(--st-accent); }
 .scrim {
   position: fixed;
   inset: 0;
-  background: rgba(26, 20, 14, 0.42);
+  background: rgba(26, 23, 20, 0.42);
   z-index: 20;
   border: none;
   padding: 0;
