@@ -288,9 +288,10 @@ a:hover { color: var(--st-accent); }
   border-color: var(--st-rule-strong);
 }
 .libcard__text { min-width: 0; text-align: left; }
-.libcard__name { font: 500 14.5px/1.2 var(--st-ui); letter-spacing: -0.01em; }
+.libcard__name { display: block; font: 500 14.5px/1.2 var(--st-ui); letter-spacing: -0.01em; }
 .libcard.is-viewing .libcard__name { font-weight: 600; }
 .libcard__meta {
+  display: block;
   margin-top: 3px;
   font: 400 10.5px/1 var(--st-mono);
   letter-spacing: 0.06em;

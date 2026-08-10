@@ -1,0 +1,53 @@
+/* ═══════════════════════════════════════════════════════════════
+   3D Studio tokens — lifted verbatim from the frozen reference
+   (3d-studio/reference/shell-v1.html). The studio inherits the
+   MRB-183 KS3 design system by ruling on MRB-186; values here that
+   are not yet in shared/tokens.css are Design's additions for this
+   surface and are recorded in the Stage 1 report.
+
+   Scoped with an --st- prefix: this app never loads shared/
+   tokens.css (it is a self-contained Vite build served at /3d/),
+   so nothing here can collide with or drift the site-wide file.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Self-hosted fonts — Claude Design's own font bytes, copied from
+   shared/fonts/ so the glyphs match the reference exactly. Same latin
+   subsets as KS3: U+2192 → / U+2713 ✓ / U+2715 ✕ are NOT in the cmap;
+   any tick, cross or arrow in this app is drawn as inline SVG, never
+   typed. /3d/ prefix is safe to hardcode — the base is architecturally
+   fixed (MRB-194). ── */
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/3d/fonts/bricolage-grotesque-var-latin.woff2') format('woff2');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/3d/fonts/instrument-sans-var-latin.woff2') format('woff2');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Instrument Sans';
+  src: url('/3d/fonts/instrument-sans-var-italic-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/3d/fonts/dm-mono-400-latin.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'DM Mono';
+  src: url('/3d/fonts/dm-mono-500-latin.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
