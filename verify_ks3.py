@@ -107,7 +107,12 @@ def main():
     for slug, l in registry.items():
         l["_disc"] = by_code[l["_unit"]]["discipline"]
     c1 = by_code["C1"]
+    b1 = by_code["B1"]
     authored = [l for l in c1["lessons"] if l.get("authored")]
+    b1_authored = [l for l in b1["lessons"] if l.get("authored")]
+    # Every authored lesson in the key stage with its unit attached, for
+    # the checks that span units (the draft markers, the §10.2 done-list).
+    all_authored = [(c1, l) for l in authored] + [(b1, l) for l in b1_authored]
 
     print("\n§9 — vertical slice done-list\n" + "=" * 60)
 
@@ -119,6 +124,24 @@ def main():
     states = {l.get("review_state") for l in authored}
     check("all six carry review_state: draft", states == {"draft"},
           "states=%s" % sorted(states))
+
+    # 1b. MRB-198 — B1 authored: eight lessons, six statutory and two
+    # carrying §7.6's declared beyond-statutory exemption. MRB-199 has no
+    # ruling yet, so the two are gated here EXACTLY as Design authored
+    # them; if Mide rules to drop them this check changes with the data.
+    check("B1 has eight authored lessons", len(b1_authored) == 8,
+          "%d authored" % len(b1_authored))
+    b1_states = {l.get("review_state") for l in b1_authored}
+    check("all eight B1 lessons carry review_state: draft",
+          b1_states == {"draft"}, "states=%s" % sorted(b1_states))
+    beyond = sorted(l["slug"] for l in b1_authored if l.get("beyond_statutory"))
+    check("exactly two B1 lessons are beyond_statutory, as authored (MRB-199)",
+          beyond == ["enzymes-and-rate", "stem-cells-and-meristems"],
+          str(beyond))
+    check("beyond_statutory is present and explicit on every B1 lesson",
+          all("beyond_statutory" in l for l in b1_authored),
+          "review-pack ruling 3: absent is a defect")
+
     manual("examiner-reviewed → frozen",
            "Mide's science gate (§5.10). Cannot be automated; the slice stops here.")
 
@@ -126,12 +149,13 @@ def main():
     # real students return, and only with a visible marker. Both halves are
     # checked here so the carve-out cannot lapse silently: after the expiry the
     # rule flips and this check starts failing on any unfrozen published lesson.
-    unfrozen = [l for l in authored if l.get("review_state") != "frozen"]
+    unfrozen = [(u, l) for u, l in all_authored
+                if l.get("review_state") != "frozen"]
     if unfrozen:
         missing_marker = []
-        for l in unfrozen:
+        for u, l in unfrozen:
             page = ("mrbadmus_site/ks3/%s/%s/%s.html"
-                    % (c1["discipline"], c1["slug"], l["slug"]))
+                    % (u["discipline"], u["slug"], l["slug"]))
             html = open(page).read() if os.path.exists(page) else ""
             if "ks3-review-flag" not in html:
                 missing_marker.append(l["slug"])
@@ -150,7 +174,8 @@ def main():
                   "expired %s; %d lesson(s) still draft and still publishing: %s. "
                   "Freeze them or revert them to coming-soon slots (architecture "
                   "§5.10). Extending the carve-out needs an explicit §12 amendment."
-                  % (CARVE_OUT_EXPIRY, len(unfrozen), [l["slug"] for l in unfrozen]))
+                  % (CARVE_OUT_EXPIRY, len(unfrozen),
+                     [l["slug"] for _, l in unfrozen]))
 
     # 2. Register exists with C1's statements owned exactly once.
     check("statutory register exists",
@@ -613,11 +638,17 @@ def main():
     print("        balance beats unit coherence — see RULED TRADE-OFF in "
           "ks3_data/half_terms.py")
 
-    print("\n§10.2 — per-lesson done-list (automatable subset)\n" + "=" * 60)
+    print("\n§10.2 — per-lesson done-list (automatable subset, C1 + B1)\n"
+          + "=" * 60)
 
-    for l in authored:
+    for _u, l in all_authored:
         pre = "  [%s]" % l["slug"]
-        ok_cov = bool(l.get("covers"))
+        # §10.2's covers rule has two legal halves: non-empty covers, OR
+        # §7.6's declared exemption — beyond_statutory with covers EMPTY
+        # and ks4_links non-empty. First exercised by B1 L7/L8 (MRB-199).
+        ok_cov = bool(l.get("covers")) or (
+            bool(l.get("beyond_statutory")) and not l.get("covers")
+            and bool(l.get("ks4_links")))
         ok_mis = bool(l.get("misconceptions"))
         ok_voc = bool(l.get("vocabulary"))
         ok_lad = set((l.get("ladder") or {})) >= {"recall", "apply", "explain", "produce"}
@@ -750,6 +781,16 @@ def main():
           "; ".join(struct_notes) if not struct_problems
           else "%d problem(s): %s" % (len(struct_problems),
                                       "; ".join(struct_problems[:3])))
+
+    # MRB-198 — the canvas paints text and state marks with token colours
+    # layer D cannot reach through CSS; the pairs are computed from
+    # tokens.css itself, the same file the canvas reads via cssVar().
+    canvas_problems, canvas_rows = PARITY.check_canvas_contrast(".")
+    check("D0 · canvas-drawn sim marks hold contrast (computed from tokens)",
+          not canvas_problems,
+          "%d pairs, worst %.2f:1"
+          % (len(canvas_rows), min((r[1] for r in canvas_rows), default=0))
+          if not canvas_problems else "; ".join(canvas_problems[:3]))
 
     try:
         import ks3_browser

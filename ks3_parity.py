@@ -76,8 +76,10 @@ Provenance for every number in ``COMPONENTS`` below is
 ``docs/ks3/design-reference/SPEC.md``, which cites the artifact it came from.
 """
 
+import json
 import os
 import re
+from html import unescape as _unescape
 
 REF_DIR = os.path.join("docs", "ks3", "design-reference")
 ARTIFACTS = (
@@ -262,6 +264,46 @@ def check_structure(ks3_root):
                         "R12: %s renders an EMPTY %s layer — an empty layer "
                         "must render nothing at all" % (rel, head))
 
+        # MRB-198 — every sim, statically: the R5 cover present, the
+        # control panel emitted EMPTY (the JS builds it; placeholder text
+        # is a promise the page cannot keep). For the two payload-carrying
+        # kinds: an aria-label that actually narrates the mechanism — not
+        # a stub, because it is the only description a non-sighted student
+        # gets — and a parseable, non-empty payload. A gutted SIM_ARIA
+        # entry or a dropped payload attribute fails HERE, by name.
+        for m in re.finditer(r'<div class="ks3-sim" data-sim="([a-z-]+)"'
+                             r'[^>]*>', html):
+            kind = m.group(1)
+            attrs = m.group(0)
+            window = html[m.start():m.start() + 6000]
+            if '<div class="ks3-sim-controls"></div>' not in window:
+                problems.append("SIM: %s %s — control panel not emitted "
+                                "empty" % (rel, kind))
+            if 'class="ks3-sim-cover"' not in window:
+                problems.append("SIM: %s %s — missing the R5 cover"
+                                % (rel, kind))
+            if kind in ("microscope", "system-parts"):
+                am = re.search(r'aria-label="([^"]*)"', window)
+                aria = _unescape(am.group(1)) if am else ""
+                if not aria.startswith("Animation:") or len(aria) < 120:
+                    problems.append(
+                        "SIM: %s %s — aria-label missing or gutted "
+                        "(%d chars); it must narrate the mechanism"
+                        % (rel, kind, len(aria)))
+                pattr = ("data-specimens" if kind == "microscope"
+                         else "data-parts")
+                pm = re.search(pattr + r'="([^"]*)"', attrs)
+                try:
+                    payload = json.loads(_unescape(pm.group(1))) if pm else []
+                except ValueError:
+                    payload = []
+                if not payload:
+                    problems.append(
+                        "SIM: %s %s — no parseable %s payload; the "
+                        "instrument would render an empty %s"
+                        % (rel, kind, pattr,
+                           "slide" if kind == "microscope" else "system"))
+
     return (problems, notes)
 
 
@@ -277,11 +319,23 @@ def check_structure(ks3_root):
 TOL_PX = 1.0
 
 LESSON = "chemistry/particles-and-their-behaviour/gas-pressure.html"
+# MRB-198 — the two new instrument kinds, each gated on the page whose
+# payload exercises it hardest: the microscope on L2 (three slides), and
+# system-parts on L5 (five levels of a stomach, including the one_of_many
+# scale rule). Both sims sit in dark `practical` shells in B1, so the new
+# kinds' locked covers, captions, controls and readouts are all measured
+# on the ink-dark ground here; the amber-ground cover pair stays measured
+# on the C1 lesson above.
+B1_MICRO = "biology/cells-and-organisation/using-a-microscope.html"
+B1_PARTS = "biology/cells-and-organisation/levels-of-organisation.html"
 UNIT = "chemistry/particles-and-their-behaviour/index.html"
 # C1 is fully authored, so its index carries no Coming soon badge; and B3 is
 # the ONLY unit in the key stage with a §4.6 reference slot, so it is the only
 # page where the pointer can be measured at all.
-UNIT_SOON = "biology/cells-and-organisation/index.html"
+# UNIT_SOON moved off B1 when MRB-198 landed Design's B1 content — a fully
+# authored unit has no coming-soon rows to measure. B2 is the next unit in
+# the same discipline with none of its lessons authored.
+UNIT_SOON = "biology/movement-skeleton-and-muscles/index.html"
 UNIT_REF = "biology/nutrition-and-digestion/index.html"
 LANDING = "index.html"
 YEAR = "year-7/index.html"
@@ -476,6 +530,36 @@ COMPONENTS = [
                 "border-top-left-radius": "20px"}),
     dict(name="sim live figure is mono", on=LESSON, sel=".ks3-sim-figure",
          props={"font-family": "DM Mono", "font-weight": "500"}),
+
+    # ── MRB-198: the two new instrument kinds ──
+    dict(name="microscope canvas (dark practical shell)", on=B1_MICRO,
+         sel='.ks3-sim[data-sim="microscope"] .ks3-sim-canvas',
+         props={"background-color": "#F7EFE1", "border-top-color": "#C6B9A7",
+                "border-top-left-radius": "20px"}),
+    dict(name="system-parts canvas (dark practical shell)", on=B1_PARTS,
+         sel='.ks3-sim[data-sim="system-parts"] .ks3-sim-canvas',
+         props={"background-color": "#F7EFE1", "border-top-color": "#C6B9A7",
+                "border-top-left-radius": "20px"}),
+    # The control panel only exists in the DOM once built and only shows
+    # once unlocked (R5), so these run in the page's after-unlock pass.
+    dict(name="microscope control label on dark ground", on=B1_MICRO,
+         sel=".ks3-practical .ks3-sim-control", drive="sim-unlocked",
+         props={"font-size": "17px", "font-weight": "600",
+                "color": "#E7DECE"}),
+    dict(name="microscope specimen select", on=B1_MICRO,
+         sel=".ks3-practical .ks3-sim-control select", drive="sim-unlocked",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "font-size": "17px", "min-height": "44px",
+                "border-top-left-radius": "14px", "color": "#221E1B"}),
+    dict(name="microscope focus wheel takes the accent", on=B1_MICRO,
+         sel='.ks3-practical .ks3-sim-control input[type="range"]',
+         drive="sim-unlocked",
+         props={"accent-color": "#E4572E", "height": "44px"}),
+    dict(name="system-parts part selector", on=B1_PARTS,
+         sel=".ks3-practical .ks3-sim-control select", drive="sim-unlocked",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "font-size": "17px", "min-height": "44px",
+                "border-top-left-radius": "14px", "color": "#221E1B"}),
 
     # ── layers ──
     dict(name="stretch layer is violet", on=LESSON, sel=".ks3-stretch .ks3-layer-body",
@@ -694,6 +778,39 @@ CONTRAST = [
     dict(name="cross-reference badge on its tint", on=UNIT_REF,
          fg=".ks3-lesson-row.is-ref .ks3-badge",
          bg=".ks3-lesson-row.is-ref .ks3-badge", need=4.5),
+    # ── MRB-198: the new kinds' surfaces, measured on their real dark
+    #    ground. Cover pairs run LOCKED; control/readout pairs run in the
+    #    after-unlock pass because R5 hides both until the prediction. ──
+    dict(name="microscope locked cover on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-cover",
+         bg=".ks3-practical .ks3-sim-cover", need=4.5),
+    dict(name="microscope caption on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-caption", bg=".ks3-practical", need=4.5),
+    dict(name="microscope control label on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-control", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
+    dict(name="microscope select text on its own ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-control select",
+         bg=".ks3-practical .ks3-sim-control select", need=4.5,
+         drive="sim-unlocked"),
+    dict(name="microscope readout on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-readout", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
+    dict(name="system-parts locked cover on dark ground", on=B1_PARTS,
+         fg=".ks3-practical .ks3-sim-cover",
+         bg=".ks3-practical .ks3-sim-cover", need=4.5),
+    dict(name="system-parts caption on dark ground", on=B1_PARTS,
+         fg=".ks3-practical .ks3-sim-caption", bg=".ks3-practical", need=4.5),
+    dict(name="system-parts control label on dark ground", on=B1_PARTS,
+         fg=".ks3-practical .ks3-sim-control", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
+    dict(name="system-parts select text on its own ground", on=B1_PARTS,
+         fg=".ks3-practical .ks3-sim-control select",
+         bg=".ks3-practical .ks3-sim-control select", need=4.5,
+         drive="sim-unlocked"),
+    dict(name="system-parts readout on dark ground", on=B1_PARTS,
+         fg=".ks3-practical .ks3-sim-readout", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
     # identifying / state-bearing marks — 3:1 is the bar (R1)
     dict(name="MARK block border on page ground", on=LESSON,
          fg=".ks3-check", bg="body", need=3.0, prop="border-top-color"),
@@ -710,6 +827,53 @@ CONTRAST = [
          fg=".ks3-check .ks3-option", bg="body", need=3.0,
          prop="outline-color", force_focus=True),
 ]
+
+
+# ── MRB-198: canvas-drawn marks — the pairs CSS cannot measure ───────────
+#
+# The two new instruments paint text and state marks straight onto the
+# canvas with token colours read via cssVar(). Layer D reads resolved CSS
+# and cannot see canvas pixels, so these pairs are computed HERE, from the
+# same tokens.css the canvas reads. `overrides` exists so the checker
+# itself can be mutation-tested: feed it a broken value and it must fail.
+
+CANVAS_PAIRS = (
+    ("part name ink on a working node", "--ks3-ink", "--ks3-card", 4.5),
+    ("part name ink on a stopped node", "--ks3-ink", "--ks3-option-spent", 4.5),
+    ("stopped hatch + stop-mark ink on spent fill", "--ks3-ink",
+     "--ks3-option-spent", 3.0),
+    ("origin accent border on canvas ground", "--ks3-accent",
+     "--ks3-inset", 3.0),
+    ("origin accent border against a node", "--ks3-accent",
+     "--ks3-card", 3.0),
+    ("microscope drawn ink on the bright field", "--ks3-ink",
+     "--ks3-card", 4.5),
+    ("Euglena's biology green on the bright field", "--ks3-biology",
+     "--ks3-card", 3.0),
+)
+
+
+def check_canvas_contrast(repo_root=".", overrides=None):
+    """Returns (problems, rows). rows = (name, ratio, need, ok)."""
+    tokens = ks3_token_colours(repo_root)
+    if overrides:
+        tokens = dict(tokens, **overrides)
+    problems, rows = [], []
+    for name, fg, bg, need in CANVAS_PAIRS:
+        f = parse_rgb(tokens.get(fg, ""))
+        g = parse_rgb(tokens.get(bg, ""))
+        if f is None or g is None:
+            problems.append("canvas pair %r: token %s or %s missing from "
+                            "tokens.css" % (name, fg, bg))
+            continue
+        ratio = contrast(f, g)
+        ok = ratio >= need - 0.005
+        rows.append((name, ratio, need, ok))
+        if not ok:
+            problems.append(
+                "CANVAS CONTRAST FAIL: %s — %.2f:1 against %.1f:1 required "
+                "(%s on %s)" % (name, ratio, need, fg, bg))
+    return (problems, rows)
 
 
 # ── colour maths ─────────────────────────────────────────────────────────
@@ -892,6 +1056,34 @@ DRIVES = {
   return "";
 })()
 """,
+    # R5 hides a sim's control panel and readout behind a cover until the
+    # student has committed a prediction, so every control, label, select and
+    # readout pair can only be measured on an unlocked panel — and the cover's
+    # own pairs only on a locked one. MRB-198 carried these specs as
+    # `after_unlock` flags with a bespoke second pass; they are drives here
+    # instead, which buys the fresh load, the settle, the console drain and the
+    # "could not reach its state" failure that every other driven state gets.
+    #
+    # Unlocking goes through the sim's OWN activity option (Law 4) rather than
+    # by stripping data-locked: the cover comes off the way a student takes it
+    # off, so a regression in the unlock path fails here instead of being
+    # measured around.
+    "sim-unlocked": r"""
+(function () {
+  var sims = document.querySelectorAll('.ks3-sim[data-locked="1"]');
+  if (!sims.length) { return "no locked sim on the page"; }
+  for (var i = 0; i < sims.length; i++) {
+    var act = sims[i].closest('[data-activity]');
+    var opt = act && act.querySelector('.ks3-option');
+    if (opt) { opt.click(); }
+  }
+  var still = document.querySelectorAll('.ks3-sim[data-locked="1"]');
+  if (still.length) {
+    return still.length + " sim(s) still locked after clicking their activity option";
+  }
+  return "";
+})()
+""",
 }
 
 
@@ -1008,6 +1200,190 @@ _JS_GLYPH_AUDIT = r"""
            svgMarks: document.querySelectorAll('svg.ks3-mark').length };
 })()
 """
+
+
+# ── MRB-198: the sim audits — behaviour, gated in a real browser ─────────
+#
+# Layer C proves the controls LOOK right; these prove the instruments DO
+# what the lesson teaches. Each runs on a real generated page: first the
+# R5 locked contract, then Law 4's unlock (an option inside the sim's own
+# activity), then the mechanism itself, asserted through the WRITTEN
+# readout — deliberately, because R6 makes the written readout carry the
+# whole result, so if these strings are right the reduced-motion
+# experience is right too. Every expected figure below is the model's,
+# not a screenshot's: ×40 ↔ 4.5 mm and ×400 ↔ 0.45 mm are fov = 180/mag.
+
+_JS_R5_CHECKS = r"""
+  function r5(sim, kind, P) {
+    function disp(s) {
+      var el = sim.querySelector(s);
+      return el ? getComputedStyle(el).display : "MISSING";
+    }
+    if (sim.getAttribute('data-locked') !== '1') {
+      P.push(kind + ": not locked on load - the Law 4 gate did not engage");
+      return;
+    }
+    if (disp('.ks3-sim-cover') === 'none') {
+      P.push(kind + " R5: locked cover not shown");
+    }
+    if (disp('.ks3-sim-controls') !== 'none') {
+      P.push(kind + " R5: control panel visible while locked - it must be hidden entirely");
+    }
+    if (disp('.ks3-sim-readout') !== 'none') {
+      P.push(kind + " R5: readout visible while locked");
+    }
+    if (disp('.ks3-sim-caption') === 'none') {
+      P.push(kind + " R5: caption hidden while locked - it holds the prediction instructions");
+    }
+    var filt = getComputedStyle(sim.querySelector('.ks3-sim-canvas')).filter;
+    if (filt.indexOf('blur') < 0) {
+      P.push(kind + " R5: canvas not blurred while locked (filter=" + filt + ")");
+    }
+  }
+  function unlockViaOwnActivity(sim, kind, P) {
+    var act = sim.closest('[data-activity]');
+    var opt = act && act.querySelector('.ks3-option');
+    if (!opt) {
+      P.push(kind + ": no .ks3-option inside its own [data-activity] - Law 4 has nothing to gate on");
+      return false;
+    }
+    opt.click();
+    if (sim.getAttribute('data-locked') === '1') {
+      P.push(kind + ": still locked after an option in its own activity was pressed");
+      return false;
+    }
+    return true;
+  }
+  function controlsRendered(sim, kind, P) {
+    var wanted = (sim.getAttribute('data-controls') || '').split(',');
+    var built = sim.querySelectorAll('.ks3-sim-controls .ks3-sim-control');
+    if (built.length !== wanted.length) {
+      P.push(kind + ": " + wanted.length + " controls declared, " + built.length
+             + " rendered - SIM_CONTROLS and CONTROL_LABELS have drifted apart");
+    }
+    var bad = 0;
+    for (var i = 0; i < built.length; i++) {
+      var input = built[i].querySelector('select, input');
+      var forId = built[i].getAttribute('for');
+      if (!input || !forId || input.id !== forId
+          || !built[i].textContent.trim()) { bad++; }
+    }
+    if (bad) {
+      P.push(kind + " R15: " + bad + " control(s) lack a real labelled input");
+    }
+    if (sim.querySelector('[data-correct]')) {
+      P.push(kind + " R3: a data-correct mark inside the instrument");
+    }
+  }
+"""
+
+_JS_MICRO_AUDIT = "(function () {" + _JS_R5_CHECKS + r"""
+  var P = [];
+  var sim = document.querySelector('.ks3-sim[data-sim="microscope"]');
+  if (!sim) { return { problems: ["no microscope sim on the page"] }; }
+  r5(sim, "microscope", P);
+  if (!unlockViaOwnActivity(sim, "microscope", P)) { return { problems: P }; }
+  controlsRendered(sim, "microscope", P);
+
+  var sels = sim.querySelectorAll('.ks3-sim-controls select');
+  var specSel = sels[0], magSel = sels[1];
+  var focusInput = sim.querySelector('.ks3-sim-controls input[type="range"]');
+  var readout = sim.querySelector('.ks3-sim-readout');
+  var specimens = [];
+  try { specimens = JSON.parse(sim.getAttribute('data-specimens') || '[]'); }
+  catch (e) {}
+  if (!specSel || specSel.options.length !== specimens.length) {
+    P.push("microscope: specimen select offers "
+           + (specSel ? specSel.options.length : 0) + " slides, payload has "
+           + specimens.length);
+  }
+  if (!magSel || magSel.options.length !== 3) {
+    P.push("microscope: magnification select must offer the three objectives");
+  }
+  if (!focusInput) { P.push("microscope: no focus wheel rendered"); }
+
+  var r40 = readout.textContent;
+  if (r40.indexOf('×40') < 0 || r40.indexOf('4.5 mm') < 0) {
+    P.push("microscope model: at the lowest lens the readout must carry ×40 "
+           + "and a 4.5 mm field of view - got: " + r40.slice(0, 90));
+  }
+  if (magSel && focusInput) {
+    magSel.value = '2';
+    magSel.dispatchEvent(new Event('change'));
+    var r400 = readout.textContent;
+    if (r400.indexOf('×400') < 0 || r400.indexOf('0.45 mm') < 0) {
+      P.push("microscope model (b): at ×400 the field of view must read "
+             + "0.45 mm - one model drives every reading. got: "
+             + r400.slice(0, 90));
+    }
+    if (!/focus/i.test(r400) || /packed in rows/.test(r400)) {
+      P.push("microscope model (c): stepping ×40 to ×400 must throw the "
+             + "image out of focus until corrected - got: " + r400.slice(0, 120));
+    }
+    focusInput.value = '8';
+    focusInput.dispatchEvent(new Event('input'));
+    var r3 = readout.textContent;
+    if (!/onion cell/.test(r3) || /nowhere near|nothing sharp/.test(r3)) {
+      P.push("microscope model: correcting the focus at ×400 must bring "
+             + "the onion layer sharp - got: " + r3.slice(0, 120));
+    }
+  }
+  return { problems: P };
+})()"""
+
+_JS_PARTS_AUDIT = "(function () {" + _JS_R5_CHECKS + r"""
+  var P = [];
+  var sim = document.querySelector('.ks3-sim[data-sim="system-parts"]');
+  if (!sim) { return { problems: ["no system-parts sim on the page"] }; }
+  r5(sim, "system-parts", P);
+  if (!unlockViaOwnActivity(sim, "system-parts", P)) { return { problems: P }; }
+  controlsRendered(sim, "system-parts", P);
+
+  var parts = [];
+  try { parts = JSON.parse(sim.getAttribute('data-parts') || '[]'); }
+  catch (e) {}
+  var sel = sim.querySelector('.ks3-sim-controls select');
+  var readout = sim.querySelector('.ks3-sim-readout');
+  if (!sel || sel.options.length !== parts.length + 1) {
+    P.push("system-parts: the selector must offer every part plus "
+           + "'every part on' - " + (sel ? sel.options.length : 0)
+           + " options for " + parts.length + " parts");
+    return { problems: P };
+  }
+
+  // The cascade is DERIVED: kill the muscle tissue and the failure must
+  // climb the levels, in order, all the way to the organism - and the
+  // glandular side must be reported still working.
+  sel.value = 'muscle-tissue';
+  sel.dispatchEvent(new Event('change'));
+  var r = readout.textContent;
+  if (!(/Stopped, in the order/.test(r) && /Stomach/.test(r)
+        && /Digestive system/.test(r) && /organism/i.test(r))) {
+    P.push("system-parts cascade: switching off the muscle tissue must stop "
+           + "the stomach, the digestive system and the organism in order - "
+           + "got: " + r.slice(0, 160));
+  }
+  if (!/Still working/.test(r) || !/Gland/i.test(r)) {
+    P.push("system-parts cascade: the readout must also carry what still "
+           + "works - got: " + r.slice(0, 160));
+  }
+
+  // The scale rule: one cell out of thousands is absorbed, never cascaded.
+  sel.value = 'muscle-cell';
+  sel.dispatchEvent(new Event('change'));
+  var r2 = readout.textContent;
+  if (/Stopped, in the order/.test(r2) || !/cover for it/.test(r2)) {
+    P.push("system-parts scale rule: switching off ONE muscle cell must be "
+           + "absorbed by the tissue (one_of_many), not cascaded - got: "
+           + r2.slice(0, 160));
+  }
+  return { problems: P };
+})()"""
+
+SIM_AUDITS = {
+    B1_MICRO: ("microscope", _JS_MICRO_AUDIT),
+    B1_PARTS: ("system-parts", _JS_PARTS_AUDIT),
+}
 
 
 def check_rendered_glyphs(page):
@@ -1354,6 +1730,28 @@ def run_browser_layers(ks3_root, browser_mod):
                              % (len(ginfo["before"]), len(ginfo["after"]),
                                 ginfo["feedbackShown"], ginfo["svgMarks"]),
                              not gl))
+
+                # ── MRB-198: the sim audits — behaviour, not appearance ──
+                # An instrument's physics is not measurable as computed style,
+                # so each kind carries a behavioural audit that asserts the R5
+                # cover, unlocks through the sim's own activity, then drives the
+                # mechanism and reads what it says. Its own fresh load, because
+                # it clicks and it changes the readout.
+                if rel in SIM_AUDITS:
+                    audit_kind, audit_js = SIM_AUDITS[rel]
+                    page = fresh(b, url, rel)
+                    if page is not None:
+                        got = page.eval(audit_js)
+                        audit_problems = (got or {}).get("problems") or []
+                        for ap in audit_problems:
+                            problems.append("SIM AUDIT (/%s): %s" % (rel, ap))
+                        drain_console(page, rel,
+                                      " during the %s sim audit" % audit_kind)
+                        style_rows.append(
+                            ("sim audit · " + audit_kind,
+                             "behavioural assertions", "0 problems",
+                             "%d problem(s)" % len(audit_problems),
+                             not audit_problems))
     finally:
         server.shutdown()
 
