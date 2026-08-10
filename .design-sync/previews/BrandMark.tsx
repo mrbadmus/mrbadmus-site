@@ -6,7 +6,7 @@ import { BrandMark } from 'mrbadmus-3d-studio'
 const wordmark: React.CSSProperties = {
   font: "600 18px/1 'Bricolage Grotesque', sans-serif",
   letterSpacing: '-0.025em',
-  color: '#1A140E',
+  color: '#1A1714',
 }
 
 export const WithWordmark = () => (

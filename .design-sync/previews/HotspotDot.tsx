@@ -16,7 +16,7 @@ const paper: React.CSSProperties = {
   height: 110,
   borderRadius: 11,
   background: '#FFFDF8',
-  border: '1px solid #E4D6BF',
+  border: '1px solid #E0D2B9',
 }
 
 export const Closed = () => (
