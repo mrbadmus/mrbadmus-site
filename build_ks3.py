@@ -38,6 +38,7 @@ changes nothing else, which is the property §9's reorder proof already tests.
 
 import hashlib
 import html
+import json
 import os
 import re
 import shutil
@@ -491,7 +492,26 @@ def r_cards(cards):
 # the two must agree, and r_sim() fails the build if a lesson names anything
 # else. See the comment in r_sim for why this is validated rather than passed
 # through.
-SIM_CONTROLS = ("temperature", "volume", "particles", "medium")
+SIM_CONTROLS = ("temperature", "volume", "particles", "medium",
+                # MRB-198 — the four names B1's two instruments declare.
+                "specimen", "magnification", "focus", "part")
+
+# MRB-198 — the microscope's slide models. Authored `specimens[]` entries are
+# free student-facing text ("onion skin — coverslip dropped flat"), but each
+# must classify to a slide model shared/ks3.js actually draws, else the select
+# offers a slide the canvas renders as an empty circle and nothing says so —
+# the same silent-defect class the SIM_CONTROLS gate exists for. The keyword
+# rule here is THE SAME ONE `specimenKind()` applies in shared/ks3.js; the
+# two must agree, and the parity gate's sim audit checks the rendered result.
+def _specimen_kind(name):
+    n = str(name).lower()
+    if "pond" in n:
+        return "pond"
+    if "cheek" in n:
+        return "cheek"
+    if "onion" in n:
+        return "bubbles" if ("dropped" in n or "bubble" in n) else "onion"
+    return None
 
 SIM_ARIA = {
     "particle-states":
@@ -513,6 +533,24 @@ SIM_ARIA = {
         "Orange particles cross to the right while blue ones cross to the "
         "left, both at once, until the two groups are mixed. The readout "
         "below the animation counts the crossings in each direction in words.",
+    # MRB-198 — both authored by Claude Design in biology_b1_cells.py's
+    # instrument spec, used verbatim. They narrate the MECHANISM, not the
+    # picture, because this label is the only description a non-sighted
+    # student gets.
+    "microscope":
+        "Animation: the view down a light microscope. Turning the "
+        "magnification up makes everything larger but shows a smaller circle "
+        "of the slide, and the image blurs until the focus is corrected. "
+        "Turning the focus moves down through the thickness of the specimen, "
+        "so different layers come sharp in turn. The readout below the "
+        "animation gives the total magnification and the width of the field "
+        "of view in words.",
+    "system-parts":
+        "Animation: a set of labelled parts that work together. Switching "
+        "one part off makes every part that depends on it stop in turn, "
+        "spreading outwards from the part that was switched off. The readout "
+        "below the animation lists what still works and what has stopped, "
+        "in words.",
 }
 
 
@@ -565,8 +603,83 @@ def r_sim(sim, act_id):
                ", ".join(sorted(SIM_CONTROLS))))
     controls = ",".join(str(c) for c in (sim.get("controls") or []))
     label = (SIM_ARIA[kind] + " " + caption).strip()
+
+    # MRB-198 — payload-carrying kinds. The payload is VALIDATED here, not
+    # passed through, for the same reason the controls are: a payload the JS
+    # cannot draw (an unknown slide, a `needs` edge pointing nowhere, a
+    # dependency cycle that would never finish propagating) renders as a
+    # control panel promising things the canvas cannot honour. Serialised as
+    # JSON into a data attribute; shared/ks3.js parses it back.
+    extra = ""
+    if kind == "microscope":
+        specimens = sim.get("specimens") or []
+        if not specimens:
+            raise ValueError(
+                "Activity %r declares a microscope sim with no specimens[] — "
+                "the specimen selector would be an empty <select>." % act_id)
+        unknown_slides = [s for s in specimens if _specimen_kind(s) is None]
+        if unknown_slides:
+            raise ValueError(
+                "Activity %r offers specimen(s) %s that shared/ks3.js has no "
+                "slide model for (specimenKind() knows onion / onion-with-"
+                "bubbles / cheek / pond). Either name the slide so it "
+                "classifies, or teach ks3.js to draw it — a slide that "
+                "renders as an empty field of view is a defect."
+                % (act_id, ", ".join(repr(s) for s in unknown_slides)))
+        extra = ' data-specimens="%s"' % e(json.dumps(
+            [str(s) for s in specimens], sort_keys=True))
+    elif kind == "system-parts":
+        parts = sim.get("parts") or []
+        if not parts:
+            raise ValueError(
+                "Activity %r declares a system-parts sim with no parts[] — "
+                "there would be nothing to switch off." % act_id)
+        ids = [p.get("id") for p in parts]
+        if len(ids) != len(set(ids)) or not all(ids):
+            raise ValueError(
+                "Activity %r has missing or duplicate part ids: %r"
+                % (act_id, ids))
+        for p in parts:
+            if not p.get("name") or not p.get("job"):
+                raise ValueError(
+                    "Activity %r part %r needs both a name and a job — the "
+                    "canvas labels parts by name and the readout narrates "
+                    "the job." % (act_id, p.get("id")))
+            bad = [n for n in (p.get("needs") or []) if n not in ids]
+            if bad:
+                raise ValueError(
+                    "Activity %r part %r needs %s, which is not a declared "
+                    "part — the cascade is derived from these edges and a "
+                    "dangling edge is a knock-on that silently never happens."
+                    % (act_id, p["id"], ", ".join(repr(b) for b in bad)))
+        # The cascade terminates because the graph is acyclic. Prove it now:
+        # a cycle would hang the propagation in every student's browser.
+        needs_of = {p["id"]: list(p.get("needs") or []) for p in parts}
+        WHITE, GREY, BLACK = 0, 1, 2
+        state = {i: WHITE for i in needs_of}
+
+        def _visit(n, trail):
+            state[n] = GREY
+            for m in needs_of[n]:
+                if state[m] == GREY:
+                    raise ValueError(
+                        "Activity %r has a dependency cycle: %s — the "
+                        "failure cascade would propagate forever."
+                        % (act_id, " → ".join(trail + [m])))
+                if state[m] == WHITE:
+                    _visit(m, trail + [m])
+            state[n] = BLACK
+
+        for i in sorted(needs_of):
+            if state[i] == WHITE:
+                _visit(i, [i])
+        payload = [{k: p[k] for k in ("id", "name", "job", "needs",
+                                      "one_of_many") if k in p}
+                   for p in parts]
+        extra = ' data-parts="%s"' % e(json.dumps(payload, sort_keys=True))
+
     return (
-        '<div class="ks3-sim" data-sim="%s" data-controls="%s">'
+        '<div class="ks3-sim" data-sim="%s" data-controls="%s"%s>'
         '<canvas class="ks3-sim-canvas" width="560" height="220" role="img" '
         'aria-label="%s"></canvas>'
         '<p class="ks3-sim-cover">Make your prediction first — then the lab '
@@ -575,7 +688,7 @@ def r_sim(sim, act_id):
         '<p class="ks3-sim-readout" role="status"></p>'
         '<p class="ks3-sim-caption">%s</p>'
         '</div>'
-        % (e(kind), e(controls), e(label), t(caption)))
+        % (e(kind), e(controls), extra, e(label), t(caption)))
 
 
 def _option_li(i, text, extra=""):
@@ -1466,9 +1579,31 @@ def validate(units, registry):
             if r not in registry:
                 problems.append("UNKNOWN PREREQUISITE: %s requires %r" % (slug, r))
 
-    # 3. Every authored lesson has non-empty `covers` (§10.2).
+    # 3. Every authored lesson has non-empty `covers` (§10.2) — unless it
+    #    carries §7.6's declared exemption. The exemption is never quietly
+    #    relaxed rules; it is the OTHER legal shape, all three legs enforced:
+    #    `beyond_statutory: True`, `covers` EMPTY (a beyond-statutory lesson
+    #    that owns a statement is a contradiction and a build failure, §7.6
+    #    rule 2), and `ks4_links` non-empty (rule 3 — a beyond-statutory
+    #    lesson pointing nowhere is just off-spec content; resolution is
+    #    checked by check_ks4_links as for every lesson). First exercised by
+    #    B1's stem-cells-and-meristems and enzymes-and-rate (MRB-199).
     for slug, l in sorted(registry.items()):
-        if l.get("authored") and not l.get("covers"):
+        if not l.get("authored"):
+            continue
+        if l.get("beyond_statutory"):
+            if l.get("covers"):
+                problems.append(
+                    "BEYOND-STATUTORY LESSON OWNS A STATEMENT: %s declares "
+                    "beyond_statutory yet covers %s — §7.6 rule 2 says covers "
+                    "MUST be empty; off-spec content never enters the "
+                    "coverage register" % (slug, l["covers"]))
+            if not l.get("ks4_links"):
+                problems.append(
+                    "BEYOND-STATUTORY LESSON POINTS NOWHERE: %s has no "
+                    "ks4_links — §7.6 rule 3 requires at least one, or it is "
+                    "just off-spec content" % slug)
+        elif not l.get("covers"):
             problems.append("EMPTY COVERS: %s (§10.2 requires non-empty)" % slug)
 
     # 4. Exactly-once ownership over subject-content statements/clauses (§4.4
