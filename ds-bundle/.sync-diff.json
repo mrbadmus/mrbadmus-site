@@ -1,0 +1,53 @@
+{
+  "styleChanged": false,
+  "anchorUsed": false,
+  "anchorReason": "not_provided",
+  "keyedBy": "renderHashes",
+  "unchanged": [],
+  "changed": [],
+  "added": [
+    "BrandMark",
+    "HotspotDot",
+    "InfoPanel",
+    "LibraryColumn",
+    "LibraryDrawer",
+    "LibraryFullScreen",
+    "ModeToggle",
+    "PhoneSheet",
+    "QualityChip",
+    "QualityPanel",
+    "RetrievalPanel",
+    "Stage",
+    "TabletPanel",
+    "ToolIcon",
+    "ToolRail",
+    "TopBar"
+  ],
+  "removed": [],
+  "renderChurned": [],
+  "upload": {
+    "any": true,
+    "components": [
+      "BrandMark",
+      "HotspotDot",
+      "InfoPanel",
+      "LibraryColumn",
+      "LibraryDrawer",
+      "LibraryFullScreen",
+      "ModeToggle",
+      "PhoneSheet",
+      "QualityChip",
+      "QualityPanel",
+      "RetrievalPanel",
+      "Stage",
+      "TabletPanel",
+      "ToolIcon",
+      "ToolRail",
+      "TopBar"
+    ],
+    "deletePaths": [],
+    "bundle": true,
+    "styling": true,
+    "aux": true
+  }
+}

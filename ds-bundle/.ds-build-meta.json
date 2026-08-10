@@ -1,0 +1,12 @@
+{
+  "namespace": "MrBadmusDS",
+  "source": "mrbadmus-3d-studio@0.1.0",
+  "shape": "package",
+  "provider": null,
+  "componentCount": 16,
+  "skippedStoryIds": [],
+  "runtimeFontPrefixes": [
+    "Space Grotesk",
+    "IBM Plex"
+  ]
+}

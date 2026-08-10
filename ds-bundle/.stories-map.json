@@ -1,0 +1,160 @@
+{
+  "global": "MrBadmusDS",
+  "pkg": "mrbadmus-3d-studio",
+  "pkgDir": "/Users/midebadmus/Documents/GitHub/mrbadmus-worktrees/3d-studio/3d-studio/node_modules/mrbadmus-3d-studio",
+  "extraEntries": [
+    "./src/renderer/placeholder.ts"
+  ],
+  "exported": [
+    "BrandMark",
+    "HotspotDot",
+    "InfoPanel",
+    "LibraryColumn",
+    "LibraryDrawer",
+    "LibraryFullScreen",
+    "ModeToggle",
+    "PhoneSheet",
+    "QualityChip",
+    "QualityPanel",
+    "RetrievalPanel",
+    "Stage",
+    "TabletPanel",
+    "ToolIcon",
+    "ToolRail",
+    "TopBar",
+    "createPlaceholderRenderer"
+  ],
+  "storybookStatic": null,
+  "keyRecipe": 7,
+  "cfgSliceGlobal": "8b64459bd42cea8bc6058418d5074f5e50227451fa068ba96bf60ddb7d4b72fd",
+  "components": [
+    {
+      "name": "BrandMark",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "27fe6e0932409ff1",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "HotspotDot",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "f42617367c42c917",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "InfoPanel",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "bb37b400dbcaa1e7",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "LibraryColumn",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "1697e69338d7d3d3",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "LibraryDrawer",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "b689e44e07f3c736",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "LibraryFullScreen",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "b689e44e07f3c736",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "ModeToggle",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "b689e44e07f3c736",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "PhoneSheet",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "f029f50b8b9b4607",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "QualityChip",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "45af93c5e0f68908",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "QualityPanel",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "b69f87ab1d1cb28f",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "RetrievalPanel",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "471d9f3c466b5362",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "Stage",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "b689e44e07f3c736",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "TabletPanel",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "b689e44e07f3c736",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "ToolIcon",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "b689e44e07f3c736",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "ToolRail",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "02256b01f9adad69",
+      "cfgSlice": "5ff899b099eb6923833804cda955efdd69101524bec86f67dac5537cd81802e8",
+      "stories": []
+    },
+    {
+      "name": "TopBar",
+      "group": "general",
+      "srcSha": null,
+      "sourceKey": "82a4ca205b66f121",
+      "cfgSlice": "5a2c1bc6e0b27fd143d9f185562bd51abfc3cbbe39477d6c2bcc9548e88cd131",
+      "stories": []
+    }
+  ]
+}

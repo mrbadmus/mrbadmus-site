@@ -1,0 +1,23 @@
+[
+  {
+    "sheet": 1,
+    "components": [
+      "BrandMark",
+      "HotspotDot",
+      "InfoPanel",
+      "LibraryColumn",
+      "LibraryDrawer",
+      "LibraryFullScreen",
+      "ModeToggle",
+      "PhoneSheet",
+      "QualityChip",
+      "QualityPanel",
+      "RetrievalPanel",
+      "Stage",
+      "TabletPanel",
+      "ToolIcon",
+      "ToolRail",
+      "TopBar"
+    ]
+  }
+]
