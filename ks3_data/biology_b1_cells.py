@@ -617,8 +617,11 @@ UNIT = {
 
     "phenomenon": {
         "kind": "data",
-        "title": "A real Year 7 slide",
-        "prompt": "This is an onion slide made by a Year 7 student, "
+        # "Year 7" reworded at MRB-198 integration: R13 forbids a lesson
+        # page from naming a year, and the parity gate caught these in the
+        # rendered bytes. Same meaning, no year.
+        "title": "A real student's slide",
+        "prompt": "This is an onion slide made by a student your age, "
                   "photographed down the microscope. It is covered in perfect "
                   "round circles with thick black rims. Beside it is the drawing "
                   "they made from it, in biro, shaded in, with twelve circles "
@@ -891,8 +894,8 @@ UNIT = {
                         "Says what to do differently next time"]},
         "produce": {
             "q": "Write a method for making and viewing an onion slide that "
-                 "another Year 7 could follow with no help. Say what each step "
-                 "is for, not just what to do.",
+                 "another student could follow with no help. Say what each "
+                 "step is for, not just what to do.",
             "success": ["Specimen must be thin enough for light to pass through",
                         "Coverslip lowered slowly at an angle, and says why",
                         "Start on the lowest objective, and says why",
@@ -1243,7 +1246,8 @@ UNIT = {
                         "takes the shape it is given"]},
         "produce": {
             "q": "A student writes: 'animal cells have a wall to hold them "
-                 "together.' Write a correction another Year 7 would understand.",
+                 "together.' Write a correction another student would "
+                 "understand.",
             "success": ["Says animal cells have no cell wall",
                         "Says what they do have — a membrane",
                         "Says what each of the two actually does",
@@ -1850,12 +1854,21 @@ UNIT = {
                  "controls": ["part"],
                  "readouts": ["what still works", "what has stopped"],
                  "parts": [
+                     # `one_of_many` added at MRB-198 integration: the reveal
+                     # below teaches that switching off ONE muscle cell does
+                     # almost nothing because a tissue is thousands of them —
+                     # but the payload shape {id, name, job, needs} cannot say
+                     # so, and a bare needs-edge would cascade a single cell's
+                     # failure to the whole organism, contradicting the reveal.
+                     # The flag marks a part as one instance of a large
+                     # population; the engine absorbs its failure and the
+                     # readout says why. The cascade stays derived from data.
                      {"id": "muscle-cell", "name": "Muscle cell",
                       "job": "Shortens when it is told to",
-                      "needs": []},
+                      "needs": [], "one_of_many": True},
                      {"id": "gland-cell", "name": "Gland cell",
                       "job": "Makes acid and digestive juice",
-                      "needs": []},
+                      "needs": [], "one_of_many": True},
                      {"id": "muscle-tissue", "name": "Muscle tissue",
                       "job": "Squeezes and churns the food",
                       "needs": ["muscle-cell"]},
