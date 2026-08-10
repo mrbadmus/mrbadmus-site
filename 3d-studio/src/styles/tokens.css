@@ -7,10 +7,13 @@
    approximating by eye before /design-sync existed for this
    surface; --st-caption, --st-faint and --st-ghost are darkened
    because the reference's values fail WCAG 4.5:1 on the cream
-   ground at the sizes they carry text. The full old→new list,
-   with reasons and measured ratios, is in reference/design-notes.md
-   § "Divergences from the frozen reference". Every other value is
-   verbatim from the reference.
+   ground at the sizes they carry text. One token is ADDED with no
+   reference counterpart — --st-accent-hover, the canonical link
+   hover; the reference hovers links to the raw accent, which the
+   accent-contrast ruling disallows at link sizes. The full old→new
+   list, with reasons and measured ratios, is in
+   reference/design-notes.md § "Divergences from the frozen
+   reference". Every other value is verbatim from the reference.
 
    Scoped with an --st- prefix: this app never loads shared/
    tokens.css (it is a self-contained Vite build served at /3d/),
@@ -51,9 +54,19 @@
   --st-chip-tint-border: #F0C9B8;
   --st-num-well: #F2E8D6;    /* numbered square wells */
 
-  /* accent */
+  /* accent — two tokens per hue (KS3 R1, shared/tokens.css).
+     --st-accent is a GRAPHIC value: fills, borders, rings, marks, and
+     text at 24px and up. It is never a contrast partner for text below
+     24px in either direction — not as the label, and not as the fill
+     behind one. Cream/paper on the raw accent measures 3.62:1, the same
+     3.62:1 it measures as text on paper, and both fail 4.5:1. Anything
+     small that must read as orange uses --st-accent-text (6.48:1 behind
+     paper, 5.98:1 on the cream ground); links hover to --st-accent-hover.
+     Hotspot numerals are the documented exception — marks, not text,
+     pinned by the no-hue-only gate at exact §07 values. */
   --st-accent: #E4572E;      /* the orange — large/graphic use */
   --st-accent-text: #A93411; /* the only orange for small text — canonical --ks3-accent-text */
+  --st-accent-hover: #7F2408;/* link hover — canonical --ks3-accent-hover; no reference counterpart */
   --st-hatch-b: #B33E1C;     /* hatch strip second stripe */
 
   /* dark room (retrieval + stage viewport) */

@@ -29,8 +29,11 @@ button {
   text-align: inherit;
 }
 
+/* Links deepen on hover rather than brightening to the raw accent: the
+   reference's a:hover is #E4572E, which is 3.34:1 on the cream ground at
+   the 13.5px the phone library CTA carries. */
 a { color: var(--st-accent-text); text-decoration: none; }
-a:hover { color: var(--st-accent); }
+a:hover { color: var(--st-accent-hover); }
 
 @keyframes st-ping {
   0% { transform: translate(-50%, -50%) scale(1); opacity: 0.85; }
@@ -112,7 +115,7 @@ a:hover { color: var(--st-accent); }
 .cta {
   font: 600 14px/1 var(--st-ui);
   color: var(--st-paper);
-  background: var(--st-accent);
+  background: var(--st-accent-text);
   padding: 11px 16px;
   border-radius: 8px;
 }
@@ -202,7 +205,7 @@ a:hover { color: var(--st-accent); }
 }
 .app[data-mode='retrieve'] .modeseg button.is-on {
   color: var(--st-paper);
-  background: var(--st-accent);
+  background: var(--st-accent-text);
   box-shadow: none;
 }
 
@@ -301,7 +304,7 @@ a:hover { color: var(--st-accent); }
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.libcard.is-viewing .libcard__meta { color: var(--st-accent); letter-spacing: 0.08em; }
+.libcard.is-viewing .libcard__meta { color: var(--st-accent-text); letter-spacing: 0.08em; }
 
 /* drawer/full-screen variants get roomier rows (§04/§05) */
 .libcard--big { padding: 11px; gap: 12px; }
@@ -907,7 +910,7 @@ a:hover { color: var(--st-accent); }
   text-overflow: ellipsis;
 }
 .structchip.is-open { border: 1.5px solid var(--st-accent); background: var(--st-chip-tint); padding: 7.5px 8.5px; }
-.structchip.is-open .structchip__num { background: var(--st-accent); color: var(--st-paper); }
+.structchip.is-open .structchip__num { background: var(--st-accent-text); color: var(--st-paper); }
 .structchip.is-open .structchip__label { font-weight: 600; color: var(--st-ink); }
 
 .facts { margin-top: 4px; }
@@ -1001,7 +1004,7 @@ a:hover { color: var(--st-accent); }
 .btn--primary {
   flex: 1.25;
   color: var(--st-paper);
-  background: var(--st-accent);
+  background: var(--st-accent-text);
 }
 .btn--primary:hover { color: var(--st-paper); }
 .btn--outline:hover { color: var(--st-ink); }
@@ -1263,7 +1266,7 @@ a:hover { color: var(--st-accent); }
   text-align: center;
   font: 600 15px/1 var(--st-ui);
   color: var(--st-paper);
-  background: var(--st-accent);
+  background: var(--st-accent-text);
   border-radius: 10px;
   padding: 15px 10px;
 }

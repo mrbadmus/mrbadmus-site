@@ -180,7 +180,9 @@ Projection floor:
 Everything above documents the reference as Design drew it, and the reference
 stays frozen — including its §07 table and in-situ colour citations. Seven
 colours ship differently in `src/styles/tokens.css`, ruled in the MRB-186
-Linear thread (Stage 1 report, Finding 1). Wherever this document or the
+Linear thread (Stage 1 report, Finding 1); one token is added and the accent
+is applied more narrowly than the reference applies it, ruled in the same
+thread (the accent-contrast ruling, below). Wherever this document or the
 reference names a value on the left, the app ships the value on the right.
 
 **Adopted canonical.** Design authored the reference before `/design-sync`
@@ -214,9 +216,48 @@ The ink alpha forms follow the ink adoption: `rgba(26,20,14,…)` ships as
 halo and inert ring. The §07 paper-stage ink fill and ink halo likewise ship
 at `#1A1714`.
 
+**The accent is never a small-text partner.** `#E4572E` is a graphic value:
+fills, borders, rings, marks, and text at 24px and up. The reference also
+stands it opposite text below that — as the fill behind five cream labels,
+and once as the label itself — and both directions measure the same 3.62:1,
+under the 4.5:1 those sizes need. Mide ruled the pairing out entirely, so
+these ship on `--st-accent-text`. The label stays cream, so Design's
+light-on-warm relationship is untouched and only the depth of the orange
+moves:
+
+| Selector | Role | Size | Reference | Ships as | Measures |
+|---|---|---|---|---|---|
+| `.cta` | fill behind "Create free account" | 14px | `#E4572E` | `#A93411` | 3.62:1 → 6.48:1 |
+| `.btn--primary` | fill behind "Start retrieval" (panel, tablet, phone sheet) | 14.5px | `#E4572E` | `#A93411` | 3.62:1 → 6.48:1 |
+| `.rbtn-check` | fill behind "Check" | 15px | `#E4572E` | `#A93411` | 3.62:1 → 6.48:1 |
+| `.modeseg .is-on` (retrieve) | fill behind the selected mode | 13.5px | `#E4572E` | `#A93411` | 3.62:1 → 6.48:1 |
+| `.structchip.is-open .structchip__num` | fill behind the open numeral | 10px | `#E4572E` | `#A93411` | 3.62:1 → 6.48:1 |
+| `.libcard.is-viewing .libcard__meta` | the `VIEWING` caption itself | 10.5px | `#E4572E` | `#A93411` | 3.62:1 → 6.48:1 |
+
+**Links deepen rather than brighten.** The reference's `a:hover{color:#E4572E}`
+is the same pairing in the same direction as the `VIEWING` row above — the one
+link inheriting it is the phone library's "Create account" at 13.5px, 3.34:1 on
+the cream ground. There is no reference value to reconcile here, so this is an
+addition rather than a substitution, taking the canonical token the KS3 system
+already defines for the role:
+
+| Reference | Ships as | Token | Canonical source (`shared/tokens.css`) | Measures |
+|---|---|---|---|---|
+| `#E4572E` (`a:hover`) | `#7F2408` | `--st-accent-hover` | `--ks3-accent-hover` | 3.34:1 → 8.83:1 |
+
+The accent is unchanged everywhere it is not a small-text partner: hotspots and
+the §07 state table (numerals are marks — identity is size, fill inversion, the
+cream ring and the dark halo, pinned by the no-hue-only gate), `.railbtn.is-active`,
+`.hatch`, the `.psq--current` ring, the viewing card's border, the chevron mark,
+focus rings and the leader line.
+
 Enforced by the parity gate (`3d_parity.py` layer A): the shipped values are
 allow-listed there with these reasons, every other token must appear
 literally in the reference, and the superseded seven must not reappear
-anywhere in `src/` or `.design-sync/previews/`. Contrast is enforced
-separately by `tests/gates/contrast.test.ts`, which recomputes ratios from
-`tokens.css` on every run.
+anywhere in `src/` or `.design-sync/previews/`. The accent-contrast ruling
+is allow-list entries 15 and 16 there, with the changed selectors asserted at
+`#A93411` in layer C and the marks still asserted at `#E4572E`. Contrast is
+enforced separately by `tests/gates/contrast.test.ts`, which recomputes ratios
+from `tokens.css` on every run and now holds the ruling as a rule — no pair
+under 24px may name `--st-accent` on either side — rather than as six
+corrected rows.

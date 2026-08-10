@@ -17,6 +17,12 @@
 // `measured` value pins the authoring-time ratio so silent degradation fails
 // too. Hotspot ring/halo contrast is the no-hue-only gate's territory (§07);
 // this gate covers the type.
+//
+// Six pairs carried a licence at authoring time for the same reason — the
+// graphic accent standing opposite small text at 3.62:1, as a fill behind
+// five labels and as the VIEWING label itself. Mide ruled that pairing out
+// entirely (MRB-186): those now use --st-accent-text and pass at 6.48:1, the
+// licences are deleted, and the rule they were tolerating is asserted below.
 
 import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -98,18 +104,20 @@ interface Pair {
   measured?: number
 }
 
-const BTN_LICENCE =
-  'reference-authored button tier: cream/paper text on the accent fill ' +
-  '(3.62:1). Every accent-filled control in the frozen reference uses it. ' +
-  'Repainting the button tier is a Design/Mide ruling — reported in the ' +
-  'MRB-186 Stage 1b run, alongside the tinted-ground caption pairs below.'
+// The button tier and the VIEWING caption used to carry a BTN_LICENCE here:
+// paper on the raw accent, and the accent as text, both 3.62:1. Mide ruled
+// (MRB-186) that --st-accent is never a contrast partner for text under 24px
+// in either direction, so those fills and that label now use --st-accent-text
+// and measure 6.48:1 on merit. The licences are gone rather than left as dead
+// tolerances — a licence that no longer describes anything is a door propped
+// open for the next pair that fails.
 
 const PAIRS: Pair[] = [
   // ── cream world: page chrome ──
   { name: 'nav links — muted on ground (15px)', fg: t('--st-muted'), bg: t('--st-ground'), px: 15 },
   { name: 'sign in — muted on ground (15px)', fg: t('--st-muted'), bg: t('--st-ground'), px: 15 },
   { name: 'active nav item — ink on ground (15px)', fg: t('--st-ink'), bg: t('--st-ground'), px: 15 },
-  { name: 'CTA — paper on accent (14px)', fg: t('--st-paper'), bg: t('--st-accent'), px: 14, licence: BTN_LICENCE, measured: 3.62 },
+  { name: 'CTA — paper on accent-text fill (14px)', fg: t('--st-paper'), bg: t('--st-accent-text'), px: 14 },
   { name: 'crumb — caption on crumb strip (12px)', fg: t('--st-caption'), bg: t('--st-crumb-bg'), px: 12, licence: 'reference-authored: the crumb strip tint costs the reconciled caption 0.22 of ratio (4.29:1). Darkening caption further changes a ruled value — Design/Mide call.', measured: 4.29 },
   { name: 'MODE eyebrow — faint on crumb strip (10.5px)', fg: t('--st-faint'), bg: t('--st-crumb-bg'), px: 10.5, licence: 'reference-authored, same tinted-strip cost as the crumb (4.28:1).', measured: 4.28 },
   { name: 'mode toggle unselected — caption on trough (13.5px)', fg: t('--st-caption'), bg: t('--st-seg-bg'), px: 13.5, licence: 'reference-authored: the darker seg trough takes the reconciled caption to 3.71:1. The selected state carries the meaning (ink on paper, 16:1); the unselected label is the quiet half of a two-state control. Repaint is a Design/Mide call.', measured: 3.71 },
@@ -120,7 +128,7 @@ const PAIRS: Pair[] = [
   { name: 'library count — ghost on ground (11px)', fg: t('--st-ghost'), bg: t('--st-ground'), px: 11 },
   { name: 'libcard name — ink on ground (14.5px)', fg: t('--st-ink'), bg: t('--st-ground'), px: 14.5 },
   { name: 'libcard meta — faint on ground (10.5px)', fg: t('--st-faint'), bg: t('--st-ground'), px: 10.5 },
-  { name: 'viewing meta — accent on paper card (10.5px)', fg: t('--st-accent'), bg: t('--st-paper'), px: 10.5, licence: 'reference-authored: VIEWING is drawn in the accent itself (3.62:1). The state is also carried by the card border and fill (no-hue rule), the word is reinforcement. Repaint is a Design/Mide call.', measured: 3.62 },
+  { name: 'viewing meta — accent-text on paper card (10.5px)', fg: t('--st-accent-text'), bg: t('--st-paper'), px: 10.5 },
 
   // ── stage furniture ──
   { name: 'stage hint — room-hint on viewport ground (11.5px)', fg: t('--st-room-hint'), bg: STAGE_DARKEST, px: 11.5 },
@@ -144,7 +152,7 @@ const PAIRS: Pair[] = [
   { name: 'section count — ghost on paper (10.5px)', fg: t('--st-ghost'), bg: t('--st-paper'), px: 10.5 },
   { name: 'structure label — muted on paper (13.5px)', fg: t('--st-muted'), bg: t('--st-paper'), px: 13.5 },
   { name: 'structure numeral — caption on number well (10px)', fg: t('--st-caption'), bg: t('--st-num-well'), px: 10, licence: 'reference-authored: the number-well tint takes caption to 4.09:1 at 10px. The numeral repeats the adjacent 5.6:1 label — orientation, not sole carrier. Repaint is a Design/Mide call.', measured: 4.09 },
-  { name: 'open structure numeral — paper on accent (10px)', fg: t('--st-paper'), bg: t('--st-accent'), px: 10, licence: BTN_LICENCE, measured: 3.62 },
+  { name: 'open structure numeral — paper on accent-text fill (10px)', fg: t('--st-paper'), bg: t('--st-accent-text'), px: 10 },
   { name: 'open structure label — ink on chip tint (13.5px)', fg: t('--st-ink'), bg: t('--st-chip-tint'), px: 13.5 },
   { name: 'fact label — caption on paper (11.5px)', fg: t('--st-caption'), bg: t('--st-paper'), px: 11.5 },
   { name: 'fact value — ink on paper (14.5px)', fg: t('--st-ink'), bg: t('--st-paper'), px: 14.5 },
@@ -153,10 +161,12 @@ const PAIRS: Pair[] = [
   { name: 'DID YOU KNOW eyebrow — caption on note tint (10px)', fg: t('--st-caption'), bg: t('--st-note-bg'), px: 10, licence: 'reference-authored: the note tint takes caption to 4.17:1 at 10px. Repaint is a Design/Mide call.', measured: 4.17 },
   { name: 'did-you-know body — on note tint (13.5px)', fg: DARK_INK_TEXT, bg: t('--st-note-bg'), px: 13.5 },
   { name: 'outline button — ink on paper (14.5px)', fg: t('--st-ink'), bg: t('--st-paper'), px: 14.5 },
-  { name: 'primary button — paper on accent (14.5px)', fg: t('--st-paper'), bg: t('--st-accent'), px: 14.5, licence: BTN_LICENCE, measured: 3.62 },
+  { name: 'primary button — paper on accent-text fill (14.5px)', fg: t('--st-paper'), bg: t('--st-accent-text'), px: 14.5 },
 
   // ── phone / drawer chrome ──
   { name: 'phone sign in — accent-text on ground (13px)', fg: t('--st-accent-text'), bg: t('--st-ground'), px: 13 },
+  { name: 'link hover — accent-hover on ground (13.5px)', fg: t('--st-accent-hover'), bg: t('--st-ground'), px: 13.5 },
+  { name: 'link hover — accent-hover on paper (13.5px)', fg: t('--st-accent-hover'), bg: t('--st-paper'), px: 13.5 },
   { name: 'library note — muted on ground (13.5px)', fg: t('--st-muted'), bg: t('--st-ground'), px: 13.5 },
   { name: 'library CTA — accent-text on ground (13.5px)', fg: t('--st-accent-text'), bg: t('--st-ground'), px: 13.5 },
   { name: 'lesson row meta — faint on paper (10.5px)', fg: t('--st-faint'), bg: t('--st-paper'), px: 10.5 },
@@ -166,14 +176,14 @@ const PAIRS: Pair[] = [
   { name: 'end round — room-text on room (14px)', fg: t('--st-room-text'), bg: t('--st-room'), px: 14 },
   { name: 'MODE eyebrow — room-faint on room (10.5px)', fg: t('--st-room-faint'), bg: t('--st-room'), px: 10.5, licence: 'reference-authored dim tier of the dark room (4.00:1 on room). Repaint is a Design/Mide call.', measured: 4.0 },
   { name: 'retrieve toggle unselected — room-muted on trough (13.5px)', fg: t('--st-room-muted'), bg: SEG_DARK, px: 13.5, licence: 'reference-authored (4.39:1 on the dark trough): the quiet half of the two-state control, as on cream. Repaint is a Design/Mide call.', measured: 4.39 },
-  { name: 'retrieve toggle selected — paper on accent (13.5px)', fg: t('--st-paper'), bg: t('--st-accent'), px: 13.5, licence: BTN_LICENCE, measured: 3.62 },
+  { name: 'retrieve toggle selected — paper on accent-text fill (13.5px)', fg: t('--st-paper'), bg: t('--st-accent-text'), px: 13.5 },
   { name: 'ROUND eyebrow — room-muted on panel (10.5px)', fg: t('--st-room-muted'), bg: t('--st-room-panel'), px: 10.5, licence: 'reference-authored (4.64:1) — above 4.5 today; licence documents the tier if the panel ever lightens.', measured: 4.64 },
   { name: 'round count — cream on panel (10.5px)', fg: t('--st-cream'), bg: t('--st-room-panel'), px: 10.5 },
   { name: 'current square numeral — cream on raise (13px)', fg: t('--st-cream'), bg: t('--st-room-raise'), px: 13 },
   { name: 'NAME THE STRUCTURE — ember on panel (11px)', fg: t('--st-ember'), bg: t('--st-room-panel'), px: 11 },
   { name: 'answer text — cream on input well (21px)', fg: t('--st-cream'), bg: t('--st-room-well'), px: 21 },
   { name: 'answer placeholder — on input well (21px)', fg: PLACEHOLDER, bg: t('--st-room-well'), px: 21, licence: 'reference-authored placeholder (3.12:1): deliberately ghosted prompt text, replaced by 17:1 cream the moment the student types. Repaint is a Design/Mide call.', measured: 3.12 },
-  { name: 'check button — paper on accent (15px)', fg: t('--st-paper'), bg: t('--st-accent'), px: 15, licence: BTN_LICENCE, measured: 3.62 },
+  { name: 'check button — paper on accent-text fill (15px)', fg: t('--st-paper'), bg: t('--st-accent-text'), px: 15 },
   { name: 'skip button — room-text on panel (15px)', fg: t('--st-room-text'), bg: t('--st-room-panel'), px: 15 },
   { name: "can't recall — room-muted on panel (13.5px)", fg: t('--st-room-muted'), bg: t('--st-room-panel'), px: 13.5, licence: 'reference-authored (4.64:1) — above 4.5 today; documents the tier.', measured: 4.64 },
   { name: 'reveal link — ember on panel (13.5px)', fg: t('--st-ember'), bg: t('--st-room-panel'), px: 13.5 },
@@ -227,6 +237,24 @@ describe('gate 6 — contrast, recomputed from tokens.css (no hardcoded ratios)'
       }
     })
   }
+
+  // Mide's MRB-186 ruling, held as a rule rather than as six corrected rows:
+  // the graphic accent may not be either half of a small-text pair. Without
+  // this, restoring any one of them is a one-token edit that still passes.
+  it('--st-accent is never a contrast partner for text under 24px', () => {
+    const accent = t('--st-accent')
+    for (const p of PAIRS) {
+      if (p.mark || p.px >= 24) continue
+      expect(
+        p.fg,
+        `${p.name}: --st-accent as a label under 24px (3.62:1 on paper) — use --st-accent-text`,
+      ).not.toBe(accent)
+      expect(
+        p.bg,
+        `${p.name}: --st-accent as a fill behind text under 24px (3.62:1) — use --st-accent-text`,
+      ).not.toBe(accent)
+    }
+  })
 
   it('every licence carries a reason and a pinned measurement', () => {
     for (const p of PAIRS.filter((x) => x.licence)) {

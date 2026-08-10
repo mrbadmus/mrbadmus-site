@@ -27,7 +27,9 @@ the token file on every vitest run — it is not duplicated here):
      documented exception: for those the gate asserts the OLD value is in
      the reference (the divergence is FROM something real) and that the old
      value appears nowhere in ``src/`` or ``.design-sync/`` — the sweep
-     stays swept.
+     stays swept. A second, smaller exception is ADOPTED: a canonical token
+     the reference has no counterpart for, where there is no old value to
+     assert or sweep, only the shipped value to pin (entry 16).
 
   B. STRUCTURE (browser).  For each screen Stage 1 implements, the regions
      the reference draws exist, in the reference's containment and state:
@@ -84,6 +86,32 @@ is tolerated; a mismatch outside this list is a failure.
        in the reference — a Stage 1 acceptance addition (every record field
        rendered). The key-facts count is therefore asserted on the FIRST
        .facts block only.
+  15.  Accent fills behind small text ship as --st-accent-text #A93411,
+       not the reference's #E4572E: .cta (14px), .btn--primary (14.5px,
+       panel + tablet + phone sheet), .rbtn-check (15px), the retrieve-mode
+       .modeseg .is-on chip (13.5px) and .structchip.is-open .structchip__num
+       (10px); the VIEWING caption (.libcard.is-viewing .libcard__meta,
+       10.5px) is the same divergence with the accent used AS the text.
+       Paper on the raw accent measures 3.62:1 and fails WCAG at these
+       sizes — the identical 3.62:1 the accent measures as text on paper,
+       which is why Mide ruled (MRB-186) that --st-accent is never a
+       contrast partner for text under 24px in either direction. The cream
+       label is unchanged, so Design's light-on-warm relationship holds and
+       only the depth of the orange moves: 3.62:1 → 6.48:1. The accent is
+       untouched wherever it is not a small-text partner — hotspots and the
+       §07 table, .railbtn.is-active, .hatch, the .psq--current ring, card
+       borders, focus rings, the leader line, the chevron mark — and those
+       rows below still assert #E4572E.
+  16.  --st-accent-hover #7F2408 is ADDED, with no reference counterpart to
+       diverge from (ADOPTED below, not RECONCILED). The reference hovers
+       links to the raw accent (a:hover{color:#E4572E}), which rule 15
+       disallows: the one link that inherits it is the phone library's
+       "Create account" at 13.5px, 3.34:1 on the cream ground. Links now
+       deepen instead of brightening, using the canonical
+       --ks3-accent-hover the KS3 system already defines for this role
+       (8.83:1 on ground). Same reconciliation logic as entries 1–4, but
+       an addition rather than a substitution, so the sweep in layer A
+       cannot ban the old value — #E4572E remains the live accent.
 
 Provenance for every value in the expectation tables below is the frozen
 reference itself — section and line cited in each screen's comment.
@@ -127,6 +155,20 @@ RECONCILED = [
      "darkened: reference value 2.29:1 on ground; now 4.55:1"),
 ]
 
+# ── canonical additions (allow-list entry 16) ────────────────────────────
+# A token with no reference counterpart to diverge FROM: the reference
+# solved the role with a value the accent-contrast ruling disallows, and the
+# canonical system already had a token for it. Unlike RECONCILED these carry
+# no old value, so they add nothing to the sweep below — the superseded form
+# here is a *usage* (a:hover), not a hex that must vanish from src/.
+# token, shipped value, reason
+ADOPTED = [
+    ("--st-accent-hover", "#7F2408",
+     "adopted canonical --ks3-accent-hover; the reference hovers links to "
+     "the raw accent (#E4572E, 3.34:1 on ground at 13.5px), which the "
+     "MRB-186 accent-contrast ruling disallows for text under 24px"),
+]
+
 # the ink alpha forms that follow the ink adoption (swept alongside it)
 SUPERSEDED_RGBA = re.compile(r"rgba\(\s*26\s*,\s*20\s*,\s*14\b", re.I)
 
@@ -150,6 +192,7 @@ def check_provenance():
 
     tokens = studio_tokens()
     reconciled = {name: (old, new) for name, old, new, _ in RECONCILED}
+    adopted = {name: new for name, new, _ in ADOPTED}
     for name, hexval in sorted(tokens.items()):
         if name in reconciled:
             old, new = reconciled[name]
@@ -162,13 +205,21 @@ def check_provenance():
                     "%s claims to diverge from reference value %s, but that "
                     "value is not in the reference — the allow-list entry is "
                     "wrong" % (name, old))
+        elif name in adopted:
+            # No reference presence to assert — that is the point of the
+            # entry. Pin the value so the addition cannot drift either.
+            if hexval.lower() != adopted[name].lower():
+                problems.append(
+                    "%s = %s but the MRB-186 adoption ruled %s — the adopted "
+                    "value has drifted" % (name, hexval, adopted[name]))
         elif hexval.lower() not in ref:
             problems.append(
                 "%s = %s does not appear anywhere in the frozen reference — "
                 "invented or drifted, and not in the reconciliation "
                 "allow-list" % (name, hexval))
     notes.append("%d tokens checked against the reference, %d on the "
-                 "reconciliation allow-list" % (len(tokens), len(RECONCILED)))
+                 "reconciliation allow-list, %d on the canonical-addition "
+                 "allow-list" % (len(tokens), len(RECONCILED), len(ADOPTED)))
 
     # The sweep stays swept: superseded values must not reappear in the
     # app source or the design-sync durable set (the reference and the
@@ -216,8 +267,9 @@ COMPONENTS = [
          props={"color": "#6E655D", "font-size": "15px"}),
     dict(name="nav current item", on="s01", sel=".topbar__nav .is-here",
          props={"color": "#1A1714"}),
+    # accent-text fill, not the reference's #E4572E (allow-list rule 15)
     dict(name="create-account CTA", on="s01", sel=".cta",
-         props={"background-color": "#E4572E", "color": "#FFFDF8",
+         props={"background-color": "#A93411", "color": "#FFFDF8",
                 "font-size": "14px", "font-weight": "600",
                 "border-top-left-radius": "8px"}),
     dict(name="breadcrumb strip", on="s01", sel=".crumbstrip",
@@ -238,9 +290,10 @@ COMPONENTS = [
     dict(name="viewing card", on="s01", sel=".libcard.is-viewing",
          props={"background-color": "#FFFDF8", "border-top-color": "#E4572E",
                 "border-top-width": "1.5px", "border-top-left-radius": "10px"}),
+    # the accent used AS text — accent-text, not #E4572E (allow-list rule 15)
     dict(name="viewing card meta is accent", on="s01",
          sel=".libcard.is-viewing .libcard__meta",
-         props={"color": "#E4572E", "font-family": "DM Mono"}),
+         props={"color": "#A93411", "font-family": "DM Mono"}),
     dict(name="coming-soon card dims", on="s01", sel=".libcard.is-soon",
          props={"opacity": "0.52"}),
     dict(name="stage viewport frame", on="s01", sel=".stage--viewport",
@@ -292,8 +345,8 @@ COMPONENTS = [
                 "border-top-color": "#DECCAE", "font-weight": "600",
                 "font-size": "14.5px"}),
     dict(name="start retrieval button", on="s01", sel=".btn--primary",
-         props={"background-color": "#E4572E", "color": "#FFFDF8",
-                "border-top-left-radius": "9px"}),
+         props={"background-color": "#A93411", "color": "#FFFDF8",
+                "border-top-left-radius": "9px"}),  # rule 15
     dict(name="hotspot numeral is mono", on="s01", sel=".hotspot",
          props={"font-family": "DM Mono", "font-weight": "500"}),
 
@@ -307,7 +360,7 @@ COMPONENTS = [
          props={"background-color": "#241E17"}),
     dict(name="retrieve selected chip is accent", on="s02",
          sel=".modeseg .is-on",
-         props={"background-color": "#E4572E", "color": "#FFFDF8"}),
+         props={"background-color": "#A93411", "color": "#FFFDF8"}),  # rule 15
     dict(name="end round button", on="s02", sel=".endround",
          props={"color": "#B7AA98", "border-top-color": "#3E362C"}),
     dict(name="question panel", on="s02", sel=".rpanel",
@@ -325,8 +378,8 @@ COMPONENTS = [
          props={"background-color": "#120F0B", "border-top-color": "#4A4036",
                 "height": "64px", "border-top-left-radius": "11px"}),
     dict(name="check button", on="s02", sel=".rbtn-check",
-         props={"background-color": "#E4572E", "color": "#FFFDF8",
-                "font-weight": "600", "font-size": "15px"}),
+         props={"background-color": "#A93411", "color": "#FFFDF8",
+                "font-weight": "600", "font-size": "15px"}),  # rule 15
     dict(name="skip button", on="s02", sel=".rbtn-skip",
          props={"color": "#B7AA98", "border-top-color": "#4A4036"}),
     dict(name="reveal link is ember", on="s02", sel=".rreveal__link",
@@ -383,7 +436,7 @@ COMPONENTS = [
          props={"width": "40px", "height": "40px",
                 "border-top-left-radius": "11px"}),
     dict(name="pinned primary action", on="s05", sel=".sheet__foot .btn--primary",
-         props={"background-color": "#E4572E", "color": "#FFFDF8"}),
+         props={"background-color": "#A93411", "color": "#FFFDF8"}),  # rule 15
     dict(name="raised sheet handle darkens", on="s05raised",
          sel=".sheet.is-raised .sheet__handle",
          props={"background-color": "#C9B79A"}),
