@@ -669,7 +669,10 @@ a:hover { color: var(--st-accent); }
 .qpanel__detected {
   margin-left: auto;
   font: 400 9.5px/1 var(--st-mono);
-  color: var(--st-muted);
+  /* dark-room role token, NOT --st-muted: the light-world muted measures
+     2.87:1 on --st-room, under the 3.0 floor the contrast gate holds.
+     room-faint keeps the reference's dimmer-than-the-title hierarchy. */
+  color: var(--st-room-faint);
 }
 .qrow {
   width: 100%;
