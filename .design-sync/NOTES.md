@@ -27,8 +27,16 @@
 - **Preview content convention:** anatomy-shaped strings in previews use the
   frozen reference's lorem placeholder style — no invented science; real
   strings pass Mide's Stage 8 gate. UI copy is real.
-- **Known render warns:** none outstanding (BrandMark's `[RENDER_THIN]`
-  cleared once its preview was authored).
+- **Known render warns:** none outstanding. BrandMark's `[RENDER_THIN]`
+  cleared once its preview was authored; InfoPanel's `[GRID_OVERFLOW]`
+  cleared 11 Aug via `overrides.InfoPanel.cardMode: "column"` — it is a
+  full-width panel and the product's grid cell was cropping both exports.
+- **`[OUT_UNSAFE]` on a re-sync is usually a half-cleaned `ds-bundle/`.**
+  The guard refuses a non-empty `--out` carrying neither `_ds_bundle.js`
+  nor a `.ds-bundle` marker — an emptied-but-present `_screenshots/` dir
+  is exactly that state. `rm -rf ds-bundle` and re-run: it is gitignored,
+  fully regenerated, and holds nothing durable (authored previews live in
+  `.design-sync/previews/`).
 - Sync-time verification also caught a real app defect (libcard name/meta
   inline stacking) — fixed in `studio.css`, committed on `feat/3d-studio`.
 
@@ -43,13 +51,34 @@
 - Specimen fixtures are inlined in `previews/InfoPanel.tsx`,
   `PhoneSheet.tsx`, `RetrievalPanel.tsx` and mirror the Stage 0 content
   schema — update them if the schema changes shape.
-- Six components ship the deliberate floor card (LibraryDrawer,
-  LibraryFullScreen, Stage, TabletPanel, ModeToggle, ToolIcon) — the standing
-  offer for incremental authoring on any later re-sync. Stage can now be
-  composed via `createPlaceholderRenderer` (merged onto the global via
-  `extraEntries`).
-- Playwright chromium lives at `~/.cache/ms-playwright`, installed by this
-  run via `.ds-sync`'s own playwright — keep the staged-scripts install and
-  the browser cache in step (see base skill §4.1 on version pinning).
+- Ten components have authored previews; the other six are unauthored. Of
+  those six, only **three actually show the typographic floor card (Stage,
+  TabletPanel, ToolIcon)** — LibraryDrawer, LibraryFullScreen and ModeToggle
+  render real content from their `.d.ts` crash-prevention props, so the
+  contact sheet marks them ✓, not `floor card`. All six remain the standing
+  offer for incremental authoring on any later re-sync. Stage can be composed
+  via `createPlaceholderRenderer` (merged onto the global via `extraEntries`).
+- **Playwright browsers live at `~/Library/Caches/ms-playwright` on macOS** —
+  NOT `~/.cache/ms-playwright`, which is the Linux path this file used to
+  give. Checking only the Linux path reports "nothing cached" and invites a
+  needless ~200MB reinstall. Present 11 Aug: `chromium-1234`,
+  `chromium_headless_shell-1234`. No `PLAYWRIGHT_BROWSERS_PATH` is set and
+  there is no `chromium`/`google-chrome` on PATH (only Google Chrome.app),
+  so that cache is the only thing making the render check run.
 - Build assumed node v24 / npm 11; converter deps live in `.ds-sync/`
   (gitignored) — re-run the staging `cp -r` + `npm i` on fresh clones.
+- **The uploaded project can sit in a mixed state matching no single commit,
+  so verify per-file rather than inferring the whole project from one
+  artefact.** Found 11 Aug: the token file carried the reconciled hexes while
+  `README.md` still carried the pre-reconciliation ones (`--st-ink` #1A140E,
+  `--st-accent-text` #A63A18) — a values-only hand-correction had reached one
+  and not the other. `DesignSync(get_file)` on the specific path is the only
+  reliable check. Both were repaired by the 11 Aug re-sync.
+- **A grade cleared with "contract changed" is not automatically churn.**
+  BrandMark and HotspotDot cleared on the 11 Aug re-sync with byte-identical
+  emitted artifacts, which looks like nondeterminism but was real: the
+  uploaded anchor predated commits `c158d481f` (component sources) and
+  `56b49c876` (their authored previews), both 10 Aug 16:31, because the last
+  upload ran earlier than the local file timestamps suggested. Check
+  `git log` on the component source and `previews/<Name>.tsx` before
+  suspecting the pipeline.
