@@ -59,6 +59,7 @@ class PlaceholderRenderer implements Renderer {
   mount(container: HTMLElement): void {
     this.container = container
     container.dataset.renderer = `placeholder-${this.stage}`
+    container.dataset.state = this.status.state
     this.draw()
   }
 
@@ -66,6 +67,7 @@ class PlaceholderRenderer implements Renderer {
     if (this.container) {
       delete this.container.dataset.renderer
       delete this.container.dataset.tier
+      delete this.container.dataset.state
       this.container.replaceChildren()
     }
     this.container = null
@@ -95,6 +97,10 @@ class PlaceholderRenderer implements Renderer {
     this.draw()
   }
 
+  /** Nothing to drive: the placeholder has no camera. Present so the
+   * declaration and invocation halves of the tool contract stay paired. */
+  invokeTool(): void {}
+
   onStatus(cb: (status: RendererStatus) => void): () => void {
     this.listeners.add(cb)
     cb(this.status)
@@ -103,6 +109,10 @@ class PlaceholderRenderer implements Renderer {
 
   private setStatus(status: RendererStatus): void {
     this.status = status
+    // Readable from outside the app: the parity harness waits on this rather
+    // than on a fixed sleep, now that one of the two renderers loads over the
+    // network (MRB-187).
+    if (this.container) this.container.dataset.state = status.state
     this.listeners.forEach((cb) => cb(status))
   }
 

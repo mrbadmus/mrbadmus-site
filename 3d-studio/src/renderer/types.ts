@@ -39,6 +39,12 @@ export interface RendererStatus {
   state: 'idle' | 'loading' | 'ready' | 'failed'
   /** Present when state is 'failed'. The shell reacts by switching renderer. */
   error?: string
+  /** 0–1 while state is 'loading', where the transport reports a total size.
+   * Absent when the server sends no content-length (spec §4 caps a GLB at 3MB,
+   * so a school connection can spend real seconds here). Added at Stage 2
+   * (MRB-187): a renderer that fetches needs somewhere to say how far it has
+   * got, and 'loading' alone cannot. */
+  progress?: number
 }
 
 export interface ScreenPoint {
@@ -82,6 +88,17 @@ export interface Renderer {
   /** Apply a render-quality tier. Must take effect live — no reload, no
    * remount (gate 5 asserts this). No-op when supportsQualityTiers is false. */
   setTier(tier: RenderTier): void
+
+  /** Fire a tool the renderer declared in `supportedTools`. The declaration
+   * side of that pair existed from Stage 1; this is the other half — the rail
+   * draws from `supportedTools` and presses back through here, so a renderer
+   * cannot advertise a tool the shell has no way to invoke.
+   *
+   * Toggle tools (`auto-rotate`) carry their desired state in `on`; momentary
+   * tools (`reset`) ignore it. A renderer ignores any tool it did not declare.
+   * Added at Stage 2 (MRB-187) — see the Linear comment for why the Stage 1
+   * interface could not carry reset or auto-rotate without it. */
+  invokeTool(tool: ToolId, on?: boolean): void
 
   /** Subscribe to readiness/failure. Returns an unsubscribe function. The
    * current status is delivered immediately on subscribe. */
