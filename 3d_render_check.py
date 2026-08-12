@@ -25,7 +25,7 @@ the same stdlib harness (``ks3_browser.py``) and the same reporting shape as
 WHAT THIS CHECK DOES, AND WHAT IT CANNOT DO — read before trusting it
 ═══════════════════════════════════════════════════════════════════════════
 
-Checks 1–9 are gates: any failure exits non-zero.
+Checks 1–10 are gates: any failure exits non-zero.
 
   1. It renders at all. The mesh renderer mounts, the stage container reaches
      ``ready``, a <canvas> exists inside the stage.
@@ -66,6 +66,12 @@ Checks 1–9 are gates: any failure exits non-zero.
      contain Three rather than the ones named as if they did. The same run
      confirms a capable browser does fetch it, so the split cannot pass by
      having broken both halves.
+
+ 10. The retrieval round frames its target before asking (ruling on
+     MRB-191). Driven from the WORST case on purpose: the specimen is turned
+     roughly 180° first, so that check 2 has already proved no dot is
+     visible, and only then is the round opened. The pulsing 52px marker must
+     be on screen and inside the stage when the prompt appears.
 
 Frame timing is a REPORT, never a gate, and carries no check number for that
 reason — see its banner. Nothing it prints can change the exit code.
@@ -221,6 +227,30 @@ window.__rc = {
     if (!row) { return false; }
     row.click();
     return true;
+  },
+  /** enter the retrieval room through the header's own mode control */
+  enterRetrieval: function () {
+    var b = Array.prototype.slice.call(
+      document.querySelectorAll('.modeseg button'))
+      .find(function (x) { return /retrieve/i.test(x.textContent || ''); });
+    if (!b) { return false; }
+    b.click();
+    return true;
+  },
+  /** the pulsing 52px target dot, if one is on the stage */
+  target: function () {
+    var t = document.querySelector('.hotspot[data-state=target]');
+    if (!t) { return null; }
+    var r = t.getBoundingClientRect();
+    var s = document.querySelector('.stage').getBoundingClientRect();
+    return {
+      x: r.x + r.width / 2, y: r.y + r.height / 2,
+      w: r.width, h: r.height,
+      inside: r.x >= s.x && r.y >= s.y &&
+              r.x + r.width <= s.x + s.width &&
+              r.y + r.height <= s.y + s.height,
+      ping: t.querySelectorAll('.hotspot__ping').length
+    };
   },
   /** Swap Design's room for one flat screaming colour, so a hole in the
    *  specimen is a pixel value rather than a judgement call. The canvas is
@@ -407,7 +437,7 @@ class Report:
         print("       %s" % text)
 
 
-# ── checks 1–9 ───────────────────────────────────────────────────────────
+# ── checks 1–10 ──────────────────────────────────────────────────────────
 
 
 def check_renders(page, report):
@@ -1166,6 +1196,87 @@ def check_section(page, report, shots):
                  problems, details)
 
 
+def check_framing(page, report):
+    """10. The round frames its target before asking (ruling on MRB-191).
+
+    Stage 2 made occlusion honest, which is what makes the identify mode an
+    assessment rather than a picture — and which creates this stage's problem.
+    A target on the far side of the specimen is "highlighted" with NOTHING on
+    screen: not a hard question, an unanswerable one, and indistinguishable
+    from the app being broken.
+
+    So this drives the worst case deliberately. The specimen is turned roughly
+    180° first — check 2 already proves that leaves no dot visible at all —
+    and only then is the round opened. The pulsing 52px marker has to be on
+    screen, inside the stage, when the prompt appears.
+
+    Turning FIRST is the whole point. Opening the round from the default view
+    would pass whether or not anything framed anything.
+    """
+    problems, details = [], []
+
+    reset_view(page)
+    before_turn = settle(page)
+    details.append("default view: %d dot(s)" % len(before_turn))
+
+    fault = drag_horizontal(page)
+    if fault:
+        problems.append("HARNESS: " + fault)
+        report.check(10, "the round frames its target", problems, details)
+        return
+    turned = settle(page)
+    if turned:
+        problems.append(
+            "HARNESS: the %dpx drag left %d dot(s) on screen, so the target "
+            "may not have been hidden to begin with and this check would "
+            "prove nothing" % (DRAG_PX, len(turned)))
+        report.check(10, "the round frames its target", problems, details)
+        return
+    details.append("after a %dpx turn: 0 dot(s) — the far side is genuinely "
+                   "not visible" % DRAG_PX)
+
+    if not page.eval("window.__rc.enterRetrieval()"):
+        problems.append("no Retrieve control in the header")
+        report.check(10, "the round frames its target", problems, details)
+        return
+
+    # The move is animated on purpose (620ms, eased): give it time to land,
+    # then let the dots settle.
+    time.sleep(1.4)
+    settle(page)
+
+    target = page.eval("window.__rc.target()")
+    if not target:
+        problems.append(
+            "the round opened with NO target dot on the stage. The student is "
+            "being asked to name a structure that is not on screen — spec §6 "
+            "says a structure is highlighted, and an invisible highlight is "
+            "not a highlight.")
+    else:
+        if not target["inside"]:
+            problems.append(
+                "the target dot is outside the stage (%.0f, %.0f) — framed "
+                "off the edge is the same as not framed"
+                % (target["x"], target["y"]))
+        if round(target["w"]) != 52:
+            problems.append("the target dot is %.0fpx, expected the 52px "
+                            "marker §07 specifies" % target["w"])
+        if not target["ping"]:
+            problems.append("the target dot has no ring pulse (§02)")
+        details.append("target: %.0fpx at (%.0f, %.0f), inside the stage=%s, "
+                       "ping=%d"
+                       % (target["w"], target["x"], target["y"],
+                          target["inside"], target["ping"]))
+
+    # Back out of the room so the checks after this one start where they expect.
+    page.eval("window.__rc.enterRetrieval()")
+    page.eval("window.__rc.rail('Reset view')")
+    time.sleep(0.5)
+
+    report.check(10, "the round frames its target before asking (MRB-191)",
+                 problems, details)
+
+
 def three_chunks():
     """Every built JS chunk that actually contains Three.js.
 
@@ -1488,7 +1599,7 @@ def main():
     started = time.time()
     print("3D Studio render check (MRB-187 Stage 2) — real Chrome, software WebGL")
     print("  the built app at %s, served as /3d/" % os.path.relpath(DIST, HERE))
-    print("  checks 1–9 gate the exit code; frame timing is a report and never does")
+    print("  checks 1–10 gate the exit code; frame timing is a report and never does")
 
     if not os.path.isdir(DIST) or not os.path.exists(os.path.join(DIST, "index.html")):
         print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
@@ -1527,6 +1638,7 @@ def main():
                 check_tiers(page, report, shot_a, shot_c)
                 check_parts(page, report, want)
                 check_section(page, report, shots)
+                check_framing(page, report)
                 timing = frame_timing(page)
             else:
                 print("       (checks 2–5, 7–8 and the timing report skipped — "

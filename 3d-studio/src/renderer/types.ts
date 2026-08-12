@@ -115,6 +115,26 @@ export interface Renderer {
    * interface could not carry reset or auto-rotate without it. */
   invokeTool(tool: ToolId, on?: boolean): void
 
+  /** Turn until a named hotspot is on screen, and animate the turn.
+   *
+   * The retrieval round asks the student to name a highlighted structure. With
+   * honest occlusion (Stage 2), a target on the far side of the specimen is
+   * highlighted with nothing visible — not a hard question, an unanswerable
+   * one, and indistinguishable from the app being broken. So the round frames
+   * its target before asking (ruling on MRB-191).
+   *
+   * Two things the implementation owes:
+   *   · ANIMATE, don't cut. A camera that teleports between questions loses
+   *     the student's orientation on the specimen, which is the thing the 3D
+   *     view is for.
+   *   · FRAME, don't zoom in. The surrounding structure is what makes the
+   *     question answerable: same distance, different angle.
+   *
+   * Called when a question is PRESENTED, never continuously — a camera that
+   * fought the student's hands would be worse than the problem. A renderer
+   * with no camera does nothing. Added at Stage 6. */
+  frameHotspot(hotspotId: string): void
+
   /** Drag the cross-section's plane along its axis, 0–1 across the specimen's
    * bounds. Ignored when the tool is not engaged, and by any renderer that
    * does not declare `cross-section`.

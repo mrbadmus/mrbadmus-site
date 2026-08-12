@@ -10,6 +10,23 @@ import { effectiveRenderTier } from './studio/quality'
 import { getSpecimen } from './studio/content'
 import { createFlatRenderer } from './renderer/flat'
 import type { Renderer } from './renderer/types'
+import {
+  PROVISIONAL_ANONYMOUS_PROFILE,
+  createMemoryAdapter,
+  type AttemptSubmitter,
+  type LearnerProfile,
+} from './studio/attempts'
+import { FRESH_ACCESS, canStartRound, completeRound, shouldPersist } from './studio/access'
+import {
+  answerQuestion,
+  currentQuestion,
+  isCorrect as isCorrectAnswer,
+  eligibleHotspots,
+  pointsFor,
+  startRound,
+  type RoundDeps,
+  type RoundState,
+} from './studio/retrieval'
 import { Stage, type StageMode } from './components/Stage'
 import { TopBar, ModeToggle } from './components/TopBar'
 import { LibraryColumn, LibraryDrawer, LibraryFullScreen } from './components/Library'
@@ -63,12 +80,27 @@ function useLayout(): Layout {
   return layout
 }
 
+/** The in-memory adapter is the ONLY submitter tonight (MRB-191 scope): the
+ * table, its RLS and the real submitter are a later stage with Mide present.
+ * Injectable so that later stage swaps one object and the round never learns
+ * that anything changed. */
+const memoryAttempts = createMemoryAdapter()
+
 export default function App({
   capability,
   createRenderer = defaultRenderer,
+  profile = PROVISIONAL_ANONYMOUS_PROFILE,
+  submitter = memoryAttempts,
+  now = () => Date.now(),
+  makeRoundId = () => `r${Date.now().toString(36)}`,
 }: {
   capability?: CapabilityReport
   createRenderer?: RendererFactory
+  /** provisional until sign-in is wired — see studio/attempts.ts */
+  profile?: LearnerProfile
+  submitter?: AttemptSubmitter
+  now?: () => number
+  makeRoundId?: () => string
 }) {
   const [probe] = useState<CapabilityReport>(() => capability ?? detectCapability())
   const layout = useLayout()
@@ -120,8 +152,24 @@ export default function App({
 
   const renderTier = effectiveRenderTier(quality, probe.tier)
 
-  const retrievable = specimen.hotspots.filter((h) => h.retrievable)
-  const targetHotspotId = retrievable[0]?.id ?? null
+  // ── the retrieval round (MRB-191) ───────────────────────────────────────
+  const [access, setAccess] = useState(FRESH_ACCESS)
+  const [gate, setGate] = useState<'sign-in' | null>(null)
+  const [round, setRound] = useState<RoundState | null>(null)
+  const [revealed, setRevealed] = useState<{ label: string; detail: string } | null>(null)
+  const [points, setPoints] = useState(0)
+
+  const roundDeps: RoundDeps = {
+    now,
+    roundId: round?.id ?? '',
+    profile,
+    submitter,
+  }
+
+  const eligible = eligibleHotspots(specimen, profile)
+  const roundSize = Math.max(eligible.length, 1)
+  const question = round ? currentQuestion(round) : null
+  const targetHotspotId = question?.hotspot.id ?? null
 
   const hint =
     mode === 'retrieve'
@@ -137,6 +185,54 @@ export default function App({
   const selectSpecimen = (id: string) => {
     setSpecimenId(id)
     setOpenHotspotId(null)
+  }
+
+  const enterRetrieval = () => {
+    setMode('retrieve')
+    setOpenHotspotId(null)
+    setRevealed(null)
+    // The free round is spent: the sign-in moment (§03) is due, and no second
+    // round starts behind it. Structured, not wired — see studio/access.ts.
+    if (!canStartRound(access, profile)) {
+      setGate('sign-in')
+      setRound(null)
+      return
+    }
+    setGate(null)
+    setRound(startRound(specimen, { ...roundDeps, roundId: makeRoundId() }))
+  }
+
+  const leaveRetrieval = () => {
+    setMode('explore')
+    setRound(null)
+    setRevealed(null)
+    setOpenHotspotId(null)
+  }
+
+  /** Grade, submit, and let the round move on. A reveal produces no payload —
+   * the contract is explicit that giving up is not an attempt (§1). */
+  const respond = (outcome: 'correct' | 'wrong' | 'skipped' | 'revealed', response: string) => {
+    if (!round) return
+    const asked = currentQuestion(round)
+    const next = answerQuestion(round, specimen, outcome, response, roundDeps)
+    setRound(next.round)
+
+    if (next.attempt && shouldPersist(profile)) {
+      void submitter.submit(next.attempt)
+    }
+
+    if (outcome === 'correct' || outcome === 'revealed') {
+      setRevealed(
+        asked ? { label: asked.hotspot.label, detail: asked.hotspot.detail } : null,
+      )
+    }
+    setPoints(pointsFor(next.round.results))
+
+    if (next.round.complete) {
+      const done = completeRound(access, profile)
+      setAccess(done.access)
+      setGate(done.gate)
+    }
   }
 
   // Between the shell drawing and the renderer module arriving (MRB-190's
@@ -163,14 +259,23 @@ export default function App({
   )
 
   return (
-    <div className="app" data-mode={mode} data-layout={layout} data-detected-tier={probe.tier}>
+    <div
+      className="app"
+      data-mode={mode}
+      data-layout={layout}
+      data-detected-tier={probe.tier}
+      // Points are COMPUTED and not persisted (MRB-191 scope): the reward
+      // layer is MRB-148's, and the attempts contract is explicit (§3) that no
+      // points column belongs on the row. They are not drawn either — §03 owns
+      // how a result is presented, and that screen is deliberately not
+      // improvised here. Surfaced only so the gates can read them.
+      data-round-points={round ? points : undefined}
+      data-round-gate={gate ?? undefined}
+    >
       <TopBar
         layout={layout}
         mode={mode}
-        onMode={(m) => {
-          setMode(m)
-          setOpenHotspotId(null)
-        }}
+        onMode={(m) => (m === 'retrieve' ? enterRetrieval() : leaveRetrieval())}
         onOpenLibrary={() => setLibraryOpen(true)}
         phoneTitle={layout === 'phone' && sheetRaised ? specimen.name : null}
       />
@@ -185,10 +290,7 @@ export default function App({
           </div>
           <ModeToggle
             mode={mode}
-            onMode={(m) => {
-              setMode(m)
-              setOpenHotspotId(null)
-            }}
+            onMode={(m) => (m === 'retrieve' ? enterRetrieval() : leaveRetrieval())}
           />
         </div>
       )}
@@ -206,12 +308,27 @@ export default function App({
       {mode === 'retrieve' ? (
         <main className="main main--retrieve">
           <div className="stagewrap" key="stage">{stage}</div>
-          <RetrievalPanel
-            key="side"
-            specimen={specimen}
-            targetIndex={0}
-            roundSize={Math.max(retrievable.length, 1)}
-          />
+          {round && (
+            <RetrievalPanel
+              key="side"
+              specimen={specimen}
+              round={round}
+              roundSize={roundSize}
+              revealed={revealed}
+              gate={gate}
+              onCheck={(answer) =>
+                respond(
+                  question && isCorrectAnswer(answer, question.hotspot)
+                    ? 'correct'
+                    : 'wrong',
+                  answer,
+                )
+              }
+              onSkip={() => respond('skipped', '')}
+              onReveal={() => respond('revealed', '')}
+              onNext={() => setRevealed(null)}
+            />
+          )}
         </main>
       ) : layout === 'phone' ? (
         <main className="main">
@@ -223,7 +340,7 @@ export default function App({
               onRaisedChange={setSheetRaised}
               openHotspotId={openHotspotId}
               onOpenHotspot={setOpenHotspotId}
-              onStartRetrieval={() => setMode('retrieve')}
+              onStartRetrieval={enterRetrieval}
             />
           </div>
         </main>
@@ -235,7 +352,7 @@ export default function App({
             specimen={specimen}
             openHotspotId={openHotspotId}
             onOpenHotspot={setOpenHotspotId}
-            onStartRetrieval={() => setMode('retrieve')}
+            onStartRetrieval={enterRetrieval}
           />
         </main>
       ) : (
@@ -247,7 +364,7 @@ export default function App({
             specimen={specimen}
             openHotspotId={openHotspotId}
             onOpenHotspot={setOpenHotspotId}
-            onStartRetrieval={() => setMode('retrieve')}
+            onStartRetrieval={enterRetrieval}
           />
         </main>
       )}

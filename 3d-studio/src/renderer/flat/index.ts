@@ -201,6 +201,12 @@ class FlatRenderer implements Renderer {
   /** No plane to drag. */
   setSectionOffset(): void {}
 
+  /** Nothing to turn: the plate has no far side, so a retrieval target is
+   * always already on screen. The round calls this on every question and this
+   * renderer's honest answer is that the work is already done — which is why
+   * the ruling on MRB-191 works identically in both renderers. */
+  frameHotspot(): void {}
+
   toolState(tool: ToolId): ToolState | null {
     if (tool === 'zoom') {
       return {

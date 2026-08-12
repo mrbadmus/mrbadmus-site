@@ -82,6 +82,7 @@ export function Stage({
 
   const dressing = renderer?.stage ?? stageKind
   const surface = dressing === 'viewport' ? 'dark' : 'paper'
+  const ready = status.state === 'ready'
 
   // mount / unmount
   useEffect(() => {
@@ -107,6 +108,20 @@ export function Stage({
     renderer?.setTier(renderTier)
   }, [renderer, renderTier])
 
+  // Frame the retrieval target before asking about it (ruling on MRB-191).
+  //
+  // Occlusion is honest, so a target on the far side of the specimen would be
+  // "highlighted" with nothing on screen — not a hard question, an
+  // unanswerable one. The camera turns to put it in view when the question is
+  // PRESENTED, which is what this effect's dependencies say: a new target, or
+  // a renderer that has just become ready. Not continuously — the student can
+  // turn away again mid-question, and a camera that fought their hands would
+  // be worse than the problem.
+  useEffect(() => {
+    if (!renderer || !ready || mode !== 'retrieve' || !targetHotspotId) return
+    renderer.frameHotspot(targetHotspotId)
+  }, [renderer, ready, mode, targetHotspotId])
+
   // reposition dots when the container resizes
   useEffect(() => {
     const el = containerRef.current
@@ -116,7 +131,6 @@ export function Stage({
     return () => ro.disconnect()
   }, [])
 
-  const ready = status.state === 'ready'
   const dots = useHotspotDots(renderer, specimen, ready)
 
   const openDot = dots.find((d) => d.hotspot.id === openHotspotId) ?? null

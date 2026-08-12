@@ -106,6 +106,8 @@ class PlaceholderRenderer implements Renderer {
    * (MRB-188, MRB-189). */
   isolateHotspot(): void {}
 
+  frameHotspot(): void {}
+
   setSectionOffset(): void {}
 
   toolState(): null {

@@ -1374,7 +1374,48 @@ a:hover { color: var(--st-accent-hover); }
   border-bottom: 1px solid #6E4A38;
   padding-bottom: 2px;
 }
+/* Named / missed / revealed — the round's own states (MRB-191). The frozen
+   reference draws the solid+tick square and the MISSED SO FAR chips; the
+   revealed card is the shell's answer to "correct identification reveals the
+   label and detail text" (spec §6), pitched at the callout's register. */
+.psq--done { color: var(--st-room-well); font: 600 15px/1 var(--st-ui); }
+.psq--missed { background: var(--st-room-raise); color: var(--st-room-muted); }
+
+.rreveal-card {
+  margin-top: 30px;
+  padding: 18px;
+  background: var(--st-room-panel);
+  border: 1px solid var(--st-room-line);
+  border-radius: 12px;
+}
+.rreveal-card__eyebrow {
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.18em;
+  color: var(--st-ember);
+}
+.rreveal-card__title {
+  margin-top: 12px;
+  font: 600 24px/1.15 var(--st-display);
+  letter-spacing: -0.02em;
+  color: var(--st-cream);
+}
+.rreveal-card__detail {
+  margin-top: 10px;
+  font: 400 14px/1.55 var(--st-ui);
+  color: var(--st-room-body);
+}
+.rreveal-card .rbtn-check { margin-top: 18px; width: 100%; }
+
 .rmissed { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--st-room-line-soft); }
+.rmissed__chips { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 7px; }
+.rmissed__chip {
+  font: 500 12px/1 var(--st-ui);
+  color: var(--st-room-text);
+  background: var(--st-room-raise);
+  border: 1px solid var(--st-room-line);
+  border-radius: 7px;
+  padding: 7px 10px;
+}
 .rmissed__eyebrow {
   font: 500 10.5px/1 var(--st-mono);
   letter-spacing: 0.18em;

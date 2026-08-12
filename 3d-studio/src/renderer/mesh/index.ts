@@ -27,6 +27,12 @@ import { TextureBudget } from './textures'
 import { TIER_RIGS } from './tiers'
 import { isStandIn, resolveMeshUrl } from './standin'
 import {
+  FRAME_DURATION_MS,
+  framePosition,
+  frameStep,
+  needsFraming,
+} from './framing'
+import {
   isClipped,
   sectionConstant,
   sectionPlane,
@@ -109,6 +115,15 @@ class MeshRenderer implements Renderer {
   /** Bumped per load so a specimen swapped mid-fetch cannot be overtaken by
    * its predecessor arriving late. */
   private loadToken = 0
+
+  /** the in-flight framing move (MRB-191), if any */
+  private frameMove: {
+    from: THREE.Vector3
+    to: THREE.Vector3
+    target: THREE.Vector3
+    started: number
+    raf: number
+  } | null = null
 
   private canvasReady = false
   private canvasWaiters: Array<{ resolve: () => void; reject: (e: Error) => void }> = []
@@ -273,6 +288,7 @@ class MeshRenderer implements Renderer {
     if (!this.supportedTools.includes(tool)) return
     switch (tool) {
       case 'reset':
+        this.cancelFraming()
         this.resetView()
         // Reset means the view a student came in on, which includes the form
         // being whole. Leaving a structure isolated, or the specimen cut in
@@ -306,6 +322,60 @@ class MeshRenderer implements Renderer {
   setSectionOffset(offset: number): void {
     if (!this.section.enabled) return
     this.setSection({ enabled: true, offset })
+  }
+
+  frameHotspot(hotspotId: string): void {
+    const anchor = this.anchors.get(hotspotId)
+    const { controls, camera } = this.bridge
+    if (!anchor || !controls || !camera) return
+
+    const target = controls.target.clone()
+    const from = camera.position.clone()
+    if (!needsFraming(anchor, target, from)) {
+      this.cancelFraming()
+      return
+    }
+    const to = framePosition(anchor, target, from)
+    if (!to) return
+
+    // Auto-rotate would fight the move and then carry the camera straight back
+    // off the target; a student who asked for it can switch it on again.
+    if (this.autoRotate) this.invokeTool('auto-rotate', false)
+
+    this.cancelFraming()
+    this.frameMove = {
+      from,
+      to,
+      target,
+      started: performance.now(),
+      raf: requestAnimationFrame(() => this.stepFraming()),
+    }
+  }
+
+  private stepFraming(): void {
+    const move = this.frameMove
+    const { controls, camera } = this.bridge
+    if (!move || !controls || !camera) return
+
+    const t = (performance.now() - move.started) / FRAME_DURATION_MS
+    camera.position.copy(frameStep(move.from, move.to, move.target, Math.min(t, 1)))
+    controls.target.copy(move.target)
+    controls.update()
+
+    if (t >= 1) {
+      this.frameMove = null
+      return
+    }
+    move.raf = requestAnimationFrame(() => this.stepFraming())
+  }
+
+  /** Stop mid-turn and leave the camera where it is. The student's hands win:
+   * the ruling is explicit that framing happens when a question is presented,
+   * not continuously. */
+  private cancelFraming(): void {
+    if (!this.frameMove) return
+    cancelAnimationFrame(this.frameMove.raf)
+    this.frameMove = null
   }
 
   isolateHotspot(hotspotId: string): void {
@@ -483,6 +553,7 @@ class MeshRenderer implements Renderer {
   }
 
   private releaseModel(): void {
+    this.cancelFraming()
     if (this.disposeModel) this.disposeModel()
     else if (this.model) disposeTree(this.model)
     this.disposeModel = null
