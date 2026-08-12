@@ -575,6 +575,19 @@ def check_structure(page, screen, counts):
                      " so §01/§02/§04/§05 would all measure the paper stage. "
                      "Harness fault, not app fault.")
             return p
+        # Same trap by a different door (MRB-187): the mesh renderer can reach
+        # tier A and still fail — a GLB that 404s, a lost context — and the
+        # shell answers by routing to the flat stage. Correct behaviour, but
+        # it would silently re-point §01–§05 at the paper stage. Name it once.
+        mounted = page.eval(
+            "window.__st.q('[data-testid=renderer-container]') && "
+            "window.__st.q('[data-testid=renderer-container]').dataset.renderer")
+        if mounted != "mesh":
+            p.append("s01: the mounted renderer is %r, not 'mesh' — the mesh "
+                     "renderer failed and the shell routed to the flat stage, "
+                     "so §01/§02/§04/§05 would all measure the paper stage."
+                     % mounted)
+            return p
         # §01: header → crumb strip → library / stage / panel, in order
         need(".topbar .brand")
         need(".topbar__nav span", 3, "Lessons / Practice / 3D Studio")
@@ -830,12 +843,47 @@ def _settle(page, seconds=0.35):
     time.sleep(seconds)
 
 
+def _await_stage(page, timeout=25.0):
+    """Wait until the mounted renderer has finished loading.
+
+    Stage 1's renderers drew synchronously, so a fixed settle was enough to
+    measure them. The mesh renderer fetches a Draco-compressed GLB over HTTP
+    (MRB-187), and the hotspot layer does not exist until that resolves — so a
+    fixed sleep turns this gate into a race whose failure mode is a handful of
+    missing hotspots rather than an honest "the stage was still loading".
+
+    Both renderers publish their state on the stage container, so this waits
+    on the app rather than on the clock. A renderer that reports 'failed' is
+    not waited out: the shell answers a failure by mounting a different
+    renderer, which will report 'ready' in its turn, and s01 asserts which one
+    ended up mounted.
+    """
+    import time
+    deadline = time.time() + timeout
+    state = None
+    while time.time() < deadline:
+        state = page.eval(
+            "(() => { const el = document.querySelector("
+            "'[data-testid=renderer-container]');"
+            " return el ? (el.dataset.state || 'none') : 'no-container' })()")
+        if state == "ready":
+            return state
+        time.sleep(0.1)
+    return state or "timeout"
+
+
 def run_browser_layers(url, tokens, counts):
     problems, style_rows = [], []
     checked = []
 
     def visit(page, screen):
         page.eval(_JS + "true")
+        state = _await_stage(page)
+        if state != "ready":
+            problems.append(
+                "%s: the renderer never reached ready (state=%r) — the stage "
+                "would have been measured mid-load" % (screen, state))
+            return False
         sane = _sanity(page, screen, tokens)
         if sane:
             problems.append(sane)

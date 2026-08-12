@@ -70,10 +70,14 @@
 - **The uploaded project can sit in a mixed state matching no single commit,
   so verify per-file rather than inferring the whole project from one
   artefact.** Found 11 Aug: the token file carried the reconciled hexes while
-  `README.md` still carried the pre-reconciliation ones (`--st-ink` #1A140E,
-  `--st-accent-text` #A63A18) — a values-only hand-correction had reached one
-  and not the other. `DesignSync(get_file)` on the specific path is the only
-  reliable check. Both were repaired by the 11 Aug re-sync.
+  `README.md` still carried the pre-reconciliation values of `--st-ink` and
+  `--st-accent-text` — a values-only hand-correction had reached one and not
+  the other. `DesignSync(get_file)` on the specific path is the only reliable
+  check. Both were repaired by the 11 Aug re-sync. (The superseded hexes are
+  deliberately not quoted here: the parity gate's layer A bans them from
+  `.design-sync/` outright, and a rule with a "but not in prose" exception is
+  a rule that unravels. The old values live in `reference/design-notes.md`,
+  which is where the divergence record belongs.)
 - **A grade cleared with "contract changed" is not automatically churn.**
   BrandMark and HotspotDot cleared on the 11 Aug re-sync with byte-identical
   emitted artifacts, which looks like nondeterminism but was real: the
