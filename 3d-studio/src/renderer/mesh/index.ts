@@ -27,6 +27,13 @@ import { TextureBudget } from './textures'
 import { TIER_RIGS } from './tiers'
 import { isStandIn, resolveMeshUrl } from './standin'
 import {
+  isClipped,
+  sectionConstant,
+  sectionPlane,
+  SECTION_REST,
+  type SectionState,
+} from './section'
+import {
   applyView,
   collectParts,
   isShown,
@@ -89,6 +96,15 @@ class MeshRenderer implements Renderer {
   private partView: PartView = WHOLE_SPECIMEN
   /** hotspot id → the part its anchor sits on, resolved geometrically */
   private anchorParts = new Map<string, SpecimenPart>()
+
+  /** cross-section (MRB-189). The plane is ONE object for the specimen's
+   * lifetime and is mutated as the cut is dragged: every clipped material
+   * holds a reference to it, so a drag costs no material recompile. `version`
+   * is what tells React that something inside it moved. */
+  private section: SectionState = SECTION_REST
+  private plane: THREE.Plane | null = null
+  private box: THREE.Box3 | null = null
+  private sceneVersion = 0
 
   /** Bumped per load so a specimen swapped mid-fetch cannot be overtaken by
    * its predecessor arriving late. */
@@ -218,28 +234,30 @@ class MeshRenderer implements Renderer {
     const height = this.container.clientHeight || this.bridge.height
     if (!width || !height) return null
 
-    // A label on a structure that isolate or layers has taken off the stage is
-    // a label pointing at nothing. The anchor keeps its coordinate; it simply
-    // stops being visible while its own part is not drawn (MRB-188).
-    const part = this.anchorParts.get(hotspotId)
-    if (part && !isShown(part.object, this.model)) {
-      const off = projectAnchor(anchor, {
-        camera,
-        model: this.model,
-        width,
-        height,
-        radius: this.view.radius,
-      })
-      return { x: off.x, y: off.y, visible: false }
-    }
+    const clip = this.activePlane()
 
-    return projectAnchor(anchor, {
+    // A label on material that is no longer on the stage is a label pointing
+    // at nothing — whether isolate and layers took the part away (MRB-188) or
+    // the cross-section cut the anchor's own half off (MRB-189). The anchor
+    // keeps its coordinate; the shell decides what to do with an invisible
+    // dot.
+    const part = this.anchorParts.get(hotspotId)
+    const gone = (part && !isShown(part.object, this.model)) || isClipped(anchor, clip)
+
+    const point = projectAnchor(anchor, {
       camera,
       model: this.model,
       width,
       height,
       radius: this.view.radius,
+      clip,
     })
+    return gone ? { x: point.x, y: point.y, visible: false } : point
+  }
+
+  /** The clipping plane in force right now, or null. */
+  private activePlane(): THREE.Plane | null {
+    return this.section.enabled ? this.plane : null
   }
 
   setTier(tier: RenderTier): void {
@@ -257,9 +275,11 @@ class MeshRenderer implements Renderer {
       case 'reset':
         this.resetView()
         // Reset means the view a student came in on, which includes the form
-        // being whole. Leaving a structure isolated behind a pressed Reset is
-        // the kind of half-restored state that reads as a broken control.
+        // being whole. Leaving a structure isolated, or the specimen cut in
+        // half, behind a pressed Reset is the kind of half-restored state that
+        // reads as a broken control.
         this.setPartView(WHOLE_SPECIMEN)
+        this.setSection(SECTION_REST)
         break
       case 'auto-rotate':
         this.autoRotate = on ?? !this.autoRotate
@@ -271,11 +291,21 @@ class MeshRenderer implements Renderer {
       case 'layers':
         this.setPartView(stepLayers(this.partView, this.parts))
         break
+      case 'cross-section':
+        this.setSection({
+          enabled: on ?? !this.section.enabled,
+          offset: this.section.offset,
+        })
+        break
       default:
-        // rotate and zoom are the pointer's, always live; cross-section
-        // arrives at Stage 4.
+        // rotate and zoom are the pointer's, always live.
         break
     }
+  }
+
+  setSectionOffset(offset: number): void {
+    if (!this.section.enabled) return
+    this.setSection({ enabled: true, offset })
   }
 
   isolateHotspot(hotspotId: string): void {
@@ -306,6 +336,10 @@ class MeshRenderer implements Renderer {
       if (levels < 2) return { active: false }
       if (this.partView.peeled === 0) return { active: false, steps: levels }
       return { active: true, step: this.partView.peeled + 1, steps: levels }
+    }
+    if (tool === 'cross-section') {
+      if (!this.plane) return { active: false }
+      return { active: this.section.enabled, offset: this.section.offset }
     }
     return null
   }
@@ -356,6 +390,46 @@ class MeshRenderer implements Renderer {
     this.partView = next
     applyView(this.parts, next)
     this.stampParts()
+    // The cap has to hear about it: a part that has left the stage must not
+    // leave its cut face behind (MRB-189).
+    this.sceneVersion += 1
+    this.renderScene()
+  }
+
+  /** Engage, move or release the cut. The plane object is mutated rather than
+   * replaced, so a drag never touches a material — see the note on `plane`. */
+  private setSection(next: SectionState): void {
+    this.section = next
+    if (this.plane && this.box) {
+      this.plane.constant = sectionConstant(this.box, next.offset)
+    }
+    this.sceneVersion += 1
+    this.stampSection()
+    this.renderScene()
+  }
+
+  private stampSection(): void {
+    const container = this.container
+    if (!container) return
+    if (this.section.enabled) {
+      container.dataset.section = String(Math.round(this.section.offset * 100))
+      container.dataset.sectionCapped = String(this.capsAvailable())
+    } else {
+      delete container.dataset.section
+      delete container.dataset.sectionCapped
+    }
+  }
+
+  /** Whether the cut is capped at the current tier.
+   *
+   * MRB-189 anticipated the stencil pass being too much for Tier C and named
+   * the fallback: an uncapped clip with a clear visual treatment, never the
+   * tool switched off. It is capped at every tier today — the pass is two
+   * extra colour-write-off draws per mesh and it measured no differently on
+   * the software renderer — so this is one named place to change rather than
+   * a decision spread through the scene. */
+  private capsAvailable(): boolean {
+    return true
   }
 
   private stampParts(): void {
@@ -398,6 +472,9 @@ class MeshRenderer implements Renderer {
       const part = partAt(anchor, this.parts)
       if (part) this.anchorParts.set(id, part)
     }
+    this.box = new THREE.Box3().setFromObject(scene)
+    this.plane = sectionPlane(this.box, SECTION_REST.offset)
+    this.section = SECTION_REST
     this.setPartView(WHOLE_SPECIMEN)
 
     this.textureBudget.collect(scene)
@@ -415,6 +492,9 @@ class MeshRenderer implements Renderer {
     this.parts = []
     this.anchorParts = new Map()
     this.partView = WHOLE_SPECIMEN
+    this.section = SECTION_REST
+    this.plane = null
+    this.box = null
     this.bridge.model = null
     this.bridge.view = null
     this.textureBudget.clear()
@@ -429,6 +509,18 @@ class MeshRenderer implements Renderer {
         view: this.view,
         tier: this.tier,
         autoRotate: this.autoRotate,
+        section:
+          this.section.enabled && this.plane && this.box
+            ? {
+                plane: this.plane,
+                box: this.box,
+                parts: this.parts,
+                version: this.sceneVersion,
+                capped: this.capsAvailable(),
+                isDrawn: (object: THREE.Object3D) =>
+                  !this.model || isShown(object, this.model),
+              }
+            : null,
         onCreated: () => this.onCanvasReady(),
         onFailure: (message: string) => this.fail(message),
       }),

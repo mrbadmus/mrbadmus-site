@@ -15,6 +15,8 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { FOV, type DefaultView } from './anchors'
 import { TIER_RIGS, type TierRig } from './tiers'
+import { SectionCap, useClippedMaterials } from './cap'
+import type { SpecimenPart } from './parts'
 import type { RenderTier } from '../types'
 
 /** The mutable handle the imperative Renderer keeps into the live scene.
@@ -47,8 +49,24 @@ export interface SceneProps {
   view: DefaultView | null
   tier: RenderTier
   autoRotate: boolean
+  /** the cross-section, when one is engaged (MRB-189) */
+  section: SectionProps | null
   onCreated: () => void
   onFailure: (message: string) => void
+}
+
+export interface SectionProps {
+  /** stable instance, mutated as the cut is dragged */
+  plane: THREE.Plane
+  box: THREE.Box3
+  /** the parts the asset declares — one cap face each, coloured by depth */
+  parts: readonly SpecimenPart[]
+  /** bumped whenever the plane moved or the drawn part set changed */
+  version: number
+  isDrawn: (object: THREE.Object3D) => boolean
+  /** false where the tier cannot carry the stencil pass: the cut still
+   * happens, it just is not capped (MRB-189's stated fallback) */
+  capped: boolean
 }
 
 export function SceneRoot(props: SceneProps) {
@@ -61,6 +79,11 @@ export function SceneRoot(props: SceneProps) {
           antialias: true,
           powerPreference: 'high-performance',
           preserveDrawingBuffer: false,
+          // three stopped allocating a stencil buffer by default at r163, and
+          // the capped cut is drawn with one. Asked for here rather than per
+          // tier: it is part of the context, and changing it would mean
+          // rebuilding the canvas — which gate 5 forbids.
+          stencil: true,
         }}
         // The camera is re-aimed from the specimen's bounds the moment one
         // loads; these are only sane defaults for the empty stage.
@@ -86,8 +109,10 @@ function SceneContents({
   view,
   rig,
   autoRotate,
+  section,
   onFailure,
 }: SceneProps & { rig: TierRig }) {
+  useClippedMaterials(model, section ? section.plane : null)
   return (
     <>
       <BridgeSync bridge={bridge} onFailure={onFailure} />
@@ -95,6 +120,16 @@ function SceneContents({
       {rig.environment && <RoomIBL />}
       <Lights rig={rig} view={view} />
       {model && <primitive object={model} />}
+      {model && section && section.capped && (
+        <SectionCap
+          model={model}
+          plane={section.plane}
+          box={section.box}
+          parts={section.parts}
+          version={section.version}
+          isDrawn={section.isDrawn}
+        />
+      )}
       {model && view && rig.contactShadow && <Ground view={view} model={model} />}
       {view && <Framing bridge={bridge} view={view} />}
       <OrbitControls
@@ -118,8 +153,12 @@ function SceneContents({
           bridge.controls = (controls as OrbitControlsImpl | null) ?? null
         }}
       />
+      {/* stencilBuffer: the composer renders the scene into a target of its
+          own, and without one the capped cut would silently stop being capped
+          at Tier A only — the tier with the most capable hardware behind it
+          (MRB-189). */}
       {rig.ambientOcclusion && (
-        <EffectComposer enableNormalPass multisampling={0}>
+        <EffectComposer enableNormalPass multisampling={0} stencilBuffer>
           <SSAO
             blendFunction={BlendFunction.MULTIPLY}
             samples={16}

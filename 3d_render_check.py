@@ -25,7 +25,7 @@ the same stdlib harness (``ks3_browser.py``) and the same reporting shape as
 WHAT THIS CHECK DOES, AND WHAT IT CANNOT DO — read before trusting it
 ═══════════════════════════════════════════════════════════════════════════
 
-Checks 1–7 are gates: any failure exits non-zero.
+Checks 1–8 are gates: any failure exits non-zero.
 
   1. It renders at all. The mesh renderer mounts, the stage container reaches
      ``ready``, a <canvas> exists inside the stage.
@@ -52,6 +52,14 @@ Checks 1–7 are gates: any failure exits non-zero.
      part count — every stand-in anchor sits on the outer shell, so taking
      that shell off the stage must take its dots with it, which is the one
      thing a step counter cannot fake.
+
+  8. The cross-section cuts, and the cut is CAPPED (MRB-189). The only check
+     here that reads pixels rather than the DOM, because "is there a cut face
+     at all" is not a question any attribute can answer. Repeated at all three
+     tiers: Tier A renders through a post-processing composer whose own render
+     target would silently un-cap the cut if it carried no stencil buffer.
+     Whether the cap covers every last pixel of the cut is NOT settled here —
+     see the limitation in the check's own docstring.
 
 Frame timing is a REPORT, never a gate, and carries no check number for that
 reason — see its banner. Nothing it prints can change the exit code.
@@ -206,6 +214,21 @@ window.__rc = {
     });
     if (!row) { return false; }
     row.click();
+    return true;
+  },
+  /** Swap Design's room for one flat screaming colour, so a hole in the
+   *  specimen is a pixel value rather than a judgement call. The canvas is
+   *  transparent by design, so whatever is behind it shows through any gap. */
+  voidBackdrop: function () {
+    var s = document.getElementById('__voidprobe') || document.createElement('style');
+    s.id = '__voidprobe';
+    s.textContent = '.stage--viewport{background:#FF00FF !important;}';
+    document.head.appendChild(s);
+    return true;
+  },
+  restoreBackdrop: function () {
+    var s = document.getElementById('__voidprobe');
+    if (s) { s.remove(); }
     return true;
   },
   /** how many of the parts the asset declares are currently drawn */
@@ -378,7 +401,7 @@ class Report:
         print("       %s" % text)
 
 
-# ── checks 1–7 ───────────────────────────────────────────────────────────
+# ── checks 1–8 ───────────────────────────────────────────────────────────
 
 
 def check_renders(page, report):
@@ -790,6 +813,353 @@ def check_parts(page, report, want):
     report.check(7, "isolate and layers (MRB-188)", problems, details)
 
 
+# ── reading pixels back, for the cap ─────────────────────────────────────
+#
+# Checks 1–7 all read the DOM. The capped cut cannot be: whether the cut face
+# is solid material or a hole through to the room is a question about PIXELS,
+# and a renderer that clipped without capping would satisfy every attribute
+# and every dot count in this file.
+#
+# So check 8 screenshots the stage and looks at it. The decoder below is
+# stdlib zlib plus PNG's five filter types — Chrome returns 8-bit RGB(A) and
+# nothing else, so that is all it handles, and it refuses anything it does not
+# recognise rather than guessing.
+
+
+def read_png(path):
+    """(width, height, rows) where each row is a bytes of RGB triples."""
+    import struct
+    import zlib
+
+    with open(path, "rb") as fh:
+        data = fh.read()
+    if data[:8] != b"\x89PNG\r\n\x1a\n":
+        raise ValueError("not a PNG")
+
+    pos, width, height, depth, colour = 8, 0, 0, 0, 0
+    idat = bytearray()
+    while pos < len(data):
+        (length,) = struct.unpack(">I", data[pos:pos + 4])
+        kind = data[pos + 4:pos + 8]
+        body = data[pos + 8:pos + 8 + length]
+        pos += 12 + length
+        if kind == b"IHDR":
+            width, height, depth, colour = struct.unpack(">IIBB", body[:10])
+        elif kind == b"IDAT":
+            idat += body
+        elif kind == b"IEND":
+            break
+
+    if depth != 8 or colour not in (2, 6):
+        raise ValueError("unsupported PNG: depth=%d colour=%d" % (depth, colour))
+    channels = 3 if colour == 2 else 4
+
+    raw = zlib.decompress(bytes(idat))
+    stride = width * channels
+    rows, previous = [], bytearray(stride)
+    at = 0
+    for _ in range(height):
+        filt = raw[at]
+        line = bytearray(raw[at + 1:at + 1 + stride])
+        at += 1 + stride
+        for i in range(stride):
+            a = line[i - channels] if i >= channels else 0
+            b = previous[i]
+            c = previous[i - channels] if i >= channels else 0
+            if filt == 0:
+                pass
+            elif filt == 1:
+                line[i] = (line[i] + a) & 0xFF
+            elif filt == 2:
+                line[i] = (line[i] + b) & 0xFF
+            elif filt == 3:
+                line[i] = (line[i] + (a + b) // 2) & 0xFF
+            elif filt == 4:
+                p = a + b - c
+                pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+                pred = a if (pa <= pb and pa <= pc) else (b if pb <= pc else c)
+                line[i] = (line[i] + pred) & 0xFF
+            else:
+                raise ValueError("unknown PNG filter %d" % filt)
+        previous = line
+        if channels == 3:
+            rows.append(bytes(line))
+        else:
+            rows.append(bytes(b for i in range(0, stride, 4) for b in line[i:i + 3]))
+    return width, height, rows
+
+
+# The colour injected behind the transparent canvas. Nothing in the palette is
+# within a hundred of it on any channel, so "did the room show through" is a
+# question with an exact answer rather than a threshold.
+VOID_RGB = (255, 0, 255)
+
+
+def _pixels(rows, rect, step=2):
+    """Sample RGB triples inside a rect, as a dict of (x, y) → (r, g, b)."""
+    out = {}
+    x0, y0 = int(rect["x"]), int(rect["y"])
+    x1 = min(int(rect["x"] + rect["w"]), len(rows[0]) // 3)
+    y1 = min(int(rect["y"] + rect["h"]), len(rows))
+    for y in range(max(y0, 0), y1, step):
+        row = rows[y]
+        for x in range(max(x0, 0), x1, step):
+            out[(x, y)] = (row[3 * x], row[3 * x + 1], row[3 * x + 2])
+    return out
+
+
+def _is_void(rgb):
+    return (abs(rgb[0] - VOID_RGB[0]) < 40 and rgb[1] < 60
+            and abs(rgb[2] - VOID_RGB[2]) < 40)
+
+
+# How far apart two renders of the same geometry may sit and still count as
+# the same picture. Tier A composites a continuously re-integrated contact
+# shadow, which lands a channel or two apart between captures — measured at
+# ±1 on a handful of shadow pixels. Every difference this check cares about is
+# a change of material: cap orange against neutral surface, or surface against
+# backdrop, both of which are tens of levels apart on every channel. Comparing
+# exactly would be measuring the shadow's dither, not the geometry.
+SAME_TOLERANCE = 8
+
+
+def _differs(a, b):
+    if a is None or b is None:
+        return True
+    return any(abs(a[i] - b[i]) > SAME_TOLERANCE for i in range(3))
+
+
+def _is_cut_face(rgb):
+    """A pixel of exposed cut material.
+
+    The cap is drawn in the accent family (`#A93411` outer, `#E4572E` inside
+    it) — strongly saturated red-orange. The generated test specimen's own PBR
+    surface is a near-neutral warm grey: measured around (192, 170, 158),
+    saturation 0.18. The gap between the two is nearly fivefold, so this
+    classifier does not need to be clever, and it deliberately is not: it
+    checks that the pixel is saturated, red-dominant, and warmer in green than
+    in blue. Magenta fails it on the last condition, which matters because the
+    void backdrop is the other thing on screen.
+
+    It DOES assume the specimen is not itself painted a saturated orange. A
+    bought asset could be; the check reports its counts either way, and a
+    specimen that broke the assumption would show as a large cut-face count
+    with no cut engaged, which is asserted below rather than assumed.
+    """
+    top, bottom = max(rgb), min(rgb)
+    if top < 40:
+        return False
+    return (top - bottom) / float(top) > 0.45 and rgb[0] == top and rgb[2] <= rgb[1]
+
+
+def _interior_holes(rows, rect, step=2):
+    """Background pixels enclosed by drawn pixels on the same scanline.
+
+    A cap that is torn, too small, or z-fighting shows the room in the MIDDLE
+    of the specimen. A cut that legitimately narrows the silhouette — the near
+    half bulged further than the far half, which a lumpy specimen does all the
+    time — shows it at the EDGES. Only the first is a defect, so only the first
+    is counted.
+    """
+    holes = 0
+    x0 = max(int(rect["x"]), 0)
+    x1 = min(int(rect["x"] + rect["w"]), len(rows[0]) // 3)
+    y0 = max(int(rect["y"]), 0)
+    y1 = min(int(rect["y"] + rect["h"]), len(rows))
+    for y in range(y0, y1, step):
+        row = rows[y]
+        drawn = [x for x in range(x0, x1, step)
+                 if not _is_void((row[3 * x], row[3 * x + 1], row[3 * x + 2]))]
+        if len(drawn) < 2:
+            continue
+        for x in range(drawn[0], drawn[-1], step):
+            if _is_void((row[3 * x], row[3 * x + 1], row[3 * x + 2])):
+                holes += 1
+    return holes
+
+
+def check_section(page, report, shots):
+    """8. The cross-section cuts, and the cut is capped (MRB-189).
+
+    Three claims, none of which can be read off an attribute the renderer
+    wrote about itself:
+
+      * THE CAP IS DRAWN. The cut face is painted in the accent family, which
+        is nothing like the specimen's own near-neutral surface, so counting
+        saturated red-orange pixels answers "is there a cut face" directly.
+        Asserted in both directions: many with the cut engaged, essentially
+        none without it.
+      * THE CAP HAS NO HOLE IN IT. The canvas is transparent — Design's room
+        is a CSS gradient behind it — so the stage background is swapped for
+        magenta and any background pixel ENCLOSED by specimen pixels on its
+        own scanline is counted. Enclosed, not merely present: a cut
+        legitimately narrows the silhouette wherever the near half bulged
+        further than the far half, and an earlier version of this check called
+        that a defect. It is not one; a hole in the middle of the cut face is.
+      * INTERIOR GEOMETRY BECOMES VISIBLE. Proven without naming a colour:
+        with the specimen whole, isolating the outer shell draws the SAME
+        picture as drawing everything, because everything else is inside it.
+        Engage the cut and that stops being true — which is what "the interior
+        is now visible" means, stated as something measurable.
+
+    All three are repeated at every tier, because the Tier A path renders
+    through a post-processing composer with a render target of its own, and a
+    target without a stencil buffer would silently un-cap the cut on the most
+    capable hardware in the fleet.
+
+    WHAT THIS CANNOT SETTLE, tried and stated rather than assumed: whether the
+    cap covers EVERY pixel of the cut. Shrinking the cap quad to a quarter of
+    its size was measured here and still passes — a large cut face remains,
+    and where the cap is missing you see the inside of the far wall rather
+    than the backdrop, so no pixel count separates the two without a threshold
+    fitted to this one specimen. Coverage is arithmetic over two functions and
+    eight box corners, so it is asserted in `tests/gates/section.test.ts`
+    instead, where the same mutation fails three assertions outright.
+    """
+    problems, details = [], []
+
+    rect = page.eval("window.__rc.rect('.stage')")
+    if not rect:
+        problems.append("no .stage to measure")
+        report.check(8, "cross-section is capped", problems, details)
+        return
+    # Sample the specimen's half of the stage only. The left column is the
+    # rail and the bottom strip is the hint line, the section slider and the
+    # quality chip — all of which legitimately change when a tool is pressed,
+    # and all of which would then show up as "the picture changed" in a
+    # comparison that is supposed to be about geometry.
+    inner = {"x": rect["x"] + 96, "y": rect["y"] + 8,
+             "w": rect["w"] - 108, "h": rect["h"] - 78}
+
+    page.eval("window.__rc.voidBackdrop()")
+
+    def shoot(name):
+        path = os.path.join(shots, name + ".png")
+        page.screenshot(path, width=VIEWPORT[0], height=VIEWPORT[1], full_page=False)
+        page.set_viewport(*VIEWPORT)
+        rows = read_png(path)[2]
+        return _pixels(rows, inner), rows
+
+    for word, tier in (("Ultra", "A"), ("High", "B"), ("Balanced", "C")):
+        fault = set_quality(page, word)
+        if fault:
+            problems.append("tier %s: %s" % (tier, fault))
+            continue
+
+        # ── whole specimen, no cut ────────────────────────────────────────
+        reset_view(page)
+        settle(page)
+        whole, whole_rows = shoot("t%s-whole" % tier)
+        drawn = {p for p, rgb in whole.items() if not _is_void(rgb)}
+        face_before = sum(1 for rgb in whole.values() if _is_cut_face(rgb))
+
+        # The instrument's own noise floor: the SAME state, photographed
+        # twice. Tier A renders through SSAO and a continuously re-integrated
+        # contact shadow, and neither settles to identical bytes — measured at
+        # a few hundred pixels here, against 1 at tiers B and C. The
+        # comparisons below are against this rather than against zero, so the
+        # gate is calibrated to what the renderer actually does rather than to
+        # what a still image would do.
+        again, _ = shoot("t%s-again" % tier)
+        noise = sum(1 for p in whole if _differs(whole[p], again.get(p)))
+        if len(drawn) < 500:
+            problems.append(
+                "tier %s: only %d specimen pixel(s) on the stage before the cut "
+                "— the backdrop probe or the render is broken, and everything "
+                "below would be measuring nothing" % (tier, len(drawn)))
+            continue
+
+        # ── shell alone, no cut: must be the same picture ─────────────────
+        page.eval("window.__rc.rail('Isolate')")
+        time.sleep(0.5)
+        shell, _ = shoot("t%s-shell" % tier)
+        same_before = sum(1 for p in whole if _differs(whole[p], shell.get(p)))
+
+        # ── shell alone, cut ──────────────────────────────────────────────
+        page.eval("window.__rc.rail('Cross-section')")
+        time.sleep(0.6)
+        shell_cut, _ = shoot("t%s-shell-cut" % tier)
+
+        # ── whole specimen, cut ───────────────────────────────────────────
+        page.eval("window.__rc.rail('Isolate')")   # step off the shell…
+        for _ in range(4):
+            page.eval("window.__rc.rail('Isolate')")  # …round to whole again
+        time.sleep(0.6)
+        if page.eval("window.__rc.ds('isolate')") != "off":
+            problems.append("tier %s: could not get back to the whole specimen"
+                            % tier)
+        cut, cut_rows = shoot("t%s-cut" % tier)
+
+        face_after = sum(1 for rgb in cut.values() if _is_cut_face(rgb))
+        holes_before = _interior_holes(whole_rows, inner)
+        holes_after = _interior_holes(cut_rows, inner)
+        changed = sum(1 for p in drawn if _differs(whole[p], cut.get(p)))
+        same_after = sum(1 for p in cut if _differs(cut[p], shell_cut.get(p)))
+
+        # (a) a cut face exists, and only once there is a cut
+        if face_before > len(drawn) * 0.02:
+            problems.append(
+                "tier %s: %d cut-face pixel(s) with NO cut engaged — the "
+                "specimen\'s own surface is being read as a cap, so the count "
+                "below proves nothing" % (tier, face_before))
+        if face_after < len(drawn) * 0.10:
+            problems.append(
+                "tier %s: %d of %d specimen pixel(s) are cut face — the plane "
+                "clipped the geometry and left the cut open"
+                % (tier, face_after, len(drawn)))
+
+        # (b) and no hole in it
+        if holes_after > max(holes_before * 2, len(drawn) * 0.005):
+            problems.append(
+                "tier %s: %d background pixel(s) enclosed by the specimen after "
+                "the cut (%d before) — the cap is torn, too small, or losing a "
+                "depth fight" % (tier, holes_after, holes_before))
+
+        # (c) the cut has to change the picture at all
+        if changed < len(drawn) * 0.10:
+            problems.append(
+                "tier %s: engaging the cut changed %d of %d specimen pixel(s) "
+                "— the plane is not cutting anything"
+                % (tier, changed, len(drawn)))
+
+        # (d) the interior was hidden before, and is not after
+        if same_before > max(noise * 3, len(drawn) * 0.01):
+            problems.append(
+                "tier %s: isolating the outer shell changed %d pixel(s) with no "
+                "cut engaged, against a %d-pixel noise floor — the interior was "
+                "already visible, so the line below would prove nothing"
+                % (tier, same_before, noise))
+        if same_after < max(noise * 3, len(drawn) * 0.02):
+            problems.append(
+                "tier %s: with the cut engaged, drawing the whole specimen and "
+                "drawing only its outer shell are still the same picture (%d "
+                "pixel(s) differ) — the cut exposed no interior geometry"
+                % (tier, same_after))
+
+        details.append(
+            "tier %s: %d specimen px · noise floor %d · cut face %d → %d · "
+            "enclosed background %d → %d · cut changed %d (%.0f%%) · interior "
+            "hidden before (%d px differ) → visible after (%d px differ)"
+            % (tier, len(drawn), noise, face_before, face_after, holes_before,
+               holes_after, changed, 100.0 * changed / max(len(drawn), 1),
+               same_before, same_after))
+
+        page.eval("window.__rc.rail('Cross-section')")
+        time.sleep(0.3)
+
+    page.eval("window.__rc.restoreBackdrop()")
+    reset_view(page)
+    settle(page)
+    details.append("cut-face pixels are counted by saturation, not by an exact "
+                   "colour match: the cap is lit and tone-mapped like anything "
+                   "else. The specimen\'s own surface measures 0.18 saturation "
+                   "against the classifier\'s 0.45 floor, and the count with no "
+                   "cut engaged is asserted above rather than assumed.")
+
+    report.check(8, "cross-section is capped, at every tier (MRB-189)",
+                 problems, details)
+
+
 def check_failure_route(url, report):
     """6. Failure is a route — driven against a build with the GLB removed."""
     problems, details = [], []
@@ -1008,7 +1378,7 @@ def main():
     started = time.time()
     print("3D Studio render check (MRB-187 Stage 2) — real Chrome, software WebGL")
     print("  the built app at %s, served as /3d/" % os.path.relpath(DIST, HERE))
-    print("  checks 1–7 gate the exit code; frame timing is a report and never does")
+    print("  checks 1–8 gate the exit code; frame timing is a report and never does")
 
     if not os.path.isdir(DIST) or not os.path.exists(os.path.join(DIST, "index.html")):
         print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
@@ -1045,9 +1415,10 @@ def main():
                 check_autorotate(page, report)
                 check_tiers(page, report, shot_a, shot_c)
                 check_parts(page, report, want)
+                check_section(page, report, shots)
                 timing = frame_timing(page)
             else:
-                print("       (checks 2–5, 7 and the timing report skipped — "
+                print("       (checks 2–5, 7–8 and the timing report skipped — "
                       "nothing rendered)")
     finally:
         cleanup()

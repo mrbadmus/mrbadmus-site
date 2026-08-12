@@ -13,6 +13,7 @@
 import * as THREE from 'three'
 import type { ScreenPoint } from '../types'
 import { isShown } from './parts'
+import { isClipped } from './section'
 
 export interface ProjectionScene {
   camera: THREE.Camera
@@ -23,6 +24,9 @@ export interface ProjectionScene {
   height: number
   /** bounding-sphere radius, used to scale the depth tolerance */
   radius: number
+  /** the cross-section's clipping plane, when one is engaged (MRB-189).
+   * Geometry the plane has taken away is not in front of anything. */
+  clip?: THREE.Plane | null
 }
 
 /** How much nearer than the anchor a hit must be before it counts as
@@ -42,7 +46,7 @@ const _view = new THREE.Vector3()
 const _raycaster = new THREE.Raycaster()
 
 export function projectAnchor(anchor: THREE.Vector3, scene: ProjectionScene): ScreenPoint {
-  const { camera, model, width, height, radius } = scene
+  const { camera, model, width, height, radius, clip } = scene
 
   camera.updateMatrixWorld()
   camera.getWorldPosition(_cameraPos)
@@ -65,7 +69,7 @@ export function projectAnchor(anchor: THREE.Vector3, scene: ProjectionScene): Sc
   return {
     x,
     y,
-    visible: inFrame && !isOccluded(anchor, _cameraPos, model, radius),
+    visible: inFrame && !isOccluded(anchor, _cameraPos, model, radius, clip),
   }
 }
 
@@ -75,6 +79,7 @@ export function isOccluded(
   cameraPos: THREE.Vector3,
   model: THREE.Object3D,
   radius: number,
+  clip: THREE.Plane | null = null,
 ): boolean {
   _toAnchor.copy(anchor).sub(cameraPos)
   const distance = _toAnchor.length()
@@ -92,6 +97,12 @@ export function isOccluded(
   // keep occluding the dots behind it, and a structure the student asked to
   // see alone would be labelled through a form that is no longer drawn
   // (MRB-188).
+  // Two things a raycast against the raw scene graph gets wrong once the tools
+  // exist. three's raycaster does not consult Object3D.visible — it tests
+  // layers and nothing else — so a part isolate or layers switched off would
+  // keep occluding the dots behind it (MRB-188). And it knows nothing about
+  // clipping planes, so the half of the specimen the cross-section has taken
+  // away would keep occluding what the cut just exposed (MRB-189).
   const hits = _raycaster.intersectObject(model, true)
-  return hits.some((hit) => isShown(hit.object, model))
+  return hits.some((hit) => isShown(hit.object, model) && !isClipped(hit.point, clip))
 }

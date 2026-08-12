@@ -235,6 +235,9 @@ export function Stage({
       {/* tool rail renders from declared support */}
       <StageTools renderer={renderer} mode={mode} onInvoked={() => setToolTick((t) => t + 1)} />
 
+      {/* The cut's position, present only while the cut is (MRB-189). */}
+      <SectionSlider renderer={renderer} onChange={() => setToolTick((t) => t + 1)} />
+
       {/* quality chip only where tiers mean anything (§06) */}
       {renderer.supportsQualityTiers && (
         <>
@@ -307,6 +310,50 @@ function useHotspotDots(renderer: Renderer, specimen: SpecimenRecord, ready: boo
   return dots
 }
 
+/** The cross-section's position control.
+ *
+ * NOT IN THE FROZEN REFERENCE — Design drew the rail's cross-section button
+ * and no control for where the plane sits, because §01–§07 never show the tool
+ * engaged. MRB-189's acceptance is explicit that the plane "drags smoothly"
+ * and the cut "updates in real time", and a press is not a drag, so the
+ * control had to be built. It is deliberately the quietest thing on the stage
+ * — the register of the quality chip, no label beyond the tool's own name —
+ * and it exists ONLY while the cut does, so nothing about the drawn stage
+ * changes for a student who never presses the button. Flagged for Design.
+ *
+ * A range input rather than a bespoke handle: it arrives with keyboard control,
+ * a screen-reader name and a value announcement already correct. */
+function SectionSlider({
+  renderer,
+  onChange,
+}: {
+  renderer: Renderer
+  onChange: () => void
+}) {
+  const state = renderer.toolState('cross-section')
+  if (!state?.active) return null
+  const offset = state.offset ?? 0.5
+
+  return (
+    <div className="sectionbar">
+      <span className="sectionbar__word">CROSS-SECTION</span>
+      <input
+        className="sectionbar__range"
+        type="range"
+        min={0}
+        max={1}
+        step={0.005}
+        value={offset}
+        aria-label="Cross-section position"
+        onChange={(e) => {
+          renderer.setSectionOffset(Number(e.target.value))
+          onChange()
+        }}
+      />
+    </div>
+  )
+}
+
 /** The hint-line caption for whichever stepped tool is engaged, or null when
  * none is. `label` is the asset's own node name, passed straight through — the
  * shell never writes a structure's name (see `mesh/parts.ts`). */
@@ -319,6 +366,12 @@ function toolCaption(renderer: Renderer): string | null {
   const layers = renderer.toolState('layers')
   if (layers?.active) {
     return `Layer ${layers.step} of ${layers.steps} · outer layers removed`
+  }
+  const section = renderer.toolState('cross-section')
+  if (section?.active) {
+    return section.offset === undefined
+      ? 'Cross-section · drag to move the cut'
+      : `Cross-section · ${Math.round(section.offset * 100)}% · drag to move the cut`
   }
   return null
 }

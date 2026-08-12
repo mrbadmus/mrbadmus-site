@@ -57,6 +57,9 @@ export interface ToolState {
   /** what is being shown, in the ASSET's own words — a declared node name, or
    * an index when the asset names nothing. Never invented. */
   label?: string
+  /** where a continuous tool sits, 0–1. Only `cross-section` has one: its
+   * position is dragged rather than stepped (MRB-189 acceptance). */
+  offset?: number
 }
 
 export interface ScreenPoint {
@@ -111,6 +114,15 @@ export interface Renderer {
    * Added at Stage 2 (MRB-187) — see the Linear comment for why the Stage 1
    * interface could not carry reset or auto-rotate without it. */
   invokeTool(tool: ToolId, on?: boolean): void
+
+  /** Drag the cross-section's plane along its axis, 0–1 across the specimen's
+   * bounds. Ignored when the tool is not engaged, and by any renderer that
+   * does not declare `cross-section`.
+   *
+   * Separate from `invokeTool` because this one is continuous: MRB-189's
+   * acceptance is "plane drags smoothly, cut updates in real time", and a
+   * press is not a drag. Added at Stage 4. */
+  setSectionOffset(offset: number): void
 
   /** Show only the structure a named hotspot sits on.
    *

@@ -101,10 +101,12 @@ class PlaceholderRenderer implements Renderer {
    * declaration and invocation halves of the tool contract stay paired. */
   invokeTool(): void {}
 
-  /** No geometry to take apart, so nothing to isolate and nothing to caption
-   * (MRB-188). Both are no-ops rather than absent so the placeholder keeps
-   * satisfying the whole contract. */
+  /** No geometry to take apart and no plane to drag, so these are no-ops
+   * rather than absent — the placeholder keeps satisfying the whole contract
+   * (MRB-188, MRB-189). */
   isolateHotspot(): void {}
+
+  setSectionOffset(): void {}
 
   toolState(): null {
     return null

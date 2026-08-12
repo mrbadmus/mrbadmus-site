@@ -424,6 +424,58 @@ a:hover { color: var(--st-accent-hover); }
   .stagehint { bottom: 64px; font-size: 10.5px; }
 }
 
+/* Cross-section position (MRB-189). Not in the frozen reference — see the
+   note on SectionSlider in components/Stage.tsx. Present only while the cut
+   is, and pitched at the quality chip's register so it never competes with
+   the specimen. Sits clear of the rail's 18px + 48px column. */
+.sectionbar {
+  position: absolute;
+  left: 84px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  background: rgba(22, 18, 14, 0.9);
+  border: 1px solid var(--st-room-line);
+  border-radius: var(--st-r-chip);
+}
+.sectionbar__word {
+  font: 500 10px/1 var(--st-mono);
+  letter-spacing: 0.14em;
+  color: var(--st-room-muted);
+}
+.sectionbar__range {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 132px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--st-room-line-strong);
+  cursor: ew-resize;
+}
+.sectionbar__range::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--st-accent);
+  border: 2px solid var(--st-room-well);
+}
+.sectionbar__range::-moz-range-thumb {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--st-accent);
+  border: 2px solid var(--st-room-well);
+}
+.sectionbar__range:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 3px; }
+@media (max-width: 699px) {
+  .sectionbar { left: 12px; right: 12px; bottom: 96px; justify-content: space-between; }
+  .sectionbar__range { flex: 1; }
+}
+
 /* FLAT DIAGRAM chip (§06) */
 .flatchip {
   position: absolute;
