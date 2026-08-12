@@ -55,7 +55,7 @@ describe('gate 7 — a renderer that fails routes to the flat stage', () => {
     render(<App capability={TIER_A} />)
 
     await waitFor(() => {
-      expect(screen.getByTestId('renderer-container').dataset.renderer).toBe('placeholder-paper')
+      expect(screen.getByTestId('renderer-container').dataset.renderer).toBe('flat')
     })
 
     // The mesh renderer's own teardown is deferred by a tick; give it time to
@@ -65,9 +65,15 @@ describe('gate 7 — a renderer that fails routes to the flat stage', () => {
     await new Promise((resolve) => setTimeout(resolve, 20))
 
     // The stage is dressed as the flat stage, not as a broken viewport.
+    //
+    // `.plate-grid` is the paper ground the flat renderer draws immediately;
+    // the plate itself needs the diagram to load, and jsdom does not fetch
+    // images at all. So the plate and its image are asserted where a real
+    // browser can see them — `3d_parity.py` s06 needs .plate and
+    // .plate__image — and what is asserted here is the half that is honestly
+    // observable in jsdom.
     expect(screen.getByText('FLAT DIAGRAM')).toBeTruthy()
-    expect(document.querySelector('.ph-plate')).toBeTruthy()
-    expect(document.querySelector('.ph-grid')).toBeTruthy()
+    expect(document.querySelector('.plate-grid')).toBeTruthy()
     expect(document.querySelector('canvas')).toBeNull()
     // No quality chip: there is no render load to tune (§06).
     expect(screen.queryByRole('button', { name: /render quality/i })).toBeNull()

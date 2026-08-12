@@ -25,7 +25,7 @@ the same stdlib harness (``ks3_browser.py``) and the same reporting shape as
 WHAT THIS CHECK DOES, AND WHAT IT CANNOT DO — read before trusting it
 ═══════════════════════════════════════════════════════════════════════════
 
-Checks 1–8 are gates: any failure exits non-zero.
+Checks 1–9 are gates: any failure exits non-zero.
 
   1. It renders at all. The mesh renderer mounts, the stage container reaches
      ``ready``, a <canvas> exists inside the stage.
@@ -42,8 +42,8 @@ Checks 1–8 are gates: any failure exits non-zero.
      the SAME canvas element survives — proven by a probe attribute stamped on
      it before the journey and read back after each step.
   6. Failure is a route. A second copy of the build, with the specimen GLB
-     deleted, must land on the flat stage: paper renderer, FLAT DIAGRAM chip,
-     no quality chip, and no error/failure/apology text anywhere on the page.
+     deleted, must land on the flat renderer: FLAT DIAGRAM chip, no quality
+     chip, and no error/failure/apology text anywhere on the page.
 
   7. Isolate and layers (MRB-188). Isolate steps through every part the asset
      declares, drawing exactly one at a time and naming it from the file; one
@@ -60,6 +60,12 @@ Checks 1–8 are gates: any failure exits non-zero.
      target would silently un-cap the cut if it carried no stencil buffer.
      Whether the cap covers every last pixel of the cut is NOT settled here —
      see the limitation in the check's own docstring.
+
+  9. A Tier D device never downloads Three.js (ruling on MRB-190). Driven in
+     a browser with WebGL genuinely off, against the chunks that are FOUND to
+     contain Three rather than the ones named as if they did. The same run
+     confirms a capable browser does fetch it, so the split cannot pass by
+     having broken both halves.
 
 Frame timing is a REPORT, never a gate, and carries no check number for that
 reason — see its banner. Nothing it prints can change the exit code.
@@ -401,7 +407,7 @@ class Report:
         print("       %s" % text)
 
 
-# ── checks 1–8 ───────────────────────────────────────────────────────────
+# ── checks 1–9 ───────────────────────────────────────────────────────────
 
 
 def check_renders(page, report):
@@ -1160,6 +1166,107 @@ def check_section(page, report, shots):
                  problems, details)
 
 
+def three_chunks():
+    """Every built JS chunk that actually contains Three.js.
+
+    Found by reading the build rather than by trusting the chunk name, so a
+    rollup config change that scattered three across three files could not
+    quietly make check 9 vacuous.
+    """
+    assets = os.path.join(DIST, "assets")
+    if not os.path.isdir(assets):
+        return []
+    marks = ("WebGLRenderer", "BufferGeometry")
+    found = []
+    for name in sorted(os.listdir(assets)):
+        if not name.endswith(".js"):
+            continue
+        with open(os.path.join(assets, name), "r", encoding="utf-8",
+                  errors="replace") as fh:
+            text = fh.read()
+        if all(mark in text for mark in marks):
+            found.append(name)
+    return found
+
+
+def check_split(url, report):
+    """9. A Tier D device never downloads Three.js (ruling on MRB-190).
+
+    Stage 2 took the bundle to 1.15MB, nearly all of it Three, and every byte
+    of it went to a device with no WebGL to render a flat diagram — the
+    students on the worst hardware paying the largest download for code that
+    cannot execute on their machine, usually on the worst connection too.
+
+    Stage 5 put the mesh renderer behind a dynamic import. This is the claim
+    that makes that worth doing, and it is asserted rather than assumed: a
+    browser launched with WebGL genuinely off lands on Tier D, mounts the flat
+    renderer, and its resource timeline must contain NO chunk carrying Three.
+
+    The same run also checks the other half — that the split did not cost the
+    capable devices anything — by confirming a WebGL browser DOES fetch it.
+    """
+    problems, details = [], []
+
+    chunks = three_chunks()
+    if not chunks:
+        problems.append(
+            "no built chunk contains Three.js at all — either the build is "
+            "broken or this check is looking in the wrong place, and either "
+            "way it would pass vacuously")
+        report.check(9, "tier D never downloads Three", problems, details)
+        return
+    details.append("three lives in: %s" % ", ".join(chunks))
+
+    def requested(extra_args):
+        with cdp.Browser(extra_args=extra_args) as b:
+            page = b.attach()
+            page.set_viewport(*VIEWPORT)
+            page.goto(url)
+            inject(page)
+            wait_state(page)
+            # The prefetch is fired before React renders, but the response
+            # still has to arrive before it shows in the timeline.
+            time.sleep(2.5)
+            tier = page.eval(
+                "document.querySelector('.app').getAttribute('data-detected-tier')")
+            renderer = page.eval("window.__rc.ds('renderer')")
+            urls = page.eval(
+                "performance.getEntriesByType('resource').map(function (e) "
+                "{ return e.name })") or []
+            return tier, renderer, [u for u in urls
+                                    if any(c in u for c in chunks)]
+
+    tier, renderer, got = requested(["--disable-webgl", "--disable-webgl2"])
+    if tier != "D":
+        problems.append(
+            "HARNESS: WebGL was not actually disabled — the probe landed on "
+            "tier %r, so this proves nothing about the Tier D route" % tier)
+    if renderer != "flat":
+        problems.append("tier D mounted renderer=%r, expected 'flat'" % renderer)
+    if got:
+        problems.append(
+            "a Tier D load requested %d Three chunk(s): %s. The device cannot "
+            "run a line of it." % (len(got), ", ".join(got)))
+    details.append("tier D: renderer=%r, %d Three chunk request(s)"
+                   % (renderer, len(got)))
+
+    tier, renderer, got = requested(["--enable-unsafe-swiftshader"])
+    if tier == "D":
+        problems.append("HARNESS: the WebGL browser also landed on tier D")
+    elif not got:
+        problems.append(
+            "a Tier %s load requested NO Three chunk — the mesh renderer "
+            "cannot be running, so the split has broken the capable path "
+            "rather than only the flat one" % tier)
+    details.append("tier %s: renderer=%r, %d Three chunk request(s) — the "
+                   "prefetch fires before React renders, so the split costs a "
+                   "capable device no round-trip"
+                   % (tier, renderer, len(got)))
+
+    report.check(9, "a tier D load requests no Three chunk (MRB-190)",
+                 problems, details)
+
+
 def check_failure_route(url, report):
     """6. Failure is a route — driven against a build with the GLB removed."""
     problems, details = [], []
@@ -1177,7 +1284,7 @@ def check_failure_route(url, report):
         renderer = None
         while time.time() < deadline:
             renderer = page.eval("window.__rc.ds('renderer')")
-            if renderer == "placeholder-paper":
+            if renderer == "flat":
                 break
             time.sleep(0.2)
 
@@ -1188,10 +1295,13 @@ def check_failure_route(url, report):
                 "HARNESS: this browser has no WebGL either, so the flat stage "
                 "proves nothing about the missing-GLB route")
 
-        if renderer != "placeholder-paper":
-            problems.append("stage reports renderer=%r, expected "
-                            "'placeholder-paper' — a mesh that will not load "
-                            "must route to the flat stage" % renderer)
+        # Stage 5 (MRB-190) replaced the paper PLACEHOLDER with the real flat
+        # renderer, so the name this asserts changed with it. The claim is the
+        # same one: a mesh that will not load lands on the flat stage.
+        if renderer != "flat":
+            problems.append("stage reports renderer=%r, expected 'flat' — a "
+                            "mesh that will not load must route to the flat "
+                            "stage" % renderer)
         word = page.eval("window.__rc.text('.flatchip__word')")
         if (word or "").lower() != "flat diagram":
             problems.append("flat chip says %r, expected 'FLAT DIAGRAM'" % word)
@@ -1378,7 +1488,7 @@ def main():
     started = time.time()
     print("3D Studio render check (MRB-187 Stage 2) — real Chrome, software WebGL")
     print("  the built app at %s, served as /3d/" % os.path.relpath(DIST, HERE))
-    print("  checks 1–8 gate the exit code; frame timing is a report and never does")
+    print("  checks 1–9 gate the exit code; frame timing is a report and never does")
 
     if not os.path.isdir(DIST) or not os.path.exists(os.path.join(DIST, "index.html")):
         print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
@@ -1398,6 +1508,7 @@ def main():
     shot_c = os.path.join(shots, "tier-c.png")
 
     url, cleanup = serve_dist_as_3d("st-render-")
+    url_for_split = url
     timing = []
     try:
         # --enable-unsafe-swiftshader: without it headless Chrome has no WebGL
@@ -1420,6 +1531,10 @@ def main():
             else:
                 print("       (checks 2–5, 7–8 and the timing report skipped — "
                       "nothing rendered)")
+
+        # Its own browsers, off the same server: one with WebGL genuinely
+        # disabled and one without.
+        check_split(url_for_split, report)
     finally:
         cleanup()
 

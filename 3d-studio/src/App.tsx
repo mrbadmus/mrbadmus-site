@@ -2,14 +2,13 @@
 // on MRB-194): specimen selection is in-memory state. Everything on screen
 // resolves from a single specimen record through a single id (spec §3.2).
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { CapabilityReport } from './studio/capability'
 import { detectCapability } from './studio/capability'
 import type { QualitySetting } from './studio/quality'
 import { effectiveRenderTier } from './studio/quality'
 import { getSpecimen } from './studio/content'
-import { createPlaceholderRenderer } from './renderer/placeholder'
-import { createMeshRenderer } from './renderer/mesh'
+import { createFlatRenderer } from './renderer/flat'
 import type { Renderer } from './renderer/types'
 import { Stage, type StageMode } from './components/Stage'
 import { TopBar, ModeToggle } from './components/TopBar'
@@ -21,14 +20,32 @@ import { PhoneSheet } from './components/PhoneSheet'
 type Layout = 'desktop' | 'tablet' | 'phone'
 
 /** Which renderer answers for each kind of stage — the shell's whole renderer
- * policy, in one line. `paper` is the placeholder until the flat renderer
- * lands at Stage 5. Injectable because gate 5 has to drive the tier journey
+ * policy, in one line. Injectable because gate 5 has to drive the tier journey
  * in an environment with no WebGL at all, where the honest production answer
- * is the flat route and so no tiered renderer would ever mount. */
-export type RendererFactory = (kind: 'viewport' | 'paper') => Renderer
+ * is the flat route and so no tiered renderer would ever mount.
+ *
+ * ASYNC as of Stage 5 (ruling on MRB-190). The mesh renderer sits behind a
+ * dynamic import, so the shell asks for one and waits — which is the whole
+ * point: a Tier D device, which is exactly the device on the worst connection,
+ * never requests the Three chunk at all. Nothing else about the policy moved;
+ * `meshFailed` and the tier-D check still make the same decision, and the
+ * import only changes when the module arrives. */
+export type RendererFactory = (kind: 'viewport' | 'paper') => Promise<Renderer>
 
-const defaultRenderer: RendererFactory = (kind) =>
-  kind === 'viewport' ? createMeshRenderer() : createPlaceholderRenderer('paper')
+const defaultRenderer: RendererFactory = async (kind) => {
+  if (kind !== 'viewport') return createFlatRenderer()
+  const { createMeshRenderer } = await import('./renderer/mesh')
+  return createMeshRenderer()
+}
+
+/** Start fetching the mesh chunk while the shell is still drawing, so the
+ * split costs a capable device nothing. Tier D is deliberately excluded: on
+ * that route the chunk would never be executed, and §5's load story already
+ * has a 3MB asset budget to spend on a school connection. */
+export function prefetchMeshRenderer(tier: CapabilityReport['tier']): void {
+  if (tier === 'D') return
+  void import('./renderer/mesh')
+}
 
 function layoutFor(width: number): Layout {
   if (width >= 1024) return 'desktop'
@@ -79,15 +96,27 @@ export default function App({
   // Tier D (no WebGL2) or a flat-content specimen ⇒ paper stage.
   const stageKind: 'viewport' | 'paper' =
     probe.tier === 'D' || specimen.renderer === 'flat' || meshFailed ? 'paper' : 'viewport'
-  const renderer = useMemo(() => createRenderer(stageKind), [createRenderer, stageKind])
 
-  useEffect(
-    () =>
-      renderer.onStatus((status) => {
-        if (status.state === 'failed') setMeshFailed(true)
-      }),
-    [renderer],
-  )
+  const [renderer, setRenderer] = useState<Renderer | null>(null)
+  useEffect(() => {
+    let live = true
+    void createRenderer(stageKind).then((next) => {
+      if (live) setRenderer(next)
+    })
+    return () => {
+      live = false
+    }
+  }, [createRenderer, stageKind])
+
+  useEffect(() => {
+    if (!renderer) return
+    return renderer.onStatus((status) => {
+      // The flat renderer is the last route there is. If its own plate will
+      // not load there is nowhere further to fall, so a failure there must not
+      // send the shell round the loop again looking for one.
+      if (status.state === 'failed' && renderer.stage === 'viewport') setMeshFailed(true)
+    })
+  }, [renderer])
 
   const renderTier = effectiveRenderTier(quality, probe.tier)
 
@@ -110,9 +139,16 @@ export default function App({
     setOpenHotspotId(null)
   }
 
+  // Between the shell drawing and the renderer module arriving (MRB-190's
+  // code split) there are a few frames with no renderer. The Stage is still
+  // the thing that draws them: the dark room, the container and the hint line
+  // are the shell's furniture, and swapping in a substitute stage would give
+  // the container a new element the moment the module landed — exactly the
+  // remount gate 5 exists to forbid.
   const stage = (
     <Stage
       renderer={renderer}
+      stageKind={stageKind}
       specimen={specimen}
       mode={mode}
       renderTier={renderTier}

@@ -39,6 +39,7 @@ function calloutPlacement(
 
 export function Stage({
   renderer,
+  stageKind,
   specimen,
   mode,
   renderTier,
@@ -50,7 +51,14 @@ export function Stage({
   targetHotspotId,
   hint,
 }: {
-  renderer: Renderer
+  /** null while the renderer module is still arriving (MRB-190's code split).
+   * The Stage still draws: the dark room, the hint line and the container are
+   * the SHELL's furniture, not the renderer's, and keeping this component
+   * mounted across the wait is what keeps the container one element — which
+   * gate 5 asserts and a swapped-in placeholder stage would quietly break. */
+  renderer: Renderer | null
+  /** which dressing to use before a renderer has answered */
+  stageKind: 'viewport' | 'paper'
   specimen: SpecimenRecord
   mode: StageMode
   renderTier: RenderTier
@@ -72,12 +80,13 @@ export function Stage({
   // and would otherwise caption a step behind (MRB-188).
   const [, setToolTick] = useState(0)
 
-  const surface = renderer.stage === 'viewport' ? 'dark' : 'paper'
+  const dressing = renderer?.stage ?? stageKind
+  const surface = dressing === 'viewport' ? 'dark' : 'paper'
 
   // mount / unmount
   useEffect(() => {
     const el = containerRef.current
-    if (!el) return
+    if (!el || !renderer) return
     renderer.mount(el)
     const unsubscribe = renderer.onStatus(setStatus)
     return () => {
@@ -90,12 +99,12 @@ export function Stage({
   // onStatus, and the shell's answer to it is a different renderer, so the
   // promise is caught here rather than surfacing as an unhandled rejection.
   useEffect(() => {
-    renderer.loadSpecimen(specimen).catch(() => {})
+    renderer?.loadSpecimen(specimen).catch(() => {})
   }, [renderer, specimen])
 
   // live tier — no reload, no remount (gate 5)
   useEffect(() => {
-    renderer.setTier(renderTier)
+    renderer?.setTier(renderTier)
   }, [renderer, renderTier])
 
   // reposition dots when the container resizes
@@ -126,14 +135,14 @@ export function Stage({
       ? status.progress === undefined
         ? 'Loading specimen'
         : `Loading specimen · ${Math.round(status.progress * 100)}%`
-      : (toolCaption(renderer) ?? hint)
+      : ((renderer && toolCaption(renderer)) ?? hint)
 
   return (
-    <div className={`stage stage--${renderer.stage}`}>
+    <div className={`stage stage--${dressing}`}>
       <div ref={containerRef} data-testid="renderer-container" style={{ position: 'absolute', inset: 0 }} />
 
       {/* §06: paper stage announces itself */}
-      {renderer.stage === 'paper' && (
+      {dressing === 'paper' && (
         <div className="flatchip">
           <span className="flatchip__mark" aria-hidden="true" />
           <span className="flatchip__word">FLAT DIAGRAM</span>
@@ -187,7 +196,7 @@ export function Stage({
           to the left when there is no room — the stage clips at its own edge,
           and dots go wherever the geometry puts them now that a real camera
           decides (MRB-187). */}
-      {mode === 'explore' && openDot && (
+      {mode === 'explore' && openDot && renderer && (
         <>
           {calloutPlacement(openDot.x, containerRef.current).leader !== null && (
             <div
@@ -233,13 +242,17 @@ export function Stage({
       )}
 
       {/* tool rail renders from declared support */}
-      <StageTools renderer={renderer} mode={mode} onInvoked={() => setToolTick((t) => t + 1)} />
+      {renderer && (
+        <StageTools renderer={renderer} mode={mode} onInvoked={() => setToolTick((t) => t + 1)} />
+      )}
 
       {/* The cut's position, present only while the cut is (MRB-189). */}
-      <SectionSlider renderer={renderer} onChange={() => setToolTick((t) => t + 1)} />
+      {renderer && (
+        <SectionSlider renderer={renderer} onChange={() => setToolTick((t) => t + 1)} />
+      )}
 
       {/* quality chip only where tiers mean anything (§06) */}
-      {renderer.supportsQualityTiers && (
+      {renderer?.supportsQualityTiers && (
         <>
           <QualityChip
             setting={quality}
@@ -277,11 +290,15 @@ interface Dot {
  * actually moved a whole pixel or changed visibility — an orbiting specimen
  * would otherwise re-render the tree at 60fps for sub-pixel drift, and a
  * still one would re-render for nothing at all. */
-function useHotspotDots(renderer: Renderer, specimen: SpecimenRecord, ready: boolean): Dot[] {
+function useHotspotDots(
+  renderer: Renderer | null,
+  specimen: SpecimenRecord,
+  ready: boolean,
+): Dot[] {
   const [dots, setDots] = useState<Dot[]>([])
 
   useEffect(() => {
-    if (!ready) {
+    if (!ready || !renderer) {
       setDots([])
       return
     }

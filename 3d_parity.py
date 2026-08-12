@@ -452,7 +452,11 @@ COMPONENTS = [
     dict(name="paper stage", on="s06", sel=".stage--paper",
          props={"background-color": "#FFFDF8", "border-top-color": "#D9C9AC",
                 "border-top-left-radius": "12px"}),
-    dict(name="plate outline", on="s06", sel=".ph-plate",
+    # Selector changed at Stage 5 (MRB-190), values unchanged. `.ph-plate`
+    # was the Stage 1 PLACEHOLDER's drawn form; the flat renderer replaces it
+    # with a real plate frame around the specimen's own diagram. Same role,
+    # same reference values, real element. Flagged in the Stage 5 report.
+    dict(name="plate outline", on="s06", sel=".plate",
          props={"border-top-color": "#B6AC9C", "border-top-width": "2px",
                 "background-color": "#DED7CB"}),
     dict(name="FLAT DIAGRAM chip", on="s06", sel=".flatchip",
@@ -767,8 +771,11 @@ def check_structure(page, screen, counts):
             p.append("s06: detected tier is %r — WebGL was not actually "
                      "disabled, so the flat stage was never exercised" % tier)
         need(".stage--paper")
-        need(".ph-grid")
-        need(".ph-plate")
+        # See the note on the "plate outline" style row: these are the flat
+        # renderer's elements now, not the placeholder's.
+        need(".plate-grid")
+        need(".plate")
+        need(".plate__image")
         need(".flatchip")
         word = (page.eval("window.__st.text('.flatchip__word')") or "").lower()
         if word != "flat diagram":

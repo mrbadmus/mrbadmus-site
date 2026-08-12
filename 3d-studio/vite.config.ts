@@ -37,18 +37,28 @@ function stageDracoDecoder(): void {
 // `.glb` into public/assets/ and this evaporates on the next build — no code
 // change in src/. Underscore-prefixed files are generated test assets and do
 // not count as acquired.
-function meshStandIn(): string | null {
+function standInFor(extension: string, fixture: string): string | null {
   const assets = resolve(here, 'public/assets')
   const acquired =
     existsSync(assets) &&
-    readdirSync(assets).some((file) => file.endsWith('.glb') && !file.startsWith('_'))
-  return acquired ? null : `${BASE}assets/_test-specimen.glb`
+    readdirSync(assets).some(
+      (file) => file.endsWith(extension) && !file.startsWith('_'),
+    )
+  return acquired ? null : `${BASE}assets/${fixture}`
 }
 
 stageDracoDecoder()
-const MESH_STANDIN = meshStandIn()
+const MESH_STANDIN = standInFor('.glb', '_test-specimen.glb')
+// The flat renderer's counterpart (MRB-190). assets.fallback is a Stage-8
+// TODO exactly as assets.mesh is, so the flat path gets the same treatment:
+// a generated fixture that carries no anatomy, and evaporates the moment a
+// drawn diagram lands in public/assets/.
+const PLATE_STANDIN = standInFor('.svg', '_test-plate.svg')
 if (MESH_STANDIN) {
   console.log(`[3d-studio] no acquired specimen mesh on disk — using ${MESH_STANDIN}`)
+}
+if (PLATE_STANDIN) {
+  console.log(`[3d-studio] no acquired fallback diagram on disk — using ${PLATE_STANDIN}`)
 }
 
 // base is architecturally fixed: the app is served from mrbadmus.com/3d, and the
@@ -61,6 +71,23 @@ export default defineConfig({
   resolve: { dedupe: ['three'] },
   define: {
     __MESH_STANDIN__: JSON.stringify(MESH_STANDIN),
+    __PLATE_STANDIN__: JSON.stringify(PLATE_STANDIN),
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        // The mesh renderer is behind a dynamic import (ruling on MRB-190), so
+        // Three lands in a chunk of its own. Naming it is not cosmetic: the
+        // browser gate asserts that a Tier D load requests NO three chunk, and
+        // it can only assert that against a name it can recognise.
+        manualChunks(id) {
+          if (/node_modules[/\\](three|three-stdlib|postprocessing)[/\\]/.test(id)) {
+            return 'three'
+          }
+          return undefined
+        },
+      },
+    },
   },
   server: { port: 8899, strictPort: true },
   preview: { port: 8899, strictPort: true },

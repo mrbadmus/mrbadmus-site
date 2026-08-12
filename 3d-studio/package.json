@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "validate": "python3 validate_content.py",
-    "test-specimen": "python3 tools/make_test_specimen.py && (python3 validate_specimen_glb.py tools/build/_test-specimen.raw.glb || true) && node tools/compress_test_specimen.mjs"
+    "test-specimen": "python3 tools/make_test_specimen.py && (python3 validate_specimen_glb.py tools/build/_test-specimen.raw.glb || true) && node tools/compress_test_specimen.mjs",
+    "test-plate": "python3 tools/make_test_plate.py"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",

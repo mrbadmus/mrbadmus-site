@@ -338,6 +338,34 @@ a:hover { color: var(--st-accent-hover); }
   .stage { height: auto; flex: 1; border-radius: 0; border: none; }
 }
 
+/* Flat renderer (MRB-190), drawn by src/renderer/flat/. The grid and the
+   plate frame are the reference's §06 in-situ treatment — 36px paper grid,
+   2px rule around the plate — carried over from the Stage 1 placeholder's
+   .ph-grid/.ph-plate, which the real renderer replaces. The lobed shape does
+   NOT carry over: that was Design drawing a heart, and the app loads one. */
+.plate-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--st-paper-grid) 1px, rgba(0, 0, 0, 0) 1px),
+    linear-gradient(90deg, var(--st-paper-grid) 1px, rgba(0, 0, 0, 0) 1px);
+  background-size: 36px 36px;
+}
+.plate {
+  position: absolute;
+  background: #DED7CB;
+  border: 2px solid var(--st-plate-line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.plate__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 /* placeholder renderer visuals (drawn by src/renderer/placeholder.ts) */
 .ph-shadow {
   position: absolute;

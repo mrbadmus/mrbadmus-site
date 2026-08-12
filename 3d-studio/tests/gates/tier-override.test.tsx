@@ -35,7 +35,7 @@ const TIER_A: CapabilityReport = {
 
 /** A tiered renderer that can exist in jsdom. Same instance across the whole
  * journey, so "no remount" is a fact the test can read rather than infer. */
-const viewportPlaceholder = () => createPlaceholderRenderer('viewport')
+const viewportPlaceholder = async () => createPlaceholderRenderer('viewport')
 
 describe('gate 5 — tier override changes render output without a reload', () => {
   it('Auto(A) → Balanced redraws the stage in place', async () => {
@@ -85,7 +85,7 @@ describe('gate 5 — tier override changes render output without a reload', () =
     const seen: { container: HTMLElement | null } = { container: null }
     let instances = 0
 
-    const recording = (): Renderer => {
+    const recording = async (): Promise<Renderer> => {
       const inner = createPlaceholderRenderer('viewport')
       instances += 1
       return {
