@@ -16,6 +16,7 @@ import type {
   RenderTier,
   ScreenPoint,
   ToolId,
+  ToolState,
 } from '../types'
 import type { SpecimenRecord } from '../../studio/types'
 import { createBridge, SceneRoot, type SceneBridge } from './scene'
@@ -25,11 +26,24 @@ import { disposeTree, loadSpecimenMesh } from './load'
 import { TextureBudget } from './textures'
 import { TIER_RIGS } from './tiers'
 import { isStandIn, resolveMeshUrl } from './standin'
+import {
+  applyView,
+  collectParts,
+  isShown,
+  layerCount,
+  partAt,
+  partLabel,
+  stepIsolate,
+  stepLayers,
+  WHOLE_SPECIMEN,
+  type PartView,
+  type SpecimenPart,
+} from './parts'
 
-/** Same seven the placeholder's viewport stage declares. `isolate`,
- * `cross-section` and `layers` are declared because the mesh renderer is the
- * renderer that will honour them (Stages 3–4); `invokeTool` ignores them for
- * now rather than the rail pretending they are missing. */
+/** Same seven the placeholder's viewport stage declares. `cross-section` is
+ * declared because the mesh renderer is the one that will honour it (Stage 4);
+ * `invokeTool` ignores it for now rather than the rail pretending it is
+ * missing. `isolate` and `layers` became real at Stage 3 (MRB-188). */
 const MESH_TOOLS: readonly ToolId[] = [
   'rotate',
   'zoom',
@@ -69,6 +83,12 @@ class MeshRenderer implements Renderer {
   private anchors = new Map<string, THREE.Vector3>()
   private disposeModel: (() => void) | null = null
   private textureBudget = new TextureBudget()
+
+  /** the parts the loaded asset declares, and which of them are drawn */
+  private parts: SpecimenPart[] = []
+  private partView: PartView = WHOLE_SPECIMEN
+  /** hotspot id → the part its anchor sits on, resolved geometrically */
+  private anchorParts = new Map<string, SpecimenPart>()
 
   /** Bumped per load so a specimen swapped mid-fetch cannot be overtaken by
    * its predecessor arriving late. */
@@ -198,6 +218,21 @@ class MeshRenderer implements Renderer {
     const height = this.container.clientHeight || this.bridge.height
     if (!width || !height) return null
 
+    // A label on a structure that isolate or layers has taken off the stage is
+    // a label pointing at nothing. The anchor keeps its coordinate; it simply
+    // stops being visible while its own part is not drawn (MRB-188).
+    const part = this.anchorParts.get(hotspotId)
+    if (part && !isShown(part.object, this.model)) {
+      const off = projectAnchor(anchor, {
+        camera,
+        model: this.model,
+        width,
+        height,
+        radius: this.view.radius,
+      })
+      return { x: off.x, y: off.y, visible: false }
+    }
+
     return projectAnchor(anchor, {
       camera,
       model: this.model,
@@ -221,16 +256,58 @@ class MeshRenderer implements Renderer {
     switch (tool) {
       case 'reset':
         this.resetView()
+        // Reset means the view a student came in on, which includes the form
+        // being whole. Leaving a structure isolated behind a pressed Reset is
+        // the kind of half-restored state that reads as a broken control.
+        this.setPartView(WHOLE_SPECIMEN)
         break
       case 'auto-rotate':
         this.autoRotate = on ?? !this.autoRotate
         this.renderScene()
         break
+      case 'isolate':
+        this.setPartView(stepIsolate(this.partView, this.parts))
+        break
+      case 'layers':
+        this.setPartView(stepLayers(this.partView, this.parts))
+        break
       default:
-        // rotate and zoom are the pointer's, always live; isolate,
-        // cross-section and layers arrive at Stages 3–4.
+        // rotate and zoom are the pointer's, always live; cross-section
+        // arrives at Stage 4.
         break
     }
+  }
+
+  isolateHotspot(hotspotId: string): void {
+    const part = this.anchorParts.get(hotspotId)
+    if (!part) return
+    const index = this.parts.indexOf(part)
+    if (index === -1) return
+    // Pressing it again on the same structure puts the specimen back, so the
+    // callout's action is its own way out.
+    const already = this.partView.isolated === index
+    this.setPartView({ isolated: already ? null : index, peeled: 0 })
+  }
+
+  toolState(tool: ToolId): ToolState | null {
+    if (tool === 'isolate') {
+      if (this.parts.length < 2) return { active: false }
+      const index = this.partView.isolated
+      if (index === null) return { active: false, steps: this.parts.length }
+      return {
+        active: true,
+        step: index + 1,
+        steps: this.parts.length,
+        label: partLabel(this.parts[index]),
+      }
+    }
+    if (tool === 'layers') {
+      const levels = layerCount(this.parts)
+      if (levels < 2) return { active: false }
+      if (this.partView.peeled === 0) return { active: false, steps: levels }
+      return { active: true, step: this.partView.peeled + 1, steps: levels }
+    }
+    return null
   }
 
   onStatus(cb: (status: RendererStatus) => void): () => void {
@@ -272,6 +349,28 @@ class MeshRenderer implements Renderer {
     controls.enableDamping = damping
   }
 
+  /** Change which parts are drawn and stamp it where the browser gate can
+   * read it. No re-render: part visibility lives on the scene graph objects
+   * R3F already has mounted, so R3F's own frame loop picks it up. */
+  private setPartView(next: PartView): void {
+    this.partView = next
+    applyView(this.parts, next)
+    this.stampParts()
+  }
+
+  private stampParts(): void {
+    const container = this.container
+    if (!container) return
+    const isolate = this.toolState('isolate')
+    const layers = this.toolState('layers')
+    container.dataset.isolate =
+      isolate?.active && isolate.label ? isolate.label : 'off'
+    container.dataset.layer = layers?.active ? String(layers.step) : 'off'
+    container.dataset.partsShown = String(
+      this.parts.filter((p) => p.object.visible).length,
+    )
+  }
+
   private adopt(scene: THREE.Group, specimen: SpecimenRecord): void {
     scene.traverse((node) => {
       const mesh = node as THREE.Mesh
@@ -290,6 +389,17 @@ class MeshRenderer implements Renderer {
     this.view = frameSpecimen(scene, aspect)
     this.anchors = resolveAnchors(specimen.hotspots, scene, this.view)
 
+    // The parts the asset declares, and which part each anchor sits on — both
+    // read off the geometry, so neither needs a binding authored in content
+    // and both stay right when Stage 8 authors real coordinates (MRB-188).
+    this.parts = collectParts(scene)
+    this.anchorParts = new Map()
+    for (const [id, anchor] of this.anchors) {
+      const part = partAt(anchor, this.parts)
+      if (part) this.anchorParts.set(id, part)
+    }
+    this.setPartView(WHOLE_SPECIMEN)
+
     this.textureBudget.collect(scene)
     const rig = TIER_RIGS[this.tier]
     this.textureBudget.apply(rig.textureScale, rig.anisotropy)
@@ -302,6 +412,9 @@ class MeshRenderer implements Renderer {
     this.model = null
     this.view = null
     this.anchors = new Map()
+    this.parts = []
+    this.anchorParts = new Map()
+    this.partView = WHOLE_SPECIMEN
     this.bridge.model = null
     this.bridge.view = null
     this.textureBudget.clear()

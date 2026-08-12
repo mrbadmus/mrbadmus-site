@@ -38,13 +38,20 @@ export function ToolRail({
   const hasReset = supported.includes('reset')
   const hasAuto = supported.includes('auto-rotate')
 
+  // A stepped tool knows whether it is engaged; a pointer mode does not, and
+  // the shell remembers that for it (MRB-188).
+  const isActive = (tool: ToolId): boolean => {
+    const stepped = renderer.toolState(tool)
+    return stepped ? stepped.active : activeTool === tool
+  }
+
   return (
     <div className="rail" role="toolbar" aria-label="Stage tools">
       {main.map((tool) => (
         <RailButton
           key={tool}
           tool={tool}
-          active={activeTool === tool}
+          active={isActive(tool)}
           onClick={() => onTool(tool)}
         />
       ))}

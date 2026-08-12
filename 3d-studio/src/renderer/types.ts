@@ -47,6 +47,18 @@ export interface RendererStatus {
   progress?: number
 }
 
+/** The live position of a stepped tool (MRB-188). */
+export interface ToolState {
+  /** false when the tool is honoured but currently doing nothing */
+  active: boolean
+  /** 1-based position, when the tool steps through a fixed set */
+  step?: number
+  steps?: number
+  /** what is being shown, in the ASSET's own words — a declared node name, or
+   * an index when the asset names nothing. Never invented. */
+  label?: string
+}
+
 export interface ScreenPoint {
   /** px from the container's left edge */
   x: number
@@ -99,6 +111,30 @@ export interface Renderer {
    * Added at Stage 2 (MRB-187) — see the Linear comment for why the Stage 1
    * interface could not carry reset or auto-rotate without it. */
   invokeTool(tool: ToolId, on?: boolean): void
+
+  /** Show only the structure a named hotspot sits on.
+   *
+   * The rail's isolate button steps blindly through the parts the asset
+   * declares, because at that moment the shell has nothing in mind. The
+   * callout's `Isolate` action (reference §01) does have something in mind —
+   * the structure whose label is open — and there is no way to say that
+   * through `invokeTool`. Added at Stage 3 (MRB-188).
+   *
+   * A renderer that cannot resolve the hotspot to a part leaves the view
+   * alone; it never guesses at one. */
+  isolateHotspot(hotspotId: string): void
+
+  /** What a stepped tool is currently showing, so the shell can caption it.
+   *
+   * Added at Stage 3 (MRB-188). `isolate` and `layers` step through positions
+   * the RENDERER knows about and the shell does not — how many parts the asset
+   * declares, what they are called — and a control that steps silently is a
+   * control a student cannot follow. Returns null for a tool this renderer
+   * does not honour or that carries no state.
+   *
+   * `label` is always a string the ASSET declares, never one the studio wrote:
+   * see the naming note at the head of `mesh/parts.ts`. */
+  toolState(tool: ToolId): ToolState | null
 
   /** Subscribe to readiness/failure. Returns an unsubscribe function. The
    * current status is delivered immediately on subscribe. */

@@ -108,6 +108,8 @@ describe('gate 5 — tier override changes render output without a reload', () =
         loadSpecimen: (s) => inner.loadSpecimen(s),
         hotspotToScreen: (id) => inner.hotspotToScreen(id),
         invokeTool: (tool, on) => inner.invokeTool(tool, on),
+        isolateHotspot: (id) => inner.isolateHotspot(id),
+        toolState: (tool) => inner.toolState(tool),
         onStatus: (cb) => inner.onStatus(cb),
       }
     }

@@ -101,6 +101,15 @@ class PlaceholderRenderer implements Renderer {
    * declaration and invocation halves of the tool contract stay paired. */
   invokeTool(): void {}
 
+  /** No geometry to take apart, so nothing to isolate and nothing to caption
+   * (MRB-188). Both are no-ops rather than absent so the placeholder keeps
+   * satisfying the whole contract. */
+  isolateHotspot(): void {}
+
+  toolState(): null {
+    return null
+  }
+
   onStatus(cb: (status: RendererStatus) => void): () => void {
     this.listeners.add(cb)
     cb(this.status)

@@ -12,6 +12,7 @@
 
 import * as THREE from 'three'
 import type { ScreenPoint } from '../types'
+import { isShown } from './parts'
 
 export interface ProjectionScene {
   camera: THREE.Camera
@@ -86,6 +87,11 @@ export function isOccluded(
   _raycaster.far = distance - tolerance
   if (_raycaster.far <= 0) return false
 
+  // three's raycaster does not consult Object3D.visible — it tests layers and
+  // nothing else — so a part that isolate or layers has switched off would
+  // keep occluding the dots behind it, and a structure the student asked to
+  // see alone would be labelled through a form that is no longer drawn
+  // (MRB-188).
   const hits = _raycaster.intersectObject(model, true)
-  return hits.length > 0
+  return hits.some((hit) => isShown(hit.object, model))
 }

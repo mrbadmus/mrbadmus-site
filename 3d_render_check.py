@@ -25,7 +25,7 @@ the same stdlib harness (``ks3_browser.py``) and the same reporting shape as
 WHAT THIS CHECK DOES, AND WHAT IT CANNOT DO — read before trusting it
 ═══════════════════════════════════════════════════════════════════════════
 
-Checks 1–6 are gates: any failure exits non-zero.
+Checks 1–7 are gates: any failure exits non-zero.
 
   1. It renders at all. The mesh renderer mounts, the stage container reaches
      ``ready``, a <canvas> exists inside the stage.
@@ -45,16 +45,24 @@ Checks 1–6 are gates: any failure exits non-zero.
      deleted, must land on the flat stage: paper renderer, FLAT DIAGRAM chip,
      no quality chip, and no error/failure/apology text anywhere on the page.
 
-Check 7 is a REPORT, never a gate — see its banner. Nothing it prints can
-change the exit code.
+  7. Isolate and layers (MRB-188). Isolate steps through every part the asset
+     declares, drawing exactly one at a time and naming it from the file; one
+     step past the last returns the whole specimen. Layers peels the outer
+     depth level away. Both are judged by the HOTSPOT LAYER as well as by the
+     part count — every stand-in anchor sits on the outer shell, so taking
+     that shell off the stage must take its dots with it, which is the one
+     thing a step counter cannot fake.
+
+Frame timing is a REPORT, never a gate, and carries no check number for that
+reason — see its banner. Nothing it prints can change the exit code.
 
 WHAT IT DOES NOT CATCH, stated plainly:
 
   * Whether the specimen LOOKS right. Nothing here is a pixel comparison
     against a reference image. Check 5's tier screenshots are compared by
     bytes only, which proves the tiers differ, not that either is correct.
-  * Real-device performance. Check 7's numbers come from SwiftShader on the
-    CPU. See its banner.
+  * Real-device performance. The frame-timing numbers come from SwiftShader
+    on the CPU. See its banner.
   * Composition, colour and type — that is ``3d_parity.py``'s job, and this
     script deliberately duplicates none of it.
   * Occlusion at authored anchor positions. Every ``position3d`` in
@@ -121,7 +129,7 @@ SETTLE_TIMEOUT = 15.0
 # How long "holds still" and "keeps moving" are given to prove themselves.
 HOLD_SECONDS = 1.0
 
-# Frame samples per tier in check 7.
+# Frame samples per tier in the frame-timing report.
 FRAME_SAMPLES = 120
 
 
@@ -199,6 +207,11 @@ window.__rc = {
     if (!row) { return false; }
     row.click();
     return true;
+  },
+  /** how many of the parts the asset declares are currently drawn */
+  partsShown: function () {
+    var v = this.ds('partsShown');
+    return v === null ? null : parseInt(v, 10);
   },
   stampCanvas: function () {
     var c = document.querySelector('canvas');
@@ -365,7 +378,7 @@ class Report:
         print("       %s" % text)
 
 
-# ── checks 1–6 ───────────────────────────────────────────────────────────
+# ── checks 1–7 ───────────────────────────────────────────────────────────
 
 
 def check_renders(page, report):
@@ -642,6 +655,141 @@ def check_tiers(page, report, shot_a, shot_c):
     report.check(5, "live tier change, no remount", problems, details)
 
 
+def check_parts(page, report, want):
+    """7. Isolate and layers take real geometry off the stage (MRB-188).
+
+    The failure this is written against is a control that steps a counter
+    while the picture stays the same. So every assertion below is about
+    something OUTSIDE the tool's own bookkeeping: how many hotspot dots the
+    shell is drawing, which is downstream of the renderer's occlusion test and
+    of part visibility, and never of the step number.
+
+    On the generated test specimen every stand-in anchor sits on the outer
+    shell (the raycast that places them starts outside the form and stops at
+    the first surface it meets), so:
+
+      * isolate the shell  ⇒ the dots stay, the interior goes
+      * isolate anything else, or peel the outer layer ⇒ the shell is not
+        drawn, so every dot on it goes with it
+
+    That second line is the one that cannot be faked by a counter.
+    """
+    problems, details = [], []
+
+    whole = page.eval("window.__rc.partsShown()")
+    if whole is None:
+        problems.append("the stage does not report how many parts are drawn — "
+                        "cannot tell a peel from a no-op")
+        report.check(7, "isolate and layers", problems, details)
+        return
+    if whole < 2:
+        problems.append(
+            "the loaded specimen declares %d part(s), so neither tool has "
+            "anything to work on. The generated test specimen declares five; "
+            "an asset with one merged form would correctly make both tools "
+            "inert, and this check would then be measuring nothing." % whole)
+        report.check(7, "isolate and layers", problems, details)
+        return
+    details.append("the asset declares %d drawable part(s)" % whole)
+
+    at_start = settle(page)
+    if len(at_start) != want:
+        problems.append("not at the default view before the test (%d dot(s), "
+                        "expected %d)" % (len(at_start), want))
+
+    # ── isolate: step through every declared part and back ────────────────
+    seen_labels, dots_per_step, shown_per_step = [], [], []
+    for step in range(whole):
+        if not page.eval("window.__rc.rail('Isolate')"):
+            problems.append("no Isolate button on the rail")
+            report.check(7, "isolate and layers", problems, details)
+            return
+        time.sleep(0.35)
+        seen_labels.append(page.eval("window.__rc.ds('isolate')"))
+        shown_per_step.append(page.eval("window.__rc.partsShown()"))
+        dots_per_step.append(len(dots(page)))
+
+    if shown_per_step != [1] * whole:
+        problems.append("isolate drew %s part(s) across its %d steps, expected "
+                        "exactly one at each — a step that changes the counter "
+                        "and not the picture looks like this"
+                        % (shown_per_step, whole))
+    if len(set(seen_labels)) != whole:
+        problems.append("isolate reported %r across %d steps — each step "
+                        "should name a different declared part"
+                        % (seen_labels, whole))
+    if any(label in (None, "off", "") for label in seen_labels):
+        problems.append("isolate reported no part name at one of its steps: %r"
+                        % (seen_labels,))
+    if len(set(dots_per_step)) < 2:
+        problems.append(
+            "the hotspot layer did not change across isolate's %d steps "
+            "(%s dot(s) each time). Every stand-in anchor sits on the outer "
+            "shell, so isolating anything else must take its dots with it — "
+            "this is the assertion a counter cannot fake."
+            % (whole, dots_per_step))
+    details.append("isolate stepped through %s" % ", ".join(map(repr, seen_labels)))
+    details.append("parts drawn per step: %s · dots per step: %s"
+                   % (shown_per_step, dots_per_step))
+
+    page.eval("window.__rc.rail('Isolate')")
+    time.sleep(0.35)
+    back = page.eval("window.__rc.partsShown()")
+    if back != whole:
+        problems.append("one step past the last part left %d part(s) drawn, "
+                        "expected the whole specimen (%d) — isolate has no way "
+                        "home" % (back, whole))
+    if page.eval("window.__rc.ds('isolate')") != "off":
+        problems.append("isolate still reports a part after returning to the "
+                        "whole specimen")
+    else:
+        details.append("one step past the last part returns the whole specimen")
+
+    # ── layers: peel the outer level ──────────────────────────────────────
+    restored = settle(page)
+    if len(restored) != want:
+        problems.append("the dots did not come back with the whole specimen "
+                        "(%d, expected %d)" % (len(restored), want))
+
+    if not page.eval("window.__rc.rail('Layers')"):
+        problems.append("no Layers button on the rail")
+        report.check(7, "isolate and layers", problems, details)
+        return
+    time.sleep(0.35)
+    peeled_parts = page.eval("window.__rc.partsShown()")
+    peeled_layer = page.eval("window.__rc.ds('layer')")
+    peeled_dots = len(dots(page))
+    if peeled_parts is None or peeled_parts >= whole:
+        problems.append("Layers left %r of %d part(s) drawn — nothing was "
+                        "peeled" % (peeled_parts, whole))
+    if peeled_layer in (None, "off"):
+        problems.append("Layers reports %r — the tool did not engage"
+                        % peeled_layer)
+    if peeled_dots >= len(restored):
+        problems.append(
+            "peeling the outer layer left %d dot(s), same or more than the %d "
+            "before it. Every anchor sits on the outer shell, so removing that "
+            "layer must remove them." % (peeled_dots, len(restored)))
+    details.append("layers: %r, %s of %d part(s) drawn, %d dot(s) (was %d)"
+                   % (peeled_layer, peeled_parts, whole, peeled_dots,
+                      len(restored)))
+
+    # ── reset puts the form back whole ────────────────────────────────────
+    reset_view(page)
+    after_reset = settle(page)
+    if page.eval("window.__rc.partsShown()") != whole:
+        problems.append("Reset left the specimen taken apart — a half-restored "
+                        "view reads as a broken control")
+    if len(after_reset) != want:
+        problems.append("Reset brought back %d dot(s), expected %d"
+                        % (len(after_reset), want))
+    else:
+        details.append("Reset restores the whole specimen and all %d dot(s)"
+                       % want)
+
+    report.check(7, "isolate and layers (MRB-188)", problems, details)
+
+
 def check_failure_route(url, report):
     """6. Failure is a route — driven against a build with the GLB removed."""
     problems, details = [], []
@@ -721,7 +869,7 @@ def check_failure_route(url, report):
     report.check(6, "failure is a route (missing GLB)", problems, details)
 
 
-# ── check 7: frame timing, report only ───────────────────────────────────
+# ── frame timing, report only (deliberately unnumbered) ──────────────────
 
 
 def _stats(samples):
@@ -761,7 +909,7 @@ def print_frame_timing(rows):
     bar = "  " + "─" * 70
     print()
     print(bar)
-    print("  7. FRAME TIMING — REPORT ONLY. This can never fail the script.")
+    print("  FRAME TIMING — REPORT ONLY. This can never fail the script.")
     print(bar)
     print("  These numbers come from SOFTWARE-RENDERED headless Chrome:")
     print("  SwiftShader on the CPU (--enable-unsafe-swiftshader), no GPU")
@@ -860,7 +1008,7 @@ def main():
     started = time.time()
     print("3D Studio render check (MRB-187 Stage 2) — real Chrome, software WebGL")
     print("  the built app at %s, served as /3d/" % os.path.relpath(DIST, HERE))
-    print("  checks 1–6 gate the exit code; check 7 is a report and never does")
+    print("  checks 1–7 gate the exit code; frame timing is a report and never does")
 
     if not os.path.isdir(DIST) or not os.path.exists(os.path.join(DIST, "index.html")):
         print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
@@ -896,9 +1044,11 @@ def main():
                 check_reset(page, report, want)
                 check_autorotate(page, report)
                 check_tiers(page, report, shot_a, shot_c)
+                check_parts(page, report, want)
                 timing = frame_timing(page)
             else:
-                print("       (checks 2–5 and 7 skipped — nothing rendered)")
+                print("       (checks 2–5, 7 and the timing report skipped — "
+                      "nothing rendered)")
     finally:
         cleanup()
 

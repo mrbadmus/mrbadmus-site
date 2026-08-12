@@ -67,6 +67,10 @@ export function Stage({
   const [hoverId, setHoverId] = useState<string | null>(null)
   const [panelOpen, setPanelOpen] = useState(false)
   const [, setViewportTick] = useState(0)
+  // Bumped whenever a tool is pressed. A stepped tool's position lives inside
+  // the renderer, so the shell has no state change of its own to re-render on
+  // and would otherwise caption a step behind (MRB-188).
+  const [, setToolTick] = useState(0)
 
   const surface = renderer.stage === 'viewport' ? 'dark' : 'paper'
 
@@ -111,12 +115,18 @@ export function Stage({
   // While the specimen is on the wire the hint line carries the load rather
   // than the interaction: the stage has nothing to drag yet. No new furniture
   // — Design drew no loading state, and this one disappears at ready.
+  //
+  // It carries a stepped tool's position the same way, and for the same
+  // reason: isolate and layers step through positions only the renderer knows
+  // (how many parts the asset declares, what it calls them), and a control
+  // that steps silently is one a student cannot follow. Same line, no new
+  // furniture, gone the moment the tool is back at rest.
   const shownHint =
     status.state === 'loading'
       ? status.progress === undefined
         ? 'Loading specimen'
         : `Loading specimen · ${Math.round(status.progress * 100)}%`
-      : hint
+      : (toolCaption(renderer) ?? hint)
 
   return (
     <div className={`stage stage--${renderer.stage}`}>
@@ -206,7 +216,15 @@ export function Stage({
             <div className="callout__title">{openDot.hotspot.label}</div>
             <div className="callout__detail">{openDot.hotspot.detail}</div>
             <div className="callout__foot">
-              <button type="button">Isolate</button>
+              <button
+                type="button"
+                onClick={() => {
+                  renderer.isolateHotspot(openDot.hotspot.id)
+                  setToolTick((t) => t + 1)
+                }}
+              >
+                Isolate
+              </button>
               <i aria-hidden="true">·</i>
               <button type="button" onClick={() => onOpenHotspot(null)}>Hide label</button>
             </div>
@@ -214,8 +232,8 @@ export function Stage({
         </>
       )}
 
-      {/* tool rail renders from declared support; no-ops pending Stage 2 */}
-      <StageTools renderer={renderer} mode={mode} />
+      {/* tool rail renders from declared support */}
+      <StageTools renderer={renderer} mode={mode} onInvoked={() => setToolTick((t) => t + 1)} />
 
       {/* quality chip only where tiers mean anything (§06) */}
       {renderer.supportsQualityTiers && (
@@ -289,7 +307,31 @@ function useHotspotDots(renderer: Renderer, specimen: SpecimenRecord, ready: boo
   return dots
 }
 
-function StageTools({ renderer, mode }: { renderer: Renderer; mode: StageMode }) {
+/** The hint-line caption for whichever stepped tool is engaged, or null when
+ * none is. `label` is the asset's own node name, passed straight through — the
+ * shell never writes a structure's name (see `mesh/parts.ts`). */
+function toolCaption(renderer: Renderer): string | null {
+  const isolate = renderer.toolState('isolate')
+  if (isolate?.active) {
+    const named = isolate.label ? `Isolated: ${isolate.label}` : 'Isolated'
+    return isolate.steps ? `${named} · ${isolate.step} of ${isolate.steps}` : named
+  }
+  const layers = renderer.toolState('layers')
+  if (layers?.active) {
+    return `Layer ${layers.step} of ${layers.steps} · outer layers removed`
+  }
+  return null
+}
+
+function StageTools({
+  renderer,
+  mode,
+  onInvoked,
+}: {
+  renderer: Renderer
+  mode: StageMode
+  onInvoked: () => void
+}) {
   const [activeTool, setActiveTool] = useState<ToolId | null>(
     renderer.supportedTools.includes('rotate') ? 'rotate' : null,
   )
@@ -326,14 +368,21 @@ function StageTools({ renderer, mode }: { renderer: Renderer; mode: StageMode })
       autoRotate={autoRotate}
       onTool={(tool) => {
         // Reset is momentary — it fires and the rail keeps its previous
-        // selection. Everything else the renderer honours is a mode.
-        if (tool !== 'reset') setActiveTool(tool)
+        // selection. A stepped tool (isolate, layers) reports its own
+        // engaged/at-rest state through toolState, so the rail reads that
+        // rather than remembering the last press: pressing isolate past its
+        // last part returns the whole specimen, and a button still lit at
+        // that point would be describing something that is no longer true.
+        // Everything else the renderer honours is a pointer mode.
+        if (tool !== 'reset' && renderer.toolState(tool) === null) setActiveTool(tool)
         renderer.invokeTool(tool)
+        onInvoked()
       }}
       onAutoRotate={() => {
         const next = !autoRotate
         setAutoRotate(next)
         renderer.invokeTool('auto-rotate', next)
+        onInvoked()
       }}
     />
   )
