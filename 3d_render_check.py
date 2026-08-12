@@ -1,0 +1,933 @@
+#!/usr/bin/env python3
+"""3d_render_check.py — the MRB-187 browser-level check for the mesh renderer.
+
+Stage 2 replaced the placeholder stage with a real React Three Fiber renderer
+(``3d-studio/src/renderer/mesh/``). Its four load-bearing promises cannot be
+tested in vitest, because jsdom has no WebGL and therefore no camera, no
+raycaster against a real scene graph, and no canvas to remount or not remount:
+
+  * honest occlusion — a dot vanishes when the specimen turns its anchor away,
+    rather than a renderer that reports ``visible: true`` for everything (which
+    is exactly what Stage 1's placeholder did, and which every DOM-level test
+    would happily accept);
+  * exact reset — the rail's Reset returns the camera to the authored default
+    view to the pixel, and stays there;
+  * live tier change — Ultra / High / Balanced retune the same canvas rather
+    than tearing one down and building another;
+  * failure is a route — a specimen mesh that will not load lands on the flat
+    stage, not on a broken viewport with an apology on it.
+
+So they are tested here, in the installed Chrome, over CDP, on the BUILT app —
+the same stdlib harness (``ks3_browser.py``) and the same reporting shape as
+``3d_parity.py``, which serves ``3d-studio/dist/`` the same way this does.
+
+═══════════════════════════════════════════════════════════════════════════
+WHAT THIS CHECK DOES, AND WHAT IT CANNOT DO — read before trusting it
+═══════════════════════════════════════════════════════════════════════════
+
+Checks 1–6 are gates: any failure exits non-zero.
+
+  1. It renders at all. The mesh renderer mounts, the stage container reaches
+     ``ready``, a <canvas> exists inside the stage.
+  2. Honest occlusion. Every hotspot in ``content/heart.json`` has a dot at the
+     default view; a drag that turns the specimen roughly 180° leaves NONE of
+     them on screen; Reset brings them all back.
+  3. Reset is exact. Dot coordinates come back as identical strings after a
+     drag, and are still identical a second later (no slow drift). Reset from
+     the default view is a no-op.
+  4. Auto-rotate. On ⇒ the dots move. Off ⇒ they hold still. ``aria-pressed``
+     tracks both.
+  5. Live tier change, no remount. Driven through the real affordance (the
+     quality chip and its radio menu), the container's tier moves A→B→C while
+     the SAME canvas element survives — proven by a probe attribute stamped on
+     it before the journey and read back after each step.
+  6. Failure is a route. A second copy of the build, with the specimen GLB
+     deleted, must land on the flat stage: paper renderer, FLAT DIAGRAM chip,
+     no quality chip, and no error/failure/apology text anywhere on the page.
+
+Check 7 is a REPORT, never a gate — see its banner. Nothing it prints can
+change the exit code.
+
+WHAT IT DOES NOT CATCH, stated plainly:
+
+  * Whether the specimen LOOKS right. Nothing here is a pixel comparison
+    against a reference image. Check 5's tier screenshots are compared by
+    bytes only, which proves the tiers differ, not that either is correct.
+  * Real-device performance. Check 7's numbers come from SwiftShader on the
+    CPU. See its banner.
+  * Composition, colour and type — that is ``3d_parity.py``'s job, and this
+    script deliberately duplicates none of it.
+  * Occlusion at authored anchor positions. Every ``position3d`` in
+    heart.json is still the all-zero Stage-8 sentinel, so the renderer derives
+    stand-in anchors on the mesh surface. The occlusion MECHANISM is what is
+    under test; the anchor coordinates arrive with the content.
+
+HARNESS NOTES, both learned the hard way:
+
+  * Chrome is launched with ``--enable-unsafe-swiftshader``. Without it
+    headless Chrome has no WebGL at all, the capability probe lands on tier D,
+    and the app correctly shows the paper stage — every check below would then
+    be measuring the fallback while appearing to measure the renderer. Check 1
+    reports that as a HARNESS fault, not an app fault, exactly as
+    ``3d_parity.py`` does for its own probe.
+  * ``page.screenshot()`` overrides device metrics and does not restore the
+    viewport exactly. A screenshot taken mid-sequence silently moves the stage
+    and every hotspot coordinate with it. Screenshots therefore happen only at
+    the END of check 5's sequence, and the viewport is re-asserted afterwards.
+
+One honesty note on check 3: the shell rounds dot coordinates to whole pixels
+(``Math.round`` in ``useHotspotDots``), so "identical strings" means the camera
+returned to within half a pixel of the default view, not to identical floats.
+The floats are the renderer's business and are asserted in vitest; what this
+gate owns is that nothing a student can see has moved.
+"""
+
+from __future__ import annotations
+
+import math
+import os
+import re
+import shutil
+import sys
+import tempfile
+import time
+
+import ks3_browser as cdp
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+APP = os.path.join(HERE, "3d-studio")
+DIST = os.path.join(APP, "dist")
+HEART = os.path.join(APP, "content", "heart.json")
+SPECIMEN_GLB = os.path.join("assets", "_test-specimen.glb")
+
+VIEWPORT = (1440, 900)
+
+# A left-button drag this far across the stage turns the specimen roughly 180°
+# at the desktop stage size: OrbitControls maps horizontal travel to azimuth
+# against the element's height, and the stage is ~1055px tall here. Enough of
+# a turn that every stand-in anchor — spread 18°–52° off the default camera
+# axis — ends up behind the form. Verified by hand before it was written down.
+DRAG_PX = 520
+DRAG_STEPS = 30
+
+# How still is still. The controls damp (dampingFactor 0.075), so a released
+# drag or a just-switched-off auto-rotate keeps creeping for a second or more.
+# Waiting a fixed sleep instead of waiting for stillness is how this check
+# would become flaky, so it polls for a run of identical samples.
+SETTLE_STABLE_RUNS = 5
+SETTLE_INTERVAL = 0.3
+SETTLE_TIMEOUT = 15.0
+
+# How long "holds still" and "keeps moving" are given to prove themselves.
+HOLD_SECONDS = 1.0
+
+# Frame samples per tier in check 7.
+FRAME_SAMPLES = 120
+
+
+# ── the page-side helpers ────────────────────────────────────────────────
+#
+# Injected after every navigation, in the same spirit as 3d_parity's
+# window.__st: the Python side stays readable, and the DOM knowledge lives in
+# one place.
+
+_JS = r"""
+window.__rc = {
+  cont: function () {
+    return document.querySelector('[data-testid=renderer-container]');
+  },
+  ds: function (key) {
+    var el = this.cont();
+    if (!el) { return null; }
+    var v = el.dataset[key];
+    return v === undefined ? null : v;
+  },
+  /** identity + position of every dot currently on the stage, in DOM order */
+  dots: function () {
+    return Array.prototype.map.call(
+      document.querySelectorAll('.hotspot'),
+      function (e) {
+        return (e.textContent || '').trim() + '@' + e.style.left + ',' + e.style.top;
+      });
+  },
+  n: function (sel) { return document.querySelectorAll(sel).length; },
+  text: function (sel) {
+    var el = document.querySelector(sel);
+    return el ? (el.textContent || '').trim() : null;
+  },
+  rect: function (sel) {
+    var el = document.querySelector(sel);
+    if (!el) { return null; }
+    var r = el.getBoundingClientRect();
+    return { x: r.x, y: r.y, w: r.width, h: r.height };
+  },
+  /** what the pointer would actually hit — a dot sitting over the drag point
+   *  would swallow the press and the specimen would never turn */
+  tagAt: function (x, y) {
+    var el = document.elementFromPoint(x, y);
+    return el ? el.tagName.toLowerCase() : null;
+  },
+  rail: function (label) {
+    var b = Array.prototype.slice.call(document.querySelectorAll('.railbtn'))
+      .find(function (x) { return x.getAttribute('aria-label') === label; });
+    if (!b) { return false; }
+    b.click();
+    return true;
+  },
+  autorot: function () {
+    var b = document.querySelector('.autorot');
+    if (!b) { return false; }
+    b.click();
+    return true;
+  },
+  autorotPressed: function () {
+    var b = document.querySelector('.autorot');
+    return b ? b.getAttribute('aria-pressed') : null;
+  },
+  openQuality: function () {
+    var c = document.querySelector('.chip');
+    if (!c) { return false; }
+    c.click();
+    return true;
+  },
+  pickQuality: function (word) {
+    var rows = Array.prototype.slice.call(
+      document.querySelectorAll('[role=menuitemradio]'));
+    var row = rows.find(function (e) {
+      return (e.textContent || '').trim().indexOf(word) === 0;
+    });
+    if (!row) { return false; }
+    row.click();
+    return true;
+  },
+  stampCanvas: function () {
+    var c = document.querySelector('canvas');
+    if (!c) { return false; }
+    c.dataset.probe = '1';
+    return true;
+  },
+  canvasProbe: function () {
+    var c = document.querySelector('canvas');
+    return c ? (c.dataset.probe === undefined ? null : c.dataset.probe) : null;
+  },
+  /** n consecutive requestAnimationFrame deltas, in ms */
+  frames: function (n) {
+    return new Promise(function (resolve) {
+      var out = [], last = performance.now(), seen = 0;
+      function tick(t) {
+        out.push(t - last);
+        last = t;
+        seen += 1;
+        // the first delta spans from this call to the first frame, not
+        // between two frames — dropped.
+        if (seen > n) { resolve(out.slice(1)); }
+        else { requestAnimationFrame(tick); }
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+};
+true
+"""
+
+
+# ── driving helpers ──────────────────────────────────────────────────────
+
+
+def inject(page):
+    page.eval(_JS)
+
+
+def wait_state(page, timeout=45.0):
+    """Poll the stage container until it settles on ready or failed.
+
+    Never a fixed sleep: one of the two renderers now loads a GLB over the
+    network, and a slow decode on a busy machine is not a failure.
+    """
+    deadline = time.time() + timeout
+    last = None
+    while time.time() < deadline:
+        last = page.eval("window.__rc.ds('state')")
+        if last in ("ready", "failed"):
+            return last
+        time.sleep(0.15)
+    return last
+
+
+def dots(page):
+    return tuple(page.eval("window.__rc.dots()") or [])
+
+
+def settle(page, timeout=SETTLE_TIMEOUT):
+    """Wait until the dots stop moving, and return where they stopped.
+
+    "Stopped" means SETTLE_STABLE_RUNS identical samples in a row, which at
+    the interval above is about a second and a half of genuine stillness —
+    long enough for the controls' damping tail to die rather than merely to
+    slow down.
+    """
+    deadline = time.time() + timeout
+    last, runs = None, 0
+    while time.time() < deadline:
+        now = dots(page)
+        if now == last:
+            runs += 1
+            if runs >= SETTLE_STABLE_RUNS:
+                return now
+        else:
+            last, runs = now, 1
+        time.sleep(SETTLE_INTERVAL)
+    return last if last is not None else dots(page)
+
+
+def drag_horizontal(page, px=DRAG_PX, steps=DRAG_STEPS):
+    """Turn the specimen with a real left-button drag across the stage.
+
+    Raw CDP input, not a synthetic JS event: OrbitControls listens on the
+    canvas's pointer events, and only the browser's own input pipeline
+    produces the sequence it expects.
+
+    Returns None on success, or a problem string if the press point is not
+    over the canvas (a hotspot dot parked on the stage centre would swallow
+    the press and the specimen would silently never turn — a harness fault
+    wearing the costume of a broken renderer).
+    """
+    rect = page.eval("window.__rc.rect('.stage')")
+    if not rect:
+        return "no .stage to drag on"
+    cx = rect["x"] + rect["w"] / 2.0
+    cy = rect["y"] + rect["h"] / 2.0
+
+    tag = page.eval("window.__rc.tagAt(%f, %f)" % (cx, cy))
+    if tag != "canvas":
+        return ("the stage centre (%.0f, %.0f) is covered by <%s>, not the "
+                "canvas — the drag would never reach the controls" % (cx, cy, tag))
+
+    page.send("Input.dispatchMouseEvent", {
+        "type": "mousePressed", "x": cx, "y": cy,
+        "button": "left", "buttons": 1, "clickCount": 1})
+    for i in range(1, steps + 1):
+        page.send("Input.dispatchMouseEvent", {
+            "type": "mouseMoved", "x": cx + px * i / float(steps), "y": cy,
+            "button": "left", "buttons": 1})
+    page.send("Input.dispatchMouseEvent", {
+        "type": "mouseReleased", "x": cx + px, "y": cy,
+        "button": "left", "buttons": 0, "clickCount": 1})
+    return None
+
+
+def reset_view(page):
+    return page.eval("window.__rc.rail('Reset view')")
+
+
+def set_quality(page, word):
+    """Drive the real affordance: open the quality chip, click a radio row."""
+    if not page.eval("window.__rc.openQuality()"):
+        return "no quality chip on the stage"
+    time.sleep(0.25)
+    if not page.eval("window.__rc.n('.qpanel')"):
+        return "the quality chip did not open its panel"
+    if not page.eval("window.__rc.pickQuality(%r)" % word):
+        return "no quality option starting %r" % word
+    time.sleep(0.6)
+    return None
+
+
+def hotspot_count():
+    import json
+    with open(HEART, encoding="utf-8") as fh:
+        return len(json.load(fh)["hotspots"])
+
+
+# ── the report ───────────────────────────────────────────────────────────
+
+
+class Report:
+    """One pass/fail line per check, plus indented detail, in 3d_parity's
+    house style. Problems accumulate; check 7 adds none by construction."""
+
+    def __init__(self):
+        self.problems = []
+        self.results = []  # (number, title, ok)
+
+    def check(self, number, title, problems, details=()):
+        ok = not problems
+        self.results.append((number, title, ok))
+        print("  %s %d. %s" % ("✓" if ok else "✗", number, title))
+        for d in details:
+            print("       %s" % d)
+        for p in problems:
+            print("       ✗ %s" % p)
+            self.problems.append("%d. %s — %s" % (number, title, p))
+        return ok
+
+    def note(self, text):
+        print("       %s" % text)
+
+
+# ── checks 1–6 ───────────────────────────────────────────────────────────
+
+
+def check_renders(page, report):
+    """1. It renders at all."""
+    problems, details = [], []
+
+    t0 = time.time()
+    state = wait_state(page)
+    took = time.time() - t0
+
+    detected = page.eval(
+        "(document.querySelector('.app')||{getAttribute:function(){return null}})"
+        ".getAttribute('data-detected-tier')")
+    if detected == "D":
+        problems.append(
+            "capability probe landed on tier D — headless Chrome has no WebGL "
+            "despite --enable-unsafe-swiftshader, so the app correctly showed "
+            "the paper stage and every check below would be measuring the "
+            "fallback. HARNESS FAULT, not app fault.")
+        report.check(1, "it renders at all", problems, details)
+        return False
+
+    renderer = page.eval("window.__rc.ds('renderer')")
+    if renderer != "mesh":
+        problems.append("stage container reports renderer=%r, expected 'mesh'"
+                        % renderer)
+    if state != "ready":
+        problems.append("stage container never reached 'ready' (state=%r after "
+                        "%.1fs)" % (state, took))
+    canvases = page.eval("window.__rc.n('.stage canvas')")
+    if canvases != 1:
+        problems.append("expected exactly 1 <canvas> inside the stage, found %d"
+                        % canvases)
+
+    source = page.eval("window.__rc.ds('specimenSource')")
+    details.append("renderer=%r  state=%r (%.1fs into the readiness poll, "
+                   "which starts after the load event)  detected tier=%s  "
+                   "canvases=%d" % (renderer, state, took, detected, canvases))
+    if source:
+        details.append("specimen source: %s (the acquired heart GLB is still "
+                       "Stage-8 work; the build points the renderer at the "
+                       "generated test specimen)" % source)
+
+    ok = report.check(1, "it renders at all", problems, details)
+    return ok
+
+
+def check_occlusion(page, report, want):
+    """2. Honest occlusion."""
+    problems, details = [], []
+
+    at_default = settle(page)
+    details.append("default view: %d dot(s) — %s"
+                   % (len(at_default), ", ".join(at_default) or "none"))
+    if len(at_default) != want:
+        problems.append("expected %d dot(s) at the default view (one per "
+                        "hotspot in content/heart.json), found %d"
+                        % (want, len(at_default)))
+
+    fault = drag_horizontal(page)
+    if fault:
+        problems.append("HARNESS: " + fault)
+        report.check(2, "honest occlusion", problems, details)
+        return
+
+    turned = settle(page)
+    details.append("after a %dpx drag (roughly 180°): %d dot(s)"
+                   % (DRAG_PX, len(turned)))
+    if turned:
+        problems.append(
+            "%d dot(s) survived the turn (%s) — every anchor should be on the "
+            "far side of the specimen. A renderer that always reported "
+            "visible:true would look exactly like this."
+            % (len(turned), ", ".join(turned)))
+
+    reset_view(page)
+    back = settle(page)
+    details.append("after Reset view: %d dot(s)" % len(back))
+    if len(back) != want:
+        problems.append("Reset brought back %d dot(s), expected %d"
+                        % (len(back), want))
+
+    report.check(2, "honest occlusion", problems, details)
+
+
+def check_reset(page, report, want):
+    """3. Reset is exact."""
+    problems, details = [], []
+
+    baseline = settle(page)
+    if len(baseline) != want:
+        problems.append("not at the default view before the test (%d dot(s), "
+                        "expected %d)" % (len(baseline), want))
+
+    # (a) reset from the default view changes nothing
+    reset_view(page)
+    noop = settle(page)
+    if noop != baseline:
+        problems.append("Reset from the default view MOVED the camera: %s → %s"
+                        % (list(baseline), list(noop)))
+    else:
+        details.append("Reset with no prior drag is a no-op: %s"
+                       % ", ".join(baseline))
+
+    # (b) drag away, reset, compare as strings
+    fault = drag_horizontal(page)
+    if fault:
+        problems.append("HARNESS: " + fault)
+        report.check(3, "reset is exact", problems, details)
+        return
+    settle(page)  # let the damping tail die before resetting
+
+    reset_view(page)
+    after = settle(page)
+    if after != baseline:
+        problems.append("after drag → Reset the coordinates differ: expected "
+                        "%s, got %s" % (list(baseline), list(after)))
+    else:
+        details.append("after drag → Reset: identical strings (%d dot(s))"
+                       % len(after))
+
+    # (c) and no slow drift a second later
+    time.sleep(HOLD_SECONDS)
+    later = dots(page)
+    if later != after:
+        problems.append("the view drifted %.1fs after Reset: %s → %s"
+                        % (HOLD_SECONDS, list(after), list(later)))
+    else:
+        details.append("still identical %.1fs later — no slow drift"
+                       % HOLD_SECONDS)
+
+    report.check(3, "reset is exact", problems, details)
+
+
+def check_autorotate(page, report):
+    """4. Auto-rotate."""
+    problems, details = [], []
+
+    before = page.eval("window.__rc.autorotPressed()")
+    if before != "false":
+        problems.append("auto-rotate starts with aria-pressed=%r, expected "
+                        "'false'" % before)
+
+    if not page.eval("window.__rc.autorot()"):
+        problems.append("no .autorot toggle on the rail")
+        report.check(4, "auto-rotate", problems, details)
+        return
+
+    pressed = page.eval("window.__rc.autorotPressed()")
+    if pressed != "true":
+        problems.append("after switching on, aria-pressed=%r, expected 'true'"
+                        % pressed)
+
+    start = dots(page)
+    time.sleep(HOLD_SECONDS)
+    moved = dots(page)
+    if moved == start:
+        problems.append("auto-rotate is ON but the dots did not move over "
+                        "%.1fs (%s)" % (HOLD_SECONDS, list(start)))
+    else:
+        details.append("ON: dots moved within %.1fs (%s → %s)"
+                       % (HOLD_SECONDS, list(start), list(moved)))
+
+    page.eval("window.__rc.autorot()")
+    pressed = page.eval("window.__rc.autorotPressed()")
+    if pressed != "false":
+        problems.append("after switching off, aria-pressed=%r, expected 'false'"
+                        % pressed)
+
+    # Reset before measuring stillness, and here is why. The controls damp,
+    # so switching auto-rotate off leaves a tail that decays geometrically —
+    # it converges on stopped without ever arriving, and a residual well under
+    # a pixel can still tip a rounded coordinate over minutes. Waiting it out
+    # is a race this check would lose intermittently (it did, before this line
+    # existed). Reset is the app's own way of putting the camera at rest: it
+    # suspends damping and zeroes the accumulated delta outright.
+    #
+    # It does not soften the check. If the toggle had NOT actually stopped the
+    # rotation, the controls would start driving the camera again on the very
+    # next frame after the reset, and the hold below would catch it.
+    reset_view(page)
+    stopped = settle(page)
+    time.sleep(HOLD_SECONDS)
+    held = dots(page)
+    if held != stopped:
+        problems.append("auto-rotate is OFF but the camera kept turning over "
+                        "%.1fs after a Reset: %s → %s"
+                        % (HOLD_SECONDS, list(stopped), list(held)))
+    else:
+        details.append("OFF: dots held still for %.1fs from a reset view (%s)"
+                       % (HOLD_SECONDS, ", ".join(held)))
+
+    report.check(4, "auto-rotate", problems, details)
+
+
+def check_tiers(page, report, shot_a, shot_c):
+    """5. Live tier change, no remount."""
+    problems, details = [], []
+
+    if not page.eval("window.__rc.stampCanvas()"):
+        problems.append("no <canvas> to stamp — cannot tell a retune from a "
+                        "remount")
+        report.check(5, "live tier change, no remount", problems, details)
+        return
+
+    for word, want in (("High", "B"), ("Balanced", "C"), ("Ultra", "A")):
+        fault = set_quality(page, word)
+        if fault:
+            problems.append("%s: %s" % (word, fault))
+            continue
+        tier = page.eval("window.__rc.ds('tier')")
+        probe = page.eval("window.__rc.canvasProbe()")
+        canvases = page.eval("window.__rc.n('canvas')")
+        if tier != want:
+            problems.append("%s selected but the stage reports tier=%r, "
+                            "expected %r" % (word, tier, want))
+        if probe != "1":
+            problems.append("%s remounted the canvas — the probe attribute is "
+                            "%r, so this is a different element. A tier is a "
+                            "retune, not a rebuild." % (word, probe))
+        if canvases != 1:
+            problems.append("%s left %d canvases on the page, expected 1"
+                            % (word, canvases))
+        details.append("%-8s → tier %s, same canvas (probe=%r), %d canvas"
+                       % (word, tier, probe, canvases))
+
+    # ── and the tiers must actually LOOK different ───────────────────────
+    # Screenshots last, and only last: page.screenshot() overrides device
+    # metrics and does not put the viewport back exactly, which would move
+    # the stage and every coordinate above it.
+    # Reset first: a camera still coasting on its damping tail would move the
+    # specimen between the two captures and manufacture a byte difference out
+    # of nothing, which is the one way this comparison could pass vacuously.
+    # The dot coordinates either side of the pair are recorded and compared
+    # below so that guard is asserted, not assumed.
+    reset_view(page)
+    settle(page)
+
+    fault = set_quality(page, "Ultra")
+    if fault:
+        problems.append("tier A for the screenshot: %s" % fault)
+    before = dots(page)
+    page.screenshot(shot_a, width=VIEWPORT[0], height=VIEWPORT[1], full_page=False)
+    page.set_viewport(*VIEWPORT)
+
+    fault = set_quality(page, "Balanced")
+    if fault:
+        problems.append("tier C for the screenshot: %s" % fault)
+    page.screenshot(shot_c, width=VIEWPORT[0], height=VIEWPORT[1], full_page=False)
+    page.set_viewport(*VIEWPORT)
+    after = dots(page)
+
+    if before != after:
+        problems.append("the camera moved between the two tier screenshots "
+                        "(%s → %s) — any byte difference between them would "
+                        "prove nothing" % (list(before), list(after)))
+
+    with open(shot_a, "rb") as fh:
+        a = fh.read()
+    with open(shot_c, "rb") as fh:
+        c = fh.read()
+    if a == c:
+        problems.append("the tier A and tier C screenshots are byte-identical "
+                        "— the tier is being reported but not rendered")
+    else:
+        details.append("tier A (%d bytes) and tier C (%d bytes) PNGs differ, "
+                       "from a camera that did not move between them (%s)"
+                       % (len(a), len(c), ", ".join(after)))
+    details.append("byte-difference is a WEAK check: it proves the two tiers "
+                   "are not the same picture, not that either is the right "
+                   "one. It is non-vacuous — a tier that only changed a data "
+                   "attribute would produce identical bytes and fail here.")
+
+    report.check(5, "live tier change, no remount", problems, details)
+
+
+def check_failure_route(url, report):
+    """6. Failure is a route — driven against a build with the GLB removed."""
+    problems, details = [], []
+
+    with cdp.Browser(extra_args=["--enable-unsafe-swiftshader"]) as b:
+        page = b.attach()
+        page.set_viewport(*VIEWPORT)
+        page.goto(url)
+        inject(page)
+
+        state = wait_state(page)
+        # the shell swaps renderers in response to the failure, so the paper
+        # stage's own mount/load follows the mesh renderer's rejection
+        deadline = time.time() + 15.0
+        renderer = None
+        while time.time() < deadline:
+            renderer = page.eval("window.__rc.ds('renderer')")
+            if renderer == "placeholder-paper":
+                break
+            time.sleep(0.2)
+
+        detected = page.eval(
+            "document.querySelector('.app').getAttribute('data-detected-tier')")
+        if detected == "D":
+            problems.append(
+                "HARNESS: this browser has no WebGL either, so the flat stage "
+                "proves nothing about the missing-GLB route")
+
+        if renderer != "placeholder-paper":
+            problems.append("stage reports renderer=%r, expected "
+                            "'placeholder-paper' — a mesh that will not load "
+                            "must route to the flat stage" % renderer)
+        word = page.eval("window.__rc.text('.flatchip__word')")
+        if (word or "").lower() != "flat diagram":
+            problems.append("flat chip says %r, expected 'FLAT DIAGRAM'" % word)
+        chips = page.eval("window.__rc.n('.chip')")
+        if chips:
+            problems.append("%d quality chip(s) on a stage with no renderer to "
+                            "tune" % chips)
+
+        body = page.eval("document.body.innerText") or ""
+        shouted = [line.strip() for line in body.splitlines()
+                   if re.search(r"error|failed|sorry", line, re.I)]
+        if shouted:
+            problems.append("the page apologises to the student: %r" % shouted)
+
+        # Nothing may be THROWN on the way, either. The 404 for the absent
+        # specimen is the point of the exercise and is expected; anything else
+        # means the swap itself is faulting. This caught a real one: with the
+        # React root mounted straight into the shell's container instead of
+        # into a host of its own, the mesh renderer's teardown raced the flat
+        # renderer's drawing and the page threw an uncaught NotFoundError from
+        # removeChild — on the one code path whose entire job is to fail
+        # gracefully. Silent to jsdom, loud here.
+        expected_404 = re.compile(r"404|not found", re.I)
+        thrown = [e for e in page.console_errors()
+                  if "favicon" not in e.lower() and not expected_404.search(e)]
+        if thrown:
+            problems.append("the swap threw: %s"
+                            % "; ".join(e.splitlines()[0][:160] for e in thrown))
+        details.append("console: %d expected 404 line(s) for the absent "
+                       "specimen, %d other entries"
+                       % (len(page.console_errors()) - len(thrown), len(thrown)))
+
+        # Observations, not claims: these lines print whether the check passed
+        # or failed, so they say what was seen rather than what was wanted.
+        details.append("settled on renderer=%r, state=%r — the mesh "
+                       "renderer's rejection is observed as the SWAP, not as "
+                       "a lingering failed state (the paper renderer that "
+                       "replaces it reaches ready of its own accord)"
+                       % (renderer, state))
+        details.append("detected tier=%s — tier D here would mean the flat "
+                       "stage proved nothing about the missing GLB" % detected)
+        details.append("flat chip word=%r, quality chips=%d, apology lines=%d"
+                       % (word, chips, len(shouted)))
+
+    report.check(6, "failure is a route (missing GLB)", problems, details)
+
+
+# ── check 7: frame timing, report only ───────────────────────────────────
+
+
+def _stats(samples):
+    s = sorted(samples)
+    n = len(s)
+    p95 = s[min(n - 1, int(math.ceil(0.95 * n)) - 1)]
+    return {
+        "min": s[0],
+        "median": s[n // 2] if n % 2 else (s[n // 2 - 1] + s[n // 2]) / 2.0,
+        "p95": p95,
+        "max": s[-1],
+    }
+
+
+def frame_timing(page):
+    """Sample frame times at each tier with the scene genuinely animating.
+
+    Auto-rotate is switched on first: an idle R3F scene renders on demand, so
+    sampling a still stage would measure how fast Chrome does nothing.
+    """
+    rows = []
+    if page.eval("window.__rc.autorotPressed()") != "true":
+        page.eval("window.__rc.autorot()")
+    for word, tier in (("Ultra", "A"), ("High", "B"), ("Balanced", "C")):
+        fault = set_quality(page, word)
+        if fault:
+            rows.append((tier, None, fault))
+            continue
+        time.sleep(0.5)
+        samples = page.eval("window.__rc.frames(%d)" % FRAME_SAMPLES, timeout=300)
+        rows.append((tier, _stats(samples), None))
+    page.eval("window.__rc.autorot()")
+    return rows
+
+
+def print_frame_timing(rows):
+    bar = "  " + "─" * 70
+    print()
+    print(bar)
+    print("  7. FRAME TIMING — REPORT ONLY. This can never fail the script.")
+    print(bar)
+    print("  These numbers come from SOFTWARE-RENDERED headless Chrome:")
+    print("  SwiftShader on the CPU (--enable-unsafe-swiftshader), no GPU")
+    print("  anywhere in the pipeline, on a machine no student owns.")
+    print()
+    print("  They are NOT evidence for or against spec §5's 60fps target at")
+    print("  Tier A or its 30fps floor at Tier C. Do not quote them as such.")
+    print("  Their only use is as a RELATIVE baseline: tier-to-tier ordering")
+    print("  on one machine, and a before/after number for Stage 10's real-")
+    print("  device test, which is where the spec's targets are actually")
+    print("  answered.")
+    print()
+    print("    tier   samples      min    median       p95       max    fps*")
+    for tier, st, fault in rows:
+        if st is None:
+            print("    %-6s not sampled — %s" % (tier, fault))
+            continue
+        fps = 1000.0 / st["median"] if st["median"] > 0 else float("inf")
+        print("    %-6s %7d %8.1f  %8.1f  %8.1f  %8.1f  %6.1f"
+              % (tier, FRAME_SAMPLES, st["min"], st["median"], st["p95"],
+                 st["max"], fps))
+    print("    (all times in ms; *fps implied by the median, software render)")
+    print("    max is expected to dwarf p95: the first frames after a tier")
+    print("    switch compile shaders and, at Tier A, generate the IBL.")
+    print(bar)
+
+
+# ── the driver ───────────────────────────────────────────────────────────
+
+
+def serve_dist_as_3d(prefix, strip_glb=False):
+    """Serve the built app under /3d/ so its absolute asset URLs resolve.
+
+    The healthy build is symlinked (3d_parity.py's approach — nothing is
+    copied, nothing can drift). The failure build is a real copy with the
+    specimen GLB removed: the real dist/ is never touched.
+
+    Returns (url, cleanup).
+    """
+    root = tempfile.mkdtemp(prefix=prefix)
+    target = os.path.join(root, "3d")
+    if strip_glb:
+        shutil.copytree(DIST, target)
+        glb = os.path.join(target, SPECIMEN_GLB)
+        if not os.path.exists(glb):
+            shutil.rmtree(root, ignore_errors=True)
+            raise RuntimeError(
+                "cannot build the failure case: %s is not in the build, so "
+                "removing it would prove nothing" % SPECIMEN_GLB)
+        os.remove(glb)
+    else:
+        os.symlink(DIST, target)
+
+    server, port = cdp.serve(root)
+
+    def cleanup():
+        server.shutdown()
+        # unlink the symlink by hand before rmtree — the real dist/ is on the
+        # other end of it and must not be within reach of a recursive delete
+        if not strip_glb and os.path.islink(target):
+            os.unlink(target)
+        shutil.rmtree(root, ignore_errors=True)
+
+    return "http://127.0.0.1:%d/3d/" % port, cleanup
+
+
+def staleness_note():
+    """A built app older than its sources measures yesterday's renderer.
+
+    A note, not a failure: this repo is worked in more than one worktree at a
+    time and a stale dist is usually a forgotten build, not a defect.
+    """
+    index = os.path.join(DIST, "index.html")
+    if not os.path.exists(index):
+        return None
+    built = os.path.getmtime(index)
+    newest, newest_at = None, 0.0
+    for root in (os.path.join(APP, "src"), os.path.join(APP, "content")):
+        for dirpath, _dirs, files in os.walk(root):
+            for f in files:
+                p = os.path.join(dirpath, f)
+                try:
+                    m = os.path.getmtime(p)
+                except OSError:
+                    continue
+                if m > newest_at:
+                    newest, newest_at = p, m
+    if newest and newest_at > built:
+        return ("WARNING: %s is newer than the build — run `npm run build` in "
+                "3d-studio/ or this measures the previous renderer"
+                % os.path.relpath(newest, HERE))
+    return None
+
+
+def main():
+    started = time.time()
+    print("3D Studio render check (MRB-187 Stage 2) — real Chrome, software WebGL")
+    print("  the built app at %s, served as /3d/" % os.path.relpath(DIST, HERE))
+    print("  checks 1–6 gate the exit code; check 7 is a report and never does")
+
+    if not os.path.isdir(DIST) or not os.path.exists(os.path.join(DIST, "index.html")):
+        print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
+              % os.path.relpath(DIST, HERE))
+        return 1
+
+    stale = staleness_note()
+    if stale:
+        print("  " + stale)
+
+    want = hotspot_count()
+    print("  content/heart.json declares %d hotspot(s)\n" % want)
+
+    report = Report()
+    shots = tempfile.mkdtemp(prefix="st-render-shots-")
+    shot_a = os.path.join(shots, "tier-a.png")
+    shot_c = os.path.join(shots, "tier-c.png")
+
+    url, cleanup = serve_dist_as_3d("st-render-")
+    timing = []
+    try:
+        # --enable-unsafe-swiftshader: without it headless Chrome has no WebGL
+        # at all and the app routes, correctly, to the paper stage — see the
+        # harness notes in this module's docstring.
+        with cdp.Browser(extra_args=["--enable-unsafe-swiftshader"]) as b:
+            page = b.attach()
+            page.set_viewport(*VIEWPORT)
+            page.goto(url)
+            inject(page)
+
+            if check_renders(page, report):
+                check_occlusion(page, report, want)
+                check_reset(page, report, want)
+                check_autorotate(page, report)
+                check_tiers(page, report, shot_a, shot_c)
+                timing = frame_timing(page)
+            else:
+                print("       (checks 2–5 and 7 skipped — nothing rendered)")
+    finally:
+        cleanup()
+
+    broken_url, broken_cleanup = serve_dist_as_3d(
+        "st-render-noglb-", strip_glb=True)
+    try:
+        check_failure_route(broken_url, report)
+    finally:
+        broken_cleanup()
+
+    shutil.rmtree(shots, ignore_errors=True)
+
+    if timing:
+        print_frame_timing(timing)
+
+    gated = report.results
+    passed = sum(1 for _n, _t, ok in gated if ok)
+    print()
+    if report.problems:
+        print("%d problem(s):" % len(report.problems))
+        for p in report.problems:
+            print("  ✗ " + p)
+        print("RENDER CHECK FAIL — %d/%d gates hold (%.0fs)"
+              % (passed, len(gated), time.time() - started))
+        return 1
+    print("RENDER CHECK PASS — %d/%d gates hold, frame timing reported only "
+          "(%.0fs)" % (passed, len(gated), time.time() - started))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
