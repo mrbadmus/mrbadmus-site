@@ -378,6 +378,79 @@ contribute nothing to the score and can never be a "miss". Whether that is the i
 a product question for Mide, not a design one, but a score component sized for "of 4" will look
 wrong against what the page actually says today.
 
+### Option-button states — every state of every answer button ⊕
+
+*Added 2026-08-12 (MRB-202).* The three tables below are the **complete** state set for every
+option button the key stage renders, with the token each state resolves to and the name of the
+assertion in `ks3_parity.py` that holds it. Nothing here is new rendering — every value is what
+the build already produced, now written down and gated.
+
+**Why this section exists.** Before it, the only option-button state registered anywhere was the
+activity button *at rest*. Every state a student actually ends up looking at — the one they
+chose, the one that was right, the one they got wrong, the ones that went spent — was compared
+against nothing, so the parity gate reported green over all of them. That is what MRB-202 cost.
+A state that is not in this section and not in `COMPONENTS` is a state nobody is checking.
+
+**Where the states come from.** Layer C now drives the page into each state in a real browser
+before measuring, because a state that only exists after a click cannot be read off the built
+HTML. Three drives: `activity-chosen`, `dark-option-chosen`, `ladder-answered`.
+
+#### Ladder options — the only surface allowed to mark right and wrong (R3)
+
+Provenance: SPEC.md §5's option-state table, transcribed.
+
+| State | Signal | Ground | Border | Badge fill / glyph | Mark |
+|---|---|---|---|---|---|
+| **Resting** | no state class | `--ks3-ground` `#FBF3E6` | `--ks3-option-border` `#DDCFB6` | `--ks3-band` / `--ks3-ink-muted` | letter A–D |
+| **Chosen-correct** | `.is-correct` | `--ks3-ok-tint` `#E4F7EB` | `--ks3-ok` `#12A150` | `--ks3-ok` / white | drawn **✓**, `ks3-pop .35s` |
+| **Chosen-wrong** | `.is-wrong` | `--ks3-band` `#F4E9D8` | `--ks3-ink` `#221E1B` | `--ks3-ink` / `--ks3-on-dark` | drawn **✕** |
+| **Spent** | `.is-spent` | `--ks3-row-dim` `#FBF6EC` | `--ks3-option-spent` `#EBDFCB` | `--ks3-band` / `--ks3-ink-ghost` | letter, dimmed |
+
+The correct answer is marked **whether or not the student chose it** — answering wrongly reveals
+which one was right, in green, alongside their own choice in ink. All four buttons are disabled
+once the rung is answered.
+
+Feedback line: correct → `--ks3-ok-tint` on `2px --ks3-ok` with a drawn ✓ in `--ks3-ok-text`;
+wrong → that option's authored correction on `--ks3-band` on `2px --ks3-ink` with a drawn ✕.
+
+#### Activity options — never mark correctness (R3)
+
+Provenance: SPEC.md §4, *"Resting `--ks3-ground` on `--ks3-option-border`. Chosen:
+`--ks3-accent-tint` ground, `2px solid --ks3-accent`. R3: never green, never red, never
+disabled."*
+
+| State | Signal | Ground | Border | Badge fill / glyph |
+|---|---|---|---|---|
+| **Resting** | `aria-pressed="false"` | `--ks3-ground` `#FBF3E6` | `--ks3-option-border` `#DDCFB6` | `--ks3-band` / `--ks3-ink-muted` |
+| **Chosen** | `aria-pressed="true"` | `--ks3-accent-tint` `#FCE7DE` | `--ks3-accent` `#E4572E` | `--ks3-accent` / `--ks3-on-dark` |
+
+There is **no correct or wrong state here by design.** Every chosen option renders identically
+whichever one it is, and `check_r3_runtime()` asserts that directly — it presses each option in
+turn and requires the resolved colours to be identical and to contain no marking colour.
+
+⚠️ **This is the surface MRB-202 was reported against, and R3 is why it looks the way it does.**
+The authored data *does* carry the right answer (`"answer": <index>` on every `predict`), so the
+information exists; R3 is a deliberate decision not to render it, so that committing before
+revealing stays safe rather than becoming a test. Whether that holds is Design's **R10**, flagged
+for Mide on 2026-08-09 and still unruled. Until it is ruled, this table is the specification and
+the gate holds the build to it.
+
+#### Options on an ink-dark block (hook, practical)
+
+⚠️ **Translation, not transcription — the weakest provenance in this document.** SPEC.md §4 row 1
+draws the hook's option buttons and puts its reveal on `--ks3-dark-panel` with a `2px` alert
+border, which is where the alert accent comes from: orange on ink cannot be read. Design never
+drew the **chosen** state of a dark option button. The values below are what the build renders
+today, registered so they cannot drift while that screen is outstanding.
+
+| State | Signal | Ground | Border | Badge fill / glyph |
+|---|---|---|---|---|
+| **Resting** | `aria-pressed="false"` | `--ks3-dark-panel` `#3E3730` | `--ks3-on-dark-muted` `#C6B9A7` | `--ks3-on-dark-muted` / `--ks3-ink` |
+| **Chosen** | `aria-pressed="true"` | `--ks3-dark-panel` (unchanged) | `--ks3-alert` `#FFC53D` | `--ks3-alert` / `--ks3-ink` |
+
+On this surface the chosen state is carried by the **border alone**, so that border is a
+state-bearing mark and is held to 3:1 against the panel behind it.
+
 ### Prediction-gate states (activities that are not simulations)
 
 | State | Signal | What renders |
