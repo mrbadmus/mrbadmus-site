@@ -58,9 +58,11 @@ export function Stage({
     }
   }, [renderer])
 
-  // load the selected specimen
+  // load the selected specimen. A rejection is already reported through
+  // onStatus, and the shell's answer to it is a different renderer, so the
+  // promise is caught here rather than surfacing as an unhandled rejection.
   useEffect(() => {
-    void renderer.loadSpecimen(specimen)
+    renderer.loadSpecimen(specimen).catch(() => {})
   }, [renderer, specimen])
 
   // live tier — no reload, no remount (gate 5)
@@ -78,20 +80,19 @@ export function Stage({
   }, [])
 
   const ready = status.state === 'ready'
-
-  const dots = useMemo(() => {
-    if (!ready) return []
-    return specimen.hotspots
-      .map((h, index) => {
-        const point = renderer.hotspotToScreen(h.id)
-        if (!point || !point.visible) return null
-        return { hotspot: h, index, x: point.x, y: point.y }
-      })
-      .filter((d): d is { hotspot: HotspotRecord; index: number; x: number; y: number } => d !== null)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, specimen, renderer, status, mode])
+  const dots = useHotspotDots(renderer, specimen, ready)
 
   const openDot = dots.find((d) => d.hotspot.id === openHotspotId) ?? null
+
+  // While the specimen is on the wire the hint line carries the load rather
+  // than the interaction: the stage has nothing to drag yet. No new furniture
+  // — Design drew no loading state, and this one disappears at ready.
+  const shownHint =
+    status.state === 'loading'
+      ? status.progress === undefined
+        ? 'Loading specimen'
+        : `Loading specimen · ${Math.round(status.progress * 100)}%`
+      : hint
 
   return (
     <div className={`stage stage--${renderer.stage}`}>
@@ -198,16 +199,71 @@ export function Stage({
         </>
       )}
 
-      <div className="stagehint">{hint}</div>
+      <div className="stagehint">{shownHint}</div>
     </div>
   )
+}
+
+interface Dot {
+  hotspot: HotspotRecord
+  index: number
+  x: number
+  y: number
+}
+
+/** Hotspot dots follow a camera that moves. The renderer resolves each anchor
+ * on demand, so the shell samples once a frame and re-renders only when a dot
+ * actually moved a whole pixel or changed visibility — an orbiting specimen
+ * would otherwise re-render the tree at 60fps for sub-pixel drift, and a
+ * still one would re-render for nothing at all. */
+function useHotspotDots(renderer: Renderer, specimen: SpecimenRecord, ready: boolean): Dot[] {
+  const [dots, setDots] = useState<Dot[]>([])
+
+  useEffect(() => {
+    if (!ready) {
+      setDots([])
+      return
+    }
+    let frame = 0
+    let previous = ''
+
+    const sample = () => {
+      const next: Dot[] = []
+      specimen.hotspots.forEach((hotspot, index) => {
+        const point = renderer.hotspotToScreen(hotspot.id)
+        if (!point || !point.visible) return
+        next.push({ hotspot, index, x: Math.round(point.x), y: Math.round(point.y) })
+      })
+      const signature = next.map((d) => `${d.hotspot.id}@${d.x},${d.y}`).join('|')
+      if (signature !== previous) {
+        previous = signature
+        setDots(next)
+      }
+      frame = requestAnimationFrame(sample)
+    }
+
+    sample()
+    return () => cancelAnimationFrame(frame)
+  }, [renderer, specimen, ready])
+
+  return dots
 }
 
 function StageTools({ renderer, mode }: { renderer: Renderer; mode: StageMode }) {
   const [activeTool, setActiveTool] = useState<ToolId | null>(
     renderer.supportedTools.includes('rotate') ? 'rotate' : null,
   )
+  // Off by default at every tier. Spec §5 requires that at Tier C; the frozen
+  // reference draws the toggle off at Tier A too, so the reference sets the
+  // default and Tier C's requirement is met by it (Stage 2 report).
   const [autoRotate, setAutoRotate] = useState(false)
+
+  // A new renderer instance starts from its own defaults, so the toggle must
+  // not carry a stale "on" across a switch to the flat stage and back.
+  useEffect(() => {
+    setAutoRotate(false)
+    setActiveTool(renderer.supportedTools.includes('rotate') ? 'rotate' : null)
+  }, [renderer])
 
   // §02: the retrieval room keeps a reduced rail
   const retrieveRenderer = useMemo(() => {
@@ -229,10 +285,16 @@ function StageTools({ renderer, mode }: { renderer: Renderer; mode: StageMode })
       activeTool={activeTool}
       autoRotate={autoRotate}
       onTool={(tool) => {
-        // no-op pending Stage 2; active state tracks selection only
+        // Reset is momentary — it fires and the rail keeps its previous
+        // selection. Everything else the renderer honours is a mode.
         if (tool !== 'reset') setActiveTool(tool)
+        renderer.invokeTool(tool)
       }}
-      onAutoRotate={() => setAutoRotate((v) => !v)}
+      onAutoRotate={() => {
+        const next = !autoRotate
+        setAutoRotate(next)
+        renderer.invokeTool('auto-rotate', next)
+      }}
     />
   )
 }

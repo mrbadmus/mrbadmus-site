@@ -9,6 +9,8 @@ import type { QualitySetting } from './studio/quality'
 import { effectiveRenderTier } from './studio/quality'
 import { getSpecimen } from './studio/content'
 import { createPlaceholderRenderer } from './renderer/placeholder'
+import { createMeshRenderer } from './renderer/mesh'
+import type { Renderer } from './renderer/types'
 import { Stage, type StageMode } from './components/Stage'
 import { TopBar, ModeToggle } from './components/TopBar'
 import { LibraryColumn, LibraryDrawer, LibraryFullScreen } from './components/Library'
@@ -17,6 +19,16 @@ import { RetrievalPanel } from './components/RetrievalPanel'
 import { PhoneSheet } from './components/PhoneSheet'
 
 type Layout = 'desktop' | 'tablet' | 'phone'
+
+/** Which renderer answers for each kind of stage — the shell's whole renderer
+ * policy, in one line. `paper` is the placeholder until the flat renderer
+ * lands at Stage 5. Injectable because gate 5 has to drive the tier journey
+ * in an environment with no WebGL at all, where the honest production answer
+ * is the flat route and so no tiered renderer would ever mount. */
+export type RendererFactory = (kind: 'viewport' | 'paper') => Renderer
+
+const defaultRenderer: RendererFactory = (kind) =>
+  kind === 'viewport' ? createMeshRenderer() : createPlaceholderRenderer('paper')
 
 function layoutFor(width: number): Layout {
   if (width >= 1024) return 'desktop'
@@ -34,7 +46,13 @@ function useLayout(): Layout {
   return layout
 }
 
-export default function App({ capability }: { capability?: CapabilityReport }) {
+export default function App({
+  capability,
+  createRenderer = defaultRenderer,
+}: {
+  capability?: CapabilityReport
+  createRenderer?: RendererFactory
+}) {
   const [probe] = useState<CapabilityReport>(() => capability ?? detectCapability())
   const layout = useLayout()
 
@@ -47,11 +65,29 @@ export default function App({ capability }: { capability?: CapabilityReport }) {
 
   const specimen = getSpecimen(specimenId)
 
-  // Tier D (no WebGL2) or a flat-content specimen ⇒ paper stage. The
-  // placeholder renderer stands in for `mesh` (viewport) and `flat` (paper).
+  // Failure is a route, not an error (spec §3.1): a mesh that will not load,
+  // times out, or loses its WebGL context drops the whole stage to the flat
+  // renderer rather than showing a broken viewport. The flat renderer itself
+  // arrives at Stage 5, so until then that route lands on the paper
+  // placeholder — which is the designed §06 stage, not a gap.
+  const [meshFailed, setMeshFailed] = useState(false)
+  useEffect(() => {
+    // A different specimen deserves its own attempt.
+    setMeshFailed(false)
+  }, [specimenId])
+
+  // Tier D (no WebGL2) or a flat-content specimen ⇒ paper stage.
   const stageKind: 'viewport' | 'paper' =
-    probe.tier === 'D' || specimen.renderer === 'flat' ? 'paper' : 'viewport'
-  const renderer = useMemo(() => createPlaceholderRenderer(stageKind), [stageKind])
+    probe.tier === 'D' || specimen.renderer === 'flat' || meshFailed ? 'paper' : 'viewport'
+  const renderer = useMemo(() => createRenderer(stageKind), [createRenderer, stageKind])
+
+  useEffect(
+    () =>
+      renderer.onStatus((status) => {
+        if (status.state === 'failed') setMeshFailed(true)
+      }),
+    [renderer],
+  )
 
   const renderTier = effectiveRenderTier(quality, probe.tier)
 
