@@ -782,6 +782,19 @@ def main():
           else "%d problem(s): %s" % (len(struct_problems),
                                       "; ".join(struct_problems[:3])))
 
+    # MRB-203 — the gate learns to see a component that was never
+    # registered. Absence-of-selector already failed; absence-of-
+    # REGISTRATION passed silently, which is how B1 shipped with no
+    # progress rail under a green gate.
+    cov_problems, cov_rows = PARITY.check_design_coverage(".")
+    check("MRB-203 · every authored family has a drawn reference screen, "
+          "every rendered block type has a registered component",
+          not cov_problems,
+          "%d families + block types checked" % len(cov_rows)
+          if not cov_problems else "; ".join(cov_problems[:2]))
+    for label, detail, ok in cov_rows:
+        print("       %s %-28s %s" % ("PASS" if ok else "FAIL", label, detail))
+
     # MRB-198 — the canvas paints text and state marks with token colours
     # layer D cannot reach through CSS; the pairs are computed from
     # tokens.css itself, the same file the canvas reads via cssVar().

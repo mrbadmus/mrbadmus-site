@@ -874,6 +874,67 @@ These are gaps in the current build, not design instructions.
 
 ---
 
+## 10. AUTHORITATIVE REGISTRY — the rows `verify_ks3.py` reads
+
+⚠️ **Sections 0–9 above are descriptive. This section is not.** `verify_ks3.py` parses
+the two tables below and **fails the build** against them. MRB-203, ruled after Design
+sign-off on 11 August 2026:
+
+> The parity gate cannot see a component that was never registered. Layer C measures
+> registered components to ±1px and layer B checks structural rules. Neither can see a
+> component that is not in the reference set at all.
+
+Absence-of-selector already fails. This section makes **absence-of-registration** fail too,
+which is the hole that let B1 ship with no progress rail, smaller type and a flat uniform
+stack while the gate reported green over 116 assertions across 40 components.
+
+Do not edit a row here to make a build pass. A row is a claim that Design has **drawn**
+the thing. If the drawing does not exist, the correct action is to get it drawn.
+
+### 10.1 Architecture family → the reference screen that defines it
+
+A lesson may only be authored in a family that has an approved reference screen. Author a
+lesson in a family with no row here, or with a row pointing at a file that does not exist,
+and the build fails naming the family.
+
+| Family | Slots | Reference screen | Approved |
+|---|---|---|---|
+| MODEL | 50 | `docs/ks3/design-reference/b1/b1-03-animal-and-plant-cells.dc.html` | Mide, 12 Aug 2026 |
+| PROCESS | 34 | `docs/ks3/design-reference/KS3 Reference Set (offline).html` | Mide, 8 Aug 2026 |
+| SYSTEM | 32 | `docs/ks3/design-reference/b1/b1-04-specialised-cells.dc.html` | Mide, 12 Aug 2026 |
+| INVESTIGATION | 18 | `docs/ks3/design-reference/b1/b1-02-using-a-microscope.dc.html` | Mide, 12 Aug 2026 |
+| CONTRAST | 18 | `docs/ks3/design-reference/b1/b1-06-unicellular-organisms.dc.html` | Mide, 12 Aug 2026 |
+| CLASSIFY | 15 | `docs/ks3/design-reference/b1/b1-01-life-processes.dc.html` | Mide, 12 Aug 2026 |
+| QUANTITATIVE | 17 | — NONE — | ✗ NOT DRAWN |
+
+**QUANTITATIVE is deliberately unrowed.** Seventeen slots, no approved screen, no authored
+lesson. The first person to author one will be stopped by this table rather than by Mide
+finding it at sign-off. That is the whole point of the section.
+
+Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 184
+slots**, every one of which would have inherited whatever Code invented. Design's approved
+B1 pages are what closed them.
+
+### 10.2 Block type → the registered components that gate it
+
+Every block type the generator can emit must map to at least one component registered in
+`ks3_parity.COMPONENTS`. Render a block type with no row, or name a component in a row that
+`ks3_parity` does not define, and the build fails naming the block type.
+
+| Block type | Registered components |
+|---|---|
+| hook | `hook is ink-dark, accent shadow` |
+| explainer | `body prose (type row 4)`, `page ground + body type` |
+| figure | `figure frame`, `figure caption`, `figure pending slot` |
+| keyword | `vocabulary card`, `card term type` |
+| quiz | `ladder shell`, `ladder heading`, `page-marked rung is accent`, `page-marked rung heading`, `self-marked rung is violet`, `ladder option chosen-correct`, `ladder correct badge is green, not accent`, `ladder option chosen-wrong`, `ladder wrong badge is ink, not amber`, `ladder option spent`, `ladder feedback, correct`, `ladder feedback, wrong` |
+| summary | `key note is ink-dark`, `key note type drops to 700` |
+| misconception | `misconception is amber` |
+| check | `activity option resting`, `activity option chosen shows accent, marks nothing` |
+| worked-example | `R8 answer box`, `R8 check-my-answer button` |
+| practical | `sim canvas`, `sim live figure is mono` |
+
+
 ## Provenance
 
 Every figure in this document was measured on 8 August 2026 against the working branch

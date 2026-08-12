@@ -489,6 +489,21 @@ COMPONENTS = [
          sel=".ks3-feedback.is-wrong",
          props={"background-color": "#F4E9D8", "border-top-color": "#221E1B"}),
 
+    # ── figure. Surfaced by MRB-203's §10.2 registry: `figure` is the
+    # second most-rendered block type in the key stage (27 uses across
+    # 12 lessons) and had no registered component at all. The gate that
+    # asks "does every rendered block type map to something registered?"
+    # found it on its first run, which is the whole argument for the
+    # registry being authoritative rather than descriptive.
+    dict(name="figure frame", on=LESSON, sel=".ks3-figure",
+         props={"margin-top": "28px"}),
+    dict(name="figure caption", on=LESSON, sel=".ks3-figure figcaption",
+         props={"font-size": "17px", "color": "#3B342E",
+                "margin-top": "12px"}),
+    dict(name="figure pending slot", on=LESSON, sel=".ks3-figure-slot",
+         props={"border-top-width": "3px", "border-top-style": "dashed",
+                "border-top-color": "#C3B191"}),
+
     # ── R4: the dog-ear card ──
     dict(name="vocabulary card", on=LESSON, sel=".ks3-card-btn",
          props={"background-color": "#FFFCF5", "border-top-left-radius": "22px",
@@ -851,6 +866,146 @@ CANVAS_PAIRS = (
     ("Euglena's biology green on the bright field", "--ks3-biology",
      "--ks3-card", 3.0),
 )
+
+
+MANIFEST = "docs/ks3/design-coverage-manifest.md"
+
+
+def _manifest_rows(repo_root, heading):
+    """Parse the markdown table under `heading` in §10 of the manifest.
+
+    Returns [(col0, col1, ...), ...] with the header and separator dropped.
+    Deliberately strict: a heading that has moved or a table that has been
+    turned into prose raises rather than silently returning nothing, because
+    an empty registry would make every check below vacuously pass — the
+    exact defect class MRB-203 exists to close.
+    """
+    path = os.path.join(repo_root, MANIFEST)
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    if heading not in text:
+        raise ValueError(
+            "design-coverage-manifest.md has no %r heading. §10 is the "
+            "authoritative registry the build reads; if it has been renamed "
+            "or removed, fix the manifest rather than this parser." % heading)
+    body = text.split(heading, 1)[1]
+    rows = []
+    for line in body.splitlines():
+        line = line.strip()
+        if not line.startswith("|"):
+            if rows:
+                break          # table ended
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        if not cells or set("".join(cells)) <= set("-: "):
+            continue           # separator row
+        if cells[0].lower() in ("family", "block type"):
+            continue           # header row
+        rows.append(cells)
+    if not rows:
+        raise ValueError("no rows parsed under %r in %s" % (heading, MANIFEST))
+    return rows
+
+
+def check_design_coverage(repo_root=".", units=None):
+    """MRB-203 — absence of REGISTRATION fails, not just absence of selector.
+
+    Two questions the old gate could not ask:
+
+      1. Is this lesson's architecture family one Design has actually drawn?
+         Layer C measures registered components to ±1px, but a family with no
+         reference screen registers nothing, so it had nothing to disagree
+         with. B1 was the first unit to author SYSTEM and CLASSIFY — 47 of
+         the 184 slots between them — and the gate reported green over
+         invented shapes.
+
+      2. Does every block type the tree actually renders map to a registered
+         component that exists in COMPONENTS?
+
+    Returns (problems, rows) where rows are (label, detail, ok) for printing.
+    """
+    problems, rows = [], []
+
+    fam_rows = _manifest_rows(repo_root, "### 10.1")
+    families = {}
+    for cells in fam_rows:
+        fam = cells[0].strip("`* ")
+        screen = cells[2].strip("`* ")
+        families[fam] = None if screen.strip("— ") in ("", "NONE") else screen
+
+    # Every family a lesson is AUTHORED in must have a drawn screen.
+    if units is None:
+        import ks3_data
+        units = ks3_data.KS3_UNITS
+    authored = [(u, l) for u in units for l in u["lessons"] if l.get("authored")]
+    for u, l in authored:
+        fam = l.get("family")
+        if fam not in families:
+            problems.append(
+                "MRB-203: %s/%s is authored in family %s, which has NO ROW in "
+                "%s §10.1. A family with no reference screen has no registered "
+                "component, so the parity gate cannot see anything wrong with "
+                "it. Get the screen drawn — do not add the row to pass the "
+                "build." % (u["code"], l["slug"], fam, MANIFEST))
+            continue
+        screen = families[fam]
+        if not screen:
+            problems.append(
+                "MRB-203: %s/%s is authored in family %s, which §10.1 records "
+                "as NOT DRAWN. Design has not supplied a reference screen for "
+                "this family." % (u["code"], l["slug"], fam))
+            continue
+        if not os.path.exists(os.path.join(repo_root, screen)):
+            problems.append(
+                "MRB-203: family %s points at reference screen %r, which does "
+                "not exist. A registry row that names a missing file is worse "
+                "than no row — it reports coverage that is not there."
+                % (fam, screen))
+    for fam, screen in sorted(families.items()):
+        used = sorted({l.get("family") for _u, l in authored})
+        rows.append(("family " + fam,
+                     (screen or "NOT DRAWN") + (" · authored" if fam in used
+                                                else " · none authored yet"),
+                     fam not in used or bool(screen)))
+
+    # Every RENDERED block type must map to components that really exist.
+    blk_rows = _manifest_rows(repo_root, "### 10.2")
+    registered = {c["name"] for c in COMPONENTS}
+    mapping = {}
+    for cells in blk_rows:
+        btype = cells[0].strip("`* ")
+        # Component names contain commas ("hook is ink-dark, accent shadow"),
+        # so the cell is parsed as backtick-delimited spans, never split on
+        # the comma. Splitting on commas turned one component into two
+        # non-existent ones and failed three real rows.
+        names = re.findall(r"`([^`]+)`", cells[1])
+        mapping[btype] = names
+
+    rendered = set()
+    for _u, l in authored:
+        for b in (l.get("core") or []):
+            if b.get("type"):
+                rendered.add(b["type"])
+    for btype in sorted(rendered):
+        names = mapping.get(btype)
+        if not names:
+            problems.append(
+                "MRB-203: block type %r is rendered in the built tree but has "
+                "NO ROW in %s §10.2 — it is drawn on screen with no registered "
+                "component gating it." % (btype, MANIFEST))
+            rows.append(("block " + btype, "NO ROW", False))
+            continue
+        missing = [n for n in names if n not in registered]
+        if missing:
+            problems.append(
+                "MRB-203: block type %r maps to component(s) %s, which are not "
+                "defined in ks3_parity.COMPONENTS. The registry claims cover "
+                "that does not exist." % (btype, missing))
+        rows.append(("block " + btype,
+                     "%d component(s): %s" % (len(names), ", ".join(names[:3])
+                                              + ("…" if len(names) > 3 else "")),
+                     not missing))
+    return problems, rows
 
 
 def check_canvas_contrast(repo_root=".", overrides=None):
