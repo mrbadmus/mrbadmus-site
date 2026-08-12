@@ -528,7 +528,7 @@ def main():
     # placement cannot even load. That is not a substitute for a gate: an
     # import assertion proves the module is self-consistent, and these checks
     # prove it is consistent with the curriculum the rest of the build sees —
-    # the 185 slots build_units() actually produced, and the authored `requires`
+    # the 183 slots build_units() actually produced, and the authored `requires`
     # edges the module deliberately cannot read (circular import).
     #
     # Everything here is recomputed rather than delegated back to the module's

@@ -1125,7 +1125,7 @@ def browse_slots(units):
     """``(year, half_term, discipline) → [(unit, lesson, position_in_unit), …]``.
 
     **Keyed on (unit_code, lesson_slug), never on the slug alone.** There are
-    185 lesson slots and 184 distinct slugs: `energy-in-food` is declared twice
+    183 lesson slots and 182 distinct slugs: `energy-in-food` is declared twice
     — once in B3 as a §4.6 reference slot, once in P2 as the lesson itself — and
     a slug-keyed lookup silently drops one of them into the wrong year.
 

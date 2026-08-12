@@ -26,15 +26,15 @@ grade boundaries, no mark schemes and no "Higher tier" badges anywhere in KS3.
 subject identity only.
 
 **The shape of the course.** 33 **units** (a unit is a multi-week block of teaching, e.g.
-"Particles and their behaviour"), containing **185 lesson slots** in total. A lesson is roughly one
+"Particles and their behaviour"), containing **183 lesson slots** in total. A lesson is roughly one
 40-minute classroom lesson and is the atom of the system — one lesson, one web page.
 
-**The state of the build, stated plainly.** Of the 185 lesson slots:
+**The state of the build, stated plainly.** Of the 183 lesson slots:
 
 | | Count | What it renders as |
 |---|---|---|
 | Fully authored lessons | **6** | A real lesson page with all its content |
-| Unwritten slots | **178** | A short "Coming soon" placeholder page |
+| Unwritten slots | **176** | A short "Coming soon" placeholder page |
 | Cross-reference slots | **1** | No page of its own — it links to another discipline's lesson |
 
 All six authored lessons are the same unit: **C1, "Particles and their behaviour"** (Chemistry,
@@ -42,14 +42,14 @@ typically Year 7). All six are marked `draft`, meaning not yet checked for scien
 all six currently show an under-review marker.
 
 **Consequence for the design work.** There are only six real lesson pages in existence to design
-against, and they are all one unit of one science. The other 179 slots are placeholders. A design
+against, and they are all one unit of one science. The other 177 slots are placeholders. A design
 that only looks right on Chemistry particle lessons will break when Biology systems lessons and
 Physics calculation lessons are written. Sections 1, 2 and 3 therefore describe the **full
 vocabulary the generator can render**, not only what is currently on screen, and mark clearly which
 parts have never yet been exercised by real content.
 
-**Total pages the generator writes: 296.** That is 1 KS3 landing page + 3 discipline hubs + 33 unit
-index pages + 184 lesson pages + 75 browse-layer index pages.
+**Total pages the generator writes: 294.** That is 1 KS3 landing page + 3 discipline hubs + 33 unit
+index pages + 182 lesson pages + 75 browse-layer index pages.
 
 **Where the code lives.** The generator is `build_ks3.py`; the page behaviour is `shared/ks3.js`;
 the styling is `shared/ks3.css`; the content is the `ks3_data/` folder; the governing design
@@ -70,20 +70,20 @@ shapes.** A lesson built around a simulation looks different from a lesson built
 step-by-step mechanism, and that is deliberate. A design that assumes one page skeleton will fight
 the system.
 
-| Family | What it means, in one line | Lessons carrying it (of 185) | Named example |
+| Family | What it means, in one line | Lessons carrying it (of 183) | Named example |
 |---|---|---|---|
-| **MODEL** | One idea explains a whole class of behaviour. | **50** — Biology 9, Chemistry 17, Physics 24 | *The particle model* (unit C1) — **authored, viewable today** |
-| **PROCESS** | A mechanism unfolds in steps. | **35** — Biology 13, Chemistry 15, Physics 7 | *Changes of state* (unit C1) — **authored, viewable today** |
+| **MODEL** | One idea explains a whole class of behaviour. | **49** — Biology 8, Chemistry 17, Physics 24 | *The particle model* (unit C1) — **authored, viewable today** |
+| **PROCESS** | A mechanism unfolds in steps. | **34** — Biology 12, Chemistry 15, Physics 7 | *Changes of state* (unit C1) — **authored, viewable today** |
 | **SYSTEM** | Parts working together, and what happens when one part fails. | **32** — Biology 21, Chemistry 2, Physics 9 | *The digestive system* (unit B3) — not yet written |
 | **CONTRAST** | Two things, one difference that discriminates between them. | **18** — Biology 4, Chemistry 7, Physics 7 | *Solids, liquids and gases* (unit C1) — **authored, viewable today** |
 | **INVESTIGATION** | The scientific skill itself is the subject (fair testing, graphs, measurement error). | **18** — Biology 7, Chemistry 5, Physics 6 | *Testing the model: does it explain everything?* (unit C1) — **authored, viewable today** |
 | **QUANTITATIVE** | A calculation carries the concept. | **17** — Biology 2, Chemistry 2, Physics 13 | *Speed* (unit P3) — not yet written |
 | **CLASSIFY** | Decide which category, fast, and know why. | **15** — Biology 4, Chemistry 7, Physics 4 | *Acids and alkalis* (unit C6) — not yet written |
 
-Counts sum to 185.
+Counts sum to 183.
 
 **Three families have never been rendered with real content:** SYSTEM (32 lessons), QUANTITATIVE
-(17) and CLASSIFY (15). That is 64 of 185 lessons — just over a third of the course — whose page
+(17) and CLASSIFY (15). That is 64 of 183 lessons — just over a third of the course — whose page
 shape exists only as a written intention. In particular:
 
 - **QUANTITATIVE** is the only family that routinely needs a calculation layout. The generator has
@@ -302,7 +302,7 @@ carries it, so a design can be specified against something concrete.
 |---|---|---|
 | **Draft / under review** | Lesson's review state is anything other than "frozen" | A visible marker paragraph `ks3-review-flag` reading **"Draft — not yet science-reviewed."** in the lesson header. Currently on **all six** written lessons. It is mandatory: a draft page without it is a defect. It must stay legible and prominent — the one thing on a page more important than the science is protecting a student from unreviewed science. |
 | **Reviewed and frozen** | Review state is "frozen" | No marker. **Zero lessons are in this state today.** |
-| **Coming-soon lesson slot** | The lesson has no authored content | An entirely different, much shorter page: header with unit name and family label, then one section `ks3-block ks3-coming-soon` containing a small "Coming soon" tag, the single sentence *"This lesson has not been written yet."*, and a link back to the unit. **178 of 185 pages are in this state today.** |
+| **Coming-soon lesson slot** | The lesson has no authored content | An entirely different, much shorter page: header with unit name and family label, then one section `ks3-block ks3-coming-soon` containing a small "Coming soon" tag, the single sentence *"This lesson has not been written yet."*, and a link back to the unit. **176 of 183 pages are in this state today.** |
 | **Cross-reference slot** | The slot points at another discipline's unit | **No page at all.** It appears only as a row on index pages, styled `ks3-lesson-row is-ref`, carrying a badge naming the owning unit and a pointer paragraph: *"Taught in Chemistry — Particles and their behaviour. You'll meet the full lesson there."* There is exactly **one** of these in the whole course. |
 
 ### Figure states
@@ -423,7 +423,7 @@ Lesson rows on index pages carry one of four appearances:
 
 ## 6. Browse layer
 
-There are **two independent routes** to the same 184 lesson pages, plus a chooser above them both.
+There are **two independent routes** to the same 182 lesson pages, plus a chooser above them both.
 Neither route mints a lesson URL of its own; both link to pages that already exist at a single
 address.
 
@@ -453,7 +453,7 @@ half terms of Year 7", "The whole KS3 Chemistry course →").
 | 1 | `/ks3/index.html` | (shared) | The secondary section on the landing page: three **discipline cards** with unit counts and written-lesson counts. | — |
 | 2 | `/ks3/<discipline>/index.html` | **3** | A grid of **unit cards**, each with the unit code, title, and "N of M lessons" progress. | Biology has 11 unit cards, Chemistry 10, Physics 12. |
 | 3 | `/ks3/<discipline>/<unit>/index.html` | **33** | Numbered lesson rows for the whole unit, plus a header line: "N of M lessons written · statutory area: …". | **Units contain between 3 and 9 lessons** — a card grid and a row list must both look right across a 3× range. Only **1 of 33 units** has an introduction paragraph; the other 32 have none, so that slot is usually empty. |
-| 4 | `/ks3/<discipline>/<unit>/<lesson>.html` | **184** | The lesson itself, in one of the states in section 5. | — |
+| 4 | `/ks3/<discipline>/<unit>/<lesson>.html` | **182** | The lesson itself, in one of the states in section 5. | — |
 
 Every page in both routes carries a breadcrumb trail at the top, from 1 to 4 items deep, e.g.
 `KS3 › Chemistry › Particles and their behaviour › The particle model`. The last item is always
@@ -481,9 +481,9 @@ Two design consequences follow directly:
 
 ## 7. Content variance
 
-**How to read this section.** Only **6 of the 185 slots** have content. Every range below marked
+**How to read this section.** Only **6 of the 183 slots** have content. Every range below marked
 *(from 6 lessons)* is measured across those six — all Chemistry, all one unit. Treat them as the
-narrowest possible sample, not as the shape of the finished course. Ranges marked *(all 185)* are
+narrowest possible sample, not as the shape of the finished course. Ranges marked *(all 183)* are
 measured across every slot, because titles and family labels exist for all of them.
 
 ### Blocks per lesson *(from 6 lessons)*
@@ -552,7 +552,7 @@ Every lesson opens `hook` then `check`, and ends `quiz` then `summary`. Everythi
 
 ### Text extremes
 
-**Lesson titles** *(all 185 slots)*:
+**Lesson titles** *(all 183 slots)*:
 
 - Shortest: **"Speed"** — 5 characters (unit P3)
 - Also short: "Joints" (6), "Density" (7)
@@ -564,7 +564,7 @@ A title component must therefore sit comfortably at both 5 and 49 characters, in
 in a breadcrumb, in an index row and in a browser tab title.
 
 **Big questions** — the one-sentence framing question under the lesson title. Present on **only the
-6 written lessons**; the other 179 slots have none. All six, sorted by length:
+6 written lessons**; the other 177 slots have none. All six, sorted by length:
 
 | Characters | Lesson | Text |
 |---|---|---|
@@ -790,7 +790,7 @@ These are gaps in the current build, not design instructions.
 | **No frozen lessons** | Every written lesson is a draft carrying the under-review marker. The "no marker" state has never been rendered. |
 | **No real artwork** | All 11 declared figures are placeholders. The "figure with an image" state has never been rendered. |
 | **No support-layer content** | The "Need a hand?" section has never been rendered. |
-| **179 of 185 lessons unwritten** | Three of seven families — SYSTEM, QUANTITATIVE, CLASSIFY, 64 lessons between them — have no authored example at all. |
+| **177 of 183 lessons unwritten** | Three of seven families — SYSTEM, QUANTITATIVE, CLASSIFY, 64 lessons between them — have no authored example at all. |
 | **One calculation only** | The Formula / Insert / Fix / Answer layout has shipped once. Seventeen QUANTITATIVE lessons, thirteen of them Physics, will need it. |
 | **No end matter** | The architecture specifies a closing block with score-plus-delta, the AI tutor and previous/next navigation. What the generator actually writes is a static "Stuck? Ask Mr Badmus AI" heading and one line of text — **the tutor is not wired up on KS3 pages, and there are no previous/next links.** |
 | **No stepper rendering** | A stepped presentation is permitted where a family calls for it, especially PROCESS lessons. None is implemented; PROCESS content currently renders as ordinary stacked blocks. |

@@ -49,10 +49,10 @@ the platform's entire published default was a data change in one dict.
 from . import structure
 
 # ═══════════════════════════════════════════════════════════════════════════
-# The published default — 33 units, 185 lessons
+# The published default — 33 units, 183 lessons
 # ═══════════════════════════════════════════════════════════════════════════
 #
-# Y7   9 units,  55 lessons
+# Y7   9 units,  53 lessons
 # Y8  13 units,  79 lessons
 # Y9  11 units,  51 lessons
 #

@@ -518,7 +518,7 @@ Statutory *supply* per unit (statements this register proposes it owns) against 
 
 | Unit | Statements | §7 lessons | Statements per lesson |
 |---|---|---|---|
-| B1 | 6 | 8 | 0.75 ⚠️ |
+| B1 | 6 | 6 | 1.00 |
 | B2 | 3 | 4 | 0.75 ⚠️ |
 | B3 | 5 | 8 | 0.62 ⚠️ |
 | B4 | 4 | 5 | 0.80 ⚠️ |
@@ -551,8 +551,8 @@ Statutory *supply* per unit (statements this register proposes it owns) against 
 | P10 | 4 | 5 | 0.80 ⚠️ |
 | P11 | 5 | 4 | 1.25 |
 | P12 | 4 | 6 | 0.67 ⚠️ |
-| **Total** | **137** | **185** | **0.74** |
+| **Total** | **137** | **183** | **0.75** |
 
-**26 of 33 units are marked ⚠️** — §7 gives them more lessons than there are statutory statements for those lessons to own.
+**25 of 33 units are marked ⚠️** — §7 gives them more lessons than there are statutory statements for those lessons to own.
 
-This is the register's principal finding and it is recorded as open decision **§11.11**. There are 137 subject-content statements and 185 lessons in §7, so under §4.4 rule 3 (exactly one owner) at least 48 lessons must own nothing — which §10.2 forbids (`covers` non-empty). The two rules cannot both hold as written.
+This is the register's principal finding and it is recorded as open decision **§11.11**. There are 137 subject-content statements and 183 lessons in §7, so under §4.4 rule 3 (exactly one owner) at least 46 lessons must own nothing — which §10.2 forbids (`covers` non-empty). The two rules cannot both hold as written.
