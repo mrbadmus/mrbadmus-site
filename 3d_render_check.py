@@ -149,6 +149,10 @@ SETTLE_TIMEOUT = 15.0
 # How long "holds still" and "keeps moving" are given to prove themselves.
 HOLD_SECONDS = 1.0
 
+# The gap check 8 leaves between a change and the capture that measures it,
+# and — crucially — the same gap it leaves when measuring its own noise floor.
+SETTLE_GAP = 0.6
+
 # Frame samples per tier in the frame-timing report.
 FRAME_SAMPLES = 120
 
@@ -1090,12 +1094,18 @@ def check_section(page, report, shots):
         face_before = sum(1 for rgb in whole.values() if _is_cut_face(rgb))
 
         # The instrument's own noise floor: the SAME state, photographed
-        # twice. Tier A renders through SSAO and a continuously re-integrated
-        # contact shadow, and neither settles to identical bytes — measured at
-        # a few hundred pixels here, against 1 at tiers B and C. The
-        # comparisons below are against this rather than against zero, so the
-        # gate is calibrated to what the renderer actually does rather than to
-        # what a still image would do.
+        # twice, WITH THE SAME GAP between captures that every comparison
+        # below has.
+        #
+        # The gap is the load-bearing part. Tier A composites a contact shadow
+        # that re-integrates every frame, and page.screenshot() overrides
+        # device metrics — so the shadow is still converging for a moment
+        # afterwards, and a floor measured back-to-back reads 0 while the real
+        # variation between two captures a beat apart reached 432 across the
+        # runs of this build. A gate calibrated against the back-to-back
+        # number would have been green tonight and red next week for no
+        # change in the code, which is worse than no gate.
+        time.sleep(SETTLE_GAP)
         again, _ = shoot("t%s-again" % tier)
         noise = sum(1 for p in whole if _differs(whole[p], again.get(p)))
         if len(drawn) < 500:
@@ -1107,7 +1117,7 @@ def check_section(page, report, shots):
 
         # ── shell alone, no cut: must be the same picture ─────────────────
         page.eval("window.__rc.rail('Isolate')")
-        time.sleep(0.5)
+        time.sleep(SETTLE_GAP)
         shell, _ = shoot("t%s-shell" % tier)
         same_before = sum(1 for p in whole if _differs(whole[p], shell.get(p)))
 
@@ -1669,9 +1679,17 @@ def main():
         print("%d problem(s):" % len(report.problems))
         for p in report.problems:
             print("  ✗ " + p)
+        if stale:
+            print("  " + stale)
         print("RENDER CHECK FAIL — %d/%d gates hold (%.0fs)"
               % (passed, len(gated), time.time() - started))
         return 1
+    if stale:
+        # Repeated at the end on purpose. A stale dist is the one failure mode
+        # that makes every line above a lie about code that is not running,
+        # and the note at the top scrolls away behind 100 seconds of output.
+        # It cost an hour of this build before it was printed twice.
+        print("  " + stale)
     print("RENDER CHECK PASS — %d/%d gates hold, frame timing reported only "
           "(%.0fs)" % (passed, len(gated), time.time() - started))
     return 0
