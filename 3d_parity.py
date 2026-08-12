@@ -298,6 +298,29 @@ COMPONENTS = [
          props={"opacity": "0.52"}),
     dict(name="stage viewport frame", on="s01", sel=".stage--viewport",
          props={"border-top-left-radius": "12px", "border-top-color": "#C9B896"}),
+    # ── §01 with a structure open (screen s01open) ──
+    # Carried forward from Stage 2: the harness never opened a callout, which
+    # is how a clipping defect survived it. Driven by a real click on the
+    # panel's structure chip, which is also the only way to measure the
+    # is-open numeral well the accent-contrast ruling changed (entry 15).
+    dict(name="open callout card", on="s01open", sel=".callout",
+         props={"width": "216px", "background-color": "rgba(16, 13, 10, 0.95)",
+                "border-top-color": "#4A4136"}),
+    dict(name="callout structure eyebrow", on="s01open", sel=".callout__eyebrow",
+         props={"color": "#F0885F"}),
+    dict(name="callout title is cream display", on="s01open", sel=".callout__title",
+         props={"color": "#FBF3E6", "font-family": "Bricolage Grotesque"}),
+    dict(name="callout detail is muted on dark", on="s01open", sel=".callout__detail",
+         props={"color": "#A99B89"}),
+    dict(name="leader line runs from the dot", on="s01open", sel=".leader",
+         props={"height": "1.5px"}),
+    dict(name="open structure numeral well", on="s01open",
+         sel=".structchip.is-open .structchip__num",
+         props={"background-color": "#A93411", "color": "#FFFDF8"}),
+    dict(name="open hotspot inverts to cream", on="s01open",
+         sel='.hotspot[data-state="open"]',
+         props={"background-color": "#FBF3E6", "color": "#1A1714",
+                "width": "38px"}),
     dict(name="tool rail", on="s01", sel=".rail",
          props={"width": "48px", "border-top-left-radius": "15px"}),
     dict(name="active tool is accent", on="s01", sel=".railbtn.is-active",
@@ -504,6 +527,30 @@ window.__st = {
     var blocks = document.querySelectorAll('.facts');
     return blocks.length ? blocks[0].querySelectorAll('.fact').length : 0;
   },
+  /** Every edge of `sel` inside every edge of `within`, in px overflow.
+   *  The clipping defect MRB-187 found — a callout placed at dot + 90px
+   *  unconditionally, which fell off the stage the moment real geometry put a
+   *  dot near the right edge — is invisible to every count and every colour
+   *  in this file, and was only caught by driving the app by hand. */
+  overflow: function (sel, within) {
+    var a = document.querySelector(sel);
+    var b = document.querySelector(within);
+    if (!a || !b) { return null; }
+    var r = a.getBoundingClientRect();
+    var s = b.getBoundingClientRect();
+    return {
+      left: Math.max(0, s.left - r.left),
+      top: Math.max(0, s.top - r.top),
+      right: Math.max(0, r.right - s.right),
+      bottom: Math.max(0, r.bottom - s.bottom)
+    };
+  },
+  rect: function (sel) {
+    var el = document.querySelector(sel);
+    if (!el) { return null; }
+    var r = el.getBoundingClientRect();
+    return { x: r.x, y: r.y, w: r.width, h: r.height };
+  },
   order: function (parent, sels) {
     var p = document.querySelector(parent);
     if (!p) { return null; }
@@ -655,6 +702,57 @@ def check_structure(page, screen, counts):
         need(".panel__foot .btn--outline")
         need(".panel__foot .btn--primary")
 
+    elif screen == "s01narrow":
+        # The same open callout on the NARROWEST desktop the layout supports.
+        # The reference's 232 / fluid / 372 grid leaves a 308px stage at 1024,
+        # so a 216px card placed at dot + 90px unconditionally — what Stage 1
+        # did, and what MRB-187 found by hand — runs off the edge. At 1440 the
+        # stage is 724px and the same defect fits on screen, which is why this
+        # screen exists at all.
+        need(".callout", 1)
+        # No leader here, and that is correct: with neither side able to take
+        # the card it is pinned to the stage's right edge, and a leader to a
+        # card that is not beside the dot would be a line to nowhere.
+        over = page.eval("window.__st.overflow('.callout', '.stage')")
+        if not over:
+            p.append("s01narrow: could not measure the callout against the stage")
+        elif any(v > 0.5 for v in over.values()):
+            p.append("s01narrow: the callout hangs off the stage by %r — a "
+                     "label clipped at the stage edge is a label the student "
+                     "cannot read" % {k: round(v) for k, v in over.items() if v > 0.5})
+        # and it still clears the tool rail rather than burying it
+        rail = page.eval("window.__st.rect('.rail')")
+        card = page.eval("window.__st.rect('.callout')")
+        if rail and card and card["x"] < rail["x"] + rail["w"]:
+            p.append("s01narrow: the callout (x=%.0f) overlaps the tool rail "
+                     "(ends at %.0f)" % (card["x"], rail["x"] + rail["w"]))
+
+    elif screen == "s01open":
+        # §01 OPEN LABEL: "Dot grows to 38px and inverts to cream fill. One
+        # callout at a time; leader line keeps the link explicit."
+        need(".callout", 1, "one callout at a time")
+        need(".callout__title")
+        need(".callout__detail")
+        need(".leader", 1, "the leader line keeps the link explicit")
+        need('.hotspot[data-state="open"]', 1)
+        need(".structchip.is-open", 1,
+             "the panel chip and the stage dot are one selection")
+        # the panel heading and the callout title are the same string from the
+        # same field (spec §3.2) — this is the liver/lungs/"Hepar" defect
+        chip = page.eval("window.__st.text('.structchip.is-open .structchip__label')")
+        title = page.eval("window.__st.text('.callout__title')")
+        if chip != title:
+            p.append("s01open: the panel chip says %r and the callout says %r "
+                     "— two lookups of one field" % (chip, title))
+        # AND it stays on the stage. The defect this screen exists for.
+        over = page.eval("window.__st.overflow('.callout', '.stage')")
+        if not over:
+            p.append("s01open: could not measure the callout against the stage")
+        elif any(v > 0.5 for v in over.values()):
+            p.append("s01open: the callout hangs off the stage by %r — a label "
+                     "clipped at the stage edge is a label the student cannot "
+                     "read" % {k: round(v) for k, v in over.items() if v > 0.5})
+
     elif screen == "s02":
         # §02: the room inverts — library removed, not dimmed
         absent(".library", "library is removed in retrieval")
@@ -795,7 +893,8 @@ def check_structure(page, screen, counts):
 
 # ── the driver ───────────────────────────────────────────────────────────
 
-SCREENS = ["s01", "s02", "s04", "s04drawer", "s05", "s05raised", "s05lib", "s06"]
+SCREENS = ["s01", "s01open", "s01narrow", "s02", "s04", "s04drawer", "s05",
+           "s05raised", "s05lib", "s06"]
 
 
 def _sanity(page, screen, tokens):
@@ -916,6 +1015,30 @@ def run_browser_layers(url, tokens, counts):
             page.eval(_JS + "window.__st.click('.modeseg button:nth-child(2)')")
             _settle(page)
             visit(page, "s02")
+
+        # §01 with a structure open. Driven through the panel's own structure
+        # chip, because that is the path a student takes and the only one that
+        # puts BOTH the chip and the stage dot into their open state from one
+        # action. Carried forward from Stage 2: the harness never opened a
+        # callout, which is how a clipping defect survived it.
+        page.set_viewport(1440, 900)
+        page.goto(url)
+        page.eval(_JS + "true")
+        _await_stage(page)
+        page.eval(_JS + "window.__st.click('.structchip')")
+        _settle(page)
+        visit(page, "s01open")
+
+        # And again at the NARROWEST desktop the layout supports (1024, where
+        # §04's landscape note says the three-column layout returns), which is
+        # where the clipping actually bites. See the screen's own note.
+        page.set_viewport(1024, 900)
+        page.goto(url)
+        page.eval(_JS + "true")
+        _await_stage(page)
+        page.eval(_JS + "window.__st.click('.structchip')")
+        _settle(page)
+        visit(page, "s01narrow")
 
         # §04 tablet — fresh navigation at the tablet width
         page.set_viewport(834, 1042)
