@@ -121,7 +121,8 @@ class MeshRenderer implements Renderer {
 
     const root = this.root
     const host = this.host
-    if (!root) return
+    // Already on its way out: one teardown is enough.
+    if (!root || this.teardown !== null) return
     // Deferred for the reason above, and because React forbids unmounting a
     // root while another root is rendering — which is exactly where the
     // shell's effect cleanup calls us from.

@@ -310,6 +310,11 @@ function Framing({ bridge, view }: { bridge: SceneBridge; view: DefaultView }) {
     if (controls) {
       controls.target.copy(view.target)
       controls.update()
+      // Make THIS the state OrbitControls returns to. Without it, reset()
+      // restores wherever the camera happened to be when the controls were
+      // constructed — before the specimen had loaded and anything had been
+      // framed.
+      controls.saveState()
     }
     bridge.view = view
   }, [bridge, camera, controls, view])
