@@ -139,7 +139,7 @@ system**, not a new platform.
 ```
 Discipline        biology | chemistry | physics          (3)
   └── Unit        a teachable sequence, 3–9 lessons      (33)
-        └── Lesson  THE ATOM — one page, one idea        (185)
+        └── Lesson  THE ATOM — one page, one idea        (183)
 ```
 
 Three levels, deliberately. The statutory document has an inconsistent two-level structure
@@ -321,7 +321,7 @@ structure.
 #### 4.5.1 Half term joins year as sequence metadata ⊕
 
 > ✅ **AMENDED 2026-08-06 on Mide's ruling (MRB-176 ruling 2).** The published default sequence gains
-> **half-term placement**: every one of the 185 lesson slots carries `(year, half_term)` where
+> **half-term placement**: every one of the 183 lesson slots carries `(year, half_term)` where
 > `half_term` is 1–6, Autumn First Half through Summer Second Half.
 
 `half_term` is **exactly as soft as `typical_year`, and is bound by the same invariant.** Everything
@@ -1064,13 +1064,13 @@ data change. `F` = architecture family. Lesson counts are
 indicative; the authoring team may merge or split within a unit provided statutory coverage stays
 exactly-once (§4.4). Units marked **⇄** contain a lesson owned by another discipline (§4.6).
 
-**Totals: 33 units, 185 lessons** (Biology 11/60, Chemistry 10/55, Physics 12/70).
+**Totals: 33 units, 183 lessons** (Biology 11/58, Chemistry 10/55, Physics 12/70).
 
 **As a default sequence, that distributes as:**
 
 | Year | Units | Lessons |
 |---|---|---|
-| Y7 | 9 | 55 |
+| Y7 | 9 | 53 |
 | Y8 | 13 | 79 |
 | Y9 | 11 | 51 |
 
@@ -1085,11 +1085,11 @@ roughly 60 lessons per year group, against the 100–120 science lessons a typic
 teaches per year, so it is a lean curriculum, not a bloated one. It is nonetheless the single
 biggest number in this document and it drives the build-order question in §11 decision 8.
 
-### 7.1 Biology — 11 units, 60 lessons
+### 7.1 Biology — 11 units, 58 lessons
 
 | Unit | Statutory area | Y | Lessons |
 |---|---|---|---|
-| **B1 Cells and organisation** | Structure and function of living organisms | 7 | Life processes and what living things are made of *(CLASSIFY)* · Using a microscope *(INVESTIGATION)* · Animal and plant cells *(MODEL)* · Specialised cells *(SYSTEM)* · Levels of organisation *(SYSTEM)* · Unicellular organisms *(CONTRAST)* · Stem cells and meristems *(PROCESS)* · Enzymes and what changes their rate *(MODEL)* |
+| **B1 Cells and organisation** | Structure and function of living organisms | 7 | Life processes and what living things are made of *(CLASSIFY)* · Using a microscope *(INVESTIGATION)* · Animal and plant cells *(MODEL)* · Specialised cells *(SYSTEM)* · Levels of organisation *(SYSTEM)* · Unicellular organisms *(CONTRAST)* |
 | **B2 Movement: skeleton and muscles** | Structure and function | 7 | What the skeleton does *(SYSTEM)* · Joints *(MODEL)* · Antagonistic muscle pairs *(SYSTEM)* · Biomechanics: forces in the body *(QUANTITATIVE)* ⇄ *requires P4 Forces* |
 | **B3 Nutrition and digestion** | Structure and function | 7 | A balanced diet *(CLASSIFY)* · Food tests *(INVESTIGATION)* · Energy in food and what you need *(QUANTITATIVE)* ⇄ *shares statements with P2* · When diet goes wrong *(CONTRAST)* · The digestive system *(SYSTEM)* · Enzymes in digestion *(PROCESS)* · Absorption and the small intestine *(MODEL)* · Bacteria in the gut *(SYSTEM)* |
 | **B4 Breathing and gas exchange** | Structure and function | 8 | The gas exchange system *(SYSTEM)* · How breathing works *(MODEL)* ⇄ *requires P5 Pressure* · Alveoli: built for exchange *(MODEL)* · Exercise, asthma and smoking *(SYSTEM)* · Stomata and gas exchange in plants *(CONTRAST)* |
@@ -1177,7 +1177,7 @@ right; the prose was one short.*
 
 *Added 2026-07-26 on Mide's instruction, alongside the default-sequence reversal. This settles the
 Phase 3 question left open by §11 conflict 1g — **whether** Year 9 gets a bridge group, and **what
-is in it**. Authoring stays deferred; nothing here is in `ks3_data/structure.py`, and the 185-lesson
+is in it**. Authoring stays deferred; nothing here is in `ks3_data/structure.py`, and the 183-lesson
 scope of §7 is unchanged by it.*
 
 **The problem the default has to solve.** A published default sequence has to serve two real shapes
@@ -1369,7 +1369,7 @@ failures with no obvious cause.
 
 #### What this costs, stated plainly
 
-- **+15 lessons, taking the full commitment from 185 to 200.** That is a real scope increase and it
+- **+15 lessons, taking the full commitment from 183 to 198.** That is a real scope increase and it
   is recorded here rather than absorbed. It is also the smallest honest version: four candidates
   came from MRB-103 and eleven were needed to make three teachable units rather than three
   fragments. **Ruling 1 did not change the count** — it moved two candidates from core lessons into
@@ -1496,7 +1496,7 @@ ks3_data/
 Each module exports a single `UNIT` dict: `{code, slug, title, discipline, statutory_area,
 split_rationale, lessons: [<lesson records per §4.8>]}`.
 
-**Why not the KS4 pattern:** ~185 lessons across three files would be unreviewable, unmergeable, and
+**Why not the KS4 pattern:** ~183 lessons across three files would be unreviewable, unmergeable, and
 impossible to gate. One module per unit matches the release increment (§4.3) and the review gate
 (§5.10) — a unit is authored, reviewed, frozen and shipped as one file.
 
@@ -1755,7 +1755,7 @@ schemes, one entry per school. Adding a school is adding a dict key.
 
 **Two divergent real schemes over identical lessons is the demonstration this architecture wants.**
 One school's scheme can be mistaken for the shape of the curriculum. Two that disagree — over the
-same 185 lessons, the same slugs, the same pages, with zero content difference between them — cannot
+same 183 lessons, the same slugs, the same pages, with zero content difference between them — cannot
 be. **Westleigh's map is the second seed and is outstanding from Mide** (requested 2026-07-26); the
 slot for it is already in `school_schemes.py`.
 
@@ -1913,7 +1913,7 @@ authoring commitment.
 > a complete, usable year early. The original reasoning (chemistry's shared ideas first) is preserved
 > *within* each year: C1 is still first overall, and chemistry still leads its year band.
 >
-> **Structure-first applies from Phase 1.** All 33 units and 185 lesson slots exist as routable
+> **Structure-first applies from Phase 1.** All 33 units and 183 lesson slots exist as routable
 > structure from the slice onward; unauthored lessons render an honest "coming soon" state and are
 > never broken links. The build order above is an **authoring** order, not a structure order.
 
@@ -2086,7 +2086,7 @@ need re-authoring, not just extending, since Law 3 changes what activities a les
 > MRB-103's deferral to v2 is rejected on two grounds, both already on the table:
 >
 > 1. **Deferring costs more, not less.** Law 3 changes what *activities* a lesson contains, so
->    lessons authored without misconceptions would need **re-authoring, not extending** — 185 of
+>    lessons authored without misconceptions would need **re-authoring, not extending** — 183 of
 >    them. The apparent saving is a debt taken out at the worst possible interest rate.
 > 2. **It is the stated reason KS3 is not KS4 with easier words** (§1). Deferring the misconception
 >    layer defers the entire thesis of this document; what shipped in the meantime would be exactly
@@ -2425,7 +2425,7 @@ measure it, with technical vocabulary excluded from the measure.
 > terms are carried deliberately, so counting them as difficulty would penalise doing Law 7 properly.
 > **Decision closed.**
 
-**8. Authoring capacity and scope.** **185 lessons** is a large commitment — larger than anything
+**8. Authoring capacity and scope.** **183 lessons** is a large commitment — larger than anything
 attempted at KS4 so far — and §10.1 assumes it happens over many months. There is a real alternative:
 build **Year 7 across all three disciplines** first (a "first year, whole curriculum" cut, roughly 60
 lessons) rather than "all of chemistry". That gives a pilot school something completely usable for a
@@ -2434,7 +2434,7 @@ of content. **Recommendation:** this is a product and commercial call, not an ar
 architecture supports either. If schools are waiting, take the Year 7 cut. If the priority is getting
 the architecture right, take the §10.1 order. Either way, C1 is still the first unit built (§9).
 
-> ✅ **RULED by Mide, 2026-07-26. FULL BUILD.** All **33 units, 185 lessons**, three disciplines, the
+> ✅ **RULED by Mide, 2026-07-26. FULL BUILD.** All **33 units, 183 lessons**, three disciplines, the
 > whole programme of study. The Year-7-first cut is **not** taken as a scope reduction — but its
 > insight is kept, as an *authoring order*:
 >
@@ -2476,13 +2476,13 @@ anything, but anchor to KS3 language and flag when something is "something you'l
 Build-blocking for the slice, because it decides what `covers` means on lesson one.)*
 
 The transcription in `docs/ks3/statutory-register.md` counts **137 subject-content statements**. §7
-specifies **185 lessons**. Two rules in this document then cannot both hold:
+specifies **183 lessons**. Two rules in this document then cannot both hold:
 
 - **§4.4 rule 3** — every statement is owned by **exactly one** lesson.
 - **§10.2** — every lesson has **`covers` non-empty**.
 
-Under both, at least **48 lessons must own nothing**, which §10.2 forbids. The register's coverage
-appendix shows this is not a rounding problem: **26 of 33 units** have more lessons than statements.
+Under both, at least **46 lessons must own nothing**, which §10.2 forbids. The register's coverage
+appendix shows this is not a rounding problem: **25 of 33 units** have more lessons than statements.
 The extremes are C5 *Types of reaction* (5 lessons, 1 statement — the whole unit hangs off
 `KS3.C.CR.03`), B5 *Reproduction* (8 lessons, 2 statements) and B6 *Health and drugs* (3 lessons,
 1 statement). The cause is structural, not sloppy: the statutory bullets are **compound**.
@@ -2615,3 +2615,5 @@ This document is law. Changing it changes what gets built.
 | 2026-08-09 | ⊕ **New: the MRB-183 parity gate — "exactly what Design did" becomes checkable.** Design's four artifacts are frozen verbatim in `docs/ks3/design-reference/` with their md5s recorded, and `docs/ks3/design-reference/SPEC.md` is the transcription the build is written against. Because the artifacts are React prototypes with **zero CSS classes** and one hardcoded lesson, a byte diff is impossible and a DOM diff would need a hand-written node-to-selector mapping — so `verify_ks3.py` gates four layers instead: **(A) provenance** — every colour the KS3 token block declares must appear literally in a frozen artifact, which makes the expectation table self-policing and catches an invented or one-digit-drifted hex (43/43 pass; mutation-tested to prove it is not vacuous); **(B) structure** — R3, R12, R13, R14, R15 and the drawn-mark rule asserted against the built tree; **(C) computed style** — 33 components loaded from real generated pages in headless Chrome, resolved colour/background/border/radius/font/padding compared to Design's values, colours exact and lengths within 1px; **(D) contrast** — every KS3 text/ground pair re-measured against the **resolved** ground, walking up the tree for the effective background, at 4.5:1 for body text and 3:1 for identifying and state-bearing marks. C and D **degrade to a manual item** when Chrome is absent rather than printing PASS, because a skipped gate reporting success is worse than no gate. What the gate cannot catch is documented in `ks3_parity.py`'s docstring rather than left to be discovered: layout and composition, the hook's bespoke marshmallow artwork (hand-built for one lesson from 12 positioned drifting spans — artwork, not a generator component, and not faked), the ladder's superseded behaviour, and any viewport Design did not draw. `ks3_browser.py` is a stdlib-only headless-Chrome harness; its narrow-viewport method is load-bearing and verified, because headless floors the window at ~500px and a `--window-size=390` run lays out at 500 while cropping to 390. | Claude (Opus 5) |
 | 2026-08-09 | ⛔ **§8's brand rule REVERSED — KS3 takes Claude Design's mark. RULED by Mide, closing MRB-197.** One bold `#E4572E` chevron plus the Bricolage Grotesque 800 wordmark, exactly as drawn in the frozen reference's header; the KS4 gold-to-rust two-chevron mark stays mandatory on every other external page. Superseded ruling kept in place at §8 per §12's reversal rule — it was this document's own initial line, inherited from `CLAUDE.md` before Design drew the KS3 world. Same key-stage split already ruled for the palette (MRB-183). `CLAUDE.md`'s brand rule amended to three presentations. Enforced by the parity gate: a layer C pin on the wordmark and two new layer D pairs — wordmark at 4.5:1, chevron at 3:1 as an identifying mark — both measured against the resolved nav ground. | Claude (Fable 5) |
 | 2026-08-09 | **R9 collapsed in the data.** Claude Design's R9 observed that `predict-then-reveal` carried an identical key set to `predict` and rendered identically — an authoring label masquerading as a component. Collapsed in `ks3_data` as R9 recommends, rather than special-cased in the stylesheet. One instance, no rendering change, one fewer kind for a renderer to know about. **R10 (per-option feedback on activities) and R17 (a stepper for PROCESS lessons) are NOT done** — both are flagged for Mide on Design's own classification, R10 because it changes what an activity is and R17 because it changes the block sequence. | Claude (Opus 5) |
+| 2026-08-12 | **MRB-199 ruled by Mide as examiner: B1 drops to six lessons, and neither departing slot becomes a bridge row.** `stem-cells-and-meristems` and `enzymes-and-rate` were declared as B1 slots at Phase 1 and had no statutory statement to own — the CELLS strand is six statements and B1 was carrying eight lessons, so the two were beyond-statutory by accident rather than by declaration. Both removed from `ks3_data/structure.py`. **Stem cells** becomes a Year 9 GCSE-bridge candidate when §7.6's units exist. **Enzymes already had a statutory home, and it was never B1**: `KS3.B.NUT.04` covers "the tissues and organs of the human digestive system... **(enzymes simply as biological catalysts)**" and B3 Nutrition and digestion already declares `enzymes-in-digestion` to own it. **No slot was carried across** — moving one would have given B3 two enzyme lessons and put the statutory one into competition for its own statement, recreating the defect this ruling closes. An enzyme lesson in a digestion context is a different lesson and gets planned fresh under MRB-205. **`bridge-register.md` was deliberately NOT created**: no KS3 lesson is beyond-statutory any more, and §7.6's register waits for the bridge unit that mandates it. Every piece of the `beyond_statutory` machinery is kept — it is correct, it is what made this finding legible, and the bridge unit will exercise it. Totals move 185 → **183** lesson slots (182 distinct slugs), Biology 60 → **58**. B1's coverage ratio goes 6 statements / 8 lessons `0.75 ⚠️` → 6/6 **1.00**, the first unit in the register to sit exactly 1:1. | Claude (Opus 5) |
+| 2026-08-12 | **MRB-202 investigated on main and answered with evidence: the ladder was never wrong, and the reported defect is R3 working as Design specified.** Driven in headless Chrome against main's published C1, measuring after transitions settle rather than during them. **The mastery ladder is correct and always has been** — correct `--ks3-ok-tint` on `--ks3-ok` with a drawn ✓, wrong `--ks3-band` on `--ks3-ink` with a drawn ✕, spent `--ks3-row-dim`, matching SPEC.md §5's table on every one of its four rows. **The surface Mide saw is the activity block**, where a chosen option takes `--ks3-accent-tint` and an accent badge above an accent-bordered reveal — identically whether the student was right or wrong. That is **not new to `feat/ks3-instruments` and not a Code defect**: it is SPEC.md's rule R3, *"Activity buttons never mark correctness... green and red must not appear on an activity button"*, rendered faithfully, and it has been live on C1's six lessons since the MRB-183 merge. Reversing it is Design's **R10**, already flagged for Mide on 2026-08-09 and still unruled, so **no rendering was changed** in this amendment. **What was fixed is the gate.** Option-button states were unregistered, which is why 116 green assertions had nothing to say about the state a student actually looks at. Layers C and D gain the ability to **drive** a page into a state before measuring (`DRIVES`, one fresh page load each, transitions cancelled so the measurement is deterministic rather than usually-long-enough); all four ladder states, both activity states and both ink-dark states are registered with computed-style and contrast assertions; R3 is promoted from a proxy (`data-correct` appears only inside the ladder) to a direct runtime assertion that presses every activity option and requires identical resolved colours and no marking colour; and the whole thing is mutation-tested — repainting a correct answer in the accent must fail the gate naming the component, and does. Gate goes 34 → **51** components, 39 → **55** contrast pairs, 116 → **136** style assertions. One contrast pair, the spent option's badge glyph at 2.63:1, is recorded as WCAG 1.4.3 exempt **conditionally** — the gate proves the control is really disabled, so the exemption fails the day spent options become clickable. | Claude (Opus 5) |

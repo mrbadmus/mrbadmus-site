@@ -1,4 +1,4 @@
-"""KS3 structure — all 33 units, all 185 lesson slots.
+"""KS3 structure — all 33 units, all 183 lesson slots.
 
 **Structure-first** (architecture.md §11 decision 8, ruled FULL BUILD 2026-07-26):
 
@@ -39,7 +39,7 @@ point at slugs.
 # `split_rationale` is carried for units split from one statutory heading (§4.3).
 
 UNITS = [
-    # ── Biology — 11 units, 60 lessons ──────────────────────────────────
+    # ── Biology — 11 units, 58 lessons ──────────────────────────────────
     ("B1", "cells-and-organisation", "Cells and organisation", "biology",
      "Structure and function of living organisms", 7, [
         ("life-processes", "Life processes and what living things are made of", "CLASSIFY"),
@@ -48,8 +48,23 @@ UNITS = [
         ("specialised-cells", "Specialised cells", "SYSTEM"),
         ("levels-of-organisation", "Levels of organisation", "SYSTEM"),
         ("unicellular-organisms", "Unicellular organisms", "CONTRAST"),
-        ("stem-cells-and-meristems", "Stem cells and meristems", "PROCESS"),
-        ("enzymes-and-rate", "Enzymes and what changes their rate", "MODEL"),
+        # ⊖ `stem-cells-and-meristems` and `enzymes-and-rate` were declared here
+        #   at Phase 1 and removed on 2026-08-12 (MRB-199), ruled by Mide as
+        #   examiner. Neither had a statutory statement to own: the CELLS strand
+        #   is six statements and B1 was carrying eight lessons, so the two
+        #   surplus slots were beyond-statutory by accident rather than by
+        #   declaration. §7.6's exemption is built for the Year 9 GCSE bridge,
+        #   not for a Year 7 statutory unit, so exempting them here would have
+        #   opened a register that has no unit to hold it yet.
+        #
+        #   Stem cells becomes a Year 9 bridge candidate when §7.6's units
+        #   exist. Enzymes has a statutory home already and it is not in B1 —
+        #   `KS3.B.NUT.04` covers "enzymes simply as biological catalysts"
+        #   under Nutrition and digestion, and B3 already declares
+        #   `enzymes-in-digestion` to own it. No slot was moved across, because
+        #   moving one would have given B3 two enzyme lessons and put the
+        #   statutory one back into competition for its own statement.
+        #   B1 is now six lessons for six statements — exactly 1:1.
      ]),
     ("B2", "movement-skeleton-and-muscles", "Movement: skeleton and muscles", "biology",
      "Structure and function of living organisms", 7, [

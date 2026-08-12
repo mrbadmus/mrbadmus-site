@@ -528,7 +528,7 @@ def main():
     # placement cannot even load. That is not a substitute for a gate: an
     # import assertion proves the module is self-consistent, and these checks
     # prove it is consistent with the curriculum the rest of the build sees —
-    # the 185 slots build_units() actually produced, and the authored `requires`
+    # the 183 slots build_units() actually produced, and the authored `requires`
     # edges the module deliberately cannot read (circular import).
     #
     # Everything here is recomputed rather than delegated back to the module's
@@ -774,12 +774,29 @@ def main():
               else "%d of %d assertions failed" % (len(css_fails),
                                                    len(style_rows)))
         cfails = [r for r in contrast_rows if not r[5]]
-        worst = min((r[3] for r in contrast_rows), default=0)
+        # "worst" must mean the worst pair that had to CLEAR its bar. Letting a
+        # WCAG-exempt row own that number reports the gate as weaker than it is
+        # and buries the exemption in a headline nobody reads twice.
+        held = [r for r in contrast_rows if "[exempt:" not in r[0]]
+        exempt = [r for r in contrast_rows if "[exempt:" in r[0]]
+        worst = min((r[3] for r in held), default=0)
+        detail = "%d pairs, worst %.2f:1" % (len(contrast_rows), worst)
+        if exempt:
+            detail += " (+%d WCAG-exempt: %s)" % (
+                len(exempt), ", ".join("%s %.2f:1" % (r[0].split(" [")[0], r[3])
+                                       for r in exempt))
         check("D · every KS3 contrast pair re-measured against real grounds",
-              not cfails,
-              "%d pairs, worst %.2f:1" % (len(contrast_rows), worst)
-              if not cfails else
+              not cfails, detail if not cfails else
               "%d FAIL: %s" % (len(cfails), ", ".join(r[0] for r in cfails[:3])))
+
+        # MRB-202. The correct-answer state passing above only means something
+        # if it is capable of failing, and for a whole release it was not —
+        # the state was unregistered, so nothing compared it to anything. This
+        # repaints a correct answer in the accent, exactly as the defect did,
+        # and requires the gate to catch it and name the component.
+        caught, mdetail = PARITY.mutation_test_correct_state(KS3_OUT, ks3_browser)
+        check("C · a correct answer repainted in the accent FAILS the gate "
+              "(mutation)", caught, mdetail)
 
         # The measured table is printed whether or not it passes — a number
         # nobody can see is a number nobody re-checks.

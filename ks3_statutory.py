@@ -510,7 +510,7 @@ TRANSCRIPTION_SHA256 = (
 # Lesson counts per unit as published in architecture.md §7. Used only by the
 # coverage audit, which compares statutory supply against authoring demand.
 SECTION7_LESSON_COUNTS = {
-    "B1": 8, "B2": 4, "B3": 8, "B4": 5, "B5": 8, "B6": 3, "B7": 4, "B8": 5,
+    "B1": 6, "B2": 4, "B3": 8, "B4": 5, "B5": 8, "B6": 3, "B7": 4, "B8": 5,
     "B9": 6, "B10": 5, "B11": 4,
     "C1": 6, "C2": 6, "C3": 7, "C4": 5, "C5": 5, "C6": 7, "C7": 4, "C8": 5,
     "C9": 4, "C10": 6,
