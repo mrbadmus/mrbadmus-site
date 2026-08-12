@@ -159,10 +159,19 @@ export default function App({
 
       {mode === 'retrieve' && <div className="hatch" aria-hidden="true" />}
 
+      {/* The keys are load-bearing (MRB-187). Without them React matches these
+          children by position, so entering the retrieval room — where the
+          library is removed and the stage becomes the first child — remounts
+          the stage, which destroys and rebuilds the WebGL context and reloads
+          the specimen on every mode toggle. Keyed, the stage survives the
+          switch: the specimen stays loaded and the camera keeps the view the
+          student had turned it to, which is what "rotate freely, labels return
+          after the round" implies. */}
       {mode === 'retrieve' ? (
         <main className="main main--retrieve">
-          <div className="stagewrap">{stage}</div>
+          <div className="stagewrap" key="stage">{stage}</div>
           <RetrievalPanel
+            key="side"
             specimen={specimen}
             targetIndex={0}
             roundSize={Math.max(retrievable.length, 1)}
@@ -170,7 +179,7 @@ export default function App({
         </main>
       ) : layout === 'phone' ? (
         <main className="main">
-          <div className="stagewrap" style={{ flex: 1, position: 'relative' }}>
+          <div className="stagewrap" key="stage" style={{ flex: 1, position: 'relative' }}>
             {stage}
             <PhoneSheet
               specimen={specimen}
@@ -184,8 +193,9 @@ export default function App({
         </main>
       ) : layout === 'tablet' ? (
         <main className="main">
-          <div className="stagewrap">{stage}</div>
+          <div className="stagewrap" key="stage">{stage}</div>
           <TabletPanel
+            key="side"
             specimen={specimen}
             openHotspotId={openHotspotId}
             onOpenHotspot={setOpenHotspotId}
@@ -194,9 +204,10 @@ export default function App({
         </main>
       ) : (
         <main className="main main--explore">
-          <LibraryColumn selectedId={specimenId} onSelect={selectSpecimen} />
-          <div className="stagewrap">{stage}</div>
+          <LibraryColumn key="library" selectedId={specimenId} onSelect={selectSpecimen} />
+          <div className="stagewrap" key="stage">{stage}</div>
           <InfoPanel
+            key="side"
             specimen={specimen}
             openHotspotId={openHotspotId}
             onOpenHotspot={setOpenHotspotId}

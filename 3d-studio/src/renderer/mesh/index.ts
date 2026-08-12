@@ -53,6 +53,9 @@ class MeshRenderer implements Renderer {
   /** the element React owns — ours, not the shell's */
   private host: HTMLDivElement | null = null
   private teardown: ReturnType<typeof setTimeout> | null = null
+  /** bumped on every fresh mount, so a deferred teardown can tell whether the
+   * instance state is still the one it was scheduled for */
+  private generation = 0
   private bridge: SceneBridge = createBridge()
 
   private status: RendererStatus = { state: 'idle' }
@@ -100,6 +103,7 @@ class MeshRenderer implements Renderer {
     host.style.inset = '0'
     container.appendChild(host)
 
+    this.generation += 1
     this.container = container
     this.rootContainer = container
     this.host = host
@@ -126,8 +130,17 @@ class MeshRenderer implements Renderer {
     // Deferred for the reason above, and because React forbids unmounting a
     // root while another root is rendering — which is exactly where the
     // shell's effect cleanup calls us from.
+    const generation = this.generation
     this.teardown = setTimeout(() => {
       this.teardown = null
+      root.unmount()
+      host?.remove()
+      // The shell may have re-mounted us into a DIFFERENT container in the
+      // meantime — switching mode remounts the stage — in which case this
+      // teardown owns the root it just disposed of and nothing else. Touching
+      // the instance state here would wipe the live mount's model, anchors and
+      // canvas out from under it.
+      if (this.generation !== generation) return
       this.root = null
       this.rootContainer = null
       this.host = null
@@ -135,8 +148,6 @@ class MeshRenderer implements Renderer {
       this.bridge = createBridge()
       this.canvasReady = false
       this.rejectWaiters(new Error('renderer unmounted'))
-      root.unmount()
-      host?.remove()
     }, 0)
   }
 
