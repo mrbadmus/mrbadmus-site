@@ -37,17 +37,17 @@
 --
 -- Row counts, generated:
 --
---   Y7  Biology 20 · Chemistry 19 · Physics 16
+--   Y7  Biology 18 · Chemistry 19 · Physics 16
 --   Y8  Biology 22 · Chemistry 22 · Physics 35
 --   Y9  Biology 18 · Chemistry 14 · Physics 19
---   185 rows total, max academic_week 35 (ceiling 39)
+--   183 rows total, max academic_week 35 (ceiling 39)
 --
 -- Lessons per half term (HT1 … HT6), generated:
 --
---   Y7 Biology     4  4  3  3  3  3   (20)
+--   Y7 Biology     3  3  3  3  3  3   (18)
 --   Y7 Chemistry   4  2  4  2  4  3   (19)
 --   Y7 Physics     3  3  3  3  2  2   (16)
---   Y7 ALL        11  9 10  8  9  8   (55)
+--   Y7 ALL        10  8 10  8  9  8   (53)
 --   Y8 Biology     4  4  4  4  3  3   (22)
 --   Y8 Chemistry   4  4  4  4  3  3   (22)
 --   Y8 Physics     6  6  6  6  6  5   (35)
@@ -78,7 +78,7 @@ end $$;
 -- Idempotency: this file owns every KS3 row in the global table.
 delete from public.scheme_of_work_entries where key_stage = 'KS3';
 
--- ── Year 7 · Biology — 20 lessons ─────────────────────────
+-- ── Year 7 · Biology — 18 lessons ─────────────────────────
 insert into public.scheme_of_work_entries
   (key_stage, year_group, tier, pathway, subject_id, exam_board, academic_week, half_term, topic, subtopic, notes, active)
 values
@@ -86,25 +86,23 @@ values
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 1, 1, 'Cells and organisation', 'life-processes', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 2, 1, 'Cells and organisation', 'using-a-microscope', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 3, 1, 'Cells and organisation', 'animal-and-plant-cells', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 4, 1, 'Cells and organisation', 'specialised-cells', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 4, 2, 'Cells and organisation', 'specialised-cells', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 5, 2, 'Cells and organisation', 'levels-of-organisation', null, true),
   ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 6, 2, 'Cells and organisation', 'unicellular-organisms', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 7, 2, 'Cells and organisation', 'stem-cells-and-meristems', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 8, 2, 'Cells and organisation', 'enzymes-and-rate', null, true),
   -- B2 Movement: skeleton and muscles
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 9, 3, 'Movement: skeleton and muscles', 'what-the-skeleton-does', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 10, 3, 'Movement: skeleton and muscles', 'joints', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 11, 3, 'Movement: skeleton and muscles', 'antagonistic-muscle-pairs', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 12, 4, 'Movement: skeleton and muscles', 'biomechanics-forces-in-the-body', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 7, 3, 'Movement: skeleton and muscles', 'what-the-skeleton-does', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 8, 3, 'Movement: skeleton and muscles', 'joints', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 9, 3, 'Movement: skeleton and muscles', 'antagonistic-muscle-pairs', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 10, 4, 'Movement: skeleton and muscles', 'biomechanics-forces-in-the-body', null, true),
   -- B3 Nutrition and digestion
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 13, 4, 'Nutrition and digestion', 'a-balanced-diet', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 14, 4, 'Nutrition and digestion', 'food-tests', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 15, 5, 'Nutrition and digestion', 'energy-in-food', 'Cross-reference (architecture.md §4.6): this lesson is owned by P2 Energy at home (Physics) and is taught from there. Listed here because Nutrition and digestion teaches the slot, not because the content is duplicated.', true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 16, 5, 'Nutrition and digestion', 'when-diet-goes-wrong', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 17, 5, 'Nutrition and digestion', 'the-digestive-system', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 18, 6, 'Nutrition and digestion', 'enzymes-in-digestion', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 19, 6, 'Nutrition and digestion', 'absorption-and-the-small-intestine', null, true),
-  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 20, 6, 'Nutrition and digestion', 'bacteria-in-the-gut', null, true);
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 11, 4, 'Nutrition and digestion', 'a-balanced-diet', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 12, 4, 'Nutrition and digestion', 'food-tests', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 13, 5, 'Nutrition and digestion', 'energy-in-food', 'Cross-reference (architecture.md §4.6): this lesson is owned by P2 Energy at home (Physics) and is taught from there. Listed here because Nutrition and digestion teaches the slot, not because the content is duplicated.', true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 14, 5, 'Nutrition and digestion', 'when-diet-goes-wrong', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 15, 5, 'Nutrition and digestion', 'the-digestive-system', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 16, 6, 'Nutrition and digestion', 'enzymes-in-digestion', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 17, 6, 'Nutrition and digestion', 'absorption-and-the-small-intestine', null, true),
+  ('KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), null, 18, 6, 'Nutrition and digestion', 'bacteria-in-the-gut', null, true);
 
 -- ── Year 7 · Chemistry — 19 lessons ─────────────────────────
 insert into public.scheme_of_work_entries

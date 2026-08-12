@@ -29,7 +29,7 @@
 -- reorder to cost: rows in this table, and nothing else. No page
 -- path and no page byte depends on any of it.
 --
--- 1 school, 185 rows.
+-- 1 school, 183 rows.
 --
 -- ═══════════════════════════════════════════════════════════════════════
 
@@ -52,10 +52,10 @@ end $$;
 --
 -- Row counts, generated:
 --
---   Y7  Biology 28 · Chemistry 31 · Physics 33
+--   Y7  Biology 26 · Chemistry 31 · Physics 33
 --   Y8  Biology 29 · Chemistry 24 · Physics 37
 --   Y9  Biology 3
---   185 rows total, max academic_week 37 (ceiling 39)
+--   183 rows total, max academic_week 37 (ceiling 39)
 --
 -- ═══════════════════════════════════════════════════════════════════════
 
@@ -72,7 +72,7 @@ delete from public.scheme_of_work_overrides
  where key_stage = 'KS3'
    and school_id = (select id from public.schools where slug = 'rainford-high');
 
--- ── Year 7 · Biology — 28 lessons ─────────────────────────
+-- ── Year 7 · Biology — 26 lessons ─────────────────────────
 insert into public.scheme_of_work_overrides
   (school_id, key_stage, year_group, tier, pathway, subject_id, academic_week, topic, subtopic, notes)
 values
@@ -83,31 +83,29 @@ values
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 4, 'Cells and organisation', 'specialised-cells', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 5, 'Cells and organisation', 'levels-of-organisation', null),
   ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 6, 'Cells and organisation', 'unicellular-organisms', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 7, 'Cells and organisation', 'stem-cells-and-meristems', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 8, 'Cells and organisation', 'enzymes-and-rate', null),
   -- B2 Movement: skeleton and muscles
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 9, 'Movement: skeleton and muscles', 'what-the-skeleton-does', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 10, 'Movement: skeleton and muscles', 'joints', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 11, 'Movement: skeleton and muscles', 'antagonistic-muscle-pairs', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 12, 'Movement: skeleton and muscles', 'biomechanics-forces-in-the-body', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 7, 'Movement: skeleton and muscles', 'what-the-skeleton-does', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 8, 'Movement: skeleton and muscles', 'joints', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 9, 'Movement: skeleton and muscles', 'antagonistic-muscle-pairs', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 10, 'Movement: skeleton and muscles', 'biomechanics-forces-in-the-body', null),
   -- B3 Nutrition and digestion
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 13, 'Nutrition and digestion', 'a-balanced-diet', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 14, 'Nutrition and digestion', 'food-tests', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 15, 'Nutrition and digestion', 'energy-in-food', 'Cross-reference (architecture.md §4.6): this lesson is owned by P2 Energy at home (Physics) and is taught from there. Listed here because Nutrition and digestion teaches the slot, not because the content is duplicated.'),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 16, 'Nutrition and digestion', 'when-diet-goes-wrong', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 17, 'Nutrition and digestion', 'the-digestive-system', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 18, 'Nutrition and digestion', 'enzymes-in-digestion', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 19, 'Nutrition and digestion', 'absorption-and-the-small-intestine', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 20, 'Nutrition and digestion', 'bacteria-in-the-gut', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 11, 'Nutrition and digestion', 'a-balanced-diet', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 12, 'Nutrition and digestion', 'food-tests', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 13, 'Nutrition and digestion', 'energy-in-food', 'Cross-reference (architecture.md §4.6): this lesson is owned by P2 Energy at home (Physics) and is taught from there. Listed here because Nutrition and digestion teaches the slot, not because the content is duplicated.'),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 14, 'Nutrition and digestion', 'when-diet-goes-wrong', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 15, 'Nutrition and digestion', 'the-digestive-system', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 16, 'Nutrition and digestion', 'enzymes-in-digestion', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 17, 'Nutrition and digestion', 'absorption-and-the-small-intestine', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 18, 'Nutrition and digestion', 'bacteria-in-the-gut', null),
   -- B5 Reproduction
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 21, 'Reproduction', 'human-reproductive-systems', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 22, 'Reproduction', 'gametes-and-fertilisation', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 23, 'Reproduction', 'the-menstrual-cycle', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 24, 'Reproduction', 'gestation-placenta-and-birth', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 25, 'Reproduction', 'lifestyle-and-the-developing-foetus', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 26, 'Reproduction', 'flowers-and-pollination', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 27, 'Reproduction', 'fertilisation-seeds-and-fruit', null),
-  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 28, 'Reproduction', 'seed-dispersal', null);
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 19, 'Reproduction', 'human-reproductive-systems', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 20, 'Reproduction', 'gametes-and-fertilisation', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 21, 'Reproduction', 'the-menstrual-cycle', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 22, 'Reproduction', 'gestation-placenta-and-birth', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 23, 'Reproduction', 'lifestyle-and-the-developing-foetus', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 24, 'Reproduction', 'flowers-and-pollination', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 25, 'Reproduction', 'fertilisation-seeds-and-fruit', null),
+  ((select id from public.schools where slug = 'rainford-high'), 'KS3', 7, null, null, (select id from public.subjects where name = 'Biology'), 26, 'Reproduction', 'seed-dispersal', null);
 
 -- ── Year 7 · Chemistry — 31 lessons ─────────────────────────
 insert into public.scheme_of_work_overrides
