@@ -56,6 +56,9 @@ if (MESH_STANDIN) {
 export default defineConfig({
   base: BASE,
   plugins: [react()],
+  // drei reaches three through three-stdlib; two copies of three in one
+  // bundle break every instanceof check inside it.
+  resolve: { dedupe: ['three'] },
   define: {
     __MESH_STANDIN__: JSON.stringify(MESH_STANDIN),
   },

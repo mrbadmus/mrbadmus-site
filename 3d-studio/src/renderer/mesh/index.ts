@@ -47,6 +47,12 @@ class MeshRenderer implements Renderer {
 
   private container: HTMLElement | null = null
   private root: Root | null = null
+  /** the shell container the React root's host sits in; outlives a scheduled
+   * teardown */
+  private rootContainer: HTMLElement | null = null
+  /** the element React owns — ours, not the shell's */
+  private host: HTMLDivElement | null = null
+  private teardown: ReturnType<typeof setTimeout> | null = null
   private bridge: SceneBridge = createBridge()
 
   private status: RendererStatus = { state: 'idle' }
@@ -69,34 +75,68 @@ class MeshRenderer implements Renderer {
   private canvasWaiters: Array<{ resolve: () => void; reject: (e: Error) => void }> = []
 
   mount(container: HTMLElement): void {
+    // React StrictMode mounts, unmounts and remounts every effect in
+    // development. Throwing away a WebGL context and a React root on that
+    // rehearsal — then building both again — is waste at best, and at worst
+    // two roots fighting over one container. So unmount SCHEDULES the
+    // teardown and a remount of the same container cancels it.
+    if (this.teardown !== null && this.rootContainer === container && this.host?.isConnected) {
+      clearTimeout(this.teardown)
+      this.teardown = null
+      this.container = container
+      this.stamp()
+      this.renderScene()
+      return
+    }
+
+    // React renders into a host of our own, never straight into the shell's
+    // container. Unmounting a React root clears its container's children, and
+    // on the failure route the flat renderer has already drawn into that
+    // container by the time our teardown runs — this keeps the two from
+    // wiping each other.
+    const host = document.createElement('div')
+    host.className = 'mesh-host'
+    host.style.position = 'absolute'
+    host.style.inset = '0'
+    container.appendChild(host)
+
     this.container = container
-    container.dataset.renderer = 'mesh'
-    container.dataset.tier = this.tier
-    container.dataset.state = this.status.state
-    if (isStandIn()) container.dataset.specimenSource = 'test-mesh'
-    this.root = createRoot(container)
+    this.rootContainer = container
+    this.host = host
+    this.stamp()
+    this.root = createRoot(host)
     this.renderScene()
   }
 
   unmount(): void {
-    const root = this.root
-    this.root = null
-    // React forbids unmounting a root while another root is rendering, and
-    // the shell unmounts us from inside its own effect cleanup.
-    if (root) queueMicrotask(() => root.unmount())
-
-    this.releaseModel()
-    this.bridge = createBridge()
-    this.canvasReady = false
-    this.rejectWaiters(new Error('renderer unmounted'))
-
-    if (this.container) {
-      delete this.container.dataset.renderer
-      delete this.container.dataset.tier
-      delete this.container.dataset.state
-      delete this.container.dataset.specimenSource
-    }
+    const container = this.container
     this.container = null
+    if (container) {
+      delete container.dataset.renderer
+      delete container.dataset.tier
+      delete container.dataset.state
+      delete container.dataset.progress
+      delete container.dataset.specimenSource
+    }
+
+    const root = this.root
+    const host = this.host
+    if (!root) return
+    // Deferred for the reason above, and because React forbids unmounting a
+    // root while another root is rendering — which is exactly where the
+    // shell's effect cleanup calls us from.
+    this.teardown = setTimeout(() => {
+      this.teardown = null
+      this.root = null
+      this.rootContainer = null
+      this.host = null
+      this.releaseModel()
+      this.bridge = createBridge()
+      this.canvasReady = false
+      this.rejectWaiters(new Error('renderer unmounted'))
+      root.unmount()
+      host?.remove()
+    }, 0)
   }
 
   async loadSpecimen(specimen: SpecimenRecord): Promise<void> {
@@ -188,6 +228,18 @@ class MeshRenderer implements Renderer {
   }
 
   // ── internals ──────────────────────────────────────────────────────────
+
+  /** What the stage container says about itself, for the shell's CSS hooks
+   * and for the browser-driven gates, which wait on `data-state` rather than
+   * on a sleep. */
+  private stamp(): void {
+    const container = this.container
+    if (!container) return
+    container.dataset.renderer = 'mesh'
+    container.dataset.tier = this.tier
+    container.dataset.state = this.status.state
+    if (isStandIn()) container.dataset.specimenSource = 'test-mesh'
+  }
 
   /** Return the camera to the authored default view, exactly. OrbitControls'
    * own `reset()` restores the state saved when the specimen was framed, so

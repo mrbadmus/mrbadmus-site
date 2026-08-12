@@ -58,8 +58,17 @@ describe('gate 7 — a renderer that fails routes to the flat stage', () => {
       expect(screen.getByTestId('renderer-container').dataset.renderer).toBe('placeholder-paper')
     })
 
+    // The mesh renderer's own teardown is deferred by a tick; give it time to
+    // run. It must not take the flat stage's drawing with it — both renderers
+    // are handed the same container, and React clears whatever container its
+    // root owns.
+    await new Promise((resolve) => setTimeout(resolve, 20))
+
     // The stage is dressed as the flat stage, not as a broken viewport.
     expect(screen.getByText('FLAT DIAGRAM')).toBeTruthy()
+    expect(document.querySelector('.ph-plate')).toBeTruthy()
+    expect(document.querySelector('.ph-grid')).toBeTruthy()
+    expect(document.querySelector('canvas')).toBeNull()
     // No quality chip: there is no render load to tune (§06).
     expect(screen.queryByRole('button', { name: /render quality/i })).toBeNull()
     // Nothing anywhere says "error".
