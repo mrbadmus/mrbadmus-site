@@ -1,7 +1,17 @@
 // @vitest-environment node
-// Gate 1 — the shell never imports Three.js. Only src/renderer/ may ever
-// touch a 3D library (and at Stage 1 even it does not). Fails on any import
-// of three, @react-three/*, or drei anywhere else under src/.
+// Gate 1 — the door between the shell and Three.js, asserted in both
+// directions.
+//
+// Outward: no file under src/ outside src/renderer/ may import three,
+// @react-three/* or drei. Unchanged since Stage 1.
+//
+// Inward: no file under src/renderer/ may import from src/components/. This
+// half is new at Stage 2 (MRB-187). Stage 1's second assertion — that even
+// the renderer directory was Three-free — was only ever true because there
+// was no real renderer yet; it retired the moment one arrived, and something
+// had to take its place. A renderer that reaches back into shell components
+// is how the separation dies quietly: the interface stays intact on paper
+// while the two halves grow a second, undeclared coupling.
 
 import { describe, expect, it } from 'vitest'
 import { readdirSync, readFileSync, statSync } from 'node:fs'
@@ -40,12 +50,27 @@ describe('gate 1 — zero direct Three.js imports in the shell', () => {
     expect(offenders).toEqual([])
   })
 
-  it('at Stage 1 even the renderer directory is Three-free (placeholder only)', () => {
-    const rendererDir = join(SRC, 'renderer')
+  it('the renderer is where Three.js lives — at least one file there imports it', () => {
+    // The outward rule above passes trivially if nobody imports Three.js at
+    // all, which is exactly the state Stage 1 was in. This keeps the first
+    // assertion honest: it is only meaningful while a real renderer exists.
+    const importers = walk(join(SRC, 'renderer')).filter((file) =>
+      FORBIDDEN.some((rx) => rx.test(readFileSync(file, 'utf8'))),
+    )
+    expect(importers.length).toBeGreaterThan(0)
+  })
+
+  it('no file under src/renderer/ imports from src/components/', () => {
+    const SHELL_IMPORT = [
+      /from\s+['"][^'"]*\/components\//,
+      /from\s+['"]\.\.\/components\//,
+      /import\s*\(\s*['"][^'"]*\/components\//,
+      /require\(\s*['"][^'"]*\/components\//,
+    ]
     const offenders: string[] = []
-    for (const file of walk(rendererDir)) {
+    for (const file of walk(join(SRC, 'renderer'))) {
       const text = readFileSync(file, 'utf8')
-      if (FORBIDDEN.some((rx) => rx.test(text))) offenders.push(relative(SRC, file))
+      if (SHELL_IMPORT.some((rx) => rx.test(text))) offenders.push(relative(SRC, file))
     }
     expect(offenders).toEqual([])
   })
