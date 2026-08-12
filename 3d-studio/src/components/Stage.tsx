@@ -13,6 +13,30 @@ import { ToolRail } from './ToolRail'
 
 export type StageMode = 'explore' | 'retrieve'
 
+/** .callout is a fixed 216px in studio.css; the gap to the dot is 90px, and
+ * the rail occupies the first 78px of the stage (18px inset + 48px + air). */
+const CALLOUT_WIDTH = 216
+const CALLOUT_GAP = 90
+const STAGE_PAD = 12
+const RAIL_CLEAR = 78
+
+/** Where the callout goes. Right of the dot as the frozen reference draws it;
+ * left when the right will not fit; pinned to the stage's right edge with no
+ * leader when neither side will, which is the narrow-stage case where a left
+ * flip would bury the tool rail. */
+function calloutPlacement(
+  x: number,
+  container: HTMLElement | null,
+): { left: number; leader: number | null } {
+  const width = container?.clientWidth ?? 0
+  if (!width || x + CALLOUT_GAP + CALLOUT_WIDTH + STAGE_PAD <= width) {
+    return { left: x + CALLOUT_GAP, leader: x + 20 }
+  }
+  const flipped = x - CALLOUT_GAP - CALLOUT_WIDTH
+  if (flipped >= RAIL_CLEAR) return { left: flipped, leader: x - CALLOUT_GAP }
+  return { left: Math.max(RAIL_CLEAR, width - CALLOUT_WIDTH - STAGE_PAD), leader: null }
+}
+
 export function Stage({
   renderer,
   specimen,
@@ -148,15 +172,31 @@ export function Stage({
           )
         })}
 
-      {/* one callout at a time, leader line keeps the link explicit (§01) */}
+      {/* one callout at a time, leader line keeps the link explicit (§01).
+          It sits to the right of the dot as the reference draws it, and flips
+          to the left when there is no room — the stage clips at its own edge,
+          and dots go wherever the geometry puts them now that a real camera
+          decides (MRB-187). */}
       {mode === 'explore' && openDot && (
         <>
+          {calloutPlacement(openDot.x, containerRef.current).leader !== null && (
+            <div
+              className="leader"
+              style={{
+                left: calloutPlacement(openDot.x, containerRef.current).leader!,
+                top: openDot.y,
+                width: 70,
+              }}
+              aria-hidden="true"
+            />
+          )}
           <div
-            className="leader"
-            style={{ left: openDot.x + 20, top: openDot.y, width: 70 }}
-            aria-hidden="true"
-          />
-          <div className="callout" style={{ left: openDot.x + 90, top: Math.max(12, openDot.y - 80) }}>
+            className="callout"
+            style={{
+              left: calloutPlacement(openDot.x, containerRef.current).left,
+              top: Math.max(12, openDot.y - 80),
+            }}
+          >
             <div className="callout__head">
               <span className="callout__dot" aria-hidden="true" />
               <span className="callout__eyebrow">
