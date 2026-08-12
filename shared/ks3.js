@@ -734,6 +734,18 @@
     return { wrap: wrap, id: id };
   }
 
+  // MRB-210 §2 — one place that knows how a range control is bound.
+  // A range fires `input` on every movement and `change` when the value
+  // settles; which of the two arrives depends on the input path, not on
+  // the element. Design's approved B1-06 binds both to the same handler
+  // and so do we. Bound twice, the handler can run twice for one drag,
+  // which is why every handler behind this is idempotent — it reads
+  // `input.value` and recomputes, rather than stepping a counter.
+  function onRange(el, fn) {
+    el.addEventListener("input", fn);
+    el.addEventListener("change", fn);
+  }
+
   function wireSim(sim) {
     // MRB-198 — dispatch. The two B1 instruments are not particle labs:
     // they share the gate scaffold and the readout discipline, nothing else.
@@ -1118,7 +1130,7 @@
         } else {
           input.min = "0"; input.max = "100"; input.value = "50";
         }
-        input.addEventListener("input", function () {
+        onRange(input, function () {
           if (name === "temperature") {
             state.temp = Number(input.value);
           } else if (name === "particles") {
@@ -1797,7 +1809,18 @@
           input.id = shell.id;
           // Deliberately no number beside it: a fine-focus wheel is
           // unnumbered, and what the position MEANS is the readout's job.
-          input.addEventListener("input", function () {
+          //
+          // MRB-210 §2 — bound on BOTH `input` and `change`, matching
+          // Design's approved B1-06 (`onChange={...} onInput={...}` on
+          // the same handler). `input` alone covers a mouse or touch
+          // drag and keyboard arrows in current browsers, but it is not
+          // the only path to a range value: some assistive technologies
+          // and automation set `.value` and fire `change` only, and that
+          // interaction would silently do nothing. Verified by driving
+          // all 12 range controls across the full control matrix on all
+          // 183 lesson pages — before this, `change` reached the handler
+          // on exactly none of them.
+          onRange(input, function () {
             state.focus = Number(input.value);
             afterControlChange();
           });

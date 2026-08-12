@@ -782,6 +782,21 @@ def main():
           else "%d problem(s): %s" % (len(struct_problems),
                                       "; ".join(struct_problems[:3])))
 
+    # MRB-210 §2 — range controls bound on both events.
+    rng_problems, rng_rows = PARITY.check_range_binding(".")
+    check("MRB-210 · every range control is bound on `input` AND `change`",
+          not rng_problems,
+          "; ".join("%s: %s" % (l, d) for l, d, _ in rng_rows)
+          if not rng_problems else rng_problems[0][:140])
+
+    # MRB-209 §4 — prose and endmatter links were never gated.
+    link_problems, link_count = PARITY.check_internal_links(KS3_OUT)
+    check("MRB-209 · every internal cross-lesson link resolves",
+          not link_problems,
+          "%d internal /ks3/ links checked" % link_count
+          if not link_problems
+          else "%d dead: %s" % (len(link_problems), link_problems[0][:120]))
+
     # MRB-203 — the gate learns to see a component that was never
     # registered. Absence-of-selector already failed; absence-of-
     # REGISTRATION passed silently, which is how B1 shipped with no

@@ -868,6 +868,124 @@ CANVAS_PAIRS = (
 )
 
 
+# MRB-210 §2 — every range control is bound on BOTH `input` and `change`.
+#
+# This is a SOURCE check, deliberately, after a runtime one was written,
+# measured and thrown away. The runtime version dragged each slider and
+# compared the sim's readout before and after. It is unsound in both
+# directions and both were observed:
+#
+#   FALSE PASS — a particle sim repaints from an animation loop, so its
+#     readout ("wall hits per second: 60") drifts on its own. A drag that
+#     did nothing still "changed" the text.
+#   FALSE FAIL — B1-06's focus slider changes nothing at ×40, because the
+#     readout short-circuits on magnification before it mentions focus. It
+#     is correctly wired and only speaks from ×100 up.
+#
+# So readout-diffing measures animation noise and lesson content, not
+# binding. An assertion whose result depends on which frame it lands in is
+# not an assertion. What is deterministic is that every range in ks3.js is
+# bound through the one helper that attaches both listeners.
+#
+# ⚠️ METHODOLOGICAL NOTE, kept where the next person will find it.
+# Design's words, verbatim:
+#
+#   "Shrinking `.ks3-main` in a probe does not fire a `max-width` media
+#    query — the viewport is still wide. Container-driven wrapping is
+#    testable that way; viewport queries are not."
+#
+# Design's first attempt at a narrow-width fix measured as a no-op for
+# exactly that reason. THIS harness overrides device metrics
+# (`Emulation.setDeviceMetricsOverride` — see ks3_browser.py's header), so
+# it DOES fire viewport queries correctly. Any future check that resizes an
+# element instead will pass silently over a broken layout.
+
+
+def check_range_binding(repo_root="."):
+    """Returns (problems, rows). Static, so it cannot be flaky."""
+    path = os.path.join(repo_root, "shared", "ks3.js")
+    with open(path, encoding="utf-8") as fh:
+        src = fh.read()
+    problems, rows = [], []
+
+    helper = re.search(r"function onRange\(el, fn\) \{(.*?)\n  \}",
+                       src, re.S)
+    if not helper:
+        problems.append(
+            "MRB-210: shared/ks3.js has no onRange() helper — the one place "
+            "that binds a range on both `input` and `change`.")
+        return problems, rows
+    body = helper.group(1)
+    for ev in ("input", "change"):
+        ok = ('addEventListener("%s", fn)' % ev) in body
+        rows.append(("onRange binds " + ev, "yes" if ok else "NO", ok))
+        if not ok:
+            problems.append(
+                "MRB-210: onRange() does not attach a `%s` listener. Design's "
+                "approved B1-06 binds both to the same handler." % ev)
+
+    # No range may be bound directly — that is how one gets missed.
+    #
+    # Scanned forward from each `X.type = "range"` rather than by matching
+    # variable names globally. ks3.js reuses the name `input` for the
+    # microscope's two <select> controls, which are correctly bound on
+    # `change` alone; a name-based check calls those a leak and is wrong.
+    lines = src.splitlines()
+    leaked = []
+    for i, line in enumerate(lines):
+        m = re.search(r'(\w+)\.type = "range"', line)
+        if not m:
+            continue
+        var = m.group(1)
+        window = "\n".join(lines[i:i + 40])
+        if re.search(r'\b%s\.addEventListener\(' % re.escape(var), window):
+            leaked.append("line %d (%s)" % (i + 1, var))
+        elif not re.search(r'\bonRange\(\s*%s\b' % re.escape(var), window):
+            leaked.append("line %d (%s: bound by neither)" % (i + 1, var))
+    rows.append(("every range goes through onRange",
+                 "clean, %d range declaration(s)"
+                 % len(re.findall(r'\.type = "range"', src))
+                 if not leaked else "leaked: %s" % leaked, not leaked))
+    if leaked:
+        problems.append(
+            "MRB-210: range input(s) at %s are bound with a direct "
+            "addEventListener instead of onRange(), so they get one event "
+            "and not the other." % ", ".join(leaked))
+    rows.append(("onRange call sites", str(len(re.findall(r"onRange\(", src)) - 1),
+                 len(re.findall(r"onRange\(", src)) - 1 > 0))
+    return problems, rows
+
+
+def check_internal_links(ks3_root):
+    """MRB-209 §4 — every internal /ks3/ link must resolve to a real page.
+
+    Prerequisite edges and `ks4_links` were already gated. Links written in
+    PROSE and in the ENDMATTER were not, and that is where the defect
+    landed: B1-04's endmatter pointed at `b1-07-stem-cells-and-meristems`
+    after MRB-199 removed it. Design happened to spot it. A removed slug
+    should fail the build, not 404 in front of a student.
+
+    Deliberately checks the BUILT tree rather than the lesson records,
+    because that is the only place a hand-written prose link exists at all.
+    """
+    problems = []
+    served = os.path.dirname(os.path.abspath(ks3_root))
+    checked = 0
+    for path in _all_pages(ks3_root):
+        rel = os.path.relpath(path, ks3_root)
+        with open(path, encoding="utf-8") as fh:
+            html = fh.read()
+        for href in set(re.findall(r'href="(/ks3/[^"#?]+)"', html)):
+            checked += 1
+            target = os.path.join(served, href.lstrip("/"))
+            if not os.path.exists(target):
+                problems.append(
+                    "MRB-209: /%s links to %s, which does not exist. A "
+                    "cross-lesson link to a removed slug is a 404 in front "
+                    "of a student." % (rel, href))
+    return problems, checked
+
+
 MANIFEST = "docs/ks3/design-coverage-manifest.md"
 
 
