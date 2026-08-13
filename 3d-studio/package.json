@@ -10,7 +10,8 @@
     "test": "vitest run",
     "validate": "python3 validate_content.py",
     "test-specimen": "python3 tools/make_test_specimen.py && (python3 validate_specimen_glb.py tools/build/_test-specimen.raw.glb || true) && node tools/compress_test_specimen.mjs",
-    "test-plate": "python3 tools/make_test_plate.py"
+    "test-plate": "python3 tools/make_test_plate.py",
+    "prepare-specimen": "python3 tools/prepare_specimen.py"
   },
   "dependencies": {
     "@react-three/drei": "^9.122.0",
@@ -32,6 +33,8 @@
     "@vitejs/plugin-react": "^4.3.4",
     "draco3dgltf": "^1.5.7",
     "jsdom": "^25.0.1",
+    "meshoptimizer": "^1.1.1",
+    "sharp": "^0.35.3",
     "typescript": "~5.6.3",
     "vite": "^5.4.11",
     "vitest": "^2.1.8"
