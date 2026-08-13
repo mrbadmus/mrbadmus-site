@@ -125,19 +125,28 @@ def main():
     check("all six carry review_state: draft", states == {"draft"},
           "states=%s" % sorted(states))
 
-    # 1b. MRB-198 — B1 authored: eight lessons, six statutory and two
-    # carrying §7.6's declared beyond-statutory exemption. MRB-199 has no
-    # ruling yet, so the two are gated here EXACTLY as Design authored
-    # them; if Mide rules to drop them this check changes with the data.
-    check("B1 has eight authored lessons", len(b1_authored) == 8,
+    # 1b. B1 authored. MRB-199 is now RULED: both slots that owned no statutory
+    # statement are gone. `stem-cells-and-meristems` has no statement anywhere
+    # in the KS3 spine. `enzymes-and-rate` was dropped OUTRIGHT rather than
+    # moved to B3 — the catalyst clause it would have carried, KS3.B.NUT.04, is
+    # already owned by B3's existing `enzymes-in-digestion` slot, and two
+    # lessons competing for one ownable statement is the defect this ticket
+    # closes. Enzyme rate has no KS3 statement at all and belongs in §7.6's
+    # Year 9 bridge. B1 is six lessons, every one of them statutory.
+    check("B1 has six authored lessons", len(b1_authored) == 6,
           "%d authored" % len(b1_authored))
     b1_states = {l.get("review_state") for l in b1_authored}
-    check("all eight B1 lessons carry review_state: draft",
+    check("all six B1 lessons carry review_state: draft",
           b1_states == {"draft"}, "states=%s" % sorted(b1_states))
+    # The §7.6 exemption machinery is deliberately KEPT and stays
+    # mutation-tested — the Year 9 bridge unit will exercise it for real. What
+    # MRB-199 changes is only the expected COUNT, which is now zero: no Year 7
+    # lesson claims the exemption. If this ever goes non-empty again without a
+    # bridge unit existing, that is precisely the defect MRB-199 was raised
+    # about, and it fails here by name rather than shipping.
     beyond = sorted(l["slug"] for l in b1_authored if l.get("beyond_statutory"))
-    check("exactly two B1 lessons are beyond_statutory, as authored (MRB-199)",
-          beyond == ["enzymes-and-rate", "stem-cells-and-meristems"],
-          str(beyond))
+    check("no B1 lesson is beyond_statutory (MRB-199 ruled)",
+          beyond == [], str(beyond))
     check("beyond_statutory is present and explicit on every B1 lesson",
           all("beyond_statutory" in l for l in b1_authored),
           "review-pack ruling 3: absent is a defect")

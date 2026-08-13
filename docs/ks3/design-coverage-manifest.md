@@ -911,7 +911,7 @@ and the build fails naming the family.
 lesson. The first person to author one will be stopped by this table rather than by Mide
 finding it at sign-off. That is the whole point of the section.
 
-Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 184
+Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 183
 slots**, every one of which would have inherited whatever Code invented. Design's approved
 B1 pages are what closed them.
 
@@ -921,16 +921,26 @@ Every block type the generator can emit must map to at least one component regis
 `ks3_parity.COMPONENTS`. Render a block type with no row, or name a component in a row that
 `ks3_parity` does not define, and the build fails naming the block type.
 
+> **The `quiz` and `check` answered-state names were reconciled on 2026-08-13, and the
+> registry is what caught it.** MRB-202 was worked twice on the night of 11–12 August by two
+> sessions that never saw each other (MRB-211). Both registered every answered option state;
+> they chose different names for them. This table was written against one set of names and
+> the surviving `ks3_parity.COMPONENTS` uses the other, so on the first run after the rebase
+> the registry failed with *"the registry claims cover that does not exist"* for both block
+> types — twelve component names that no longer resolved. It named the block type and every
+> missing component, which is precisely the job §10.2 was built for: a stale row here is a
+> block type gated by nothing, and before this section existed it would have passed green.
+
 | Block type | Registered components |
 |---|---|
 | hook | `hook is ink-dark, accent shadow` |
 | explainer | `body prose (type row 4)`, `page ground + body type` |
 | figure | `figure frame`, `figure caption`, `figure pending slot` |
 | keyword | `vocabulary card`, `card term type` |
-| quiz | `ladder shell`, `ladder heading`, `page-marked rung is accent`, `page-marked rung heading`, `self-marked rung is violet`, `ladder option chosen-correct`, `ladder correct badge is green, not accent`, `ladder option chosen-wrong`, `ladder wrong badge is ink, not amber`, `ladder option spent`, `ladder feedback, correct`, `ladder feedback, wrong` |
+| quiz | `ladder shell`, `ladder heading`, `page-marked rung is accent`, `page-marked rung heading`, `self-marked rung is violet`, `ladder option CHOSEN-CORRECT`, `ladder option CHOSEN-CORRECT badge`, `ladder option CHOSEN-WRONG`, `ladder option CHOSEN-WRONG badge`, `ladder option SPENT`, `ladder option SPENT badge`, `ladder feedback CORRECT`, `ladder feedback WRONG` |
 | summary | `key note is ink-dark`, `key note type drops to 700` |
 | misconception | `misconception is amber` |
-| check | `activity option resting`, `activity option chosen shows accent, marks nothing` |
+| check | `activity option resting`, `activity option CHOSEN`, `activity option CHOSEN badge` |
 | worked-example | `R8 answer box`, `R8 check-my-answer button` |
 | practical | `sim canvas`, `sim live figure is mono` |
 
