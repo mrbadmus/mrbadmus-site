@@ -1,0 +1,31 @@
+{
+  "note": [
+    "Anchor rules for the two heart hotspots that have no mesh part of their own.",
+    "BodyParts3D models neither: `wall of right ventricle` and `free wall of right",
+    "ventricle` resolve to identical element sets, so no septal geometry is",
+    "separately addressable; and no conducting tissue is modelled anywhere in the",
+    "dataset, so there is no sino-atrial node to select.",
+    "",
+    "Each rule locates the structure from parts that DO exist. This is anatomy, so",
+    "it is written down and reviewable rather than derived from nothing — the",
+    "offsets are in units of the specimen's bounding radius, in the GLB's own",
+    "axes (+x patient's left, +y superior, +z anterior).",
+    "",
+    "Every other hotspot takes its anchor from its own like-named mesh part and",
+    "needs no rule here."
+  ],
+  "anchors": [
+    {
+      "hotspot": "heart.septum",
+      "derivedFrom": ["right-ventricle", "left-ventricle"],
+      "weights": [1, 1],
+      "why": "The interventricular septum is the wall between the two ventricular cavities, so the midpoint of their centroids sits inside it. The nearest exit from there surfaces on the anterior interventricular groove, which is where a diagram marks the septum."
+    },
+    {
+      "hotspot": "heart.sino-atrial-node",
+      "derivedFrom": ["right-atrium"],
+      "offset": [0, 0.15, 0.04],
+      "why": "The sino-atrial node lies in the wall of the right atrium at the superior end, near where the superior vena cava enters. Offsetting the atrium's centroid superiorly and slightly anteriorly puts the anchor in that wall rather than in the middle of the chamber."
+    }
+  ]
+}

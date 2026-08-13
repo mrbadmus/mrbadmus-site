@@ -21,13 +21,29 @@ Formats
 install. Those are glTF — the format the web renders natively, and the one the
 studio loads.
 
-.blend, .fbx, .obj, .dae, .stl and .ply are not glTF. Converting them needs
-Blender, the free 3D program, which is NOT installed here. When it is missing
-this script says so and stops with a non-zero exit code; it does not half-run
-and leave something that looks converted. The Blender branch is written and
-ready and starts working the moment Blender is installed — but it has never
-executed, because there is no Blender on this machine to execute it. Treat it
-as untested code until its first real run.
+.obj also runs here with nothing to install, since MRB-187. It is a plain text
+list of vertices and faces, so tools/obj_glb.py reads it directly and writes
+the GLB the rest of the pipeline expects. This matters because the anatomical
+sources worth using ship .obj: BodyParts3D gives one mesh per named structure,
+which is exactly the shape the studio needs, and requiring Blender for a text
+format would have blocked it for no reason.
+
+An .obj-based specimen is usually not ONE file. Anatomical sources ship a mesh
+per structure, and a specimen is a named selection of them, so this script also
+accepts an ASSEMBLY RECIPE — a .json listing each named part and the source
+files that compose it. tools/recipes/heart.recipe.json is the worked example.
+Point --obj-dir at the extracted meshes:
+
+    python3 tools/prepare_specimen.py tools/recipes/heart.recipe.json \
+        --obj-dir ~/Downloads/partof_BP3D_4.0_obj_99
+
+.blend, .fbx, .dae, .stl and .ply are still not glTF and still need Blender,
+the free 3D program, which is NOT installed here. When it is missing this
+script says so and stops with a non-zero exit code; it does not half-run and
+leave something that looks converted. The Blender branch is written and ready
+and starts working the moment Blender is installed — but it has never executed,
+because there is no Blender on this machine to execute it. Treat it as untested
+code until its first real run.
 
 The way past that gap costs nothing: download the model as GLB. Sketchfab and
 most model sites offer GLB directly in the download menu, and Blender itself
@@ -42,6 +58,7 @@ Exit codes
     3   the source format needs Blender and Blender is not installed
     4   Blender ran and the conversion to GLB failed
     5   the glTF pipeline failed (part names lost, Draco missing, unreadable)
+    6   an .obj or assembly recipe could not be read into a GLB
 
 Stdlib only. The glTF work lives in Node because the libraries that do it well
 (@gltf-transform, meshoptimizer, sharp) live there; this script's job is to
@@ -59,6 +76,9 @@ import subprocess
 import sys
 import tempfile
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import obj_glb  # noqa: E402  (needs the path line above)
+
 # This script's own prints interleave with the output of the two subprocesses it
 # runs, which write straight to the terminal. Without line buffering Python's
 # lines arrive last, in a block, and the report reads as though the steps ran in
@@ -74,9 +94,15 @@ ASSETS = os.path.join(STUDIO, "public", "assets")
 # Formats the Node pipeline reads directly.
 GLTF_SUFFIXES = {".glb", ".gltf"}
 
+# Formats tools/obj_glb.py converts here, in Python, with nothing installed.
+# .json is an assembly recipe naming many .obj files as one specimen's parts.
+OBJ_SUFFIXES = {".obj", ".json"}
+
 # Formats that are not glTF and so need Blender to become glTF. The operator
 # that reads each one lives in BLENDER_SCRIPT below, where Blender can see it.
-BLENDER_SUFFIXES = {".blend", ".fbx", ".obj", ".dae", ".stl", ".ply"}
+# .obj was here until MRB-187 and is handled natively now; Blender's .obj
+# importer is left in BLENDER_SCRIPT because a .blend may contain one.
+BLENDER_SUFFIXES = {".blend", ".fbx", ".dae", ".stl", ".ply"}
 
 # Where a real, acquired specimen lives. vite.config.ts treats any .glb here
 # whose name does NOT start with an underscore as an acquired asset, and stops
@@ -248,6 +274,26 @@ def run_pipeline(src: str, dst: str, name: str | None, report: str) -> int:
     return subprocess.run(command, check=False, cwd=STUDIO).returncode
 
 
+def convert_obj(src: str, dst: str, obj_dir: str | None, name: str) -> bool:
+    """Read an .obj, or an assembly recipe naming several, into a GLB.
+
+    Prints the part list it built, because that list IS the thing the studio's
+    isolate and layers tools will show a class — a recipe that silently
+    produced one merged blob would still pass a file-size gate."""
+    print("  reading with tools/obj_glb.py (no Blender needed for .obj)\n")
+    try:
+        parts = obj_glb.convert(src, dst, obj_dir, name)
+    except (OSError, ValueError) as error:
+        print(f"  ❌ {error}")
+        return False
+    total = sum(len(p["faces"]) for p in parts)
+    print(f"  assembled {len(parts)} named part(s), {total:,} triangles:")
+    for part in parts:
+        print(f"    {part['name']:24} {len(part['faces']):8,}")
+    print()
+    return True
+
+
 def run_validator(path: str) -> int:
     print("\n" + "─" * 76)
     print("Purchase gates — validate_specimen_glb.py\n")
@@ -304,7 +350,10 @@ def main() -> int:
                              "public/assets/<name>.glb)")
     parser.add_argument("--name", default=None,
                         help="specimen id, e.g. heart (default: the source "
-                             "file's name)")
+                             "file's name, or the recipe's own name)")
+    parser.add_argument("--obj-dir", default=None,
+                        help="where an assembly recipe's .obj files live "
+                             "(default: beside the recipe)")
     args = parser.parse_args()
 
     src = os.path.abspath(os.path.expanduser(args.source))
@@ -314,13 +363,22 @@ def main() -> int:
 
     suffix = os.path.splitext(src)[1].lower()
     name = args.name or os.path.splitext(os.path.basename(src))[0]
+    # A recipe names the specimen it builds; that beats the file's own name,
+    # which is "heart.recipe" and would put the asset at heart.recipe.glb.
+    if suffix == ".json" and not args.name:
+        try:
+            name = obj_glb.load_recipe(src).get("name") or name
+        except (OSError, ValueError):
+            pass                        # reported properly by convert_obj
     out = (os.path.abspath(os.path.expanduser(args.out)) if args.out
            else os.path.join(DEFAULT_OUT_DIR, f"{name}.glb"))
 
     print(f"3D Studio — preparing {os.path.basename(src)} as specimen '{name}'\n")
 
-    if suffix not in GLTF_SUFFIXES and suffix not in BLENDER_SUFFIXES:
-        known = ", ".join(sorted(GLTF_SUFFIXES | BLENDER_SUFFIXES))
+    if suffix not in GLTF_SUFFIXES and suffix not in OBJ_SUFFIXES \
+            and suffix not in BLENDER_SUFFIXES:
+        known = ", ".join(sorted(GLTF_SUFFIXES | OBJ_SUFFIXES
+                                 | BLENDER_SUFFIXES))
         print(f"❌ {suffix or 'that file'} is not a 3D model format this script "
               f"handles.")
         print(f"   Handled: {known}")
@@ -333,7 +391,17 @@ def main() -> int:
     try:
         pipeline_input = src
 
-        if suffix in BLENDER_SUFFIXES:
+        if suffix in OBJ_SUFFIXES:
+            pipeline_input = os.path.join(workdir, f"{name}.converted.glb")
+            obj_dir = (os.path.abspath(os.path.expanduser(args.obj_dir))
+                       if args.obj_dir else None)
+            if not convert_obj(src, pipeline_input, obj_dir, name):
+                print(f"\n❌ could not read {os.path.basename(src)} into a GLB.")
+                print("   The purchase gates were NOT run — there is nothing "
+                      "fit to gate.")
+                return 6
+
+        elif suffix in BLENDER_SUFFIXES:
             blender = find_blender()
             if blender is None:
                 print(blender_missing_message(suffix))

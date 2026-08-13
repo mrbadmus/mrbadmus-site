@@ -1,0 +1,255 @@
+{
+  "recipe": "specimen-assembly/v1",
+  "name": "heart",
+  "note": [
+    "Assembles the AQA GCSE heart from BodyParts3D elemental meshes.",
+    "BodyParts3D does not decompose the heart into one mesh per named structure:",
+    "Part names are the structure names exactly as heart.json labels them, because the isolate tool shows a part's name to the class verbatim (`Isolated: Right atrium`) and the renderer contract forbids inventing one. They bind to hotspot ids by slug: slugify(part name) == the id after the specimen prefix.",
+    "its elemental meshes are claimed by several named concepts at once (the",
+    "tricuspid leaflets are simultaneously part of the right atrium and the right",
+    "ventricle). `parts` below is therefore a PARTITION — each elemental file is",
+    "assigned to the single most specific structure that claims it, so no triangle",
+    "appears twice and the watertight gate stays meaningful.",
+    "Two of heart.json's fourteen hotspots have no part here and are anchored by",
+    "coordinate alone: the septum (BodyParts3D models the ventricular walls but",
+    "not a separately addressable septum — `wall of right ventricle` and `free",
+    "wall of right ventricle` resolve to identical element sets) and the",
+    "sino-atrial node (no conducting tissue is modelled anywhere in the dataset).",
+    "Run: python3 tools/prepare_specimen.py tools/recipes/heart.recipe.json \\",
+    "       --obj-dir <extracted partof_BP3D_4.0_obj_99>"
+  ],
+  "source": {
+    "database": "BodyParts3D",
+    "attribution": "BodyParts3D, (c) The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan",
+    "licence": "CC BY-SA 2.1 Japan",
+    "licenceNote": "The downloaded release-4.0 .obj files each carry CC BY-SA 2.1 Japan in their own header comment. The upstream README at the same URL now states CC BY 4.0 International. The files' own statement is the more restrictive of the two and is what is recorded, so attribution and share-alike are honoured either way.",
+    "homepage": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html",
+    "release": "BP3D 4.0, partof tree, 99% reduction",
+    "files": [
+      {
+        "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_BP3D_4.0_obj_99.zip",
+        "sha256": "9fbc713fffeee924a5a657d9813d84d7eb957bded63adb854931dd5e3eb61c97"
+      },
+      {
+        "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_parts_list_e.txt"
+      },
+      {
+        "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_element_parts.txt"
+      }
+    ]
+  },
+  "transform": {
+    "axes": "LPS-to-glTF",
+    "recentre": "bounds",
+    "scaleTo": 1.0,
+    "note": "BodyParts3D is +x anatomical left, +y posterior, +z superior, in millimetres within a whole-body frame (the heart sits around z=1230). Converted to glTF's y-up and recentred on its own bounds so authored position3d values are small numbers about the origin."
+  },
+  "parts": [
+    {
+      "name": "Right atrium",
+      "hotspot": "heart.right-atrium",
+      "files": [
+        "FJ2424",
+        "FJ2439"
+      ],
+      "sources": [
+        "FMA7096 right atrium (cavity + wall)"
+      ]
+    },
+    {
+      "name": "Right ventricle",
+      "hotspot": "heart.right-ventricle",
+      "files": [
+        "FJ2423",
+        "FJ2419",
+        "FJ2430",
+        "FJ2437"
+      ],
+      "sources": [
+        "FMA7098 right ventricle (cavity + walls + papillary muscles)"
+      ]
+    },
+    {
+      "name": "Left atrium",
+      "hotspot": "heart.left-atrium",
+      "files": [
+        "FJ2425",
+        "FJ2438"
+      ],
+      "sources": [
+        "FMA7097 left atrium (cavity + wall)"
+      ]
+    },
+    {
+      "name": "Left ventricle",
+      "hotspot": "heart.left-ventricle",
+      "files": [
+        "FJ2422",
+        "FJ2418",
+        "FJ2429"
+      ],
+      "sources": [
+        "FMA7101 left ventricle (cavity + walls + papillary muscles)"
+      ]
+    },
+    {
+      "name": "Tricuspid valve",
+      "hotspot": "heart.tricuspid-valve",
+      "files": [
+        "FJ2421",
+        "FJ2433",
+        "FJ2436"
+      ],
+      "sources": [
+        "FMA7234 tricuspid valve (anterior, posterior, septal leaflets)"
+      ]
+    },
+    {
+      "name": "Bicuspid valve",
+      "hotspot": "heart.bicuspid-valve",
+      "files": [
+        "FJ2420",
+        "FJ2432"
+      ],
+      "sources": [
+        "FMA7235 mitral valve (anterior, posterior leaflets)"
+      ]
+    },
+    {
+      "name": "Semilunar valves",
+      "hotspot": "heart.semilunar-valves",
+      "files": [
+        "FJ2426",
+        "FJ2431",
+        "FJ2435",
+        "FJ2417",
+        "FJ2427",
+        "FJ2434"
+      ],
+      "sources": [
+        "FMA7236 aortic valve (3 cusps)",
+        "FMA7246 pulmonary valve (3 cusps)"
+      ]
+    },
+    {
+      "name": "Aorta",
+      "hotspot": "heart.aorta",
+      "files": [
+        "FJ3413",
+        "FJ3411"
+      ],
+      "sources": [
+        "FMA3736 ascending aorta",
+        "FMA3768 arch of aorta"
+      ]
+    },
+    {
+      "name": "Vena cava",
+      "hotspot": "heart.vena-cava",
+      "files": [
+        "FJ3645",
+        "FJ3441"
+      ],
+      "sources": [
+        "FMA4720 superior vena cava",
+        "FMA10951 inferior vena cava, thoracic course only"
+      ],
+      "excluded": [
+        "FJ3659 — the abdominal course of the inferior vena cava, spanning z 951-1095mm while the heart itself sits at 1180-1260mm. Excluded on the same principle already applied to the aorta (ascending and arch kept, descending and abdominal dropped) and to the pulmonary vessels (extrapulmonary part kept, intrapulmonary dropped): the specimen carries the cardiac segment of each great vessel, not its distal course. BodyParts3D names no subdivision of the inferior vena cava, so this is excluded by element file rather than by concept. Costs 1,670 triangles and takes the bounding radius from 206mm to 146mm, so the heart renders 30% larger in the same frame."
+      ]
+    },
+    {
+      "name": "Pulmonary artery",
+      "hotspot": "heart.pulmonary-artery",
+      "files": [
+        "FJ2966",
+        "FJ3019",
+        "FJ2924"
+      ],
+      "sources": [
+        "FMA8612 pulmonary trunk",
+        "FMA50872/50873 L+R pulmonary artery, extrapulmonary part only"
+      ]
+    },
+    {
+      "name": "Pulmonary vein",
+      "hotspot": "heart.pulmonary-vein",
+      "files": [
+        "FJ3020",
+        "FJ3040",
+        "FJ2925",
+        "FJ2933",
+        "FJ2944",
+        "FJ2950",
+        "FJ2955"
+      ],
+      "sources": [
+        "FMA49911/49913/49914/49916 four pulmonary veins, extrapulmonary part only"
+      ]
+    },
+    {
+      "name": "Coronary arteries",
+      "hotspot": "heart.coronary-arteries",
+      "files": [
+        "FJ2667",
+        "FJ2668",
+        "FJ2670",
+        "FJ2671",
+        "FJ2672",
+        "FJ2673",
+        "FJ2674",
+        "FJ2675",
+        "FJ2676",
+        "FJ2677",
+        "FJ2692",
+        "FJ2693",
+        "FJ2694",
+        "FJ2695",
+        "FJ2696",
+        "FJ2697",
+        "FJ2698",
+        "FJ2699",
+        "FJ2700",
+        "FJ2714",
+        "FJ2715",
+        "FJ2716",
+        "FJ2717",
+        "FJ2718",
+        "FJ2719",
+        "FJ2720",
+        "FJ2721",
+        "FJ2722",
+        "FJ2723",
+        "FJ2631",
+        "FJ2632",
+        "FJ2633",
+        "FJ2634",
+        "FJ2635",
+        "FJ2636",
+        "FJ2637",
+        "FJ2638",
+        "FJ2639",
+        "FJ2640",
+        "FJ2641",
+        "FJ2642",
+        "FJ2643",
+        "FJ2644",
+        "FJ2645",
+        "FJ2646",
+        "FJ2647",
+        "FJ2648",
+        "FJ2649",
+        "FJ2650",
+        "FJ2651",
+        "FJ2652",
+        "FJ2653",
+        "FJ2654",
+        "FJ2737"
+      ],
+      "sources": [
+        "FMA50039 right coronary artery",
+        "FMA50040 left coronary artery"
+      ]
+    }
+  ]
+}
