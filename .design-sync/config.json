@@ -19,7 +19,17 @@
   "overrides": {
     "TopBar": { "cardMode": "column", "viewport": "1240x480" },
     "PhoneSheet": { "cardMode": "column" },
-    "InfoPanel": { "cardMode": "column" }
+    "InfoPanel": { "cardMode": "column" },
+    "RetrievalPanel": { "cardMode": "column" },
+    "Stage": { "cardMode": "column", "viewport": "1240x520" },
+    "TabletPanel": { "cardMode": "column" }
+  },
+  "dtsPropsFor": {
+    "ModeToggle": "mode: 'explore' | 'retrieve'; onMode: (m: 'explore' | 'retrieve') => void;",
+    "ToolIcon": "tool: 'rotate' | 'zoom' | 'isolate' | 'cross-section' | 'layers' | 'labels' | 'reset' | 'auto-rotate'; size?: number;",
+    "LibraryDrawer": "selectedId: string; onSelect: (id: string) => void; onClose: () => void; keyStage: 'KS3' | 'KS4' | null;",
+    "LibraryFullScreen": "selectedId: string; onSelect: (id: string) => void; onClose: () => void; keyStage: 'KS3' | 'KS4' | null;",
+    "TabletPanel": "specimen: { id: string; renderer: 'mesh' | 'flat'; name: string; epithet: string; system: string; keyStages: ('KS3' | 'KS4')[]; assets: { mesh: string; fallback: string; thumbnail: string; licence: string; source: string; acquired: string }; description: string; keyFacts: { label: string; value: string }[]; callouts: { importance: string; didYouKnow: string }; lessonUrl: string; specPoints: string[]; hotspots: { id: string; label: string; detail: string; position3d: [number, number, number]; position2d: [number, number]; tiers: ('foundation' | 'higher')[]; retrievable: boolean; specPoints?: string[]; keyStages?: ('KS3' | 'KS4')[]; accept?: string[] }[] }; openHotspotId: string | null; onOpenHotspot: (id: string | null) => void; onStartRetrieval: () => void;"
   },
   "libOverrides": {
     "css.mjs": "tokensGlob array-of-paths: token files live at site root (shared/), outside the app package"
