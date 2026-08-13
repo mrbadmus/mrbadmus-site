@@ -2597,12 +2597,120 @@
     each(root.querySelectorAll(".ks3-sim"), wireSim);
   }
 
+  // ── the progress rail (MRB-208 rule 2) ──────────────────────────────
+  //
+  // ⚖️ BOTH VARIANTS TICK ON COMPLETION, AND NOTHING IS TICKED ON LOAD.
+  //
+  // Design's delivered narrow variant was IntersectionObserver-driven only, so
+  // it read "4 / 4" with a full accent bar for a student who had scrolled to
+  // the bottom and answered nothing — and below 1340px it is the only rail a
+  // student ever sees. Ruled on MRB-208: the rail records PARTICIPATION, which
+  // is what keeps it consistent with R3. A stop ticks when the activity is
+  // finished, right or wrong.
+  //
+  // What stays scroll-driven is the side rail's CURRENT ring and the top bar's
+  // CURRENT LABEL — those answer "where am I", not "how far have I got", and
+  // Design drew them that way. Count and fill are completion.
+  //
+  // A stage is done when its section says so. Any component may declare its own
+  // completion by setting `data-stage-done="1"` on the section, which is the
+  // contract an instrument should use — it knows what finished means and the
+  // rail does not. `doneByDom` is the fallback for plain option blocks, and it
+  // is deliberately generous in the same direction as the ruling: a commitment
+  // made is a stage done.
+  function doneByDom(sec) {
+    if (!sec) { return false; }
+    if (sec.getAttribute("data-stage-done") === "1") { return true; }
+
+    // The mastery ladder: every rung either answered or self-checked.
+    var rungs = sec.querySelectorAll(".ks3-rung");
+    if (rungs.length) {
+      for (var r = 0; r < rungs.length; r++) {
+        var marked = rungs[r].querySelector('.ks3-option[aria-pressed="true"], .ks3-option.is-correct, .ks3-option.is-wrong');
+        var checked = rungs[r].querySelector("[data-ticks]:not([hidden])");
+        if (!marked && !checked) { return false; }
+      }
+      return true;
+    }
+
+    // A reveal that has been opened is an activity carried through to its end.
+    var opened = sec.querySelector('[data-reveal]:not([hidden]), .ks3-reveal-btn[aria-expanded="true"]');
+    if (opened) { return true; }
+
+    // Otherwise: any commitment at all inside this section.
+    return !!sec.querySelector('[aria-pressed="true"]');
+  }
+
+  function wireRail(wrap) {
+    var stages;
+    try { stages = JSON.parse(wrap.getAttribute("data-rail-stages") || "[]"); }
+    catch (err) { stages = []; }
+    if (!stages.length) { return; }
+
+    var nodes = toArray(wrap.querySelectorAll('[data-rail="side"] li'));
+    var count = wrap.querySelector("[data-rail-count]");
+    var label = wrap.querySelector("[data-rail-label]");
+    var fill = wrap.querySelector("[data-rail-fill]");
+    var active = 0;
+
+    function sectionFor(i) { return document.getElementById(stages[i].anchor); }
+
+    function paint() {
+      var done = 0;
+      for (var i = 0; i < stages.length; i++) {
+        var isDone = doneByDom(sectionFor(i));
+        if (isDone) { done++; }
+        var li = nodes[i];
+        if (li) {
+          li.classList.toggle("is-done", isDone);
+          li.classList.toggle("is-current", i === active && !isDone);
+          var chip = li.querySelector(".ks3-rail-chip");
+          // The drawn mark, never a typed ✓ — same rule as the ladder's.
+          if (chip) {
+            var hasMark = !!chip.querySelector("svg");
+            if (isDone && !hasMark) { chip.innerHTML = TICK_SVG; }
+            else if (!isDone && hasMark) { chip.textContent = String(i + 1); }
+          }
+        }
+      }
+      if (count) { count.textContent = done + " / " + stages.length; }
+      if (fill) { fill.style.width = (done / stages.length * 100) + "%"; }
+      if (label) { label.textContent = stages[active].label || ""; }
+    }
+
+    // Scroll drives CURRENT only. Same rootMargin Design used, so the stage
+    // changes at the same scroll position it does on the approved page.
+    if (window.IntersectionObserver) {
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (!entries[i].isIntersecting) { continue; }
+          var idx = stages.map(function (s) { return s.anchor; })
+                          .indexOf(entries[i].target.id);
+          if (idx >= 0) { active = idx; }
+        }
+        paint();
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      for (var i = 0; i < stages.length; i++) {
+        var sec = sectionFor(i);
+        if (sec) { io.observe(sec); }
+      }
+    }
+
+    // Completion is recomputed after anything the student does. Cheap, and it
+    // cannot go stale the way a set of per-component callbacks can.
+    each(["click", "change", "input"], function (evt) {
+      document.addEventListener(evt, function () { window.setTimeout(paint, 0); }, true);
+    });
+    paint();
+  }
+
   function init() {
     wirePredictions(document);
     wireCriteria(document);
     wireCards(document);
     wireSims(document);
     each(document.querySelectorAll(".ks3-ladder"), wireLadder);
+    each(document.querySelectorAll(".ks3-rails"), wireRail);
   }
 
   if (document.readyState === "loading") {

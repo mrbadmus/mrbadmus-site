@@ -248,12 +248,19 @@ def family_label(family):
 # reference's header. The KS4 gold-to-rust two-chevron mark stays mandatory on
 # every other external page; this is the same key-stage split already ruled
 # for the palette under MRB-183. `.ks3-brand` is styled in shared/ks3.css.
+#
+# ⊕ MRB-208 rule 1, amended 12 Aug 2026: the chevron sits INSIDE a 34px
+# accent-filled rounded tile and the stroke goes cream, rather than a bare 30px
+# accent chevron on the page ground. Measured on all six approved B1 pages:
+# tile 34×34, radius 10px, `--ks3-accent` ground, chevron stroke `#FBF3E6`
+# (= `--ks3-ground`) at width 4.6, wordmark Bricolage 22px/800, gap 10px.
 NAV_BRAND = (
     '<a class="ks3-brand" href="/index.html">'
-    '<svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true">'
-    '<path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" '
+    '<span class="ks3-brand-tile" aria-hidden="true">'
+    '<svg width="20" height="20" viewBox="0 0 24 24">'
+    '<path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" '
     'stroke-linecap="round" stroke-linejoin="round"/>'
-    '</svg>MrBadmusAI</a>'
+    '</svg></span>MrBadmusAI</a>'
 )
 
 
@@ -275,7 +282,13 @@ FONT_PRELOADS = "".join(
 
 
 def crumbs(parts):
-    """KS3 › Chemistry › Particles and their behaviour  (§8.5)."""
+    """KS3 › Chemistry › Particles and their behaviour  (§8.5).
+
+    The separate breadcrumb ROW, mono 14px inside `<main>`. Still correct on
+    unit indices, discipline hubs and the browse layer. ⊕ MRB-208 amendment 1
+    removed it from LESSON pages only, where the trail moved into the header —
+    see `header_trail()`.
+    """
     out = []
     for i, (label, href) in enumerate(parts):
         if href and i < len(parts) - 1:
@@ -286,9 +299,51 @@ def crumbs(parts):
             % '<span class="ks3-crumb-sep" aria-hidden="true">›</span>'.join(out))
 
 
-def shell(title, body, crumb_html="", discipline=None, description=""):
-    """KS3 page shell. `class="rd"` + `data-mode="ks3"` per §8.5."""
+def header_trail(parts):
+    """The lesson trail, inline in the header bar. ⊕ MRB-208 rule 1.
+
+    Ruled by Mide during B1 round one, and re-affirmed on 13 Aug 2026 when both
+    treatments were found alive in the tree:
+
+        "Amendment 1 on this ticket ruled it on 12 August: the header carries
+         the trail inline, the separate breadcrumb row is gone, the KS3 pill
+         stays. Design's treatment survives; `.ks3-crumbs` is removed from the
+         lesson pages. Re-opening a settled ruling because both artefacts still
+         exist in the repo is how a decision quietly becomes a discussion
+         again."
+
+    An `<ol>` rather than the row's flat spans, because it is an ordered path
+    and a screen reader should say so. Separators are their own `<li>`s and are
+    `aria-hidden`, so the list reads as four items and not seven. Measured on
+    Design's pages at body 17px/600, gap 9px, wrapping to its own row at 820
+    and over three rows at 390 — which is what grows `nav.ks3-nav` from 63.19px
+    to 94.78px to 176.06px, and the sticky rail sits directly under it.
+    """
+    out = []
+    for i, (label, href) in enumerate(parts):
+        last = i == len(parts) - 1
+        if i:
+            out.append('<li class="ks3-trail-sep" aria-hidden="true">›</li>')
+        if href and not last:
+            out.append('<li><a href="%s">%s</a></li>' % (e(href), t(label)))
+        else:
+            out.append('<li><span aria-current="page">%s</span></li>' % t(label))
+    return ('<ol class="ks3-trail" aria-label="Breadcrumb">%s</ol>'
+            % "".join(out))
+
+
+def shell(title, body, crumb_html="", discipline=None, description="",
+          trail_html="", rail_html=""):
+    """KS3 page shell. `class="rd"` + `data-mode="ks3"` per §8.5.
+
+    `trail_html` — the inline header trail (lesson pages, MRB-208 rule 1).
+    `rail_html`  — both progress-rail variants (lesson pages, MRB-208 rule 2).
+    Both are empty on every non-lesson page, which keeps the browse layer and
+    the unit indices exactly as they were.
+    """
     accent = ("--subject: var(%s);" % SUBJECT_TOKEN[discipline]) if discipline else ""
+    divider = ('<span class="ks3-nav-divider" aria-hidden="true"></span>'
+               if trail_html else "")
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -302,10 +357,10 @@ def shell(title, body, crumb_html="", discipline=None, description=""):
 <link rel="stylesheet" href="/shared/ks3.css"/>
 </head>
 <body class="rd" data-mode="ks3"%(style)s>
-<nav class="ks3-nav">%(brand)s
+<nav class="ks3-nav">%(brand)s%(divider)s%(trail)s
   <a class="ks3-nav-link" href="/ks3/index.html">KS3</a>
 </nav>
-<main class="ks3-main">
+%(rail)s<main class="ks3-main">
 %(crumbs)s
 %(body)s
 </main>
@@ -320,6 +375,9 @@ def shell(title, body, crumb_html="", discipline=None, description=""):
         "desc": e(description or title),
         "style": (' style="%s"' % accent) if accent else "",
         "brand": NAV_BRAND,
+        "divider": divider,
+        "trail": trail_html,
+        "rail": rail_html,
         "crumbs": crumb_html,
         "body": body,
         "preload": FONT_PRELOADS,
@@ -938,8 +996,168 @@ def r_ladder(lesson):
             % (e(slug), e(sub), e(note), "".join(rungs)))
 
 
+# ── the four block types B1 round two added (§5.1.1 ⊕) ───────────────────
+
+# Grounds a block may sit on. Spelled as a map rather than interpolating the
+# author's string into a var() call, so a typo is a build error and never a
+# silent `background: var(--ks3-taupe)` that resolves to nothing.
+_GROUNDS = {"band": "var(--ks3-band)", "card": "var(--ks3-card)",
+            "inset": "var(--ks3-inset)", "ground": "var(--ks3-ground)"}
+
+
+def _ground_of(block, default):
+    g = block.get("ground") or default
+    if g not in _GROUNDS:
+        raise ValueError(
+            "unknown ground %r — KS3 grounds are %s"
+            % (g, ", ".join(sorted(_GROUNDS))))
+    return g
+
+
+def r_key_fact(lesson, block):
+    """⊕ §4.8.1 B — the one line that must survive the lesson.
+
+    Ruled by Mide (MRB-208 rule 3): cream band, 2px ink outline, hard orange
+    offset shadow, small mono label, statement in display type. **Deliberately
+    not amber** — amber is a wrong idea being confronted, and a key fact must
+    never be confusable with a misconception block. Bold alone was judged
+    insufficient.
+
+    The accent shadow is what separates this from a `.ks3-block`, whose shadow
+    is ink. And the box grows NO badge, letter or mark: `--ks3-band` is also the
+    ground a chosen-WRONG ladder option takes (MRB-202), so anything mark-like
+    here would read as a verdict on a line that is simply true.
+
+    `ground` exists because b1-06 nests one inside a block that is itself
+    `--ks3-band`, which is the entire reason drift 5 had an outlier. Default is
+    `band`, 5:1 across the delivery.
+    """
+    text = block.get("text", "")
+    if not text and block.get("ref") is not None:
+        text = (lesson.get("key_facts") or [])[block["ref"]].get("text", "")
+    ground = _ground_of(block, "band")
+    return ('<div class="ks3-keyfact" data-ground="%s">'
+            '<p class="ks3-keyfact-label">%s</p>'
+            '<p class="ks3-keyfact-body">%s</p></div>'
+            % (e(ground), t(block.get("eyebrow") or "Key fact"), t(text)))
+
+
+def r_rule(lesson, block):
+    """⊕ §5.1.1 — the statement panel: the lesson's rule, in the student's words.
+
+    CLASSIFY's spine already demanded it ("Ends with the rule stated in the
+    student's words") and there was nowhere to put it. A 3px ink border and no
+    shadow are what separate it from a `.ks3-block`; the cards' `--ks3-option-
+    border` is what separates them from misconception cards' ink.
+
+    The statement takes drift 3's RULED clamp — `clamp(28px, 3.9vw, 44px)`, the
+    modal and median of the four real statements in the delivery — not any one
+    page's own. b1-02's formula statement and b1-05's instrument readout are
+    excluded from that role and are different components.
+    """
+    cards = "".join(
+        '<li><p class="ks3-rule-term">%s</p><p class="ks3-rule-gloss">%s</p></li>'
+        % (t(c.get("term", "")), t(c.get("gloss", "")))
+        for c in block.get("cards") or [])
+    close = ('<p class="ks3-rule-close">%s</p>' % t(block["close"])
+             if block.get("close") else "")
+    return ('<section class="ks3-rule"%s><p class="ks3-eyebrow">%s</p>'
+            '<p class="ks3-rule-statement">%s</p>'
+            '%s%s</section>'
+            % (_id_attr(block), t(block.get("eyebrow") or "What settles it"),
+               t(block.get("statement", "")),
+               ('<ul class="ks3-rule-cards">%s</ul>' % cards) if cards else "",
+               close))
+
+
+def r_formula(lesson, block):
+    """⊕ §5.1.1 · MRB-204 step 1 — the formula stands alone.
+
+    Ruled by Mide: "Its own block on the page, nothing else in it. Not embedded
+    in a paragraph, not inside a worked example, not sharing a card. A student
+    flicking back through the lesson to find the formula must be able to see it
+    from the scroll position."
+
+    Centred with NO max-width, which is the whole difference between this and
+    `rule`'s left-aligned 20ch measure. The two shells are otherwise identical
+    and a future tidy-up will try to merge them, so a parity pair asserts they
+    stay apart.
+    """
+    return ('<section class="ks3-formula"%s>'
+            '<div class="ks3-formula-statement"><p>%s</p></div></section>'
+            % (_id_attr(block), t(block.get("statement", ""))))
+
+
+def r_comparison(lesson, block):
+    """⊕ §5.1.1 — CONTRAST's spine. Two things held against each other.
+
+    FLEX, NEVER GRID, and that is a measured constraint rather than a taste:
+    a grid cannot produce the 820px stack without a second query. Root-level
+    `flex-wrap`, `flex: 0 0 118px` on the label, `flex: 1 1 250px; min-width: 0`
+    on the cells (MRB-210).
+
+    **Every cell emits its caption unconditionally**, hidden by CSS above 820px.
+    Emitting it conditionally would need JS and would break at a container width
+    the media query does not know about. The captions ARE the column captions —
+    one authored string used twice per column, never authored twice.
+
+    Under `max-width: 820px` the dark header row hides and each cell shows its
+    own mono caption, so every stacked sentence stays attributed. Without that
+    the discrimination breaks on a phone, which is the point of the block.
+    """
+    cols = block.get("columns") or []
+    if len(cols) != 2:
+        # The flex basis maths is written for two. Say so rather than paint a
+        # third column at a width nobody chose.
+        raise ValueError("comparison takes exactly 2 columns, got %d" % len(cols))
+
+    head = "".join('<span class="ks3-compare-cell" data-tone="%s">%s</span>'
+                   % (e(c.get("tone", "ink")), t(c.get("caption", "")))
+                   for c in cols)
+    rows = []
+    for i, r in enumerate(block.get("rows") or []):
+        cells = "".join(
+            '<span class="ks3-compare-cell" data-tone="%s">'
+            '<span class="ks3-compare-caption" aria-hidden="true">%s</span>'
+            '<span class="ks3-compare-text">%s</span></span>'
+            % (e((block.get("row_tones") or ["ink", "ink"])[j]),
+               t(cols[j].get("caption", "")), t(cell))
+            for j, cell in enumerate(r.get("cells") or []))
+        rows.append('<li class="ks3-compare-row" data-zebra="%d">'
+                    '<span class="ks3-compare-name">%s</span>%s</li>'
+                    % (i % 2, t(r.get("name", "")), cells))
+
+    nested = block.get("key_fact")
+    kf = r_key_fact(lesson, dict(nested, ground=nested.get("ground", "card"))) if nested else ""
+    return ('<section class="ks3-compare" data-ground="%s"%s>'
+            '<p class="ks3-eyebrow" data-tone="%s">%s</p>'
+            '<p class="ks3-compare-statement">%s</p>'
+            '<ul class="ks3-compare-rows">'
+            '<li class="ks3-compare-head" aria-hidden="true">'
+            '<span class="ks3-compare-name"></span>%s</li>%s</ul>%s</section>'
+            % (e(_ground_of(block, "band")), _id_attr(block),
+               e(block.get("eyebrow_tone", "ink-muted")),
+               t(block.get("eyebrow", "")), t(block.get("statement", "")),
+               head, "".join(rows), kf))
+
+
+def _id_attr(block):
+    """`id` plus the 92px scroll margin every anchorable section needs.
+
+    Emitted on EVERY id-bearing section, not only the rail's stages — a hash
+    link from the trail, the endmatter or another lesson lands under the sticky
+    bar otherwise. The value is a class in ks3.css; the attribute here is just
+    the id.
+    """
+    return (' id="%s"' % e(block["id"])) if block.get("id") else ""
+
+
 BLOCK_RENDERERS = {
     "hook": lambda l, b: r_hook(l),
+    "key-fact": r_key_fact,
+    "rule": r_rule,
+    "formula": r_formula,
+    "comparison": r_comparison,
     "explainer": r_explainer,
     "figure": r_figure,
     "keyword": r_keyword,
@@ -996,7 +1214,7 @@ LEGAL_LINE = ('<p class="ks3-legal">Lesson content © MrBadmusAI. Written by a '
               'before a lesson leaves draft.</p>')
 
 
-def r_endmatter(cards):
+def r_endmatter(cards, tutor=None):
     """The end-matter grid. `cards` is [(heading, [<li>…]), …].
 
     A card with no items is omitted — an empty "Before this lesson" is a
@@ -1009,7 +1227,10 @@ def r_endmatter(cards):
             continue
         out.append('<section><h2>%s</h2><ul>%s</ul></section>'
                    % (e(heading), "".join(items)))
-    # ⚠️ A SPAN, NOT A LINK, AND DELIBERATELY SO.
+
+    # ⚠️ A SPAN, NOT A LINK, AND DELIBERATELY SO — unless the lesson names a
+    # destination that exists on its own page.
+    #
     # This was an <a href="#ks3-tutor">, and no KS3 page contains an element
     # with that id — so it was a link that silently went nowhere, which is
     # worse than no affordance at all. Claude Design's reference draws it as a
@@ -1017,12 +1238,97 @@ def r_endmatter(cards):
     # (§8.8 — a KS3 student can reach no tutor today), and the reference shows
     # what the card will look like rather than pretending the destination is
     # live. It becomes a real control when the KS3 tutor lands, not before.
-    out.append('<section class="ks3-tutor"><h2>Stuck? Ask Mr Badmus AI</h2>'
-               '<p>Ask anything about this lesson and get it explained another '
-               'way.</p>'
-               '<span class="ks3-tutor-cta">Start a question %s'
-               '</span></section>' % MARK_ARROW)
+    #
+    # ⊕ §4.8.1 C. Design's approved B1 pages resolve this differently: the card
+    # points at THE LESSON'S OWN flagship activity — b1-01's at `#s-board` —
+    # which scrolls, asks nobody anything, and still reads as a tutor. That is
+    # a real destination on the page it is printed on, so the <span> objection
+    # does not apply to it. A lesson that names no `anchor` still gets the
+    # span. MRB-209's link gate covers the href either way.
+    tutor = tutor or {}
+    heading = t(tutor.get("prompt") or "Stuck? Ask Mr Badmus AI")
+    body = ('<p>Ask anything about this lesson and get it explained another '
+            'way.</p>' if not tutor.get("prompt") else "")
+    label = t(tutor.get("cta") or "Start a question")
+    anchor = tutor.get("anchor")
+    cta = ('<a class="ks3-tutor-cta" href="#%s">%s %s</a>'
+           % (e(anchor), label, MARK_ARROW)) if anchor else (
+          '<span class="ks3-tutor-cta">%s %s</span>' % (label, MARK_ARROW))
+    out.append('<section class="ks3-tutor"><h2>%s</h2>%s%s</section>'
+               % (heading, body, cta))
     return '<div class="ks3-endmatter">%s</div>' % "".join(out)
+
+
+# ── the progress rail (§4.8.1 A · MRB-208 rule 2) ────────────────────────
+
+# Two variants, and they are NOT two renderings of one thing — they carry
+# different information and swap at a hard threshold with no viewport showing
+# both and none showing neither:
+#
+#     [data-rail="side"] { display: none }
+#     @media (min-width: 1340px) { side: block; top: none }
+#
+# ⚖️ BOTH VARIANTS ARE COMPLETION-BASED, AND NOTHING IS TICKED ON LOAD.
+# Ruled on MRB-208 (12 Aug, re-affirmed 13 Aug). Design's delivered top bar was
+# `IntersectionObserver`-driven only, so it read "4 / 4" with a full accent bar
+# for a student who had scrolled to the bottom and answered nothing — and below
+# 1340px it is the only rail a student ever sees. The ruling already bound both
+# variants and was not scoped to the wide one:
+#
+#     "here the approved page is wrong and the ruling wins. That is the same
+#      shape as the microscope depth table on MRB-210 — where an approved page
+#      contradicts a settled fact or a standing ruling, the page gets corrected."
+#
+# What stays scroll-driven is the side rail's CURRENT ring and the top bar's
+# CURRENT LABEL. Those answer "where am I", not "how far have I got", and
+# Design drew them that way. The count and the fill are completion, which is
+# precisely the defect the ruling named. `shared/ks3.js` owns the state.
+
+def r_rail(lesson):
+    """Both rail variants, or nothing at all when a lesson declares no stages."""
+    stages = lesson.get("rail") or []
+    if not stages:
+        return ""
+
+    nodes = []
+    for i, s in enumerate(stages):
+        last = i == len(stages) - 1
+        # The connector belongs to the node ABOVE it, so the last node has none
+        # — otherwise the column ends in a 20px stub pointing at nothing.
+        line = ("" if last else
+                '<span class="ks3-rail-line" aria-hidden="true"></span>')
+        nodes.append(
+            '<li><a href="#%s" data-rail-stage="%d">'
+            '<span class="ks3-rail-chip" aria-hidden="true">%d</span>'
+            '<span class="ks3-rail-label">%s</span></a>%s</li>'
+            % (e(s["anchor"]), i, i + 1, t(s.get("short", "")), line))
+
+    side = ('<nav class="ks3-rail" data-rail="side" aria-label="Lesson progress">'
+            '<ol>%s</ol></nav>' % "".join(nodes))
+
+    # The top bar carries no focusable element, exactly as Design drew it. The
+    # side rail's anchors give a keyboard route above 1340px; below it the
+    # header trail and normal document order remain tab-navigable. Adding
+    # anchors here is an addition INSIDE a drawn component and the inventory
+    # recommends it (F11) — but it would repaint the bar, and this run's whole
+    # purpose is a side-by-side match Mide signs off. Raised in the report
+    # instead of taken unilaterally.
+    top = ('<nav class="ks3-railbar" data-rail="top" aria-label="Lesson progress">'
+           '<div class="ks3-railbar-row">'
+           '<span class="ks3-railbar-count" data-rail-count>0 / %d</span>'
+           '<span class="ks3-railbar-label" data-rail-label>%s</span>'
+           '<span class="ks3-railbar-track">'
+           '<span class="ks3-railbar-fill" data-rail-fill></span>'
+           '</span></div></nav>'
+           % (len(stages), t(stages[0].get("label", ""))))
+
+    payload = json.dumps([{"anchor": s["anchor"],
+                           "label": s.get("label", ""),
+                           "done_when": s.get("done_when", "")}
+                          for s in stages], separators=(",", ":"),
+                         sort_keys=True)
+    return ('<div class="ks3-rails" data-rail-stages="%s">%s%s</div>'
+            % (e(payload), side, top))
 
 
 # ── pages ────────────────────────────────────────────────────────────────
@@ -1034,10 +1340,13 @@ def ks4_bridge_href(link):
 def lesson_page(unit, lesson, registry, units_by_code):
     disc = unit["discipline"]
     base = "/ks3/%s/%s" % (disc, unit["slug"])
-    crumb = crumbs([("KS3", "/ks3/index.html"),
-                    (DISCIPLINE_TITLES[disc], "/ks3/%s/index.html" % disc),
-                    (unit["title"], base + "/index.html"),
-                    (lesson["title"], None)])
+    # ⊕ MRB-208 rule 1: on a LESSON page the trail lives in the header bar and
+    # the separate `.ks3-crumbs` row is gone. Every other page type still calls
+    # crumbs() — the ruling was scoped to lessons and nothing else moved.
+    trail = header_trail([("KS3", "/ks3/index.html"),
+                          (DISCIPLINE_TITLES[disc], "/ks3/%s/index.html" % disc),
+                          (unit["title"], base + "/index.html"),
+                          (lesson["title"], None)])
 
     head = ['<header class="ks3-lesson-head">',
             '<p class="ks3-eyebrow">%s · %s</p>'
@@ -1102,14 +1411,35 @@ def lesson_page(unit, lesson, registry, units_by_code):
               MARK_ARROW)
            for l in lesson.get("ks4_links") or []]
 
+    # ⊕ §4.8.1 D — two prose slots that fill a card the generator used to omit.
+    # `before_this` speaks only when there are no prerequisites ("Nothing —
+    # this is where the unit starts."), `ks4_becomes` only when there is no KS4
+    # page to point at yet. Neither ever competes with the real list: an empty
+    # card is a promise the lesson did not make, and a card carrying BOTH prose
+    # and links would say the same thing twice.
+    if not prereqs and lesson.get("before_this"):
+        prereqs = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
+                   % t(lesson["before_this"])]
+    if not ks4 and lesson.get("ks4_becomes"):
+        ks4 = ['<li><span class="ks3-endmatter-prose">%s</span></li>'
+               % t(lesson["ks4_becomes"])]
+
     body.append(r_endmatter([("Before this lesson", prereqs),
                              ("Connects to", connects),
-                             ("At GCSE this becomes", ks4)]))
+                             ("At GCSE this becomes", ks4)],
+                            tutor=lesson.get("tutor")))
+    # ⊕ §4.8.1 D — the lesson-specific safety line sits ALONGSIDE the standing
+    # legal line, never instead of it. b1-01's is "Never light a candle to test
+    # this at home without an adult with you."
+    if lesson.get("safety_note"):
+        body.append('<p class="ks3-legal ks3-safety">%s</p>'
+                    % t(lesson["safety_note"]))
     body.append(LEGAL_LINE)
     body.append("</div>")
 
-    return shell(lesson["title"], "\n".join(x for x in body if x), crumb, disc,
-                 lesson.get("big_question", ""))
+    return shell(lesson["title"], "\n".join(x for x in body if x), "", disc,
+                 lesson.get("big_question", ""),
+                 trail_html=trail, rail_html=r_rail(lesson))
 
 
 def coming_soon_page(unit, lesson):
