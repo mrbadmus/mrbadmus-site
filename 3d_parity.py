@@ -81,11 +81,24 @@ is tolerated; a mismatch outside this list is a failure.
   13.  The §02 reference draws mid-round state (two answered squares, one
        missed chip). The app opens a round at its start: square 1 current,
        none done, no missed chips yet. Same structure, minute zero.
-  14.  The panel's "Record" provenance section (six .fact rows: system,
-       spec points, renderer, licence, source, acquired) has no drawn slot
-       in the reference — a Stage 1 acceptance addition (every record field
-       rendered). The key-facts count is therefore asserted on the FIRST
-       .facts block only.
+  14.  The panel's "Record" section has no drawn slot in the reference. It
+       is now ONE .fact row — system — and the key-facts count is therefore
+       still asserted on the FIRST .facts block only.
+       It carried six until MRB-186: renderer, licence, source and acquired
+       were implementation and provenance detail on a page whose job is to
+       teach biology, and `RENDERER: mesh` is the platform narrating its own
+       internals — the standing rule that student-facing pages carry no
+       explanatory meta-text about how the platform works. Spec points went
+       with them: the ruling puts statement IDs on a teacher-facing surface
+       rather than the default student view, and MRB-193 made the
+       specimen-level array a fallback a hotspot may override, so the row
+       would have stated something untrue about any structure that did.
+       All five now live in docs/3d_studio_asset_manifest.md, generated from
+       the content records by 3d-studio/tools/asset_manifest.py.
+       This block being undrawn is also why nothing caught it rendering
+       SYSTEM as SYSTE / M — see the mid-word-break sweep in Layer B, which
+       asserts the property across the whole document on every screen rather
+       than trusting a selector list to stay complete.
   15.  Accent fills behind small text ship as --st-accent-text #A93411,
        not the reference's #E4572E: .cta (14px), .btn--primary (14.5px,
        panel + tablet + phone sheet), .rbtn-check (15px), the retrieve-mode
@@ -551,6 +564,62 @@ window.__st = {
     var r = el.getBoundingClientRect();
     return { x: r.x, y: r.y, w: r.width, h: r.height };
   },
+  /** Every place the rendered text breaks INSIDE a word, anywhere on the page.
+   *
+   *  MRB-186: the panel's label column rendered SYSTEM as SYSTE / M, LICENCE as
+   *  LICE / NCE and SOURCE as SOU / RCE, on desktop at full width, through
+   *  every screenshot of the build. No row caught it, because the Record block
+   *  is furniture the frozen reference does not draw, so nothing was asserting
+   *  anything about it. A rendered-output gate that cannot catch a mid-word
+   *  break is not doing its job — so this asserts the PROPERTY over the whole
+   *  document rather than a list of selectors somebody has to remember to
+   *  extend. It costs nothing on text that does not wrap.
+   *
+   *  Method: walk the line boxes. For each text node, ask for one rect per
+   *  character; a break is a jump in the rect's top edge. A jump between two
+   *  non-space characters is a break inside a word. Wrapping at a space is
+   *  normal and never reported, and a break after a hyphen or a slash is a
+   *  legitimate break opportunity, so those are allowed too. */
+  midWordBreaks: function () {
+    var out = [];
+    var AFTER_OK = '-‐‑‒–—―­/​';
+    var walker = document.createTreeWalker(
+      document.body, NodeFilter.SHOW_TEXT, null);
+    var node, range = document.createRange();
+    while ((node = walker.nextNode())) {
+      var s = node.nodeValue;
+      if (!s || !/\S/.test(s)) { continue; }
+      var el = node.parentElement;
+      if (!el) { continue; }
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') { continue; }
+      // One line box means nothing wrapped: nothing to look at.
+      range.selectNodeContents(node);
+      if (range.getClientRects().length <= 1) { continue; }
+      var prevTop = null, prevCh = null;
+      for (var i = 0; i < s.length; i++) {
+        var ch = s.charAt(i);
+        range.setStart(node, i);
+        range.setEnd(node, i + 1);
+        var rects = range.getClientRects();
+        if (!rects.length) { prevTop = null; prevCh = ch; continue; }
+        var top = Math.round(rects[0].top * 10) / 10;
+        if (prevTop !== null && top > prevTop + 1
+            && /\S/.test(ch) && prevCh !== null && /\S/.test(prevCh)
+            && AFTER_OK.indexOf(prevCh) === -1) {
+          var word = (s.slice(0, i).split(/\s/).pop() || '')
+            + ' / ' + (s.slice(i).split(/\s/)[0] || '');
+          var where = el.tagName.toLowerCase()
+            + (el.className && typeof el.className === 'string'
+               ? '.' + el.className.trim().split(/\s+/).join('.') : '');
+          out.push({ sel: where, split: word });
+          break;  // one report per text node is enough to fail it
+        }
+        prevTop = top; prevCh = ch;
+      }
+    }
+    return out;
+  },
   order: function (parent, sels) {
     var p = document.querySelector(parent);
     if (!p) { return null; }
@@ -888,6 +957,18 @@ def check_structure(page, screen, counts):
             p.append("s06: hint %r promises rotation on a flat plate" % hint)
         need(".hotspot", counts["hotspots"])
 
+    # ── every screen, every breakpoint: nothing breaks inside a word ──────
+    # Deliberately not scoped to a selector list. The defect this exists for
+    # (MRB-186) was in a block no row mentioned, so a gate that only watches
+    # the selectors somebody remembered would have missed it in exactly the
+    # same way. It runs on all eight driven screens, which is what makes it a
+    # breakpoint sweep rather than a desktop check.
+    for hit in page.eval("window.__st.midWordBreaks()") or []:
+        p.append("%s: text breaks mid-word in %s — %r (the label column is too "
+                 "narrow for its content, or the element is wrapping with "
+                 "overflow-wrap:anywhere as a flex item)"
+                 % (screen, hit["sel"], hit["split"]))
+
     return p
 
 
@@ -1072,9 +1153,72 @@ def run_browser_layers(url, tokens, counts):
     return problems, style_rows, checked
 
 
+def dist_staleness():
+    """The newest file under src/ or content/, when it is newer than the build.
+
+    Returns (path, seconds_ahead) or None.
+
+    FATAL, not a note — ruled on MRB-191. `npm run build` is `tsc && vite
+    build`, so a type error aborts BEFORE Vite writes anything and leaves
+    dist/ holding the PREVIOUS build. Every screen this gate then drives
+    measures code that is not running, and the gate reports green about it.
+    That is worse than having no gate: it converts a build failure into a
+    false pass, and a false pass is believed. It cost the overnight session
+    an hour while it was still only a warning.
+    """
+    index = os.path.join(DIST, "index.html")
+    if not os.path.exists(index):
+        return None
+    built = os.path.getmtime(index)
+    newest, newest_at = None, 0.0
+    for root in (os.path.join(APP, "src"), os.path.join(APP, "content")):
+        for dirpath, _dirs, files in os.walk(root):
+            for f in files:
+                path = os.path.join(dirpath, f)
+                try:
+                    mtime = os.path.getmtime(path)
+                except OSError:
+                    continue
+                if mtime > newest_at:
+                    newest, newest_at = path, mtime
+    if newest and newest_at > built:
+        return newest, newest_at - built
+    return None
+
+
+def refuse_if_stale(gate):
+    """Print the refusal and return True when the build cannot be trusted."""
+    if not os.path.isdir(DIST) or not os.path.exists(
+            os.path.join(DIST, "index.html")):
+        print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
+              % os.path.relpath(DIST, HERE))
+        print("NO RESULTS — nothing was measured.")
+        return True
+    stale = dist_staleness()
+    if stale:
+        newest, behind = stale
+        print("FAIL: the built app is STALE. %s is %.0fs newer than dist/."
+              % (os.path.relpath(newest, HERE), behind))
+        print("      `npm run build` is `tsc && vite build` — a type error "
+              "aborts before Vite writes, so dist/ keeps the previous build "
+              "and this gate would measure code that is not running.")
+        print("      %s refuses rather than report green about it (MRB-191)."
+              % gate)
+        print("      Run `npm run build` in 3d-studio/ and re-run. If the "
+              "build fails, THAT is the defect this was hiding.")
+        print("NO RESULTS — nothing was measured.")
+        return True
+    return False
+
+
 def main():
     print("3D Studio parity gate — reference: %s"
           % os.path.relpath(REFERENCE, HERE))
+
+    # Before anything is measured, and before layer A prints a single note:
+    # a refusal that still emitted partial results would be read as results.
+    if refuse_if_stale("The parity gate"):
+        return 1
 
     tokens = studio_tokens()
     counts = _content_counts()
@@ -1083,12 +1227,6 @@ def main():
     a_problems, a_notes = check_provenance()
     for note in a_notes:
         print("  A: " + note)
-
-    if not os.path.isdir(DIST) or not os.path.exists(
-            os.path.join(DIST, "index.html")):
-        print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
-              % os.path.relpath(DIST, HERE))
-        return 1
 
     # serve dist under /3d/ so the app's absolute asset URLs resolve
     root = tempfile.mkdtemp(prefix="st-parity-")

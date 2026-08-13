@@ -868,13 +868,13 @@ a:hover { color: var(--st-accent-hover); }
   font: 600 18px/1.2 var(--st-display);
   color: var(--st-cream);
   letter-spacing: -0.02em;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .callout__detail {
   margin-top: 7px;
   font: 400 13px/1.5 var(--st-ui);
   color: var(--st-room-body);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .callout__foot {
   margin-top: 11px;
@@ -937,13 +937,13 @@ a:hover { color: var(--st-accent-hover); }
   margin: 9px 0 0;
   font: italic 400 16px/1.35 var(--st-ui);
   color: var(--st-caption);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .panel__desc {
   margin: 14px 0 0;
   font: 400 16.5px/1.6 var(--st-ui);
   color: var(--st-body);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .sectionrule {
@@ -1003,14 +1003,31 @@ a:hover { color: var(--st-accent-hover); }
   border-bottom: 1px solid var(--st-rule-fact);
 }
 .fact:last-child { border-bottom: none; }
+/* BREAK-WORD, NOT ANYWHERE — and the difference is the whole defect (MRB-186).
+ *
+ * `overflow-wrap: anywhere` also collapses the element's MIN-CONTENT
+ * contribution to a single character. These two are flex items sharing a
+ * `space-between` row, so flexbox was free to squeeze the label to a few
+ * characters and break inside the word: SYSTEM rendered SYSTE / M, LICENCE
+ * LICE / NCE, SOURCE SOU / RCE — on desktop, at full width.
+ *
+ * `break-word` still breaks a genuinely over-long token as a last resort, so
+ * nothing can overflow the card, but it leaves min-content at the longest
+ * WORD. Flexbox therefore cannot shrink either column past that, and a break
+ * can only ever fall where a break belongs. Applied to every wrapping element
+ * in this file for the same reason, whether or not it is a flex item today.
+ *
+ * Watched by the parity gate's mid-word-break row, which walks the rendered
+ * line boxes on every screen — this was invisible to review because the block
+ * is furniture the frozen reference does not draw, so nothing asserted it. */
 .fact__label {
   font: 400 11.5px/1.3 var(--st-mono);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--st-caption);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
-.fact__value { font: 500 14.5px/1.3 var(--st-ui); text-align: right; overflow-wrap: anywhere; }
+.fact__value { font: 500 14.5px/1.3 var(--st-ui); text-align: right; overflow-wrap: break-word; }
 
 .matters {
   margin-top: 14px;
@@ -1027,7 +1044,7 @@ a:hover { color: var(--st-accent-hover); }
   margin-top: 8px;
   font: 400 13.5px/1.55 var(--st-ui);
   color: var(--st-room-note);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 .didyouknow {
   margin-top: 8px;
@@ -1046,7 +1063,7 @@ a:hover { color: var(--st-accent-hover); }
   margin-top: 8px;
   font: 400 13.5px/1.55 var(--st-ui);
   color: #4A4136;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .panel__foot {
@@ -1101,7 +1118,7 @@ a:hover { color: var(--st-accent-hover); }
 .tpanel__title { flex: 1; min-width: 260px; }
 .tpanel__title .panel__name { font-size: 34px; margin-top: 14px; }
 .tpanel__actions { display: flex; gap: 8px; flex: none; }
-.tpanel__desc { margin: 16px 0 0; font: 400 17px/1.6 var(--st-ui); color: var(--st-body); max-width: 640px; overflow-wrap: anywhere; }
+.tpanel__desc { margin: 16px 0 0; font: 400 17px/1.6 var(--st-ui); color: var(--st-body); max-width: 640px; overflow-wrap: break-word; }
 .tpanel__cols {
   margin-top: 20px;
   display: grid;
@@ -1264,7 +1281,7 @@ a:hover { color: var(--st-accent-hover); }
   border: 1px solid var(--st-thumb-border);
   flex: none;
 }
-.lessonrow__title { display: block; font: 600 14.5px/1.25 var(--st-ui); overflow-wrap: anywhere; }
+.lessonrow__title { display: block; font: 600 14.5px/1.25 var(--st-ui); overflow-wrap: break-word; }
 .lessonrow__meta { display: block; margin-top: 3px; font: 400 10.5px/1 var(--st-mono); color: var(--st-faint); text-transform: uppercase; }
 .lessonrow__arrow { margin-left: auto; color: var(--st-accent-text); display: flex; flex: none; }
 

@@ -1577,11 +1577,25 @@ def serve_dist_as_3d(prefix, strip_glb=False):
     return "http://127.0.0.1:%d/3d/" % port, cleanup
 
 
-def staleness_note():
-    """A built app older than its sources measures yesterday's renderer.
+def dist_staleness():
+    """The newest file under src/ or content/, when it is newer than the build.
 
-    A note, not a failure: this repo is worked in more than one worktree at a
-    time and a stale dist is usually a forgotten build, not a defect.
+    Returns (path, seconds_ahead) or None.
+
+    THIS IS NOW FATAL, and it used to be a note — ruled on MRB-191.
+
+    The old reasoning was that this repo is worked in more than one worktree
+    at a time, so a stale dist is usually a forgotten build rather than a
+    defect. True, and beside the point. `npm run build` is `tsc && vite
+    build`: a type error aborts BEFORE Vite writes, leaving dist/ on the
+    previous build. Checks 1–10 then drive yesterday's renderer and print
+    RENDER CHECK PASS about code that is not running.
+
+    A gate that can report green on stale output is worse than no gate,
+    because it turns a build failure into a false pass — and the pass is
+    believed, twice over, since it is exactly the moment nobody re-reads the
+    warnings. It cost the overnight session an hour as a warning printed
+    twice. So it refuses.
     """
     index = os.path.join(DIST, "index.html")
     if not os.path.exists(index):
@@ -1599,9 +1613,7 @@ def staleness_note():
                 if m > newest_at:
                     newest, newest_at = p, m
     if newest and newest_at > built:
-        return ("WARNING: %s is newer than the build — run `npm run build` in "
-                "3d-studio/ or this measures the previous renderer"
-                % os.path.relpath(newest, HERE))
+        return newest, newest_at - built
     return None
 
 
@@ -1614,11 +1626,26 @@ def main():
     if not os.path.isdir(DIST) or not os.path.exists(os.path.join(DIST, "index.html")):
         print("FAIL: no built app at %s — run `npm run build` in 3d-studio/"
               % os.path.relpath(DIST, HERE))
+        print("NO RESULTS — nothing was measured.")
         return 1
 
-    stale = staleness_note()
+    # Refuse before a single browser starts. A refusal that still ran the
+    # cheap checks would print a column of ticks above the failure, and the
+    # ticks are what gets read.
+    stale = dist_staleness()
     if stale:
-        print("  " + stale)
+        newest, behind = stale
+        print("FAIL: the built app is STALE. %s is %.0fs newer than dist/."
+              % (os.path.relpath(newest, HERE), behind))
+        print("      `npm run build` is `tsc && vite build` — a type error "
+              "aborts before Vite writes, so dist/ keeps the previous build "
+              "and checks 1–10 would measure code that is not running.")
+        print("      The render check refuses rather than report green about "
+              "it (MRB-191).")
+        print("      Run `npm run build` in 3d-studio/ and re-run. If the "
+              "build fails, THAT is the defect this was hiding.")
+        print("NO RESULTS — nothing was measured.")
+        return 1
 
     want = hotspot_count()
     print("  content/heart.json declares %d hotspot(s)\n" % want)
@@ -1679,17 +1706,13 @@ def main():
         print("%d problem(s):" % len(report.problems))
         for p in report.problems:
             print("  ✗ " + p)
-        if stale:
-            print("  " + stale)
         print("RENDER CHECK FAIL — %d/%d gates hold (%.0fs)"
               % (passed, len(gated), time.time() - started))
         return 1
-    if stale:
-        # Repeated at the end on purpose. A stale dist is the one failure mode
-        # that makes every line above a lie about code that is not running,
-        # and the note at the top scrolls away behind 100 seconds of output.
-        # It cost an hour of this build before it was printed twice.
-        print("  " + stale)
+    # Nothing about staleness is printed down here any more, and that is the
+    # improvement: it cannot be reached with a stale dist. The warning used to
+    # be repeated at the top and the bottom precisely because a note is easy to
+    # scroll past — the fix for a warning nobody reads is not a third warning.
     print("RENDER CHECK PASS — %d/%d gates hold, frame timing reported only "
           "(%.0fs)" % (passed, len(gated), time.time() - started))
     return 0
