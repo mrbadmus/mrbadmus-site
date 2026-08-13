@@ -1183,8 +1183,25 @@ def _pixels(rows, rect, step=2):
 
 
 def _is_void(rgb):
-    return (abs(rgb[0] - VOID_RGB[0]) < 40 and rgb[1] < 60
-            and abs(rgb[2] - VOID_RGB[2]) < 40)
+    """The magenta backdrop, recognised by its HUE rather than its exact value.
+
+    This used to ask for each channel within 40 levels of `VOID_RGB`, which is
+    a fine test of a colour that arrives unmodified and a poor one of a colour
+    that does not. Tier A renders through a post-processing composer and lands
+    the backdrop at (215, 0, 215) — forty levels off on red and blue, exactly
+    at the old test's boundary, so roughly half of tier A's backdrop counted as
+    SPECIMEN. Nothing in the old check read it as a cap (magenta fails a
+    red-dominant test on its blue channel), so it inflated the pixel counts the
+    thresholds are taken as fractions of and never showed as a failure. It
+    would have poisoned a luminance classifier outright, which is how it was
+    found.
+
+    Magenta is the one thing on the stage where red and blue are high, close to
+    each other, and green is a fraction of both. Tissue (192, 170, 158) fails on
+    red-against-blue; the cut wall and the cavity fail on green.
+    """
+    r, g, b = rgb
+    return r > 90 and b > 90 and abs(r - b) < 26 and g < 0.45 * min(r, b)
 
 
 # How far apart two renders of the same geometry may sit and still count as
@@ -1203,27 +1220,116 @@ def _differs(a, b):
     return any(abs(a[i] - b[i]) > SAME_TOLERANCE for i in range(3))
 
 
-def _is_cut_face(rgb):
-    """A pixel of exposed cut material.
+# ── the cut-face classifier ──────────────────────────────────────────────────
+#
+# THE OLD ONE'S PREMISE EXPIRED, AND THIS IS THE REPLACEMENT (MRB-189, Aug 13).
+#
+# Until Design authored the cross-section treatment, the cap was drawn in the
+# accent family — `#A93411` outer, `#E4572E` inside it — so a cut-face pixel
+# could be found by asking whether it was saturated, red-dominant and warmer in
+# green than in blue, with an HSV saturation floor of 0.45 against a specimen
+# surface measuring 0.18. That was a sound classifier for an orange cap.
+#
+# The cap is no longer orange. §08 takes the accent off the tissue entirely:
+# the cut wall is `#F0E9DC` and the cavity `#141109`, the extremes of the frame.
+# Measured, the wall is 0.08 saturation — it would not have been counted as cut
+# face AT ALL — and the cavity is 0.55, which passes the old floor but only
+# incidentally, because a near-black warm value is arithmetically "saturated"
+# rather than because saturation means anything about it. The old gate would
+# have failed on correct output. That is a premise expiring, not a defect in
+# the design or in the gate.
+#
+# WHAT IT CLASSIFIES ON NOW: the two properties Design named as load-bearing.
+#
+#   FLAT. "The cut face is flat and unshaded while the exterior keeps its
+#   gradient. That alone says cut before any colour is read, and it holds in
+#   greyscale." A flat unshaded fill puts thousands of pixels on exactly one
+#   value; a shaded surface cannot, because shading is what a gradient is. So a
+#   cut-face colour is one held by a large share of the frame at once.
+#
+#   EXTREME. "The two values are the extremes of the frame, not neighbours in a
+#   family: lightest thing on the stage against darkest." So a cut-face colour
+#   also has to sit a long way in luminance from the specimen's own mid-tone,
+#   which is measured in the same frame rather than assumed.
+#
+# BOTH conditions are needed, and the reason is Tier A. Tier A alone renders
+# with an environment map through a composer, and its specular highlights on
+# the specimen's own surface reach luminance 0.91 — BRIGHTER than the cut wall's
+# 0.82. A luminance test on its own would count tier A's highlights as cut face
+# with no cut engaged, and fail the baseline assertion below on a correct
+# render. Flatness is what separates them there: the wall holds 6.2k pixels on
+# one exact value, and the busiest single value anywhere on the lit surface
+# holds 148. The gap is fortyfold, which is why this classifier, like the one it
+# replaces, does not need to be clever.
+#
+# Deliberately NOT an exact match against `#F0E9DC` and `#141109`, even though
+# both now arrive on the glass unmodified (`toneMapped: false`, and measured
+# identical at all three tiers). An exact match would assert the colour rather
+# than the cut, would break on any future compositing pass, and would make this
+# check the third place the palette is pinned. The values themselves are
+# asserted in `tests/gates/section.test.ts` and in `3d_parity.py`; this check
+# asserts that a flat face at a luminance extreme exists where a cut is, and
+# does not where one is not.
 
-    The cap is drawn in the accent family (`#A93411` outer, `#E4572E` inside
-    it) — strongly saturated red-orange. The generated test specimen's own PBR
-    surface is a near-neutral warm grey: measured around (192, 170, 158),
-    saturation 0.18. The gap between the two is nearly fivefold, so this
-    classifier does not need to be clever, and it deliberately is not: it
-    checks that the pixel is saturated, red-dominant, and warmer in green than
-    in blue. Magenta fails it on the last condition, which matters because the
-    void backdrop is the other thing on screen.
+#: A flat population is an exact colour held by at least this share of the
+#: sampled specimen pixels. Measured on the heart at all three tiers: the cut
+#: wall lands 6239–6332 of ~8.8k (71%), the busiest value on the lit surface
+#: lands 148 (1.7%). 3% sits an order of magnitude clear of both.
+CUT_FLAT_SHARE = 0.03
 
-    It DOES assume the specimen is not itself painted a saturated orange. A
-    bought asset could be; the check reports its counts either way, and a
-    specimen that broke the assumption would show as a large cut-face count
-    with no cut engaged, which is asserted below rather than assumed.
+#: How far from the specimen's own median luminance a flat population must sit
+#: before it counts as an extreme. Measured: median 0.50–0.58 across tiers, cut
+#: wall 0.8197 at every tier (Δ 0.24–0.32), cavity 0.0052 (Δ 0.50–0.57).
+CUT_SEPARATION = 0.20
+
+
+def _luma(rgb):
+    """Relative luminance, WCAG 2.x — the same arithmetic `contrast.test.ts`
+    uses, so "light" and "dark" mean here what they mean there."""
+    channels = []
+    for value in rgb:
+        v = value / 255.0
+        channels.append(v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4)
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
+
+
+def _median_luma(pixels, keys):
+    values = sorted(_luma(pixels[p]) for p in keys)
+    return values[len(values) // 2] if values else 0.0
+
+
+def _flat_faces(pixels, keys, mid):
+    """The flat populations at a luminance extreme, as {rgb: count}.
+
+    A flat population is one exact colour held by CUT_FLAT_SHARE of the sampled
+    specimen; an extreme one sits CUT_SEPARATION or further from `mid`. Returns
+    every flat population it found either way — the ones that are not extreme
+    are reported, because a flat mid-tone population is the shape a broken
+    premise would take.
     """
-    top, bottom = max(rgb), min(rgb)
-    if top < 40:
-        return False
-    return (top - bottom) / float(top) > 0.45 and rgb[0] == top and rgb[2] <= rgb[1]
+    counts = {}
+    for point in keys:
+        rgb = pixels[point]
+        counts[rgb] = counts.get(rgb, 0) + 1
+    floor = max(int(len(keys) * CUT_FLAT_SHARE), 1)
+    flat = {rgb: n for rgb, n in counts.items() if n >= floor}
+    extreme = {rgb: n for rgb, n in flat.items()
+               if abs(_luma(rgb) - mid) >= CUT_SEPARATION}
+    return flat, extreme
+
+
+def _describe_pops(pops, mid):
+    """Flat populations as `#RRGGBB×N L=0.82 (Δ0.24)`, biggest first.
+
+    Reported at every tier whether or not anything failed. The old check
+    reported a saturation figure it had measured once and written down; this
+    reports what it actually found this run, so the number a future premise
+    expires against is on the screen rather than in a comment.
+    """
+    return " ".join(
+        "#%02X%02X%02X×%d L=%.3f (Δ%.2f)"
+        % (rgb[0], rgb[1], rgb[2], n, _luma(rgb), abs(_luma(rgb) - mid))
+        for rgb, n in sorted(pops.items(), key=lambda kv: -kv[1]))
 
 
 def _interior_holes(rows, rect, step=2):
@@ -1258,13 +1364,17 @@ def check_section(page, report, shots):
     Three claims, none of which can be read off an attribute the renderer
     wrote about itself:
 
-      * THE CAP IS DRAWN. The cut face is painted in the accent family, which
-        is nothing like the specimen's own near-neutral surface, so counting
-        saturated red-orange pixels answers "is there a cut face" directly.
+      * THE CAP IS DRAWN. The cut face is flat and unshaded where the exterior
+        is shaded, and its two values sit at the extremes of the frame — so
+        counting pixels that belong to a large flat population at a luminance
+        extreme from the specimen's own mid-tone answers "is there a cut face"
+        directly. See the classifier above for why it is both of those and not
+        either alone, and for the saturation-shaped premise it replaced.
         Asserted in both directions: many with the cut engaged, essentially
-        none without it. The hotspot dots are painted in that same accent and
-        are not part of the render, so they are hidden for every capture here
-        — see `shoot`, which is where that was got wrong and put right.
+        none without it — and the mid-tone the extremes are measured against is
+        measured in the same frame, never assumed. The hotspot dots are not
+        part of the render and are hidden for every capture here — see `shoot`,
+        which is where that was got wrong and put right.
       * THE CAP HAS NO HOLE IN IT. The canvas is transparent — Design's room
         is a CSS gradient behind it — so the stage background is swapped for
         magenta and any background pixel ENCLOSED by specimen pixels on its
@@ -1354,7 +1464,15 @@ def check_section(page, report, shots):
         whole, whole_rows = shoot("t%s-whole" % tier)
         whole_dots = dots(page)
         drawn = {p for p, rgb in whole.items() if not _is_void(rgb)}
-        face_before = sum(1 for rgb in whole.values() if _is_cut_face(rgb))
+        # The specimen's OWN mid-tone, measured in this frame at this tier with
+        # no cut engaged. Everything the classifier calls extreme is extreme
+        # relative to this, not to a number written down in this file — which
+        # is what makes the same thresholds right on a tier that renders the
+        # surface half a stop brighter, and what makes a specimen the premise
+        # does not hold for fail loudly instead of quietly.
+        mid = _median_luma(whole, drawn)
+        flat_before, extreme_before = _flat_faces(whole, drawn, mid)
+        face_before = sum(extreme_before.values())
 
         # The instrument's own noise floor: the SAME state, photographed
         # twice, WITH THE SAME GAP between captures that every comparison
@@ -1410,7 +1528,11 @@ def check_section(page, report, shots):
         cut, cut_rows = shoot("t%s-cut" % tier)
         cut_dots = dots(page)
 
-        face_after = sum(1 for rgb in cut.values() if _is_cut_face(rgb))
+        cut_drawn = {p for p, rgb in cut.items() if not _is_void(rgb)}
+        flat_after, extreme_after = _flat_faces(cut, cut_drawn, mid)
+        face_after = sum(extreme_after.values())
+        wall = {rgb: n for rgb, n in extreme_after.items() if _luma(rgb) > mid}
+        cavity = {rgb: n for rgb, n in extreme_after.items() if _luma(rgb) < mid}
         holes_before = _interior_holes(whole_rows, inner)
         holes_after = _interior_holes(cut_rows, inner)
         changed = sum(1 for p in drawn if _differs(whole[p], cut.get(p)))
@@ -1419,14 +1541,30 @@ def check_section(page, report, shots):
         # (a) a cut face exists, and only once there is a cut
         if face_before > len(drawn) * 0.02:
             problems.append(
-                "tier %s: %d cut-face pixel(s) with NO cut engaged — the "
-                "specimen\'s own surface is being read as a cap, so the count "
-                "below proves nothing" % (tier, face_before))
+                "tier %s: %d cut-face pixel(s) with NO cut engaged (%s) — the "
+                "specimen\'s own surface is producing a flat population at a "
+                "luminance extreme, so the count below proves nothing"
+                % (tier, face_before, _describe_pops(extreme_before, mid)))
         if face_after < len(drawn) * 0.10:
             problems.append(
                 "tier %s: %d of %d specimen pixel(s) are cut face — the plane "
-                "clipped the geometry and left the cut open"
+                "clipped the geometry and left the cut open, or the cap is "
+                "being shaded rather than drawn flat"
                 % (tier, face_after, len(drawn)))
+        # The cut WALL specifically. A plane through solid material must
+        # produce the light extreme; the dark one only appears where the plane
+        # also crossed a cavity, which is a property of where the student left
+        # the slider and of the specimen, not of the renderer. So the wall is
+        # asserted and the cavity is reported — its value and its contrast
+        # against the wall are pinned in `tests/gates/section.test.ts`, where
+        # they can be asserted without depending on the geometry a plane at
+        # 50% happens to meet.
+        if not wall:
+            problems.append(
+                "tier %s: no flat cut-face population above the specimen\'s own "
+                "mid-tone (%.3f) — a plane through solid material draws a cut "
+                "WALL, and the light extreme is the one value that cannot be "
+                "absent from a capped cut" % (tier, mid))
 
         # (b) and no hole in it
         if holes_after > max(holes_before * 2, len(drawn) * 0.005):
@@ -1473,12 +1611,18 @@ def check_section(page, report, shots):
                 "change which dots are visible" % (tier, len(cut_dots)))
 
         details.append(
-            "tier %s: %d specimen px · noise floor %d · cut face %d → %d · "
-            "enclosed background %d → %d · cut changed %d (%.0f%%) · interior "
-            "hidden before (%d px differ) → visible after (%d px differ)"
-            % (tier, len(drawn), noise, face_before, face_after, holes_before,
-               holes_after, changed, 100.0 * changed / max(len(drawn), 1),
-               same_before, same_after))
+            "tier %s: %d specimen px · own mid-tone %.3f · noise floor %d · "
+            "cut face %d → %d · enclosed background %d → %d · cut changed %d "
+            "(%.0f%%) · interior hidden before (%d px differ) → visible after "
+            "(%d px differ)"
+            % (tier, len(drawn), mid, noise, face_before, face_after,
+               holes_before, holes_after, changed,
+               100.0 * changed / max(len(drawn), 1), same_before, same_after))
+        details.append(
+            "        wall %s · cavity %s · flat populations before the cut: %s"
+            % (_describe_pops(wall, mid) or "none",
+               _describe_pops(cavity, mid) or "none (the plane met no cavity)",
+               _describe_pops(flat_before, mid) or "none"))
 
         page.eval("window.__rc.rail('Cross-section')")
         time.sleep(0.3)
@@ -1486,11 +1630,15 @@ def check_section(page, report, shots):
     page.eval("window.__rc.restoreBackdrop()")
     reset_view(page)
     settle(page)
-    details.append("cut-face pixels are counted by saturation, not by an exact "
-                   "colour match: the cap is lit and tone-mapped like anything "
-                   "else. The specimen\'s own surface measures 0.18 saturation "
-                   "against the classifier\'s 0.45 floor, and the count with no "
-                   "cut engaged is asserted above rather than assumed.")
+    details.append("cut-face pixels are counted as flat populations (one exact "
+                   "colour held by %.0f%%+ of the specimen, which a shaded "
+                   "surface cannot produce) at a luminance extreme (%.2f or "
+                   "further from the specimen's own median, measured in the "
+                   "same frame). Not an exact colour match — the values are "
+                   "pinned in section.test.ts and 3d_parity.py, and this check "
+                   "asserts the cut rather than the palette. The count with no "
+                   "cut engaged is asserted above rather than assumed."
+                   % (CUT_FLAT_SHARE * 100, CUT_SEPARATION))
 
     report.check(8, "cross-section is capped, at every tier (MRB-189)",
                  problems, details)
