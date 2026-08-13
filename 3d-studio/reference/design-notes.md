@@ -1,9 +1,18 @@
-# 3D Studio shell — design notes extracted from the frozen reference
+# 3D Studio shell — design notes extracted from the frozen references
 
-Source: `3d-studio/reference/shell-v1.html` (Claude Design, frozen under MRB-186 —
-never edit it). Every annotation block in the reference is reproduced here as a
-checklist item; these are binding intent, not decoration. Check an item only when
-the build genuinely satisfies it.
+Sources, both frozen (Claude Design — never edit either):
+
+- `3d-studio/reference/shell-v1.html` — §01–§07, frozen under MRB-186.
+- `3d-studio/reference/crosssection-v1.html` — §08–§10, frozen under MRB-189.
+  It redraws §01–§07 as well; that redrawing is **byte-identical** to
+  `shell-v1.html` (the two files differ only in the HTML comment on line 8,
+  `design reference` → `design reference v2`), so `shell-v1.html` remains the
+  frozen reference for those seven screens and nothing about them is restated
+  or superseded here.
+
+Every annotation block in the references is reproduced here as a checklist item;
+these are binding intent, not decoration. Check an item only when the build
+genuinely satisfies it.
 
 Conventions the whole reference shares:
 
@@ -165,6 +174,163 @@ Projection floor:
   the dark halo is the darkest — the orange is decoration." (Washed-projector
   simulation tile; the sim toggle itself is a canvas handoff control, not a
   product feature.)
+
+## §08 The cut face (`crosssection-v1.html`)
+
+Header note: "Clipping plane at 46%. Near half gone, cap solid. Wall and cavity
+are separate materials, and neither is the accent."
+
+Materials sheet — three swatches, exactly these values:
+
+| Material | Value | Treatment |
+|---|---|---|
+| Cut wall | `#F0E9DC` | `FLAT, HATCHED` — no shading of any kind; 1.5px `#100D0A` outline |
+| Cavity & lumen | `#141109` | annotated `17:1 AGAINST WALL` |
+| Outer wall, uncut | radial gradient `#A9A198 → #857D73 40% → #565048 78% → #3D3830` | `SHADED · UNCHANGED` |
+
+- [ ] **THE TWO VALUES ARE THE EXTREMES OF THE FRAME** — "not neighbours in a
+  family: lightest thing on the stage against darkest. Same argument that
+  carried the hotspot ring. A cavity is an absence of material, so it takes the
+  void end — nothing to invent, and nothing to unlearn when a student meets a
+  printed plate."
+- [ ] **FLAT AGAINST SHADED IS THE LOAD-BEARING PART** — "The cut face is *flat
+  and unshaded* while the exterior keeps its gradient. That alone says *cut*
+  before any colour is read, and it holds in greyscale." If an implementation
+  choice forces a trade, flatness is preserved over hue.
+- [ ] **ACCENT IS THE TOOL, NOT THE TISSUE** — "Orange comes off the organ
+  entirely. It marks the plane — the rule through the specimen, its end ticks,
+  and the slider being dragged — because the plane is the interactive thing.
+  Tissue is substance and never highlights itself."
+- [ ] **HOTSPOTS ON THE CUT FACE FLIP TO PAPER** — "This also frees the
+  hotspots. Dots keep their one meaning on the cut face; on that light ground
+  they flip to the paper variant from §07, dark outline and all."
+- [ ] "no legend · no key · label reads SECTION"
+
+The hatch is optional: "The hatch on the chosen tile is optional decoration —
+strip it and nothing is lost." (As drawn:
+`repeating-linear-gradient(45deg, rgba(26,20,14,.07) 0 3px, rgba(26,20,14,0) 3px 7px)`
+over the flat fill.)
+
+WHY NOT THE OTHER TWO — four comparison tiles, and the verdict on each:
+
+- [ ] `AS BUILT — TWO ACCENT VALUES · WALL/CAVITY 2.8:1 · READS AS SELECTED`.
+  "The two accent values sit close enough in lightness that the projector
+  merges them, and the whole cut reads as one selected object rather than
+  material."
+- [ ] `ONE FLAT FILL · GEOMETRICALLY TRUE · NO CHAMBERS` — rejected.
+- [ ] `WALL / CAVITY — CHOSEN · 17:1 · SURVIVES NESTED SHAPES`.
+- [ ] `CHOSEN, WASHED · SAME SIMULATION AS §07` — the chosen pair under the
+  projector wash.
+
+In situ (the §08 hero, 1440): plane drawn as a 1.5px vertical rule through the
+specimen, `#E4572E` fading to zero at both ends
+(`rgba(228,87,46,0) → .75 at 18% → .75 at 82% → 0`), with two 16×1.5px `#E4572E`
+end ticks; cross-section tool active in the rail (accent fill, cream icon) with
+its `Cross-section` / `C` tooltip; quality chip bottom-right unchanged; section
+slider bottom-centre (§09).
+
+## §09 The section slider (`crosssection-v1.html`)
+
+Header note: "Quality-chip chrome, foot of the stage. Present at a glance,
+recessive until touched. **Only shown while the tool is on.**"
+
+- [ ] **DESKTOP 1440** — `PLATE 392×44 · BOTTOM CENTRE`. Plate is quality-chip
+  chrome: `rgba(22,18,14,.86)`, 1px `#3E362C`, radius 11, 18px from the bottom,
+  padding `0 14px`, gap 12. `SECTION` eyebrow (DM Mono 10.5px/500, `.16em`,
+  `#8A7E6E`) · track · readout (DM Mono 11.5px, `#B7AA98`, 40px right-aligned).
+- [ ] **DRAG EMPHASIS LANDS ON THE CUT** — "Dragging thickens the handle,
+  hatches the travelled track to match the cut face, promotes the value from
+  caption to 15px, and brings the plane rule up to full strength with its end
+  ticks. Emphasis lands on the cut, not on the furniture."
+- [ ] **THE ROTATE HINT YIELDS** — "The rotate hint at bottom centre yields to
+  the plate — one thing lives on that edge at a time."
+- [ ] **TABLET 1024** — `PLATE 320×44 · CLEARS THE RAIL BY 16`. "Same plate,
+  narrower, and no longer centred on the stage — it centres on the space left
+  of the rail so the two never touch. Height stays 44 because it is now a touch
+  target." (Drawn at `left:calc(50% + 22px)`, 16px from the bottom, padding
+  `0 13px`, gap 11, readout 38px/11px.)
+- [ ] **PHONE 390 — ONE BAR, SHARED WITH THE RAIL.** "THE RAIL YIELDS, IT DOES
+  NOT STACK. Both want the bottom edge and there is room for one. Turning
+  cross-section on collapses the five-icon rail from §05 to the single tool that
+  is running — orange, cream dot, 44 square — and the slider takes the rest of
+  that same bar. Tap the tool to exit and the rail returns."
+- [ ] **NO SECOND ROW, NO SHEET, NO LOST STAGE HEIGHT** — "Nothing scrolls
+  behind a thumb, the stage keeps its height, and the bar never gains a second
+  row. While you are cutting, the other four tools are not what you want
+  anyway."
+- [ ] **THE READOUT LIFTS ON PHONE** — "The readout cannot stay in the bar — a
+  thumb covers it. It lifts to the top-left corner of the stage, opposite the
+  quality chip, and only while dragging."
+- [ ] "44 targets · no sheet · no second row"
+
+In situ (phone): the collapsed tool is a 44×44 `#E4572E` square, radius 12,
+cream icon, with a 9×9 `#FBF3E6` running dot ringed 2px `#100D0A` at its top
+right; the bar is 60px tall over
+`linear-gradient(rgba(16,13,10,0), rgba(16,13,10,.94) 45%)`, padding `0 12px`,
+gap 8; the slider pill is `flex:1`, 44 tall, radius 12, and carries **no**
+`SECTION` eyebrow. The dragging readout chip sits at `left:12 top:12` —
+`SECTION` 9.5px + value 15px `#FBF3E6` on `rgba(18,14,10,.96)` / `#5C5347`.
+Phone handle is 11×32 at rest, 13×40 with a 9px halo while dragging.
+
+## §10 Parts — slider (component source of truth)
+
+Header note: "Every state at full size, then the same handle under the
+projector."
+
+Slider states, dark stage (plate 392×44 in every row):
+
+| State | Handle | Handle extras | Plate | Travelled track | Readout |
+|---|---|---|---|---|---|
+| Rest | 10×30 r3 | ring 2px `#100D0A`, drop `0 4px 10px rgba(0,0,0,.6)` | `rgba(22,18,14,.86)` / `#3E362C` | `#C4B8A7` | 11.5px `#B7AA98` |
+| Hover | 11×34 r3 | + 6px halo `rgba(251,243,230,.11)` | `rgba(22,18,14,.92)` / `#4A4036` | `#C4B8A7` | 11.5px `#B7AA98` |
+| Dragging | 12×38 r3 | + 8px halo `rgba(251,243,230,.15)` | `rgba(18,14,10,.96)` / `#5C5347` | hatched `repeating-linear-gradient(45deg,#C4B8A7 0 3px,#8A7E6E 3px 6px)` | **15px/500 `#FBF3E6`** |
+| Keyboard | 10×30 r3 + 2×14 `#100D0A` notch | plate `outline:2px #FBF3E6`, offset 3 | `rgba(22,18,14,.86)` / `#3E362C` | `#C4B8A7` | 11.5px `#B7AA98` |
+
+The `SECTION` eyebrow deepens to `#6E6255` while dragging (from `#8A7E6E`).
+
+- [ ] **KEYBOARD** — "ARROWS STEP 2%, NOTCHED HANDLE". Drawn, therefore
+  required.
+- [ ] **HANDLE ANATOMY** — `HIT 44`, `10×30 R3`. "The handle is a bar, not a
+  knob, because the thing it moves is a plane. It reads as the plane's edge seen
+  end-on, and the shape alone distinguishes it from every round hotspot on the
+  stage."
+- [ ] **IT INHERITS THE HOTSPOT CONSTRUCTION** — "Cream fill with a dark 2px
+  ring, exactly the hotspot construction: lightest value, darkest halo. That
+  pairing is what survived the washed-projector test, so the handle inherits it
+  rather than arguing again."
+- [ ] "track 4 · plate 44 · gap to rail 16"
+- [ ] **PROJECTION FLOOR** — "Washed, the plate loses its edge and the track
+  loses half its depth — the cream bar and the light travelled segment both
+  hold, so position is still readable from the back of the room. The percentage
+  is a courtesy for whoever is at the keyboard."
+
+Two things Design removed deliberately, recorded so they are not reintroduced:
+
+- [ ] **No leader line from handle to cut.** The handle's x and the plane's x do
+  not genuinely coincide, so a connector would be a lie. Drag emphasis lives on
+  the plane instead.
+- [ ] **No light-ground variant of the slider.** Retrieval keeps the stage dark
+  and cross-section is absent from the flat renderer, so a light-ground state
+  cannot occur.
+
+## Reconciliations within §08–§10 (MRB-189 build)
+
+The reference draws the plane's end ticks in the §08 hero at rest, and omits
+them from the three at-rest tiles in §09 while drawing them in all three
+dragging tiles. §09's own caption reads "brings the plane rule up to full
+strength with its end ticks", and §08's prose lists "the rule through the
+specimen, its end ticks" as things the accent marks, unconditionally. Built as
+one plane-strength variable: rule **and** ticks are drawn at both states, at
+0.75 strength at rest and full strength while dragging. That satisfies the §08
+hero, both prose lines, and the §09 dragging tiles; the §09 at-rest tiles are
+1440-to-176px reductions where the 16px ticks would be sub-pixel.
+
+The materials sheet annotates the wall/cavity pair as `17:1`. Measured with the
+WCAG formula the pair is **15.63:1** (`#F0E9DC` L=0.8197, `#141109` L=0.0052).
+Design's figure is generous by about 9%; the argument — extremes of the frame,
+not neighbours — is unaffected, and 15.63:1 clears every threshold the claim is
+used to support. The built value is the drawn value; only the annotation is
+approximate. Recorded in the parity allow-list rather than silently tolerated.
 
 ## Rulings applied on top of the reference (Linear beats reference where they touch)
 
