@@ -290,6 +290,7 @@ export default function App({
       onOpenHotspot={setOpenHotspotId}
       targetHotspotId={targetHotspotId}
       hint={hint}
+      layout={layout}
     />
   )
 
@@ -298,6 +299,13 @@ export default function App({
       className="app"
       data-mode={mode}
       data-layout={layout}
+      // The phone sheet overlays the stage's lower half, so the stage's own
+      // bottom-edge furniture — the horizontal rail, and now the section plate
+      // — has to sit above whichever detent the sheet is at. Which detent that
+      // is lives in this component; the stylesheet cannot see a class on a
+      // sibling's descendant, and the alternative was a `:has()` selector
+      // reaching across the tree for a fact the shell already knows (MRB-189).
+      data-sheet={layout === 'phone' ? (sheetRaised ? 'raised' : 'rest') : undefined}
       data-detected-tier={probe.tier}
       // Points are COMPUTED and not persisted (MRB-191 scope): the reward
       // layer is MRB-148's, and the attempts contract is explicit (§3) that no

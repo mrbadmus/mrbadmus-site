@@ -326,9 +326,9 @@ hero, both prose lines, and the §09 dragging tiles; the §09 at-rest tiles are
 1440-to-176px reductions where the 16px ticks would be sub-pixel.
 
 The materials sheet annotates the wall/cavity pair as `17:1`. Measured with the
-WCAG formula the pair is **15.63:1** (`#F0E9DC` L=0.8197, `#141109` L=0.0052).
+WCAG formula the pair is **15.62:1** (`#F0E9DC` L=0.81970, `#141109` L=0.00569).
 Design's figure is generous by about 9%; the argument — extremes of the frame,
-not neighbours — is unaffected, and 15.63:1 clears every threshold the claim is
+not neighbours — is unaffected, and 15.62:1 clears every threshold the claim is
 used to support. The built value is the drawn value; only the annotation is
 approximate. Recorded in the parity allow-list rather than silently tolerated.
 

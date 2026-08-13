@@ -495,59 +495,261 @@ a:hover { color: var(--st-accent-hover); }
 .stage--paper .stagehint { color: var(--st-faint); }
 @media (max-width: 699px) {
   .stagehint { bottom: 64px; font-size: 10.5px; }
+  /* clear of the sheet, like the rail below it */
+  .app[data-sheet='rest'] .stagehint { bottom: calc(var(--sheet-rest, 55%) + 64px); }
+  .app[data-sheet='raised'] .stagehint { bottom: calc(100% - 150px + 64px); }
 }
 
-/* Cross-section position (MRB-189). Not in the frozen reference — see the
-   note on SectionSlider in components/Stage.tsx. Present only while the cut
-   is, and pitched at the quality chip's register so it never competes with
-   the specimen. Sits clear of the rail's 18px + 48px column. */
-.sectionbar {
+/* ── §09/§10 The section slider ─────────────────────────────────────────
+   Quality-chip chrome at the foot of the stage, present only while the cut
+   is. Every value here is read off `reference/crosssection-v1.html` §10, which
+   is the component sheet for it the way §07 is for the hotspot. */
+.secplate {
   position: absolute;
-  left: 84px;
-  bottom: 16px;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: 392px;
+  height: 44px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 7px 12px;
-  background: rgba(22, 18, 14, 0.9);
+  gap: 12px;
+  background: rgba(22, 18, 14, 0.86);
   border: 1px solid var(--st-room-line);
-  border-radius: var(--st-r-chip);
+  border-radius: 11px;
+  box-shadow: 0 14px 32px -18px rgba(0, 0, 0, 0.9);
+  z-index: 4;
 }
-.sectionbar__word {
-  font: 500 10px/1 var(--st-mono);
-  letter-spacing: 0.14em;
-  color: var(--st-room-muted);
+/* hover, §10: the plate lifts a little under the pointer before anything is
+   dragged, so the control answers before it is used */
+.secplate:hover {
+  background: rgba(22, 18, 14, 0.92);
+  border-color: var(--st-room-line-strong);
 }
-.sectionbar__range {
+.secplate[data-drag] {
+  background: rgba(18, 14, 10, 0.96);
+  border-color: #5C5347;
+  box-shadow: 0 18px 38px -16px rgba(0, 0, 0, 0.95);
+}
+/* §10 keyboard state: the plate takes the focus ring, because the handle
+   underneath it is the thing being driven and a ring around a 10px bar is
+   not a visible focus treatment. */
+.secplate[data-key] {
+  outline: 2px solid var(--st-cream);
+  outline-offset: 3px;
+}
+
+.secplate__word {
+  flex: none;
+  font: 500 10.5px/1 var(--st-mono);
+  letter-spacing: 0.16em;
+  color: var(--st-room-hint);
+}
+.secplate[data-drag] .secplate__word { color: var(--st-muted); }
+
+.secplate__track {
+  position: relative;
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--st-room-line);
+}
+.secplate__travel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 4px;
+  border-radius: 2px;
+  background: #C4B8A7;
+}
+/* §09: dragging hatches the travelled track to match the cut face */
+.secplate[data-drag] .secplate__travel {
+  background: repeating-linear-gradient(45deg, #C4B8A7 0 3px, #8A7E6E 3px 6px);
+}
+
+/* The handle is a BAR, not a knob: it reads as the plane's edge seen end-on,
+   and the shape alone tells it apart from every round hotspot on the stage.
+   Cream fill, dark 2px ring — the hotspot construction (§10). */
+.secplate__handle {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 10px;
+  height: 30px;
+  border-radius: 3px;
+  background: var(--st-cream);
+  box-shadow: 0 0 0 2px var(--st-room-well), 0 4px 10px rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.secplate:hover .secplate__handle {
+  width: 11px;
+  height: 34px;
+  box-shadow:
+    0 0 0 2px var(--st-room-well),
+    0 0 0 6px rgba(251, 243, 230, 0.11),
+    0 5px 12px rgba(0, 0, 0, 0.65);
+}
+.secplate[data-drag] .secplate__handle {
+  width: 12px;
+  height: 38px;
+  box-shadow:
+    0 0 0 2px var(--st-room-well),
+    0 0 0 8px rgba(251, 243, 230, 0.15),
+    0 6px 14px rgba(0, 0, 0, 0.7);
+}
+/* §10: the keyboard handle is notched. The notch is the state's own mark —
+   the focus ring says "this has focus", the notch says "this is the thing the
+   arrows move". */
+.secplate__notch {
+  width: 2px;
+  height: 14px;
+  background: var(--st-room-well);
+  opacity: 0;
+}
+.secplate[data-key] .secplate__notch { opacity: 1; }
+
+/* The real control. It carries the name, the value announcement and arrow
+   stepping; the drawn parts above are laid over it. 44px tall for the touch
+   target §10 draws around the handle, and the full width of the track so a
+   press anywhere on it lands. */
+.secplate__input {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  padding: 0;
   appearance: none;
   -webkit-appearance: none;
-  width: 132px;
-  height: 3px;
-  border-radius: 2px;
-  background: var(--st-room-line-strong);
+  background: transparent;
+  opacity: 0;
   cursor: ew-resize;
 }
-.sectionbar__range::-webkit-slider-thumb {
+.secplate__input::-webkit-slider-thumb {
   appearance: none;
   -webkit-appearance: none;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--st-accent);
-  border: 2px solid var(--st-room-well);
+  width: 44px;
+  height: 44px;
 }
-.sectionbar__range::-moz-range-thumb {
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--st-accent);
-  border: 2px solid var(--st-room-well);
+.secplate__input::-moz-range-thumb { width: 44px; height: 44px; border: 0; }
+
+.secplate__value {
+  flex: none;
+  width: 40px;
+  text-align: right;
+  font: 400 11.5px/1 var(--st-mono);
+  letter-spacing: 0.04em;
+  color: var(--st-room-text);
 }
-.sectionbar__range:focus-visible { outline: 2px solid var(--st-accent); outline-offset: 3px; }
+/* §09: dragging promotes the value from caption to 15px. Emphasis lands on
+   the cut, not on the furniture — this is the loudest the furniture gets. */
+.secplate[data-drag] .secplate__value {
+  font: 500 15px/1 var(--st-mono);
+  letter-spacing: 0.02em;
+  color: var(--st-cream);
+}
+
+/* §09 tablet: same plate, narrower, and no longer centred on the STAGE — it
+   centres on the space left over beside the rail so the two never touch.
+   Height stays 44 because it is now a touch target. The 82px is the rail's
+   own geometry (18px inset + 48px column) plus the drawn 16px gap; the
+   reference's own `calc(50% + 22px)` is that same rule measured inside its
+   645px illustration tile, so the rule travels and the number does not. */
+@media (min-width: 700px) and (max-width: 1023px) {
+  .secplate {
+    left: 82px;
+    right: 0;
+    bottom: 16px;
+    transform: none;
+    margin-inline: auto;
+    width: 320px;
+    padding: 0 13px;
+    gap: 11px;
+  }
+  .secplate__word { font-size: 10px; }
+  .secplate__value { width: 38px; font-size: 11px; }
+}
+
+/* §09 phone: ONE BAR, SHARED WITH THE RAIL. The rail has collapsed to the
+   single running tool at the left of the strip (see `.rail[data-collapsed]`),
+   and the plate takes the rest of the same bar — no second row, no sheet, and
+   the stage keeps its height. */
 @media (max-width: 699px) {
-  .sectionbar { left: 12px; right: 12px; bottom: 96px; justify-content: space-between; }
-  .sectionbar__range { flex: 1; }
+  .secplate {
+    left: 64px;
+    right: 12px;
+    bottom: 8px;
+    transform: none;
+    width: auto;
+    padding: 0 12px;
+    gap: 10px;
+    border-radius: 12px;
+    box-shadow: none;
+  }
+  .secplate[data-drag] { box-shadow: none; }
+  .secplate__value { width: 36px; font-size: 11px; }
+  .app[data-sheet='rest'] .secplate { bottom: calc(var(--sheet-rest, 55%) + 8px); }
+  .app[data-sheet='raised'] .secplate { bottom: calc(100% - 150px + 8px); }
 }
+
+/* §09 phone: the readout cannot stay in the bar, because a thumb covers it.
+   It lifts to the stage's top-left corner, opposite the quality chip, and
+   only while dragging. */
+.secreadout {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  background: rgba(18, 14, 10, 0.96);
+  border: 1px solid #5C5347;
+  border-radius: 8px;
+  z-index: 5;
+  pointer-events: none;
+}
+.secreadout__word {
+  font: 500 9.5px/1 var(--st-mono);
+  letter-spacing: 0.16em;
+  color: var(--st-room-hint);
+}
+.secreadout__value { font: 500 15px/1 var(--st-mono); color: var(--st-cream); }
+
+/* §08: the plane's own mark — a rule through the specimen with a tick at each
+   end. This is the ONLY accent in the cross-section treatment; the tissue has
+   none. Opacity is set inline: it carries both how edge-on the plane is (a
+   rule through a plane seen face-on would be a fiction) and whether the slider
+   is being dragged, which is when §09 brings it to full strength. */
+.planerule {
+  position: absolute;
+  width: 1.5px;
+  background: linear-gradient(
+    rgba(228, 87, 46, 0),
+    var(--st-accent) 18%,
+    var(--st-accent) 82%,
+    rgba(228, 87, 46, 0)
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+.planerule__tick {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 1.5px;
+  background: var(--st-accent);
+}
+.planerule__tick--start { top: 0; }
+.planerule__tick--end { bottom: 0; }
 
 /* FLAT DIAGRAM chip (§06) */
 .flatchip {
@@ -683,6 +885,15 @@ a:hover { color: var(--st-accent-hover); }
 
 /* phone: the rail goes horizontal (§05) */
 @media (max-width: 699px) {
+  /* THE FOOT OF THE STAGE IS NOT THE FOOT OF THE VIEWPORT on phone, and this
+     was wrong before the slider existed. §05 puts the horizontal rail "at the
+     foot of the stage", and `.stage` runs the full height with the sheet
+     overlaid on its lower half — so a rail at `bottom: 0` sat underneath the
+     sheet and had never been visible at any detent. It surfaced here because
+     §09 hands that same bar to the section slider, and a bar nobody can see
+     cannot be shared. Both detents are honoured: at rest the bar rides the
+     sheet's top edge, and raised it stays inside the 150px of stage §05
+     promises will always remain. */
   .rail {
     left: 0;
     right: 0;
@@ -727,9 +938,40 @@ a:hover { color: var(--st-accent-hover); }
   .stage--paper .railbtn { background: var(--st-note-bg); }
   .railbtn.is-active { background: var(--st-accent); }
   .rail__rule { display: none; }
+
+  /* §09: THE RAIL YIELDS, IT DOES NOT STACK. Turning cross-section on
+     collapses the five-icon strip to the single tool that is running, and the
+     section plate takes the rest of the same bar. The scroll fade goes with
+     the other four tools — it promises more, and there is no more. Tapping
+     the tool exits and the rail returns. */
+  .rail[data-collapsed] {
+    height: 60px;
+    padding: 0 12px;
+    overflow: visible;
+  }
+  .rail[data-collapsed]::after { display: none; }
+  .rail[data-collapsed] .railbtn {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+  /* the running mark: cream dot, dark ring — the hotspot construction again,
+     at the size a status dot can be */
+  .rail[data-collapsed] .railbtn.is-active::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -1px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--st-cream);
+    box-shadow: 0 0 0 2px var(--st-room-well);
+  }
   .autorot { margin-top: 0; flex: none; height: 40px; width: 40px; border-radius: 11px; }
   .railtip { display: none !important; }
-}
+  .app[data-sheet='rest'] .rail { bottom: var(--sheet-rest, 55%); }
+  .app[data-sheet='raised'] .rail { bottom: calc(100% - 150px); }
 
 /* ── §01/§07 Quality chip ──────────────────────────────────── */
 .chip {

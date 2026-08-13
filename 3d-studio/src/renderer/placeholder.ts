@@ -110,6 +110,10 @@ class PlaceholderRenderer implements Renderer {
 
   setSectionOffset(): void {}
 
+  sectionRule(): null {
+    return null
+  }
+
   toolState(): null {
     return null
   }

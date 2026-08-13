@@ -111,6 +111,7 @@ describe('gate 5 — tier override changes render output without a reload', () =
         isolateHotspot: (id) => inner.isolateHotspot(id),
         frameHotspot: (id) => inner.frameHotspot(id),
         setSectionOffset: (o) => inner.setSectionOffset(o),
+        sectionRule: () => inner.sectionRule(),
         toolState: (tool) => inner.toolState(tool),
         onStatus: (cb) => inner.onStatus(cb),
       }

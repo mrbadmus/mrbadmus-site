@@ -34,22 +34,34 @@ import { useThree } from '@react-three/fiber'
 import { capSize, capTransform } from './section'
 import type { SpecimenPart } from './parts'
 
-// The cut face's colours, one per structural depth.
+// The cut face's colours, one per structural depth (§08 of
+// `reference/crosssection-v1.html`, the cross-section reference Design authored
+// once the tool worked on real anatomy).
 //
 // One colour for the whole cut is geometrically correct and pedagogically
 // useless: a plane through the middle of a solid specimen produces a face that
 // fills the silhouette, and if the wall and the chambers inside it are painted
-// the same the section reads as a single orange mass. MRB-189 asks for a cap
-// that makes the section LEGIBLE, so the cap is drawn per part and coloured by
-// the part's nesting depth — the outer wall in the deep burnt orange
-// `--st-accent-text` carries, everything inside it in the accent itself. Both
-// are values the frozen reference declares, used as graphic fills with no text
-// on them, which is the only use of the accent family at size that the MRB-186
-// accent-contrast ruling permits.
+// the same the section reads as a single mass. So the cap is drawn per part and
+// coloured by the part's nesting depth — outermost is cut WALL, anything nested
+// inside it is CAVITY or lumen. Depth is geometric (see `parts.ts`), so this
+// needs nothing authored and no invented palette.
 //
-// Depth is geometric (see `parts.ts`), so this needs nothing authored and no
-// invented palette.
-const CAP_COLOURS = ['#A93411', '#E4572E'] as const
+// THE ACCENT CAME OFF THE TISSUE. This shipped first as two accent values
+// (`#A93411` wall, `#E4572E` cavity) — the reasoning being that both are
+// reference-declared values used as graphic fills with no text on them. Design
+// overruled it in §08: orange marks the PLANE — the rule through the specimen,
+// its end ticks, and the slider while being dragged — because the plane is the
+// interactive thing, and tissue is substance that never highlights itself. The
+// as-built pair also measured 1.79:1 against each other, close enough in
+// lightness that a classroom projector merges them and the whole cut reads as
+// one selected object rather than as material.
+//
+// The two values that replace them are the extremes of the frame rather than
+// neighbours in a family: the lightest thing on the stage against the darkest,
+// 15.62:1 apart. A cavity is an absence of material, so it takes the void end.
+// (§08's materials sheet annotates the pair as 17:1, which is generous by about
+// 9%; the argument is unaffected and the allow-list carries the difference.)
+const CAP_COLOURS = ['#F0E9DC', '#141109'] as const
 
 export function capColour(depth: number): string {
   return CAP_COLOURS[Math.min(Math.max(depth, 0), CAP_COLOURS.length - 1)]
@@ -144,12 +156,20 @@ export function SectionCap({ model, plane, box, parts, version, isDrawn }: CapPr
         return mesh
       })
 
+      // FLAT AND UNSHADED, and this is the load-bearing half of the treatment.
+      // The exterior keeps its gradient; the cut face takes none, so the cut
+      // reads as cut before any colour is interpreted and it holds in
+      // greyscale. A lit material (this was MeshStandardMaterial) puts a
+      // gradient across the cap that says "another curved surface". Basic
+      // rather than Standard for the flatness, `toneMapped: false` so the two
+      // values arrive on the glass as the values Design chose rather than as
+      // whatever the tier's tone curve makes of them — the cap is a diagram
+      // drawn on the specimen, not a surface in its lighting.
       const cap = new THREE.Mesh(
         new THREE.PlaneGeometry(size, size),
-        new THREE.MeshStandardMaterial({
+        new THREE.MeshBasicMaterial({
           color: capColour(part.depth),
-          metalness: 0.05,
-          roughness: 0.85,
+          toneMapped: false,
           side: THREE.DoubleSide,
           stencilWrite: true,
           stencilRef: 0,

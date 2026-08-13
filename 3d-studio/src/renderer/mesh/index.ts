@@ -15,6 +15,7 @@ import type {
   RendererStatus,
   RenderTier,
   ScreenPoint,
+  SectionRule,
   ToolId,
   ToolState,
 } from '../types'
@@ -36,6 +37,7 @@ import {
   isClipped,
   sectionConstant,
   sectionPlane,
+  sectionRule,
   SECTION_REST,
   type SectionState,
 } from './section'
@@ -322,6 +324,15 @@ class MeshRenderer implements Renderer {
   setSectionOffset(offset: number): void {
     if (!this.section.enabled) return
     this.setSection({ enabled: true, offset })
+  }
+
+  sectionRule(): SectionRule | null {
+    const plane = this.activePlane()
+    const { camera } = this.bridge
+    if (!plane || !camera || !this.box || !this.container) return null
+    const width = this.container.clientWidth || this.bridge.width
+    const height = this.container.clientHeight || this.bridge.height
+    return sectionRule(plane, this.box, camera, width, height)
   }
 
   frameHotspot(hotspotId: string): void {

@@ -24,12 +24,18 @@ export function ToolRail({
   renderer,
   activeTool,
   autoRotate,
+  collapsed,
   onTool,
   onAutoRotate,
 }: {
   renderer: Renderer
   activeTool: ToolId | null
   autoRotate: boolean
+  /** the rail has yielded the bar to the section slider and is drawing only
+   * the tool that is running (§09, phone) — the stylesheet needs to know,
+   * because a one-button rail must not keep the scroll fade that says there
+   * is more */
+  collapsed?: boolean
   onTool: (tool: ToolId) => void
   onAutoRotate: () => void
 }) {
@@ -46,7 +52,12 @@ export function ToolRail({
   }
 
   return (
-    <div className="rail" role="toolbar" aria-label="Stage tools">
+    <div
+      className="rail"
+      data-collapsed={collapsed ? '' : undefined}
+      role="toolbar"
+      aria-label="Stage tools"
+    >
       {main.map((tool) => (
         <RailButton
           key={tool}

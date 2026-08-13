@@ -70,6 +70,51 @@ export interface ScreenPoint {
   /** false when the hotspot is on the far side of the model (occluded) —
    * always true for flat/placeholder renderers */
   visible: boolean
+  /** true when the dot is drawn over the cut face rather than over the
+   * specimen's exterior: the cross-section removed the material that was in
+   * front of this anchor, so what the dot sits on is the cap.
+   *
+   * The cut face is a LIGHT ground inside a dark stage, so a dot there flips
+   * to the §07 paper variant (crosssection-v1.html §08: "Dots keep their one
+   * meaning on the cut face; on that light ground they flip to the paper
+   * variant from §07, dark outline and all"). Absent or false everywhere a
+   * renderer has no cut — the flat renderer does not declare cross-section at
+   * all. Added at MRB-189. */
+  onCut?: boolean
+}
+
+/** Below this, the plane is being seen too nearly face-on for a rule through
+ * it to be true, and the renderer draws none. `edgeOn` is |sin| of the angle
+ * between the plane's normal and the view direction: 1 is exactly edge-on, 0
+ * exactly face-on. 0.30 is about 17° off face-on; full strength by 0.55 (33°).
+ *
+ * Here rather than in `mesh/section.ts` because the shell fades the rule in
+ * across this band and must not import anything that pulls Three.js with it
+ * (gate 1). The geometry stays in the renderer; only the two numbers the two
+ * halves must agree on live at the door. */
+export const RULE_EDGE_ON_FLOOR = 0.3
+export const RULE_EDGE_ON_FULL = 0.55
+
+/** Where the shell should draw the accent rule that marks the cut plane
+ * (MRB-189, §08 of `reference/crosssection-v1.html`).
+ *
+ * The rule is the ONLY place the accent lives in the cross-section treatment —
+ * §08 takes it off the tissue entirely, because the plane is the interactive
+ * thing and tissue is substance that never highlights itself. It is geometry,
+ * so the renderer computes it; it is furniture, so the shell draws it. */
+export interface SectionRule {
+  /** the rule's midpoint, in container pixels */
+  x: number
+  y: number
+  /** CSS rotation in degrees; 0 draws it vertical, as the reference does */
+  angle: number
+  /** how long to draw it across the specimen, in pixels, before the ticks */
+  length: number
+  /** 0–1, how edge-on the plane is seen. A plane is a LINE on screen only when
+   * seen edge-on; face-on it covers the frame and has no position to mark, so
+   * the shell fades the rule out as this falls and the renderer returns null
+   * once it would be a fiction. */
+  edgeOn: number
 }
 
 export interface Renderer {
@@ -143,6 +188,12 @@ export interface Renderer {
    * acceptance is "plane drags smoothly, cut updates in real time", and a
    * press is not a drag. Added at Stage 4. */
   setSectionOffset(offset: number): void
+
+  /** Where to draw the accent rule marking the cut plane, in container pixels,
+   * or null when there is no cut engaged — or when the plane is being seen too
+   * nearly face-on for a rule through it to be true. A renderer that does not
+   * declare `cross-section` returns null always. Added at MRB-189. */
+  sectionRule(): SectionRule | null
 
   /** Show only the structure a named hotspot sits on.
    *

@@ -201,6 +201,12 @@ class FlatRenderer implements Renderer {
   /** No plane to drag. */
   setSectionOffset(): void {}
 
+  /** No cut on a flat plate: `cross-section` is not in `supportedTools`, so
+   * there is never a plane to mark (MRB-189, §08). */
+  sectionRule(): null {
+    return null
+  }
+
   /** Nothing to turn: the plate has no far side, so a retrieval target is
    * always already on screen. The round calls this on every question and this
    * renderer's honest answer is that the work is already done — which is why

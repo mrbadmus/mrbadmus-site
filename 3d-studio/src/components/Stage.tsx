@@ -9,6 +9,7 @@ import type { CapabilityTier } from '../studio/capability'
 import type { QualitySetting } from '../studio/quality'
 import { HotspotDot } from './HotspotDot'
 import { QualityChip, QualityPanel } from './Quality'
+import { SectionPlate, type StageLayout } from './SectionPlate'
 import { ToolRail } from './ToolRail'
 
 export type StageMode = 'explore' | 'retrieve'
@@ -50,6 +51,7 @@ export function Stage({
   onOpenHotspot,
   targetHotspotId,
   hint,
+  layout,
 }: {
   /** null while the renderer module is still arriving (MRB-190's code split).
    * The Stage still draws: the dark room, the hint line and the container are
@@ -69,6 +71,10 @@ export function Stage({
   onOpenHotspot: (id: string | null) => void
   targetHotspotId?: string | null
   hint: string
+  /** The rail and the plate share the bottom edge, and on phone they share one
+   * bar — which is a rendering decision, not a styling one, so the breakpoint
+   * has to reach the components rather than only the stylesheet (MRB-189). */
+  layout: StageLayout
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<RendererStatus>({ state: 'idle' })
@@ -165,6 +171,10 @@ export function Stage({
   // (how many parts the asset declares, what it calls them), and a control
   // that steps silently is one a student cannot follow. Same line, no new
   // furniture, gone the moment the tool is back at rest.
+  // The plate owns the bottom edge whenever the cut is engaged, and the hint
+  // line and the rail both answer to that (§09).
+  const sectionOn = renderer?.toolState('cross-section')?.active === true
+
   const shownHint =
     status.state === 'loading'
       ? status.progress === undefined
@@ -186,7 +196,7 @@ export function Stage({
 
       {/* hotspot layer */}
       {mode === 'explore' &&
-        dots.map(({ hotspot, index, x, y }) => {
+        dots.map(({ hotspot, index, x, y, onCut }) => {
           const numeral = String(index + 1).padStart(2, '0')
           const isOpen = hotspot.id === openHotspotId
           const state = isOpen ? 'open' : hoverId === hotspot.id ? 'hover' : 'closed'
@@ -194,7 +204,7 @@ export function Stage({
             <HotspotDot
               key={hotspot.id}
               state={state}
-              surface={surface}
+              surface={onCut ? 'paper' : surface}
               numeral={numeral}
               x={x}
               y={y}
@@ -206,14 +216,15 @@ export function Stage({
         })}
 
       {mode === 'retrieve' &&
-        dots.map(({ hotspot, index, x, y }) => {
+        dots.map(({ hotspot, index, x, y, onCut }) => {
           const numeral = String(index + 1).padStart(2, '0')
+          const ground = onCut ? 'paper' : surface
           if (hotspot.id === targetHotspotId) {
             return (
               <HotspotDot
                 key={hotspot.id}
                 state="target"
-                surface={surface}
+                surface={ground}
                 numeral={numeral}
                 x={x}
                 y={y}
@@ -222,7 +233,7 @@ export function Stage({
             )
           }
           return (
-            <HotspotDot key={hotspot.id} state="inert" surface={surface} numeral={numeral} x={x} y={y} />
+            <HotspotDot key={hotspot.id} state="inert" surface={ground} numeral={numeral} x={x} y={y} />
           )
         })}
 
@@ -278,12 +289,21 @@ export function Stage({
 
       {/* tool rail renders from declared support */}
       {renderer && (
-        <StageTools renderer={renderer} mode={mode} onInvoked={() => setToolTick((t) => t + 1)} />
+        <StageTools
+          renderer={renderer}
+          mode={mode}
+          collapse={sectionOn && layout === 'phone'}
+          onInvoked={() => setToolTick((t) => t + 1)}
+        />
       )}
 
-      {/* The cut's position, present only while the cut is (MRB-189). */}
+      {/* The cut's position, present only while the cut is (§09). */}
       {renderer && (
-        <SectionSlider renderer={renderer} onChange={() => setToolTick((t) => t + 1)} />
+        <SectionPlate
+          renderer={renderer}
+          layout={layout}
+          onChange={() => setToolTick((t) => t + 1)}
+        />
       )}
 
       {/* quality chip only where tiers mean anything (§06) */}
@@ -308,7 +328,9 @@ export function Stage({
         </>
       )}
 
-      <div className="stagehint">{shownHint}</div>
+      {/* §09: "The rotate hint at bottom centre yields to the plate — one
+          thing lives on that edge at a time." */}
+      {!sectionOn && <div className="stagehint">{shownHint}</div>}
     </div>
   )
 }
@@ -318,6 +340,8 @@ interface Dot {
   index: number
   x: number
   y: number
+  /** the dot is sitting on the cut face, which is a light ground (MRB-189) */
+  onCut: boolean
 }
 
 /** Hotspot dots follow a camera that moves. The renderer resolves each anchor
@@ -345,9 +369,20 @@ function useHotspotDots(
       specimen.hotspots.forEach((hotspot, index) => {
         const point = renderer.hotspotToScreen(hotspot.id)
         if (!point || !point.visible) return
-        next.push({ hotspot, index, x: Math.round(point.x), y: Math.round(point.y) })
+        next.push({
+          hotspot,
+          index,
+          x: Math.round(point.x),
+          y: Math.round(point.y),
+          onCut: point.onCut === true,
+        })
       })
-      const signature = next.map((d) => `${d.hotspot.id}@${d.x},${d.y}`).join('|')
+      // The ground a dot stands on is part of what re-renders it: a dot that
+      // has not moved a pixel but has just come to sit on the cut face is a
+      // different drawing (MRB-189).
+      const signature = next
+        .map((d) => `${d.hotspot.id}@${d.x},${d.y}${d.onCut ? '#cut' : ''}`)
+        .join('|')
       if (signature !== previous) {
         previous = signature
         setDots(next)
@@ -360,50 +395,6 @@ function useHotspotDots(
   }, [renderer, specimen, ready])
 
   return dots
-}
-
-/** The cross-section's position control.
- *
- * NOT IN THE FROZEN REFERENCE — Design drew the rail's cross-section button
- * and no control for where the plane sits, because §01–§07 never show the tool
- * engaged. MRB-189's acceptance is explicit that the plane "drags smoothly"
- * and the cut "updates in real time", and a press is not a drag, so the
- * control had to be built. It is deliberately the quietest thing on the stage
- * — the register of the quality chip, no label beyond the tool's own name —
- * and it exists ONLY while the cut does, so nothing about the drawn stage
- * changes for a student who never presses the button. Flagged for Design.
- *
- * A range input rather than a bespoke handle: it arrives with keyboard control,
- * a screen-reader name and a value announcement already correct. */
-function SectionSlider({
-  renderer,
-  onChange,
-}: {
-  renderer: Renderer
-  onChange: () => void
-}) {
-  const state = renderer.toolState('cross-section')
-  if (!state?.active) return null
-  const offset = state.offset ?? 0.5
-
-  return (
-    <div className="sectionbar">
-      <span className="sectionbar__word">CROSS-SECTION</span>
-      <input
-        className="sectionbar__range"
-        type="range"
-        min={0}
-        max={1}
-        step={0.005}
-        value={offset}
-        aria-label="Cross-section position"
-        onChange={(e) => {
-          renderer.setSectionOffset(Number(e.target.value))
-          onChange()
-        }}
-      />
-    </div>
-  )
 }
 
 /** The hint-line caption for whichever stepped tool is engaged, or null when
@@ -419,22 +410,27 @@ function toolCaption(renderer: Renderer): string | null {
   if (layers?.active) {
     return `Layer ${layers.step} of ${layers.steps} · outer layers removed`
   }
-  const section = renderer.toolState('cross-section')
-  if (section?.active) {
-    return section.offset === undefined
-      ? 'Cross-section · drag to move the cut'
-      : `Cross-section · ${Math.round(section.offset * 100)}% · drag to move the cut`
-  }
+  // Cross-section is deliberately absent: it has a plate of its own at the
+  // foot of the stage carrying the same percentage, and §09 rules that one
+  // thing lives on that edge at a time. The hint yields; it does not echo.
   return null
 }
 
 function StageTools({
   renderer,
   mode,
+  collapse,
   onInvoked,
 }: {
   renderer: Renderer
   mode: StageMode
+  /** §09, phone: "THE RAIL YIELDS, IT DOES NOT STACK." Both the rail and the
+   * slider want the bottom edge and there is room for one, so turning
+   * cross-section on collapses the five-icon rail to the single tool that is
+   * running and the slider takes the rest of that same bar. Tapping the tool
+   * exits and the rail returns. No second row, no sheet, and the stage keeps
+   * its height. */
+  collapse: boolean
   onInvoked: () => void
 }) {
   const [activeTool, setActiveTool] = useState<ToolId | null>(
@@ -452,10 +448,17 @@ function StageTools({
     setActiveTool(renderer.supportedTools.includes('rotate') ? 'rotate' : null)
   }, [renderer])
 
-  // §02: the retrieval room keeps a reduced rail
-  const retrieveRenderer = useMemo(() => {
-    if (mode !== 'retrieve') return renderer
-    const keep: ToolId[] = ['rotate', 'zoom', 'reset']
+  // §02: the retrieval room keeps a reduced rail. §09 on phone: while the cut
+  // is running, the rail is that one tool. Both are the same move — the rail
+  // draws from `supportedTools` and never from a list of its own, so narrowing
+  // the rail is narrowing what the renderer declares to it.
+  const railRenderer = useMemo(() => {
+    const keep: ToolId[] | null = collapse
+      ? ['cross-section']
+      : mode === 'retrieve'
+        ? ['rotate', 'zoom', 'reset']
+        : null
+    if (!keep) return renderer
     return new Proxy(renderer, {
       get(target, prop, receiver) {
         if (prop === 'supportedTools') {
@@ -464,11 +467,12 @@ function StageTools({
         return Reflect.get(target, prop, receiver)
       },
     })
-  }, [renderer, mode])
+  }, [renderer, mode, collapse])
 
   return (
     <ToolRail
-      renderer={retrieveRenderer}
+      renderer={railRenderer}
+      collapsed={collapse}
       activeTool={activeTool}
       autoRotate={autoRotate}
       onTool={(tool) => {

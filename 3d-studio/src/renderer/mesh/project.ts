@@ -66,31 +66,48 @@ export function projectAnchor(anchor: THREE.Vector3, scene: ProjectionScene): Sc
     Math.abs(_ndc.y) <= NDC_LIMIT &&
     _ndc.z <= 1
 
+  const along = raysight(anchor, _cameraPos, model, radius, clip)
+
   return {
     x,
     y,
-    visible: inFrame && !isOccluded(anchor, _cameraPos, model, radius, clip),
+    visible: inFrame && !along.occluded,
+    onCut: inFrame && !along.occluded && along.throughCut,
   }
 }
 
-/** True when solid geometry sits between the camera and the anchor. */
-export function isOccluded(
+/** What the ray from the camera to the anchor met on the way.
+ *
+ * `occluded` is the original question: does solid geometry sit in front.
+ *
+ * `throughCut` is the other one, and it comes free from the same raycast
+ * (MRB-189, §08). If the ray passed through geometry the plane took away, then
+ * the cap — which is drawn exactly where the stencil says the plane removed
+ * material in front of what survived — covers this pixel. So the dot is not on
+ * the specimen's shaded exterior at all; it is on the cut face, which is a
+ * LIGHT ground (`#F0E9DC`) inside a dark stage. Design's ruling is that such a
+ * dot flips to the §07 paper variant, dark outline and all, and this is the
+ * only honest way to know: the shell cannot see canvas pixels, and the
+ * anchor's distance to the plane would be a guess about geometry rather than a
+ * measurement of what is in front of it.
+ */
+export function raysight(
   anchor: THREE.Vector3,
   cameraPos: THREE.Vector3,
   model: THREE.Object3D,
   radius: number,
   clip: THREE.Plane | null = null,
-): boolean {
+): { occluded: boolean; throughCut: boolean } {
   _toAnchor.copy(anchor).sub(cameraPos)
   const distance = _toAnchor.length()
-  if (distance === 0) return false
+  if (distance === 0) return { occluded: false, throughCut: false }
 
   const tolerance = Math.max(radius * DEPTH_TOLERANCE, 1e-4)
   _raycaster.set(cameraPos, _toAnchor.divideScalar(distance))
   _raycaster.near = 0
   // Nothing beyond the anchor can be in front of it.
   _raycaster.far = distance - tolerance
-  if (_raycaster.far <= 0) return false
+  if (_raycaster.far <= 0) return { occluded: false, throughCut: false }
 
   // three's raycaster does not consult Object3D.visible — it tests layers and
   // nothing else — so a part that isolate or layers has switched off would
@@ -104,5 +121,25 @@ export function isOccluded(
   // clipping planes, so the half of the specimen the cross-section has taken
   // away would keep occluding what the cut just exposed (MRB-189).
   const hits = _raycaster.intersectObject(model, true)
-  return hits.some((hit) => isShown(hit.object, model) && !isClipped(hit.point, clip))
+  let occluded = false
+  let throughCut = false
+  for (const hit of hits) {
+    if (!isShown(hit.object, model)) continue
+    if (isClipped(hit.point, clip)) throughCut = true
+    else occluded = true
+  }
+  return { occluded, throughCut }
+}
+
+/** True when solid geometry sits between the camera and the anchor. Kept as
+ * its own name because that is the question `occlusion.test.ts` asks and the
+ * one the contract's `visible` is defined by. */
+export function isOccluded(
+  anchor: THREE.Vector3,
+  cameraPos: THREE.Vector3,
+  model: THREE.Object3D,
+  radius: number,
+  clip: THREE.Plane | null = null,
+): boolean {
+  return raysight(anchor, cameraPos, model, radius, clip).occluded
 }
