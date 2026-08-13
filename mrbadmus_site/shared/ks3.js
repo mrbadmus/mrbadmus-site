@@ -596,7 +596,12 @@
     temperature: "Temperature",
     volume:      "Space to move in",
     particles:   "How many particles",
-    medium:      "What it spreads through"
+    medium:      "What it spreads through",
+    // MRB-198 — the microscope's three, and system-parts' one.
+    specimen:      "Slide on the stage",
+    magnification: "Magnification",
+    focus:         "Focus",
+    part:          "Switch one part off"
   };
 
   // SPEC §6 populations.
@@ -663,7 +668,91 @@
     ctx.fill();
   }
 
+  /* ── the R5 / Law 4 / R6 power scaffold, shared by every sim kind ──
+     Extracted unchanged from the particle engine when MRB-198 added two
+     non-particle kinds: the LOCKING is the same law for all of them, and
+     two copies of it is how one copy quietly stops gating. hooks:
+       draw()   — paint one frame at the current state (the frozen frame
+                  behind the veil)
+       settle() — R6: compute the settled state for the CURRENT controls,
+                  draw one representative frame, write the full readout
+       start()  — begin animating (never called under REDUCED)
+       stop()   — halt animating                                          */
+  function wireGate(sim, hooks) {
+    var activity = sim.closest ? sim.closest("[data-activity]") : null;
+    var gated = activity && activity.querySelectorAll(".ks3-option").length > 0;
+
+    function unlock() {
+      sim.removeAttribute("data-locked");
+      if (REDUCED) {
+        // One representative frame, then the words. Nothing is
+        // motion-only, so this is a complete experience, not a stub.
+        hooks.settle();
+      } else {
+        hooks.start();
+      }
+    }
+
+    if (gated) {
+      sim.setAttribute("data-locked", "1");
+      each(activity.querySelectorAll(".ks3-option"), function (btn) {
+        btn.addEventListener("click", unlock);
+      });
+      hooks.draw();   // the frozen first frame behind the veil
+    } else {
+      unlock();
+    }
+
+    // Don't burn a phone battery animating a lab three screens away.
+    if (window.IntersectionObserver && !REDUCED) {
+      new window.IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (sim.getAttribute("data-locked") === "1") { return; }
+          if (en.isIntersecting) { hooks.start(); } else { hooks.stop(); }
+        });
+      }, { threshold: 0.05 }).observe(sim);
+    }
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) { hooks.stop(); }
+      else if (sim.getAttribute("data-locked") !== "1") { hooks.start(); }
+    });
+  }
+
+  // R15 — one control shell for every engine: a real <label> with a real
+  // for=, wrapping the visible label text. The input goes in after.
+  // Returns null when CONTROL_LABELS has no entry: a control labelled
+  // "undefined" is the empty-control-panel defect in a new costume, and
+  // refusing here is what lets the parity sim audit count the drift
+  // (declared vs rendered) instead of shipping it.
+  function controlShell(name) {
+    if (!CONTROL_LABELS.hasOwnProperty(name)) { return null; }
+    var id = "ks3-sim-" + name + "-" + (++UID);
+    var wrap = document.createElement("label");
+    wrap.className = "ks3-sim-control";
+    wrap.setAttribute("for", id);
+    wrap.appendChild(document.createTextNode(CONTROL_LABELS[name]));
+    return { wrap: wrap, id: id };
+  }
+
+  // MRB-210 §2 — one place that knows how a range control is bound.
+  // A range fires `input` on every movement and `change` when the value
+  // settles; which of the two arrives depends on the input path, not on
+  // the element. Design's approved B1-06 binds both to the same handler
+  // and so do we. Bound twice, the handler can run twice for one drag,
+  // which is why every handler behind this is idempotent — it reads
+  // `input.value` and recomputes, rather than stepping a counter.
+  function onRange(el, fn) {
+    el.addEventListener("input", fn);
+    el.addEventListener("change", fn);
+  }
+
   function wireSim(sim) {
+    // MRB-198 — dispatch. The two B1 instruments are not particle labs:
+    // they share the gate scaffold and the readout discipline, nothing else.
+    var simKind = sim.getAttribute("data-sim");
+    if (simKind === "microscope") { return wireMicroscope(sim); }
+    if (simKind === "system-parts") { return wireSystemParts(sim); }
+
     var canvas = sim.querySelector(".ks3-sim-canvas");
     if (!canvas || !canvas.getContext) { return; }
     var ctx = canvas.getContext("2d");
@@ -1041,7 +1130,7 @@
         } else {
           input.min = "0"; input.max = "100"; input.value = "50";
         }
-        input.addEventListener("input", function () {
+        onRange(input, function () {
           if (name === "temperature") {
             state.temp = Number(input.value);
           } else if (name === "particles") {
@@ -1089,43 +1178,1047 @@
     report();          // never leave the readout empty, even while locked
 
     /* ── R5: locked until a prediction is committed ── */
-    var activity = sim.closest ? sim.closest("[data-activity]") : null;
-    var gated = activity && activity.querySelectorAll(".ks3-option").length > 0;
+    wireGate(sim, { draw: draw, settle: settle, start: start, stop: stop });
+  }
 
-    function unlock() {
-      sim.removeAttribute("data-locked");
+  /* ═══════════════════════════════════════════════════════════════
+     MRB-198 · THE MICROSCOPE — B1's L2 flagship, re-used in L6.
+
+     ONE MODEL DRIVES EVERY READING (R18's discipline, carried over):
+
+       total magnification = ×10 eyepiece × objective (×4 / ×10 / ×40)
+       field of view (mm)  = 180 / magnification
+                             ×40 → 4.5 mm · ×100 → 1.8 mm · ×400 → 0.45 mm
+       pixels per mm       = field diameter in px / field of view
+       depth of field      = 2200 / magnification  (55 · 22 · 5.5)
+       layer sharpness     = 1 − |focal plane − layer depth| / depth of field
+
+     The mm figure, the drawn size of every cell, the count of cells
+     across the view and the blur are ALL computed from those five
+     lines. No figure in the readout is invented (the review pack's
+     1.8 mm ÷ 6 onion cells falls straight out: 1.8 / 0.30).
+
+     THE POINT, so nobody "tidies" the physics away: turning the
+     magnification up must do all three of (a) make everything larger,
+     (b) SHRINK the field of view, (c) throw the image OUT OF FOCUS
+     until the focus is corrected. (b) is fov = 180/mag. (c) is the
+     depth of field narrowing PLUS the objectives not being parfocal —
+     OBJ_FOCUS_SHIFT racks the focal plane further down at each step
+     up, exactly like the school microscopes these students use. A
+     version that only scales the drawing is decoration, and it is the
+     version L2 exists to beat: CELL-02 is "the highest magnification
+     is always the best one".
+
+     Focus racks through the DEPTH of the slide (0–100), so a thick
+     specimen — pond water above all — can never be sharp all at once:
+     different layers come sharp in turn. Law 9: the magnification
+     change is a real zoom transition, never a frame swap; reduced
+     motion gets the settled frame and the full written readout.
+     ═══════════════════════════════════════════════════════════════ */
+
+  var EYEPIECE = 10;
+  var OBJECTIVES = [4, 10, 40];
+  var OBJ_FOCUS_SHIFT = [0, 10, 22];
+  var FIELD_AT_1X_MM = 180;
+
+  // The SAME classification rule as _specimen_kind() in build_ks3.py.
+  // The build fails on a name neither side knows; the parity gate's sim
+  // audit checks the rendered result, so the two cannot drift silently.
+  function specimenKind(name) {
+    var n = String(name).toLowerCase();
+    if (n.indexOf("pond") >= 0) { return "pond"; }
+    if (n.indexOf("cheek") >= 0) { return "cheek"; }
+    if (n.indexOf("onion") >= 0) {
+      return (n.indexOf("dropped") >= 0 || n.indexOf("bubble") >= 0)
+        ? "bubbles" : "onion";
+    }
+    return null;
+  }
+
+  function wireMicroscope(sim) {
+    var canvas = sim.querySelector(".ks3-sim-canvas");
+    if (!canvas || !canvas.getContext) { return; }
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+
+    var ink = cssVar(sim, "--ks3-ink", "#221E1B");
+    var card = cssVar(sim, "--ks3-card", "#FFFCF5");
+    var band = cssVar(sim, "--ks3-band", "#F4E9D8");
+    var accent = cssVar(sim, "--ks3-accent", "#E4572E");
+    var muted = cssVar(sim, "--ks3-ink-muted", "#5F564F");
+    // Subject identity, not a correctness mark: chloroplasts and the
+    // Euglena are GREEN because biology's hue is, and R3 is untouched —
+    // nothing here marks an answer.
+    var bio = cssVar(sim, "--ks3-biology", "#12A150");
+
+    var specimens;
+    try {
+      specimens = JSON.parse(sim.getAttribute("data-specimens") || "[]");
+    } catch (err) { specimens = []; }
+    if (!specimens.length) { return; }
+
+    var FIELD_R = 96, CX = W / 2, CY = H / 2;
+    var CELL_W = 0.30, CELL_H = 0.13;   // an onion cell, mm (≈0.3 across)
+    var CHEEK_D = 0.06;                 // a cheek cell, mm
+
+    // Slide content is generated once per slide, in mm about the field
+    // centre, so racking the controls looks at the SAME slide.
+    function buildContent(kindName) {
+      var i, out;
+      if (kindName === "bubbles") {
+        out = [];
+        for (i = 0; i < 7; i++) {
+          out.push({ x: rand(-2.2, 2.2), y: rand(-1.2, 1.2),
+                     d: rand(0.35, 0.95) });
+        }
+        return { bubbles: out };
+      }
+      if (kindName === "cheek") {
+        out = [];
+        for (i = 0; i < 26; i++) {
+          out.push({ x: rand(-2.6, 2.6), y: rand(-1.4, 1.4),
+                     d: rand(0.052, 0.07), depth: rand(22, 48),
+                     wob: rand(0, Math.PI * 2) });
+        }
+        return { cells: out };
+      }
+      if (kindName === "pond") {
+        // Three whole organisms (L6's cast), at three DEPTHS — the wet
+        // mount is thick, which is why ×400 can never sharpen all three.
+        return { swimmers: [
+          { type: "paramecium", x: -0.5, y: 0.15, depth: 16,
+            speed: 0.55, hdg: rand(0, Math.PI * 2), phase: 0 },
+          { type: "euglena", x: 0.55, y: -0.3, depth: 38,
+            speed: 0.12, hdg: rand(0, Math.PI * 2), phase: 0 },
+          { type: "amoeba", x: 0.1, y: 0.55, depth: 62,
+            speed: 0.02, hdg: rand(0, Math.PI * 2), phase: rand(0, 9) }
+        ] };
+      }
+      return {};   // onion tiles procedurally; nothing to pre-place
+    }
+
+    var state = {
+      slide: 0,                     // index into specimens[]
+      obj: 0,                       // index into OBJECTIVES — start LOWEST
+      // Sharp on the onion layer (depth 30) at the lowest lens, on
+      // purpose: the lesson only works if the opening view is GOOD and
+      // turning the magnification up is what breaks it. Opening soft
+      // would make the readout's "packed in rows like bricks" a claim
+      // the picture does not honour, and would blunt the whole point.
+      focus: 30,
+      dispMag: EYEPIECE * OBJECTIVES[0],   // what the canvas shows NOW
+      running: false, dirty: true, lastSay: 0, last: 0,
+      content: null
+    };
+    state.content = buildContent(specimenKind(specimens[0]));
+
+    function mag() { return EYEPIECE * OBJECTIVES[state.obj]; }
+    function fovMM() { return FIELD_AT_1X_MM / mag(); }
+    function focal() { return state.focus + OBJ_FOCUS_SHIFT[state.obj]; }
+    function dof() { return 2200 / mag(); }
+    function sharpOf(depth) {
+      var s = 1 - Math.abs(focal() - depth) / dof();
+      return s < 0 ? 0 : s;
+    }
+
+    // Law 9 — while the zoom transition runs, the CANVAS derives its
+    // depth of field and focal shift from the magnification currently
+    // displayed, interpolating the objective shift on the same log
+    // scale the zoom sweeps. The image therefore slides out of focus
+    // AS it grows, one continuous movement — never sharp, snap, blurred.
+    // The readout keeps the settled model's figures (they are what the
+    // student records), so nothing written ever shows a mid-zoom value.
+    function viewSharp(depth) {
+      var m = state.dispMag;
+      var lo = EYEPIECE * OBJECTIVES[0];
+      var hi = EYEPIECE * OBJECTIVES[OBJECTIVES.length - 1];
+      var pos = Math.log(m / lo) / Math.log(hi / lo)
+                * (OBJECTIVES.length - 1);
+      if (pos < 0) { pos = 0; }
+      if (pos > OBJECTIVES.length - 1) { pos = OBJECTIVES.length - 1; }
+      var i = Math.floor(pos), f = pos - i;
+      var shift = OBJ_FOCUS_SHIFT[i]
+        + (OBJ_FOCUS_SHIFT[Math.min(i + 1, OBJ_FOCUS_SHIFT.length - 1)]
+           - OBJ_FOCUS_SHIFT[i]) * f;
+      var s = 1 - Math.abs((state.focus + shift) - depth) / (2200 / m);
+      return s < 0 ? 0 : s;
+    }
+    function fovText() {
+      var f = fovMM();
+      return (f >= 1 ? String(Math.round(f * 10) / 10) : f.toFixed(2)) + " mm";
+    }
+    function kindNow() { return specimenKind(specimens[state.slide]); }
+
+    // ── drawing ──
+    var canFilter = typeof ctx.filter === "string";
+
+    function blurFor(sharp) { return Math.min(8, (1 - sharp) * 7); }
+
+    function layer(sharp, paint) {
+      // A blurred layer is DRAWN blurred — the mechanism has to be
+      // visible, not narrated only. Where canvas filters are missing
+      // (very old WebKit) the layer fades instead: less honest about
+      // optics, still unmistakably "not sharp".
+      ctx.save();
+      if (sharp < 0.92) {
+        if (canFilter) { ctx.filter = "blur(" + blurFor(sharp).toFixed(1) + "px)"; }
+        else { ctx.globalAlpha = 0.25 + 0.75 * sharp; }
+      }
+      paint();
+      ctx.restore();
+    }
+
+    function mmFont(px, weight) {
+      ctx.font = (weight || 400) + " " + px + "px 'Instrument Sans', system-ui, sans-serif";
+    }
+
+    function drawOnionLayer(ppm, sharp, dim) {
+      var w = CELL_W * ppm, h = CELL_H * ppm;
+      layer(sharp, function () {
+        var r, c, x, y, row = 0;
+        ctx.lineWidth = Math.max(1.2, 0.012 * ppm);
+        ctx.strokeStyle = ink;
+        ctx.fillStyle = card;
+        if (dim) { ctx.globalAlpha *= 0.8; }
+        for (r = -Math.ceil(FIELD_R / h) - 1; r * h < FIELD_R + h; r++) {
+          row = r;
+          for (c = -Math.ceil(FIELD_R / w) - 1; c * w < FIELD_R + w; c++) {
+            x = CX + c * w + ((row % 2) ? w / 2 : 0);
+            y = CY + r * h;
+            ctx.fillRect(x, y, w - 1, h - 1);
+            ctx.strokeRect(x, y, w - 1, h - 1);
+            if (w > 22) {
+              // The nucleus resolves once a cell is drawn large enough.
+              ctx.beginPath();
+              ctx.arc(x + w * (0.28 + 0.4 * (((r * 7 + c * 13) % 5) / 5)),
+                      y + h / 2, Math.max(1.6, 0.014 * ppm), 0, Math.PI * 2);
+              ctx.fillStyle = muted;
+              ctx.fill();
+              ctx.fillStyle = card;
+            }
+          }
+        }
+      });
+    }
+
+    function drawBubbles(ppm) {
+      var sb = viewSharp(12), sc = viewSharp(38);
+      drawOnionLayer(ppm, sc, true);
+      layer(sb, function () {
+        state.content.bubbles.forEach(function (b) {
+          var x = CX + b.x * ppm, y = CY + b.y * ppm, r = (b.d / 2) * ppm;
+          ctx.beginPath();
+          ctx.arc(x, y, r, 0, Math.PI * 2);
+          ctx.fillStyle = band;
+          ctx.globalAlpha *= 0.92;
+          ctx.fill();
+          ctx.globalAlpha /= 0.92;
+          // The thick dark rim is the tell (CELL-01's confrontation).
+          ctx.lineWidth = Math.max(3, 0.05 * ppm);
+          ctx.strokeStyle = ink;
+          ctx.stroke();
+        });
+      });
+    }
+
+    function drawCheek(ppm) {
+      state.content.cells.forEach(function (cell) {
+        layer(viewSharp(cell.depth), function () {
+          var x = CX + cell.x * ppm, y = CY + cell.y * ppm;
+          var r = (cell.d / 2) * ppm, k;
+          ctx.beginPath();
+          for (k = 0; k <= 10; k++) {
+            var a = cell.wob + (k / 10) * Math.PI * 2;
+            var rr = r * (0.85 + 0.15 * Math.sin(a * 3 + cell.wob));
+            if (k === 0) { ctx.moveTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); }
+            else { ctx.lineTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); }
+          }
+          ctx.closePath();
+          ctx.fillStyle = card;
+          ctx.fill();
+          ctx.lineWidth = Math.max(1, 0.008 * ppm);
+          ctx.strokeStyle = muted;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(x, y, Math.max(1.2, r * 0.22), 0, Math.PI * 2);
+          ctx.fillStyle = ink;
+          ctx.fill();
+        });
+      });
+    }
+
+    function drawSwimmer(s, ppm) {
+      var x = CX + s.x * ppm, y = CY + s.y * ppm, k;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(s.hdg);
+      if (s.type === "euglena") {
+        var eL = 0.10 * ppm, eW = 0.035 * ppm;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, eL / 2, eW / 2, 0, 0, Math.PI * 2);
+        ctx.fillStyle = bio;
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = ink;
+        ctx.stroke();
+        ctx.beginPath();               // the eyespot, at the front
+        ctx.arc(eL * 0.32, 0, Math.max(1.2, eW * 0.16), 0, Math.PI * 2);
+        ctx.fillStyle = accent;
+        ctx.fill();
+        ctx.beginPath();               // the flagellum, beating ahead
+        ctx.moveTo(eL / 2, 0);
+        for (k = 1; k <= 8; k++) {
+          ctx.lineTo(eL / 2 + k * eL * 0.09,
+                     Math.sin(k * 1.1 + s.phase * 9) * eW * 0.3);
+        }
+        ctx.lineWidth = Math.max(1, eW * 0.08);
+        ctx.strokeStyle = ink;
+        ctx.stroke();
+      } else if (s.type === "paramecium") {
+        var pL = 0.18 * ppm, pW = 0.07 * ppm;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, pL / 2, pW / 2, 0, 0, Math.PI * 2);
+        ctx.fillStyle = card;
+        ctx.fill();
+        ctx.lineWidth = Math.max(1, pW * 0.05);
+        ctx.strokeStyle = ink;
+        ctx.stroke();
+        for (k = 0; k < 26; k++) {     // cilia all round, mid-beat
+          var a = (k / 26) * Math.PI * 2;
+          var cx1 = Math.cos(a) * pL / 2, cy1 = Math.sin(a) * pW / 2;
+          var tick = 1 + 0.35 * Math.sin(k + s.phase * 14);
+          ctx.beginPath();
+          ctx.moveTo(cx1, cy1);
+          ctx.lineTo(cx1 * (1 + 0.10 * tick), cy1 * (1 + 0.22 * tick));
+          ctx.stroke();
+        }
+        ctx.beginPath();               // oral groove
+        ctx.arc(-pL * 0.1, pW * 0.16, pW * 0.16, 0.3, Math.PI - 0.3);
+        ctx.stroke();
+        for (k = 0; k < 2; k++) {      // contractile vacuoles
+          ctx.beginPath();
+          ctx.arc((k ? 1 : -1) * pL * 0.28, 0, pW * 0.13, 0, Math.PI * 2);
+          ctx.strokeStyle = muted;
+          ctx.stroke();
+          ctx.strokeStyle = ink;
+        }
+      } else {                         // amoeba
+        var aR = 0.125 * ppm;
+        ctx.beginPath();
+        for (k = 0; k <= 14; k++) {
+          var aa = (k / 14) * Math.PI * 2;
+          var rr = aR * (0.7 + 0.3 * Math.sin(aa * 3 + s.phase));
+          if (k === 0) { ctx.moveTo(rr * Math.cos(aa), rr * Math.sin(aa)); }
+          else { ctx.lineTo(rr * Math.cos(aa), rr * Math.sin(aa)); }
+        }
+        ctx.closePath();
+        ctx.fillStyle = band;
+        ctx.fill();
+        ctx.lineWidth = Math.max(1.2, aR * 0.04);
+        ctx.strokeStyle = ink;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.max(1.5, aR * 0.16), 0, Math.PI * 2);
+        ctx.fillStyle = muted;
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function drawPond(ppm) {
+      state.content.swimmers.forEach(function (s) {
+        layer(viewSharp(s.depth), function () { drawSwimmer(s, ppm); });
+      });
+    }
+
+    function draw() {
+      var ppm = (FIELD_R * 2) / (FIELD_AT_1X_MM / state.dispMag);
+      ctx.clearRect(0, 0, W, H);
+      // The dark surround and the bright circular field: the view down
+      // the tube, not a screen-shaped picture of one.
+      ctx.fillStyle = ink;
+      ctx.fillRect(0, 0, W, H);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(CX, CY, FIELD_R, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.fillStyle = card;
+      ctx.fillRect(CX - FIELD_R, CY - FIELD_R, FIELD_R * 2, FIELD_R * 2);
+      var kn = kindNow();
+      if (kn === "onion") { drawOnionLayer(ppm, viewSharp(30), false); }
+      else if (kn === "bubbles") { drawBubbles(ppm); }
+      else if (kn === "cheek") { drawCheek(ppm); }
+      else if (kn === "pond") { drawPond(ppm); }
+      ctx.restore();
+      ctx.beginPath();
+      ctx.arc(CX, CY, FIELD_R, 0, Math.PI * 2);
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = ink;
+      ctx.stroke();
+    }
+
+    // ── the readout: the whole result, in words, all of it computed ──
+    var readout = sim.querySelector(".ks3-sim-readout");
+    function say(txt) { if (readout) { readout.textContent = txt; } }
+
+    function inViewSwimmers() {
+      var half = fovMM() / 2, out = [];
+      state.content.swimmers.forEach(function (s) {
+        if (Math.sqrt(s.x * s.x + s.y * s.y) < half + 0.05) { out.push(s); }
+      });
+      return out;
+    }
+
+    var SWIMMER_WORDS = {
+      euglena: "a Euglena — green, with a whip to swim with and an orange eyespot",
+      paramecium: "a Paramecium — a slipper shape covered in beating cilia",
+      amoeba: "an Amoeba — a slow grey blob pushing out pseudopods"
+    };
+
+    function whatYouSee() {
+      var kn = kindNow(), s, n, ppm = (FIELD_R * 2) / fovMM();
+      if (kn === "onion") {
+        s = sharpOf(30);
+        if (s >= 0.7) {
+          n = Math.round(fovMM() / CELL_W);
+          return (n <= 1
+            ? "A single onion cell more than fills the view — straight sides, "
+              + "part of a row."
+            : "About " + n + " onion cells fit across the view — straight "
+              + "sides, packed in rows like bricks.")
+            + (CELL_W * ppm > 22 ? " Each has a small nucleus." : "");
+        }
+        if (s >= 0.3) {
+          return "The rows are there, but soft — turn the focus until the "
+            + "cell walls come sharp.";
+        }
+        return "A bright blur, nothing sharp. The focus is nowhere near the "
+          + "specimen — turn it slowly and watch.";
+      }
+      if (kn === "bubbles") {
+        var sb = sharpOf(12), sc = sharpOf(38);
+        if (sb >= 0.6) {
+          return "Perfectly round circles with a thick dark rim, floating "
+            + "apart from each other. They look like cells; they are air "
+            + "bubbles, trapped when the coverslip was dropped flat"
+            + (sc < 0.4 ? " — and the onion cells are a blur underneath."
+                        : ".");
+        }
+        if (sc >= 0.6) {
+          return "Past the bubbles: rows of onion cells come sharp in the "
+            + "gaps, but the blurred bubble rims still hide most of the "
+            + "slide. A slide this bad is worth making again.";
+        }
+        return "Bright circles and shadows, none of it sharp — rack the "
+          + "focus down through the slide.";
+      }
+      if (kn === "cheek") {
+        if (CHEEK_D * ppm < 6) {
+          return "Dozens of pale specks scattered across the view — too "
+            + "small to make anything out at ×" + mag() + ".";
+        }
+        var best = 0, count = 0, half = fovMM() / 2;
+        state.content.cells.forEach(function (cell) {
+          var inV = Math.sqrt(cell.x * cell.x + cell.y * cell.y) < half;
+          var sh = sharpOf(cell.depth);
+          if (inV) { count++; if (sh > best) { best = sh; } }
+        });
+        if (!count) { return "Empty slide just here — the smear is patchy."; }
+        if (best >= 0.6) {
+          return count + " cheek cell" + (count === 1 ? "" : "s")
+            + " in view — soft and rounded, each with a darker nucleus. "
+            + "They sit at slightly different depths: nudge the focus and "
+            + "different ones come sharp.";
+        }
+        return "Rounded shadows in the view, none sharp — bring the focus "
+          + "through the smear slowly.";
+      }
+      if (kn === "pond") {
+        var vis = inViewSwimmers();
+        if (!vis.length) {
+          return "Empty water just now. At ×" + mag() + " the view is only "
+            + fovText() + " wide — drop back to ×40 to find something, "
+            + "then work up.";
+        }
+        // Same honesty rule the cheek slide runs on: do not name a
+        // feature the drawing is too small to show. A Paramecium is
+        // 0.18 mm, which is 8 pixels across a ×40 field — a moving
+        // speck, and saying so IS the lesson. It resolves from ×100.
+        if (0.18 * ppm < 14) {
+          return vis.length + " tiny specks drifting and darting about the "
+            + "view — alive, clearly, but far too small at ×" + mag()
+            + " to tell what any of them is. Found something? Turn the "
+            + "magnification up.";
+        }
+        var bits = [], anyBlur = false;
+        vis.forEach(function (sw) {
+          var sh = sharpOf(sw.depth);
+          if (sh < 0.6) { anyBlur = true; }
+          bits.push(SWIMMER_WORDS[sw.type]
+                    + (sh >= 0.6 ? " (sharp)" : " (a blur at another depth)"));
+        });
+        return "In view: " + bits.join("; ") + "."
+          + (anyBlur ? " The water is deeper than the lens can focus — "
+                       + "layers come sharp in turn." : "")
+          + (mag() === 400 && vis.some(function (sw) { return sw.type === "paramecium"; })
+             ? " The Paramecium will not stay long: at ×400 it crosses the "
+               + "whole view in under a second."
+             : "");
+      }
+      return "";
+    }
+
+    function report() {
+      say("Total magnification ×" + mag() + " · field of view " + fovText()
+          + ". " + whatYouSee());
+    }
+
+    // ── motion ──
+    function stepSwimmers(dt) {
+      if (kindNow() !== "pond") { return; }
+      state.content.swimmers.forEach(function (s) {
+        s.phase += dt * (s.type === "paramecium" ? 3 : 1);
+        if (Math.random() < (s.type === "amoeba" ? 0.002 : 0.02)) {
+          s.hdg += rand(-1.2, 1.2);
+        }
+        s.x += Math.cos(s.hdg) * s.speed * dt;
+        s.y += Math.sin(s.hdg) * s.speed * dt;
+        // Steer back toward the middle of the mount, softly — the drop
+        // of water is bigger than the field but not infinite.
+        var d = Math.sqrt(s.x * s.x + s.y * s.y);
+        if (d > 2.3) {
+          s.hdg = Math.atan2(-s.y, -s.x) + rand(-0.5, 0.5);
+        }
+      });
+    }
+
+    var raf = null;
+    function animating() {
+      return kindNow() === "pond" || Math.abs(state.dispMag - mag()) > 0.5;
+    }
+    function loop(now) {
+      if (!state.running) { return; }
+      var dt = state.last ? Math.min(50, now - state.last) / 1000 : 0.016;
+      state.last = now;
+      stepSwimmers(dt);
+      if (Math.abs(state.dispMag - mag()) > 0.5) {
+        // Law 9 — the zoom is a movement through magnifications, on a
+        // log scale so ×40 → ×400 sweeps evenly, never a frame swap.
+        var ratio = mag() / state.dispMag;
+        var stepR = Math.pow(ratio, Math.min(1, dt * 3.2));
+        state.dispMag *= stepR;
+        if (Math.abs(state.dispMag - mag()) <= 0.5) { state.dispMag = mag(); }
+        state.dirty = true;
+      }
+      if (animating() || state.dirty) {
+        draw();
+        state.dirty = false;
+      }
+      if (kindNow() === "pond") {
+        // Organisms swim in and out of view, so — like diffusion's
+        // crossing counts — this one readout re-reads on a cadence.
+        if (!state.lastSay) { state.lastSay = now; }
+        else if (now - state.lastSay > 700) { state.lastSay = now; report(); }
+      }
+      raf = window.requestAnimationFrame(loop);
+    }
+    function start() {
+      if (state.running || REDUCED) { return; }
+      state.running = true;
+      state.last = 0;
+      state.dirty = true;
+      raf = window.requestAnimationFrame(loop);
+    }
+    function stop() {
+      state.running = false;
+      if (raf) { window.cancelAnimationFrame(raf); raf = null; }
+    }
+
+    // R6 — one representative frame at the CURRENT controls. The pond
+    // settles 1,400 steps first so the frame is mid-swim, not the pose
+    // the slide was mounted in; every control change re-settles.
+    var SETTLE_STEPS = 1400;
+    function settle() {
+      var i;
+      for (i = 0; i < SETTLE_STEPS; i++) { stepSwimmers(1 / 60); }
+      state.dispMag = mag();
+      draw();
+      report();
+    }
+
+    function afterControlChange() {
+      if (sim.getAttribute("data-locked") === "1") { return; }
       if (REDUCED) {
-        // One representative frame, then the words. Nothing is
-        // motion-only, so this is a complete experience, not a stub.
-        settle();
+        settle();                     // R6 — re-settle from scratch
       } else {
-        start();
+        state.dirty = true;
+        report();                     // the figures track the control at once
+        if (!state.running) { draw(); }
       }
     }
 
-    if (gated) {
-      sim.setAttribute("data-locked", "1");
-      each(activity.querySelectorAll(".ks3-option"), function (btn) {
-        btn.addEventListener("click", unlock);
+    // ── controls (R15: real select / range, real labels) ──
+    var controls = sim.querySelector(".ks3-sim-controls");
+    if (controls) {
+      (sim.getAttribute("data-controls") || "").split(",").forEach(function (name) {
+        name = name.trim();
+        var shell, input;
+        if (name === "specimen") {
+          shell = controlShell(name);
+          if (!shell) { return; }
+          input = document.createElement("select");
+          input.id = shell.id;
+          specimens.forEach(function (label, i) {
+            var opt = document.createElement("option");
+            opt.value = String(i);
+            opt.textContent = label;
+            input.appendChild(opt);
+          });
+          input.addEventListener("change", function () {
+            state.slide = Number(input.value);
+            state.content = buildContent(kindNow());
+            afterControlChange();
+          });
+          shell.wrap.appendChild(input);
+          controls.appendChild(shell.wrap);
+        } else if (name === "magnification") {
+          shell = controlShell(name);
+          if (!shell) { return; }
+          input = document.createElement("select");
+          input.id = shell.id;
+          OBJECTIVES.forEach(function (o, i) {
+            var opt = document.createElement("option");
+            opt.value = String(i);
+            opt.textContent = "×" + (EYEPIECE * o)
+              + (i === 0 ? " — lowest lens"
+                 : (i === OBJECTIVES.length - 1 ? " — highest lens" : ""));
+            input.appendChild(opt);
+          });
+          input.addEventListener("change", function () {
+            state.obj = Number(input.value);
+            afterControlChange();
+          });
+          shell.wrap.appendChild(input);
+          controls.appendChild(shell.wrap);
+        } else if (name === "focus") {
+          shell = controlShell(name);
+          if (!shell) { return; }
+          input = document.createElement("input");
+          input.type = "range";
+          input.min = "0"; input.max = "100"; input.value = String(state.focus);
+          input.id = shell.id;
+          // Deliberately no number beside it: a fine-focus wheel is
+          // unnumbered, and what the position MEANS is the readout's job.
+          //
+          // MRB-210 §2 — bound on BOTH `input` and `change`, matching
+          // Design's approved B1-06 (`onChange={...} onInput={...}` on
+          // the same handler). `input` alone covers a mouse or touch
+          // drag and keyboard arrows in current browsers, but it is not
+          // the only path to a range value: some assistive technologies
+          // and automation set `.value` and fire `change` only, and that
+          // interaction would silently do nothing. Verified by driving
+          // all 12 range controls across the full control matrix on all
+          // 183 lesson pages — before this, `change` reached the handler
+          // on exactly none of them.
+          onRange(input, function () {
+            state.focus = Number(input.value);
+            afterControlChange();
+          });
+          shell.wrap.appendChild(input);
+          controls.appendChild(shell.wrap);
+        }
       });
-      draw();   // the frozen first frame behind the veil
-    } else {
-      unlock();
     }
 
-    // Don't burn a phone battery animating a lab three screens away.
-    if (window.IntersectionObserver && !REDUCED) {
-      new window.IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (sim.getAttribute("data-locked") === "1") { return; }
-          if (en.isIntersecting) { start(); } else { stop(); }
-        });
-      }, { threshold: 0.05 }).observe(sim);
-    }
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) { stop(); }
-      else if (sim.getAttribute("data-locked") !== "1") { start(); }
+    report();          // never leave the readout empty, even while locked
+    wireGate(sim, { draw: draw, settle: settle, start: start, stop: stop });
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     MRB-198 · SYSTEM-PARTS — the SYSTEM family's perturbation
+     flagship (B1 L3, L4, L5), and the pattern for 47 lessons.
+
+     §6, verbatim: "the characteristic KS3 error is knowing the parts
+     and not the interaction, so the flagship must be perturbation,
+     never labelling." There is deliberately NO mode in which this
+     component just names parts: the only control switches one off,
+     and the only spectacle is the failure CLIMBING THE LEVELS. If you
+     find yourself adding clickable hotspots to a labelled diagram,
+     stop — that is the thing this component exists instead of.
+
+     Everything is DERIVED from the payload, never scripted per
+     lesson:
+       · the layout — a part sits one row above the things it needs
+         (longest dependent chain), so providers rest at the bottom
+         and the whole drawing reads as "everything stands on the
+         membrane" / "the organism stands on its cells";
+       · the cascade — switch a part off and every part whose `needs`
+         list touches a stopped part stops in the next wave, wave by
+         wave (Law 9: the spread is animated as movement; reduced
+         motion draws the settled end state and the readout carries
+         the whole result);
+       · the scale rule — a part flagged `one_of_many` is ONE
+         INSTANCE of a large population (a single muscle cell in a
+         tissue of thousands). Switching it off stops only itself:
+         the parts that need its KIND still have the rest. That
+         contrast — one cell is nothing, one tissue is everything —
+         is what having levels of organisation buys, and the payload
+         states it as data so the engine never scripts it.
+
+     R3: stopped/working is SIM STATE, not correctness — no green
+     tick, no red cross on any option, and the marks drawn here are
+     drawn strokes (the font subsets carry no ✕ glyph, and text is
+     the readout's job anyway).
+     ═══════════════════════════════════════════════════════════════ */
+
+  function wireSystemParts(sim) {
+    var canvas = sim.querySelector(".ks3-sim-canvas");
+    if (!canvas || !canvas.getContext) { return; }
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width, H = canvas.height;
+
+    var ink = cssVar(sim, "--ks3-ink", "#221E1B");
+    var card = cssVar(sim, "--ks3-card", "#FFFCF5");
+    var spent = cssVar(sim, "--ks3-option-spent", "#EBDFCB");
+    var accent = cssVar(sim, "--ks3-accent", "#E4572E");
+    var ruleStrong = cssVar(sim, "--ks3-rule-strong", "#C3B191");
+
+    var parts;
+    try {
+      parts = JSON.parse(sim.getAttribute("data-parts") || "[]");
+    } catch (err) { parts = []; }
+    if (!parts.length) { return; }
+
+    var byId = {};
+    parts.forEach(function (p) { byId[p.id] = p; });
+
+    // Row = the longest chain of dependents ABOVE a part. Sinks (the
+    // organism, the delivered oxygen) land on row 0 at the top; the
+    // deepest providers rest on the bottom row. Derived, not authored.
+    var dependents = {};
+    parts.forEach(function (p) {
+      (p.needs || []).forEach(function (n) {
+        (dependents[n] = dependents[n] || []).push(p.id);
+      });
     });
+    var upMemo = {};
+    function up(id) {
+      if (upMemo.hasOwnProperty(id)) { return upMemo[id]; }
+      var deps = dependents[id] || [], best = 0, i;
+      upMemo[id] = 0;                  // build_ks3.py proved acyclicity
+      for (i = 0; i < deps.length; i++) {
+        var d = 1 + up(deps[i]);
+        if (d > best) { best = d; }
+      }
+      upMemo[id] = best;
+      return best;
+    }
+    var nRows = 0;
+    parts.forEach(function (p) {
+      if (up(p.id) + 1 > nRows) { nRows = up(p.id) + 1; }
+    });
+
+    var rows = [];
+    (function () {
+      var i;
+      for (i = 0; i < nRows; i++) { rows.push([]); }
+      parts.forEach(function (p) { rows[up(p.id)].push(p); });
+    })();
+
+    var PAD = 10;
+    var rowH = (H - PAD * 2) / nRows;
+    // The GAP between rows is where the dependency edges are drawn, and
+    // the edges are what make a cascade read as a cascade rather than as
+    // boxes changing colour. A 5-level payload leaves 40px per row, so
+    // boxes take at most 60% of it and the remaining 16px carries the
+    // travelling dashed line.
+    var boxH = Math.min(30, rowH * 0.6);
+    var geom = {};
+    rows.forEach(function (row, r) {
+      row.forEach(function (p, i) {
+        var cw = (W - PAD * 2) / row.length;
+        geom[p.id] = {
+          x: PAD + cw * (i + 0.5),
+          y: PAD + r * rowH + rowH / 2,
+          w: Math.min(cw - 10, 158),
+          h: boxH
+        };
+      });
+    });
+
+    // name → up to two lines, splitting at " (" so "Cell wall (plant
+    // only)" keeps its qualifier without overflowing the box.
+    function nameLines(p) {
+      var m = /^(.*?)\s*(\(.*\))$/.exec(p.name);
+      return m ? [m[1], m[2]] : [p.name];
+    }
+
+    var state = { off: null, waves: [], shown: 0, absorbed: false, anim: null };
+
+    function cascade(offId) {
+      // The knock-on is DERIVED: wave 0 is the switched-off part; each
+      // later wave is every still-working part one of whose needs has
+      // stopped. one_of_many absorbs the failure at wave 0.
+      var stopped = {}, waves = [[offId]], absorbed = false;
+      stopped[offId] = true;
+      if (byId[offId].one_of_many) {
+        absorbed = true;
+      } else {
+        for (;;) {
+          var next = [];
+          parts.forEach(function (p) {
+            if (stopped[p.id]) { return; }
+            var hit = (p.needs || []).some(function (n) { return stopped[n]; });
+            if (hit) { next.push(p.id); }
+          });
+          if (!next.length) { break; }
+          next.forEach(function (id) { stopped[id] = true; });
+          waves.push(next);
+        }
+      }
+      return { waves: waves, absorbed: absorbed };
+    }
+
+    function stoppedNow() {
+      var out = {}, i, j;
+      for (i = 0; i < state.shown && i < state.waves.length; i++) {
+        for (j = 0; j < state.waves[i].length; j++) {
+          out[state.waves[i][j]] = i;
+        }
+      }
+      return out;
+    }
+
+    function partFont(px) {
+      ctx.font = "600 " + px + "px 'Instrument Sans', system-ui, sans-serif";
+    }
+
+    function drawNode(p, stoppedWave, isOrigin) {
+      var g = geom[p.id];
+      var x = g.x - g.w / 2, y = g.y - g.h / 2;
+      var stoppedHere = stoppedWave !== undefined;
+      ctx.fillStyle = stoppedHere ? spent : card;
+      ctx.fillRect(x, y, g.w, g.h);
+      if (stoppedHere) {
+        // Diagonal hatch: the drawn "stopped" state. Ink on the spent
+        // fill, so the mark holds well past 3:1 (R1).
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x, y, g.w, g.h);
+        ctx.clip();
+        ctx.strokeStyle = ink;
+        ctx.globalAlpha = 0.18;
+        ctx.lineWidth = 1;
+        var hx;
+        for (hx = -g.h; hx < g.w; hx += 7) {
+          ctx.beginPath();
+          ctx.moveTo(x + hx, y + g.h);
+          ctx.lineTo(x + hx + g.h, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+      ctx.lineWidth = isOrigin ? 3 : 2;
+      ctx.strokeStyle = isOrigin ? accent : ink;
+      if (stoppedHere && !isOrigin && ctx.setLineDash) { ctx.setLineDash([5, 3]); }
+      ctx.strokeRect(x, y, g.w, g.h);
+      if (ctx.setLineDash) { ctx.setLineDash([]); }
+
+      var lines = nameLines(p);
+      var fpx = lines.length > 1 ? 10 : 11;
+      partFont(fpx);
+      while (fpx > 8.5) {
+        var wide = false, li;
+        for (li = 0; li < lines.length; li++) {
+          if (ctx.measureText(lines[li]).width > g.w - 12) { wide = true; }
+        }
+        if (!wide) { break; }
+        fpx -= 0.5;
+        partFont(fpx);
+      }
+      ctx.fillStyle = ink;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      if (lines.length > 1) {
+        ctx.fillText(lines[0], g.x, g.y - fpx * 0.62);
+        ctx.fillText(lines[1], g.x, g.y + fpx * 0.62);
+      } else {
+        ctx.fillText(lines[0], g.x, g.y);
+      }
+
+      if (stoppedHere) {
+        // A drawn stop-mark in the corner — strokes, never a ✕ glyph.
+        var mx = x + g.w - 11, my = y + 4;
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = isOrigin ? accent : ink;
+        ctx.beginPath();
+        ctx.moveTo(mx, my); ctx.lineTo(mx + 7, my + 7);
+        ctx.moveTo(mx + 7, my); ctx.lineTo(mx, my + 7);
+        ctx.stroke();
+      }
+    }
+
+    function drawEdges(stopped, pulseT) {
+      parts.forEach(function (p) {
+        (p.needs || []).forEach(function (n) {
+          var a = geom[n], b = geom[p.id];
+          var failing = stopped[n] !== undefined && stopped[p.id] !== undefined
+                        && !state.absorbed;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y - a.h / 2);
+          ctx.lineTo(b.x, b.y + b.h / 2);
+          ctx.lineWidth = failing ? 2.5 : 2;
+          ctx.strokeStyle = failing ? accent : ruleStrong;
+          if (failing && ctx.setLineDash) {
+            // Law 9 — the failure travels ALONG the edge as movement.
+            ctx.setLineDash([6, 5]);
+            ctx.lineDashOffset = -(pulseT || 0) * 30;
+          }
+          ctx.stroke();
+          if (ctx.setLineDash) { ctx.setLineDash([]); ctx.lineDashOffset = 0; }
+        });
+      });
+    }
+
+    var pulse = 0;
+    function draw() {
+      var stopped = stoppedNow();
+      ctx.clearRect(0, 0, W, H);
+      drawEdges(stopped, pulse);
+      parts.forEach(function (p) {
+        drawNode(p, stopped[p.id], state.off === p.id);
+      });
+    }
+
+    // ── the readout: what still works · what has stopped ──
+    var readout = sim.querySelector(".ks3-sim-readout");
+    function say(txt) { if (readout) { readout.textContent = txt; } }
+
+    function names(ids) {
+      return ids.map(function (id) { return byId[id].name; });
+    }
+
+    function report() {
+      if (!state.off) {
+        say("Every part is working. Switch one off, and predict what stops "
+            + "first before you look.");
+        return;
+      }
+      var p = byId[state.off];
+      var head = "The " + p.name.toLowerCase() + " is off. Its job — "
+                 + p.job.toLowerCase() + " — is not being done. ";
+      if (state.absorbed) {
+        say(head + "Almost nothing else happens: it is one of thousands "
+            + "doing that job, and the rest cover for it. Everything else "
+            + "still works.");
+        return;
+      }
+      var later = [], i;
+      for (i = 1; i < state.waves.length; i++) {
+        later.push(names(state.waves[i]).join(" and "));
+      }
+      var stillOn = parts.filter(function (q) {
+        return !state.waves.some(function (w) { return w.indexOf(q.id) >= 0; });
+      });
+      say(head
+          + (later.length
+             ? "Stopped, in the order the failure spread: "
+               + later.join(", then ") + ". "
+             : "Nothing else depends on it, so nothing else stops. ")
+          + (stillOn.length
+             ? "Still working: " + names(stillOn.map(function (q) { return q.id; })).join(", ") + "."
+             : "Nothing is still working."));
+    }
+
+    // ── the cascade, animated wave by wave (Law 9) ──
+    var raf = null, waveT = 0, lastT = 0;
+    var WAVE_MS = 550;
+
+    function animate(now) {
+      if (!lastT) { lastT = now; }
+      var dt = now - lastT;
+      lastT = now;
+      pulse += dt / 1000;
+      waveT += dt;
+      if (waveT >= WAVE_MS && state.shown < state.waves.length) {
+        state.shown++;
+        waveT = 0;
+      }
+      draw();
+      if (state.shown < state.waves.length || state.absorbed === false
+          && state.shown === state.waves.length && pulse < 60) {
+        // Keep the dashed pulse moving while a failure is on screen —
+        // a frozen "spreading" mark reads as a finished one.
+        raf = window.requestAnimationFrame(animate);
+      }
+    }
+
+    function stopAnim() {
+      if (raf) { window.cancelAnimationFrame(raf); raf = null; }
+      lastT = 0;
+    }
+
+    function applyOff(offId) {
+      stopAnim();
+      state.off = offId;
+      if (!offId) {
+        state.waves = [];
+        state.shown = 0;
+        state.absorbed = false;
+        draw();
+        report();
+        return;
+      }
+      var c = cascade(offId);
+      state.waves = c.waves;
+      state.absorbed = c.absorbed;
+      if (REDUCED) {
+        state.shown = state.waves.length;   // R6: the end state, at once
+        draw();
+      } else {
+        state.shown = 1;                    // the switched-off part, now
+        waveT = 0;
+        draw();
+        raf = window.requestAnimationFrame(animate);
+      }
+      report();   // the words carry the WHOLE result either way (R6)
+    }
+
+    // ── the one control: a part selector, never a slider (R15) ──
+    var controls = sim.querySelector(".ks3-sim-controls");
+    var shell = controls ? controlShell("part") : null;
+    if (shell) {
+      var sel = document.createElement("select");
+      sel.id = shell.id;
+      var optAll = document.createElement("option");
+      optAll.value = "";
+      optAll.textContent = "Every part on";
+      sel.appendChild(optAll);
+      parts.forEach(function (p) {
+        var opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = "Switch off: " + p.name;
+        sel.appendChild(opt);
+      });
+      sel.addEventListener("change", function () {
+        if (sim.getAttribute("data-locked") === "1") { return; }
+        applyOff(sel.value || null);
+      });
+      shell.wrap.appendChild(sel);
+      controls.appendChild(shell.wrap);
+    }
+
+    function settle() {
+      if (state.off) {
+        state.shown = state.waves.length;
+      }
+      draw();
+      report();
+    }
+    function start() { draw(); report(); }
+
+    report();          // never leave the readout empty, even while locked
+    wireGate(sim, { draw: draw, settle: settle, start: start, stop: stopAnim });
   }
 
   function wireSims(root) {
