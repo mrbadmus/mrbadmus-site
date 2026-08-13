@@ -694,9 +694,10 @@ def check_occlusion(page, report, every):
                 "occluded" % (len(survived), len(before), ", ".join(survived)))
         if not fresh:
             problems.append(
-                "the half turn brought no new dot into view (%s) — the same "
-                "set at every angle is what a renderer reporting visible:true "
-                "for everything would draw"
+                "the half turn brought no new dot into view (%s) — the far "
+                "side of a specimen carries structures too, and a visibility "
+                "test that never changes its answer draws the same set at "
+                "every angle"
                 % (", ".join(sorted(after)) or "nothing on the stage"))
         details.append(
             "half turn: %d of %d survived (%s) · %d arrived (%s)"
@@ -987,12 +988,19 @@ def check_parts(page, report, default_view):
         problems.append("isolate reported no part name at one of its steps: %r"
                         % (seen_labels,))
     if len(set(dots_per_step)) < 2:
+        # The premise here used to be the fixture's: "every stand-in anchor
+        # sits on the outer shell, so isolating anything else must take its
+        # dots with it". True of five concentric parts with raycast anchors,
+        # meaningless on twelve authored structures standing side by side.
+        # The assertion did not change and did not need to — occlusion is
+        # recomputed against whatever is still drawn, so drawing ONE structure
+        # at a time cannot leave the hotspot layer identical at every step.
         problems.append(
             "the hotspot layer did not change across isolate's %d steps "
-            "(%s dot(s) each time). Every stand-in anchor sits on the outer "
-            "shell, so isolating anything else must take its dots with it — "
-            "this is the assertion a counter cannot fake."
-            % (whole, dots_per_step))
+            "(%s dot(s) each time). Occlusion is recomputed against whatever "
+            "is still drawn, so stepping through the parts one at a time must "
+            "change which dots are visible — this is the assertion a counter "
+            "cannot fake." % (whole, dots_per_step))
     details.append("isolate stepped through %s" % ", ".join(map(repr, seen_labels)))
     details.append("parts drawn per step: %s · dots per step: %s"
                    % (shown_per_step, dots_per_step))
