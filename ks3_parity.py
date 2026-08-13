@@ -1593,12 +1593,30 @@ _JS_MICRO_AUDIT = "(function () {" + _JS_R5_CHECKS + r"""
       P.push("microscope model (c): stepping ×40 to ×400 must throw the "
              + "image out of focus until corrected - got: " + r400.slice(0, 120));
     }
-    focusInput.value = '8';
-    focusInput.dispatchEvent(new Event('input'));
-    var r3 = readout.textContent;
-    if (!/onion cell/.test(r3) || /nowhere near|nothing sharp/.test(r3)) {
-      P.push("microscope model: correcting the focus at ×400 must bring "
-             + "the onion layer sharp - got: " + r3.slice(0, 120));
+    // "Correcting the focus at ×400 brings a layer back" is asserted as the
+    // PROPERTY — that some correction exists — by sweeping the wheel, rather
+    // than by driving one hardcoded position. It used to be `value = '8'`,
+    // which worked only because 8 plus the 22-unit parfocal shift landed
+    // exactly on the one onion layer's depth of 30 in the old slider-unit
+    // model. MRB-210 moved the model to millimetres and the onion to three
+    // layers, so that constant silently stopped meaning anything and the
+    // audit failed against a correct engine. A gate that encodes a magic
+    // number derived from engine constants breaks whenever those constants
+    // are ruled on; a gate that sweeps for the behaviour does not.
+    var found = -1, sample = '';
+    for (var fw = 0; fw <= 100; fw++) {
+      focusInput.value = String(fw);
+      focusInput.dispatchEvent(new Event('input'));
+      var rw = readout.textContent;
+      if (/onion cell/.test(rw) && !/nowhere near|nothing sharp/.test(rw)) {
+        found = fw; sample = rw.slice(0, 120); break;
+      }
+    }
+    if (found < 0) {
+      P.push("microscope model: at ×400 NO position of the focus wheel brings "
+             + "an onion layer sharp - the highest lens is unusable, which is "
+             + "not what the lesson teaches. last readout: "
+             + readout.textContent.slice(0, 120));
     }
   }
   return { problems: P };

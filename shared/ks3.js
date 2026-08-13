@@ -1190,13 +1190,30 @@
        field of view (mm)  = 180 / magnification
                              ×40 → 4.5 mm · ×100 → 1.8 mm · ×400 → 0.45 mm
        pixels per mm       = field diameter in px / field of view
-       depth of field      = 2200 / magnification  (55 · 22 · 5.5)
-       layer sharpness     = 1 − |focal plane − layer depth| / depth of field
+       depth of field      = OBJ_DOF_MM — a TABLE, not a formula
+                             ×40 → 0.100 mm · ×100 → 0.040 · ×400 → 0.008
+       focus wheel (0–100) = −0.09 mm … +0.09 mm through the specimen
+       a layer is SHARP    = |focal plane − depth| < 0.6 × depth of field
 
-     The mm figure, the drawn size of every cell, the count of cells
-     across the view and the blur are ALL computed from those five
-     lines. No figure in the readout is invented (the review pack's
+     Everything is in MILLIMETRES on the slide, exactly as Design's two
+     approved pages are. The mm figure, the drawn size of every cell, the
+     count of cells across the view and the blur are ALL computed from
+     those lines. No figure in the readout is invented (the review pack's
      1.8 mm ÷ 6 onion cells falls straight out: 1.8 / 0.30).
+
+     ONE kernel, TWO renderers, FOUR blur laws (MRB-210):
+       · the kernel is the mm model above, and it is the same instrument
+         on every slide and in every lesson;
+       · tessellation-with-N-layers tiles a payload's layers[] and takes
+         each layer's blur from its OWN depth — onion (N=3), cheek (N=1),
+         and the onion bed under the bubbles;
+       · scatter-with-per-item-depth walks a list whose every item carries
+         a depth and blurs each one independently — pond organisms, pond
+         bacteria, bubbles.
+     The blur CAP and FACTOR are per specimen because Design tuned them
+     per specimen: a bacterium two pixels wide cannot carry an 11 px
+     blur. Those are rendering choices and travel with the payload. The
+     optics are not a choice and live in one table.
 
      THE POINT, so nobody "tidies" the physics away: turning the
      magnification up must do all three of (a) make everything larger,
@@ -1209,8 +1226,9 @@
      version L2 exists to beat: CELL-02 is "the highest magnification
      is always the best one".
 
-     Focus racks through the DEPTH of the slide (0–100), so a thick
-     specimen — pond water above all — can never be sharp all at once:
+     Focus racks through the DEPTH of the slide (0–100 on the wheel,
+     0.18 mm of real travel), so a thick specimen — pond water above
+     all — can never be sharp all at once:
      different layers come sharp in turn. Law 9: the magnification
      change is a real zoom transition, never a frame swap; reduced
      motion gets the settled frame and the full written readout.
@@ -1218,8 +1236,43 @@
 
   var EYEPIECE = 10;
   var OBJECTIVES = [4, 10, 40];
-  var OBJ_FOCUS_SHIFT = [0, 10, 22];
   var FIELD_AT_1X_MM = 180;
+
+  // ── MRB-210: the single KS3 microscope depth-of-field table ──────────
+  // Ruled by Mide, 13 Aug 2026. Design implemented the microscope inline
+  // twice and the two approved pages disagreed: B1-02 had 0.30 / 0.09 /
+  // 0.012 mm, B1-06 had 0.100 / 0.040 / 0.008. B1-06's stands for all of
+  // KS3 — B1-02's is roughly three times too generous at the low power and
+  // does not describe a school microscope. The same instrument behaving
+  // differently in two lessons a fortnight apart is a science error, not a
+  // per-lesson design choice, so this is an engine constant and NOT a
+  // payload field.
+  //
+  // Deliberately a TABLE and not a law. Depth of field falls faster than
+  // magnification does — these three stand in the ratio 1 : 2.5 : 12.5
+  // while the magnifications are 1 : 2.5 : 10 — so the old `2200 / mag`
+  // could not express it. That formula happened to land within 1% at ×40
+  // and ×100 and was 24% too generous at ×400, which is the one place the
+  // lesson depends on the window being cruelly thin.
+  var OBJ_DOF_MM = [0.100, 0.040, 0.008];   // index matches OBJECTIVES
+
+  // The focus wheel is a 0..100 slider; both approved pages map it to the
+  // same 0.18 mm of travel through the specimen, centred on the slide.
+  var FOCUS_MIN_MM = -0.09, FOCUS_SPAN_MM = 0.18;
+
+  // Sharp = within 0.6 of a depth of field, both approved pages.
+  var SHARP_FRACTION = 0.6;
+
+  // Non-parfocal focus offsets, in SLIDER UNITS: racking up a lens
+  // carries the focal plane further down, exactly like the school
+  // microscopes these students use. These exist in NEITHER of Design's
+  // approved pages — Code added them under MRB-198, and Mide ruled on
+  // 13 Aug 2026 that they STAY: they sit inside an instrument Design
+  // drew, the approved pages are silent on parfocality, and they are how
+  // the component teaches the registered misconception CELL-02, "the
+  // highest magnification is always the best one". Without them, turning
+  // the lens up only scales the drawing, and nothing is learned.
+  var OBJ_FOCUS_SHIFT = [0, 10, 22];
 
   // The SAME classification rule as _specimen_kind() in build_ks3.py.
   // The build fails on a name neither side knows; the parity gate's sim
@@ -1258,54 +1311,147 @@
     if (!specimens.length) { return; }
 
     var FIELD_R = 96, CX = W / 2, CY = H / 2;
-    var CELL_W = 0.30, CELL_H = 0.13;   // an onion cell, mm (≈0.3 across)
-    var CHEEK_D = 0.06;                 // a cheek cell, mm
+    // D2's onion cell: 0.30 mm across, 0.115 mm deep. The 0.13 mm this
+    // engine carried before MRB-210 was not Design's figure, and it made
+    // the count of cells DOWN a column disagree with the approved page.
+    var CELL_W = 0.30, CELL_H = 0.115;
+    var CHEEK_D = 0.06;                 // a cheek cell, mm — D6's cellMm
 
-    // Slide content is generated once per slide, in mm about the field
-    // centre, so racking the controls looks at the SAME slide.
+    // Design's specimen colours, from the approved pages. These are
+    // pigment on a slide, not interface chrome, so they are literals
+    // rather than theme tokens — an onion epidermis is the same brown in
+    // either theme, and R3 is untouched (nothing here marks an answer).
+    var ONION_MID = "#8A6A3C", ONION_EDGE = "#A98A5E";
+    var ONION_NUCLEUS = "#7A5A2E";
+    var BACT_DOT = "#6E6152", BACT_ROD = "#7C6E5C";
+
+    // D6 gates fine structure on `px > 44`, measured on ITS canvas, whose
+    // field radius is 252 px. This field is 96 px, so the same FRACTION of
+    // the view is 16.8 px here. Taking the literal 44 would deny the
+    // Euglena its eyespot and the cheek cell its nucleus at EVERY
+    // magnification this microscope has — while the readout names both —
+    // and it would not reproduce D6's page either. Scaled, the gate opens
+    // and shuts on exactly the same (specimen × lens) combinations D6's
+    // page opens and shuts on.
+    var DESIGN_FIELD_R = 252, DESIGN_DETAIL_PX = 44;
+    function detailAt(px) {
+      return px > DESIGN_DETAIL_PX * (FIELD_R / DESIGN_FIELD_R);
+    }
+
+    // The bubble slide's two depths. This slide appears on NO approved
+    // Design page: it is kept because B1-02's authored payload really does
+    // declare it ("onion skin — coverslip dropped flat"), it confronts the
+    // registered misconception `bubble-or-cell`, and B1-02's authored
+    // reveal text depends on comparing the two onion slides. The figures
+    // are the old slider-unit depths 12 and 38 carried across the same
+    // 0..100 → −0.09..+0.09 mm mapping, so the slide racks exactly as it
+    // did — and the arithmetic lands where the physics wants it: the
+    // bubbles sit ABOVE the tissue, trapped under the coverslip.
+    var BUBBLE_DEPTH_MM = -0.0684, BUBBLE_BED_DEPTH_MM = -0.0216;
+
+    // Swimming speeds in mm/s, by kind — this engine's, not Design's; see
+    // the note in buildContent.
+    var ORG_SPEED = { paramecium: 0.55, euglena: 0.12, amoeba: 0.02 };
+
+    // Slide content is generated once per slide, in MILLIMETRES about the
+    // field centre, so racking the controls looks at the SAME slide.
     function buildContent(kindName) {
       var i, out;
+      if (kindName === "onion") {
+        // D2 draws the onion as three layers of epidermis, 0.055 mm apart.
+        // Racking through them IS the lesson; one layer taught the
+        // opposite — that a slide is flat and focus is a knob you set once.
+        return { layers: [
+          { depth: -0.055, alpha: 0.72, stroke: ONION_EDGE },
+          { depth:  0.000, alpha: 1.00, stroke: ONION_MID },
+          { depth:  0.055, alpha: 0.72, stroke: ONION_EDGE }
+        ] };
+      }
+      if (kindName === "cheek") {
+        // A smear is a SHEET. One layer at one depth, so racking finds
+        // nothing behind it — which is what B1-06 exists to contrast
+        // against the pond's three-dimensional world. The 26 cells at 26
+        // random depths this engine drew before taught the exact opposite
+        // of the page's own words.
+        return { layers: [{ depth: 0.000, alpha: 1.00 }] };
+      }
       if (kindName === "bubbles") {
         out = [];
         for (i = 0; i < 7; i++) {
           out.push({ x: rand(-2.2, 2.2), y: rand(-1.2, 1.2),
-                     d: rand(0.35, 0.95) });
+                     d: rand(0.35, 0.95), depth: BUBBLE_DEPTH_MM });
         }
-        return { bubbles: out };
-      }
-      if (kindName === "cheek") {
-        out = [];
-        for (i = 0; i < 26; i++) {
-          out.push({ x: rand(-2.6, 2.6), y: rand(-1.4, 1.4),
-                     d: rand(0.052, 0.07), depth: rand(22, 48),
-                     wob: rand(0, Math.PI * 2) });
-        }
-        return { cells: out };
+        return {
+          bubbleDepth: BUBBLE_DEPTH_MM,
+          onionDepth: BUBBLE_BED_DEPTH_MM,
+          // one bed of onion tissue under the trapped air
+          layers: [{ depth: BUBBLE_BED_DEPTH_MM, alpha: 0.80,
+                     stroke: ONION_EDGE }],
+          bubbles: out
+        };
       }
       if (kindName === "pond") {
-        // Three whole organisms (L6's cast), at three DEPTHS — the wet
-        // mount is thick, which is why ×400 can never sharpen all three.
-        return { swimmers: [
-          { type: "paramecium", x: -0.5, y: 0.15, depth: 16,
-            speed: 0.55, hdg: rand(0, Math.PI * 2), phase: 0 },
-          { type: "euglena", x: 0.55, y: -0.3, depth: 38,
-            speed: 0.12, hdg: rand(0, Math.PI * 2), phase: 0 },
-          { type: "amoeba", x: 0.1, y: 0.55, depth: 62,
-            speed: 0.02, hdg: rand(0, Math.PI * 2), phase: rand(0, 9) }
-        ] };
+        // D6's cast of seven, verbatim: positions, depths, lengths and
+        // shape seeds are all in mm on the slide.
+        var orgs = [
+          { kind: "amoeba",     x: -0.90, y:  0.30, depth: -0.045, len: 0.30, seed: 0.4 },
+          { kind: "paramecium", x:  0.15, y: -0.10, depth:  0.000, len: 0.25, seed: 1.1 },
+          { kind: "euglena",    x:  0.58, y:  0.46, depth:  0.050, len: 0.05, seed: 2.3 },
+          { kind: "euglena",    x: -0.30, y: -0.58, depth: -0.020, len: 0.05, seed: 3.7 },
+          { kind: "paramecium", x:  1.45, y:  0.95, depth:  0.030, len: 0.25, seed: 0.8 },
+          { kind: "amoeba",     x:  1.95, y: -1.15, depth: -0.070, len: 0.30, seed: 2.9 },
+          { kind: "euglena",    x: -1.60, y:  1.10, depth:  0.015, len: 0.05, seed: 1.6 }
+        ];
+        // Design's page holds the cast still and gives the student a
+        // `centre` control to pan to each one. This engine has no centre
+        // control, so the organisms SWIM — the engine's own behaviour
+        // since MRB-198, and the reason the pond readout re-reads on a
+        // cadence and R6 settles 1,400 steps before drawing a frame. It is
+        // also the honest thing: a wet mount is the one slide where being
+        // alive is visible. Motion is layered ON the approved payload,
+        // never over it: x, y, depth, len and seed are D6's, and the
+        // heading is DERIVED from the seed rather than drawn at random, so
+        // the slide opens the same way every time — the same discipline
+        // the bacteria field is built on.
+        for (i = 0; i < orgs.length; i++) {
+          orgs[i].speed = ORG_SPEED[orgs[i].kind] || 0.1;
+          orgs[i].hdg = orgs[i].seed * 1.7;
+          orgs[i].phase = orgs[i].seed;
+        }
+        // 54 bacteria, at 0.002 mm. They stay two pixels of nothing at
+        // every magnification, which is the point: you can see THAT they
+        // are there, not WHAT they are. Deterministic LCG, verbatim from
+        // D6, so the slide is the same slide every time it is opened.
+        var bact = [], n = 0, a, b, c;
+        for (i = 0; i < 54; i++) {
+          n = (n * 1103515245 + 12345) % 2147483648; a = n / 2147483648;
+          n = (n * 1103515245 + 12345) % 2147483648; b = n / 2147483648;
+          n = (n * 1103515245 + 12345) % 2147483648; c = n / 2147483648;
+          bact.push({ x: (a - 0.5) * 3.4, y: (b - 0.5) * 3.4,
+                      depth: (c - 0.5) * 0.14, rot: a * 6.28 });
+        }
+        return { organisms: orgs, bacteria: bact };
       }
-      return {};   // onion tiles procedurally; nothing to pre-place
+      return {};   // unknown kind: draws nothing, says nothing, throws nothing
     }
 
     var state = {
       slide: 0,                     // index into specimens[]
       obj: 0,                       // index into OBJECTIVES — start LOWEST
-      // Sharp on the onion layer (depth 30) at the lowest lens, on
-      // purpose: the lesson only works if the opening view is GOOD and
-      // turning the magnification up is what breaks it. Opening soft
-      // would make the readout's "packed in rows like bricks" a claim
-      // the picture does not honour, and would blunt the whole point.
-      focus: 30,
+      // Design's own default (B1-02 line 630), and it has to be 50 now
+      // that depths are in mm: 50 puts the focal plane exactly ON the
+      // middle layer at the lowest lens. The lesson only works if the
+      // opening view is GOOD and turning the magnification up is what
+      // breaks it — opening soft would make the readout's "packed in rows
+      // like bricks" a claim the picture does not honour. With the ruled
+      // table and the non-parfocal shifts this default gives the whole
+      // teaching ladder: ×40 holds all three layers at once, ×100 holds
+      // the middle one and loses the others, ×400 loses everything until
+      // the focus is corrected. The old 30 was tuned for slider-unit
+      // depths; carried across unchanged it would have left ×400
+      // ACCIDENTALLY sharp (focus 30 + shift 22 = 52 ≈ the middle of the
+      // wheel = 0.000 mm), which is precisely CELL-02 going untaught.
+      focus: 50,
       dispMag: EYEPIECE * OBJECTIVES[0],   // what the canvas shows NOW
       running: false, dirty: true, lastSay: 0, last: 0,
       content: null
@@ -1314,34 +1460,58 @@
 
     function mag() { return EYEPIECE * OBJECTIVES[state.obj]; }
     function fovMM() { return FIELD_AT_1X_MM / mag(); }
-    function focal() { return state.focus + OBJ_FOCUS_SHIFT[state.obj]; }
-    function dof() { return 2200 / mag(); }
-    function sharpOf(depth) {
-      var s = 1 - Math.abs(focal() - depth) / dof();
-      return s < 0 ? 0 : s;
-    }
 
-    // Law 9 — while the zoom transition runs, the CANVAS derives its
-    // depth of field and focal shift from the magnification currently
-    // displayed, interpolating the objective shift on the same log
-    // scale the zoom sweeps. The image therefore slides out of focus
-    // AS it grows, one continuous movement — never sharp, snap, blurred.
-    // The readout keeps the settled model's figures (they are what the
-    // student records), so nothing written ever shows a mid-zoom value.
-    function viewSharp(depth) {
-      var m = state.dispMag;
-      var lo = EYEPIECE * OBJECTIVES[0];
-      var hi = EYEPIECE * OBJECTIVES[OBJECTIVES.length - 1];
-      var pos = Math.log(m / lo) / Math.log(hi / lo)
-                * (OBJECTIVES.length - 1);
-      if (pos < 0) { pos = 0; }
-      if (pos > OBJECTIVES.length - 1) { pos = OBJECTIVES.length - 1; }
-      var i = Math.floor(pos), f = pos - i;
-      var shift = OBJ_FOCUS_SHIFT[i]
-        + (OBJ_FOCUS_SHIFT[Math.min(i + 1, OBJ_FOCUS_SHIFT.length - 1)]
-           - OBJ_FOCUS_SHIFT[i]) * f;
-      var s = 1 - Math.abs((state.focus + shift) - depth) / (2200 / m);
-      return s < 0 ? 0 : s;
+    // Slider units -> depth in mm through the specimen.
+    function focusMM(units) {
+      return FOCUS_MIN_MM + (units / 100) * FOCUS_SPAN_MM;
+    }
+    // The focal plane, including the non-parfocal offset for this lens.
+    function focalMM() {
+      return focusMM(state.focus + OBJ_FOCUS_SHIFT[state.obj]);
+    }
+    function dofMM() { return OBJ_DOF_MM[state.obj]; }
+    function sharpWindowMM() { return SHARP_FRACTION * dofMM(); }
+    // How far a given depth sits from the focal plane, in mm.
+    function offMM(depthMM) { return Math.abs(depthMM - focalMM()); }
+    // Design's readouts count what is SHARP as a boolean, not on a ramp.
+    function isSharp(depthMM) { return offMM(depthMM) < sharpWindowMM(); }
+
+    // Law 9 — mid-zoom the canvas must use the optics of the magnification
+    // it is DISPLAYING, or the image would snap between focus states
+    // instead of sliding. Depth of field is now a table, so it is
+    // interpolated on the same log-magnification axis the zoom sweeps;
+    // geometric interpolation, because the table falls geometrically.
+    //
+    // The position is found by BRACKETING the displayed magnification
+    // between two objectives rather than by mapping the whole ×40..×400
+    // span onto 0..2. That matters: ×4/×10/×40 are not evenly spaced in
+    // log, so the even mapping lands on 0.80 at a settled ×100, and the
+    // canvas would then draw with a 0.048 mm depth of field and a 7.96
+    // unit focus shift while the readout below it reported 0.040 mm and
+    // 10. Bracketing lands exactly on an integer at every settled
+    // magnification, so what is drawn and what is written are the same
+    // instrument — which is the whole reason this table exists.
+    function viewPos() {
+      var m = state.dispMag, i, a, b;
+      if (m <= EYEPIECE * OBJECTIVES[0]) { return 0; }
+      for (i = 1; i < OBJECTIVES.length; i++) {
+        a = EYEPIECE * OBJECTIVES[i - 1];
+        b = EYEPIECE * OBJECTIVES[i];
+        if (m <= b) { return (i - 1) + Math.log(m / a) / Math.log(b / a); }
+      }
+      return OBJECTIVES.length - 1;
+    }
+    function viewDofMM() {
+      var pos = viewPos(), i = Math.floor(pos), f = pos - i;
+      var j = Math.min(i + 1, OBJ_DOF_MM.length - 1);
+      return Math.exp(Math.log(OBJ_DOF_MM[i])
+                      + (Math.log(OBJ_DOF_MM[j]) - Math.log(OBJ_DOF_MM[i])) * f);
+    }
+    function viewOffMM(depthMM) {
+      var pos = viewPos(), i = Math.floor(pos), f = pos - i;
+      var j = Math.min(i + 1, OBJ_FOCUS_SHIFT.length - 1);
+      var shift = OBJ_FOCUS_SHIFT[i] + (OBJ_FOCUS_SHIFT[j] - OBJ_FOCUS_SHIFT[i]) * f;
+      return Math.abs(focusMM(state.focus + shift) - depthMM);
     }
     function fovText() {
       var f = fovMM();
@@ -1352,130 +1522,240 @@
     // ── drawing ──
     var canFilter = typeof ctx.filter === "string";
 
-    function blurFor(sharp) { return Math.min(8, (1 - sharp) * 7); }
+    // Blur in px. Design tuned cap and factor per specimen — a bacterium
+    // two pixels wide cannot carry an 11px blur — so both travel with the
+    // payload rather than being one engine constant.
+    function blurPx(off, dof, cap, factor) {
+      var b = (off / dof) * factor;
+      return b > cap ? cap : b;
+    }
 
-    function layer(sharp, paint) {
+    // The four blur laws, verbatim from Design's approved pages:
+    //   onion layers   D2 line 683 — cap 9,  factor 3.2
+    //   cheek cells    D6 line 872 — cap 8,  factor 2.6
+    //   pond organisms D6 line 851 — cap 11, factor 3.0
+    //   bacteria       D6 line 836 — cap 6,  factor 2.2
+    // All four survive rather than one winning, because these are
+    // RENDERING choices about a drawing, not claims about optics. The
+    // optics are the one table above, and there is only ever one of those.
+    var BLUR_ONION = { cap: 9, factor: 3.2 };
+    var BLUR_CHEEK = { cap: 8, factor: 2.6 };
+    var BLUR_POND = { cap: 11, factor: 3.0 };
+    var BLUR_BACTERIA = { cap: 6, factor: 2.2 };
+
+    function layer(blur, paint) {
       // A blurred layer is DRAWN blurred — the mechanism has to be
       // visible, not narrated only. Where canvas filters are missing
       // (very old WebKit) the layer fades instead: less honest about
       // optics, still unmistakably "not sharp".
       ctx.save();
-      if (sharp < 0.92) {
-        if (canFilter) { ctx.filter = "blur(" + blurFor(sharp).toFixed(1) + "px)"; }
-        else { ctx.globalAlpha = 0.25 + 0.75 * sharp; }
+      if (blur > 0.05) {
+        if (canFilter) { ctx.filter = "blur(" + blur.toFixed(2) + "px)"; }
+        else {
+          var a = 1 - blur / 12;
+          ctx.globalAlpha = a < 0.25 ? 0.25 : a;
+        }
       }
       paint();
       ctx.restore();
     }
 
-    function mmFont(px, weight) {
-      ctx.font = (weight || 400) + " " + px + "px 'Instrument Sans', system-ui, sans-serif";
+    function roundRectPath(x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
     }
 
-    function drawOnionLayer(ppm, sharp, dim) {
+    /* ── RENDERER 1 of 2 · tessellation with N layers ──────────────────
+       Drives onion (N=3), cheek (N=1), and the bed of onion tissue under
+       the bubbles. Walks the payload's layers[], takes each layer's blur
+       from its OWN depth, and hands a tiler the job of covering the field.
+       `par` is the parallax index: −1 / 0 / +1 for three layers (D2's
+       `li - 1`), 0 for one, so a single-layer payload sits square. */
+    function drawTessellation(ppm, payload, tile, law) {
+      var layers = payload && payload.layers;
+      if (!layers || !layers.length) { return; }
+      var dof = viewDofMM(), mid = (layers.length - 1) / 2;
+      layers.forEach(function (lay, li) {
+        var blur = blurPx(viewOffMM(lay.depth), dof, law.cap, law.factor);
+        layer(blur, function () {
+          if (lay.alpha !== undefined) { ctx.globalAlpha *= lay.alpha; }
+          tile(ppm, lay, li, li - mid);
+        });
+      });
+    }
+
+    /* ── RENDERER 2 of 2 · scatter with per-item depth ─────────────────
+       Drives the pond (organisms and bacteria, two passes with two laws)
+       and the bubbles. Walks a list whose every item carries its own
+       depth, and blurs each one independently — which is what makes a wet
+       mount read as a volume of water rather than a picture of one. */
+    function drawScatter(ppm, items, law, paint) {
+      if (!items || !items.length) { return; }
+      var dof = viewDofMM();
+      items.forEach(function (it) {
+        var blur = blurPx(viewOffMM(it.depth), dof, law.cap, law.factor);
+        layer(blur, function () { paint(it, ppm); });
+      });
+    }
+
+    // D2 lines 690-715, verbatim: the rounded-rect cell, the one-in-four
+    // nucleus, and the per-layer parallax that makes three layers read as
+    // three DEPTHS instead of one thicker drawing.
+    function tileOnion(ppm, lay, li, par) {
+      var fov = FIELD_AT_1X_MM / state.dispMag;
+      var cols = Math.ceil(fov / CELL_W) + 3;
+      var rows = Math.ceil(fov / CELL_H) + 3;
       var w = CELL_W * ppm, h = CELL_H * ppm;
-      layer(sharp, function () {
-        var r, c, x, y, row = 0;
-        ctx.lineWidth = Math.max(1.2, 0.012 * ppm);
-        ctx.strokeStyle = ink;
-        ctx.fillStyle = card;
-        if (dim) { ctx.globalAlpha *= 0.8; }
-        for (r = -Math.ceil(FIELD_R / h) - 1; r * h < FIELD_R + h; r++) {
-          row = r;
-          for (c = -Math.ceil(FIELD_R / w) - 1; c * w < FIELD_R + w; c++) {
-            x = CX + c * w + ((row % 2) ? w / 2 : 0);
-            y = CY + r * h;
-            ctx.fillRect(x, y, w - 1, h - 1);
-            ctx.strokeRect(x, y, w - 1, h - 1);
-            if (w > 22) {
-              // The nucleus resolves once a cell is drawn large enough.
-              ctx.beginPath();
-              ctx.arc(x + w * (0.28 + 0.4 * (((r * 7 + c * 13) % 5) / 5)),
-                      y + h / 2, Math.max(1.6, 0.014 * ppm), 0, Math.PI * 2);
-              ctx.fillStyle = muted;
-              ctx.fill();
-              ctx.fillStyle = card;
-            }
+      var rad = Math.min(w, h) * 0.28;
+      var r, q, x, y, stagger;
+      ctx.lineWidth = Math.max(1.2, ppm * 0.006);
+      ctx.strokeStyle = lay.stroke || ink;
+      for (r = -1; r < rows; r++) {
+        for (q = -1; q < cols; q++) {
+          stagger = (r % 2 === 0 ? 0 : CELL_W * 0.5) + par * CELL_W * 0.22;
+          x = CX - FIELD_R + (q * CELL_W + stagger) * ppm;
+          y = CY - FIELD_R + (r * CELL_H + par * CELL_H * 0.3) * ppm;
+          roundRectPath(x, y, w, h, rad);
+          ctx.stroke();
+          if ((q + r * 3 + li) % 4 === 0) {
+            // A thin section cuts through some nuclei and misses others,
+            // so Design draws roughly one cell in four with one.
+            ctx.beginPath();
+            ctx.fillStyle = ONION_NUCLEUS;
+            ctx.arc(x + w * 0.42, y + h * 0.5,
+                    Math.max(1.5, h * 0.2), 0, Math.PI * 2);
+            ctx.fill();
           }
         }
-      });
+      }
     }
 
-    function drawBubbles(ppm) {
-      var sb = viewSharp(12), sc = viewSharp(38);
-      drawOnionLayer(ppm, sc, true);
-      layer(sb, function () {
-        state.content.bubbles.forEach(function (b) {
-          var x = CX + b.x * ppm, y = CY + b.y * ppm, r = (b.d / 2) * ppm;
-          ctx.beginPath();
-          ctx.arc(x, y, r, 0, Math.PI * 2);
-          ctx.fillStyle = band;
-          ctx.globalAlpha *= 0.92;
-          ctx.fill();
-          ctx.globalAlpha /= 0.92;
-          // The thick dark rim is the tell (CELL-01's confrontation).
-          ctx.lineWidth = Math.max(3, 0.05 * ppm);
-          ctx.strokeStyle = ink;
-          ctx.stroke();
-        });
-      });
+    // D6 lines 862-877, verbatim, with one change: this engine clips to
+    // the field CIRCLE, so cells are culled against that circle instead of
+    // against D6's canvas box. Identical image inside the clip, about a
+    // fifth of the work at ×40 — and this engine, unlike D6's page,
+    // re-tiles on every frame of the zoom transition.
+    function tileCheek(ppm) {
+      var step = CHEEK_D * ppm * 1.04;
+      var n = Math.ceil((FIELD_R * 2) / step) + 2;
+      var px = CHEEK_D * ppm, detail = detailAt(px);
+      var lim = FIELD_R + step, i, j, x, y, dx, dy;
+      for (i = -n; i <= n; i++) {
+        for (j = -n; j <= n; j++) {
+          x = CX + i * step + ((j % 2) ? step * 0.5 : 0);
+          y = CY + j * step * 0.88;
+          dx = x - CX; dy = y - CY;
+          if (dx * dx + dy * dy > lim * lim) { continue; }
+          ctx.save();
+          ctx.translate(x, y);
+          drawCheekCell(px, (i * 3 + j * 7) % 6, detail);
+          ctx.restore();
+        }
+      }
     }
 
-    function drawCheek(ppm) {
-      state.content.cells.forEach(function (cell) {
-        layer(viewSharp(cell.depth), function () {
-          var x = CX + cell.x * ppm, y = CY + cell.y * ppm;
-          var r = (cell.d / 2) * ppm, k;
-          ctx.beginPath();
-          for (k = 0; k <= 10; k++) {
-            var a = cell.wob + (k / 10) * Math.PI * 2;
-            var rr = r * (0.85 + 0.15 * Math.sin(a * 3 + cell.wob));
-            if (k === 0) { ctx.moveTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); }
-            else { ctx.lineTo(x + rr * Math.cos(a), y + rr * Math.sin(a)); }
-          }
-          ctx.closePath();
-          ctx.fillStyle = card;
-          ctx.fill();
-          ctx.lineWidth = Math.max(1, 0.008 * ppm);
-          ctx.strokeStyle = muted;
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(x, y, Math.max(1.2, r * 0.22), 0, Math.PI * 2);
-          ctx.fillStyle = ink;
-          ctx.fill();
-        });
-      });
+    // This engine's own cheek cell — theme tokens, R3-safe — resized onto
+    // D6's tessellation: px across, a per-cell variant for the wobble, and
+    // the nucleus behind the detail gate so nothing fine is drawn at a
+    // size where it could only be a smudge.
+    function drawCheekCell(px, variant, detail) {
+      var R = px / 2, k, a, rr;
+      ctx.beginPath();
+      for (k = 0; k <= 10; k++) {
+        a = variant + (k / 10) * Math.PI * 2;
+        rr = R * (0.85 + 0.15 * Math.sin(a * 3 + variant));
+        if (k === 0) { ctx.moveTo(rr * Math.cos(a), rr * Math.sin(a)); }
+        else { ctx.lineTo(rr * Math.cos(a), rr * Math.sin(a)); }
+      }
+      ctx.closePath();
+      ctx.fillStyle = card;
+      ctx.fill();
+      ctx.lineWidth = Math.max(1.1, px * 0.026);
+      ctx.strokeStyle = muted;
+      ctx.stroke();
+      if (!detail) { return; }
+      ctx.beginPath();
+      ctx.arc(0, 0, Math.max(1.2, R * 0.22), 0, Math.PI * 2);
+      ctx.fillStyle = ink;
+      ctx.fill();
     }
 
-    function drawSwimmer(s, ppm) {
-      var x = CX + s.x * ppm, y = CY + s.y * ppm, k;
+    // D6 lines 830-844, verbatim. 0.002 mm: two pixels of nothing at every
+    // magnification this microscope has, which is exactly the point. The
+    // rod branch is Design's and is kept as drawn, though no objective
+    // here reaches the 2.6 px it needs.
+    function drawBacterium(b, ppm) {
+      var x = CX + b.x * ppm, y = CY + b.y * ppm;
+      if (x < -20 || x > W + 20 || y < -20 || y > H + 20) { return; }
+      var px = Math.max(0.6, 0.002 * ppm);
+      ctx.save();
+      // D6 sets alpha outright; multiplying instead keeps the no-filter
+      // fallback's fade from being thrown away.
+      ctx.globalAlpha *= 0.8;
+      ctx.translate(x, y);
+      ctx.rotate(b.rot);
+      if (px < 2.6) {
+        ctx.beginPath();
+        ctx.arc(0, 0, Math.max(0.7, px), 0, Math.PI * 2);
+        ctx.fillStyle = BACT_DOT;
+        ctx.fill();
+      } else {
+        roundRectPath(-px / 2, -px * 0.2, px, px * 0.4, px * 0.2);
+        ctx.fillStyle = BACT_ROD;
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // This engine's own organisms, sized from the payload's `len` in mm
+    // and gated by D6's detail rule, so cilia, eyespot, flagellum, oral
+    // groove and vacuoles only draw when the organism is big enough for
+    // them to mean anything. Below the gate you get an outline that moves,
+    // which is the honest ×40 and ×100 view and is what D6's own RESOLVE
+    // copy promises.
+    function drawOrganism(p, ppm) {
+      var px = p.len * ppm;
+      var x = CX + p.x * ppm, y = CY + p.y * ppm, k;
+      if (x < -px || x > W + px || y < -px || y > H + px) { return; }
+      var detail = detailAt(px);
       ctx.save();
       ctx.translate(x, y);
-      ctx.rotate(s.hdg);
-      if (s.type === "euglena") {
-        var eL = 0.10 * ppm, eW = 0.035 * ppm;
+      ctx.rotate(p.hdg);
+      if (p.kind === "euglena") {
+        var eL = px, eW = px * 0.35;
         ctx.beginPath();
         ctx.ellipse(0, 0, eL / 2, eW / 2, 0, 0, Math.PI * 2);
         ctx.fillStyle = bio;
         ctx.fill();
-        ctx.lineWidth = 1;
+        ctx.lineWidth = Math.max(1, px * 0.020);
         ctx.strokeStyle = ink;
         ctx.stroke();
-        ctx.beginPath();               // the eyespot, at the front
-        ctx.arc(eL * 0.32, 0, Math.max(1.2, eW * 0.16), 0, Math.PI * 2);
-        ctx.fillStyle = accent;
-        ctx.fill();
-        ctx.beginPath();               // the flagellum, beating ahead
-        ctx.moveTo(eL / 2, 0);
-        for (k = 1; k <= 8; k++) {
-          ctx.lineTo(eL / 2 + k * eL * 0.09,
-                     Math.sin(k * 1.1 + s.phase * 9) * eW * 0.3);
+        if (detail) {
+          ctx.beginPath();             // the eyespot, at the front
+          ctx.arc(eL * 0.32, 0, Math.max(1.2, eW * 0.16), 0, Math.PI * 2);
+          ctx.fillStyle = accent;
+          ctx.fill();
+          ctx.beginPath();             // the flagellum, beating ahead
+          ctx.moveTo(eL / 2, 0);
+          for (k = 1; k <= 8; k++) {
+            ctx.lineTo(eL / 2 + k * eL * 0.09,
+                       Math.sin(k * 1.1 + p.phase * 9) * eW * 0.3);
+          }
+          ctx.lineWidth = Math.max(1, eW * 0.08);
+          ctx.strokeStyle = ink;
+          ctx.stroke();
         }
-        ctx.lineWidth = Math.max(1, eW * 0.08);
-        ctx.strokeStyle = ink;
-        ctx.stroke();
-      } else if (s.type === "paramecium") {
-        var pL = 0.18 * ppm, pW = 0.07 * ppm;
+      } else if (p.kind === "paramecium") {
+        var pL = px, pW = px * 0.389;
         ctx.beginPath();
         ctx.ellipse(0, 0, pL / 2, pW / 2, 0, 0, Math.PI * 2);
         ctx.fillStyle = card;
@@ -1483,31 +1763,33 @@
         ctx.lineWidth = Math.max(1, pW * 0.05);
         ctx.strokeStyle = ink;
         ctx.stroke();
-        for (k = 0; k < 26; k++) {     // cilia all round, mid-beat
-          var a = (k / 26) * Math.PI * 2;
-          var cx1 = Math.cos(a) * pL / 2, cy1 = Math.sin(a) * pW / 2;
-          var tick = 1 + 0.35 * Math.sin(k + s.phase * 14);
-          ctx.beginPath();
-          ctx.moveTo(cx1, cy1);
-          ctx.lineTo(cx1 * (1 + 0.10 * tick), cy1 * (1 + 0.22 * tick));
+        if (detail) {
+          for (k = 0; k < 26; k++) {   // cilia all round, mid-beat
+            var a = (k / 26) * Math.PI * 2;
+            var cx1 = Math.cos(a) * pL / 2, cy1 = Math.sin(a) * pW / 2;
+            var tick = 1 + 0.35 * Math.sin(k + p.phase * 14);
+            ctx.beginPath();
+            ctx.moveTo(cx1, cy1);
+            ctx.lineTo(cx1 * (1 + 0.10 * tick), cy1 * (1 + 0.22 * tick));
+            ctx.stroke();
+          }
+          ctx.beginPath();             // oral groove
+          ctx.arc(-pL * 0.1, pW * 0.16, pW * 0.16, 0.3, Math.PI - 0.3);
           ctx.stroke();
-        }
-        ctx.beginPath();               // oral groove
-        ctx.arc(-pL * 0.1, pW * 0.16, pW * 0.16, 0.3, Math.PI - 0.3);
-        ctx.stroke();
-        for (k = 0; k < 2; k++) {      // contractile vacuoles
-          ctx.beginPath();
-          ctx.arc((k ? 1 : -1) * pL * 0.28, 0, pW * 0.13, 0, Math.PI * 2);
-          ctx.strokeStyle = muted;
-          ctx.stroke();
-          ctx.strokeStyle = ink;
+          for (k = 0; k < 2; k++) {    // contractile vacuoles
+            ctx.beginPath();
+            ctx.arc((k ? 1 : -1) * pL * 0.28, 0, pW * 0.13, 0, Math.PI * 2);
+            ctx.strokeStyle = muted;
+            ctx.stroke();
+            ctx.strokeStyle = ink;
+          }
         }
       } else {                         // amoeba
-        var aR = 0.125 * ppm;
+        var aR = px / 2;
         ctx.beginPath();
         for (k = 0; k <= 14; k++) {
           var aa = (k / 14) * Math.PI * 2;
-          var rr = aR * (0.7 + 0.3 * Math.sin(aa * 3 + s.phase));
+          var rr = aR * (0.7 + 0.3 * Math.sin(aa * 3 + p.phase));
           if (k === 0) { ctx.moveTo(rr * Math.cos(aa), rr * Math.sin(aa)); }
           else { ctx.lineTo(rr * Math.cos(aa), rr * Math.sin(aa)); }
         }
@@ -1517,18 +1799,28 @@
         ctx.lineWidth = Math.max(1.2, aR * 0.04);
         ctx.strokeStyle = ink;
         ctx.stroke();
-        ctx.beginPath();
-        ctx.arc(0, 0, Math.max(1.5, aR * 0.16), 0, Math.PI * 2);
-        ctx.fillStyle = muted;
-        ctx.fill();
+        if (detail) {
+          ctx.beginPath();
+          ctx.arc(0, 0, Math.max(1.5, aR * 0.16), 0, Math.PI * 2);
+          ctx.fillStyle = muted;
+          ctx.fill();
+        }
       }
       ctx.restore();
     }
 
-    function drawPond(ppm) {
-      state.content.swimmers.forEach(function (s) {
-        layer(viewSharp(s.depth), function () { drawSwimmer(s, ppm); });
-      });
+    function drawBubble(b, ppm) {
+      var x = CX + b.x * ppm, y = CY + b.y * ppm, r = (b.d / 2) * ppm;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = band;
+      ctx.globalAlpha *= 0.92;
+      ctx.fill();
+      ctx.globalAlpha /= 0.92;
+      // The thick dark rim is the tell (CELL-01's confrontation).
+      ctx.lineWidth = Math.max(3, 0.05 * ppm);
+      ctx.strokeStyle = ink;
+      ctx.stroke();
     }
 
     function draw() {
@@ -1544,11 +1836,20 @@
       ctx.clip();
       ctx.fillStyle = card;
       ctx.fillRect(CX - FIELD_R, CY - FIELD_R, FIELD_R * 2, FIELD_R * 2);
-      var kn = kindNow();
-      if (kn === "onion") { drawOnionLayer(ppm, viewSharp(30), false); }
-      else if (kn === "bubbles") { drawBubbles(ppm); }
-      else if (kn === "cheek") { drawCheek(ppm); }
-      else if (kn === "pond") { drawPond(ppm); }
+      var kn = kindNow(), p = state.content;
+      if (kn === "onion") {
+        drawTessellation(ppm, p, tileOnion, BLUR_ONION);
+      } else if (kn === "cheek") {
+        drawTessellation(ppm, p, tileCheek, BLUR_CHEEK);
+      } else if (kn === "bubbles") {
+        drawTessellation(ppm, p, tileOnion, BLUR_ONION);
+        // The bubbles are furniture on an onion slide, so they take the
+        // onion's law; Design has no bubble slide to have tuned one.
+        drawScatter(ppm, p.bubbles, BLUR_ONION, drawBubble);
+      } else if (kn === "pond") {
+        drawScatter(ppm, p.bacteria, BLUR_BACTERIA, drawBacterium);
+        drawScatter(ppm, p.organisms, BLUR_POND, drawOrganism);
+      }
       ctx.restore();
       ctx.beginPath();
       ctx.arc(CX, CY, FIELD_R, 0, Math.PI * 2);
@@ -1561,9 +1862,9 @@
     var readout = sim.querySelector(".ks3-sim-readout");
     function say(txt) { if (readout) { readout.textContent = txt; } }
 
-    function inViewSwimmers() {
+    function inViewOrganisms() {
       var half = fovMM() / 2, out = [];
-      state.content.swimmers.forEach(function (s) {
+      (state.content.organisms || []).forEach(function (s) {
         if (Math.sqrt(s.x * s.x + s.y * s.y) < half + 0.05) { out.push(s); }
       });
       return out;
@@ -1575,36 +1876,102 @@
       amoeba: "an Amoeba — a slow grey blob pushing out pseudopods"
     };
 
+    // D6's nicknames, for the "in focus" line — the words a student would
+    // actually use at the bench before they have the Latin.
+    var ORG_NICKNAME = {
+      amoeba: "the blob",
+      paramecium: "the slipper",
+      euglena: "the green spindle"
+    };
+
+    // D6's two verbatim notes. They are the sentences that make the
+    // contrast between the two slides land, so they are reproduced exactly.
+    var BACTERIA_NOTE = " The dots scattered between them are bacteria, "
+      + "about 0.002 mm long. Even at ×400 they are two pixels of nothing — "
+      + "you can see that they are there, not what they are. Every organism "
+      + "on this slide is doing all seven life processes for itself.";
+    var SMEAR_NOTE = " One layer, one shape, no movement. Racking the focus "
+      + "finds nothing behind them, because a smear is a sheet. Every cell "
+      + "here does one job, and none of them is an organism.";
+
+    function dofText() {
+      var d = dofMM();
+      return (d >= 0.1 ? d.toFixed(2) : d.toFixed(3)) + " mm";
+    }
+
+    // How many cells fit across the view: 600 / magnification for the
+    // onion (15 · 6 · 1½) and 3000 / magnification for a cheek smear
+    // (75 · 30 · 7½). The ×400 figure is a HALF, and D2's recording table
+    // prints it as "1½" — so the readout has to say a half too. A student
+    // who copies "2" out of the readout into a table that wants 1½ has
+    // been misled by us, and this whole ticket exists to stop the engine
+    // and the approved page saying different things.
+    function cellsAcross(cellMm) {
+      var v = fovMM() / cellMm, whole = Math.floor(v);
+      if (Math.abs(v - whole - 0.5) < 0.01) {
+        return (whole ? String(whole) : "") + "½";
+      }
+      return String(Math.round(v));
+    }
+
     function whatYouSee() {
-      var kn = kindNow(), s, n, ppm = (FIELD_R * 2) / fovMM();
+      var kn = kindNow(), ppm = (FIELD_R * 2) / fovMM();
       if (kn === "onion") {
-        s = sharpOf(30);
-        if (s >= 0.7) {
-          n = Math.round(fovMM() / CELL_W);
-          return (n <= 1
+        var layers = state.content.layers || [];
+        var nSharp = 0;
+        layers.forEach(function (l) { if (isSharp(l.depth)) { nSharp++; } });
+        // Band the sentence on the layer NEAREST the focal plane, not on the
+        // middle one. Keying it to the middle layer let the readout say "a
+        // bright blur, nothing sharp" in the same breath as "1 of the 3 layers
+        // is inside the depth of field", whenever an OUTER layer was the one in
+        // focus — which at ×40 is most of the wheel. What the student sees is
+        // whichever layer is closest to sharp, wherever it sits in the stack.
+        var midL = layers[0] || { depth: 0 };
+        layers.forEach(function (l) {
+          if (offMM(l.depth) < offMM(midL.depth)) { midL = l; }
+        });
+        // How many layers hold at once is COMPUTED, never asserted: it is
+        // the depth of field doing its work, and at ×400 it is the whole
+        // reason the highest lens is not the best one.
+        var depthNote = " " + (nSharp === layers.length
+          ? "All " + layers.length + " layers are inside the depth of field "
+            + "at once — at ×" + mag() + " that is " + dofText()
+            + ", deeper than the layers are apart."
+          : (nSharp === 0
+            ? "None of the " + layers.length + " layers is inside the depth "
+              + "of field — at ×" + mag() + " that is only " + dofText()
+              + " deep."
+            : "Only " + nSharp + " of the " + layers.length + " layers "
+              + (nSharp === 1 ? "is" : "are") + " inside the depth of field — "
+              + "at ×" + mag() + " that is only " + dofText() + " deep, so "
+              + "the rest sit outside it."));
+        if (isSharp(midL.depth)) {
+          return (fovMM() / CELL_W < 1
             ? "A single onion cell more than fills the view — straight sides, "
               + "part of a row."
-            : "About " + n + " onion cells fit across the view — straight "
-              + "sides, packed in rows like bricks.")
-            + (CELL_W * ppm > 22 ? " Each has a small nucleus." : "");
+            : "About " + cellsAcross(CELL_W) + " onion cells fit across the "
+              + "view — straight sides, packed in rows like bricks.")
+            + (CELL_W * ppm > 22
+               ? " Some of them show a small dark nucleus." : "")
+            + depthNote;
         }
-        if (s >= 0.3) {
+        if (offMM(midL.depth) < 2 * sharpWindowMM()) {
           return "The rows are there, but soft — turn the focus until the "
-            + "cell walls come sharp.";
+            + "cell walls come sharp." + depthNote;
         }
         return "A bright blur, nothing sharp. The focus is nowhere near the "
-          + "specimen — turn it slowly and watch.";
+          + "specimen — turn it slowly and watch." + depthNote;
       }
       if (kn === "bubbles") {
-        var sb = sharpOf(12), sc = sharpOf(38);
-        if (sb >= 0.6) {
+        var bD = state.content.bubbleDepth, oD = state.content.onionDepth;
+        if (isSharp(bD)) {
           return "Perfectly round circles with a thick dark rim, floating "
             + "apart from each other. They look like cells; they are air "
             + "bubbles, trapped when the coverslip was dropped flat"
-            + (sc < 0.4 ? " — and the onion cells are a blur underneath."
-                        : ".");
+            + (offMM(oD) > 2 * sharpWindowMM()
+               ? " — and the onion cells are a blur underneath." : ".");
         }
-        if (sc >= 0.6) {
+        if (isSharp(oD)) {
           return "Past the bubbles: rows of onion cells come sharp in the "
             + "gaps, but the blurred bubble rims still hide most of the "
             + "slide. A slide this bad is worth making again.";
@@ -1615,55 +1982,60 @@
       if (kn === "cheek") {
         if (CHEEK_D * ppm < 6) {
           return "Dozens of pale specks scattered across the view — too "
-            + "small to make anything out at ×" + mag() + ".";
+            + "small to make anything out at ×" + mag() + "." + SMEAR_NOTE;
         }
-        var best = 0, count = 0, half = fovMM() / 2;
-        state.content.cells.forEach(function (cell) {
-          var inV = Math.sqrt(cell.x * cell.x + cell.y * cell.y) < half;
-          var sh = sharpOf(cell.depth);
-          if (inV) { count++; if (sh > best) { best = sh; } }
-        });
-        if (!count) { return "Empty slide just here — the smear is patchy."; }
-        if (best >= 0.6) {
-          return count + " cheek cell" + (count === 1 ? "" : "s")
-            + " in view — soft and rounded, each with a darker nucleus. "
-            + "They sit at slightly different depths: nudge the focus and "
-            + "different ones come sharp.";
+        var sheet = (state.content.layers || [{ depth: 0 }])[0];
+        if (isSharp(sheet.depth)) {
+          return "About " + cellsAcross(CHEEK_D) + " cheek cells fit across "
+            + "the view — soft, rounded, tessellated edge to edge with no gaps"
+            + (detailAt(CHEEK_D * ppm) ? ", each with a darker nucleus" : "")
+            + "." + SMEAR_NOTE;
         }
         return "Rounded shadows in the view, none sharp — bring the focus "
-          + "through the smear slowly.";
+          + "through the smear slowly." + SMEAR_NOTE;
       }
       if (kn === "pond") {
-        var vis = inViewSwimmers();
+        var vis = inViewOrganisms();
         if (!vis.length) {
           return "Empty water just now. At ×" + mag() + " the view is only "
             + fovText() + " wide — drop back to ×40 to find something, "
-            + "then work up.";
+            + "then work up." + BACTERIA_NOTE;
         }
-        // Same honesty rule the cheek slide runs on: do not name a
-        // feature the drawing is too small to show. A Paramecium is
-        // 0.18 mm, which is 8 pixels across a ×40 field — a moving
-        // speck, and saying so IS the lesson. It resolves from ×100.
-        if (0.18 * ppm < 14) {
+        // Same honesty rule the cheek slide runs on: do not name a feature
+        // the drawing is too small to show. The biggest thing here is a
+        // Paramecium at 0.25 mm, which is 11 pixels across a ×40 field — a
+        // moving speck, and saying so IS the lesson. It resolves from ×100.
+        var biggest = 0;
+        vis.forEach(function (sw) {
+          var p = sw.len * ppm;
+          if (p > biggest) { biggest = p; }
+        });
+        if (biggest < 14) {
           return vis.length + " tiny specks drifting and darting about the "
             + "view — alive, clearly, but far too small at ×" + mag()
             + " to tell what any of them is. Found something? Turn the "
-            + "magnification up.";
+            + "magnification up." + BACTERIA_NOTE;
         }
-        var bits = [], anyBlur = false;
+        var bits = [], anyBlur = false, focusSet = [];
         vis.forEach(function (sw) {
-          var sh = sharpOf(sw.depth);
-          if (sh < 0.6) { anyBlur = true; }
-          bits.push(SWIMMER_WORDS[sw.type]
-                    + (sh >= 0.6 ? " (sharp)" : " (a blur at another depth)"));
+          var sh = isSharp(sw.depth);
+          if (!sh) { anyBlur = true; }
+          bits.push(SWIMMER_WORDS[sw.kind]
+                    + (sh ? " (sharp)" : " (a blur at another depth)"));
+          if (sh && focusSet.indexOf(ORG_NICKNAME[sw.kind]) < 0) {
+            focusSet.push(ORG_NICKNAME[sw.kind]);
+          }
         });
         return "In view: " + bits.join("; ") + "."
           + (anyBlur ? " The water is deeper than the lens can focus — "
                        + "layers come sharp in turn." : "")
-          + (mag() === 400 && vis.some(function (sw) { return sw.type === "paramecium"; })
+          + " In focus: "
+          + (focusSet.length ? focusSet.join(", ") : "nothing sharp") + "."
+          + (mag() === 400 && vis.some(function (sw) { return sw.kind === "paramecium"; })
              ? " The Paramecium will not stay long: at ×400 it crosses the "
                + "whole view in under a second."
-             : "");
+             : "")
+          + BACTERIA_NOTE;
       }
       return "";
     }
@@ -1674,11 +2046,11 @@
     }
 
     // ── motion ──
-    function stepSwimmers(dt) {
+    function stepOrganisms(dt) {
       if (kindNow() !== "pond") { return; }
-      state.content.swimmers.forEach(function (s) {
-        s.phase += dt * (s.type === "paramecium" ? 3 : 1);
-        if (Math.random() < (s.type === "amoeba" ? 0.002 : 0.02)) {
+      (state.content.organisms || []).forEach(function (s) {
+        s.phase += dt * (s.kind === "paramecium" ? 3 : 1);
+        if (Math.random() < (s.kind === "amoeba" ? 0.002 : 0.02)) {
           s.hdg += rand(-1.2, 1.2);
         }
         s.x += Math.cos(s.hdg) * s.speed * dt;
@@ -1700,7 +2072,7 @@
       if (!state.running) { return; }
       var dt = state.last ? Math.min(50, now - state.last) / 1000 : 0.016;
       state.last = now;
-      stepSwimmers(dt);
+      stepOrganisms(dt);
       if (Math.abs(state.dispMag - mag()) > 0.5) {
         // Law 9 — the zoom is a movement through magnifications, on a
         // log scale so ×40 → ×400 sweeps evenly, never a frame swap.
@@ -1740,7 +2112,7 @@
     var SETTLE_STEPS = 1400;
     function settle() {
       var i;
-      for (i = 0; i < SETTLE_STEPS; i++) { stepSwimmers(1 / 60); }
+      for (i = 0; i < SETTLE_STEPS; i++) { stepOrganisms(1 / 60); }
       state.dispMag = mag();
       draw();
       report();
