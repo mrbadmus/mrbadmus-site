@@ -5121,7 +5121,7 @@ def build_site(output_dir="mrbadmus_site"):
     # Add a name here whenever another standalone generator starts writing into
     # mrbadmus_site/. Anything NOT listed is still wiped, which is the point:
     # one tree, one writer.
-    FOREIGN_OUTPUT_DIRS = ["ks3"]
+    FOREIGN_OUTPUT_DIRS = ["ks3", "3d"]
 
     if os.path.exists(output_dir):
         for _entry in os.listdir(output_dir):
@@ -5227,6 +5227,123 @@ def build_site(output_dir="mrbadmus_site"):
         print(f"  ✅ student/ (directory tree)")
     else:
         print(f"  ⚠️  student/ directory not found — skipping")
+
+    # ── 3D Studio built artifact (MRB-185 recon, MRB-194 integration) ──
+    # 3d-studio/ is a Vite app at repo root; its build output (3d-studio/dist/)
+    # is the single source of truth for mrbadmus_site/3d/. This block is the
+    # ONLY writer of that path: "3d" is in FOREIGN_OUTPUT_DIRS, so the wipe
+    # loop and the cache-bust stamping both leave it alone, and it is opted out
+    # of the repo-root round-trip below (no ./3d/ mirror — Cloudflare serves
+    # mrbadmus_site/ only, and a mirror would be a third copy of every
+    # multi-MB GLB in git with no reader). One tree, one writer.
+    #
+    # No `npm run build` is invoked from here, deliberately. A Node failure
+    # must never be able to fail a KS3 or KS4 build. The Vite build is a manual
+    # pre-step documented in CLAUDE.md, and the staleness check below is its
+    # safety net.
+    #
+    # Two failure modes, both LOUD, neither fatal, neither destructive:
+    #   dist/ missing → the deployed studio is left exactly as it is, never
+    #                   deleted. A machine without a Node toolchain (or a fresh
+    #                   clone) must not be able to wipe live output — that is
+    #                   the MRB-88 lesson.
+    #   dist/ stale   → the studio is still published (dist IS the source of
+    #                   truth, and republishing it changes nothing), but the
+    #                   run shouts, because otherwise Mide's normal workflow —
+    #                   generator, then GitHub Desktop, with no npm step in it
+    #                   — ships an old build silently every single time.
+    # Both warnings are re-printed after the "Done" line, because a warning
+    # 2,000 green ticks above the end of the output has not been delivered.
+    _studio_root = "3d-studio"
+    _studio_dist = _os.path.join(_studio_root, "dist")
+    _studio_dst = f"{output_dir}/3d"
+    _studio_src_dirs = [_os.path.join(_studio_root, _d)
+                        for _d in ("src", "content", "public")]
+    _studio_alarm = None
+
+    def _newest_file_mtime(_top):
+        """Newest mtime of any file under _top, or None if it holds no files.
+
+        Directory mtimes are deliberately ignored: a directory's mtime only
+        moves when an entry is added or removed, so editing a file in place
+        would not register. Files are what Vite reads.
+        """
+        _newest = None
+        for _r, _subdirs, _files in _os.walk(_top):
+            _subdirs[:] = [_d for _d in _subdirs if _d != "node_modules"]
+            for _f in _files:
+                if _f == ".DS_Store":
+                    continue
+                try:
+                    _m = _os.path.getmtime(_os.path.join(_r, _f))
+                except OSError:
+                    continue
+                if _newest is None or _m > _newest:
+                    _newest = _m
+        return _newest
+
+    def _shout(_lines):
+        """A warning sized to survive a wall of green ticks."""
+        _w = 78
+        print()
+        print("!" * _w)
+        for _l in _lines:
+            print("!! " + _l.ljust(_w - 6) + " !!")
+        print("!" * _w)
+        print()
+
+    if _os.path.isdir(_studio_dist):
+        _dist_mtime = _newest_file_mtime(_studio_dist)
+        _src_mtime = None
+        for _sd in _studio_src_dirs:
+            if not _os.path.isdir(_sd):
+                continue
+            _m = _newest_file_mtime(_sd)
+            if _m is not None and (_src_mtime is None or _m > _src_mtime):
+                _src_mtime = _m
+
+        if _os.path.exists(_studio_dst):
+            _shutil.rmtree(_studio_dst)
+        _shutil.copytree(_studio_dist, _studio_dst)
+        _studio_files = sum(len(_f) for _, _, _f in _os.walk(_studio_dst))
+        print(f"  ✅ 3d/ ({_studio_files} files, from {_studio_dist})")
+
+        if _dist_mtime is not None and _src_mtime is not None and _dist_mtime < _src_mtime:
+            import datetime as _dt
+            _fmt = "%d %b %H:%M:%S"
+            _studio_alarm = [
+                "",
+                "STALE 3D STUDIO BUILD — the studio you just published is OLD.",
+                "",
+                f"  3d-studio/dist/  last built  {_dt.datetime.fromtimestamp(_dist_mtime).strftime(_fmt)}",
+                f"  3d-studio source last edited {_dt.datetime.fromtimestamp(_src_mtime).strftime(_fmt)}",
+                "",
+                "  Source has changed since the last Vite build, so mrbadmus_site/3d/",
+                "  does NOT contain your latest 3D Studio work. Everything else in",
+                "  this build is fine — KS3 and KS4 are unaffected.",
+                "",
+                "  Fix, then run this generator again:",
+                "",
+                "      cd 3d-studio && npm run build && cd ..",
+                "",
+            ]
+            _shout(_studio_alarm)
+    else:
+        _studio_alarm = [
+            "",
+            "NO 3D STUDIO BUILD FOUND — 3d-studio/dist/ does not exist.",
+            "",
+            f"  {_studio_dst} has been LEFT UNTOUCHED (not deleted), so whatever",
+            "  was last deployed is still there. But nothing was published from",
+            "  source in this run. Everything else in this build is fine — KS3 and",
+            "  KS4 are unaffected.",
+            "",
+            "  If you meant to publish the studio, run:",
+            "",
+            "      cd 3d-studio && npm install && npm run build && cd ..",
+            "",
+        ]
+        _shout(_studio_alarm)
 
     # ── Landing pages ──
     # /index.html is the key-stage chooser; /ks4.html is the GCSE landing that
@@ -5414,7 +5531,7 @@ def build_site(output_dir="mrbadmus_site"):
     for item in os.listdir(output_dir):
         s = os.path.join(output_dir, item)
         d = os.path.join(".", item)
-        if item in ['.git', 'generate_site_v5.py', 'generate_site.py',
+        if item in ['3d', '.git', 'generate_site_v5.py', 'generate_site.py',
                     'all_subtopics_physics.py', 'all_subtopics_chemistry.py',
                     'all_subtopics_biology.py']:
             continue
@@ -5432,6 +5549,13 @@ def build_site(output_dir="mrbadmus_site"):
     print(f"  1. python3 generate_site_v5.py")
     print(f"  2. Check output in {output_dir}/")
     print(f"  3. Push to GitHub → Cloudflare auto-deploys")
+
+    # A 3D Studio warning raised hundreds of lines ago has scrolled off the
+    # screen by now. Say it again, last, where it is the thing still on screen
+    # when the run finishes. Still not fatal: KS3 and KS4 are unaffected, and a
+    # Node problem must never be able to fail this build.
+    if _studio_alarm:
+        _shout(_studio_alarm)
 
 
 if __name__ == "__main__":
