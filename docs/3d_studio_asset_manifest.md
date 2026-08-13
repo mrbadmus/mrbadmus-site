@@ -36,10 +36,22 @@ Specimen default: _unauthored_
 
 | Structure | Spec points | Source | Accepted answers |
 | --- | --- | --- | --- |
-| `heart.item-01` _unauthored_ | _(specimen default)_ | inherited | _none authored — exact match on the label_ |
-| `heart.item-02` _unauthored_ | _(specimen default)_ | inherited | _none authored — exact match on the label_ |
+| `heart.right-atrium` Right atrium | _(specimen default)_ | inherited | right atrium, RA |
+| `heart.right-ventricle` Right ventricle | _(specimen default)_ | inherited | right ventricle, RV |
+| `heart.left-atrium` Left atrium | _(specimen default)_ | inherited | left atrium, LA |
+| `heart.left-ventricle` Left ventricle | _(specimen default)_ | inherited | left ventricle, LV |
+| `heart.aorta` Aorta | _(specimen default)_ | inherited | aorta |
+| `heart.vena-cava` Vena cava | _(specimen default)_ | inherited | vena cava, venae cavae, superior vena cava, inferior vena cava |
+| `heart.pulmonary-artery` Pulmonary artery | _(specimen default)_ | inherited | pulmonary artery |
+| `heart.pulmonary-vein` Pulmonary vein | _(specimen default)_ | inherited | pulmonary vein |
+| `heart.coronary-arteries` Coronary arteries | _(specimen default)_ | inherited | coronary arteries, coronary artery |
+| `heart.tricuspid-valve` Tricuspid valve | _(specimen default)_ | inherited | tricuspid valve, tricuspid, right atrioventricular valve |
+| `heart.bicuspid-valve` Bicuspid valve | _(specimen default)_ | inherited | bicuspid valve, bicuspid, mitral valve, mitral, left atrioventricular valve |
+| `heart.semilunar-valves` Semilunar valves | _(specimen default)_ | inherited | semilunar valves, semilunar valve, aortic valve, pulmonary valve |
+| `heart.septum` Septum | _(specimen default)_ | inherited | septum |
+| `heart.sino-atrial-node` Sino-atrial node | _(specimen default)_ | inherited | sino-atrial node, sinoatrial node, SAN, SA node, pacemaker |
 
 ## Authoring state
 
-18 placeholder string(s) across 1 record(s) still await Mide's Stage 8 science gate. `python3 3d-studio/validate_content.py` prints the itemised checklist.
+5 placeholder string(s) across 1 record(s) still await Mide's Stage 8 science gate. `python3 3d-studio/validate_content.py` prints the itemised checklist.
 

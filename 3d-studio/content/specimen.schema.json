@@ -145,6 +145,13 @@
               ]
             }
           },
+          "keyStages": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "OPTIONAL per-hotspot override, the same mechanism as specPoints. Where a hotspot declares its own keyStages they win; where it does not, it inherits the specimen's — absence is an inherit, never a placeholder. A structure narrower than its specimen is hidden from the key stages it excludes and is never asked about there. ORTHOGONAL to tiers: key stage decides whether the structure exists for this student at all, tiers differentiates foundation from higher within it.",
+            "items": { "type": "string", "enum": ["KS3", "KS4"] }
+          },
           "accept": {
             "type": "array",
             "minItems": 1,

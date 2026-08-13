@@ -2,9 +2,12 @@
   "id": "heart",
   "renderer": "mesh",
   "name": "Heart",
-  "epithet": "TODO: epithet — science gate (Stage 8)",
-  "system": "TODO: body system — science gate (Stage 8)",
-  "keyStages": ["KS3", "KS4"],
+  "epithet": "the pump that never rests",
+  "system": "Circulatory",
+  "keyStages": [
+    "KS3",
+    "KS4"
+  ],
   "assets": {
     "mesh": "/3d/assets/heart.glb",
     "fallback": "/3d/assets/heart-2d.svg",
@@ -13,14 +16,36 @@
     "source": "TODO: asset source — filled from the provenance record at acquisition",
     "acquired": "TODO: acquisition date"
   },
-  "description": "TODO: specimen description — science gate (Stage 8)",
+  "description": "The heart is a muscular organ that pumps blood around the body. It has four chambers and works as a double pump: the right side sends deoxygenated blood to the lungs, and the left side sends the returning oxygenated blood on to the rest of the body. Because blood passes through the heart twice on each complete circuit, humans have a double circulatory system. Keeping the two circuits separate means blood can reach the lungs at low pressure, protecting the delicate capillaries around the alveoli, while still reaching the rest of the body at high pressure.",
   "keyFacts": [
-    { "label": "TODO: key fact label — science gate (Stage 8)", "value": "TODO: key fact value — science gate (Stage 8)" },
-    { "label": "TODO: key fact label — science gate (Stage 8)", "value": "TODO: key fact value — science gate (Stage 8)" }
+    {
+      "label": "Position",
+      "value": "In the thorax between the lungs, tilted slightly to the left"
+    },
+    {
+      "label": "Size",
+      "value": "About the size of a clenched fist"
+    },
+    {
+      "label": "Chambers",
+      "value": "Four — two atria above, two ventricles below"
+    },
+    {
+      "label": "Resting rate",
+      "value": "About 70 beats per minute in a healthy adult"
+    },
+    {
+      "label": "Output",
+      "value": "Roughly 5 litres of blood every minute at rest"
+    },
+    {
+      "label": "Tissue",
+      "value": "Cardiac muscle — myogenic, so it contracts without a nerve impulse"
+    }
   ],
   "callouts": {
-    "importance": "TODO: medical importance — science gate (Stage 8)",
-    "didYouKnow": "TODO: did-you-know — science gate (Stage 8)"
+    "importance": "The coronary arteries supply the cardiac muscle itself. If fatty deposits build up in their walls the lumen narrows, blood flow falls, and the muscle receives less oxygen — this is coronary heart disease. Treatments include stents to hold the artery open, statins to lower blood cholesterol, and in severe cases a coronary bypass.",
+    "didYouKnow": "The heart sets its own rhythm. A patch of cells in the right atrium called the sino-atrial node fires electrical impulses without any signal from the brain — which is why a heart keeps beating for a short time after removal from the body, and why a transplanted heart works at all."
   },
   "lessonUrl": "TODO: lesson URL — awaits the lesson URL map (spec §11 open item)",
   "specPoints": [
@@ -28,22 +53,348 @@
   ],
   "hotspots": [
     {
-      "id": "heart.item-01",
-      "label": "TODO: hotspot label — science gate (Stage 8)",
-      "detail": "TODO: hotspot detail — science gate (Stage 8)",
-      "position3d": [0, 0, 0],
-      "position2d": [0, 0],
-      "tiers": ["foundation", "higher"],
+      "id": "heart.right-atrium",
+      "label": "Right atrium",
+      "detail": "Receives deoxygenated blood returning from the body through the vena cava. Its wall is thin because it only has to push blood a short distance down into the right ventricle.",
+      "accept": [
+        "right atrium",
+        "RA"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
       "retrievable": true
     },
     {
-      "id": "heart.item-02",
-      "label": "TODO: hotspot label — science gate (Stage 8)",
-      "detail": "TODO: hotspot detail — science gate (Stage 8)",
-      "position3d": [0, 0, 0],
-      "position2d": [0, 0],
-      "tiers": ["higher"],
-      "retrievable": false
+      "id": "heart.right-ventricle",
+      "label": "Right ventricle",
+      "detail": "Pumps deoxygenated blood to the lungs through the pulmonary artery. Its muscular wall is thinner than the left ventricle's: the lungs are close by, and blood must arrive at low pressure so the delicate capillaries around the alveoli are not damaged.",
+      "accept": [
+        "right ventricle",
+        "RV"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.left-atrium",
+      "label": "Left atrium",
+      "detail": "Receives oxygenated blood returning from the lungs through the pulmonary vein, then pushes it down into the left ventricle.",
+      "accept": [
+        "left atrium",
+        "LA"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.left-ventricle",
+      "label": "Left ventricle",
+      "detail": "Pumps oxygenated blood to the whole body through the aorta. It has the thickest muscular wall of any chamber, because it must generate enough pressure to force blood all the way to the extremities and back.",
+      "accept": [
+        "left ventricle",
+        "LV"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.aorta",
+      "label": "Aorta",
+      "detail": "The largest artery in the body, carrying oxygenated blood away from the left ventricle. Its wall is thick, muscular and elastic, so it stretches as blood surges through and recoils to keep blood moving between beats.",
+      "accept": [
+        "aorta"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.vena-cava",
+      "label": "Vena cava",
+      "detail": "The large vein returning deoxygenated blood from the body to the right atrium. Blood arrives at low pressure, so the vessel has a thin wall and a wide lumen. There are two: the superior vena cava from the head and arms, and the inferior vena cava from the rest of the body.",
+      "accept": [
+        "vena cava",
+        "venae cavae",
+        "superior vena cava",
+        "inferior vena cava"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.pulmonary-artery",
+      "label": "Pulmonary artery",
+      "detail": "Carries deoxygenated blood from the right ventricle to the lungs. It is the only artery in the body carrying deoxygenated blood — arteries are defined by carrying blood away from the heart, not by what the blood contains.",
+      "accept": [
+        "pulmonary artery"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.pulmonary-vein",
+      "label": "Pulmonary vein",
+      "detail": "Carries oxygenated blood from the lungs back to the left atrium — the only vein in the body carrying oxygenated blood.",
+      "accept": [
+        "pulmonary vein"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.coronary-arteries",
+      "label": "Coronary arteries",
+      "detail": "Branch from the base of the aorta and spread across the surface of the heart, supplying the cardiac muscle itself with oxygen and glucose for respiration. The heart cannot use the blood passing through its own chambers.",
+      "accept": [
+        "coronary arteries",
+        "coronary artery"
+      ],
+      "keyStages": [
+        "KS4"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.tricuspid-valve",
+      "label": "Tricuspid valve",
+      "detail": "The valve between the right atrium and right ventricle, made of three flaps of tissue. When the ventricle contracts, back-flowing blood pushes the flaps shut so blood can only leave through the pulmonary artery.",
+      "accept": [
+        "tricuspid valve",
+        "tricuspid",
+        "right atrioventricular valve"
+      ],
+      "keyStages": [
+        "KS4"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.bicuspid-valve",
+      "label": "Bicuspid valve",
+      "detail": "The valve between the left atrium and left ventricle, made of two flaps. Also called the mitral valve. It withstands the highest pressures in the heart, so it is anchored by tough cords that stop it turning inside out.",
+      "accept": [
+        "bicuspid valve",
+        "bicuspid",
+        "mitral valve",
+        "mitral",
+        "left atrioventricular valve"
+      ],
+      "keyStages": [
+        "KS4"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.semilunar-valves",
+      "label": "Semilunar valves",
+      "detail": "Sit where the aorta and the pulmonary artery leave the heart. As the ventricles relax, blood starts to fall back and forces these half-moon shaped pockets shut, preventing it from returning into the ventricles.",
+      "accept": [
+        "semilunar valves",
+        "semilunar valve",
+        "aortic valve",
+        "pulmonary valve"
+      ],
+      "keyStages": [
+        "KS4"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.septum",
+      "label": "Septum",
+      "detail": "The wall of muscle dividing the right side of the heart from the left, keeping oxygenated and deoxygenated blood completely separate. Without it the two would mix and less oxygen would reach the tissues.",
+      "accept": [
+        "septum"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
+    },
+    {
+      "id": "heart.sino-atrial-node",
+      "label": "Sino-atrial node",
+      "detail": "A small group of cells in the wall of the right atrium that generates the electrical impulses setting the heart's resting rhythm — the heart's natural pacemaker. If it becomes faulty and the rhythm turns irregular, an artificial pacemaker can be fitted to correct it.",
+      "accept": [
+        "sino-atrial node",
+        "sinoatrial node",
+        "SAN",
+        "SA node",
+        "pacemaker"
+      ],
+      "keyStages": [
+        "KS4"
+      ],
+      "position3d": [
+        0,
+        0,
+        0
+      ],
+      "position2d": [
+        0,
+        0
+      ],
+      "tiers": [
+        "foundation",
+        "higher"
+      ],
+      "retrievable": true
     }
   ]
 }

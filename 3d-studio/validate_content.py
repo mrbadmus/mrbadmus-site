@@ -36,6 +36,12 @@ and a hotspot with no 'specPoints' inherits the specimen's — both are legal,
 both are on the checklist. Everything on that list must be cleared, and
 science-gated text signed off by Mide, before Stage 8 closes.
 
+Optional 'keyStages' is the exception, and deliberately so. It is NOT on the
+checklist when absent: a hotspot without it inherits the specimen's key stages,
+which is the finished, correct answer for the great majority of structures.
+Listing every one of them would be asking Mide to clear an item that has
+nothing wrong with it. Where the field IS present its values are checked.
+
 Exit code 0 = every record valid. Exit code 1 = at least one failure.
 """
 
@@ -55,13 +61,68 @@ TOP_LEVEL_KEYS = [
     "hotspots",
 ]
 ASSET_KEYS = ["mesh", "fallback", "thumbnail", "licence", "source", "acquired"]
+
+# Which file extension each asset is served as. Used to ask the same question
+# vite.config.ts asks — is an acquired file of this kind on disk — so the
+# record and the build agree about what has actually been acquired.
+ASSET_EXTENSIONS = {"mesh": ".glb", "fallback": ".svg", "thumbnail": ".webp"}
+
+
+def slugify(name):
+    """"Right atrium" → "right-atrium". The one reduction that binds a GLB's
+    part names to the record's hotspot ids. Mirrored in
+    tools/derive_anchors.py, which resolves anchors across the same join."""
+    out = []
+    for ch in name.strip().lower():
+        if ch.isalnum():
+            out.append(ch)
+        elif out and out[-1] != "-":
+            out.append("-")
+    return "".join(out).strip("-")
+
+
+def glb_part_names(path):
+    """Every named node with a mesh, straight out of a GLB's JSON chunk.
+
+    Stdlib only and no geometry decoding: the names live in the JSON chunk, so
+    this reads them without numpy or DracoPy and keeps this validator runnable
+    on a machine with nothing installed."""
+    import struct
+
+    with open(path, "rb") as fh:
+        header = fh.read(12)
+        if len(header) < 12 or header[:4] != b"glTF":
+            raise ValueError("not a GLB")
+        chunk_header = fh.read(8)
+        if len(chunk_header) < 8:
+            raise ValueError("truncated GLB")
+        length, kind = struct.unpack("<II", chunk_header)
+        if kind != 0x4E4F534A:
+            raise ValueError("first chunk is not JSON")
+        gltf = json.loads(fh.read(length).decode("utf-8"))
+    return [node["name"] for node in gltf.get("nodes", [])
+            if "mesh" in node and node.get("name")]
+
+
+def acquired_asset(extension):
+    """The first acquired file of that kind in public/assets, or None.
+    Underscore-prefixed files are generated test fixtures and do not count —
+    the same rule vite.config.ts's standInFor() applies."""
+    directory = os.path.join(PUBLIC_DIR, "assets")
+    if not os.path.isdir(directory):
+        return None
+    for name in sorted(os.listdir(directory)):
+        if name.endswith(extension) and not name.startswith("_"):
+            return name
+    return None
 CALLOUT_KEYS = ["importance", "didYouKnow"]
 HOTSPOT_KEYS = ["id", "label", "detail", "position3d", "position2d", "tiers",
                 "retrievable"]
 # Optional per-hotspot fields (MRB-193). Allowed by the unknown-field check but
 # NOT required — they are deliberately kept out of HOTSPOT_KEYS, which doubles
 # as the required-presence list.
-HOTSPOT_OPTIONAL_KEYS = ["specPoints", "accept"]
+HOTSPOT_OPTIONAL_KEYS = ["specPoints", "accept", "keyStages"]
+KEY_STAGES = ("KS3", "KS4")
 # Aliases that would reintroduce independent name lookups. Their absence is
 # already implied by the unknown-key check; naming them keeps the failure
 # message specific when someone tries.
@@ -175,6 +236,21 @@ def validate_record(fname, record, failures, placeholders):
              f"'{expected_id}'")
 
     # ── gate 2: referenced asset files exist on disk
+    #
+    # The three assets are acquired SEPARATELY. The heart's mesh landed on
+    # 2026-08-13 while its 2D plate and thumbnail had not been drawn, so a
+    # single `acquired` date cannot speak for all three: read as "everything
+    # arrived" it demands files nobody has made, and read as "nothing has"
+    # it stops enforcing the one that did. Each asset therefore answers for
+    # itself — a real path must exist on disk, a TODO path is pending — and
+    # `acquired` keeps the old bundled behaviour only while it is itself a
+    # TODO, which is the pre-acquisition state it was written for.
+    #
+    # The inverse matters just as much. vite.config.ts substitutes a generated
+    # stand-in only while NO acquired file of that kind is on disk, so a record
+    # still saying TODO after one lands would send the renderer to fetch the
+    # literal string "TODO: …". Both directions are checked, against the same
+    # test the build makes, so the record and the build cannot disagree.
     assets = record.get("assets") or {}
     acquired_pending = is_placeholder(assets.get("acquired", ""))
     for k in ("mesh", "fallback", "thumbnail"):
@@ -182,6 +258,12 @@ def validate_record(fname, record, failures, placeholders):
         if not isinstance(served, str) or not served:
             continue  # absence already failed gate 1
         if is_placeholder(served):
+            on_disk = acquired_asset(ASSET_EXTENSIONS[k])
+            if on_disk:
+                fail(f"{ctx}: assets.{k} is still a placeholder, but "
+                     f"{on_disk} is on disk — the build has stopped "
+                     f"substituting a stand-in, so the record must name the "
+                     f"acquired file")
             continue  # counted by the placeholder sweep below
         src = served_path_to_source(served)
         if src is None:
@@ -194,6 +276,48 @@ def validate_record(fname, record, failures, placeholders):
                     f"a real date)")
             else:
                 fail(f"{ctx}: assets.{k} '{served}' does not exist at {src}")
+
+    # ── gate 2b: the mesh's named parts bind to hotspots
+    #
+    # The pipeline already proves a GLB kept its part names through decimation
+    # (specimen_pipeline.mjs, namesPreserved) — that catches a flattened
+    # export. It cannot catch the other half: names that survived intact but
+    # name nothing the record knows about. The isolate tool shows a part's name
+    # to the class verbatim ("Isolated: Right atrium"), so a part the record
+    # cannot account for is a structure a student can select and the panel has
+    # nothing to say about.
+    #
+    # Binding is by slug, because the two are written for different readers: a
+    # part is named for the class, a hotspot id is written for code.
+    #
+    # The reverse is NOT an error. A hotspot may legitimately have no part of
+    # its own and be anchored by coordinate alone — the heart's septum and
+    # sino-atrial node are, because BodyParts3D models neither as separately
+    # addressable geometry. Those are listed, not failed, so the split between
+    # "has a part" and "coordinates only" stays visible rather than silently
+    # becoming whatever the last acquisition happened to contain.
+    mesh = assets.get("mesh")
+    if isinstance(mesh, str) and mesh and not is_placeholder(mesh):
+        mesh_src = served_path_to_source(mesh)
+        if mesh_src and os.path.isfile(mesh_src):
+            try:
+                part_names = glb_part_names(mesh_src)
+            except (OSError, ValueError) as error:
+                fail(f"{ctx}: cannot read part names from {mesh}: {error}")
+                part_names = []
+            ids = {h.get("id") for h in record.get("hotspots") or []
+                   if isinstance(h, dict)}
+            prefix = record.get("id", "")
+            for name in part_names:
+                if f"{prefix}.{slugify(name)}" not in ids:
+                    fail(f"{ctx}: the mesh declares a part {name!r} that no "
+                         f"hotspot claims — expected a hotspot with id "
+                         f"'{prefix}.{slugify(name)}'")
+            bound = {f"{prefix}.{slugify(n)}" for n in part_names}
+            for hotspot_id in sorted(ids - bound):
+                placeholders.append(
+                    f"{ctx}: {hotspot_id} has no mesh part — anchored by "
+                    f"coordinate alone")
 
     # ── gate 3: lessonUrl resolves to a real generated page
     lesson = record.get("lessonUrl")
@@ -258,6 +382,19 @@ def validate_record(fname, record, failures, placeholders):
                 isinstance(sp, str) and sp.strip() for sp in h["specPoints"])):
             fail(f"{hctx}: specPoints must be a non-empty list of statement "
                  f"IDs")
+
+        # ── optional keyStages: absence is an INHERIT, not a placeholder.
+        # Unlike specPoints above it produces no checklist line — a structure
+        # taught at every key stage its specimen is offered at is finished
+        # content, and putting it on Mide's Stage 8 list would be asking him to
+        # clear an item with nothing wrong with it. Only a declared-but-broken
+        # value is a failure.
+        if "keyStages" in h and not (
+                isinstance(h["keyStages"], list) and h["keyStages"]
+                and all(ks in KEY_STAGES for ks in h["keyStages"])
+                and len(set(h["keyStages"])) == len(h["keyStages"])):
+            fail(f"{hctx}: keyStages must be a non-empty list of unique "
+                 f"'KS3'/'KS4' values")
 
     # ── Stage 8 checklist: every TODO string, wherever it sits
     for path, value in walk_strings(record):
