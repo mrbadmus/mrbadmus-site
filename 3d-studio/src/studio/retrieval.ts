@@ -42,6 +42,10 @@ export interface RoundState {
   /** stable id for this round; every client_key is derived from it */
   id: string
   specimenId: string
+  /** how many structures this round asks on its first pass — the number the
+   * progress rail draws squares for. Fixed at the start and never grows: the
+   * missed tail re-asks structures already counted here. */
+  size: number
   /** the structures the round will ask about, in order */
   queue: RoundQuestion[]
   /** how far through `queue` we are */
@@ -65,6 +69,16 @@ export interface RoundDeps {
   roundId: string
   profile: LearnerProfile
   submitter: AttemptSubmitter
+  /** 0 ≤ r < 1. Injected for the same reason `roundId` is: a round that
+   * invented its own randomness would be untestable and the six it drew
+   * unreproducible. The shell passes Math.random. */
+  random?: () => number
+  /** Structures already asked in this browser session, so a second round is
+   * not a re-run of the first. Session-scoped deliberately — attempts do not
+   * persist yet, and the moment they do this becomes "not yet seen, OR
+   * previously wrong", which is the Retrieval Engine's job (MRB-148) and the
+   * first place 3D Studio consumes mastery rather than only feeding it. */
+  seen?: ReadonlySet<string>
 }
 
 /**
@@ -103,29 +117,87 @@ export function eligibleHotspots(
 }
 
 /**
- * A round is SPECIMEN-LENGTH: every eligible structure, asked once, with the
- * missed ones returning at the end.
+ * A round is SIX QUESTIONS, SAMPLED — not the whole eligible set asked in
+ * order (MRB-191, ruled once the heart was authored and the real count was
+ * known: fourteen eligible structures at KS4, nine at KS3).
  *
- * This is a real pedagogical choice and Mide may reverse it. Design drew six
- * progress squares, which implies a fixed round length; against that, spec §6
- * describes eligibility as a property of the specimen's own hotspots, and a
- * fixed six would mean either padding a small specimen with repeats or
- * truncating a large one and never asking about the rest. Specimen-length is
- * also what the parity gate already counts (one square per retrievable
- * hotspot), so the drawn round and the built one agree today. Flagged in the
- * Stage 6 report as a decision, not a detail.
+ * Fourteen typed answers in one sitting is a slog rather than retrieval
+ * practice. The mechanic's value is short, repeated, spaced exposure; a
+ * marathon round produces drop-off in the middle and teaches students that
+ * starting one is a commitment. Coverage comes from repeat rounds, not from
+ * length. Six is also what Design drew, so the rail needs no change.
+ *
+ * A specimen with fewer than six eligible structures gives a shorter round.
+ * Padding with repeats would be the distortion the specimen-length reading was
+ * right to avoid.
  */
+export const ROUND_SIZE = 6
+
+/** Fisher–Yates, on a copy, using the injected source. */
+function shuffled<T>(items: readonly T[], random: () => number): T[] {
+  const out = [...items]
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out
+}
+
+/**
+ * Draw the round's structures from the eligible set.
+ *
+ * PREFER THE UNSEEN. Structures not yet asked this session are drawn first, so
+ * a second round is not a re-run of the first. Only when they run out does the
+ * draw fall back to structures already asked — a fifth round of a nine-hotspot
+ * KS3 specimen has to repeat something, and repeating is better than returning
+ * a short round for no stated reason.
+ *
+ * SELECTION IS RANDOM; PRESENTATION IS NOT. The six are chosen at random and
+ * then asked in the specimen's own record order, because that order is
+ * authored — chambers before vessels before valves — and a shuffled
+ * presentation would throw away a teaching sequence to buy variety the
+ * selection has already bought.
+ */
+export function sampleRound(
+  eligible: readonly HotspotRecord[],
+  options: {
+    size?: number
+    seen?: ReadonlySet<string>
+    random?: () => number
+  } = {},
+): HotspotRecord[] {
+  const size = options.size ?? ROUND_SIZE
+  const seen = options.seen ?? new Set<string>()
+  const random = options.random ?? Math.random
+  if (eligible.length <= size) return [...eligible]
+
+  const unseen = eligible.filter((h) => !seen.has(h.id))
+  const alreadySeen = eligible.filter((h) => seen.has(h.id))
+
+  const drawn = shuffled(unseen, random).slice(0, size)
+  if (drawn.length < size) {
+    drawn.push(...shuffled(alreadySeen, random).slice(0, size - drawn.length))
+  }
+
+  const chosen = new Set(drawn.map((h) => h.id))
+  return eligible.filter((h) => chosen.has(h.id))
+}
+
 export function startRound(
   specimen: SpecimenRecord,
   deps: RoundDeps,
 ): RoundState {
-  const queue = eligibleHotspots(specimen, deps.profile).map((hotspot) => ({
+  const queue = sampleRound(eligibleHotspots(specimen, deps.profile), {
+    seen: deps.seen,
+    random: deps.random,
+  }).map((hotspot) => ({
     hotspot,
     attemptNo: 1,
   }))
   return {
     id: deps.roundId,
     specimenId: specimen.id,
+    size: queue.length,
     queue,
     index: 0,
     results: [],
@@ -133,6 +205,13 @@ export function startRound(
     complete: queue.length === 0,
     askedAt: deps.now(),
   }
+}
+
+/** Every structure this round asked on its first pass, for the shell's
+ * session-scoped `seen` set. Read at the start of a round, not the end: a
+ * student who abandons a round halfway has still met those structures. */
+export function askedStructures(round: RoundState): string[] {
+  return round.queue.filter((q) => q.attemptNo === 1).map((q) => q.hotspot.id)
 }
 
 export function currentQuestion(round: RoundState): RoundQuestion | null {

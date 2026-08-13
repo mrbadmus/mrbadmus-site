@@ -23,7 +23,9 @@ import {
   isCorrect as isCorrectAnswer,
   eligibleHotspots,
   pointsFor,
+  askedStructures,
   startRound,
+  ROUND_SIZE,
   type RoundDeps,
   type RoundState,
 } from './studio/retrieval'
@@ -93,6 +95,7 @@ export default function App({
   submitter = memoryAttempts,
   now = () => Date.now(),
   makeRoundId = () => `r${Date.now().toString(36)}`,
+  random = Math.random,
 }: {
   capability?: CapabilityReport
   createRenderer?: RendererFactory
@@ -101,6 +104,9 @@ export default function App({
   submitter?: AttemptSubmitter
   now?: () => number
   makeRoundId?: () => string
+  /** which six a round draws — injectable so a gate can drive a reproducible
+   * round, exactly as makeRoundId and now are */
+  random?: () => number
 }) {
   const [probe] = useState<CapabilityReport>(() => capability ?? detectCapability())
   const layout = useLayout()
@@ -171,16 +177,26 @@ export default function App({
   const [round, setRound] = useState<RoundState | null>(null)
   const [revealed, setRevealed] = useState<{ label: string; detail: string } | null>(null)
   const [points, setPoints] = useState(0)
+  // Structures asked in this browser session, so a second round prefers the
+  // ones the first did not reach (MRB-191). Session-scoped on purpose:
+  // attempts do not persist yet, and a reload is a fresh start.
+  const [seenStructures, setSeenStructures] = useState<ReadonlySet<string>>(
+    () => new Set<string>(),
+  )
 
   const roundDeps: RoundDeps = {
     now,
     roundId: round?.id ?? '',
     profile,
     submitter,
+    random,
+    seen: seenStructures,
   }
 
   const eligible = eligibleHotspots(specimen, profile)
-  const roundSize = Math.max(eligible.length, 1)
+  // The rail draws squares for the round's own first pass. Before a round
+  // exists there is nothing to draw, so this is only the panel's fallback.
+  const roundSize = round?.size ?? Math.max(Math.min(eligible.length, ROUND_SIZE), 1)
   const question = round ? currentQuestion(round) : null
   const targetHotspotId = question?.hotspot.id ?? null
 
@@ -212,7 +228,13 @@ export default function App({
       return
     }
     setGate(null)
-    setRound(startRound(specimen, { ...roundDeps, roundId: makeRoundId() }))
+    const started = startRound(specimen, { ...roundDeps, roundId: makeRoundId() })
+    setRound(started)
+    // Recorded at the START of the round: a student who abandons halfway has
+    // still met these structures, and asking them again first would be the
+    // re-run this ruling exists to prevent.
+    const asked = askedStructures(started)
+    setSeenStructures((prev) => new Set([...prev, ...asked]))
   }
 
   const leaveRetrieval = () => {

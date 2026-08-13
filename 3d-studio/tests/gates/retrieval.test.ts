@@ -22,6 +22,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   answerQuestion,
+  askedStructures,
   currentQuestion,
   eligibleHotspots,
   isCorrect,
@@ -29,6 +30,8 @@ import {
   normaliseAnswer,
   pointsFor,
   roundScore,
+  ROUND_SIZE,
+  sampleRound,
   startRound,
   type RoundDeps,
   type RoundState,
@@ -430,5 +433,146 @@ describe('gate 12 — one free round, then the prompt', () => {
       access = done.access
       expect(done.gate).toBeNull()
     }
+  })
+})
+
+describe('gate 12 — a round is six, drawn from the eligible set (MRB-191)', () => {
+  // Fourteen retrievable structures is what the authored heart actually has.
+  const many = specimen(
+    Array.from({ length: 14 }, (_, i) => hotspot(`h${i}`, `Structure ${i}`)),
+  )
+  const ids = (round: RoundState) => round.queue.map((q) => q.hotspot.id)
+
+  // Two reproducible sources. `() => 0` moves every element to the front in
+  // turn; `() => 0.99` leaves the order alone. Different permutations, so the
+  // two draw different sixes — which is the point of drawing at all.
+  const rotate = () => 0
+  const identity = () => 0.99
+
+  it('six questions, not fourteen', () => {
+    const round = startRound(many, deps({ random: rotate }))
+    expect(ROUND_SIZE).toBe(6)
+    expect(round.queue).toHaveLength(6)
+    expect(round.size).toBe(6)
+  })
+
+  it('the six are all eligible — sampling does not smuggle anything in', () => {
+    const mixed = specimen([
+      ...Array.from({ length: 8 }, (_, i) => hotspot(`ok${i}`, `Ok ${i}`)),
+      ...Array.from({ length: 4 }, (_, i) =>
+        hotspot(`no${i}`, `No ${i}`, { retrievable: false }),
+      ),
+    ])
+    const round = startRound(mixed, deps({ random: rotate }))
+    expect(round.queue).toHaveLength(6)
+    expect(ids(round).every((id) => id.startsWith('ok'))).toBe(true)
+  })
+
+  it('the key-stage filter still decides the pool the six come from', () => {
+    // Nine visible at KS3, fourteen at KS4 — the shape the heart really has.
+    const split = specimen([
+      ...Array.from({ length: 9 }, (_, i) => hotspot(`both${i}`, `Both ${i}`)),
+      ...Array.from({ length: 5 }, (_, i) =>
+        hotspot(`ks4only${i}`, `KS4 only ${i}`, { keyStages: ['KS4'] }),
+      ),
+    ])
+    const ks3: LearnerProfile = {
+      userId: 'user-ks3',
+      pathway: 'combined',
+      // A KS3 learner has no tier at all (attempts contract §6 item 2).
+      tier: null,
+      keyStage: 'KS3',
+    }
+    const round = startRound(split, deps({ profile: ks3, random: rotate }))
+    expect(round.queue).toHaveLength(6)
+    expect(ids(round).every((id) => id.startsWith('both'))).toBe(true)
+  })
+
+  it('a specimen with fewer than six eligible gives a shorter round, not a padded one', () => {
+    const small = specimen([hotspot('a', 'Alpha'), hotspot('b', 'Beta')])
+    const round = startRound(small, deps({ random: rotate }))
+    expect(ids(round)).toEqual(['a', 'b'])
+    expect(round.size).toBe(2)
+  })
+
+  it('selection is random, presentation is the record order', () => {
+    // Swept across seeds on purpose. A single source can draw a six that
+    // happens to already be in record order, and a test that used one would
+    // pass whether or not the draw is re-sorted at all.
+    const seeded = (seed: number) => {
+      let s = seed >>> 0
+      return () => {
+        s = (s * 1664525 + 1013904223) >>> 0
+        return s / 4294967296
+      }
+    }
+    for (let seed = 1; seed <= 25; seed += 1) {
+      const round = startRound(many, deps({ random: seeded(seed) }))
+      const positions = ids(round).map((id) =>
+        many.hotspots.findIndex((h) => h.id === id),
+      )
+      expect(round.queue).toHaveLength(6)
+      expect(positions).toEqual([...positions].sort((a, b) => a - b))
+    }
+  })
+
+  it('two draws are not the same six', () => {
+    const a = ids(startRound(many, deps({ random: rotate })))
+    const b = ids(startRound(many, deps({ random: identity })))
+    expect(a).not.toEqual(b)
+  })
+
+  it('a second round prefers what the first did not reach', () => {
+    const first = startRound(many, deps({ random: identity }))
+    const seen = new Set(askedStructures(first))
+    expect(seen.size).toBe(6)
+    const second = startRound(many, deps({ random: identity, seen }))
+    expect(second.queue).toHaveLength(6)
+    // not a re-run: nothing from the first round comes back in the second
+    expect(ids(second).some((id) => seen.has(id))).toBe(false)
+  })
+
+  it('when the unseen run out it tops up from the seen rather than going short', () => {
+    const seen = new Set(many.hotspots.slice(0, 12).map((h) => h.id))
+    const round = startRound(many, deps({ random: identity, seen }))
+    expect(round.queue).toHaveLength(6)
+    // both remaining unseen structures are in, and four repeats fill the rest
+    expect(ids(round)).toContain('h12')
+    expect(ids(round)).toContain('h13')
+    expect(ids(round).filter((id) => seen.has(id))).toHaveLength(4)
+  })
+
+  it('every structure is asked eventually, across enough rounds', () => {
+    // Coverage comes from repeat rounds, which is the whole basis of the
+    // ruling — so it has to actually happen.
+    const seen = new Set<string>()
+    for (let i = 0; i < 3; i += 1) {
+      const round = startRound(many, deps({ random: identity, seen }))
+      for (const id of askedStructures(round)) seen.add(id)
+    }
+    expect(seen.size).toBe(14)
+  })
+
+  it('the missed tail re-asks, and does not grow the rail', () => {
+    const d = deps({ random: identity })
+    let round: RoundState = startRound(many, d)
+    expect(round.size).toBe(6)
+    for (let i = 0; i < 6; i += 1) {
+      round = answerQuestion(round, many, 'wrong', 'nope', d).round
+    }
+    // all six come back once
+    expect(round.complete).toBe(false)
+    expect(round.queue).toHaveLength(12)
+    // …but the rail still draws six, because size is the first pass
+    expect(round.size).toBe(6)
+    expect(askedStructures(round)).toHaveLength(6)
+  })
+
+  it('sampleRound is a pure draw over the set it is handed', () => {
+    const pool = many.hotspots
+    expect(sampleRound(pool, { random: identity })).toHaveLength(6)
+    expect(sampleRound(pool, { size: 3, random: identity })).toHaveLength(3)
+    expect(sampleRound(pool.slice(0, 2), { random: identity })).toHaveLength(2)
+    expect(sampleRound([], { random: identity })).toEqual([])
   })
 })

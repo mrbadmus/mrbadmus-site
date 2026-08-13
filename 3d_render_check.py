@@ -118,6 +118,7 @@ gate owns is that nothing a student can see has moved.
 
 from __future__ import annotations
 
+import json
 import math
 import os
 import re
@@ -1498,6 +1499,25 @@ def check_section(page, report, shots):
 TITLE_10 = "the round frames its target before asking (MRB-191)"
 
 
+def structure_numerals():
+    """{'01': 'Right atrium', …} — the glyph a dot wears, to what it is called.
+
+    Stage.tsx numbers a dot `String(index + 1).padStart(2, '0')` over the
+    specimen's OWN hotspot order, and pushes only the visible ones, so the
+    glyph is a stable global index into content/heart.json rather than a
+    position in whatever subset is on screen. Read here so the driver can name
+    a structure it can see without clicking on it.
+    """
+    path = os.path.join(HERE, "3d-studio", "content", "heart.json")
+    try:
+        with open(path, encoding="utf-8") as fh:
+            record = json.load(fh)
+    except (OSError, ValueError):
+        return {}
+    return {str(i + 1).zfill(2): h.get("label")
+            for i, h in enumerate(record.get("hotspots", []))}
+
+
 def check_framing(page, report):
     """10. The round frames its target before asking (ruling on MRB-191).
 
@@ -1508,42 +1528,70 @@ def check_framing(page, report):
     from the app being broken.
 
     So this drives the worst case deliberately, and the worst case has to be
-    ESTABLISHED rather than hoped for. That is what the guard below is: a
-    round opened from a view where the target already happened to be on screen
-    proves nothing at all.
+    ESTABLISHED rather than hoped for. A round opened from a view where the
+    target already happened to be on screen proves nothing at all.
 
-    WHAT THE GUARD USED TO SAY, and why it was the fixture talking: turn the
-    specimen roughly 180° and require that NO dot at all is left on the stage,
-    on the strength of check 2's old claim that a half turn hides everything.
-    True of the generated fixture, whose two anchors were both on the near
-    side. False of a real specimen: the acquired heart's far side carries the
-    left atrium and both pulmonary vessels, so a half turn ends with three
-    dots on screen and the guard refused to let the check run at all.
+    TWO EARLIER FORMS OF THAT PRECONDITION, and why both are gone:
 
-    "No dot is visible" was never what this needs. What it needs is that THE
-    TARGET is not visible before the round opens, and that is what is measured
-    now — on the target itself, which is strictly stronger than the old form
-    (a view with dots on it but not the target's would have been rejected
-    before, and is the ordinary case here).
+    The first turned the specimen roughly 180° and required that NO dot at all
+    was left on the stage, on the strength of check 2's old claim that a half
+    turn hides everything. True of the generated fixture, whose two anchors
+    were both on the near side; false of the acquired heart, whose far side
+    carries the left atrium and both pulmonary vessels.
 
-    The target is not named anywhere a driver can read: the marker's glyph is
-    '?', its aria-label is "Highlighted structure", and the panel asks the
-    question without answering it. So the room is entered THREE times, and the
-    order is the whole design:
+    The second opened a round to learn which structure gets asked first, turned
+    until THAT marker was off the stage, opened a SECOND round from there, and
+    asserted the two rounds agreed on their first question — which they did,
+    because a round was the whole eligible set in record order. MRB-191 then
+    ruled a round to be six, SAMPLED, preferring structures not yet seen this
+    session, so two consecutive rounds now deliberately do not agree. That form
+    refused to run, and it refused correctly: it was reading a property of the
+    old round-building, not a property of framing.
 
-      1. open a round and give up on its first question, which is the only
-         affordance that says out loud which structure was being asked about;
-      2. open a round and turn until that round's own marker is off the stage
-         — the camera survives leaving the room (App.tsx keys the stage across
-         the switch precisely so it does), so the view found here is the view
-         the next round opens from;
-      3. open a round from THERE, and require the marker back on screen and
-         inside the stage. Then give up on that question too, and require the
-         same structure as step 1 — so "the round asks the same thing first
-         each time", which is what carries step 2's measurement into step 3,
-         is asserted here rather than assumed of the queue.
+    WHAT IS MEASURED NOW uses one round and no cross-round assumption:
+
+      1. In explore mode, at whatever view we are at, read the numeral on every
+         dot on the stage. A numeral is an index into the specimen's own
+         hotspot list (see structure_numerals), so this is a set of STRUCTURE
+         NAMES — what the student can see from here, by name, without touching
+         anything.
+      2. Open a round. The retrieval room draws one dot, the target, wearing
+         '?' rather than its numeral — deliberately, since what it is called is
+         the question. Measure the marker: on the stage, inside it, 52px,
+         pulsing.
+      3. Give up on that question. Revealing is the one affordance that says
+         out loud which structure was being asked about, and it happens AFTER
+         the measurement, so it cannot influence it.
+      4. The claim holds only if the revealed structure was not in the set from
+         step 1: the round framed something that was not on screen when it
+         opened.
+
+    Identity is not carried across a mode switch, and deliberately so — the
+    stage is a different width in the two rooms (`main--retrieve` gives 404px
+    to the panel), so the same anchor projects to a different pixel and dots
+    cannot be matched by position between them.
+
+    If the sampler hands us a target that was already on screen, nothing is
+    asserted: the specimen is turned a quarter and another round is drawn. Same
+    shape as the old turn-until-hidden loop, but it now searches for an adverse
+    ROUND rather than an adverse view of a fixed one.
     """
     problems, details = [], []
+    names = structure_numerals()
+    if not names:
+        report.check(10, TITLE_10, ["HARNESS: could not read content/heart.json, "
+                                    "so a dot's numeral cannot be turned into a "
+                                    "structure name"], details)
+        return
+
+    def visible_structures():
+        """The names of the structures whose dots are on the stage right now."""
+        seen = set()
+        for entry in dots(page):
+            glyph = entry.split("@", 1)[0]
+            if glyph in names:
+                seen.add(names[glyph])
+        return seen
 
     def leave():
         page.eval("window.__rc.leaveRetrieval()")
@@ -1557,116 +1605,89 @@ def check_framing(page, report):
         settle(page)
         return True
 
-    def give_up(where):
-        """Reveal the answer, and read it. Advances the round, so it is always
-        the last thing done with one."""
+    reset_view(page)
+    settle(page)
+
+    established = False
+    for attempt in range(QUARTER_TURNS + 1):
+        where = "attempt %d" % (attempt + 1)
+        before = visible_structures()
+
+        if not open_round(where):
+            report.check(10, TITLE_10, problems, details)
+            return
+
+        marker = page.eval("window.__rc.target()")
+
+        # Read the answer only after the marker has been measured.
         if not page.eval("window.__rc.reveal()"):
             problems.append(
                 "no reveal control in the retrieval panel (%s) — the target's "
                 "identity cannot be read, and without it the precondition "
-                "below cannot be established" % where)
-            return None
+                "cannot be established" % where)
+            break
         time.sleep(0.4)
-        return page.eval("window.__rc.revealedLabel()")
-
-    # ── 1. which structure does a round ask about first? ──────────────────
-    # This opening asserts NOTHING and must not: it happens at the default
-    # view, where the target may already be on screen.
-    reset_view(page)
-    settle(page)
-    if not open_round("learning the target"):
-        report.check(10, TITLE_10, problems, details)
-        return
-    first = give_up("learning the target")
-    leave()
-    if not first:
-        problems.append("the round revealed no structure name, so there is "
-                        "nothing to establish a precondition about")
-        report.check(10, TITLE_10, problems, details)
-        return
-    details.append("a round opens on %r" % first)
-
-    # ── 2. turn until THAT structure's marker is off the stage ────────────
-    if not open_round("finding a view that hides the target"):
-        report.check(10, TITLE_10, problems, details)
-        return
-    if not page.eval("window.__rc.target()"):
-        problems.append(
-            "the round opened with NO target marker on the stage, from the "
-            "DEFAULT view — the easy case. Spec §6 says a structure is "
-            "highlighted, and an invisible highlight is not a highlight.")
+        asked = page.eval("window.__rc.revealedLabel()")
         leave()
-        report.check(10, TITLE_10, problems, details)
-        return
 
-    hidden_after = None
-    for quarter in range(QUARTER_TURNS):
-        fault = drag_horizontal(page, px=QUARTER_PX)
-        if fault:
-            problems.append("HARNESS: " + fault)
+        if not marker:
+            problems.append(
+                "the round opened with NO target dot on the stage%s. The "
+                "student is being asked to name a structure that is not on "
+                "screen — spec §6 says a structure is highlighted, and an "
+                "invisible highlight is not a highlight."
+                % (" (%r)" % asked if asked else ""))
             break
-        settle(page)
-        if not page.eval("window.__rc.target()"):
-            hidden_after = quarter + 1
+
+        if not asked:
+            problems.append(
+                "the round revealed no structure name, so there is nothing to "
+                "establish a precondition about")
             break
-    if hidden_after is None:
-        problems.append(
-            "HARNESS: %r kept its marker on screen through %d quarter-turns, "
-            "so there is no view here from which the round's own target is "
-            "hidden, and framing it would prove nothing. A structure thin "
-            "enough to be genuinely visible from every azimuth would read "
-            "exactly like this." % (first, QUARTER_TURNS))
-        leave()
-        report.check(10, TITLE_10, problems, details)
-        return
-    still_up = len(dots(page))
-    details.append(
-        "after %d quarter-turn(s) the marker for %r is gone while %d other "
-        "dot(s) are still on the stage — the specimen is in view, the TARGET "
-        "is not, which is the precondition this check needs"
-        % (hidden_after, first, still_up))
 
-    # ── 3. open a round from there: the marker must be brought back ───────
-    leave()  # the camera survives the mode switch; this view is kept
-    if not open_round("the claim"):
-        report.check(10, TITLE_10, problems, details)
-        return
+        if asked in before:
+            details.append(
+                "%s: the round asked about %r, which was already on screen "
+                "before it opened — nothing asserted, turning" % (where, asked))
+            fault = drag_horizontal(page, px=QUARTER_PX)
+            if fault:
+                problems.append("HARNESS: " + fault)
+                break
+            settle(page)
+            continue
 
-    target = page.eval("window.__rc.target()")
-    if not target:
-        problems.append(
-            "the round opened with NO target dot on the stage. The student is "
-            "being asked to name a structure that is not on screen — spec §6 "
-            "says a structure is highlighted, and an invisible highlight is "
-            "not a highlight.")
-    else:
-        if not target["inside"]:
+        # ── adversity established: this round asked about something that was
+        #    not on the stage a moment ago. NOW the claim is worth asserting.
+        established = True
+        details.append(
+            "%s: %r was NOT on the stage before the round opened — %d other "
+            "structure(s) were (%s) — and the round brought it into view. The "
+            "precondition and the claim are about the same structure, in the "
+            "same round." % (where, asked, len(before),
+                             ", ".join(sorted(before)) or "none"))
+
+        if not marker["inside"]:
             problems.append(
                 "the target dot is outside the stage (%.0f, %.0f) — framed "
                 "off the edge is the same as not framed"
-                % (target["x"], target["y"]))
-        if round(target["w"]) != 52:
+                % (marker["x"], marker["y"]))
+        if round(marker["w"]) != 52:
             problems.append("the target dot is %.0fpx, expected the 52px "
-                            "marker §07 specifies" % target["w"])
-        if not target["ping"]:
+                            "marker §07 specifies" % marker["w"])
+        if not marker["ping"]:
             problems.append("the target dot has no ring pulse (§02)")
         details.append("target: %.0fpx at (%.0f, %.0f), inside the stage=%s, "
                        "ping=%d"
-                       % (target["w"], target["x"], target["y"],
-                          target["inside"], target["ping"]))
+                       % (marker["w"], marker["x"], marker["y"],
+                          marker["inside"], marker["ping"]))
+        break
 
-    # ── and it is the same structure that was measured absent ─────────────
-    again = give_up("the claim")
-    if again != first:
+    if not established and not problems:
         problems.append(
-            "the two rounds did not open on the same structure (%r then %r), "
-            "so the marker measured absent above and the marker framed here "
-            "are not necessarily the same one, and the precondition does not "
-            "carry" % (first, again))
-    else:
-        details.append("both rounds open on %r, so the structure whose marker "
-                       "was measured absent is the structure framed here"
-                       % first)
+            "HARNESS: %d rounds were drawn and every one of them asked about a "
+            "structure that was already on screen, so the framing move was "
+            "never asked to do anything. Nothing is asserted."
+            % (QUARTER_TURNS + 1))
 
     # Back out of the room so the checks after this one start where they expect.
     leave()

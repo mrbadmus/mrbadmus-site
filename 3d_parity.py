@@ -168,6 +168,14 @@ TOKENS_CSS = os.path.join(APP, "src", "styles", "tokens.css")
 REFERENCE = os.path.join(APP, "reference", "shell-v1.html")
 DIST = os.path.join(APP, "dist")
 HEART = os.path.join(APP, "content", "heart.json")
+RETRIEVAL_TS = os.path.join(APP, "src", "studio", "retrieval.ts")
+
+# Design drew SIX progress squares. Until MRB-191's round-length ruling the
+# built round was specimen-length, so the rail drew one square per retrievable
+# hotspot — fourteen on the authored heart — and the gate asserted that number,
+# which meant the gate agreed with the build and neither agreed with the
+# reference. A round is now six, and this is the number the reference drew.
+REFERENCE_ROUND_SQUARES = 6
 
 # ── the seven reconciled values (allow-list entries 1–7) ─────────────────
 # token, reference value, shipped value, reason
@@ -277,6 +285,25 @@ def check_provenance():
                     hits.append("%s carries superseded rgba(26,20,14,…) ink" %
                                 os.path.relpath(p, HERE))
     problems.extend(hits)
+
+    # The rail and the round have to be the same number. Counting squares on
+    # the built page (layer B) proves the rail matches the reference; this
+    # proves the round the rail is drawing matches it too.
+    size = _round_size_in_source()
+    if size is None:
+        problems.append(
+            "could not read ROUND_SIZE out of src/studio/retrieval.ts — the "
+            "round length and Design's rail can no longer be compared")
+    elif size != REFERENCE_ROUND_SQUARES:
+        problems.append(
+            "ROUND_SIZE = %d but the frozen reference draws %d progress "
+            "squares — a round of %d would either overflow the rail or leave "
+            "it short (MRB-191)"
+            % (size, REFERENCE_ROUND_SQUARES, size))
+    else:
+        notes.append("round length %d matches the reference's %d squares"
+                     % (size, REFERENCE_ROUND_SQUARES))
+
     return (problems, notes)
 
 
@@ -752,6 +779,20 @@ window.__st = {
 """
 
 
+def _round_size_in_source():
+    """ROUND_SIZE as the shell actually ships it.
+
+    Counting squares on the built page proves the rail matches the reference.
+    It does not prove the ROUND SIZE matches — a build could draw six squares
+    over a round of fourteen. Reading the constant closes that, and makes a
+    future change to it a deliberate re-reading of Design's rail rather than a
+    silent divergence from it.
+    """
+    with open(RETRIEVAL_TS, encoding="utf-8") as fh:
+        m = re.search(r"export const ROUND_SIZE\s*=\s*(\d+)", fh.read())
+    return int(m.group(1)) if m else None
+
+
 def _content_counts():
     with open(HEART, encoding="utf-8") as fh:
         heart = json.load(fh)
@@ -1042,7 +1083,8 @@ def check_structure(page, screen, counts):
             p.append("s02: retrieve grid is %r, reference says fluid / 404" % cols)
         need(".rpanel__round")
         need(".rpanel__of")
-        need(".psq", counts["retrievable"], "one square per retrievable hotspot")
+        need(".psq", REFERENCE_ROUND_SQUARES,
+             "Design drew six squares; a round is six (MRB-191)")
         need(".psq--current")
         absent(".psq--done", "round starts at minute zero (allow-list rule 13)")
         need(".rpanel__ask")
