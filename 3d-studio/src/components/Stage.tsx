@@ -122,6 +122,27 @@ export function Stage({
     renderer.frameHotspot(targetHotspotId)
   }, [renderer, ready, mode, targetHotspotId])
 
+  // And frame a structure the student picks from the panel, for the same
+  // reason (MRB-187).
+  //
+  // The callout is drawn from `openDot`, which comes out of `dots` — and
+  // `dots` drops anything the occlusion test says is hidden. So selecting a
+  // structure facing away from the camera marked its chip open, said "1
+  // SHOWN", and put nothing on the stage. With the two-hotspot placeholder
+  // both anchors faced the camera and this never happened; the acquired heart
+  // has fourteen spread over a concave form, about half of them hidden at any
+  // moment, so half the panel's chips did nothing when clicked and gave no
+  // reason why.
+  //
+  // Same ruling, same mechanism: an invisible highlight is not a highlight, so
+  // the camera turns to bring the structure into view. On the flat renderer
+  // frameHotspot is a no-op, which is correct — a paper plate has no camera
+  // and its dots are never occluded.
+  useEffect(() => {
+    if (!renderer || !ready || mode !== 'explore' || !openHotspotId) return
+    renderer.frameHotspot(openHotspotId)
+  }, [renderer, ready, mode, openHotspotId])
+
   // reposition dots when the container resizes
   useEffect(() => {
     const el = containerRef.current

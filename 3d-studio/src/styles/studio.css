@@ -53,8 +53,29 @@ a:hover { color: var(--st-accent-hover); }
 }
 
 /* ── App frame ─────────────────────────────────────────────── */
+/* ONE VIEWPORT TALL ON DESKTOP, AND THE PANEL SCROLLS INSIDE ITSELF.
+ *
+ * `min-height` alone leaves this column's height INDEFINITE: it is a floor,
+ * not a ceiling, so the flex column still takes its height from its content.
+ * `.main` is a `flex: 1; min-height: 0` grid, but a flex item's max-content
+ * contribution is what an auto-height flex container measures itself against,
+ * and an `fr` row in an indefinite-height grid resolves to exactly that
+ * max-content — so the grid row grew to the tallest item and the whole page
+ * grew with it. The info panel is that tallest item, and its height is the
+ * specimen's structure count: heart.json going from 2 hotspots to 14 put the
+ * body at 1942px inside a 900px viewport, with `.panel { overflow: hidden }`
+ * and `.panel__scroll { overflow-y: auto }` correct, built, and never engaged
+ * because the row they sit in had no ceiling. Constraining the ROW cannot fix
+ * this — measured: `grid-template-rows: minmax(0, 1fr)` on `.main` leaves the
+ * row at the same 1765.78px, because the fr has nothing definite to be a
+ * fraction OF. The ceiling has to come from here.
+ *
+ * Desktop only. Tablet and phone deliberately scroll the whole column, so the
+ * ceiling is lifted again at 1023 below — the shell is desktop-first and the
+ * max-width blocks are the overrides. */
 .app {
   min-height: 100dvh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--st-ground);
@@ -237,6 +258,9 @@ a:hover { color: var(--st-accent-hover); }
   .topbar { height: 60px; padding: 0 20px; gap: 14px; }
   .topbar__nav { display: none; }
   .crumbstrip { display: none; }
+  /* the desktop viewport ceiling is lifted: below 1024 the whole column
+     scrolls with the document, which is what these two layouts are for */
+  .app { height: auto; }
   .main { display: block; padding: 16px 20px 20px; overflow-y: auto; }
   .main--explore .library { display: none; }
 }
@@ -293,6 +317,27 @@ a:hover { color: var(--st-accent-hover); }
 .libcard__text { min-width: 0; text-align: left; }
 .libcard__name { display: block; font: 500 14.5px/1.2 var(--st-ui); letter-spacing: -0.01em; }
 .libcard.is-viewing .libcard__name { font-weight: 600; }
+/* WRAPS TO A SECOND LINE; NEVER TRUNCATES, NEVER BREAKS A WORD.
+ *
+ * The text column here is ~145px. `white-space: nowrap` + ellipsis rendered
+ * the live specimen's caption as VIEWING · 14 STRUCTU… — the count is the one
+ * thing this line exists to tell the viewer, and it was the part cut off. So
+ * it wraps. The live card is one line taller than the coming-soon cards; that
+ * is accepted (parity allow-list 17) rather than abbreviated away.
+ *
+ * `normal`, NOT the `break-word` the rest of this file uses. MRB-186 ruled a
+ * label column may never break inside a word (SYSTEM as SYSTE / M), and this
+ * is a label column of two short tokens: there is no over-long token for
+ * `break-word` to rescue, so it would only license the break the ruling
+ * forbids. Both properties are set explicitly because both INHERIT — several
+ * blocks in this file set `overflow-wrap: break-word`, and stating it here
+ * means no future ancestor can hand this column a break it did not ask for.
+ *
+ * `overflow: hidden` and `text-overflow: ellipsis` are gone with the nowrap
+ * they served. Kept, `overflow: hidden` would silently clip an unbreakable
+ * token — the exact failure mode above, hidden from the eye and from review.
+ * Overflowing visibly is worse-looking and better: it can be seen, and the
+ * parity gate's meta row measures it. */
 .libcard__meta {
   display: block;
   margin-top: 3px;
@@ -300,9 +345,9 @@ a:hover { color: var(--st-accent-hover); }
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--st-faint);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 .libcard.is-viewing .libcard__meta { color: var(--st-accent-text); letter-spacing: 0.08em; }
 

@@ -29,9 +29,11 @@ Checks 1–10 are gates: any failure exits non-zero.
 
   1. It renders at all. The mesh renderer mounts, the stage container reaches
      ``ready``, a <canvas> exists inside the stage.
-  2. Honest occlusion. Every hotspot in ``content/heart.json`` has a dot at the
-     default view; a drag that turns the specimen roughly 180° leaves NONE of
-     them on screen; Reset brings them all back.
+  2. Honest occlusion. At the default view SOME anchors face the camera and
+     some do not, so some dots are drawn and some are not; a full turn in six
+     steps brings every hotspot in ``content/heart.json`` into view at some
+     angle; the half-turn sample replaces most of what was visible with what
+     was not; Reset returns the default view exactly.
   3. Reset is exact. Dot coordinates come back as identical strings after a
      drag, and are still identical a second later (no slow drift). Reset from
      the default view is a no-op.
@@ -49,9 +51,9 @@ Checks 1–10 are gates: any failure exits non-zero.
      declares, drawing exactly one at a time and naming it from the file; one
      step past the last returns the whole specimen. Layers peels the outer
      depth level away. Both are judged by the HOTSPOT LAYER as well as by the
-     part count — every stand-in anchor sits on the outer shell, so taking
-     that shell off the stage must take its dots with it, which is the one
-     thing a step counter cannot fake.
+     part count — occlusion is recomputed against whatever is still drawn, so
+     taking geometry off the stage must change which dots are visible, which
+     is the one thing a step counter cannot fake.
 
   8. The cross-section cuts, and the cut is CAPPED (MRB-189). The only check
      here that reads pixels rather than the DOM, because "is there a cut face
@@ -68,10 +70,11 @@ Checks 1–10 are gates: any failure exits non-zero.
      having broken both halves.
 
  10. The retrieval round frames its target before asking (ruling on
-     MRB-191). Driven from the WORST case on purpose: the specimen is turned
-     roughly 180° first, so that check 2 has already proved no dot is
-     visible, and only then is the round opened. The pulsing 52px marker must
-     be on screen and inside the stage when the prompt appears.
+     MRB-191). Driven from the WORST case on purpose: a round is opened once
+     to find out which structure it asks about first, the specimen is turned
+     until THAT structure's marker is measurably off the stage, and only then
+     is a round opened from there. The pulsing 52px marker must be on screen
+     and inside the stage when the prompt appears.
 
 Frame timing is a REPORT, never a gate, and carries no check number for that
 reason — see its banner. Nothing it prints can change the exit code.
@@ -85,10 +88,13 @@ WHAT IT DOES NOT CATCH, stated plainly:
     on the CPU. See its banner.
   * Composition, colour and type — that is ``3d_parity.py``'s job, and this
     script deliberately duplicates none of it.
-  * Occlusion at authored anchor positions. Every ``position3d`` in
-    heart.json is still the all-zero Stage-8 sentinel, so the renderer derives
-    stand-in anchors on the mesh surface. The occlusion MECHANISM is what is
-    under test; the anchor coordinates arrive with the content.
+  * Whether an anchor sits on the RIGHT structure. heart.json now carries
+    authored ``position3d`` for all fourteen hotspots (they were the all-zero
+    Stage-8 sentinel while nothing had been acquired, and the renderer derived
+    stand-in anchors on the mesh surface instead). Nothing here can tell an
+    anchor over the aorta from one a centimetre into the pulmonary artery —
+    that is the science gate's, and the manifest's. The occlusion MECHANISM is
+    what is under test; where each anchor belongs arrives with the content.
 
 HARNESS NOTES, both learned the hard way:
 
@@ -126,17 +132,34 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.join(HERE, "3d-studio")
 DIST = os.path.join(APP, "dist")
 HEART = os.path.join(APP, "content", "heart.json")
-SPECIMEN_GLB = os.path.join("assets", "_test-specimen.glb")
+SPECIMEN_ASSETS = os.path.join("assets")
 
 VIEWPORT = (1440, 900)
 
 # A left-button drag this far across the stage turns the specimen roughly 180°
 # at the desktop stage size: OrbitControls maps horizontal travel to azimuth
-# against the element's height, and the stage is ~1055px tall here. Enough of
-# a turn that every stand-in anchor — spread 18°–52° off the default camera
-# axis — ends up behind the form. Verified by hand before it was written down.
+# against the element's height, and the stage is ~1055px tall here. Verified
+# by hand before it was written down.
 DRAG_PX = 520
 DRAG_STEPS = 30
+
+# A full revolution, and how finely check 2 samples it. Twice the half turn
+# above is 360°; six steps samples it every 60°, which is the coarsest sweep
+# that can still claim to have looked all the way round. Measured on the
+# acquired heart: the union closes over all fourteen hotspots by the fourth
+# step, so this is not a threshold fitted to scrape a pass.
+SWEEP_STEPS = 6
+SWEEP_PX = 2.0 * DRAG_PX / SWEEP_STEPS
+
+# Quarter turns, used by check 10 to hunt for a view from which the round's
+# own target is not on screen. Four of them close the circle.
+QUARTER_PX = DRAG_PX / 2.0
+QUARTER_TURNS = 4
+
+# Below this many hotspots, "some are visible and some are not" is not a
+# question worth asking of a specimen — see check 2. The generated test
+# specimen declares two.
+PARTIAL_MIN_HOTSPOTS = 4
 
 # How still is still. The controls damp (dampingFactor 0.075), so a released
 # drag or a just-switched-off auto-rotate keeps creeping for a second or more.
@@ -155,6 +178,15 @@ SETTLE_GAP = 0.6
 
 # Frame samples per tier in the frame-timing report.
 FRAME_SAMPLES = 120
+
+# The framing move the retrieval round makes is animated on purpose (620ms,
+# eased). This is how long check 10 gives it to land before it looks.
+FRAME_MOVE = 1.4
+
+# A style change has to reach the compositor before a capture can see it —
+# check 8 hides the hotspot layer for its screenshots and this is the beat it
+# leaves for the frame that draws the stage without it.
+DOT_HIDE_SETTLE = 0.15
 
 
 # ── the page-side helpers ────────────────────────────────────────────────
@@ -241,6 +273,28 @@ window.__rc = {
     b.click();
     return true;
   },
+  /** and leave it by the same control. The mode segment is drawn in both
+   *  rooms, so this is the room's own way out and not a back door. */
+  leaveRetrieval: function () {
+    var b = Array.prototype.slice.call(
+      document.querySelectorAll('.modeseg button'))
+      .find(function (x) { return /explore/i.test(x.textContent || ''); });
+    if (!b) { return false; }
+    b.click();
+    return true;
+  },
+  /** give up on the current question, which is the only affordance that says
+   *  out loud WHICH structure was being asked about */
+  reveal: function () {
+    var b = document.querySelector('.rreveal__link');
+    if (!b) { return false; }
+    b.click();
+    return true;
+  },
+  revealedLabel: function () {
+    var el = document.querySelector('.rreveal-card__title');
+    return el ? (el.textContent || '').trim() : null;
+  },
   /** the pulsing 52px target dot, if one is on the stage */
   target: function () {
     var t = document.querySelector('.hotspot[data-state=target]');
@@ -268,6 +322,24 @@ window.__rc = {
   },
   restoreBackdrop: function () {
     var s = document.getElementById('__voidprobe');
+    if (s) { s.remove(); }
+    return true;
+  },
+  /** Take the hotspot layer out of the PICTURE without taking it out of the
+   *  DOM. The dots are shell elements painted in the accent, sitting over the
+   *  stage; check 8 measures canvas pixels and they are not canvas. Hidden
+   *  rather than removed so every dot read in that check still sees real
+   *  visibility — display:none changes nothing about which dots exist, where
+   *  they are, or what the renderer thinks. */
+  hideDots: function () {
+    var s = document.getElementById('__dotprobe') || document.createElement('style');
+    s.id = '__dotprobe';
+    s.textContent = '.hotspot{display:none !important;}';
+    document.head.appendChild(s);
+    return true;
+  },
+  showDots: function () {
+    var s = document.getElementById('__dotprobe');
     if (s) { s.remove(); }
     return true;
   },
@@ -363,21 +435,38 @@ def drag_horizontal(page, px=DRAG_PX, steps=DRAG_STEPS):
     canvas's pointer events, and only the browser's own input pipeline
     produces the sequence it expects.
 
-    Returns None on success, or a problem string if the press point is not
-    over the canvas (a hotspot dot parked on the stage centre would swallow
-    the press and the specimen would silently never turn — a harness fault
-    wearing the costume of a broken renderer).
+    Returns None on success, or a problem string if NO press point down the
+    middle of the stage is over the canvas (a hotspot dot parked on the press
+    point would swallow the press and the specimen would silently never turn —
+    a harness fault wearing the costume of a broken renderer).
+
+    The candidate list is new, and it is not a softening of that guard. This
+    used to press the stage centre and give up if anything covered it, which
+    was safe while the fixture had two anchors and neither projected near the
+    middle. A real specimen puts anchors wherever its structures are, each dot
+    carries a 48px touch area (§04), and check 2 now stops at six views
+    instead of two — so a covered centre is an ordinary event rather than a
+    freak one. Where the press lands does not affect the turn: OrbitControls
+    maps DELTA to azimuth and ignores the origin. If every candidate is
+    covered this still refuses to drag.
     """
     rect = page.eval("window.__rc.rect('.stage')")
     if not rect:
         return "no .stage to drag on"
     cx = rect["x"] + rect["w"] / 2.0
-    cy = rect["y"] + rect["h"] / 2.0
 
-    tag = page.eval("window.__rc.tagAt(%f, %f)" % (cx, cy))
-    if tag != "canvas":
-        return ("the stage centre (%.0f, %.0f) is covered by <%s>, not the "
-                "canvas — the drag would never reach the controls" % (cx, cy, tag))
+    cy, covered = None, []
+    for fraction in (0.5, 0.62, 0.38, 0.75, 0.25):
+        y = rect["y"] + rect["h"] * fraction
+        tag = page.eval("window.__rc.tagAt(%f, %f)" % (cx, y))
+        if tag == "canvas":
+            cy = y
+            break
+        covered.append("%.0f%%:<%s>" % (fraction * 100, tag))
+    if cy is None:
+        return ("every press point down the middle of the stage is covered by "
+                "something other than the canvas (%s) — the drag would never "
+                "reach the controls" % ", ".join(covered))
 
     page.send("Input.dispatchMouseEvent", {
         "type": "mousePressed", "x": cx, "y": cy,
@@ -409,10 +498,24 @@ def set_quality(page, word):
     return None
 
 
-def hotspot_count():
+def hotspot_ids():
+    """Every dot id the shell can draw for this specimen, in record order.
+
+    A dot's id is its TEXT: the shell numbers the hotspots by their position
+    in the specimen's own list ('01', '02', …), so the ids are derived from
+    the record's length and never written down here. Nothing in this file may
+    hardcode how many structures the heart has — that is content, and content
+    changes.
+    """
     import json
     with open(HEART, encoding="utf-8") as fh:
-        return len(json.load(fh)["hotspots"])
+        count = len(json.load(fh)["hotspots"])
+    return tuple("%02d" % (i + 1) for i in range(count))
+
+
+def ids_of(sample):
+    """The dot ids in a `dots()` sample, as a set — positions dropped."""
+    return frozenset(entry.split("@", 1)[0] for entry in sample)
 
 
 # ── the report ───────────────────────────────────────────────────────────
@@ -489,52 +592,148 @@ def check_renders(page, report):
     return ok
 
 
-def check_occlusion(page, report, want):
-    """2. Honest occlusion."""
+def check_occlusion(page, report, every):
+    """2. Honest occlusion.
+
+    WHAT THIS USED TO ASSERT, and why it was the fixture talking. Two things:
+    that the default view drew one dot per hotspot in the record, and that a
+    drag of roughly 180° left NO dot on the stage at all. Both held on the
+    generated test specimen — two anchors, on a convex form, both facing the
+    camera at rest and both behind it after half a turn — and both contradict
+    the feature on a real specimen. Stage 2's entire point is that an anchor
+    on the far side reports visible:false and the shell drops the dot; on a
+    deeply concave heart with fourteen anchors spread over its surface, about
+    half face the camera at any one moment and the other half do not. Seeing 7
+    of 14 IS the mechanism working, and 0 after a half turn would mean the far
+    side of the heart carries no structures — it carries the left atrium and
+    both pulmonary vessels. The old form was demanding the defect back.
+
+    What replaces it are three properties of the MECHANISM, which hold on any
+    specimen of any shape, and which a renderer that reported visible:true for
+    everything fails on every count:
+
+      * SOME ARE DRAWN AND SOME ARE NOT at the default view. Read against the
+        record's own count rather than a number written here. A specimen small
+        enough that every anchor could honestly face the camera at once is not
+        asked the strong form at all — the generated fixture declares two, and
+        this file must still hold against it if the GLB is ever removed.
+      * EVERY HOTSPOT IS REACHABLE BY ROTATION. A full turn in six steps, the
+        dot ids unioned. This is the one a student's learning actually rests
+        on: a structure that can never be brought into view cannot be
+        labelled, learned, or asked about in a retrieval round.
+      * THE TURN CHANGES WHAT IS ON THE STAGE. A clear majority of what was
+        visible must be gone by the half-turn sample, and at least one dot
+        that was not visible before must have arrived. Survivors are
+        legitimate on a real specimen and were impossible on the fixture: a
+        thin structure — the pulmonary artery, the pulmonary vein — has an
+        anchor that can be genuinely visible from front and back, which is
+        why this asks for a majority rather than for none.
+    """
     problems, details = [], []
+    total = len(every)
 
     at_default = settle(page)
-    details.append("default view: %d dot(s) — %s"
-                   % (len(at_default), ", ".join(at_default) or "none"))
-    if len(at_default) != want:
-        problems.append("expected %d dot(s) at the default view (one per "
-                        "hotspot in content/heart.json), found %d"
-                        % (want, len(at_default)))
+    details.append("default view: %d of %d dot(s) — %s"
+                   % (len(at_default), total, ", ".join(at_default) or "none"))
 
-    fault = drag_horizontal(page)
-    if fault:
-        problems.append("HARNESS: " + fault)
-        report.check(2, "honest occlusion", problems, details)
-        return
-
-    turned = settle(page)
-    details.append("after a %dpx drag (roughly 180°): %d dot(s)"
-                   % (DRAG_PX, len(turned)))
-    if turned:
+    # ── (a) some face the camera, some do not ─────────────────────────────
+    if not at_default:
         problems.append(
-            "%d dot(s) survived the turn (%s) — every anchor should be on the "
-            "far side of the specimen. A renderer that always reported "
-            "visible:true would look exactly like this."
-            % (len(turned), ", ".join(turned)))
+            "not one of the %d hotspot(s) has a dot at the default view — the "
+            "anchors are not reaching the screen at all" % total)
+    elif total >= PARTIAL_MIN_HOTSPOTS and len(at_default) >= total:
+        problems.append(
+            "all %d hotspot(s) have a dot at the default view. The anchors sit "
+            "over structures on every side of a solid specimen, so the far "
+            "ones must report visible:false — a renderer that reported "
+            "visible:true for everything looks exactly like this." % total)
+    if total < PARTIAL_MIN_HOTSPOTS:
+        details.append(
+            "the specimen declares %d hotspot(s), too few to ask that some be "
+            "hidden while others are shown — only 'at least one is visible' is "
+            "asserted at the default view" % total)
+
+    # ── (b) and (c), off one sweep ────────────────────────────────────────
+    # The half-turn sample is the halfway point of the full turn, so the two
+    # properties come out of the same journey rather than out of two.
+    union, per_step, half_turn = set(ids_of(at_default)), [len(at_default)], None
+    for step in range(SWEEP_STEPS):
+        fault = drag_horizontal(page, px=SWEEP_PX)
+        if fault:
+            problems.append("HARNESS: " + fault)
+            break
+        sample = settle(page)
+        union |= ids_of(sample)
+        per_step.append(len(sample))
+        if step + 1 == SWEEP_STEPS // 2:
+            half_turn = sample
+    details.append("a full turn in %d steps of %.0fpx — dots at each: %s"
+                   % (SWEEP_STEPS, SWEEP_PX,
+                      " → ".join(str(n) for n in per_step)))
+
+    missing = sorted(set(every) - union)
+    if missing:
+        problems.append(
+            "%d of %d hotspot(s) never appeared anywhere in a full turn: %s. A "
+            "structure a student cannot bring into view cannot be labelled, "
+            "learned, or asked about." % (len(missing), total, ", ".join(missing)))
+    else:
+        details.append("every one of the %d hotspot(s) appears somewhere in the "
+                       "turn — none is unreachable" % total)
+
+    if half_turn is None:
+        problems.append("the sweep never reached its halfway sample, so what a "
+                        "half turn does to the stage was not measured")
+    else:
+        before, after = ids_of(at_default), ids_of(half_turn)
+        survived, fresh = sorted(before & after), sorted(after - before)
+        if len(survived) * 2 > len(before):
+            problems.append(
+                "%d of the %d dot(s) visible at the default view were STILL "
+                "visible after a half turn (%s) — the far side is not being "
+                "occluded" % (len(survived), len(before), ", ".join(survived)))
+        if not fresh:
+            problems.append(
+                "the half turn brought no new dot into view (%s) — the same "
+                "set at every angle is what a renderer reporting visible:true "
+                "for everything would draw"
+                % (", ".join(sorted(after)) or "nothing on the stage"))
+        details.append(
+            "half turn: %d of %d survived (%s) · %d arrived (%s)"
+            % (len(survived), len(before), ", ".join(survived) or "none",
+               len(fresh), ", ".join(fresh) or "none"))
 
     reset_view(page)
     back = settle(page)
-    details.append("after Reset view: %d dot(s)" % len(back))
-    if len(back) != want:
-        problems.append("Reset brought back %d dot(s), expected %d"
-                        % (len(back), want))
+    if back != at_default:
+        problems.append("Reset did not bring the default view back: %s → %s"
+                        % (list(at_default), list(back)))
+    else:
+        details.append("Reset returns the default view exactly (%d dot(s))"
+                       % len(back))
 
     report.check(2, "honest occlusion", problems, details)
 
 
-def check_reset(page, report, want):
-    """3. Reset is exact."""
+def check_reset(page, report, default_view):
+    """3. Reset is exact.
+
+    `default_view` is a PRECONDITION and nothing more: everything this check
+    asserts, it asserts against a baseline it takes itself, a line below. It
+    used to read "one dot per hotspot in the record", which was the generated
+    fixture's arithmetic (see check 2) and says nothing about where the camera
+    is. What stands in its place is the dot set the default view actually drew
+    once, right after check 1 — measured, so it stays true of whatever
+    specimen is loaded, and still fails loudly if some earlier check left the
+    camera somewhere else.
+    """
     problems, details = [], []
 
     baseline = settle(page)
-    if len(baseline) != want:
-        problems.append("not at the default view before the test (%d dot(s), "
-                        "expected %d)" % (len(baseline), want))
+    if ids_of(baseline) != ids_of(default_view):
+        problems.append("not at the default view before the test: dots %s, "
+                        "expected %s"
+                        % (sorted(ids_of(baseline)), sorted(ids_of(default_view))))
 
     # (a) reset from the default view changes nothing
     reset_view(page)
@@ -718,24 +917,26 @@ def check_tiers(page, report, shot_a, shot_c):
     report.check(5, "live tier change, no remount", problems, details)
 
 
-def check_parts(page, report, want):
+def check_parts(page, report, default_view):
     """7. Isolate and layers take real geometry off the stage (MRB-188).
 
     The failure this is written against is a control that steps a counter
     while the picture stays the same. So every assertion below is about
-    something OUTSIDE the tool's own bookkeeping: how many hotspot dots the
-    shell is drawing, which is downstream of the renderer's occlusion test and
-    of part visibility, and never of the step number.
+    something OUTSIDE the tool's own bookkeeping: which hotspot dots the shell
+    is drawing, which is downstream of the renderer's occlusion test and of
+    part visibility, and never of the step number.
 
-    On the generated test specimen every stand-in anchor sits on the outer
-    shell (the raycast that places them starts outside the form and stops at
-    the first surface it meets), so:
+    Occlusion is recomputed against whatever is still drawn (project.ts
+    consults isShown precisely so a part the tool switched off stops hiding
+    what is behind it), so taking geometry off the stage MUST change which
+    dots are visible. That is the line a counter cannot fake, and it holds
+    whatever shape the specimen is — see the note at the layers assertion for
+    what it replaced and why the old form belonged to the fixture.
 
-      * isolate the shell  ⇒ the dots stay, the interior goes
-      * isolate anything else, or peel the outer layer ⇒ the shell is not
-        drawn, so every dot on it goes with it
-
-    That second line is the one that cannot be faked by a counter.
+    `default_view` is the dot set the default view drew, measured once after
+    check 1. It is used here only as a precondition and as the thing the tools
+    must restore; it replaces a hard "one dot per hotspot in the record",
+    which was the fixture's arithmetic (see check 2).
     """
     problems, details = [], []
 
@@ -756,9 +957,10 @@ def check_parts(page, report, want):
     details.append("the asset declares %d drawable part(s)" % whole)
 
     at_start = settle(page)
-    if len(at_start) != want:
-        problems.append("not at the default view before the test (%d dot(s), "
-                        "expected %d)" % (len(at_start), want))
+    if ids_of(at_start) != ids_of(default_view):
+        problems.append("not at the default view before the test: dots %s, "
+                        "expected %s"
+                        % (sorted(ids_of(at_start)), sorted(ids_of(default_view))))
 
     # ── isolate: step through every declared part and back ────────────────
     seen_labels, dots_per_step, shown_per_step = [], [], []
@@ -810,9 +1012,10 @@ def check_parts(page, report, want):
 
     # ── layers: peel the outer level ──────────────────────────────────────
     restored = settle(page)
-    if len(restored) != want:
-        problems.append("the dots did not come back with the whole specimen "
-                        "(%d, expected %d)" % (len(restored), want))
+    if ids_of(restored) != ids_of(default_view):
+        problems.append("the dots did not come back with the whole specimen: "
+                        "%s, expected %s"
+                        % (sorted(ids_of(restored)), sorted(ids_of(default_view))))
 
     if not page.eval("window.__rc.rail('Layers')"):
         problems.append("no Layers button on the rail")
@@ -821,18 +1024,39 @@ def check_parts(page, report, want):
     time.sleep(0.35)
     peeled_parts = page.eval("window.__rc.partsShown()")
     peeled_layer = page.eval("window.__rc.ds('layer')")
-    peeled_dots = len(dots(page))
+    peeled_dot_set = dots(page)
+    peeled_dots = len(peeled_dot_set)
     if peeled_parts is None or peeled_parts >= whole:
         problems.append("Layers left %r of %d part(s) drawn — nothing was "
                         "peeled" % (peeled_parts, whole))
     if peeled_layer in (None, "off"):
         problems.append("Layers reports %r — the tool did not engage"
                         % peeled_layer)
-    if peeled_dots >= len(restored):
+    # The assertion is that the HOTSPOT LAYER MOVED, not that it shrank.
+    #
+    # It used to demand a decrease, on the premise that "every anchor sits on
+    # the outer shell, so removing that layer must remove them". That premise
+    # belonged to the generated fixture — concentric shells, with stand-in
+    # anchors placed by a raycast from outside that always stopped on the
+    # outermost surface. The acquired heart is not concentric: nine of its
+    # twelve parts are at depth 0, side by side, and its anchors are authored.
+    # Peeling the outer level there UNCOVERS the right ventricle and the two
+    # atrioventricular valves, so more dots become visible, not fewer — which
+    # is MRB-188's stated design (project.ts consults isShown precisely so a
+    # part the tool switched off stops occluding what is behind it), not a
+    # regression.
+    #
+    # What survives fixture-independently is the thing the check exists for: a
+    # control that ticks a counter while the picture stays the same. Occlusion
+    # is recomputed against the reduced geometry, so the set of visible dots
+    # MUST differ after a peel. That a counter cannot fake either.
+    if peeled_dot_set == restored:
         problems.append(
-            "peeling the outer layer left %d dot(s), same or more than the %d "
-            "before it. Every anchor sits on the outer shell, so removing that "
-            "layer must remove them." % (peeled_dots, len(restored)))
+            "peeling the outer layer left the hotspot layer identical (%d "
+            "dot(s) at the same places). Occlusion is recomputed against what "
+            "is still drawn, so a real peel must change which dots are "
+            "visible — this is what a counter cannot fake."
+            % peeled_dots)
     details.append("layers: %r, %s of %d part(s) drawn, %d dot(s) (was %d)"
                    % (peeled_layer, peeled_parts, whole, peeled_dots,
                       len(restored)))
@@ -843,12 +1067,13 @@ def check_parts(page, report, want):
     if page.eval("window.__rc.partsShown()") != whole:
         problems.append("Reset left the specimen taken apart — a half-restored "
                         "view reads as a broken control")
-    if len(after_reset) != want:
-        problems.append("Reset brought back %d dot(s), expected %d"
-                        % (len(after_reset), want))
+    if ids_of(after_reset) != ids_of(default_view):
+        problems.append("Reset brought back dots %s, expected the default "
+                        "view's %s"
+                        % (sorted(ids_of(after_reset)), sorted(ids_of(default_view))))
     else:
-        details.append("Reset restores the whole specimen and all %d dot(s)"
-                       % want)
+        details.append("Reset restores the whole specimen and the default "
+                       "view's %d dot(s)" % len(after_reset))
 
     report.check(7, "isolate and layers (MRB-188)", problems, details)
 
@@ -1028,7 +1253,9 @@ def check_section(page, report, shots):
         is nothing like the specimen's own near-neutral surface, so counting
         saturated red-orange pixels answers "is there a cut face" directly.
         Asserted in both directions: many with the cut engaged, essentially
-        none without it.
+        none without it. The hotspot dots are painted in that same accent and
+        are not part of the render, so they are hidden for every capture here
+        — see `shoot`, which is where that was got wrong and put right.
       * THE CAP HAS NO HOLE IN IT. The canvas is transparent — Design's room
         is a CSS gradient behind it — so the stage background is swapped for
         magenta and any background pixel ENCLOSED by specimen pixels on its
@@ -1036,11 +1263,15 @@ def check_section(page, report, shots):
         legitimately narrows the silhouette wherever the near half bulged
         further than the far half, and an earlier version of this check called
         that a defect. It is not one; a hole in the middle of the cut face is.
-      * INTERIOR GEOMETRY BECOMES VISIBLE. Proven without naming a colour:
-        with the specimen whole, isolating the outer shell draws the SAME
-        picture as drawing everything, because everything else is inside it.
-        Engage the cut and that stops being true — which is what "the interior
-        is now visible" means, stated as something measurable.
+      * INTERIOR GEOMETRY BECOMES VISIBLE. Occlusion consults the clipping
+        plane (project.ts), so geometry the cut took away stops hiding what
+        was behind it — and engaging the cut must therefore change WHICH
+        hotspot dots are visible. That holds whatever shape the specimen is.
+        It replaces an earlier version which isolated the outermost part and
+        argued it must draw the same picture as the whole specimen "because
+        everything else is inside it": true of the generated fixture, false
+        of the acquired heart, whose nine depth-0 parts sit side by side.
+        See claim (d) below for the full note.
 
     All three are repeated at every tier, because the Tier A path renders
     through a post-processing composer with a render target of its own, and a
@@ -1074,9 +1305,31 @@ def check_section(page, report, shots):
     page.eval("window.__rc.voidBackdrop()")
 
     def shoot(name):
+        """Capture the STAGE, which means the canvas and not the shell on top
+        of it.
+
+        The hotspot layer is hidden for the capture and restored the instant
+        it is taken. It is not part of the render, and every question this
+        check asks is about canvas pixels — but the dots are DOM elements
+        filled with `#E4572E`, which is the accent family the cap is drawn in,
+        so `_is_cut_face` counted them as cut face. On the two-hotspot fixture
+        that was noise beneath every threshold. The acquired heart's fourteen
+        measured 593 cut-face pixels with NO cut engaged, IDENTICALLY at all
+        three tiers while the render itself differed — the tell that the count
+        was never coming from the canvas at all. The thresholds are not the
+        problem and are untouched: a real cut still lands 6255–6267 against
+        them. The instrument was reading the wrong surface.
+
+        Hidden, not removed: the elements stay in the DOM at their real
+        positions, so `dots()` either side of this call still sees exactly
+        which hotspots the renderer holds visible — which claim (d) depends on.
+        """
         path = os.path.join(shots, name + ".png")
+        page.eval("window.__rc.hideDots()")
+        time.sleep(DOT_HIDE_SETTLE)
         page.screenshot(path, width=VIEWPORT[0], height=VIEWPORT[1], full_page=False)
         page.set_viewport(*VIEWPORT)
+        page.eval("window.__rc.showDots()")
         rows = read_png(path)[2]
         return _pixels(rows, inner), rows
 
@@ -1090,6 +1343,7 @@ def check_section(page, report, shots):
         reset_view(page)
         settle(page)
         whole, whole_rows = shoot("t%s-whole" % tier)
+        whole_dots = dots(page)
         drawn = {p for p, rgb in whole.items() if not _is_void(rgb)}
         face_before = sum(1 for rgb in whole.values() if _is_cut_face(rgb))
 
@@ -1115,7 +1369,8 @@ def check_section(page, report, shots):
                 "below would be measuring nothing" % (tier, len(drawn)))
             continue
 
-        # ── shell alone, no cut: must be the same picture ─────────────────
+        # ── shell alone, no cut ───────────────────────────────────────────
+        whole_parts = page.eval("window.__rc.partsShown()") or 1
         page.eval("window.__rc.rail('Isolate')")
         time.sleep(SETTLE_GAP)
         shell, _ = shoot("t%s-shell" % tier)
@@ -1127,14 +1382,24 @@ def check_section(page, report, shots):
         shell_cut, _ = shoot("t%s-shell-cut" % tier)
 
         # ── whole specimen, cut ───────────────────────────────────────────
-        page.eval("window.__rc.rail('Isolate')")   # step off the shell…
-        for _ in range(4):
-            page.eval("window.__rc.rail('Isolate')")  # …round to whole again
+        #
+        # Step round until isolate reports 'off' rather than clicking a fixed
+        # five times. Five was the generated fixture's part count; the heart
+        # declares twelve, so the fixed count stopped three parts short of
+        # home and every measurement after it was taken of a single isolated
+        # structure. Bounded by the part count the stage itself reports, plus
+        # one for the step back to whole, so a control that never returns
+        # fails here instead of spinning.
+        for _ in range(whole_parts + 1):
+            page.eval("window.__rc.rail('Isolate')")
+            if page.eval("window.__rc.ds('isolate')") == "off":
+                break
         time.sleep(0.6)
         if page.eval("window.__rc.ds('isolate')") != "off":
             problems.append("tier %s: could not get back to the whole specimen"
                             % tier)
         cut, cut_rows = shoot("t%s-cut" % tier)
+        cut_dots = dots(page)
 
         face_after = sum(1 for rgb in cut.values() if _is_cut_face(rgb))
         holes_before = _interior_holes(whole_rows, inner)
@@ -1168,19 +1433,35 @@ def check_section(page, report, shots):
                 "— the plane is not cutting anything"
                 % (tier, changed, len(drawn)))
 
-        # (d) the interior was hidden before, and is not after
-        if same_before > max(noise * 3, len(drawn) * 0.01):
+        # (d) the cut exposed geometry that was hidden before it
+        #
+        # This claim used to be made by isolating the outermost part and
+        # arguing that on a whole specimen that must draw the SAME picture as
+        # drawing everything, "because everything else is inside it". That was
+        # true of the generated fixture — one shell around three chambers and
+        # a torus — and it is false of the acquired heart, where nine of the
+        # twelve parts sit at depth 0 side by side. Isolating the first there
+        # draws a right atrium alone, which legitimately differs from the
+        # whole heart by thousands of pixels, so the old pair failed on a
+        # correct renderer and a correct asset.
+        #
+        # The claim itself is still worth making; it needed a measurement that
+        # assumes no nesting. project.ts consults the clipping plane when it
+        # decides occlusion, precisely so geometry the cut took away stops
+        # hiding what was behind it. So engaging the cut MUST change which
+        # hotspot dots are visible, on any specimen of any shape. A cut that
+        # drew a plane and reached nothing leaves that set exactly alone —
+        # which is the same class of defect the old pair was written against,
+        # caught without a premise about the asset.
+        #
+        # same_before / same_after are kept in the details line below as a
+        # REPORT. They are informative on any specimen and assert nothing.
+        if cut_dots == whole_dots:
             problems.append(
-                "tier %s: isolating the outer shell changed %d pixel(s) with no "
-                "cut engaged, against a %d-pixel noise floor — the interior was "
-                "already visible, so the line below would prove nothing"
-                % (tier, same_before, noise))
-        if same_after < max(noise * 3, len(drawn) * 0.02):
-            problems.append(
-                "tier %s: with the cut engaged, drawing the whole specimen and "
-                "drawing only its outer shell are still the same picture (%d "
-                "pixel(s) differ) — the cut exposed no interior geometry"
-                % (tier, same_after))
+                "tier %s: the cut left the hotspot layer identical (%d dot(s) "
+                "at the same places) — occlusion is recomputed against the "
+                "clipping plane, so a cut that reaches real geometry must "
+                "change which dots are visible" % (tier, len(cut_dots)))
 
         details.append(
             "tier %s: %d specimen px · noise floor %d · cut face %d → %d · "
@@ -1206,6 +1487,9 @@ def check_section(page, report, shots):
                  problems, details)
 
 
+TITLE_10 = "the round frames its target before asking (MRB-191)"
+
+
 def check_framing(page, report):
     """10. The round frames its target before asking (ruling on MRB-191).
 
@@ -1215,45 +1499,130 @@ def check_framing(page, report):
     screen: not a hard question, an unanswerable one, and indistinguishable
     from the app being broken.
 
-    So this drives the worst case deliberately. The specimen is turned roughly
-    180° first — check 2 already proves that leaves no dot visible at all —
-    and only then is the round opened. The pulsing 52px marker has to be on
-    screen, inside the stage, when the prompt appears.
+    So this drives the worst case deliberately, and the worst case has to be
+    ESTABLISHED rather than hoped for. That is what the guard below is: a
+    round opened from a view where the target already happened to be on screen
+    proves nothing at all.
 
-    Turning FIRST is the whole point. Opening the round from the default view
-    would pass whether or not anything framed anything.
+    WHAT THE GUARD USED TO SAY, and why it was the fixture talking: turn the
+    specimen roughly 180° and require that NO dot at all is left on the stage,
+    on the strength of check 2's old claim that a half turn hides everything.
+    True of the generated fixture, whose two anchors were both on the near
+    side. False of a real specimen: the acquired heart's far side carries the
+    left atrium and both pulmonary vessels, so a half turn ends with three
+    dots on screen and the guard refused to let the check run at all.
+
+    "No dot is visible" was never what this needs. What it needs is that THE
+    TARGET is not visible before the round opens, and that is what is measured
+    now — on the target itself, which is strictly stronger than the old form
+    (a view with dots on it but not the target's would have been rejected
+    before, and is the ordinary case here).
+
+    The target is not named anywhere a driver can read: the marker's glyph is
+    '?', its aria-label is "Highlighted structure", and the panel asks the
+    question without answering it. So the room is entered THREE times, and the
+    order is the whole design:
+
+      1. open a round and give up on its first question, which is the only
+         affordance that says out loud which structure was being asked about;
+      2. open a round and turn until that round's own marker is off the stage
+         — the camera survives leaving the room (App.tsx keys the stage across
+         the switch precisely so it does), so the view found here is the view
+         the next round opens from;
+      3. open a round from THERE, and require the marker back on screen and
+         inside the stage. Then give up on that question too, and require the
+         same structure as step 1 — so "the round asks the same thing first
+         each time", which is what carries step 2's measurement into step 3,
+         is asserted here rather than assumed of the queue.
     """
     problems, details = [], []
 
+    def leave():
+        page.eval("window.__rc.leaveRetrieval()")
+        time.sleep(0.3)
+
+    def open_round(where):
+        if not page.eval("window.__rc.enterRetrieval()"):
+            problems.append("no Retrieve control in the header (%s)" % where)
+            return False
+        time.sleep(FRAME_MOVE)  # the framing move is animated: 620ms, eased
+        settle(page)
+        return True
+
+    def give_up(where):
+        """Reveal the answer, and read it. Advances the round, so it is always
+        the last thing done with one."""
+        if not page.eval("window.__rc.reveal()"):
+            problems.append(
+                "no reveal control in the retrieval panel (%s) — the target's "
+                "identity cannot be read, and without it the precondition "
+                "below cannot be established" % where)
+            return None
+        time.sleep(0.4)
+        return page.eval("window.__rc.revealedLabel()")
+
+    # ── 1. which structure does a round ask about first? ──────────────────
+    # This opening asserts NOTHING and must not: it happens at the default
+    # view, where the target may already be on screen.
     reset_view(page)
-    before_turn = settle(page)
-    details.append("default view: %d dot(s)" % len(before_turn))
-
-    fault = drag_horizontal(page)
-    if fault:
-        problems.append("HARNESS: " + fault)
-        report.check(10, "the round frames its target", problems, details)
-        return
-    turned = settle(page)
-    if turned:
-        problems.append(
-            "HARNESS: the %dpx drag left %d dot(s) on screen, so the target "
-            "may not have been hidden to begin with and this check would "
-            "prove nothing" % (DRAG_PX, len(turned)))
-        report.check(10, "the round frames its target", problems, details)
-        return
-    details.append("after a %dpx turn: 0 dot(s) — the far side is genuinely "
-                   "not visible" % DRAG_PX)
-
-    if not page.eval("window.__rc.enterRetrieval()"):
-        problems.append("no Retrieve control in the header")
-        report.check(10, "the round frames its target", problems, details)
-        return
-
-    # The move is animated on purpose (620ms, eased): give it time to land,
-    # then let the dots settle.
-    time.sleep(1.4)
     settle(page)
+    if not open_round("learning the target"):
+        report.check(10, TITLE_10, problems, details)
+        return
+    first = give_up("learning the target")
+    leave()
+    if not first:
+        problems.append("the round revealed no structure name, so there is "
+                        "nothing to establish a precondition about")
+        report.check(10, TITLE_10, problems, details)
+        return
+    details.append("a round opens on %r" % first)
+
+    # ── 2. turn until THAT structure's marker is off the stage ────────────
+    if not open_round("finding a view that hides the target"):
+        report.check(10, TITLE_10, problems, details)
+        return
+    if not page.eval("window.__rc.target()"):
+        problems.append(
+            "the round opened with NO target marker on the stage, from the "
+            "DEFAULT view — the easy case. Spec §6 says a structure is "
+            "highlighted, and an invisible highlight is not a highlight.")
+        leave()
+        report.check(10, TITLE_10, problems, details)
+        return
+
+    hidden_after = None
+    for quarter in range(QUARTER_TURNS):
+        fault = drag_horizontal(page, px=QUARTER_PX)
+        if fault:
+            problems.append("HARNESS: " + fault)
+            break
+        settle(page)
+        if not page.eval("window.__rc.target()"):
+            hidden_after = quarter + 1
+            break
+    if hidden_after is None:
+        problems.append(
+            "HARNESS: %r kept its marker on screen through %d quarter-turns, "
+            "so there is no view here from which the round's own target is "
+            "hidden, and framing it would prove nothing. A structure thin "
+            "enough to be genuinely visible from every azimuth would read "
+            "exactly like this." % (first, QUARTER_TURNS))
+        leave()
+        report.check(10, TITLE_10, problems, details)
+        return
+    still_up = len(dots(page))
+    details.append(
+        "after %d quarter-turn(s) the marker for %r is gone while %d other "
+        "dot(s) are still on the stage — the specimen is in view, the TARGET "
+        "is not, which is the precondition this check needs"
+        % (hidden_after, first, still_up))
+
+    # ── 3. open a round from there: the marker must be brought back ───────
+    leave()  # the camera survives the mode switch; this view is kept
+    if not open_round("the claim"):
+        report.check(10, TITLE_10, problems, details)
+        return
 
     target = page.eval("window.__rc.target()")
     if not target:
@@ -1278,13 +1647,25 @@ def check_framing(page, report):
                        % (target["w"], target["x"], target["y"],
                           target["inside"], target["ping"]))
 
+    # ── and it is the same structure that was measured absent ─────────────
+    again = give_up("the claim")
+    if again != first:
+        problems.append(
+            "the two rounds did not open on the same structure (%r then %r), "
+            "so the marker measured absent above and the marker framed here "
+            "are not necessarily the same one, and the precondition does not "
+            "carry" % (first, again))
+    else:
+        details.append("both rounds open on %r, so the structure whose marker "
+                       "was measured absent is the structure framed here"
+                       % first)
+
     # Back out of the room so the checks after this one start where they expect.
-    page.eval("window.__rc.enterRetrieval()")
+    leave()
     page.eval("window.__rc.rail('Reset view')")
     time.sleep(0.5)
 
-    report.check(10, "the round frames its target before asking (MRB-191)",
-                 problems, details)
+    report.check(10, TITLE_10, problems, details)
 
 
 def three_chunks():
@@ -1545,8 +1926,18 @@ def serve_dist_as_3d(prefix, strip_glb=False):
     """Serve the built app under /3d/ so its absolute asset URLs resolve.
 
     The healthy build is symlinked (3d_parity.py's approach — nothing is
-    copied, nothing can drift). The failure build is a real copy with the
-    specimen GLB removed: the real dist/ is never touched.
+    copied, nothing can drift). The failure build is a real copy with EVERY
+    .glb removed: the real dist/ is never touched.
+
+    Every, not one named file. This used to delete `assets/_test-specimen.glb`
+    by name, which was the only mesh in the build while nothing had been
+    acquired. The heart's real mesh landing (MRB-187) broke that silently and
+    in the worst possible way: `_test-specimen.glb` is still copied out of
+    public/, so the guard below still found it and the deletion still
+    "worked" — but the app had stopped asking for it and loaded heart.glb
+    perfectly well, so the check that proves a missing mesh routes to the flat
+    stage was quietly proving nothing at all. Removing whatever GLBs are there
+    is the only version that cannot rot as specimens are acquired.
 
     Returns (url, cleanup).
     """
@@ -1554,13 +1945,17 @@ def serve_dist_as_3d(prefix, strip_glb=False):
     target = os.path.join(root, "3d")
     if strip_glb:
         shutil.copytree(DIST, target)
-        glb = os.path.join(target, SPECIMEN_GLB)
-        if not os.path.exists(glb):
+        assets = os.path.join(target, SPECIMEN_ASSETS)
+        removed = []
+        for name in sorted(os.listdir(assets)) if os.path.isdir(assets) else []:
+            if name.endswith(".glb"):
+                os.remove(os.path.join(assets, name))
+                removed.append(name)
+        if not removed:
             shutil.rmtree(root, ignore_errors=True)
             raise RuntimeError(
-                "cannot build the failure case: %s is not in the build, so "
-                "removing it would prove nothing" % SPECIMEN_GLB)
-        os.remove(glb)
+                "cannot build the failure case: the build contains no .glb at "
+                "all, so removing one would prove nothing")
     else:
         os.symlink(DIST, target)
 
@@ -1647,8 +2042,8 @@ def main():
         print("NO RESULTS — nothing was measured.")
         return 1
 
-    want = hotspot_count()
-    print("  content/heart.json declares %d hotspot(s)\n" % want)
+    every = hotspot_ids()
+    print("  content/heart.json declares %d hotspot(s)\n" % len(every))
 
     report = Report()
     shots = tempfile.mkdtemp(prefix="st-render-shots-")
@@ -1669,11 +2064,19 @@ def main():
             inject(page)
 
             if check_renders(page, report):
-                check_occlusion(page, report, want)
-                check_reset(page, report, want)
+                # The default view's own dot set, measured once, before
+                # anything has touched the camera. Checks 3 and 7 need a "we
+                # are where the camera starts" precondition and used to get it
+                # from a count off the record — which was the generated
+                # fixture's arithmetic, not a fact about the camera (check 2
+                # carries the full note). Measured, it stays true of whatever
+                # specimen is loaded.
+                default_view = settle(page)
+                check_occlusion(page, report, every)
+                check_reset(page, report, default_view)
                 check_autorotate(page, report)
                 check_tiers(page, report, shot_a, shot_c)
-                check_parts(page, report, want)
+                check_parts(page, report, default_view)
                 check_section(page, report, shots)
                 check_framing(page, report)
                 timing = frame_timing(page)

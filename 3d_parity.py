@@ -35,7 +35,13 @@ the token file on every vitest run — it is not duplicated here):
      the reference draws exist, in the reference's containment and state:
      library / stage / panel composition, the retrieval room's inversions
      (library removed, hatch strip, one target + inert dots), the tablet
-     drawer, the phone sheet detents, the flat stage's reduced rail.
+     drawer, the phone sheet detents, the flat stage's reduced rail. It also
+     holds the two invariants that let a SPECIMEN GROW without deforming the
+     shell: on desktop the page stays one viewport tall however many hotspots
+     the record carries, and every rendered caption is whole and unbroken.
+     Both of those were defects before they were rows — heart.json went from
+     2 hotspots to 14, the page became 1942px inside a 900px viewport, and
+     the library caption started reading VIEWING · 14 STRUCTU…
 
   C. COMPUTED STYLE (browser).  A real Chrome loads the BUILT app (dist/)
      and resolved styles are compared against the reference's values:
@@ -125,6 +131,21 @@ is tolerated; a mismatch outside this list is a failure.
        (8.83:1 on ground). Same reconciliation logic as entries 1–4, but
        an addition rather than a substitution, so the sweep in layer A
        cannot ban the old value — #E4572E remains the live accent.
+  17.  The live specimen's library caption wraps to a SECOND LINE, so that
+       card stands one row taller than the coming-soon cards beneath it. The
+       reference draws a 3-row library whose captions are a system name and
+       nothing else — one line each, every card the same height — because the
+       reference has no structure count to carry. The app does: MRB-193's
+       key-stage ruling makes the count per-viewer (a KS3 student is offered
+       nine of the heart's fourteen structures), and the caption is where the
+       viewer is told what they will actually find before they open it. A
+       card promising fourteen and opening onto nine is the defect that
+       ruling exists to prevent, so the count is not optional furniture that
+       could be dropped to keep the rows even. Truncating it instead —
+       VIEWING · 14 STRUCTU… — deleted precisely the count, which is why the
+       nowrap that made it fit is gone. Not compressed, not abbreviated: the
+       uneven row is the accepted cost, and the caption is now watched by
+       Layer B's metaIntegrity row.
 
 Provenance for every value in the expectation tables below is the frozen
 reference itself — section and line cited in each screen's comment.
@@ -620,6 +641,98 @@ window.__st = {
     }
     return out;
   },
+  /** The document's own scroll extent against the viewport. */
+  pageHeight: function () {
+    return {
+      body: document.body.scrollHeight,
+      doc: document.documentElement.scrollHeight,
+      vh: window.innerHeight,
+      appH: Math.round(
+        (document.querySelector('.app') || document.body)
+          .getBoundingClientRect().height),
+      panelScrolls: (function () {
+        var el = document.querySelector('.panel__scroll');
+        return el ? el.scrollHeight > el.clientHeight + 1 : null;
+      })()
+    };
+  },
+  /** Every .libcard__meta: is it whole, and does it wrap between words only?
+   *
+   *  MRB-186 asked for exactly this on the RECORD label column and noted the
+   *  parity gate had nothing watching it. This is that watch, pointed at the
+   *  library caption — which broke the same way from the other end: with
+   *  `white-space: nowrap` the caption did not split a word, it silently
+   *  DELETED one, VIEWING · 14 STRUCTU…, and what it deleted was the
+   *  structure count, the single thing that caption exists to tell the
+   *  viewer (MRB-193: a card promising fourteen structures must not open
+   *  onto nine).
+   *
+   *  WHAT IT CAN CATCH
+   *    a. Truncation: rendered content wider than the box that holds it.
+   *       True whether or not an ellipsis is drawn, so `overflow: hidden`
+   *       without `text-overflow` — a silent clip — fails the same way.
+   *    b. A break that falls inside a word, measured off the REAL line boxes
+   *       one character at a time. Not a string-length guess: a guess would
+   *       need the font metrics this is measuring, and would go wrong the
+   *       first time the tracking or the webfont changed.
+   *    c. A computed wrap property that licenses (b) even where today's
+   *       string happens to fit — `overflow-wrap` and `word-break` both
+   *       inherit, so this can be handed in from an ancestor.
+   *
+   *  WHAT IT CANNOT CATCH
+   *    * Composition. That the live card now stands one line taller than the
+   *      coming-soon cards is asserted nowhere and cannot be: whether that
+   *      reads well is Mide's eye at localhost:8899/3d/, not a measurement.
+   *    * A break that is legal but reads badly — "· 14" left stranded at the
+   *      end of a line breaks no word and passes here.
+   *    * Text hidden by an ANCESTOR's clipping rather than the caption's own
+   *      overflow. (b) walks this element's line boxes, not its visibility
+   *      inside .library__list.
+   *    * Anything at all before the mono webfont lands, which is why the
+   *      driver waits on document.fonts before any of this is measured. */
+  metaIntegrity: function () {
+    var out = [];
+    var AFTER_OK = '-‐‑‒–—―­/​';
+    var els = document.querySelectorAll('.libcard__meta');
+    var range = document.createRange();
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var cs = getComputedStyle(el);
+      if (cs.display === 'none' || cs.visibility === 'hidden') { continue; }
+      var rec = {
+        text: (el.textContent || '').trim(),
+        over: Math.round(el.scrollWidth - el.clientWidth),
+        ws: cs.whiteSpace, ow: cs.overflowWrap, wb: cs.wordBreak,
+        lines: 1, split: null
+      };
+      var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null);
+      var node, tops = {};
+      while ((node = walker.nextNode())) {
+        var s = node.nodeValue || '';
+        var prevTop = null, prevCh = null;
+        for (var j = 0; j < s.length; j++) {
+          var ch = s.charAt(j);
+          range.setStart(node, j);
+          range.setEnd(node, j + 1);
+          var rects = range.getClientRects();
+          if (!rects.length) { prevTop = null; prevCh = ch; continue; }
+          var top = Math.round(rects[0].top * 10) / 10;
+          tops[top] = true;
+          if (prevTop !== null && top > prevTop + 1
+              && /\S/.test(ch) && prevCh !== null && /\S/.test(prevCh)
+              && AFTER_OK.indexOf(prevCh) === -1 && !rec.split) {
+            rec.split = (s.slice(0, j).split(/\s/).pop() || '')
+              + ' / ' + (s.slice(j).split(/\s/)[0] || '');
+          }
+          prevTop = top;
+          prevCh = ch;
+        }
+      }
+      rec.lines = Object.keys(tops).length || 1;
+      out.push(rec);
+    }
+    return out;
+  },
   order: function (parent, sels) {
     var p = document.querySelector(parent);
     if (!p) { return null; }
@@ -652,6 +765,82 @@ def _content_counts():
         "library": 8,
         "soon": 7,
     }
+
+
+# Screens driven at a desktop viewport. On these the page is exactly one
+# screen tall and the panel scrolls inside itself; tablet and phone are absent
+# deliberately, because below 1024 the whole column scrolls with the document
+# and that is the design, not a defect (studio.css, the two max-width blocks).
+DESKTOP_SCREENS = {"s01", "s01open", "s01narrow", "s02", "s06"}
+
+
+def check_page_height(page, screen):
+    """The specimen's hotspot count must not lengthen the page.
+
+    The info panel renders one structure chip per hotspot, so its height IS
+    the content record's size. heart.json going from 2 hotspots to 14 put
+    body.scrollHeight at 1942px inside a 900px viewport — the panel stretched
+    the grid row, the row stretched .main, and .main stretched an .app whose
+    only height rule was a `min-height` floor. Nothing was watching, and the
+    next specimen would have stretched it further.
+    """
+    m = page.eval("window.__st.pageHeight()")
+    if not m:
+        return ["%s: could not measure the page against the viewport" % screen]
+    grew = max(m["body"], m["doc"]) - m["vh"]
+    if grew <= 2:
+        return []
+    return ["%s: the page scrolls — %dpx of content in a %dpx viewport (%dpx "
+            "over), with .app measuring %dpx. The panel is stretching the grid "
+            "row instead of scrolling inside it: the structure list is one "
+            "chip per hotspot, so the page now grows with the specimen and a "
+            "40-structure record would draw a 5000px page. .panel and "
+            ".panel__scroll already carry the internal scroll — it engages "
+            "only when the column above has a definite height, not a "
+            "min-height floor (panel__scroll scrolling: %r)."
+            % (screen, max(m["body"], m["doc"]), m["vh"], grew, m["appH"],
+               m["panelScrolls"])]
+
+
+def check_meta_integrity(page, screen):
+    """The library caption is whole, and wraps between words only.
+
+    Two failure modes, one row. Truncation is what MRB-186's ruling was
+    aimed at from the other side: a label column that cannot fit its content
+    either splits a word or eats one, and both leave the student reading
+    something the record does not say. See metaIntegrity's own comment for
+    what this measurement can and cannot see.
+    """
+    p = []
+    metas = page.eval("window.__st.metaIntegrity()") or []
+    # Per-caption rows: which string was damaged, and how.
+    for m in metas:
+        if m["over"] > 0:
+            p.append("%s: library caption %r is cut off by %dpx — the "
+                     "structure count is the part that goes, and the count is "
+                     "what the caption is for (MRB-193). It must wrap, not "
+                     "truncate." % (screen, m["text"], m["over"]))
+        if m["split"]:
+            p.append("%s: library caption %r breaks INSIDE a word — %r. "
+                     "MRB-186 ruled a label column never splits a token."
+                     % (screen, m["text"], m["split"]))
+    # Property rows: ONCE per screen, however many cards carry them. These are
+    # a property of one CSS rule, not of eight strings; eight identical lines
+    # about `.libcard__meta` would bury the caption that actually broke.
+    nowrap = [m for m in metas if m["ws"] == "nowrap"]
+    if nowrap:
+        p.append("%s: %d of %d library captions are white-space:nowrap, so "
+                 "they can only ever truncate — no second line to use "
+                 "(.libcard__meta)" % (screen, len(nowrap), len(metas)))
+    breaks = sorted({(m["ow"], m["wb"]) for m in metas
+                     if m["ow"] != "normal" or m["wb"] != "normal"})
+    for ow, wb in breaks:
+        p.append("%s: library captions compute overflow-wrap:%s "
+                 "word-break:%s — both properties INHERIT, so this may have "
+                 "been handed in from an ancestor, and either value licenses "
+                 "the mid-word break MRB-186 forbids on the next string long "
+                 "enough to need it (.libcard__meta)" % (screen, ow, wb))
+    return p
 
 
 def check_structure(page, screen, counts):
@@ -749,8 +938,25 @@ def check_structure(page, screen, counts):
         hint = (page.eval("window.__st.text('.stagehint')") or "").lower()
         if "drag to rotate" not in hint:
             p.append("s01: stage hint %r does not carry the rotate verb" % hint)
-        # hotspots are content-driven (allow-list rule 11)
-        need(".hotspot", counts["hotspots"])
+        # HOW MANY DOTS IS NOT THE HOTSPOT COUNT, and asserting that it was
+        # contradicted the feature. Occlusion is honest (MRB-187): an anchor on
+        # the far side reports visible:false and the shell drops its dot. With
+        # the two-hotspot placeholder both anchors happened to face the camera,
+        # so "one dot per hotspot" held by accident. The acquired heart has
+        # fourteen spread over a concave form and shows five to eight at a
+        # time — which IS the feature working, and a renderer that always
+        # reported visible:true would be the thing that showed all fourteen.
+        #
+        # What is asserted instead: some are drawn and some are not. The
+        # structure-chip row below still holds the panel to one chip per
+        # record, so a content record losing hotspots is still caught there.
+        drawn = n(".hotspot")
+        if not 0 < drawn < counts["hotspots"]:
+            p.append("%s: %d of %d hotspot(s) drawn — with honest occlusion a "
+                     "concave specimen shows some and hides the rest; all of "
+                     "them is a renderer reporting visible:true for "
+                     "everything, none of them is a stage with no dots at all"
+                     % (screen, drawn, counts["hotspots"]))
         bad = n('.hotspot[data-state="inert"]') + n('.hotspot[data-state="target"]')
         if bad:
             p.append("s01: %d retrieval-state hotspot(s) on the explore "
@@ -848,8 +1054,15 @@ def check_structure(page, screen, counts):
         # the stage: one target with a ping, everything else inert
         need('.hotspot[data-state="target"]')
         need(".hotspot__ping")
-        need('.hotspot[data-state="inert"]', counts["hotspots"] - 1,
-             "non-target hotspots drop to inert outlines")
+        # Every OTHER dot that is drawn is inert — not every other hotspot.
+        # Same reason as s01: occlusion drops the ones facing away, so the
+        # count is what the camera can see minus the target, and the claim
+        # worth making is that nothing else is wearing the target's treatment.
+        inert = n('.hotspot[data-state="inert"]')
+        if inert != n(".hotspot") - n('.hotspot[data-state="target"]'):
+            p.append("s02: %d inert of %d drawn hotspot(s) — every dot that is "
+                     "not the target must drop to an inert outline"
+                     % (inert, n(".hotspot")))
         bad = n('.hotspot[data-state="closed"]') + n('.hotspot[data-state="open"]')
         if bad:
             p.append("s02: %d labelled hotspot(s) survive into retrieval" % bad)
@@ -957,6 +1170,15 @@ def check_structure(page, screen, counts):
             p.append("s06: hint %r promises rotation on a flat plate" % hint)
         need(".hotspot", counts["hotspots"])
 
+    # ── every screen: the two ways a growing record deforms the shell ─────
+    # Both arrived with heart.json going from 2 hotspots to 14, and neither
+    # had anything watching it. Deliberately outside the per-screen branches
+    # above, for the same reason the mid-word sweep is: a rule that only runs
+    # where somebody remembered to list it is a rule with holes.
+    if screen in DESKTOP_SCREENS:
+        p.extend(check_page_height(page, screen))
+    p.extend(check_meta_integrity(page, screen))
+
     # ── every screen, every breakpoint: nothing breaks inside a word ──────
     # Deliberately not scoped to a selector list. The defect this exists for
     # (MRB-186) was in a block no row mentioned, so a gate that only watches
@@ -1059,12 +1281,36 @@ def _await_stage(page, timeout=25.0):
     return state or "timeout"
 
 
+def _await_fonts(page, timeout=10.0):
+    """Wait for the webfonts, because two rows now measure LINE BOXES.
+
+    Where the text wraps, and whether it fits its column at all, are answers
+    in the shipped font's metrics. Measured against the fallback they are
+    answers about a font the student never sees — and the failure mode is the
+    worst kind: a caption that fits in Helvetica and truncates in DM Mono
+    would pass this gate every time. Failed font loads settle too, so this
+    cannot hang on a 404.
+    """
+    import time
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        if page.eval("document.fonts && document.fonts.status") == "loaded":
+            return True
+        time.sleep(0.05)
+    return False
+
+
 def run_browser_layers(url, tokens, counts):
     problems, style_rows = [], []
     checked = []
 
     def visit(page, screen):
         page.eval(_JS + "true")
+        if not _await_fonts(page):
+            problems.append(
+                "%s: the webfonts never settled — every line-box measurement "
+                "on this screen would be about the fallback font, not the "
+                "shipped one" % screen)
         state = _await_stage(page)
         if state != "ready":
             problems.append(
