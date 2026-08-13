@@ -135,6 +135,20 @@ FRAMED_POOL = 24
 # line at all.
 FALLBACK_CANDIDATES = 64
 
+# How close to the seam between two parts a candidate must sit to count as
+# "in the groove", as a fraction of the bounding radius. A surface furrow is
+# the line where two parts' surfaces converge, so a point in it is near BOTH;
+# a point out on either free wall is near one and far from the other. The
+# measured spread on the heart is an order of magnitude wide — points in the
+# anterior interventricular groove sit within ~2.8% of both ventricles, while
+# the anchor this rule replaces was 8.3% from the right ventricle — so this
+# threshold is nowhere near a knife edge.
+SEAM_BAND = 0.04
+
+# If nothing clears SEAM_BAND, score this many best-of-a-bad-lot candidates
+# rather than silently failing to derive the structure at all.
+SEAM_FALLBACK = 16
+
 # Camera positions per elevation band, and how far out they sit as a multiple
 # of the bounding radius. FRAMING_MARGIN in renderer/mesh/anchors.ts puts the
 # real camera at about this distance.
@@ -215,6 +229,70 @@ def area_centroid(positions, faces):
     if total <= 0:
         return positions.mean(axis=0)
     return (mids * areas[:, None]).sum(axis=0) / total
+
+
+def nearest_vertex_distance(points, vertices, chunk=256):
+    """For each point, the distance to the closest vertex of `vertices`.
+
+    Vertex distance rather than true point-to-triangle distance, deliberately.
+    The question it answers is "is this point on the seam between two parts,
+    or out on one part's free wall", and on this mesh those two answers differ
+    by an order of magnitude. Triangle distance would be more precise about a
+    number that never needs to be precise, and would cost a great deal more.
+    """
+    out = np.empty(len(points))
+    for start in range(0, len(points), chunk):
+        block = points[start:start + chunk]
+        out[start:start + len(block)] = np.sqrt(
+            ((block[:, None, :] - vertices[None, :, :]) ** 2).sum(-1)).min(axis=1)
+    return out
+
+
+def seam_directions(centroid, directions, all_v0, all_v1, all_v2,
+                    start_distance, part_a, part_b, aspect, centre, radius):
+    """The subset of `directions` whose outer-surface exit lands in the
+    surface furrow where two parts meet, on the stated aspect.
+
+    WHY A SURFACE FURROW NEEDS ITS OWN RULE. `best_anchor` finds the outer
+    surface point near a structure that a camera can best SEE, and that is the
+    right instinct almost everywhere — but a groove is by definition the least
+    visible part of a convex form, so scoring by visibility walks straight out
+    of it and onto the neighbouring bulge. That is what happened to the
+    septum: its anchor landed antero-laterally on the left ventricle, further
+    left than a diagram would mark it.
+
+    A groove is not a compromise between two structures' positions either.
+    Casting straight anteriorly from between the two ventricular cavities
+    exits through the RIGHT VENTRICLE's free wall, because the right ventricle
+    wraps around the front of the septum — measured, not assumed. The groove
+    is the SEAM: the locus of surface points close to both parts at once.
+
+    So: exits are computed once, filtered to the stated aspect, and ranked by
+    the larger of their two distances. `best_anchor` then does its usual work
+    inside that band, so the framing gate and the 36-view visibility score
+    still choose between candidates — they just no longer choose the bulge.
+    """
+    dists = inward_first_hits(centroid, directions, all_v0, all_v1, all_v2,
+                              start_distance)
+    finite = np.isfinite(dists)
+    points = centroid + directions * dists[:, None]
+
+    aspect = np.asarray(aspect, dtype=np.float64)
+    aspect = aspect / np.linalg.norm(aspect)
+    facing = (points - centre) @ aspect > 0
+
+    keep = np.where(finite & facing)[0]
+    if not len(keep):
+        return directions, None
+
+    seam = np.maximum(
+        nearest_vertex_distance(points[keep], part_a),
+        nearest_vertex_distance(points[keep], part_b),
+    )
+    inside = keep[seam <= SEAM_BAND * radius]
+    if not len(inside):
+        inside = keep[np.argsort(seam)[:SEAM_FALLBACK]]
+    return directions[inside], float(seam.min() / radius)
 
 
 def fibonacci_directions(n):
@@ -425,6 +503,9 @@ def main():
     parser.add_argument("specimen", help="specimen id, e.g. heart")
     parser.add_argument("--write", action="store_true",
                         help="patch position3d into the content record")
+    parser.add_argument("--check", action="store_true",
+                        help="exit non-zero if the content record disagrees "
+                             "with what this tool derives")
     args = parser.parse_args()
 
     record_path = os.path.join(STUDIO, "content", f"{args.specimen}.json")
@@ -492,8 +573,23 @@ def main():
         if (rule or {}).get("offset"):
             centroid = centroid + np.asarray(rule["offset"]) * radius
 
+        # A structure whose landmark is a surface FURROW cannot be found by
+        # asking which nearby surface is most visible — see seam_directions.
+        search, seam_note = directions, None
+        seam_rule = (rule or {}).get("surfaceSeam")
+        if seam_rule:
+            between = [slug(name) for name in seam_rule["between"]]
+            if all(name in parts for name in between):
+                search, seam_note = seam_directions(
+                    centroid, directions, v0, v1, v2, radius * 3.0,
+                    parts[between[0]][0], parts[between[1]][0],
+                    seam_rule["aspect"], centre, radius)
+            else:
+                print(f"  ⚠️  {hotspot['id']:26} surfaceSeam names a part that "
+                      f"is not in the mesh — rule ignored")
+
         point, distance, normal, rank = best_anchor(
-            centroid, v0, v1, v2, directions, radius * 3.0,
+            centroid, v0, v1, v2, search, radius * 3.0,
             centre, radius, cameras, lift, tolerance)
         if point is None:
             unresolved.append(hotspot["id"])
@@ -502,6 +598,8 @@ def main():
             continue
         derived[hotspot["id"]] = [round(float(c), 5) for c in point]
         via = "own part" if key in parts else "rule: " + "+".join(source)
+        if seam_note is not None:
+            via += f", seam ≤{SEAM_BAND * 100:.0f}% (best {seam_note * 100:.1f}%)"
         framed, score = rank
         mark = "✅" if framed and score else "⚠️ "
         print(f"  {mark} {hotspot['id']:26} {np.round(point, 4)}  "
@@ -522,6 +620,35 @@ def main():
         print(f"  ⚠️  the framing move cannot reveal: {', '.join(unframed)} — "
               f"selecting one of these from the panel, or being asked about it "
               f"in a round, will turn the camera and still show nothing")
+
+    if args.check:
+        # The record and the recipe have to agree. An anchor is a derived
+        # number with a written-down reason (recipes/<specimen>.anchors.json),
+        # so a hand-edit of the record is a reason that no longer exists —
+        # and a recipe edit that was never re-derived is a reason with no
+        # number behind it. Both read as "someone decided this"; neither is.
+        #
+        # NOT wired into `npm test`: this pass takes about a minute and needs
+        # numpy, and validate_content.py is deliberately dependency-free so it
+        # runs anywhere. Run it when a recipe or a mesh changes.
+        drift = []
+        for hotspot in record["hotspots"]:
+            want = derived.get(hotspot["id"])
+            if want is None:
+                continue
+            got = [round(float(c), 5) for c in hotspot.get("position3d", [])]
+            if got != want:
+                drift.append((hotspot["id"], got, want))
+        if drift:
+            print(f"\n❌ {len(drift)} anchor(s) in content/{args.specimen}.json "
+                  f"disagree with this derivation:")
+            for hid, got, want in drift:
+                print(f"     {hid:26} record {got}  derives {want}")
+            print("   Re-run with --write, or fix the recipe.")
+            return 1
+        print(f"\n✅ every derived anchor matches "
+              f"content/{args.specimen}.json")
+        return 0
 
     if args.write:
         for hotspot in record["hotspots"]:

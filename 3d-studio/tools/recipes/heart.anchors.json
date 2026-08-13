@@ -19,7 +19,12 @@
       "hotspot": "heart.septum",
       "derivedFrom": ["right-ventricle", "left-ventricle"],
       "weights": [1, 1],
-      "why": "The interventricular septum is the wall between the two ventricular cavities, so the midpoint of their centroids sits inside it. The nearest exit from there surfaces on the anterior interventricular groove, which is where a diagram marks the septum."
+      "surfaceSeam": {
+        "between": ["right-ventricle", "left-ventricle"],
+        "aspect": [0, 0, 1]
+      },
+      "why": "The interventricular septum is the wall between the two ventricular cavities, so the midpoint of their centroids sits inside it. Its only honest EXTERNAL landmark is the anterior interventricular groove — the surface furrow running down the front of the heart directly over the septum, where the anterior interventricular branch of the left coronary artery runs, and the line a textbook diagram labels.",
+      "whySeam": "Two earlier readings of 'the nearest exit' both missed the groove, and both were measured rather than argued. Choosing the most VISIBLE nearby surface walks out of the furrow and onto the neighbouring bulge: it put the dot antero-laterally on the left ventricle, 8.3% of the bounding radius from the right ventricle and 1.0% from the left — on a chamber wall, not on the wall between the chambers. Casting straight ANTERIORLY from between the two cavities is worse: it exits through the right ventricle's own free wall, because the right ventricle wraps around the front of the septum. The groove is neither. It is the seam where the two ventricular surfaces converge, so it is found as the surface point close to BOTH — on the anterior aspect, which is what distinguishes it from the posterior interventricular groove on the other side."
     },
     {
       "hotspot": "heart.sino-atrial-node",
