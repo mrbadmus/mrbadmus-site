@@ -86,7 +86,7 @@ number in one place once the generator owns it.
 | b1-02 using-a-microscope | 149 | `font-size: clamp(26px, 3.6vw, 40px)` | **formula** statement (`ks3-font-display`) |
 | b1-03 animal-and-plant-cells | 227 | `font-size: clamp(28px, 3.9vw, 44px)` | statement |
 | b1-04 specialised-cells | 214 | `font-size: clamp(28px, 3.9vw, 44px)` | statement |
-| b1-05 levels-of-organisation | 132 | `font-size: 30px` — **no clamp at all** | statement |
+| ~~b1-05 levels-of-organisation~~ | ~~132~~ | ~~`font-size: 30px`~~ | ⊖ **not a statement — see the correction below** |
 | b1-06 unicellular-organisms | 217 | `font-size: clamp(26px, 3.6vw, 40px)` | statement |
 
 ### ⚖️ Ruled: `clamp(28px, 3.9vw, 44px)` for the statement role
@@ -103,16 +103,39 @@ Four distinct declarations, but they are not four candidates for one role:
   middle answer and the most common one, which is as close to consensus as six
   hand-written pages get.
 
-### ⚑ One consequence Mide should see before this is applied
+### ⊖ CORRECTION, 13 Aug 2026 — the b1-05 row was the wrong element
 
-**b1-05 has no clamp — its statement is a flat 30px.** Adopting the ruled clamp
-takes b1-05's statement from 30px to 44px at any viewport above ~1128px. That is
-a 47% increase and it will look like a different page. It is very probably the
-right change — MRB-203's finding was that Code's B1 pages ran *smaller* than
-Design's screens and that the new block types never opted into the display
-scale, and a lone un-clamped 30px statement is exactly that defect surviving
-inside Design's own delivery. But it is a visible change to an approved page, so
-it is flagged rather than assumed.
+**Withdrawn: the ⚑ flag this section originally carried.** It read that b1-05's
+statement is a flat un-clamped 30px and that the ruling would take it to 44px —
+"a visible change to an approved page". That was wrong, and it was wrong in the
+direction that would have cost Mide a decision he does not need to make.
+
+b1-05 line 132 is not a statement. It is `{{ levelName }}` — a **templated live
+readout heading inside the zoom instrument's panel**, on `--ks3-inset` behind a
+2px ink border. **b1-05 has no statement panel at all**: zero hits for `#s-rule`
+or "What settles it". Verified directly in the source.
+
+So the statement role has **four** occurrences across the delivery, not six, and
+they are b1-01, b1-03, b1-04 and b1-06. `clamp(28px, 3.9vw, 44px)` is still both
+the modal and the median of those, so **the ruling itself is unchanged and its
+basis is now cleaner** — it no longer rests on a mis-read row.
+
+Applying the ruling touches nothing on b1-05, because there is nothing there to
+apply it to. **b1-05 is an exclusion from this role, exactly as b1-02's formula
+statement is** — one page has a formula where the statement would go, and this
+one has an instrument.
+
+The measured cost of applying the clamp to that readout anyway, had anyone: +16px
+of document height at 1280 and 1340, +2px at 820, and **−5px at 390** (the 28px
+floor makes it smaller on a phone). Nothing wraps that did not already wrap. The
+objection is not layout, it is meaning — it would make an instrument caption the
+largest body-level type on the page, above the 22px key fact.
+
+**How it happened, since the class of error matters more than the instance.** The
+role column in the table above was assigned by pattern-matching a large
+display-font declaration, not by asking what the element *is*. Four of the six
+rows were statements; two were not. A generator built from the original table
+would have emitted a statement component into an instrument panel.
 
 ---
 
@@ -194,11 +217,13 @@ KEY FACT box must never grow anything that reads as a mark.
 |---|---|---|---|---|
 | 1 | bench grid column | 232 × 2, 240 × 1 | **232px** | majority; 8px, no semantics |
 | 2 | bench grid collapse | 780 × 2, 820 × 1 | **820px** | *against count* — 820 already ruled on b1-06 under MRB-210; one threshold per page; kinder at 800px |
-| 3 | statement type | 4 declarations | **clamp(28px, 3.9vw, 44px)** | modal and median once b1-02's formula role is excluded; ⚑ takes b1-05 from 30px → 44px |
+| 3 | statement type | 4 occurrences of the role | **clamp(28px, 3.9vw, 44px)** | modal and median of the four real statements; b1-02 (formula) and b1-05 (instrument readout) are excluded — see the correction |
 | 4 | `seg()` light branch | 4 variants | **b1-06's** | only one whose geometry matches its own dark branch; b1-04 and b1-03 are not drift |
 | 5 | KEY FACT ground | band × 5, card × 1 | **`--ks3-band`** | 5:1, no accessibility driver |
 
 Three of the five are clean majorities. Drift 2 goes against its count on
-recorded evidence. Drift 3 needs Mide's eye because applying it visibly changes
-an approved page. Drift 4 resolves one value and surfaces two separate
-components that were hiding under one helper name.
+recorded evidence. Drift 3's ruling stands but its evidence was corrected on
+13 Aug — one of its six rows was an instrument readout misread as a statement,
+and the ⚑ that asked for Mide's eye is withdrawn: applying it changes nothing on
+b1-05. Drift 4 resolves one value and surfaces two separate components that were
+hiding under one helper name.
