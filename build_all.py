@@ -19,10 +19,19 @@ impossible to demonstrate.
 Separate generators used to mean an order that mattered: ``build_site()``
 wipes ``mrbadmus_site/`` and rebuilt it, which silently deleted
 ``mrbadmus_site/ks3/`` whenever the KS4 generator ran second. That hazard is
-now fixed at source — ``build_site()`` lifts foreign output trees out before
-the wipe and puts them back after, so the two generators are safe in either
-order. This script exists so nobody has to know that: run one command, get a
-complete site, every time.
+now fixed at source — ``build_site()`` SKIPS the foreign output trees named in
+its ``FOREIGN_OUTPUT_DIRS`` where they stand, so the two generators are safe in
+either order. (This paragraph used to say the trees were lifted out and put
+back afterwards. That was an earlier fix, and it was replaced precisely because
+it stranded the KS3 output in a temp directory if the build raised in between;
+nothing is moved now.) This script exists so nobody has to know any of that:
+run one command, get a complete site, every time.
+
+``mrbadmus_site/3d/`` is on the same list as of MRB-194, but it is NOT built
+here: 3D Studio is a Vite app, and ``npm run build`` inside ``3d-studio/`` is a
+manual pre-step (see CLAUDE.md). A Node failure must not be able to fail a KS3
+or KS4 build. The generator publishes whatever build exists and shouts, loudly
+and twice, when that build is stale or missing.
 
 The KS4 generator still runs first here, because that is the order the deploy
 notes and the commit history describe, and there is no reason to diverge from

@@ -1,5 +1,11 @@
 # 3D Studio — Generator isolation recon (MRB-185, Stage 0)
 
+> **STATUS: the diff in §5 landed on 13 August 2026 (MRB-194), commit
+> `c48328ce5`.** §§1–5 below are the Stage 0 recon, kept as written. What
+> actually shipped, and the two places it differs from what was proposed here,
+> is §7 at the end. The verification plan in §6 became
+> `3d_isolation_check.py`, which runs it.
+
 **Date:** 9 August 2026
 **Read:** `generate_site_v5.py` (all 5,439 lines), `build_all.py` (all 66 lines),
 plus the output-writing region of `build_ks3.py` (lines 1225–1325). Every claim
@@ -255,3 +261,73 @@ Spec §10's gate, made concrete:
 5. Same command → hashes must be identical, file-for-file.
 6. Delete `3d-studio/dist/`, run again → `mrbadmus_site/3d/` must still be
    byte-identical (the leave-alone branch).
+
+---
+
+## 7. What actually landed (MRB-194, 13 August 2026)
+
+The three hunks in §5 were **re-derived against the current file rather than
+applied**, because the generator is shared with live KS3/KS4 work and had moved
+since August. It had not moved here: every line number in §§1–3 still pointed at
+the same code, and hunks 1 and 3 went in verbatim. Hunk 2 grew.
+
+### Hunk 2 grew a staleness alarm
+
+The publication step as proposed printed one line — `⚠️ 3d-studio/dist not
+found` — and that line was the whole of its answer to a build that is not there.
+MRB-194's first comment identified why that is not enough, and it is worth
+restating because it is a workflow fact rather than a code fact:
+
+> Mide's production workflow is `python3 generate_site_v5.py` in Terminal, then
+> GitHub Desktop. No npm step exists anywhere in it.
+
+A guarded publication is safe in the sense that nothing gets deleted. It is not
+safe in the sense that matters: the studio ships **stale** every time the site is
+regenerated without a Vite build first, and a warning line sitting among ~2,000
+green ticks has not been delivered to anyone. So what shipped:
+
+* `dist/` is compared against the newest file in `3d-studio/{src,content,public}`.
+  Directory mtimes are ignored — they only move when an entry is added or
+  removed, so an edit in place would not register.
+* Stale, or absent, prints a `!!!!`-bordered banner rather than a line.
+* **The banner is printed twice**: where it happens, and again after the
+  "🎉 Done!" block, where it is the last thing on screen when the run finishes.
+* Neither is fatal, and no `npm run build` runs from the generator. A Node
+  failure must not be able to fail a KS3 or KS4 build. The manual pre-step is
+  documented in CLAUDE.md instead, in Mide's actual workflow order — this is
+  option **(c) plus (b)** from the ticket, as recommended there.
+* Stale still publishes. `dist/` is the source of truth, and republishing what
+  is already deployed changes nothing; the alarm is the point, not a refusal.
+
+### Spec §9 was self-contradictory, and this is the corrected reading
+
+§9 says the generator "copies the built artifact into `mrbadmus_site/3d/` **and
+never cleans or writes inside it**". Both cannot be true. What is true, and what
+is built:
+
+> `mrbadmus_site/3d/` has exactly one writer, the publication step, and that
+> writer's only source of truth is `3d-studio/dist/`. No other part of the
+> generator reads, writes, cleans, stamps, or mirrors it.
+
+The wipe skips it, the cache-bust walker prunes it, the round-trip skips it, and
+the safety net never looks at it. That is the property the acceptance test
+measures, and it is stronger than "never writes inside", because it also rules
+out the `?v=` stamping that would otherwise have rewritten Vite's `index.html`
+on every run and made byte-identity impossible to claim.
+
+### The verification plan became a gate
+
+§6's plan is implemented as `3d_isolation_check.py` at the repo root — six
+checks, twelve assertions, including the one §6 did not have: **remove `"3d"`
+from `FOREIGN_OUTPUT_DIRS` and watch the tree die.** It does, silently, exit 0,
+which is the MRB-88 failure mode reproduced on demand.
+
+Two results worth recording:
+
+* After eight full generator runs and a `build_all.py` run, `git status` showed
+  the generator edit and the new `mrbadmus_site/3d/` and **nothing else** — so
+  every KS3 and KS4 file in both `mrbadmus_site/` and the repo root was
+  byte-identical to `HEAD`. That is the KS3/KS4-unchanged evidence.
+* The generator as it stood at `44db1c24a`, the commit immediately before the
+  fix, was extracted and run against a populated `mrbadmus_site/3d/`: all 16
+  files gone, exit 0, no error. The hazard was real, not theoretical.

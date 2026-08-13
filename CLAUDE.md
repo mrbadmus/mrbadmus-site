@@ -212,6 +212,24 @@ The script reads structured data from `all_subtopics_*.py` files (topics, subtop
 
 **If you want to edit hand-written pages (weekly-challenge.html, leaderboard.html, etc.):** edit the root-level file, then run the generator so it copies into `mrbadmus_site/`.
 
+### ⚠️ 3D Studio has a manual build step BEFORE the generator
+
+3D Studio (`/3d`) is a Vite app in `3d-studio/`. The generator does not build it — it only **publishes** whatever build already exists, copying `3d-studio/dist/` into `mrbadmus_site/3d/`. So if you have changed anything in `3d-studio/`, the full deploy sequence is:
+
+```bash
+cd 3d-studio && npm run build && cd ..   # 1. build the studio  ← easy to forget
+python3 generate_site_v5.py              # 2. build the site and publish the studio
+                                         # 3. commit + push in GitHub Desktop
+```
+
+**Step 1 is only needed when `3d-studio/` has changed.** For an ordinary KS4 content change, `python3 generate_site_v5.py` on its own is still the whole job.
+
+**If you forget step 1, the generator will tell you** — it compares the build against the source and prints a large `!!!!` banner, twice, once where it happens and again as the last thing on screen. It is deliberately hard to miss, because it is otherwise invisible: the studio would simply ship as whatever it was last time.
+
+**Why the generator does not just run `npm run build` itself:** a Node or npm problem would then be able to fail the whole site build, and KS3 and KS4 have nothing to do with the studio. The warnings are loud; neither is fatal. If there is no build at all, the generator leaves `mrbadmus_site/3d/` exactly as it is rather than deleting it, so a machine without Node can never wipe the deployed studio.
+
+To check the isolation still holds: `python3 3d_isolation_check.py`.
+
 ---
 
 ## How the AI Chat Backend Works
