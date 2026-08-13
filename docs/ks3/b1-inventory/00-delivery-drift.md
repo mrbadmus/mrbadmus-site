@@ -19,20 +19,35 @@ than hiding behind the majority, so Mide can overrule in one line.
 `[data-bench-grid]` is the practical block's two-column layout: a fixed control
 column beside a flexible canvas.
 
-| Page | Line | Declaration |
-|---|---|---|
-| b1-03 animal-and-plant-cells | 20 | `[data-bench-grid] { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); }` |
-| b1-04 specialised-cells | 20 | `[data-bench-grid] { grid-template-columns: minmax(0, 232px) minmax(0, 1fr); }` |
-| b1-06 unicellular-organisms | 20 | `[data-bench-grid] { grid-template-columns: minmax(0, 232px) minmax(0, 1fr); }` |
+| Page | Line | Declaration | Elements matched |
+|---|---|---|---|
+| b1-03 animal-and-plant-cells | 20 | `[data-bench-grid] { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); }` | **1** |
+| b1-04 specialised-cells | 20 | `[data-bench-grid] { grid-template-columns: minmax(0, 232px) minmax(0, 1fr); }` | **1** |
+| ~~b1-06 unicellular-organisms~~ | ~~20~~ | ~~`… minmax(0, 232px) …`~~ | ⊖ **0 — dead CSS** |
 
-**Count: 232px × 2, 240px × 1.**
+### ⊖ CORRECTION, 13 Aug 2026 — b1-06's declaration never applies
 
-### ⚖️ Ruled: `232px`
+**b1-06 declares the rule and carries no element that matches it.** Counted
+directly: the string appears twice in its `<style>` block (the rule and its media
+query) and on zero tags. It is CSS Design carried forward from an earlier page
+without the component. b1-06 has no bench grid.
 
-Majority, and nothing else distinguishes them. The difference is 8px on a
-control column and carries no semantic content — both are on the 8px step the
-rest of the system uses. b1-03 is the earliest of the three pages to declare the
-grid, and the two later ones agree with each other.
+So the bench grid lives on exactly **two** pages, and the count is not 2:1 — it
+is **1:1, 240px against 232px**.
+
+### ⚖️ Ruled: `240px` — and this is the weakest of the five
+
+A genuine tie with no strong basis, which is worth saying rather than dressing
+up. The tie-break used: **b1-03 is the approved reference screen for MODEL, 50
+slots; b1-04 is the approved reference screen for SYSTEM, 32.** Both are
+approved, both are equally "Design's intent", so the one that is right on more
+lessons wins. That is a thin reason, but it is a reason, and the alternative is
+a coin toss presented as a finding.
+
+The difference is 8px on a control column and carries no semantic content; both
+sit on the 8px step the rest of the system uses. **If Mide or Design prefers
+232px, it costs one number to change** and nothing about this document's other
+rulings depends on it.
 
 **Not to be confused with** a separate `repeat(auto-fit, minmax(Npx, 1fr))` on
 b1-01 line 222 (232px), b1-02 line 274 (240px) and b1-04 line 217 (232px). That
@@ -44,37 +59,34 @@ second component, not more evidence about this one.
 
 ## Drift 2 — the bench grid's collapse breakpoint: 780px or 820px
 
-| Page | Line | Declaration |
-|---|---|---|
-| b1-03 animal-and-plant-cells | 21 | `@media (max-width: 780px) { [data-bench-grid] { grid-template-columns: minmax(0, 1fr); } }` |
-| b1-04 specialised-cells | 21 | `@media (max-width: 780px) { … }` |
-| b1-06 unicellular-organisms | 21 | `@media (max-width: 820px) { … }` |
+| Page | Line | Declaration | Applies? |
+|---|---|---|---|
+| b1-03 animal-and-plant-cells | 21 | `@media (max-width: 780px) { [data-bench-grid] { grid-template-columns: minmax(0, 1fr); } }` | **yes** |
+| b1-04 specialised-cells | 21 | `@media (max-width: 780px) { … }` | **yes** |
+| ~~b1-06 unicellular-organisms~~ | ~~21~~ | ~~`@media (max-width: 820px) { … }`~~ | ⊖ **no — dead, see drift 1** |
 
-**Count: 780px × 2, 820px × 1.**
+### ⚖️ Ruled: `780px` — REVERSED on 13 Aug 2026
 
-### ⚖️ Ruled: `820px` — against the count, deliberately
+**This section previously ruled 820px, against the count. That ruling is
+withdrawn and the reasoning under it was unsound.**
 
-This is the one place I have not followed the majority, and the reason is on the
-record rather than in taste.
+The argument was that b1-06 sets a narrow-width threshold at 820px for its
+comparison rows, so aligning the bench grid to 820 would give one threshold per
+page instead of two 40px apart. **b1-06 has no bench grid** (drift 1's
+correction), so the two-threshold collision I was avoiding does not exist on any
+page. The pages that actually have the component both collapse it at 780px, and
+they agree.
 
-MRB-210 records that Design went back to B1-06 specifically to fix its
-narrow-width behaviour, and fixed the comparison rows to restyle under
-`max-width: 820px` — the dark header row hides and each content cell grows its
-own mono caption. So **820px is already a ruled threshold on that page**, for a
-different component, and it is the most recently considered narrow-width
-decision in the delivery.
+That leaves **780px unanimous among live declarations**, and my remaining
+argument — that collapsing earlier is kinder at an 800px viewport — is my
+comfort against Design's consistent, repeated choice on both pages that carry
+the thing. Overriding that would be Code deciding a layout question Design has
+already answered twice, which is the exact failure MRB-205 exists to stop.
 
-Two thresholds 40px apart on one page means a viewport between 780 and 820 gets
-a two-column bench grid beside stacked comparison rows. One threshold per page
-is the coherent outcome, and 820 is the one that was actually thought about.
-
-It is also the kinder of the two. Collapsing *earlier* means that at an 800px
-viewport the student gets a full-width stacked layout instead of a 232px control
-column crushing the canvas into ~500px. The failure mode of collapsing too late
-is a cramped instrument; of collapsing too early, a slightly tall page.
-
-**If Mide prefers the majority, 780px costs nothing to adopt** — it is one
-number in one place once the generator owns it.
+**820px is still a real threshold in this delivery** — it is where b1-06's
+comparison rows hide their dark header row and grow per-cell mono captions,
+bisected exactly at `flex` on 821 and `none` on 820. It belongs to the
+comparison-row component and to nothing else.
 
 ---
 
@@ -215,15 +227,26 @@ KEY FACT box must never grow anything that reads as a mark.
 
 | # | Drift | Count | Ruled | Basis |
 |---|---|---|---|---|
-| 1 | bench grid column | 232 × 2, 240 × 1 | **232px** | majority; 8px, no semantics |
-| 2 | bench grid collapse | 780 × 2, 820 × 1 | **820px** | *against count* — 820 already ruled on b1-06 under MRB-210; one threshold per page; kinder at 800px |
+| 1 | bench grid column | **1:1** (b1-06's is dead CSS) | **240px** | a real tie; broken on reference-screen reach (MODEL 50 slots vs SYSTEM 32). The weakest of the five |
+| 2 | bench grid collapse | **780 unanimous** among live declarations | **780px** | REVERSED 13 Aug — b1-06 has no bench grid, so the collision that justified 820 does not exist. 820 remains the comparison rows' own threshold |
 | 3 | statement type | 4 occurrences of the role | **clamp(28px, 3.9vw, 44px)** | modal and median of the four real statements; b1-02 (formula) and b1-05 (instrument readout) are excluded — see the correction |
 | 4 | `seg()` light branch | 4 variants | **b1-06's** | only one whose geometry matches its own dark branch; b1-04 and b1-03 are not drift |
 | 5 | KEY FACT ground | band × 5, card × 1 | **`--ks3-band`** | 5:1, no accessibility driver |
 
-Three of the five are clean majorities. Drift 2 goes against its count on
-recorded evidence. Drift 3's ruling stands but its evidence was corrected on
-13 Aug — one of its six rows was an instrument readout misread as a statement,
-and the ⚑ that asked for Mide's eye is withdrawn: applying it changes nothing on
-b1-05. Drift 4 resolves one value and surfaces two separate components that were
-hiding under one helper name.
+Two of the five are clean majorities (3 and 5). **Three were corrected on 13 Aug
+by the per-lesson inventories, which is the strongest argument for having written
+them** — every correction came from asking what an element *is* rather than what
+its CSS looks like:
+
+- **Drift 1 and 2** rested on b1-06's `[data-bench-grid]` declarations, which
+  match no element on that page. Drift 1 falls from a 2:1 majority to a 1:1 tie
+  and now turns on a thin tie-break; drift 2 is **reversed** to 780px, the value
+  both live pages actually use.
+- **Drift 3** keeps its value but loses a row: b1-05's was an instrument readout,
+  not a statement, and the ⚑ asking for Mide's eye is withdrawn.
+- **Drift 4** resolves one value and surfaces two separate components that were
+  hiding under one helper name.
+
+The pattern across all three corrections: a measurement of *declarations* is not
+a measurement of *behaviour*. Dead CSS counts as evidence to a grep and as
+nothing at all to a browser.
