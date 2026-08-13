@@ -806,6 +806,26 @@ def main():
           if not link_problems
           else "%d dead: %s" % (len(link_problems), link_problems[0][:120]))
 
+    # §8.10 — the platform does not explain itself on the page.
+    #
+    # §8.10 is deliberately a discernment test and NOT a banned-phrase list,
+    # and architecture.md is explicit that a blanket rule here would repeat the
+    # failure it was written to stop. So this gate does not try to judge tone.
+    # It catches one mechanical tell that is never legitimate in student prose:
+    # a §-numbered reference to this project's own architecture document. A
+    # twelve-year-old has no §7.4. The discernment stays with the author; only
+    # the unarguable case is automated.
+    #
+    # Found live: the `references[].why` field renders into the "Connects to"
+    # card, and C1's read "P11 owns it (§7.4); this lesson points at it and must
+    # render gracefully before P11 exists" on the published draft.
+    sec_problems, sec_pages = PARITY.check_no_section_refs(KS3_OUT)
+    check("§8.10 · no architecture §-reference reaches student prose",
+          not sec_problems,
+          "%d pages' visible text scanned" % sec_pages
+          if not sec_problems
+          else "%d page(s): %s" % (len(sec_problems), sec_problems[0][:150]))
+
     # MRB-203 — the gate learns to see a component that was never
     # registered. Absence-of-selector already failed; absence-of-
     # REGISTRATION passed silently, which is how B1 shipped with no

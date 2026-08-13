@@ -956,6 +956,43 @@ def check_range_binding(repo_root="."):
     return problems, rows
 
 
+def check_no_section_refs(ks3_root):
+    """§8.10 — an architecture §-reference must never reach student prose.
+
+    §8.10 is a DISCERNMENT test, not a banned-phrase list, and architecture.md
+    says plainly that a blanket rule here would be the same failure as the
+    callout that prompted the rule. So this checks exactly one thing, the one
+    that is never a judgement call: a `§` followed by a section number, in the
+    VISIBLE text of a built page. That is this project talking to itself.
+
+    The live instance it was written for: `references[].why` renders into the
+    "Connects to" endmatter card, and C1's `testing-the-model` shipped
+    "P11 owns it (§7.4); this lesson points at it and must render gracefully
+    before P11 exists" to students on the published draft.
+
+    Script and style contents are stripped before the scan, then tags, so this
+    measures what a reader sees rather than what the source contains — an
+    authoring comment in a data module is fine, a rendered one is not.
+    """
+    problems, scanned = [], 0
+    pat = re.compile(r"§\s*\d")
+    for path in _all_pages(ks3_root):
+        with open(path, encoding="utf-8") as fh:
+            src = fh.read()
+        scanned += 1
+        src = re.sub(r"<script.*?</script>", " ", src, flags=re.S)
+        src = re.sub(r"<style.*?</style>", " ", src, flags=re.S)
+        text = _unescape(re.sub(r"<[^>]+>", " ", src))
+        m = pat.search(text)
+        if m:
+            near = " ".join(
+                text[max(0, m.start() - 80):m.start() + 90].split())
+            rel = os.path.relpath(path, ks3_root)
+            problems.append("%s — student text carries an architecture "
+                            "section reference: …%s…" % (rel, near))
+    return problems, scanned
+
+
 def check_internal_links(ks3_root):
     """MRB-209 §4 — every internal /ks3/ link must resolve to a real page.
 

@@ -1300,12 +1300,17 @@ UNIT = {
 
     "requires":    ["animal-and-plant-cells"],
     "assumes":     ["KS3.C.PIS.03"],   # diffusion, owned by C1 L5
+    # ⊖ §8.10 — `why` RENDERS to the student, in the "Connects to" card. It read
+    #   "Diffusion is owned by C1 (§7.4 ordering: …) … and must render gracefully
+    #   whether or not C1 has been taught first", which is the platform
+    #   explaining its own build order to a twelve-year-old who did not ask.
+    #   Rewritten to say what the connection IS. The authoring rationale it used
+    #   to carry is not lost — it is what `assumes` and the reference edge encode.
     "references":  [{"unit": "C1", "lesson": "diffusion",
-                     "why": "Diffusion is owned by C1 (§7.4 ordering: the "
-                            "particle idea is taught in chemistry first). This "
-                            "lesson uses it, re-confronts PART-10 in its "
-                            "biological form, and must render gracefully "
-                            "whether or not C1 has been taught first."}],
+                     "why": "Oxygen gets into a red blood cell by diffusion — "
+                            "the same spreading out you meet with particles in "
+                            "chemistry, happening here across a living "
+                            "membrane."}],
     "ks4_links":   ["biology/cell-biology/cell-specialisation",
                     "biology/cell-biology/transport-in-cells"],
 
