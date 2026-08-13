@@ -4,16 +4,27 @@
 // Selecting a specimen is one action — it loads and the drawer closes, no
 // confirm step (§04).
 
-import { comingSoon, librarySize, specimens } from '../studio/content'
+import { comingSoon, librarySize, specimens, visibleHotspots } from '../studio/content'
+import type { KeyStage } from '../studio/types'
 import { CloseIcon } from './icons'
+
+/** How many structures THIS viewer would find on that specimen — the count
+ * is filtered by key stage exactly as the stage and the panel are, so a card
+ * promising fourteen structures cannot open onto nine (MRB-193/186). */
+function structureCount(count: number): string {
+  return `${count} structure${count === 1 ? '' : 's'}`
+}
 
 function LibraryRows({
   selectedId,
   onSelect,
+  keyStage,
   big,
 }: {
   selectedId: string
   onSelect: (id: string) => void
+  /** null = no filter, the anonymous shopfront view */
+  keyStage: KeyStage | null
   big?: boolean
 }) {
   const cardClass = big ? 'libcard libcard--big' : 'libcard'
@@ -32,7 +43,10 @@ function LibraryRows({
             <span className="libcard__thumb" aria-hidden="true" />
             <span className="libcard__text">
               <span className="libcard__name">{s.name}</span>
-              <span className="libcard__meta">{viewing ? 'Viewing' : s.system}</span>
+              <span className="libcard__meta">
+                {viewing ? 'Viewing' : s.system} ·{' '}
+                {structureCount(visibleHotspots(s, keyStage).length)}
+              </span>
             </span>
           </button>
         )
@@ -55,9 +69,11 @@ function LibraryRows({
 export function LibraryColumn({
   selectedId,
   onSelect,
+  keyStage,
 }: {
   selectedId: string
   onSelect: (id: string) => void
+  keyStage: KeyStage | null
 }) {
   return (
     <aside className="library" aria-label="Specimen library">
@@ -66,7 +82,7 @@ export function LibraryColumn({
         <span className="library__count">{librarySize}</span>
       </div>
       <div className="library__list">
-        <LibraryRows selectedId={selectedId} onSelect={onSelect} />
+        <LibraryRows selectedId={selectedId} onSelect={onSelect} keyStage={keyStage} />
       </div>
     </aside>
   )
@@ -77,10 +93,12 @@ export function LibraryDrawer({
   selectedId,
   onSelect,
   onClose,
+  keyStage,
 }: {
   selectedId: string
   onSelect: (id: string) => void
   onClose: () => void
+  keyStage: KeyStage | null
 }) {
   return (
     <>
@@ -97,6 +115,7 @@ export function LibraryDrawer({
           <LibraryRows
             big
             selectedId={selectedId}
+            keyStage={keyStage}
             onSelect={(id) => {
               onSelect(id)
               onClose()
@@ -113,10 +132,12 @@ export function LibraryFullScreen({
   selectedId,
   onSelect,
   onClose,
+  keyStage,
 }: {
   selectedId: string
   onSelect: (id: string) => void
   onClose: () => void
+  keyStage: KeyStage | null
 }) {
   return (
     <div className="phonelib" role="dialog" aria-label="Specimen library">
@@ -131,6 +152,7 @@ export function LibraryFullScreen({
         <LibraryRows
           big
           selectedId={selectedId}
+          keyStage={keyStage}
           onSelect={(id) => {
             onSelect(id)
             onClose()

@@ -71,7 +71,12 @@ function specimen(hotspots: HotspotRecord[]): SpecimenRecord {
     name: 'Test',
     epithet: '',
     system: '',
-    keyStages: ['KS4'],
+    // Offered at both key stages so this file's fixtures stay about what this
+    // file is about. The key-stage filter is real in `eligibleHotspots`
+    // (MRB-193/186) and a KS4-only fixture would silently empty every round a
+    // signed-in KS3 profile started here — which is the correct behaviour, and
+    // is asserted where it belongs, in tests/gates/key-stage.test.ts.
+    keyStages: ['KS3', 'KS4'],
     assets: {
       mesh: '', fallback: '', thumbnail: '', licence: '', source: '', acquired: '',
     },

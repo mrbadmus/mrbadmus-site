@@ -20,6 +20,7 @@
 
 import type { HotspotRecord, SpecimenRecord } from './types'
 import type { AttemptPayload, AttemptSubmitter, LearnerProfile } from './attempts'
+import { viewingKeyStage, visibleHotspots } from './content'
 
 export type QuestionOutcome = 'correct' | 'wrong' | 'skipped' | 'revealed'
 
@@ -67,20 +68,34 @@ export interface RoundDeps {
 }
 
 /**
- * Eligibility, spec §6: "Only hotspots with `retrievable: true` and a `tiers`
- * value matching the student's pathway are eligible."
+ * Eligibility. TWO filters, and they are not the same filter.
  *
- * Read carefully, that sentence says pathway but names `tiers`, and `tiers` in
- * the content schema holds foundation|higher. The schema is what the studio
- * can act on, so eligibility matches the TIER. A KS3 learner has no tier at
- * all (contract §6 item 2), and for them every retrievable hotspot is
- * eligible — the alternative is a KS3 round that silently excludes everything.
+ * KEY STAGE decides whether the structure exists for this student at all. A
+ * hotspot's own `keyStages` win and it inherits the specimen's where it
+ * declares none (MRB-193's mechanism, resolved in studio/content.ts). This is
+ * applied HERE and not merely by the shell: a KS3 learner must never be asked
+ * to name a structure they cannot see, and that guarantee has to hold for
+ * every caller, not only for the one that happens to pre-filter today.
+ *
+ * It is derived through `viewingKeyStage`, the same derivation the shell uses,
+ * so what is asked and what is on the stage cannot come apart. An anonymous
+ * visitor filters by nothing and is asked about everything — they can see
+ * everything too, so the guarantee holds.
+ *
+ * TIER differentiates within a key stage, spec §6: "Only hotspots with
+ * `retrievable: true` and a `tiers` value matching the student's pathway are
+ * eligible." Read carefully, that sentence says pathway but names `tiers`, and
+ * `tiers` in the content schema holds foundation|higher. The schema is what the
+ * studio can act on, so eligibility matches the TIER. A KS3 learner has no tier
+ * at all (contract §6 item 2), and for them every retrievable hotspot they can
+ * see is eligible — the alternative is a KS3 round that silently excludes
+ * everything.
  */
 export function eligibleHotspots(
   specimen: SpecimenRecord,
   profile: LearnerProfile,
 ): HotspotRecord[] {
-  return specimen.hotspots.filter((hotspot) => {
+  return visibleHotspots(specimen, viewingKeyStage(profile)).filter((hotspot) => {
     if (!hotspot.retrievable) return false
     if (profile.tier === null) return true
     return hotspot.tiers.includes(profile.tier)

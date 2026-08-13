@@ -2,12 +2,12 @@
 // on MRB-194): specimen selection is in-memory state. Everything on screen
 // resolves from a single specimen record through a single id (spec §3.2).
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { CapabilityReport } from './studio/capability'
 import { detectCapability } from './studio/capability'
 import type { QualitySetting } from './studio/quality'
 import { effectiveRenderTier } from './studio/quality'
-import { getSpecimen } from './studio/content'
+import { getSpecimen, specimenForKeyStage, viewingKeyStage } from './studio/content'
 import { createFlatRenderer } from './renderer/flat'
 import type { Renderer } from './renderer/types'
 import {
@@ -112,7 +112,20 @@ export default function App({
   const [libraryOpen, setLibraryOpen] = useState(false)
   const [sheetRaised, setSheetRaised] = useState(false)
 
-  const specimen = getSpecimen(specimenId)
+  // The key-stage filter is applied ONCE, here, at the top (MRB-193/186). What
+  // flows on from this line is the specimen as THIS viewer sees it, so the
+  // stage, both renderers, the panel, the sheet, the library and the retrieval
+  // round cannot disagree about what is on the heart — a KS3 student is not
+  // asked about a structure the stage never drew for them.
+  //
+  // The memo is load-bearing, not tidiness: `Stage` reloads the specimen and
+  // resamples its dots whenever this identity changes, so a fresh object every
+  // render would re-fetch the GLB continuously. `getSpecimen` returns a stable
+  // module-level record and `specimenForKeyStage` returns that same object
+  // untouched when nothing is filtered out, so both dependencies are stable.
+  const record = getSpecimen(specimenId)
+  const keyStage = viewingKeyStage(profile)
+  const specimen = useMemo(() => specimenForKeyStage(record, keyStage), [record, keyStage])
 
   // Failure is a route, not an error (spec §3.1): a mesh that will not load,
   // times out, or loses its WebGL context drops the whole stage to the flat
@@ -357,7 +370,12 @@ export default function App({
         </main>
       ) : (
         <main className="main main--explore">
-          <LibraryColumn key="library" selectedId={specimenId} onSelect={selectSpecimen} />
+          <LibraryColumn
+            key="library"
+            selectedId={specimenId}
+            onSelect={selectSpecimen}
+            keyStage={keyStage}
+          />
           <div className="stagewrap" key="stage">{stage}</div>
           <InfoPanel
             key="side"
@@ -374,6 +392,7 @@ export default function App({
           selectedId={specimenId}
           onSelect={selectSpecimen}
           onClose={() => setLibraryOpen(false)}
+          keyStage={keyStage}
         />
       )}
       {libraryOpen && layout === 'phone' && (
@@ -381,6 +400,7 @@ export default function App({
           selectedId={specimenId}
           onSelect={selectSpecimen}
           onClose={() => setLibraryOpen(false)}
+          keyStage={keyStage}
         />
       )}
     </div>

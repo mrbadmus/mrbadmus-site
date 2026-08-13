@@ -24,6 +24,9 @@ export interface HotspotRecord {
   /** Optional override: where present these win, otherwise the hotspot
    * inherits the specimen's specPoints (MRB-193). */
   specPoints?: string[]
+  /** Optional override: where present these win, otherwise the hotspot
+   * inherits the specimen's keyStages. Same mechanism as specPoints (MRB-193). */
+  keyStages?: KeyStage[]
   /** Optional authored alternatives accepted for this structure in the
    * identify round. Written by Mide under the science gate, never computed. */
   accept?: string[]
