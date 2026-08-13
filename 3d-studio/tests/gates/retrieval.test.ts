@@ -169,6 +169,45 @@ describe('gate 12 — grading is exact, and stays out of marking decisions', () 
   })
 })
 
+describe('gate 12 — authored alternatives are accepted, and only authored ones', () => {
+  // A TEST FIXTURE, not content. The real alternatives are authored in the
+  // content record by Mide at the science gate; nothing here derives one.
+  const withAccept = hotspot('a', 'Left ventricle', {
+    accept: ['Left ventricle chamber'],
+  })
+  const withoutAccept = hotspot('a', 'Left ventricle')
+
+  it('an authored alternative is accepted', () => {
+    expect(isCorrect('Left ventricle chamber', withAccept)).toBe(true)
+  })
+
+  it('the label is still accepted alongside it', () => {
+    expect(isCorrect('Left ventricle', withAccept)).toBe(true)
+  })
+
+  it('an alternative matches under the same normalisation as the label', () => {
+    expect(isCorrect('  left   VENTRICLE  chamber ', withAccept)).toBe(true)
+    expect(isCorrect('left ventricle chamber.', withAccept)).toBe(true)
+  })
+
+  it('an empty answer is still wrong, alternatives or not', () => {
+    expect(isCorrect('', withAccept)).toBe(false)
+    expect(isCorrect('   ', withAccept)).toBe(false)
+  })
+
+  it('an alternative NOT on the list is not accepted — nothing is derived', () => {
+    expect(isCorrect('LV', withAccept)).toBe(false)
+    expect(isCorrect('ventricle', withAccept)).toBe(false)
+  })
+
+  it('a hotspot with no accept field grades exactly as before', () => {
+    expect(isCorrect('Left ventricle', withoutAccept)).toBe(true)
+    expect(isCorrect('  left   VENTRICLE ', withoutAccept)).toBe(true)
+    expect(isCorrect('Left ventricle chamber', withoutAccept)).toBe(false)
+    expect(isCorrect('', withoutAccept)).toBe(false)
+  })
+})
+
 describe('gate 12 — the round asks, marks, and brings the missed back', () => {
   const s = specimen([hotspot('a', 'Alpha'), hotspot('b', 'Beta')])
 
@@ -256,6 +295,23 @@ describe('gate 12 — the attempt payload is the contract, field for field', () 
       response: 'Alpha',
       client_key: 'round-1:a:1',
     })
+  })
+
+  it('spec_points come from the HOTSPOT where it declares its own', () => {
+    const own = specimen([
+      hotspot('a', 'Alpha', { specPoints: ['KS4.B.ORG.09'] }),
+    ])
+    const d = deps({ profile: SIGNED_IN })
+    const round = startRound(own, d)
+    const { attempt } = answerQuestion(round, own, 'correct', 'Alpha', d)
+    expect(attempt?.spec_points).toEqual(['KS4.B.ORG.09'])
+  })
+
+  it('and fall back to the specimen where the hotspot declares none', () => {
+    const d = deps({ profile: SIGNED_IN })
+    const round = startRound(s, d)
+    const { attempt } = answerQuestion(round, s, 'correct', 'Alpha', d)
+    expect(attempt?.spec_points).toEqual(['KS4.B.ORG.04', 'KS3.B.BOD.02'])
   })
 
   it('confidence is always null from this surface (contract §6 item 3)', () => {

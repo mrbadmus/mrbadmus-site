@@ -21,6 +21,12 @@ export interface HotspotRecord {
   position2d: [number, number]
   tiers: Tier[]
   retrievable: boolean
+  /** Optional override: where present these win, otherwise the hotspot
+   * inherits the specimen's specPoints (MRB-193). */
+  specPoints?: string[]
+  /** Optional authored alternatives accepted for this structure in the
+   * identify round. Written by Mide under the science gate, never computed. */
+  accept?: string[]
 }
 
 export interface KeyFact {

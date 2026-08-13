@@ -8,10 +8,15 @@
 // live in a view.
 //
 // WHAT IS DELIBERATELY NOT HERE: any judgement about science. Grading compares
-// what the student typed against the hotspot's own `label` from the content
-// record, normalised for case, punctuation and spacing, and nothing else. No
-// synonym list, no "close enough". Whether "left ventricle" and "LV" are the
-// same answer is a marking decision, and marking decisions are Mide's.
+// what the student typed against the hotspot's own `label` and against the
+// hotspot's `accept` list if it has one, normalised for case, punctuation and
+// spacing, and nothing else. No "close enough".
+//
+// That `accept` list is AUTHORED, never computed (MRB-193). Every alternative
+// on it is written down by Mide under the science gate; an alternative that is
+// not written down is not accepted. Nothing here derives one — no stemming, no
+// fuzzy matching, no abbreviation expansion. Whether "left ventricle" and "LV"
+// are the same answer is a marking decision, and marking decisions are Mide's.
 
 import type { HotspotRecord, SpecimenRecord } from './types'
 import type { AttemptPayload, AttemptSubmitter, LearnerProfile } from './attempts'
@@ -134,7 +139,10 @@ export function normaliseAnswer(value: string): string {
 export function isCorrect(response: string, hotspot: HotspotRecord): boolean {
   const given = normaliseAnswer(response)
   if (given === '') return false
-  return given === normaliseAnswer(hotspot.label)
+  if (given === normaliseAnswer(hotspot.label)) return true
+  // The authored alternatives, compared under exactly the same normalisation
+  // as the label — a hotspot with no `accept` list grades on the label alone.
+  return (hotspot.accept ?? []).some((alt) => given === normaliseAnswer(alt))
 }
 
 /**
@@ -162,6 +170,16 @@ export function roundScore(results: readonly RoundResult[]): {
   }
 }
 
+/** Hotspot-level specPoints win; a hotspot without them inherits the
+ * specimen's (MRB-193). */
+function resolveSpecPoints(
+  specimen: SpecimenRecord,
+  hotspot: HotspotRecord,
+): readonly string[] {
+  const own = hotspot.specPoints
+  return Array.isArray(own) && own.length > 0 ? own : specimen.specPoints
+}
+
 /** Build the contract-shaped payload for one graded response. */
 export function buildAttempt(
   specimen: SpecimenRecord,
@@ -177,10 +195,10 @@ export function buildAttempt(
     item_type: 'hotspot',
     item_ref: question.hotspot.id,
     // Contract §2 wants the statement ids the ITEM serves, denormalised at
-    // attempt time. The content schema carries specPoints per SPECIMEN, not
-    // per hotspot, so this is the closest true answer available — flagged in
-    // the Stage 6 report as a gap between the contract and the schema.
-    spec_points: [...specimen.specPoints],
+    // attempt time. MRB-193 closed the gap by adding an optional per-hotspot
+    // specPoints: a hotspot's own list wins where it declares one, and where
+    // it does not the hotspot inherits the specimen's.
+    spec_points: [...resolveSpecPoints(specimen, question.hotspot)],
     pathway: deps.profile.pathway,
     tier: deps.profile.tier,
     key_stage: deps.profile.keyStage,

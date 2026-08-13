@@ -132,6 +132,25 @@
           "retrievable": {
             "type": "boolean",
             "description": "false allows a hotspot to be informative without being examinable."
+          },
+          "specPoints": {
+            "type": "array",
+            "minItems": 1,
+            "description": "OPTIONAL per-hotspot override. Where a hotspot declares its own specPoints they win; where it does not, it inherits the specimen's.",
+            "items": {
+              "description": "Permanent statement IDs (e.g. KS4.B.ORG.04), or a TODO placeholder until spec point bindings land (spec §11 open item).",
+              "anyOf": [
+                { "type": "string", "pattern": "^KS[34]\\..+$" },
+                { "$ref": "#/$defs/placeholder" }
+              ]
+            }
+          },
+          "accept": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "description": "OPTIONAL. Authored alternative answers accepted for this structure in the identify round, under Mide's science gate — an alternative that is not written down here is not accepted. Case and surrounding whitespace are normalised mechanically and nothing else is: no stemming, no fuzzy matching, no abbreviation expansion.",
+            "items": { "$ref": "#/$defs/prose" }
           }
         }
       }

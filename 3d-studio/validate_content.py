@@ -29,9 +29,12 @@ Placeholder convention (Stage 8 checklist): a string value beginning with
 semantic check is deferred — a TODO lessonUrl is not resolved, and while
 assets.acquired is a TODO the missing asset files are reported as "pending
 acquisition" rather than failing. A hotspot position of all zeros likewise
-passes presence but is listed as not yet authored. Everything on that list
-must be cleared, and science-gated text signed off by Mide, before Stage 8
-closes.
+passes presence but is listed as not yet authored. The two optional
+per-hotspot fields added by MRB-193 are listed the same way: a hotspot with no
+'accept' array grades on its label alone until Mide authors the alternatives,
+and a hotspot with no 'specPoints' inherits the specimen's — both are legal,
+both are on the checklist. Everything on that list must be cleared, and
+science-gated text signed off by Mide, before Stage 8 closes.
 
 Exit code 0 = every record valid. Exit code 1 = at least one failure.
 """
@@ -55,6 +58,10 @@ ASSET_KEYS = ["mesh", "fallback", "thumbnail", "licence", "source", "acquired"]
 CALLOUT_KEYS = ["importance", "didYouKnow"]
 HOTSPOT_KEYS = ["id", "label", "detail", "position3d", "position2d", "tiers",
                 "retrievable"]
+# Optional per-hotspot fields (MRB-193). Allowed by the unknown-field check but
+# NOT required — they are deliberately kept out of HOTSPOT_KEYS, which doubles
+# as the required-presence list.
+HOTSPOT_OPTIONAL_KEYS = ["specPoints", "accept"]
 # Aliases that would reintroduce independent name lookups. Their absence is
 # already implied by the unknown-key check; naming them keeps the failure
 # message specific when someone tries.
@@ -203,7 +210,7 @@ def validate_record(fname, record, failures, placeholders):
             fail(f"{hctx} is not an object")
             continue
         for k in h:
-            if k not in HOTSPOT_KEYS:
+            if k not in HOTSPOT_KEYS and k not in HOTSPOT_OPTIONAL_KEYS:
                 fail(f"{hctx}: unknown field '{k}'")
         for k in HOTSPOT_KEYS:
             if k == "retrievable":
@@ -231,6 +238,26 @@ def validate_record(fname, record, failures, placeholders):
         if isinstance(tiers, list) and not all(
                 t in ("foundation", "higher") for t in tiers):
             fail(f"{hctx}: tiers must contain only 'foundation'/'higher'")
+
+        # ── the two optional fields (MRB-193): absent is legal, and listed.
+        # A field that is PRESENT but holds a TODO string is not listed here —
+        # the walk_strings sweep below already catches it, and counting it
+        # twice would overstate the checklist.
+        if "accept" not in h:
+            placeholders.append(f"{hctx}: accept not yet authored "
+                                f"(exact-match on the label only until Mide "
+                                f"authors alternatives)")
+        elif not (isinstance(h["accept"], list) and h["accept"] and all(
+                isinstance(a, str) and a.strip() for a in h["accept"])):
+            fail(f"{hctx}: accept must be a non-empty list of authored "
+                 f"alternatives")
+        if "specPoints" not in h:
+            placeholders.append(f"{hctx}: specPoints not declared — inherits "
+                                f"the specimen's")
+        elif not (isinstance(h["specPoints"], list) and h["specPoints"] and all(
+                isinstance(sp, str) and sp.strip() for sp in h["specPoints"])):
+            fail(f"{hctx}: specPoints must be a non-empty list of statement "
+                 f"IDs")
 
     # ── Stage 8 checklist: every TODO string, wherever it sits
     for path, value in walk_strings(record):
