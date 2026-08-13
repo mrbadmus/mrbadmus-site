@@ -1739,6 +1739,74 @@ body.rd[data-mode="ks3"] {
   [data-bench-grid] { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* ── the initial-pill row (⊕ §4.8.2 · explainer.pills) ──
+   MRS GREN and its successors. DECORATIVE REFERENCE, NOT A CONTROL — no
+   aria-pressed, no cursor, no hover. If it ever grows one a student will press
+   it, and it does nothing. */
+.ks3-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ks3-pills li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 15px 9px 9px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+  border-radius: var(--ks3-r-pill);
+}
+.ks3-pill-badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--ks3-band);
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ks3-accent-text);
+}
+.ks3-pill-label { font-size: 17px; font-weight: 600; }
+
+/* ── mono-numeral scorecards (⊕ §4.8.2 · misconception.scorecards) ──
+   The figure is MONO because it is a live-number role. The card sits on the
+   amber misconception ground without becoming a mark. */
+.ks3-scorecards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 14px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ks3-scorecards li {
+  padding: 18px 20px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card);
+}
+.ks3-scorecard-fig {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ks3-ink);
+}
+.ks3-scorecard-title { margin: 10px 0 0; font-size: 18px; font-weight: 700; }
+.ks3-scorecard-note {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+
 /* Prose standing in for a list in an end-matter card (⊕ §4.8.1 D). */
 .ks3-endmatter-prose { color: var(--ks3-ink-body); }
 .ks3-safety { border-top: 0; margin-top: 18px; }

@@ -216,6 +216,30 @@ def t(s):
     return out
 
 
+# ── inline emphasis (⊕ B1 round two) ─────────────────────────────────────
+#
+# Design's authored strings carry `<em>` and `<strong>` — the key fact, the key
+# note, the MRS GREN explainer, a scorecard note and the hook's reveal all use
+# one or the other, and §4.8.1 B's own field note sanctions `<em>` in a key
+# fact. `t()` is `html.escape`, so every one of those was rendering as a
+# LITERAL `<em>` on the page: Design's emphasis silently turned into visible
+# tag soup. Found by the b1-01 authoring run before it could ship.
+#
+# The fix is an allow-list and deliberately a small one. Escape everything, then
+# put back exactly two tags. Nothing else is permitted — not `<a>`, not `<span
+# class>`, not a bare `<b>` — because the authored strings are the surface a
+# lesson's science lands on, and a general HTML pass-through there is an
+# injection hole and a styling backdoor at the same time. Two tags carry every
+# case in the delivery, and a third needs a ruling rather than a regex.
+_RICH_OK = ("em", "strong")
+_RICH_RE = re.compile(r"&lt;(/?)(%s)&gt;" % "|".join(_RICH_OK))
+
+
+def rich(s):
+    """`t()` plus `<em>` and `<strong>`, and nothing else."""
+    return _RICH_RE.sub(r"<\1\2>", t(s))
+
+
 # ⚠️ ← (U+2190) is absent from the same subsets, and the browse layer used to
 # open three back-links with one. Design's system has no left-arrow mark to
 # draw instead, so those links now say "Back to …" in words — which is what R2
@@ -412,8 +436,18 @@ def r_explainer(lesson, block):
     every lesson to the 60rem break-out, which is the exact measure R11 exists
     to prevent, and it would look almost right.
     """
-    return ('<section class="ks3-block ks3-explainer"><p>%s</p></section>'
-            % t(block.get("text", "")))
+    # ⊕ `pills` — the initial row (MRS GREN and its successors). Decorative
+    # reference, NOT a control: no aria-pressed, no cursor, no hover. The
+    # initial is duplicated in the label's first letter, so a screen reader
+    # reading only the label loses nothing, and the badge is aria-hidden.
+    pills = "".join(
+        '<li><span class="ks3-pill-badge" aria-hidden="true">%s</span>'
+        '<span class="ks3-pill-label">%s</span></li>'
+        % (t(p.get("initial", "")), t(p.get("label", "")))
+        for p in block.get("pills") or [])
+    return ('<section class="ks3-block ks3-explainer"%s><p>%s</p>%s</section>'
+            % (_id_attr(block), rich(block.get("text", "")),
+               ('<ul class="ks3-pills">%s</ul>' % pills) if pills else ""))
 
 
 def r_figure(lesson, block):
@@ -1032,14 +1066,28 @@ def r_key_fact(lesson, block):
     `--ks3-band`, which is the entire reason drift 5 had an outlier. Default is
     `band`, 5:1 across the delivery.
     """
-    text = block.get("text", "")
-    if not text and block.get("ref") is not None:
-        text = (lesson.get("key_facts") or [])[block["ref"]].get("text", "")
-    ground = _ground_of(block, "band")
+    # A `key-fact` block in `core` positions the box by document order, which is
+    # the generator's own mechanism and needs no placement DSL. `ref` names an
+    # entry in the lesson's `key_facts` list BY ID, so the text lives once and
+    # the block says only where it goes.
+    spec = dict(block)
+    ref = block.get("ref")
+    if ref is not None:
+        for kf in lesson.get("key_facts") or []:
+            if kf.get("id") == ref:
+                merged = dict(kf)
+                merged.update({k: v for k, v in block.items()
+                               if k not in ("ref", "type")})
+                spec = merged
+                break
+        else:
+            raise ValueError("key-fact ref %r matches no key_facts[].id" % ref)
+    ground = _ground_of(spec, "band")
     return ('<div class="ks3-keyfact" data-ground="%s">'
             '<p class="ks3-keyfact-label">%s</p>'
             '<p class="ks3-keyfact-body">%s</p></div>'
-            % (e(ground), t(block.get("eyebrow") or "Key fact"), t(text)))
+            % (e(ground), t(spec.get("eyebrow") or "Key fact"),
+               rich(spec.get("text", ""))))
 
 
 def r_rule(lesson, block):
@@ -1057,15 +1105,15 @@ def r_rule(lesson, block):
     """
     cards = "".join(
         '<li><p class="ks3-rule-term">%s</p><p class="ks3-rule-gloss">%s</p></li>'
-        % (t(c.get("term", "")), t(c.get("gloss", "")))
+        % (t(c.get("term", "")), rich(c.get("gloss", "")))
         for c in block.get("cards") or [])
-    close = ('<p class="ks3-rule-close">%s</p>' % t(block["close"])
+    close = ('<p class="ks3-rule-close">%s</p>' % rich(block["close"])
              if block.get("close") else "")
     return ('<section class="ks3-rule"%s><p class="ks3-eyebrow">%s</p>'
             '<p class="ks3-rule-statement">%s</p>'
             '%s%s</section>'
             % (_id_attr(block), t(block.get("eyebrow") or "What settles it"),
-               t(block.get("statement", "")),
+               rich(block.get("statement", "")),
                ('<ul class="ks3-rule-cards">%s</ul>' % cards) if cards else "",
                close))
 
@@ -1142,14 +1190,21 @@ def r_comparison(lesson, block):
 
 
 def _id_attr(block):
-    """`id` plus the 92px scroll margin every anchorable section needs.
+    """The section's anchor id, if it has one.
 
-    Emitted on EVERY id-bearing section, not only the rail's stages — a hash
-    link from the trail, the endmatter or another lesson lands under the sticky
-    bar otherwise. The value is a class in ks3.css; the attribute here is just
-    the id.
+    `anchor` and `id` both appear in authored data and mean different things:
+    `id` names the ACTIVITY a block renders (it is a key into `activities[]`),
+    while `anchor` names the SECTION the rail and hash links point at. A block
+    can carry both, and when it does the anchor is the one that belongs in the
+    document. Reading `id` as an anchor would put an activity's name in the URL
+    and break every rail link on the page.
+
+    The 92px `scroll-margin-top` that makes an anchor land clear of the sticky
+    bar is a rule in ks3.css on `.ks3-lesson [id]`, so it follows automatically
+    from emitting the attribute — no block has to remember it.
     """
-    return (' id="%s"' % e(block["id"])) if block.get("id") else ""
+    anchor = block.get("anchor")
+    return (' id="%s"' % e(anchor)) if anchor else ""
 
 
 BLOCK_RENDERERS = {
@@ -1166,8 +1221,8 @@ BLOCK_RENDERERS = {
     # The label stays an <h2>: `.ks3-keynote p` sets 30px display 700 on every
     # paragraph in the block, so an eyebrow here would be swallowed by it.
     "summary": lambda l, b: (
-        '<section class="ks3-block ks3-dark ks3-keynote"><h2>Key note</h2>'
-        '<p>%s</p></section>' % t(l.get("key_note", ""))),
+        '<section class="ks3-block ks3-dark ks3-keynote"%s><h2>Key note</h2>'
+        '<p>%s</p></section>' % (_id_attr(b), rich(l.get("key_note", "")))),
     "misconception": lambda l, b: r_activity(l, "misconception", b.get("id")),
     "check": lambda l, b: r_activity(l, "check", b.get("id")),
     "worked-example": lambda l, b: r_activity(l, "worked-example", b.get("id")),
