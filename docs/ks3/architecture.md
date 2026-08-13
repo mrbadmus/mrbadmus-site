@@ -483,6 +483,14 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   "ladder":          {...},                        # the four rungs, §5.8
   "key_note":        "...",                        # revision card, last
 
+  # ---- navigation and framing (⊕ B1 round two, §4.8.1) ----------------
+  "rail":            [...stages...],               # ⊕ progress rail, §4.8.1 A
+  "key_facts":       [{...}],                      # ⊕ KEY FACT boxes, §4.8.1 B
+  "tutor":           {...},                        # ⊕ tutor card copy, §4.8.1 C
+  "before_this":     "...",                        # ⊕ prose, used only when requires == []
+  "ks4_becomes":     "...",                        # ⊕ prose, used only when ks4_links == []
+  "safety_note":     "...",                        # ⊕ lesson-specific safety line, §4.8.1 D
+
   # ---- working scientifically ----------------------------------------
   "ws":              ["analysis-and-evaluation"],  # §5.7
 
@@ -490,6 +498,88 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   "review_state":    "draft",                      # draft | examiner-reviewed | frozen (§5.10)
 }
 ```
+
+#### 4.8.1 Amendment — the six fields B1 round two added
+
+Adopted 13 Aug 2026, building Design's approved B1 delivery (MRB-205, MRB-208). Every field
+here was measured on an approved page before it was written down; the per-lesson evidence is in
+`docs/ks3/b1-inventory/`. Nothing in this amendment is optional-by-omission — a lesson that does
+not need a field omits it, and the renderer emits nothing.
+
+**A · `rail` — the progress rail (MRB-208 rule 2).**
+
+```python
+"rail": [
+  {"anchor": "s-hook", "short": "HOOK", "label": "The flame", "done_when": "committed"},
+  ...
+]
+```
+
+`anchor` must name a section the lesson actually emits, and every id-bearing section carries
+`scroll-margin-top: 92px` whether or not the rail references it — otherwise a hash link from
+anywhere else lands under the sticky bar. `short` is ≤6 characters and renders in the side rail's
+mono label; `label` is sentence case and renders in the sub-1340px top bar. Two label sets, both
+authored, neither derivable from the block titles.
+
+`done_when` names a completion predicate over state the block already owns. **Both rail variants
+are completion-based and nothing is ticked on load** — ruled on MRB-208, 13 Aug, against the
+delivered narrow variant, which was `IntersectionObserver`-driven and read "4 / 4" with a full
+accent bar for a student who scrolled to the bottom and answered nothing. Where the approved page
+contradicts a settled ruling, the ruling wins and the page gets corrected.
+
+**B · `key_facts` — the KEY FACT box (MRB-208 rule 3).**
+
+```python
+"key_facts": [
+  {"text": "...", "placement": "top-level", "ground": "band", "eyebrow": "Key fact"}
+]
+```
+
+A list, because b1-03 carries two. `placement` is `"top-level"` (a direct child of `.ks3-lesson`,
+in `core` order) or `"inside:<section-id>"` (appended as the last child of a named block).
+`ground` is `band` by default — drift 5's ruling, 5:1 — and `card` where the box is nested inside
+a block that is itself `--ks3-band`, which is the only reason the outlier existed. **Never amber:**
+amber is a wrong idea being confronted and a key fact must never be confusable with a
+misconception. The box carries no badge, no letter and no mark, because `--ks3-band` is also the
+chosen-wrong ladder ground (MRB-202) and anything mark-like here reads as a verdict.
+
+**C · `tutor` — the tutor card.**
+
+```python
+"tutor": {"prompt": "Stuck on why a flame isn't alive?", "cta": "Ask about this lesson",
+          "anchor": "s-board"}
+```
+
+Replaces hard-coded generic copy. `anchor`, when present, makes the CTA a real in-page link; when
+absent the card renders the non-interactive `<span>` §8.8 requires, because a KS3 student can
+reach no tutor today.
+
+**D · `before_this`, `ks4_becomes`, `safety_note` — three prose slots.**
+
+`before_this` renders in the endmatter's first card **only when `requires` is empty** ("Nothing —
+this is where the unit starts."). `ks4_becomes` renders in the third card **only when `ks4_links`
+is empty**. Both exist because the generator previously omitted the card entirely and Design's
+pages carry prose there. `safety_note` is a lesson-specific line rendered alongside `LEGAL_LINE`,
+not instead of it.
+
+#### 4.8.2 Amendment — extensions inside existing records
+
+Four records gain sub-shapes. These are not new top-level fields; they are shapes the existing
+records could not express.
+
+| Record | Extension | Why |
+|---|---|---|
+| `figures[]` | `kind` gains `css-art` and `photo`; new `art: "<registered-art-id>"`; new `slot_label: "..."` | A DOM/CSS illustration is not derivable from any data shape — it must bind to a registered named art component. `slot_label` distinguishes "Photo coming soon" from "Diagram coming soon": a micrograph is not a diagram and §4.10 says the two sourcing efforts must not be merged. |
+| `phenomenon` | `tiles: [{n, label, note}]`, `art: "<figure-id>"`, `figures: [id, id]` | The hook carries a numbered part-tile row on b1-03 and a two-up pending-photo pair on b1-02. |
+| `explainer` block | `pills: [{initial, label}]` | The MRS GREN initial row. Decorative reference, not a control: no `aria-pressed`, no cursor, no hover. |
+| `misconception` activity | `scorecards: [{figure, title, note}]`; `statements: [...]` | Two mono-numeral cards; and b1-03/04/05/06 each carry **one** misconception block holding **two** misconceptions, which the single-`statement` shape cannot express. |
+
+**One breaking change.** `activities[].fifa` becomes a **list** of `{letter, name, line, note}`
+rather than a dict of four fixed keys, so a worked example can stage its reveal one step at a time
+(MRB-204 step 3). This breaks two shipped KS3 lessons and the migration ships in the same commit.
+`.ks3-fifa` keeps the **scaffold** job Design gives it — the method as instructions beside a
+question the student is about to answer — and the worked answer moves to the `worked-example`
+block's staged stepper.
 
 And the unit record that wraps them — one per module in `ks3_data/` (§8.3):
 
@@ -647,6 +737,30 @@ these types and no others; a new type requires an amendment to this document.
 | `misconception` | The confrontation activity. Law 3. Required. |
 | `summary` | Consolidation. |
 | `quiz` | The mastery ladder (§5.8) and micro-checks. |
+| `key-fact` | ⊕ The one line that must survive the lesson. §4.8.1 B. |
+| `rule` | ⊕ The statement panel — the lesson's rule, in the student's own words. |
+| `formula` | ⊕ MRB-204's standalone formula. Its own block, nothing else in it. |
+| `comparison` | ⊕ Two things held against each other, row by row. CONTRAST's spine. |
+
+⊕ **Amendment, 13 Aug 2026 — four block types added (MRB-205, MRB-204, MRB-208).** The vocabulary
+is still closed; it is now fourteen types rather than ten. Each of the four was drawn by Design on
+an approved B1 page before it was written here, which is the order MRB-205 requires — Design draws,
+Code renders, and the registry (MRB-203) fails the build on a type with no registered component.
+
+- **`key-fact`** and **`rule`** were both rendering as `explainer` prose or not at all. They are
+  distinct shells: `key-fact` is `--ks3-band` on a 2px ink border with a 5px **accent** offset
+  shadow (the accent shadow is what separates it from a `.ks3-block`, whose shadow is ink);
+  `rule` is `--ks3-band` on a **3px** ink border with no shadow and a display-type statement at
+  `clamp(28px, 3.9vw, 44px)` — drift 3's ruled value, the modal and median of the four real
+  statements in the delivery.
+- **`formula`** exists because MRB-204 ruled that a formula stands alone in its own block, "not
+  embedded in a paragraph, not inside a worked example, not sharing a card. A student flicking back
+  through the lesson to find the formula must be able to see it from the scroll position." Its
+  statement is **centred with no `max-width`**, which is what distinguishes it from `rule`'s
+  left-aligned 20ch measure; the two shells are otherwise identical and a future tidy-up will try to
+  merge them, so a parity pair asserts they stay apart.
+- **`comparison`** is the CONTRAST family's spine and 18 lessons inherit it. It is flex, never grid:
+  a grid cannot produce the 820px stack without a second query.
 
 **The grammar** — the seven families (§6) decide **which** segments a lesson uses, **how many**, and
 **in what order** the middle runs. The families are unchanged.

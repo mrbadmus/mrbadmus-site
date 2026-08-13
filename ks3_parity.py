@@ -1436,42 +1436,112 @@ _JS_SETTLE = r"""
 # resolved colours are identical whichever was pressed, and that none of them
 # is a marking colour. If a correct answer were ever tinted differently from a
 # wrong one on an activity block, this fails and names the block.
+#
+# ⚖️ SCOPE, ruled by chat-app Claude on MRB-202, 13 Aug 2026.
+#
+# The assertion is scoped to THE OPTION BUTTON, and to nothing else:
+#
+#     "R3's text is about the control... The rule protects the *moment of
+#      committing*. A student looking at a row of options must not be able to
+#      read the answer off the buttons. What happens **after** they commit is a
+#      reveal, and every activity in the system has one — that is Law 4's whole
+#      shape: commit, then find out. A reveal that states the answer is not a
+#      violation; it is the mechanism. So the assertion tests one thing: no
+#      `.ks3-option` carries a correctness treatment — no `data-correct`, no
+#      ok/alert ground, no drawn ✓ or ✕ — outside the mastery ladder. Reveal
+#      panels, answer notes and after-the-fact prose are out of scope."
+#
+# Two consequences for how this is written:
+#
+#   1. The scope is now EVERY `.ks3-option` outside `.ks3-ladder`, not the three
+#      block classes it used to name. That is strictly stronger — an option in a
+#      block type nobody has invented yet is covered on the day it appears,
+#      which is the MRB-203 failure mode one level down.
+#   2. It reads the button's OWN resolved style and never walks up to an
+#      ancestor for an effective ground. b1-05's `#s-hard` marks the ROW
+#      CONTAINER after the student opens the answers (`--ks3-inset`/ink for
+#      right, `--ks3-alert-tint`/`--ks3-alert-border` for wrong) and leaves the
+#      choice buttons untouched — measured, b1-inventory §3.4.2. That is a
+#      reveal, so it passes, and it must pass without an exception list. No
+#      exception list is created: "an exception list is how a rule stops being
+#      a rule — the first entry is always justified and the tenth never gets
+#      read."
+#
+# Amber note: on an ink-dark block Design's chosen option takes an `--ks3-alert`
+# BORDER on the unchanged `--ks3-dark-panel` ground. That is the drawn
+# chosen-state and is identical whichever option is picked, so it is choosing,
+# not marking. Grounds are checked against the marking families; borders are
+# only checked through the "all alike" test, which is what separates the two.
 _JS_R3_RUNTIME = r"""
 (function () {
-  var MARKING = ['rgb(18, 161, 80)', 'rgb(228, 247, 235)', 'rgb(10, 107, 54)'];
+  // ok family (the ladder's correct state) and the alert TINTS that would read
+  // as a verdict if they ever landed on a control's ground.
+  var MARKING_GROUND = ['rgb(18, 161, 80)',   /* --ks3-ok       */
+                        'rgb(228, 247, 235)', /* --ks3-ok-tint  */
+                        'rgb(10, 107, 54)',   /* --ks3-ok-text  */
+                        'rgb(255, 243, 212)'  /* --ks3-alert-tint */];
   var out = [];
-  var blocks = document.querySelectorAll('.ks3-block.ks3-check, .ks3-block.ks3-misconception, .ks3-block.ks3-practical');
-  for (var b = 0; b < blocks.length; b++) {
-    var opts = blocks[b].querySelectorAll('.ks3-option');
-    if (!opts.length) { continue; }
-    var seen = [], disabled = false;
-    for (var i = 0; i < opts.length; i++) {
-      opts[i].click();
-      var cs = getComputedStyle(opts[i]);
-      var mk = opts[i].querySelector('.ks3-opt-mark');
-      var sig = [cs.backgroundColor, cs.borderTopColor,
+  // Every option button on the page that is not a mastery-ladder rung's.
+  var all = document.querySelectorAll('.ks3-option');
+  var opts = [];
+  for (var k = 0; k < all.length; k++) {
+    if (!all[k].closest('.ks3-ladder')) { opts.push(all[k]); }
+  }
+  // Group by the activity/block that owns each option, so a failure names it.
+  var groups = {}, order = [];
+  for (var j = 0; j < opts.length; j++) {
+    var own = opts[j].closest('[data-activity]') || opts[j].closest('section') || document.body;
+    var id = own.getAttribute && (own.getAttribute('data-activity') || own.id);
+    id = id || ('block ' + j);
+    if (!groups[id]) { groups[id] = []; order.push(id); }
+    groups[id].push(opts[j]);
+  }
+  for (var g = 0; g < order.length; g++) {
+    var id = order[g], list = groups[id], seen = [], disabled = false;
+    for (var i = 0; i < list.length; i++) {
+      var o = list[i];
+      // (a) marking DATA never reaches an activity option.
+      if (o.hasAttribute('data-correct')) {
+        out.push(id + ': an activity option carries data-correct');
+      }
+      o.click();
+      var cs = getComputedStyle(o);
+      var mk = o.querySelector('.ks3-opt-mark');
+      // (b) a drawn mark never appears on an activity option. The ladder draws
+      //     its ✓/✕ as an <svg class="ks3-mark"> inside the badge; a typed ✓/✕
+      //     in the badge text is the same claim by another route.
+      if (o.querySelector('svg.ks3-mark')) {
+        out.push(id + ': a drawn ✓/✕ appears on an activity option');
+      }
+      if (mk && /[✓✔✕✖✗✘×]/.test(mk.textContent || '')) {
+        out.push(id + ': a typed ✓/✕ appears on an activity option badge');
+      }
+      // (c) the ground never takes a marking colour.
+      var grounds = [cs.backgroundColor, mk ? getComputedStyle(mk).backgroundColor : ''];
+      for (var q = 0; q < grounds.length; q++) {
+        for (var m = 0; m < MARKING_GROUND.length; m++) {
+          if (grounds[q] === MARKING_GROUND[m]) {
+            out.push(id + ': a marking colour (' + MARKING_GROUND[m] +
+                     ') is the ground of an activity option');
+          }
+        }
+      }
+      // (d) whichever option was pressed, the button looks the same. This is
+      //     the assertion that separates CHOOSING from MARKING, and it is read
+      //     off the button, never off an ancestor.
+      seen.push([cs.backgroundColor, cs.borderTopColor,
                  mk ? getComputedStyle(mk).backgroundColor : '',
-                 mk ? getComputedStyle(mk).color : ''].join(' | ');
-      seen.push(sig);
-      if (opts[i].disabled) { disabled = true; }
+                 mk ? getComputedStyle(mk).color : ''].join(' | '));
+      if (o.disabled) { disabled = true; }
     }
-    var id = blocks[b].getAttribute('data-activity') || ('block ' + b);
     var uniq = seen.filter(function (v, i, a) { return a.indexOf(v) === i; });
     if (uniq.length !== 1) {
       out.push(id + ': chosen options do not all render alike — ' +
                uniq.length + ' distinct treatments: ' + uniq.join('  //  '));
     }
-    for (var u = 0; u < uniq.length; u++) {
-      for (var m = 0; m < MARKING.length; m++) {
-        if (uniq[u].indexOf(MARKING[m]) !== -1) {
-          out.push(id + ': a marking colour (' + MARKING[m] +
-                   ') appears on an activity option — ' + uniq[u]);
-        }
-      }
-    }
     if (disabled) { out.push(id + ': an activity option was disabled'); }
   }
-  return { problems: out, blocks: blocks.length };
+  return { problems: out, blocks: order.length, options: opts.length };
 })()
 """
 
