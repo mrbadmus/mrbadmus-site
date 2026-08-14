@@ -30,7 +30,7 @@ is deliberate and ruled:
     which is the opposite of "depth to spare". The line was true on the page's own
     superseded inline table (0.30 / 0.09 / 0.012 mm); it became wrong when the two
     approved microscopes were reconciled onto one instrument. Corrected wording is
-    in `sim["notes"]["100"]` below. ×40 and ×400 are untouched — both survive the
+    in `sim["resolve_notes"]["100"]` below. ×40 and ×400 are untouched — both survive the
     ruled table (×40 holds all three layers at the lesson's starting focus of 50;
     ×400's window is ±0.0048 mm, ~24× thinner than one 0.115 mm cell).
 
@@ -518,7 +518,15 @@ LESSON = {
              # window is ±0.0240 mm against layers 0.055 mm apart, so exactly
              # one layer is sharp at every one of the 101 wheel positions and
              # the sharp slice is thinner than the gap between the layers.
-             "notes": {                                            # NEW
+             #
+             # ⚠️ The key is `resolve_notes`, which is what `r_micro_bench`
+             # reads (build_ks3.py) and what b1-06 authors. This record said
+             # `notes` until 14 Aug 2026, and the generator has no such field —
+             # so the whole block, INCLUDING Mide's approved ×100 correction,
+             # was validated by nothing and dropped on the floor. The corrected
+             # line was reported as delivered and appeared zero times in the
+             # built page. Renaming is the entire fix; the copy was already right.
+             "resolve_notes": {                                    # NEW
                  "40": "At ×40 the whole thickness of the skin is in focus at "
                        "once. Easy to find things; not much detail in them.",
                  "100": "At ×100 only one layer is sharp at a time. Rack the "

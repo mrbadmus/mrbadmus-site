@@ -35,19 +35,30 @@ without the component. b1-06 has no bench grid.
 So the bench grid lives on exactly **two** pages, and the count is not 2:1 — it
 is **1:1, 240px against 232px**.
 
-### ⚖️ Ruled: `240px` — and this is the weakest of the five
+### ⚖️ Ruled: `232px` — SUPERSEDED BY MIDE, MRB-208, 13 Aug 2026
 
-A genuine tie with no strong basis, which is worth saying rather than dressing
-up. The tie-break used: **b1-03 is the approved reference screen for MODEL, 50
-slots; b1-04 is the approved reference screen for SYSTEM, 32.** Both are
-approved, both are equally "Design's intent", so the one that is right on more
-lessons wins. That is a thin reason, but it is a reason, and the alternative is
-a coin toss presented as a finding.
+**This section previously ruled 240px. Mide overruled it the same day and the
+generator has shipped 232px ever since** (`shared/ks3.css`, `[data-bench-grid]`).
+The ruling is recorded on MRB-208:
+
+> **232px.** b1-04 is the approved reference screen for SYSTEM, which carries 32
+> slots — the largest family with a drawn screen behind it. A tie between two
+> live pages breaks toward the one that also defines a family.
+
+The tie-break this document originally used was reach — b1-03 defines MODEL (50
+slots) against b1-04's SYSTEM (32) — and it took the larger family. Mide's
+tie-break is *which page is a reference screen at all*, and it is the better one:
+both pages are approved, but a reference screen is the artefact the parity gate
+measures a whole family against, so its measurements are load-bearing in a way an
+ordinary approved page's are not.
 
 The difference is 8px on a control column and carries no semantic content; both
-sit on the 8px step the rest of the system uses. **If Mide or Design prefers
-232px, it costs one number to change** and nothing about this document's other
-rulings depends on it.
+sit on the 8px step the rest of the system uses.
+
+⚠️ **This doc said 240px for a day while the code said 232px.** Left visible
+rather than silently rewritten: the ruled value lives on the ticket, and a
+measurement document that disagrees with a ruling is how a settled decision
+quietly becomes a discussion again.
 
 **Not to be confused with** a separate `repeat(auto-fit, minmax(Npx, 1fr))` on
 b1-01 line 222 (232px), b1-02 line 274 (240px) and b1-04 line 217 (232px). That
@@ -227,7 +238,7 @@ KEY FACT box must never grow anything that reads as a mark.
 
 | # | Drift | Count | Ruled | Basis |
 |---|---|---|---|---|
-| 1 | bench grid column | **1:1** (b1-06's is dead CSS) | **240px** | a real tie; broken on reference-screen reach (MODEL 50 slots vs SYSTEM 32). The weakest of the five |
+| 1 | bench grid column | **1:1** (b1-06's is dead CSS) | **232px** | SUPERSEDED by Mide (MRB-208, 13 Aug): a tie between two live pages breaks toward the one that is a reference screen. This doc's own 240px ruling is withdrawn |
 | 2 | bench grid collapse | **780 unanimous** among live declarations | **780px** | REVERSED 13 Aug — b1-06 has no bench grid, so the collision that justified 820 does not exist. 820 remains the comparison rows' own threshold |
 | 3 | statement type | 4 occurrences of the role | **clamp(28px, 3.9vw, 44px)** | modal and median of the four real statements; b1-02 (formula) and b1-05 (instrument readout) are excluded — see the correction |
 | 4 | `seg()` light branch | 4 variants | **b1-06's** | only one whose geometry matches its own dark branch; b1-04 and b1-03 are not drift |
