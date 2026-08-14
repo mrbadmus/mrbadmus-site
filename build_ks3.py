@@ -1346,6 +1346,246 @@ def r_sort_rows(a, act_id):
                len(items), e(_count_word(len(items))), len(items), self_check))
 
 
+def r_cell_bench(a, act_id):
+    """⊕ MODEL's flagship — seven parts, two cells, two ways of looking.
+
+    b1-03 is the approved reference screen for MODEL, which carries 50 lesson
+    slots, so this is the single highest-reach component in B1. It rendered as
+    an empty section.
+
+    The instrument's argument is the second view. A textbook drawing shows all
+    seven parts; a school microscope shows three. Switching between them is
+    how a student learns to tell "not there" from "there but you cannot see
+    it" — which is the misconception the lesson exists to break, and it cannot
+    be taught by a diagram alone.
+
+    Every part carries `mark[specimen]` — the circles the canvas draws over
+    the chosen part — so the marks live with the part rather than with the
+    drawing, and a part that is absent from a specimen simply has none.
+    """
+    parts = a.get("parts") or []
+    specimens = a.get("specimens") or []
+    views = a.get("views") or []
+    if not parts:
+        raise ValueError("cell-bench %r declares no parts[]." % act_id)
+    if len(specimens) < 2:
+        raise ValueError(
+            "cell-bench %r declares %d specimen(s). The whole instrument is "
+            "'watch which parts stay put when you switch the cell'."
+            % (act_id, len(specimens)))
+    for p in parts:
+        for sp in specimens:
+            marks = (p.get("mark") or {}).get(sp["id"])
+            if marks is None and p.get("where") != "plant":
+                raise ValueError(
+                    "cell-bench %r part %r has no mark for specimen %r. A part "
+                    "the student can select and the canvas cannot point at is "
+                    "a control that does nothing."
+                    % (act_id, p.get("id"), sp["id"]))
+
+    labels = a.get("control_labels") or {}
+    where_labels = a.get("where_labels") or {}
+    start = a.get("start") or specimens[0]["id"]
+
+    def seg_row(name, items, current, extra=""):
+        btns = "".join(
+            '<button type="button" class="ks3-seg-btn ks3-bench-%s" '
+            'data-%s="%s" aria-pressed="%s"%s>%s</button>'
+            % (name, name, e(it["id"]),
+               "true" if it["id"] == current else "false",
+               ' data-locked="1"' if it.get("locked_until_gate") else "",
+               t(it.get("label", "")))
+            for it in items)
+        return ('<div class="ks3-bench-control"><p class="ks3-bench-control-label">'
+                '%s</p><div class="ks3-bench-seg">%s</div></div>'
+                % (t(labels.get(name, name.title())), btns))
+
+    controls = seg_row("specimen", specimens, start)
+    if views:
+        controls += seg_row("view", views, views[0]["id"])
+
+    gate = ""
+    g = a.get("gate") or {}
+    if g.get("options"):
+        gate = ('<div class="ks3-bench-gate" data-bench-gate>'
+                '<p class="ks3-bench-gate-q">%s</p>%s</div>'
+                % (t(g.get("q", "")), r_activity_options(g["options"])))
+
+    part_btns = "".join(
+        '<li><button type="button" class="ks3-part" data-part="%s" '
+        'aria-pressed="%s"><span class="ks3-part-num" aria-hidden="true">%s'
+        '</span><span class="ks3-part-body">'
+        '<span class="ks3-part-name">%s</span>'
+        '<span class="ks3-part-tag" data-where="%s"></span>'
+        '</span></button></li>'
+        % (e(p["id"]), "true" if i == 0 else "false", t(p.get("num", "")),
+           t(p.get("name", "")), e(p.get("where", "")))
+        for i, p in enumerate(parts))
+
+    meta = json.dumps({
+        "parts": [{"id": p["id"], "num": p.get("num", ""),
+                   "name": p.get("name", ""), "where": p.get("where", ""),
+                   "job": p.get("job", ""), "detail": p.get("detail", ""),
+                   "visible": bool(p.get("visible")),
+                   "scope_note": p.get("scope_note", ""),
+                   "mark": p.get("mark") or {}} for p in parts],
+        "specimens": [{"id": s["id"], "label": s.get("label", ""),
+                       "art": s.get("art", ""), "alt": s.get("alt", ""),
+                       "caption": s.get("caption", ""),
+                       "tally": s.get("tally", ""),
+                       "absent_tag": s.get("absent_tag", ""),
+                       "absent_detail": s.get("absent_detail", "")}
+                      for s in specimens],
+        "where_labels": where_labels,
+        "scope_words": a.get("scope_words") or {},
+        "space": a.get("mark_space") or {"w": 900, "h": 560},
+    }, sort_keys=True)
+
+    return ('<div class="ks3-bench-controls">%s</div>%s'
+            '<div class="ks3-bench" data-bench-grid="1" data-cellbench="%s">'
+            '<ul class="ks3-parts" role="list">%s</ul>'
+            '<div class="ks3-bench-main">'
+            '<div class="ks3-bench-figure">'
+            '<canvas class="ks3-bench-canvas" width="1800" height="1120" '
+            'role="img" data-bench-canvas></canvas>'
+            '<p class="ks3-bench-caption" data-bench-caption></p></div>'
+            '<div class="ks3-readout" data-readout>'
+            '<div class="ks3-readout-head">'
+            '<span class="ks3-readout-num" aria-hidden="true" data-readout-num>'
+            '</span>'
+            '<span class="ks3-readout-name" data-readout-name></span>'
+            '<span class="ks3-readout-where" data-readout-where></span></div>'
+            '<p class="ks3-readout-job" data-readout-job></p>'
+            '<p class="ks3-readout-detail" data-readout-detail></p>'
+            '<p class="ks3-readout-scope" hidden data-readout-scope>'
+            '<strong class="ks3-readout-scope-word" data-readout-scope-word>'
+            '</strong> <span data-readout-scope-note></span></p></div>'
+            '<p class="ks3-bench-tally" data-bench-tally></p>'
+            '</div></div>'
+            % (controls, gate, e(meta), part_btns))
+
+
+def r_sort_pairs(a, act_id):
+    """⊕ The two-way sorter — wall or membrane, the pair swapped most often.
+
+    Rendered as an empty section. Structurally the three-way sorter's sibling,
+    and deliberately NOT built on it: this one sends each statement to one of
+    two named things rather than sorting rows into categories, and Design draws
+    it as a row with the two names as buttons. One component that tried to be
+    both would be the "nearest shape that exists" failure again.
+
+    R3: nothing is marked here, and the intro says so in as many words.
+    """
+    rows = a.get("rows") or []
+    cats = a.get("categories") or []
+    if len(cats) != 2:
+        raise ValueError(
+            "sort-pairs %r declares %d categories. It is the TWO-way sorter; "
+            "three or more is `sort-rows`." % (act_id, len(cats)))
+    ids = {c["id"] for c in cats}
+    for r in rows:
+        if r.get("answer") not in ids:
+            raise ValueError(
+                "sort-pairs %r row %r answers %r, which is neither of %r."
+                % (act_id, r.get("id"), r.get("answer"), sorted(ids)))
+
+    lookup = {c["id"]: c.get("label", c["id"]) for c in cats}
+    out = []
+    for r in rows:
+        chips = "".join(
+            '<button type="button" class="ks3-seg-btn ks3-pair-chip" '
+            'data-cat="%s" aria-pressed="false">%s</button>'
+            % (e(c["id"]), t(c.get("label", ""))) for c in cats)
+        out.append(
+            '<li class="ks3-pairrow" data-row="%s">'
+            '<p class="ks3-pairrow-text">%s</p>'
+            '<div class="ks3-pairrow-chips">%s</div>'
+            '<p class="ks3-pairrow-note" hidden data-reveal>'
+            '<strong class="ks3-pairrow-word">%s</strong> %s</p></li>'
+            % (e(r.get("id", "")), rich(r.get("text", "")), chips,
+               t(lookup[r["answer"]] + "."), rich(r.get("note", ""))))
+
+    unit = a.get("progress_unit") or "sent"
+    panel = ('<div class="ks3-pair-panel" hidden data-pair-panel>%s</div>'
+             % rich(a["reveal_panel"])) if a.get("reveal_panel") else ""
+    return ('<ul class="ks3-pairrows" role="list">%s</ul>'
+            '<div class="ks3-pair-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-pair-reveal" '
+            'data-pair-reveal disabled>%s</button>'
+            '<span class="ks3-pair-progress" data-pair-progress '
+            'data-total="%d" data-unit="%s">0 of %d %s</span></div>%s'
+            % ("".join(out), t(a.get("reveal_label") or "Show the answers"),
+               len(rows), e(unit), len(rows), t(unit), panel))
+
+
+def r_fit_parts(a, act_id):
+    """⊕ Build four real cells from one parts list, then run them.
+
+    "Which parts" becomes a consequence of "what job". Rendered as an empty
+    section. The parts list is `parts_from` — it names the bench's activity, so
+    the two instruments share one list and a part cannot exist in the builder
+    and not on the bench.
+    """
+    specimens = a.get("specimens") or []
+    if not specimens:
+        raise ValueError("fit-parts %r declares no specimens[]." % act_id)
+    for sp in specimens:
+        if not sp.get("needs"):
+            raise ValueError(
+                "fit-parts %r specimen %r needs no parts at all — there would "
+                "be nothing to get right." % (act_id, sp.get("id")))
+
+    tabs = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-fit-tab" data-fit="%s" '
+        'aria-pressed="%s">%s</button>'
+        % (e(sp["id"]), "true" if i == 0 else "false", t(sp.get("label", "")))
+        for i, sp in enumerate(specimens))
+
+    meta = json.dumps({
+        "specimens": [{"id": s["id"], "label": s.get("label", ""),
+                       "kind": s.get("kind", ""), "job": s.get("job", ""),
+                       "where": s.get("where", ""),
+                       "needs": list(s.get("needs") or []),
+                       "waste": s.get("waste") or {},
+                       "note": s.get("note", "")} for s in specimens],
+        "labels": {
+            "job": a.get("job_label", "The job"),
+            "install": a.get("install_label", "Install the parts"),
+            "run": a.get("run_label", "Run this cell"),
+            "rerun": a.get("rerun_label", "Run it again"),
+            "clear": a.get("clear_label", "Strip it back out"),
+            "empty": a.get("install_empty_hint", "Install something first"),
+            "unit": a.get("progress_unit", "cells run"),
+            "installed": a.get("install_unit", "installed"),
+        },
+        "verdicts": a.get("verdicts") or {},
+        "finding_words": a.get("finding_words") or {},
+        "consequence": a.get("consequence") or {},
+        "note_when": a.get("note_when", ""),
+        "waste_fallback": a.get("waste_fallback", ""),
+        "parts_from": a.get("parts_from", ""),
+    }, sort_keys=True)
+
+    return ('<div class="ks3-fit" data-fit-spec="%s">'
+            '<div class="ks3-fit-tabs">%s</div>'
+            '<div class="ks3-fit-job"><p class="ks3-fit-job-label"></p>'
+            '<p class="ks3-fit-job-text"></p>'
+            '<p class="ks3-fit-job-where"></p></div>'
+            '<p class="ks3-fit-install-label"></p>'
+            '<ul class="ks3-fit-parts" role="list" data-fit-parts></ul>'
+            '<div class="ks3-fit-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-fit-run" '
+            'data-fit-run></button>'
+            '<button type="button" class="ks3-fit-clear" data-fit-clear>'
+            '</button>'
+            '<span class="ks3-fit-progress" data-fit-progress></span></div>'
+            '<div class="ks3-fit-out" hidden data-reveal>'
+            '<p class="ks3-fit-verdict" data-fit-verdict></p>'
+            '<ul class="ks3-fit-findings" role="list" data-fit-findings></ul>'
+            '<p class="ks3-fit-note" data-fit-note></p></div>'
+            '</div>' % (e(meta), tabs))
+
+
 ZOOM_DRAWINGS = {"plant", "plant-shoot", "one-leaf", "leaf-section", "one-cell"}
 
 
@@ -2187,6 +2427,11 @@ ACTIVITY_KIND_RENDERERS = {
                       ' data-instrument data-board data-stage-done="0"'),
     "sort-rows":     ("ks3-sort",
                       ' data-instrument data-sort data-stage-done="0"'),
+    "cell-bench":    ("ks3-cellbench-block",
+                      ' data-instrument data-cellbench data-stage-done="0"'),
+    "sort-pairs":    ("ks3-pairs", ' data-instrument data-pairs data-stage-done="0"'),
+    "fit-parts":     ("ks3-fit-block",
+                      ' data-instrument data-fitblock data-stage-done="0"'),
     "zoom-ladder":   ("ks3-zoom-block",
                       ' data-instrument data-zoomblock data-stage-done="0"'),
     "sort-task":     ("ks3-hard", ' data-instrument data-hard data-stage-done="0"'),
@@ -2315,6 +2560,12 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append(r_sort_rows(a, act_id))
     if kind == "settles-it":
         parts.append(r_settles_it(a, act_id))
+    if kind == "cell-bench":
+        parts.append(r_cell_bench(a, act_id))
+    if kind == "sort-pairs":
+        parts.append(r_sort_pairs(a, act_id))
+    if kind == "fit-parts":
+        parts.append(r_fit_parts(a, act_id))
     if kind == "zoom-ladder":
         parts.append(r_zoom_ladder(a, act_id))
     if kind == "sort-task":

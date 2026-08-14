@@ -4077,6 +4077,589 @@
     if (panels.length) { show(panels[0].getAttribute("data-case")); }
   }
 
+
+  /* ═══════════════════════════════════════════════════════════════
+     b1-03's three instruments. b1-03 is the approved reference screen
+     for MODEL — 50 lesson slots — and all three rendered as empty
+     sections. The cell drawings, `rr`, `ell` and `blob` below are
+     ported VERBATIM from Design's approved b1-03.
+     ═══════════════════════════════════════════════════════════════ */
+
+  var CVW = 900, CVH = 560;
+
+  function rr(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function ell(ctx, x, y, rx, ry, rot) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, Math.max(0.5, rx), Math.max(0.5, ry), rot || 0, 0, Math.PI * 2);
+  }
+
+  function blob(ctx, cx, cy, rx, ry, seed) {
+    ctx.beginPath();
+    for (let i = 0; i <= 150; i++) {
+      const t = (i / 150) * Math.PI * 2;
+      const k = 1 + 0.055 * Math.sin(3 * t + seed) + 0.032 * Math.cos(5 * t - seed);
+      const x = cx + Math.cos(t) * rx * k;
+      const y = cy + Math.sin(t) * ry * k;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+  }
+
+  function leafBody(ctx, mode, stained) {
+    const lw = mode === 'scope' ? 1.9 : 1;
+    rr(ctx, 118, 58, 664, 444, 34);
+    ctx.fillStyle = mode === 'scope' ? '#CFB98A' : '#D9C48D';
+    ctx.fill();
+    ctx.lineWidth = 2.6 * lw; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+
+    rr(ctx, 138, 78, 624, 404, 26);
+    ctx.fillStyle = mode === 'scope' ? '#EDF2E1' : '#F5ECD8';
+    ctx.fill();
+    if (mode === 'diagram') { ctx.lineWidth = 2.2; ctx.strokeStyle = '#A2603A'; ctx.stroke(); }
+
+    rr(ctx, 236, 176, 428, 208, 72);
+    ctx.fillStyle = mode === 'scope' ? '#E3EDE2' : '#E4EDE9';
+    ctx.fill();
+    ctx.lineWidth = (mode === 'scope' ? 1.4 : 2) * lw; ctx.strokeStyle = '#9AB0A6'; ctx.stroke();
+
+    ctx.save();
+    if (mode === 'scope') ctx.filter = 'blur(0.7px)';
+    CHLORO.forEach((c) => {
+      ctx.save();
+      ctx.translate(c[0], c[1]); ctx.rotate(c[2]);
+      ell(ctx, 0, 0, 27, 16, 0);
+      ctx.fillStyle = mode === 'scope' ? '#5C8544' : '#4F7C3B';
+      ctx.fill();
+      ctx.lineWidth = 2 * lw; ctx.strokeStyle = '#2F5326'; ctx.stroke();
+      if (mode === 'diagram') {
+        ctx.lineWidth = 3; ctx.strokeStyle = '#6E9C52';
+        [-11, 0, 11].forEach((dx) => { ctx.beginPath(); ctx.moveTo(dx, -6); ctx.lineTo(dx, 6); ctx.stroke(); });
+      }
+      ctx.restore();
+    });
+    ctx.restore();
+
+    if (mode === 'diagram') {
+      MITO_LEAF.forEach((m) => mito(ctx, m[0], m[1], m[2]));
+    }
+    nucleus(ctx, 188, 300, 44, 52, mode, stained);
+  }
+
+  function cheekBody(ctx, cx, cy, seed, mode, stained) {
+    const lw = mode === 'scope' ? 1.9 : 1;
+    const dx = cx - 450, dy = cy - 286;
+    blob(ctx, cx, cy, 298, 168, seed);
+    ctx.fillStyle = mode === 'scope' ? '#EFE8DA' : '#F5ECD8';
+    ctx.fill();
+    ctx.lineWidth = 2.6 * lw; ctx.strokeStyle = mode === 'scope' ? '#B0A48E' : '#221E1B'; ctx.stroke();
+    if (mode === 'diagram') {
+      blob(ctx, cx, cy, 288, 158, seed);
+      ctx.lineWidth = 1.8; ctx.strokeStyle = '#A2603A'; ctx.stroke();
+      MITO_CHEEK.forEach((m) => mito(ctx, m[0] + dx, m[1] + dy, m[2]));
+    }
+    nucleus(ctx, 466 + dx, 272 + dy, 66, 60, mode, stained);
+  }
+
+  function mito(ctx, x, y, rot) {
+    ctx.save();
+    ctx.translate(x, y); ctx.rotate(rot);
+    ell(ctx, 0, 0, 26, 13, 0);
+    ctx.fillStyle = '#C96C3C'; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#8B4523'; ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-17, 0);
+    ctx.quadraticCurveTo(-11, -7, -5, 0);
+    ctx.quadraticCurveTo(1, 7, 7, 0);
+    ctx.quadraticCurveTo(13, -7, 18, 0);
+    ctx.lineWidth = 2; ctx.strokeStyle = '#F6E2D2'; ctx.stroke();
+    ctx.restore();
+  }
+
+  function nucleus(ctx, x, y, rx, ry, mode, stained) {
+    if (mode === 'scope') {
+      ctx.save();
+      ctx.filter = 'blur(1.1px)';
+      ell(ctx, x, y, rx, ry, 0);
+      ctx.fillStyle = stained ? '#4A3C7A' : '#DCD2BE';
+      ctx.globalAlpha = stained ? 0.92 : 0.6;
+      ctx.fill();
+      ctx.restore();
+      return;
+    }
+    ell(ctx, x, y, rx, ry, 0);
+    ctx.fillStyle = '#7C6AA6'; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+    ell(ctx, x, y, rx - 7, ry - 7, 0);
+    ctx.lineWidth = 1.5; ctx.strokeStyle = '#9C8DC0'; ctx.stroke();
+    ell(ctx, x + rx * 0.28, y - ry * 0.24, 13, 11, 0);
+    ctx.fillStyle = '#3E3260'; ctx.fill();
+  }
+
+  function drawDiagram(ctx, sp) {
+    ctx.fillStyle = '#FFFCF5';
+    ctx.fillRect(0, 0, CVW, CVH);
+    if (sp === 'leaf') leafBody(ctx, 'diagram', false);
+    else cheekBody(ctx, 450, 286, 0.8, 'diagram', false);
+  }
+
+  function drawScope(ctx, sp, stained) {
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, CVW, CVH);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(450, 280, 250, 0, Math.PI * 2);
+    ctx.clip();
+    ctx.fillStyle = sp === 'leaf' ? '#E8EFDF' : '#EBE4D6';
+    ctx.fillRect(0, 0, CVW, CVH);
+
+    const k = 0.52;
+    if (sp === 'leaf') {
+      for (let i = -2; i <= 2; i++) {
+        for (let j = -2; j <= 2; j++) {
+          ctx.save();
+          ctx.translate(450 + i * 664 * k, 280 + j * 444 * k);
+          ctx.scale(k, k);
+          ctx.translate(-450, -280);
+          leafBody(ctx, 'scope', stained);
+          ctx.restore();
+        }
+      }
+    } else {
+      [[450, 280, 0.8], [172, 356, 2.1], [742, 214, 1.3], [516, 470, 3.0], [300, 118, 0.4]].forEach((b) => {
+        ctx.save();
+        ctx.translate(b[0], b[1]);
+        ctx.scale(k, k);
+        ctx.translate(-450, -286);
+        cheekBody(ctx, 450, 286, b[2], 'scope', stained);
+        ctx.restore();
+      });
+    }
+    ctx.restore();
+
+    ctx.beginPath();
+    ctx.arc(450, 280, 250, 0, Math.PI * 2);
+    ctx.lineWidth = 11; ctx.strokeStyle = '#100D0A'; ctx.stroke();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#4A4038'; ctx.stroke();
+  }
+
+  // Ported from Design's `drawMarker`, with the part passed in rather than
+  // read off component state. The dim, dashed ring is the "there but you
+  // cannot see it" case, and it is the instrument's whole argument.
+  function drawPartMarker(ctx, part, sp, scope) {
+    if (!part) { return; }
+    var marks = (part.mark || {})[sp];
+    if (!marks || !marks.length) { return; }
+    var k = scope ? 0.52 : 1;
+    var dim = scope && !part.visible;
+    var hue = dim ? "#8F857B" : "#E4572E";
+    var pts = marks.map(function (m) {
+      return { x: 450 + (m.x - 450) * k, y: 280 + (m.y - 280) * k,
+               r: Math.max(11, m.r * k) };
+    });
+    ctx.save();
+    if (dim) { ctx.setLineDash([7, 6]); }
+    pts.forEach(function (p, i) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r + 5, 0, Math.PI * 2);
+      ctx.lineWidth = i === 0 ? 4 : 2.4;
+      ctx.strokeStyle = hue;
+      ctx.globalAlpha = i === 0 ? 1 : 0.6;
+      ctx.stroke();
+    });
+    ctx.restore();
+    var a = pts[0];
+    var bx = a.x + (a.x > 450 ? -(a.r + 26) : a.r + 26);
+    var by = a.y - (a.r + 24);
+    ctx.beginPath();
+    ctx.arc(bx, by, 19, 0, Math.PI * 2);
+    ctx.fillStyle = hue; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = scope ? "#100D0A" : "#221E1B"; ctx.stroke();
+    ctx.fillStyle = "#FBF3E6";
+    ctx.font = '800 21px "Bricolage Grotesque", system-ui, sans-serif';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(part.num, bx, by + 1);
+  }
+
+  function wireCellBench(sec) {
+    var wrap = sec.querySelector(".ks3-bench");
+    if (!wrap) { return; }
+    var spec;
+    try { spec = JSON.parse(wrap.getAttribute("data-cellbench")); }
+    catch (err) { return; }
+
+    var canvas = wrap.querySelector("[data-bench-canvas]");
+    var caption = wrap.querySelector("[data-bench-caption]");
+    var tally = wrap.querySelector("[data-bench-tally]");
+    var partBtns = toArray(wrap.querySelectorAll(".ks3-part"));
+    var specBtns = toArray(sec.querySelectorAll(".ks3-bench-specimen"));
+    var viewBtns = toArray(sec.querySelectorAll(".ks3-bench-view"));
+    var gate = sec.querySelector("[data-bench-gate]");
+    var R = {
+      num: wrap.querySelector("[data-readout-num]"),
+      name: wrap.querySelector("[data-readout-name]"),
+      where: wrap.querySelector("[data-readout-where]"),
+      job: wrap.querySelector("[data-readout-job]"),
+      detail: wrap.querySelector("[data-readout-detail]"),
+      scope: wrap.querySelector("[data-readout-scope]"),
+      scopeWord: wrap.querySelector("[data-readout-scope-word]"),
+      scopeNote: wrap.querySelector("[data-readout-scope-note]")
+    };
+
+    var specimen = specBtns.length ? specBtns[0].getAttribute("data-specimen")
+                                   : spec.specimens[0].id;
+    var view = viewBtns.length ? viewBtns[0].getAttribute("data-view") : "diagram";
+    var partId = spec.parts[0].id;
+    var gateAnswered = !gate;
+    var seen = {};
+
+    function specDef(id) {
+      for (var i = 0; i < spec.specimens.length; i++) {
+        if (spec.specimens[i].id === id) { return spec.specimens[i]; }
+      }
+      return spec.specimens[0];
+    }
+    function partDef(id) {
+      for (var i = 0; i < spec.parts.length; i++) {
+        if (spec.parts[i].id === id) { return spec.parts[i]; }
+      }
+      return spec.parts[0];
+    }
+
+    function paint() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var scope = view === "scope";
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      if (scope) { drawScope(ctx, specimen, false); }
+      else { drawDiagram(ctx, specimen); }
+      drawPartMarker(ctx, partDef(partId), specimen, scope);
+      ctx.filter = "none";
+      var sp = specDef(specimen);
+      canvas.setAttribute("aria-label", sp.alt || "");
+      if (caption) { caption.textContent = sp.caption || ""; }
+      if (tally) { tally.textContent = sp.tally || ""; }
+    }
+
+    function readout() {
+      var p = partDef(partId);
+      var sp = specDef(specimen);
+      var scope = view === "scope";
+      // A part that is not in THIS cell reads as absent, whatever the drawing
+      // shows — that is the "not there" half of the discrimination.
+      var absent = p.where === "plant" && !((p.mark || {})[specimen] || []).length;
+      var wl = spec.where_labels || {};
+      var key = absent ? "absent" : p.where;
+      if (R.num) { R.num.textContent = p.num; }
+      if (R.name) { R.name.textContent = p.name; }
+      if (R.where) {
+        R.where.textContent = (wl[key] || {}).pill || "";
+        R.where.setAttribute("data-where", key);
+      }
+      if (R.job) { R.job.textContent = p.job; }
+      if (R.detail) {
+        R.detail.textContent = absent && sp.absent_detail ? sp.absent_detail : p.detail;
+      }
+      // The scope line only exists in the scope view — before the student
+      // switches, "you cannot see this one" has nothing to mean.
+      setHidden(R.scope, !scope);
+      if (scope) {
+        var words = spec.scope_words || {};
+        if (R.scopeWord) {
+          R.scopeWord.textContent = p.visible ? (words.visible || "") : (words.hidden || "");
+        }
+        if (R.scopeNote) { R.scopeNote.textContent = p.scope_note || ""; }
+      }
+      each(partBtns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-part") === partId ? "true" : "false");
+      });
+      // Every tag reads for the CURRENT specimen, so switching the cell
+      // repaints the list as well as the drawing.
+      each(partBtns, function (b) {
+        var pd = partDef(b.getAttribute("data-part"));
+        var gone = pd.where === "plant" && !((pd.mark || {})[specimen] || []).length;
+        var tag = b.querySelector(".ks3-part-tag");
+        if (tag) {
+          tag.textContent = ((spec.where_labels || {})[gone ? "absent" : pd.where] || {}).tag
+            || (gone ? (specDef(specimen).absent_tag || "") : "");
+        }
+      });
+      seen[specimen + ":" + view] = true;
+      markStage(sec, gateAnswered && Object.keys(seen).length >= 2);
+    }
+
+    function refresh() { paint(); readout(); }
+
+    each(partBtns, function (b) {
+      b.addEventListener("click", function () {
+        partId = b.getAttribute("data-part");
+        refresh();
+      });
+    });
+    each(specBtns, function (b) {
+      b.addEventListener("click", function () {
+        specimen = b.getAttribute("data-specimen");
+        each(specBtns, function (x) {
+          x.setAttribute("aria-pressed",
+            x.getAttribute("data-specimen") === specimen ? "true" : "false");
+        });
+        refresh();
+      });
+    });
+    // Law 4: the scope view is locked until the gate is answered. Guessing
+    // how many parts survive a school microscope is the commitment the second
+    // view exists to test.
+    each(viewBtns, function (b) {
+      if (b.getAttribute("data-locked") === "1" && gate) {
+        b.setAttribute("disabled", "");
+      }
+      b.addEventListener("click", function () {
+        if (b.hasAttribute("disabled")) { return; }
+        view = b.getAttribute("data-view");
+        each(viewBtns, function (x) {
+          x.setAttribute("aria-pressed",
+            x.getAttribute("data-view") === view ? "true" : "false");
+        });
+        refresh();
+      });
+    });
+    if (gate) {
+      var opts = toArray(gate.querySelectorAll(".ks3-option"));
+      each(opts, function (o) {
+        o.addEventListener("click", function () {
+          each(opts, function (x) { x.setAttribute("aria-pressed", "false"); });
+          o.setAttribute("aria-pressed", "true");
+          gateAnswered = true;
+          each(viewBtns, function (x) { x.removeAttribute("disabled"); });
+          readout();
+        });
+      });
+    }
+    refresh();
+  }
+
+  /* The two-way sorter. Nothing is marked here and the intro says so. */
+  function wirePairs(sec) {
+    var rows = toArray(sec.querySelectorAll(".ks3-pairrow"));
+    var btn = sec.querySelector("[data-pair-reveal]");
+    var prog = sec.querySelector("[data-pair-progress]");
+    var panel = sec.querySelector("[data-pair-panel]");
+    if (!rows.length) { return; }
+    var total = rows.length;
+    var unit = (prog && prog.getAttribute("data-unit")) || "sent";
+
+    function sent() {
+      var n = 0;
+      each(rows, function (r) {
+        if (r.querySelector('.ks3-pair-chip[aria-pressed="true"]')) { n += 1; }
+      });
+      return n;
+    }
+    function repaint() {
+      var n = sent();
+      each(rows, function (r) {
+        r.setAttribute("data-sent",
+          r.querySelector('.ks3-pair-chip[aria-pressed="true"]') ? "1" : "0");
+      });
+      if (prog) { prog.textContent = n + " of " + total + " " + unit; }
+      if (btn) {
+        if (n < total) { btn.setAttribute("disabled", ""); }
+        else { btn.removeAttribute("disabled"); }
+      }
+    }
+    each(rows, function (row) {
+      var chips = toArray(row.querySelectorAll(".ks3-pair-chip"));
+      each(chips, function (c) {
+        c.addEventListener("click", function () {
+          each(chips, function (b) { b.setAttribute("aria-pressed", "false"); });
+          c.setAttribute("aria-pressed", "true");
+          repaint();
+        });
+      });
+    });
+    if (btn) {
+      btn.addEventListener("click", function () {
+        if (sent() < total) { return; }
+        each(rows, function (r) { setHidden(r.querySelector("[data-reveal]"), false); });
+        setHidden(panel, false);
+        btn.setAttribute("aria-expanded", "true");
+        markStage(sec, true);   // `answers_opened`
+      });
+    }
+    repaint();
+  }
+
+  /* Build it, then run it. The cell tells you what you got away with. */
+  function wireFit(sec) {
+    var wrap = sec.querySelector(".ks3-fit");
+    if (!wrap) { return; }
+    var spec;
+    try { spec = JSON.parse(wrap.getAttribute("data-fit-spec")); }
+    catch (err) { return; }
+    var L = spec.labels || {};
+
+    var tabs = toArray(wrap.querySelectorAll(".ks3-fit-tab"));
+    var list = wrap.querySelector("[data-fit-parts]");
+    var runBtn = wrap.querySelector("[data-fit-run]");
+    var clearBtn = wrap.querySelector("[data-fit-clear]");
+    var prog = wrap.querySelector("[data-fit-progress]");
+    var out = wrap.querySelector("[data-reveal]");
+    var verdict = wrap.querySelector("[data-fit-verdict]");
+    var findings = wrap.querySelector("[data-fit-findings]");
+    var note = wrap.querySelector("[data-fit-note]");
+    var jobLabel = wrap.querySelector(".ks3-fit-job-label");
+    var jobText = wrap.querySelector(".ks3-fit-job-text");
+    var jobWhere = wrap.querySelector(".ks3-fit-job-where");
+    var installLabel = wrap.querySelector(".ks3-fit-install-label");
+
+    // The parts list is the BENCH's, named by `parts_from`, so a part cannot
+    // exist in the builder and not on the bench.
+    var bench = document.querySelector("[data-cellbench]");
+    var allParts = [];
+    if (bench) {
+      try { allParts = JSON.parse(bench.getAttribute("data-cellbench")).parts; }
+      catch (err) { allParts = []; }
+    }
+
+    var current = spec.specimens[0].id;
+    var installed = {};
+    var ran = {};
+
+    function def(id) {
+      for (var i = 0; i < spec.specimens.length; i++) {
+        if (spec.specimens[i].id === id) { return spec.specimens[i]; }
+      }
+      return spec.specimens[0];
+    }
+
+    function renderParts() {
+      if (!list) { return; }
+      list.innerHTML = "";
+      var chosen = installed[current] || {};
+      allParts.forEach(function (p) {
+        var li = document.createElement("li");
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "ks3-fit-part";
+        b.setAttribute("data-part", p.id);
+        b.setAttribute("aria-pressed", chosen[p.id] ? "true" : "false");
+        b.appendChild(document.createTextNode(p.name));
+        b.addEventListener("click", function () {
+          var c = installed[current] || (installed[current] = {});
+          if (c[p.id]) { delete c[p.id]; } else { c[p.id] = true; }
+          renderParts();
+          repaint();
+        });
+        li.appendChild(b);
+        list.appendChild(li);
+      });
+    }
+
+    function count() { return Object.keys(installed[current] || {}).length; }
+
+    function repaint() {
+      if (installLabel) { installLabel.textContent = L.install || ""; }
+      if (jobLabel) { jobLabel.textContent = L.job || ""; }
+      var d = def(current);
+      if (jobText) { jobText.textContent = d.job || ""; }
+      if (jobWhere) { jobWhere.textContent = d.where || ""; }
+      if (clearBtn) { clearBtn.textContent = L.clear || ""; }
+      if (runBtn) {
+        runBtn.textContent = ran[current] ? (L.rerun || "") : (L.run || "");
+        if (!count()) { runBtn.setAttribute("disabled", ""); }
+        else { runBtn.removeAttribute("disabled"); }
+      }
+      if (prog) {
+        prog.textContent = count()
+          ? count() + " " + (L.installed || "")
+          : (L.empty || "");
+      }
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+          tb.getAttribute("data-fit") === current ? "true" : "false");
+      });
+      markStage(sec, Object.keys(ran).length === spec.specimens.length);
+    }
+
+    function run() {
+      var d = def(current);
+      var chosen = installed[current] || {};
+      var needs = d.needs || [];
+      var missing = needs.filter(function (id) { return !chosen[id]; });
+      var extra = Object.keys(chosen).filter(function (id) {
+        return needs.indexOf(id) < 0;
+      });
+      ran[current] = true;
+      var W = spec.finding_words || {};
+      if (verdict) {
+        verdict.textContent = !missing.length && !extra.length
+          ? (spec.verdicts || {}).ok || "It runs."
+          : ((spec.verdicts || {}).problem || "It runs, after a fashion.");
+      }
+      if (findings) {
+        findings.innerHTML = "";
+        function add(kind, id, word) {
+          var p = null;
+          allParts.forEach(function (x) { if (x.id === id) { p = x; } });
+          var li = document.createElement("li");
+          li.className = "ks3-fit-finding";
+          li.setAttribute("data-kind", kind);
+          var s = document.createElement("strong");
+          s.appendChild(document.createTextNode((p ? p.name : id) + "."));
+          li.appendChild(s);
+          li.appendChild(document.createTextNode(" " + word));
+          findings.appendChild(li);
+        }
+        missing.forEach(function (id) {
+          add("missing", id, (spec.consequence || {})[id] || W.missing || "");
+        });
+        extra.forEach(function (id) {
+          add("extra", id, (d.waste || {})[id] || spec.waste_fallback || "");
+        });
+      }
+      if (note) { note.textContent = d.note || ""; }
+      setHidden(out, false);
+      if (out) { out.setAttribute("role", "status"); }
+      repaint();
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        current = tb.getAttribute("data-fit");
+        setHidden(out, true);
+        renderParts();
+        repaint();
+      });
+    });
+    if (runBtn) { runBtn.addEventListener("click", function () { if (count()) { run(); } }); }
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        installed[current] = {};
+        setHidden(out, true);
+        renderParts();
+        repaint();
+      });
+    }
+    renderParts();
+    repaint();
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -4088,6 +4671,10 @@
     each(root.querySelectorAll("[data-zoomblock]"), wireZoom);
     each(root.querySelectorAll("[data-hard]"), wireHard);
     each(root.querySelectorAll("[data-removal]"), wireRemoval);
+    // The builder reads the bench's parts list, so the bench is wired first.
+    each(root.querySelectorAll("[data-cellbench]"), wireCellBench);
+    each(root.querySelectorAll("[data-pairs]"), wirePairs);
+    each(root.querySelectorAll("[data-fitblock]"), wireFit);
   }
 
   // ── the progress rail (MRB-208 rule 2) ──────────────────────────────

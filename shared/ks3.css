@@ -2262,6 +2262,297 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-ink-body);
 }
 
+/* ── b1-03's three instruments (⊕ 14 Aug 2026) ──────────────────────
+   b1-03 is the approved reference screen for MODEL — 50 lesson slots, the
+   largest family in the key stage — and all three of its instruments rendered
+   as empty sections. `#s-bench` alone was 1266px of the missing height.
+
+   `cell-bench`'s argument is the SECOND VIEW: a textbook drawing shows all
+   seven parts, a school microscope shows three, and switching between them is
+   how a student learns to tell "not there" from "there but you cannot see
+   it". That is the misconception the lesson exists to break and a diagram
+   alone cannot teach it. */
+.ks3-bench-controls {
+  margin-top: 22px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px 34px;
+}
+.ks3-bench-control-label {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bench-seg { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-bench-gate {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-bench-gate-q { margin: 0; font-size: 20px; font-weight: 700; }
+.ks3-bench-gate .ks3-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.ks3-parts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ks3-part {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  padding: 12px 14px;
+  min-height: 56px;
+  border-radius: var(--ks3-r-option);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-part[aria-pressed="true"] { border-color: var(--ks3-accent); background: var(--ks3-accent-tint); }
+.ks3-part-num {
+  display: grid;
+  place-items: center;
+  flex: 0 0 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+}
+.ks3-part[aria-pressed="true"] .ks3-part-num { background: var(--ks3-accent); color: var(--ks3-on-dark); }
+.ks3-part-name { display: block; font-size: 17px; font-weight: 700; line-height: 1.25; }
+.ks3-part-tag {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-readout {
+  margin-top: 16px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-readout-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ks3-readout-num {
+  display: grid;
+  place-items: center;
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  background: var(--ks3-accent);
+  color: var(--ks3-on-dark);
+  border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 18px;
+}
+.ks3-readout-name { font-family: var(--ks3-font-display); font-weight: 800; font-size: 25px; letter-spacing: -.02em; }
+.ks3-readout-where {
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 5px 11px;
+  border-radius: var(--ks3-r-pill);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-band);
+  color: var(--ks3-ink);
+}
+.ks3-readout-where[data-where="plant"] { background: var(--ks3-ok-tint); }
+.ks3-readout-where[data-where="absent"] { background: var(--ks3-alert-tint); }
+.ks3-readout-job { margin: 12px 0 0; font-size: 20px; line-height: 1.55; font-weight: 600; }
+.ks3-readout-detail { margin: 8px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body); }
+/* "You can see this one." / "You cannot see this one." — the second view's
+   whole point, so it is a stated line and not a colour. */
+.ks3-readout-scope {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-readout-scope-word { font-family: var(--ks3-font-display); }
+.ks3-bench-tally {
+  margin: 14px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+
+/* The two-way sorter. Structurally the three-way sorter's sibling and
+   deliberately not built on it: this one SENDS a statement to one of two
+   named things, and one component trying to be both is the "nearest shape
+   that exists" failure again. */
+.ks3-pairrows {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.ks3-pairrow {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+}
+.ks3-pairrow[data-sent="1"] { border-color: var(--ks3-option-border); }
+.ks3-pairrow-text { margin: 0; font-size: 19px; line-height: 1.5; font-weight: 600; }
+.ks3-pairrow-chips { margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-pairrow-note { margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
+.ks3-pairrow-word { font-family: var(--ks3-font-display); }
+.ks3-pair-foot { margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.ks3-pair-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-pair-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-pair-panel {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+/* Build it. "Which parts" becomes a consequence of "what job". */
+.ks3-fit-tabs { margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-fit-job {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-fit-job-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-fit-job-text { margin: 6px 0 0; font-size: 21px; line-height: 1.4; font-weight: 700; }
+.ks3-fit-job-where { margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body); }
+.ks3-fit-install-label {
+  margin: 20px 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-fit-parts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 9px;
+}
+.ks3-fit-part {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 12px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-fit-part[aria-pressed="true"] { border-color: var(--ks3-accent); background: var(--ks3-accent-tint); }
+.ks3-fit-foot { margin-top: 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.ks3-fit-run[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-fit-clear {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 11px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: transparent;
+  color: var(--ks3-ink-body);
+}
+.ks3-fit-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-fit-out {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-fit-verdict {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -.025em;
+}
+.ks3-fit-findings {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-fit-finding {
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+  font-size: 18px;
+  line-height: 1.55;
+}
+.ks3-fit-finding[data-kind="missing"] { background: var(--ks3-alert-tint); border-color: var(--ks3-alert-border); }
+.ks3-fit-finding strong { font-family: var(--ks3-font-display); }
+.ks3-fit-note { margin: 16px 0 0; padding-top: 14px; border-top: 2px solid var(--ks3-rule); font-size: 19px; line-height: 1.6; }
+
 /* ── b1-05's three instruments (⊕ 14 Aug 2026) ──────────────────────
    `zoom-ladder`, `sort-task` and `removal-cases`. All three rendered as
    EMPTY sections — an eyebrow and 90.39px of nothing each — and between them
