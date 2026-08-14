@@ -601,7 +601,12 @@
     specimen:      "Slide on the stage",
     magnification: "Magnification",
     focus:         "Focus",
-    part:          "Switch one part off"
+    part:          "Switch one part off",
+    // MRB-211 — the bench's two. These are the generic words; a lesson that
+    // has better ones says so in `control_labels` and they win, exactly as
+    // B1-06 says "Mount" where the engine says "Slide on the stage".
+    centre:        "Move the slide to",
+    motion:        "Movement"
   };
 
   // SPEC §6 populations.
@@ -724,14 +729,55 @@
   // "undefined" is the empty-control-panel defect in a new costume, and
   // refusing here is what lets the parity sim audit count the drift
   // (declared vs rendered) instead of shipping it.
-  function controlShell(name) {
+  function controlShell(name, caption) {
     if (!CONTROL_LABELS.hasOwnProperty(name)) { return null; }
     var id = "ks3-sim-" + name + "-" + (++UID);
     var wrap = document.createElement("label");
     wrap.className = "ks3-sim-control";
     wrap.setAttribute("for", id);
-    wrap.appendChild(document.createTextNode(CONTROL_LABELS[name]));
+    wrap.appendChild(document.createTextNode(caption || CONTROL_LABELS[name]));
     return { wrap: wrap, id: id };
+  }
+
+  /* MRB-211 — the same shell for a control that is a ROW OF BUTTONS rather
+     than one input: Design draws the bench's mount, objective, centre and
+     motion groups as segmented buttons, and a two-state toggle is a button
+     with `aria-pressed`, not a select with two options.
+
+     A <label for=> cannot carry a group — `for` names one labelable element
+     and there are three here — so the caption becomes a <span> and the row
+     is a `role="group"` named by it. That is the same accessible name a
+     <label> would have given, reached the way a group has to reach it.
+     R15 is honoured on its terms: a real caption, really associated, and no
+     control on the panel that does nothing. */
+  function segShell(name, caption) {
+    if (!CONTROL_LABELS.hasOwnProperty(name)) { return null; }
+    var id = "ks3-sim-" + name + "-" + (++UID);
+    var wrap = document.createElement("div");
+    wrap.className = "ks3-sim-control ks3-sim-control-seg";
+    var cap = document.createElement("span");
+    cap.className = "ks3-sim-control-caption";
+    cap.id = id;
+    cap.appendChild(document.createTextNode(caption || CONTROL_LABELS[name]));
+    var row = document.createElement("div");
+    row.className = "ks3-sim-seg";
+    row.setAttribute("role", "group");
+    row.setAttribute("aria-labelledby", id);
+    wrap.appendChild(cap);
+    wrap.appendChild(row);
+    return { wrap: wrap, row: row, id: id };
+  }
+
+  // One segmented button. `aria-pressed` is the state — R2: the state carries
+  // a word and a border, never colour alone — and R3 is untouched, because
+  // nothing here is an answer: it is where the slide is and whether it moves.
+  function segButton(text, pressed) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "ks3-sim-seg-btn";
+    b.setAttribute("aria-pressed", pressed ? "true" : "false");
+    b.appendChild(document.createTextNode(text));
+    return b;
   }
 
   // MRB-210 §2 — one place that knows how a range control is bound.
@@ -1310,6 +1356,35 @@
     } catch (err) { specimens = []; }
     if (!specimens.length) { return; }
 
+    /* ── MRB-211 · G9 — TWO MOUNTS ON ONE INSTRUMENT ──────────────────
+       `data-specimens` is the classifier list and stays exactly what
+       MRB-198 shipped, so an instrument with no mounts (B1-02) reads a
+       synthesised list here and behaves identically. `data-mounts` adds
+       what a mount is beyond a slide model: the caption on its button,
+       its own cast of organisms, and the three strings that must switch
+       WITH the slide — the note under the bench, the caption under the
+       canvas, and the canvas's own aria-label. Design authored one of
+       each per mount, so one per instrument would be wrong for both. */
+    var mounts = [];
+    try {
+      mounts = JSON.parse(sim.getAttribute("data-mounts") || "[]") || [];
+    } catch (err2) { mounts = []; }
+    if (!mounts.length) {
+      mounts = specimens.map(function (name, i) {
+        return { id: String(i), label: String(name), specimen: String(name) };
+      });
+    }
+
+    var bench = {};
+    try {
+      bench = JSON.parse(sim.getAttribute("data-bench") || "{}") || {};
+    } catch (err3) { bench = {}; }
+    var BENCH_CENTRES = bench.centres || [];
+    var CENTRE_ON = bench.centreOn || null;   // null = every mount
+    var MOTION = bench.motion || null;
+    var RESOLVE = bench.resolve || null;
+    var CAPTIONS = bench.labels || {};
+
     var FIELD_R = 96, CX = W / 2, CY = H / 2;
     // D2's onion cell: 0.30 mm across, 0.115 mm deep. The 0.13 mm this
     // engine carried before MRB-210 was not Design's figure, and it made
@@ -1355,7 +1430,7 @@
 
     // Slide content is generated once per slide, in MILLIMETRES about the
     // field centre, so racking the controls looks at the SAME slide.
-    function buildContent(kindName) {
+    function buildContent(kindName, mount) {
       var i, out;
       if (kindName === "onion") {
         // D2 draws the onion as three layers of epidermis, 0.055 mm apart.
@@ -1392,8 +1467,15 @@
       }
       if (kindName === "pond") {
         // D6's cast of seven, verbatim: positions, depths, lengths and
-        // shape seeds are all in mm on the slide.
-        var orgs = [
+        // shape seeds are all in mm on the slide. A mount that carries its
+        // own cast wins — B1-06 authors these same seven — and it is COPIED,
+        // because the swimmers are stepped in place and a mount must open
+        // where it was drawn, not where it was last left.
+        var authored = mount && mount.organisms;
+        var orgs = (authored && authored.length) ? authored.map(function (o) {
+          return { kind: o.kind, x: o.x, y: o.y,
+                   depth: o.depth, len: o.len, seed: o.seed };
+        }) : [
           { kind: "amoeba",     x: -0.90, y:  0.30, depth: -0.045, len: 0.30, seed: 0.4 },
           { kind: "paramecium", x:  0.15, y: -0.10, depth:  0.000, len: 0.25, seed: 1.1 },
           { kind: "euglena",    x:  0.58, y:  0.46, depth:  0.050, len: 0.05, seed: 2.3 },
@@ -1435,8 +1517,16 @@
       return {};   // unknown kind: draws nothing, says nothing, throws nothing
     }
 
+    function startSlide() {
+      var i;
+      for (i = 0; i < mounts.length; i++) {
+        if (bench.start && mounts[i].id === bench.start) { return i; }
+      }
+      return 0;
+    }
+
     var state = {
-      slide: 0,                     // index into specimens[]
+      slide: startSlide(),          // index into mounts[] / specimens[]
       obj: 0,                       // index into OBJECTIVES — start LOWEST
       // Design's own default (B1-02 line 630), and it has to be 50 now
       // that depths are in mm: 50 puts the focal plane exactly ON the
@@ -1454,9 +1544,68 @@
       focus: 50,
       dispMag: EYEPIECE * OBJECTIVES[0],   // what the canvas shows NOW
       running: false, dirty: true, lastSay: 0, last: 0,
+      // MRB-211 — which centre the field is on, and whether the mount is
+      // alive. `motion` defaults to the payload's, which is ON: the words
+      // are "Swimming" and "Held still", and the bench opens alive.
+      centre: null,
+      motion: !MOTION || MOTION.on !== false,
       content: null
     };
-    state.content = buildContent(specimenKind(specimens[0]));
+
+    function mountNow() { return mounts[state.slide] || {}; }
+    state.content = buildContent(specimenKind(specimens[state.slide]),
+                                 mountNow());
+
+    /* ── MRB-211 · G10 — where the field is centred ────────────────────
+       The centre control is offered PER MOUNT: B1-06 offers it on the pond
+       and not on the cheek smear, because a tessellated sheet has nothing
+       to pan to. Where it is not offered the field sits at the origin, so
+       every instrument that predates this behaves exactly as it did. */
+    function centresHere() {
+      if (!BENCH_CENTRES.length) { return null; }
+      if (CENTRE_ON && CENTRE_ON.indexOf(mountNow().id) < 0) { return null; }
+      return BENCH_CENTRES;
+    }
+
+    // Preallocated: this is read once per organism per frame and 61 fresh
+    // objects a frame is a garbage collector's problem, not a model's.
+    var CTR = { x: 0, y: 0 };
+    function effectiveCentre() {
+      var cs = centresHere(), i;
+      if (!cs) { return null; }
+      for (i = 0; i < cs.length; i++) {
+        if (cs[i].id === state.centre) { return cs[i]; }
+      }
+      // Design's own fallback (`CENTRES.find(...) || CENTRES[1]`): with
+      // nothing chosen the field opens on the SECOND centre — B1-06's
+      // slipper, the one organism sitting at depth 0.000 — so the bench
+      // opens on something rather than on the origin. The button for it is
+      // drawn pressed, because it is where the slide actually is.
+      return cs[cs.length > 1 ? 1 : 0];
+    }
+    function centreMM() {
+      var c = effectiveCentre();
+      CTR.x = c ? c.x : 0;
+      CTR.y = c ? c.y : 0;
+      return CTR;
+    }
+
+    /* ⚑ F33 — THE ORGANISMS STOP SWIMMING WHERE THERE IS A CENTRE CONTROL.
+       Design's approved B1-06 says so in student-facing prose — "Real ones
+       swim out of the field in seconds. These are held for you, and the
+       slide moves when you ask it to" — and the standing law is that where
+       the page teaches one thing in words and the engine does another, the
+       page wins. It is also the only coherent reading: a control that pans
+       the field to the blob is a lie if the blob has drifted off by the
+       time the student looks up, and centring and focusing are two separate
+       operations precisely BECAUSE the cast holds still while the wheel
+       moves. So `pinned()` removes the TRANSLATION only. The organisms stay
+       alive — cilia beat, vacuoles fill and empty, the Euglena bends — and
+       THAT is what the motion toggle governs, which is why its two words
+       are "Swimming" and "Held still" rather than "On" and "Off". An
+       instrument with no centre control (B1-02, and any lesson that only
+       wants a wet mount) swims exactly as MRB-198 shipped it. */
+    function pinned() { return !!centresHere(); }
 
     function mag() { return EYEPIECE * OBJECTIVES[state.obj]; }
     function fovMM() { return FIELD_AT_1X_MM / mag(); }
@@ -1694,7 +1843,12 @@
     // rod branch is Design's and is kept as drawn, though no objective
     // here reaches the 2.6 px it needs.
     function drawBacterium(b, ppm) {
-      var x = CX + b.x * ppm, y = CY + b.y * ppm;
+      // G10 — the field is a WINDOW on the slide, so panning subtracts the
+      // centre here rather than translating the context: the cull below has
+      // to test where the dot really lands, or panning would drop the ones
+      // that just came into view.
+      var c = centreMM();
+      var x = CX + (b.x - c.x) * ppm, y = CY + (b.y - c.y) * ppm;
       if (x < -20 || x > W + 20 || y < -20 || y > H + 20) { return; }
       var px = Math.max(0.6, 0.002 * ppm);
       ctx.save();
@@ -1724,7 +1878,8 @@
     // copy promises.
     function drawOrganism(p, ppm) {
       var px = p.len * ppm;
-      var x = CX + p.x * ppm, y = CY + p.y * ppm, k;
+      var c = centreMM();
+      var x = CX + (p.x - c.x) * ppm, y = CY + (p.y - c.y) * ppm, k;
       if (x < -px || x > W + px || y < -px || y > H + px) { return; }
       var detail = detailAt(px);
       ctx.save();
@@ -1810,7 +1965,9 @@
     }
 
     function drawBubble(b, ppm) {
-      var x = CX + b.x * ppm, y = CY + b.y * ppm, r = (b.d / 2) * ppm;
+      var c = centreMM();
+      var x = CX + (b.x - c.x) * ppm, y = CY + (b.y - c.y) * ppm;
+      var r = (b.d / 2) * ppm;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fillStyle = band;
@@ -1863,9 +2020,12 @@
     function say(txt) { if (readout) { readout.textContent = txt; } }
 
     function inViewOrganisms() {
-      var half = fovMM() / 2, out = [];
+      var half = fovMM() / 2, out = [], c = centreMM();
+      // Measured from where the FIELD is, not from the origin: pan to the
+      // blob and the readout has to be about the blob's neighbourhood.
       (state.content.organisms || []).forEach(function (s) {
-        if (Math.sqrt(s.x * s.x + s.y * s.y) < half + 0.05) { out.push(s); }
+        var dx = s.x - c.x, dy = s.y - c.y;
+        if (Math.sqrt(dx * dx + dy * dy) < half + 0.05) { out.push(s); }
       });
       return out;
     }
@@ -1893,6 +2053,23 @@
     var SMEAR_NOTE = " One layer, one shape, no movement. Racking the focus "
       + "finds nothing behind them, because a smear is a sheet. Every cell "
       + "here does one job, and none of them is an organism.";
+
+    // G9 — a mount may bring its own note, and B1-06's two are these two
+    // sentences verbatim. Reading the payload rather than the constant is
+    // what stops the pair drifting: one of them is the lesson's, and the
+    // lesson is the one that can be re-authored.
+    function mountNote(fallback) {
+      var n = mountNow().note;
+      return n ? " " + n : fallback;
+    }
+
+    // The lesson answering its own gate, keyed by TOTAL magnification and
+    // live-switched with the turret. Absent on every instrument that does
+    // not author it, so nothing else gains a sentence.
+    function resolveNote() {
+      var n = RESOLVE && RESOLVE[String(mag())];
+      return n ? " What you can resolve: " + n : "";
+    }
 
     function dofText() {
       var d = dofMM();
@@ -1982,24 +2159,24 @@
       if (kn === "cheek") {
         if (CHEEK_D * ppm < 6) {
           return "Dozens of pale specks scattered across the view — too "
-            + "small to make anything out at ×" + mag() + "." + SMEAR_NOTE;
+            + "small to make anything out at ×" + mag() + "." + mountNote(SMEAR_NOTE);
         }
         var sheet = (state.content.layers || [{ depth: 0 }])[0];
         if (isSharp(sheet.depth)) {
           return "About " + cellsAcross(CHEEK_D) + " cheek cells fit across "
             + "the view — soft, rounded, tessellated edge to edge with no gaps"
             + (detailAt(CHEEK_D * ppm) ? ", each with a darker nucleus" : "")
-            + "." + SMEAR_NOTE;
+            + "." + mountNote(SMEAR_NOTE);
         }
         return "Rounded shadows in the view, none sharp — bring the focus "
-          + "through the smear slowly." + SMEAR_NOTE;
+          + "through the smear slowly." + mountNote(SMEAR_NOTE);
       }
       if (kn === "pond") {
         var vis = inViewOrganisms();
         if (!vis.length) {
           return "Empty water just now. At ×" + mag() + " the view is only "
             + fovText() + " wide — drop back to ×40 to find something, "
-            + "then work up." + BACTERIA_NOTE;
+            + "then work up." + mountNote(BACTERIA_NOTE);
         }
         // Same honesty rule the cheek slide runs on: do not name a feature
         // the drawing is too small to show. The biggest thing here is a
@@ -2014,7 +2191,7 @@
           return vis.length + " tiny specks drifting and darting about the "
             + "view — alive, clearly, but far too small at ×" + mag()
             + " to tell what any of them is. Found something? Turn the "
-            + "magnification up." + BACTERIA_NOTE;
+            + "magnification up." + mountNote(BACTERIA_NOTE);
         }
         var bits = [], anyBlur = false, focusSet = [];
         vis.forEach(function (sw) {
@@ -2035,21 +2212,29 @@
              ? " The Paramecium will not stay long: at ×400 it crosses the "
                + "whole view in under a second."
              : "")
-          + BACTERIA_NOTE;
+          + mountNote(BACTERIA_NOTE);
       }
       return "";
     }
 
     function report() {
       say("Total magnification ×" + mag() + " · field of view " + fovText()
-          + ". " + whatYouSee());
+          + ". " + whatYouSee() + resolveNote());
     }
 
     // ── motion ──
     function stepOrganisms(dt) {
       if (kindNow() !== "pond") { return; }
+      // G11 — the student's own stillness switch, on top of the OS's. With
+      // it off the cilia stop, the vacuoles freeze and the Euglena stops
+      // bending: the drawing is complete, just still.
+      if (!state.motion) { return; }
       (state.content.organisms || []).forEach(function (s) {
         s.phase += dt * (s.kind === "paramecium" ? 3 : 1);
+        // F33 — with a centre control the cast is held and the SLIDE moves.
+        // Everything above this line is life in place; everything below is
+        // travel, and travel is what the page's own caption denies.
+        if (pinned()) { return; }
         if (Math.random() < (s.kind === "amoeba" ? 0.002 : 0.02)) {
           s.hdg += rand(-1.2, 1.2);
         }
@@ -2066,7 +2251,8 @@
 
     var raf = null;
     function animating() {
-      return kindNow() === "pond" || Math.abs(state.dispMag - mag()) > 0.5;
+      return (kindNow() === "pond" && state.motion)
+        || Math.abs(state.dispMag - mag()) > 0.5;
     }
     function loop(now) {
       if (!state.running) { return; }
@@ -2086,9 +2272,12 @@
         draw();
         state.dirty = false;
       }
-      if (kindNow() === "pond") {
-        // Organisms swim in and out of view, so — like diffusion's
-        // crossing counts — this one readout re-reads on a cadence.
+      // Organisms swim in and out of view, so — like diffusion's crossing
+      // counts — this one readout re-reads on a cadence. A PINNED mount has
+      // no such churn: the cast is where the student left it and the
+      // readout only changes when a control does, so re-reading it would be
+      // noise on a line a screen reader is announcing.
+      if (kindNow() === "pond" && !pinned() && state.motion) {
         if (!state.lastSay) { state.lastSay = now; }
         else if (now - state.lastSay > 700) { state.lastSay = now; report(); }
       }
@@ -2131,30 +2320,141 @@
 
     // ── controls (R15: real select / range, real labels) ──
     var controls = sim.querySelector(".ks3-sim-controls");
+    var captionEl = sim.querySelector(".ks3-sim-caption");
+    var declared = (sim.getAttribute("data-controls") || "").split(",")
+      .map(function (s) { return s.trim(); })
+      .filter(function (s) { return s; });
+    var wraps = {};                   // control name -> its rendered wrapper
+    var centreBtns = [], motionBtn = null;
+
+    /* G9 — the three strings that switch WITH the slide. Design authored a
+       caption and an aria-label per mount because they say different things
+       about different slides; one per instrument would be wrong for both. */
+    function syncMount() {
+      var m = mountNow();
+      if (captionEl && m.caption) { captionEl.textContent = m.caption; }
+      if (m.alt) { canvas.setAttribute("aria-label", m.alt); }
+    }
+
+    // The wrapper that should follow `name`, so a control removed and put
+    // back lands where it was declared rather than on the end of the row.
+    function nextWrapAfter(name) {
+      var i = declared.indexOf(name), j;
+      for (j = i + 1; j < declared.length; j++) {
+        var w = wraps[declared[j]];
+        if (w && w.parentNode === controls) { return w; }
+      }
+      return null;
+    }
+
+    /* G10 — the centre group is offered PER MOUNT, and where it is not
+       offered it is removed from the DOM rather than disabled. Same
+       discipline as R5's gate: a control the student cannot use is not
+       drawn, because a dead button is a promise the instrument breaks. On
+       B1-06 that is four control groups on the pond and three on the cheek
+       smear, exactly as the approved page measures. */
+    function syncCentre() {
+      var w = wraps.centre;
+      if (!w) { return; }
+      if (centresHere()) {
+        if (w.parentNode !== controls) {
+          controls.insertBefore(w, nextWrapAfter("centre"));
+        }
+        paintCentre();
+      } else if (w.parentNode === controls) {
+        controls.removeChild(w);
+      }
+    }
+
+    function paintCentre() {
+      var c = effectiveCentre();
+      centreBtns.forEach(function (b) {
+        b.setAttribute("aria-pressed",
+                       (c && b.getAttribute("data-centre") === c.id)
+                         ? "true" : "false");
+      });
+    }
+
+    function paintMotion() {
+      if (!motionBtn) { return; }
+      var words = (MOTION && MOTION.labels) || ["Swimming", "Held still"];
+      // The button says what the slide IS doing, which is Design's own
+      // wording rule, and `aria-pressed` carries the same fact for anyone
+      // who cannot see which of the two is lit.
+      motionBtn.textContent = state.motion ? words[0] : words[1];
+      motionBtn.setAttribute("aria-pressed", state.motion ? "true" : "false");
+    }
+
     if (controls) {
-      (sim.getAttribute("data-controls") || "").split(",").forEach(function (name) {
-        name = name.trim();
+      declared.forEach(function (name) {
         var shell, input;
         if (name === "specimen") {
-          shell = controlShell(name);
+          shell = controlShell(name, CAPTIONS[name]);
           if (!shell) { return; }
           input = document.createElement("select");
           input.id = shell.id;
-          specimens.forEach(function (label, i) {
+          mounts.forEach(function (m, i) {
             var opt = document.createElement("option");
             opt.value = String(i);
-            opt.textContent = label;
+            opt.textContent = m.label;
             input.appendChild(opt);
           });
+          input.value = String(state.slide);
           input.addEventListener("change", function () {
             state.slide = Number(input.value);
-            state.content = buildContent(kindNow());
+            state.content = buildContent(kindNow(), mountNow());
+            syncMount();
+            syncCentre();
             afterControlChange();
           });
           shell.wrap.appendChild(input);
+          wraps[name] = shell.wrap;
+          controls.appendChild(shell.wrap);
+        } else if (name === "centre") {
+          if (!BENCH_CENTRES.length) { return; }
+          shell = segShell(name, CAPTIONS[name]);
+          if (!shell) { return; }
+          BENCH_CENTRES.forEach(function (c) {
+            var btn = segButton(c.label, false);
+            btn.setAttribute("data-centre", c.id);
+            btn.addEventListener("click", function () {
+              // Panning is a pure translation of the field. It moves the
+              // SLIDE and nothing else — in particular it does not touch
+              // the wheel, so the readout can go on naming a different
+              // organism as the one in focus. That is the lesson: centring
+              // and focusing are two operations and the bench makes the
+              // student do both.
+              state.centre = c.id;
+              paintCentre();
+              afterControlChange();
+            });
+            centreBtns.push(btn);
+            shell.row.appendChild(btn);
+          });
+          wraps[name] = shell.wrap;
+          controls.appendChild(shell.wrap);
+        } else if (name === "motion") {
+          shell = segShell(name, CAPTIONS[name]);
+          if (!shell) { return; }
+          motionBtn = segButton("", state.motion);
+          motionBtn.addEventListener("click", function () {
+            state.motion = !state.motion;
+            paintMotion();
+            // Coming back to life needs the loop restarted: `animating()`
+            // is false while the mount is still, so the frame that was
+            // painted last is the frame that stays.
+            if (state.motion && !REDUCED
+                && sim.getAttribute("data-locked") !== "1") {
+              start();
+            }
+            afterControlChange();
+          });
+          shell.row.appendChild(motionBtn);
+          paintMotion();
+          wraps[name] = shell.wrap;
           controls.appendChild(shell.wrap);
         } else if (name === "magnification") {
-          shell = controlShell(name);
+          shell = controlShell(name, CAPTIONS[name]);
           if (!shell) { return; }
           input = document.createElement("select");
           input.id = shell.id;
@@ -2171,9 +2471,10 @@
             afterControlChange();
           });
           shell.wrap.appendChild(input);
+          wraps[name] = shell.wrap;
           controls.appendChild(shell.wrap);
         } else if (name === "focus") {
-          shell = controlShell(name);
+          shell = controlShell(name, CAPTIONS[name]);
           if (!shell) { return; }
           input = document.createElement("input");
           input.type = "range";
@@ -2197,10 +2498,17 @@
             afterControlChange();
           });
           shell.wrap.appendChild(input);
+          wraps[name] = shell.wrap;
           controls.appendChild(shell.wrap);
         }
       });
     }
+
+    // The opening mount may be one that offers no centre control, so the
+    // group's presence is settled from the state and not from the order the
+    // controls happened to be built in.
+    syncMount();
+    syncCentre();
 
     report();          // never leave the readout empty, even while locked
     wireGate(sim, { draw: draw, settle: settle, start: start, stop: stop });
@@ -2597,12 +2905,120 @@
     each(root.querySelectorAll(".ks3-sim"), wireSim);
   }
 
+  // ── the progress rail (MRB-208 rule 2) ──────────────────────────────
+  //
+  // ⚖️ BOTH VARIANTS TICK ON COMPLETION, AND NOTHING IS TICKED ON LOAD.
+  //
+  // Design's delivered narrow variant was IntersectionObserver-driven only, so
+  // it read "4 / 4" with a full accent bar for a student who had scrolled to
+  // the bottom and answered nothing — and below 1340px it is the only rail a
+  // student ever sees. Ruled on MRB-208: the rail records PARTICIPATION, which
+  // is what keeps it consistent with R3. A stop ticks when the activity is
+  // finished, right or wrong.
+  //
+  // What stays scroll-driven is the side rail's CURRENT ring and the top bar's
+  // CURRENT LABEL — those answer "where am I", not "how far have I got", and
+  // Design drew them that way. Count and fill are completion.
+  //
+  // A stage is done when its section says so. Any component may declare its own
+  // completion by setting `data-stage-done="1"` on the section, which is the
+  // contract an instrument should use — it knows what finished means and the
+  // rail does not. `doneByDom` is the fallback for plain option blocks, and it
+  // is deliberately generous in the same direction as the ruling: a commitment
+  // made is a stage done.
+  function doneByDom(sec) {
+    if (!sec) { return false; }
+    if (sec.getAttribute("data-stage-done") === "1") { return true; }
+
+    // The mastery ladder: every rung either answered or self-checked.
+    var rungs = sec.querySelectorAll(".ks3-rung");
+    if (rungs.length) {
+      for (var r = 0; r < rungs.length; r++) {
+        var marked = rungs[r].querySelector('.ks3-option[aria-pressed="true"], .ks3-option.is-correct, .ks3-option.is-wrong');
+        var checked = rungs[r].querySelector("[data-ticks]:not([hidden])");
+        if (!marked && !checked) { return false; }
+      }
+      return true;
+    }
+
+    // A reveal that has been opened is an activity carried through to its end.
+    var opened = sec.querySelector('[data-reveal]:not([hidden]), .ks3-reveal-btn[aria-expanded="true"]');
+    if (opened) { return true; }
+
+    // Otherwise: any commitment at all inside this section.
+    return !!sec.querySelector('[aria-pressed="true"]');
+  }
+
+  function wireRail(wrap) {
+    var stages;
+    try { stages = JSON.parse(wrap.getAttribute("data-rail-stages") || "[]"); }
+    catch (err) { stages = []; }
+    if (!stages.length) { return; }
+
+    var nodes = toArray(wrap.querySelectorAll('[data-rail="side"] li'));
+    var count = wrap.querySelector("[data-rail-count]");
+    var label = wrap.querySelector("[data-rail-label]");
+    var fill = wrap.querySelector("[data-rail-fill]");
+    var active = 0;
+
+    function sectionFor(i) { return document.getElementById(stages[i].anchor); }
+
+    function paint() {
+      var done = 0;
+      for (var i = 0; i < stages.length; i++) {
+        var isDone = doneByDom(sectionFor(i));
+        if (isDone) { done++; }
+        var li = nodes[i];
+        if (li) {
+          li.classList.toggle("is-done", isDone);
+          li.classList.toggle("is-current", i === active && !isDone);
+          var chip = li.querySelector(".ks3-rail-chip");
+          // The drawn mark, never a typed ✓ — same rule as the ladder's.
+          if (chip) {
+            var hasMark = !!chip.querySelector("svg");
+            if (isDone && !hasMark) { chip.innerHTML = TICK_SVG; }
+            else if (!isDone && hasMark) { chip.textContent = String(i + 1); }
+          }
+        }
+      }
+      if (count) { count.textContent = done + " / " + stages.length; }
+      if (fill) { fill.style.width = (done / stages.length * 100) + "%"; }
+      if (label) { label.textContent = stages[active].label || ""; }
+    }
+
+    // Scroll drives CURRENT only. Same rootMargin Design used, so the stage
+    // changes at the same scroll position it does on the approved page.
+    if (window.IntersectionObserver) {
+      var io = new IntersectionObserver(function (entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (!entries[i].isIntersecting) { continue; }
+          var idx = stages.map(function (s) { return s.anchor; })
+                          .indexOf(entries[i].target.id);
+          if (idx >= 0) { active = idx; }
+        }
+        paint();
+      }, { rootMargin: "-45% 0px -50% 0px" });
+      for (var i = 0; i < stages.length; i++) {
+        var sec = sectionFor(i);
+        if (sec) { io.observe(sec); }
+      }
+    }
+
+    // Completion is recomputed after anything the student does. Cheap, and it
+    // cannot go stale the way a set of per-component callbacks can.
+    each(["click", "change", "input"], function (evt) {
+      document.addEventListener(evt, function () { window.setTimeout(paint, 0); }, true);
+    });
+    paint();
+  }
+
   function init() {
     wirePredictions(document);
     wireCriteria(document);
     wireCards(document);
     wireSims(document);
     each(document.querySelectorAll(".ks3-ladder"), wireLadder);
+    each(document.querySelectorAll(".ks3-rails"), wireRail);
   }
 
   if (document.readyState === "loading") {
