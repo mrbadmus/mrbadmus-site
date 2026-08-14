@@ -943,6 +943,28 @@ Every block type the generator can emit must map to at least one component regis
 | check | `activity option resting`, `activity option CHOSEN`, `activity option CHOSEN badge` |
 | worked-example | `R8 answer box`, `R8 check-my-answer button` |
 | practical | `sim canvas`, `sim live figure is mono` |
+| key-fact | `KEY FACT box is band on an ACCENT shadow`, `KEY FACT label is mono accent-text`, `KEY FACT statement is display 700` |
+| rule | `statement panel is band on a 3px ink border`, `statement is display 800 at the ruled clamp`, `statement cards take the option border` |
+| formula | `formula panel is centred`, `formula statement takes the FORMULA clamp, not the rule's` |
+| comparison | `comparison rows are flex, not grid`, `comparison label stacks below 820`, `comparison content cells shrink to zero` |
+
+⊕ **The four rows above are B1 round two's (13 Aug 2026).** Each block type is a
+distinct SHELL, and every component registered against it pins the property that
+makes it distinct rather than the properties it shares with everything else:
+
+- `key-fact`'s shadow is **accent**, where a `.ks3-block`'s is ink. That single
+  value is what stops the box reading as one more card. It is also why the box
+  carries no badge, letter or mark — `--ks3-band` is the ground a chosen-WRONG
+  ladder option takes (MRB-202), so anything mark-like here reads as a verdict
+  on a line that is simply true.
+- `rule`'s border is **3px with no shadow**, and its statement takes drift 3's
+  **ruled** clamp rather than any one page's own.
+- `formula`'s statement is **centred with `max-width: none`**. That is the
+  entire difference between it and `rule`, whose statement is left-aligned at
+  20ch; the two shells are otherwise identical and a future tidy-up will try to
+  merge them. The pair exists to make that merge fail.
+- `comparison` is **flex and never grid**, because a grid cannot produce the
+  820px stack without a second query (MRB-210).
 
 
 ## Provenance

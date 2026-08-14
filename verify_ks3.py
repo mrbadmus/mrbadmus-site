@@ -923,10 +923,20 @@ def main():
         # "worst" must mean the worst pair that had to CLEAR its bar. Letting a
         # WCAG-exempt row own that number reports the gate as weaker than it is
         # and buries the exemption in a headline nobody reads twice.
-        held = [r for r in contrast_rows if "[exempt:" not in r[0]]
-        exempt = [r for r in contrast_rows if "[exempt:" in r[0]]
+        # A PARKED pair was never measured, so it has no ratio. It must not
+        # own the headline and it must not crash the comparison — same
+        # reasoning as the exemption below, one step further: a pair that did
+        # not run is not a pair that passed.
+        parked = [r for r in contrast_rows if r[3] is None]
+        measured = [r for r in contrast_rows if r[3] is not None]
+        held = [r for r in measured if "[exempt:" not in r[0]]
+        exempt = [r for r in measured if "[exempt:" in r[0]]
         worst = min((r[3] for r in held), default=0)
-        detail = "%d pairs, worst %.2f:1" % (len(contrast_rows), worst)
+        detail = "%d pairs measured, worst %.2f:1" % (len(measured), worst)
+        if parked:
+            detail += " (+%d parked: %s)" % (
+                len(parked),
+                ", ".join(r[0].split(" [")[0] for r in parked[:3]))
         if exempt:
             detail += " (+%d WCAG-exempt: %s)" % (
                 len(exempt), ", ".join("%s %.2f:1" % (r[0].split(" [")[0], r[3])
@@ -948,6 +958,10 @@ def main():
         # nobody can see is a number nobody re-checks.
         print("\n     measured contrast (fg on resolved ground):")
         for name, fg, bg, ratio, need, ok in contrast_rows:
+            if ratio is None:          # PARKED — never measured, so no number
+                print("       %-4s %-46s %8s  (needs %.1f)"
+                      % ("----", name[:46], "parked", need or 0))
+                continue
             print("       %-4s %-46s %6.2f:1  (needs %.1f)"
                   % ("PASS" if ok else "FAIL", name[:46], ratio, need))
 

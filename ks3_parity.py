@@ -328,6 +328,37 @@ LESSON = "chemistry/particles-and-their-behaviour/gas-pressure.html"
 # on the C1 lesson above.
 B1_MICRO = "biology/cells-and-organisation/using-a-microscope.html"
 B1_PARTS = "biology/cells-and-organisation/levels-of-organisation.html"
+# ⊕ B1 round two. A component is registered on a page that RENDERS it — a
+# component measured on a page that lacks it reports "selector not present" and
+# passes, which is the absence-of-assertion failure this gate exists to close.
+B1_LIFE = "biology/cells-and-organisation/life-processes.html"
+B1_UNI = "biology/cells-and-organisation/unicellular-organisms.html"
+
+# ── parking, and why it is not deletion ──────────────────────────────────
+#
+# A spec may carry `parked="<reason>"`. It is then not measured, and it is
+# REPORTED as parked in the run's output rather than passing quietly.
+#
+# This exists for one narrow case: machinery that is sound, registered, and
+# currently rendered by no page. `system-parts` is exactly that — B1-05 used to
+# carry it, and Design's approved B1-05 replaces it with `removal-cases`
+# (measured: zero `.ks3-sim`, zero `<select>`, no dependency graph anywhere on
+# the page). The engine in `shared/ks3.js` is audited and correct; nothing
+# renders it.
+#
+# Deleting the registrations would throw away real coverage the day a lesson
+# uses the kind again. Leaving them pointed at a page that no longer has the
+# component fails the gate forever, and a gate that always fails is a gate
+# everyone learns to ignore — which is how the 11 August sign-off happened.
+#
+# Parking is neither. Nothing is lost, nothing silently passes, and the output
+# says in words which components are not currently being measured and why.
+# MRB-203's registry still guards the real risk: if a lesson renders a block
+# type whose components are not defined, the build fails naming it.
+_PARKED_SYSTEM_PARTS = (
+    "no lesson renders a system-parts sim — Design's approved B1-05 replaces "
+    "it with `removal-cases`. Engine and audit kept; un-park when a lesson "
+    "uses the kind again.")
 UNIT = "chemistry/particles-and-their-behaviour/index.html"
 # C1 is fully authored, so its index carries no Coming soon badge; and B3 is
 # the ONLY unit in the key stage with a §4.6 reference slot, so it is the only
@@ -354,7 +385,14 @@ COMPONENTS = [
     dict(name="eyebrow (type row 6)", on=LESSON, sel=".ks3-eyebrow",
          props={"font-size": "13px", "font-weight": "700",
                 "text-transform": "uppercase", "color": "#5F564F"}),
-    dict(name="breadcrumb is mono", on=LESSON, sel=".ks3-crumbs",
+    # ⊕ MRB-208 amendment 1: on a LESSON page the trail moved into the header
+    # bar and `.ks3-crumbs` came off. It is body 17px/600, not the row's mono
+    # 14px — they are two different components and only one of them is a
+    # lesson's. The mono row survives on unit indices, discipline hubs and the
+    # browse layer, and is gated there.
+    dict(name="header trail is body type (MRB-208)", on=LESSON, sel=".ks3-trail",
+         props={"font-family": "Instrument Sans", "font-size": "17px"}),
+    dict(name="breadcrumb row is mono", on=UNIT, sel=".ks3-crumbs",
          props={"font-family": "DM Mono", "font-size": "14px"}),
     # MRB-197: Design's nav mark. Pinned to the frozen reference's header —
     # if the wordmark shrinks below display size, the chevron's 3:1 pair
@@ -362,6 +400,96 @@ COMPONENTS = [
     dict(name="nav brand wordmark (MRB-197)", on=LESSON, sel=".ks3-brand",
          props={"font-family": "Bricolage Grotesque", "font-weight": "800",
                 "font-size": "22px", "color": "#221E1B"}),
+    # ⊕ MRB-208 rule 1 — the chevron's accent tile.
+    dict(name="nav brand tile (MRB-208)", on=LESSON, sel=".ks3-brand-tile",
+         props={"background-color": "#E4572E", "width": "34px",
+                "height": "34px", "border-top-left-radius": "10px"}),
+
+    # ── B1 round two: the four block types §5.1.1 added ──
+    #
+    # Each is registered on a page that actually renders it, because a
+    # component measured on a page without it reports "selector not present"
+    # and passes — which is the absence-of-assertion failure MRB-198 fixed one
+    # level down and MRB-203 fixed one level up.
+    dict(name="KEY FACT box is band on an ACCENT shadow", on=B1_LIFE,
+         sel=".ks3-keyfact",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px",
+                "border-top-left-radius": "20px",
+                # The accent shadow is the whole distinction from a
+                # `.ks3-block`, whose shadow is ink. If this ever resolves to
+                # ink the box stops reading as a key fact and starts reading
+                # as one more card.
+                "box-shadow": "rgb(228, 87, 46) 5px 5px 0px 0px"}),
+    dict(name="KEY FACT label is mono accent-text", on=B1_LIFE,
+         sel=".ks3-keyfact-label",
+         props={"font-family": "DM Mono", "font-size": "13px",
+                "text-transform": "uppercase", "color": "#A93411"}),
+    dict(name="KEY FACT statement is display 700", on=B1_LIFE,
+         sel=".ks3-keyfact-body",
+         props={"font-family": "Bricolage Grotesque", "font-size": "22px",
+                "font-weight": "700", "color": "#221E1B"}),
+    # The statement panel. 3px and no shadow is what separates it from a
+    # `.ks3-block`; the clamp is drift 3's RULED value, not this page's own.
+    dict(name="statement panel is band on a 3px ink border", on=B1_LIFE,
+         sel=".ks3-rule",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "3px", "border-top-left-radius": "28px",
+                "box-shadow": "none"}),
+    # ⚠️ NO `font-size` HERE, and the omission is deliberate. The statement is
+    # `clamp(28px, 3.9vw, 44px)` — drift 3's ruled value — so its computed size
+    # is a function of the VIEWPORT, and this harness pins no viewport: headless
+    # Chrome lands around 756px, where the clamp resolves to 29.48px. Asserting
+    # 44px here would fail on a correct page, and asserting 29.48px would pin
+    # the harness's window size as if it were a design decision. The clamp is
+    # gated where a viewport actually exists — `tools/compare_b1.py`, at
+    # 1280 / 1340 / 820 / 390.
+    dict(name="statement is display 800 at the ruled clamp", on=B1_LIFE,
+         sel=".ks3-rule-statement",
+         # `text-align: start` is the viewport-free half of the rule/formula
+         # distinction — the formula's statement is centred with no measure,
+         # this one is left-aligned at 20ch. `max-width` cannot be asserted
+         # here: `ch` resolves against the clamped font size, so it computes to
+         # a different px value at every viewport.
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "color": "#221E1B", "text-align": "start"}),
+    # `--ks3-option-border` and not ink — that is what separates these from the
+    # misconception block's cards.
+    dict(name="statement cards take the option border", on=B1_LIFE,
+         sel=".ks3-rule-cards li",
+         props={"background-color": "#FFFCF5",
+                "border-top-color": "#DDCFB6", "border-top-width": "2px",
+                "border-top-left-radius": "22px"}),
+    # The formula. Centred with NO max-width is the entire difference between
+    # this and `rule`'s left-aligned 20ch measure — the shells are otherwise
+    # identical and a future tidy-up will try to merge them.
+    dict(name="formula panel is centred", on=B1_MICRO,
+         sel=".ks3-formula-statement",
+         props={"background-color": "#F4E9D8", "border-top-width": "3px",
+                "text-align": "center"}),
+    # `max-width: none` is the assertion that matters and it is viewport-free:
+    # it is the ONLY thing separating this shell from `rule`'s, which caps its
+    # statement at 20ch. Its own clamp (26/3.6vw/40 against the rule's
+    # 28/3.9vw/44) is viewport-dependent for the reason above.
+    dict(name="formula statement takes the FORMULA clamp, not the rule's",
+         on=B1_MICRO, sel=".ks3-formula-statement p",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "max-width": "none", "text-align": "center"}),
+    # The comparison rows. FLEX, never grid — a grid cannot produce the 820px
+    # stack without a second query (MRB-210).
+    dict(name="comparison rows are flex, not grid", on=B1_UNI,
+         sel=".ks3-compare-row",
+         props={"display": "flex", "flex-wrap": "wrap",
+                "border-top-width": "2px"}),
+    # The harness pins no viewport and headless lands under 820px, so what it
+    # measures here is the STACKED state — which is the one MRB-210 cares about
+    # and the one that breaks the discrimination on a phone if it regresses.
+    # The wide 118px basis is gated by `tools/compare_b1.py` at 1280 and 1340.
+    dict(name="comparison label stacks below 820", on=B1_UNI,
+         sel=".ks3-compare-name", props={"flex-basis": "100%"}),
+    dict(name="comparison content cells shrink to zero", on=B1_UNI,
+         sel=".ks3-compare-cell",
+         props={"flex-basis": "250px", "min-width": "0px"}),
 
     # ── blocks ──
     dict(name="standard block shell", on=LESSON, sel=".ks3-check",
@@ -551,7 +679,7 @@ COMPONENTS = [
          sel='.ks3-sim[data-sim="microscope"] .ks3-sim-canvas',
          props={"background-color": "#F7EFE1", "border-top-color": "#C6B9A7",
                 "border-top-left-radius": "20px"}),
-    dict(name="system-parts canvas (dark practical shell)", on=B1_PARTS,
+    dict(name="system-parts canvas (dark practical shell)", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
          sel='.ks3-sim[data-sim="system-parts"] .ks3-sim-canvas',
          props={"background-color": "#F7EFE1", "border-top-color": "#C6B9A7",
                 "border-top-left-radius": "20px"}),
@@ -570,7 +698,7 @@ COMPONENTS = [
          sel='.ks3-practical .ks3-sim-control input[type="range"]',
          drive="sim-unlocked",
          props={"accent-color": "#E4572E", "height": "44px"}),
-    dict(name="system-parts part selector", on=B1_PARTS,
+    dict(name="system-parts part selector", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
          sel=".ks3-practical .ks3-sim-control select", drive="sim-unlocked",
          props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
                 "font-size": "17px", "min-height": "44px",
@@ -625,14 +753,25 @@ CONTRAST = [
          fg=".ks3-eyebrow", bg="body", need=4.5),
     dict(name="big question on page ground", on=LESSON,
          fg=".ks3-bigq", bg="body", need=4.5),
-    dict(name="breadcrumb link on page ground", on=LESSON,
+    dict(name="header trail link on page ground", on=LESSON,
+         fg=".ks3-trail a", bg=".ks3-nav", need=4.5),
+    dict(name="header trail current page on page ground", on=LESSON,
+         fg=".ks3-trail [aria-current]", bg=".ks3-nav", need=4.5),
+    dict(name="breadcrumb row link on page ground", on=UNIT,
          fg=".ks3-crumbs a", bg="body", need=4.5),
     dict(name="nav brand wordmark on page ground", on=LESSON,
          fg=".ks3-brand", bg=".ks3-nav", need=4.5),
     # MRB-197: the chevron is an identifying mark, so R1's 3:1 applies. Read
     # from the SVG stroke, not `color` — the mark is drawn, not typed.
-    dict(name="nav brand chevron on page ground (mark, 3:1)", on=LESSON,
-         fg=".ks3-brand svg path", bg=".ks3-nav", need=3.0, prop="stroke"),
+    #
+    # ⊕ MRB-208 rule 1 moved the chevron INSIDE a 34px accent tile and turned
+    # the stroke cream, so the ground it has to clear is the tile and not the
+    # page. Measuring it against `.ks3-nav` after that change reports cream on
+    # cream at 1.00:1 — a real failure of the assertion, not of the mark, and
+    # exactly the kind of stale pair that makes a gate look like it is lying.
+    dict(name="nav brand chevron on its tile (mark, 3:1)", on=LESSON,
+         fg=".ks3-brand svg path", bg=".ks3-brand-tile", need=3.0,
+         prop="stroke"),
     dict(name="body text on card", on=LESSON,
          fg=".ks3-check p", bg=".ks3-check", need=4.5),
     dict(name="draft marker text on its tint", on=LESSON,
@@ -811,19 +950,19 @@ CONTRAST = [
     dict(name="microscope readout on dark ground", on=B1_MICRO,
          fg=".ks3-practical .ks3-sim-readout", bg=".ks3-practical",
          need=4.5, drive="sim-unlocked"),
-    dict(name="system-parts locked cover on dark ground", on=B1_PARTS,
+    dict(name="system-parts locked cover on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
          fg=".ks3-practical .ks3-sim-cover",
          bg=".ks3-practical .ks3-sim-cover", need=4.5),
-    dict(name="system-parts caption on dark ground", on=B1_PARTS,
+    dict(name="system-parts caption on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
          fg=".ks3-practical .ks3-sim-caption", bg=".ks3-practical", need=4.5),
-    dict(name="system-parts control label on dark ground", on=B1_PARTS,
+    dict(name="system-parts control label on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
          fg=".ks3-practical .ks3-sim-control", bg=".ks3-practical",
          need=4.5, drive="sim-unlocked"),
-    dict(name="system-parts select text on its own ground", on=B1_PARTS,
+    dict(name="system-parts select text on its own ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
          fg=".ks3-practical .ks3-sim-control select",
          bg=".ks3-practical .ks3-sim-control select", need=4.5,
          drive="sim-unlocked"),
-    dict(name="system-parts readout on dark ground", on=B1_PARTS,
+    dict(name="system-parts readout on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
          fg=".ks3-practical .ks3-sim-readout", bg=".ks3-practical",
          need=4.5, drive="sim-unlocked"),
     # identifying / state-bearing marks — 3:1 is the bar (R1)
@@ -1250,6 +1389,21 @@ def same_colour(got, want):
     return g is not None and w is not None and g == w
 
 
+# ⚠️ A 1px tolerance is for LAYOUT, and it is wrong for a hairline.
+#
+# `TOL_PX = 1.0` exists because a measured width or height lands a fraction off
+# after rounding, and failing a build over 0.4px would make the gate useless.
+# Applied to a BORDER, it makes 2px and 3px indistinguishable — and 2px against
+# 3px is exactly what separates `.ks3-rule` from a `.ks3-block`, and
+# `.ks3-ladder` from both.
+#
+# Found by mutation-testing the statement panel: repainting its 3px border to
+# 2px changed the page and the gate did not notice, which is the definition of
+# an assertion that cannot fail. Below 5px a length is a design decision, not a
+# rounding artefact, so it is compared exactly.
+_HAIRLINE_PX = 5.0
+
+
 def close_length(got, want):
     def px(v):
         m = re.match(r'(-?[\d.]+)px$', (v or "").strip())
@@ -1257,6 +1411,8 @@ def close_length(got, want):
     a, b = px(got), px(want)
     if a is None or b is None:
         return None
+    if abs(b) < _HAIRLINE_PX:
+        return a == b
     return abs(a - b) <= TOL_PX
 
 
@@ -1665,19 +1821,56 @@ _JS_MICRO_AUDIT = "(function () {" + _JS_R5_CHECKS + r"""
   if (!unlockViaOwnActivity(sim, "microscope", P)) { return { problems: P }; }
   controlsRendered(sim, "microscope", P);
 
-  var sels = sim.querySelectorAll('.ks3-sim-controls select');
-  var specSel = sels[0], magSel = sels[1];
+  // ⚠️ FIND CONTROLS BY NAME, NEVER BY POSITION.
+  //
+  // This used to read `sels[0]` as the specimen selector and `sels[1]` as the
+  // magnification one. That held only while every microscope declared both.
+  // Design's approved B1-02 draws TWO controls over ONE slide — magnification
+  // and focus, no specimen selector, because there is nothing to select — so
+  // positional indexing read the magnification select as the specimen select
+  // and reported two failures on a correct page. A gate that assumes a control
+  // layout fails the first lesson that legitimately has a different one.
+  var declared = (sim.getAttribute('data-controls') || '').split(',');
+  function controlNamed(name) {
+    var wraps = sim.querySelectorAll('.ks3-sim-control');
+    for (var i = 0; i < wraps.length; i++) {
+      if (wraps[i].getAttribute('data-control') === name) { return wraps[i]; }
+    }
+    // Fall back to declaration order among the controls that render a select.
+    var idx = declared.indexOf(name);
+    var sels = sim.querySelectorAll('.ks3-sim-controls select');
+    return idx >= 0 && sels[idx] ? sels[idx].closest('.ks3-sim-control') : null;
+  }
+  function selectIn(name) {
+    var w = controlNamed(name);
+    return w ? w.querySelector('select') : null;
+  }
+  var hasSpecimen = declared.indexOf('specimen') >= 0;
+  var specSel = hasSpecimen ? selectIn('specimen') : null;
+  var magSel = selectIn('magnification');
   var focusInput = sim.querySelector('.ks3-sim-controls input[type="range"]');
   var readout = sim.querySelector('.ks3-sim-readout');
   var specimens = [];
   try { specimens = JSON.parse(sim.getAttribute('data-specimens') || '[]'); }
   catch (e) {}
-  if (!specSel || specSel.options.length !== specimens.length) {
+  // A lesson with one slide draws no selector, and that is correct. What is
+  // never correct is DECLARING the control and not rendering it.
+  if (hasSpecimen && (!specSel || specSel.options.length !== specimens.length)) {
     P.push("microscope: specimen select offers "
            + (specSel ? specSel.options.length : 0) + " slides, payload has "
            + specimens.length);
   }
-  if (!magSel || magSel.options.length !== 3) {
+  if (!hasSpecimen && specimens.length > 1) {
+    P.push("microscope: " + specimens.length + " slides in the payload but no "
+           + "specimen control declared — the student cannot reach them");
+  }
+  // The objective control may be a select or a segmented group (B1-06).
+  if (!magSel) {
+    var segs = sim.querySelectorAll('.ks3-sim-seg-btn');
+    if (segs.length !== 3) {
+      P.push("microscope: magnification must offer the three objectives");
+    }
+  } else if (magSel.options.length !== 3) {
     P.push("microscope: magnification select must offer the three objectives");
   }
   if (!focusInput) { P.push("microscope: no focus wheel rendered"); }
@@ -1780,7 +1973,12 @@ _JS_PARTS_AUDIT = "(function () {" + _JS_R5_CHECKS + r"""
 
 SIM_AUDITS = {
     B1_MICRO: ("microscope", _JS_MICRO_AUDIT),
-    B1_PARTS: ("system-parts", _JS_PARTS_AUDIT),
+    # `system-parts` is PARKED, not deleted — see `_PARKED_SYSTEM_PARTS`. No
+    # lesson renders the kind since Design's approved B1-05 replaced it with
+    # `removal-cases`, so the audit has nothing to drive and would report "no
+    # system-parts sim on the page" on every run. `_JS_PARTS_AUDIT` stays in
+    # this file, with its cascade and scale-rule assertions intact, and this
+    # row goes back the day a lesson uses the kind again.
 }
 
 
@@ -1990,6 +2188,10 @@ def run_browser_layers(ks3_root, browser_mod):
         for spec in COMPONENTS:
             if spec["on"] != rel or spec.get("drive") != drive:
                 continue
+            if spec.get("parked"):
+                style_rows.append((spec["name"], "—", "PARKED",
+                                   spec["parked"], True))
+                continue
             sel = spec["sel"]
             if not page.eval("!!window.__ks3.q(%r)" % sel):
                 problems.append("PARITY: %s — selector %s not present on /%s%s"
@@ -2003,7 +2205,14 @@ def run_browser_layers(ks3_root, browser_mod):
                     ok = want.lower() in got.lower()
                 elif want.startswith("#"):
                     ok = same_colour(got, want)
-                elif want.endswith("px"):
+                # ⚠️ A LENGTH IS ONE TOKEN. `box-shadow: rgb(228, 87, 46) 5px
+                # 5px 0px 0px` ends in "px" and is not a length — routing it to
+                # `close_length` made an assertion fail while printing an
+                # expected and a resolved value that were CHARACTER-IDENTICAL,
+                # which is the most confusing failure a gate can produce. Found
+                # registering the KEY FACT box's accent shadow, which is the one
+                # property that distinguishes it from every other card.
+                elif want.endswith("px") and " " not in want.strip():
                     ok = close_length(got, want)
                 else:
                     ok = (got.lower() == want.lower())
@@ -2016,6 +2225,10 @@ def run_browser_layers(ks3_root, browser_mod):
     def measure_d(page, rel, drive):
         for spec in CONTRAST:
             if spec["on"] != rel or spec.get("drive") != drive:
+                continue
+            if spec.get("parked"):
+                contrast_rows.append(("%s [PARKED]" % spec["name"],
+                                      None, None, None, spec.get("need"), True))
                 continue
             fg_sel, bg_sel = spec["fg"], spec["bg"]
             if not page.eval("!!window.__ks3.q(%r)" % fg_sel):
