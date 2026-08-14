@@ -332,10 +332,22 @@ window.__rc = {
    *  rather than removed so every dot read in that check still sees real
    *  visibility — display:none changes nothing about which dots exist, where
    *  they are, or what the renderer thinks. */
+  /** Hide every SHELL overlay that sits on the stage, for a capture that is
+   *  about canvas pixels.
+   *
+   *  The hotspot dots have always been here. The plane rule joined them at
+   *  MRB-189 and cost check 8 a false failure first: it is a 1.5px accent line
+   *  drawn ACROSS the stage, well past the specimen at both ends, and
+   *  `_interior_holes` counts backdrop lying BETWEEN drawn pixels on a
+   *  scanline. One stray drawn pixel out near the stage edge therefore brackets
+   *  a few hundred pixels of backdrop on every scanline it crosses, and the
+   *  enclosed-background count went from ~1.2k to ~4.7k with nothing wrong with
+   *  the cap at all. Same class of mistake as the dots, same fix: the
+   *  instrument must photograph the render, not the furniture on top of it. */
   hideDots: function () {
     var s = document.getElementById('__dotprobe') || document.createElement('style');
     s.id = '__dotprobe';
-    s.textContent = '.hotspot{display:none !important;}';
+    s.textContent = '.hotspot,.planerule,.secreadout{display:none !important;}';
     document.head.appendChild(s);
     return true;
   },
