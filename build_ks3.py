@@ -191,6 +191,12 @@ MARK_TICK = ('<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">'
              '<path d="M4 13l5 5L20 7"/></svg>')
 MARK_CROSS = ('<svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true">'
               '<path d="M6 6l12 12M18 6L6 18"/></svg>')
+# ▾ U+25BE is absent from the same five subsets, for the same reason — it is a
+# geometric shape, not a letter. Typed into the picker's button it would drop to
+# a system font mid-label, inside a 19px/700 Bricolage button, which is exactly
+# the defect `.ks3-mark` exists to prevent. Drawn instead. MRB-212.
+MARK_CARET = ('<svg class="ks3-mark ks3-mark-caret" viewBox="0 0 24 24" '
+              'aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>')
 
 # Escaped TEXT, with the three marks DRAWN rather than typed.
 #
@@ -285,9 +291,41 @@ def crumbs(parts):
             % '<span class="ks3-crumb-sep" aria-hidden="true">›</span>'.join(out))
 
 
-def shell(title, body, crumb_html="", discipline=None, description=""):
-    """KS3 page shell. `class="rd"` + `data-mode="ks3"` per §8.5."""
+def shell(title, body, crumb_html="", discipline=None, description="",
+          footer_links=(), main_class="", lesson_slug=None):
+    """KS3 page shell. `class="rd"` + `data-mode="ks3"` per §8.5.
+
+    **The breadcrumbs live in the HEADER, not in `<main>` (MRB-208).** Design's
+    browse layer puts them on the header rail, one divider after the brand, and
+    that is the only place they appear: a page that repeated them as a row
+    inside `<main>` would announce the same trail twice to a screen reader and
+    push the h1 below the fold on a phone for no gain. `crumbs()` still returns
+    the same `<nav class="ks3-crumbs">` — only where it is dropped changed.
+
+    `footer_links` is a list of `(label, href)` for the footer's right-hand
+    quick links. It is per-page rather than derived here because only the caller
+    knows which year and which discipline it is inside; `landing()` passes
+    nothing but "All of KS3", the browse screens add their own way back up.
+
+    `lesson_slug` stamps `data-ks3-lesson` on `<body>`. MRB-212's visit logger
+    reads it to know which lesson a page IS. It cannot use the existing
+    `data-lesson` attribute for that: that one lives on the ladder element,
+    which only an AUTHORED lesson with a ladder has, so every coming-soon page
+    and any authored page without a ladder would be invisible to the log.
+    """
     accent = ("--subject: var(%s);" % SUBJECT_TOKEN[discipline]) if discipline else ""
+
+    # No brand→crumb divider when there is nothing to divide.
+    crumb_rail = ('<span class="ks3-nav-divider" aria-hidden="true"></span>\n  %s'
+                  % crumb_html) if crumb_html.strip() else ""
+
+    # "All of KS3" is on every KS3 page, always — the one link that is true
+    # from anywhere in the tree. Callers supply only the extra rungs they
+    # happen to sit under.
+    links = "".join(
+        '<a href="%s">%s</a>' % (e(href), t(label))
+        for label, href in (("All of KS3", "/ks3/index.html"),) + tuple(footer_links))
+
     return """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -300,16 +338,22 @@ def shell(title, body, crumb_html="", discipline=None, description=""):
 <link rel="stylesheet" href="/shared/nav.css"/>
 <link rel="stylesheet" href="/shared/ks3.css"/>
 </head>
-<body class="rd" data-mode="ks3"%(style)s>
-<nav class="ks3-nav">%(brand)s
-  <a class="ks3-nav-link" href="/ks3/index.html">KS3</a>
-</nav>
-<main class="ks3-main">
-%(crumbs)s
+<body class="rd" data-mode="ks3"%(lesson)s%(style)s>
+<header class="ks3-nav">
+  <div class="ks3-nav-rail">%(brand)s
+  %(crumbs)s
+  <span class="ks3-nav-spacer"></span>
+  <a class="ks3-pill" href="/ks3/index.html">KS3</a>
+  </div>
+</header>
+<main class="ks3-main%(mainclass)s">
 %(body)s
 </main>
 <footer class="ks3-footer">
-  <p>MrBadmusAI · Key Stage 3 Science</p>
+  <div class="ks3-footer-rail">
+    <p class="ks3-footer-title">MrBadmusAI · Key Stage 3 Science</p>
+    <div class="ks3-footer-links">%(links)s</div>
+  </div>
 </footer>
 <script src="/shared/ks3.js" defer></script>
 </body>
@@ -318,8 +362,11 @@ def shell(title, body, crumb_html="", discipline=None, description=""):
         "title": e(title),
         "desc": e(description or title),
         "style": (' style="%s"' % accent) if accent else "",
+        "lesson": (' data-ks3-lesson="%s"' % e(lesson_slug)) if lesson_slug else "",
         "brand": NAV_BRAND,
-        "crumbs": crumb_html,
+        "crumbs": crumb_rail,
+        "mainclass": (" %s" % main_class) if main_class else "",
+        "links": links,
         "body": body,
         "preload": FONT_PRELOADS,
     }
@@ -706,7 +753,11 @@ def r_activity(lesson, block_type, act_id):
 LADDER_RUNGS = (("recall", 1, "Recall"), ("apply", 2, "Apply"),
                 ("explain", 3, "Explain"), ("produce", 4, "Produce"))
 
-NUMBER_WORDS = ("no", "one", "two", "three", "four")
+# Runs to twelve because the browse layer counts lessons in a card, not just
+# ladder rungs (which never exceed four). `_count_word` already falls back to
+# digits above the tuple, so lengthening it changes no existing output.
+NUMBER_WORDS = ("no", "one", "two", "three", "four", "five", "six", "seven",
+                "eight", "nine", "ten", "eleven", "twelve")
 
 
 def _count_word(n):
@@ -996,7 +1047,8 @@ def lesson_page(unit, lesson, registry, units_by_code):
     body.append("</div>")
 
     return shell(lesson["title"], "\n".join(x for x in body if x), crumb, disc,
-                 lesson.get("big_question", ""))
+                 lesson.get("big_question", ""),
+                 lesson_slug=lesson["slug"])
 
 
 def coming_soon_page(unit, lesson):
@@ -1020,7 +1072,8 @@ def coming_soon_page(unit, lesson):
 </div>""" % (t(unit["title"]), e(family_label(lesson["family"])),
              t(lesson["title"]), e(base), t(unit["title"]))
     return shell(lesson["title"], body, crumb, disc,
-                 "%s — coming soon" % lesson["title"])
+                 "%s — coming soon" % lesson["title"],
+                 lesson_slug=lesson["slug"])
 
 
 def unit_index(unit, units_by_code, registry):
@@ -1220,55 +1273,152 @@ def lesson_row(unit, lesson, position, units_by_code):
                e(family_label(lesson["family"])), badge))
 
 
+SEASON_TITLES = {"autumn": "Autumn", "spring": "Spring", "summer": "Summer"}
+
+
+def _seasons_of_year():
+    """`[(season, [half_term, …]), …]` in teaching order, derived.
+
+    Read off `season_of()` rather than tabulated, so a change to the slugs in
+    half_terms.py moves the rows here instead of leaving a stale second copy.
+    """
+    order = []
+    groups = {}
+    for ht in HALF_TERMS:
+        s = season_of(ht)
+        if s not in groups:
+            groups[s] = []
+            order.append(s)
+        groups[s].append(ht)
+    return [(s, groups[s]) for s in order]
+
+
+def _units_in(browse, year, half_term):
+    """`[(discipline, unit_title), …]` for one half term, in teaching order.
+
+    Deduplicated because a unit contributes one ROW however many of its lessons
+    land in the half term, and ordered by discipline so the three colours always
+    appear top to bottom in the same order.
+    """
+    out = []
+    for d in DISCIPLINES:
+        for u, _l, _i in browse.get((year, half_term, d), []):
+            if (d, u["title"]) not in out:
+                out.append((d, u["title"]))
+    return out
+
+
 def year_index(year, browse):
-    """/ks3/year-<n>/index.html — the six half terms of one year."""
+    """/ks3/year-<n>/index.html — the six half terms of one year.
+
+    Laid out as THREE SEASON ROWS (MRB-182), not a flat 2×3 grid: a school year
+    is three terms, each two half terms, and a sticky season tile down the left
+    is what makes "which term is this?" answerable while scrolling.
+
+    Each card lists the UNIT NAMES taught in that half term, one row per unit.
+    It used to print "Biology 3 · Chemistry 4 · Physics 3", which told a student
+    how MUCH was coming without ever saying WHAT — the one question the page
+    exists to answer. A half term may carry four units, or two in one science;
+    the list is derived, so it renders however many there actually are.
+    """
     crumb = crumbs([("KS3", "/ks3/index.html"), ("Year %d" % year, None)])
 
-    cards = []
-    for ht in HALF_TERMS:
-        per_disc = [(d, browse.get((year, ht, d), [])) for d in DISCIPLINES]
-        entries = [r for _d, rows in per_disc for r in rows]
-        units, lessons = _counts(entries)
-        split = " · ".join("%s %d" % (DISCIPLINE_TITLES[d], len(rows))
-                           for d, rows in per_disc if rows)
-        # .ks3-code inside a .ks3-browse-ht card is a 42px square tile, so it
-        # holds the NUMBER and the heading holds the name. "Half term 3" in a
-        # 42px box was overflowing its own border.
-        cards.append(
-            '<li class="ks3-unit-card ks3-browse-ht" data-season="%s">'
-            '<a href="/ks3/year-%d/%s/index.html">'
-            '<span class="ks3-code">%d</span><h2>%s</h2>'
-            '<p class="ks3-meta">%s · %s</p>'
-            '<p class="ks3-browse-split">%s</p></a></li>'
-            % (e(season_of(ht)), year, e(half_term_slug(ht)), ht,
-               e(half_term_name(ht)), e(_plural(lessons, "lesson")),
-               e(_plural(units, "unit")), e(split)))
+    rows = []
+    for season, hts in _seasons_of_year():
+        season_lessons = sum(len(_entries(browse, year, ht)) for ht in hts)
+        cards = []
+        for ht in hts:
+            units_n, lessons_n = _counts(_entries(browse, year, ht))
+            unit_rows = "".join(
+                '<li data-discipline="%s">'
+                '<span class="ks3-ht-dot" aria-hidden="true"></span>'
+                '<span>%s</span></li>' % (e(d), t(title))
+                for d, title in _units_in(browse, year, ht))
+            # .ks3-code is the 46px season-coloured number tile; the heading
+            # carries the name. Layer C of the parity gate reads the tile's
+            # background off this exact selector, so the class stays.
+            cards.append(
+                '<li class="ks3-unit-card ks3-browse-ht" data-season="%s">'
+                '<a href="/ks3/year-%d/%s/index.html">'
+                '<span class="ks3-ht-head"><span class="ks3-code">%d</span>'
+                '<span class="ks3-ht-name">%s</span></span>'
+                '<span class="ks3-meta">%s · %s</span>'
+                '<ul class="ks3-ht-units">%s</ul></a></li>'
+                % (e(season), year, e(half_term_slug(ht)), ht,
+                   e(half_term_name(ht)), e(_plural(lessons_n, "lesson")),
+                   e(_plural(units_n, "unit")), unit_rows))
+
+        rows.append(
+            '<div class="ks3-season-row" data-season="%s">'
+            '<div class="ks3-season-side"><div class="ks3-season-tile">'
+            '<p class="ks3-season-name">%s</p>'
+            '<p class="ks3-season-meta">Half terms %s · %s</p></div></div>'
+            '<ul class="ks3-ht-grid">%s</ul></div>'
+            % (e(season), e(SEASON_TITLES.get(season, season.title())),
+               e(" & ".join(str(h) for h in hts)),
+               e(_plural(season_lessons, "lesson")), "".join(cards)))
 
     units, lessons = _counts(_entries(browse, year))
-    body = """<header class="ks3-landing-head">
-  <p class="ks3-eyebrow">Key Stage 3</p>
-  <h1>Year %d</h1>
-  <p class="ks3-intro">%s across %s, split into the six half terms of the school
-     year. Pick a half term to see what each science covers.</p>
+    body = """<header class="ks3-landing-head ks3-browse-head">
+  <div>
+    <p class="ks3-eyebrow">Key Stage 3</p>
+    <h1>Year %(year)d</h1>
+    <p class="ks3-intro">%(lessons)s across %(units)s, split into the six half
+       terms of the school year. Pick a half term to see what each science
+       covers.</p>
+  </div>
+  <div class="ks3-stat-row">
+    <div class="ks3-stat"><span class="ks3-stat-n">%(nlessons)d</span><span class="ks3-stat-l">lessons</span></div>
+    <div class="ks3-stat"><span class="ks3-stat-n">%(nunits)d</span><span class="ks3-stat-l">units</span></div>
+    <div class="ks3-stat"><span class="ks3-stat-n">%(nhts)d</span><span class="ks3-stat-l">half terms</span></div>
+  </div>
 </header>
-<ul class="ks3-unit-grid">%s</ul>
-<p class="ks3-browse-alt"><a href="/ks3/index.html">Browse by subject instead %s</a></p>""" % (
-        year, e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-        "".join(cards), MARK_ARROW)
+<section class="ks3-season-rows">%(rows)s</section>
+<p class="ks3-browse-alt"><a href="/ks3/index.html">Browse by subject instead %(arrow)s</a></p>""" % {
+        "year": year,
+        "lessons": e(_plural(lessons, "lesson")),
+        "units": e(_plural(units, "unit")),
+        "nlessons": lessons,
+        "nunits": units,
+        "nhts": len(HALF_TERMS),
+        "rows": "".join(rows),
+        "arrow": MARK_ARROW,
+    }
     return shell("Year %d Science" % year, body, crumb, None,
                  "KS3 Year %d Science — the MrBadmusAI default sequence, half "
-                 "term by half term." % year)
+                 "term by half term." % year,
+                 footer_links=[("Year %d" % year,
+                                "/ks3/year-%d/index.html" % year)],
+                 main_class="is-browse")
 
 
 def half_term_index(year, half_term, browse):
-    """/ks3/year-<n>/<half-term>/index.html — the sciences in one half term."""
+    """/ks3/year-<n>/<half-term>/index.html — the sciences in one half term.
+
+    Each subject card now names its UNIT and lists that unit's lessons, rather
+    than reporting a bare count. The stat panel takes the page's own season
+    colour — Design drew it orange because it drew half term 1, and a green
+    spring page wearing an autumn panel would undo the whole point of colouring
+    the browse layer by term.
+
+    **Both states of a card are a real link.** Design's prototype renders a card
+    with nothing authored as an inert div, and that would strand every
+    coming-soon page in the half term: `/ks3/year-7/autumn-1/biology/index.html`
+    is a real, generated, routable page and the card is its only route in.
+    Structure-first (§11 decision 8) and R15 both point the same way, and §3d's
+    lesson rows already resolve the identical tension by staying links in both
+    states. The card's WORDS still carry the difference (R2) — "Open these four
+    lessons" against "Lessons being written".
+    """
     slug = half_term_slug(half_term)
     name = half_term_name(half_term)
+    season = season_of(half_term)
     crumb = crumbs([("KS3", "/ks3/index.html"),
                     ("Year %d" % year, "/ks3/year-%d/index.html" % year),
                     (name, None)])
 
     cards = []
+    splits = []
     for disc in DISCIPLINES:
         rows = browse.get((year, half_term, disc), [])
         if not rows:
@@ -1277,44 +1427,141 @@ def half_term_index(year, half_term, browse):
             # costs one line and means a future exemption degrades to a missing
             # card rather than a crash.
             continue
-        units, lessons = _counts(rows)
-        unit_titles = []
-        for u, _l, _i in rows:
-            if u["title"] not in unit_titles:
-                unit_titles.append(u["title"])
-        # data-discipline is what sets --ks3-hue, which colours both the dot and
-        # the card's shadow. Without it both fall back to the accent and all
-        # three subject cards look identical.
+        units_n, lessons_n = _counts(rows)
+        splits.append((disc, lessons_n))
+
+        # Consecutive grouping — a half term may carry more than one unit of a
+        # science, and each gets its own eyebrow, title and list in sequence.
+        groups = []
+        for u, l, i in rows:
+            if not groups or groups[-1][0]["code"] != u["code"]:
+                groups.append((u, []))
+            groups[-1][1].append((l, i))
+
+        blocks = []
+        for u, lessons in groups:
+            items = "".join(
+                '<li%s><span class="ks3-ht-n">%02d</span><span>%s</span></li>'
+                % (' class="is-live"' if l["authored"] else "", i, t(l["title"]))
+                for l, i in lessons)
+            blocks.append(
+                '<div class="ks3-ht-unit">'
+                '<p class="ks3-eyebrow">Unit %s · %s</p>'
+                '<p class="ks3-ht-unit-title">%s</p>'
+                '<ol class="ks3-ht-lessons">%s</ol></div>'
+                % (e(u["code"]), e(_plural(len(lessons), "lesson")),
+                   t(u["title"]), items))
+
+        live = sum(1 for _u, l, _i in rows if l["authored"])
+        if live:
+            cta = ('<span class="ks3-browse-cta">Open these %s lessons %s</span>'
+                   % (e(_count_word(lessons_n)), MARK_ARROW))
+        else:
+            cta = '<span class="ks3-ht-soon">Lessons being written</span>'
+
+        # data-discipline is what sets --ks3-hue, which colours the dot and the
+        # card's offset shadow. Without it all three cards look identical.
         cards.append(
             '<li class="ks3-unit-card ks3-browse-subject" data-discipline="%s">'
             '<a href="/ks3/year-%d/%s/%s/index.html">'
             '<span class="ks3-browse-subject-head">'
             '<span class="ks3-browse-dot" aria-hidden="true"></span>'
-            '<h2>%s</h2></span>'
-            '<p class="ks3-meta">%s · %s</p>'
-            '<p class="ks3-browse-split">%s</p></a></li>'
+            '<h2>%s</h2></span>%s%s</a></li>'
             % (e(disc), year, e(slug), e(disc), e(DISCIPLINE_TITLES[disc]),
-               e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-               t(" · ".join(unit_titles))))
+               "".join(blocks), cta))
 
     units, lessons = _counts(_entries(browse, year, half_term))
-    body = """<header class="ks3-landing-head" data-season="%s">
-  <p class="ks3-eyebrow">Year %d · Half term %d</p>
-  <h1>%s</h1>
-  <p class="ks3-intro">%s across %s. Pick a science to see the lessons.</p>
+
+    # The proportional bar: each subject's flex-grow IS its lesson count, so
+    # the row is the split rather than a picture of it.
+    bar = "".join('<span data-discipline="%s" style="flex:%d"></span>'
+                  % (e(d), n) for d, n in splits)
+    split_line = " · ".join("%s %d" % (DISCIPLINE_TITLES[d], n) for d, n in splits)
+
+    body = """<header class="ks3-landing-head ks3-browse-head" data-season="%(season)s">
+  <div>
+    <p class="ks3-eyebrow">Year %(year)d · Half term %(ht)d</p>
+    <h1>%(name)s</h1>
+    <p class="ks3-intro">%(lessons)s across %(units)s. Pick a science to see the
+       lessons.</p>
+  </div>
+  <div class="ks3-ht-panel">
+    <p class="ks3-ht-panel-n">%(nlessons)d</p>
+    <p class="ks3-ht-panel-l">lessons across %(units)s</p>
+    <div class="ks3-ht-bar">%(bar)s</div>
+    <p class="ks3-ht-panel-split">%(split)s</p>
+  </div>
 </header>
-<ul class="ks3-unit-grid">%s</ul>
-<p class="ks3-browse-alt"><a href="/ks3/year-%d/index.html">Back to all six half terms of Year %d</a></p>""" % (
-        e(season_of(half_term)), year, half_term, e(name),
-        e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-        "".join(cards), year, year)
+<ul class="ks3-unit-grid is-browse">%(cards)s</ul>
+<p class="ks3-browse-alt"><a href="/ks3/year-%(year)d/index.html">Back to all six half terms of Year %(year)d</a></p>""" % {
+        "season": e(season),
+        "year": year,
+        "ht": half_term,
+        "name": e(name),
+        "lessons": e(_plural(lessons, "lesson")),
+        "units": e(_plural(units, "unit")),
+        "nlessons": lessons,
+        "bar": bar,
+        "split": e(split_line),
+        "cards": "".join(cards),
+    }
     return shell("%s · Year %d" % (name, year), body, crumb, None,
                  "KS3 Year %d, %s — the MrBadmusAI default sequence."
-                 % (year, name))
+                 % (year, name),
+                 footer_links=[("Year %d" % year,
+                                "/ks3/year-%d/index.html" % year)],
+                 main_class="is-browse")
+
+
+VOCAB_CAP = 8
+
+
+def _later_this_year(browse, year, half_term, unit_code):
+    """`(half_term, [(lesson, position), …])` for the rest of a unit, or None.
+
+    Where the same unit's remaining lessons return LATER in the same year.
+    Derived from the placement, never authored — §4.5 forbids page text being a
+    function of the sequence for a LESSON page, but this is a browse page and
+    §4.5.2 makes it the rendered sequence, so it must move when the sequence
+    does. Returns the earliest half term the unit resumes in, and everything
+    placed from that point on.
+    """
+    out = []
+    first = None
+    for ht in HALF_TERMS:
+        if ht <= half_term:
+            continue
+        for (y, h, _d), entries in browse.items():
+            if y != year or h != ht:
+                continue
+            for u, l, i in entries:
+                if u["code"] == unit_code:
+                    if first is None:
+                        first = ht
+                    out.append((l, i))
+    if not out:
+        return None
+    out.sort(key=lambda p: p[1])
+    return (first, out)
 
 
 def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
-    """/ks3/year-<n>/<half-term>/<discipline>/index.html — the lessons placed there."""
+    """/ks3/year-<n>/<half-term>/<discipline>/index.html — the lessons placed there.
+
+    A numbered timeline down the left, a sticky aside on the right. Every row is
+    a real link in BOTH states: an unwritten lesson still has a real page saying
+    so, and `lesson_row()`'s contract — never mint a lesson URL, never dead-end
+    a student — is the same one honoured here (§11 decision 8).
+
+    ⚠️ THE SPINE HAS NO PER-LESSON BLURB AND NO UNIT "by the end you can…".
+    Both lines are therefore CONDITIONAL, never invented:
+      · the description falls back to `big_question`, which only an authored
+        lesson has, and is OMITTED otherwise;
+      · the panel's closing line uses the unit's `intro`, which today only C1
+        has, and is OMITTED otherwise.
+    Writing a plausible sentence for the other 177 slots would be the generator
+    inventing science, which is the one thing it must never do.
+    """
     slug = half_term_slug(half_term)
     name = half_term_name(half_term)
     crumb = crumbs([("KS3", "/ks3/index.html"),
@@ -1333,36 +1580,208 @@ def half_term_discipline_index(year, half_term, disc, browse, units_by_code):
             groups.append((u, []))
         groups[-1][1].append((l, i))
 
-    sections = []
+    # ── the dark unit panel(s), one per unit in this slice ──
+    panels = []
     for u, lessons in groups:
-        items = "".join(lesson_row(u, l, i, units_by_code) for l, i in lessons)
         span = ("lesson %d" % lessons[0][1] if len(lessons) == 1
                 else "lessons %d to %d" % (lessons[0][1], lessons[-1][1]))
-        sections.append(
-            '<section class="ks3-browse-unit">'
-            '<p class="ks3-eyebrow">%s · %s of %d</p>'
-            '<h2><a href="/ks3/%s/%s/index.html">%s</a></h2>'
-            '<ol class="ks3-lesson-list">%s</ol></section>'
+        intro = ('<p class="ks3-unit-panel-intro">%s</p>' % t(u["intro"])
+                 if u.get("intro") else "")
+        panels.append(
+            '<div class="ks3-unit-panel">'
+            '<p class="ks3-eyebrow">Unit %s · %s of %d</p>'
+            '<p class="ks3-unit-panel-title">'
+            '<a href="/ks3/%s/%s/index.html">%s</a></p>%s</div>'
             % (e(u["code"]), e(span), len(u["lessons"]),
-               e(disc), e(u["slug"]), t(u["title"]), items))
+               e(disc), e(u["slug"]), t(u["title"]), intro))
+
+    # ── the timeline ──
+    timeline = []
+    for u, lessons in groups:
+        for l, i in lessons:
+            href = ("/ks3/%s/%s/%s.html"
+                    % (u["discipline"], u["slug"], l["slug"]))
+            if l.get("reference_to"):
+                owner = units_by_code.get(l["reference_to"])
+                if owner:
+                    href = ("/ks3/%s/%s/%s.html"
+                            % (owner["discipline"], owner["slug"], l["slug"]))
+            live = bool(l["authored"])
+            # No blurb exists for an unwritten slot. The row simply has one
+            # fewer line rather than a fabricated one.
+            blurb = ('<span class="ks3-tl-blurb">%s</span>' % t(l["big_question"])
+                     if live and l.get("big_question") else "")
+            cta = ('<span class="ks3-browse-cta">Open this lesson %s</span>'
+                   % MARK_ARROW) if live else \
+                  '<span class="ks3-tl-soon">Being written</span>'
+            timeline.append(
+                '<li class="ks3-tl-row"%s>'
+                '<a href="%s">'
+                '<span class="ks3-tl-node">%02d</span>'
+                '<span class="ks3-tl-card">'
+                '<span class="ks3-tl-head">'
+                '<span class="ks3-tl-title">%s</span>'
+                '<span class="ks3-family">%s</span></span>'
+                '%s%s</span></a></li>'
+                % (' data-live="1"' if live else "", e(href), i,
+                   t(l["title"]), e(family_label(l["family"])), blurb, cta))
+
+    # ── aside 1: the words this unit gives you ──
+    # Aggregated from the AUTHORED lessons in THIS slice only, in order,
+    # deduplicated, capped. An empty list means no box at all — an empty
+    # bordered panel headed "Words this unit gives you" is worse than silence.
+    terms = []
+    for u, lessons in groups:
+        for l, _i in lessons:
+            for v in (l.get("vocabulary") or []):
+                term = v.get("term")
+                if term and term not in terms:
+                    terms.append(term)
+    vocab_box = ""
+    if terms:
+        chips = "".join('<span class="ks3-term">%s</span>' % t(x)
+                        for x in terms[:VOCAB_CAP])
+        vocab_box = ('<div class="ks3-aside-box ks3-aside-words">'
+                     '<h3>Words this unit gives you</h3>'
+                     '<div class="ks3-terms">%s</div></div>' % chips)
+
+    # ── aside 2: later this year ──
+    later_boxes = []
+    for u, _lessons in groups:
+        later = _later_this_year(browse, year, half_term, u["code"])
+        if not later:
+            continue
+        ht_next, rest = later
+        n = len(rest)
+        line = ("The last %s lesson%s of %s come%s back in Half term %d."
+                % (_count_word(n), "" if n == 1 else "s", e(u["code"]),
+                   "s" if n == 1 else "", ht_next))
+        items = "".join(
+            '<li><span class="ks3-tl-n">%02d</span><span>%s</span></li>'
+            % (i, t(l["title"])) for l, i in rest)
+        later_boxes.append(
+            '<div class="ks3-aside-box ks3-aside-later">'
+            '<h3>Later this year</h3>'
+            '<p class="ks3-aside-line">%s</p>'
+            '<ul class="ks3-later-list">%s</ul></div>' % (line, items))
+
+    aside = ""
+    if vocab_box or later_boxes:
+        aside = ('<aside class="ks3-unit-aside">%s%s</aside>'
+                 % (vocab_box, "".join(later_boxes)))
 
     units, lessons = _counts(rows)
-    body = """<header class="ks3-landing-head">
-  <p class="ks3-eyebrow">Year %d · %s</p>
-  <h1>%s</h1>
-  <p class="ks3-intro">%s from %s.</p>
+    body = """<header class="ks3-landing-head ks3-browse-head">
+  <div>
+    <p class="ks3-eyebrow">Year %(year)d · %(name)s</p>
+    <h1 class="ks3-h1-dotted"><span class="ks3-subject-dot" aria-hidden="true"></span>%(disc)s</h1>
+    <p class="ks3-intro">%(lessons)s from %(units)s.</p>
+  </div>
+  <div class="ks3-unit-panels">%(panels)s</div>
 </header>
-%s
-<p class="ks3-browse-alt"><a href="/ks3/year-%d/%s/index.html">Back to all three sciences this half term</a>
-   <a href="/ks3/%s/index.html">The whole KS3 %s course %s</a></p>""" % (
-        year, e(name), e(DISCIPLINE_TITLES[disc]),
-        e(_plural(lessons, "lesson")), e(_plural(units, "unit")),
-        "".join(sections), year, e(slug),
-        e(disc), e(DISCIPLINE_TITLES[disc]), MARK_ARROW)
+<section class="ks3-unit-body">
+  <ol class="ks3-timeline">%(timeline)s</ol>
+  %(aside)s
+</section>
+<p class="ks3-browse-alt"><a href="/ks3/year-%(year)d/%(slug)s/index.html">Back to all three sciences this half term</a>
+   <a href="/ks3/%(dslug)s/index.html">The whole KS3 %(disc)s course %(arrow)s</a></p>""" % {
+        "year": year,
+        "name": e(name),
+        "disc": e(DISCIPLINE_TITLES[disc]),
+        "dslug": e(disc),
+        "slug": e(slug),
+        "lessons": e(_plural(lessons, "lesson")),
+        "units": e(_plural(units, "unit")),
+        "panels": "".join(panels),
+        "timeline": "".join(timeline),
+        "aside": aside,
+        "arrow": MARK_ARROW,
+    }
     return shell("%s · %s · Year %d" % (DISCIPLINE_TITLES[disc], name, year),
                  body, crumb, disc,
                  "KS3 Year %d %s, %s — the MrBadmusAI default sequence."
-                 % (year, DISCIPLINE_TITLES[disc], name))
+                 % (year, DISCIPLINE_TITLES[disc], name),
+                 footer_links=[("Year %d" % year,
+                                "/ks3/year-%d/index.html" % year),
+                               (DISCIPLINE_TITLES[disc],
+                                "/ks3/%s/index.html" % disc)],
+                 main_class="is-browse")
+
+
+def lesson_picker(units):
+    """MRB-212 — the hub's primary CTA is a disclosure, not a fixed link.
+
+    "Try a lesson: Gas pressure" named one lesson forever. A student who had
+    already done it was sent back to it; a student who had done four was sent
+    to the one they were least likely to want. The picker asks the browser what
+    it knows instead.
+
+    **PROGRESSIVE ENHANCEMENT, and the fallback is the honest one.** Every
+    published lesson is emitted here as a real `<a>` inside `<li data-slug>`,
+    all of them in "Start something new", which is exactly right for a browser
+    with no visit history — including one with JS off, where that is the final
+    state. `ks3.js` then MOVES rows into "Pick up where you left off" from
+    `ks3_visits` and hides whichever group ends up empty. R15's "every control
+    is a real control" is satisfied by construction: these are links.
+
+    **Only `authored` lessons may appear.** A "being written" slot has a real
+    page, but sending a student who asked to *do a lesson* to a placeholder is
+    the one thing this control must never do. Today that is exactly six.
+
+    ⚠️ No explanatory copy anywhere in the panel (MRB-181, §8.10). Two headings
+    and the lessons. Nothing about how any of it is remembered.
+    """
+    rows = []
+    for u in units:
+        for l in u["lessons"]:
+            if not l["authored"]:
+                continue
+            rows.append(
+                '<li data-slug="%s"><a href="/ks3/%s/%s/%s.html">'
+                '<span class="ks3-picker-title">%s</span>'
+                '<span class="ks3-picker-unit">%s</span></a></li>'
+                % (e(l["slug"]), e(u["discipline"]), e(u["slug"]), e(l["slug"]),
+                   t(l["title"]), t(u["title"])))
+    if not rows:
+        return ""
+
+    return ("""<div class="ks3-picker">
+      <button type="button" class="ks3-btn is-primary ks3-picker-btn"
+              id="ks3-picker-btn" aria-expanded="false"
+              aria-controls="ks3-picker-panel">Jump back in %(caret)s</button>
+      <div class="ks3-picker-panel" id="ks3-picker-panel" hidden>
+        <section class="ks3-picker-group" data-group="resume" hidden>
+          <p class="ks3-eyebrow">Pick up where you left off</p>
+          <ul class="ks3-picker-list"></ul>
+        </section>
+        <section class="ks3-picker-group" data-group="new">
+          <p class="ks3-eyebrow">Start something new</p>
+          <ul class="ks3-picker-list">%(rows)s</ul>
+        </section>
+      </div>
+    </div>""" % {"caret": MARK_CARET, "rows": "".join(rows)})
+
+
+# Design's three year blurbs, verbatim from the browse-layer artifact. These
+# are the one thing on a year card that is NOT derived, and correctly so: a
+# count is a fact about the sequence and must follow it, whereas "the biggest
+# year of KS3" is a sentence somebody wrote. Keyed by year so a fourth year
+# could never silently inherit Year 9's description.
+YEAR_BLURBS = {
+    7: "Cells, particles, forces and motion — the foundations everything else "
+       "sits on.",
+    8: "Reactions, body systems, electricity and waves. The biggest year of KS3.",
+    9: "Inheritance, the periodic table and energy — the run-up to GCSE.",
+}
+
+# The yellow swash under "poke at". Design draws it as a stroked path rather
+# than an underline so it overshoots the word at both ends the way a highlighter
+# does. `preserveAspectRatio="none"` is what lets one 300-unit path stretch to
+# whatever width the words happen to take.
+HERO_SWASH = (
+    '<svg class="ks3-swash" viewBox="0 0 300 22" preserveAspectRatio="none" '
+    'aria-hidden="true">'
+    '<path d="M4 14C60 5 120 18 176 9C224 2 268 12 296 7"/></svg>')
 
 
 def landing(units, browse):
@@ -1373,65 +1792,149 @@ def landing(units, browse):
     kept, unchanged and clearly labelled, because §11 decision 2 ruled
     disciplinary structure with integrated navigation and §4.5.2 is explicit
     that the browse layer is an additional way in, not a migration.
+
+    ⚠️ EVERY NUMBER ON THIS PAGE IS DERIVED (MRB-182). Design's prototype was
+    drawn before MRB-199 dropped two lessons and its counts are all one or two
+    out — 185 total, 55 in Year 7, 60 in Biology. None of them are copied here.
+    verify_ks3.py check 6b re-runs the build with a mutated sequence and asserts
+    these pages change, so a hardcoded number fails the build rather than
+    quietly lying to a student about how much course there is.
     """
     crumb = crumbs([("KS3", None)])
 
-    years = []
-    for year in YEARS:
-        units_n, lessons_n = _counts(_entries(browse, year))
-        years.append(
-            '<li class="ks3-unit-card ks3-browse-year">'
-            '<a href="/ks3/year-%d/index.html">'
-            '<span class="ks3-code">Key Stage 3</span><h2>Year %d</h2>'
-            '<p class="ks3-meta">%s · %s</p>'
-            '<span class="ks3-browse-strip" aria-hidden="true">%s</span>'
-            '<span class="ks3-browse-cta">Browse by half term %s</span>'
-            '</a></li>'
-            % (year, year, e(_plural(units_n, "unit")),
-               e(_plural(lessons_n, "lesson")),
-               "".join('<span data-season="%s"></span>' % e(season_of(ht))
-                       for ht in HALF_TERMS),
-               MARK_ARROW))
+    total_lessons = sum(len(u["lessons"]) for u in units)
+    total_done = sum(u["authored_count"] for u in units)
 
-    # The subject cards take .ks3-browse-subject alongside .ks3-disc-card purely
-    # for --ks3-hue: it is what gives each card its own subject shadow and its
-    # own dot colour. Biology green, Chemistry orange, Physics blue — the same
-    # three hues the half-term subject cards use, so a student learns one
-    # mapping and not two.
-    secs = []
-    for disc in ("biology", "chemistry", "physics"):
+    # ── "Live right now" — one bar per subject ──
+    bars = []
+    for disc in DISCIPLINES:
         du = [u for u in units if u["discipline"] == disc]
         done = sum(u["authored_count"] for u in du)
         total = sum(len(u["lessons"]) for u in du)
-        secs.append(
-            '<li class="ks3-disc-card ks3-browse-subject" data-discipline="%s">'
-            '<a href="/ks3/%s/index.html">'
-            '<span class="ks3-browse-subject-head">'
-            '<span class="ks3-browse-dot" aria-hidden="true"></span>'
-            '<h2>%s</h2></span>'
-            '<p class="ks3-meta">%d units · %d of %d lessons written</p>'
-            '</a></li>'
-            % (e(disc), e(disc), e(DISCIPLINE_TITLES[disc]), len(du), done, total))
+        # A bar at zero keeps a 2% stub so the track still reads as a track
+        # rather than as an empty strip. The stub is shape, not a claim: the
+        # honest count sits in words directly above it ("0 of 58"), which is
+        # the R2 signal.
+        pct = max(2, int(round(done * 100.0 / total))) if total else 2
+        bars.append(
+            '<div class="ks3-live-row" data-discipline="%s">'
+            '<div class="ks3-live-label"><span>%s</span>'
+            '<span class="ks3-live-of">%d of %d</span></div>'
+            '<div class="ks3-live-track">'
+            '<span class="ks3-live-fill" style="width:%d%%"></span></div></div>'
+            % (e(disc), e(DISCIPLINE_TITLES[disc]), done, total, pct))
 
-    total_lessons = sum(len(u["lessons"]) for u in units)
-    total_done = sum(u["authored_count"] for u in units)
-    body = """<header class="ks3-landing-head">
-  <h1>Key Stage 3 Science</h1>
-  <p class="ks3-intro">Years 7 to 9. Biology, Chemistry and Physics — the whole
-     national curriculum programme of study, built lesson by lesson.</p>
-  <p class="ks3-meta">%d of %d lessons written so far.</p>
-</header>
-<ul class="ks3-unit-grid">%s</ul>
-<section class="ks3-browse-secondary">
-  <h2>Prefer to browse by subject?</h2>
-  <p class="ks3-intro">Every lesson also sits in its subject and its unit, in
-     the order the science builds up. Same lessons, same pages — a different way
-     in.</p>
-  <ul class="ks3-disc-grid">%s</ul>
-</section>""" % (total_done, total_lessons, "".join(years),
-                 "".join(secs))
+    if total_done == 0:
+        live_line = "The first lessons are on their way."
+    else:
+        live_line = ("%s lesson%s %s finished. The rest are on their way."
+                     % (_count_word(total_done).capitalize(),
+                        "" if total_done == 1 else "s",
+                        "is" if total_done == 1 else "are"))
+
+    # ── year cards ──
+    years = []
+    for year in YEARS:
+        units_n, lessons_n = _counts(_entries(browse, year))
+        # The six season chips are DERIVED from season_of() over HALF_TERMS,
+        # not six hardcoded spans: if half_terms.py ever renamed or re-paired a
+        # season the strip would follow it instead of going quietly wrong. The
+        # second half term of each season carries `data-late`, which is what
+        # dims it to Design's .62.
+        seen = {}
+        chips = []
+        for ht in HALF_TERMS:
+            s = season_of(ht)
+            seen[s] = seen.get(s, 0) + 1
+            chips.append('<span data-season="%s"%s></span>'
+                         % (e(s), ' data-late="1"' if seen[s] > 1 else ""))
+        years.append(
+            '<li class="ks3-unit-card ks3-browse-year" data-year="%d">'
+            '<a href="/ks3/year-%d/index.html">'
+            '<div class="ks3-year-top"><h2>Year %d</h2>'
+            '<span class="ks3-year-tile" aria-hidden="true">%d</span></div>'
+            '<p class="ks3-meta">%s · %s</p>'
+            '<p class="ks3-year-blurb">%s</p>'
+            '<span class="ks3-browse-strip" aria-hidden="true">%s</span>'
+            '<span class="ks3-browse-cta">Browse the six half terms %s</span>'
+            '</a></li>'
+            % (year, year, year, year,
+               e(_plural(units_n, "unit")), e(_plural(lessons_n, "lesson")),
+               t(YEAR_BLURBS[year]), "".join(chips), MARK_ARROW))
+
+    # ── subject cards ──
+    # .ks3-browse-subject is what supplies --ks3-hue: the dot, the offset
+    # shadow and the card tint all read from it. Biology green, Chemistry
+    # orange, Physics blue — the same three hues the half-term cards use, so a
+    # student learns one mapping and not two.
+    secs = []
+    for disc in DISCIPLINES:
+        du = [u for u in units if u["discipline"] == disc]
+        done = sum(u["authored_count"] for u in du)
+        total = sum(len(u["lessons"]) for u in du)
+        live = ('<span class="ks3-hub-live"> · %d live</span>' % done) if done else ""
+        secs.append(
+            '<li class="ks3-hub-subject ks3-browse-subject" data-discipline="%s">'
+            '<a href="/ks3/%s/index.html">'
+            '<div class="ks3-browse-subject-head">'
+            '<span class="ks3-browse-dot" aria-hidden="true"></span>'
+            '<h3>%s</h3></div>'
+            '<p class="ks3-hub-subject-meta">%s · %s%s</p>'
+            '<p class="ks3-hub-subject-units">%s</p>'
+            '</a></li>'
+            % (e(disc), e(disc), e(DISCIPLINE_TITLES[disc]),
+               e(_plural(len(du), "unit")), e(_plural(total, "lesson")), live,
+               t(" · ".join(u["title"] for u in du))))
+
+    body = """<section class="ks3-hub-top">
+  <div class="ks3-hub-hero">
+    <p class="ks3-eyebrow">Key Stage 3 · Years 7 to 9</p>
+    <h1 class="ks3-hub-title">Science you<br/>get to <span class="ks3-hero-mark">poke at%(swash)s</span></h1>
+    <p class="ks3-hub-sub">Biology, Chemistry and Physics for Years 7, 8 and 9 —
+       built lesson by lesson, with something to press on every page.</p>
+    <div class="ks3-hub-actions">%(primary)s
+      <a class="ks3-btn" href="/ks3/year-7/index.html">Start with Year 7</a>
+    </div>
+  </div>
+  <div class="ks3-live">
+    <div class="ks3-live-head">
+      <p class="ks3-eyebrow">Live right now</p>
+      <span class="ks3-live-count">%(done)d / %(total)d</span>
+    </div>
+    <p class="ks3-live-line">%(liveline)s</p>
+    <div class="ks3-live-bars">%(bars)s</div>
+  </div>
+</section>
+
+<section class="ks3-hub-sec">
+  <div class="ks3-sec-head">
+    <h2>Pick your year</h2>
+    <p>Each year is split into the six half terms of the school year, with all
+       three sciences running side by side.</p>
+  </div>
+  <ul class="ks3-unit-grid is-browse">%(years)s</ul>
+</section>
+
+<section class="ks3-hub-sec">
+  <div class="ks3-sec-head">
+    <h2>Or go by subject</h2>
+    <p>Same lessons, same pages — ordered by how the science builds up instead
+       of by school term.</p>
+  </div>
+  <ul class="ks3-unit-grid is-browse">%(subjects)s</ul>
+</section>""" % {
+        "swash": HERO_SWASH,
+        "primary": lesson_picker(units),
+        "done": total_done,
+        "total": total_lessons,
+        "liveline": t(live_line),
+        "bars": "".join(bars),
+        "years": "".join(years),
+        "subjects": "".join(secs),
+    }
     return shell("KS3 Science", body, crumb, None,
-                 "Free KS3 Science revision — Years 7 to 9, all three sciences.")
+                 "Free KS3 Science revision — Years 7 to 9, all three sciences.",
+                 main_class="is-browse is-hub")
 
 
 # ── validation (§9 gates) ────────────────────────────────────────────────

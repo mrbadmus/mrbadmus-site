@@ -33,8 +33,15 @@
 
 /* ── page shell ─────────────────────────────────────────────────── */
 
+/* The dotted ground is Design's, from the browse-layer artifact: a 26px
+   grid of 1px dots in --ks3-dot. It is texture and nothing else — no
+   information rides on it — so it needs no reduced-motion or contrast
+   carve-out, and it sits UNDER every card because each card paints its
+   own opaque --ks3-card ground. */
 body.rd[data-mode="ks3"] {
   background: var(--ks3-ground);
+  background-image: radial-gradient(var(--ks3-dot) 1px, transparent 1px);
+  background-size: 26px 26px;
   color: var(--ks3-ink);
   font-family: var(--ks3-font-body);
   font-size: 19px;
@@ -73,13 +80,48 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-mark-arrow { stroke-width: 2.2; }
 
+/* MRB-182 — Design's browse-layer header. Sticky, translucent over the
+   dotted ground with a blur behind it, and one 72px rail carrying brand,
+   breadcrumbs and the KS3 pill. `z-index:60` clears the sticky season
+   tiles and the sticky unit aside, both of which scroll under it. */
 .ks3-nav {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  border-bottom: 2px solid var(--ks3-ink);
+  background: rgba(251, 243, 230, .93);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+.ks3-nav-rail {
+  max-width: var(--ks3-rail);
+  margin: 0 auto;
+  padding: 0 32px;
+  min-height: 72px;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 14px 24px 12px;
-  border-bottom: 2px solid var(--ks3-ink);
-  background: var(--ks3-ground);
+  gap: 20px;
+}
+/* Brand → crumbs divider. Decoration: the crumb trail is already a
+   labelled landmark, so this carries no meaning to announce. */
+.ks3-nav-divider {
+  width: 2px;
+  height: 26px;
+  background: var(--ks3-rule);
+  flex: 0 0 auto;
+}
+.ks3-nav-spacer { flex: 1; }
+/* The KS3 pill, top right — an ink lozenge, cream text. */
+.ks3-pill {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-decoration: none;
 }
 /* MRB-197: Design's mark — dimensions from the frozen reference's header
    (30px chevron, 22px/800 Bricolage wordmark, 10px gap, ink on ground). */
@@ -95,14 +137,6 @@ body.rd[data-mode="ks3"] {
   text-decoration: none;
 }
 .ks3-brand svg { flex: 0 0 auto; }
-.ks3-nav-link {
-  margin-left: auto;
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--ks3-accent-text);
-  text-decoration: none;
-}
-.ks3-nav-link:hover { text-decoration: underline; }
 
 /* Index pages run to the full page width; lesson pages are capped by
    .ks3-lesson (below) because prose has a measure and a browse grid
@@ -112,21 +146,38 @@ body.rd[data-mode="ks3"] {
   margin: 0 auto;
   padding: 44px 24px 90px;
 }
+/* The four browse screens take Design's narrower 1240px rail. The lesson
+   tree deliberately does NOT: it is capped by .ks3-lesson at 60rem and
+   changing .ks3-main under it would move every lesson page in a ticket
+   that is about the browse layer. */
+.ks3-main.is-browse { max-width: var(--ks3-rail); padding: 52px 32px 90px; }
+.ks3-main.is-hub    { max-width: var(--ks3-rail); padding: 56px 32px 90px; }
 
 /* R11 — 60rem for the lesson, 46rem for prose inside it. */
 .ks3-lesson { max-width: var(--ks3-wide); margin: 0 auto; }
 .ks3-lesson > .ks3-explainer,
 .ks3-lesson > .ks3-prose { max-width: var(--ks3-measure); }
 
+/* MRB-208: the crumb trail moved onto the header rail, so it carries no
+   bottom margin of its own and `min-width:0` lets it shrink before the
+   KS3 pill does on a narrow rail.
+
+   ⚠️ THE TYPE STAYS MONO 14px. Design's browse-layer artifact draws these
+   at 16px/600 in the body face, but the Reference Set — which is what
+   SPEC.md §2 and Layer C of ks3_parity.py were written from — makes the
+   breadcrumb the one mono line in the chrome. Two Design artifacts
+   disagree; the gate is the arbiter, and a breadcrumb that changes face
+   between a lesson page and a browse page would be worse than either
+   choice. Only the POSITION moved. */
 .ks3-crumbs {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: .4rem;
+  gap: 10px;
+  min-width: 0;
   font-family: var(--ks3-font-mono);
   font-size: 14px;
   color: var(--ks3-ink-muted);
-  margin-bottom: 24px;
 }
 .ks3-crumbs a { color: var(--ks3-accent-text); text-decoration: none; font-weight: 500; }
 .ks3-crumbs a:hover { color: var(--ks3-accent-hover); text-decoration: underline; }
@@ -1240,15 +1291,212 @@ body.rd[data-mode="ks3"] {
 
 /* ── browse layer ───────────────────────────────────────────────── */
 
-/* Season tint, read off the half-term slug. Autumn / spring / summer
-   are well separated from each other by hue, and each card also names
-   its half term (R2). */
-[data-season="autumn"] { --ks3-season: var(--ks3-accent); }
-[data-season="spring"] { --ks3-season: var(--ks3-ok); }
-[data-season="summer"] { --ks3-season: var(--ks3-blue); }
+/* Season tint, read off the half-term slug.
+   MRB-182: Design recoloured the browse layer BY TERM. Autumn / spring /
+   summer used to borrow the accent / success / blue hues, which meant a
+   half-term tile and a subject dot could be the same colour and mean
+   two different things. They are their own three hues now, each with a
+   darkened ink for text at body size on the fill (R1 — ink on the
+   autumn amber is only 3.68:1, so a 16px line on it takes --ks3-*-ink).
+   Every card still names its half term as well (R2). */
+[data-season="autumn"] { --ks3-season: var(--ks3-autumn); --ks3-season-ink: var(--ks3-autumn-ink); }
+[data-season="spring"] { --ks3-season: var(--ks3-spring); --ks3-season-ink: var(--ks3-spring-ink); }
+[data-season="summer"] { --ks3-season: var(--ks3-summer); --ks3-season-ink: var(--ks3-summer-ink); }
 
-.ks3-browse-year > a { box-shadow: 5px 5px 0 var(--ks3-ink); }
-.ks3-browse-year h2 { font-size: 36px; line-height: 1; }
+/* ── the hub ────────────────────────────────────────────────────── */
+
+.ks3-hub-top {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 56px;
+  align-items: end;
+}
+.ks3-hub-title {
+  margin: 14px 0 0;
+  font-size: clamp(48px, 6.4vw, 86px);
+  line-height: .92;
+  letter-spacing: -.035em;
+}
+/* "poke at" — accent at 48px+, which is comfortably inside R1's
+   large-text allowance for --ks3-accent. */
+.ks3-hero-mark { color: var(--ks3-accent); position: relative; display: inline-block; }
+.ks3-swash {
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 100%;
+  height: 16px;
+  overflow: visible;
+}
+.ks3-swash path {
+  fill: none;
+  stroke: var(--ks3-alert);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+.ks3-hub-sub {
+  margin: 30px 0 0;
+  font-size: 22px;
+  line-height: 1.55;
+  max-width: 31ch;
+  color: var(--ks3-ink-body);
+}
+.ks3-hub-actions { display: flex; gap: 14px; margin-top: 34px; flex-wrap: wrap; }
+
+/* The two hero buttons, and the shape every button on the browse layer
+   takes: hard 5px offset, 2px ink border, no blur. */
+.ks3-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 17px 28px;
+  min-height: var(--ks3-tap);
+  border-radius: 16px;
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  box-shadow: 5px 5px 0 var(--ks3-ink);
+  font: inherit;
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--ks3-ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform .16s cubic-bezier(.34, 1.56, .64, 1), box-shadow .16s;
+}
+.ks3-btn:hover { transform: translate(-3px, -3px); box-shadow: 8px 8px 0 var(--ks3-ink); }
+.ks3-btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ks3-ink); }
+/* ⚠️ MRB-208 / MRB-206: the primary fills with --ks3-accent-text (6.0:1),
+   NOT the raw --ks3-accent Design drew. Cream on the raw accent is 3.4:1,
+   which fails AA for a 19px label. The accent stays legal for this
+   button's BORDER and SHADOW, and for the hero word above at 48px+. */
+.ks3-btn.is-primary { background: var(--ks3-accent-text); color: var(--ks3-on-dark); }
+
+/* ── the hub's lesson picker (MRB-212) ──────────────────────────── */
+
+.ks3-picker { position: relative; }
+.ks3-mark-caret { stroke-width: 3; }
+/* The panel hangs under the button. `position:absolute` keeps it out of
+   the hero's flow so opening it does not shove the year cards down the
+   page; z-index clears the "Live right now" panel beside it. */
+.ks3-picker-panel {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  z-index: 40;
+  min-width: min(360px, 86vw);
+  max-height: min(60vh, 460px);
+  overflow-y: auto;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: 22px;
+  box-shadow: 5px 5px 0 var(--ks3-ink);
+  padding: 18px;
+}
+.ks3-picker-panel[hidden] { display: none; }
+.ks3-picker-group + .ks3-picker-group { margin-top: 18px; }
+.ks3-picker-group .ks3-eyebrow { margin: 0 0 8px; }
+.ks3-picker-list { list-style: none; margin: 0; padding: 0; }
+.ks3-picker-list > li + li { border-top: 1px solid var(--ks3-rule); }
+/* R15 — a real link, and a 44px one. Two lines: what it is, and which
+   unit it belongs to, so a title alone never has to carry the context. */
+.ks3-picker-list a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 11px 12px;
+  min-height: var(--ks3-tap);
+  justify-content: center;
+  border-radius: var(--ks3-r-control);
+  text-decoration: none;
+  color: var(--ks3-ink);
+}
+.ks3-picker-list a:hover { background: var(--ks3-band); }
+.ks3-picker-title { font-weight: 700; font-size: 17px; line-height: 1.25; }
+.ks3-picker-unit { font-size: 14px; color: var(--ks3-ink-muted); line-height: 1.25; }
+
+/* the ink-dark "Live right now" panel */
+.ks3-live {
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+  border-radius: var(--ks3-r-block);
+  padding: 30px 30px 26px;
+  box-shadow: 6px 6px 0 var(--ks3-accent);
+}
+.ks3-live-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.ks3-live-head .ks3-eyebrow { margin: 0; color: var(--ks3-on-dark-muted); }
+.ks3-live-count { font-family: var(--ks3-font-mono); font-size: 15px; color: var(--ks3-alert); }
+.ks3-live-line {
+  margin: 14px 0 22px;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 27px;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+}
+.ks3-live-bars { display: flex; flex-direction: column; gap: 16px; }
+.ks3-live-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+.ks3-live-of { color: var(--ks3-on-dark-muted); }
+.ks3-live-track {
+  height: 12px;
+  border-radius: 99px;
+  background: var(--ks3-dark-track);
+  overflow: hidden;
+}
+.ks3-live-fill { display: block; height: 100%; border-radius: 99px; background: var(--ks3-hue, var(--ks3-accent)); }
+.ks3-live-row[data-discipline="biology"]   { --ks3-hue: var(--ks3-biology); }
+.ks3-live-row[data-discipline="chemistry"] { --ks3-hue: var(--ks3-chemistry); }
+.ks3-live-row[data-discipline="physics"]   { --ks3-hue: var(--ks3-physics); }
+
+.ks3-hub-sec { margin-top: 84px; }
+.ks3-sec-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+  flex-wrap: wrap;
+}
+.ks3-sec-head h2 {
+  margin: 0;
+  font-size: 40px;
+  letter-spacing: -.03em;
+}
+.ks3-sec-head p { margin: 0; font-size: 18px; color: var(--ks3-ink-muted); max-width: 44ch; }
+
+/* Design's browse grid: a touch wider per card and a touch looser than
+   the unit index's, so a year card's 52px numeral has room. */
+.ks3-unit-grid.is-browse {
+  gap: 22px;
+  grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
+}
+
+.ks3-browse-year > a { box-shadow: 5px 5px 0 var(--ks3-ink); gap: 14px; padding: 26px 26px 22px; }
+.ks3-year-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ks3-browse-year h2 { font-size: 52px; line-height: 1; letter-spacing: -.04em; }
+.ks3-year-tile {
+  width: 44px;
+  height: 44px;
+  flex: 0 0 auto;
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-year-tint, var(--ks3-band));
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 20px;
+}
+.ks3-browse-year[data-year="7"] { --ks3-year-tint: var(--ks3-year7-tint); }
+.ks3-browse-year[data-year="8"] { --ks3-year-tint: var(--ks3-year8-tint); }
+.ks3-browse-year[data-year="9"] { --ks3-year-tint: var(--ks3-year9-tint); }
+.ks3-year-blurb { margin: 0; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-body); }
 .ks3-browse-cta {
   margin-top: auto;
   font-size: 17px;
@@ -1258,38 +1506,276 @@ body.rd[data-mode="ks3"] {
   align-items: center;
   gap: 6px;
 }
-/* the six-segment season strip — decoration, hidden from AT */
-.ks3-browse-strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3px; margin-top: 4px; }
+/* the six-segment season strip — decoration, hidden from AT. The second
+   half term of each season dims to .62, which is Design's way of showing
+   the pairs without adding a third hue. */
+.ks3-browse-strip { display: flex; gap: 6px; margin-top: 2px; }
 .ks3-browse-strip > span {
-  height: 8px;
-  border-radius: 4px;
+  flex: 1;
+  height: 10px;
+  border-radius: 99px;
   background: var(--ks3-season, var(--ks3-rule));
-  border: 1px solid var(--ks3-ink);
+}
+.ks3-browse-strip > span[data-late] { opacity: .62; }
+
+/* the hub's three tinted subject cards */
+.ks3-hub-subject[data-discipline="biology"]   { --ks3-tint: var(--ks3-ok-tint); }
+.ks3-hub-subject[data-discipline="chemistry"] { --ks3-tint: var(--ks3-accent-tint); }
+.ks3-hub-subject[data-discipline="physics"]   { --ks3-tint: var(--ks3-blue-tint); }
+.ks3-hub-subject > a {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+  padding: 26px;
+  border: 2px solid var(--ks3-ink);
+  border-radius: 26px;
+  background: var(--ks3-tint);
+  box-shadow: 5px 5px 0 var(--ks3-hue, var(--ks3-ink));
+  color: var(--ks3-ink);
+  text-decoration: none;
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1), box-shadow .18s;
+}
+.ks3-hub-subject > a:hover {
+  transform: translate(-4px, -4px);
+  box-shadow: 9px 9px 0 var(--ks3-hue, var(--ks3-ink));
+}
+.ks3-hub-subject h3 { margin: 0; font-size: 30px; letter-spacing: -.02em; }
+.ks3-hub-subject-meta { margin: 0; font-size: 17px; font-weight: 600; color: var(--ks3-ink-body); }
+.ks3-hub-subject-units { margin: 0; font-size: 17px; line-height: 1.55; color: var(--ks3-ink-body); }
+.ks3-hub-live { color: var(--ks3-accent-text); font-weight: 700; }
+
+/* ── the year screen ────────────────────────────────────────────── */
+
+/* Head and stat tiles. The 2-up head is shared with the half-term and
+   subject screens; only what sits in the right-hand column differs. */
+.ks3-browse-head {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 52px;
+  align-items: end;
+}
+/* Design drew the year head one step larger than the half-term and
+   subject heads (46/74 against 44/70). Unified here on the smaller pair:
+   the three screens sit one click apart in the same journey and a title
+   that grows when you go UP a level reads as a bug, not a hierarchy. */
+.ks3-browse-head h1 {
+  margin: 12px 0 0;
+  font-size: clamp(44px, 5.4vw, 70px);
+  line-height: .95;
+  letter-spacing: -.035em;
+}
+.ks3-browse-head .ks3-intro { font-size: 21px; max-width: 46ch; margin: 22px 0 0; }
+.ks3-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.ks3-stat {
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-panel);
+  padding: 18px 16px;
+  text-align: center;
+}
+.ks3-stat-n {
+  display: block;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 40px;
+  line-height: 1;
+}
+.ks3-stat-l {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ks3-ink-muted);
+  margin-top: 4px;
 }
 
-.ks3-browse-ht > a { box-shadow: 5px 5px 0 var(--ks3-ink); }
+/* Three season rows, each a sticky term tile beside its two half terms. */
+.ks3-season-rows { margin-top: 56px; display: flex; flex-direction: column; gap: 34px; }
+.ks3-season-row {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 26px;
+  align-items: start;
+}
+/* top:96px clears the 72px sticky header plus Design's breathing room. */
+.ks3-season-side { position: sticky; top: 96px; }
+.ks3-season-tile {
+  background: var(--ks3-season);
+  border: 2px solid var(--ks3-ink);
+  border-radius: 22px;
+  padding: 20px;
+  box-shadow: 4px 4px 0 var(--ks3-ink);
+}
+/* 32px/800 is large text, so ink on the season fill passes at 3:1 (R1). */
+.ks3-season-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 32px;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+/* …but this line is 16px, which is body size, so it MUST take the
+   season's darkened ink. Ink on the autumn amber is only 3.68:1. */
+.ks3-season-meta {
+  margin: 6px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ks3-season-ink, var(--ks3-ink));
+}
+.ks3-ht-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(290px, 100%), 1fr));
+  gap: 20px;
+}
+
+.ks3-browse-ht > a {
+  box-shadow: 5px 5px 0 var(--ks3-ink);
+  border-radius: 24px;
+  padding: 24px;
+  gap: 14px;
+}
+.ks3-ht-head { display: flex; align-items: center; gap: 13px; }
 .ks3-browse-ht .ks3-code {
   display: inline-grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--ks3-r-control);
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
   background: var(--ks3-season, var(--ks3-band));
   border: 2px solid var(--ks3-ink);
   font-family: var(--ks3-font-display);
   font-weight: 800;
-  font-size: 21px;
+  font-size: 23px;
   color: var(--ks3-ink);
   letter-spacing: 0;
 }
-.ks3-browse-ht h2 { font-size: 24px; letter-spacing: -.02em; }
+.ks3-ht-name {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: -.02em;
+  line-height: 1.1;
+}
+.ks3-browse-ht .ks3-meta { font-size: 16px; font-weight: 600; }
+/* One row per unit taught in this half term, dot coloured by discipline.
+   However many there are — a half term is not guaranteed three. */
+.ks3-ht-units {
+  list-style: none;
+  margin: 0;
+  padding: 14px 0 0;
+  border-top: 2px dashed var(--ks3-rule);
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-ht-units > li { display: flex; gap: 10px; align-items: baseline; font-size: 17px; line-height: 1.4; }
+.ks3-ht-units > li[data-discipline="biology"]   { --ks3-hue: var(--ks3-biology); }
+.ks3-ht-units > li[data-discipline="chemistry"] { --ks3-hue: var(--ks3-chemistry); }
+.ks3-ht-units > li[data-discipline="physics"]   { --ks3-hue: var(--ks3-physics); }
+.ks3-ht-dot {
+  width: 11px;
+  height: 11px;
+  flex: 0 0 auto;
+  border-radius: 99px;
+  background: var(--ks3-hue, var(--ks3-accent));
+  transform: translateY(-1px);
+}
 .ks3-browse-split { margin: 0; font-size: 16px; color: var(--ks3-ink-muted); }
+
+/* ── the half-term screen ───────────────────────────────────────── */
+
+/* The season-coloured stat panel. Design drew it amber because it drew
+   half term 1; it takes the page's OWN season here, so half terms 3–6
+   are green and teal. */
+.ks3-ht-panel {
+  background: var(--ks3-season, var(--ks3-band));
+  border: 2px solid var(--ks3-ink);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 5px 5px 0 var(--ks3-ink);
+}
+/* 56px/800 — large text, so ink on the season fill passes at 3:1. */
+.ks3-ht-panel-n {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 56px;
+  line-height: 1;
+  letter-spacing: -.03em;
+  color: var(--ks3-ink);
+}
+/* Both of these are body size on the fill, so both take the season ink. */
+.ks3-ht-panel-l {
+  margin: 6px 0 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ks3-season-ink, var(--ks3-ink));
+}
+.ks3-ht-panel-split {
+  margin: 9px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ks3-season-ink, var(--ks3-ink));
+}
+/* Each subject's flex-grow IS its lesson count — the bar is the split,
+   not an illustration of it. */
+.ks3-ht-bar { margin-top: 16px; display: flex; gap: 6px; }
+.ks3-ht-bar > span { height: 12px; border-radius: 99px; background: var(--ks3-hue, var(--ks3-accent)); }
+.ks3-ht-bar > span[data-discipline="biology"]   { --ks3-hue: var(--ks3-biology); }
+.ks3-ht-bar > span[data-discipline="chemistry"] { --ks3-hue: var(--ks3-chemistry); }
+.ks3-ht-bar > span[data-discipline="physics"]   { --ks3-hue: var(--ks3-physics); }
+
+/* the three subject cards */
+.ks3-browse-subject > a { border-radius: 26px; padding: 26px; gap: 16px; }
+.ks3-ht-unit { display: flex; flex-direction: column; }
+.ks3-ht-unit-title {
+  margin: 5px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 23px;
+  line-height: 1.15;
+  letter-spacing: -.02em;
+}
+.ks3-ht-lessons {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.ks3-ht-lessons > li { display: flex; gap: 12px; align-items: baseline; font-size: 18px; line-height: 1.4; }
+/* R2 — an authored lesson is bolder AND the card's CTA says so in words. */
+.ks3-ht-lessons > li.is-live { font-weight: 700; }
+.ks3-ht-n {
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  color: var(--ks3-hue, var(--ks3-accent-text));
+  flex: 0 0 auto;
+}
+.ks3-ht-soon {
+  margin-top: auto;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ks3-ink-muted);
+}
+.ks3-browse-subject .ks3-browse-cta { font-size: 17px; }
+/* (0,2,0) beats the base .ks3-browse-dot regardless of source order — the
+   hub keeps Design's 20px dot, the half-term card takes its 22px one.) */
+.ks3-browse-subject .ks3-browse-dot { width: 22px; height: 22px; }
 
 .ks3-browse-subject[data-discipline="biology"]   { --ks3-hue: var(--ks3-biology); }
 .ks3-browse-subject[data-discipline="chemistry"] { --ks3-hue: var(--ks3-chemistry); }
 .ks3-browse-subject[data-discipline="physics"]   { --ks3-hue: var(--ks3-physics); }
 .ks3-browse-subject > a { box-shadow: 5px 5px 0 var(--ks3-hue, var(--ks3-ink)); }
-.ks3-browse-subject h2 { font-size: 28px; }
+/* The half-term subject card's heading. The hub's subject cards are
+   `.ks3-hub-subject` and use an h3, so this selector is theirs alone. */
+.ks3-browse-subject h2 { font-size: 32px; letter-spacing: -.025em; }
 .ks3-browse-dot {
   width: 20px;
   height: 20px;
@@ -1299,6 +1785,158 @@ body.rd[data-mode="ks3"] {
   flex: 0 0 auto;
 }
 .ks3-browse-subject-head { display: flex; align-items: center; gap: 11px; }
+
+/* ── the subject screen ─────────────────────────────────────────── */
+
+/* The h1 wears the subject dot. --subject is set inline on <body> by
+   shell(); --ks3-hue is the browse layer's own name for the same idea. */
+.ks3-h1-dotted { display: flex; align-items: center; gap: 18px; }
+.ks3-subject-dot {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border-radius: 99px;
+  background: var(--subject, var(--ks3-accent));
+  border: 3px solid var(--ks3-ink);
+}
+
+/* the ink-dark unit panel, with Design's orange offset shadow */
+.ks3-unit-panels { display: flex; flex-direction: column; gap: 18px; }
+.ks3-unit-panel {
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 5px 5px 0 var(--ks3-accent);
+}
+.ks3-unit-panel .ks3-eyebrow { color: var(--ks3-on-dark-muted); margin: 0; }
+.ks3-unit-panel-title {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+.ks3-unit-panel-title a { color: inherit; text-decoration: none; }
+.ks3-unit-panel-title a:hover { text-decoration: underline; }
+.ks3-unit-panel-intro {
+  margin: 14px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+.ks3-unit-body {
+  margin-top: 52px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 36px;
+  align-items: start;
+}
+
+/* The timeline. The dashed connector is drawn once, behind the nodes,
+   as a repeating gradient rather than 12 border segments. It is pure
+   decoration: the numbers carry the order. */
+.ks3-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.ks3-timeline::before {
+  content: "";
+  position: absolute;
+  left: 31px;
+  top: 40px;
+  bottom: 40px;
+  width: 3px;
+  background: repeating-linear-gradient(var(--ks3-ink) 0 9px, transparent 9px 18px);
+  opacity: .35;
+}
+.ks3-tl-row { position: relative; }
+.ks3-tl-row > a {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+  text-decoration: none;
+  color: var(--ks3-ink);
+  transition: transform .18s cubic-bezier(.34, 1.56, .64, 1);
+}
+.ks3-tl-row > a:hover { transform: translateX(5px); }
+/* R2 — the node's FILL says written, and the card's CTA says it in words
+   as well. Neither signal is doing the job alone. */
+.ks3-tl-node {
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  border: 3px solid var(--ks3-ink);
+  box-shadow: 3px 3px 0 var(--ks3-ink);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 27px;
+}
+.ks3-tl-row[data-live] .ks3-tl-node {
+  background: var(--ks3-accent-text);
+  color: var(--ks3-on-dark);
+}
+.ks3-tl-card {
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: 22px;
+  box-shadow: 4px 4px 0 var(--ks3-ink);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ks3-tl-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.ks3-tl-title {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+}
+.ks3-tl-blurb { font-size: 18px; line-height: 1.5; color: var(--ks3-ink-body); }
+.ks3-tl-soon { font-size: 17px; font-weight: 700; color: var(--ks3-ink-ghost); }
+.ks3-tl-row .ks3-browse-cta { margin-top: 0; }
+/* The family chip. `family_label()` sends it here title-cased and this
+   uppercases it visually — a literal run of capitals in the bytes is
+   read letter by letter by some screen readers. */
+.ks3-family { text-transform: uppercase; letter-spacing: .12em; padding: 5px 10px; border-radius: 8px; background: var(--ks3-tag); }
+
+/* the sticky aside */
+.ks3-unit-aside { position: sticky; top: 96px; display: flex; flex-direction: column; gap: 18px; }
+.ks3-aside-box {
+  border: 2px solid var(--ks3-ink);
+  border-radius: 22px;
+  padding: 22px;
+  background: var(--ks3-card);
+}
+.ks3-aside-words { background: var(--ks3-accent-tint); }
+.ks3-aside-box h3 { margin: 0 0 12px; font-size: 22px; letter-spacing: -.02em; }
+.ks3-terms { display: flex; flex-wrap: wrap; gap: 8px; }
+.ks3-term {
+  padding: 8px 13px;
+  border-radius: 11px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  font-size: 16px;
+  font-weight: 600;
+}
+.ks3-aside-line { margin: 0 0 12px; font-size: 17px; line-height: 1.5; color: var(--ks3-ink-muted); }
+.ks3-later-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.ks3-later-list > li { display: flex; gap: 12px; align-items: baseline; font-size: 18px; }
+.ks3-tl-n { font-family: var(--ks3-font-mono); color: var(--ks3-ink-ghost); flex: 0 0 auto; }
 
 .ks3-browse-unit { margin: 34px 0 0; }
 .ks3-browse-unit h2 { margin: 10px 0 0; font-size: 30px; letter-spacing: -.03em; }
@@ -1323,14 +1961,43 @@ body.rd[data-mode="ks3"] {
 .ks3-browse-secondary { margin: 52px 0 0; }
 .ks3-browse-secondary h2 { margin: 0 0 6px; font-size: 32px; letter-spacing: -.025em; }
 
+/* MRB-182 — Design's footer band: the tag ground, the wordmark at
+   display weight, and the quick links back up the tree on the right. */
 .ks3-footer {
   border-top: 2px solid var(--ks3-ink);
-  padding: 24px;
-  text-align: center;
-  font-size: 16px;
+  background: var(--ks3-tag);
   color: var(--ks3-ink-muted);
-  background: var(--ks3-card);
 }
+.ks3-footer-rail {
+  max-width: var(--ks3-rail);
+  margin: 0 auto;
+  padding: 34px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.ks3-footer-title {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+.ks3-footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+.ks3-footer-links a {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ks3-ink-muted);
+  text-decoration: none;
+  /* R15 — a real control, and a thumb-sized one. */
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--ks3-tap);
+}
+.ks3-footer-links a:hover { color: var(--ks3-accent-text); text-decoration: underline; }
 
 /* ── motion (R6, R7) ────────────────────────────────────────────── */
 
@@ -1369,6 +2036,54 @@ body.rd[data-mode="ks3"] {
    floor rather than overflowing. */
 @media (max-width: 34rem) {
   .ks3-main { padding: 28px 16px 64px; }
+
+  /* ── the browse layer on a phone (MRB-182) ──
+     These need their own rules rather than inheriting `.ks3-main`'s,
+     because `.ks3-main.is-browse` is (0,2,0) and wins on specificity
+     whatever the source order. Everything two-up collapses to one
+     column and everything sticky goes static — a sticky season tile on
+     a 390px screen is a banner eating a third of the viewport. */
+  .ks3-main.is-browse,
+  .ks3-main.is-hub { padding: 28px 16px 64px; }
+  .ks3-nav-rail { padding: 0 16px; gap: 12px; min-height: 64px; }
+  .ks3-footer-rail { padding: 24px 16px; gap: 12px; }
+
+  .ks3-hub-top { gap: 34px; }
+  .ks3-hub-actions { gap: 10px; }
+  .ks3-btn { padding: 15px 20px; font-size: 17px; }
+  .ks3-live { padding: 22px 20px 20px; }
+  .ks3-live-line { font-size: 22px; }
+  .ks3-hub-sec { margin-top: 52px; }
+  .ks3-sec-head { display: block; }
+  .ks3-sec-head h2 { font-size: 32px; }
+  .ks3-sec-head p { margin-top: 8px; max-width: none; }
+  .ks3-browse-year h2 { font-size: 42px; }
+  .ks3-picker-panel { min-width: 0; width: min(340px, calc(100vw - 44px)); }
+
+  .ks3-browse-head { gap: 28px; }
+  .ks3-stat-row { gap: 8px; }
+  .ks3-stat { padding: 14px 8px; }
+  .ks3-stat-n { font-size: 30px; }
+  .ks3-stat-l { font-size: 13px; }
+
+  .ks3-season-rows { margin-top: 36px; gap: 26px; }
+  .ks3-season-row { grid-template-columns: 1fr; gap: 14px; }
+  .ks3-season-side { position: static; }
+  .ks3-season-tile { padding: 16px 18px; }
+  .ks3-season-name { font-size: 27px; }
+
+  .ks3-ht-panel { padding: 20px; }
+  .ks3-ht-panel-n { font-size: 44px; }
+
+  .ks3-unit-body { margin-top: 36px; gap: 24px; }
+  .ks3-unit-aside { position: static; }
+  /* A 64px node plus an 18px gutter is a quarter of the screen. */
+  .ks3-tl-row > a { grid-template-columns: 48px minmax(0, 1fr); gap: 12px; }
+  .ks3-tl-node { width: 48px; height: 48px; font-size: 21px; border-radius: 15px; }
+  .ks3-timeline::before { left: 23px; }
+  .ks3-tl-card { padding: 16px 18px; }
+  .ks3-tl-title { font-size: 22px; }
+  .ks3-h1-dotted { gap: 12px; }
   .ks3-block, .ks3-dark, .ks3-ladder { padding: 22px 18px; }
   .ks3-cards { grid-template-columns: 1fr; }
   .ks3-card-btn { min-height: 0; }

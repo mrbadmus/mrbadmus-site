@@ -333,6 +333,39 @@
   --ks3-chemistry:     #E4572E;
   --ks3-physics:       #2F5CE0;
 
+  /* ═══ THE BROWSE LAYER — MRB-182 ═══
+     Every value below is Claude Design's own, read off the frozen
+     "KS3 Browse Layer (offline).html" artifact rather than picked here,
+     so Layer A of ks3_parity.py can vouch for each one. */
+
+  /* ── season · the three terms of the school year ──
+     Design's browse layer colours a school year by TERM, not by subject:
+     a student looking for "what am I doing after half term" is asking a
+     calendar question, and the six half-term cards answer it in three
+     pairs. Each fill carries a darkened ink for text at body size.
+
+     ⚠️ R1 applies here exactly as it does to the accent. Ink on the
+     autumn fill is 3.68:1, so anything at BODY size on a season fill
+     takes that season's `-ink` token. Season NAMES (32px/800) and the
+     half-term NUMBERS (23px/800) are "large text" and pass at 3:1 with
+     --ks3-ink, which is why they may stay ink. */
+  --ks3-autumn:      #E08A1E;
+  --ks3-autumn-ink:  #4A3410;
+  --ks3-spring:      #7FB927;
+  --ks3-spring-ink:  #2E4409;
+  --ks3-summer:      #22B8CF;
+  --ks3-summer-ink:  #0B4954;
+
+  /* ── year identity tints — the year card's number tile ── */
+  --ks3-year7-tint:  #FDE8DF;
+  --ks3-year8-tint:  #E2F6E9;
+  --ks3-year9-tint:  #E1E8FE;
+
+  /* ── browse-layer surfaces ── */
+  --ks3-dot:         #E7D9C1;  /* the dotted page texture */
+  --ks3-dark-track:  #3A332E;  /* progress-bar track on an ink-dark panel */
+  --ks3-tag:         #F3E8D6;  /* family tag chip, footer band */
+
   /* ── type ── */
   --ks3-font-display: 'Bricolage Grotesque', system-ui, sans-serif;
   --ks3-font-body:    'Instrument Sans', system-ui, sans-serif;
@@ -360,6 +393,10 @@
   --ks3-measure: 46rem;
   --ks3-wide:    60rem;
   --ks3-page:    1320px;
+  /* Design's browse-layer rail (MRB-182). Narrower than --ks3-page because
+     the browse screens are two-up grids of cards rather than a full-bleed
+     index, and the header and footer rails have to line up with them. */
+  --ks3-rail:    1240px;
 
   /* ── the shared chrome KS3 still borrows ──
      KS3 pages also load styles.css and nav.css for the nav brand, so

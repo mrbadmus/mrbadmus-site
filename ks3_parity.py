@@ -85,6 +85,12 @@ ARTIFACTS = (
     "KS3 Parts Library (offline).html",
     "KS3 Mastery Ladder (offline).html",
     "KS3 Simulation (offline).html",
+    # MRB-182 — the browse-layer prototype: the hub, year, half-term and
+    # subject screens. It is the provenance for the season trio, the three
+    # year tints and the browse-layer surfaces (--ks3-dot, --ks3-dark-track,
+    # --ks3-tag). Without it registered, Layer A would correctly report every
+    # one of those as invented.
+    "KS3 Browse Layer (offline).html",
 )
 
 
@@ -501,15 +507,22 @@ COMPONENTS = [
     dict(name="year card", on=LANDING, sel=".ks3-browse-year > a",
          props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
                 "border-top-width": "2px"}),
+    # MRB-182: Design recoloured the browse layer BY TERM rather than by
+    # borrowing the subject hues. The seasons used to be the accent, the
+    # success green and the physics blue, which meant a half-term tile and a
+    # subject dot could be the same colour while meaning different things.
+    # They are their own three hues now. The SELECTOR is unchanged on purpose
+    # — .ks3-code stays on the numbered season badge, so what this asserts is
+    # still "the season tile is the season colour", only the colours moved.
     dict(name="half-term card, autumn season", on=YEAR,
          sel='.ks3-browse-ht[data-season="autumn"] .ks3-code',
-         props={"background-color": "#E4572E"}),
+         props={"background-color": "#E08A1E"}),
     dict(name="half-term card, spring season", on=YEAR,
          sel='.ks3-browse-ht[data-season="spring"] .ks3-code',
-         props={"background-color": "#12A150"}),
+         props={"background-color": "#7FB927"}),
     dict(name="half-term card, summer season", on=YEAR,
          sel='.ks3-browse-ht[data-season="summer"] .ks3-code',
-         props={"background-color": "#2F5CE0"}),
+         props={"background-color": "#22B8CF"}),
 ]
 
 
