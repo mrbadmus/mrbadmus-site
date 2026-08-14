@@ -386,39 +386,12 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-mis-next > .ks3-mis-quote { margin-top: 0; }
 
-/* The scorecards. b1-01's whole argument is that the higher score is the dead
-   one — the prompt says so and the two cards are what show it. The figure is
-   MONO because it is a reading taken off an instrument, which is the same
-   reason every live readout in the key stage is mono; a display-font "6 of 7"
-   would read as a heading. `minmax(232px, …)` is the ruled options-grid track
-   (MRB-208, 13 Aug), so two cards sit side by side above ~500px and stack
-   below it without a query. */
-.ks3-scorecards {
-  margin-top: 18px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
-  gap: 14px;
-}
-.ks3-scorecard {
-  background: var(--ks3-card);
-  border: 2px solid var(--ks3-ink);
-  border-radius: var(--ks3-r-card);
-  padding: 18px 20px;
-}
-.ks3-score-figure {
-  margin: 0;
-  font-family: var(--ks3-font-mono);
-  font-weight: 500;
-  font-size: 32px;
-  line-height: 1;
-}
-.ks3-score-title { margin: 8px 0 0; font-size: 18px; font-weight: 700; }
-.ks3-score-note {
-  margin: 6px 0 0;
-  font-size: 17px;
-  line-height: 1.5;
-  color: var(--ks3-ink-body);
-}
+/* The scorecards themselves were already styled — see the
+   `mono-numeral scorecards` section further down. The CSS was written by an
+   earlier run and the RENDERER never was, which is the exact mirror of the
+   seven-tests board, where the renderer exists and the stylesheet has nothing
+   for any of its classes. Both halves of a component have to land or neither
+   is built. */
 
 /* ── activity options (R3) ──
    R3 is load-bearing and easy to lose: an activity button shows that it
@@ -1824,6 +1797,327 @@ body.rd[data-mode="ks3"] {
   }
 }
 
+/* ── CLASSIFY's two instruments (⊕ 14 Aug 2026) ─────────────────────
+   The seven-tests board and the three-way sorter. `build_ks3.py` has emitted
+   their markup since B1 round two and this stylesheet had **no rule for any of
+   their 44 classes** and `shared/ks3.js` no wiring for any of their 13
+   `data-*` attributes. So `<ul class="ks3-lamps">` rendered as a literal
+   bullet list of bare default buttons — which is exactly what Mide opened
+   b1-01 and found, and it is why "the seven-tests instrument rendering as bare
+   buttons dumped into a bullet list" was a precise description rather than an
+   exaggeration.
+
+   Every value below is transcribed from Design's approved b1-01, most of it
+   out of the `<script data-dc-script>` block: the page builds these controls
+   at runtime from JS-computed style strings (`optStyleTab`, `lampStyle`,
+   `badgeStyle`, `verdictStyle`, `noteStyle`, `rowStyle`), so the markup alone
+   does not carry them.                                                     */
+
+/* The specimen tabs. Pill radius, and the chosen state is INVERTED — ink
+   ground, cream text — rather than the accent tint every other chosen control
+   takes. Design draws it that way here and on b1-03's bench; reproduced as
+   drawn. It is legible and it is not a mark: a tab says which specimen you are
+   looking at, never whether you were right. */
+.ks3-tabs {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ks3-tab {
+  cursor: pointer;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 11px 17px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-pill);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+  transition: transform .14s;
+}
+.ks3-tab[aria-pressed="true"] {
+  border-color: var(--ks3-ink);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+
+/* One specimen's whole instrument, on the inset ground. */
+.ks3-board-panel {
+  margin-top: 22px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-board-name {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-board-blurb {
+  margin: 6px 0 0;
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* Law 4's gate: say what you think before the board opens. */
+.ks3-board-predict {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 2px solid var(--ks3-rule);
+}
+.ks3-board-ask { margin: 0 0 12px; font-size: 21px; font-weight: 700; }
+.ks3-board-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.ks3-board-tests {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 2px solid var(--ks3-rule);
+}
+.ks3-board-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-board-instruction {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ks3-ink-body);
+}
+.ks3-board-tally {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 24px;
+  color: var(--ks3-ink);
+}
+
+/* The lamps. THREE states, and the lamp is deliberately not a `.ks3-option`:
+   it reports the SPECIMEN, not the student, so it is allowed to resolve
+   differently for yes and no where an answer button is not (R3). `data-state`
+   rather than `aria-pressed` alone, because "yes" and "no" are both pressed. */
+.ks3-lamps {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 11px;
+}
+.ks3-lamp {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-option);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+}
+.ks3-lamp[data-state="yes"] {
+  border-color: var(--ks3-ink);
+  background: var(--ks3-alert-tint);
+  color: var(--ks3-ink);
+}
+.ks3-lamp[data-state="no"] {
+  border-color: var(--ks3-option-border);
+  background: var(--ks3-row-dim);
+  color: var(--ks3-ink-body);
+}
+.ks3-lamp-row { display: flex; align-items: center; gap: 10px; }
+.ks3-lamp-badge {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: 9px;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 15px;
+  background: var(--ks3-band);
+  color: var(--ks3-ink);
+}
+.ks3-lamp[data-state="yes"] .ks3-lamp-badge { background: var(--ks3-alert); }
+.ks3-lamp-name { font-size: 18px; font-weight: 700; }
+.ks3-lamp-verdict {
+  margin-left: auto;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ks3-accent-text);
+}
+.ks3-lamp[data-state="yes"] .ks3-lamp-verdict { color: var(--ks3-alert-text); }
+.ks3-lamp[data-state="no"] .ks3-lamp-verdict { color: var(--ks3-ink-muted); }
+/* The note is the finding. It cannot show before the tap — it IS what the tap
+   produces — so it is display:none until the lamp has a resolved state. */
+.ks3-lamp-note { display: none; font-size: 16px; line-height: 1.45; color: var(--ks3-ink-body); }
+.ks3-lamp[data-state] .ks3-lamp-note { display: block; }
+
+/* The verdict, on ink, once all seven are lit. */
+.ks3-board-verdict {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-board-verdict-head {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+}
+.ks3-board-verdict-body {
+  margin: 12px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-board-extra {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 2px solid var(--ks3-dark-panel);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ks3-board-extra-label {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-board-extra-answer { font-size: 20px; font-weight: 700; color: var(--ks3-alert); }
+.ks3-board-extra-note {
+  font-size: 18px;
+  color: var(--ks3-on-dark-body);
+  flex: 1 1 240px;
+}
+
+/* ── the three-way sorter ──
+   R3 twice over: a chip takes the same chosen treatment whichever category it
+   names, and after the reveal a wrong row is pixel-identical to a right one.
+   The page states what settles each item; it never says whether the student
+   had it. The only thing a row's border records is whether it has been
+   answered at all. */
+.ks3-sortrows {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-sortrow {
+  padding: 15px 18px;
+  border-radius: var(--ks3-r-option);
+  border: 2px solid var(--ks3-rule);
+  background: var(--ks3-card);
+}
+.ks3-sortrow[data-sorted="1"] { border-color: var(--ks3-option-border); }
+.ks3-sortrow-main { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.ks3-sortrow-name { flex: 1 1 190px; font-size: 19px; font-weight: 700; }
+.ks3-sortrow-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.ks3-sort-chip {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 9px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-sort-chip[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+.ks3-sort-evidence {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+  /* `.ks3-reveal`'s panel treatment is taken back off: the evidence is a line
+     inside a row, not a card on the page. The class is kept only because it is
+     the 220ms arrive animation's one hook — see F7 in build_ks3.py. */
+  background: none;
+  border-left: 0;
+  border-right: 0;
+  border-bottom: 0;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+}
+.ks3-sort-answer { font-family: var(--ks3-font-display); font-weight: 800; }
+.ks3-sort-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-sort-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-sort-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+
+/* MRB-196's self-check, ruled by Mide 13 Aug. Design's sorter reveals eight
+   answers and never asks whether they matched, so the student commits and
+   never finds out — which Law 4 forbids. It renders ONLY once the evidence is
+   showing, because before that there is nothing to compare against. There is
+   no correct option and there must never be one: only the student knows how
+   many of their own eight matched. */
+.ks3-selfcheck {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 2px solid var(--ks3-rule);
+}
+.ks3-selfcheck-q { margin: 0 0 12px; font-size: 19px; font-weight: 700; }
+.ks3-selfcheck-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+.ks3-selfcheck-note {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
 /* ── the bench grid (drift 1 + drift 2, ruled on MRB-208 13 Aug) ──
    232px, and the collapse at 780px. The tie was 1:1 once b1-06's declarations
    proved to match no element on that page — dead CSS — and it broke toward
@@ -1879,7 +2173,9 @@ body.rd[data-mode="ks3"] {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
   gap: 14px;
-  margin: 20px 0 0;
+  /* 18px, not 20px, and the title's 8px, not 10px — both taken off Design's
+     approved b1-01 now that the renderer exists to be measured against it. */
+  margin: 18px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -1897,7 +2193,7 @@ body.rd[data-mode="ks3"] {
   line-height: 1;
   color: var(--ks3-ink);
 }
-.ks3-scorecard-title { margin: 10px 0 0; font-size: 18px; font-weight: 700; }
+.ks3-scorecard-title { margin: 8px 0 0; font-size: 18px; font-weight: 700; }
 .ks3-scorecard-note {
   margin: 6px 0 0;
   font-size: 17px;

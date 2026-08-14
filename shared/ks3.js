@@ -151,6 +151,14 @@
      ═══════════════════════════════════════════════════════════════ */
   function wirePredictions(root) {
     each(root.querySelectorAll("[data-activity]"), function (block) {
+      // ⊕ An instrument owns every option inside it. `build_ks3.py` has
+      // claimed this exclusion in a comment since B1 round two and the check
+      // did not exist, which on the seven-tests board would have wired all
+      // four specimen panels' predictions to one another and unhidden
+      // specimen one's verdict panel on any of them — `querySelector`
+      // returns the FIRST [data-reveal] in the section, and on that board it
+      // is a verdict, not a gate.
+      if (block.hasAttribute("data-instrument")) { return; }
       var reveal = block.querySelector("[data-reveal]");
       var options = block.querySelectorAll(".ks3-option");
       if (!options.length) { return; }
@@ -2905,6 +2913,224 @@
     each(root.querySelectorAll(".ks3-sim"), wireSim);
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     CLASSIFY's two instruments — the seven-tests board and the
+     three-way sorter.
+
+     `build_ks3.py` has emitted their markup since B1 round two, and there
+     was **no CSS for any of their 44 classes and no JS for any of their
+     13 `data-*` attributes**. The kinds gate passed them because it reads
+     the dispatch table, and a dispatch-table entry is not a component.
+
+     What a student actually got was `<ul class="ks3-lamps">` as a bullet
+     list of bare default buttons that did nothing when tapped. Both of
+     these set `data-stage-done` themselves, because an instrument knows
+     what finished means and the rail does not (MRB-208).
+     ═══════════════════════════════════════════════════════════════ */
+
+  function markStage(sec, done) {
+    if (sec) { sec.setAttribute("data-stage-done", done ? "1" : "0"); }
+  }
+
+  function wireBoard(sec) {
+    var tabs = toArray(sec.querySelectorAll(".ks3-tab"));
+    var panels = toArray(sec.querySelectorAll(".ks3-board-panel"));
+    if (!panels.length) { return; }
+
+    // All four panels are in the document and only one is shown, so each
+    // specimen's progress is independent with no state to keep — the DOM is
+    // the state, and switching back shows a panel exactly as it was left.
+    function show(id) {
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-specimen") === id ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-specimen") !== id);
+      });
+    }
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        show(tab.getAttribute("data-specimen"));
+      });
+    });
+
+    // ⚖️ The stage is done when EVERY specimen has had all its tests run.
+    // Design's own `boardComplete` is per-specimen and gates that panel's
+    // verdict, which is right for the verdict and wrong for the rail: the
+    // instrument's argument is the COMPARISON — the candle scores 6 and is
+    // dead, the seed scores 3 and is alive — and `r_test_board` refuses a
+    // one-specimen board in as many words, because "a board with one
+    // specimen teaches that a score settles it, which is the misconception
+    // it exists to break". One specimen tested is half a lesson. The rail
+    // stop is `all_tests_run` with no threshold, and the eyebrow Design
+    // wrote is "Your turn · test four things".
+    function refreshStage() {
+      var whole = true;
+      each(panels, function (p) {
+        var lamps = p.querySelectorAll(".ks3-lamp");
+        for (var i = 0; i < lamps.length; i++) {
+          if (!lamps[i].hasAttribute("data-state")) { whole = false; return; }
+        }
+      });
+      markStage(sec, whole);
+    }
+
+    each(panels, function (panel) {
+      var tests = panel.querySelector("[data-board-tests]");
+      var gate = toArray(panel.querySelectorAll(".ks3-board-predict .ks3-option"));
+      var lamps = toArray(panel.querySelectorAll(".ks3-lamp"));
+      var tally = panel.querySelector("[data-board-tally]");
+      var instruction = panel.querySelector("[data-board-instruction]");
+      var verdict = panel.querySelector(".ks3-board-verdict");
+
+      // Law 4, per panel: this specimen's prediction opens this specimen's
+      // board. The choice stays changeable and never disables — R3's runtime
+      // assertion fails an activity option that is disabled, and fails a
+      // group whose options do not all render alike, which a one-way gate
+      // produces the moment its unchosen sibling stays resting.
+      each(gate, function (btn) {
+        btn.addEventListener("click", function () {
+          each(gate, function (b) { b.setAttribute("aria-pressed", "false"); });
+          btn.setAttribute("aria-pressed", "true");
+          if (tests && tests.hasAttribute("hidden")) {
+            setHidden(tests, false);
+            tests.setAttribute("role", "status");
+          }
+        });
+      });
+
+      function repaint() {
+        var run = 0, lit = 0;
+        each(lamps, function (l) {
+          if (!l.hasAttribute("data-state")) { return; }
+          run += 1;
+          if (l.getAttribute("data-state") === "yes") { lit += 1; }
+        });
+        if (tally) {
+          tally.textContent = lit + " of " + lamps.length + " lit";
+        }
+        if (run === lamps.length) {
+          if (instruction) { instruction.textContent = "All seven tested."; }
+          if (verdict && verdict.hasAttribute("hidden")) {
+            setHidden(verdict, false);
+            verdict.setAttribute("role", "status");
+          }
+        }
+        refreshStage();
+      }
+
+      each(lamps, function (lamp) {
+        lamp.addEventListener("click", function () {
+          // A test is run once. Re-tapping must not un-run it: the finding
+          // is a property of the specimen, not a toggle the student owns.
+          if (lamp.hasAttribute("data-state")) { return; }
+          var yes = lamp.getAttribute("data-yes") === "1";
+          lamp.setAttribute("data-state", yes ? "yes" : "no");
+          lamp.setAttribute("aria-pressed", "true");
+          var word = lamp.querySelector("[data-lamp-verdict]");
+          if (word) { word.textContent = yes ? "Yes" : "No"; }
+          repaint();
+        });
+      });
+
+      repaint();
+    });
+
+    if (panels.length) {
+      show(panels[0].getAttribute("data-specimen"));
+    }
+  }
+
+  function wireSort(sec) {
+    var rows = toArray(sec.querySelectorAll(".ks3-sortrow"));
+    var btn = sec.querySelector("[data-sort-reveal]");
+    var progress = sec.querySelector("[data-sort-progress]");
+    var selfcheck = sec.querySelector("[data-selfcheck]");
+    if (!rows.length) { return; }
+
+    var total = rows.length;
+    var word = (progress && progress.getAttribute("data-total-word")) || String(total);
+
+    function sortedCount() {
+      var n = 0;
+      each(rows, function (row) {
+        if (row.querySelector('.ks3-sort-chip[aria-pressed="true"]')) { n += 1; }
+      });
+      return n;
+    }
+
+    function repaint() {
+      var n = sortedCount();
+      each(rows, function (row) {
+        var on = !!row.querySelector('.ks3-sort-chip[aria-pressed="true"]');
+        row.setAttribute("data-sorted", on ? "1" : "0");
+      });
+      if (progress) {
+        progress.textContent = n < total
+          ? n + " of " + total + " sorted"
+          : "All " + word + " sorted";
+      }
+      if (btn) {
+        if (n < total) { btn.setAttribute("disabled", ""); }
+        else { btn.removeAttribute("disabled"); }
+      }
+    }
+
+    each(rows, function (row) {
+      var chips = toArray(row.querySelectorAll(".ks3-sort-chip"));
+      each(chips, function (chip) {
+        chip.addEventListener("click", function () {
+          // Freely changeable until the reveal, and changeable after it too:
+          // nothing here marks anybody, so there is nothing to protect.
+          each(chips, function (c) { c.setAttribute("aria-pressed", "false"); });
+          chip.setAttribute("aria-pressed", "true");
+          repaint();
+        });
+      });
+    });
+
+    if (btn) {
+      btn.addEventListener("click", function () {
+        if (sortedCount() < total) { return; }
+        // The evidence lands on all rows at once. R3: after the reveal a
+        // wrong row is pixel-identical to a right one — the page says what
+        // settles each item and never whether the student had it.
+        each(rows, function (row) {
+          setHidden(row.querySelector("[data-reveal]"), false);
+        });
+        btn.setAttribute("aria-expanded", "true");
+        // MRB-196's self-check arrives only now, because before the evidence
+        // is showing there is nothing to compare an answer against.
+        if (selfcheck) {
+          setHidden(selfcheck, false);
+          selfcheck.setAttribute("role", "status");
+        }
+        markStage(sec, true);
+      });
+    }
+
+    // The self-check's options mark nothing and gate nothing; they are a
+    // commitment the student makes to themselves. `wirePredictions` skips
+    // this whole section, so they are wired here.
+    if (selfcheck) {
+      var scOpts = toArray(selfcheck.querySelectorAll(".ks3-option"));
+      each(scOpts, function (o) {
+        o.addEventListener("click", function () {
+          each(scOpts, function (b) { b.setAttribute("aria-pressed", "false"); });
+          o.setAttribute("aria-pressed", "true");
+        });
+      });
+    }
+
+    repaint();
+  }
+
+  function wireInstruments(root) {
+    each(root.querySelectorAll("[data-board]"), wireBoard);
+    each(root.querySelectorAll("[data-sort]"), wireSort);
+  }
+
   // ── the progress rail (MRB-208 rule 2) ──────────────────────────────
   //
   // ⚖️ BOTH VARIANTS TICK ON COMPLETION, AND NOTHING IS TICKED ON LOAD.
@@ -2928,7 +3154,16 @@
   // made is a stage done.
   function doneByDom(sec) {
     if (!sec) { return false; }
-    if (sec.getAttribute("data-stage-done") === "1") { return true; }
+    // ⚠️ The declaration is AUTHORITATIVE in both directions. This used to
+    // check only for "1" and fall through to the heuristics below on "0",
+    // which is how an instrument that says plainly "I am not finished" got
+    // overruled by a guess. Measured on b1-06: `#s-scope` ticked on PAGE LOAD,
+    // because the last clause matches any `aria-pressed="true"` and the sim's
+    // motion toggle and fallback centre button are both built pressed while
+    // the sim is still locked. MRB-208 ruled that nothing is ticked on load.
+    if (sec.hasAttribute("data-stage-done")) {
+      return sec.getAttribute("data-stage-done") === "1";
+    }
 
     // The mastery ladder: every rung either answered or self-checked.
     var rungs = sec.querySelectorAll(".ks3-rung");
@@ -2945,8 +3180,12 @@
     var opened = sec.querySelector('[data-reveal]:not([hidden]), .ks3-reveal-btn[aria-expanded="true"]');
     if (opened) { return true; }
 
-    // Otherwise: any commitment at all inside this section.
-    return !!sec.querySelector('[aria-pressed="true"]');
+    // Otherwise: any commitment at all inside this section — but a COMMITMENT,
+    // which is an answer button. A bare `[aria-pressed="true"]` also matches
+    // every segmented sim control and every specimen tab, and those are built
+    // pressed to show where the slide is, not to record that a student decided
+    // anything. Same defect as the one above, reached by a different route.
+    return !!sec.querySelector('.ks3-option[aria-pressed="true"]');
   }
 
   function wireRail(wrap) {
@@ -3017,6 +3256,7 @@
     wireCriteria(document);
     wireCards(document);
     wireSims(document);
+    wireInstruments(document);
     each(document.querySelectorAll(".ks3-ladder"), wireLadder);
     each(document.querySelectorAll(".ks3-rails"), wireRail);
   }

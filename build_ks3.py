@@ -415,16 +415,27 @@ def shell(title, body, crumb_html="", discipline=None, description="",
 # not have reaches for an existing class; it does not invent one, because an
 # invented class is a silent no-op that looks like styling.
 
-def r_hook(lesson):
-    """Block 1 — ink dark. A phenomenon that ends in a commitment (R16)."""
+def r_hook(lesson, block=None):
+    """Block 1 — ink dark. A phenomenon that ends in a commitment (R16).
+
+    ⚠️ `block` is not decoration. Until 14 Aug 2026 the dispatch entry was
+    `lambda l, b: r_hook(l)` — it threw the block away, and with it the
+    `anchor`. So `#s-hook` was emitted on NO page in the key stage, and the
+    same was true of `#s-ladder`. Measured on all six B1 lessons: the rail's
+    FIRST and LAST stops both pointed at ids that do not exist, so their links
+    went nowhere and `doneByDom(null)` was false forever — a lesson with six
+    stops could reach at most four, and no student could ever complete a rail.
+    Neither the inventory nor any ticket had this; it was found by asking
+    whether every rail anchor resolves, which is now gated.
+    """
     p = lesson.get("phenomenon") or {}
-    return ("""<section class="ks3-block ks3-dark ks3-hook">
+    return ("""<section class="ks3-block ks3-dark ks3-hook"%s>
   <p class="ks3-eyebrow">Start here</p>
   <h2>%s</h2>
   <p class="ks3-hook-prompt">%s</p>
   <p class="ks3-commit">%s</p>
-</section>""" % (t(p.get("title", "")), t(p.get("prompt", "")),
-                 t(p.get("commit", ""))))
+</section>""" % (_id_attr(block or {}), t(p.get("title", "")),
+                 t(p.get("prompt", "")), t(p.get("commit", ""))))
 
 
 def r_explainer(lesson, block):
@@ -1247,9 +1258,11 @@ def r_sort_rows(a, act_id):
             '<button type="button" class="ks3-reveal-btn ks3-sort-reveal" '
             'data-sort-reveal disabled>%s</button>'
             '<span class="ks3-sort-progress" data-sort-progress '
-            'data-total="%d">0 of %d sorted</span></div>%s'
-            % ("".join(rows), t(a.get("reveal_label") or "Show the answers"),
-               len(items), len(items), self_check))
+            'data-total="%d" data-total-word="%s">0 of %d sorted</span>'
+            '</div>%s'
+            % ("".join(rows),
+               t(a.get("reveal_label") or "Show what settles each one"),
+               len(items), e(_count_word(len(items))), len(items), self_check))
 
 
 def _quoted(s):
@@ -1364,6 +1377,14 @@ def r_scorecards(cards):
 
     The figure is mono 32px because it is a reading off an instrument, not a
     heading — the same reason every live readout in the key stage is mono.
+
+    ⚠️ The STYLESHEET for this already existed — `.ks3-scorecards` and its three
+    children have been in `shared/ks3.css` since B1 round two. Only the renderer
+    was missing, so the CSS matched nothing on any page. That is the exact
+    mirror of the seven-tests board, where the renderer exists and the
+    stylesheet has nothing for any of its 44 classes. Neither half is a
+    component on its own, and a gate that measures registration rather than
+    rendering cannot tell the difference.
     """
     out = []
     for c in cards:
@@ -1371,13 +1392,13 @@ def r_scorecards(cards):
             raise ValueError(
                 "A scorecard with no `figure` is a card with no reading on it "
                 "— the figure is the whole point of the comparison.")
-        out.append('<div class="ks3-scorecard">'
-                   '<p class="ks3-score-figure">%s</p>'
-                   '<p class="ks3-score-title">%s</p>'
-                   '<p class="ks3-score-note">%s</p></div>'
+        out.append('<li>'
+                   '<p class="ks3-scorecard-fig">%s</p>'
+                   '<p class="ks3-scorecard-title">%s</p>'
+                   '<p class="ks3-scorecard-note">%s</p></li>'
                    % (t(c["figure"]), t(c.get("title", "")),
                       rich(c.get("note", ""))))
-    return '<div class="ks3-scorecards">%s</div>' % "".join(out)
+    return ('<ul class="ks3-scorecards" role="list">%s</ul>' % "".join(out))
 
 
 def _option_li(i, text, extra=""):
@@ -1517,11 +1538,22 @@ ACTIVITY_SHELLS = {
 # carries "only sections that require the student to do something", and a
 # confrontation asks for nothing. Emitting the attribute anyway would declare a
 # completion contract the section can never discharge.
+#
+# ⊕ Every entry also carries `data-instrument`. That is what tells
+# `wirePredictions` to keep its hands off, and until 14 Aug 2026 the comment
+# here claimed it did while **no such check existed in `shared/ks3.js`**. The
+# consequence was live and exactly what this comment predicted: the generic
+# Law 4 wiring selects every `.ks3-option` in the section and the FIRST
+# `[data-reveal]` it finds, so on the board it would have wired all four
+# specimen panels' predictions together and unhidden specimen one's verdict
+# panel on any of them. An instrument owns every option inside it.
 ACTIVITY_KIND_RENDERERS = {
-    "test-board":    ("ks3-board", ' data-board data-stage-done="0"'),
-    "sort-rows":     ("ks3-sort", ' data-sort data-stage-done="0"'),
+    "test-board":    ("ks3-board",
+                      ' data-instrument data-board data-stage-done="0"'),
+    "sort-rows":     ("ks3-sort",
+                      ' data-instrument data-sort data-stage-done="0"'),
     # Expository: no control, no commitment, nothing to tick.
-    "confrontation": ("ks3-confront", " data-confront"),
+    "confrontation": ("ks3-confront", " data-instrument data-confront"),
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -1669,7 +1701,12 @@ def r_activity(lesson, block_type, act_id, block=None):
 LADDER_RUNGS = (("recall", 1, "Recall"), ("apply", 2, "Apply"),
                 ("explain", 3, "Explain"), ("produce", 4, "Produce"))
 
-NUMBER_WORDS = ("no", "one", "two", "three", "four")
+# Extended past four for the sorter's "All eight sorted" (Design's own string).
+# Spelling numbers stays in ONE place: `r_sort_rows` emits the word alongside
+# the count so `shared/ks3.js` never has to carry a second, drifting copy of
+# this table.
+NUMBER_WORDS = ("no", "one", "two", "three", "four", "five", "six", "seven",
+                "eight", "nine", "ten", "eleven", "twelve")
 
 
 def _count_word(n):
@@ -1729,7 +1766,7 @@ def _rung_self(slug, key, num, name, q):
                "".join(ticks)))
 
 
-def r_ladder(lesson):
+def r_ladder(lesson, block=None):
     """§5's four-rung ladder. Two the page marks, two the student marks.
 
     ⚠️ Which is which comes from the DATA, not from the rung's name or its
@@ -1775,7 +1812,7 @@ def r_ladder(lesson):
         note = ("Rungs %s and %d you mark yourself."
                 % (", ".join(str(n) for n in self_marked[:-1]), self_marked[-1]))
 
-    return ('<section class="ks3-block ks3-ladder" data-lesson="%s">'
+    return ('<section class="ks3-block ks3-ladder" data-lesson="%s"%s>'
             '<div class="ks3-ladder-head">'
             '<div><h2>Mastery ladder</h2>'
             '<p class="ks3-ladder-sub">%s</p></div>'
@@ -1785,7 +1822,8 @@ def r_ladder(lesson):
             '</div>'
             '<div class="ks3-rungs">%s</div>'
             '</section>'
-            % (e(slug), e(sub), e(note), "".join(rungs)))
+            % (e(slug), _id_attr(block or {}), e(sub), e(note),
+               "".join(rungs)))
 
 
 # ── the four block types B1 round two added (§5.1.1 ⊕) ───────────────────
@@ -1978,7 +2016,7 @@ def _id_attr(block):
 
 
 BLOCK_RENDERERS = {
-    "hook": lambda l, b: r_hook(l),
+    "hook": r_hook,
     "key-fact": r_key_fact,
     "rule": r_rule,
     "formula": r_formula,
@@ -1986,7 +2024,7 @@ BLOCK_RENDERERS = {
     "explainer": r_explainer,
     "figure": r_figure,
     "keyword": r_keyword,
-    "quiz": lambda l, b: r_ladder(l),
+    "quiz": r_ladder,
     # Ink dark, like the hook and the practical — the three blocks that invert.
     # The label stays an <h2>: `.ks3-keynote p` sets 30px display 700 on every
     # paragraph in the block, so an eyebrow here would be swallowed by it.

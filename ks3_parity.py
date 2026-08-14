@@ -1165,6 +1165,46 @@ def check_internal_links(ks3_root):
 MANIFEST = "docs/ks3/design-coverage-manifest.md"
 
 
+def check_rail_anchors(ks3_root):
+    """Every `data-rail-stages` anchor names an element that exists.
+
+    The rail is emitted from the lesson record and the sections are emitted by
+    the block renderers, and nothing joined the two up. `#s-hook` and
+    `#s-ladder` were missing from every lesson page in the key stage — see the
+    gate's own note in `verify_ks3.py` for how.
+
+    Read out of the BUILT page rather than the record, deliberately: the record
+    is what we meant, and the question is what a browser will find.
+    """
+    problems, total = [], 0
+    for page in _lesson_pages(ks3_root):
+        with open(page, encoding="utf-8") as fh:
+            html = fh.read()
+        name = os.path.basename(page)
+        m = re.search(r'data-rail-stages="([^"]*)"', html)
+        if not m:
+            continue
+        try:
+            stages = json.loads(_unescape(m.group(1)))
+        except ValueError as err:
+            problems.append("%s: unparseable data-rail-stages (%s)"
+                            % (name, err))
+            continue
+        ids = set(re.findall(r'\sid="([^"]+)"', html))
+        for st in stages:
+            anchor = st.get("anchor")
+            if not anchor:
+                problems.append("%s: a rail stop declares no anchor" % name)
+                continue
+            total += 1
+            if anchor not in ids:
+                problems.append(
+                    "%s: rail stop %r points at #%s, which is on no element — "
+                    "the link goes nowhere and the stop can never tick"
+                    % (name, st.get("short") or anchor, anchor))
+    return problems, total
+
+
 def _manifest_rows(repo_root, heading):
     """Parse the markdown table under `heading` in §10 of the manifest.
 

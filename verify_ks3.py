@@ -806,6 +806,31 @@ def main():
           if not link_problems
           else "%d dead: %s" % (len(link_problems), link_problems[0][:120]))
 
+    # ── MRB-208, one level down: a rail stop pointing at nothing ────────
+    #
+    # The rail was gated on the things a reader thinks to check — that both
+    # variants exist, that the threshold flips at 1340, that nothing ticks on
+    # load — and not on the one that makes it work at all: that each stop's
+    # `anchor` names an element that is really on the page.
+    #
+    # It did not, on any lesson in the key stage. `BLOCK_RENDERERS["hook"]` and
+    # `["quiz"]` were `lambda l, b: r_hook(l)` and `lambda l, b: r_ladder(l)`,
+    # which threw the block away and with it the anchor, so `#s-hook` and
+    # `#s-ladder` were emitted nowhere. Every lesson's rail therefore had a dead
+    # FIRST stop and a dead LAST stop: the links went nowhere, and
+    # `doneByDom(null)` is false forever, so a six-stop lesson could reach four
+    # and no student could complete a rail.
+    #
+    # Neither the six-lesson inventory nor any ticket carried this. Two
+    # independent audits found it on the same afternoon by asking the question
+    # this gate now asks on every build.
+    anchor_problems, anchor_count = PARITY.check_rail_anchors(KS3_OUT)
+    check("MRB-208 · every rail stop's anchor exists on its page",
+          not anchor_problems,
+          "%d rail stops checked across the key stage" % anchor_count
+          if not anchor_problems
+          else "%d dead: %s" % (len(anchor_problems), anchor_problems[0][:160]))
+
     # ── MRB-203, one level down: an activity KIND with no renderer ──────
     #
     # MRB-203's registry asks whether a BLOCK TYPE has a registered component.
