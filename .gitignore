@@ -36,3 +36,8 @@ node_modules/
 
 # Lane 3 secrets scan output (local only, never commit)
 SECRETS_SCAN_RESULT.md
+
+# B1 comparison screenshots — 38MB of PNGs, regenerated on demand.
+# The live side-by-side on localhost is the sign-off surface; these are
+# the record of one run and do not belong in a repo Mide pushes.
+docs/ks3/b1-comparison/*/*.png
