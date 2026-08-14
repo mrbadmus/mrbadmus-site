@@ -972,6 +972,7 @@ a:hover { color: var(--st-accent-hover); }
   .railtip { display: none !important; }
   .app[data-sheet='rest'] .rail { bottom: var(--sheet-rest, 55%); }
   .app[data-sheet='raised'] .rail { bottom: calc(100% - 150px); }
+}
 
 /* ── §01/§07 Quality chip ──────────────────────────────────── */
 .chip {

@@ -284,3 +284,44 @@ describe('gate 15B — the library caption wraps, never truncates, never splits 
     expect(meta['text-transform']).toBe('uppercase')
   })
 })
+
+// ── gate 15C — the stylesheet's blocks close ─────────────────────────────
+//
+// Added at MRB-189, having just cost a run. Extending the phone media block
+// with two rules swallowed its closing brace, so `@media (max-width: 699px)`
+// never ended and every rule after it — a third of the stylesheet, including
+// the desktop grid's row sizing — silently became phone-only. The page then
+// grew to 1134px on desktop, the panel's internal scroll stopped engaging, and
+// the specimen moved 205px down the stage, which surfaced as a render-check
+// failure about a hotspot a student could not turn into view. Three symptoms,
+// none of them anywhere near the cause.
+//
+// The parity gate catches the CONSEQUENCE in a real browser, correctly and
+// slowly. This catches the CAUSE in a millisecond, and it is exactly the kind
+// of defect that is invisible to inspection: CSS reports no syntax error,
+// because an unclosed block stays legal all the way to end of file.
+describe('gate 15C — every block in the stylesheet is closed', () => {
+  it('braces balance, and no block is left open at end of file', () => {
+    // Comments first: a brace inside prose is not a block.
+    const code = css.replace(/\/\*[\s\S]*?\*\//g, '')
+    let depth = 0
+    let line = 1
+    let outermostOpenedAt = 0
+    for (const ch of code) {
+      if (ch === '\n') line += 1
+      else if (ch === '{') {
+        depth += 1
+        if (depth === 1) outermostOpenedAt = line
+      } else if (ch === '}') {
+        depth -= 1
+        expect(depth, `studio.css has a stray '}' at line ${line}`).toBeGreaterThanOrEqual(0)
+      }
+    }
+    expect(
+      depth,
+      `studio.css ends with ${depth} block(s) still open — the one beginning at ` +
+        `line ${outermostOpenedAt} never closes, so every rule after it belongs ` +
+        `to that block rather than to the stylesheet`,
+    ).toBe(0)
+  })
+})
