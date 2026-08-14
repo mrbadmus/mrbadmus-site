@@ -3296,7 +3296,10 @@
     ctx.ellipse(x, y, Math.max(0.5, rx), Math.max(0.5, ry), rot || 0, 0, Math.PI * 2);
   }
 
-  function mito(ctx, x, y, rot, k) {
+  // ⚠️ b1-04's mitochondrion takes a SCALE; b1-03's does not, and the two
+  // pages draw different sizes. Ported into one file they collided under
+  // one name and the later definition silently won for both. Scoped.
+  function mitoScaled(ctx, x, y, rot, k) {
     ctx.save();
     ctx.translate(x, y); ctx.rotate(rot); ctx.scale(k, k);
     ell(ctx, 0, 0, 22, 11, 0);
@@ -3426,7 +3429,7 @@
 
     if (sab !== 'mito') {
       [[110, 380, 0.4], [200, 384, -0.3], [156, 262, 1.4], [212, 300, 0.2], [96, 300, 1.2], [180, 158, 0.5]]
-        .forEach((m) => mito(ctx, m[0], m[1], m[2], 0.9));
+        .forEach((m) => mitoScaled(ctx, m[0], m[1], m[2], 0.9));
     }
 
     const wcol = '#2F5CE0';
@@ -3469,7 +3472,7 @@
     ctx.lineWidth = 3; ctx.strokeStyle = dark ? '#C6B9A7' : '#221E1B'; ctx.stroke();
     if (sab !== 'mito') {
       [[288, cy - 8, 0.5], [318, cy + 9, -0.4], [346, cy - 7, 0.3], [300, cy + 14, 0.9]]
-        .forEach((m) => mito(ctx, m[0], m[1], m[2], 0.62));
+        .forEach((m) => mitoScaled(ctx, m[0], m[1], m[2], 0.62));
     }
 
     if (sab !== 'notail') {
@@ -3878,6 +3881,17 @@
     ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
   }
 
+  function leafShape(ctx, cx, cy, L, Wd, rot) {
+    ctx.save();
+    ctx.translate(cx, cy); ctx.rotate(rot);
+    ctx.beginPath();
+    ctx.moveTo(-L / 2, 0);
+    ctx.quadraticCurveTo(-L / 6, -Wd / 2, L / 2, 0);
+    ctx.quadraticCurveTo(-L / 6, Wd / 2, -L / 2, 0);
+    ctx.closePath();
+    ctx.restore();
+  }
+
   var ZOOM_DRAWINGS = {
     "plant": function (ctx) { drawPlant(ctx, false); },
     "plant-shoot": function (ctx) { drawPlant(ctx, "shoot"); },
@@ -4086,25 +4100,6 @@
      ═══════════════════════════════════════════════════════════════ */
 
   var CVW = 900, CVH = 560;
-
-  function rr(ctx, x, y, w, h, r) {
-    ctx.beginPath();
-    ctx.moveTo(x + r, y);
-    ctx.lineTo(x + w - r, y);
-    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-    ctx.lineTo(x + w, y + h - r);
-    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    ctx.lineTo(x + r, y + h);
-    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-    ctx.lineTo(x, y + r);
-    ctx.quadraticCurveTo(x, y, x + r, y);
-    ctx.closePath();
-  }
-
-  function ell(ctx, x, y, rx, ry, rot) {
-    ctx.beginPath();
-    ctx.ellipse(x, y, Math.max(0.5, rx), Math.max(0.5, ry), rot || 0, 0, Math.PI * 2);
-  }
 
   function blob(ctx, cx, cy, rx, ry, seed) {
     ctx.beginPath();
