@@ -30,13 +30,16 @@ here rather than hidden: the old record still stands in
   point back at (`docs/ks3/misconception-register.md`). Their *statements* are
   now Design's wording, which is a register edit that has to follow.
 
-Three block types here do not exist in §5.1.1's closed vocabulary yet —
-`zoom-ladder`, `sort-task`, `removal-cases` — and one field shape is new to
-§4.8 (`illustration_palette`). Each was drawn by Design on an approved page
-before it was written down, which is the order MRB-205 requires. Until
-`build_ks3.BLOCK_RENDERERS` registers the three, §10.2's `ok_vocabtypes` gate
-fails this lesson by design: the data says what the page needs and the renderer
-has not caught up.
+Three instruments are authored as inline `core` blocks — `zoom-ladder`,
+`sort-task`, `removal-cases` — because that is how Design draws them: each owns
+a whole content payload and a page position. `ks3_data/b1/__init__.py`
+normalises them into `activities[]` when it collects the six records, leaving a
+`practical` / `check` / `practical` shell with its anchor behind, so §5.1.1's
+block vocabulary stays closed at fourteen and §10.2's `ok_vocabtypes` gate
+passes untouched. Read the payloads here and the normalisation there.
+
+`illustration_palette` IS new against §4.8 and needs the amendment — see its
+note at the foot of this record.
 """
 
 

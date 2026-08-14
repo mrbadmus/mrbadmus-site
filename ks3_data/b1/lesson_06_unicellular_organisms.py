@@ -312,8 +312,9 @@ LESSON = {
          # Column 2 is deliberately one step quieter than column 1.
          "row_tones": ["ink", "ink-body"],
          # G6 — `card`, because the block itself is `band` and band on band is
-         # invisible. Drift 5's outlier has a reason (F34).
-         "key_fact": {"ref": 0}},
+         # invisible. Drift 5's outlier has a reason (F34). `ref` names a
+         # `key_facts[].id`, so the text lives once and this says only where.
+         "key_fact": {"ref": "kf-one-cell-all-seven"}},
 
         # ── §3.5 / §7.3 — the CONTRAST flagship (gap G7) ─────────────────
         # NOT a check (four independent judgements, gated collectively), NOT a
@@ -347,6 +348,11 @@ LESSON = {
         #     seg() is 17px / 11px 17px.
         {"type": "settles-it",
          "anchor": "s-settle",
+         # ks3_data/b1/__init__.py lifts this block into `activities[]` and
+         # renders it through the `check` shell, so `demand` is authored rather
+         # than left to that collector's "investigate" default.
+         "demand": "discriminate: sixteen judgements, and most of the facts "
+                   "decide nothing",
          "eyebrow": "Your turn · four mystery cells",
          "heading": "Does that settle it?",
          # The <em> is Design's and is load-bearing — this string needs rich().
@@ -373,13 +379,20 @@ LESSON = {
          # student. Three options and not two, because three of the four cases
          # have two discriminators and a yes/no would force a student who found
          # one of two to answer falsely.
+         #
+         # Shape is L1's `{question, options, note}` — the same ruling landed
+         # on `living-once-never` in lesson_01 and the two must not ship as two
+         # shapes. The `note` says what to DO with the answer, which is what
+         # keeps it the right side of §8.10.
          "self_check": {
-             "prompt": "Now look back at your four marks. Did you have it?",
+             "question": "Now look back at your four marks. Did you have it?",
              "options": [
                  "Yes — I marked what settles it, and nothing else.",
                  "Partly — I marked one of them, and something else as well.",
                  "No — I went for the vivid facts and missed the quiet ones.",
              ],
+             "note": "Nobody marks this but you. The facts you marked wrongly "
+                     "are the ones to read again before the next cell.",
          },
 
          # Exactly four cases, each with exactly four features. The renderer
@@ -883,7 +896,8 @@ LESSON = {
     # §4.8.1 B + gaps G5 / G6. Fourth distinct position for this box across
     # five pages, so placement is authored and never guessed.
     "key_facts": [
-        {"text": "One cell doing all seven life processes is an organism. One "
+        {"id": "kf-one-cell-all-seven",
+         "text": "One cell doing all seven life processes is an organism. One "
                  "cell doing one job is part of one.",
          "eyebrow": "Key fact",
          "placement": "inside:s-compare",
