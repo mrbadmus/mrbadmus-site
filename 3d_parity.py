@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """3d_parity.py — the MRB-186 visual parity gate for the 3D Studio shell.
 
-Design's reference is frozen at ``3d-studio/reference/shell-v1.html``. Stage 1
+Design's reference is frozen in two files: ``3d-studio/reference/shell-v1.html``
+(§01–§07, MRB-186) and ``3d-studio/reference/crosssection-v1.html`` (§08–§10,
+the cut face and its slider, MRB-189). The second redraws the first's seven
+screens byte-identically before adding its own three, so shell-v1 remains the
+reference for §01–§07 and layer A asserts that agreement rather than assuming
+it. Stage 1
 shipped five logical gates and none of them looks at pixels — and on KS3 the
 parity gate (``ks3_parity.py``) caught three real defects that human review
 missed. This module is the same idea pointed at the studio, and it follows
@@ -21,9 +26,12 @@ asserted in three layers (the fourth KS3 layer, contrast, lives in
 the token file on every vitest run — it is not duplicated here):
 
   A. PROVENANCE (no browser).  Every colour ``src/styles/tokens.css``
-     declares must appear literally in the frozen reference — you cannot
-     invent a colour Design never specified, or drift a hex by one digit,
-     without the build failing. The seven MRB-186 reconciled values are the
+     declares must appear literally in the frozen references, read as one
+     text — you cannot invent a colour Design never specified, or drift a
+     hex by one digit, without the build failing. It also holds the two
+     files to their overlap: §01–§07 must stay the same bytes in both, or
+     the line numbers every row below cites have stopped meaning anything.
+     The seven MRB-186 reconciled values are the
      documented exception: for those the gate asserts the OLD value is in
      the reference (the divergence is FROM something real) and that the old
      value appears nowhere in ``src/`` or ``.design-sync/`` — the sweep
@@ -146,6 +154,45 @@ is tolerated; a mismatch outside this list is a failure.
        nowrap that made it fit is gone. Not compressed, not abbreviated: the
        uneven row is the accepted cost, and the caption is now watched by
        Layer B's metaIntegrity row.
+  18.  §10 (Parts — slider) is not driven as a screen, following §07's
+       precedent that a component sheet is not a screen. Where §07's state
+       table lives in TypeScript and the no-hue-only gate reads it directly,
+       §10's lives in CSS — `:hover`, `[data-drag]`, `[data-key]` — which
+       jsdom cannot resolve, so its four states are pinned as layer C rows
+       driven through the real states in a real browser instead: a pointer
+       moved onto the plate, a pointer pressed on it, and arrows sent to it
+       once it has focus. Same principle, different place, because that is
+       where the values are.
+  19.  The materials sheet annotates the cut wall against the cavity as 17:1;
+       measured with the WCAG formula the pair is 15.62:1. Design's figure is
+       generous by about 9% and the argument — extremes of the frame, not
+       neighbours in a family — is unaffected. The measured value is asserted
+       in `3d-studio/tests/gates/section.test.ts`; this entry records that
+       the reference's own figure is not the one that holds.
+  20.  The plane rule is drawn at the strength its geometry earns, not at
+       the strength the reference draws. §08 draws a cut face fully facing
+       the viewer AND the plane seen edge-on as a crisp vertical rule beside
+       it; those two cannot both be true of one plane in three dimensions,
+       because a plane is a line on screen only when it is edge-on and covers
+       the frame when it is not. A 2D mock can hold both at once and a
+       projection cannot. So the rule is drawn where it is true: the default
+       camera is a three-quarter view, about 26 degrees off face-on, and the
+       rule is there at partial strength, fading out altogether if the
+       student turns the specimen to face the cut squarely and coming to full
+       strength while the slider is dragged. The s08 rows measure it at the
+       default camera, which is where a student meets it; the values pinned
+       are its construction — 1.5px, the accent, two 16px end ticks — and not
+       an opacity, which is the part that legitimately moves.
+  21.  The tablet plate sits at `left: 82px` — the rail's own geometry (18px
+       inset + 48px column) plus the drawn 16px gap — rather than the
+       reference's literal `calc(50% + 22px)`, which is that same rule
+       measured inside its 645px illustration tile. The rule travels; the
+       number does not.
+  22.  The plane's end ticks are drawn at rest as well as while dragging.
+       §08's hero draws them at rest, §09's three at-rest tiles omit them and
+       its three dragging tiles draw them; built as one plane-strength
+       variable at 0.75 at rest and full strength while dragging, which
+       satisfies §08's hero, §09's dragging tiles and both prose lines.
 
 Provenance for every value in the expectation tables below is the frozen
 reference itself — section and line cited in each screen's comment.
@@ -165,7 +212,27 @@ from ks3_parity import close_length, parse_rgb, parse_rgba, same_colour
 HERE = os.path.dirname(os.path.abspath(__file__))
 APP = os.path.join(HERE, "3d-studio")
 TOKENS_CSS = os.path.join(APP, "src", "styles", "tokens.css")
-REFERENCE = os.path.join(APP, "reference", "shell-v1.html")
+
+# Design froze the shell at `shell-v1.html` (§01–§07, MRB-186) and the cut at
+# `crosssection-v1.html` (§08–§10, MRB-189). BOTH are the reference now, and
+# layer A reads them as one text: a colour that exists only because the
+# cross-section treatment needed it — the cut wall, the cavity, the plate's
+# own chrome — has its provenance in the second file and nowhere in the
+# first, so a sweep that only read the first would call it invented.
+SHELL_REF = os.path.join(APP, "reference", "shell-v1.html")
+CROSSSECTION_REF = os.path.join(APP, "reference", "crosssection-v1.html")
+REFERENCE = [SHELL_REF, CROSSSECTION_REF]
+
+# `crosssection-v1.html` redraws §01–§07 before it draws §08–§10, and that
+# redrawing is the reason shell-v1.html is still the frozen reference for
+# those seven screens rather than being superseded by the newer file: over
+# its first 911 lines the two are the same bytes, save the HTML comment on
+# line 8 that names the version. Asserted below, because the claim is load
+# bearing in both directions — it is what lets every §01–§07 row keep citing
+# shell-v1, and it is the only thing that would notice either frozen file
+# being edited.
+SHARED_PREFIX_LINES = 911
+SHARED_PREFIX_COMMENT_LINE = 8
 DIST = os.path.join(APP, "dist")
 HEART = os.path.join(APP, "content", "heart.json")
 RETRIEVAL_TS = os.path.join(APP, "src", "studio", "retrieval.ts")
@@ -224,13 +291,73 @@ def studio_tokens():
     return dict(re.findall(r"(--st-[a-z0-9-]+)\s*:\s*(#[0-9A-Fa-f]{6})\s*;", css))
 
 
+def _shared_prefix_divergences():
+    """Every line on which the two frozen files stop agreeing over §01–§07.
+
+    Returns a list of (line number, shell-v1 line, crosssection-v1 line), or
+    None when a file is missing. One entry is expected and correct — line 8,
+    where the newer file names itself `design reference v2`. Anything else
+    means one of the two has been edited, and a frozen file that has moved is
+    not a reference: every row in this module cites a line number in one of
+    them.
+    """
+    for path in REFERENCE:
+        if not os.path.exists(path):
+            return None
+    with open(SHELL_REF, encoding="utf-8", errors="replace") as fh:
+        shell = fh.read().splitlines()
+    with open(CROSSSECTION_REF, encoding="utf-8", errors="replace") as fh:
+        cross = fh.read().splitlines()
+    out = []
+    for i in range(SHARED_PREFIX_LINES):
+        a = shell[i] if i < len(shell) else None
+        b = cross[i] if i < len(cross) else None
+        if a != b:
+            out.append((i + 1, a, b))
+    return out
+
+
 def check_provenance():
     """Layer A. Returns (problems, notes)."""
     problems, notes = [], []
-    if not os.path.exists(REFERENCE):
-        return (["frozen reference missing: %s" % REFERENCE], notes)
-    with open(REFERENCE, encoding="utf-8", errors="replace") as fh:
-        ref = fh.read().lower()
+    missing = [p for p in REFERENCE if not os.path.exists(p)]
+    if missing:
+        return (["frozen reference missing: %s"
+                 % ", ".join(os.path.relpath(p, HERE) for p in missing)], notes)
+    ref = ""
+    for path in REFERENCE:
+        with open(path, encoding="utf-8", errors="replace") as fh:
+            ref += fh.read().lower()
+
+    # The two frozen files agree over §01–§07, which is what keeps shell-v1
+    # the reference for those seven screens (design-notes.md says so in its
+    # first paragraph, and every §01–§07 row below cites it). Read the claim
+    # rather than trust it: it is also the only assertion in this module that
+    # would catch an accidental edit to EITHER frozen file.
+    diverged = _shared_prefix_divergences()
+    expected = [SHARED_PREFIX_COMMENT_LINE]
+    if [n for n, _a, _b in diverged] != expected:
+        for n, a, b in diverged:
+            if n in expected:
+                continue
+            problems.append(
+                "the two frozen references disagree at line %d of their "
+                "shared §01–§07 — shell-v1 has %r, crosssection-v1 has %r. "
+                "Only line %d (the version comment) may differ; one of the "
+                "two files has been edited, and every row here cites a line "
+                "number in them" % (n, a, b, SHARED_PREFIX_COMMENT_LINE))
+        if SHARED_PREFIX_COMMENT_LINE not in [n for n, _a, _b in diverged]:
+            problems.append(
+                "line %d of the two frozen references is now identical — the "
+                "version comment that told `design reference` from `design "
+                "reference v2` has gone, so one of them has been edited"
+                % SHARED_PREFIX_COMMENT_LINE)
+    else:
+        notes.append(
+            "the frozen references are byte-identical over lines 1–%d "
+            "(§01–§07), differing only in the version comment on line %d — "
+            "shell-v1.html remains the reference for those seven screens"
+            % (SHARED_PREFIX_LINES, SHARED_PREFIX_COMMENT_LINE))
 
     tokens = studio_tokens()
     reconciled = {name: (old, new) for name, old, new, _ in RECONCILED}
@@ -554,6 +681,117 @@ COMPONENTS = [
     dict(name="paper hotspot keeps accent fill", on="s06", sel=".hotspot",
          props={"background-color": "#E4572E", "border-top-color": "#FFFDF8",
                 "width": "28px"}),
+
+    # ── §10 Parts — slider (crosssection-v1.html lines 1305–1415) ──
+    #
+    # §10 is the component sheet for the slider the way §07 is for the
+    # hotspot, and it is read the same way: as the source of truth for every
+    # state rather than as one more screen to drive. The difference is where
+    # the states live. §07's are a TypeScript table, so the no-hue-only gate
+    # reads the function and needs no browser; §10's are CSS — `:hover`,
+    # `[data-drag]`, `[data-key]` — and a stylesheet only answers to a real
+    # engine. So the four rows are driven here, through a real pointer moved
+    # onto the plate, a real press on it, and real arrow keys once it has
+    # focus (allow-list entry 18).
+    #
+    # Rest is the sheet's first row (line 1320) and also the §08 hero's
+    # slider (line 975) and §09's AT REST tile (line 1109) — three drawings
+    # of the same plate, which is why the values below are cited once.
+    dict(name="section plate at rest", on="s08", sel=".secplate",
+         props={"width": "392px", "height": "44px",
+                "background-color": "rgba(22, 18, 14, 0.86)",
+                "border-top-color": "#3E362C",
+                "border-top-left-radius": "11px"}),
+    dict(name="SECTION eyebrow", on="s08", sel=".secplate__word",
+         props={"font-family": "DM Mono", "font-size": "10.5px",
+                "color": "#8A7E6E"}),
+    dict(name="slider track", on="s08", sel=".secplate__track",
+         props={"height": "4px"}),
+    dict(name="travelled track", on="s08", sel=".secplate__travel",
+         props={"background-color": "#C4B8A7"}),
+    # "The handle is a bar, not a knob, because the thing it moves is a
+    # plane." Cream fill and a dark ring — the hotspot construction, which is
+    # what survived the washed-projector test, inherited rather than argued
+    # again (§10 HANDLE ANATOMY).
+    dict(name="handle is a bar", on="s08", sel=".secplate__handle",
+         props={"width": "10px", "height": "30px",
+                "border-top-left-radius": "3px",
+                "background-color": "#FBF3E6"}),
+    dict(name="readout is a caption at rest", on="s08", sel=".secplate__value",
+         props={"font-family": "DM Mono", "font-size": "11.5px",
+                "color": "#B7AA98"}),
+    # ── §10 hover (line 1332) ──
+    dict(name="plate lifts under the pointer", on="s08hover", sel=".secplate",
+         props={"background-color": "rgba(22, 18, 14, 0.92)",
+                "border-top-color": "#4A4036"}),
+    dict(name="handle thickens on hover", on="s08hover",
+         sel=".secplate__handle", props={"width": "11px", "height": "34px"}),
+    # ── §10 dragging (line 1344) ──
+    # "Dragging thickens the handle, hatches the travelled track to match the
+    # cut face, promotes the value from caption to 15px, and brings the plane
+    # rule up to full strength. Emphasis lands on the cut, not on the
+    # furniture" (§09) — this is the loudest the furniture is allowed to get.
+    dict(name="plate deepens while dragging", on="s08drag", sel=".secplate",
+         props={"background-color": "rgba(18, 14, 10, 0.96)",
+                "border-top-color": "#5C5347"}),
+    dict(name="handle thickens again while dragging", on="s08drag",
+         sel=".secplate__handle", props={"width": "12px", "height": "38px"}),
+    dict(name="readout is promoted while dragging", on="s08drag",
+         sel=".secplate__value",
+         props={"font-size": "15px", "font-weight": "500",
+                "color": "#FBF3E6"}),
+    # The reference deepens the eyebrow to #6E6255 while dragging; that is
+    # the value --st-muted reconciles to #6E655D, so it ships as the token
+    # (allow-list entry 2) rather than as the reference's near-miss.
+    dict(name="eyebrow deepens while dragging", on="s08drag",
+         sel=".secplate__word", props={"color": "#6E655D"}),
+    # ── §10 keyboard (line 1356) ──
+    # "ARROWS STEP 2%, NOTCHED HANDLE". Drawn, therefore required: the notch
+    # is the state's own mark — the ring says this has focus, the notch says
+    # this is the thing the arrows move.
+    dict(name="keyboard handle is notched", on="s08key",
+         sel=".secplate__notch",
+         props={"width": "2px", "height": "14px", "opacity": "1"}),
+    dict(name="keyboard focus ring is on the plate", on="s08key",
+         sel=".secplate",
+         props={"outline-color": "#FBF3E6", "outline-width": "2px"}),
+    # ── §08 the plane's own mark (lines 942–944) ──
+    # The only accent in the whole cross-section treatment: "Orange comes off
+    # the organ entirely. It marks the plane — the rule through the specimen,
+    # its end ticks, and the slider being dragged — because the plane is the
+    # interactive thing. Tissue is substance and never highlights itself."
+    # Drawn at rest as well as while dragging (allow-list entry 22); how
+    # strongly is a function of how edge-on the plane is (entry 20).
+    dict(name="plane rule", on="s08", sel=".planerule",
+         props={"width": "1.5px"}),
+    dict(name="plane end tick", on="s08", sel=".planerule__tick",
+         props={"width": "16px", "height": "1.5px",
+                "background-color": "#E4572E"}),
+    # ── §09 tablet (line 1176) ──
+    # "Same plate, narrower … Height stays 44 because it is now a touch
+    # target." Where it sits is layer B's row; that it did not also shrink is
+    # this one.
+    dict(name="tablet plate is narrower", on="s09t", sel=".secplate",
+         props={"width": "320px", "height": "44px"}),
+    # ── §09 phone (lines 1247–1255) ──
+    # ONE BAR, SHARED WITH THE RAIL. The collapsed tool is "orange, cream
+    # dot, 44 square", and the plate is the rest of that same bar at the same
+    # height and the same radius — one bar, drawn as one.
+    dict(name="phone plate keeps its 44", on="s09p", sel=".secplate",
+         props={"height": "44px", "border-top-left-radius": "12px"}),
+    dict(name="collapsed rail is the running tool", on="s09p",
+         sel=".rail[data-collapsed] .railbtn.is-active",
+         props={"width": "44px", "height": "44px",
+                "border-top-left-radius": "12px",
+                "background-color": "#E4572E"}),
+    # ── §09 phone, dragging (line 1273) ──
+    # The readout lifted out of the bar carries the dragging plate's own
+    # chrome, because it is the plate's readout wearing the plate's state.
+    dict(name="lifted readout", on="s09pdrag", sel=".secreadout",
+         props={"background-color": "rgba(18, 14, 10, 0.96)",
+                "border-top-color": "#5C5347"}),
+    dict(name="lifted readout value", on="s09pdrag", sel=".secreadout__value",
+         props={"font-size": "15px", "color": "#FBF3E6"}),
 ]
 
 
@@ -812,7 +1050,15 @@ def _content_counts():
 # screen tall and the panel scrolls inside itself; tablet and phone are absent
 # deliberately, because below 1024 the whole column scrolls with the document
 # and that is the design, not a defect (studio.css, the two max-width blocks).
-DESKTOP_SCREENS = {"s01", "s01open", "s01narrow", "s02", "s06"}
+DESKTOP_SCREENS = {"s01", "s01open", "s01narrow", "s02", "s06",
+                   "s08", "s08hover", "s08drag", "s08key"}
+
+# The rail button that is the door to every §08–§10 screen. Identified by the
+# accessible name rather than by position, because position is what the rail
+# changes: §02 narrows it to three tools and §09 collapses it to one, and a
+# gate that reached for the fourth child would follow the rail into being
+# wrong rather than notice.
+CUT_BUTTON = '.railbtn[aria-label="Cross-section"]'
 
 
 def check_page_height(page, screen):
@@ -1212,6 +1458,195 @@ def check_structure(page, screen, counts):
             p.append("s06: hint %r promises rotation on a flat plate" % hint)
         need(".hotspot", counts["hotspots"])
 
+    elif screen == "s08":
+        # §08/§09 desktop, the cut engaged and the slider untouched. The
+        # plate exists only while the tool does — "Only shown while the tool
+        # is on" — so every row here is downstream of a real press on the
+        # rail, which is how the screen is driven.
+        need(".secplate")
+        # §09: "The rotate hint at bottom centre yields to the plate — one
+        # thing lives on that edge at a time." Two captions stacked on one
+        # edge is the defect this forbids, and it is a rule about the EDGE,
+        # not about the hint: whichever of them is drawn, the other is not.
+        absent(".stagehint", "the rotate hint yields to the plate (§09)")
+        need(CUT_BUTTON + ".is-active", 1,
+             "the rail says which tool is running")
+        # The rail yields the bar on PHONE and nowhere else (§09). A desktop
+        # that collapsed would be answering a phone's problem with a
+        # desktop's room.
+        need(".rail .railbtn", 6, "desktop keeps all six icon tools")
+        need(".chip", 1, "the quality chip keeps its corner")
+        stage = page.eval("window.__st.rect('.stage')")
+        plate = page.eval("window.__st.rect('.secplate')")
+        chip = page.eval("window.__st.rect('.chip')")
+        if not stage or not plate:
+            p.append("s08: could not measure the plate against the stage")
+        else:
+            off = abs((plate["x"] + plate["w"] / 2.0)
+                      - (stage["x"] + stage["w"] / 2.0))
+            if off > 2:
+                p.append("s08: the plate's centre is %.0fpx off the stage's "
+                         "— §09 says PLATE 392×44 · BOTTOM CENTRE, and the "
+                         "plate centres on the stage until the tablet moves "
+                         "it off centre to clear the rail" % off)
+        # Both of them live on the bottom edge of the stage, and the
+        # reference draws them clear of one another. A plate wide enough to
+        # reach the chip would bury the one control §07 calls "deliberately
+        # the quietest element on the stage".
+        if plate and chip and plate["x"] + plate["w"] > chip["x"]:
+            p.append("s08: the plate ends at x=%.0f and the quality chip "
+                     "starts at x=%.0f — they overlap on the bottom edge"
+                     % (plate["x"] + plate["w"], chip["x"]))
+
+    elif screen == "s08hover":
+        # This screen exists only to resolve §10's hover row, which is a CSS
+        # `:hover` and therefore an answer only the engine can give. Assert
+        # the pointer actually landed: without this, a harness that missed
+        # the plate would report the hover row as a colour drift, and a
+        # colour drift is the one thing it would not be.
+        need(".secplate")
+        if not page.eval("!!document.querySelector('.secplate:hover')"):
+            p.append("s08hover: the pointer is not over the plate — §10's "
+                     "hover row would measure the resting state and blame "
+                     "the stylesheet for a harness fault")
+
+    elif screen == "s08drag":
+        # §10's third state, reached the way a student reaches it: a real
+        # pointerdown on the real control. `data-drag` is React's answer to
+        # an event it actually received, so nothing short of a dispatched
+        # pointer event puts the plate here.
+        need(".secplate[data-drag]", 1,
+             "a real press on the input puts the plate in its drag state")
+
+    elif screen == "s08key":
+        # §10's fourth state: "ARROWS STEP 2%, NOTCHED HANDLE". Drawn,
+        # therefore required — and required as BEHAVIOUR, not only as
+        # treatment, which is why the step is counted rather than the notch
+        # merely being looked at. A native range input carries the stepping,
+        # so this is also the row that would notice the drawn parts being
+        # laid over something that is no longer a range input.
+        need(".secplate[data-key]", 1,
+             "arrow keys on a focused plate raise the keyboard state")
+        was = page.eval("window.__stKeyFrom")
+        now = page.eval("document.querySelector('.secplate') && Number("
+                        "document.querySelector('.secplate')"
+                        ".getAttribute('data-percent'))")
+        if was is None or now is None:
+            p.append("s08key: could not read the plate's percentage before "
+                     "and after the arrows")
+        elif now - was != 6:
+            p.append("s08key: three ArrowRights moved the cut from %s%% to "
+                     "%s%%, a step of %s — §10 says ARROWS STEP 2%%, so "
+                     "three of them is 6" % (was, now, now - was))
+
+    elif screen == "s09t":
+        # §09 TABLET: "Same plate, narrower, and no longer centred on the
+        # stage — it centres on the space left of the rail so the two never
+        # touch." The rail is still the vertical desktop rail here (§04: a
+        # tablet has the room and often is the teacher's device), so the
+        # clearance is horizontal and the number Design gives it is 16.
+        need(".secplate")
+        absent(".rail[data-collapsed]",
+               "the rail yields the bar on phone, not on tablet")
+        plate = page.eval("window.__st.rect('.secplate')")
+        rail = page.eval("window.__st.rect('.rail')")
+        if not plate or not rail:
+            p.append("s09t: could not measure the plate against the rail")
+        else:
+            if abs(plate["w"] - 320) > 1 or abs(plate["h"] - 44) > 1:
+                p.append("s09t: the plate renders %.0f×%.0f, §09 says PLATE "
+                         "320×44 — height stays 44 because it is now a touch "
+                         "target" % (plate["w"], plate["h"]))
+            gap = plate["x"] - (rail["x"] + rail["w"])
+            if gap < 16:
+                p.append("s09t: the plate leaves %.0fpx between itself and "
+                         "the rail; §10's own summary line says gap to rail "
+                         "16, and below that the two read as one control"
+                         % gap)
+
+    elif screen == "s09p":
+        # §09 PHONE: "THE RAIL YIELDS, IT DOES NOT STACK. Both want the
+        # bottom edge and there is room for one."
+        need(".rail[data-collapsed]", 1,
+             "turning the cut on collapses the rail")
+        need(".rail .railbtn", 1,
+             "collapsed to the single tool that is running (§09)")
+        need(".rail .railbtn.is-active", 1,
+             "and the one that is left is the one that is running")
+        need(".secplate")
+        # "the slider pill … carries no SECTION eyebrow" — on a shared bar
+        # the width belongs to the track, and the label is what goes.
+        absent(".secplate__word",
+               "the eyebrow goes on phone; the width belongs to the track")
+        plate = page.eval("window.__st.rect('.secplate')")
+        btn = page.eval("window.__st.rect('.rail .railbtn')")
+        if not plate or not btn:
+            p.append("s09p: could not measure the plate against the rail")
+        else:
+            # ONE bar means one row: the two sit on the same centre line.
+            drift = abs((plate["y"] + plate["h"] / 2.0)
+                        - (btn["y"] + btn["h"] / 2.0))
+            if drift > 4:
+                p.append("s09p: the plate's centre line is %.0fpx off the "
+                         "rail button's — §09 draws them sharing one bar, "
+                         "and two centre lines is the second row it forbids"
+                         % drift)
+            if plate["x"] < btn["x"] + btn["w"] and btn["x"] < plate["x"] + plate["w"]:
+                p.append("s09p: the plate (x %.0f–%.0f) and the rail button "
+                         "(x %.0f–%.0f) overlap — they share the bar side by "
+                         "side, not stacked"
+                         % (plate["x"], plate["x"] + plate["w"],
+                            btn["x"], btn["x"] + btn["w"]))
+        # "Nothing scrolls behind a thumb, the stage keeps its height, and
+        # the bar never gains a second row." The stage height is measured
+        # BEFORE the tool is pressed and again after: a bar that took its
+        # room from the stage would satisfy every other row on this screen.
+        before = page.eval("window.__stStageH0")
+        after = plate and page.eval("window.__st.rect('.stage')")
+        if before is None or not after:
+            p.append("s09p: could not measure the stage either side of the "
+                     "cut being engaged")
+        elif abs(after["h"] - before) > 1:
+            p.append("s09p: engaging the cut moved the stage from %.0fpx to "
+                     "%.0fpx tall — §09 is explicit that the stage keeps its "
+                     "height, because the bar is shared rather than added"
+                     % (before, after["h"]))
+
+    elif screen == "s09pdrag":
+        # §09: "The readout cannot stay in the bar — a thumb covers it. It
+        # lifts to the top-left corner of the stage, opposite the quality
+        # chip, and only while dragging."
+        need(".secreadout", 1, "the readout lifts out of the bar")
+        absent(".secplate__value",
+               "and it is not still in the bar under the thumb")
+        stage = page.eval("window.__st.rect('.stage')")
+        readout = page.eval("window.__st.rect('.secreadout')")
+        chip = page.eval("window.__st.rect('.chip')")
+        if not stage or not readout:
+            p.append("s09pdrag: could not measure the readout against the "
+                     "stage")
+        else:
+            dx = readout["x"] - stage["x"]
+            dy = readout["y"] - stage["y"]
+            if dx > 16 or dy > 16:
+                p.append("s09pdrag: the lifted readout sits %.0fpx from the "
+                         "stage's left edge and %.0fpx from its top — §09 "
+                         "puts it in the top-left corner" % (dx, dy))
+            # OPPOSITE the quality chip, which is the whole reason it lifts
+            # to that corner rather than the nearest free one: the two are
+            # the only things on the stage's top edge, and a student holding
+            # the phone must be able to read both at once.
+            if chip:
+                mid = stage["x"] + stage["w"] / 2.0
+                if not (readout["x"] + readout["w"] / 2.0 < mid < chip["x"]
+                        + chip["w"] / 2.0):
+                    p.append("s09pdrag: the readout and the quality chip are "
+                             "not on opposite sides of the stage — readout "
+                             "centred at x=%.0f, chip at x=%.0f, stage "
+                             "midline %.0f"
+                             % (readout["x"] + readout["w"] / 2.0,
+                                chip["x"] + chip["w"] / 2.0, mid))
+
     # ── every screen: the two ways a growing record deforms the shell ─────
     # Both arrived with heart.json going from 2 hotspots to 14, and neither
     # had anything watching it. Deliberately outside the per-screen branches
@@ -1239,7 +1674,64 @@ def check_structure(page, screen, counts):
 # ── the driver ───────────────────────────────────────────────────────────
 
 SCREENS = ["s01", "s01open", "s01narrow", "s02", "s04", "s04drawer", "s05",
-           "s05raised", "s05lib", "s06"]
+           "s05raised", "s05lib", "s06",
+           "s08", "s08hover", "s08drag", "s08key", "s09t", "s09p", "s09pdrag"]
+
+
+def _mouse(page, sel, kind):
+    """Dispatch a real mouse event at the centre of `sel`.
+
+    Every other screen's door is `element.click()`, which is enough when the
+    thing being opened is a handler. §10's states are not handlers: `:hover`
+    is the engine's own answer to where the pointer is, and `[data-drag]` is
+    React's answer to a pointer event it actually received. Neither can be
+    reached by calling a method on an element, so these go through the input
+    pipeline instead. Returns the rect it aimed at, or None.
+    """
+    r = page.eval("window.__st.rect(%r)" % sel)
+    if not r:
+        return None
+    params = {"type": kind, "pointerType": "mouse",
+              "x": r["x"] + r["w"] / 2.0, "y": r["y"] + r["h"] / 2.0}
+    if kind == "mouseMoved":
+        params.update(button="none", buttons=0)
+    else:
+        params.update(button="left", clickCount=1,
+                      buttons=1 if kind == "mousePressed" else 0)
+    page.send("Input.dispatchMouseEvent", params)
+    return r
+
+
+def _key(page, key, code, vk):
+    """One real key press and release, through the input pipeline.
+
+    rawKeyDown rather than keyDown: the range input steps on the key event
+    itself, and rawKeyDown is the one that does not also generate a char
+    event for a control that has no text to take it.
+    """
+    for kind in ("rawKeyDown", "keyUp"):
+        page.send("Input.dispatchKeyEvent",
+                  {"type": kind, "key": key, "code": code,
+                   "windowsVirtualKeyCode": vk, "nativeVirtualKeyCode": vk})
+
+
+def _engage_cut(page, timeout=6.0):
+    """Press the rail's cross-section button and wait for the plate.
+
+    Pressed, not simulated. The plate is rendered only while the RENDERER
+    reports the tool active (§09: "Only shown while the tool is on"), so a
+    harness that set a class or forced a state would be measuring markup no
+    student can reach — and would keep passing after the tool stopped
+    engaging at all, which is the one failure worth catching here.
+    """
+    import time
+    page.eval(_JS + "window.__st.click(%r)" % CUT_BUTTON)
+    deadline = time.time() + timeout
+    while time.time() < deadline:
+        if page.eval("window.__st.n('.secplate')"):
+            return True
+        time.sleep(0.05)
+    return False
 
 
 def _sanity(page, screen, tokens):
@@ -1430,6 +1922,76 @@ def run_browser_layers(url, tokens, counts):
             _settle(page)
             visit(page, "s05lib")
 
+        # ── §08–§10, the cut engaged ─────────────────────────────────────
+        # Every screen below starts by pressing the cross-section tool,
+        # because the plate and the plane rule exist only while the tool
+        # does. Desktop first: the plate at rest, then the three states §10
+        # draws that a stylesheet will only enter for a real pointer and a
+        # real keyboard.
+        page.set_viewport(1440, 900)
+        page.goto(url)
+        page.eval(_JS + "true")
+        _await_stage(page)
+        if not _engage_cut(page):
+            problems.append(
+                "s08: pressing the rail's cross-section button never brought "
+                "up the plate — §08, §09 and §10 are all downstream of that "
+                "one control, so none of them could be measured")
+        else:
+            visit(page, "s08")
+            _mouse(page, ".secplate", "mouseMoved")
+            _settle(page)
+            visit(page, "s08hover")
+            _mouse(page, ".secplate__input", "mousePressed")
+            _settle(page)
+            visit(page, "s08drag")
+            _mouse(page, ".secplate__input", "mouseReleased")
+            _settle(page)
+            # The keyboard state is `:focus-visible`, not `:focus` — §10
+            # draws the pointer and the keyboard as two states, and a press
+            # must not raise the ring. So the press above has to be undone as
+            # a MODE, not just as a focus: Tab is what tells the engine the
+            # person has moved to the keyboard, and the focus that follows it
+            # is the one that shows a ring. Without it the plate would sit in
+            # its resting state and the row would blame the stylesheet.
+            page.eval("document.activeElement && document.activeElement.blur()")
+            _key(page, "Tab", "Tab", 9)
+            _settle(page, 0.15)
+            page.eval("document.querySelector('.secplate__input').focus()")
+            _settle(page)
+            page.eval("window.__stKeyFrom = Number(document.querySelector("
+                      "'.secplate').getAttribute('data-percent'))")
+            for _ in range(3):
+                _key(page, "ArrowRight", "ArrowRight", 39)
+                _settle(page, 0.1)
+            visit(page, "s08key")
+
+        # §09 tablet — the plate stops centring on the stage and centres on
+        # the space left of the rail instead.
+        page.set_viewport(834, 1042)
+        page.goto(url)
+        page.eval(_JS + "true")
+        _await_stage(page)
+        if _engage_cut(page):
+            visit(page, "s09t")
+
+        # §09 phone — ONE BAR, SHARED WITH THE RAIL. The stage is measured
+        # before the tool is pressed, because the claim the reference makes
+        # loudest here is about what does NOT change.
+        page.set_viewport(390, 844)
+        page.goto(url)
+        page.eval(_JS + "true")
+        _await_stage(page)
+        page.eval("window.__stStageH0 = document.querySelector('.stage')"
+                  " ? document.querySelector('.stage')"
+                  ".getBoundingClientRect().height : null")
+        if _engage_cut(page):
+            visit(page, "s09p")
+            _mouse(page, ".secplate__input", "mousePressed")
+            _settle(page)
+            visit(page, "s09pdrag")
+            _mouse(page, ".secplate__input", "mouseReleased")
+
     # §06 — a separate Chrome with WebGL off, so the REAL capability probe
     # lands on tier D and the paper stage is exercised end to end.
     with cdp.Browser(extra_args=["--disable-webgl", "--disable-webgl2"]) as b:
@@ -1500,8 +2062,8 @@ def refuse_if_stale(gate):
 
 
 def main():
-    print("3D Studio parity gate — reference: %s"
-          % os.path.relpath(REFERENCE, HERE))
+    print("3D Studio parity gate — references: %s"
+          % ", ".join(os.path.relpath(p, HERE) for p in REFERENCE))
 
     # Before anything is measured, and before layer A prints a single note:
     # a refusal that still emitted partial results would be read as results.

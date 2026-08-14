@@ -101,19 +101,18 @@ export function capSize(box: THREE.Box3): number {
  * the cut face, which is what an edge-on plane looks like.
  *
  * A plane is only a LINE on screen when it is seen edge-on. Seen face-on it
- * covers the whole frame and has no position to mark, and the section axis is
- * Z — chosen at Stage 4 so the cut face is the thing the student is looking at
- * rather than something they must turn the specimen to find — so at the
- * default camera it is exactly face-on. Which means the reference's own
- * picture (cut face fully visible AND plane edge-on) cannot be drawn in three
- * dimensions at all; a 2D mock can hold both at once and a projection cannot.
+ * covers the whole frame and has no position to mark — which means the
+ * reference's own picture, a cut face fully facing the viewer AND the plane
+ * edge-on beside it, cannot be drawn in three dimensions at all. A 2D mock can
+ * hold both at once and a projection cannot.
  *
- * So the rule is drawn where it is true and not where it is not: it appears as
- * the student turns the specimen, which is the same gesture that makes the
- * plane's position legible in the first place, and it is absent head-on rather
- * than being a decoration at a made-up angle. The other three drag emphases
- * (§09: handle, hatched travel, promoted readout) are unconditional, so the
- * drag never has nothing to say.
+ * So the rule is drawn where it is true and not where it is not. The default
+ * camera is a three-quarter view, about 26 degrees off face-on, so a student
+ * meets the rule at partial strength; turning the specimen to face the cut
+ * squarely fades it out altogether rather than leaving a decoration at a
+ * made-up angle, and turning further round brings it to full. The other three
+ * drag emphases (§09: handle, hatched travel, promoted readout) are
+ * unconditional, so the drag never has nothing to say.
  */
 export function sectionRule(
   plane: THREE.Plane,
