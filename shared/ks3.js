@@ -4101,6 +4101,17 @@
 
   var CVW = 900, CVH = 560;
 
+  // Design's authored positions for b1-03's chloroplasts and the two
+  // mitochondria scatters. Ported with the drawings that read them —
+  // `MITO_CHEEK` was missed on the first pass and `#s-bench` threw
+  // ReferenceError on every load, so the canvas stayed blank.
+  var CHLORO = [[300, 126, -0.2], [392, 112, 0.1], [486, 124, -0.15], [578, 114, 0.2], [664, 132, -0.1],
+    [706, 222, 1.5], [700, 330, 1.4], [620, 438, 0.15], [520, 452, -0.1], [420, 440, 0.2], [316, 450, -0.15],
+    [176, 404, 1.3], [180, 196, 1.45]];
+  var MITO_LEAF = [[258, 140, 0.6], [742, 182, 1.2], [700, 392, -0.5], [268, 438, 0.3]];
+  var MITO_CHEEK = [[250, 214, 0.5], [302, 368, -0.4], [600, 196, 0.3], [650, 352, -0.5], [392, 196, 0.9],
+    [420, 392, 0.1], [694, 272, 1.3], [224, 300, 1.4]];
+
   function blob(ctx, cx, cy, rx, ry, seed) {
     ctx.beginPath();
     for (let i = 0; i <= 150; i++) {
