@@ -50,10 +50,25 @@ import pkgutil
 # they render as. `practical` is the hands-on/simulated investigation shell;
 # `check` is the do-it-yourself counterpart. The distinction follows what the
 # student is asked to do, not how complicated the widget is.
+#
+# ⚠️ The segment decides the SHELL, and `practical` is ink-dark. Two of these
+# were wrong and it took a layer-C assertion to say so: `system-bench` and
+# `zoom-ladder` were mapped to `practical`, and Design draws both as a plain
+# light `ks3-block`. The zoom instrument's accent-text gain label was resolving
+# to `--ks3-on-dark-body` because `.ks3-dark p` was winning — a whole
+# instrument painted on the wrong ground, on the reference screens for SYSTEM
+# (32 slots) and on the page Mide rejected by name.
+#
+# Measured from Design's own markup:
+#   #s-tuned  ks3-block                          light  → check
+#   #s-zoom   ks3-block                          light  → check
+#   #s-hard   ks3-block                          light  → check
+#   #s-settle ks3-block                          light  → check
+#   #s-break  ks3-block ks3-dark ks3-practical   dark   → practical  (both pages)
 _INSTRUMENT_SEGMENTS = {
-    "system-bench":   "practical",
+    "system-bench":   "check",
     "sabotage":       "practical",
-    "zoom-ladder":    "practical",
+    "zoom-ladder":    "check",
     "removal-cases":  "practical",
     "settles-it":     "check",
     "sort-task":      "check",

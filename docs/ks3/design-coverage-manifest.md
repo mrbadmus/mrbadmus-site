@@ -933,19 +933,19 @@ Every block type the generator can emit must map to at least one component regis
 
 | Block type | Registered components |
 |---|---|
-| hook | `hook is ink-dark, accent shadow` |
+| hook | `hook is ink-dark, accent shadow`, `hook art sits on its own night ground`, `Motion control clears the 44px tap target` |
 | explainer | `body prose (type row 4)`, `page ground + body type` |
 | figure | `figure frame`, `figure caption`, `figure pending slot` |
 | keyword | `vocabulary card`, `card term type` |
 | quiz | `ladder shell`, `ladder heading`, `page-marked rung is accent`, `page-marked rung heading`, `self-marked rung is violet`, `ladder option CHOSEN-CORRECT`, `ladder option CHOSEN-CORRECT badge`, `ladder option CHOSEN-WRONG`, `ladder option CHOSEN-WRONG badge`, `ladder option SPENT`, `ladder option SPENT badge`, `ladder feedback CORRECT`, `ladder feedback WRONG` |
 | summary | `key note is ink-dark`, `key note type drops to 700` |
-| misconception | `misconception is amber` |
-| check | `activity option resting`, `activity option CHOSEN`, `activity option CHOSEN badge` |
+| misconception | `misconception is amber`, `second confrontation is divided in amber`, `scorecard figure is mono 32px, not a heading` |
+| check | `activity option resting`, `activity option CHOSEN`, `activity option CHOSEN badge`, `board lamp is a column, not an option row`, `board lamp badge is a 28px display square`, `board verdict is ink-dark`, `board tally is mono 24px`, `sorter row is a card on a hairline, not an option`, `sorter chip is 16px, narrower than a segment`, `self-check options are a plain grid`, `settles-it feature is a panel, not a row`, `settles-it choice is 16px on the ground`, `settles-it why is ONE tone (MRB-196)`, `case verdict is ink-dark with an alert label`, `bench cell picker is a full-width ROW, not a segment`, `tuning dial is a fixed 74px mono chip`, `zoom slider clears the 44px tap target`, `zoom gain label is accent-text mono`, `awkward row is unmarked until opened`, `cell-bench part row carries a numbered badge`, `cell-bench readout name is display 800 at 25px`, `pair row is the sorter's sibling, not the sorter`, `fit-parts installs into a responsive grid`, `critique step is a full-width tappable row`, `critique verdict is indented under its badge`, `FIFA field is a real text input at tap size`, `model line is mono, so it reads as working` |
 | worked-example | `R8 answer box`, `R8 check-my-answer button` |
-| practical | `sim canvas`, `sim live figure is mono` |
+| practical | `sim canvas`, `sim live figure is mono`, `sabotage chain's first link is the cell itself`, `removal outcome lands on a LIGHT panel` |
 | key-fact | `KEY FACT box is band on an ACCENT shadow`, `KEY FACT label is mono accent-text`, `KEY FACT statement is display 700` |
 | rule | `statement panel is band on a 3px ink border`, `statement is display 800 at the ruled clamp`, `statement cards take the option border` |
-| formula | `formula panel is centred`, `formula statement takes the FORMULA clamp, not the rule's` |
+| formula | `formula panel is centred`, `formula statement takes the FORMULA clamp, not the rule's`, `formula triangle is drawn, not typed`, `triangle cover is ink and starts invisible` |
 | comparison | `comparison rows are flex, not grid`, `comparison label stacks below 820`, `comparison content cells shrink to zero` |
 
 ⊕ **The four rows above are B1 round two's (13 Aug 2026).** Each block type is a

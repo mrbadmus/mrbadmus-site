@@ -737,6 +737,146 @@ COMPONENTS = [
     dict(name="half-term card, summer season", on=YEAR,
          sel='.ks3-browse-ht[data-season="summer"] .ks3-code',
          props={"background-color": "#2F5CE0"}),
+
+    # ── ⊕ the eleven instruments (14 Aug 2026) ──────────────────────────
+    #
+    # Each row pins the property that makes its instrument DISTINCT, not the
+    # ones it shares with every card on the page. That is the whole point:
+    # `test-board` and `sort-rows` passed the kinds gate for a fortnight with
+    # a dispatch-table entry, no CSS and no JS, because the gate asks whether a
+    # renderer exists and a renderer is not a component. A layer-C assertion
+    # cannot be satisfied that way — with no stylesheet the selector resolves
+    # to the browser default and fails by name. Registration now IMPLIES
+    # realisation, which is what §10.2 was always supposed to mean.
+    #
+    # Every row is `on` a page that actually renders it: a component registered
+    # on a page that lacks it reports "selector not present" and passes.
+    dict(name="board lamp is a column, not an option row", on=B1_LIFE,
+         sel=".ks3-lamp",
+         props={"display": "flex", "flex-direction": "column",
+                "border-top-width": "2px",
+                "border-top-left-radius": "16px"}),
+    dict(name="board lamp badge is a 28px display square", on=B1_LIFE,
+         sel=".ks3-lamp-badge",
+         props={"width": "28px", "height": "28px",
+                "font-family": "Bricolage Grotesque", "font-weight": "800"}),
+    dict(name="board verdict is ink-dark", on=B1_LIFE,
+         sel=".ks3-board-verdict",
+         props={"background-color": "#221E1B", "color": "#FBF3E6"}),
+    dict(name="board tally is mono 24px", on=B1_LIFE,
+         sel=".ks3-board-tally",
+         props={"font-family": "DM Mono", "font-size": "24px"}),
+    dict(name="sorter row is a card on a hairline, not an option", on=B1_LIFE,
+         sel=".ks3-sortrow",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E0D2B9",
+                "border-top-width": "2px"}),
+    dict(name="sorter chip is 16px, narrower than a segment", on=B1_LIFE,
+         sel=".ks3-sort-chip",
+         props={"font-size": "16px", "min-height": "44px",
+                "border-top-left-radius": "14px"}),
+    # The self-check is MRB-196's, and the ONLY thing that proves it is not a
+    # marked question is that its options carry no correctness data at all —
+    # asserted structurally by check_r3_runtime, and here by its being an
+    # ordinary option group on an ordinary ground.
+    dict(name="self-check options are a plain grid", on=B1_LIFE,
+         sel=".ks3-selfcheck-options",
+         props={"display": "grid"}),
+
+    dict(name="settles-it feature is a panel, not a row", on=B1_UNI,
+         sel=".ks3-feature",
+         props={"background-color": "#FFFCF5", "border-top-color": "#C3B191",
+                "border-top-left-radius": "20px"}),
+    dict(name="settles-it choice is 16px on the ground", on=B1_UNI,
+         sel=".ks3-settle-choice",
+         props={"font-size": "16px", "background-color": "#FBF3E6",
+                "min-height": "44px"}),
+    # ⚖️ MRB-196: ONE tone. If this ever resolves to `--ks3-ink` the instrument
+    # has started marking the student again, ~6 ΔL* at a time.
+    dict(name="settles-it why is ONE tone (MRB-196)", on=B1_UNI,
+         sel=".ks3-feature-why", props={"color": "#3B342E"}),
+    dict(name="case verdict is ink-dark with an alert label", on=B1_UNI,
+         sel=".ks3-case-verdict", props={"background-color": "#221E1B"}),
+
+    dict(name="bench cell picker is a full-width ROW, not a segment",
+         on="biology/cells-and-organisation/specialised-cells.html",
+         sel=".ks3-bench-cell",
+         props={"min-height": "56px", "text-align": "left",
+                "border-top-left-radius": "16px"}),
+    dict(name="tuning dial is a fixed 74px mono chip",
+         on="biology/cells-and-organisation/specialised-cells.html",
+         sel=".ks3-tune-dial",
+         props={"font-family": "DM Mono", "font-size": "12px",
+                "border-top-width": "2px"}),
+    dict(name="sabotage chain's first link is the cell itself",
+         on="biology/cells-and-organisation/specialised-cells.html",
+         sel=".ks3-chain-link:first-child",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B"}),
+
+    dict(name="zoom slider clears the 44px tap target", on=B1_PARTS,
+         sel=".ks3-zoom-range", props={"height": "44px"}),
+    dict(name="zoom gain label is accent-text mono", on=B1_PARTS,
+         sel=".ks3-zoom-gain-label",
+         props={"font-family": "DM Mono", "color": "#A93411"}),
+    dict(name="awkward row is unmarked until opened", on=B1_PARTS,
+         sel=".ks3-hardrow",
+         props={"background-color": "#FFFCF5",
+                "border-top-color": "#C3B191"}),
+    dict(name="removal outcome lands on a LIGHT panel", on=B1_PARTS,
+         sel=".ks3-removal-out",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+
+    dict(name="cell-bench part row carries a numbered badge",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-part-num",
+         props={"width": "28px", "font-family": "Bricolage Grotesque",
+                "font-weight": "800"}),
+    dict(name="cell-bench readout name is display 800 at 25px",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-readout-name",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "font-size": "25px"}),
+    dict(name="pair row is the sorter's sibling, not the sorter",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-pairrow",
+         props={"background-color": "#FFFCF5",
+                "border-top-left-radius": "20px"}),
+    dict(name="fit-parts installs into a responsive grid",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-fit-parts", props={"display": "grid"}),
+
+    dict(name="critique step is a full-width tappable row", on=B1_MICRO,
+         sel=".ks3-step-btn",
+         props={"min-height": "44px", "text-align": "left",
+                "border-top-left-radius": "16px"}),
+    # The 46px indent is 32px of badge plus the 14px gap — derived, and the one
+    # value that keeps the verdict reading as belonging to its step.
+    dict(name="critique verdict is indented under its badge", on=B1_MICRO,
+         sel=".ks3-step-verdict", props={"margin-left": "46px"}),
+    dict(name="formula triangle is drawn, not typed", on=B1_MICRO,
+         sel=".ks3-tri-svg", props={"width": "260px"}),
+    dict(name="triangle cover is ink and starts invisible", on=B1_MICRO,
+         sel=".ks3-tri-cover", props={"opacity": "0"}),
+    dict(name="FIFA field is a real text input at tap size", on=B1_MICRO,
+         sel=".ks3-fifa-input",
+         props={"min-height": "44px", "border-top-width": "2px",
+                "background-color": "#FFFCF5"}),
+    dict(name="model line is mono, so it reads as working", on=B1_MICRO,
+         sel=".ks3-model-line",
+         props={"font-family": "DM Mono", "font-size": "17px"}),
+
+    # The hook's media column and its Motion control — Mide's named complaint.
+    dict(name="hook art sits on its own night ground", on=B1_LIFE,
+         sel=".ks3-hook-art",
+         props={"height": "226px", "background-color": "#17130F"}),
+    dict(name="Motion control clears the 44px tap target", on=B1_LIFE,
+         sel=".ks3-motion-btn", props={"min-height": "44px"}),
+    dict(name="scorecard figure is mono 32px, not a heading", on=B1_LIFE,
+         sel=".ks3-scorecard-fig",
+         props={"font-family": "DM Mono", "font-size": "32px"}),
+    # Amber is a wrong idea being confronted — the one place it is right.
+    dict(name="second confrontation is divided in amber", on=B1_UNI,
+         sel=".ks3-mis-next",
+         props={"border-top-color": "#D9821A", "border-top-width": "2px"}),
 ]
 
 
