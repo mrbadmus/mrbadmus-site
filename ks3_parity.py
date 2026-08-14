@@ -35,9 +35,15 @@ cannot:
      padding, shadow. Colours must match exactly; lengths within 1px; a font
      family must contain the expected family name.
 
+     A component may declare a `drive` — a named interaction the gate performs
+     before measuring, so that states which only exist after a click are
+     measured in the state rather than assumed from the stylesheet. Each drive
+     gets its own fresh page load. See DRIVES.
+
   D. CONTRAST (browser).  Every text/ground pair re-measured against the real
      rendered grounds, not against Design's table. Body text 4.5:1,
-     state-bearing and identifying marks 3:1.
+     state-bearing and identifying marks 3:1. Pairs may also be driven, so an
+     answered option's ground is measured as the student sees it.
 
 WHAT IT DOES NOT CATCH, stated plainly rather than papered over:
 
@@ -58,6 +64,13 @@ WHAT IT DOES NOT CATCH, stated plainly rather than papered over:
   * **Anything at a viewport Design did not draw.** The reference set is
     desktop-first; the 390px rules are translation decisions, not
     transcriptions, and are checked by screenshot rather than by table.
+  * **A state nobody registered.** This is what MRB-202 cost: an answer button
+    had only its RESTING state registered, so the four states a student
+    actually ends up looking at were compared against nothing and the gate
+    reported green over them. Layers C and D can only ever be as complete as
+    COMPONENTS and CONTRAST are. Adding a state to the stylesheet without
+    adding it here re-opens exactly that hole, so a new state is not finished
+    until it appears in both lists AND its token has been mutation-tested.
 
 Provenance for every number in ``COMPONENTS`` below is
 ``docs/ks3/design-reference/SPEC.md``, which cites the artifact it came from.
@@ -312,12 +325,115 @@ COMPONENTS = [
          props={"font-family": "Bricolage Grotesque", "font-weight": "700",
                 "font-size": "30px"}),
 
-    # ── R3: activity option shows CHOSEN, never CORRECT ──
+    # ══ OPTION BUTTONS — every state of both surfaces (MRB-202) ══════════
+    #
+    # This block is the one whose absence let a P0 live in production for a
+    # whole release. Layer C compares REGISTERED components; a state nobody
+    # registered has nothing to disagree with, so the gate printed green over
+    # it. Registering only the resting state of an answer button is registering
+    # the one state a student never makes a decision in.
+    #
+    # States that exist only after a click are DRIVEN into being (see DRIVES
+    # below) rather than assumed. Provenance is SPEC.md §4 for the activity
+    # buttons and SPEC.md §5's four-row option-state table for the ladder.
+
+    # ── activity options. SPEC.md §4: "Resting `--ks3-ground` on
+    # `--ks3-option-border`. Chosen: `--ks3-accent-tint` ground, `2px solid
+    # --ks3-accent`. R3: never green, never red, never disabled." ──
     dict(name="activity option resting", on=LESSON,
          sel=".ks3-check .ks3-option",
          props={"background-color": "#FBF3E6", "border-top-color": "#DDCFB6",
                 "font-size": "18px", "font-weight": "600",
                 "border-top-left-radius": "16px", "min-height": "44px"}),
+    dict(name="activity option resting badge", on=LESSON,
+         sel=".ks3-check .ks3-option .ks3-opt-mark",
+         props={"background-color": "#F4E9D8", "color": "#5F564F",
+                "border-top-left-radius": "9px"}),
+    dict(name="activity option CHOSEN", on=LESSON, drive="activity-chosen",
+         sel='.ks3-check .ks3-option[aria-pressed="true"]',
+         props={"background-color": "#FCE7DE", "border-top-color": "#E4572E",
+                "border-top-width": "2px"}),
+    dict(name="activity option CHOSEN badge", on=LESSON, drive="activity-chosen",
+         sel='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-mark',
+         props={"background-color": "#E4572E", "color": "#FBF3E6"}),
+
+    # ── activity options on an INK-DARK block (hook, practical). ──
+    #
+    # ⚠️ PROVENANCE IS WEAKER HERE, AND SAYING SO IS THE POINT. SPEC.md §4
+    # row 1 draws the hook's "full-width option buttons with letter badges"
+    # and its reveal "on `--ks3-dark-panel` with a `2px` alert border", which
+    # is where the dark block's alert accent comes from — orange on ink is
+    # illegible, so the dark surface swaps accent for alert. But Design never
+    # drew the CHOSEN state of a dark option button. The values below are
+    # therefore a TRANSLATION of the reveal's treatment, in the same category
+    # SPEC.md puts the 390px rules in, not a transcription of a drawn screen.
+    #
+    # They are registered anyway. An unregistered state is what MRB-202 cost,
+    # and pinning today's rendering at least means it cannot drift in silence
+    # while Design's screen is outstanding. When that screen arrives these
+    # rows get re-pointed at it, and the comment goes.
+    dict(name="dark-block option resting (translated)", on=LESSON,
+         sel=".ks3-dark .ks3-option",
+         props={"background-color": "#3E3730", "border-top-color": "#C6B9A7",
+                "color": "#FBF3E6"}),
+    dict(name="dark-block option resting badge (translated)", on=LESSON,
+         sel=".ks3-dark .ks3-option .ks3-opt-mark",
+         props={"background-color": "#C6B9A7", "color": "#221E1B"}),
+    dict(name="dark-block option CHOSEN (translated)", on=LESSON,
+         drive="dark-option-chosen",
+         sel='.ks3-dark .ks3-option[aria-pressed="true"]',
+         props={"background-color": "#3E3730", "border-top-color": "#FFC53D"}),
+    dict(name="dark-block option CHOSEN badge (translated)", on=LESSON,
+         drive="dark-option-chosen",
+         sel='.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark',
+         props={"background-color": "#FFC53D", "color": "#221E1B"}),
+
+    # ── ladder options. SPEC.md §5's table, all four rows. This is the only
+    # surface in the key stage allowed to say right or wrong (R3), so it is
+    # the surface where getting the colour wrong does the most damage. ──
+    dict(name="ladder option resting", on=LESSON,
+         sel='.ks3-rung[data-mode="marked"] .ks3-option',
+         props={"background-color": "#FBF3E6", "border-top-color": "#DDCFB6",
+                "border-top-left-radius": "15px", "font-size": "18px",
+                "font-weight": "600", "min-height": "44px"}),
+    dict(name="ladder option resting badge", on=LESSON,
+         sel='.ks3-rung[data-mode="marked"] .ks3-option .ks3-opt-mark',
+         props={"background-color": "#F4E9D8", "color": "#5F564F"}),
+
+    dict(name="ladder option CHOSEN-CORRECT", on=LESSON, drive="ladder-answered",
+         sel='.ks3-rung[data-mode="marked"] .ks3-option.is-correct',
+         props={"background-color": "#E4F7EB", "border-top-color": "#12A150"}),
+    dict(name="ladder option CHOSEN-CORRECT badge", on=LESSON,
+         drive="ladder-answered",
+         sel='.ks3-rung[data-mode="marked"] .ks3-option.is-correct .ks3-opt-mark',
+         props={"background-color": "#12A150", "color": "#FFFFFF"}),
+
+    dict(name="ladder option CHOSEN-WRONG", on=LESSON, drive="ladder-answered",
+         sel='.ks3-rung[data-mode="marked"] .ks3-option.is-wrong',
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B"}),
+    dict(name="ladder option CHOSEN-WRONG badge", on=LESSON,
+         drive="ladder-answered",
+         sel='.ks3-rung[data-mode="marked"] .ks3-option.is-wrong .ks3-opt-mark',
+         props={"background-color": "#221E1B", "color": "#FBF3E6"}),
+
+    dict(name="ladder option SPENT", on=LESSON, drive="ladder-answered",
+         sel='.ks3-rung[data-mode="marked"] .ks3-option.is-spent',
+         props={"background-color": "#FBF6EC", "border-top-color": "#EBDFCB",
+                "color": "#6E655D"}),
+    dict(name="ladder option SPENT badge", on=LESSON, drive="ladder-answered",
+         sel='.ks3-rung[data-mode="marked"] .ks3-option.is-spent .ks3-opt-mark',
+         props={"background-color": "#F4E9D8", "color": "#9A8F86"}),
+
+    # The feedback line carries the same verdict in words, so it is registered
+    # with the states rather than apart from them — a green option above a
+    # band-coloured "Not quite." would be a contradiction the gate should see.
+    dict(name="ladder feedback CORRECT", on=LESSON, drive="ladder-answered",
+         sel=".ks3-feedback.is-correct",
+         props={"background-color": "#E4F7EB", "border-top-color": "#12A150",
+                "border-top-left-radius": "15px", "font-size": "19px"}),
+    dict(name="ladder feedback WRONG", on=LESSON, drive="ladder-answered",
+         sel=".ks3-feedback.is-wrong",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B"}),
 
     # ── R4: the dog-ear card ──
     dict(name="vocabulary card", on=LESSON, sel=".ks3-card-btn",
@@ -432,6 +548,97 @@ CONTRAST = [
          fg=".ks3-keynote p", bg=".ks3-keynote", need=4.5),
     dict(name="option label on option ground", on=LESSON,
          fg=".ks3-check .ks3-option", bg=".ks3-check .ks3-option", need=4.5),
+
+    # ── option states, measured in the state (MRB-202) ──
+    # A ground the student only ever sees after committing is still a ground
+    # text has to be legible on. These are driven, then measured.
+    dict(name="activity CHOSEN label on its tint", on=LESSON,
+         drive="activity-chosen",
+         fg='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-label',
+         bg='.ks3-check .ks3-option[aria-pressed="true"]', need=4.5),
+    dict(name="MARK activity CHOSEN badge letter on accent", on=LESSON,
+         drive="activity-chosen",
+         fg='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-mark',
+         bg='.ks3-check .ks3-option[aria-pressed="true"] .ks3-opt-mark',
+         need=3.0),
+    dict(name="dark-block option label on dark panel", on=LESSON,
+         fg=".ks3-dark .ks3-option .ks3-opt-label",
+         bg=".ks3-dark .ks3-option", need=4.5),
+    dict(name="MARK dark-block badge letter on its fill", on=LESSON,
+         fg=".ks3-dark .ks3-option .ks3-opt-mark",
+         bg=".ks3-dark .ks3-option .ks3-opt-mark", need=3.0),
+    dict(name="MARK dark-block CHOSEN badge letter on alert", on=LESSON,
+         drive="dark-option-chosen",
+         fg='.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark',
+         bg='.ks3-dark .ks3-option[aria-pressed="true"] .ks3-opt-mark',
+         need=3.0),
+    # On the dark surface the CHOSEN state is carried by the border alone —
+    # the ground does not change — so that border is the state-bearing mark
+    # and has to clear 3:1 against the panel behind it, or the state is
+    # invisible to anyone who cannot pick the amber out.
+    dict(name="MARK dark-block CHOSEN border on dark panel", on=LESSON,
+         drive="dark-option-chosen",
+         fg='.ks3-dark .ks3-option[aria-pressed="true"]',
+         bg=".ks3-practical", need=3.0, prop="border-top-color"),
+    dict(name="ladder CORRECT label on ok tint", on=LESSON,
+         drive="ladder-answered",
+         fg='.ks3-rung[data-mode="marked"] .ks3-option.is-correct .ks3-opt-label',
+         bg='.ks3-rung[data-mode="marked"] .ks3-option.is-correct', need=4.5),
+    dict(name="MARK ladder CORRECT tick on ok fill", on=LESSON,
+         drive="ladder-answered",
+         fg='.ks3-rung[data-mode="marked"] .ks3-option.is-correct .ks3-opt-mark',
+         bg='.ks3-rung[data-mode="marked"] .ks3-option.is-correct .ks3-opt-mark',
+         need=3.0),
+    dict(name="ladder WRONG label on band", on=LESSON,
+         drive="ladder-answered",
+         fg='.ks3-rung[data-mode="marked"] .ks3-option.is-wrong .ks3-opt-label',
+         bg='.ks3-rung[data-mode="marked"] .ks3-option.is-wrong', need=4.5),
+    dict(name="MARK ladder WRONG cross on ink", on=LESSON,
+         drive="ladder-answered",
+         fg='.ks3-rung[data-mode="marked"] .ks3-option.is-wrong .ks3-opt-mark',
+         bg='.ks3-rung[data-mode="marked"] .ks3-option.is-wrong .ks3-opt-mark',
+         need=3.0),
+    # The spent option's LABEL is asserted at the full 4.5 and reaches 5.29:1,
+    # so no exemption is claimed for it even though it could be.
+    dict(name="ladder SPENT label on dimmed row", on=LESSON,
+         drive="ladder-answered",
+         fg='.ks3-rung[data-mode="marked"] .ks3-option.is-spent .ks3-opt-label',
+         bg='.ks3-rung[data-mode="marked"] .ks3-option.is-spent', need=4.5),
+    # Its BADGE GLYPH measures 2.63:1 and does not reach 3:1. That is
+    # deliberate — `--ks3-ink-ghost` exists in tokens.css commented "spent
+    # option badge glyph", and a spent option is a DISABLED control, which
+    # WCAG 1.4.3 exempts from contrast entirely.
+    #
+    # The exemption is recorded here rather than the pair being dropped,
+    # because a dropped pair is an assertion that cannot fail. `exempt_if_
+    # disabled` makes the exemption CONDITIONAL on the thing that justifies
+    # it: the gate proves the control is really disabled, and if a future
+    # change leaves spent options clickable, the exemption stops applying and
+    # 2.63:1 becomes a failure naming this row.
+    dict(name="MARK ladder SPENT badge glyph on band", on=LESSON,
+         drive="ladder-answered",
+         fg='.ks3-rung[data-mode="marked"] .ks3-option.is-spent .ks3-opt-mark',
+         bg='.ks3-rung[data-mode="marked"] .ks3-option.is-spent .ks3-opt-mark',
+         need=3.0,
+         exempt_if_disabled='.ks3-rung[data-mode="marked"] .ks3-option.is-spent'),
+    dict(name="ladder feedback CORRECT text on ok tint", on=LESSON,
+         drive="ladder-answered",
+         fg=".ks3-feedback.is-correct", bg=".ks3-feedback.is-correct", need=4.5),
+    # The drawn tick inside the feedback line carries the verdict as a mark,
+    # so it is measured as one. Note it is the GLYPH that takes --ks3-ok-text
+    # here; the word "Correct." beside it inherits ink. tokens.css comments
+    # that token as "the word", which is one step out from where it lands.
+    dict(name="MARK ladder feedback tick on ok tint", on=LESSON,
+         drive="ladder-answered",
+         fg=".ks3-feedback.is-correct .ks3-mark",
+         bg=".ks3-feedback.is-correct", need=3.0),
+    dict(name="ladder feedback WRONG text on band", on=LESSON,
+         drive="ladder-answered",
+         fg=".ks3-feedback.is-wrong", bg=".ks3-feedback.is-wrong", need=4.5),
+    dict(name="MARK ladder feedback cross on band", on=LESSON,
+         drive="ladder-answered",
+         fg=".ks3-feedback.is-wrong .ks3-mark",
+         bg=".ks3-feedback.is-wrong", need=3.0),
     dict(name="card hint on card", on=LESSON,
          fg=".ks3-card-hint", bg=".ks3-card-btn", need=4.5),
     dict(name="card term on card", on=LESSON,
@@ -622,6 +829,161 @@ window.__ks3 = {
 """
 
 
+# ── driven states ────────────────────────────────────────────────────────
+#
+# Layers C and D used to measure the page exactly as the generator wrote it.
+# That is fine for a card or a heading, and useless for an answer button,
+# whose whole reason to exist is what it does AFTER a student presses it.
+# MRB-202 is what that blind spot cost: a correct answer rendered in the
+# accent tint for a full release and 116 green assertions had nothing to say,
+# because the only registered state of an option button was the resting one.
+#
+# A spec may now carry `drive="<name>"`. The gate loads the page FRESH for
+# each drive, runs the snippet, settles, and only then measures that drive's
+# specs. Fresh-per-drive matters: driving the ladder marks four buttons at
+# once, and a later "resting" measurement on the same document would then be
+# measuring a spent button and calling it resting.
+
+DRIVES = {
+    # One wrong answer in the first page-marked rung, one right answer in the
+    # second. Between them that produces all four option states and both
+    # feedback verdicts in a single document: the rung answered wrongly holds
+    # is-wrong (the click), is-correct (the answer it reveals) and is-spent
+    # (the rest), and the rung answered rightly holds the correct-verdict
+    # feedback line.
+    "ladder-answered": r"""
+(function () {
+  var rungs = document.querySelectorAll('.ks3-rung[data-mode="marked"]');
+  if (rungs.length < 2) { return "need 2 page-marked rungs, found " + rungs.length; }
+  function pick(rung, correct) {
+    var opts = rung.querySelectorAll('.ks3-option');
+    for (var j = 0; j < opts.length; j++) {
+      if ((opts[j].getAttribute('data-correct') === '1') === correct) {
+        opts[j].click();
+        return true;
+      }
+    }
+    return false;
+  }
+  if (!pick(rungs[0], false)) { return "no wrong option in rung 1"; }
+  if (!pick(rungs[1], true))  { return "no correct option in rung 2"; }
+  return "";
+})()
+""",
+    # Any option in the first activity block. Which one is deliberately not
+    # specified: under R3 every chosen activity option renders identically
+    # whether it is right or wrong, and check_r3_runtime() below asserts
+    # exactly that rather than trusting it.
+    "activity-chosen": r"""
+(function () {
+  var first = document.querySelector('.ks3-check .ks3-option');
+  if (!first) { return "no activity option found"; }
+  first.click();
+  return "";
+})()
+""",
+    # The same commitment, on an ink-dark block, where the palette swaps the
+    # accent for the alert because orange on ink cannot be read.
+    "dark-option-chosen": r"""
+(function () {
+  var first = document.querySelector('.ks3-dark .ks3-option');
+  if (!first) { return "no option on an ink-dark block"; }
+  first.click();
+  return "";
+})()
+""",
+}
+
+
+# Transitions are the reason a naive measurement lies. `.ks3-option` carries
+# `transition: transform .14s, background-color .16s, border-color .16s`, so
+# reading computed style straight after a click returns the colour the button
+# is transitioning AWAY from — the resting one. Measured that way, a correctly
+# implemented green state reports as cream, and the gate would raise a defect
+# against work that is right.
+#
+# Cancelling transitions and animations snaps every property to its settled
+# value with no sleep and no polling, so the measurement is deterministic
+# rather than merely usually-long-enough. Only durations are suppressed; no
+# target value changes, and the pop animation touches `transform` alone.
+_JS_SETTLE = r"""
+(function () {
+  var s = document.getElementById('ks3-parity-settle');
+  if (!s) {
+    s = document.createElement('style');
+    s.id = 'ks3-parity-settle';
+    document.head.appendChild(s);
+  }
+  s.textContent = '*,*::before,*::after{transition:none!important;' +
+                  'animation:none!important}';
+  void document.body.offsetHeight;
+  return true;
+})()
+"""
+
+
+# R3 is Design's rule and Design's words: "Activity buttons never mark
+# correctness. Only the mastery ladder marks right and wrong... Green and red
+# must not appear on an activity button — if they do, the student reads the
+# whole page as a test, and the point of committing before revealing is lost."
+#
+# Layer B checks this by proxy, asserting `data-correct` appears only inside
+# the ladder. That catches the generator emitting marking DATA and misses the
+# thing the rule is actually about, which is what the button LOOKS like once
+# pressed. This is the direct form: press every option in turn and assert the
+# resolved colours are identical whichever was pressed, and that none of them
+# is a marking colour. If a correct answer were ever tinted differently from a
+# wrong one on an activity block, this fails and names the block.
+_JS_R3_RUNTIME = r"""
+(function () {
+  var MARKING = ['rgb(18, 161, 80)', 'rgb(228, 247, 235)', 'rgb(10, 107, 54)'];
+  var out = [];
+  var blocks = document.querySelectorAll('.ks3-block.ks3-check, .ks3-block.ks3-misconception, .ks3-block.ks3-practical');
+  for (var b = 0; b < blocks.length; b++) {
+    var opts = blocks[b].querySelectorAll('.ks3-option');
+    if (!opts.length) { continue; }
+    var seen = [], disabled = false;
+    for (var i = 0; i < opts.length; i++) {
+      opts[i].click();
+      var cs = getComputedStyle(opts[i]);
+      var mk = opts[i].querySelector('.ks3-opt-mark');
+      var sig = [cs.backgroundColor, cs.borderTopColor,
+                 mk ? getComputedStyle(mk).backgroundColor : '',
+                 mk ? getComputedStyle(mk).color : ''].join(' | ');
+      seen.push(sig);
+      if (opts[i].disabled) { disabled = true; }
+    }
+    var id = blocks[b].getAttribute('data-activity') || ('block ' + b);
+    var uniq = seen.filter(function (v, i, a) { return a.indexOf(v) === i; });
+    if (uniq.length !== 1) {
+      out.push(id + ': chosen options do not all render alike — ' +
+               uniq.length + ' distinct treatments: ' + uniq.join('  //  '));
+    }
+    for (var u = 0; u < uniq.length; u++) {
+      for (var m = 0; m < MARKING.length; m++) {
+        if (uniq[u].indexOf(MARKING[m]) !== -1) {
+          out.push(id + ': a marking colour (' + MARKING[m] +
+                   ') appears on an activity option — ' + uniq[u]);
+        }
+      }
+    }
+    if (disabled) { out.push(id + ': an activity option was disabled'); }
+  }
+  return { problems: out, blocks: blocks.length };
+})()
+"""
+
+
+def check_r3_runtime(page):
+    """R3, asserted on the painted button rather than on the markup.
+
+    Returns (problems, info). Mutates the page — call it on a fresh load.
+    """
+    page.eval(_JS_SETTLE)          # settle FIRST, so every click lands instantly
+    info = page.eval(_JS_R3_RUNTIME)
+    return (["R3: " + p for p in info["problems"]], info)
+
+
 # The runtime half of the drawn-mark rule. Layer B can only see the HTML as
 # written; this sees the DOM as painted, INCLUDING the ladder feedback, which
 # does not exist until a wrong option has been clicked. That feedback is where
@@ -690,6 +1052,100 @@ def _pages_needed():
     return seen
 
 
+def _drives_needed(rel):
+    """Drive names used by any spec on this page, in declaration order."""
+    seen = []
+    for spec in COMPONENTS + CONTRAST:
+        d = spec.get("drive")
+        if spec["on"] == rel and d and d not in seen:
+            seen.append(d)
+    return seen
+
+
+def _unregistered_drives():
+    """A spec naming a drive that does not exist is a silently-skipped
+    assertion, which is the failure mode this whole ticket is about."""
+    bad = []
+    for spec in COMPONENTS + CONTRAST:
+        d = spec.get("drive")
+        if d and d not in DRIVES:
+            bad.append("%s names unknown drive %r" % (spec["name"], d))
+    return bad
+
+
+def mutation_test_correct_state(ks3_root, browser_mod):
+    """Prove the correct-answer assertions can actually fail.
+
+    MRB-202 got into production because the correct-answer state was never
+    registered, so the gate had nothing to compare and printed green. Adding
+    the registration fixes that only if the registration really bites — an
+    assertion that cannot fail is not a gate, it is a comment.
+
+    So this repaints a CORRECT answer in the accent tint, exactly as the
+    defect did, and requires the gate to notice AND to name the component.
+    It mutates the rendered page rather than the expectation table: mutating
+    the table would only prove that two different strings are unequal.
+
+    Returns (detected, detail).
+    """
+    targets = ["ladder option CHOSEN-CORRECT", "ladder option CHOSEN-CORRECT badge"]
+    specs = [c for c in COMPONENTS if c["name"] in targets]
+    if len(specs) != len(targets):
+        return (False, "the correct-answer components are not registered at all "
+                       "— expected %r" % (targets,))
+
+    # The defect, reproduced faithfully: a correct answer wearing exactly the
+    # treatment a chosen activity option wears — accent tint, accent border,
+    # accent badge with on-dark glyph. Every registered colour on the state is
+    # moved, so "every colour assertion must fail" is a fair bar; an assertion
+    # left standing here would be one that cannot see this defect.
+    mutant = (
+        "(function(){var s=document.createElement('style');"
+        "s.textContent='.ks3-option.is-correct{background:var(--ks3-accent-tint)"
+        "!important;border-color:var(--ks3-accent)!important}"
+        ".ks3-option.is-correct .ks3-opt-mark{background:var(--ks3-accent)"
+        "!important;color:var(--ks3-on-dark)!important}';"
+        "document.head.appendChild(s);return true;})()")
+
+    served_root = os.path.dirname(os.path.abspath(ks3_root))
+    prefix = os.path.basename(os.path.abspath(ks3_root))
+    server, port = browser_mod.serve(served_root)
+    caught, missed = [], []
+    try:
+        with browser_mod.Browser() as b:
+            page = b.page("http://127.0.0.1:%d/%s/%s" % (port, prefix, LESSON))
+            page.eval(_JS_HELPERS + "true")
+            page.eval(_JS_SETTLE)
+            err = page.eval(DRIVES["ladder-answered"])
+            if err:
+                return (False, "could not drive the ladder into its answered "
+                               "state: %s" % err)
+            page.eval(mutant)
+            page.eval(_JS_SETTLE)
+
+            for spec in specs:
+                for prop, want in sorted(spec["props"].items()):
+                    if not want.startswith("#"):
+                        continue
+                    got = (page.eval("window.__ks3.style(%r, %r)"
+                                     % (spec["sel"], prop)) or "").strip()
+                    if same_colour(got, want):
+                        missed.append("%s / %s still resolved %s"
+                                      % (spec["name"], prop, got))
+                    else:
+                        caught.append("%s / %s: %s → %s"
+                                      % (spec["name"], prop, want, got))
+    finally:
+        server.shutdown()
+
+    if missed:
+        return (False, "the mutation did NOT fail these assertions, so they "
+                       "cannot catch the defect they exist for: %s"
+                       % "; ".join(missed))
+    return (True, "accent repaint caught by %d assertion(s), naming the "
+                  "component: %s" % (len(caught), "; ".join(caught[:4])))
+
+
 def run_browser_layers(ks3_root, browser_mod):
     """Layers C and D. Returns (problems, style_rows, contrast_rows).
 
@@ -713,105 +1169,191 @@ def run_browser_layers(ks3_root, browser_mod):
     served_root = os.path.dirname(os.path.abspath(ks3_root))
     prefix = os.path.basename(os.path.abspath(ks3_root))
 
+    # A spec pointing at a drive that does not exist would simply never be
+    # measured, and would read as a covered state in the manifest. That is the
+    # exact shape of the hole MRB-202 came through, so it is fatal here.
+    problems.extend("PARITY: " + u for u in _unregistered_drives())
+
+    seen_console = set()
+
+    def fresh(b, url, rel):
+        """Load the page clean and prove the stylesheet applied. None if not."""
+        page = b.page(url)
+        page.eval(_JS_HELPERS + "true")
+
+        # Sanity FIRST: did ks3.css actually load and apply? If not, every
+        # number below is measured against an unstyled document and the gate
+        # would blame the work for a plumbing fault.
+        applied = page.eval(
+            "(function(){var s=getComputedStyle(document.body);"
+            "return {sheets: document.styleSheets.length,"
+            " ground: s.backgroundColor,"
+            " token: s.getPropertyValue('--ks3-ground').trim(),"
+            " font: s.fontFamily};})()")
+        if not applied["token"]:
+            problems.append(
+                "STYLESHEET DID NOT APPLY on /%s — %d sheets, ground %s, "
+                "font %s. Every style and contrast number for this page "
+                "would be meaningless, so they are not reported."
+                % (rel, applied["sheets"], applied["ground"], applied["font"]))
+            return None
+        return page
+
+    def drain_console(page, rel, doing):
+        """A favicon 404 is an artefact of serving a bare tree, not a defect in
+        the page. Every other console error stays fatal. The same page is now
+        loaded several times, so each distinct message is reported once."""
+        for e in page.console_errors():
+            if "favicon" in e.lower():
+                continue
+            key = (rel, e)
+            if key in seen_console:
+                continue
+            seen_console.add(key)
+            problems.append("console error on /%s%s: %s" % (rel, doing, e))
+
+    def measure_c(page, rel, drive):
+        for spec in COMPONENTS:
+            if spec["on"] != rel or spec.get("drive") != drive:
+                continue
+            sel = spec["sel"]
+            if not page.eval("!!window.__ks3.q(%r)" % sel):
+                problems.append("PARITY: %s — selector %s not present on /%s%s"
+                                % (spec["name"], sel, rel,
+                                   " after driving %s" % drive if drive else ""))
+                continue
+            for prop, want in sorted(spec["props"].items()):
+                got = (page.eval("window.__ks3.style(%r, %r)" % (sel, prop))
+                       or "").strip()
+                if prop == "font-family":
+                    ok = want.lower() in got.lower()
+                elif want.startswith("#"):
+                    ok = same_colour(got, want)
+                elif want.endswith("px"):
+                    ok = close_length(got, want)
+                else:
+                    ok = (got.lower() == want.lower())
+                style_rows.append((spec["name"], prop, want, got, bool(ok)))
+                if not ok:
+                    problems.append(
+                        "PARITY: %s — %s expected %s, resolved %s (%s on /%s)"
+                        % (spec["name"], prop, want, got or "<empty>", sel, rel))
+
+    def measure_d(page, rel, drive):
+        for spec in CONTRAST:
+            if spec["on"] != rel or spec.get("drive") != drive:
+                continue
+            fg_sel, bg_sel = spec["fg"], spec["bg"]
+            if not page.eval("!!window.__ks3.q(%r)" % fg_sel):
+                problems.append("CONTRAST: %s — selector %s not present on /%s%s"
+                                % (spec["name"], fg_sel, rel,
+                                   " after driving %s" % drive if drive else ""))
+                continue
+            if spec.get("force_focus"):
+                fg = page.eval("window.__ks3.token(%r, '--ks3-accent')" % fg_sel)
+            elif spec.get("via_after"):
+                fg = page.eval("window.__ks3.style(%r, %r, '::after')"
+                               % (fg_sel, spec.get("prop", "color")))
+            else:
+                fg = page.eval("window.__ks3.style(%r, %r)"
+                               % (fg_sel, spec.get("prop", "color")))
+            stack = page.eval("window.__ks3.groundStack(%r)" % bg_sel)
+            bg = _flatten(stack)
+            f, g = parse_rgb(fg), bg
+            if f is None or g is None:
+                problems.append("CONTRAST: %s — could not resolve (fg=%r bg=%r)"
+                                % (spec["name"], fg, bg))
+                continue
+            ratio = contrast(f, g)
+            need = spec["need"]
+            ok = ratio >= need - 0.005
+            name_out = spec["name"]
+
+            # WCAG 1.4.3 exempts an INACTIVE user-interface component. Claiming
+            # that exemption is only honest if the component really is inactive,
+            # so the gate checks rather than takes the spec's word for it.
+            guard = spec.get("exempt_if_disabled")
+            if not ok and guard:
+                disabled = page.eval(
+                    "(function(){var e=document.querySelector(%r);"
+                    "return !!(e && e.disabled);})()" % guard)
+                if disabled:
+                    ok = True
+                    name_out = "%s [exempt: disabled control]" % spec["name"]
+                else:
+                    problems.append(
+                        "CONTRAST FAIL: %s — %.2f:1 against %.1f:1 required, and "
+                        "its WCAG 1.4.3 exemption does not apply because %s is "
+                        "NOT disabled" % (spec["name"], ratio, need, guard))
+                    contrast_rows.append((spec["name"], fg, bg, ratio, need, False))
+                    continue
+
+            contrast_rows.append((name_out, fg, bg, ratio, need, ok))
+            if not ok:
+                problems.append(
+                    "CONTRAST FAIL: %s — %.2f:1 against %.1f:1 required "
+                    "(%s on %s)" % (spec["name"], ratio, need, fg, bg))
+
     server, port = browser_mod.serve(served_root)
     try:
         with browser_mod.Browser() as b:
             for rel in _pages_needed():
                 url = "http://127.0.0.1:%d/%s/%s" % (port, prefix, rel)
-                page = b.page(url)
-                page.eval(_JS_HELPERS + "true")
 
-                # Sanity FIRST: did ks3.css actually load and apply? If not,
-                # every number below is measured against an unstyled document
-                # and the gate would blame the work for a plumbing fault.
-                applied = page.eval(
-                    "(function(){var s=getComputedStyle(document.body);"
-                    "return {sheets: document.styleSheets.length,"
-                    " ground: s.backgroundColor,"
-                    " token: s.getPropertyValue('--ks3-ground').trim(),"
-                    " font: s.fontFamily};})()")
-                if not applied["token"]:
-                    problems.append(
-                        "STYLESHEET DID NOT APPLY on /%s — %d sheets, ground %s, "
-                        "font %s. Every style and contrast number for this page "
-                        "would be meaningless, so they are not reported."
-                        % (rel, applied["sheets"], applied["ground"],
-                           applied["font"]))
+                # ── pass 1: the page as the generator wrote it ──
+                page = fresh(b, url, rel)
+                if page is None:
                     continue
+                drain_console(page, rel, "")
+                measure_c(page, rel, None)
+                measure_d(page, rel, None)
 
-                # A favicon 404 is an artefact of serving a bare tree, not a
-                # defect in the page. Every other console error stays fatal.
-                for e in page.console_errors():
-                    if "favicon" in e.lower():
+                # ── one FRESH load per driven state ──
+                # Fresh, not sequential: the ladder drive marks four buttons at
+                # once, so measuring "resting" afterwards on the same document
+                # would be measuring a spent button and calling it resting.
+                for drive in _drives_needed(rel):
+                    page = fresh(b, url, rel)
+                    if page is None:
                         continue
-                    problems.append("console error on /%s: %s" % (rel, e))
-
-                # ── layer C ──
-                for spec in [c for c in COMPONENTS if c["on"] == rel]:
-                    sel = spec["sel"]
-                    exists = page.eval("!!window.__ks3.q(%r)" % sel)
-                    if not exists:
-                        problems.append("PARITY: %s — selector %s not present on /%s"
-                                        % (spec["name"], sel, rel))
-                        continue
-                    for prop, want in sorted(spec["props"].items()):
-                        got = page.eval("window.__ks3.style(%r, %r)" % (sel, prop))
-                        got = (got or "").strip()
-                        ok = None
-                        if prop == "font-family":
-                            ok = want.lower() in got.lower()
-                        elif want.startswith("#"):
-                            ok = same_colour(got, want)
-                        elif want.endswith("px"):
-                            ok = close_length(got, want)
-                        else:
-                            ok = (got.lower() == want.lower())
-                        style_rows.append((spec["name"], prop, want, got, bool(ok)))
-                        if not ok:
-                            problems.append(
-                                "PARITY: %s — %s expected %s, resolved %s (%s on /%s)"
-                                % (spec["name"], prop, want, got or "<empty>",
-                                   sel, rel))
-
-                # ── layer D ──
-                for spec in [c for c in CONTRAST if c["on"] == rel]:
-                    fg_sel, bg_sel = spec["fg"], spec["bg"]
-                    if not page.eval("!!window.__ks3.q(%r)" % fg_sel):
-                        problems.append("CONTRAST: %s — selector %s not present on /%s"
-                                        % (spec["name"], fg_sel, rel))
-                        continue
-                    if spec.get("force_focus"):
-                        fg = page.eval("window.__ks3.token(%r, '--ks3-accent')" % fg_sel)
-                    elif spec.get("via_after"):
-                        fg = page.eval("window.__ks3.style(%r, %r, '::after')"
-                                       % (fg_sel, spec.get("prop", "color")))
-                    else:
-                        fg = page.eval("window.__ks3.style(%r, %r)"
-                                       % (fg_sel, spec.get("prop", "color")))
-                    stack = page.eval("window.__ks3.groundStack(%r)" % bg_sel)
-                    bg = _flatten(stack)
-                    f, g = parse_rgb(fg), bg
-                    if f is None or g is None:
-                        problems.append("CONTRAST: %s — could not resolve (fg=%r bg=%r)"
-                                        % (spec["name"], fg, bg))
-                        continue
-                    ratio = contrast(f, g)
-                    need = spec["need"]
-                    ok = ratio >= need - 0.005
-                    contrast_rows.append((spec["name"], fg, bg, ratio, need, ok))
-                    if not ok:
+                    page.eval(_JS_SETTLE)
+                    err = page.eval(DRIVES[drive])
+                    if err:
                         problems.append(
-                            "CONTRAST FAIL: %s — %.2f:1 against %.1f:1 required "
-                            "(%s on %s)" % (spec["name"], ratio, need, fg, bg))
-                # Runtime glyph audit — LAST, because it clicks things.
+                            "DRIVE: %s could not reach its state on /%s — %s. "
+                            "Its assertions did not run."
+                            % (drive, rel, err))
+                        continue
+                    page.eval(_JS_SETTLE)
+                    drain_console(page, rel, " while driving %s" % drive)
+                    measure_c(page, rel, drive)
+                    measure_d(page, rel, drive)
+
+                # ── runtime audits, each on its own fresh load: they click ──
                 if rel == LESSON:
-                    gl, ginfo = check_rendered_glyphs(page)
-                    problems.extend("GLYPH: " + g for g in gl)
-                    style_rows.append(("runtime glyph audit", "undrawable glyphs",
-                                       "0", "%d before / %d after (%d feedback, "
-                                       "%d svg marks)" % (len(ginfo["before"]),
-                                       len(ginfo["after"]), ginfo["feedbackShown"],
-                                       ginfo["svgMarks"]), not gl))
+                    page = fresh(b, url, rel)
+                    if page is not None:
+                        r3, r3info = check_r3_runtime(page)
+                        problems.extend(r3)
+                        drain_console(page, rel, " during the R3 runtime audit")
+                        style_rows.append(
+                            ("R3 runtime: a chosen activity option never marks",
+                             "identical treatment, no marking colour",
+                             "0 problems across all activity blocks",
+                             "%d problem(s) across %d block(s)"
+                             % (len(r3info["problems"]), r3info["blocks"]),
+                             not r3))
+
+                    page = fresh(b, url, rel)
+                    if page is not None:
+                        gl, ginfo = check_rendered_glyphs(page)
+                        problems.extend("GLYPH: " + g for g in gl)
+                        style_rows.append(
+                            ("runtime glyph audit", "undrawable glyphs", "0",
+                             "%d before / %d after (%d feedback, %d svg marks)"
+                             % (len(ginfo["before"]), len(ginfo["after"]),
+                                ginfo["feedbackShown"], ginfo["svgMarks"]),
+                             not gl))
     finally:
         server.shutdown()
 

@@ -30,7 +30,7 @@ them has been tidied, reformatted or corrected — they are evidence.
 **Format of the artifacts.** React prototypes using `x-dc` templating (`sc-for`, `sc-if`,
 `dc-import`), styled with inline `style` attributes and **zero CSS classes**. The gas-pressure
 lesson's prose is written literally into the markup. This is therefore a **translation** — inline
-styles cannot be shared across 185 lessons — and the deliverable is real classes in
+styles cannot be shared across 183 lessons — and the deliverable is real classes in
 `shared/ks3.css` consuming tokens, plus renderers in `build_ks3.py` that emit them.
 
 ---

@@ -1,10 +1,10 @@
 """KS3 content package — architecture.md §8.3.
 
-    "KS3 uses a package with one module per unit. ~185 lessons across three
+    "KS3 uses a package with one module per unit. ~183 lessons across three
      files would be unreviewable, unmergeable, and impossible to gate. One
      module per unit matches the release increment and the review gate."
 
-**How a unit becomes a page.** `structure.py` declares all 33 units and all 185
+**How a unit becomes a page.** `structure.py` declares all 33 units and all 183
 lesson slots. Authored units live in their own modules and export a single
 `UNIT` dict. `build_units()` merges the authored content over the skeleton:
 

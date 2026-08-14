@@ -135,7 +135,7 @@ SCHOOL_SCHEMES = {
     #
     # Leave this slot open and fill it as soon as the map arrives. One divergent
     # school proves the override mechanism runs; TWO divergent real schemes,
-    # teaching the *identical* 185 lessons in two different orders off one
+    # teaching the *identical* 183 lessons in two different orders off one
     # unchanged build, is the demonstration §4.5 actually exists for. Until the
     # second one lands, "year is metadata, never structure" is a claim supported
     # by a single example.

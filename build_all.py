@@ -43,7 +43,7 @@ import sys
 
 STEPS = [
     ("KS4 site — combined/, triple/, root pages, shared/", "generate_site_v5.py"),
-    ("KS3 site — ks3/ (33 units, 185 lesson slots)",       "build_ks3.py"),
+    ("KS3 site — ks3/ (33 units, 183 lesson slots)",       "build_ks3.py"),
 ]
 
 

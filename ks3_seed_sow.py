@@ -286,7 +286,7 @@ def half_term_comment(blocks):
     """Lessons per half term, stated in the file rather than inferrable from it.
 
     The distribution is the whole point of the column, and it is the first
-    thing anyone reviewing this seed wants to see. Reading it off 185 INSERT
+    thing anyone reviewing this seed wants to see. Reading it off 183 INSERT
     tuples is not review, it is arithmetic.
     """
     lines = ["-- Lessons per half term (HT1 … HT6), generated:", "--"]

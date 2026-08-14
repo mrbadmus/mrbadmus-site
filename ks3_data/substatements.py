@@ -5,7 +5,7 @@ any sane scheme of work teaches as separate lessons. `KS3.P.ECT.02` alone
 contains thermal equilibrium, conduction, radiation *and* insulators.
 
 Under §4.4 rule 3 every statement is owned by exactly one lesson, and under
-§10.2 every lesson has non-empty `covers`. With 137 statements and 185 lessons
+§10.2 every lesson has non-empty `covers`. With 137 statements and 183 lessons
 those two rules cannot both hold — unless the compound bullets are split at the
 grain lessons are actually written at. That is what this file does.
 
