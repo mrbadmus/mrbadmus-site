@@ -1252,6 +1252,134 @@ def r_sort_rows(a, act_id):
                len(items), len(items), self_check))
 
 
+def _quoted(s):
+    """“…” exactly once, whatever the author supplied.
+
+    Six agents authored six lessons in parallel and drifted on this: b1-03
+    writes its quotes with the curly marks inside the string, b1-04, b1-05 and
+    b1-06 write them bare, and the register's statements are bare too. Design
+    draws “…” on every one. Stripping first and re-wrapping is the only version
+    that is right for all three inputs — wrapping unconditionally double-quotes
+    half the delivery, and trusting the author leaves the other half naked.
+    """
+    return "“%s”" % (s or "").strip().strip("“”\"")
+
+
+def _confrontations(lesson, a):
+    """Normalise the three authored shapes of a confrontation into one list.
+
+    Each entry is `{quote, body: [str], key_fact}`. The shapes, all live:
+
+      b1-01  `statements: ["…"]`                       — a bare string
+      b1-03  `statements: [{quote, body: [str], …}]`   — body as a list
+      b1-04  `statements: [{quote, answer: "…"}]`      — body as one string
+      b1-02  no statements; `paragraphs: [str]`        — quote from the register
+      C1     no statements; `prompt` + `reveal`        — quote from the register
+
+    The register fallback is what keeps C1's seven confrontations rendering
+    exactly as they do today: none of them carries any of the new keys, so all
+    of them take the last branch and nothing about their markup moves.
+    """
+    out = []
+    for st in (a.get("statements") or []):
+        if isinstance(st, str):
+            out.append({"quote": st, "body": [], "key_fact": None})
+            continue
+        body = st.get("body")
+        if body is None:
+            body = [st["answer"]] if st.get("answer") else []
+        elif isinstance(body, str):
+            body = [body]
+        out.append({"quote": st.get("quote", ""), "body": list(body),
+                    "key_fact": st.get("key_fact")})
+
+    if not out:
+        # No authored statement: the wrong idea comes from the register, named
+        # by `targets`, and `paragraphs` (if any) is its body.
+        quote = _misconception_quote(lesson, a.get("targets"))
+        paras = list(a.get("paragraphs") or [])
+        if quote or paras:
+            out.append({"quote": quote, "body": paras, "key_fact": None})
+    elif a.get("paragraphs"):
+        raise ValueError(
+            "Activity %r carries BOTH statements[] and paragraphs[]. "
+            "`paragraphs` is the body of a register-derived confrontation and "
+            "has no owner once statements[] names its own — the words would "
+            "render after the last quote and read as belonging to it."
+            % a.get("id"))
+    return out
+
+
+def r_confrontation(lesson, a, act_id):
+    """⊕ The misconception block's real content. Design drew it; nothing read it.
+
+    `confrontation` was declared GENERIC — a claim that prompt/options/reveal
+    IS its drawn component. That is true of C1's seven, which carry exactly
+    those keys. It is false of all six of B1's, and the cost was measured
+    rather than argued: **b1-03's whole `#s-think` section rendered as
+    `! Think again` and nothing else** — 231 characters of markup, both
+    authored statements dropped, and no `targets` either so not even a register
+    quote. That is an empty block on the approved reference screen for MODEL, a
+    family carrying 50 lesson slots.
+
+    b1-01 is the subtler case and the more dangerous one, because it rendered
+    something and therefore looked finished: the line a student read was the
+    register's (“If something moves on its own it must be alive…”) and not the
+    one Design drew (“If it moves and grows, it must be alive.”). The authored
+    comment in the record says so in as many words — *"They differ here… and
+    the page's line is the one that renders"* — and the build did the opposite.
+    So an authored statement now WINS over the register; the register is the
+    fallback for a block that names no statement of its own.
+
+    Design draws a second confrontation behind an amber-topped divider rather
+    than as a second block: one wrong idea, then another, inside one "Think
+    again". The divider is `--ks3-alert-border`, which is the one place amber
+    is right — this is a wrong idea being confronted, which is exactly what
+    §8's amber is reserved for.
+    """
+    parts = []
+    for i, c in enumerate(_confrontations(lesson, a)):
+        if i:
+            parts.append('<div class="ks3-mis-next">')
+        if c["quote"]:
+            parts.append('<p class="ks3-mis-quote">%s</p>' % t(_quoted(c["quote"])))
+        for para in c["body"]:
+            parts.append('<p class="ks3-mis-body">%s</p>' % rich(para))
+        if c["key_fact"]:
+            # The box lives once in `key_facts[]` and is named here by id, so a
+            # correction to the line cannot be applied to one copy and not the
+            # other. `r_key_fact` already resolves `ref` by id or by index.
+            parts.append(r_key_fact(lesson, {"ref": c["key_fact"]}))
+        if i:
+            parts.append("</div>")
+    return "".join(parts)
+
+
+def r_scorecards(cards):
+    """The two-up figure cards. b1-01's whole teaching point, rendered nowhere.
+
+    “6 of 7 · Candle flame — not alive” against “3 of 7 · Oak seed — alive” is
+    the beat the lesson turns on: the higher score is the dead one. The block
+    kept its prompt, which SAYS that, and lost the cards that show it.
+
+    The figure is mono 32px because it is a reading off an instrument, not a
+    heading — the same reason every live readout in the key stage is mono.
+    """
+    out = []
+    for c in cards:
+        if not c.get("figure"):
+            raise ValueError(
+                "A scorecard with no `figure` is a card with no reading on it "
+                "— the figure is the whole point of the comparison.")
+        out.append('<div class="ks3-scorecard">'
+                   '<p class="ks3-score-figure">%s</p>'
+                   '<p class="ks3-score-title">%s</p>'
+                   '<p class="ks3-score-note">%s</p></div>'
+                   % (t(c["figure"]), t(c.get("title", "")),
+                      rich(c.get("note", ""))))
+    return '<div class="ks3-scorecards">%s</div>' % "".join(out)
+
+
 def _option_li(i, text, extra=""):
     """One answer button. The letter badge is the resting mark (R2/§5).
 
@@ -1380,9 +1508,20 @@ ACTIVITY_SHELLS = {
 # The class is what the stylesheet hangs the instrument on; the attribute is
 # what shared/ks3.js dispatches on, and it also tells `wirePredictions` to keep
 # its hands off — an instrument owns every option inside it.
+#
+# ⊕ The attribute string carries `data-stage-done="0"` for an instrument that
+# HAS a completion contract, and omits it for one that does not. It used to be
+# appended automatically to every entry, which was right while both entries
+# were tasks and wrong the moment an expository kind joined them: `#s-think` is
+# a rail stop on none of the six lessons, because MRB-208 ruled the rail
+# carries "only sections that require the student to do something", and a
+# confrontation asks for nothing. Emitting the attribute anyway would declare a
+# completion contract the section can never discharge.
 ACTIVITY_KIND_RENDERERS = {
-    "test-board": ("ks3-board", " data-board"),
-    "sort-rows":  ("ks3-sort", " data-sort"),
+    "test-board":    ("ks3-board", ' data-board data-stage-done="0"'),
+    "sort-rows":     ("ks3-sort", ' data-sort data-stage-done="0"'),
+    # Expository: no control, no commitment, nothing to tick.
+    "confrontation": ("ks3-confront", " data-confront"),
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -1396,9 +1535,21 @@ ACTIVITY_KIND_RENDERERS = {
 # So a kind is either declared generic here, or it has a renderer above, or the
 # build says it is unrendered. There is no fourth state, and adding a kind to
 # this set is a claim someone has to defend in review.
+#
+# ⊖ `confrontation` was in this set until 14 Aug 2026 and did not belong. The
+# claim a kind makes by being here is that prompt/options/reveal IS its drawn
+# component — true of C1's seven, which carry exactly `prompt` + `reveal` +
+# `targets`, and false of all six of B1's, which carry `statements`,
+# `scorecards` and `paragraphs` that nothing read. Measured cost: b1-03's whole
+# `#s-think` rendered as `! Think again` and nothing else. It has a renderer now.
+#
+# The lesson generalises: membership here is a claim about the CONTENT, not
+# about the kind's name. The same kind can be generic in one unit and an
+# instrument in the next, and the only way to know is to check what the payload
+# actually carries — which is what the orphan-key sweep does.
 GENERIC_ACTIVITY_KINDS = {
     "predict", "classify", "construct", "investigation", "lab",
-    "reveal-cards", "worked-example", "confrontation",
+    "reveal-cards", "worked-example",
 }
 
 
@@ -1434,11 +1585,13 @@ def r_activity(lesson, block_type, act_id, block=None):
     if instrument:
         shell_cls += " " + instrument[0]
         # `data-stage-done` is the rail's completion contract (shared/ks3.js,
-        # `doneByDom`). Emitted at 0 rather than left absent so the rail reads
-        # the instrument's own predicate and never falls through to "anything
-        # in here is aria-pressed" — the specimen tabs would tick this stage on
-        # page load, and MRB-208 ruled that nothing is ticked on load.
-        marker = instrument[1] + ' data-stage-done="0"'
+        # `doneByDom`). An instrument that has one emits it at 0 rather than
+        # leaving it absent, so the rail reads the instrument's own predicate
+        # and never falls through to "anything in here is aria-pressed" — the
+        # specimen tabs would tick that stage on page load, and MRB-208 ruled
+        # that nothing is ticked on load. An instrument with no contract omits
+        # it entirely; see the table.
+        marker = instrument[1]
 
     parts = ['<section class="%s"%s data-activity="%s"%s>'
              % (shell_cls, _id_attr(block or {}), e(act_id), marker)]
@@ -1452,9 +1605,11 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append('<div class="ks3-mis-head">'
                      '<span class="ks3-mis-badge" aria-hidden="true">!</span>'
                      '<p class="ks3-eyebrow">%s</p></div>' % t(eyebrow))
-        quote = _misconception_quote(lesson, a.get("targets"))
-        if quote:
-            parts.append('<p class="ks3-mis-quote">“%s”</p>' % t(quote))
+        # ⊕ Subsumes the old single-quote path. With no authored `statements`
+        # this emits exactly the register quote it always did, which is why
+        # C1's seven confrontations do not move: none of them carries any of
+        # the new keys.
+        parts.append(r_confrontation(lesson, a, act_id))
     else:
         parts.append('<p class="ks3-eyebrow">%s</p>' % t(eyebrow))
 
@@ -1480,6 +1635,8 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append(r_test_board(a, act_id))
     if kind == "sort-rows":
         parts.append(r_sort_rows(a, act_id))
+    if a.get("scorecards"):
+        parts.append(r_scorecards(a["scorecards"]))
 
     if a.get("options"):
         parts.append(r_activity_options(a["options"]))

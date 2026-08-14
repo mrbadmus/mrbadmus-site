@@ -366,6 +366,60 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-misconception > p { font-size: 19px; line-height: 1.6; }
 
+/* ── the confrontation's own content (⊕ 14 Aug 2026) ──
+   Design draws a misconception block as a SEQUENCE of confrontations: one
+   wrong idea answered, then — behind a divider — another, inside one "Think
+   again". Both b1-03 and b1-06 do this. The generator rendered the register's
+   quote and stopped, so every authored answer on all six pages went nowhere
+   and b1-03's block rendered as `! Think again` alone.
+
+   The divider is `--ks3-alert-border` and that is the one place amber is
+   correct: a wrong idea being confronted is exactly what §8 reserves it for.
+   It is never a mark on a student (MRB-202) and never a key fact (MRB-208
+   rule 3) — both of which is why neither of those grows an amber anything. */
+.ks3-mis-body { font-size: 19px; line-height: 1.6; }
+.ks3-mis-body + .ks3-mis-body { margin-top: 14px; }
+.ks3-mis-next {
+  margin-top: 22px;
+  padding-top: 20px;
+  border-top: 2px solid var(--ks3-alert-border);
+}
+.ks3-mis-next > .ks3-mis-quote { margin-top: 0; }
+
+/* The scorecards. b1-01's whole argument is that the higher score is the dead
+   one — the prompt says so and the two cards are what show it. The figure is
+   MONO because it is a reading taken off an instrument, which is the same
+   reason every live readout in the key stage is mono; a display-font "6 of 7"
+   would read as a heading. `minmax(232px, …)` is the ruled options-grid track
+   (MRB-208, 13 Aug), so two cards sit side by side above ~500px and stack
+   below it without a query. */
+.ks3-scorecards {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 14px;
+}
+.ks3-scorecard {
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-card);
+  padding: 18px 20px;
+}
+.ks3-score-figure {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-weight: 500;
+  font-size: 32px;
+  line-height: 1;
+}
+.ks3-score-title { margin: 8px 0 0; font-size: 18px; font-weight: 700; }
+.ks3-score-note {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+
 /* ── activity options (R3) ──
    R3 is load-bearing and easy to lose: an activity button shows that it
    was CHOSEN, never whether it was right. No green, no red, and it stays
