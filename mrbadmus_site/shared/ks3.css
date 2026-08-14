@@ -324,6 +324,143 @@ body.rd[data-mode="ks3"] {
   border-top: 2px solid var(--ks3-dark-rule);
 }
 
+/* ── the hook's media column and its Motion control (⊕ 14 Aug 2026) ──
+   `phenomenon.art`, `.figures` and `.tiles` were read by nothing, so three of
+   the six hooks drew nothing at all. This is the class Mide named: "the hook
+   missing its candle artwork and Motion toggle entirely".
+
+   ⚠️ CORRECTION TO DESIGN — the grid collapses. Design's b1-01 grid has no
+   breakpoint, so at a 390px viewport it holds a 165px prose column beside a
+   122px candle and the page scrolls sideways by 23px. That is measured on the
+   approved page, and it is the only horizontal scroll anywhere in the
+   delivery. Collapsing at 780px is the breakpoint already ruled for the bench
+   grid (MRB-208), so the page gains no new threshold. */
+.ks3-hook-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 34px;
+  align-items: center;
+}
+.ks3-hook-motion {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: -14px;
+}
+@media (max-width: 780px) {
+  .ks3-hook-grid { grid-template-columns: minmax(0, 1fr); gap: 22px; }
+  .ks3-hook-motion { grid-column: 1; margin-top: 0; }
+}
+.ks3-hook-motion-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ks3-on-dark-muted);
+}
+/* ⚠️ CORRECTION TO DESIGN — `min-height` is the 44px tap token, not Design's
+   34px. Every other control in the key stage honours `--ks3-tap`, the token
+   exists so this judgement is not remade per control, and the inventory had
+   already flagged the same class of defect on the two range sliders ("an
+   accessibility regression if copied as drawn"). It costs 10px of height on
+   one row. Nothing else about the control moves. */
+.ks3-motion-btn {
+  cursor: pointer;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 7px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-pill);
+  border: 2px solid var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-motion-btn[aria-pressed="true"] {
+  border-color: var(--ks3-alert);
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+
+/* R7 / Law 9 — one switch turns every drawing's animation off, and the OS
+   setting does it without asking. `!important` because each animation is set
+   on the element itself. */
+[data-motion="off"] [data-anim] { animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  [data-anim] { animation: none !important; }
+}
+
+.ks3-hook-art {
+  position: relative;
+  height: 226px;
+  border-radius: 22px;
+  background: #17130F;
+  border: 2px solid var(--ks3-dark-panel);
+  overflow: hidden;
+  display: grid;
+  place-items: end center;
+}
+
+/* The candle. Wick, wax and night ground are Design's own literals; the flame
+   gradient is tokens — alert → accent → accent-text, top to bottom. */
+.ks3-candle {
+  position: relative;
+  width: 100%;
+  display: grid;
+  place-items: center;
+}
+.ks3-flame {
+  position: absolute;
+  transform-origin: 50% 100%;
+  animation: ks3-flicker 1.7s ease-in-out infinite alternate;
+}
+.ks3-flame-outer {
+  bottom: 86px;
+  width: 46px;
+  height: 92px;
+  border-radius: 50% 50% 46% 46% / 66% 66% 34% 34%;
+  background: linear-gradient(180deg, var(--ks3-alert) 0%, var(--ks3-accent) 62%, var(--ks3-accent-text) 100%);
+}
+.ks3-flame-inner {
+  bottom: 90px;
+  width: 20px;
+  height: 42px;
+  border-radius: 50% 50% 46% 46% / 70% 70% 30% 30%;
+  background: var(--ks3-alert-tint);
+  animation-duration: 1.15s;
+}
+.ks3-wick {
+  position: absolute;
+  bottom: 78px;
+  width: 3px;
+  height: 12px;
+  background: #2A211B;
+  border-radius: 2px;
+}
+.ks3-wax {
+  width: 74px;
+  height: 78px;
+  background: linear-gradient(90deg, #E7DECE 0%, #FFFCF5 38%, #C6B9A7 100%);
+  border-radius: 8px 8px 4px 4px;
+}
+.ks3-soot {
+  position: absolute;
+  border-radius: var(--ks3-r-pill);
+  background: #6E6259;
+  animation: ks3-soot 3.1s linear infinite;
+}
+.ks3-soot:nth-of-type(1) { left: 46%; bottom: 128px; width: 5px; height: 5px; }
+.ks3-soot:nth-of-type(2) { left: 55%; bottom: 132px; width: 4px; height: 4px; animation-duration: 2.4s; animation-delay: .7s; }
+.ks3-soot:nth-of-type(3) { left: 50%; bottom: 140px; width: 3px; height: 3px; animation-duration: 3.8s; animation-delay: 1.4s; }
+
+@keyframes ks3-flicker {
+  0%   { transform: scale(1) translateY(0) rotate(-1.4deg); }
+  100% { transform: scale(1.06) translateY(-4px) rotate(1.8deg); }
+}
+@keyframes ks3-soot {
+  0%   { transform: translateY(0); opacity: .55; }
+  100% { transform: translateY(-58px); opacity: 0; }
+}
+
 /* row 3, at key-note weight — Design drops to 700 here because 800 at
    30px over four lines is a wall. */
 .ks3-keynote p {

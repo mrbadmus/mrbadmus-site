@@ -36,6 +36,9 @@
      does not save", never throw. */
   var BEST_PREFIX = "ks3_ladder4_";
   var WORK_PREFIX = "ks3_work_";
+  // Motion is a preference, not per-lesson progress: it is deliberately
+  // NOT slug-keyed, so answering it once answers it for the key stage.
+  var MOTION_KEY = "ks3_motion";
 
   function readStore(key) {
     try {
@@ -3126,6 +3129,34 @@
     repaint();
   }
 
+  /* R7 / Law 9 — the Motion switch. Motion carries meaning here (a flame
+     flickers and gives off soot, which is half the argument the hook makes),
+     so it cannot simply be deleted for everyone. It gets a control instead,
+     and the OS setting pre-answers it: a student who has already asked their
+     device for less motion does not have to ask again on every page. */
+  function wireMotion(root) {
+    var btns = toArray(root.querySelectorAll("[data-motion-set]"));
+    if (!btns.length) { return; }
+
+    function set(state) {
+      document.documentElement.setAttribute("data-motion", state);
+      each(btns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-motion-set") === state ? "true" : "false");
+      });
+      writeStore(MOTION_KEY, state);
+    }
+
+    each(btns, function (b) {
+      b.addEventListener("click", function () {
+        set(b.getAttribute("data-motion-set"));
+      });
+    });
+
+    var saved = readStore(MOTION_KEY);
+    set(saved === "off" || saved === "on" ? saved : (REDUCED ? "off" : "on"));
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -3257,6 +3288,7 @@
     wireCards(document);
     wireSims(document);
     wireInstruments(document);
+    wireMotion(document);
     each(document.querySelectorAll(".ks3-ladder"), wireLadder);
     each(document.querySelectorAll(".ks3-rails"), wireRail);
   }

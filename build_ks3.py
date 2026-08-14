@@ -429,13 +429,111 @@ def r_hook(lesson, block=None):
     whether every rail anchor resolves, which is now gated.
     """
     p = lesson.get("phenomenon") or {}
-    return ("""<section class="ks3-block ks3-dark ks3-hook"%s>
-  <p class="ks3-eyebrow">Start here</p>
-  <h2>%s</h2>
-  <p class="ks3-hook-prompt">%s</p>
-  <p class="ks3-commit">%s</p>
-</section>""" % (_id_attr(block or {}), t(p.get("title", "")),
-                 t(p.get("prompt", "")), t(p.get("commit", ""))))
+
+    head = ('<p class="ks3-eyebrow">%s</p>'
+            '<h2 class="ks3-hook-h">%s</h2>'
+            '<p class="ks3-hook-prompt">%s</p>'
+            % (t(p.get("eyebrow") or "Start here"), t(p.get("title", "")),
+               rich(p.get("prompt", ""))))
+
+    # ⊕ The media column, and the Motion control that belongs to it. Both were
+    # dropped on the floor: `phenomenon.art`, `.figures` and `.tiles` were read
+    # by nothing, which is why Mide opened b1-01 and found "the hook missing
+    # its candle artwork and Motion toggle entirely". The toggle is not
+    # decoration either — Law 9 says motion is meaning, and R7 requires a way
+    # to stop it that is not buried in an OS setting.
+    media = _hook_media(lesson, p)
+    if media:
+        body = ('<div class="ks3-hook-grid">'
+                '<div class="ks3-hook-lede">%s</div>%s'
+                '<div class="ks3-hook-motion">'
+                '<span class="ks3-hook-motion-label">Motion</span>'
+                '<button type="button" class="ks3-motion-btn" data-motion-set="on"'
+                ' aria-pressed="true">On</button>'
+                '<button type="button" class="ks3-motion-btn" data-motion-set="off"'
+                ' aria-pressed="false">Off</button>'
+                '</div></div>' % (head, media))
+    else:
+        body = head
+
+    # ⊕ The commitment. R16 and Law 1: the hook ends in a decision, and the
+    # reveal is gated behind it. `options` and `reveal` are authored on ALL SIX
+    # lessons and were read on none of them, so every hook stopped at the
+    # question and no student could ever answer it. `#s-hook` is the first stop
+    # on all six rails and could therefore never tick.
+    commit = ""
+    if p.get("commit") or p.get("options") or p.get("reveal"):
+        bits = []
+        if p.get("commit"):
+            bits.append('<p class="ks3-commit">%s</p>' % t(p["commit"]))
+        if p.get("options"):
+            bits.append(r_activity_options(p["options"]))
+        if p.get("reveal"):
+            bits.append('<div class="ks3-reveal" hidden data-reveal><p>%s</p>'
+                        '</div>' % rich(p["reveal"]))
+        commit = '<div class="ks3-hook-commit">%s</div>' % "".join(bits)
+
+    return ('<section class="ks3-block ks3-dark ks3-hook"%s data-activity="hook">'
+            '%s%s</section>' % (_id_attr(block or {}), body, commit))
+
+
+# ── the hook's media column ──────────────────────────────────────────────
+#
+# Three of the six lessons draw something beside the lede, under three
+# different authored keys, because six agents authored six lessons. They are
+# genuinely three different components rather than one with a discriminator —
+# `phenomenon.kind` ("demo", "data", "compare", "narrative") looks like it
+# should select between them and DOES NOT: Design draws nothing that varies by
+# it, and b1-05 is `demo` with no art at all. Dispatching on which key is
+# present is what the data actually supports; `kind` stays unread and is
+# reported rather than pressed into service.
+
+def _hook_media(lesson, p):
+    if p.get("art"):
+        return _css_art(lesson, p["art"])
+    return ""
+
+
+def _css_art(lesson, fig_id):
+    """A drawing built from tokens and CSS, not an asset.
+
+    `phenomenon.art` names a `figures[]` entry whose `kind` is `css-art`; its
+    `art` field names the drawing. Kept as a closed set with a raise on an
+    unknown name, for the same reason `r_sim` refuses an unknown control: a
+    figure that silently renders nothing is a hole the page hides.
+    """
+    fig = next((f for f in (lesson.get("figures") or [])
+                if f.get("id") == fig_id), None)
+    if fig is None:
+        raise ValueError(
+            "phenomenon.art names figure %r, which is not in figures[]." % fig_id)
+    art = fig.get("art")
+    if art not in CSS_ART:
+        raise ValueError(
+            "figure %r declares css-art %r, which the generator cannot draw. "
+            "Known: %s." % (fig_id, art, ", ".join(sorted(CSS_ART))))
+    # The caption is the accessible description. The drawing itself is
+    # `aria-hidden` — a screen reader gets the sentence, not a pile of spans.
+    return ('<div class="ks3-hook-art ks3-art-%s" role="img" aria-label="%s">'
+            '%s</div>' % (e(art), e(fig.get("caption", "")), CSS_ART[art]))
+
+
+# A burning candle. Every colour that is not a token is Design's own literal
+# from the approved page: the night ground `#17130F`, the soot `#6E6259`, the
+# wick `#2A211B` and the three wax stops. The flame gradient IS tokens —
+# alert → accent → accent-text, top to bottom.
+_CANDLE = (
+    '<span class="ks3-soot" data-anim="soot"></span>'
+    '<span class="ks3-soot" data-anim="soot"></span>'
+    '<span class="ks3-soot" data-anim="soot"></span>'
+    '<div class="ks3-candle">'
+    '<span class="ks3-flame ks3-flame-outer" data-anim="flame"></span>'
+    '<span class="ks3-flame ks3-flame-inner" data-anim="flame"></span>'
+    '<span class="ks3-wick"></span>'
+    '<span class="ks3-wax"></span>'
+    '</div>')
+
+CSS_ART = {"candle-flame": _CANDLE}
 
 
 def r_explainer(lesson, block):
