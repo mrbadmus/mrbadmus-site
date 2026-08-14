@@ -3276,10 +3276,474 @@
     show(panels[0].getAttribute("data-case"));
   }
 
+
+  /* ═══════════════════════════════════════════════════════════════
+     SYSTEM's bench and its sabotage engine (b1-04, the SYSTEM
+     reference screen — 32 slots).
+
+     The four cell drawings and the three canvas helpers below are
+     ported VERBATIM from Design's approved b1-04, method bodies
+     unchanged, class methods turned into functions. They are Design's
+     drawings and the standing law is to reproduce them, so they are
+     not retouched, retimed or re-coloured. The 26 hex literals in them
+     that have no KS3 token are Design's own and stay Design's own;
+     inventing tokens for them would claim a design decision nobody
+     made.
+     ═══════════════════════════════════════════════════════════════ */
+
+  function ell(ctx, x, y, rx, ry, rot) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, Math.max(0.5, rx), Math.max(0.5, ry), rot || 0, 0, Math.PI * 2);
+  }
+
+  function mito(ctx, x, y, rot, k) {
+    ctx.save();
+    ctx.translate(x, y); ctx.rotate(rot); ctx.scale(k, k);
+    ell(ctx, 0, 0, 22, 11, 0);
+    ctx.fillStyle = '#C96C3C'; ctx.fill();
+    ctx.lineWidth = 2 / k; ctx.strokeStyle = '#8B4523'; ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(-14, 0);
+    ctx.quadraticCurveTo(-9, -6, -4, 0);
+    ctx.quadraticCurveTo(1, 6, 6, 0);
+    ctx.quadraticCurveTo(11, -6, 15, 0);
+    ctx.lineWidth = 1.8 / k; ctx.strokeStyle = '#F6E2D2'; ctx.stroke();
+    ctx.restore();
+  }
+
+  function arrow(ctx, x1, y1, x2, y2, col) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+    ctx.lineWidth = 3; ctx.strokeStyle = col; ctx.stroke();
+    const a = Math.atan2(y2 - y1, x2 - x1);
+    ctx.beginPath();
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 12 * Math.cos(a - 0.42), y2 - 12 * Math.sin(a - 0.42));
+    ctx.moveTo(x2, y2);
+    ctx.lineTo(x2 - 12 * Math.cos(a + 0.42), y2 - 12 * Math.sin(a + 0.42));
+    ctx.stroke();
+  }
+
+  function drawRed(ctx, W, H, sab, dark) {
+    const cy = H * 0.5;
+    const narrow = sab === 'sphere';
+    const vh = narrow ? 116 : 150;
+    ctx.fillStyle = dark ? '#241A18' : '#F8E9E5';
+    ctx.beginPath();
+    ctx.moveTo(0, cy - vh / 2);
+    ctx.lineTo(W * 0.62, cy - vh / 2);
+    ctx.quadraticCurveTo(W * 0.72, cy - vh / 2, W * 0.74, cy - (narrow ? 44 : vh / 2));
+    ctx.lineTo(W, cy - (narrow ? 44 : vh / 2));
+    ctx.lineTo(W, cy + (narrow ? 44 : vh / 2));
+    ctx.lineTo(W * 0.74, cy + (narrow ? 44 : vh / 2));
+    ctx.quadraticCurveTo(W * 0.72, cy + vh / 2, W * 0.62, cy + vh / 2);
+    ctx.lineTo(0, cy + vh / 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.lineWidth = 4; ctx.strokeStyle = dark ? '#7A6A62' : '#221E1B'; ctx.stroke();
+
+    const xs = narrow ? [140, 330, 500] : [180, 450, 720];
+    xs.forEach((x, i) => {
+      ctx.save();
+      ctx.translate(x, cy + (i === 1 ? 0 : (i === 0 ? -12 : 14)));
+      if (narrow) {
+        ell(ctx, 0, 0, 64, 62, 0);
+        ctx.fillStyle = '#C2372B'; ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = '#7E1F16'; ctx.stroke();
+      } else {
+        ctx.rotate(i === 1 ? 0 : (i === 0 ? -0.18 : 0.14));
+        ctx.beginPath();
+        ctx.moveTo(-86, 0);
+        ctx.bezierCurveTo(-70, -38, -28, -13, 0, -13);
+        ctx.bezierCurveTo(28, -13, 70, -38, 86, 0);
+        ctx.bezierCurveTo(70, 38, 28, 13, 0, 13);
+        ctx.bezierCurveTo(-28, 13, -70, 38, -86, 0);
+        ctx.closePath();
+        ctx.fillStyle = '#C2372B'; ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = '#7E1F16'; ctx.stroke();
+      }
+      const dots = sab === 'nucleus' ? 6 : 15;
+      ctx.fillStyle = '#8E2318';
+      for (let d = 0; d < dots; d++) {
+        const a = (d / dots) * Math.PI * 2 + i;
+        const rr2 = narrow ? 38 : 58;
+        ell(ctx, Math.cos(a) * rr2 * 0.9, Math.sin(a) * (narrow ? 34 : 8), 5, 4, 0);
+        ctx.fill();
+      }
+      if (sab === 'nucleus') {
+        ell(ctx, 0, 0, 30, narrow ? 26 : 13, 0);
+        ctx.fillStyle = '#7C6AA6'; ctx.fill();
+        ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+      }
+      ctx.restore();
+    });
+
+    if (narrow) {
+      ctx.setLineDash([9, 7]);
+      arrow(ctx, 620, cy, 700, cy, '#B23A2A');
+      ctx.setLineDash([]);
+    }
+  }
+
+  function drawRoot(ctx, W, H, sab, dark) {
+    const soilX = 260;
+    ctx.fillStyle = dark ? '#241E17' : '#E9DCC2';
+    ctx.fillRect(soilX, 0, W - soilX, H);
+    ctx.fillStyle = dark ? '#2E271E' : '#DCCBA9';
+    [[380, 120, 58], [520, 90, 44], [660, 150, 66], [800, 96, 50], [340, 300, 52],
+     [470, 340, 62], [620, 300, 46], [760, 360, 58], [400, 470, 60], [560, 480, 48],
+     [700, 470, 56], [840, 440, 62], [880, 240, 54]].forEach((p) => {
+      ell(ctx, p[0], p[1], p[2], p[2] * 0.82, 0.3);
+      ctx.fill();
+    });
+
+    ctx.fillStyle = dark ? '#1A1611' : '#F3E8D2';
+    ctx.fillRect(0, 0, soilX, H);
+    ctx.lineWidth = 4; ctx.strokeStyle = dark ? '#7A6A62' : '#221E1B';
+    ctx.beginPath(); ctx.moveTo(soilX, 0); ctx.lineTo(soilX, H); ctx.stroke();
+
+    rr(ctx, 60, 150, 200, 260, 20);
+    ctx.fillStyle = '#D9C48D'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+    rr(ctx, 76, 166, 168, 228, 14);
+    ctx.fillStyle = '#F5ECD8'; ctx.fill();
+    rr(ctx, 104, 214, 118, 140, 34);
+    ctx.fillStyle = '#E4EDE9'; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#9AB0A6'; ctx.stroke();
+
+    const hairEnd = sab === 'short' ? 340 : 800;
+    ctx.beginPath();
+    ctx.moveTo(240, 234);
+    ctx.quadraticCurveTo((240 + hairEnd) / 2, 214, hairEnd, 248);
+    ctx.quadraticCurveTo((240 + hairEnd) / 2, 262, 240, 292);
+    ctx.closePath();
+    ctx.fillStyle = '#F5ECD8'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+
+    ell(ctx, 150, 195, 32, 24, 0);
+    ctx.fillStyle = '#7C6AA6'; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+
+    if (sab !== 'mito') {
+      [[110, 380, 0.4], [200, 384, -0.3], [156, 262, 1.4], [212, 300, 0.2], [96, 300, 1.2], [180, 158, 0.5]]
+        .forEach((m) => mito(ctx, m[0], m[1], m[2], 0.9));
+    }
+
+    const wcol = '#2F5CE0';
+    const waterAt = sab === 'short' ? [[400, 200, 350, 232], [400, 300, 352, 262]] :
+      [[430, 150, 372, 224], [560, 130, 508, 226], [700, 170, 650, 236], [470, 400, 412, 274], [640, 410, 588, 268], [810, 350, 790, 274]];
+    waterAt.forEach((a) => arrow(ctx, a[0], a[1], a[2], a[3], wcol));
+
+    if (sab !== 'mito') {
+      ctx.setLineDash([]);
+      [[520, 250, 440, 250]].forEach((a) => arrow(ctx, a[0], a[1], a[2], a[3], '#A93411'));
+    } else {
+      ctx.setLineDash([8, 7]);
+      ctx.globalAlpha = 0.5;
+      arrow(ctx, 520, 250, 470, 250, '#A93411');
+      ctx.globalAlpha = 1;
+      ctx.setLineDash([]);
+    }
+  }
+
+  function drawSperm(ctx, W, H, sab, dark) {
+    const cy = H * 0.5;
+    ell(ctx, 190, cy, 74, 52, 0);
+    ctx.fillStyle = '#E7DECE'; ctx.fill();
+    ctx.lineWidth = 3.5; ctx.strokeStyle = dark ? '#C6B9A7' : '#221E1B'; ctx.stroke();
+    ctx.save();
+    ctx.beginPath();
+    ell(ctx, 190, cy, 74, 52, 0);
+    ctx.clip();
+    ctx.fillStyle = '#C8B49A';
+    ctx.beginPath();
+    ctx.moveTo(116, cy - 60); ctx.lineTo(170, cy - 60); ctx.lineTo(150, cy + 60); ctx.lineTo(116, cy + 60);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ell(ctx, 208, cy, 40, 34, 0);
+    ctx.fillStyle = '#7C6AA6'; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+
+    rr(ctx, 262, cy - 26, 104, 52, 16);
+    ctx.fillStyle = '#F5ECD8'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = dark ? '#C6B9A7' : '#221E1B'; ctx.stroke();
+    if (sab !== 'mito') {
+      [[288, cy - 8, 0.5], [318, cy + 9, -0.4], [346, cy - 7, 0.3], [300, cy + 14, 0.9]]
+        .forEach((m) => mito(ctx, m[0], m[1], m[2], 0.62));
+    }
+
+    if (sab !== 'notail') {
+      const limp = sab === 'mito';
+      const end = limp ? 620 : 850;
+      const amp = limp ? 10 : 46;
+      ctx.beginPath();
+      for (let x = 366; x <= end; x += 4) {
+        const t = (x - 366) / (end - 366);
+        const y = cy + Math.sin(t * Math.PI * (limp ? 1.6 : 3.1)) * amp * (0.35 + t * 0.8);
+        if (x === 366) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.lineWidth = limp ? 7 : 10;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = dark ? '#C6B9A7' : '#221E1B';
+      ctx.stroke();
+      if (limp) {
+        ctx.setLineDash([8, 8]);
+        ctx.beginPath();
+        ctx.moveTo(end, cy + 6); ctx.lineTo(760, cy + 10);
+        ctx.lineWidth = 4; ctx.strokeStyle = '#8F857B'; ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+  }
+
+  function drawNerve(ctx, W, H, sab, dark) {
+    const cy = H * 0.5;
+    const ink = dark ? '#C6B9A7' : '#221E1B';
+    const relay = sab === 'short';
+    const somas = relay ? [[120, cy], [420, cy], [700, cy]] : [[130, cy]];
+    const axonTo = relay ? [340, 640, 880] : [820];
+
+    somas.forEach((s, si) => {
+      const sx = s[0], sy = s[1];
+      [[-1.9, 66], [-2.5, 58], [2.4, 62], [1.9, 54], [-3.1, 50]].forEach((d) => {
+        const a = d[0], L = d[1] * (relay ? 0.62 : 1);
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(sx + Math.cos(a) * L, sy + Math.sin(a) * L);
+        ctx.lineTo(sx + Math.cos(a) * (L + 22) - 8, sy + Math.sin(a) * (L + 22) - 6);
+        ctx.moveTo(sx + Math.cos(a) * L, sy + Math.sin(a) * L);
+        ctx.lineTo(sx + Math.cos(a) * (L + 22) + 6, sy + Math.sin(a) * (L + 22) + 8);
+        ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = ink; ctx.stroke();
+      });
+      const R = relay ? 40 : 58;
+      ell(ctx, sx, sy, R, R * 0.92, 0);
+      ctx.fillStyle = '#F5ECD8'; ctx.fill();
+      ctx.lineWidth = 3.5; ctx.strokeStyle = ink; ctx.stroke();
+      ell(ctx, sx, sy, R * 0.44, R * 0.42, 0);
+      ctx.fillStyle = '#7C6AA6'; ctx.fill();
+      ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+
+      const x0 = sx + R, x1 = axonTo[si];
+      ctx.beginPath();
+      ctx.moveTo(x0, sy); ctx.lineTo(x1, sy);
+      ctx.lineWidth = 15; ctx.lineCap = 'round'; ctx.strokeStyle = '#F5ECD8'; ctx.stroke();
+      ctx.lineWidth = 17; ctx.strokeStyle = ink; ctx.stroke();
+      ctx.lineWidth = 11; ctx.strokeStyle = '#F5ECD8'; ctx.stroke();
+
+      if (sab !== 'sheath') {
+        const seg = relay ? 74 : 108;
+        for (let x = x0 + 18; x + seg < x1; x += seg + 16) {
+          rr(ctx, x, sy - 19, seg, 38, 15);
+          ctx.fillStyle = '#EFD9A8'; ctx.fill();
+          ctx.lineWidth = 3; ctx.strokeStyle = ink; ctx.stroke();
+        }
+      }
+
+      [[-0.5, 1], [0, 1], [0.5, 1]].forEach((d) => {
+        ctx.beginPath();
+        ctx.moveTo(x1, sy);
+        ctx.lineTo(x1 + 34, sy + d[0] * 44);
+        ctx.lineTo(x1 + 56, sy + d[0] * 62);
+        ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = ink; ctx.stroke();
+        ell(ctx, x1 + 58, sy + d[0] * 64, 8, 8, 0);
+        ctx.fillStyle = ink; ctx.fill();
+      });
+
+      if (relay && si < somas.length - 1) {
+        ctx.setLineDash([6, 6]);
+        ctx.beginPath();
+        ctx.moveTo(x1 + 68, sy - 60); ctx.lineTo(x1 + 68, sy + 60);
+        ctx.lineWidth = 3; ctx.strokeStyle = '#A93411'; ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    });
+  }
+
+
+  var CELL_DRAWINGS = { red: drawRed, root: drawRoot, sperm: drawSperm, nerve: drawNerve };
+
+  // Design's own framing: every cell is drawn in a fixed 900x560 design space
+  // and scaled to fit, on a 2x backing store.
+  function paintCell(canvas, dark, sab) {
+    if (!canvas || !canvas.getContext) { return; }
+    var fn = CELL_DRAWINGS[canvas.getAttribute("data-drawing")];
+    if (!fn) { return; }
+    var ctx = canvas.getContext("2d");
+    var W = canvas.width / 2, H = canvas.height / 2;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = dark ? "#100D0A" : "#FFFCF5";
+    ctx.fillRect(0, 0, W, H);
+    var k = Math.min(W / 900, H / 560);
+    ctx.save();
+    ctx.translate((W - 900 * k) / 2, (H - 560 * k) / 2);
+    ctx.scale(k, k);
+    fn(ctx, 900, 560, sab, dark);
+    ctx.restore();
+  }
+
+  /* The bench. Emit-all-show-one, like the board — the DOM is the state.
+     The chosen cell is broadcast, because the sabotage section follows it:
+     `bench` in the payload names this section's anchor, and the two
+     instruments share a cast. */
+  function wireBench(sec) {
+    var bench = sec.querySelector(".ks3-bench");
+    if (!bench) { return; }
+    var btns = toArray(bench.querySelectorAll(".ks3-bench-cell"));
+    var figures = toArray(bench.querySelectorAll(".ks3-bench-figure"));
+    var panels = toArray(bench.querySelectorAll(".ks3-bench-panel"));
+    var seen = {};
+
+    function show(id) {
+      bench.setAttribute("data-current", id);
+      each(btns, function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-cell") === id ? "true" : "false");
+      });
+      each(figures, function (f) {
+        var on = f.getAttribute("data-cell") === id;
+        setHidden(f, !on);
+        // Painted on first show rather than on load: four 1800x1120 canvases
+        // is real work for a phone, and three of them are behind a button.
+        if (on && !f.hasAttribute("data-painted")) {
+          paintCell(f.querySelector("canvas"), false, null);
+          f.setAttribute("data-painted", "1");
+        }
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-cell") !== id);
+      });
+      seen[id] = true;
+      // The rail stop is `all_specimens_seen`: the bench's claim is that the
+      // same seven parts are tuned four different ways, and you have not seen
+      // that until you have seen all four.
+      markStage(sec, Object.keys(seen).length === btns.length);
+      var name = "";
+      each(btns, function (b) {
+        if (b.getAttribute("data-cell") === id) {
+          var n = b.querySelector(".ks3-bench-cell-name");
+          name = n ? n.textContent : "";
+        }
+      });
+      document.dispatchEvent(new CustomEvent("ks3:cell", {
+        detail: { anchor: sec.id, cell: id, name: name }
+      }));
+    }
+
+    each(btns, function (b) {
+      b.addEventListener("click", function () {
+        show(b.getAttribute("data-cell"));
+      });
+    });
+    show(bench.getAttribute("data-current") || btns[0].getAttribute("data-cell"));
+  }
+
+  /* The sabotage engine. Every (cell x sabotage) panel is in the document;
+     the pair showing is the bench's cell and this section's chosen sabotage
+     for that cell. Law 4 gates the chain behind the prediction. */
+  function wireSabotage(sec) {
+    var wrap = sec.querySelector(".ks3-sab");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll(".ks3-sab-tab"));
+    var panels = toArray(wrap.querySelectorAll(".ks3-sab-panel"));
+    var prog = wrap.querySelector("[data-sab-progress]");
+    var specimen = wrap.querySelector("[data-sab-specimen]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || panels.length;
+    var cell = null, chosen = {};
+
+    function ranCount() {
+      var n = 0;
+      each(panels, function (p) { if (p.getAttribute("data-run") === "1") { n += 1; } });
+      return n;
+    }
+
+    function paint() {
+      each(tabs, function (tb) {
+        var mine = tb.getAttribute("data-cell") === cell;
+        setHidden(tb, !mine);
+        tb.setAttribute("aria-pressed",
+          mine && tb.getAttribute("data-sab") === chosen[cell] ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, !(p.getAttribute("data-cell") === cell
+                       && p.getAttribute("data-sab") === chosen[cell]));
+      });
+      if (prog) {
+        prog.textContent = ranCount() + " of " + total + " sabotages run";
+      }
+      // `predictions_made`, threshold 4 — four sabotages followed out, not all
+      // eight. The threshold is the lesson's, not the instrument's.
+      markStage(sec, ranCount() >= 4);
+    }
+
+    function setCell(id, name) {
+      cell = id;
+      if (!chosen[cell]) {
+        var first = null;
+        each(tabs, function (tb) {
+          if (!first && tb.getAttribute("data-cell") === cell) {
+            first = tb.getAttribute("data-sab");
+          }
+        });
+        chosen[cell] = first;
+      }
+      if (specimen && name) { specimen.textContent = name; }
+      paint();
+    }
+
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () {
+        chosen[tb.getAttribute("data-cell")] = tb.getAttribute("data-sab");
+        paint();
+      });
+    });
+
+    each(panels, function (panel) {
+      var opts = toArray(panel.querySelectorAll(".ks3-option"));
+      var chain = panel.querySelector("[data-reveal]");
+      var pick = panel.querySelector("[data-sab-pick]");
+      each(opts, function (o, i) {
+        o.addEventListener("click", function () {
+          each(opts, function (b) { b.setAttribute("aria-pressed", "false"); });
+          o.setAttribute("aria-pressed", "true");
+          // ⊕ F4's precedent, already taken on the board: Design REMOVES the
+          // prediction once made. It stays here, chosen and still changeable,
+          // because R3's runtime assertion fails an activity option that is
+          // disabled and fails a group whose options do not all render alike
+          // — which a removed or frozen sibling produces immediately.
+          if (pick) {
+            var label = o.querySelector(".ks3-opt-label");
+            pick.textContent = "You said: " + (label ? label.textContent : "");
+          }
+          if (chain && chain.hasAttribute("hidden")) {
+            setHidden(chain, false);
+            chain.setAttribute("role", "status");
+            paintCell(panel.querySelector(".ks3-sab-canvas"), true,
+                      panel.getAttribute("data-sab"));
+          }
+          panel.setAttribute("data-run", "1");
+          paint();
+        });
+      });
+    });
+
+    document.addEventListener("ks3:cell", function (ev) {
+      if (!wrap.getAttribute("data-bench-ref")
+          || ev.detail.anchor === wrap.getAttribute("data-bench-ref")) {
+        setCell(ev.detail.cell, ev.detail.name);
+      }
+    });
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
     each(root.querySelectorAll("[data-settles]"), wireSettles);
+    // The sabotage engine listens for the bench's cell, so it is wired
+    // FIRST — otherwise the bench's opening broadcast lands on nothing.
+    each(root.querySelectorAll("[data-sabotage]"), wireSabotage);
+    each(root.querySelectorAll("[data-benchblock]"), wireBench);
   }
 
   // ── the progress rail (MRB-208 rule 2) ──────────────────────────────

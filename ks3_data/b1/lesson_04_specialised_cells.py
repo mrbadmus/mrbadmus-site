@@ -796,9 +796,21 @@ LESSON = {
     #    without naming either. Six of the eight pairs are identical
     #    strings, so the switch only moves those two.
     #
-    #    True is Design's delivered default and is reproduced here
-    #    unchanged. Flipping it is a one-word edit.
-    "named_conditions": True,
+    #    ⚖️ RULED FALSE by Mide, 14 Aug 2026. Design's delivered default
+    #    was True and shipped both names. Naming a specific inherited
+    #    condition and a specific neurological disease to a Year 7 in a
+    #    cell-biology lesson is not what either sabotage is teaching —
+    #    the science point is that shape and insulation are load-bearing,
+    #    and `close_safe` makes it without handing a twelve-year-old a
+    #    diagnosis to take home. Design had already written the copy.
+    #
+    #    Resolved at BUILD time, not at runtime. Design's page keeps both
+    #    strings and picks between them from a prop, which leaves the
+    #    named condition sitting in the page source whichever way the
+    #    switch is set. `r_sabotage` emits one string, and it raises if a
+    #    sabotage has no `close_safe` to emit — there is no silent
+    #    fallback to the named one.
+    "named_conditions": False,
 
     # ── core blocks, in document order ────────────────────────────
     # Eight blocks against the generator's twenty. Design's shape is

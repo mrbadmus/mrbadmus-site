@@ -1346,6 +1346,199 @@ def r_sort_rows(a, act_id):
                len(items), e(_count_word(len(items))), len(items), self_check))
 
 
+def r_system_bench(a, act_id):
+    """⊕ SYSTEM's reference screen — four cells, the same seven parts, tuned.
+
+    Rendered as an empty section before this: the payload declares
+    `specimens[]` with `job`/`where`/`tuning`/`problem`/`drawing` and the
+    generic shell reads none of them.
+
+    Emit-all-show-one, the same shape the seven-tests board uses. Four panels
+    and four figures are in the document and one of each is shown, so the DOM
+    is the state and going back to a cell finds it as you left it.
+
+    ⚠️ The cell picker is NOT the segmented control, and drift 4 says so
+    explicitly: b1-04's light `seg()` branch is `width:100%`, `text-align:left`,
+    `min-height:56px`, `--ks3-r-option` — a full-width option ROW that happens
+    to share a helper name with the segment. Generating it as a segment would
+    produce the wrong component. It gets `.ks3-bench-cell` of its own.
+    """
+    specimens = a.get("specimens") or []
+    if len(specimens) < 2:
+        raise ValueError(
+            "system-bench %r declares %d specimen(s). The instrument's claim is "
+            "that the SAME seven parts are tuned differently, and one cell "
+            "cannot show a difference." % (act_id, len(specimens)))
+    for sp in specimens:
+        if not sp.get("tuning"):
+            raise ValueError(
+                "system-bench %r specimen %r declares no tuning[] — the bench "
+                "would show a cell with nothing turned up or down, which is the "
+                "one thing this lesson says never happens."
+                % (act_id, sp.get("id")))
+        if sp.get("drawing") not in CELL_DRAWINGS:
+            raise ValueError(
+                "system-bench %r specimen %r asks for drawing %r, which the "
+                "engine cannot paint. Known: %s."
+                % (act_id, sp.get("id"), sp.get("drawing"),
+                   ", ".join(sorted(CELL_DRAWINGS))))
+
+    start = a.get("start") or specimens[0].get("id")
+    picker, figures, panels = [], [], []
+    for sp in specimens:
+        on = sp.get("id") == start
+        picker.append(
+            '<li><button type="button" class="ks3-bench-cell" data-cell="%s" '
+            'aria-pressed="%s">'
+            '<span class="ks3-bench-cell-name">%s</span>'
+            '<span class="ks3-bench-cell-tag">%s</span></button></li>'
+            % (e(sp["id"]), "true" if on else "false",
+               t(sp.get("name", "")), t(sp.get("tag", ""))))
+
+        figures.append(
+            '<div class="ks3-bench-figure" data-cell="%s"%s>'
+            '<canvas class="ks3-bench-canvas" width="1800" height="1120" '
+            'data-drawing="%s" role="img" aria-label="%s"></canvas>'
+            '<p class="ks3-bench-caption">%s</p></div>'
+            % (e(sp["id"]), "" if on else " hidden", e(sp["drawing"]),
+               e(sp.get("alt", "")), t(sp.get("caption", ""))))
+
+        dials = "".join(
+            '<li class="ks3-tune"><span class="ks3-tune-dial" '
+            'data-dial="%s" aria-hidden="true">%s</span>'
+            '<span class="ks3-tune-body">'
+            '<span class="ks3-tune-part">%s</span>'
+            '<span class="ks3-tune-why">%s</span></span></li>'
+            % (e(d.get("dial", "")), t(d.get("dial", "")),
+               t(d.get("part", "")), rich(d.get("why", "")))
+            for d in sp["tuning"])
+
+        panels.append(
+            '<div class="ks3-bench-panel" data-cell="%s"%s>'
+            '<p class="ks3-bench-eyebrow">Its job</p>'
+            '<p class="ks3-bench-job">%s</p>'
+            '<p class="ks3-bench-where">%s</p>'
+            '<ul class="ks3-tuning" role="list">%s</ul>'
+            '<p class="ks3-bench-problem">'
+            '<strong>The problem it solves:</strong> %s</p></div>'
+            % (e(sp["id"]), "" if on else " hidden",
+               rich(sp.get("job", "")), rich(sp.get("where", "")),
+               dials, rich(sp.get("problem", ""))))
+
+    return ('<div class="ks3-bench" data-bench-grid="1" data-current="%s">'
+            '<ul class="ks3-bench-cells" role="list">%s</ul>'
+            '<div class="ks3-bench-main">%s<div class="ks3-bench-read">%s</div>'
+            '</div></div>'
+            % (e(start), "".join(picker), "".join(figures), "".join(panels)))
+
+
+# The four cell drawings `shared/ks3.js` can paint, ported verbatim from
+# Design's approved b1-04. Named here so the generator can REFUSE a specimen
+# that asks for one that does not exist, rather than emitting a blank canvas.
+CELL_DRAWINGS = {"red", "root", "sperm", "nerve"}
+
+
+def r_sabotage(lesson, a, act_id):
+    """⊕ Break one thing and follow it out from the cell to the organism.
+
+    The instrument that makes b1-04 a SYSTEM lesson rather than a labelling
+    exercise: perturbation over naming. It rendered as an empty section.
+
+    It follows the bench's chosen cell — `bench` names the bench's anchor —
+    so every (cell × sabotage) panel is in the document and the pair that is
+    showing is the bench's cell and this section's chosen sabotage.
+
+    ⚖️ `named_conditions` is FALSE, ruled by Mide 14 Aug. Design's page carries
+    both strings per sabotage and picks between them at RUNTIME from a prop,
+    which leaves the named condition in the page source either way. It is
+    resolved here, at build time, so `close` never reaches a browser: naming
+    hereditary spherocytosis and multiple sclerosis to a Year 7 in a
+    cell-biology lesson is what the ruling is about, and shipping it in a
+    hidden attribute would honour the letter and miss the point.
+    """
+    safe = lesson.get("named_conditions") is False
+    groups = a.get("specimens") or []
+    if not groups:
+        raise ValueError("sabotage %r declares no specimens[]." % act_id)
+
+    panels, tabs, total = [], [], 0
+    for g in groups:
+        cell = g.get("specimen")
+        opts = g.get("options") or []
+        if not opts:
+            raise ValueError(
+                "sabotage %r offers cell %r no sabotages — there would be "
+                "nothing to break." % (act_id, cell))
+        for i, o in enumerate(opts):
+            total += 1
+            if safe and not (o.get("close_safe") or "").strip():
+                raise ValueError(
+                    "sabotage %r option %r has no `close_safe`, and this "
+                    "lesson sets named_conditions False. The safe copy is the "
+                    "one that ships; there is no silent fallback to the named "
+                    "one." % (act_id, o.get("id")))
+            tabs.append(
+                '<button type="button" class="ks3-seg-btn ks3-sab-tab" '
+                'data-cell="%s" data-sab="%s" aria-pressed="%s"%s>%s</button>'
+                % (e(cell), e(o["id"]), "true" if i == 0 else "false",
+                   "" if i == 0 else "", t(o.get("label", ""))))
+
+            chain = "".join(
+                '<li class="ks3-chain-link"><p class="ks3-chain-scale">%s</p>'
+                '<p class="ks3-chain-text">%s</p></li>'
+                % (t(c.get("scale", "")), rich(c.get("text", "")))
+                for c in (o.get("chain") or []))
+
+            panels.append(
+                '<div class="ks3-sab-panel" data-cell="%s" data-sab="%s" hidden>'
+                '<div class="ks3-sab-what">'
+                '<p class="ks3-sab-what-label">The sabotage</p>'
+                '<p class="ks3-sab-what-text">%s</p></div>'
+                '<div class="ks3-sab-predict">'
+                '<p class="ks3-commit">%s</p>%s</div>'
+                '<div class="ks3-sab-chain" hidden data-reveal>'
+                '<div class="ks3-sab-figure">'
+                '<canvas class="ks3-sab-canvas" width="1800" height="840" '
+                'data-drawing="%s" data-sab="%s" role="img" aria-label="%s">'
+                '</canvas>'
+                '<p class="ks3-sab-caption">%s</p></div>'
+                '<p class="ks3-sab-pick" data-sab-pick></p>'
+                '<ol class="ks3-chain" role="list">%s</ol>'
+                '<p class="ks3-sab-close">%s</p></div></div>'
+                % (e(cell), e(o["id"]), rich(o.get("what", "")),
+                   t(a.get("commit") or "Commit first. What breaks first?"),
+                   r_activity_options(o.get("predict") or []),
+                   e(_drawing_for(lesson, cell)), e(o["id"]),
+                   e(o.get("alt", "")), t(o.get("caption", "")),
+                   chain,
+                   rich((o.get("close_safe") if safe else o.get("close")) or "")))
+
+    lede = a.get("lede") or ""
+    head_lede = lede.replace(
+        "{specimen}", '<strong data-sab-specimen></strong>')
+
+    return ('<div class="ks3-sab" data-bench-ref="%s" data-total="%d">'
+            '<p class="ks3-sab-progress" data-sab-progress>0 of %d sabotages '
+            'run</p>'
+            '<p class="ks3-sab-lede">%s</p>'
+            '<div class="ks3-sab-tabs">%s</div>%s</div>'
+            % (e(a.get("bench", "")), total, total, rich(head_lede),
+               "".join(tabs), "".join(panels)))
+
+
+def _drawing_for(lesson, specimen_id):
+    """Which drawing a sabotage's broken canvas paints — the cell's own."""
+    for act in lesson.get("activities") or []:
+        if act.get("kind") != "system-bench":
+            continue
+        for sp in act.get("specimens") or []:
+            if sp.get("id") == specimen_id:
+                return sp.get("drawing", "")
+    raise ValueError(
+        "sabotage names specimen %r, which the bench does not declare. The two "
+        "instruments share a cast and this one is off it." % specimen_id)
+
+
 def r_settles_it(a, act_id):
     """⊕ CONTRAST's flagship — sixteen judgements, and most of them decide nothing.
 
@@ -1790,6 +1983,10 @@ ACTIVITY_KIND_RENDERERS = {
                       ' data-instrument data-board data-stage-done="0"'),
     "sort-rows":     ("ks3-sort",
                       ' data-instrument data-sort data-stage-done="0"'),
+    "system-bench":  ("ks3-bench-block",
+                      ' data-instrument data-benchblock data-stage-done="0"'),
+    "sabotage":      ("ks3-sab-block",
+                      ' data-instrument data-sabotage data-stage-done="0"'),
     "settles-it":    ("ks3-settles",
                       ' data-instrument data-settles data-stage-done="0"'),
     # Expository: no control, no commitment, nothing to tick.
@@ -1909,6 +2106,10 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append(r_sort_rows(a, act_id))
     if kind == "settles-it":
         parts.append(r_settles_it(a, act_id))
+    if kind == "system-bench":
+        parts.append(r_system_bench(a, act_id))
+    if kind == "sabotage":
+        parts.append(r_sabotage(lesson, a, act_id))
     if a.get("scorecards"):
         parts.append(r_scorecards(a["scorecards"]))
 

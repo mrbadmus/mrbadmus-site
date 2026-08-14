@@ -2262,6 +2262,231 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-ink-body);
 }
 
+/* ── SYSTEM's bench and its sabotage engine (⊕ 14 Aug 2026) ─────────
+   b1-04 is the approved reference screen for SYSTEM, 32 slots, and both of
+   its instruments rendered as empty sections. Together they were 58% of the
+   page's missing height.
+
+   ⚠️ The cell picker is NOT the segmented control. Drift 4 records that
+   b1-04's light `seg()` branch is a full-width option ROW — `width:100%`,
+   `text-align:left`, `min-height:56px`, `--ks3-r-option` — that shares a
+   helper name with the segment and nothing else. Generating it as a segment
+   would produce the wrong component; generating the segment from it would
+   produce the wrong control everywhere else. */
+.ks3-bench-cells {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ks3-bench-cell {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  padding: 12px 14px;
+  min-height: 56px;
+  border-radius: var(--ks3-r-option);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-bench-cell[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+.ks3-bench-cell-name { display: block; font-size: 17px; font-weight: 700; line-height: 1.25; }
+.ks3-bench-cell-tag {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bench-cell[aria-pressed="true"] .ks3-bench-cell-tag { color: var(--ks3-accent-text); }
+
+.ks3-bench-figure {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  overflow: hidden;
+}
+.ks3-bench-canvas { display: block; width: 100%; height: auto; }
+.ks3-bench-caption {
+  margin: 0;
+  padding: 11px 16px;
+  border-top: 2px solid var(--ks3-rule);
+  background: var(--ks3-band);
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bench-panel {
+  margin-top: 16px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-bench-eyebrow {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bench-job { margin: 6px 0 0; font-size: 21px; line-height: 1.4; font-weight: 700; }
+.ks3-bench-where { margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body); }
+.ks3-tuning {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-tune {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+}
+/* The dial reads what was DONE to the part — turned off, turned up, reshaped.
+   Amber for taken away, accent for added to, band for reshaped. It is not a
+   mark on a student, so amber is right here in a way it never is on an
+   option. */
+.ks3-tune-dial {
+  display: grid;
+  place-items: center;
+  flex: 0 0 74px;
+  padding: 5px 0;
+  border-radius: 8px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink);
+  background: var(--ks3-band);
+}
+.ks3-tune-dial[data-dial="GONE"],
+.ks3-tune-dial[data-dial="NONE"],
+.ks3-tune-dial[data-dial="HALF"] { background: var(--ks3-alert-tint); }
+.ks3-tune-dial[data-dial="MORE"],
+.ks3-tune-dial[data-dial="EXTRA"] { background: var(--ks3-accent-tint); }
+.ks3-tune-part { display: block; font-size: 18px; font-weight: 700; }
+.ks3-tune-why { display: block; margin-top: 3px; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
+.ks3-bench-problem {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 19px;
+  line-height: 1.6;
+}
+.ks3-bench-problem strong { font-family: var(--ks3-font-display); }
+
+/* The sabotage engine, on the ink-dark practical ground. */
+.ks3-sab-progress {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-sab-lede { margin: 14px 0 0; font-size: 19px; line-height: 1.65; max-width: 58ch; }
+.ks3-sab-lede strong { color: var(--ks3-on-dark); }
+.ks3-sab-tabs { margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-sab-what {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-sab-what-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-sab-what-text { margin: 8px 0 0; font-size: 21px; line-height: 1.5; font-weight: 700; color: var(--ks3-on-dark); }
+.ks3-sab-predict { margin-top: 22px; }
+.ks3-sab-predict .ks3-commit { margin: 0 0 4px; }
+.ks3-sab-chain { margin-top: 22px; }
+.ks3-sab-figure {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-on-dark-muted);
+  overflow: hidden;
+}
+.ks3-sab-canvas { display: block; width: 100%; height: auto; }
+.ks3-sab-caption {
+  margin: 0;
+  padding: 11px 16px;
+  border-top: 2px solid var(--ks3-on-dark-muted);
+  background: var(--ks3-dark-panel);
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-sab-pick {
+  margin: 18px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-chain {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+/* Every link is a light card ON the dark block — the consequence leaves the
+   cell and lands in the world. The FIRST link is the cell itself and takes
+   the band ground and the full ink outline; the rest step outward. */
+.ks3-chain-link {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  border: 2px solid var(--ks3-rule-strong);
+}
+.ks3-chain-link:first-child { background: var(--ks3-band); border-color: var(--ks3-ink); }
+.ks3-chain-scale {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-chain-text { margin: 6px 0 0; font-size: 19px; line-height: 1.55; color: var(--ks3-ink); }
+.ks3-sab-close {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
 /* ── CONTRAST's flagship: settles-it (⊕ 14 Aug 2026) ────────────────
    Four mystery cells, four true facts each, sixteen judgements. Inherited by
    18 CONTRAST lessons. It rendered as an EMPTY section: the generic shell
