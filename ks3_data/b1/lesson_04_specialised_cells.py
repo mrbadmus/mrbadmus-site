@@ -67,11 +67,31 @@ marks below are the calls this file is holding for him.
 # the state (R2), so the polarity map belongs in the renderer and the six-value
 # dial belongs here.
 #
-# ⚑ SCIENCE, S2 — MIDE'S. The nerve cell's EXTRA row names `Fatty sheath`
-#   with no part number, where every other row names a numbered part from
-#   last lesson. The page's own key fact and misconception both say a
-#   specialised cell has NO new parts. Both sentences are Design's, both are
-#   lifted verbatim, and the tension ships exactly as delivered.
+# ⚖️ SCIENCE, S2 — RESOLVED 14 Aug 2026, on Mide's instruction to resolve it
+#   if the science is certain. It is, and the resolution costs one sentence.
+#
+#   The tension: the nerve cell's EXTRA row names `Fatty sheath` with no part
+#   number, where every other row names a numbered part from last lesson, and
+#   the page's own key fact says a specialised cell has NO new parts.
+#
+#   **A myelin sheath is not one of the nerve cell's parts at all.** It is the
+#   membrane of OTHER cells — Schwann cells in the peripheral nerves,
+#   oligodendrocytes in the brain and cord — wrapped repeatedly around the
+#   axon. The neuron grows no new organelle; a different cell wraps itself
+#   around it. So the key fact is not contradicted and neither sentence has to
+#   give way.
+#
+#   Better than that, it is the lesson's own idea. b1-04 is a SYSTEM lesson,
+#   and "another cell wraps itself around this one so it can do its job" is
+#   the SYSTEM point exactly — parts working together — where "this cell grew
+#   a part nobody else has" would have been an exception to the rule the
+#   lesson is teaching.
+#
+#   The added sentence names no cell type: Schwann cell and oligodendrocyte
+#   are KS4 vocabulary, on the same ground that keeps prokaryote and eukaryote
+#   off b1-06. The dial stays `EXTRA` — something extra IS there — and the row
+#   still has no part number, which is now the honest signal rather than an
+#   anomaly.
 #
 # `drawing` names a canvas ROUTINE, not an asset (gap G10). The same routine
 # draws the healthy cell here and the sabotaged one in #s-break; which variant
@@ -197,7 +217,9 @@ _SPECIMENS = [
           "why": "A fatty covering wrapped round the cable in segments with "
                  "tiny gaps between them. The signal jumps from gap to gap "
                  "instead of creeping along, which makes it many times "
-                 "faster."},
+                 "faster. The sheath is not one of the nerve cell's own "
+                 "parts — it is made of other cells wrapped tightly around "
+                 "it, which is why it is not on the list of seven."},
          {"dial": "MORE",
           "part": "Mitochondria (4)",
           "why": "Concentrated at the branched ends, where the signal is "
