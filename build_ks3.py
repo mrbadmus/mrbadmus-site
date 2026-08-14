@@ -586,7 +586,19 @@ def r_cards(cards):
 # through.
 SIM_CONTROLS = ("temperature", "volume", "particles", "medium",
                 # MRB-198 — the four names B1's two instruments declare.
-                "specimen", "magnification", "focus", "part")
+                "specimen", "magnification", "focus", "part",
+                # MRB-211 (G10, G11) — B1-06's bench. `centre` pans the field
+                # to a named organism; `motion` is the student's own stillness
+                # switch. Both are segmented, neither is a range.
+                "centre", "motion")
+
+# MRB-211 — the total magnifications this instrument HAS, i.e. EYEPIECE ×
+# OBJECTIVES in shared/ks3.js. Kept here so `resolve_notes` can be checked
+# against the lens turret that exists: a note keyed 200 would be authored,
+# validated, serialised and never once shown, which is the silent-defect class
+# every other gate in this function exists to close. If the turret is ever
+# re-ruled, these two lists move together.
+MICRO_TOTALS = (40, 100, 400)
 
 # MRB-198 — the microscope's slide models. Authored `specimens[]` entries are
 # free student-facing text ("onion skin — coverslip dropped flat"), but each
@@ -644,6 +656,233 @@ SIM_ARIA = {
         "below the animation lists what still works and what has stopped, "
         "in words.",
 }
+
+# MRB-211 — the organism shapes shared/ks3.js `drawOrganism` actually draws.
+# Same gate as `_specimen_kind`: a mount that declares a `tardigrade` would
+# render as nothing at all, in silence.
+MICRO_ORGANISMS = ("amoeba", "paramecium", "euglena")
+
+
+def _num(v):
+    return isinstance(v, (int, float)) and not isinstance(v, bool)
+
+
+def _microscope_payload(sim, act_id):
+    """The microscope's data attributes, validated (⊕ G9, G10, G11).
+
+    THREE attributes, and the split is by lifetime, not by taste:
+
+      `data-specimens` — the classifier strings, one per slide, exactly as
+        MRB-198 shipped them. Every microscope emits it and `specimenKind()`
+        reads it, so the B1-02 instrument and the parity sim audit are
+        untouched by anything below.
+      `data-mounts`    — G9. The rich per-slide payload: the button caption,
+        the authored organisms, and the three strings that switch WITH the
+        slide (`note`, `caption`, `alt`). One instrument, two mounts.
+      `data-bench`     — the bench's options: which mount opens, the centres
+        the field can be panned to and where they are offered, the motion
+        toggle's default and its two authored words, the per-magnification
+        resolve notes, and Design's own control captions.
+
+    Everything is checked here rather than in the browser for the reason the
+    whole of `r_sim` is: a bench that renders a "Move the slide to" caption
+    over nothing, or offers a mount the canvas cannot draw, is a defect the
+    page hides. The build is the only place that can refuse it.
+    """
+    controls = list(sim.get("controls") or [])
+    mounts = sim.get("mounts") or []
+    specimens = list(sim.get("specimens") or [])
+
+    if mounts and specimens:
+        raise ValueError(
+            "Activity %r declares BOTH mounts[] and specimens[]. They are the "
+            "same list in two shapes — mounts[] is specimens[] plus the "
+            "per-slide strings — and two sources for one slide list is how "
+            "the canvas and the selector come to disagree." % act_id)
+
+    if mounts:
+        ids = [m.get("id") for m in mounts]
+        if len(ids) != len(set(ids)) or not all(ids):
+            raise ValueError(
+                "Activity %r has missing or duplicate mount id(s): %r. The id "
+                "is what `centre_offered_on` and `start_mount` name."
+                % (act_id, ids))
+        for m in mounts:
+            if not m.get("label"):
+                raise ValueError(
+                    "Activity %r mount %r has no label — the selector would "
+                    "offer a blank slide." % (act_id, m.get("id")))
+            if _specimen_kind(m.get("specimen") or "") is None:
+                raise ValueError(
+                    "Activity %r mount %r names specimen %r, which "
+                    "shared/ks3.js has no slide model for (specimenKind() "
+                    "knows onion / onion-with-bubbles / cheek / pond). "
+                    "`specimen` is the classifier string; `label` is the "
+                    "caption, and it is free text."
+                    % (act_id, m.get("id"), m.get("specimen")))
+            for org in m.get("organisms") or []:
+                if org.get("kind") not in MICRO_ORGANISMS:
+                    raise ValueError(
+                        "Activity %r mount %r declares an organism of kind %r. "
+                        "shared/ks3.js draws only %s — anything else is drawn "
+                        "as nothing and narrated as nothing."
+                        % (act_id, m.get("id"), org.get("kind"),
+                           ", ".join(MICRO_ORGANISMS)))
+                missing = [k for k in ("x", "y", "depth", "len", "seed")
+                           if not _num(org.get(k))]
+                if missing:
+                    raise ValueError(
+                        "Activity %r mount %r has an organism missing numeric "
+                        "%s. All five are millimetres on the slide (bar the "
+                        "seed) and the drawing is computed from them."
+                        % (act_id, m.get("id"), ", ".join(missing)))
+        specimens = [str(m["specimen"]) for m in mounts]
+    else:
+        if not specimens:
+            raise ValueError(
+                "Activity %r declares a microscope sim with no specimens[] and "
+                "no mounts[] — the specimen selector would be an empty "
+                "<select>." % act_id)
+        unknown_slides = [s for s in specimens if _specimen_kind(s) is None]
+        if unknown_slides:
+            raise ValueError(
+                "Activity %r offers specimen(s) %s that shared/ks3.js has no "
+                "slide model for (specimenKind() knows onion / onion-with-"
+                "bubbles / cheek / pond). Either name the slide so it "
+                "classifies, or teach ks3.js to draw it — a slide that "
+                "renders as an empty field of view is a defect."
+                % (act_id, ", ".join(repr(s) for s in unknown_slides)))
+
+    mount_ids = [str(m["id"]) for m in mounts]
+    bench = {}
+
+    start = sim.get("start_mount")
+    if start is not None:
+        if str(start) not in mount_ids:
+            raise ValueError(
+                "Activity %r sets start_mount %r, which is not one of its "
+                "mounts %r." % (act_id, start, mount_ids))
+        bench["start"] = str(start)
+
+    # ── G10 · the centre control ──────────────────────────────────────────
+    centres = sim.get("centres") or []
+    has_centre = "centre" in controls
+    if has_centre and not centres:
+        raise ValueError(
+            "Activity %r declares the `centre` control with no centres[] — a "
+            "caption over an empty row. The centres are where the field can "
+            "be panned to." % act_id)
+    if centres and not has_centre:
+        raise ValueError(
+            "Activity %r authors centres[] but does not declare the `centre` "
+            "control, so the field can never be panned to any of them."
+            % act_id)
+    if centres:
+        cids = [c.get("id") for c in centres]
+        if len(cids) != len(set(cids)) or not all(cids):
+            raise ValueError(
+                "Activity %r has missing or duplicate centre id(s): %r"
+                % (act_id, cids))
+        for c in centres:
+            if not c.get("label"):
+                raise ValueError(
+                    "Activity %r centre %r has no label. The labels are "
+                    "AUTHORED teaching language — how the lesson refers to an "
+                    "organism the student cannot yet name — and are never "
+                    "derived from a kind." % (act_id, c.get("id")))
+            if not (_num(c.get("x")) and _num(c.get("y"))):
+                raise ValueError(
+                    "Activity %r centre %r needs numeric x and y — "
+                    "millimetres on the slide, which is what the field is "
+                    "translated by." % (act_id, c.get("id")))
+        bench["centres"] = [{"id": str(c["id"]), "label": str(c["label"]),
+                             "x": c["x"], "y": c["y"]} for c in centres]
+
+        offered = sim.get("centre_offered_on")
+        if offered is not None:
+            if not mounts:
+                raise ValueError(
+                    "Activity %r sets centre_offered_on without mounts[] — "
+                    "there is nothing to name." % act_id)
+            stray = [o for o in offered if str(o) not in mount_ids]
+            if stray:
+                raise ValueError(
+                    "Activity %r offers the centre control on %s, which "
+                    "is not a mount id. Mounts are %r."
+                    % (act_id, ", ".join(repr(s) for s in stray), mount_ids))
+            bench["centreOn"] = [str(o) for o in offered]
+
+    # ── G11 · the motion toggle ───────────────────────────────────────────
+    has_motion = "motion" in controls
+    if has_motion != bool(sim.get("motion_toggle")):
+        raise ValueError(
+            "Activity %r declares the `motion` control %s motion_toggle. The "
+            "control IS the toggle; one without the other is either a dead "
+            "switch or a promise with no button."
+            % (act_id, "without" if has_motion else "but not"))
+    if has_motion:
+        labels = sim.get("motion_labels") or []
+        if len(labels) != 2 or not all(str(x).strip() for x in labels):
+            raise ValueError(
+                "Activity %r needs exactly two non-empty motion_labels, on "
+                "and then off, got %r. The two words are CONTENT — "
+                "'Swimming' / 'Held still' is a Paramecium vocabulary choice, "
+                "not a generic on/off — so the engine will not invent them."
+                % (act_id, labels))
+        bench["motion"] = {"on": sim.get("motion_default") is not False,
+                           "labels": [str(x) for x in labels]}
+
+    # ── the per-magnification resolve note ────────────────────────────────
+    notes = sim.get("resolve_notes")
+    if notes:
+        keyed = {}
+        for k, v in notes.items():
+            try:
+                total = int(k)
+            except (TypeError, ValueError):
+                raise ValueError(
+                    "Activity %r keys a resolve note by %r. The keys are TOTAL "
+                    "magnifications: %s." % (act_id, k, MICRO_TOTALS))
+            if total not in MICRO_TOTALS:
+                raise ValueError(
+                    "Activity %r keys a resolve note by ×%d, which this "
+                    "instrument cannot reach. The turret gives %s."
+                    % (act_id, total,
+                       ", ".join("×%d" % m for m in MICRO_TOTALS)))
+            keyed[str(total)] = str(v)
+        absent = [m for m in MICRO_TOTALS if str(m) not in keyed]
+        if absent:
+            raise ValueError(
+                "Activity %r has resolve notes for some magnifications and "
+                "not %s. The note is the lesson answering its own gate, and a "
+                "lens that answers nothing reads as a lens with nothing to "
+                "say." % (act_id, ", ".join("×%d" % m for m in absent)))
+        bench["resolve"] = keyed
+
+    # Design's own control captions, which override CONTROL_LABELS' generic
+    # words ("Mount", not "Slide on the stage"). A caption for a control the
+    # lesson never declares would never be read, so it is refused.
+    labels = sim.get("control_labels") or {}
+    stray = [k for k in labels if k not in controls]
+    if stray:
+        raise ValueError(
+            "Activity %r labels control(s) %s that it does not declare in "
+            "controls[]. The caption would never be rendered."
+            % (act_id, ", ".join(repr(s) for s in stray)))
+    if labels:
+        bench["labels"] = {str(k): str(v) for k, v in labels.items()}
+
+    out = ' data-specimens="%s"' % e(json.dumps(
+        [str(s) for s in specimens], sort_keys=True))
+    if mounts:
+        keep = ("id", "label", "specimen", "note", "caption", "alt",
+                "organisms")
+        out += ' data-mounts="%s"' % e(json.dumps(
+            [{k: m[k] for k in keep if k in m} for m in mounts],
+            sort_keys=True))
+    if bench:
+        out += ' data-bench="%s"' % e(json.dumps(bench, sort_keys=True))
+    return out
 
 
 def r_sim(sim, act_id):
@@ -704,22 +943,7 @@ def r_sim(sim, act_id):
     # JSON into a data attribute; shared/ks3.js parses it back.
     extra = ""
     if kind == "microscope":
-        specimens = sim.get("specimens") or []
-        if not specimens:
-            raise ValueError(
-                "Activity %r declares a microscope sim with no specimens[] — "
-                "the specimen selector would be an empty <select>." % act_id)
-        unknown_slides = [s for s in specimens if _specimen_kind(s) is None]
-        if unknown_slides:
-            raise ValueError(
-                "Activity %r offers specimen(s) %s that shared/ks3.js has no "
-                "slide model for (specimenKind() knows onion / onion-with-"
-                "bubbles / cheek / pond). Either name the slide so it "
-                "classifies, or teach ks3.js to draw it — a slide that "
-                "renders as an empty field of view is a defect."
-                % (act_id, ", ".join(repr(s) for s in unknown_slides)))
-        extra = ' data-specimens="%s"' % e(json.dumps(
-            [str(s) for s in specimens], sort_keys=True))
+        extra = _microscope_payload(sim, act_id)
     elif kind == "system-parts":
         parts = sim.get("parts") or []
         if not parts:
@@ -783,6 +1007,251 @@ def r_sim(sim, act_id):
         % (e(kind), e(controls), extra, e(label), t(caption)))
 
 
+# ── the CLASSIFY instruments (⊕ §4.8.2 · G3, G4) ─────────────────────────
+#
+# Two activity KINDS, not two block types. §5.1.1's block vocabulary stays
+# closed: both render inside a `check` shell, which is what `core` names, and
+# `activities[].kind` is what distinguishes them. See ks3_data/b1/__init__.py's
+# header for the same ruling from the data side.
+#
+# ⚠️ BOTH ARE RENDERED WHOLE, AT BUILD TIME. Design's page holds all 28 lamp
+# results and all 8 evidence lines in a JavaScript constant and templates the
+# DOM from it; nothing in this generator works that way, and a page whose
+# content only exists once a script has run is a page that says nothing when the
+# script 404s. So every specimen panel and every evidence line is real markup,
+# `hidden` until the student has earned it — exactly the shape `_rung_self`
+# already uses for the ladder's success criteria.
+#
+# The consequence, stated plainly: a student who reads the page source can find
+# the answers. That is true of the ladder criteria too, and it is the accepted
+# trade in this system — the alternative is a lesson that is blank without JS.
+
+
+def _lamp_li(test, result):
+    """One lamp. R2: the state carries a WORD, never colour alone.
+
+    The word starts as "Tap to test" and ks3.js writes "Yes"/"No" from
+    `data-yes` when the lamp is tapped. It cannot be emitted resolved: the
+    verdict IS the finding the tap is supposed to produce.
+
+    The lamp is deliberately NOT a `.ks3-option`. Its resolved state differs by
+    the specimen's property, and R3's runtime assertion requires every
+    `.ks3-option` outside the ladder to render alike whichever was pressed — a
+    lamp that lit differently for "yes" and "no" would fail it, and rightly, if
+    it claimed to be an answer button. It is not one: it reports the SPECIMEN,
+    not the student.
+    """
+    yes, note = (result + [""])[:2] if isinstance(result, list) else (result, "")
+    return ('<li><button type="button" class="ks3-lamp" data-test="%s" '
+            'data-yes="%d" aria-pressed="false">'
+            '<span class="ks3-lamp-row">'
+            '<span class="ks3-lamp-badge" aria-hidden="true">%s</span>'
+            '<span class="ks3-lamp-name">%s</span>'
+            '<span class="ks3-lamp-verdict" data-lamp-verdict>Tap to test</span>'
+            '</span>'
+            '<span class="ks3-lamp-note">%s</span></button></li>'
+            % (e(test["key"]), 1 if yes else 0, t(test.get("initial", "")),
+               t(test.get("name", "")), t(note)))
+
+
+def _board_panel(a, spec, tests):
+    """One specimen's whole instrument: gate, lamps, verdict.
+
+    All four panels are in the document and only one is shown, which is what
+    makes the four instruments' progress independent WITHOUT any state to keep:
+    the DOM is the state. Switching specimens shows a panel that still holds
+    whatever the student did to it.
+    """
+    results = spec.get("results") or {}
+    predict = a.get("predict") or {}
+    opts = "".join(
+        _option_li(i, o, ' aria-pressed="false"')
+        for i, o in enumerate(predict.get("options") or []))
+
+    # ⊕ F4, Code's call (inventory §8c). Design REMOVES the prediction from the
+    # DOM the moment it is made, so a student cannot see what they wagered.
+    # It stays here, in its chosen state, and it stays CHANGEABLE — not
+    # `disabled`. Both halves are forced: R3's runtime assertion fails an
+    # activity option that is disabled, and fails a group whose options do not
+    # all render alike, which a one-way gate would produce the moment its
+    # unchosen sibling stayed resting. Keeping it live satisfies F4 and R3 at
+    # once, and contradicts nothing Design drew — the gate still opens the
+    # board, and the board never closes again.
+    gate = ('<div class="ks3-board-predict">'
+            '<p class="ks3-board-ask">%s</p>'
+            '<ul class="ks3-options ks3-board-options" role="list">%s</ul>'
+            '</div>' % (t(predict.get("prompt", "")), opts))
+
+    lamps = "".join(_lamp_li(x, results.get(x["key"])) for x in tests)
+
+    verdict = ('<div class="ks3-reveal ks3-board-verdict" data-reveal hidden>'
+               '<p class="ks3-board-verdict-head">%s</p>'
+               '<p class="ks3-board-verdict-body">%s</p>'
+               '<div class="ks3-board-extra">'
+               '<span class="ks3-board-extra-label">%s</span>'
+               '<span class="ks3-board-extra-answer">%s</span>'
+               '<span class="ks3-board-extra-note">%s</span>'
+               '</div></div>'
+               % (rich(spec.get("verdict_head", "")),
+                  rich(spec.get("verdict_body", "")),
+                  t(spec.get("extra_label", "The eighth test")),
+                  t(spec.get("extra_answer", "")),
+                  rich(spec.get("extra_note", ""))))
+
+    return ('<div class="ks3-board-panel" data-specimen="%s"%s>'
+            '<p class="ks3-board-name">%s</p>'
+            '<p class="ks3-board-blurb">%s</p>'
+            '%s'
+            '<div class="ks3-board-tests" data-board-tests hidden>'
+            '<div class="ks3-board-head">'
+            '<p class="ks3-board-instruction" data-board-instruction>'
+            'Tap each test to run it.</p>'
+            '<p class="ks3-board-tally" data-board-tally role="status">'
+            '0 of %d lit</p></div>'
+            '<ul class="ks3-lamps" role="list">%s</ul>'
+            '%s</div></div>'
+            % (e(spec["id"]), "" if spec.get("_first") else " hidden",
+               t(spec.get("name", "")), t(spec.get("blurb", "")),
+               gate, len(tests), lamps, verdict))
+
+
+def r_test_board(a, act_id):
+    """⊕ G3 — the seven-tests board. CLASSIFY's decision instrument.
+
+    Validation is the same discipline `r_sim` applies to a sim payload: an
+    instrument that renders half a specimen is worse than one that refuses to
+    build, because the hole is silent and the lesson still looks finished.
+    """
+    tests = a.get("tests") or []
+    specimens = a.get("specimens") or []
+    if not tests:
+        raise ValueError("test-board %r declares no tests[] — there would be "
+                         "nothing to tap." % act_id)
+    keys = [x.get("key") for x in tests]
+    if len(keys) != len(set(keys)) or not all(keys):
+        raise ValueError(
+            "test-board %r has missing or duplicate test key(s): %r. `initial` "
+            "may repeat (MRS GREN has two R's); `key` may not, because it is "
+            "what each specimen's results are looked up by." % (act_id, keys))
+    if len(specimens) < 2:
+        raise ValueError(
+            "test-board %r declares %d specimen(s). The instrument's whole "
+            "argument is comparison — a board with one specimen teaches that a "
+            "score settles it, which is the misconception it exists to break."
+            % (act_id, len(specimens)))
+    if not (a.get("predict") or {}).get("options"):
+        raise ValueError(
+            "test-board %r has no predict.options — Law 4's gate is what opens "
+            "the board, and without it the lamps are readable before the "
+            "student has committed to anything." % act_id)
+    for sp in specimens:
+        missing = [k for k in keys if k not in (sp.get("results") or {})]
+        if missing:
+            raise ValueError(
+                "test-board %r specimen %r supplies no result for test(s) %s. "
+                "Every specimen answers every test or the board has a lamp that "
+                "cannot resolve." % (act_id, sp.get("id"), ", ".join(missing)))
+
+    tabs = "".join(
+        '<li><button type="button" class="ks3-tab" data-specimen="%s" '
+        'aria-pressed="%s">%s</button></li>'
+        % (e(sp["id"]), "true" if i == 0 else "false", t(sp.get("name", "")))
+        for i, sp in enumerate(specimens))
+
+    panels = "".join(
+        _board_panel(a, dict(sp, _first=(i == 0)), tests)
+        for i, sp in enumerate(specimens))
+
+    return ('<ul class="ks3-tabs" role="list">%s</ul>%s' % (tabs, panels))
+
+
+def r_sort_rows(a, act_id):
+    """⊕ G4 — the three-way sorter, plus MRB-196's self-check.
+
+    R3 is the whole design constraint here and it is obeyed twice over: a chip
+    takes the same chosen treatment whichever category it names, and after the
+    reveal a wrong row is pixel-identical to a right one. The page states what
+    settles each item; it never says whether the student had it.
+
+    ⚖️ THE SELF-CHECK (MRB-196, ruled by Mide 13 Aug 2026). Design's sorter
+    reveals eight answers and never asks the student whether they matched, so
+    the student commits and never finds out — which Law 4 forbids. The record
+    carries `self_check` and it renders ONLY once the evidence is showing,
+    because before that there is nothing to compare against. There is no
+    `answer` key and there must never be one: nothing on any option button and
+    nothing on any row changes by what is picked. The page asks; it does not
+    grade.
+    """
+    cats = a.get("categories") or []
+    items = a.get("items") or []
+    if len(cats) < 2:
+        raise ValueError("sort-rows %r needs at least 2 categories, got %d — "
+                         "one box is not a sort." % (act_id, len(cats)))
+    if not items:
+        raise ValueError("sort-rows %r declares no items[]." % act_id)
+    for it in items:
+        if it.get("answer") not in cats:
+            raise ValueError(
+                "sort-rows %r item %r answers %r, which is not one of the "
+                "declared categories %r. The evidence line's lead word IS the "
+                "answer, so a stray one renders a category the student was "
+                "never offered." % (act_id, it.get("id"), it.get("answer"), cats))
+        if not (it.get("evidence") or "").strip():
+            raise ValueError(
+                "sort-rows %r item %r has no evidence. The reveal exists to say "
+                "what settles each one; a blank line says nothing and the "
+                "student has no way to self-mark it." % (act_id, it.get("id")))
+
+    rows = []
+    for it in items:
+        chips = "".join(
+            '<button type="button" class="ks3-sort-chip" data-cat="%s" '
+            'aria-pressed="false">%s</button>' % (e(c), t(c)) for c in cats)
+        # ⊕ F7, Code's call. Design's evidence carries `data-reveal` WITHOUT
+        # `class="ks3-reveal"`, so `animation-name` resolves to `none` and the
+        # 220ms reveal never fires — measured, inventory §3.2. The class is the
+        # animation's only hook; `.ks3-sort-evidence` then takes the panel back
+        # off it, exactly as `.ks3-dark .ks3-reveal` already re-paints the same
+        # base class for the ink-dark surface.
+        rows.append(
+            '<li class="ks3-sortrow" data-item="%s">'
+            '<div class="ks3-sortrow-main">'
+            '<span class="ks3-sortrow-name">%s</span>'
+            '<span class="ks3-sortrow-chips">%s</span></div>'
+            '<p class="ks3-reveal ks3-sort-evidence" data-reveal hidden>'
+            '<strong class="ks3-sort-answer">%s</strong> — %s</p></li>'
+            % (e(it.get("id", "")), t(it.get("name", "")), chips,
+               t(it["answer"]), rich(it["evidence"])))
+
+    self_check = ""
+    sc = a.get("self_check")
+    if sc:
+        if "answer" in sc:
+            raise ValueError(
+                "sort-rows %r self_check carries an `answer` key. It must not: "
+                "the student is asked how many of their own eight matched, and "
+                "only the student knows. A right answer here would put a mark "
+                "on an activity option, which R3 forbids." % act_id)
+        opts = "".join(_option_li(i, o, ' aria-pressed="false"')
+                       for i, o in enumerate(sc.get("options") or []))
+        note = ('<p class="ks3-selfcheck-note">%s</p>' % rich(sc["note"])
+                if sc.get("note") else "")
+        self_check = ('<div class="ks3-selfcheck" data-selfcheck hidden>'
+                      '<p class="ks3-selfcheck-q">%s</p>'
+                      '<ul class="ks3-options ks3-selfcheck-options" '
+                      'role="list">%s</ul>%s</div>'
+                      % (t(sc.get("question", "")), opts, note))
+
+    return ('<ul class="ks3-sortrows" role="list">%s</ul>'
+            '<div class="ks3-sort-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-sort-reveal" '
+            'data-sort-reveal disabled>%s</button>'
+            '<span class="ks3-sort-progress" data-sort-progress '
+            'data-total="%d">0 of %d sorted</span></div>%s'
+            % ("".join(rows), t(a.get("reveal_label") or "Show the answers"),
+               len(items), len(items), self_check))
+
+
 def _option_li(i, text, extra=""):
     """One answer button. The letter badge is the resting mark (R2/§5).
 
@@ -804,6 +1273,58 @@ def r_activity_options(options):
     return ('<ul class="ks3-options" role="list">%s</ul>'
             % "".join(_option_li(i, o, ' aria-pressed="false"')
                       for i, o in enumerate(options)))
+
+
+# The four FIFA steps as the OLD dict shape names them, in method order. Kept
+# as data rather than a hard-coded run of four `<p>`s so the two shapes go
+# through one renderer and cannot drift apart.
+#
+# No letters here on purpose: the dict shape has always rendered "Formula",
+# never "F · Formula", and this migration is not the place to restyle a shipped
+# page. The list shape carries its own letters because Design authored them.
+_FIFA_DICT_STEPS = (("formula", "Formula"), ("insert", "Insert"),
+                    ("fix", "Fix"), ("answer", "Answer"))
+
+
+def r_fifa(fifa):
+    """FIFA, in either authored shape (⊕ §4.8.2's one breaking change).
+
+    §4.8.2 turns `activities[].fifa` from a dict of four fixed keys into a LIST
+    of `{letter, name, line, note}`, so a worked example can name its own steps
+    ("Fine-tune", not "Fix") and hang a teaching note on each — which MRB-204
+    step 3 needs and four flat strings have nowhere to put.
+
+    BOTH SHAPES RENDER, and that is a deliberate choice over migrating the one
+    record still on the old shape (C1's `mass-fifa`). `ks3_data/` is owned by
+    another agent this session and editing it would be a collision; and a
+    renderer that accepts both is worth having anyway, because the old shape is
+    a strict subset of the new one — it is the new one with the letters and
+    names implied and no notes. Normalising here means there is exactly one
+    piece of markup, not two that are free to diverge.
+
+    ⚠️ The STAGED reveal is not built here. §4.8.2 moves the worked answer out
+    of `.ks3-fifa` into the `worked-example` block's stepper, which is b1-02's
+    task; until it lands, every step renders at once, exactly as the dict shape
+    always did. That is the status quo rather than a regression — but it means
+    b1-02's worked example currently shows its answer without asking, and the
+    stepper is what fixes that.
+    """
+    if isinstance(fifa, dict):
+        steps = [{"name": name, "line": fifa.get(key)}
+                 for key, name in _FIFA_DICT_STEPS]
+    else:
+        steps = list(fifa or [])
+
+    out = []
+    for s in steps:
+        # The letter is chrome and the name is the label; a step with neither
+        # would render a bare line with nothing saying which step it is.
+        label = " · ".join(x for x in (s.get("letter"), s.get("name")) if x)
+        note = ('<span class="ks3-fifa-note">%s</span>' % rich(s["note"])
+                if s.get("note") else "")
+        out.append('<p class="ks3-fifa-step"><strong>%s</strong> %s%s</p>'
+                   % (t(label), t(s.get("line")), note))
+    return '<div class="ks3-fifa">%s</div>' % "".join(out)
 
 
 def r_criteria(success):
@@ -840,29 +1361,110 @@ ACTIVITY_SHELLS = {
 }
 
 
-def r_activity(lesson, block_type, act_id):
+# ⊕ The activity-kind dispatch table, as a module-level constant.
+#
+# It is a constant rather than a dict literal inside `r_activity` so that
+# `verify_ks3.py` can read the REAL table and report every authored kind that
+# has no entry. That gate exists because MRB-203's registry works one level
+# above this one: it asks whether a BLOCK TYPE has a registered component, and
+# cannot see that an activity KIND it does not know falls through to the
+# generic prompt/options/reveal shell — which renders, validates, and passes
+# every gate while being the wrong component.
+#
+# That is not hypothetical. It is what Mide rejected on 11 August: B1-06's task
+# is "name the level for each of these eight and say what settled it" and it
+# rendered as a four-option multiple choice with eight items in the prompt.
+#
+#   kind -> (modifier class, marker attributes)
+#
+# The class is what the stylesheet hangs the instrument on; the attribute is
+# what shared/ks3.js dispatches on, and it also tells `wirePredictions` to keep
+# its hands off — an instrument owns every option inside it.
+ACTIVITY_KIND_RENDERERS = {
+    "test-board": ("ks3-board", " data-board"),
+    "sort-rows":  ("ks3-sort", " data-sort"),
+}
+
+# Kinds that ARE the generic shell, and are not waiting for a component.
+#
+# The distinction matters or the gate above is noise. A `predict` is a prompt,
+# some options and a reveal — the generic shell IS its drawn component, and C1
+# has shipped them since MRB-183 with Design's screens behind them. An
+# `instrument` kind is different: Design drew a specific mechanism for it, and
+# rendering it as prompt-options-reveal is the MRB-205 failure exactly.
+#
+# So a kind is either declared generic here, or it has a renderer above, or the
+# build says it is unrendered. There is no fourth state, and adding a kind to
+# this set is a claim someone has to defend in review.
+GENERIC_ACTIVITY_KINDS = {
+    "predict", "classify", "construct", "investigation", "lab",
+    "reveal-cards", "worked-example", "confrontation",
+}
+
+
+def r_activity(lesson, block_type, act_id, block=None):
     """The one activity renderer, with a per-type shell.
 
     Inner order is prompt → options → cards → sim → fifa → reveal → criteria:
     commit first, then the thing that tests the commitment, then the words that
     settle it. `data-activity` stays on the section because ks3.js walks up to
     it for the Law 4 gate.
+
+    ⊕ `block` is the `core[]` entry that named this activity, and it is passed
+    for one reason: its `anchor`. Before B1 round two an activity block dropped
+    it on the floor, so `#s-board`, `#s-sort` and `#s-think` were never emitted
+    and every rail link and hash link into an activity landed nowhere. The rail
+    cannot be built without this.
     """
     a = _activity(lesson, act_id)
     if not a:
         return ""
     shell_cls, eyebrow, prompt_tag = ACTIVITY_SHELLS[block_type]
-    parts = ['<section class="%s" data-activity="%s">' % (shell_cls, e(act_id))]
+    kind = a.get("kind") or ""
+
+    # ⊕ §4.8.2 — the two CLASSIFY instruments. Each takes a modifier class and
+    # a marker attribute: the class is what the stylesheet hangs the instrument
+    # on, and the attribute is what shared/ks3.js dispatches on. `data-board`
+    # and `data-sort` also tell `wirePredictions` to keep its hands off — an
+    # instrument owns every option inside it, and the generic Law 4 wiring
+    # would otherwise unhide the first `[data-reveal]` it found, which on the
+    # board is specimen one's verdict panel.
+    instrument = ACTIVITY_KIND_RENDERERS.get(kind)
+    marker = ""
+    if instrument:
+        shell_cls += " " + instrument[0]
+        # `data-stage-done` is the rail's completion contract (shared/ks3.js,
+        # `doneByDom`). Emitted at 0 rather than left absent so the rail reads
+        # the instrument's own predicate and never falls through to "anything
+        # in here is aria-pressed" — the specimen tabs would tick this stage on
+        # page load, and MRB-208 ruled that nothing is ticked on load.
+        marker = instrument[1] + ' data-stage-done="0"'
+
+    parts = ['<section class="%s"%s data-activity="%s"%s>'
+             % (shell_cls, _id_attr(block or {}), e(act_id), marker)]
+
+    # ⊕ §4.8.2 — a scoped eyebrow. Design's instrument shells carry
+    # "Your turn · test four things", not the shell's fixed "Your turn"; the
+    # fixed label is the fallback, never an override.
+    eyebrow = a.get("eyebrow") or eyebrow
 
     if block_type == "misconception":
         parts.append('<div class="ks3-mis-head">'
                      '<span class="ks3-mis-badge" aria-hidden="true">!</span>'
-                     '<p class="ks3-eyebrow">%s</p></div>' % e(eyebrow))
+                     '<p class="ks3-eyebrow">%s</p></div>' % t(eyebrow))
         quote = _misconception_quote(lesson, a.get("targets"))
         if quote:
             parts.append('<p class="ks3-mis-quote">“%s”</p>' % t(quote))
     else:
-        parts.append('<p class="ks3-eyebrow">%s</p>' % e(eyebrow))
+        parts.append('<p class="ks3-eyebrow">%s</p>' % t(eyebrow))
+
+    # ⊕ §4.8.2 — an explicit `heading` beside the prompt. The `check` shell
+    # promotes the PROMPT to the block's <h2>, which works while a block has
+    # only one of the two. Design's instruments carry both a title and a line
+    # of instruction under it, and without this the title would be lost.
+    if a.get("heading"):
+        parts.append("<h2>%s</h2>" % t(a["heading"]))
+        prompt_tag = "p"
 
     if a.get("prompt"):
         # ⚠️ A card grid keeps its prompt as prose even in a `check`. The prompt
@@ -874,6 +1476,11 @@ def r_activity(lesson, block_type, act_id):
         tag = "p" if a.get("cards") else prompt_tag
         parts.append("<%s>%s</%s>" % (tag, t(a["prompt"]), tag))
 
+    if kind == "test-board":
+        parts.append(r_test_board(a, act_id))
+    if kind == "sort-rows":
+        parts.append(r_sort_rows(a, act_id))
+
     if a.get("options"):
         parts.append(r_activity_options(a["options"]))
     if a.get("cards"):
@@ -881,13 +1488,7 @@ def r_activity(lesson, block_type, act_id):
     if a.get("sim"):
         parts.append(r_sim(a["sim"], act_id))
     if a.get("fifa"):
-        f = a["fifa"]
-        parts.append(
-            '<div class="ks3-fifa">'
-            '<p><strong>Formula</strong> %s</p><p><strong>Insert</strong> %s</p>'
-            '<p><strong>Fix</strong> %s</p><p><strong>Answer</strong> %s</p></div>'
-            % (t(f.get("formula")), t(f.get("insert")),
-               t(f.get("fix")), t(f.get("answer"))))
+        parts.append(r_fifa(a["fifa"]))
     if a.get("reveal"):
         # Law 4: the reveal is gated behind the student's commitment.
         parts.append('<div class="ks3-reveal" hidden data-reveal>%s</div>'
@@ -1073,15 +1674,27 @@ def r_key_fact(lesson, block):
     spec = dict(block)
     ref = block.get("ref")
     if ref is not None:
-        for kf in lesson.get("key_facts") or []:
-            if kf.get("id") == ref:
-                merged = dict(kf)
-                merged.update({k: v for k, v in block.items()
-                               if k not in ("ref", "type")})
-                spec = merged
-                break
+        facts = lesson.get("key_facts") or []
+        # `ref` is an id. It may also be a positional index, because a lesson
+        # with one key fact has no reason to name it and two of the six B1
+        # modules authored it that way. Both are unambiguous — an id is a
+        # string and an index is an int — so accepting both costs nothing and
+        # refusing one would fail the build over a spelling.
+        if isinstance(ref, int) and not isinstance(ref, bool):
+            if ref >= len(facts):
+                raise ValueError(
+                    "key-fact ref %d is out of range — the lesson declares %d"
+                    % (ref, len(facts)))
+            found = facts[ref]
         else:
-            raise ValueError("key-fact ref %r matches no key_facts[].id" % ref)
+            found = next((kf for kf in facts if kf.get("id") == ref), None)
+            if found is None:
+                raise ValueError(
+                    "key-fact ref %r matches no key_facts[].id" % ref)
+        merged = dict(found)
+        merged.update({k: v for k, v in block.items()
+                       if k not in ("ref", "type")})
+        spec = merged
     ground = _ground_of(spec, "band")
     return ('<div class="ks3-keyfact" data-ground="%s">'
             '<p class="ks3-keyfact-label">%s</p>'
@@ -1223,10 +1836,12 @@ BLOCK_RENDERERS = {
     "summary": lambda l, b: (
         '<section class="ks3-block ks3-dark ks3-keynote"%s><h2>Key note</h2>'
         '<p>%s</p></section>' % (_id_attr(b), rich(l.get("key_note", "")))),
-    "misconception": lambda l, b: r_activity(l, "misconception", b.get("id")),
-    "check": lambda l, b: r_activity(l, "check", b.get("id")),
-    "worked-example": lambda l, b: r_activity(l, "worked-example", b.get("id")),
-    "practical": lambda l, b: r_activity(l, "practical", b.get("id")),
+    # `b` is passed whole, not just its id: an activity block's `anchor` is what
+    # the rail and every hash link point at, and it lives on the BLOCK.
+    "misconception": lambda l, b: r_activity(l, "misconception", b.get("id"), b),
+    "check": lambda l, b: r_activity(l, "check", b.get("id"), b),
+    "worked-example": lambda l, b: r_activity(l, "worked-example", b.get("id"), b),
+    "practical": lambda l, b: r_activity(l, "practical", b.get("id"), b),
 }
 
 VALID_BLOCK_TYPES = set(BLOCK_RENDERERS)
@@ -1443,8 +2058,18 @@ def lesson_page(unit, lesson, registry, units_by_code):
 
     # Cross-discipline references (§4.6) — must render gracefully BEFORE the
     # referenced unit exists. This is a §9 slice gate.
+    #
+    # ⊕ A reference may be a bare lesson SLUG as well as a `{unit, lesson, why}`
+    # record. §4.6 frames the field as cross-discipline reuse, where naming the
+    # unit is the whole point — but Design's approved B1 endmatter cards point at
+    # SAME-UNIT lessons, and a same-unit pointer has no unit to name. Rather than
+    # make six lessons repeat their own unit code, a string is read as "a lesson
+    # in this unit". The dict form is unchanged and stays required the moment a
+    # reference crosses a unit boundary.
     connects = []
     for r in lesson.get("references") or []:
+        if isinstance(r, str):
+            r = {"unit": unit["code"], "lesson": r}
         tgt_unit = units_by_code.get(r["unit"])
         tgt = registry.get(r["lesson"])
         why = ('<p>%s</p>' % t(r["why"])) if r.get("why") else ""

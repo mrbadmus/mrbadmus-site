@@ -806,6 +806,54 @@ def main():
           if not link_problems
           else "%d dead: %s" % (len(link_problems), link_problems[0][:120]))
 
+    # ── MRB-203, one level down: an activity KIND with no renderer ──────
+    #
+    # MRB-203's registry asks whether a BLOCK TYPE has a registered component.
+    # It cannot see the hole one level below it: `r_activity` dispatches on
+    # `activities[].kind`, and a kind it does not know falls through to the
+    # generic shell — prompt, options, reveal — which renders, validates, and
+    # passes every gate while being the wrong component.
+    #
+    # That is not hypothetical. It is exactly what Mide rejected on 11 August:
+    # B1-06's task is "name the level for each of these eight and say what
+    # settled it" and it rendered as a four-option multiple choice with eight
+    # items in the prompt. MRB-205's words: "CLASSIFY has no reference screen,
+    # so there was no sorting component to render into, and the content was
+    # forced into the nearest shape that existed."
+    #
+    # So: every authored kind must have a dedicated branch in `r_activity`, or
+    # the build says which ones do not and how much of the page they are. It
+    # reports rather than fails, because failing would delete the six pages
+    # Mide is comparing — but it is loud, it names each kind and the lessons it
+    # costs, and it cannot be satisfied by the silence that produced the
+    # original defect.
+    import build_ks3 as _B
+    # The map is a module-level constant so this gate reads the real dispatch
+    # table rather than a copy that drifts. `getattr` only so that the gate
+    # degrades to "nothing is dispatched" instead of crashing if the constant
+    # is ever renamed — a gate that dies is a gate that gets deleted.
+    dispatched = set(getattr(_B, "ACTIVITY_KIND_RENDERERS", {}))
+    generic = set(getattr(_B, "GENERIC_ACTIVITY_KINDS", set()))
+    authored = {}
+    for u in _B.ks3_data.build_units():
+        for l in u.get("lessons", []):
+            for a in l.get("activities", []):
+                k = a.get("kind")
+                if k and k not in dispatched and k not in generic:
+                    authored.setdefault(k, set()).add(l["slug"])
+    unrendered = sorted(authored)
+    check("MRB-203 (kinds) · every instrument kind has its own renderer",
+          not unrendered,
+          "%d instrument kinds dispatched, %d declared generic, none "
+          "unrendered" % (len(dispatched), len(generic))
+          if not unrendered else
+          "%d instrument kind(s) fall through to the GENERIC prompt/options/"
+          "reveal shell — the page renders and every other gate passes, but it "
+          "is NOT Design's component: %s"
+          % (len(unrendered),
+             "; ".join("%s (%s)" % (k, ", ".join(sorted(authored[k])))
+                       for k in unrendered)))
+
     # §8.10 — the platform does not explain itself on the page.
     #
     # §8.10 is deliberately a discernment test and NOT a banned-phrase list,

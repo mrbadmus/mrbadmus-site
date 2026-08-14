@@ -927,6 +927,50 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-dark .ks3-sim-value { color: var(--ks3-on-dark-muted); }
 
+/* MRB-211 — a control that is a ROW OF BUTTONS: the bench's "Move the slide
+   to" and its movement toggle. The shell is `.ks3-sim-control` so the caption
+   sits over the control exactly as it does for a select or a wheel; only the
+   control itself differs, which is why this is a modifier and not a second
+   layout.
+
+   The caption is a <span>, not the <label> text, because `for` names one
+   labelable element and a group has three. `role="group"` +
+   `aria-labelledby` carries the same association. */
+.ks3-sim-control-caption { display: block; }
+.ks3-sim-seg { display: flex; flex-wrap: wrap; gap: 9px; }
+.ks3-sim-seg-btn {
+  cursor: pointer;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 11px 17px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-rule-strong);
+  background: transparent;
+  color: var(--ks3-ink-body);
+}
+/* R2 — the chosen state carries a WORD (`aria-pressed`, and the toggle's own
+   two words) and a border, never colour alone. R3 is untouched: nothing here
+   is an answer, only where the slide is and whether it is moving. */
+.ks3-sim-seg-btn[aria-pressed="true"] {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+  color: var(--ks3-accent-text);
+}
+/* On the ink-dark practical block, Design's own pair: the lit state is the
+   alert yellow with ink text, the resting state transparent on the muted
+   rule. */
+.ks3-dark .ks3-sim-seg-btn {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-sim-seg-btn[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+
 /* R19 — particle-states gets a band strip instead of a number, so the
    solid/liquid/gas changes are findable by dragging. No temperature is
    displayed, because naming one would imply a melting point for a model
