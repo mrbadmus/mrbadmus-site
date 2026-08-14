@@ -1346,6 +1346,238 @@ def r_sort_rows(a, act_id):
                len(items), e(_count_word(len(items))), len(items), self_check))
 
 
+def r_critique_steps(a, act_id):
+    """⊕ Judge someone else's method before you write your own.
+
+    Six steps, three of which cost him. A CHECKBOX SET, not a radio group —
+    the student marks every step they would change, so the demand is "find all
+    the faults", not "find the fault". Rendered as an empty section before this.
+
+    R3 holds and is worth stating: the verdict panels are keyed off the STEP's
+    own `fault`, which is the method's property and not the student's. Every
+    step opens identically whether or not it was tapped.
+    """
+    steps = a.get("steps") or []
+    if len(steps) < 3:
+        raise ValueError("critique-steps %r declares %d step(s)."
+                         % (act_id, len(steps)))
+    if not any(s.get("fault") for s in steps):
+        raise ValueError(
+            "critique-steps %r has no faulty step — there is nothing to find, "
+            "and a student who taps nothing is right." % act_id)
+
+    rows = "".join(
+        '<li class="ks3-step" data-fault="%d">'
+        '<button type="button" class="ks3-step-btn" aria-pressed="false">'
+        '<span class="ks3-step-num" aria-hidden="true">%d</span>'
+        '<span class="ks3-step-text">%s</span></button>'
+        '<p class="ks3-step-verdict" hidden data-reveal>'
+        '<strong class="ks3-step-word">%s</strong> %s</p></li>'
+        % (1 if s.get("fault") else 0, i + 1, rich(s.get("text", "")),
+           t(s.get("word", "")), rich(s.get("verdict", "")))
+        for i, s in enumerate(steps))
+
+    return ('<ul class="ks3-steps" role="list">%s</ul>'
+            '<div class="ks3-steps-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-steps-reveal" '
+            'data-steps-reveal disabled>%s</button>'
+            '<span class="ks3-steps-progress" data-steps-progress '
+            'data-zero="%s">%s</span></div>'
+            % (rows, t(a.get("reveal_label") or "Open them up"),
+               e(a.get("progress_zero") or "Pick at least one"),
+               t(a.get("progress_zero") or "Pick at least one")))
+
+
+def r_fifa_construct(lesson, a, act_id):
+    """⊕ MRB-204 step 4 — the student fills the steps before full FIFA.
+
+    Law 5's "the same artifact, produced by the student": the stepper's letters
+    and these fields' letters must match in order, and the model, the fields
+    and the success criteria must be the same length. Asserted here rather
+    than trusted, because the claim is the whole point of the pairing.
+
+    Two defects on Design's page are fixed rather than reproduced, both stated:
+
+    1. **Check accepts an empty attempt** and reveals the full model. A student
+       who taps it first has been handed the answer before writing anything,
+       which is what steps 3 and 4 exist to prevent. Gated on a non-empty field.
+    2. **The typed working does not survive a re-render.** `<input value=…>`
+       sets an ATTRIBUTE, which the element reads only as its default, so the
+       first tick wipes what the student wrote. No `value` attribute is emitted.
+    """
+    fields = a.get("fields") or []
+    model = a.get("model") or []
+    success = a.get("success") or []
+    if not (len(fields) == len(model) == len(success)):
+        raise ValueError(
+            "fifa-construct %r has %d fields, %d model lines and %d success "
+            "criteria. Law 5 says the student produces the SAME artifact, and "
+            "three different lengths cannot describe one."
+            % (act_id, len(fields), len(model), len(success)))
+
+    stepper = next((x for x in (lesson.get("activities") or [])
+                    if x.get("kind") == "worked-example" and x.get("staged")), None)
+    if stepper:
+        want = [s.get("letter") for s in (stepper.get("fifa") or [])]
+        got = [f.get("letter") for f in fields]
+        if want != got:
+            raise ValueError(
+                "fifa-construct %r asks for %r and the worked example it "
+                "mirrors shows %r. The letters and their ORDER are the shared "
+                "artifact." % (act_id, got, want))
+
+    rows = "".join(
+        '<div class="ks3-fifa-field">'
+        '<label class="ks3-fifa-label" for="%s">'
+        '<span class="ks3-fifa-letter" aria-hidden="true">%s</span> %s</label>'
+        '<input class="ks3-fifa-input" type="text" id="%s" data-fifa-input '
+        'placeholder="%s" autocomplete="off"></div>'
+        % (e("ks3-fifa-%s" % f["id"]), t(f.get("letter", "")),
+           t(f.get("label", "")), e("ks3-fifa-%s" % f["id"]),
+           e(f.get("placeholder", "")))
+        for f in fields)
+
+    lines = "".join('<li class="ks3-model-line">%s</li>' % t(m) for m in model)
+    ticks = "".join(
+        '<li class="ks3-tick"><input type="checkbox" id="%s" data-crit>'
+        '<label for="%s"><span class="ks3-tick-num">%d</span> %s</label></li>'
+        % (e("ks3-fifa-crit-%s-%d" % (act_id, i)),
+           e("ks3-fifa-crit-%s-%d" % (act_id, i)), i + 1, t(s))
+        for i, s in enumerate(success))
+
+    return ('<div class="ks3-construct">%s'
+            '<div class="ks3-construct-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-construct-check" '
+            'data-construct-check disabled>%s</button>'
+            '<span class="ks3-construct-hint" data-construct-hint>%s</span>'
+            '</div>'
+            '<div class="ks3-construct-out" hidden data-reveal>'
+            '<p class="ks3-model-lead">%s</p>'
+            '<ol class="ks3-model" role="list">%s</ol>'
+            '<p class="ks3-crit-lead">Did you do all of these?</p>'
+            '<ul class="ks3-ticks" role="list">%s</ul>'
+            '<p class="ks3-construct-tally" hidden data-construct-tally '
+            'role="status">%s</p></div></div>'
+            % (rows, t(a.get("check_label") or "Check my working"),
+               t("Write at least one step first"),
+               t(a.get("model_lead", "")), lines, ticks,
+               t(a.get("tally_met", ""))))
+
+
+TRI_W, TRI_H, TRI_PAD, TRI_DIV_Y = 260, 216, 8, 130
+
+
+def _triangle_geometry():
+    """MRB-204 step 2's three cover boxes, DERIVED from the viewBox.
+
+    They are a function of the fixed 260×216 frame and its dividers, so nothing
+    is authored per lesson. Authoring twelve magic numbers a lesson is exactly
+    the hand-authoring the generator exists to remove — and it is what produced
+    four console errors on Design's own page, where they were left as template
+    placeholders (`<rect> attribute x: Expected length, "{{ coverX }}"`; SVG
+    geometry attributes are typed and reject a placeholder).
+    """
+    apex_x = TRI_W / 2.0
+    base_y = TRI_H - TRI_PAD
+    # Half-width of the triangle at any y, from similar triangles.
+    def half(y):
+        return (apex_x - TRI_PAD) * (y - TRI_PAD) / (base_y - TRI_PAD)
+
+    # ⚠️ A RECTANGLE IN A TRIANGLE ALWAYS OVERHANGS, unless it is sized at its
+    # own narrowest edge — and a box that narrow cannot hold the word it is
+    # meant to hide. That is not a slip in Design's numbers, it is a property
+    # of the shape, and it is why Design's `total` cover sits ~35 units outside
+    # the sloping sides at its top edge.
+    #
+    # So the covers are sized GENEROUSLY, to cover their labels, and CLIPPED to
+    # the triangle. The clip is what makes the geometry honest: a cover can be
+    # as wide as the word needs and can never paint outside the shape. Derived
+    # from the frame either way — nothing here is authored per lesson.
+    pad, gutter = 16, 12
+    top_h, low_h = 52, 48
+    top_w = 2 * half(TRI_DIV_Y) - 2 * pad
+    top = (apex_x - top_w / 2.0, TRI_DIV_Y - top_h - pad, top_w, top_h)
+    low_w = half(base_y) - gutter - pad
+    left = (apex_x - gutter / 2.0 - low_w, TRI_DIV_Y + pad, low_w, low_h)
+    right = (apex_x + gutter / 2.0, TRI_DIV_Y + pad, low_w, low_h)
+    return {"top": top, "left": left, "right": right,
+            "apex": (apex_x, TRI_PAD), "base": (TRI_PAD, base_y,
+                                                TRI_W - TRI_PAD, base_y),
+            "div_half": half(TRI_DIV_Y)}
+
+
+def r_formula_triangle(tri):
+    """MRB-204 step 2 — the formula drawn as a triangle, in KS3 tokens.
+
+    ⚠️ CORRECTED. Design's three cover boxes overhang the sloping sides —
+    the `total` one by about 35 units at its top edge. It is not a slip and it
+    is not nudgeable: a rectangle inside a triangle always overhangs unless it
+    is sized at its own narrowest edge, and a box that narrow cannot hold the
+    word it exists to hide. The covers are therefore sized to their labels and
+    CLIPPED to the triangle path, so a cover can be as wide as the word needs
+    and can never paint outside the shape. Both the boxes and the clip are
+    derived from the frame; nothing is authored per lesson.
+    """
+    g = _triangle_geometry()
+    # One triangle per page today; the id is derived from the aria-label so two
+    # on one page would still not collide.
+    clip_id = "ks3-tri-clip-%s" % hashlib.md5(
+        (tri.get("aria_label", "") or "t").encode("utf-8")).hexdigest()[:8]
+    ax, ay = g["apex"]
+    x1, y1, x2, y2 = g["base"]
+    dh = g["div_half"]
+
+    def cover(key):
+        x, y, w, h = g[key]
+        return ('<rect class="ks3-tri-cover" data-cover="%s" x="%.2f" y="%.2f" '
+                'width="%.2f" height="%.2f" rx="8"></rect>'
+                % (e(key), x, y, w, h))
+
+    labels = ""
+    for key, (lx, ly) in (("top", (ax, TRI_DIV_Y - 42)),
+                          ("left", (ax - 44, TRI_DIV_Y + 46)),
+                          ("right", (ax + 44, TRI_DIV_Y + 46))):
+        labels += ('<text class="ks3-tri-label" x="%.2f" y="%.2f" '
+                   'text-anchor="middle">%s</text>'
+                   % (lx, ly, t((tri.get(key) or {}).get("label", ""))))
+
+    btns = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-tri-btn" '
+        'data-cover="%s" aria-pressed="false">%s</button>'
+        % (e(k), t((tri.get(k) or {}).get("button", "")))
+        for k in ("top", "left", "right"))
+
+    notes = "".join(
+        '<p class="ks3-tri-note" data-note="%s" hidden>%s</p>'
+        % (e(k), rich((tri.get(k) or {}).get("text", "")))
+        for k in ("top", "left", "right"))
+
+    close = ('<p class="ks3-tri-close">%s</p>' % rich(tri["close"])
+             if tri.get("close") else "")
+
+    return ('<div class="ks3-triangle" data-triangle>'
+            '<p class="ks3-eyebrow">%s</p><p class="ks3-tri-heading">%s</p>'
+            '<svg class="ks3-tri-svg" viewBox="0 0 %d %d" role="img" '
+            'aria-label="%s">'
+            '<defs><clipPath id="%s">'
+            '<path d="M %.2f %.2f L %.2f %.2f L %.2f %.2f Z"/></clipPath></defs>'
+            '<path class="ks3-tri-path" d="M %.2f %.2f L %.2f %.2f L %.2f %.2f Z"/>'
+            '<line class="ks3-tri-div" x1="%.2f" y1="%d" x2="%.2f" y2="%d"/>'
+            '<line class="ks3-tri-div" x1="%.2f" y1="%d" x2="%.2f" y2="%.2f"/>'
+            '%s%s%s</svg>'
+            '<div class="ks3-tri-btns">%s</div>%s%s</div>'
+            % (t(tri.get("eyebrow", "")), t(tri.get("heading", "")),
+               TRI_W, TRI_H, e(tri.get("aria_label", "")),
+               clip_id, ax, ay, x2, y2, x1, y1,
+               ax, ay, x2, y2, x1, y1,
+               ax - dh, TRI_DIV_Y, ax + dh, TRI_DIV_Y,
+               ax, TRI_DIV_Y, ax, y2,
+               labels,
+               '<g clip-path="url(#%s)">%s</g>'
+               % (clip_id, cover("top") + cover("left") + cover("right")), "",
+               btns, notes, close))
+
+
 def r_cell_bench(a, act_id):
     """⊕ MODEL's flagship — seven parts, two cells, two ways of looking.
 
@@ -2310,7 +2542,7 @@ _FIFA_DICT_STEPS = (("formula", "Formula"), ("insert", "Insert"),
                     ("fix", "Fix"), ("answer", "Answer"))
 
 
-def r_fifa(fifa):
+def r_fifa(fifa, staged=False, buttons=None):
     """FIFA, in either authored shape (⊕ §4.8.2's one breaking change).
 
     §4.8.2 turns `activities[].fifa` from a dict of four fixed keys into a LIST
@@ -2340,15 +2572,25 @@ def r_fifa(fifa):
         steps = list(fifa or [])
 
     out = []
-    for s in steps:
+    for i, s in enumerate(steps):
         # The letter is chrome and the name is the label; a step with neither
         # would render a bare line with nothing saying which step it is.
         label = " · ".join(x for x in (s.get("letter"), s.get("name")) if x)
         note = ('<span class="ks3-fifa-note">%s</span>' % rich(s["note"])
                 if s.get("note") else "")
-        out.append('<p class="ks3-fifa-step"><strong>%s</strong> %s%s</p>'
-                   % (t(label), t(s.get("line")), note))
-    return '<div class="ks3-fifa">%s</div>' % "".join(out)
+        out.append('<p class="ks3-fifa-step"%s><strong>%s</strong> %s%s</p>'
+                   % (' hidden data-step="%d"' % i if staged else "",
+                      t(label), t(s.get("line")), note))
+    if not staged:
+        return '<div class="ks3-fifa">%s</div>' % "".join(out)
+    b = buttons or {}
+    return ('<div class="ks3-fifa ks3-fifa-staged" data-stepper '
+            'data-total="%d" data-next="%s" data-done="%s">%s'
+            '<button type="button" class="ks3-reveal-btn ks3-step-next" '
+            'data-step-next>%s</button></div>'
+            % (len(out), e(b.get("next", "Show the next step")),
+               e(b.get("done", "All steps shown")), "".join(out),
+               t(b.get("first", "Show the first step"))))
 
 
 def r_criteria(success):
@@ -2427,6 +2669,10 @@ ACTIVITY_KIND_RENDERERS = {
                       ' data-instrument data-board data-stage-done="0"'),
     "sort-rows":     ("ks3-sort",
                       ' data-instrument data-sort data-stage-done="0"'),
+    "critique-steps": ("ks3-critique",
+                       ' data-instrument data-critique data-stage-done="0"'),
+    "fifa-construct": ("ks3-construct-block",
+                       ' data-instrument data-construct data-stage-done="0"'),
     "cell-bench":    ("ks3-cellbench-block",
                       ' data-instrument data-cellbench data-stage-done="0"'),
     "sort-pairs":    ("ks3-pairs", ' data-instrument data-pairs data-stage-done="0"'),
@@ -2560,6 +2806,10 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append(r_sort_rows(a, act_id))
     if kind == "settles-it":
         parts.append(r_settles_it(a, act_id))
+    if kind == "critique-steps":
+        parts.append(r_critique_steps(a, act_id))
+    if kind == "fifa-construct":
+        parts.append(r_fifa_construct(lesson, a, act_id))
     if kind == "cell-bench":
         parts.append(r_cell_bench(a, act_id))
     if kind == "sort-pairs":
@@ -2586,7 +2836,13 @@ def r_activity(lesson, block_type, act_id, block=None):
     if a.get("sim"):
         parts.append(r_sim(a["sim"], act_id))
     if a.get("fifa"):
-        parts.append(r_fifa(a["fifa"]))
+        # ⊕ MRB-204 step 3 — a STAGED reveal, one step at a time, on tap. A
+        # worked example a student reads is one they watch happen to somebody
+        # else; the point of the pause is that they try the next line first.
+        # One-way: there is no collapse, because unshowing a step teaches
+        # nothing and gives a student a way to lose their place.
+        parts.append(r_fifa(a["fifa"], staged=bool(a.get("staged")),
+                            buttons=a.get("buttons") or {}))
     if a.get("reveal"):
         # Law 4: the reveal is gated behind the student's commitment.
         parts.append('<div class="ks3-reveal" hidden data-reveal>%s</div>'
@@ -2848,9 +3104,14 @@ def r_formula(lesson, block):
     and a future tidy-up will try to merge them, so a parity pair asserts they
     stay apart.
     """
+    # ⊕ MRB-204 step 2 — the triangle, in the same block as the statement it
+    # draws. Design gives them separate shells inside one classless section;
+    # both are the formula, and a student flicking back wants them together.
+    tri = (r_formula_triangle(block["triangle"])
+           if block.get("triangle") else "")
     return ('<section class="ks3-formula"%s>'
-            '<div class="ks3-formula-statement"><p>%s</p></div></section>'
-            % (_id_attr(block), t(block.get("statement", ""))))
+            '<div class="ks3-formula-statement"><p>%s</p></div>%s</section>'
+            % (_id_attr(block), t(block.get("statement", "")), tri))
 
 
 def r_comparison(lesson, block):

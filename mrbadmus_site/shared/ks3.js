@@ -4660,6 +4660,162 @@
     repaint();
   }
 
+
+  /* ═══════════════════════════════════════════════════════════════
+     b1-02 — MRB-204's remaining three formula components and the
+     step critique. Ruled by Mide: a KS3 formula gets all four, in
+     order, and steps 3 and 4 are the ones that teach.
+     ═══════════════════════════════════════════════════════════════ */
+
+  function wireCritique(sec) {
+    var steps = toArray(sec.querySelectorAll(".ks3-step"));
+    var btn = sec.querySelector("[data-steps-reveal]");
+    var prog = sec.querySelector("[data-steps-progress]");
+    if (!steps.length) { return; }
+    var zero = (prog && prog.getAttribute("data-zero")) || "Pick at least one";
+
+    function picked() {
+      var n = 0;
+      each(steps, function (s) {
+        if (s.querySelector('.ks3-step-btn[aria-pressed="true"]')) { n += 1; }
+      });
+      return n;
+    }
+    function repaint() {
+      var n = picked();
+      if (prog) {
+        prog.textContent = n
+          ? n + " of " + steps.length + " marked"
+          : zero;
+      }
+      if (btn) {
+        if (!n) { btn.setAttribute("disabled", ""); }
+        else { btn.removeAttribute("disabled"); }
+      }
+    }
+    each(steps, function (s) {
+      var b = s.querySelector(".ks3-step-btn");
+      // A checkbox set: each toggles on its own and never unpicks a sibling.
+      b.addEventListener("click", function () {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("aria-pressed") === "true" ? "false" : "true");
+        repaint();
+      });
+    });
+    if (btn) {
+      btn.addEventListener("click", function () {
+        if (!picked()) { return; }
+        each(steps, function (s) { setHidden(s.querySelector("[data-reveal]"), false); });
+        btn.setAttribute("aria-expanded", "true");
+        markStage(sec, true);   // `steps_opened`
+      });
+    }
+    repaint();
+  }
+
+  /* MRB-204 step 3. One way — there is no collapse, because unshowing a step
+     teaches nothing and gives a student a way to lose their place. */
+  function wireStepper(sec) {
+    var wrap = sec.querySelector("[data-stepper]");
+    if (!wrap) { return; }
+    var lines = toArray(wrap.querySelectorAll("[data-step]"));
+    var btn = wrap.querySelector("[data-step-next]");
+    var total = lines.length;
+    var shown = 0;
+    var nextWord = wrap.getAttribute("data-next") || "Show the next step";
+    var doneWord = wrap.getAttribute("data-done") || "All steps shown";
+    if (!btn) { return; }
+    btn.addEventListener("click", function () {
+      if (shown >= total) { return; }
+      setHidden(lines[shown], false);
+      shown += 1;
+      if (shown >= total) {
+        btn.textContent = doneWord;
+        btn.setAttribute("disabled", "");
+        markStage(sec, true);   // `all_steps_shown`
+      } else {
+        btn.textContent = nextWord;
+      }
+    });
+  }
+
+  /* MRB-204 step 4. Law 5's "the same artifact, produced by the student". */
+  function wireConstruct(sec) {
+    var wrap = sec.querySelector(".ks3-construct");
+    if (!wrap) { return; }
+    var inputs = toArray(wrap.querySelectorAll("[data-fifa-input]"));
+    var btn = wrap.querySelector("[data-construct-check]");
+    var hint = wrap.querySelector("[data-construct-hint]");
+    var out = wrap.querySelector("[data-reveal]");
+    var tally = wrap.querySelector("[data-construct-tally]");
+    var ticks = toArray(wrap.querySelectorAll("[data-crit]"));
+
+    function written() {
+      var n = 0;
+      each(inputs, function (i) { if (i.value.trim()) { n += 1; } });
+      return n;
+    }
+    function repaint() {
+      var n = written();
+      // ⊕ Design's Check accepts an EMPTY attempt and reveals the full model.
+      // A student who taps it first has been handed the answer before writing
+      // anything, which is the whole thing steps 3 and 4 exist to prevent.
+      if (btn) {
+        if (!n) { btn.setAttribute("disabled", ""); }
+        else { btn.removeAttribute("disabled"); }
+      }
+      if (hint) {
+        hint.textContent = n
+          ? n + " of " + inputs.length + " written"
+          : "Write at least one step first";
+      }
+    }
+    each(inputs, function (i) {
+      i.addEventListener("input", repaint);
+      i.addEventListener("change", repaint);
+    });
+    if (btn) {
+      btn.addEventListener("click", function () {
+        if (!written()) { return; }
+        setHidden(out, false);
+        if (out) { out.setAttribute("role", "status"); }
+        btn.setAttribute("aria-expanded", "true");
+      });
+    }
+    // R8: the student marks themselves. Nothing here checks their arithmetic.
+    each(ticks, function (c) {
+      c.addEventListener("change", function () {
+        var all = ticks.every(function (x) { return x.checked; });
+        setHidden(tally, !all);
+        markStage(sec, all);   // `attempt_checked`
+      });
+    });
+    repaint();
+  }
+
+  /* MRB-204 step 2. Cover the one you want. */
+  function wireTriangle(root) {
+    each(root.querySelectorAll("[data-triangle]"), function (tri) {
+      var btns = toArray(tri.querySelectorAll(".ks3-tri-btn"));
+      var notes = toArray(tri.querySelectorAll(".ks3-tri-note"));
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          var key = b.getAttribute("data-cover");
+          var on = tri.getAttribute("data-covered") === key;
+          if (on) { tri.removeAttribute("data-covered"); }
+          else { tri.setAttribute("data-covered", key); }
+          each(btns, function (x) {
+            x.setAttribute("aria-pressed",
+              !on && x.getAttribute("data-cover") === key ? "true" : "false");
+          });
+          each(notes, function (n) {
+            setHidden(n, on || n.getAttribute("data-note") !== key);
+          });
+        });
+      });
+    });
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -4675,6 +4831,12 @@
     each(root.querySelectorAll("[data-cellbench]"), wireCellBench);
     each(root.querySelectorAll("[data-pairs]"), wirePairs);
     each(root.querySelectorAll("[data-fitblock]"), wireFit);
+    each(root.querySelectorAll("[data-critique]"), wireCritique);
+    each(root.querySelectorAll("[data-construct]"), wireConstruct);
+    each(root.querySelectorAll("[data-stepper]"), function (w) {
+      wireStepper(w.closest("[data-activity]") || w.parentNode);
+    });
+    wireTriangle(root);
   }
 
   // ── the progress rail (MRB-208 rule 2) ──────────────────────────────

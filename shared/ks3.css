@@ -2262,6 +2262,192 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-ink-body);
 }
 
+/* ── b1-02: MRB-204's four formula components + critique-steps ──────
+   Ruled by Mide: wherever a KS3 lesson uses a formula it gets all four, in
+   order — the formula stands alone, it is DRAWN as a triangle, the first
+   worked example reveals one step at a time on tap, and then the student
+   fills the steps themselves before meeting full FIFA questions. Only the
+   first was built. */
+.ks3-steps {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-step-btn {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  padding: 15px 18px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-option);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+}
+/* A CHECKBOX SET, not a radio group: three of the six cost him, so the demand
+   is "find all the faults" and a control that unpicks its siblings would make
+   that impossible. */
+.ks3-step-btn[aria-pressed="true"] { border-color: var(--ks3-accent); background: var(--ks3-accent-tint); }
+.ks3-step-num {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 16px;
+}
+.ks3-step-text { font-size: 19px; line-height: 1.5; }
+/* The verdict is keyed off the STEP's own fault — the method's property, not
+   the student's — so it reads the same whether or not it was tapped. The
+   46px indent is 32px of badge plus the 14px gap, derived rather than typed. */
+.ks3-step-verdict {
+  margin: 10px 0 0 46px;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  font-size: 18px;
+  line-height: 1.55;
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-rule-strong);
+  color: var(--ks3-ink-body);
+}
+.ks3-step[data-fault="1"] .ks3-step-verdict {
+  background: var(--ks3-alert-tint);
+  border-color: var(--ks3-alert-border);
+}
+.ks3-step-word { font-family: var(--ks3-font-display); color: var(--ks3-ink); }
+.ks3-steps-foot { margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.ks3-steps-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-steps-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+
+/* MRB-204 step 2 — the triangle. Cover the one you want. */
+.ks3-triangle { margin-top: 26px; text-align: center; }
+.ks3-tri-heading {
+  margin: 4px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: -.02em;
+}
+.ks3-tri-svg { display: block; width: 260px; max-width: 100%; height: auto; margin: 16px auto 0; }
+.ks3-tri-path { fill: var(--ks3-band); stroke: var(--ks3-ink); stroke-width: 3; stroke-linejoin: round; }
+.ks3-tri-div { stroke: var(--ks3-ink); stroke-width: 3; stroke-linecap: round; }
+.ks3-tri-label {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 22px;
+  fill: var(--ks3-ink);
+}
+/* The cover is the mechanism. It is invisible until its term is covered, and
+   then it is a solid ink block with the word gone — which is what "cover the
+   one you want" means physically. */
+.ks3-tri-cover { fill: var(--ks3-ink); opacity: 0; pointer-events: none; transition: opacity .16s; }
+.ks3-triangle[data-covered="top"] .ks3-tri-cover[data-cover="top"],
+.ks3-triangle[data-covered="left"] .ks3-tri-cover[data-cover="left"],
+.ks3-triangle[data-covered="right"] .ks3-tri-cover[data-cover="right"] { opacity: 1; }
+.ks3-tri-btns { margin-top: 18px; display: flex; gap: 9px; flex-wrap: wrap; justify-content: center; }
+.ks3-tri-note {
+  margin: 16px auto 0;
+  max-width: 46rem;
+  padding: 16px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+  text-align: left;
+}
+.ks3-tri-close { margin: 16px auto 0; max-width: 46rem; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body); }
+
+/* MRB-204 step 3 — the staged stepper. One way: there is no collapse. */
+.ks3-fifa-staged .ks3-step-next { margin-top: 14px; }
+.ks3-fifa-staged .ks3-step-next[disabled] { opacity: .45; cursor: default; transform: none; }
+
+/* MRB-204 step 4 — the student's own four steps. */
+.ks3-construct { margin-top: 18px; }
+.ks3-fifa-field { margin-top: 14px; }
+.ks3-fifa-label { display: block; font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+.ks3-fifa-letter {
+  display: inline-grid;
+  place-items: center;
+  width: 26px; height: 26px;
+  margin-right: 8px;
+  border-radius: 8px;
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 14px;
+  vertical-align: middle;
+}
+.ks3-fifa-input {
+  width: 100%;
+  font: inherit;
+  font-size: 18px;
+  padding: 12px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+}
+.ks3-construct-foot { margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.ks3-construct-check[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-construct-hint {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-construct-out {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-model-lead {
+  margin: 0 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-model { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+.ks3-model-line {
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  line-height: 1.5;
+  padding: 10px 14px;
+  border-radius: var(--ks3-r-control);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+  white-space: pre-wrap;
+}
+.ks3-construct-tally {
+  margin: 14px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ks3-ok-text);
+}
+
 /* ── b1-03's three instruments (⊕ 14 Aug 2026) ──────────────────────
    b1-03 is the approved reference screen for MODEL — 50 lesson slots, the
    largest family in the key stage — and all three of its instruments rendered
