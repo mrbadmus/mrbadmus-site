@@ -1102,6 +1102,12 @@ body.rd[data-mode="ks3"] {
    `aria-labelledby` carries the same association. */
 .ks3-sim-control-caption { display: block; }
 .ks3-sim-seg { display: flex; flex-wrap: wrap; gap: 9px; }
+/* ⊕ Drift 4 ruled ONE segmented control for the system — b1-06's variant, the
+   only light branch whose geometry matches its own dark branch. `.ks3-seg-btn`
+   is that control; `.ks3-sim-seg-btn` is the same declaration under the name
+   the sim panels already use. Two classes, one set of values, because a second
+   copy is exactly the drift the ruling exists to stop. */
+.ks3-seg-btn,
 .ks3-sim-seg-btn {
   cursor: pointer;
   font: inherit;
@@ -1117,6 +1123,7 @@ body.rd[data-mode="ks3"] {
 /* R2 — the chosen state carries a WORD (`aria-pressed`, and the toggle's own
    two words) and a border, never colour alone. R3 is untouched: nothing here
    is an answer, only where the slide is and whether it is moving. */
+.ks3-seg-btn[aria-pressed="true"],
 .ks3-sim-seg-btn[aria-pressed="true"] {
   background: var(--ks3-accent-tint);
   border-color: var(--ks3-accent);
@@ -2254,6 +2261,137 @@ body.rd[data-mode="ks3"] {
   line-height: 1.55;
   color: var(--ks3-ink-body);
 }
+
+/* ── CONTRAST's flagship: settles-it (⊕ 14 Aug 2026) ────────────────
+   Four mystery cells, four true facts each, sixteen judgements. Inherited by
+   18 CONTRAST lessons. It rendered as an EMPTY section: the generic shell
+   reads prompt/options/reveal and this payload declares
+   instruction/choice_labels/cases.
+
+   The row's ground records whether the FACT settles it — the page's own
+   answer, revealed to everyone identically — and never whether the student
+   said so. That is what keeps it clear of R3 while looking close to the line.
+   Design's `agreed` computation is gone under MRB-196; see the renderer. */
+.ks3-case-tabs {
+  margin-top: 22px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-case-head {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-case-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-case-desc { margin: 8px 0 0; font-size: 21px; line-height: 1.45; font-weight: 700; }
+
+.ks3-features {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.ks3-feature {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+}
+/* After the reveal the row says what the FACT does. A discriminating fact
+   takes the band ground and the full ink outline; one that settles nothing
+   dims back. Identical for every student. */
+.ks3-case-panel[data-open="1"] .ks3-feature[data-settles="1"] {
+  background: var(--ks3-band);
+  border-color: var(--ks3-ink);
+}
+.ks3-case-panel[data-open="1"] .ks3-feature[data-settles="0"] {
+  background: var(--ks3-row-dim);
+  border-color: var(--ks3-rule);
+}
+.ks3-feature-text { margin: 0; font-size: 19px; line-height: 1.5; font-weight: 600; }
+.ks3-feature-choices { margin-top: 12px; display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-settle-choice {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-settle-choice[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+.ks3-settle-choice[disabled] { cursor: default; }
+.ks3-settle-choice[disabled][aria-pressed="false"] { opacity: .5; }
+/* ⚖️ MRB-196 — ONE tone. Design paints this `--ks3-ink` when the student
+   agreed and `--ks3-ink-body` when they did not: about 6 ΔL* apart, a mark
+   nobody can read, and a mark all the same. The self-check asks instead. */
+.ks3-feature-why {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-why-word { font-family: var(--ks3-font-display); }
+
+.ks3-settle-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-settle-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-settle-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-case-verdict {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-case-verdict-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-alert);
+}
+.ks3-case-answer {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 27px;
+  line-height: 1.18;
+  letter-spacing: -.025em;
+  color: var(--ks3-on-dark);
+}
+.ks3-case-why { margin: 12px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body); }
 
 /* ── the bench grid (drift 1 + drift 2, ruled on MRB-208 13 Aug) ──
    232px, and the collapse at 780px. The tie was 1:1 once b1-06's declarations

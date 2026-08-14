@@ -3157,9 +3157,129 @@
     set(saved === "off" || saved === "on" ? saved : (REDUCED ? "off" : "on"));
   }
 
+  /* CONTRAST's flagship. Four cases, each independent, all four in the
+     document with one shown — the same trick the board uses, so a student who
+     goes back to cell 1 finds it exactly as they left it and no state has to
+     be kept anywhere but the DOM.
+
+     ⚖️ MRB-196: whether the student agreed is NOT computed. Design computes it
+     and spends it on the why paragraph's colour, ~6 ΔL* — a mark nobody can
+     read and a mark all the same. The self-check asks them instead. */
+  function wireSettles(sec) {
+    var panels = toArray(sec.querySelectorAll(".ks3-case-panel"));
+    var tabs = toArray(sec.querySelectorAll(".ks3-case-tab"));
+    var selfcheck = sec.querySelector("[data-selfcheck]");
+    if (!panels.length) { return; }
+
+    function show(id) {
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-case") === id ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-case") !== id);
+      });
+    }
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        show(tab.getAttribute("data-case"));
+      });
+    });
+
+    // The rail stop is `all_cases_revealed`, threshold 4 — every case opened,
+    // not merely every fact marked on one of them. One case is one cell; the
+    // lesson's argument is the four held against each other.
+    function refreshStage() {
+      var all = true;
+      each(panels, function (p) {
+        if (p.getAttribute("data-open") !== "1") { all = false; }
+      });
+      markStage(sec, all);
+      if (all && selfcheck) {
+        setHidden(selfcheck, false);
+        selfcheck.setAttribute("role", "status");
+      }
+    }
+
+    each(panels, function (panel) {
+      var feats = toArray(panel.querySelectorAll(".ks3-feature"));
+      var btn = panel.querySelector("[data-settle-reveal]");
+      var prog = panel.querySelector("[data-settle-progress]");
+      var verdict = panel.querySelector("[data-case-verdict]");
+      var total = feats.length;
+      var fmt = (prog && prog.getAttribute("data-format")) || "{n} of {total} marked";
+      var opened = (prog && prog.getAttribute("data-opened")) || "Opened";
+
+      function marked() {
+        var n = 0;
+        each(feats, function (f) {
+          if (f.querySelector('.ks3-settle-choice[aria-pressed="true"]')) { n += 1; }
+        });
+        return n;
+      }
+
+      function repaint() {
+        var n = marked();
+        var isOpen = panel.getAttribute("data-open") === "1";
+        if (prog) {
+          prog.textContent = isOpen ? opened
+            : fmt.replace("{n}", n).replace("{total}", total);
+        }
+        if (btn) {
+          if (n < total || isOpen) { btn.setAttribute("disabled", ""); }
+          else { btn.removeAttribute("disabled"); }
+        }
+      }
+
+      each(feats, function (feat) {
+        var choices = toArray(feat.querySelectorAll(".ks3-settle-choice"));
+        each(choices, function (c) {
+          c.addEventListener("click", function () {
+            if (panel.getAttribute("data-open") === "1") { return; }
+            each(choices, function (b) { b.setAttribute("aria-pressed", "false"); });
+            c.setAttribute("aria-pressed", "true");
+            repaint();
+          });
+        });
+      });
+
+      if (btn) {
+        btn.addEventListener("click", function () {
+          if (marked() < total || panel.getAttribute("data-open") === "1") { return; }
+          panel.setAttribute("data-open", "1");
+          each(feats, function (f) {
+            setHidden(f.querySelector("[data-reveal]"), false);
+            each(f.querySelectorAll(".ks3-settle-choice"), function (c) {
+              c.setAttribute("disabled", "");
+            });
+          });
+          setHidden(verdict, false);
+          if (verdict) { verdict.setAttribute("role", "status"); }
+          repaint();
+          refreshStage();
+        });
+      }
+
+      repaint();
+    });
+
+    if (selfcheck) {
+      var scOpts = toArray(selfcheck.querySelectorAll(".ks3-option"));
+      each(scOpts, function (o) {
+        o.addEventListener("click", function () {
+          each(scOpts, function (b) { b.setAttribute("aria-pressed", "false"); });
+          o.setAttribute("aria-pressed", "true");
+        });
+      });
+    }
+
+    show(panels[0].getAttribute("data-case"));
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
+    each(root.querySelectorAll("[data-settles]"), wireSettles);
   }
 
   // ── the progress rail (MRB-208 rule 2) ──────────────────────────────

@@ -1332,24 +1332,7 @@ def r_sort_rows(a, act_id):
             % (e(it.get("id", "")), t(it.get("name", "")), chips,
                t(it["answer"]), rich(it["evidence"])))
 
-    self_check = ""
-    sc = a.get("self_check")
-    if sc:
-        if "answer" in sc:
-            raise ValueError(
-                "sort-rows %r self_check carries an `answer` key. It must not: "
-                "the student is asked how many of their own eight matched, and "
-                "only the student knows. A right answer here would put a mark "
-                "on an activity option, which R3 forbids." % act_id)
-        opts = "".join(_option_li(i, o, ' aria-pressed="false"')
-                       for i, o in enumerate(sc.get("options") or []))
-        note = ('<p class="ks3-selfcheck-note">%s</p>' % rich(sc["note"])
-                if sc.get("note") else "")
-        self_check = ('<div class="ks3-selfcheck" data-selfcheck hidden>'
-                      '<p class="ks3-selfcheck-q">%s</p>'
-                      '<ul class="ks3-options ks3-selfcheck-options" '
-                      'role="list">%s</ul>%s</div>'
-                      % (t(sc.get("question", "")), opts, note))
+    self_check = _self_check(a, act_id)
 
     return ('<ul class="ks3-sortrows" role="list">%s</ul>'
             '<div class="ks3-sort-foot">'
@@ -1361,6 +1344,163 @@ def r_sort_rows(a, act_id):
             % ("".join(rows),
                t(a.get("reveal_label") or "Show what settles each one"),
                len(items), e(_count_word(len(items))), len(items), self_check))
+
+
+def r_settles_it(a, act_id):
+    """⊕ CONTRAST's flagship — sixteen judgements, and most of them decide nothing.
+
+    Four mystery cells, four true facts each. The student marks every fact
+    SETTLES IT or SETTLES NOTHING before anything is revealed. Most settle
+    nothing, because they are true of single-celled organisms AND of cells
+    inside a body, and the discriminating fact is never the most interesting
+    one — cell 4 changes shape and engulfs another cell, and both settle
+    nothing, because a white blood cell does both. Discriminators run 1, 2, 2,
+    2 so the pattern never degrades into "find the one".
+
+    Before this it rendered as an **empty section**: `r_activity` emitted the
+    shell, the eyebrow and the heading and stopped, because the generic shell
+    reads `prompt`/`options`/`reveal` and this payload declares
+    `instruction`/`choice_labels`/`cases`. Not one of the sixteen judgements
+    reached the page. The kind is inherited by 18 CONTRAST lessons.
+
+    ⚖️ MRB-196, ruled by Mide 13 Aug, resolves the inventory's F36. Design
+    computes whether the student agreed and then spends it on the why
+    paragraph's COLOUR — `--ks3-ink` against `--ks3-ink-body`, about 6 ΔL*
+    apart — which is a mark nobody can read and, being a mark at all, sits
+    badly beside R3. The computation goes, the why paragraph takes one tone,
+    and the self-check asks the student directly. Same shape as the rail on
+    MRB-208: where the approved page and a ruling collide, the ruling wins.
+
+    R3 is safe by construction and worth stating, because it looks close to
+    the line. The row's ground records whether the FACT settles it — the
+    page's own answer, revealed to everyone identically — never whether the
+    student said so. The choice buttons carry the chosen tint and nothing
+    else, and they are not `.ks3-option`s, so the reveal may disable them
+    without failing R3's runtime assertion.
+    """
+    cases = a.get("cases") or []
+    labels = a.get("choice_labels") or []
+    openers = a.get("why_openers") or []
+    if len(cases) < 2:
+        raise ValueError(
+            "settles-it %r declares %d case(s). The instrument is a "
+            "discrimination exercise and one case cannot discriminate."
+            % (act_id, len(cases)))
+    if len(labels) != 2:
+        raise ValueError(
+            "settles-it %r needs exactly two choice_labels — the two things a "
+            "fact can do. Got %r." % (act_id, labels))
+    if len(openers) != 2:
+        raise ValueError(
+            "settles-it %r needs exactly two why_openers, the SETTLES and the "
+            "SETTLES-NOTHING word, in that order. Got %r." % (act_id, openers))
+
+    for k in cases:
+        feats = k.get("features") or []
+        if not feats:
+            raise ValueError("settles-it %r case %r declares no features."
+                             % (act_id, k.get("id")))
+        for f in feats:
+            if "settles" not in f:
+                raise ValueError(
+                    "settles-it %r case %r has a feature with no `settles` "
+                    "verdict: %r. Every fact is either the one that decides it "
+                    "or one that does not, and the whole exercise is telling "
+                    "them apart." % (act_id, k.get("id"), f.get("text")))
+            if not (f.get("why") or "").strip():
+                raise ValueError(
+                    "settles-it %r case %r feature %r has no `why`. The reveal "
+                    "exists to say what settles each one."
+                    % (act_id, k.get("id"), f.get("text")))
+        if not sum(1 for f in feats if f.get("settles")):
+            raise ValueError(
+                "settles-it %r case %r has no discriminating feature at all — "
+                "nothing settles it, so the case has no answer."
+                % (act_id, k.get("id")))
+
+    fmt = a.get("progress_format") or "{n} of {total} marked"
+    tabs = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-case-tab" '
+        'data-case="%s" aria-pressed="%s">%s</button>'
+        % (e(k["id"]), "true" if i == 0 else "false",
+           t(k.get("tab_label") or k.get("label", "")))
+        for i, k in enumerate(cases))
+
+    panels = []
+    for i, k in enumerate(cases):
+        feats = k.get("features") or []
+        rows = []
+        for f in feats:
+            settles = bool(f.get("settles"))
+            choices = "".join(
+                '<button type="button" class="ks3-settle-choice" '
+                'data-pick="%s" aria-pressed="false">%s</button>'
+                % (pick, t(lab))
+                for pick, lab in (("yes", labels[0]), ("no", labels[1])))
+            rows.append(
+                '<li class="ks3-feature" data-settles="%d">'
+                '<p class="ks3-feature-text">%s</p>'
+                '<div class="ks3-feature-choices">%s</div>'
+                '<p class="ks3-feature-why" hidden data-reveal>'
+                '<strong class="ks3-why-word">%s</strong> %s</p></li>'
+                % (1 if settles else 0, rich(f.get("text", "")), choices,
+                   t(openers[0] if settles else openers[1]), rich(f["why"])))
+
+        panels.append(
+            '<div class="ks3-case-panel" data-case="%s"%s>'
+            '<div class="ks3-case-head">'
+            '<p class="ks3-case-label">%s</p>'
+            '<p class="ks3-case-desc">%s</p></div>'
+            '<ul class="ks3-features" role="list">%s</ul>'
+            '<div class="ks3-settle-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-settle-reveal" '
+            'data-settle-reveal disabled>%s</button>'
+            '<span class="ks3-settle-progress" data-settle-progress '
+            'data-total="%d" data-format="%s" data-opened="%s">%s</span></div>'
+            '<div class="ks3-case-verdict" hidden data-case-verdict>'
+            '<p class="ks3-case-verdict-label">%s</p>'
+            '<p class="ks3-case-answer">%s</p>'
+            '<p class="ks3-case-why">%s</p></div></div>'
+            % (e(k["id"]), "" if i == 0 else " hidden",
+               t(k.get("label", "")), rich(k.get("description", "")),
+               "".join(rows),
+               t(a.get("reveal_label") or "Show what settles it"),
+               len(feats), e(fmt), e(a.get("progress_opened") or "Opened"),
+               t(fmt.replace("{n}", "0").replace("{total}", str(len(feats)))),
+               t(k.get("verdict_label", "")), rich(k.get("answer", "")),
+               rich(k.get("why", ""))))
+
+    return ('<div class="ks3-case-tabs" role="list">%s</div>%s%s'
+            % (tabs, "".join(panels), _self_check(a, act_id)))
+
+
+def _self_check(a, act_id):
+    """MRB-196's self-check, shared by the sorter and settles-it.
+
+    Extracted rather than written twice: it is one component, ruled once, and
+    two copies is how one copy quietly stops obeying the rule below.
+
+    There is no `answer` key and there must never be one. The student is asked
+    how many of their OWN judgements matched, and only the student knows. A
+    right answer here would put a mark on an activity option, which R3 forbids.
+    """
+    sc = a.get("self_check")
+    if not sc:
+        return ""
+    if "answer" in sc:
+        raise ValueError(
+            "%r's self_check carries an `answer` key. It must not: only the "
+            "student knows how many of their own marks matched, and a right "
+            "answer here would mark an activity option, which R3 forbids."
+            % act_id)
+    opts = "".join(_option_li(i, o, ' aria-pressed="false"')
+                   for i, o in enumerate(sc.get("options") or []))
+    note = ('<p class="ks3-selfcheck-note">%s</p>' % rich(sc["note"])
+            if sc.get("note") else "")
+    return ('<div class="ks3-selfcheck" data-selfcheck hidden>'
+            '<p class="ks3-selfcheck-q">%s</p>'
+            '<ul class="ks3-options ks3-selfcheck-options" role="list">%s</ul>'
+            '%s</div>' % (t(sc.get("question", "")), opts, note))
 
 
 def _quoted(s):
@@ -1650,6 +1790,8 @@ ACTIVITY_KIND_RENDERERS = {
                       ' data-instrument data-board data-stage-done="0"'),
     "sort-rows":     ("ks3-sort",
                       ' data-instrument data-sort data-stage-done="0"'),
+    "settles-it":    ("ks3-settles",
+                      ' data-instrument data-settles data-stage-done="0"'),
     # Expository: no control, no commitment, nothing to tick.
     "confrontation": ("ks3-confront", " data-instrument data-confront"),
 }
@@ -1765,6 +1907,8 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append(r_test_board(a, act_id))
     if kind == "sort-rows":
         parts.append(r_sort_rows(a, act_id))
+    if kind == "settles-it":
+        parts.append(r_settles_it(a, act_id))
     if a.get("scorecards"):
         parts.append(r_scorecards(a["scorecards"]))
 
