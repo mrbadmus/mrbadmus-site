@@ -3736,6 +3736,347 @@
     });
   }
 
+
+  /* ═══════════════════════════════════════════════════════════════
+     b1-05's three instruments. All three rendered as EMPTY sections.
+     The four zoom drawings and `rr` below are ported VERBATIM from
+     Design's approved b1-05.
+     ═══════════════════════════════════════════════════════════════ */
+
+  function rr(ctx, x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+    ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y);
+    ctx.closePath();
+  }
+
+  function drawPlant(ctx, faded) {
+    const stemX = 450, ground = 348;
+    ctx.fillStyle = '#EFE3C9';
+    ctx.fillRect(0, ground, 900, 500 - ground);
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B';
+    ctx.beginPath(); ctx.moveTo(0, ground); ctx.lineTo(900, ground); ctx.stroke();
+
+    ctx.save();
+    if (faded) ctx.globalAlpha = 0.26;
+    ctx.lineWidth = 6; ctx.strokeStyle = '#8A6A3C'; ctx.lineCap = 'round';
+    [[-1, 96], [1, 104], [-1, 52], [1, 60]].forEach((r, i) => {
+      ctx.beginPath();
+      ctx.moveTo(stemX, ground);
+      ctx.quadraticCurveTo(stemX + r[0] * r[1] * 0.6, ground + 40, stemX + r[0] * r[1], ground + 96 + i * 8);
+      ctx.stroke();
+    });
+    ctx.restore();
+
+    ctx.save();
+    if (faded === 'root') ctx.globalAlpha = 1;
+    ctx.lineWidth = 11; ctx.strokeStyle = '#5E7A3A'; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(stemX, ground); ctx.lineTo(stemX, 104); ctx.stroke();
+    [[-1, 262, 0.24], [1, 208, -0.26], [-1, 150, 0.2]].forEach((b) => {
+      ctx.beginPath();
+      ctx.moveTo(stemX, b[1]);
+      ctx.quadraticCurveTo(stemX + b[0] * 52, b[1] - 16, stemX + b[0] * 112, b[1] - 34);
+      ctx.lineWidth = 7; ctx.stroke();
+      leafShape(ctx, stemX + b[0] * 186, b[1] - 52, 168, 76, b[2] * b[0]);
+      ctx.fillStyle = '#5E9440'; ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = '#2F5326'; ctx.stroke();
+      ctx.strokeStyle = '#5E7A3A';
+    });
+    leafShape(ctx, stemX, 88, 150, 70, -0.12);
+    ctx.fillStyle = '#5E9440'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#2F5326'; ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawOneLeaf(ctx) {
+    ctx.save();
+    ctx.translate(450, 250);
+    ctx.beginPath();
+    ctx.moveTo(-330, 0);
+    ctx.quadraticCurveTo(-120, -172, 330, 0);
+    ctx.quadraticCurveTo(-120, 172, -330, 0);
+    ctx.closePath();
+    ctx.fillStyle = '#5E9440'; ctx.fill();
+    ctx.lineWidth = 4; ctx.strokeStyle = '#2F5326'; ctx.stroke();
+    ctx.lineWidth = 6; ctx.strokeStyle = '#3E6B2C';
+    ctx.beginPath(); ctx.moveTo(-330, 0); ctx.lineTo(310, 0); ctx.stroke();
+    ctx.lineWidth = 3;
+    for (let i = -4; i <= 4; i++) {
+      if (i === 0) continue;
+      const x = i * 62;
+      const up = i % 2 === 0 ? -1 : 1;
+      ctx.beginPath();
+      ctx.moveTo(x - 40, 0);
+      ctx.quadraticCurveTo(x, up * 40, x + 78, up * 72);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawLeafSection(ctx) {
+    const x0 = 90, x1 = 810;
+    rr(ctx, x0, 90, x1 - x0, 66, 8);
+    ctx.fillStyle = '#EFE6D2'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+    for (let x = x0 + 90; x < x1; x += 90) {
+      ctx.beginPath(); ctx.moveTo(x, 90); ctx.lineTo(x, 156);
+      ctx.lineWidth = 2; ctx.strokeStyle = '#C3B191'; ctx.stroke();
+    }
+    for (let i = 0; i < 8; i++) {
+      const x = x0 + 16 + i * 90;
+      rr(ctx, x, 164, 62, 130, 12);
+      ctx.fillStyle = '#EFF3E4'; ctx.fill();
+      ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+      for (let j = 0; j < 7; j++) {
+        ell(ctx, x + 16 + (j % 2) * 28, 182 + j * 16, 11, 7, 0.2);
+        ctx.fillStyle = '#4F7C3B'; ctx.fill();
+      }
+    }
+    for (let i = 0; i < 5; i++) {
+      const x = x0 + 40 + i * 150;
+      [[x, 330], [x + 70, 372], [x + 4, 402]].forEach((p, k) => {
+        ell(ctx, p[0], p[1], 42, 28, k * 0.4);
+        ctx.fillStyle = '#EFF3E4'; ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+        ell(ctx, p[0] - 10, p[1], 9, 6, 0);
+        ctx.fillStyle = '#4F7C3B'; ctx.fill();
+      });
+    }
+    rr(ctx, x0, 428, x1 - x0, 58, 8);
+    ctx.fillStyle = '#EFE6D2'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+  }
+
+  function drawOneCell(ctx) {
+    rr(ctx, 300, 46, 300, 420, 26);
+    ctx.fillStyle = '#D9C48D'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+    rr(ctx, 318, 64, 264, 384, 20);
+    ctx.fillStyle = '#F5ECD8'; ctx.fill();
+    ctx.lineWidth = 2.2; ctx.strokeStyle = '#A2603A'; ctx.stroke();
+    rr(ctx, 372, 158, 156, 220, 48);
+    ctx.fillStyle = '#E4EDE9'; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#9AB0A6'; ctx.stroke();
+    [[350, 100], [420, 88], [492, 100], [556, 128], [560, 226], [556, 330], [492, 414],
+     [420, 424], [352, 400], [344, 300], [348, 200]].forEach((p, i) => {
+      ctx.save();
+      ctx.translate(p[0], p[1]); ctx.rotate(i * 0.5);
+      ell(ctx, 0, 0, 25, 15, 0);
+      ctx.fillStyle = '#4F7C3B'; ctx.fill();
+      ctx.lineWidth = 2; ctx.strokeStyle = '#2F5326'; ctx.stroke();
+      ctx.restore();
+    });
+    ell(ctx, 346, 258, 26, 36, 0);
+    ctx.fillStyle = '#7C6AA6'; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+  }
+
+  var ZOOM_DRAWINGS = {
+    "plant": function (ctx) { drawPlant(ctx, false); },
+    "plant-shoot": function (ctx) { drawPlant(ctx, "shoot"); },
+    "one-leaf": drawOneLeaf,
+    "leaf-section": drawLeafSection,
+    "one-cell": drawOneCell
+  };
+
+  function wireZoom(sec) {
+    var wrap = sec.querySelector(".ks3-zoom");
+    if (!wrap) { return; }
+    var canvas = wrap.querySelector("[data-zoom-canvas]");
+    var range = wrap.querySelector("[data-zoom-range]");
+    var ticks = toArray(wrap.querySelectorAll(".ks3-zoom-tick"));
+    var panels = toArray(wrap.querySelectorAll(".ks3-zoom-panel"));
+    var step = wrap.querySelector("[data-zoom-step]");
+    var size = wrap.querySelector("[data-zoom-size]");
+    var levels, space;
+    try { levels = JSON.parse(wrap.getAttribute("data-zoom-levels")); }
+    catch (err) { return; }
+    space = (wrap.getAttribute("data-space") || "900,500").split(",");
+    var SW = parseFloat(space[0]), SH = parseFloat(space[1]);
+    var boxLabel = wrap.getAttribute("data-box-label") || "";
+    var fmt = (step && step.getAttribute("data-format")) || "Stop {n} of {total}";
+    var seen = {};
+
+    function paint(i) {
+      if (!canvas || !canvas.getContext) { return; }
+      var lv = levels[i];
+      var fn = ZOOM_DRAWINGS[lv.drawing];
+      if (!fn) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = canvas.width / 2, H = canvas.height / 2;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#FFFCF5";
+      ctx.fillRect(0, 0, W, H);
+      var k = Math.min(W / SW, H / SH);
+      ctx.save();
+      ctx.translate((W - SW * k) / 2, (H - SH * k) / 2);
+      ctx.scale(k, k);
+      fn(ctx);
+      // The orange box: where the next stop down is hiding inside this one.
+      // Authored per level, so the drawing and the box cannot drift apart.
+      var b = lv.box;
+      if (b) {
+        ctx.setLineDash([11, 8]);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "#E4572E";
+        rr(ctx, b[0], b[1], b[2], b[3], 12);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        rr(ctx, b[0], b[1] - 30, 176, 26, 8);
+        ctx.fillStyle = "#E4572E"; ctx.fill();
+        ctx.fillStyle = "#FBF3E6";
+        ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText(boxLabel, b[0] + 12, b[1] - 16);
+      }
+      ctx.restore();
+      canvas.setAttribute("aria-label", lv.alt || "");
+    }
+
+    function show(i) {
+      i = Math.max(0, Math.min(levels.length - 1, i));
+      if (range) { range.value = String(i); }
+      each(ticks, function (tk) {
+        tk.setAttribute("aria-pressed",
+          parseInt(tk.getAttribute("data-zoom"), 10) === i ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, parseInt(p.getAttribute("data-zoom"), 10) !== i);
+      });
+      if (step) {
+        step.textContent = fmt.replace("{n}", i + 1).replace("{total}", levels.length);
+      }
+      if (size) { size.textContent = levels[i].size || ""; }
+      paint(i);
+      seen[i] = true;
+      // `all_stops_seen`, threshold 5 — the ladder is the point, not any rung.
+      markStage(sec, Object.keys(seen).length === levels.length);
+    }
+
+    if (range) { onRange(range, function () { show(parseInt(range.value, 10) || 0); }); }
+    each(ticks, function (tk) {
+      tk.addEventListener("click", function () {
+        show(parseInt(tk.getAttribute("data-zoom"), 10));
+      });
+    });
+    show(range ? (parseInt(range.value, 10) || 0) : 0);
+  }
+
+  /* The awkward eight. The mark lands on the ROW and never on a chip. */
+  function wireHard(sec) {
+    var rows = toArray(sec.querySelectorAll(".ks3-hardrow"));
+    var btn = sec.querySelector("[data-hard-reveal]");
+    var prog = sec.querySelector("[data-hard-progress]");
+    if (!rows.length) { return; }
+    var total = rows.length;
+    var fmt = (prog && prog.getAttribute("data-format")) || "{n} of {total} placed";
+
+    function placed() {
+      var n = 0;
+      each(rows, function (r) {
+        if (r.querySelector('.ks3-rung-chip[aria-pressed="true"]')) { n += 1; }
+      });
+      return n;
+    }
+    function repaint() {
+      var n = placed();
+      if (prog) { prog.textContent = fmt.replace("{n}", n).replace("{total}", total); }
+      if (btn) {
+        if (n < total) { btn.setAttribute("disabled", ""); }
+        else { btn.removeAttribute("disabled"); }
+      }
+    }
+    each(rows, function (row) {
+      var chips = toArray(row.querySelectorAll(".ks3-rung-chip"));
+      each(chips, function (c) {
+        c.addEventListener("click", function () {
+          each(chips, function (b) { b.setAttribute("aria-pressed", "false"); });
+          c.setAttribute("aria-pressed", "true");
+          repaint();
+        });
+      });
+    });
+    if (btn) {
+      btn.addEventListener("click", function () {
+        if (placed() < total) { return; }
+        each(rows, function (row) {
+          var chosen = row.querySelector('.ks3-rung-chip[aria-pressed="true"]');
+          var right = chosen
+            && chosen.getAttribute("data-rung") === row.getAttribute("data-answer");
+          row.setAttribute("data-open", "1");
+          row.setAttribute("data-right", right ? "1" : "0");
+          setHidden(row.querySelector("[data-reveal]"), false);
+        });
+        btn.setAttribute("aria-expanded", "true");
+        markStage(sec, true);   // `answers_opened`
+      });
+    }
+    repaint();
+  }
+
+  /* Take a level out. Four cases, commit then consequence. */
+  function wireRemoval(sec) {
+    var wrap = sec.querySelector(".ks3-removal");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll(".ks3-removal-tab"));
+    var panels = toArray(wrap.querySelectorAll(".ks3-removal-panel"));
+    var prog = wrap.querySelector("[data-removal-progress]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || panels.length;
+    var fmt = (prog && prog.getAttribute("data-format")) || "{n} of {total} explored";
+
+    function explored() {
+      var n = 0;
+      each(panels, function (p) { if (p.getAttribute("data-run") === "1") { n += 1; } });
+      return n;
+    }
+    function repaint() {
+      var n = explored();
+      if (prog) { prog.textContent = fmt.replace("{n}", n).replace("{total}", total); }
+      // `all_cases_explored`, threshold 4.
+      markStage(sec, n >= total);
+    }
+    function show(id) {
+      each(tabs, function (tb) {
+        tb.setAttribute("aria-pressed",
+          tb.getAttribute("data-case") === id ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-case") !== id);
+      });
+    }
+    each(tabs, function (tb) {
+      tb.addEventListener("click", function () { show(tb.getAttribute("data-case")); });
+    });
+    each(panels, function (panel) {
+      var opts = toArray(panel.querySelectorAll(".ks3-option"));
+      var out = panel.querySelector("[data-reveal]");
+      each(opts, function (o) {
+        o.addEventListener("click", function () {
+          each(opts, function (b) { b.setAttribute("aria-pressed", "false"); });
+          o.setAttribute("aria-pressed", "true");
+          if (out && out.hasAttribute("hidden")) {
+            setHidden(out, false);
+            out.setAttribute("role", "status");
+          }
+          panel.setAttribute("data-run", "1");
+          repaint();
+        });
+      });
+    });
+    repaint();
+    if (panels.length) { show(panels[0].getAttribute("data-case")); }
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -3744,6 +4085,9 @@
     // FIRST — otherwise the bench's opening broadcast lands on nothing.
     each(root.querySelectorAll("[data-sabotage]"), wireSabotage);
     each(root.querySelectorAll("[data-benchblock]"), wireBench);
+    each(root.querySelectorAll("[data-zoomblock]"), wireZoom);
+    each(root.querySelectorAll("[data-hard]"), wireHard);
+    each(root.querySelectorAll("[data-removal]"), wireRemoval);
   }
 
   // ── the progress rail (MRB-208 rule 2) ──────────────────────────────

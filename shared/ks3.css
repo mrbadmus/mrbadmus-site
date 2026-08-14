@@ -2262,6 +2262,237 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-ink-body);
 }
 
+/* ── b1-05's three instruments (⊕ 14 Aug 2026) ──────────────────────
+   `zoom-ladder`, `sort-task` and `removal-cases`. All three rendered as
+   EMPTY sections — an eyebrow and 90.39px of nothing each — and between them
+   they were 78% of this page's missing height. b1-05 is the page Mide
+   rejected by name on 11 August. */
+.ks3-visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ks3-zoom-frame {
+  margin-top: 24px;
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  overflow: hidden;
+}
+.ks3-zoom-canvas { display: block; width: 100%; height: auto; }
+.ks3-zoom-controls {
+  padding: 14px 18px 18px;
+  border-top: 2px solid var(--ks3-rule);
+  background: var(--ks3-band);
+}
+.ks3-zoom-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-zoom-step {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-zoom-size { margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-ink); }
+/* Design draws this slider at 40px. `--ks3-tap` is 44 and every other control
+   honours it; the inventory already flagged this exact slider as "an
+   accessibility regression if copied as drawn". Corrected, and stated. */
+.ks3-zoom-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: var(--ks3-tap);
+  background: transparent;
+  cursor: pointer;
+}
+.ks3-zoom-range::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-zoom-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px; height: 30px;
+  margin-top: -12px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-zoom-range::-moz-range-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-zoom-range::-moz-range-thumb {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-zoom-ticks { display: flex; flex-wrap: wrap; gap: 7px; }
+.ks3-zoom-panel {
+  margin-top: 18px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-zoom-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+}
+.ks3-zoom-what { margin: 10px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink-body); }
+.ks3-zoom-gain { margin-top: 18px; padding-top: 16px; border-top: 2px solid var(--ks3-rule); }
+.ks3-zoom-gain-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-zoom-gain-text { margin: 8px 0 0; font-size: 20px; line-height: 1.55; font-weight: 600; }
+.ks3-zoom-human { margin: 16px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body); }
+.ks3-zoom-human strong { font-family: var(--ks3-font-display); }
+
+/* The awkward eight. THE activity Mide rejected: it rendered as a four-option
+   multiple choice with eight items in the prompt.
+
+   ⚠️ The mark is on the ROW and never on a control. After the reveal a row
+   the student had takes the inset ground on a full ink outline; one they did
+   not takes alert-tint on the alert border. The chips are byte-identical
+   before and after, and identical on a right row and a wrong one — measured
+   by driving Design's page. That is what keeps a deferred, self-service,
+   student-opened mark clear of R3, and it is the entire distinction. */
+.ks3-hardrows {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.ks3-hardrow {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule-strong);
+}
+.ks3-hardrow[data-open="1"][data-right="1"] {
+  background: var(--ks3-inset);
+  border-color: var(--ks3-ink);
+}
+.ks3-hardrow[data-open="1"][data-right="0"] {
+  background: var(--ks3-alert-tint);
+  border-color: var(--ks3-alert-border);
+}
+.ks3-hardrow-item { margin: 0; font-size: 20px; font-weight: 700; }
+.ks3-hardrow-chips { margin-top: 11px; display: flex; gap: 7px; flex-wrap: wrap; }
+.ks3-hardrow-answer { margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
+.ks3-hardrow-word { font-family: var(--ks3-font-display); }
+.ks3-hard-foot { margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.ks3-hard-reveal[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-hard-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+
+/* Take a level out. On the ink-dark practical ground, with the consequence
+   landing on a light panel — the same "it leaves the cell" move the sabotage
+   chain makes. */
+.ks3-removal-progress {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-removal-lede { margin: 14px 0 0; font-size: 19px; line-height: 1.65; max-width: 58ch; }
+.ks3-removal-tabs { margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-removal-what {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-removal-what-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-removal-what-text { margin: 8px 0 0; font-size: 21px; line-height: 1.5; font-weight: 700; color: var(--ks3-on-dark); }
+.ks3-removal-intact { margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-on-dark-body); }
+.ks3-removal-predict { margin-top: 22px; }
+.ks3-removal-predict .ks3-commit { margin: 0 0 4px; }
+.ks3-removal-out {
+  margin-top: 22px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-removal-lost {
+  margin: 0;
+  display: inline-block;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  padding: 6px 13px;
+  border-radius: var(--ks3-r-pill);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-alert-tint);
+  color: var(--ks3-ink);
+}
+.ks3-removal-headline {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -.025em;
+  color: var(--ks3-ink);
+}
+.ks3-removal-body { margin: 12px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-ink-body); }
+.ks3-removal-principle {
+  margin: 18px 0 0;
+  padding-top: 16px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+.ks3-removal-principle strong { font-family: var(--ks3-font-display); }
+
 /* ── SYSTEM's bench and its sabotage engine (⊕ 14 Aug 2026) ─────────
    b1-04 is the approved reference screen for SYSTEM, 32 slots, and both of
    its instruments rendered as empty sections. Together they were 58% of the

@@ -1346,6 +1346,210 @@ def r_sort_rows(a, act_id):
                len(items), e(_count_word(len(items))), len(items), self_check))
 
 
+ZOOM_DRAWINGS = {"plant", "plant-shoot", "one-leaf", "leaf-section", "one-cell"}
+
+
+def r_zoom_ladder(a, act_id):
+    """⊕ Five stops from a whole plant to one cell, without leaving the leaf.
+
+    A slider and a tick row over one canvas, with an orange dashed box showing
+    where the NEXT stop down is hiding inside this one. The panel underneath
+    says what this level can do that the level below cannot — which is the
+    lesson's whole argument, and the reason the ladder is not a size chart.
+
+    The `next_box` rectangles are AUTHORED, one per level in the payload's own
+    design space, so the drawing and the box cannot drift apart. The last level
+    has none: there is no stop below a cell.
+    """
+    levels = a.get("levels") or []
+    if len(levels) < 2:
+        raise ValueError("zoom-ladder %r declares %d level(s)."
+                         % (act_id, len(levels)))
+    for lv in levels:
+        if lv.get("drawing") not in ZOOM_DRAWINGS:
+            raise ValueError(
+                "zoom-ladder %r level %r asks for drawing %r. Known: %s."
+                % (act_id, lv.get("tick"), lv.get("drawing"),
+                   ", ".join(sorted(ZOOM_DRAWINGS))))
+
+    canvas = a.get("canvas") or {}
+    buf = canvas.get("buffer") or [1800, 1000]
+    space = canvas.get("design_space") or [900, 500]
+    start = a.get("start")
+    idx = next((i for i, lv in enumerate(levels)
+                if lv.get("tick", "").lower().startswith(str(start).lower())), 0)
+
+    ticks = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-zoom-tick" '
+        'data-zoom="%d" aria-pressed="%s">%s</button>'
+        % (i, "true" if i == idx else "false", t(lv.get("tick", "")))
+        for i, lv in enumerate(levels))
+
+    panels = "".join(
+        '<div class="ks3-zoom-panel" data-zoom="%d"%s>'
+        '<p class="ks3-zoom-name">%s</p>'
+        '<p class="ks3-zoom-what">%s</p>'
+        '<div class="ks3-zoom-gain">'
+        '<p class="ks3-zoom-gain-label">%s</p>'
+        '<p class="ks3-zoom-gain-text">%s</p></div>'
+        '<p class="ks3-zoom-human"><strong>%s</strong> %s</p></div>'
+        % (i, "" if i == idx else " hidden", t(lv.get("name", "")),
+           rich(lv.get("what", "")), t(lv.get("gain_label", "")),
+           rich(lv.get("gain", "")), t(a.get("human_prefix") or "In you:"),
+           rich(lv.get("human", "")))
+        for i, lv in enumerate(levels))
+
+    meta = json.dumps(
+        [{"drawing": lv["drawing"], "box": lv.get("next_box"),
+          "size": lv.get("size", ""), "alt": lv.get("alt", "")}
+         for lv in levels], sort_keys=True)
+
+    aid = "ks3-zoom-%s" % act_id
+    fmt = a.get("step_format") or "Stop {n} of {total}"
+    return ('<div class="ks3-zoom" data-zoom-levels="%s" data-space="%d,%d" '
+            'data-box-label="%s">'
+            '<div class="ks3-zoom-frame">'
+            '<canvas class="ks3-zoom-canvas" width="%d" height="%d" role="img" '
+            'aria-label="%s" data-zoom-canvas></canvas>'
+            '<div class="ks3-zoom-controls">'
+            '<div class="ks3-zoom-head">'
+            '<p class="ks3-zoom-step" data-zoom-step data-format="%s">%s</p>'
+            '<p class="ks3-zoom-size" data-zoom-size>%s</p></div>'
+            '<label class="ks3-visually-hidden" for="%s">%s</label>'
+            '<input class="ks3-zoom-range" type="range" id="%s" min="0" '
+            'max="%d" step="1" value="%d" data-zoom-range>'
+            '<div class="ks3-zoom-ticks">%s</div>'
+            '</div></div>%s</div>'
+            % (e(meta), space[0], space[1],
+               e(a.get("next_box_label") or "NEXT STOP IS HERE"),
+               buf[0], buf[1], e(levels[idx].get("alt", "")), e(fmt),
+               t(fmt.replace("{n}", str(idx + 1))
+                    .replace("{total}", str(len(levels)))),
+               t(levels[idx].get("size", "")), e(aid),
+               t(a.get("slider_label") or "Zoom level"), e(aid),
+               len(levels) - 1, idx, ticks, panels))
+
+
+def r_sort_task(a, act_id):
+    """⊕ Eight things that get put on the wrong rung.
+
+    THE activity Mide rejected by name on 11 August: "name the level for each
+    of these eight and say what settled it" rendered as a four-option multiple
+    choice with eight items in the prompt, because CLASSIFY had no sorting
+    component and the content was forced into the nearest shape that existed.
+
+    ⚠️ R3 and the row. After the reveal the ROW is marked — inset on ink when
+    the student had it, alert-tint on the alert border when they did not — and
+    the CHOICE BUTTONS are untouched, identical before and after and identical
+    on a right row and a wrong one. Verified by driving Design's page. The mark
+    is on a container, never on a control, which is what keeps a deferred,
+    self-service, student-opened mark clear of R3. Do not move it onto the
+    buttons for tidiness; that is the whole distinction.
+    """
+    items = a.get("items") or []
+    choices = a.get("choices") or []
+    if len(choices) < 3:
+        raise ValueError(
+            "sort-task %r offers %d rung(s). The awkward cases need every rung "
+            "AND the off-ladder answer, or the hard ones have nowhere to go."
+            % (act_id, len(choices)))
+    for it in items:
+        if it.get("answer") not in choices:
+            raise ValueError(
+                "sort-task %r item %r answers %r, which is not one of the "
+                "offered rungs %r." % (act_id, it.get("id"), it.get("answer"),
+                                       choices))
+
+    rows = []
+    for it in items:
+        chips = "".join(
+            '<button type="button" class="ks3-seg-btn ks3-rung-chip" '
+            'data-rung="%s" aria-pressed="false">%s</button>' % (e(c), t(c))
+            for c in choices)
+        rows.append(
+            '<li class="ks3-hardrow" data-item="%s" data-answer="%s">'
+            '<p class="ks3-hardrow-item">%s</p>'
+            '<div class="ks3-hardrow-chips">%s</div>'
+            '<p class="ks3-hardrow-answer" hidden data-reveal>'
+            '<strong class="ks3-hardrow-word">%s</strong> %s</p></li>'
+            % (e(it.get("id", "")), e(it["answer"]), t(it.get("item", "")),
+               chips, t(it["answer"] + "."), rich(it.get("note", ""))))
+
+    counter = a.get("counter") or "{n} of {total} placed"
+    return ('<ul class="ks3-hardrows" role="list">%s</ul>'
+            '<div class="ks3-hard-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-hard-reveal" '
+            'data-hard-reveal disabled>%s</button>'
+            '<span class="ks3-hard-progress" data-hard-progress '
+            'data-total="%d" data-format="%s">%s</span></div>'
+            % ("".join(rows), t(a.get("gate_label") or "Open the answers"),
+               len(items), e(counter),
+               t(counter.replace("{n}", "0")
+                        .replace("{total}", str(len(items))))))
+
+
+def r_removal_cases(a, act_id):
+    """⊕ Keep every cell alive. Remove the organisation.
+
+    Four cases, each a commitment then a consequence. Replaces the retired
+    `system-parts` sim, which is why b1-05 has no `.ks3-sim` at all and why the
+    parity gate's `sim-unlocked` drive found nothing to unlock on this page.
+
+    ⚠️ CORRECTION TO DESIGN. `caseLevelLost` is `'Level lost: ' + kase.lost`
+    and only ONE of the four cases authors `lost`, so Design's own page renders
+    **"Level lost: undefined"** on three of them. The pill is omitted when
+    there is nothing to name.
+    """
+    cases = a.get("cases") or []
+    if not cases:
+        raise ValueError("removal-cases %r declares no cases[]." % act_id)
+
+    tabs = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-removal-tab" '
+        'data-case="%s" aria-pressed="%s">%s</button>'
+        % (e(k["id"]), "true" if i == 0 else "false", t(k.get("label", "")))
+        for i, k in enumerate(cases))
+
+    panels = []
+    for i, k in enumerate(cases):
+        lost = (k.get("lost") or "").strip()
+        pill = ('<p class="ks3-removal-lost">%s%s</p>'
+                % (t(a.get("lost_prefix") or "Level lost: "), t(lost))
+                if lost else "")
+        panels.append(
+            '<div class="ks3-removal-panel" data-case="%s"%s>'
+            '<div class="ks3-removal-what">'
+            '<p class="ks3-removal-what-label">%s</p>'
+            '<p class="ks3-removal-what-text">%s</p>'
+            '<p class="ks3-removal-intact">%s</p></div>'
+            '<div class="ks3-removal-predict">'
+            '<p class="ks3-commit">%s</p>%s</div>'
+            '<div class="ks3-removal-out" hidden data-reveal>%s'
+            '<p class="ks3-removal-headline">%s</p>'
+            '<p class="ks3-removal-body">%s</p>'
+            '<p class="ks3-removal-principle"><strong>%s</strong> %s</p>'
+            '</div></div>'
+            % (e(k["id"]), "" if i == 0 else " hidden",
+               t(a.get("what_label") or "What we did"),
+               rich(k.get("what", "")), rich(k.get("intact", "")),
+               t(a.get("commit") or "Commit first. What stops working?"),
+               r_activity_options(k.get("predict") or []),
+               pill, rich(k.get("headline", "")), rich(k.get("body", "")),
+               t(a.get("principle_prefix") or "The principle:"),
+               rich(k.get("principle", ""))))
+
+    counter = a.get("counter") or "{n} of {total} explored"
+    return ('<div class="ks3-removal" data-total="%d">'
+            '<p class="ks3-removal-progress" data-removal-progress '
+            'data-format="%s">%s</p>'
+            '<p class="ks3-removal-lede">%s</p>'
+            '<div class="ks3-removal-tabs">%s</div>%s</div>'
+            % (len(cases), e(counter),
+               t(counter.replace("{n}", "0")
+                        .replace("{total}", str(len(cases)))),
+               rich(a.get("lede", "")), tabs, "".join(panels)))
+
+
 def r_system_bench(a, act_id):
     """⊕ SYSTEM's reference screen — four cells, the same seven parts, tuned.
 
@@ -1983,6 +2187,11 @@ ACTIVITY_KIND_RENDERERS = {
                       ' data-instrument data-board data-stage-done="0"'),
     "sort-rows":     ("ks3-sort",
                       ' data-instrument data-sort data-stage-done="0"'),
+    "zoom-ladder":   ("ks3-zoom-block",
+                      ' data-instrument data-zoomblock data-stage-done="0"'),
+    "sort-task":     ("ks3-hard", ' data-instrument data-hard data-stage-done="0"'),
+    "removal-cases": ("ks3-removal-block",
+                      ' data-instrument data-removal data-stage-done="0"'),
     "system-bench":  ("ks3-bench-block",
                       ' data-instrument data-benchblock data-stage-done="0"'),
     "sabotage":      ("ks3-sab-block",
@@ -2106,6 +2315,12 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append(r_sort_rows(a, act_id))
     if kind == "settles-it":
         parts.append(r_settles_it(a, act_id))
+    if kind == "zoom-ladder":
+        parts.append(r_zoom_ladder(a, act_id))
+    if kind == "sort-task":
+        parts.append(r_sort_task(a, act_id))
+    if kind == "removal-cases":
+        parts.append(r_removal_cases(a, act_id))
     if kind == "system-bench":
         parts.append(r_system_bench(a, act_id))
     if kind == "sabotage":
