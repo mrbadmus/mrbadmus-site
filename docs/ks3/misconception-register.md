@@ -64,6 +64,8 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | Prefix | Domain | Opened |
 |---|---|---|
 | `PART` | Particles, states and the particle model | 2026-07-26, by C1 (Phase 1 slice) |
+| `LIFE` | What counts as living, and the life processes | 2026-08-09, by B1 |
+| `CELL` | Cells, microscopy and the organisation of living things | 2026-08-09, by B1 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: `PART` (particles and states),
@@ -113,7 +115,7 @@ before any of these freeze.
 - `PART-05` (matter is destroyed) → C4 `mass-in-a-reaction`, C2 `conservation-of-mass`. It changes
   costume from "the puddle dried up" to "the mass went down when it burned"; it is the same belief.
 - `PART-09` (heating makes particles bigger) → P5 `pressure-in-liquids`, P11 `density`.
-- `PART-10`/`PART-11` (diffusion needs a push / particles intend to spread) → B1 `animal-and-plant-cells`
+- `PART-10`/`PART-11` (diffusion needs a push / particles intend to spread) → B1 `specialised-cells`
   and B4 `alveoli-built-for-exchange`, where diffusion does real biological work.
 - `PART-12`/`PART-13` (how models and theories work) → C2 `the-atom-daltons-model`, C8 `mendeleev`,
   B10 `how-we-worked-out-dna`. These are the nature-of-science pair and they recur in every
@@ -147,6 +149,54 @@ order rather than a conceptual claim.
   noted here rather than assigned an ID, so nothing is minted into the wrong family in the meantime.
 
 This is recorded as a decision rather than a question so the next author does not re-open it.
+
+### `LIFE` — what counts as living
+
+Opened by **B1 *Cells and organisation*** (2026-08-09, authored by Claude Design). All three are
+`review_state: draft` — the `statement` field is science-bearing (§5.10) and needs Mide's review
+before any of these freeze.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `LIFE-01` | If something moves on its own it must be alive, and if it never moves it must not be. | `three-dishes-vote` | `seed-or-crystal` | `life-processes` |
+| `LIFE-02` | Doing one of the life processes is enough to count as alive — if it grows on its own, it is alive. | `crystal-check` | `seven-out-of-seven` | `life-processes` |
+| `LIFE-03` | A single cell cannot be a whole living thing — it must be part of something bigger. | `how-many-processes` | `one-cell-does-all-seven` | `unicellular-organisms` |
+
+### `CELL` — cells, microscopy and organisation
+
+Opened by **B1 *Cells and organisation*** (2026-08-09, authored by Claude Design). All twelve are
+`review_state: draft`, as above.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `CELL-01` | Those neat round circles in the field of view are the cells. | `count-the-cells` | `bubble-or-cell` | `using-a-microscope` |
+| `CELL-02` | The highest magnification is always the best one to use, because it shows you the most. | `pick-a-lens` | `microscope-lab` | `using-a-microscope` |
+| `CELL-03` | Every plant cell is green, because plants are green. | `plant-extras` | `not-all-green` | `animal-and-plant-cells` |
+| `CELL-04` | The cell membrane and the cell wall are the same thing — animal cells have a wall, it is just called a membrane. | `whats-holding-it-up` | `wall-or-membrane` | `animal-and-plant-cells` |
+| `CELL-05` | Every cell in your body has a nucleus. | `which-has-no-nucleus` | `no-nucleus-reveal` | `specialised-cells` |
+| `CELL-06` | The levels are just about size: small things are cells, medium things are tissues and big things are organs. | `size-trap` | `not-about-size` | `levels-of-organisation` |
+| `CELL-07` | Blood is not a tissue, because a tissue is solid and blood is a liquid. | `blood-check` | `blood-is-a-tissue` | `levels-of-organisation` |
+| `CELL-08` | A single-celled organism is just a simpler version of one of our cells — the same parts, doing less. | `same-or-extra` | `more-not-fewer` | `unicellular-organisms` |
+| `CELL-09` | A stem cell is a cell from the stem of a plant. | `where-does-the-word-come-from` | `stem-not-stem` | `stem-cells-and-meristems` |
+| `CELL-10` | A specialised cell can change into a different kind whenever the body needs it — a skin cell can become a nerve cell. | `where-from` | `once-you-choose` | `stem-cells-and-meristems` |
+| `CELL-11` | The enzymes were killed by the heat. | `what-did-boiling-do` | `not-killed-changed` | `enzymes-and-rate` |
+| `CELL-12` | The hotter it is the faster any reaction goes, so an enzyme works best as hot as possible. | `predict-the-curve` | `two-halves-of-the-curve` | `enzymes-and-rate` |
+
+**Where these are expected to resurface** (`reappears_in`, for filling as later units are
+authored):
+
+- `CELL-04` (wall/membrane) → B7 `leaves-built-for-the-job`, and again at KS4.
+- `CELL-05` (every cell has a nucleus) → B10 `chromosomes-genes-and-dna`, where it does real
+  damage.
+- `CELL-06`/`CELL-07` (levels) → B3 `the-digestive-system`, B4 `the-gas-exchange-system`, B9
+  `food-chains-and-food-webs`. Every SYSTEM lesson in Biology re-tests this pair.
+- `CELL-11` (killed, not denatured) → B3 `enzymes-in-digestion`, C6 `catalysts`. It is a *wording*
+  habit, and wording habits are killed early or not at all.
+
+**Cross-family note.** B1 `specialised-cells` re-confronts `PART-10` (see the `PART` reappears
+list above) with its own pair — `how-does-oxygen-get-in` and `membrane-diffusion-lab` — because a
+register row records where an idea was *opened*, not everywhere it is fought. `PART-10`'s own row
+keeps its C1 `elicited_by`/`confronted_by`.
 
 ---
 

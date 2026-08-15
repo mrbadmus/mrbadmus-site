@@ -10,13 +10,13 @@
 <link rel="stylesheet" href="/shared/tokens.css?v=475c2efb"/>
 <link rel="stylesheet" href="/shared/styles.css?v=2da37530"/>
 <link rel="stylesheet" href="/shared/nav.css?v=896000cb"/>
-<link rel="stylesheet" href="/shared/ks3.css?v=79df97e8"/>
+<link rel="stylesheet" href="/shared/ks3.css?v=dbd1f2f2"/>
 </head>
 <body class="rd" data-mode="ks3" data-ks3-lesson="diffusion" style="--subject: var(--chemistry);">
 <header class="ks3-nav">
   <div class="ks3-nav-rail"><a class="ks3-brand" href="/index.html"><svg width="30" height="30" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#E4572E" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/></svg>MrBadmusAI</a>
   <span class="ks3-nav-divider" aria-hidden="true"></span>
-  <nav class="ks3-crumbs" aria-label="Breadcrumb"><a href="/ks3/index.html">KS3</a><span class="ks3-crumb-sep" aria-hidden="true">›</span><a href="/ks3/chemistry/index.html">Chemistry</a><span class="ks3-crumb-sep" aria-hidden="true">›</span><a href="/ks3/chemistry/particles-and-their-behaviour/index.html">Particles and their behaviour</a><span class="ks3-crumb-sep" aria-hidden="true">›</span><span aria-current="page">Diffusion</span></nav>
+  <ol class="ks3-trail" aria-label="Breadcrumb"><li><a href="/ks3/index.html">KS3</a></li><li class="ks3-trail-sep" aria-hidden="true">›</li><li><a href="/ks3/chemistry/index.html">Chemistry</a></li><li class="ks3-trail-sep" aria-hidden="true">›</li><li><a href="/ks3/chemistry/particles-and-their-behaviour/index.html">Particles and their behaviour</a></li><li class="ks3-trail-sep" aria-hidden="true">›</li><li><span aria-current="page">Diffusion</span></li></ol>
   <span class="ks3-nav-spacer"></span>
   <a class="ks3-pill" href="/ks3/index.html">KS3</a>
   </div>
@@ -24,12 +24,7 @@
 <main class="ks3-main">
 <div class="ks3-lesson">
 <header class="ks3-lesson-head"><p class="ks3-eyebrow">Particles and their behaviour · Model</p><h1>Diffusion</h1><p class="ks3-bigq">How does a smell get across the room with no wind?</p><p class="ks3-review-flag">Draft — not yet science-reviewed.</p></header>
-<section class="ks3-block ks3-dark ks3-hook">
-  <p class="ks3-eyebrow">Start here</p>
-  <h2>Perfume at the front of the lab</h2>
-  <p class="ks3-hook-prompt">Gas particles move fast in every direction — that is how pressure works. Here is the other thing it lets them do. A bottle is opened at the front of a still room. Hands go up row by row as the smell reaches each one.</p>
-  <p class="ks3-commit">Nothing is blowing it. So what is moving it?</p>
-</section>
+<section class="ks3-block ks3-dark ks3-hook" data-activity="hook"><p class="ks3-eyebrow">Start here</p><h2 class="ks3-hook-h">Perfume at the front of the lab</h2><p class="ks3-hook-prompt">Gas particles move fast in every direction — that is how pressure works. Here is the other thing it lets them do. A bottle is opened at the front of a still room. Hands go up row by row as the smell reaches each one.</p><div class="ks3-hook-commit"><p class="ks3-commit">Nothing is blowing it. So what is moving it?</p></div></section>
 <section class="ks3-block ks3-check" data-activity="predict-still-room"><p class="ks3-eyebrow">Your turn</p><h2>Commit first. The windows are shut and the air is completely still. Will the smell still reach the back row?</h2><ul class="ks3-options" role="list"><li><button type="button" class="ks3-option" data-i="0" aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">A</span><span class="ks3-opt-label">No — with no draught nothing carries it</span></button></li><li><button type="button" class="ks3-option" data-i="1" aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">B</span><span class="ks3-opt-label">Yes — it gets there anyway</span></button></li></ul><div class="ks3-reveal" hidden data-reveal>It gets there anyway. Nothing carries the particles — they carry themselves.</div></section>
 <section class="ks3-block ks3-explainer"><p>Nothing is moving it except the particles themselves. Particles in a gas or a liquid never stop moving. They move in random directions — no pattern, no aim. Near the open bottle the perfume particles are crowded together. So more of them happen to drift outwards than inwards. Do that for a few minutes and the smell has crossed the room. Nothing pushed it. That spreading has a name: diffusion.</p></section>
 <section class="ks3-block ks3-dark ks3-practical" data-activity="random-walk-sim"><p class="ks3-eyebrow">Investigate</p><p>There is no draught anywhere in this lab. Predict first: what path does the one tagged particle take to the far side?</p><ul class="ks3-options" role="list"><li><button type="button" class="ks3-option" data-i="0" aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">A</span><span class="ks3-opt-label">A straight line towards the empty side</span></button></li><li><button type="button" class="ks3-option" data-i="1" aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">B</span><span class="ks3-opt-label">A long jagged path with no set direction</span></button></li><li><button type="button" class="ks3-option" data-i="2" aria-pressed="false"><span class="ks3-opt-mark" aria-hidden="true">C</span><span class="ks3-opt-label">It never reaches the far side at all</span></button></li></ul><div class="ks3-sim" data-sim="diffusion" data-controls="temperature,medium"><canvas class="ks3-sim-canvas" width="560" height="220" role="img" aria-label="Animation: two groups of particles, orange starting on the left and blue starting on the right, each wandering on its own random path. Orange particles cross to the right while blue ones cross to the left, both at once, until the two groups are mixed. The readout below the animation counts the crossings in each direction in words. One particle is tagged so you can follow it. There is no wind, no current and no waft in this simulation."></canvas><p class="ks3-sim-cover">Make your prediction first — then the lab runs.</p><div class="ks3-sim-controls"></div><p class="ks3-sim-readout" role="status"></p><p class="ks3-sim-caption">One particle is tagged so you can follow it. There is no wind, no current and no waft in this simulation.</p></div><div class="ks3-reveal" hidden data-reveal>A long jagged path. It gets there in the end, but by wandering, not by aiming. Nothing pushes it — the knocks it takes from other particles are the only thing steering it.</div></section>
@@ -64,6 +59,6 @@
     <div class="ks3-footer-links"><a href="/ks3/index.html">All of KS3</a></div>
   </div>
 </footer>
-<script src="/shared/ks3.js?v=7240da6c" defer></script>
+<script src="/shared/ks3.js?v=b9cf7a3f" defer></script>
 </body>
 </html>

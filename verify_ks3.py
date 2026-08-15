@@ -107,7 +107,12 @@ def main():
     for slug, l in registry.items():
         l["_disc"] = by_code[l["_unit"]]["discipline"]
     c1 = by_code["C1"]
+    b1 = by_code["B1"]
     authored = [l for l in c1["lessons"] if l.get("authored")]
+    b1_authored = [l for l in b1["lessons"] if l.get("authored")]
+    # Every authored lesson in the key stage with its unit attached, for
+    # the checks that span units (the draft markers, the §10.2 done-list).
+    all_authored = [(c1, l) for l in authored] + [(b1, l) for l in b1_authored]
 
     print("\n§9 — vertical slice done-list\n" + "=" * 60)
 
@@ -119,6 +124,33 @@ def main():
     states = {l.get("review_state") for l in authored}
     check("all six carry review_state: draft", states == {"draft"},
           "states=%s" % sorted(states))
+
+    # 1b. B1 authored. MRB-199 is now RULED: both slots that owned no statutory
+    # statement are gone. `stem-cells-and-meristems` has no statement anywhere
+    # in the KS3 spine. `enzymes-and-rate` was dropped OUTRIGHT rather than
+    # moved to B3 — the catalyst clause it would have carried, KS3.B.NUT.04, is
+    # already owned by B3's existing `enzymes-in-digestion` slot, and two
+    # lessons competing for one ownable statement is the defect this ticket
+    # closes. Enzyme rate has no KS3 statement at all and belongs in §7.6's
+    # Year 9 bridge. B1 is six lessons, every one of them statutory.
+    check("B1 has six authored lessons", len(b1_authored) == 6,
+          "%d authored" % len(b1_authored))
+    b1_states = {l.get("review_state") for l in b1_authored}
+    check("all six B1 lessons carry review_state: draft",
+          b1_states == {"draft"}, "states=%s" % sorted(b1_states))
+    # The §7.6 exemption machinery is deliberately KEPT and stays
+    # mutation-tested — the Year 9 bridge unit will exercise it for real. What
+    # MRB-199 changes is only the expected COUNT, which is now zero: no Year 7
+    # lesson claims the exemption. If this ever goes non-empty again without a
+    # bridge unit existing, that is precisely the defect MRB-199 was raised
+    # about, and it fails here by name rather than shipping.
+    beyond = sorted(l["slug"] for l in b1_authored if l.get("beyond_statutory"))
+    check("no B1 lesson is beyond_statutory (MRB-199 ruled)",
+          beyond == [], str(beyond))
+    check("beyond_statutory is present and explicit on every B1 lesson",
+          all("beyond_statutory" in l for l in b1_authored),
+          "review-pack ruling 3: absent is a defect")
+
     manual("examiner-reviewed → frozen",
            "Mide's science gate (§5.10). Cannot be automated; the slice stops here.")
 
@@ -126,12 +158,13 @@ def main():
     # real students return, and only with a visible marker. Both halves are
     # checked here so the carve-out cannot lapse silently: after the expiry the
     # rule flips and this check starts failing on any unfrozen published lesson.
-    unfrozen = [l for l in authored if l.get("review_state") != "frozen"]
+    unfrozen = [(u, l) for u, l in all_authored
+                if l.get("review_state") != "frozen"]
     if unfrozen:
         missing_marker = []
-        for l in unfrozen:
+        for u, l in unfrozen:
             page = ("mrbadmus_site/ks3/%s/%s/%s.html"
-                    % (c1["discipline"], c1["slug"], l["slug"]))
+                    % (u["discipline"], u["slug"], l["slug"]))
             html = open(page).read() if os.path.exists(page) else ""
             if "ks3-review-flag" not in html:
                 missing_marker.append(l["slug"])
@@ -150,7 +183,8 @@ def main():
                   "expired %s; %d lesson(s) still draft and still publishing: %s. "
                   "Freeze them or revert them to coming-soon slots (architecture "
                   "§5.10). Extending the carve-out needs an explicit §12 amendment."
-                  % (CARVE_OUT_EXPIRY, len(unfrozen), [l["slug"] for l in unfrozen]))
+                  % (CARVE_OUT_EXPIRY, len(unfrozen),
+                     [l["slug"] for _, l in unfrozen]))
 
     # 2. Register exists with C1's statements owned exactly once.
     check("statutory register exists",
@@ -613,11 +647,17 @@ def main():
     print("        balance beats unit coherence — see RULED TRADE-OFF in "
           "ks3_data/half_terms.py")
 
-    print("\n§10.2 — per-lesson done-list (automatable subset)\n" + "=" * 60)
+    print("\n§10.2 — per-lesson done-list (automatable subset, C1 + B1)\n"
+          + "=" * 60)
 
-    for l in authored:
+    for _u, l in all_authored:
         pre = "  [%s]" % l["slug"]
-        ok_cov = bool(l.get("covers"))
+        # §10.2's covers rule has two legal halves: non-empty covers, OR
+        # §7.6's declared exemption — beyond_statutory with covers EMPTY
+        # and ks4_links non-empty. First exercised by B1 L7/L8 (MRB-199).
+        ok_cov = bool(l.get("covers")) or (
+            bool(l.get("beyond_statutory")) and not l.get("covers")
+            and bool(l.get("ks4_links")))
         ok_mis = bool(l.get("misconceptions"))
         ok_voc = bool(l.get("vocabulary"))
         ok_lad = set((l.get("ladder") or {})) >= {"recall", "apply", "explain", "produce"}
@@ -751,6 +791,137 @@ def main():
           else "%d problem(s): %s" % (len(struct_problems),
                                       "; ".join(struct_problems[:3])))
 
+    # MRB-210 §2 — range controls bound on both events.
+    rng_problems, rng_rows = PARITY.check_range_binding(".")
+    check("MRB-210 · every range control is bound on `input` AND `change`",
+          not rng_problems,
+          "; ".join("%s: %s" % (l, d) for l, d, _ in rng_rows)
+          if not rng_problems else rng_problems[0][:140])
+
+    # MRB-209 §4 — prose and endmatter links were never gated.
+    link_problems, link_count = PARITY.check_internal_links(KS3_OUT)
+    check("MRB-209 · every internal cross-lesson link resolves",
+          not link_problems,
+          "%d internal /ks3/ links checked" % link_count
+          if not link_problems
+          else "%d dead: %s" % (len(link_problems), link_problems[0][:120]))
+
+    # ── MRB-208, one level down: a rail stop pointing at nothing ────────
+    #
+    # The rail was gated on the things a reader thinks to check — that both
+    # variants exist, that the threshold flips at 1340, that nothing ticks on
+    # load — and not on the one that makes it work at all: that each stop's
+    # `anchor` names an element that is really on the page.
+    #
+    # It did not, on any lesson in the key stage. `BLOCK_RENDERERS["hook"]` and
+    # `["quiz"]` were `lambda l, b: r_hook(l)` and `lambda l, b: r_ladder(l)`,
+    # which threw the block away and with it the anchor, so `#s-hook` and
+    # `#s-ladder` were emitted nowhere. Every lesson's rail therefore had a dead
+    # FIRST stop and a dead LAST stop: the links went nowhere, and
+    # `doneByDom(null)` is false forever, so a six-stop lesson could reach four
+    # and no student could complete a rail.
+    #
+    # Neither the six-lesson inventory nor any ticket carried this. Two
+    # independent audits found it on the same afternoon by asking the question
+    # this gate now asks on every build.
+    anchor_problems, anchor_count = PARITY.check_rail_anchors(KS3_OUT)
+    check("MRB-208 · every rail stop's anchor exists on its page",
+          not anchor_problems,
+          "%d rail stops checked across the key stage" % anchor_count
+          if not anchor_problems
+          else "%d dead: %s" % (len(anchor_problems), anchor_problems[0][:160]))
+
+    # ── MRB-203, one level down: an activity KIND with no renderer ──────
+    #
+    # MRB-203's registry asks whether a BLOCK TYPE has a registered component.
+    # It cannot see the hole one level below it: `r_activity` dispatches on
+    # `activities[].kind`, and a kind it does not know falls through to the
+    # generic shell — prompt, options, reveal — which renders, validates, and
+    # passes every gate while being the wrong component.
+    #
+    # That is not hypothetical. It is exactly what Mide rejected on 11 August:
+    # B1-06's task is "name the level for each of these eight and say what
+    # settled it" and it rendered as a four-option multiple choice with eight
+    # items in the prompt. MRB-205's words: "CLASSIFY has no reference screen,
+    # so there was no sorting component to render into, and the content was
+    # forced into the nearest shape that existed."
+    #
+    # So: every authored kind must have a dedicated branch in `r_activity`, or
+    # the build says which ones do not and how much of the page they are. It
+    # reports rather than fails, because failing would delete the six pages
+    # Mide is comparing — but it is loud, it names each kind and the lessons it
+    # costs, and it cannot be satisfied by the silence that produced the
+    # original defect.
+    import build_ks3 as _B
+    # The map is a module-level constant so this gate reads the real dispatch
+    # table rather than a copy that drifts. `getattr` only so that the gate
+    # degrades to "nothing is dispatched" instead of crashing if the constant
+    # is ever renamed — a gate that dies is a gate that gets deleted.
+    dispatched = set(getattr(_B, "ACTIVITY_KIND_RENDERERS", {}))
+    generic = set(getattr(_B, "GENERIC_ACTIVITY_KINDS", set()))
+    authored = {}
+    for u in _B.ks3_data.build_units():
+        for l in u.get("lessons", []):
+            for a in l.get("activities", []):
+                k = a.get("kind")
+                if k and k not in dispatched and k not in generic:
+                    authored.setdefault(k, set()).add(l["slug"])
+    unrendered = sorted(authored)
+    check("MRB-203 (kinds) · every instrument kind has its own renderer",
+          not unrendered,
+          "%d instrument kinds dispatched, %d declared generic, none "
+          "unrendered" % (len(dispatched), len(generic))
+          if not unrendered else
+          "%d instrument kind(s) fall through to the GENERIC prompt/options/"
+          "reveal shell — the page renders and every other gate passes, but it "
+          "is NOT Design's component: %s"
+          % (len(unrendered),
+             "; ".join("%s (%s)" % (k, ", ".join(sorted(authored[k])))
+                       for k in unrendered)))
+
+    # §8.10 — the platform does not explain itself on the page.
+    #
+    # §8.10 is deliberately a discernment test and NOT a banned-phrase list,
+    # and architecture.md is explicit that a blanket rule here would repeat the
+    # failure it was written to stop. So this gate does not try to judge tone.
+    # It catches one mechanical tell that is never legitimate in student prose:
+    # a §-numbered reference to this project's own architecture document. A
+    # twelve-year-old has no §7.4. The discernment stays with the author; only
+    # the unarguable case is automated.
+    #
+    # Found live: the `references[].why` field renders into the "Connects to"
+    # card, and C1's read "P11 owns it (§7.4); this lesson points at it and must
+    # render gracefully before P11 exists" on the published draft.
+    sec_problems, sec_pages = PARITY.check_no_section_refs(KS3_OUT)
+    check("§8.10 · no architecture §-reference reaches student prose",
+          not sec_problems,
+          "%d pages' visible text scanned" % sec_pages
+          if not sec_problems
+          else "%d page(s): %s" % (len(sec_problems), sec_problems[0][:150]))
+
+    # MRB-203 — the gate learns to see a component that was never
+    # registered. Absence-of-selector already failed; absence-of-
+    # REGISTRATION passed silently, which is how B1 shipped with no
+    # progress rail under a green gate.
+    cov_problems, cov_rows = PARITY.check_design_coverage(".")
+    check("MRB-203 · every authored family has a drawn reference screen, "
+          "every rendered block type has a registered component",
+          not cov_problems,
+          "%d families + block types checked" % len(cov_rows)
+          if not cov_problems else "; ".join(cov_problems[:2]))
+    for label, detail, ok in cov_rows:
+        print("       %s %-28s %s" % ("PASS" if ok else "FAIL", label, detail))
+
+    # MRB-198 — the canvas paints text and state marks with token colours
+    # layer D cannot reach through CSS; the pairs are computed from
+    # tokens.css itself, the same file the canvas reads via cssVar().
+    canvas_problems, canvas_rows = PARITY.check_canvas_contrast(".")
+    check("D0 · canvas-drawn sim marks hold contrast (computed from tokens)",
+          not canvas_problems,
+          "%d pairs, worst %.2f:1"
+          % (len(canvas_rows), min((r[1] for r in canvas_rows), default=0))
+          if not canvas_problems else "; ".join(canvas_problems[:3]))
+
     try:
         import ks3_browser
         _have_browser = os.path.exists(ks3_browser.CHROME)
@@ -777,10 +948,20 @@ def main():
         # "worst" must mean the worst pair that had to CLEAR its bar. Letting a
         # WCAG-exempt row own that number reports the gate as weaker than it is
         # and buries the exemption in a headline nobody reads twice.
-        held = [r for r in contrast_rows if "[exempt:" not in r[0]]
-        exempt = [r for r in contrast_rows if "[exempt:" in r[0]]
+        # A PARKED pair was never measured, so it has no ratio. It must not
+        # own the headline and it must not crash the comparison — same
+        # reasoning as the exemption below, one step further: a pair that did
+        # not run is not a pair that passed.
+        parked = [r for r in contrast_rows if r[3] is None]
+        measured = [r for r in contrast_rows if r[3] is not None]
+        held = [r for r in measured if "[exempt:" not in r[0]]
+        exempt = [r for r in measured if "[exempt:" in r[0]]
         worst = min((r[3] for r in held), default=0)
-        detail = "%d pairs, worst %.2f:1" % (len(contrast_rows), worst)
+        detail = "%d pairs measured, worst %.2f:1" % (len(measured), worst)
+        if parked:
+            detail += " (+%d parked: %s)" % (
+                len(parked),
+                ", ".join(r[0].split(" [")[0] for r in parked[:3]))
         if exempt:
             detail += " (+%d WCAG-exempt: %s)" % (
                 len(exempt), ", ".join("%s %.2f:1" % (r[0].split(" [")[0], r[3])
@@ -802,6 +983,10 @@ def main():
         # nobody can see is a number nobody re-checks.
         print("\n     measured contrast (fg on resolved ground):")
         for name, fg, bg, ratio, need, ok in contrast_rows:
+            if ratio is None:          # PARKED — never measured, so no number
+                print("       %-4s %-46s %8s  (needs %.1f)"
+                      % ("----", name[:46], "parked", need or 0))
+                continue
             print("       %-4s %-46s %6.2f:1  (needs %.1f)"
                   % ("PASS" if ok else "FAIL", name[:46], ratio, need))
 

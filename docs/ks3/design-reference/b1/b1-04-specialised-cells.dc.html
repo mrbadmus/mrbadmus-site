@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Specialised cells · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b4-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b4-arrive .34s ease-out both; }
+  [data-bench-grid] { grid-template-columns: minmax(0, 232px) minmax(0, 1fr); }
+  @media (max-width: 780px) { [data-bench-grid] { grid-template-columns: minmax(0, 1fr); } }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Cells and organisation</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Specialised cells</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="4">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Cells and organisation · System</p>
+        <h1>Specialised cells</h1>
+        <p class="ks3-bigq">One cell in your body throws its nucleus away. Why would anything do that?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Last lesson: no nucleus, no instructions, no repair, no dividing.</h2>
+        <p class="ks3-hook-prompt">All still true. And yet: a red blood cell starts out with a nucleus, in the marrow inside your bones, and as it matures it pushes that nucleus out and destroys it. It can then never repair itself and never divide, and it lasts about a hundred and twenty days. Your body does this deliberately, two million times a second.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Something must be worth all that. What does losing the nucleus buy the cell?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Hold it. Every cell below is the same trade, made differently: something given up, something gained, and a shape that answers one physical problem.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section id="s-tuned" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The bench · same seven parts</p>
+        <h2>Nothing new was added. Something was turned up, and something was turned down.</h2>
+        <p style="margin: 10px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">These are the same seven parts you numbered last lesson. Pick a cell and read what has been tuned — and what the tuning is for.</p>
+
+        <div data-bench-grid="1" style="margin-top: 22px; display: grid; gap: 22px; align-items: start;">
+          <ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px;">
+            <sc-for list="{{ cellButtons }}" as="c" hint-placeholder-count="4">
+              <li>
+                <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.pressed }}" style="{{ c.style }}">
+                  <span style="display: block; font-size: 17px; font-weight: 700; line-height: 1.25;">{{ c.name }}</span>
+                  <span style="{{ c.tagStyle }}">{{ c.tag }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+
+          <div>
+            <div style="border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); background: var(--ks3-card); overflow: hidden;">
+              <canvas width="1800" height="1120" ref="{{ cellRef }}" role="img" aria-label="{{ cellAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+              <p style="margin: 0; padding: 11px 16px; border-top: 2px solid var(--ks3-rule); background: var(--ks3-band); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-ink-muted);">{{ cellCaption }}</p>
+            </div>
+
+            <div style="margin-top: 16px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">Its job</p>
+              <p style="margin: 6px 0 0; font-size: 21px; line-height: 1.4; font-weight: 700;">{{ cellJob }}</p>
+              <p style="margin: 12px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body);">{{ cellWhere }}</p>
+
+              <ul style="list-style: none; margin: 20px 0 0; padding: 0; display: flex; flex-direction: column; gap: 9px;">
+                <sc-for list="{{ tuning }}" as="t" hint-placeholder-count="3">
+                  <li style="display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-rule-strong);">
+                    <span aria-hidden="true" style="{{ t.dialStyle }}">{{ t.dial }}</span>
+                    <span>
+                      <span style="display: block; font-size: 18px; font-weight: 700;">{{ t.part }}</span>
+                      <span style="display: block; margin-top: 3px; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">{{ t.why }}</span>
+                    </span>
+                  </li>
+                </sc-for>
+              </ul>
+
+              <p style="margin: 18px 0 0; padding-top: 16px; border-top: 2px solid var(--ks3-rule); font-size: 19px; line-height: 1.6;"><strong style="font-family: var(--ks3-font-display);">The problem it solves:</strong> {{ cellProblem }}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-break" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Break it on purpose</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Take the adaptation away</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ breakProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Knowing the parts is not knowing the system. Sabotage one thing about <strong style="color: var(--ks3-on-dark);">{{ cellName }}</strong>, say what you think breaks first, and then follow it out from the cell to the whole organism.</p>
+
+        <div style="margin-top: 22px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ sabotageTabs }}" as="t" hint-placeholder-count="2">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">The sabotage</p>
+          <p style="margin: 8px 0 0; font-size: 21px; line-height: 1.5; font-weight: 700; color: var(--ks3-on-dark);">{{ sabotageWhat }}</p>
+        </div>
+
+        <sc-if value="{{ predictOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. What breaks first?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ predictOptions }}" as="opt" hint-placeholder-count="3">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ chainOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <div style="border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+              <canvas width="1800" height="840" ref="{{ brokenRef }}" role="img" aria-label="{{ brokenAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+              <p style="margin: 0; padding: 11px 16px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel); font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ brokenCaption }}</p>
+            </div>
+
+            <p style="margin: 18px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ yourPickLine }}</p>
+
+            <ol style="list-style: none; margin: 14px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px;">
+              <sc-for list="{{ chain }}" as="link" hint-placeholder-count="3">
+                <li style="{{ link.style }}">
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ link.scale }}</p>
+                  <p style="margin: 6px 0 0; font-size: 19px; line-height: 1.55; color: var(--ks3-ink);">{{ link.text }}</p>
+                </li>
+              </sc-for>
+            </ol>
+
+            <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ chainClose }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-rule" style="margin: 28px 0 0; scroll-margin-top: 92px; background: var(--ks3-band); border: 3px solid var(--ks3-ink); border-radius: var(--ks3-r-block); padding: 34px 32px;">
+        <p class="ks3-eyebrow" style="color: var(--ks3-accent-text);">What settles it</p>
+        <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: clamp(28px, 3.9vw, 44px); line-height: 1.08; letter-spacing: -.03em; max-width: 24ch;">Every adaptation is an answer to a physical problem.</p>
+        <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.6; max-width: 56ch; color: var(--ks3-ink-body);">There are only a few problems a single cell can be up against. Once you can name the problem, the shape stops being a fact to memorise and becomes the obvious solution.</p>
+
+        <div style="margin-top: 26px; display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)); gap: 14px;">
+          <div style="background: var(--ks3-card); border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card); padding: 20px 22px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text);">Problem 1</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">Not enough surface</p>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">Everything enters a cell through its surface. Need more in? Get more surface: a long thin hair, a folded edge, a flattened disc.</p>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">Root hair cell · red blood cell</p>
+          </div>
+          <div style="background: var(--ks3-card); border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card); padding: 20px 22px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text);">Problem 2</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">Too far to travel</p>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">A message from your toe to your spine has a metre to cross. Passing it from cell to cell costs time at every handover, so one cell is stretched the whole way.</p>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">Nerve cell</p>
+          </div>
+          <div style="background: var(--ks3-card); border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card); padding: 20px 22px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text);">Problem 3</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">Work that never stops</p>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">Movement costs energy, and energy comes from mitochondria. A cell that swims, contracts or sweeps all day is crammed with them.</p>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">Sperm cell · muscle cell · ciliated cell</p>
+          </div>
+          <div style="background: var(--ks3-card); border: 2px solid var(--ks3-ink); border-radius: var(--ks3-r-card); padding: 20px 22px;">
+            <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-accent-text);">Problem 4</p>
+            <p style="margin: 6px 0 0; font-family: var(--ks3-font-display); font-weight: 800; font-size: 23px; line-height: 1.2; letter-spacing: -.02em;">Nowhere to put the cargo</p>
+            <p style="margin: 10px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);">A cell that carries something needs room for it, and room has to come from somewhere. This is the only problem on the list solved by throwing a part away.</p>
+            <p style="margin: 12px 0 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">Red blood cell</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Specialised cells are made of different parts from ordinary cells.”</p>
+        <p>There is no such thing as an ordinary cell. Every cell in the four you just looked at is built from the same seven parts as the cheek cell — the tuning is what differs. A nerve cell has a nucleus, cytoplasm, a membrane and mitochondria; so does a sperm cell; so does a root hair cell, plus its wall and its vacuole. Nothing on the parts list is new. What changes is how much of each, and what shape the whole thing is pulled into.</p>
+
+        <div style="margin-top: 22px; padding-top: 20px; border-top: 2px solid var(--ks3-alert-border);">
+          <p class="ks3-mis-quote" style="margin-top: 0;">“A red blood cell is not really a cell, then.”</p>
+          <p>It is. It was made in the marrow with a full nucleus and everything else, and it gave the nucleus up on the way to the job — the way you might take the back seats out of a van. It still has a membrane, still has cytoplasm, still carries oxygen for about a hundred and twenty days. What it cannot do is repair itself or divide, and that is the price of the room it gained.</p>
+        </div>
+      </section>
+
+
+        <div style="margin: 24px 0 0; padding: 18px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); box-shadow: 5px 5px 0 var(--ks3-accent);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+          <p style="margin: 7px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 22px; line-height: 1.35; letter-spacing: -.015em; color: var(--ks3-ink);">A specialised cell has no new parts. The same seven are turned up, turned down, or reshaped.</p>
+        </div>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section id="s-keynote" class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>A specialised cell is not built from different parts. It is the same seven, tuned — more of one, none of another, and a shape that answers one physical problem.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Something has to keep replacing them, and it does: about two million new cells a second, from marrow in your ribs, spine, hips and the ends of your long bones. That is the hidden cost of the trade — cargo space bought with a maintenance bill handed to the rest of the body. Why keep paying it? Because about a quarter of all your cells are red blood cells, and every one would otherwise carry a third less oxygen.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b1-03-animal-and-plant-cells.html">Animal and plant cells<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Connects to</h2>
+          <ul>
+            <li><a href="b1-05-levels-of-organisation.html">Levels of organisation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+            <li><a href="b1-06-unicellular-organisms.html">Unicellular organisms<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Cell differentiation, exchange surfaces and surface area to volume ratio, and active transport at the root hair.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure which problem a cell is solving?</p>
+          <a class="ks3-tutor-cta" href="#s-rule">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;railLabels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Progress rail&quot;},&quot;startCell&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;red&quot;,&quot;root&quot;,&quot;sperm&quot;,&quot;nerve&quot;],&quot;default&quot;:&quot;red&quot;,&quot;tsType&quot;:&quot;'red' | 'root' | 'sperm' | 'nerve'&quot;,&quot;section&quot;:&quot;The bench&quot;},&quot;namedConditions&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Content&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The trade' },
+  { id: 's-tuned', label: 'Same seven parts' },
+  { id: 's-break', label: 'Break it on purpose' },
+  { id: 's-ladder', label: 'Mastery ladder' }
+];
+
+const RAIL_SHORT = ['HOOK', 'TUNED', 'BREAK', 'LADDER'];
+
+function isDone(id, s) {
+  if (id === 's-hook') return s.hookChoice !== null;
+  if (id === 's-tuned') return Object.keys(s.seen || {}).length >= 4;
+  if (id === 's-break') return Object.keys(s.predict || {}).length >= 4;
+  if (id === 's-ladder') return (s.answers || {}).r1 !== undefined && (s.answers || {}).r2 !== undefined && (s.checked || {}).r3 && (s.checked || {}).r4;
+  return false;
+}
+
+const CELLS = [
+  {
+    id: 'red', name: 'Red blood cell', tag: 'In your blood',
+    job: 'Carry oxygen from your lungs to every working cell.',
+    where: 'Made in bone marrow, then pushed round your body about once a minute for four months. Twenty-five trillion are in you right now.',
+    problem: 'Nowhere to put the cargo — and not enough surface to load it through.',
+    tuning: [
+      { dial: 'GONE', part: 'Nucleus (3)', why: 'Pushed out and destroyed as the cell matures. The space it freed is filled with haemoglobin, the red protein that oxygen sticks to.' },
+      { dial: 'SHAPE', part: 'Whole cell', why: 'A disc squashed in at the middle — biconcave. Same volume, much more surface, so oxygen loads and unloads faster. It also folds to squeeze through vessels narrower than itself.' },
+      { dial: 'NONE', part: 'Mitochondria (4)', why: 'It has none either — which means it cannot use any of the oxygen it is carrying. A courier that ate the parcel would be no use.' }
+    ],
+    caption: 'A capillary, with red blood cells folding through it single file.',
+    alt: 'A narrow blood capillary in cross-section with three biconcave red blood cells passing through it in single file.',
+    sabotages: [
+      {
+        id: 'sphere', label: 'Make it a sphere',
+        what: 'Round it out. Same volume of cell, no dimple in the middle, and stiff instead of floppy.',
+        predict: ['It cannot carry haemoglobin any more', 'It has less surface, and it can no longer fold through narrow vessels', 'It runs out of energy'],
+        caption: 'The same cells, rounded out and stiff, jamming at a narrowing.',
+        alt: 'Spherical red blood cells too large and rigid to pass through a narrowing in the capillary.',
+        chain: [
+          { scale: 'The cell', text: 'Rounding it up gives the same volume the smallest possible surface. Oxygen now has less membrane to cross, so loading and unloading both slow down.' },
+          { scale: 'The vessel', text: 'The narrowest capillaries are thinner than a red blood cell. A floppy disc folds and slips through; a stiff ball wedges, and everything behind it stops too.' },
+          { scale: 'The whole body', text: 'Tissues past the blockage get less oxygen than they need, and the spleen destroys the misshapen cells early, so there are fewer of them as well.' }
+        ],
+        close: 'This is not hypothetical. In hereditary spherocytosis the red cells really are round and stiff, and the result is exactly this: tiredness, and a spleen working overtime.',
+        closeSafe: 'Shape is not decoration here. There are real inherited conditions in which red cells come out round and stiff instead of flexible discs, and tiredness is the first thing people notice.'
+      },
+      {
+        id: 'nucleus', label: 'Give the nucleus back',
+        what: 'Let it keep the nucleus it would normally destroy. Everything else stays the same.',
+        predict: ['It carries less oxygen', 'It cannot fit through capillaries at all', 'It stops being able to divide'],
+        caption: 'The same cells, each with the nucleus it should have given up.',
+        alt: 'Red blood cells each containing a nucleus, with visibly less haemoglobin packed around it.',
+        chain: [
+          { scale: 'The cell', text: 'The nucleus occupies space that haemoglobin was using. Less haemoglobin means less oxygen carried per cell — and the nucleus is in the way of the dimple, so the shape suffers too.' },
+          { scale: 'The blood', text: 'The same volume of blood now delivers noticeably less oxygen per beat, because every courier in it is carrying a smaller load.' },
+          { scale: 'The whole body', text: 'Climbing stairs becomes hard work. Your muscles ask for oxygen at a rate the blood can no longer supply, so they respire without it and ache.' }
+        ],
+        close: 'It would gain something: with a nucleus it could repair itself and live far longer than a hundred and twenty days. The body has judged that trade and chosen cargo over lifespan.',
+        closeSafe: 'It would gain something: with a nucleus it could repair itself and live far longer than a hundred and twenty days. The body has judged that trade and chosen cargo over lifespan.'
+      }
+    ]
+  },
+  {
+    id: 'root', name: 'Root hair cell', tag: 'In a plant root',
+    job: 'Pull water and dissolved minerals out of the soil.',
+    where: 'Just behind the growing tip of every root, in a fuzz of millions. They last days, then are replaced further along as the root pushes on.',
+    problem: 'Not enough surface. Water is spread thinly over soil particles, and it has to be collected.',
+    tuning: [
+      { dial: 'SHAPE', part: 'Whole cell', why: 'Drawn out into a long thin finger that pushes between soil particles. The hair alone can be more than ten times the length of the cell body, and almost all of the surface is on it.' },
+      { dial: 'NONE', part: 'Chloroplasts (7)', why: 'No light reaches a root, so none are built. This cell is a plant cell and it is not green.' },
+      { dial: 'MORE', part: 'Mitochondria (4)', why: 'Water arrives on its own, but minerals have to be dragged in against the flow, and dragging costs energy. So this cell keeps a large supply of mitochondria.' }
+    ],
+    caption: 'A root hair cell, with its hair pushed out between soil particles.',
+    alt: 'A root hair cell in root tissue with a long thin hair extending into soil between soil particles, and arrows showing water entering.',
+    sabotages: [
+      {
+        id: 'short', label: 'Shorten the hair',
+        what: 'Cut the hair back to a stub, so the cell is a neat block like its neighbours. Nothing inside it changes.',
+        predict: ['It cannot make food any more', 'Far less surface is touching soil water', 'The cell bursts'],
+        caption: 'The same cell with the hair cut back to a stub.',
+        alt: 'A root hair cell with only a short stub instead of a long hair, touching far fewer soil particles.',
+        chain: [
+          { scale: 'The cell', text: 'Almost all of this cell’s surface was on the hair. Cut it off and the area in contact with soil water collapses, so far less can cross the membrane per second.' },
+          { scale: 'The root', text: 'Multiply that by millions of cells. The root can still absorb, but at a fraction of the rate — and it is competing with the soil itself, which holds water tightly.' },
+          { scale: 'The whole plant', text: 'The leaves lose water faster than the root can replace it, so the vacuoles empty and the plant wilts. Minerals like nitrate arrive too slowly to build new leaves, so growth stops.' }
+        ],
+        close: 'Surface area is the whole point of this cell. It is the same idea your lungs and your small intestine are built on, at a scale you can see.',
+        closeSafe: 'Surface area is the whole point of this cell. It is the same idea your lungs and your small intestine are built on, at a scale you can see.'
+      },
+      {
+        id: 'mito', label: 'Remove the mitochondria',
+        what: 'Take out every mitochondrion. The hair, the wall, the vacuole and the nucleus all stay exactly as they were.',
+        predict: ['Water stops entering', 'Minerals stop entering, but water keeps coming', 'The hair shrivels immediately'],
+        caption: 'The same cell with no mitochondria — minerals no longer crossing in.',
+        alt: 'A root hair cell with no mitochondria; water arrows still enter but mineral arrows have stopped.',
+        chain: [
+          { scale: 'The cell', text: 'Water still soaks in on its own, because it moves from where there is more to where there is less. Minerals do not: there is more nitrate inside the cell than in the soil, so pulling more in has to be paid for — and the payment came from the mitochondria.' },
+          { scale: 'The root', text: 'The plant keeps drinking and stops feeding. Water goes up the stem as usual; the dissolved minerals it should be carrying are missing.' },
+          { scale: 'The whole plant', text: 'The leaves turn yellow. Chlorophyll needs nitrogen and magnesium to build, and neither is arriving — so the plant is standing in wet soil, in full sun, slowly starving.' }
+        ],
+        close: 'This is the sabotage that separates two things students often merge: water gets in for free, minerals have to be bought. Yellow leaves on a well-watered plant is the classic sign.',
+        closeSafe: 'This is the sabotage that separates two things students often merge: water gets in for free, minerals have to be bought. Yellow leaves on a well-watered plant is the classic sign.'
+      }
+    ]
+  },
+  {
+    id: 'sperm', name: 'Sperm cell', tag: 'A sex cell',
+    job: 'Travel a long way, and deliver half a set of instructions.',
+    where: 'Made in the testes, and built for one journey it will make once. Most never arrive.',
+    problem: 'Work that never stops, over a distance that is enormous for one cell.',
+    tuning: [
+      { dial: 'SHAPE', part: 'Whole cell', why: 'A streamlined head and a long tail that whips from side to side. Nothing about this cell is built to sit still.' },
+      { dial: 'MORE', part: 'Mitochondria (4)', why: 'Packed into the middle section, right behind the head, feeding the tail. Swimming for hours is expensive and there is nowhere to refuel.' },
+      { dial: 'HALF', part: 'Nucleus (3)', why: 'It carries half a set of chromosomes, not a full set, so that it can be added to the half in the egg. This is the one cell on the page whose nucleus is deliberately incomplete.' }
+    ],
+    caption: 'A sperm cell: head, mitochondria-packed midpiece, and tail.',
+    alt: 'A sperm cell with a rounded head containing a nucleus, a midpiece full of mitochondria, and a long wavy tail.',
+    sabotages: [
+      {
+        id: 'notail', label: 'Remove the tail',
+        what: 'Take the tail off. The head, the nucleus and every mitochondrion stay untouched.',
+        predict: ['It can no longer move', 'It can no longer carry chromosomes', 'It runs out of energy faster'],
+        caption: 'The same cell with no tail. Everything else is intact.',
+        alt: 'A sperm cell head and midpiece with no tail attached.',
+        chain: [
+          { scale: 'The cell', text: 'It has the instructions, the energy and the enzymes — and no way to move. A cell this small cannot drift anywhere useful on its own.' },
+          { scale: 'The journey', text: 'It never gets near the egg. Distance, for something this size, is the hardest part of the whole job.' },
+          { scale: 'The outcome', text: 'No fertilisation. Every other adaptation in the cell was in perfect order and none of them mattered.' }
+        ],
+        close: 'This is what a system means. Six things right and one thing missing is not five-sixths of a working cell — it is a cell that fails.',
+        closeSafe: 'This is what a system means. Six things right and one thing missing is not five-sixths of a working cell — it is a cell that fails.'
+      },
+      {
+        id: 'mito', label: 'Empty the midpiece',
+        what: 'Take out the mitochondria. The tail is still perfectly formed and attached.',
+        predict: ['The tail falls off', 'The tail can beat, but not for long', 'The nucleus stops working'],
+        caption: 'The same cell with an empty midpiece — the tail hangs limp.',
+        alt: 'A sperm cell with an empty midpiece and a limp, nearly straight tail.',
+        chain: [
+          { scale: 'The cell', text: 'A tail is a motor and a motor needs fuel released. With no mitochondria there is nothing turning food into usable energy, so the tail beats weakly and then stops.' },
+          { scale: 'The journey', text: 'It covers a fraction of the distance and stalls. There is no refuelling on the way — everything it will ever spend was loaded before it set off.' },
+          { scale: 'The outcome', text: 'No fertilisation, for the same reason as before but from the other end: the machine is intact and unpowered.' }
+        ],
+        close: 'Notice the pattern. The tail and the mitochondria are not two adaptations, they are one — a structure and its power supply, useless apart.',
+        closeSafe: 'Notice the pattern. The tail and the mitochondria are not two adaptations, they are one — a structure and its power supply, useless apart.'
+      }
+    ]
+  },
+  {
+    id: 'nerve', name: 'Nerve cell', tag: 'In your nervous system',
+    job: 'Carry a signal a long way, fast.',
+    where: 'From your spine to your toe can be a single cell over a metre long — the longest cells in your body by a wide margin.',
+    problem: 'Too far to travel, and every handover between cells costs time.',
+    tuning: [
+      { dial: 'SHAPE', part: 'Whole cell', why: 'Drawn out into one enormous thread. Branches at both ends collect signals in and pass them on; the middle is pure cable.' },
+      { dial: 'EXTRA', part: 'Fatty sheath', why: 'A fatty covering wrapped round the cable in segments with tiny gaps between them. The signal jumps from gap to gap instead of creeping along, which makes it many times faster.' },
+      { dial: 'MORE', part: 'Mitochondria (4)', why: 'Concentrated at the branched ends, where the signal is passed to the next cell. That handover is the expensive part.' }
+    ],
+    caption: 'A nerve cell: branched ends, and a long sheathed cable between them.',
+    alt: 'A nerve cell with branching dendrites, a long axon covered in segments of fatty sheath with gaps between them, and branched terminals.',
+    sabotages: [
+      {
+        id: 'sheath', label: 'Strip the fatty sheath',
+        what: 'Remove the fatty covering. The cell is the same length, and every other part is intact.',
+        predict: ['The signal cannot start at all', 'The signal still travels, but much more slowly', 'The cell dies'],
+        caption: 'The same cell with the sheath stripped away — bare cable.',
+        alt: 'A nerve cell with a bare, unsheathed axon and no segments.',
+        chain: [
+          { scale: 'The cell', text: 'With the sheath on, the signal jumps between the gaps. Bare, it has to travel the whole length of the membrane step by step, and it leaks as it goes.' },
+          { scale: 'The nerve', text: 'The message arrives many times later, and weaker. Timing between different nerves goes out of step, which matters as much as the delay itself.' },
+          { scale: 'The whole body', text: 'Movement becomes clumsy and slow to correct, and vision and balance are affected too, because those signals depend on arriving on time.' }
+        ],
+        close: 'The sheath is what makes a metre-long cell practical. In multiple sclerosis the body’s own immune system damages it, and these are the effects people describe.',
+        closeSafe: 'The sheath is what makes a metre-long cell practical. Speed here is not a bonus; it is the difference between catching yourself as you trip and hitting the floor.'
+      },
+      {
+        id: 'short', label: 'Make it short',
+        what: 'Replace the one long cell with a relay of short ones covering the same distance. Every cell keeps its sheath and its mitochondria.',
+        predict: ['The signal cannot cross the gaps between cells', 'Every handover adds a delay, so the total time goes up', 'The signal gets stronger with each cell'],
+        caption: 'The same distance covered by a relay of short cells, with junctions between them.',
+        alt: 'Three short nerve cells in a row spanning the same distance, with junction gaps drawn between them.',
+        chain: [
+          { scale: 'The cell', text: 'Each short cell works perfectly. But at the end of every one, the signal has to be handed to the next across a junction, and that handover takes chemistry, not electricity.' },
+          { scale: 'The nerve', text: 'Chemistry across a junction is slower than a signal running down a cable. Two extra junctions is two extra delays; a hundred would be a hundred.' },
+          { scale: 'The whole body', text: 'A reflex that should take a fraction of a second takes long enough to matter. You would still be deciding to let go of the hot pan after you had already been burned.' }
+        ],
+        close: 'This is why the nerve cell is shaped the way it is. Length is not a curiosity — it is the adaptation, and it exists to avoid handovers.',
+        closeSafe: 'This is why the nerve cell is shaped the way it is. Length is not a curiosity — it is the adaptation, and it exists to avoid handovers.'
+      }
+    ]
+  }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Name the job',
+    question: 'A cell is long and thin, has a wall and a vacuole, no chloroplasts, and an unusually large number of mitochondria. What is it built for?',
+    options: [
+      { text: 'Carrying oxygen round the body', correction: 'That cell has no wall and no vacuole — and no mitochondria at all, so that it does not use the oxygen it carries.' },
+      { text: 'Absorbing water and minerals from soil', correct: true },
+      { text: 'Trapping light to make food', correction: 'Then it would be full of chloroplasts. This one has none, which is the clue that no light reaches it.' },
+      { text: 'Carrying a signal from your spine to your toe', correction: 'A nerve cell is an animal cell. No animal cell has a wall or a permanent vacuole.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A student says a red blood cell is not really a cell, because it has no nucleus. What is the best reply?',
+    options: [
+      { text: 'They are right — it is just a bag of haemoglobin', correction: 'It has a membrane and cytoplasm and it does a job for four months. Having no nucleus is a cost it paid, not proof it was never a cell.' },
+      { text: 'It has a nucleus, it is only too small to see', correction: 'It genuinely has none. This is not a limit of the microscope — the nucleus is pushed out and destroyed while the cell matures.' },
+      { text: 'It started with a nucleus and destroyed it as it matured, which is why it cannot repair itself and lasts about 120 days', correct: true },
+      { text: 'It keeps the nucleus but switches it off', correction: 'A switched-off nucleus would still take up the space. The whole point of losing it is the room that the haemoglobin then fills.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain it',
+    question: 'A root hair cell is drawn out into a long thin hair. Explain how that shape helps the whole plant, and why a rounder cell of the same volume would be worse.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The long thin shape means…',
+    criteria: [
+      'Says the long thin shape gives a much larger surface area than a round cell of the same volume.',
+      'Says water and dissolved minerals can only enter through the surface, so more surface means a faster rate of absorption.',
+      'Says the hair reaches in between soil particles, where the water actually is.',
+      'Connects it to the whole plant: enough water to stay firm and enough minerals to keep growing.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Design a cell whose job is to line the inside of your windpipe and stop dust reaching your lungs. Say which of the seven parts you would turn up, what shape you would give the cell, and what would go wrong in the whole body if that shape stopped working. You may invent a structure — but say which problem it solves.',
+    fieldLabel: 'Your design',
+    placeholder: 'Shape: … Turned up: … If it failed: …',
+    criteria: [
+      'Gives the cell something on its exposed surface that can move dust along — a fringe of hair-like structures, or your own equivalent, with a reason.',
+      'Turns up mitochondria, because constant sweeping is constant work.',
+      'Says the surface facing the airway is the one that matters, and the cells sit in a sheet so they can sweep together in one direction.',
+      'Follows a failure out to the whole body: dust and mucus stay in the airway instead of being cleared, so infections take hold.'
+    ] }
+];
+
+function rr(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function ell(ctx, x, y, rx, ry, rot) {
+  ctx.beginPath();
+  ctx.ellipse(x, y, Math.max(0.5, rx), Math.max(0.5, ry), rot || 0, 0, Math.PI * 2);
+}
+
+function mito(ctx, x, y, rot, k) {
+  ctx.save();
+  ctx.translate(x, y); ctx.rotate(rot); ctx.scale(k, k);
+  ell(ctx, 0, 0, 22, 11, 0);
+  ctx.fillStyle = '#C96C3C'; ctx.fill();
+  ctx.lineWidth = 2 / k; ctx.strokeStyle = '#8B4523'; ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(-14, 0);
+  ctx.quadraticCurveTo(-9, -6, -4, 0);
+  ctx.quadraticCurveTo(1, 6, 6, 0);
+  ctx.quadraticCurveTo(11, -6, 15, 0);
+  ctx.lineWidth = 1.8 / k; ctx.strokeStyle = '#F6E2D2'; ctx.stroke();
+  ctx.restore();
+}
+
+function arrow(ctx, x1, y1, x2, y2, col) {
+  ctx.beginPath();
+  ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+  ctx.lineWidth = 3; ctx.strokeStyle = col; ctx.stroke();
+  const a = Math.atan2(y2 - y1, x2 - x1);
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 12 * Math.cos(a - 0.42), y2 - 12 * Math.sin(a - 0.42));
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 12 * Math.cos(a + 0.42), y2 - 12 * Math.sin(a + 0.42));
+  ctx.stroke();
+}
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    cell: (function (p) { return CELLS.some((c) => c.id === p) ? p : 'red'; })(this.props.startCell),
+    seen: (function (p) { const k = CELLS.some((c) => c.id === p) ? p : 'red'; const o = {}; o[k] = true; return o; })(this.props.startCell),
+    sab: {},
+    predict: {},
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.drawAll();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => this.drawAll());
+  }
+
+  componentDidUpdate() { this.drawAll(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  cellDef() { return CELLS.find((c) => c.id === this.state.cell) || CELLS[0]; }
+  sabDef() {
+    const c = this.cellDef();
+    const id = this.state.sab[c.id] || c.sabotages[0].id;
+    return c.sabotages.find((s) => s.id === id) || c.sabotages[0];
+  }
+
+  // ── cell drawings ────────────────────────────────────────────────
+  red(ctx, W, H, sab, dark) {
+    const cy = H * 0.5;
+    const narrow = sab === 'sphere';
+    const vh = narrow ? 116 : 150;
+    ctx.fillStyle = dark ? '#241A18' : '#F8E9E5';
+    ctx.beginPath();
+    ctx.moveTo(0, cy - vh / 2);
+    ctx.lineTo(W * 0.62, cy - vh / 2);
+    ctx.quadraticCurveTo(W * 0.72, cy - vh / 2, W * 0.74, cy - (narrow ? 44 : vh / 2));
+    ctx.lineTo(W, cy - (narrow ? 44 : vh / 2));
+    ctx.lineTo(W, cy + (narrow ? 44 : vh / 2));
+    ctx.lineTo(W * 0.74, cy + (narrow ? 44 : vh / 2));
+    ctx.quadraticCurveTo(W * 0.72, cy + vh / 2, W * 0.62, cy + vh / 2);
+    ctx.lineTo(0, cy + vh / 2);
+    ctx.closePath();
+    ctx.fill();
+    ctx.lineWidth = 4; ctx.strokeStyle = dark ? '#7A6A62' : '#221E1B'; ctx.stroke();
+
+    const xs = narrow ? [140, 330, 500] : [180, 450, 720];
+    xs.forEach((x, i) => {
+      ctx.save();
+      ctx.translate(x, cy + (i === 1 ? 0 : (i === 0 ? -12 : 14)));
+      if (narrow) {
+        ell(ctx, 0, 0, 64, 62, 0);
+        ctx.fillStyle = '#C2372B'; ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = '#7E1F16'; ctx.stroke();
+      } else {
+        ctx.rotate(i === 1 ? 0 : (i === 0 ? -0.18 : 0.14));
+        ctx.beginPath();
+        ctx.moveTo(-86, 0);
+        ctx.bezierCurveTo(-70, -38, -28, -13, 0, -13);
+        ctx.bezierCurveTo(28, -13, 70, -38, 86, 0);
+        ctx.bezierCurveTo(70, 38, 28, 13, 0, 13);
+        ctx.bezierCurveTo(-28, 13, -70, 38, -86, 0);
+        ctx.closePath();
+        ctx.fillStyle = '#C2372B'; ctx.fill();
+        ctx.lineWidth = 3; ctx.strokeStyle = '#7E1F16'; ctx.stroke();
+      }
+      const dots = sab === 'nucleus' ? 6 : 15;
+      ctx.fillStyle = '#8E2318';
+      for (let d = 0; d < dots; d++) {
+        const a = (d / dots) * Math.PI * 2 + i;
+        const rr2 = narrow ? 38 : 58;
+        ell(ctx, Math.cos(a) * rr2 * 0.9, Math.sin(a) * (narrow ? 34 : 8), 5, 4, 0);
+        ctx.fill();
+      }
+      if (sab === 'nucleus') {
+        ell(ctx, 0, 0, 30, narrow ? 26 : 13, 0);
+        ctx.fillStyle = '#7C6AA6'; ctx.fill();
+        ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+      }
+      ctx.restore();
+    });
+
+    if (narrow) {
+      ctx.setLineDash([9, 7]);
+      arrow(ctx, 620, cy, 700, cy, '#B23A2A');
+      ctx.setLineDash([]);
+    }
+  }
+
+  root(ctx, W, H, sab, dark) {
+    const soilX = 260;
+    ctx.fillStyle = dark ? '#241E17' : '#E9DCC2';
+    ctx.fillRect(soilX, 0, W - soilX, H);
+    ctx.fillStyle = dark ? '#2E271E' : '#DCCBA9';
+    [[380, 120, 58], [520, 90, 44], [660, 150, 66], [800, 96, 50], [340, 300, 52],
+     [470, 340, 62], [620, 300, 46], [760, 360, 58], [400, 470, 60], [560, 480, 48],
+     [700, 470, 56], [840, 440, 62], [880, 240, 54]].forEach((p) => {
+      ell(ctx, p[0], p[1], p[2], p[2] * 0.82, 0.3);
+      ctx.fill();
+    });
+
+    ctx.fillStyle = dark ? '#1A1611' : '#F3E8D2';
+    ctx.fillRect(0, 0, soilX, H);
+    ctx.lineWidth = 4; ctx.strokeStyle = dark ? '#7A6A62' : '#221E1B';
+    ctx.beginPath(); ctx.moveTo(soilX, 0); ctx.lineTo(soilX, H); ctx.stroke();
+
+    rr(ctx, 60, 150, 200, 260, 20);
+    ctx.fillStyle = '#D9C48D'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+    rr(ctx, 76, 166, 168, 228, 14);
+    ctx.fillStyle = '#F5ECD8'; ctx.fill();
+    rr(ctx, 104, 214, 118, 140, 34);
+    ctx.fillStyle = '#E4EDE9'; ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#9AB0A6'; ctx.stroke();
+
+    const hairEnd = sab === 'short' ? 340 : 800;
+    ctx.beginPath();
+    ctx.moveTo(240, 234);
+    ctx.quadraticCurveTo((240 + hairEnd) / 2, 214, hairEnd, 248);
+    ctx.quadraticCurveTo((240 + hairEnd) / 2, 262, 240, 292);
+    ctx.closePath();
+    ctx.fillStyle = '#F5ECD8'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = '#221E1B'; ctx.stroke();
+
+    ell(ctx, 150, 195, 32, 24, 0);
+    ctx.fillStyle = '#7C6AA6'; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+
+    if (sab !== 'mito') {
+      [[110, 380, 0.4], [200, 384, -0.3], [156, 262, 1.4], [212, 300, 0.2], [96, 300, 1.2], [180, 158, 0.5]]
+        .forEach((m) => mito(ctx, m[0], m[1], m[2], 0.9));
+    }
+
+    const wcol = '#2F5CE0';
+    const waterAt = sab === 'short' ? [[400, 200, 350, 232], [400, 300, 352, 262]] :
+      [[430, 150, 372, 224], [560, 130, 508, 226], [700, 170, 650, 236], [470, 400, 412, 274], [640, 410, 588, 268], [810, 350, 790, 274]];
+    waterAt.forEach((a) => arrow(ctx, a[0], a[1], a[2], a[3], wcol));
+
+    if (sab !== 'mito') {
+      ctx.setLineDash([]);
+      [[520, 250, 440, 250]].forEach((a) => arrow(ctx, a[0], a[1], a[2], a[3], '#A93411'));
+    } else {
+      ctx.setLineDash([8, 7]);
+      ctx.globalAlpha = 0.5;
+      arrow(ctx, 520, 250, 470, 250, '#A93411');
+      ctx.globalAlpha = 1;
+      ctx.setLineDash([]);
+    }
+  }
+
+  sperm(ctx, W, H, sab, dark) {
+    const cy = H * 0.5;
+    ell(ctx, 190, cy, 74, 52, 0);
+    ctx.fillStyle = '#E7DECE'; ctx.fill();
+    ctx.lineWidth = 3.5; ctx.strokeStyle = dark ? '#C6B9A7' : '#221E1B'; ctx.stroke();
+    ctx.save();
+    ctx.beginPath();
+    ell(ctx, 190, cy, 74, 52, 0);
+    ctx.clip();
+    ctx.fillStyle = '#C8B49A';
+    ctx.beginPath();
+    ctx.moveTo(116, cy - 60); ctx.lineTo(170, cy - 60); ctx.lineTo(150, cy + 60); ctx.lineTo(116, cy + 60);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+    ell(ctx, 208, cy, 40, 34, 0);
+    ctx.fillStyle = '#7C6AA6'; ctx.fill();
+    ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+
+    rr(ctx, 262, cy - 26, 104, 52, 16);
+    ctx.fillStyle = '#F5ECD8'; ctx.fill();
+    ctx.lineWidth = 3; ctx.strokeStyle = dark ? '#C6B9A7' : '#221E1B'; ctx.stroke();
+    if (sab !== 'mito') {
+      [[288, cy - 8, 0.5], [318, cy + 9, -0.4], [346, cy - 7, 0.3], [300, cy + 14, 0.9]]
+        .forEach((m) => mito(ctx, m[0], m[1], m[2], 0.62));
+    }
+
+    if (sab !== 'notail') {
+      const limp = sab === 'mito';
+      const end = limp ? 620 : 850;
+      const amp = limp ? 10 : 46;
+      ctx.beginPath();
+      for (let x = 366; x <= end; x += 4) {
+        const t = (x - 366) / (end - 366);
+        const y = cy + Math.sin(t * Math.PI * (limp ? 1.6 : 3.1)) * amp * (0.35 + t * 0.8);
+        if (x === 366) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.lineWidth = limp ? 7 : 10;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = dark ? '#C6B9A7' : '#221E1B';
+      ctx.stroke();
+      if (limp) {
+        ctx.setLineDash([8, 8]);
+        ctx.beginPath();
+        ctx.moveTo(end, cy + 6); ctx.lineTo(760, cy + 10);
+        ctx.lineWidth = 4; ctx.strokeStyle = '#8F857B'; ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    }
+  }
+
+  nerve(ctx, W, H, sab, dark) {
+    const cy = H * 0.5;
+    const ink = dark ? '#C6B9A7' : '#221E1B';
+    const relay = sab === 'short';
+    const somas = relay ? [[120, cy], [420, cy], [700, cy]] : [[130, cy]];
+    const axonTo = relay ? [340, 640, 880] : [820];
+
+    somas.forEach((s, si) => {
+      const sx = s[0], sy = s[1];
+      [[-1.9, 66], [-2.5, 58], [2.4, 62], [1.9, 54], [-3.1, 50]].forEach((d) => {
+        const a = d[0], L = d[1] * (relay ? 0.62 : 1);
+        ctx.beginPath();
+        ctx.moveTo(sx, sy);
+        ctx.lineTo(sx + Math.cos(a) * L, sy + Math.sin(a) * L);
+        ctx.lineTo(sx + Math.cos(a) * (L + 22) - 8, sy + Math.sin(a) * (L + 22) - 6);
+        ctx.moveTo(sx + Math.cos(a) * L, sy + Math.sin(a) * L);
+        ctx.lineTo(sx + Math.cos(a) * (L + 22) + 6, sy + Math.sin(a) * (L + 22) + 8);
+        ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = ink; ctx.stroke();
+      });
+      const R = relay ? 40 : 58;
+      ell(ctx, sx, sy, R, R * 0.92, 0);
+      ctx.fillStyle = '#F5ECD8'; ctx.fill();
+      ctx.lineWidth = 3.5; ctx.strokeStyle = ink; ctx.stroke();
+      ell(ctx, sx, sy, R * 0.44, R * 0.42, 0);
+      ctx.fillStyle = '#7C6AA6'; ctx.fill();
+      ctx.lineWidth = 2.5; ctx.strokeStyle = '#453A69'; ctx.stroke();
+
+      const x0 = sx + R, x1 = axonTo[si];
+      ctx.beginPath();
+      ctx.moveTo(x0, sy); ctx.lineTo(x1, sy);
+      ctx.lineWidth = 15; ctx.lineCap = 'round'; ctx.strokeStyle = '#F5ECD8'; ctx.stroke();
+      ctx.lineWidth = 17; ctx.strokeStyle = ink; ctx.stroke();
+      ctx.lineWidth = 11; ctx.strokeStyle = '#F5ECD8'; ctx.stroke();
+
+      if (sab !== 'sheath') {
+        const seg = relay ? 74 : 108;
+        for (let x = x0 + 18; x + seg < x1; x += seg + 16) {
+          rr(ctx, x, sy - 19, seg, 38, 15);
+          ctx.fillStyle = '#EFD9A8'; ctx.fill();
+          ctx.lineWidth = 3; ctx.strokeStyle = ink; ctx.stroke();
+        }
+      }
+
+      [[-0.5, 1], [0, 1], [0.5, 1]].forEach((d) => {
+        ctx.beginPath();
+        ctx.moveTo(x1, sy);
+        ctx.lineTo(x1 + 34, sy + d[0] * 44);
+        ctx.lineTo(x1 + 56, sy + d[0] * 62);
+        ctx.lineWidth = 4; ctx.lineCap = 'round'; ctx.strokeStyle = ink; ctx.stroke();
+        ell(ctx, x1 + 58, sy + d[0] * 64, 8, 8, 0);
+        ctx.fillStyle = ink; ctx.fill();
+      });
+
+      if (relay && si < somas.length - 1) {
+        ctx.setLineDash([6, 6]);
+        ctx.beginPath();
+        ctx.moveTo(x1 + 68, sy - 60); ctx.lineTo(x1 + 68, sy + 60);
+        ctx.lineWidth = 3; ctx.strokeStyle = '#A93411'; ctx.stroke();
+        ctx.setLineDash([]);
+      }
+    });
+  }
+
+  paint(canvas, dark, sab) {
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width / 2, H = canvas.height / 2;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = dark ? '#100D0A' : '#FFFCF5';
+    ctx.fillRect(0, 0, W, H);
+    // every cell is drawn in a fixed 900x560 design space, scaled to fit
+    const k = Math.min(W / 900, H / 560);
+    ctx.save();
+    ctx.translate((W - 900 * k) / 2, (H - 560 * k) / 2);
+    ctx.scale(k, k);
+    const id = this.state.cell;
+    if (id === 'red') this.red(ctx, 900, 560, sab, dark);
+    else if (id === 'root') this.root(ctx, 900, 560, sab, dark);
+    else if (id === 'sperm') this.sperm(ctx, 900, 560, sab, dark);
+    else this.nerve(ctx, 900, 560, sab, dark);
+    ctx.restore();
+  }
+
+  drawAll() {
+    this.paint(this.healthy, false, null);
+    const c = this.cellDef();
+    if (this.state.predict[c.id + ':' + this.sabDef().id] !== undefined) {
+      this.paint(this.broken, true, this.sabDef().id);
+    }
+  }
+
+  seg(on, dark) {
+    if (dark) {
+      return 'cursor:pointer;font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);border:2px solid ' +
+        (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') + ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return 'width:100%;text-align:left;cursor:pointer;font:inherit;padding:12px 14px;min-height:56px;border-radius:var(--ks3-r-option);border:2px solid ' +
+      (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') + ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') +
+      ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const c = this.cellDef();
+    const sab = this.sabDef();
+    const key = c.id + ':' + sab.id;
+    const picked = s.predict[key];
+    const answered = picked !== undefined;
+    const runCount = Object.keys(s.predict).length;
+    const total = CELLS.reduce((n, x) => n + x.sabotages.length, 0);
+    const safe = this.props.namedConditions === false;
+
+    const dialColour = { GONE: 'var(--ks3-alert-tint)', NONE: 'var(--ks3-alert-tint)', HALF: 'var(--ks3-alert-tint)', MORE: 'var(--ks3-accent-tint)', EXTRA: 'var(--ks3-accent-tint)', SHAPE: 'var(--ks3-band)' };
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers && s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = (s.ticks || {})[r.id] || [];
+      if ((s.checked || {})[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = isDone(r.id, s), cur = i === s.active;
+        return {
+          href: '#' + r.id, label: RAIL_SHORT[i] || r.label, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'It can fit through narrower vessels' },
+        { letter: 'B', text: 'Room — space for the cargo it carries' },
+        { letter: 'C', text: 'It saves energy by not using the nucleus' },
+        { letter: 'D', text: 'Nothing. It is a mistake in the process' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      cellButtons: CELLS.map((x) => ({
+        name: x.name, tag: x.tag,
+        pressed: x.id === s.cell,
+        tagStyle: 'display:block;margin-top:2px;font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;letter-spacing:.04em;text-transform:uppercase;color:' +
+          (x.id === s.cell ? 'var(--ks3-accent-text)' : 'var(--ks3-ink-muted)') + ';',
+        style: this.seg(x.id === s.cell, false),
+        onClick: () => this.setState((st) => ({ cell: x.id, seen: Object.assign({}, st.seen, { [x.id]: true }) }))
+      })),
+      cellRef: (el) => { this.healthy = el; if (el) this.paint(el, false, null); },
+      brokenRef: (el) => { this.broken = el; if (el) this.paint(el, true, this.sabDef().id); },
+      cellName: c.name,
+      cellJob: c.job,
+      cellWhere: c.where,
+      cellProblem: c.problem,
+      cellCaption: c.caption,
+      cellAlt: c.alt,
+      tuning: c.tuning.map((t) => ({
+        dial: t.dial, part: t.part, why: t.why,
+        dialStyle: 'display:grid;place-items:center;flex:0 0 74px;padding:5px 0;border-radius:8px;font-family:var(--ks3-font-mono);font-size:12px;font-weight:500;letter-spacing:.08em;border:2px solid var(--ks3-ink);color:var(--ks3-ink);background:' +
+          (dialColour[t.dial] || 'var(--ks3-band)') + ';'
+      })),
+
+      sabotageTabs: c.sabotages.map((x) => ({
+        label: x.label,
+        pressed: x.id === sab.id,
+        style: this.seg(x.id === sab.id, true),
+        onClick: () => this.setState({ sab: Object.assign({}, this.state.sab, { [c.id]: x.id }) })
+      })),
+      sabotageWhat: sab.what,
+      breakProgress: runCount + ' of ' + total + ' sabotages run',
+      predictOpen: !answered,
+      predictOptions: sab.predict.map((t, i) => ({
+        letter: String.fromCharCode(65 + i), text: t,
+        pressed: picked === i,
+        onClick: () => this.setState({ predict: Object.assign({}, this.state.predict, { [key]: i }) })
+      })),
+      chainOpen: answered,
+      yourPickLine: answered ? 'You said: ' + sab.predict[picked] : '',
+      brokenCaption: sab.caption,
+      brokenAlt: sab.alt,
+      chain: sab.chain.map((l, i) => ({
+        scale: l.scale, text: l.text,
+        style: 'padding: 18px 20px; border-radius: var(--ks3-r-panel); background: ' + (i === 0 ? 'var(--ks3-band)' : 'var(--ks3-ground)') +
+          '; border: 2px solid ' + (i === 0 ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';'
+      })),
+      chainClose: safe ? sab.closeSafe : sab.close,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = (s.answers || {})[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                const a = st.answers || {};
+                if (a[r.id] !== null && a[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, a, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = (s.ticks || {})[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: (s.text || {})[r.id] || '', checked: !!(s.checked || {})[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text || {}, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked || {}, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = ((st.ticks || {})[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks || {}, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({ answers: {}, checked: {}, ticks: {} })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

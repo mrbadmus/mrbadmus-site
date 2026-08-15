@@ -49,6 +49,16 @@ SUBSTATEMENTS = {
               "and gas), explained by the particle model.", "C1"),
         ("c", "Gas pressure, explained by the particle model.", "C1"),
     ],
+    # Minted for B1 (2026-08-09). The bullet reads:
+    #   "cells as the fundamental unit of living organisms, including how to
+    #    observe, interpret and record cell structure using a light microscope"
+    # Two separable teaching ideas, taught a week apart by every scheme of work.
+    "KS3.B.CELLS.01": [
+        ("a", "Cells as the fundamental unit of living organisms: everything "
+              "alive is built from cells, and nothing else is.", "B1"),
+        ("b", "How to observe, interpret and record cell structure using a "
+              "light microscope.", "B1"),
+    ],
 }
 
 
