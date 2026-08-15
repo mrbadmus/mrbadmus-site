@@ -2015,9 +2015,26 @@ def check_failure_route(url, report):
         # renderer's drawing and the page threw an uncaught NotFoundError from
         # removeChild — on the one code path whose entire job is to fail
         # gracefully. Silent to jsdom, loud here.
+        # The absent PLATE is expected here too, as of MRB-215, and for the
+        # same reason the absent GLB is: it is the point of the exercise. The
+        # generated fixtures no longer reach a production build, and
+        # assets.fallback is still an unacquired TODO — so the flat renderer
+        # asks for the literal TODO string and the browser rejects it as an
+        # unknown URL scheme. That is the ruled outcome, not the swap faulting.
+        #
+        # Narrow on purpose, exactly as 3d_parity.plate_blocker() is: the
+        # exemption is conditional on the record ITSELF still saying the asset
+        # has not been acquired. Once a drawn plate lands, `expected_plate`
+        # becomes None and any such error is a real problem again.
+        with open(HEART, encoding="utf-8") as fh:
+            _fallback = (json.load(fh).get("assets") or {}).get("fallback") or ""
+        expected_plate = (re.compile(r"unknown_url_scheme|\btodo\b", re.I)
+                          if _fallback.startswith("TODO") else None)
         expected_404 = re.compile(r"404|not found", re.I)
         thrown = [e for e in page.console_errors()
-                  if "favicon" not in e.lower() and not expected_404.search(e)]
+                  if "favicon" not in e.lower()
+                  and not expected_404.search(e)
+                  and not (expected_plate and expected_plate.search(e))]
         if thrown:
             problems.append("the swap threw: %s"
                             % "; ".join(e.splitlines()[0][:160] for e in thrown))
