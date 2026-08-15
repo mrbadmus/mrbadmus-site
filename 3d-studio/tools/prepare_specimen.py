@@ -37,6 +37,14 @@ Point --obj-dir at the extracted meshes:
     python3 tools/prepare_specimen.py tools/recipes/heart.recipe.json \
         --obj-dir ~/Downloads/partof_BP3D_4.0_obj_99
 
+A recipe may draw parts from more than one source tree — the heart does, since
+MRB-222, because BodyParts3D models the ventricular myocardium only in its isa
+release. Name each tree, and the recipe's per-part `tree` selects between them:
+
+    python3 tools/prepare_specimen.py tools/recipes/heart.recipe.json \
+        --obj-dir partof=~/Downloads/partof_BP3D_4.0_obj_99 \
+        --obj-dir isa=~/Downloads/isa_BP3D_4.0_obj_99
+
 .blend, .fbx, .dae, .stl and .ply are still not glTF and still need Blender,
 the free 3D program, which is NOT installed here. When it is missing this
 script says so and stops with a non-zero exit code; it does not half-run and
@@ -259,7 +267,8 @@ def blender_missing_message(suffix: str) -> str:
 
 # ── steps ─────────────────────────────────────────────────────────────────
 
-def run_pipeline(src: str, dst: str, name: str | None, report: str) -> int:
+def run_pipeline(src: str, dst: str, name: str | None, report: str,
+                 preserve: list[str] | None = None) -> int:
     node = shutil.which("node")
     if node is None:
         print("  ❌ Node.js is not installed or not on PATH.")
@@ -269,13 +278,20 @@ def run_pipeline(src: str, dst: str, name: str | None, report: str) -> int:
     command = [node, WORKER, "--in", src, "--out", dst, "--report", report]
     if name:
         command += ["--name", name]
+    # The recipe decides what may be decimated; the worker owns the simplifier.
+    # Passing the names rather than the whole recipe keeps the worker ignorant
+    # of recipes, which is the split every other step here already observes.
+    if preserve:
+        command += ["--preserve", json.dumps(preserve)]
     # Not captured: the worker's report is the operator's report, and it should
     # appear as it happens rather than in a block at the end.
     return subprocess.run(command, check=False, cwd=STUDIO).returncode
 
 
-def convert_obj(src: str, dst: str, obj_dir: str | None, name: str) -> bool:
+def convert_obj(src: str, dst: str, obj_dir, name: str) -> list | None:
     """Read an .obj, or an assembly recipe naming several, into a GLB.
+
+    Returns the part list, or None if it could not be built.
 
     Prints the part list it built, because that list IS the thing the studio's
     isolate and layers tools will show a class — a recipe that silently
@@ -285,13 +301,15 @@ def convert_obj(src: str, dst: str, obj_dir: str | None, name: str) -> bool:
         parts = obj_glb.convert(src, dst, obj_dir, name)
     except (OSError, ValueError) as error:
         print(f"  ❌ {error}")
-        return False
+        return None
     total = sum(len(p["faces"]) for p in parts)
     print(f"  assembled {len(parts)} named part(s), {total:,} triangles:")
     for part in parts:
-        print(f"    {part['name']:24} {len(part['faces']):8,}")
+        print(f"    {part['name']:24} {len(part['faces']):8,}"
+              + ("   [preserved — never simplified]"
+                 if part.get("preserve") else ""))
     print()
-    return True
+    return parts
 
 
 def run_validator(path: str) -> int:
@@ -351,9 +369,11 @@ def main() -> int:
     parser.add_argument("--name", default=None,
                         help="specimen id, e.g. heart (default: the source "
                              "file's name, or the recipe's own name)")
-    parser.add_argument("--obj-dir", default=None,
+    parser.add_argument("--obj-dir", default=None, action="append",
                         help="where an assembly recipe's .obj files live "
-                             "(default: beside the recipe)")
+                             "(default: beside the recipe). Repeat as "
+                             "--obj-dir name=path when a recipe draws parts "
+                             "from more than one source tree.")
     args = parser.parse_args()
 
     src = os.path.abspath(os.path.expanduser(args.source))
@@ -388,18 +408,20 @@ def main() -> int:
 
     workdir = tempfile.mkdtemp(prefix="prepare_specimen_")
     report = os.path.join(workdir, "report.json")
+    preserve: list[str] = []
     try:
         pipeline_input = src
 
         if suffix in OBJ_SUFFIXES:
             pipeline_input = os.path.join(workdir, f"{name}.converted.glb")
-            obj_dir = (os.path.abspath(os.path.expanduser(args.obj_dir))
-                       if args.obj_dir else None)
-            if not convert_obj(src, pipeline_input, obj_dir, name):
+            obj_dir = obj_glb.parse_obj_dirs(args.obj_dir)
+            parts = convert_obj(src, pipeline_input, obj_dir, name)
+            if parts is None:
                 print(f"\n❌ could not read {os.path.basename(src)} into a GLB.")
                 print("   The purchase gates were NOT run — there is nothing "
                       "fit to gate.")
                 return 6
+            preserve = [p["name"] for p in parts if p.get("preserve")]
 
         elif suffix in BLENDER_SUFFIXES:
             blender = find_blender()
@@ -422,7 +444,7 @@ def main() -> int:
                 return 4
             print(f"\n  converted to GLB: {pipeline_input}\n")
 
-        status = run_pipeline(pipeline_input, out, name, report)
+        status = run_pipeline(pipeline_input, out, name, report, preserve)
         if status != 0:
             print("\n❌ the glTF pipeline did not produce a usable specimen "
                   "(see above).")

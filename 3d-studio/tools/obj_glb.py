@@ -38,6 +38,8 @@ Recipe format — "specimen-assembly/v1"
       },
       "parts": [
         { "name": "right-atrium", "files": ["FJ2424", "FJ2439"] },
+        { "name": "ventricular-myocardium", "files": ["FJ2428.clean100"],
+          "tree": "isa", "preserve": true },
         ...
       ]
     }
@@ -46,6 +48,23 @@ Recipe format — "specimen-assembly/v1"
 part may name several files: they are concatenated into one mesh under one
 node, which is what "the right atrium" means when the source ships its wall
 and its cavity as separate meshes.
+
+`tree` (optional) names WHICH source directory a part's files come from, for a
+specimen assembled from more than one release of the same database. Directories
+are supplied as `--obj-dir name=path`, and a part with no `tree` takes the
+unnamed `--obj-dir`. MRB-222 is why this exists: BodyParts3D ships a partof and
+an isa tree, and the heart's ventricular myocardium is present only in the isa
+one. The two trees share element ids AND coordinate frame — all 1,258 elements
+common to both are byte-identical below their header comments — so parts drawn
+from either compose without reconciliation. That is a property of these two
+archives, checked, not a general guarantee about multi-tree assembly.
+
+`preserve` (optional, default false) marks a part the simplifier must NOT
+touch. This module never simplifies anything, so the flag is carried rather
+than acted on here: build_from_recipe records it on the part, prepare_specimen
+hands the names to tools/specimen_pipeline.mjs, and the decimation is scoped
+there. Preservation is not free — the triangle budget the rest of the specimen
+gets is what remains after the preserved parts have taken their share.
 
 Axis conventions
 ----------------
@@ -384,10 +403,26 @@ def load_recipe(path):
     return recipe
 
 
-def resolve_source(obj_dir, ref):
+def resolve_source(obj_dir, ref, tree=None):
+    """Locate one element file.
+
+    `obj_dir` is either a single directory (the original, still what
+    inspect_source_mesh.py and the single-tree path pass) or a mapping of tree
+    name to directory, where the unnamed tree is keyed None. A part that asks
+    for a tree the caller did not supply is an error rather than a silent fall
+    back to the default directory: the two BodyParts3D trees share element ids,
+    so a mis-resolved ref would quietly load a DIFFERENT structure that exists
+    under the same name, and nothing downstream could see it happen.
+    """
+    dirs = obj_dir if isinstance(obj_dir, dict) else {None: obj_dir}
+    if tree not in dirs:
+        known = ", ".join(sorted(str(k) for k in dirs)) or "none"
+        raise ValueError(
+            f"{ref}: recipe asks for source tree {tree!r} but no directory was "
+            f"given for it (have: {known}). Pass --obj-dir {tree}=<path>.")
     candidate = ref if ref.lower().endswith(".obj") else ref + ".obj"
     path = candidate if os.path.isabs(candidate) \
-        else os.path.join(obj_dir, candidate)
+        else os.path.join(dirs[tree], candidate)
     if not os.path.isfile(path):
         raise FileNotFoundError(path)
     return path
@@ -403,9 +438,10 @@ def build_from_recipe(recipe, obj_dir):
     parts = []
     for entry in recipe["parts"]:
         name = entry["name"]
+        tree = entry.get("tree")
         pieces = []
         for ref in entry["files"]:
-            pieces.extend(read_obj(resolve_source(obj_dir, ref)))
+            pieces.extend(read_obj(resolve_source(obj_dir, ref, tree)))
         if not pieces:
             raise ValueError(f"part {name!r}: sources contain no geometry")
         part = merge_parts(pieces, name)
@@ -413,8 +449,30 @@ def build_from_recipe(recipe, obj_dir):
             part["colour"] = entry["colour"]
         if "roughness" in entry:
             part["roughness"] = entry["roughness"]
+        if entry.get("preserve"):
+            part["preserve"] = True
         parts.append(part)
     return apply_transform(parts, recipe.get("transform"))
+
+
+def parse_obj_dirs(values):
+    """`["path"]` or `["isa=path", "path"]` → the mapping resolve_source wants.
+
+    A bare path is the unnamed tree (key None); `name=path` is a named one. A
+    single string is accepted too, so every existing caller keeps working.
+    """
+    if values is None:
+        return {}
+    if isinstance(values, dict):
+        return values
+    if isinstance(values, str):
+        values = [values]
+    dirs = {}
+    for value in values:
+        name, sep, path = value.partition("=")
+        dirs[name if sep else None] = os.path.abspath(
+            os.path.expanduser(path if sep else value))
+    return dirs
 
 
 def convert(source, out, obj_dir=None, name=None):
@@ -422,8 +480,10 @@ def convert(source, out, obj_dir=None, name=None):
     was written, so a caller can report on it."""
     if source.lower().endswith(".json"):
         recipe = load_recipe(source)
-        directory = obj_dir or os.path.dirname(os.path.abspath(source))
-        parts = build_from_recipe(recipe, directory)
+        dirs = parse_obj_dirs(obj_dir)
+        if None not in dirs:
+            dirs[None] = os.path.dirname(os.path.abspath(source))
+        parts = build_from_recipe(recipe, dirs)
         scene = recipe.get("name") or name or "specimen"
         generator = (f"MrBadmusAI 3D Studio — tools/obj_glb.py "
                      f"({RECIPE_VERSION}, {os.path.basename(source)})")
@@ -447,14 +507,16 @@ def main():
                     "many of them, into a multi-part GLB.")
     parser.add_argument("source", help=".obj file or .json assembly recipe")
     parser.add_argument("out", help="output .glb path")
-    parser.add_argument("--obj-dir", default=None,
-                        help="where a recipe's source files live "
-                             "(default: beside the recipe)")
+    parser.add_argument("--obj-dir", default=None, action="append",
+                        help="where a recipe's source files live (default: "
+                             "beside the recipe). Repeat as --obj-dir "
+                             "name=path to supply a named source tree.")
     parser.add_argument("--name", default=None, help="scene / part name")
     args = parser.parse_args()
 
     try:
-        parts = convert(args.source, args.out, args.obj_dir, args.name)
+        parts = convert(args.source, args.out, parse_obj_dirs(args.obj_dir),
+                        args.name)
     except (OSError, ValueError) as error:
         print(f"❌ {error}")
         return 1

@@ -19,7 +19,8 @@
  *   weld()             merge bitwise-identical vertices; simplification needs it
  *   simplify()         meshoptimizer, ONLY when over the 60,000-triangle gate,
  *                      at a ratio computed from the actual count, escalating the
- *                      error budget only as far as it has to
+ *                      error budget only as far as it has to — and skipping any
+ *                      part the recipe marks `preserve` (see --preserve below)
  *   textureCompress()  resize to 1024² max, aspect preserved, downsize only
  *   draco()            edgebreaker, the same setting the test specimen uses
  *
@@ -48,7 +49,10 @@ import { basename, dirname, resolve } from 'node:path';
 
 import { NodeIO } from '@gltf-transform/core';
 import { ALL_EXTENSIONS } from '@gltf-transform/extensions';
-import { dedup, draco, simplify, textureCompress, weld } from '@gltf-transform/functions';
+import { PropertyType } from '@gltf-transform/core';
+import {
+  dedup, draco, prune, simplifyPrimitive, textureCompress, weld,
+} from '@gltf-transform/functions';
 import { MeshoptDecoder, MeshoptEncoder, MeshoptSimplifier } from 'meshoptimizer';
 import draco3d from 'draco3dgltf';
 import sharp from 'sharp';
@@ -78,6 +82,28 @@ const inArg = arg('--in');
 const outArg = arg('--out');
 const specimenName = arg('--name', null);
 const reportPath = arg('--report', null);
+
+// Parts the recipe forbids the simplifier from touching, by node/mesh name.
+//
+// MRB-222 is the case that forced this. The heart's ventricular myocardium
+// carries the one measurement the specimen exists to show — a left free wall of
+// 9.4mm against a right of 3.5mm — on a median edge length of 1.62mm. That is
+// about two triangles across the thin wall, so a uniform decimation eats the
+// RIGHT ventricle first and destroys the teaching point while leaving a mesh
+// that still looks like a heart. No error budget expresses "spend the error
+// anywhere but here"; only excluding the part does.
+//
+// Preservation is never free. The ratio below is computed against the budget
+// that REMAINS once the preserved parts have taken their share, so protecting
+// one structure visibly costs the others — which is the honest trade and is
+// printed as such.
+let preserveNames;
+try {
+  preserveNames = new Set(JSON.parse(arg('--preserve', '[]')));
+} catch {
+  console.error('  ❌ --preserve must be a JSON array of part names');
+  process.exit(64);
+}
 
 if (!inArg || !outArg) {
   console.error('usage: node tools/specimen_pipeline.mjs --in <src.glb|src.gltf> '
@@ -278,12 +304,219 @@ console.log(`    dedup + weld:      ${countTriangles(document).toLocaleString()}
 const simplifyPasses = [];
 let triangles = countTriangles(document);
 
-/** One simplification pass, at a ratio computed from the CURRENT count — an
- * asset 5× over budget and one 5% over need very different cuts. */
+const meshTriangles = (mesh) => mesh.listPrimitives()
+  .reduce((n, p) => n + primitiveTriangles(p), 0);
+
+// ── topology, as the WATERTIGHT GATE sees it ─────────────────────────────────
+//
+// validate_specimen_glb.py welds vertices by POSITION at a tolerance of the
+// mesh extent × 1e-6 before counting edges. Counting raw indices instead
+// reports every duplicated seam vertex as a boundary edge, which is a fact
+// about the file rather than a hole in the surface — so this mirrors the gate's
+// rule rather than inventing a second one. If the gate's tolerance moves, this
+// moves with it.
+const WELD_REL = 1e-6;
+
+/** (boundary, over-shared, misoriented) for one primitive. All zero = the
+ * closed orientable manifold the watertight gate demands. */
+function weldedDefects(prim) {
+  const indices = prim.getIndices();
+  if (!indices || prim.getMode() !== 4) return { boundary: 0, over: 0, mis: 0 };
+  const position = prim.getAttribute('POSITION');
+  const count = position.getCount();
+
+  const xyz = new Float64Array(count * 3);
+  const lo = [Infinity, Infinity, Infinity];
+  const hi = [-Infinity, -Infinity, -Infinity];
+  const scratch = [0, 0, 0];
+  for (let i = 0; i < count; i++) {
+    position.getElement(i, scratch);
+    for (let k = 0; k < 3; k++) {
+      xyz[i * 3 + k] = scratch[k];
+      if (scratch[k] < lo[k]) lo[k] = scratch[k];
+      if (scratch[k] > hi[k]) hi[k] = scratch[k];
+    }
+  }
+  const extent = Math.max(hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]);
+  const tol = Math.max(extent, 1e-12) * WELD_REL;
+
+  const seen = new Map();
+  const remap = new Int32Array(count);
+  for (let i = 0; i < count; i++) {
+    const key = `${Math.round(xyz[i * 3] / tol)},${Math.round(xyz[i * 3 + 1] / tol)},`
+      + `${Math.round(xyz[i * 3 + 2] / tol)}`;
+    let id = seen.get(key);
+    if (id === undefined) { id = seen.size; seen.set(key, id); }
+    remap[i] = id;
+  }
+
+  const undirected = new Map();
+  const directed = new Map();
+  const n = indices.getCount();
+  for (let i = 0; i < n; i += 3) {
+    const a = remap[indices.getScalar(i)];
+    const b = remap[indices.getScalar(i + 1)];
+    const c = remap[indices.getScalar(i + 2)];
+    if (a === b || b === c || a === c) continue;            // degenerate
+    const tri = [a, b, c];
+    for (let e = 0; e < 3; e++) {
+      const u = tri[e];
+      const v = tri[(e + 1) % 3];
+      const key = u < v ? `${u},${v}` : `${v},${u}`;
+      undirected.set(key, (undirected.get(key) || 0) + 1);
+      const dir = `${u},${v}`;
+      directed.set(dir, (directed.get(dir) || 0) + 1);
+    }
+  }
+  let boundary = 0;
+  let over = 0;
+  let mis = 0;
+  for (const v of undirected.values()) { if (v === 1) boundary++; else if (v > 2) over++; }
+  for (const v of directed.values()) if (v > 1) mis++;
+  return { boundary, over, mis };
+}
+
+const isManifold = (d) => d.boundary === 0 && d.over === 0 && d.mis === 0;
+const describeDefects = (d) => `b${d.boundary}/o${d.over}/m${d.mis}`;
+
+/** Enough of a primitive to put it back exactly as it was.
+ *
+ * simplifyPrimitive replaces a primitive's accessors rather than editing them,
+ * so keeping references to the old ones is not safe — they may be detached by
+ * the time a retry needs them. The raw arrays are. */
+function snapshotPrim(prim) {
+  const indices = prim.getIndices();
+  const semantics = prim.listSemantics();
+  return {
+    indices: indices ? indices.getArray().slice() : null,
+    indicesType: indices ? indices.getComponentType() : null,
+    attributes: semantics.map((semantic) => {
+      const accessor = prim.getAttribute(semantic);
+      return {
+        semantic,
+        array: accessor.getArray().slice(),
+        type: accessor.getType(),
+        componentType: accessor.getComponentType(),
+        normalized: accessor.getNormalized(),
+      };
+    }),
+  };
+}
+
+function restorePrim(doc, prim, snap) {
+  for (const saved of snap.attributes) {
+    prim.setAttribute(saved.semantic, doc.createAccessor()
+      .setArray(saved.array)
+      .setType(saved.type)
+      .setNormalized(saved.normalized));
+  }
+  if (snap.indices) {
+    prim.setIndices(doc.createAccessor().setArray(snap.indices));
+  }
+}
+
+/** The meshes split by whether the recipe protects them.
+ *
+ * Matched on MESH name. obj_glb.py writes the mesh, the node and the recipe's
+ * part name as the same string, and a name in --preserve that matches nothing
+ * is reported rather than ignored: a typo there would silently un-protect the
+ * one part the flag exists to protect. */
+const preserved = [];
+const simplifiable = [];
+for (const mesh of document.getRoot().listMeshes()) {
+  (preserveNames.has(mesh.getName()) ? preserved : simplifiable).push(mesh);
+}
+const unmatched = [...preserveNames].filter(
+  (name) => !preserved.some((m) => m.getName() === name));
+if (unmatched.length) {
+  console.error(`\n  ❌ --preserve names ${unmatched.length} part(s) that do not `
+    + `exist in the model: ${unmatched.join(', ')}`);
+  console.error('     The recipe and the GLB disagree about what this specimen is');
+  console.error('     made of. Refusing to simplify on a guess.');
+  process.exit(1);
+}
+
+const preservedTriangles = Math.round(
+  preserved.reduce((n, m) => n + meshTriangles(m), 0));
+if (preserved.length) {
+  console.log(`    preserved:         ${preserved.length} part(s), `
+    + `${preservedTriangles.toLocaleString()} triangles never simplified — `
+    + `${preserved.map((m) => m.getName()).join(', ')}`);
+}
+
+/** One simplification pass over the SIMPLIFIABLE meshes only.
+ *
+ * The ratio is computed from the current count of what may actually be cut,
+ * against the budget left after preservation — an asset 5× over budget and one
+ * 5% over need very different cuts, and a preserved part changes the sum. This
+ * mirrors gltf-transform's own simplify() transform (weld first, then
+ * simplifyPrimitive per primitive, then drop anything simplified away to
+ * nothing); it is scoped rather than reimplemented. simplifyPrimitive is
+ * exported but marked @hidden, so it is pinned by package-lock.json and worth
+ * re-checking on any gltf-transform upgrade. */
+// How far a part is allowed to climb back up when the requested cut breaks its
+// topology, and the point past which backing off further is pointless.
+const BACKOFF_STEPS = [1.5, 2.25, 3.5, 5.0];
+const BACKOFF_CEILING = 0.95;
+
 async function simplifyPass(error, lockBorder) {
-  const ratio = Math.max(0.01, Math.min(0.99, TRIANGLE_TARGET / triangles));
-  await document.transform(
-    simplify({ simplifier: MeshoptSimplifier, ratio, error, lockBorder }));
+  const before = Math.round(simplifiable.reduce((n, m) => n + meshTriangles(m), 0));
+  const budget = TRIANGLE_TARGET - preservedTriangles;
+  const ratio = Math.max(0.01, Math.min(0.99, budget / before));
+  await document.transform(weld({ overwrite: false }));
+
+  for (const mesh of simplifiable) {
+    for (const prim of mesh.listPrimitives()) {
+      if (prim.getMode() !== 4) continue;               // TRIANGLES only
+
+      // A part that was ALREADY non-manifold is not this pass's problem, and
+      // holding simplification hostage to a defect the source shipped with
+      // would be the wrong trade. Only a part the simplifier BREAKS is backed
+      // off, so the check can never make an existing failure worse.
+      const wasManifold = isManifold(weldedDefects(prim));
+      const snapshot = wasManifold ? snapshotPrim(prim) : null;
+
+      simplifyPrimitive(prim, {
+        simplifier: MeshoptSimplifier, ratio, error, lockBorder,
+      });
+      if (!wasManifold) continue;
+
+      let defects = weldedDefects(prim);
+      if (isManifold(defects)) continue;
+
+      // THE BACKOFF. The simplifier tore this part; ask for less of it until it
+      // holds. Thin branching tubes are what provoke this — the heart's 54
+      // coronary segments pinch shut somewhere below ratio 0.40 while the
+      // atrial walls are still clean at 0.15 — so the tolerable cut is a
+      // property of the PART, not a number anyone can pick in advance. The
+      // alternative is shipping a specimen the watertight gate then fails,
+      // having spent the whole pipeline getting there.
+      let healed = false;
+      for (const step of BACKOFF_STEPS) {
+        const retry = Math.min(BACKOFF_CEILING, ratio * step);
+        restorePrim(document, prim, snapshot);
+        simplifyPrimitive(prim, {
+          simplifier: MeshoptSimplifier, ratio: retry, error, lockBorder,
+        });
+        defects = weldedDefects(prim);
+        if (isManifold(defects)) {
+          console.log(`    simplify:          ${mesh.getName()} tore at ratio `
+            + `${ratio.toFixed(3)} — backed off to ${retry.toFixed(3)}, `
+            + `${primitiveTriangles(prim).toLocaleString()} triangles, topology intact`);
+          healed = true;
+          break;
+        }
+        if (retry >= BACKOFF_CEILING) break;
+      }
+      if (!healed) {
+        restorePrim(document, prim, snapshot);
+        console.log(`    simplify:          ⚠️  ${mesh.getName()} could not be `
+          + `simplified without tearing (${describeDefects(defects)}) — left at `
+          + `${primitiveTriangles(prim).toLocaleString()} triangles, uncut`);
+      }
+    }
+  }
+
   const after = countTriangles(document);
   simplifyPasses.push({ ratio, error, lockBorder, from: triangles, to: after });
   console.log(`    simplify:          ratio ${ratio.toFixed(3)}, error ${error}`
@@ -293,6 +526,18 @@ async function simplifyPass(error, lockBorder) {
     console.log('                       no further reduction at this error budget');
   }
   triangles = after;
+}
+
+if (preservedTriangles >= TRIANGLE_LIMIT) {
+  // No amount of cutting elsewhere can help: the protected geometry alone is
+  // over the gate. Say so plainly rather than grinding through the ladder.
+  console.error(`\n  ❌ the preserved parts alone are `
+    + `${preservedTriangles.toLocaleString()} triangles, at or over the `
+    + `${TRIANGLE_LIMIT.toLocaleString()} gate.`);
+  console.error('     Nothing the simplifier is allowed to touch can bring this');
+  console.error('     specimen inside budget. Either the preservation or the gate');
+  console.error('     has to change, and that is a ruling, not a build setting.');
+  process.exit(1);
 }
 
 if (triangles < TRIANGLE_LIMIT) {
@@ -319,6 +564,22 @@ if (triangles < TRIANGLE_LIMIT) {
       + 'the watertight gate below is the check that matters');
   }
 }
+
+// Sweep up accessors nothing points at any more.
+//
+// The backoff above restores a primitive by building fresh accessors from the
+// snapshot; the retry that follows immediately replaces them, leaving the
+// originals owned by the document but referenced by nothing. NodeIO serialises
+// every accessor the root owns, and an orphan is not part of any primitive so
+// Draco never touches it — it lands in the buffer at full size, uncompressed.
+// Measured on the heart: two backoffs left 12 orphans and took the written file
+// from 203 KB to 796 KB, for 4% more triangles. Scoped to accessors so this
+// cannot quietly remove a material, a node or a mesh.
+await document.transform(prune({
+  propertyTypes: [PropertyType.ACCESSOR],
+  keepAttributes: true,
+}));
+console.log('    prune:             unreferenced accessors dropped');
 
 const oversizeTextures = texturesBefore.filter(
   (t) => t.width !== null && (t.width > TEXTURE_LIMIT || t.height > TEXTURE_LIMIT));
@@ -398,6 +659,8 @@ if (reportPath) {
     bytesAfter,
     trianglesBefore,
     trianglesAfter,
+    preservedParts: preserved.map((m) => m.getName()),
+    preservedTriangles,
     simplifyPasses,
     texturesBefore,
     texturesAfter,
