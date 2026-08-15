@@ -15,7 +15,7 @@ It is deliberately **not** in the student-facing panel — see MRB-186.
 
 | Specimen | Licence | Source | Acquired | Renderer |
 | --- | --- | --- | --- | --- |
-| Heart (`heart`) | CC BY-SA 2.1 Japan — BodyParts3D, (c) The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan. Share-alike attaches to the derived mesh. | BodyParts3D (Database Center for Life Science, Japan), release BP3D 4.0, partof tree, 99% reduction — https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html. Assembled by tools/recipes/heart.recipe.json, which records the element files and the sha256 of the source archive. | 2026-08-13 | `mesh` |
+| Heart (`heart`) | CC BY-SA 2.1 Japan — BodyParts3D, (c) The Database Center for Life Science licensed under CC Attribution-Share Alike 2.1 Japan. Share-alike attaches to the derived mesh. | BodyParts3D (Database Center for Life Science, Japan), release BP3D 4.0, 99% reduction, partof AND isa trees — https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html. Assembled by tools/recipes/heart.recipe.json, which records the element files and the sha256 of both source archives. The ventricular myocardium comes from the isa tree (FJ2428, FMA13884 wall of ventricle), which is the only place BodyParts3D models it as a real enclosing shell; everything else comes from the partof tree. | 2026-08-13 | `mesh` |
 
 ## Files
 
