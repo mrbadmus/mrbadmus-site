@@ -19,6 +19,7 @@ import { SectionCap, useClippedMaterials } from './cap'
 import { stageViewOffset } from './viewport'
 import type { SpecimenPart } from './parts'
 import type { RenderTier, StageInsets } from '../types'
+import type { CutMaterial } from '../../studio/types'
 
 /** The mutable handle the imperative Renderer keeps into the live scene.
  * React writes it; hotspotToScreen and the tool commands read it. */
@@ -67,6 +68,9 @@ export interface SectionProps {
   /** bumped whenever the plane moved or the drawn part set changed */
   version: number
   isDrawn: (object: THREE.Object3D) => boolean
+  /** the AUTHORED cut material for a part, or null where the record says
+   * nothing and the depth heuristic decides (MRB-217) */
+  materialFor: (part: SpecimenPart) => CutMaterial | null
   /** false where the tier cannot carry the stencil pass: the cut still
    * happens, it just is not capped (MRB-189's stated fallback) */
   capped: boolean
@@ -133,6 +137,7 @@ function SceneContents({
           parts={section.parts}
           version={section.version}
           isDrawn={section.isDrawn}
+          materialFor={section.materialFor}
         />
       )}
       {model && view && rig.contactShadow && <Ground view={view} model={model} />}

@@ -21,7 +21,7 @@ import {
   type ToolId,
   type ToolState,
 } from '../types'
-import type { SpecimenRecord } from '../../studio/types'
+import type { CutMaterial, HotspotRecord, SpecimenRecord } from '../../studio/types'
 import { createBridge, SceneRoot, type SceneBridge } from './scene'
 import { frameSpecimen, resolveAnchors, type DefaultView } from './anchors'
 import { projectAnchor } from './project'
@@ -29,6 +29,7 @@ import { disposeTree, loadSpecimenMesh } from './load'
 import { TextureBudget } from './textures'
 import { TIER_RIGS } from './tiers'
 import { isStandIn, resolveMeshUrl } from './standin'
+import { indexHotspots, resolveCutMaterial } from './cutmaterial'
 import {
   FRAME_DURATION_MS,
   framePosition,
@@ -109,6 +110,11 @@ class MeshRenderer implements Renderer {
   private partView: PartView = WHOLE_SPECIMEN
   /** hotspot id → the part its anchor sits on, resolved geometrically */
   private anchorParts = new Map<string, SpecimenPart>()
+
+  /** the loaded record, kept for the joins that need it AFTER load — today
+   * the part→hotspot slug binding the cut material resolves across (MRB-217) */
+  private specimen: SpecimenRecord | null = null
+  private hotspotsById: ReadonlyMap<string, HotspotRecord> = new Map()
 
   /** cross-section (MRB-189). The plane is ONE object for the specimen's
    * lifetime and is mutated as the cut is dragged: every clipped material
@@ -514,6 +520,20 @@ class MeshRenderer implements Renderer {
     }
   }
 
+  /** What the cut face through this part is made of, or null where nothing is
+   * authored and `capColour`'s depth heuristic should decide (MRB-217).
+   *
+   * The join is the one tools/recipes/heart.recipe.json already records — a
+   * part name slugifies to its hotspot id — so this needs no binding table and
+   * no second naming convention. A part with no matching hotspot resolves to
+   * the specimen's default if it has one, and otherwise to the heuristic:
+   * correct rather than an error, since a GLB may legitimately declare
+   * structural geometry the record has no hotspot for. */
+  private cutMaterialFor(part: SpecimenPart): CutMaterial | null {
+    if (!this.specimen) return null
+    return resolveCutMaterial(part.name, this.specimen, this.hotspotsById)
+  }
+
   /** Whether the cut is capped at the current tier.
    *
    * MRB-189 anticipated the stencil pass being too much for Tier C and named
@@ -571,6 +591,9 @@ class MeshRenderer implements Renderer {
     this.section = SECTION_REST
     this.setPartView(WHOLE_SPECIMEN)
 
+    this.specimen = specimen
+    this.hotspotsById = indexHotspots(specimen.hotspots)
+
     this.textureBudget.collect(scene)
     const rig = TIER_RIGS[this.tier]
     this.textureBudget.apply(rig.textureScale, rig.anisotropy)
@@ -590,6 +613,8 @@ class MeshRenderer implements Renderer {
     this.section = SECTION_REST
     this.plane = null
     this.box = null
+    this.specimen = null
+    this.hotspotsById = new Map()
     this.bridge.model = null
     this.bridge.view = null
     this.textureBudget.clear()
@@ -615,6 +640,7 @@ class MeshRenderer implements Renderer {
                 capped: this.capsAvailable(),
                 isDrawn: (object: THREE.Object3D) =>
                   !this.model || isShown(object, this.model),
+                materialFor: (part: SpecimenPart) => this.cutMaterialFor(part),
               }
             : null,
         onCreated: () => this.onCanvasReady(),

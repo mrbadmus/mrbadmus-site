@@ -51,7 +51,13 @@ import sys
 
 STUDIO_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.dirname(STUDIO_DIR)
-CONTENT_DIR = os.path.join(STUDIO_DIR, "content")
+# MRB_CONTENT_DIR points the record sweep somewhere else. A TEST SEAM, and the
+# only reason it exists: gate 4 proves the validator REJECTS a bad value by
+# handing it a copy of content/ with one planted in, and a validator nobody has
+# watched reject something is a spell-check that is switched off. Everything
+# else — public/assets, mrbadmus_site — still resolves from the repo, so the
+# copy is validated against the real world rather than against a stub.
+CONTENT_DIR = os.environ.get("MRB_CONTENT_DIR") or os.path.join(STUDIO_DIR, "content")
 PUBLIC_DIR = os.path.join(STUDIO_DIR, "public")
 SITE_DIR = os.path.join(REPO_ROOT, "mrbadmus_site")
 
@@ -60,6 +66,10 @@ TOP_LEVEL_KEYS = [
     "description", "keyFacts", "callouts", "lessonUrl", "specPoints",
     "hotspots",
 ]
+# Optional top-level fields. Kept OUT of TOP_LEVEL_KEYS deliberately, which
+# doubles as the required-presence list — the same split HOTSPOT_OPTIONAL_KEYS
+# makes for the same reason.
+TOP_LEVEL_OPTIONAL_KEYS = ["cutMaterial"]
 ASSET_KEYS = ["mesh", "fallback", "thumbnail", "licence", "source", "acquired"]
 
 # Which file extension each asset is served as. Used to ask the same question
@@ -121,7 +131,11 @@ HOTSPOT_KEYS = ["id", "label", "detail", "position3d", "position2d", "tiers",
 # Optional per-hotspot fields (MRB-193). Allowed by the unknown-field check but
 # NOT required — they are deliberately kept out of HOTSPOT_KEYS, which doubles
 # as the required-presence list.
-HOTSPOT_OPTIONAL_KEYS = ["specPoints", "accept", "keyStages"]
+HOTSPOT_OPTIONAL_KEYS = ["specPoints", "accept", "keyStages", "cutMaterial"]
+# What a cut face may be made of (MRB-217). Optional at BOTH levels — hotspot
+# first, then the specimen's, then the renderer's depth heuristic — so absence
+# is an inherit exactly as keyStages' is, and produces no placeholder line.
+CUT_MATERIALS = ("wall", "cavity")
 KEY_STAGES = ("KS3", "KS4")
 # Aliases that would reintroduce independent name lookups. Their absence is
 # already implied by the unknown-key check; naming them keeps the failure
@@ -213,8 +227,14 @@ def validate_record(fname, record, failures, placeholders):
         if k in NAME_ALIASES:
             fail(f"{ctx}: alias field '{k}' — sidebar label, stage caption "
                  f"and panel heading must all derive from 'name'")
-        elif k not in TOP_LEVEL_KEYS:
+        elif k not in TOP_LEVEL_KEYS and k not in TOP_LEVEL_OPTIONAL_KEYS:
             fail(f"{ctx}: unknown top-level field '{k}'")
+
+    # ── gate 5b: the specimen-wide cut material, where one is declared
+    if "cutMaterial" in record and record["cutMaterial"] not in CUT_MATERIALS:
+        fail(f"{ctx}: cutMaterial {record['cutMaterial']!r} is not one of "
+             f"{list(CUT_MATERIALS)} — the cut face is wall or cavity, and a "
+             f"third value would have no colour to be drawn in")
 
     # ── gate 1: every declared field present and non-empty
     require(record, TOP_LEVEL_KEYS, ctx, fail)
@@ -345,6 +365,10 @@ def validate_record(fname, record, failures, placeholders):
                 fail(f"{hctx}: missing field '{k}'")
             elif not non_empty(h[k]):
                 fail(f"{hctx}: field '{k}' is empty")
+        if "cutMaterial" in h and h["cutMaterial"] not in CUT_MATERIALS:
+            fail(f"{hctx}: cutMaterial {h['cutMaterial']!r} is not one of "
+                 f"{list(CUT_MATERIALS)} — the cut face is wall or cavity, and "
+                 f"a third value would have no colour to be drawn in")
         p3, p2 = h.get("position3d"), h.get("position2d")
         if not (isinstance(p3, list) and len(p3) == 3
                 and all(isinstance(v, (int, float)) for v in p3)):

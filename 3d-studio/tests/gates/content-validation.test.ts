@@ -5,6 +5,9 @@
 
 import { describe, expect, it } from 'vitest'
 import { spawnSync } from 'node:child_process'
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const STUDIO_DIR = fileURLToPath(new URL('../..', import.meta.url))
@@ -23,6 +26,49 @@ describe('gate 4 — Stage 0 content validation', () => {
     ).toBe(0)
     expect(result.stdout).toContain('all records valid')
   })
+
+  // A validator nobody has watched REJECT something is a spell-check that is
+  // switched off. `cutMaterial` is a two-value enum at both levels (MRB-217),
+  // and a third value would reach the renderer with no colour to be drawn in,
+  // so the rejection is asserted by feeding the validator a copy of the real
+  // content directory with one bad value in it.
+  //
+  // A COPY, and that matters: mutating content/heart.json in place would leave
+  // the repo dirty if this test were interrupted, and the validator reads the
+  // whole directory rather than a file handed to it.
+  for (const [where, mutate] of [
+    ['at hotspot level', (r: Record<string, any>) => {
+      r.hotspots[0].cutMaterial = 'myocardium'
+    }],
+    ['at specimen level', (r: Record<string, any>) => {
+      r.cutMaterial = 'myocardium'
+    }],
+  ] as const) {
+    it(`rejects a cutMaterial outside {wall, cavity} ${where}`, () => {
+      const scratch = mkdtempSync(join(tmpdir(), 'mrb-content-'))
+      try {
+        cpSync(join(STUDIO_DIR, 'content'), join(scratch, 'content'), {
+          recursive: true,
+        })
+        const file = join(scratch, 'content', 'heart.json')
+        const record = JSON.parse(readFileSync(file, 'utf8'))
+        mutate(record)
+        writeFileSync(file, JSON.stringify(record, null, 2))
+
+        const result = spawnSync('python3', [join(STUDIO_DIR, 'validate_content.py')], {
+          cwd: STUDIO_DIR,
+          encoding: 'utf8',
+          timeout: 15000,
+          env: { ...process.env, MRB_CONTENT_DIR: join(scratch, 'content') },
+        })
+        expect(result.status, `validator ACCEPTED a bad cutMaterial ${where}:\n${result.stdout}`)
+          .not.toBe(0)
+        expect(result.stdout + result.stderr).toContain('cutMaterial')
+      } finally {
+        rmSync(scratch, { recursive: true, force: true })
+      }
+    })
+  }
 
   // The provenance rows MRB-186 took out of the student panel did not get
   // deleted, they moved to docs/3d_studio_asset_manifest.md — and a provenance

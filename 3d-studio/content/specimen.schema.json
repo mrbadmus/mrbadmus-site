@@ -93,6 +93,11 @@
         ]
       }
     },
+    "cutMaterial": {
+      "type": "string",
+      "enum": ["wall", "cavity"],
+      "description": "OPTIONAL specimen-wide default for what the CUT FACE is made of, inherited by every hotspot that does not declare its own. Absent on an unauthored specimen, which leaves the renderer's depth heuristic in force, so adding this field changed no existing specimen's behaviour."
+    },
     "hotspots": {
       "type": "array",
       "minItems": 1,
@@ -158,6 +163,11 @@
             "uniqueItems": true,
             "description": "OPTIONAL. Authored alternative answers accepted for this structure in the identify round, under Mide's science gate — an alternative that is not written down here is not accepted. Case and surrounding whitespace are normalised mechanically and nothing else is: no stemming, no fuzzy matching, no abbreviation expansion.",
             "items": { "$ref": "#/$defs/prose" }
+          },
+          "cutMaterial": {
+            "type": "string",
+            "enum": ["wall", "cavity"],
+            "description": "OPTIONAL per-hotspot override of what the CUT FACE through this structure is made of — the same inheritance mechanism as specPoints and keyStages. Declared wins; silent inherits the specimen's; neither declared falls back to the renderer's depth heuristic (outermost is wall, anything nested is cavity). Absence is an inherit, never a placeholder. It exists because that heuristic is a proxy for a fact about ANATOMY rather than about geometry, and it inverts on blood-volume cast meshes such as BodyParts3D's, where a ventricle is a top-level solid with no myocardium shell around it and is therefore painted as wall — the one thing on the specimen that is unambiguously a cavity reading as the most solid thing there. Parts bind to hotspots by slug: slugify(part name) == the hotspot id after the specimen prefix, which is the join tools/recipes/*.recipe.json already records."
           }
         }
       }

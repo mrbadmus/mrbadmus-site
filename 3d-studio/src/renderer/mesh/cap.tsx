@@ -33,6 +33,7 @@ import * as THREE from 'three'
 import { useThree } from '@react-three/fiber'
 import { capSize, capTransform } from './section'
 import type { SpecimenPart } from './parts'
+import type { CutMaterial } from '../../studio/types'
 
 // The cut face's colours, one per structural depth (§08 of
 // `reference/crosssection-v1.html`, the cross-section reference Design authored
@@ -67,6 +68,20 @@ export function capColour(depth: number): string {
   return CAP_COLOURS[Math.min(Math.max(depth, 0), CAP_COLOURS.length - 1)]
 }
 
+/** The same two values, addressed by what they MEAN rather than by how deep the
+ * geometry happens to be (MRB-217). Depth was only ever a proxy for this, and
+ * on cast geometry it is a bad one — see `cutmaterial.ts`. */
+const MATERIAL_COLOURS: Record<CutMaterial, string> = {
+  wall: CAP_COLOURS[0],
+  cavity: CAP_COLOURS[1],
+}
+
+/** What to paint a part's cut face. Authored material wins; where none is
+ * authored the depth heuristic decides, exactly as before. */
+export function cutFaceColour(material: CutMaterial | null, depth: number): string {
+  return material ? MATERIAL_COLOURS[material] : capColour(depth)
+}
+
 /** Coplanar cap quads z-fight. Each depth is nudged this fraction of the
  * specimen's size towards the camera side of the cut, so an inner cut face is
  * drawn in front of the wall it sits inside rather than fighting it. */
@@ -84,6 +99,9 @@ export interface CapProps {
   /** which of the specimen's meshes are on the stage right now, so a part
    * isolate or layers has taken away does not leave its cut face behind */
   isDrawn: (object: THREE.Object3D) => boolean
+  /** the AUTHORED material for a part, or null where the record says nothing
+   * and the depth heuristic should decide (MRB-217) */
+  materialFor: (part: SpecimenPart) => CutMaterial | null
 }
 
 interface CapUnit {
@@ -94,7 +112,15 @@ interface CapUnit {
 }
 
 /** Two stencil-only draws per part, plus the quad that fills the result. */
-export function SectionCap({ model, plane, box, parts, version, isDrawn }: CapProps) {
+export function SectionCap({
+  model,
+  plane,
+  box,
+  parts,
+  version,
+  isDrawn,
+  materialFor,
+}: CapProps) {
   const gl = useThree((s) => s.gl)
 
   // Local clipping has to be on for material-level clippingPlanes to do
@@ -168,7 +194,7 @@ export function SectionCap({ model, plane, box, parts, version, isDrawn }: CapPr
       const cap = new THREE.Mesh(
         new THREE.PlaneGeometry(size, size),
         new THREE.MeshBasicMaterial({
-          color: capColour(part.depth),
+          color: cutFaceColour(materialFor(part), part.depth),
           toneMapped: false,
           side: THREE.DoubleSide,
           stencilWrite: true,
@@ -190,7 +216,7 @@ export function SectionCap({ model, plane, box, parts, version, isDrawn }: CapPr
     })
 
     return { group, units }
-  }, [model, plane, box, parts])
+  }, [model, plane, box, parts, materialFor])
 
   // Give everything back: eight specimens are coming, and a studio a teacher
   // leaves open all lesson must not accumulate stencil twins.
