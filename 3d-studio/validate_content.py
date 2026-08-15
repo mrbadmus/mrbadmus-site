@@ -77,7 +77,7 @@ TOP_LEVEL_KEYS = [
 # Optional top-level fields. Kept OUT of TOP_LEVEL_KEYS deliberately, which
 # doubles as the required-presence list — the same split HOTSPOT_OPTIONAL_KEYS
 # makes for the same reason.
-TOP_LEVEL_OPTIONAL_KEYS = ["cutMaterial", "appearance"]
+TOP_LEVEL_OPTIONAL_KEYS = ["cutMaterial", "appearance", "structuralParts"]
 ASSET_KEYS = ["mesh", "fallback", "thumbnail", "licence", "source", "acquired"]
 
 # Which file extension each asset is served as. Used to ask the same question
@@ -151,10 +151,15 @@ CUT_MATERIALS = ("wall", "cavity")
 # These are SEMANTIC TOKENS, not colours. The renderer owns the mapping from
 # token to colour and finish, which is what lets two palettes — 'realistic'
 # (the default) and 'schematic' (the AQA diagram convention) — stand over one
-# identical record. A sixth token is a RULING, not an edit here: every palette
+# identical record. A SEVENTH token is a RULING, not an edit here: every palette
 # must cover every token, and the renderer's gate asserts that both do.
+#
+# 'muscle' is the sixth, ruled by Mide for MRB-222 and added with the geometry
+# that needed it — before the ventricular myocardium was assembled from
+# BodyParts3D's isa tree there was no muscle on the heart to paint, only
+# blood-volume casts of the chambers.
 APPEARANCES = ("blood-oxygenated", "blood-deoxygenated", "vessel-oxygenated",
-               "vessel-deoxygenated", "valve")
+               "vessel-deoxygenated", "valve", "muscle")
 KEY_STAGES = ("KS3", "KS4")
 # Aliases that would reintroduce independent name lookups. Their absence is
 # already implied by the unknown-key check; naming them keeps the failure
@@ -354,11 +359,42 @@ def validate_record(fname, record, failures, placeholders):
             ids = {h.get("id") for h in record.get("hotspots") or []
                    if isinstance(h, dict)}
             prefix = record.get("id", "")
+            # A part may be declared STRUCTURAL: geometry the specimen needs in
+            # order to be the right shape, which the record does not (yet) name
+            # as a teaching structure. MRB-222 forced this — the heart's
+            # ventricular myocardium and its two atrial walls are real parts
+            # carrying the wall-thickness comparison, and writing a hotspot for
+            # them means writing student-facing prose, which is authored
+            # anatomy under the science gate rather than a build step.
+            #
+            # This does NOT bless the gap, and the gate above keeps all its
+            # force against an ACCIDENTALLY unnamed part. A structural part
+            # must be named here on purpose, it must actually exist in the mesh
+            # (so the list cannot rot into a blanket exemption), and every one
+            # of them is booked into the Stage 8 checklist below — because the
+            # defect this gate guards against is real for them too: the isolate
+            # tool will show the part's name to a class and the panel has
+            # nothing to say. Tracked, not waived.
+            structural = record.get("structuralParts") or []
+            if not isinstance(structural, list):
+                fail(f"{ctx}: structuralParts must be a list of part names")
+                structural = []
+            declared = {n for n in structural if isinstance(n, str)}
+            for name in sorted(declared - set(part_names)):
+                fail(f"{ctx}: structuralParts names {name!r}, which the mesh "
+                     f"does not declare as a part — remove it, or fix the "
+                     f"spelling to match the GLB exactly")
             for name in part_names:
-                if f"{prefix}.{slugify(name)}" not in ids:
+                if name in declared:
+                    placeholders.append(
+                        f"{ctx}: part {name!r} is declared structural and has "
+                        f"no hotspot — a class can isolate it and the panel "
+                        f"has nothing to say; needs authored content")
+                elif f"{prefix}.{slugify(name)}" not in ids:
                     fail(f"{ctx}: the mesh declares a part {name!r} that no "
                          f"hotspot claims — expected a hotspot with id "
-                         f"'{prefix}.{slugify(name)}'")
+                         f"'{prefix}.{slugify(name)}', or declare it in "
+                         f"structuralParts if it carries no teaching content")
             bound = {f"{prefix}.{slugify(n)}" for n in part_names}
             for hotspot_id in sorted(ids - bound):
                 placeholders.append(

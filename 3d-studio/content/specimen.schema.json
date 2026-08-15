@@ -6,8 +6,19 @@
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "id", "renderer", "name", "epithet", "system", "keyStages", "assets",
-    "description", "keyFacts", "callouts", "lessonUrl", "specPoints", "hotspots"
+    "id",
+    "renderer",
+    "name",
+    "epithet",
+    "system",
+    "keyStages",
+    "assets",
+    "description",
+    "keyFacts",
+    "callouts",
+    "lessonUrl",
+    "specPoints",
+    "hotspots"
   ],
   "properties": {
     "id": {
@@ -17,7 +28,9 @@
     },
     "renderer": {
       "type": "string",
-      "enum": ["mesh"],
+      "enum": [
+        "mesh"
+      ],
       "description": "In v1 this only ever holds 'mesh'. Future studios widen this enum; no plugin architecture is built for products that do not exist."
     },
     "name": {
@@ -25,61 +38,114 @@
       "minLength": 1,
       "description": "THE display name. Sidebar label, stage caption and panel heading all derive from this one field — no aliases exist and additionalProperties:false keeps it that way."
     },
-    "epithet": { "$ref": "#/$defs/prose" },
-    "system": { "$ref": "#/$defs/prose" },
+    "epithet": {
+      "$ref": "#/$defs/prose"
+    },
+    "system": {
+      "$ref": "#/$defs/prose"
+    },
     "keyStages": {
       "type": "array",
       "minItems": 1,
       "uniqueItems": true,
-      "items": { "type": "string", "enum": ["KS3", "KS4"] }
+      "items": {
+        "type": "string",
+        "enum": [
+          "KS3",
+          "KS4"
+        ]
+      }
     },
     "assets": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["mesh", "fallback", "thumbnail", "licence", "source", "acquired"],
+      "required": [
+        "mesh",
+        "fallback",
+        "thumbnail",
+        "licence",
+        "source",
+        "acquired"
+      ],
       "properties": {
-        "mesh": { "$ref": "#/$defs/assetPath" },
-        "fallback": { "$ref": "#/$defs/assetPath" },
-        "thumbnail": { "$ref": "#/$defs/assetPath" },
-        "licence": { "$ref": "#/$defs/prose" },
-        "source": { "$ref": "#/$defs/prose" },
+        "mesh": {
+          "$ref": "#/$defs/assetPath"
+        },
+        "fallback": {
+          "$ref": "#/$defs/assetPath"
+        },
+        "thumbnail": {
+          "$ref": "#/$defs/assetPath"
+        },
+        "licence": {
+          "$ref": "#/$defs/prose"
+        },
+        "source": {
+          "$ref": "#/$defs/prose"
+        },
         "acquired": {
           "description": "ISO date of acquisition, or a TODO placeholder while the asset is not yet purchased. While this is a placeholder, the harness reports missing asset files as 'pending acquisition' instead of failing.",
           "anyOf": [
-            { "type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$" },
-            { "$ref": "#/$defs/placeholder" }
+            {
+              "type": "string",
+              "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+            },
+            {
+              "$ref": "#/$defs/placeholder"
+            }
           ]
         }
       }
     },
-    "description": { "$ref": "#/$defs/prose" },
+    "description": {
+      "$ref": "#/$defs/prose"
+    },
     "keyFacts": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["label", "value"],
+        "required": [
+          "label",
+          "value"
+        ],
         "properties": {
-          "label": { "$ref": "#/$defs/prose" },
-          "value": { "$ref": "#/$defs/prose" }
+          "label": {
+            "$ref": "#/$defs/prose"
+          },
+          "value": {
+            "$ref": "#/$defs/prose"
+          }
         }
       }
     },
     "callouts": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["importance", "didYouKnow"],
+      "required": [
+        "importance",
+        "didYouKnow"
+      ],
       "properties": {
-        "importance": { "$ref": "#/$defs/prose" },
-        "didYouKnow": { "$ref": "#/$defs/prose" }
+        "importance": {
+          "$ref": "#/$defs/prose"
+        },
+        "didYouKnow": {
+          "$ref": "#/$defs/prose"
+        }
       }
     },
     "lessonUrl": {
       "description": "Must resolve to a real generated page under mrbadmus_site/ (build-time gate 3), or be a TODO placeholder until the lesson URL map lands (spec §11 open item).",
       "anyOf": [
-        { "type": "string", "pattern": "^/.+\\.html$" },
-        { "$ref": "#/$defs/placeholder" }
+        {
+          "type": "string",
+          "pattern": "^/.+\\.html$"
+        },
+        {
+          "$ref": "#/$defs/placeholder"
+        }
       ]
     },
     "specPoints": {
@@ -88,20 +154,44 @@
       "items": {
         "description": "Permanent statement IDs (e.g. KS4.B.ORG.04), or a TODO placeholder until spec point bindings land (spec §11 open item).",
         "anyOf": [
-          { "type": "string", "pattern": "^KS[34]\\..+$" },
-          { "$ref": "#/$defs/placeholder" }
+          {
+            "type": "string",
+            "pattern": "^KS[34]\\..+$"
+          },
+          {
+            "$ref": "#/$defs/placeholder"
+          }
         ]
       }
     },
     "cutMaterial": {
       "type": "string",
-      "enum": ["wall", "cavity"],
+      "enum": [
+        "wall",
+        "cavity"
+      ],
       "description": "OPTIONAL specimen-wide default for what the CUT FACE is made of, inherited by every hotspot that does not declare its own. Absent on an unauthored specimen, which leaves the renderer's depth heuristic in force, so adding this field changed no existing specimen's behaviour."
     },
     "appearance": {
       "type": "string",
-      "enum": ["blood-oxygenated", "blood-deoxygenated", "vessel-oxygenated", "vessel-deoxygenated", "valve"],
-      "description": "OPTIONAL specimen-wide default for what the OUTER SURFACE is, inherited by every hotspot that does not declare its own. Absent leaves the renderer's neutral unauthored tone in force. A SEMANTIC TOKEN, never a colour: the renderer owns the mapping from token to colour and finish, which is what allows two palettes — 'realistic' (the default) and 'schematic' (the AQA diagram convention, blue for deoxygenated) — to stand over one identical record, so a palette switch touches no content and no geometry."
+      "enum": [
+        "blood-oxygenated",
+        "blood-deoxygenated",
+        "vessel-oxygenated",
+        "vessel-deoxygenated",
+        "valve",
+        "muscle"
+      ],
+      "description": "OPTIONAL specimen-wide default for what the OUTER SURFACE is, inherited by every hotspot that does not declare its own. Absent leaves the renderer's neutral unauthored tone in force. The heart declares 'muscle' here (MRB-222): its ventricular myocardium and its two atrial walls are real GLB parts with no hotspot of their own, and this default is what paints them. A SEMANTIC TOKEN, never a colour: the renderer owns the mapping from token to colour and finish, which is what allows two palettes — 'realistic' (the default) and 'schematic' (the AQA diagram convention, blue for deoxygenated) — to stand over one identical record, so a palette switch touches no content and no geometry."
+    },
+    "structuralParts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "description": "OPTIONAL list of GLB part names that deliberately carry NO hotspot (MRB-222) — geometry the specimen needs to be the right shape, which the record does not name as a teaching structure. On the heart: the ventricular myocardium and the two atrial walls, which carry the wall-thickness comparison but whose student-facing prose is authored anatomy under the science gate rather than a build step. This is a deliberate declaration, never a waiver: validate_content.py still FAILS on any part neither claimed by a hotspot nor listed here, fails on a name here the mesh does not declare, and books every entry into the Stage 8 checklist — a class can isolate these parts and the panel has nothing to say about them yet."
     },
     "hotspots": {
       "type": "array",
@@ -109,34 +199,56 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "label", "detail", "position3d", "position2d", "tiers", "retrievable"],
+        "required": [
+          "id",
+          "label",
+          "detail",
+          "position3d",
+          "position2d",
+          "tiers",
+          "retrievable"
+        ],
         "properties": {
           "id": {
             "type": "string",
             "pattern": "^[a-z][a-z0-9-]*\\.[a-z0-9][a-z0-9.-]*$",
             "description": "Namespaced by specimen id, e.g. '<specimenId>.<item>'."
           },
-          "label": { "$ref": "#/$defs/prose" },
-          "detail": { "$ref": "#/$defs/prose" },
+          "label": {
+            "$ref": "#/$defs/prose"
+          },
+          "detail": {
+            "$ref": "#/$defs/prose"
+          },
           "position3d": {
             "type": "array",
             "minItems": 3,
             "maxItems": 3,
-            "items": { "type": "number" },
+            "items": {
+              "type": "number"
+            },
             "description": "Model-space anchor for the mesh renderer. [0,0,0] is treated by the harness as 'not yet authored' (reported, not failed)."
           },
           "position2d": {
             "type": "array",
             "minItems": 2,
             "maxItems": 2,
-            "items": { "type": "number" },
+            "items": {
+              "type": "number"
+            },
             "description": "Pixel anchor on the fallback diagram. [0,0] is treated by the harness as 'not yet authored' (reported, not failed)."
           },
           "tiers": {
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,
-            "items": { "type": "string", "enum": ["foundation", "higher"] },
+            "items": {
+              "type": "string",
+              "enum": [
+                "foundation",
+                "higher"
+              ]
+            },
             "description": "Drives text differentiation and retrieval eligibility only — the mesh is tier-neutral."
           },
           "retrievable": {
@@ -150,8 +262,13 @@
             "items": {
               "description": "Permanent statement IDs (e.g. KS4.B.ORG.04), or a TODO placeholder until spec point bindings land (spec §11 open item).",
               "anyOf": [
-                { "type": "string", "pattern": "^KS[34]\\..+$" },
-                { "$ref": "#/$defs/placeholder" }
+                {
+                  "type": "string",
+                  "pattern": "^KS[34]\\..+$"
+                },
+                {
+                  "$ref": "#/$defs/placeholder"
+                }
               ]
             }
           },
@@ -160,24 +277,42 @@
             "minItems": 1,
             "uniqueItems": true,
             "description": "OPTIONAL per-hotspot override, the same mechanism as specPoints. Where a hotspot declares its own keyStages they win; where it does not, it inherits the specimen's — absence is an inherit, never a placeholder. A structure narrower than its specimen is hidden from the key stages it excludes and is never asked about there. ORTHOGONAL to tiers: key stage decides whether the structure exists for this student at all, tiers differentiates foundation from higher within it.",
-            "items": { "type": "string", "enum": ["KS3", "KS4"] }
+            "items": {
+              "type": "string",
+              "enum": [
+                "KS3",
+                "KS4"
+              ]
+            }
           },
           "accept": {
             "type": "array",
             "minItems": 1,
             "uniqueItems": true,
             "description": "OPTIONAL. Authored alternative answers accepted for this structure in the identify round, under Mide's science gate — an alternative that is not written down here is not accepted. Case and surrounding whitespace are normalised mechanically and nothing else is: no stemming, no fuzzy matching, no abbreviation expansion.",
-            "items": { "$ref": "#/$defs/prose" }
+            "items": {
+              "$ref": "#/$defs/prose"
+            }
           },
           "cutMaterial": {
             "type": "string",
-            "enum": ["wall", "cavity"],
+            "enum": [
+              "wall",
+              "cavity"
+            ],
             "description": "OPTIONAL per-hotspot override of what the CUT FACE through this structure is made of — the same inheritance mechanism as specPoints and keyStages. Declared wins; silent inherits the specimen's; neither declared falls back to the renderer's depth heuristic (outermost is wall, anything nested is cavity). Absence is an inherit, never a placeholder. It exists because that heuristic is a proxy for a fact about ANATOMY rather than about geometry, and it inverts on blood-volume cast meshes such as BodyParts3D's, where a ventricle is a top-level solid with no myocardium shell around it and is therefore painted as wall — the one thing on the specimen that is unambiguously a cavity reading as the most solid thing there. Parts bind to hotspots by slug: slugify(part name) == the hotspot id after the specimen prefix, which is the join tools/recipes/*.recipe.json already records."
           },
           "appearance": {
             "type": "string",
-            "enum": ["blood-oxygenated", "blood-deoxygenated", "vessel-oxygenated", "vessel-deoxygenated", "valve"],
-            "description": "OPTIONAL per-hotspot override of what this structure's OUTER SURFACE is — the same three-step resolution and the same binding as cutMaterial above. Declared wins; silent inherits the specimen's; neither declared falls back to the renderer's neutral unauthored tone, which is deliberately NOT one of the five tokens so that unauthored geometry never claims to be oxygenated or deoxygenated anything. Absence is an inherit, never a placeholder. On the heart the four chambers take BLOOD tokens rather than muscle tokens because BodyParts3D models them as blood-volume casts — the geometry genuinely is the blood, so painting it as blood is accurate rather than a convention imposed on tissue; when a shell-modelled mesh lands those four move to muscle tokens. Note that the pulmonary artery is deoxygenated and the pulmonary vein oxygenated: that is the most-examined exception in the topic and the colouring is doing teaching work, not decoration."
+            "enum": [
+              "blood-oxygenated",
+              "blood-deoxygenated",
+              "vessel-oxygenated",
+              "vessel-deoxygenated",
+              "valve",
+              "muscle"
+            ],
+            "description": "OPTIONAL per-hotspot override of what this structure's OUTER SURFACE is — the same three-step resolution and the same binding as cutMaterial above. Declared wins; silent inherits the specimen's; neither declared falls back to the renderer's neutral unauthored tone, which is deliberately NOT one of the six tokens so that unauthored geometry never claims to be oxygenated or deoxygenated anything. Absence is an inherit, never a placeholder. On the heart the four chambers take BLOOD tokens rather than muscle tokens because BodyParts3D models them as blood-volume casts — the geometry genuinely is the blood, so painting it as blood is accurate rather than a convention imposed on tissue. They KEEP those tokens now that the wall exists (MRB-222): the myocardium arrived as a separate part beside the casts rather than replacing them, so the reading is literal rather than convenient. Note that the pulmonary artery is deoxygenated and the pulmonary vein oxygenated: that is the most-examined exception in the topic and the colouring is doing teaching work, not decoration."
           }
         }
       }
@@ -196,8 +331,13 @@
     "assetPath": {
       "description": "Served path under /3d/assets/, or a TODO placeholder.",
       "anyOf": [
-        { "type": "string", "pattern": "^/3d/assets/.+\\..+$" },
-        { "$ref": "#/$defs/placeholder" }
+        {
+          "type": "string",
+          "pattern": "^/3d/assets/.+\\..+$"
+        },
+        {
+          "$ref": "#/$defs/placeholder"
+        }
       ]
     }
   }

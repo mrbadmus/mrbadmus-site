@@ -10,11 +10,16 @@
 //
 // The information is not in the geometry, so the fix is authoring, and the
 // heuristic stays for everything unauthored. This file asserts the resolution
-// order, both inheritance steps, and the fallback — and that the fallback is
-// what the heart still gets today, because its map is deliberately NOT authored
-// in this run: every part in the current assembly is a cast, so an honest map
-// would mark all twelve cavity and the cut face would read as pure void.
-// Authoring against geometry that is being replaced is wasted work.
+// order, both inheritance steps, and the fallback.
+//
+// THE HEART'S MAP IS NOW AUTHORED (MRB-222). It was deliberately left blank in
+// MRB-217, and the reason was recorded here: every part in that assembly was a
+// blood-volume cast, so an honest map would have marked all twelve `cavity` and
+// the cut face would have read as pure void. That is no longer the assembly.
+// The heart now carries `Ventricular myocardium` — real muscle, from
+// BodyParts3D's isa tree — beside the four casts, so the specimen defaults to
+// `wall` and only the four chambers declare `cavity`. There is finally a
+// distinction on the specimen for the cut face to draw.
 
 import { describe, expect, it } from 'vitest'
 import { capColour, cutFaceColour } from '../../src/renderer/mesh/cap'
@@ -141,20 +146,67 @@ describe('gate 15 — what gets painted', () => {
   })
 })
 
-describe('gate 15 — the heart is deliberately UNAUTHORED in this run', () => {
+describe('gate 15 — the heart’s authored map (MRB-222)', () => {
   const heart = specimens.find((s) => s.id === 'heart')!
+  const index = indexHotspots(heart.hotspots)
 
-  it('declares no specimen-level cutMaterial', () => {
-    expect((heart as { cutMaterial?: CutMaterial }).cutMaterial).toBeUndefined()
+  /** The four blood-volume casts, and the ONLY parts that are cavity. Written
+   * out rather than derived from the record, or this would assert the record
+   * equals itself. */
+  const CAVITIES = [
+    'heart.right-atrium',
+    'heart.right-ventricle',
+    'heart.left-atrium',
+    'heart.left-ventricle',
+  ]
+
+  it('the specimen defaults to wall — most of a heart is muscle', () => {
+    expect((heart as { cutMaterial?: CutMaterial }).cutMaterial).toBe('wall')
   })
 
-  it('declares no hotspot-level cutMaterial', () => {
-    expect(heart.hotspots.filter((h) => h.cutMaterial).map((h) => h.id)).toEqual([])
+  it('exactly the four chambers declare cavity, and nothing else does', () => {
+    const declared = heart.hotspots.filter((h) => h.cutMaterial)
+    expect(declared.map((h) => h.id).sort()).toEqual([...CAVITIES].sort())
+    for (const h of declared) expect(h.cutMaterial).toBe('cavity')
   })
 
-  it('so every part still resolves to the heuristic — no behaviour changed', () => {
-    for (const part of ['Right atrium', 'Left ventricle', 'Aorta', 'Septum']) {
-      expect(resolveCutMaterial(part, heart)).toBeNull()
+  it('the four chambers cut as CAVITY regardless of nesting depth', () => {
+    // The defect this whole mechanism exists for: a cast ventricle is a
+    // top-level solid at depth 0, which the heuristic would paint as wall.
+    for (const part of ['Right atrium', 'Right ventricle', 'Left atrium', 'Left ventricle']) {
+      expect(resolveCutMaterial(part, heart, index)).toBe('cavity')
+      expect(cutFaceColour(resolveCutMaterial(part, heart, index), 0)).toBe(CAVITY)
+    }
+  })
+
+  it('every other part cuts as WALL, including the three with no hotspot', () => {
+    // The myocardium and the two atrial walls are real GLB parts that the
+    // record names no hotspot for. They inherit the specimen's default, which
+    // is exactly the inheritance step this gate exists to protect.
+    for (const part of [
+      'Ventricular myocardium', 'Right atrial wall', 'Left atrial wall',
+      'Aorta', 'Vena cava', 'Tricuspid valve', 'Coronary arteries',
+    ]) {
+      expect(resolveCutMaterial(part, heart, index)).toBe('wall')
+      expect(cutFaceColour(resolveCutMaterial(part, heart, index), 0)).toBe(WALL)
+    }
+  })
+
+  it('THE MYOCARDIUM IS NOT A CAVITY — the wall must read as solid', () => {
+    // The single reading MRB-222 exists to produce. If the ventricular wall
+    // ever cut as void, the cross-section would show the left ventricle's
+    // 9.4mm of muscle as empty space and teach the opposite of the point.
+    expect(resolveCutMaterial('Ventricular myocardium', heart, index)).toBe('wall')
+    expect(resolveCutMaterial('Ventricular myocardium', heart, index)).not.toBe('cavity')
+  })
+
+  it('an unauthored specimen still falls all the way to the heuristic', () => {
+    // Authoring the heart must not have switched the fallback off for anything
+    // else. Asserted on a synthetic record, since the heart is now authored.
+    const bare = specimen([hotspot('other.thing')])
+    for (const depth of [0, 1, 5]) {
+      expect(resolveCutMaterial('Thing', bare)).toBeNull()
+      expect(cutFaceColour(resolveCutMaterial('Thing', bare), depth)).toBe(capColour(depth))
     }
   })
 })

@@ -13,8 +13,8 @@
 //   1. the resolution order and both inheritance steps, plus the fallback
 //   2. the twelve authored assignments, by name — including the pulmonary
 //      exception, which is the whole reason the colouring teaches anything
-//   3. that BOTH palettes cover ALL FIVE tokens with no gaps and no overlap
-//   4. that the hotspot numerals still read against all ten surface colours
+//   3. that BOTH palettes cover ALL SIX tokens with no gaps and no overlap
+//   4. that the hotspot numerals still read against all twelve surface colours
 //   5. that the cut face is untouched
 //
 // The mutations this gate was proved against are recorded at the foot of the
@@ -163,11 +163,37 @@ describe('gate 16 — the authored map for the heart (Mide, 15 Aug)', () => {
   })
 
   it('the chambers take BLOOD tokens, because the geometry IS the blood', () => {
-    // BodyParts3D models chambers as blood-volume casts. When a shell-modelled
-    // mesh lands these four move to muscle tokens; until then, blood is the
-    // honest reading of what the geometry actually is.
+    // BodyParts3D models chambers as blood-volume casts. This file used to say
+    // the four would MOVE to muscle tokens once a shell-modelled mesh landed.
+    // That is not what happened (MRB-222): the wall arrived as a SEPARATE part
+    // beside them, so the casts keep their blood tokens and the reading is now
+    // literal rather than a convenient one.
     for (const part of ['Right atrium', 'Right ventricle', 'Left atrium', 'Left ventricle']) {
       expect(resolveAppearance(part, heart, index)!.startsWith('blood-')).toBe(true)
+    }
+  })
+
+  it('THE WALL AND THE BLOOD ARE DIFFERENT SURFACES (MRB-222)', () => {
+    // The whole point of the sixth token. If the myocardium ever painted as
+    // blood, the specimen would go back to being one undifferentiated red mass
+    // and the wall a student is meant to SEE would disappear into the chamber
+    // it surrounds.
+    expect(resolveAppearance('Ventricular myocardium', heart, index)).toBe('muscle')
+    for (const palette of PALETTE_IDS) {
+      for (const blood of ['blood-oxygenated', 'blood-deoxygenated'] as const) {
+        expect(surfaceColour('muscle', palette)).not.toBe(surfaceColour(blood, palette))
+      }
+    }
+  })
+
+  it('the three wall parts with no hotspot inherit the specimen’s muscle', () => {
+    // These are real GLB parts the record names no hotspot for — naming one
+    // would be authoring anatomy outside the science gate. They rely on the
+    // specimen default, which is why it is set.
+    for (const part of ['Ventricular myocardium', 'Right atrial wall', 'Left atrial wall']) {
+      expect(heart.hotspots.find((h) => h.id === `heart.${part.toLowerCase().replace(/ /g, '-')}`))
+        .toBeUndefined()
+      expect(resolveAppearance(part, heart, index)).toBe('muscle')
     }
   })
 
@@ -179,8 +205,23 @@ describe('gate 16 — the authored map for the heart (Mide, 15 Aug)', () => {
     }
   })
 
-  it('the specimen declares no blanket default — every surface is authored per structure', () => {
-    expect((heart as { appearance?: Appearance }).appearance).toBeUndefined()
+  it('the specimen defaults to muscle, and that default is load-bearing', () => {
+    // It was `undefined` until MRB-222, when three real GLB parts arrived with
+    // no hotspot of their own. Without this the myocardium and both atrial
+    // walls would fall through to the palette's neutral unauthored tone and the
+    // heart would render its muscle as "no claim made".
+    expect((heart as { appearance?: Appearance }).appearance).toBe('muscle')
+    expect(resolveAppearance('Ventricular myocardium', heart)).toBe('muscle')
+  })
+
+  it('the default does not silently repaint anything that authors its own', () => {
+    // The risk of introducing a specimen-level default: a hotspot that used to
+    // resolve to null now inherits instead. Every one of the twelve authored
+    // parts must still win over it.
+    for (const [part, token] of AUTHORED) {
+      expect(resolveAppearance(part, heart, index)).toBe(token)
+      expect(resolveAppearance(part, heart, index)).not.toBe('muscle')
+    }
   })
 })
 
@@ -192,24 +233,24 @@ describe('gate 16 — two palettes over one record', () => {
   })
 
   for (const palette of PALETTE_IDS) {
-    it(`the ${palette} palette covers all five tokens with no gaps`, () => {
+    it(`the ${palette} palette covers all six tokens with no gaps`, () => {
       const table = PALETTES[palette]
       for (const token of APPEARANCES) {
         const colour = table.colours[token]
         expect(colour, `${palette} has no colour for '${token}'`).toBeTruthy()
         expect(colour).toMatch(/^#[0-9A-F]{6}$/)
       }
-      // …and no colours BEYOND the five, so a token cannot be quietly retired
+      // …and no colours BEYOND the six, so a token cannot be quietly retired
       // from the type while its colour lingers.
       expect(Object.keys(table.colours).sort()).toEqual([...APPEARANCES].sort())
     })
 
-    it(`the ${palette} palette gives five DISTINCT colours`, () => {
+    it(`the ${palette} palette gives six DISTINCT colours`, () => {
       const values = APPEARANCES.map((t) => surfaceColour(t, palette))
       expect(new Set(values).size).toBe(APPEARANCES.length)
     })
 
-    it(`the ${palette} palette's unauthored tone is NOT one of the five`, () => {
+    it(`the ${palette} palette's unauthored tone is NOT one of the six`, () => {
       // Unauthored geometry must never claim to be oxygenated or deoxygenated
       // anything — that would be the studio inventing anatomy.
       const values = APPEARANCES.map((t) => surfaceColour(t, palette))
@@ -302,7 +343,7 @@ describe('gate 16 — two palettes over one record', () => {
 //      edge on a light ground via the halo and on a dark ground via the ring.
 //
 // (b) is asserted with the same Rec. 601 separation gate 2 uses on the cut
-// face, and it is asserted TWO-SIDED: neither rim alone clears all ten, so a
+// face, and it is asserted TWO-SIDED: neither rim alone clears all twelve, so a
 // "simplification" that drops either one fails here.
 
 const GROUND_SEPARATION = 0.25
@@ -320,17 +361,17 @@ function haloOver(tissue: string, halo = '#080604', alpha = 0.6): number {
 }
 
 const RING = '#FBF3E6' // the dark variant's ring, every state
-const TEN: ReadonlyArray<readonly [PaletteId, Appearance, string]> = PALETTE_IDS.flatMap(
+const SURFACES: ReadonlyArray<readonly [PaletteId, Appearance, string]> = PALETTE_IDS.flatMap(
   (palette) => APPEARANCES.map((token) => [palette, token, surfaceColour(token, palette)] as const),
 )
 
-describe('gate 16 — hotspot numerals still read against all ten surfaces', () => {
-  it('there are exactly ten surfaces to check', () => {
-    expect(TEN).toHaveLength(10)
-    expect(new Set(TEN.map(([, , hex]) => hex)).size).toBe(10)
+describe('gate 16 — hotspot numerals still read against all twelve surfaces', () => {
+  it('there are exactly twelve surfaces to check', () => {
+    expect(SURFACES).toHaveLength(12)
+    expect(new Set(SURFACES.map(([, , hex]) => hex)).size).toBe(12)
   })
 
-  for (const [palette, token, hex] of TEN) {
+  for (const [palette, token, hex] of SURFACES) {
     it(`the dot keeps an edge on ${palette}/${token} (${hex})`, () => {
       const ground = luma(hex)
       const ring = Math.abs(luma(RING) - ground)
@@ -343,13 +384,14 @@ describe('gate 16 — hotspot numerals still read against all ten surfaces', () 
     })
   }
 
-  it('BOTH rims are load-bearing — neither alone clears all ten', () => {
+  it('BOTH rims are load-bearing — neither alone clears all twelve', () => {
     // The assertion that keeps the ring-inside-halo construction from being
     // "simplified" to one rim. The cream ring closes up on the pale valve
-    // tones; the dark halo closes up on deoxygenated blood. Each covers where
-    // the other cannot, which is precisely why the dot is ground-independent.
-    const ringFails = TEN.filter(([, , hex]) => Math.abs(luma(RING) - luma(hex)) < GROUND_SEPARATION)
-    const haloFails = TEN.filter(([, , hex]) => Math.abs(haloOver(hex) - luma(hex)) < GROUND_SEPARATION)
+    // tones; the dark halo closes up on deoxygenated blood and on muscle. Each
+    // covers where the other cannot, which is precisely why the dot is
+    // ground-independent.
+    const ringFails = SURFACES.filter(([, , hex]) => Math.abs(luma(RING) - luma(hex)) < GROUND_SEPARATION)
+    const haloFails = SURFACES.filter(([, , hex]) => Math.abs(haloOver(hex) - luma(hex)) < GROUND_SEPARATION)
     expect(ringFails.length, 'the ring alone would suffice — check this gate still means anything')
       .toBeGreaterThan(0)
     expect(haloFails.length, 'the halo alone would suffice — check this gate still means anything')
@@ -443,7 +485,7 @@ describe('gate 16 — the cut face is untouched', () => {
     // Flatness is what says "cut". If a tissue colour ever equalled a cap
     // colour the section would stop reading as a section.
     const cut = [capColour(0), capColour(1)]
-    for (const [, , hex] of TEN) expect(cut).not.toContain(hex)
+    for (const [, , hex] of SURFACES) expect(cut).not.toContain(hex)
   })
 
   it('the cut face’s own pair is still §08’s, at 15.62:1', () => {
@@ -455,7 +497,7 @@ describe('gate 16 — the cut face is untouched', () => {
     // #E4572E marks the PLANE and the hotspots; it is barred as a contrast
     // partner for text under 24px and must never become tissue.
     const accent = '#E4572E'
-    for (const [, , hex] of TEN) expect(hex).not.toBe(accent)
+    for (const [, , hex] of SURFACES) expect(hex).not.toBe(accent)
     for (const palette of PALETTE_IDS) {
       expect(PALETTES[palette].unauthored).not.toBe(accent)
     }
@@ -487,8 +529,8 @@ describe('gate 16 — the cut face is untouched', () => {
 //   2. the `?? null` fallback replaced with a token     → 3 failed
 //        'neither declared resolves to null', and both no-matching-hotspot cases
 //   3. 'valve' deleted from the schematic palette       → 3 failed
-//        'the schematic palette covers all five tokens with no gaps', plus the
-//        ten-surface sweep, which stops being a sweep of ten
+//        'the schematic palette covers all six tokens with no gaps', plus the
+//        surface sweep, which stops being a sweep of twelve
 //   4. realistic oxy/deoxy swapped, blood then vessel   → 1 failed each
 //        'in REALISTIC, deoxygenated is DARKER than its oxygenated partner'
 //   5. the validator's APPEARANCES enum widened         → 3 failed

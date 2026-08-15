@@ -31,26 +31,40 @@
 // palette is where that convention lives — not a fact about blood.
 //
 // WHY THE CHAMBERS TAKE BLOOD TOKENS RATHER THAN MUSCLE TOKENS.
-// BodyParts3D models the chambers as blood-volume CASTS. That is wrong for wall
-// thickness, which is why the mesh is being replaced — but it makes the
-// colouring honest: the geometry genuinely IS the blood, so painting it as
-// blood is accurate rather than a convention imposed on tissue. When a
-// shell-modelled mesh lands, those four hotspots move to muscle tokens and the
-// palettes absorb it. The record changes; this mechanism does not.
+// BodyParts3D models the chambers as blood-volume CASTS. That was wrong for
+// wall thickness, and it makes the colouring honest: the geometry genuinely IS
+// the blood, so painting it as blood is accurate rather than a convention
+// imposed on tissue.
+//
+// This file used to predict that when a shell-modelled mesh landed, those four
+// hotspots would MOVE to muscle tokens. That is not what happened (MRB-222).
+// The wall arrived as a SEPARATE part — `Ventricular myocardium`, FJ2428 from
+// BodyParts3D's isa tree — standing beside the casts rather than replacing
+// them. So the chambers keep their blood tokens, and the reading is now
+// literal rather than convenient: the cast is the blood, the myocardium is the
+// muscle, and both are on the specimen at once. The record grew a sixth token;
+// this mechanism did not change at all, which was the point of building it
+// this way.
 // ─────────────────────────────────────────────────────────────────────────────
 
 import type { Appearance, HotspotRecord, SpecimenRecord } from '../../studio/types'
 import { hotspotForPart } from './cutmaterial'
 
-/** The five tokens, in the order the palettes are read and reported in.
- * Adding a sixth is a RULING, not a code change: every palette must cover
- * every token, and the gate asserts exactly that. */
+/** The six tokens, in the order the palettes are read and reported in.
+ * Adding a seventh is a RULING, not a code change: every palette must cover
+ * every token, and the gate asserts exactly that.
+ *
+ * `muscle` is the sixth (MRB-222, ruled by Mide). It could not have been
+ * authored earlier: the specimen had no muscle geometry on it until the
+ * ventricular myocardium was assembled from BodyParts3D's isa tree, only
+ * blood-volume casts of the four chambers. */
 export const APPEARANCES: readonly Appearance[] = [
   'blood-oxygenated',
   'blood-deoxygenated',
   'vessel-oxygenated',
   'vessel-deoxygenated',
   'valve',
+  'muscle',
 ] as const
 
 export type PaletteId = 'realistic' | 'schematic'
@@ -71,7 +85,7 @@ export interface Palette {
 }
 
 /**
- * The two palettes. Both cover all five tokens; neither may have a gap.
+ * The two palettes. Both cover all six tokens; neither may have a gap.
  *
  * These are ALBEDO values handed to a lit material, not screen values. The
  * scene tone-maps (ACES Filmic, exposure 1.05), so what reaches the glass is
@@ -93,6 +107,7 @@ export const PALETTES: Record<PaletteId, Palette> = {
       'vessel-oxygenated': '#C9907F',
       'vessel-deoxygenated': '#B08A80',
       valve: '#DCC9A8',
+      muscle: '#8E4B42',
     },
     unauthored: '#9C8578',
   },
@@ -107,6 +122,7 @@ export const PALETTES: Record<PaletteId, Palette> = {
       'vessel-oxygenated': '#C4433A',
       'vessel-deoxygenated': '#3D6E9E',
       valve: '#E8DCC8',
+      muscle: '#B5675A',
     },
     unauthored: '#9A9490',
   },
@@ -165,6 +181,16 @@ const VESSEL_WALL: Finish = { roughness: 0.46, metalness: 0 }
 /** Valves are the matte exception — thin fibrous tissue, not a wet lumen. */
 const VALVE_TISSUE: Finish = { roughness: 0.74, metalness: 0 }
 
+/** Cardiac muscle: drier than the blood it encloses, wetter than a valve.
+ *
+ * Myocardium in a fresh dissection is damp rather than wet — it has a sheen,
+ * but nothing like the standing-liquid highlight of a chamber cast. 0.52 sits
+ * it a step drier than a vessel wall (0.46) and well clear of the valve's
+ * matte (0.74), which keeps the wall legible as a distinct SURFACE against the
+ * blood it surrounds under the cross-section, where the two meet along an edge
+ * and a shared finish would let them merge. */
+const MUSCLE_TISSUE: Finish = { roughness: 0.52, metalness: 0 }
+
 /** Neutral, and flatter than anything authored — unauthored geometry should
  * not read as more confidently rendered than the structures Mide has actually
  * signed off. */
@@ -176,6 +202,7 @@ const FINISHES: Record<Appearance, Finish> = {
   'vessel-oxygenated': VESSEL_WALL,
   'vessel-deoxygenated': VESSEL_WALL,
   valve: VALVE_TISSUE,
+  muscle: MUSCLE_TISSUE,
 }
 
 /**
@@ -202,7 +229,7 @@ export function resolveAppearance(
 }
 
 /** What to paint a surface, under a given palette. Null — nothing authored —
- * takes the palette's neutral tone, never one of the five tokens. */
+ * takes the palette's neutral tone, never one of the six tokens. */
 export function surfaceColour(appearance: Appearance | null, palette: PaletteId): string {
   const table = PALETTES[palette]
   return appearance ? table.colours[appearance] : table.unauthored

@@ -50,19 +50,27 @@ export interface HotspotRecord {
  * a palette switch touches no content and no geometry. See
  * `renderer/mesh/appearance.ts` for both tables.
  *
- * Five tokens, and a sixth is a RULING rather than a code change — every
+ * Six tokens, and a seventh is a RULING rather than a code change — every
  * palette must cover every token, and the gate asserts it.
  *
  * The pulmonary vessels are the exception the tokens exist to carry: the
  * pulmonary ARTERY is deoxygenated and the pulmonary VEIN is oxygenated. That
  * is the most-examined exception in the topic, so the colouring is doing
- * teaching work rather than decoration. It is not a mistake to be tidied. */
+ * teaching work rather than decoration. It is not a mistake to be tidied.
+ *
+ * `muscle` was the sixth, ruled by Mide for MRB-222. It arrived with the
+ * geometry that needed it: until the ventricular myocardium was assembled from
+ * BodyParts3D's isa tree there was no muscle ON this specimen to paint, only
+ * blood-volume casts of the chambers. The chambers keep their `blood-*` tokens
+ * and that is now literally true rather than a convenient reading — the cast IS
+ * the blood, and the muscle is a separate part standing beside it. */
 export type Appearance =
   | 'blood-oxygenated'
   | 'blood-deoxygenated'
   | 'vessel-oxygenated'
   | 'vessel-deoxygenated'
   | 'valve'
+  | 'muscle'
 
 /** What a cut face is made of.
  *
@@ -105,5 +113,16 @@ export interface SpecimenRecord {
    * Inherited by every hotspot that does not declare its own. Absent on an
    * unauthored specimen, which leaves the renderer's neutral tone in force. */
   appearance?: Appearance
+  /** GLB parts that deliberately carry NO hotspot (MRB-222).
+   *
+   * Geometry the specimen needs in order to be the right shape, which the
+   * record does not name as a teaching structure — the heart's ventricular
+   * myocardium and its two atrial walls. Naming one is a deliberate act, not a
+   * waiver: validate_content.py still FAILS on any part that is neither
+   * claimed by a hotspot nor listed here, it fails on a name here that the
+   * mesh does not actually declare, and it books every entry into the Stage 8
+   * checklist, because a class can isolate these and the panel has nothing to
+   * say about them yet. */
+  structuralParts?: string[]
   hotspots: HotspotRecord[]
 }

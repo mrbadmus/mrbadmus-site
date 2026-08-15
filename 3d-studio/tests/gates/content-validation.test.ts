@@ -120,7 +120,15 @@ describe('gate 4 — Stage 0 content validation', () => {
       heart.hotspots.find((h) => h.id === id)!.position3d as number[]
 
     const septum = at('heart.septum')
-    expect(septum).toEqual([0.16901, 0.02181, 0.23811])
+    // Re-derived in MRB-222 against the new part set. The rule did not change —
+    // still the seam between the two ventricular cavities, on the anterior
+    // aspect — but the geometry under it did: the ray now exits through the
+    // myocardium's epicardial surface, because the specimen finally has one.
+    // Before, with the chambers modelled as bare blood casts, it exited through
+    // a cast's own skin. The three PROPERTIES below are the actual gate and all
+    // three still hold; this line is the tripwire that makes an accidental
+    // change loud, so it tracks a deliberate re-derivation and nothing else.
+    expect(septum).toEqual([0.21541, 0.1226, 0.18506])
 
     // The three properties that make it the groove rather than a chamber wall,
     // in the GLB's own axes (+x patient's left, +y superior, +z anterior).
