@@ -693,9 +693,9 @@ def nav_html(active_subject="", pathway="", tier=""):
   <a class="nav-brand" href="/index.html"><svg class="brand-logo" width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 6l4-4 4 4" stroke="url(#navGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" transform="translate(4,6)"/><defs><linearGradient id="navGrad" x1="4" y1="2" x2="16" y2="12" gradientUnits="userSpaceOnUse"><stop style="stop-color:var(--brand-grad-a)"/><stop offset="1" style="stop-color:var(--brand-grad-b)"/></linearGradient></defs></svg> MrBadmusAI</a>
   {crumbs_block}
   <div class="nav-cluster">
+    <a href="/3d/" class="nav-text-link">3D Studio</a>
     <a href="/weekly-challenge.html" class="challenge-chip">⚡ <span class="nav-chip-label">Challenge</span></a>
     <a href="/leaderboard.html" class="nav-icon-link" title="Leaderboard" aria-label="Leaderboard">🏆</a>
-    <a href="/3d/" class="nav-icon-link" title="3D Studio" aria-label="3D Studio">🫀</a>
     <a href="#" class="nav-icon-link" title="Search topics" aria-label="Search topics" onclick="if(window.MRBSearch){{MRBSearch.open();}}return false;">🔍</a>
     <span id="nav-auth-area"></span>
     <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer"><span></span><span></span><span></span></button>
@@ -5483,9 +5483,17 @@ def build_site(output_dir="mrbadmus_site"):
     # (auth.html, teacher/*, etc.) is re-stamped to the current hash, never
     # frozen at an old one.
     import hashlib as _hashlib, re as _re
-    _versioned_css = ["tokens.css", "styles.css", "nav.css"]
+    # nav.js is on this list for the same reason nav.css is, and the omission
+    # was a real hole rather than a decision: the nav's BEHAVIOUR — the drawer's
+    # menu rows — lives in the JS, so a device holding a cached nav.js keeps an
+    # old menu however many times the CSS is rebusted. Found when the 3D Studio
+    # drawer row was added (MRB-214) and the row would have reached nobody who
+    # had already loaded the site. The regex below is written against a bare
+    # `/shared/<name>"`, which is the shape of both the <link> and the <script>
+    # tag, so extending the list is the whole change.
+    _versioned_assets = ["tokens.css", "styles.css", "nav.css", "nav.js"]
     _asset_ver = {}
-    for _name in _versioned_css:
+    for _name in _versioned_assets:
         _p = os.path.join(output_dir, "shared", _name)
         if os.path.exists(_p):
             with open(_p, "rb") as _fh:

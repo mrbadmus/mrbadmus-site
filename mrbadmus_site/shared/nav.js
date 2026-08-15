@@ -111,6 +111,11 @@
     { ico: '🏠', label: 'Home', href: '/index.html' },
     { ico: '⚡', label: 'Challenge', href: '/weekly-challenge.html' },
     { ico: '🏆', label: 'Leaderboard', href: '/leaderboard.html' },
+    // A microscope rather than the anatomical heart this link used to be: the
+    // studio holds eight specimens, and only one of them is a heart. The drawer
+    // row is labelled either way — the glyph is company for the word, never a
+    // substitute for it.
+    { ico: '🔬', label: '3D Studio', href: '/3d/' },
     { ico: '📄', label: 'Past Papers', href: '/past-papers.html' },
     { ico: '📚', label: 'Revision', href: '/revision.html' },
     { ico: '📊', label: 'My Challenges', href: '/my-challenges.html' },

@@ -88,6 +88,28 @@
 }
 .nav-icon-link:hover { background: var(--accent-soft); color: var(--accent); }
 
+/* A cluster item that is a WORD rather than a glyph.
+   3D Studio shipped as an unlabelled anatomical-heart glyph between the trophy
+   and the magnifier, which nobody could read as anything — and which would have
+   been wrong on its face the moment the second of the eight specimens landed.
+   The pill
+   geometry is .nav-icon-link's exactly, so the cluster keeps one rhythm; the
+   treatment is typographic, so the link needs no title attribute repeating
+   what is already on screen. */
+.nav-text-link {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--muted);
+  white-space: nowrap;
+  padding: 7px 10px;
+  border-radius: 999px;
+  transition: background 0.15s, color 0.15s;
+}
+.nav-text-link:hover { background: var(--accent-soft); color: var(--accent); }
+
 /* Auth control — Sign In / Sign Up when signed out, chip when signed in.
    The chip colours are the audited ~5.5:1 contrast pair — do not weaken. */
 #nav-auth-area { display: flex; gap: 6px; align-items: center; }
@@ -248,6 +270,16 @@
 
 /* ── Responsive tightening ── */
 @media (max-width: 900px) { .nav-crumbs { display: none; } }
+/* 3D Studio collapses one rung ABOVE Sign Up, not with it, and the extra rung
+   is measured rather than chosen. It is a word, so it is the widest item in the
+   cluster (~103px on a generated topic page, where reading density scales the
+   type up); and 561px is the pixel at which Sign Up returns too, so the ladder
+   would otherwise hand the bar 188px back in a single step. Measured on
+   combined/higher/chemistry/bonding/chemical-bonds.html: 561px overflows by
+   10px with this item present, and is clean from 580px up. 600px is the next
+   round number past that with headroom. The drawer carries the item below
+   here, so nothing is lost. */
+@media (max-width: 600px) { .nav-text-link { display: none; } }
 @media (max-width: 560px) {
   .nav { padding: 0 var(--sp-3); gap: var(--sp-2); }
   .nav-brand { font-size: 1.1rem; gap: 7px; }
