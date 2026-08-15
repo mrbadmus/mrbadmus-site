@@ -159,6 +159,13 @@ def render(specimen_id, out_path):
                 "document.querySelector('[data-renderer]').dataset.renderer")
             palette = page.eval(
                 "document.querySelector('[data-renderer]').dataset.palette")
+            # Reported because the tier decides the lighting rig and, since
+            # MRB-218, whether the wet-tissue sheen is spent at all — so a
+            # thumbnail shot at Tier C is a flatter picture than the one most
+            # students will see, and that should be visible here rather than
+            # discovered by looking at the card.
+            tier = page.eval(
+                "document.querySelector('[data-renderer]').dataset.tier")
             if renderer != "mesh":
                 raise SystemExit(
                     "the stage is running the %r renderer, not 'mesh' — a "
@@ -191,6 +198,7 @@ def render(specimen_id, out_path):
                 "edge": EDGE,
                 "palette": palette,
                 "renderer": renderer,
+                "tier": tier,
             }
     finally:
         cleanup()
@@ -212,9 +220,10 @@ def main():
     info = render(args.specimen, out)
     served = "/3d/assets/%s" % name
 
-    print("✅ wrote %s — %d bytes, %d×%d, %s palette, %s renderer"
+    print("✅ wrote %s — %d bytes, %d×%d, %s palette, %s renderer, tier %s"
           % (os.path.relpath(out, os.path.dirname(STUDIO)), info["bytes"],
-             info["edge"], info["edge"], info["palette"], info["renderer"]))
+             info["edge"], info["edge"], info["palette"], info["renderer"],
+             info["tier"]))
     print("   point assets.thumbnail at %r in content/%s.json"
           % (served, args.specimen))
 

@@ -118,63 +118,57 @@ export const DEFAULT_PALETTE: PaletteId = 'realistic'
 
 export const PALETTE_IDS: readonly PaletteId[] = ['realistic', 'schematic'] as const
 
-/** How a surface takes the light — separate from its colour, and shared across
+/**
+ * How a surface takes the light — separate from its colour, and shared across
  * both palettes.
  *
  * Colour is what the palette swaps; finish is what the tissue IS. A valve is
  * matte in a realistic rendering and matte in a schematic one, because that is
  * a fact about the tissue rather than about the drawing convention. Keeping
  * finish palette-independent means a palette switch is one colour write per
- * material with no shader recompile. */
+ * material with no shader recompile.
+ *
+ * ROUGHNESS DOES THE WORK, AND THE SHEEN LOBE WAS MEASURED OUT.
+ *
+ * This first shipped as MeshPhysicalMaterial with three's sheen lobe — the
+ * proper approximation of the soft waxy rim wet tissue has. 3d_render_check.py
+ * disagreed, twice, reproducibly:
+ *
+ *              Tier A median   Tier B median
+ *   before          100.0ms          33.4ms
+ *   physical+sheen  116.6ms          50.0ms
+ *   physical, no sheen             ~50.0ms   ← gating the lobe by tier fixed nothing
+ *   standard        100.1ms          35.3ms   ← restored
+ *
+ * The cost was MeshPhysicalMaterial ITSELF, not the lobe: three compiles the
+ * `physical` shader whether or not sheen is switched on. Tier-gating the sheen
+ * was tried first and removed again, because it left a flag whose comment
+ * claimed a saving it did not make — worse than not having it.
+ *
+ * Those numbers are SwiftShader on a CPU and are not evidence about a real
+ * device; 3d_render_check.py says so at length. But before/after on one machine
+ * is exactly what they are for, and a specular response from roughness alone
+ * turned out to read as WETTER than the lobe did, not drier — the highlight is
+ * tighter and the colour more saturated. So there was nothing to trade.
+ */
 export interface Finish {
   roughness: number
   metalness: number
-  /** three's sheen lobe — the cheap approximation of the soft, slightly waxy
-   * rim wet tissue has. NOT clearcoat, which reads as varnish, and NOT
-   * transmission, which would cost a whole extra render pass on a Tier C
-   * machine for a hint nobody would see. */
-  sheen: number
-  sheenRoughness: number
-  /** warm, so the sheen reads as light through the surface of something living
-   * rather than as a white highlight sitting on plastic */
-  sheenColour: string
 }
 
-const WET_TISSUE: Finish = {
-  roughness: 0.34,
-  metalness: 0,
-  sheen: 0.65,
-  sheenRoughness: 0.55,
-  sheenColour: '#FFC7A8',
-}
+/** Chambers and lumens: a tight highlight on a wet surface. */
+const WET_TISSUE: Finish = { roughness: 0.34, metalness: 0 }
 
-const VESSEL_WALL: Finish = {
-  roughness: 0.46,
-  metalness: 0,
-  sheen: 0.5,
-  sheenRoughness: 0.6,
-  sheenColour: '#FFD3B8',
-}
+/** Vessel walls: fibrous and a little drier than the blood inside them. */
+const VESSEL_WALL: Finish = { roughness: 0.46, metalness: 0 }
 
 /** Valves are the matte exception — thin fibrous tissue, not a wet lumen. */
-const VALVE_TISSUE: Finish = {
-  roughness: 0.74,
-  metalness: 0,
-  sheen: 0.12,
-  sheenRoughness: 0.85,
-  sheenColour: '#FFF0DE',
-}
+const VALVE_TISSUE: Finish = { roughness: 0.74, metalness: 0 }
 
-/** Neutral, and slightly flatter than anything authored — unauthored geometry
- * should not read as more confidently rendered than the structures Mide has
- * actually signed off. */
-const UNAUTHORED_FINISH: Finish = {
-  roughness: 0.62,
-  metalness: 0,
-  sheen: 0.25,
-  sheenRoughness: 0.7,
-  sheenColour: '#FFE6D2',
-}
+/** Neutral, and flatter than anything authored — unauthored geometry should
+ * not read as more confidently rendered than the structures Mide has actually
+ * signed off. */
+const UNAUTHORED_FINISH: Finish = { roughness: 0.62, metalness: 0 }
 
 const FINISHES: Record<Appearance, Finish> = {
   'blood-oxygenated': WET_TISSUE,

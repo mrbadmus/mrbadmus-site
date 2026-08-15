@@ -31,7 +31,7 @@ import type { SpecimenPart } from './parts'
 interface Painted {
   mesh: THREE.Mesh
   appearance: Appearance | null
-  material: THREE.MeshPhysicalMaterial
+  material: THREE.MeshStandardMaterial
 }
 
 /**
@@ -76,13 +76,10 @@ export class SpecimenSurface {
 
       const appearance = appearanceFor(part)
       const finish = surfaceFinish(appearance)
-      const material = new THREE.MeshPhysicalMaterial({
+      const material = new THREE.MeshStandardMaterial({
         color: new THREE.Color(surfaceColour(appearance, palette)),
         roughness: finish.roughness,
         metalness: finish.metalness,
-        sheen: finish.sheen,
-        sheenRoughness: finish.sheenRoughness,
-        sheenColor: new THREE.Color(finish.sheenColour),
         // Large smooth areas of a dark saturated red band badly on an 8-bit
         // display; dithering costs nothing and is the difference between
         // "tissue" and "gradient artefact" on the deoxygenated chambers.
@@ -117,11 +114,17 @@ export class SpecimenSurface {
 
   /** What each part was actually painted, for the browser-driven gates and for
    * anyone asking the renderer to account for itself. */
-  report(): ReadonlyArray<{ name: string; appearance: Appearance | null; colour: string }> {
+  report(): ReadonlyArray<{
+    name: string
+    appearance: Appearance | null
+    colour: string
+    roughness: number
+  }> {
     return this.painted.map(({ mesh, appearance, material }) => ({
       name: mesh.name,
       appearance,
       colour: `#${material.color.getHexString().toUpperCase()}`,
+      roughness: material.roughness,
     }))
   }
 

@@ -35,6 +35,7 @@ import {
   type PaletteId,
 } from '../../src/renderer/mesh/appearance'
 import { capColour } from '../../src/renderer/mesh/cap'
+import { TIER_RIGS } from '../../src/renderer/mesh/tiers'
 import { indexHotspots } from '../../src/renderer/mesh/cutmaterial'
 import { specimens } from '../../src/studio/content'
 import { hotspotVisual, type HotspotState } from '../../src/components/HotspotDot'
@@ -285,20 +286,6 @@ describe('gate 16 — two palettes over one record', () => {
       surfaceFinish('blood-oxygenated').roughness,
     )
   })
-
-  it('every token has a finish, and valves are the matte exception', () => {
-    for (const token of APPEARANCES) {
-      const finish = surfaceFinish(token)
-      expect(finish.roughness).toBeGreaterThan(0)
-      expect(finish.roughness).toBeLessThanOrEqual(1)
-      expect(finish.metalness).toBe(0) // tissue is never metal
-      expect(finish.sheen).toBeGreaterThanOrEqual(0)
-    }
-    const valve = surfaceFinish('valve')
-    for (const token of APPEARANCES.filter((t) => t !== 'valve')) {
-      expect(valve.sheen, `valve must be mattest`).toBeLessThan(surfaceFinish(token).sheen)
-    }
-  })
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -387,6 +374,69 @@ describe('gate 16 — hotspot numerals still read against all ten surfaces', () 
 })
 
 // ─────────────────────────────────────────────────────────────────────────────
+
+describe('gate 16 — the finish is roughness, and that was measured', () => {
+  it('the three tissue finishes are ordered wet → fibrous → matte', () => {
+    // The relation, not the numbers: blood is the wettest thing on the
+    // specimen, a vessel wall is drier than the blood inside it, and a valve
+    // is the matte exception. Asserted as an ordering so a retune that keeps
+    // the meaning passes and one that flattens everything to a single value
+    // does not.
+    const blood = surfaceFinish('blood-oxygenated').roughness
+    const vessel = surfaceFinish('vessel-oxygenated').roughness
+    const valve = surfaceFinish('valve').roughness
+    expect(blood).toBeLessThan(vessel)
+    expect(vessel).toBeLessThan(valve)
+  })
+
+  it('the two blood tokens and the two vessel tokens share a finish', () => {
+    // Oxygenation is a fact about the blood, not about how the surface takes
+    // the light. If these ever diverge, the palette has leaked into the finish.
+    expect(surfaceFinish('blood-oxygenated')).toEqual(surfaceFinish('blood-deoxygenated'))
+    expect(surfaceFinish('vessel-oxygenated')).toEqual(surfaceFinish('vessel-deoxygenated'))
+  })
+
+  it('nothing is metal, and everything is in range', () => {
+    for (const token of APPEARANCES) {
+      const finish = surfaceFinish(token)
+      expect(finish.metalness).toBe(0)
+      expect(finish.roughness).toBeGreaterThan(0)
+      expect(finish.roughness).toBeLessThanOrEqual(1)
+    }
+    expect(surfaceFinish(null).metalness).toBe(0)
+  })
+
+  it('the unauthored tone is flatter than every authored tissue but the valve', () => {
+    // Unauthored geometry must not read as more confidently rendered than the
+    // structures Mide has actually signed off.
+    const unauthored = surfaceFinish(null).roughness
+    expect(unauthored).toBeGreaterThan(surfaceFinish('blood-oxygenated').roughness)
+    expect(unauthored).toBeGreaterThan(surfaceFinish('vessel-oxygenated').roughness)
+  })
+
+  it('THE SHEEN LOBE IS GONE, and must not come back unmeasured', () => {
+    // MeshPhysicalMaterial + sheen cost 100.0→116.6ms at Tier A and
+    // 33.4→50.0ms at Tier B on 3d_render_check.py, reproducibly. The cost was
+    // the `physical` shader itself, not the lobe — gating the lobe by tier
+    // changed nothing, which is why TierRig has no `sheen` flag. Roughness
+    // alone reads wetter anyway.
+    //
+    // Written as a shape assertion so that reintroducing sheen fields here
+    // fails, and whoever does it has to come back through the numbers above.
+    const finish = surfaceFinish('blood-oxygenated') as unknown as Record<string, unknown>
+    expect(Object.keys(finish).sort()).toEqual(['metalness', 'roughness'])
+    expect((TIER_RIGS.A as unknown as Record<string, unknown>).sheen).toBeUndefined()
+  })
+
+  it('the renderer builds MeshStandardMaterial, not MeshPhysicalMaterial', () => {
+    const source = readFileSync(
+      resolve(dirname(fileURLToPath(import.meta.url)), '../../src/renderer/mesh/surface.ts'),
+      'utf8',
+    )
+    expect(source).toMatch(/new THREE\.MeshStandardMaterial\(/)
+    expect(source).not.toMatch(/new THREE\.MeshPhysicalMaterial\(/)
+  })
+})
 
 describe('gate 16 — the cut face is untouched', () => {
   it('no surface colour collides with either cut-face value', () => {
