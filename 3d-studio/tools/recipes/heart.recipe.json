@@ -3,20 +3,33 @@
   "name": "heart",
   "note": [
     "Assembles the AQA GCSE heart from BodyParts3D elemental meshes.",
-    "BodyParts3D does not decompose the heart into one mesh per named structure:",
     "Part names are the structure names exactly as heart.json labels them, because the isolate tool shows a part's name to the class verbatim (`Isolated: Right atrium`) and the renderer contract forbids inventing one. They bind to hotspot ids by slug: slugify(part name) == the id after the specimen prefix.",
-    "its elemental meshes are claimed by several named concepts at once (the",
-    "tricuspid leaflets are simultaneously part of the right atrium and the right",
-    "ventricle). `parts` below is therefore a PARTITION — each elemental file is",
-    "assigned to the single most specific structure that claims it, so no triangle",
-    "appears twice and the watertight gate stays meaningful.",
-    "Two of heart.json's fourteen hotspots have no part here and are anchored by",
-    "coordinate alone: the septum (BodyParts3D models the ventricular walls but",
-    "not a separately addressable septum — `wall of right ventricle` and `free",
-    "wall of right ventricle` resolve to identical element sets) and the",
-    "sino-atrial node (no conducting tissue is modelled anywhere in the dataset).",
+    "`parts` is a PARTITION — each elemental file is assigned to the single most specific structure that claims it, so no triangle appears twice and the watertight gate stays meaningful. BodyParts3D does not decompose the heart into one mesh per named structure: its elemental meshes are claimed by several named concepts at once (the tricuspid leaflets are simultaneously part of the right atrium and the right ventricle).",
+    "",
+    "TWO TREES, AND WHY (MRB-222).",
+    "BodyParts3D ships its release twice, built up two different ways: a partof tree and an isa tree. Until MRB-222 this recipe used only the partof one, and could not show the single fact the heart is taught for — that the left ventricle wall is thicker than the right.",
+    "The partof tree's `wall of left ventricle` (FMA9556) and `wall of right ventricle` (FMA9533) are not walls. They are papillary-muscle lumps, covering 2.5% and 10% of the directions around their own cavities. A name is not geometry.",
+    "The isa tree carries `wall of ventricle` (FMA13884) as a SINGLE element, FJ2428, which is absent from the partof archive entirely. It encloses both ventricular lumens at 91.3% angular coverage and measures, across 13 short-axis levels, an LV free wall of 9.39mm against an RV free wall of 3.53mm — a ratio of 2.66:1. Textbook is 8-12mm, 3-5mm, about 3:1. That element is this specimen's `Ventricular myocardium`.",
+    "",
+    "THE TWO TREES SHARE A COORDINATE FRAME — CHECKED, NOT ASSUMED.",
+    "All 1,258 elements present in both archives are byte-identical below their header comments; the only difference in any of them is the `Representation ID` and `Build-up logic` lines. So a part drawn from the isa tree drops into an assembly of partof parts with no transform reconciliation, and the myocardium lands around the cavity casts rather than beside them.",
+    "",
+    "THE FOUR CHAMBERS ARE NOW THE CAVITY CASTS ALONE.",
+    "The papillary lumps (FJ2418, FJ2419, FJ2429, FJ2430, FJ2432, FJ2437) have left the assembly. They sit inside FJ2428's volume, so keeping them would double-count triangles and break the watertight gate. That also makes the chambers' `blood-*` appearance tokens literally true rather than a convenient reading: the geometry IS the blood, and the muscle is a separate part beside it.",
+    "",
+    "PREPARATION OF FJ2428 — one documented command, not a hand edit.",
+    "FJ2428 ships 7 zero-volume sliver components holding all of its topology errors (b0/o7/m14). Dropping them costs 1.853 of 160,720 cubic mm, 0.0012% of the volume, and makes it watertight. `--min-volume 1` does NOT separate them; 100 does. Produce the file this recipe names with:",
+    "    python3 tools/inspect_source_mesh.py clean <isa-obj-dir> FJ2428 <isa-obj-dir>/FJ2428.clean100.obj --min-volume 100",
+    "It deletes components; it never adds, moves or thickens geometry. Result: 35,232 triangles, watertight YES, sha256 74350051e81da31a2f0ca025a2957ef697618ac2b8850599eddcd5eb3da32f8a.",
+    "",
+    "THE TRIANGLE BUDGET.",
+    "The raw assembly is 142,736 triangles against a 60,000 gate, so the pipeline's simplifier does the same work it has always done here — the shipping heart before MRB-222 was 111,518 raw triangles reduced to 54,990. What is NEW is that `Ventricular myocardium` is marked `preserve` and is never simplified. Its median edge is 1.62mm against a 3.53mm right-ventricular free wall, about two triangles across, so uniform decimation eats the RIGHT ventricle first and destroys the measurement while leaving something that still looks like a heart. Everything else pays for that protection out of the remaining budget.",
+    "",
+    "Two of heart.json's fourteen hotspots still have no part here and are anchored by coordinate alone: the septum (BodyParts3D names no separately addressable septum; it is interventricular myocardium, now inside FJ2428 rather than absent) and the sino-atrial node (no conducting tissue is modelled anywhere in the dataset).",
+    "",
     "Run: python3 tools/prepare_specimen.py tools/recipes/heart.recipe.json \\",
-    "       --obj-dir <extracted partof_BP3D_4.0_obj_99>"
+    "       --obj-dir partof=<extracted partof_BP3D_4.0_obj_99> \\",
+    "       --obj-dir isa=<extracted isa_BP3D_4.0_obj_99>"
   ],
   "source": {
     "database": "BodyParts3D",
@@ -24,17 +37,29 @@
     "licence": "CC BY-SA 2.1 Japan",
     "licenceNote": "The downloaded release-4.0 .obj files each carry CC BY-SA 2.1 Japan in their own header comment. The upstream README at the same URL now states CC BY 4.0 International. The files' own statement is the more restrictive of the two and is what is recorded, so attribution and share-alike are honoured either way.",
     "homepage": "https://dbarchive.biosciencedbc.jp/en/bodyparts3d/desc.html",
-    "release": "BP3D 4.0, partof tree, 99% reduction",
+    "release": "BP3D 4.0, partof AND isa trees, 99% reduction",
     "files": [
       {
+        "tree": "partof",
         "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_BP3D_4.0_obj_99.zip",
         "sha256": "9fbc713fffeee924a5a657d9813d84d7eb957bded63adb854931dd5e3eb61c97"
+      },
+      {
+        "tree": "isa",
+        "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_BP3D_4.0_obj_99.zip",
+        "sha256": "40665852c49f218326590e204db91064a1ecfc3c6f8cbd7bbbcaac62c7cd409e"
       },
       {
         "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_parts_list_e.txt"
       },
       {
         "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/partof_element_parts.txt"
+      },
+      {
+        "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_parts_list_e.txt"
+      },
+      {
+        "url": "https://dbarchive.biosciencedbc.jp/data/bodyparts3d/LATEST/isa_element_parts.txt"
       }
     ]
   },
@@ -48,53 +73,91 @@
     {
       "name": "Right atrium",
       "hotspot": "heart.right-atrium",
+      "tree": "partof",
       "files": [
-        "FJ2424",
-        "FJ2439"
+        "FJ2424"
       ],
       "sources": [
-        "FMA7096 right atrium (cavity + wall)"
+        "FMA7096 right atrium — the cavity cast alone"
       ]
     },
     {
       "name": "Right ventricle",
       "hotspot": "heart.right-ventricle",
+      "tree": "partof",
       "files": [
-        "FJ2423",
-        "FJ2419",
-        "FJ2430",
-        "FJ2437"
+        "FJ2423"
       ],
       "sources": [
-        "FMA7098 right ventricle (cavity + walls + papillary muscles)"
+        "FMA7098 right ventricle — the cavity cast alone"
+      ],
+      "excluded": [
+        "FJ2419, FJ2430, FJ2437 — papillary muscle and the partof tree's misnamed `wall of right ventricle`, which covers only 10% of the directions around this cavity. All three lie inside FJ2428's volume and are carried by `Ventricular myocardium` instead."
       ]
     },
     {
       "name": "Left atrium",
       "hotspot": "heart.left-atrium",
+      "tree": "partof",
       "files": [
-        "FJ2425",
-        "FJ2438"
+        "FJ2425"
       ],
       "sources": [
-        "FMA7097 left atrium (cavity + wall)"
+        "FMA7097 left atrium — the cavity cast alone"
       ]
     },
     {
       "name": "Left ventricle",
       "hotspot": "heart.left-ventricle",
+      "tree": "partof",
       "files": [
-        "FJ2422",
-        "FJ2418",
-        "FJ2429"
+        "FJ2422"
       ],
       "sources": [
-        "FMA7101 left ventricle (cavity + walls + papillary muscles)"
+        "FMA7101 left ventricle — the cavity cast alone"
+      ],
+      "excluded": [
+        "FJ2418, FJ2429 — papillary muscle and the partof tree's misnamed `wall of left ventricle`, which covers only 2.5% of the directions around this cavity. Both lie inside FJ2428's volume and are carried by `Ventricular myocardium` instead."
       ]
+    },
+    {
+      "name": "Ventricular myocardium",
+      "tree": "isa",
+      "preserve": true,
+      "files": [
+        "FJ2428.clean100"
+      ],
+      "sources": [
+        "FMA13884 wall of ventricle, isa tree, sliver components removed"
+      ],
+      "note": "No hotspot: heart.json names no `Ventricular myocardium`, and inventing one would be authoring anatomy outside the science gate. It therefore takes the specimen-level appearance and cutMaterial defaults, which is why heart.json sets them. `preserve` is load-bearing — see the triangle-budget note above."
+    },
+    {
+      "name": "Right atrial wall",
+      "tree": "partof",
+      "files": [
+        "FJ2439"
+      ],
+      "sources": [
+        "FMA7280 wall of right atrium"
+      ],
+      "note": "No hotspot, by the same reasoning as the myocardium. Split out of `Right atrium` in MRB-222 so that every chamber part is a cavity cast and every wall part is muscle, rather than the two being mixed inside one node."
+    },
+    {
+      "name": "Left atrial wall",
+      "tree": "partof",
+      "files": [
+        "FJ2438"
+      ],
+      "sources": [
+        "FMA7281 wall of left atrium"
+      ],
+      "note": "No hotspot, as above."
     },
     {
       "name": "Tricuspid valve",
       "hotspot": "heart.tricuspid-valve",
+      "tree": "partof",
       "files": [
         "FJ2421",
         "FJ2433",
@@ -107,6 +170,7 @@
     {
       "name": "Bicuspid valve",
       "hotspot": "heart.bicuspid-valve",
+      "tree": "partof",
       "files": [
         "FJ2420",
         "FJ2432"
@@ -118,6 +182,7 @@
     {
       "name": "Semilunar valves",
       "hotspot": "heart.semilunar-valves",
+      "tree": "partof",
       "files": [
         "FJ2426",
         "FJ2431",
@@ -134,6 +199,7 @@
     {
       "name": "Aorta",
       "hotspot": "heart.aorta",
+      "tree": "partof",
       "files": [
         "FJ3413",
         "FJ3411"
@@ -146,6 +212,7 @@
     {
       "name": "Vena cava",
       "hotspot": "heart.vena-cava",
+      "tree": "partof",
       "files": [
         "FJ3645",
         "FJ3441"
@@ -161,6 +228,7 @@
     {
       "name": "Pulmonary artery",
       "hotspot": "heart.pulmonary-artery",
+      "tree": "partof",
       "files": [
         "FJ2966",
         "FJ3019",
@@ -174,6 +242,7 @@
     {
       "name": "Pulmonary vein",
       "hotspot": "heart.pulmonary-vein",
+      "tree": "partof",
       "files": [
         "FJ3020",
         "FJ3040",
@@ -190,6 +259,7 @@
     {
       "name": "Coronary arteries",
       "hotspot": "heart.coronary-arteries",
+      "tree": "partof",
       "files": [
         "FJ2667",
         "FJ2668",
