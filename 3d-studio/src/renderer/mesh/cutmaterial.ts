@@ -51,6 +51,29 @@ export function hotspotIdForPart(specimenId: string, partName: string): string {
 }
 
 /**
+ * The hotspot a part binds to, or null when it binds to none.
+ *
+ * THE one lookup. Every per-part field the record can author — `cutMaterial`
+ * here, `appearance` in appearance.ts (MRB-218) — resolves through this
+ * function rather than re-spelling the join, so a second field can never drift
+ * into binding parts differently from the first. A nameless part is not a
+ * lookup failure; it is no lookup at all, and the caller falls straight through
+ * to the specimen's default.
+ */
+export function hotspotForPart(
+  partName: string,
+  specimen: Pick<SpecimenRecord, 'id' | 'hotspots'>,
+  hotspotsById?: ReadonlyMap<string, HotspotRecord>,
+): HotspotRecord | null {
+  if (!partName) return null
+  const id = hotspotIdForPart(specimen.id, partName)
+  const hotspot = hotspotsById
+    ? hotspotsById.get(id)
+    : specimen.hotspots.find((h) => h.id === id)
+  return hotspot ?? null
+}
+
+/**
  * The authored material for a part, or null when nothing is authored for it.
  *
  * Resolution order, and it is exactly the ruling's:
@@ -69,11 +92,7 @@ export function resolveCutMaterial(
   specimen: Pick<SpecimenRecord, 'id' | 'hotspots'> & { cutMaterial?: CutMaterial },
   hotspotsById?: ReadonlyMap<string, HotspotRecord>,
 ): CutMaterial | null {
-  if (!partName) return specimen.cutMaterial ?? null
-  const id = hotspotIdForPart(specimen.id, partName)
-  const hotspot = hotspotsById
-    ? hotspotsById.get(id)
-    : specimen.hotspots.find((h) => h.id === id)
+  const hotspot = hotspotForPart(partName, specimen, hotspotsById)
   return hotspot?.cutMaterial ?? specimen.cutMaterial ?? null
 }
 

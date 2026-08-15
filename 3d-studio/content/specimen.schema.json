@@ -98,6 +98,11 @@
       "enum": ["wall", "cavity"],
       "description": "OPTIONAL specimen-wide default for what the CUT FACE is made of, inherited by every hotspot that does not declare its own. Absent on an unauthored specimen, which leaves the renderer's depth heuristic in force, so adding this field changed no existing specimen's behaviour."
     },
+    "appearance": {
+      "type": "string",
+      "enum": ["blood-oxygenated", "blood-deoxygenated", "vessel-oxygenated", "vessel-deoxygenated", "valve"],
+      "description": "OPTIONAL specimen-wide default for what the OUTER SURFACE is, inherited by every hotspot that does not declare its own. Absent leaves the renderer's neutral unauthored tone in force. A SEMANTIC TOKEN, never a colour: the renderer owns the mapping from token to colour and finish, which is what allows two palettes — 'realistic' (the default) and 'schematic' (the AQA diagram convention, blue for deoxygenated) — to stand over one identical record, so a palette switch touches no content and no geometry."
+    },
     "hotspots": {
       "type": "array",
       "minItems": 1,
@@ -168,6 +173,11 @@
             "type": "string",
             "enum": ["wall", "cavity"],
             "description": "OPTIONAL per-hotspot override of what the CUT FACE through this structure is made of — the same inheritance mechanism as specPoints and keyStages. Declared wins; silent inherits the specimen's; neither declared falls back to the renderer's depth heuristic (outermost is wall, anything nested is cavity). Absence is an inherit, never a placeholder. It exists because that heuristic is a proxy for a fact about ANATOMY rather than about geometry, and it inverts on blood-volume cast meshes such as BodyParts3D's, where a ventricle is a top-level solid with no myocardium shell around it and is therefore painted as wall — the one thing on the specimen that is unambiguously a cavity reading as the most solid thing there. Parts bind to hotspots by slug: slugify(part name) == the hotspot id after the specimen prefix, which is the join tools/recipes/*.recipe.json already records."
+          },
+          "appearance": {
+            "type": "string",
+            "enum": ["blood-oxygenated", "blood-deoxygenated", "vessel-oxygenated", "vessel-deoxygenated", "valve"],
+            "description": "OPTIONAL per-hotspot override of what this structure's OUTER SURFACE is — the same three-step resolution and the same binding as cutMaterial above. Declared wins; silent inherits the specimen's; neither declared falls back to the renderer's neutral unauthored tone, which is deliberately NOT one of the five tokens so that unauthored geometry never claims to be oxygenated or deoxygenated anything. Absence is an inherit, never a placeholder. On the heart the four chambers take BLOOD tokens rather than muscle tokens because BodyParts3D models them as blood-volume casts — the geometry genuinely is the blood, so painting it as blood is accurate rather than a convention imposed on tissue; when a shell-modelled mesh lands those four move to muscle tokens. Note that the pulmonary artery is deoxygenated and the pulmonary vein oxygenated: that is the most-examined exception in the topic and the colouring is doing teaching work, not decoration."
           }
         }
       }

@@ -21,7 +21,7 @@ import {
   type ToolId,
   type ToolState,
 } from '../types'
-import type { CutMaterial, HotspotRecord, SpecimenRecord } from '../../studio/types'
+import type { Appearance, CutMaterial, HotspotRecord, SpecimenRecord } from '../../studio/types'
 import { createBridge, SceneRoot, type SceneBridge } from './scene'
 import { frameSpecimen, resolveAnchors, type DefaultView } from './anchors'
 import { projectAnchor } from './project'
@@ -30,6 +30,8 @@ import { TextureBudget } from './textures'
 import { TIER_RIGS } from './tiers'
 import { isStandIn, resolveMeshUrl } from './standin'
 import { indexHotspots, resolveCutMaterial } from './cutmaterial'
+import { DEFAULT_PALETTE, resolveAppearance, type PaletteId } from './appearance'
+import { SpecimenSurface } from './surface'
 import {
   FRAME_DURATION_MS,
   framePosition,
@@ -111,10 +113,20 @@ class MeshRenderer implements Renderer {
   /** hotspot id → the part its anchor sits on, resolved geometrically */
   private anchorParts = new Map<string, SpecimenPart>()
 
-  /** the loaded record, kept for the joins that need it AFTER load — today
-   * the part→hotspot slug binding the cut material resolves across (MRB-217) */
+  /** the loaded record, kept for the joins that need it AFTER load — the
+   * part→hotspot slug binding that the cut material (MRB-217) and the outer
+   * surface (MRB-218) both resolve across */
   private specimen: SpecimenRecord | null = null
   private hotspotsById: ReadonlyMap<string, HotspotRecord> = new Map()
+
+  /** the outer surface's materials (MRB-218), and which palette is painting
+   * them. `realistic` by default — ruled by Mide, 15 August. There is no
+   * visible control: the tool rail's button counts are asserted against
+   * Claude Design's frozen reference by 3d_parity.py, and a seventh tool is
+   * Design's to draw, not Code's to add. The mechanism is complete and gated;
+   * switching it on is `setPalette('schematic')`. */
+  private surface = new SpecimenSurface()
+  private palette: PaletteId = DEFAULT_PALETTE
 
   /** cross-section (MRB-189). The plane is ONE object for the specimen's
    * lifetime and is mutated as the cut is dragged: every clipped material
@@ -185,6 +197,7 @@ class MeshRenderer implements Renderer {
       delete container.dataset.state
       delete container.dataset.progress
       delete container.dataset.specimenSource
+      delete container.dataset.palette
     }
 
     const root = this.root
@@ -462,6 +475,7 @@ class MeshRenderer implements Renderer {
     container.dataset.tier = this.tier
     container.dataset.state = this.status.state
     if (isStandIn()) container.dataset.specimenSource = 'test-mesh'
+    this.stampSurface()
   }
 
   /** Return the camera to the authored default view, exactly. OrbitControls'
@@ -534,6 +548,37 @@ class MeshRenderer implements Renderer {
     return resolveCutMaterial(part.name, this.specimen, this.hotspotsById)
   }
 
+  /** What this part's OUTER SURFACE is, or null where the record says nothing
+   * and the palette's neutral tone should decide (MRB-218). The same join, the
+   * same three steps, and deliberately the same shape as `cutMaterialFor` —
+   * two fields over one lookup, not two lookups. */
+  private appearanceFor(part: SpecimenPart): Appearance | null {
+    if (!this.specimen) return null
+    return resolveAppearance(part.name, this.specimen, this.hotspotsById)
+  }
+
+  /** Repaint under a different palette. The record is identical under both;
+   * only this mapping changes, so the swap is one colour write per material —
+   * no reload, no geometry, no material rebuild, and an open cross-section
+   * keeps its clipping planes. */
+  setPalette(palette: PaletteId): void {
+    if (this.palette === palette) return
+    this.palette = palette
+    this.surface.setPalette(palette)
+    this.stampSurface()
+  }
+
+  /** Which palette is painting the specimen. */
+  activePalette(): PaletteId {
+    return this.palette
+  }
+
+  private stampSurface(): void {
+    const container = this.container
+    if (!container) return
+    container.dataset.palette = this.palette
+  }
+
   /** Whether the cut is capped at the current tier.
    *
    * MRB-189 anticipated the stencil pass being too much for Tier C and named
@@ -594,6 +639,14 @@ class MeshRenderer implements Renderer {
     this.specimen = specimen
     this.hotspotsById = indexHotspots(specimen.hotspots)
 
+    // The surface goes on HERE, before the model reaches React: the clipping
+    // plane is attached to the specimen's materials by an effect in
+    // `useClippedMaterials`, so these have to be the materials that effect
+    // finds. Painting later would leave a cut specimen whose new materials
+    // never learned about the plane.
+    this.surface.paint(this.parts, (part) => this.appearanceFor(part), this.palette)
+    this.stampSurface()
+
     this.textureBudget.collect(scene)
     const rig = TIER_RIGS[this.tier]
     this.textureBudget.apply(rig.textureScale, rig.anisotropy)
@@ -615,6 +668,7 @@ class MeshRenderer implements Renderer {
     this.box = null
     this.specimen = null
     this.hotspotsById = new Map()
+    this.surface.dispose()
     this.bridge.model = null
     this.bridge.view = null
     this.textureBudget.clear()

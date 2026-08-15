@@ -42,6 +42,14 @@ which is the finished, correct answer for the great majority of structures.
 Listing every one of them would be asking Mide to clear an item that has
 nothing wrong with it. Where the field IS present its values are checked.
 
+'cutMaterial' (MRB-217) and 'appearance' (MRB-218) are exceptions on exactly
+the same terms and for the same reason. Both resolve hotspot → specimen →
+renderer fallback, so absence is an inherit rather than an unauthored blank,
+and neither produces a checklist line. The heart's septum and sino-atrial node
+declare no 'appearance' at all: they have no part in the GLB and are anchored
+by coordinate alone, so there is no surface of theirs to paint. Where either
+field IS present its value is checked against its enum.
+
 Exit code 0 = every record valid. Exit code 1 = at least one failure.
 """
 
@@ -69,7 +77,7 @@ TOP_LEVEL_KEYS = [
 # Optional top-level fields. Kept OUT of TOP_LEVEL_KEYS deliberately, which
 # doubles as the required-presence list — the same split HOTSPOT_OPTIONAL_KEYS
 # makes for the same reason.
-TOP_LEVEL_OPTIONAL_KEYS = ["cutMaterial"]
+TOP_LEVEL_OPTIONAL_KEYS = ["cutMaterial", "appearance"]
 ASSET_KEYS = ["mesh", "fallback", "thumbnail", "licence", "source", "acquired"]
 
 # Which file extension each asset is served as. Used to ask the same question
@@ -131,11 +139,22 @@ HOTSPOT_KEYS = ["id", "label", "detail", "position3d", "position2d", "tiers",
 # Optional per-hotspot fields (MRB-193). Allowed by the unknown-field check but
 # NOT required — they are deliberately kept out of HOTSPOT_KEYS, which doubles
 # as the required-presence list.
-HOTSPOT_OPTIONAL_KEYS = ["specPoints", "accept", "keyStages", "cutMaterial"]
+HOTSPOT_OPTIONAL_KEYS = ["specPoints", "accept", "keyStages", "cutMaterial",
+                         "appearance"]
 # What a cut face may be made of (MRB-217). Optional at BOTH levels — hotspot
 # first, then the specimen's, then the renderer's depth heuristic — so absence
 # is an inherit exactly as keyStages' is, and produces no placeholder line.
 CUT_MATERIALS = ("wall", "cavity")
+# What an OUTER SURFACE may be (MRB-218). Optional at BOTH levels on exactly
+# the same terms, so absence is an inherit and produces no placeholder line.
+#
+# These are SEMANTIC TOKENS, not colours. The renderer owns the mapping from
+# token to colour and finish, which is what lets two palettes — 'realistic'
+# (the default) and 'schematic' (the AQA diagram convention) — stand over one
+# identical record. A sixth token is a RULING, not an edit here: every palette
+# must cover every token, and the renderer's gate asserts that both do.
+APPEARANCES = ("blood-oxygenated", "blood-deoxygenated", "vessel-oxygenated",
+               "vessel-deoxygenated", "valve")
 KEY_STAGES = ("KS3", "KS4")
 # Aliases that would reintroduce independent name lookups. Their absence is
 # already implied by the unknown-key check; naming them keeps the failure
@@ -235,6 +254,13 @@ def validate_record(fname, record, failures, placeholders):
         fail(f"{ctx}: cutMaterial {record['cutMaterial']!r} is not one of "
              f"{list(CUT_MATERIALS)} — the cut face is wall or cavity, and a "
              f"third value would have no colour to be drawn in")
+
+    # ── gate 5c: the specimen-wide outer surface, where one is declared
+    if "appearance" in record and record["appearance"] not in APPEARANCES:
+        fail(f"{ctx}: appearance {record['appearance']!r} is not one of "
+             f"{list(APPEARANCES)} — a sixth token is a ruling, not an edit, "
+             f"because every palette must cover every token and an unlisted "
+             f"one would have no colour in either palette")
 
     # ── gate 1: every declared field present and non-empty
     require(record, TOP_LEVEL_KEYS, ctx, fail)
@@ -369,6 +395,11 @@ def validate_record(fname, record, failures, placeholders):
             fail(f"{hctx}: cutMaterial {h['cutMaterial']!r} is not one of "
                  f"{list(CUT_MATERIALS)} — the cut face is wall or cavity, and "
                  f"a third value would have no colour to be drawn in")
+        if "appearance" in h and h["appearance"] not in APPEARANCES:
+            fail(f"{hctx}: appearance {h['appearance']!r} is not one of "
+                 f"{list(APPEARANCES)} — a sixth token is a ruling, not an "
+                 f"edit, because every palette must cover every token and an "
+                 f"unlisted one would have no colour in either palette")
         p3, p2 = h.get("position3d"), h.get("position2d")
         if not (isinstance(p3, list) and len(p3) == 3
                 and all(isinstance(v, (int, float)) for v in p3)):

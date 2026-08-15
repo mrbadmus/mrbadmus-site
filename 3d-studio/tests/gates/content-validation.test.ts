@@ -36,15 +36,29 @@ describe('gate 4 — Stage 0 content validation', () => {
   // A COPY, and that matters: mutating content/heart.json in place would leave
   // the repo dirty if this test were interrupted, and the validator reads the
   // whole directory rather than a file handed to it.
-  for (const [where, mutate] of [
-    ['at hotspot level', (r: Record<string, any>) => {
+  // `appearance` (MRB-218) joins it on exactly the same terms: a five-token
+  // enum at both levels, where a sixth token would reach the renderer with no
+  // colour in EITHER palette. Same seam, same copy-the-directory discipline.
+  for (const [field, where, mutate] of [
+    ['cutMaterial', 'at hotspot level', (r: Record<string, any>) => {
       r.hotspots[0].cutMaterial = 'myocardium'
     }],
-    ['at specimen level', (r: Record<string, any>) => {
+    ['cutMaterial', 'at specimen level', (r: Record<string, any>) => {
       r.cutMaterial = 'myocardium'
     }],
+    ['appearance', 'at hotspot level', (r: Record<string, any>) => {
+      r.hotspots[0].appearance = 'muscle-cardiac'
+    }],
+    ['appearance', 'at specimen level', (r: Record<string, any>) => {
+      r.appearance = 'muscle-cardiac'
+    }],
+    // The near-miss that a looser check would wave through: a real token
+    // spelled the way someone would guess it.
+    ['appearance', 'as a plausible misspelling', (r: Record<string, any>) => {
+      r.hotspots[0].appearance = 'blood-deoxygenised'
+    }],
   ] as const) {
-    it(`rejects a cutMaterial outside {wall, cavity} ${where}`, () => {
+    it(`rejects a ${field} outside its enum ${where}`, () => {
       const scratch = mkdtempSync(join(tmpdir(), 'mrb-content-'))
       try {
         cpSync(join(STUDIO_DIR, 'content'), join(scratch, 'content'), {
@@ -61,9 +75,9 @@ describe('gate 4 — Stage 0 content validation', () => {
           timeout: 15000,
           env: { ...process.env, MRB_CONTENT_DIR: join(scratch, 'content') },
         })
-        expect(result.status, `validator ACCEPTED a bad cutMaterial ${where}:\n${result.stdout}`)
+        expect(result.status, `validator ACCEPTED a bad ${field} ${where}:\n${result.stdout}`)
           .not.toBe(0)
-        expect(result.stdout + result.stderr).toContain('cutMaterial')
+        expect(result.stdout + result.stderr).toContain(field)
       } finally {
         rmSync(scratch, { recursive: true, force: true })
       }
