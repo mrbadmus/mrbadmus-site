@@ -4319,6 +4319,24 @@ def make_pathway_subtopic_page(st, color, subject, pathway, tier, all_subtopics_
   <div class="examiner-box"><p>{st['examiner_tip']}</p></div>
 </div>"""
 
+    # 3D Studio link — an optional way into /3d/ from the pages whose specimen
+    # the studio holds. Scoped by DATA, not by slug: a page gets the link when
+    # its subtopic entry carries `studio_url`, and nothing at all when it does
+    # not, so there is no page list in the template to keep in sync. Optional
+    # `studio_label` carries the copy that names the specimen (the default is
+    # deliberately specimen-neutral). Same leading-newline trick as the
+    # examiner tip above — it piggybacks onto the keynote line in the body, so
+    # every page without the field stays byte-identical.
+    studio_html = ""
+    if st.get("studio_url"):
+        studio_html = f"""
+  <div class="section">
+  <div class="section-title">🧊 3D Studio</div>
+  <div class="card">
+    <a class="btn-primary" href="{st['studio_url']}">{st.get('studio_label', 'Explore in 3D')}</a>
+  </div>
+</div>"""
+
     # Higher box — only on higher tier
     higher_html = ""
     if tier == "higher" and st.get("higher"):
@@ -4854,7 +4872,7 @@ try {{
 
   {var_html}
   {eq_html}
-  {keynote_html}{examiner_html}
+  {keynote_html}{examiner_html}{studio_html}
   {matching_html}
   {fifa_html_content}
   {higher_html}

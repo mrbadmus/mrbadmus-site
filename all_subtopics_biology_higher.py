@@ -1636,6 +1636,8 @@ BIOLOGY_SUBTOPICS_ALL = {
                                       'concentration gradients.'}}],
   'rp': None,
   'spec': '4.2.3',
+  'studio_label': 'Explore the heart in 3D',
+  'studio_url': '/3d/',
   'summary': 'Describe the structure and function of the heart, the double circulatory system and the three types of '
              'blood vessel.',
   'theory': [{'content': 'Humans have a DOUBLE circulatory system — the blood passes through the heart twice for every '
@@ -1913,6 +1915,8 @@ BIOLOGY_SUBTOPICS_ALL = {
                                       'factor.'}}],
   'rp': None,
   'spec': '4.2.3.3',
+  'studio_label': 'Explore the heart in 3D',
+  'studio_url': '/3d/',
   'summary': 'Describe the causes and treatments of coronary heart disease.',
   'theory': [{'content': 'Coronary heart disease (CHD) is a condition in which the CORONARY ARTERIES — the blood '
                          'vessels that supply the heart muscle itself with oxygen and glucose — become narrowed and '
