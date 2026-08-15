@@ -117,6 +117,26 @@ export interface SectionRule {
   edgeOn: number
 }
 
+/** How much of the stage container is covered by the SHELL's own furniture, in
+ * container pixels.
+ *
+ * The stage runs the full height of its wrapper at every layout, but on phone
+ * the §05 sheet is drawn over its lower part — 55% of it at rest, all but 150px
+ * raised. A renderer that framed against the geometric centre of the container
+ * would put the specimen half behind it, and could frame a retrieval target
+ * underneath it entirely, which makes a question unanswerable rather than hard.
+ *
+ * Only the bottom edge is ever covered today, but this is an inset rather than
+ * a number so an overlay on another edge does not need the door changed under
+ * it. The shell measures it — it owns the furniture — and a renderer with no
+ * camera is free to ignore it. Added at MRB-216. */
+export interface StageInsets {
+  /** px of the stage's bottom edge hidden behind shell furniture */
+  bottom: number
+}
+
+export const NO_STAGE_INSETS: StageInsets = { bottom: 0 }
+
 export interface Renderer {
   /** Which stage dressing the shell should use: 'viewport' is the dark room,
    * 'paper' is the flat plate on light ground (reference §06). */
@@ -148,6 +168,15 @@ export interface Renderer {
   /** Apply a render-quality tier. Must take effect live — no reload, no
    * remount (gate 5 asserts this). No-op when supportsQualityTiers is false. */
   setTier(tier: RenderTier): void
+
+  /** Tell the renderer how much of its container the shell is covering, so it
+   * can frame the specimen in the part a student can actually see.
+   *
+   * Called whenever the covered height changes — which on phone is every frame
+   * of the sheet's 0.22s detent transition, so an implementation must be cheap
+   * and must not remount anything. A renderer that draws to fixed coordinates
+   * ignores it. Added at MRB-216. */
+  setStageInsets(insets: StageInsets): void
 
   /** Fire a tool the renderer declared in `supportedTools`. The declaration
    * side of that pair existed from Stage 1; this is the other half — the rail

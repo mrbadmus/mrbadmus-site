@@ -9,6 +9,7 @@ import { SheetContent, LessonLink } from './InfoPanel'
 import { BookIcon } from './icons'
 
 export function PhoneSheet({
+  rootRef,
   specimen,
   raised,
   onRaisedChange,
@@ -16,6 +17,9 @@ export function PhoneSheet({
   onOpenHotspot,
   onStartRetrieval,
 }: {
+  /** So the stage can MEASURE how much of itself this is covering and have the
+   * renderer frame the specimen above it (MRB-216). */
+  rootRef?: React.Ref<HTMLDivElement>
   specimen: SpecimenRecord
   raised: boolean
   onRaisedChange: (raised: boolean) => void
@@ -26,7 +30,7 @@ export function PhoneSheet({
   const dragStartY = useRef<number | null>(null)
 
   return (
-    <div className={`sheet${raised ? ' is-raised' : ''}`}>
+    <div ref={rootRef} className={`sheet${raised ? ' is-raised' : ''}`}>
       <button
         type="button"
         className="sheet__grab"

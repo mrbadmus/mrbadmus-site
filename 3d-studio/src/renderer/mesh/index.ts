@@ -10,14 +10,16 @@
 import { createRoot, type Root } from 'react-dom/client'
 import { createElement } from 'react'
 import * as THREE from 'three'
-import type {
-  Renderer,
-  RendererStatus,
-  RenderTier,
-  ScreenPoint,
-  SectionRule,
-  ToolId,
-  ToolState,
+import {
+  NO_STAGE_INSETS,
+  type Renderer,
+  type RendererStatus,
+  type RenderTier,
+  type ScreenPoint,
+  type SectionRule,
+  type StageInsets,
+  type ToolId,
+  type ToolState,
 } from '../types'
 import type { SpecimenRecord } from '../../studio/types'
 import { createBridge, SceneRoot, type SceneBridge } from './scene'
@@ -92,6 +94,9 @@ class MeshRenderer implements Renderer {
 
   private tier: RenderTier = 'A'
   private autoRotate = false
+  /** how much of the container the shell is covering (MRB-216). Phone only;
+   * desktop and tablet stay at zero and take no view offset at all. */
+  private insets: StageInsets = NO_STAGE_INSETS
 
   private model: THREE.Object3D | null = null
   private view: DefaultView | null = null
@@ -283,6 +288,14 @@ class MeshRenderer implements Renderer {
     if (this.container) this.container.dataset.tier = tier
     const rig = TIER_RIGS[tier]
     this.textureBudget.apply(rig.textureScale, rig.anisotropy)
+    this.renderScene()
+  }
+
+  setStageInsets(insets: StageInsets): void {
+    if (this.insets.bottom === insets.bottom) return
+    this.insets = insets
+    // A re-render, never a remount: the offset is applied inside the canvas by
+    // an effect, and gate 5 forbids rebuilding the context for anything.
     this.renderScene()
   }
 
@@ -591,6 +604,7 @@ class MeshRenderer implements Renderer {
         view: this.view,
         tier: this.tier,
         autoRotate: this.autoRotate,
+        insets: this.insets,
         section:
           this.section.enabled && this.plane && this.box
             ? {

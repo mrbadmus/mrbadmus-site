@@ -97,6 +97,10 @@ class PlaceholderRenderer implements Renderer {
     this.draw()
   }
 
+  /** No camera, so nothing to re-frame: the placeholder draws to fixed
+   * proportions of its container (MRB-216). */
+  setStageInsets(): void {}
+
   /** Nothing to drive: the placeholder has no camera. Present so the
    * declaration and invocation halves of the tool contract stay paired. */
   invokeTool(): void {}

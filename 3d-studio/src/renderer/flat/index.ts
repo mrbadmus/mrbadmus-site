@@ -171,6 +171,17 @@ class FlatRenderer implements Renderer {
   /** No render load, so no tier to set. */
   setTier(): void {}
 
+  /** DELIBERATELY A NO-OP, and worth saying why rather than leaving it blank.
+   *
+   * The plate has the same problem the mesh camera had — `plateRect` centres it
+   * in the container, so on phone its lower part sits behind the §05 sheet. But
+   * the answer is different geometry, not this one: there is no camera and no
+   * projection here, so the fix is in `plateRect`'s own arithmetic, and it
+   * wants the plate's aspect ratio taken into account in a way a frustum offset
+   * says nothing about. MRB-216 fixed the camera; the plate is still to do, and
+   * is moot until a plate is acquired at all (MRB-215). */
+  setStageInsets(): void {}
+
   invokeTool(tool: ToolId, on?: boolean): void {
     if (!this.supportedTools.includes(tool)) return
     switch (tool) {

@@ -101,6 +101,7 @@ describe('gate 5 — tier override changes render output without a reload', () =
           log.push('unmount')
           inner.unmount()
         },
+        setStageInsets: inner.setStageInsets.bind(inner),
         setTier(tier: RenderTier) {
           log.push(`setTier:${tier}`)
           inner.setTier(tier)

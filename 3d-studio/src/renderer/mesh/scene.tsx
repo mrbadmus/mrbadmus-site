@@ -16,8 +16,9 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import { FOV, type DefaultView } from './anchors'
 import { TIER_RIGS, type TierRig } from './tiers'
 import { SectionCap, useClippedMaterials } from './cap'
+import { stageViewOffset } from './viewport'
 import type { SpecimenPart } from './parts'
-import type { RenderTier } from '../types'
+import type { RenderTier, StageInsets } from '../types'
 
 /** The mutable handle the imperative Renderer keeps into the live scene.
  * React writes it; hotspotToScreen and the tool commands read it. */
@@ -49,6 +50,8 @@ export interface SceneProps {
   view: DefaultView | null
   tier: RenderTier
   autoRotate: boolean
+  /** how much of the stage the shell is covering (MRB-216) */
+  insets: StageInsets
   /** the cross-section, when one is engaged (MRB-189) */
   section: SectionProps | null
   onCreated: () => void
@@ -109,6 +112,7 @@ function SceneContents({
   view,
   rig,
   autoRotate,
+  insets,
   section,
   onFailure,
 }: SceneProps & { rig: TierRig }) {
@@ -116,6 +120,7 @@ function SceneContents({
   return (
     <>
       <BridgeSync bridge={bridge} onFailure={onFailure} />
+      <StageFraming insets={insets} />
       <TierEffects rig={rig} />
       {rig.environment && <RoomIBL />}
       <Lights rig={rig} view={view} />
@@ -211,6 +216,45 @@ function BridgeSync({
     canvas.addEventListener('webglcontextlost', onLost)
     return () => canvas.removeEventListener('webglcontextlost', onLost)
   }, [gl, onFailure])
+
+  return null
+}
+
+/** Frames the specimen inside the part of the stage the shell is not covering
+ * (MRB-216). See `viewport.ts` for why this is a projection offset and not a
+ * camera move.
+ *
+ * Depends on the live canvas size as well as the insets, because the offset is
+ * expressed in pixels: R3F re-derives `camera.aspect` on resize and calls
+ * `updateProjectionMatrix`, which PRESERVES `camera.view`, so a stale offset
+ * would otherwise survive a rotation of the phone at the wrong scale.
+ *
+ * Desktop and tablet send no insets, `stageViewOffset` returns null, and
+ * `clearViewOffset` leaves the projection exactly the one that shipped. */
+function StageFraming({ insets }: { insets: StageInsets }) {
+  const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
+  const size = useThree((s) => s.size)
+
+  useEffect(() => {
+    if (!camera.isPerspectiveCamera) return
+    const offset = stageViewOffset(size.width, size.height, insets)
+    if (offset) {
+      camera.setViewOffset(
+        offset.fullWidth,
+        offset.fullHeight,
+        offset.offsetX,
+        offset.offsetY,
+        offset.width,
+        offset.height,
+      )
+    } else {
+      camera.clearViewOffset()
+    }
+    // Both branches call updateProjectionMatrix internally, but clearViewOffset
+    // is a no-op when there was no offset to clear, so this is not redundant on
+    // the very first pass at a layout that never takes one.
+    camera.updateProjectionMatrix()
+  }, [camera, size.width, size.height, insets])
 
   return null
 }

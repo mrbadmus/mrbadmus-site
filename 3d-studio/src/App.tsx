@@ -2,7 +2,7 @@
 // on MRB-194): specimen selection is in-memory state. Everything on screen
 // resolves from a single specimen record through a single id (spec §3.2).
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { CapabilityReport } from './studio/capability'
 import { detectCapability } from './studio/capability'
 import type { QualitySetting } from './studio/quality'
@@ -117,6 +117,12 @@ export default function App({
   const [quality, setQuality] = useState<QualitySetting>('auto')
   const [libraryOpen, setLibraryOpen] = useState(false)
   const [sheetRaised, setSheetRaised] = useState(false)
+  // The sheet covers the lower part of the stage, so the renderer has to be
+  // told how much in order to frame the specimen where it can be seen. Handed
+  // over as an element to MEASURE rather than as the detent, so the sheet's
+  // 55% and its 150px stay in the stylesheet and are not copied into TS where
+  // they would drift (MRB-216).
+  const sheetRef = useRef<HTMLDivElement>(null)
 
   // The key-stage filter is applied ONCE, here, at the top (MRB-193/186). What
   // flows on from this line is the specimen as THIS viewer sees it, so the
@@ -291,6 +297,7 @@ export default function App({
       targetHotspotId={targetHotspotId}
       hint={hint}
       layout={layout}
+      overlayRef={layout === 'phone' ? sheetRef : undefined}
     />
   )
 
@@ -378,6 +385,7 @@ export default function App({
           <div className="stagewrap" key="stage" style={{ flex: 1, position: 'relative' }}>
             {stage}
             <PhoneSheet
+              rootRef={sheetRef}
               specimen={specimen}
               raised={sheetRaised}
               onRaisedChange={setSheetRaised}

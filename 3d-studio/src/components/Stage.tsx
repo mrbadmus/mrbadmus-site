@@ -52,6 +52,7 @@ export function Stage({
   targetHotspotId,
   hint,
   layout,
+  overlayRef,
 }: {
   /** null while the renderer module is still arriving (MRB-190's code split).
    * The Stage still draws: the dark room, the hint line and the container are
@@ -75,8 +76,15 @@ export function Stage({
    * bar — which is a rendering decision, not a styling one, so the breakpoint
    * has to reach the components rather than only the stylesheet (MRB-189). */
   layout: StageLayout
+  /** The element the shell draws OVER the stage, if any — the §05 phone sheet.
+   * Measured rather than derived from the detent, because the quantity the
+   * renderer needs is a pixel height, and deriving it would mean copying the
+   * sheet's 55% and its 150px out of the stylesheet into TypeScript where they
+   * would drift (MRB-216). Null at every layout that overlays nothing. */
+  overlayRef?: React.RefObject<HTMLElement>
 }) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const stageRootRef = useRef<HTMLDivElement>(null)
   const [status, setStatus] = useState<RendererStatus>({ state: 'idle' })
   const [hoverId, setHoverId] = useState<string | null>(null)
   const [panelOpen, setPanelOpen] = useState(false)
@@ -158,6 +166,86 @@ export function Stage({
     return () => ro.disconnect()
   }, [])
 
+  // Declared up here rather than beside the hint line it also governs: the
+  // inset effect below depends on it, and a const read from a dependency
+  // array before its own initialiser is a temporal-dead-zone crash.
+  const sectionOn = renderer?.toolState('cross-section')?.active === true
+
+  // Tell the renderer how much of the stage the shell is covering, so it can
+  // frame the specimen where a student can see it (MRB-216).
+  //
+  // PHONE ONLY, and the layout test is load-bearing rather than an
+  // optimisation. Furniture floating over the stage is the design at every
+  // width — on desktop the rail is a vertical column over the stage's left
+  // edge and the specimen is centred behind it quite deliberately. What is
+  // different on phone is that all of it becomes one BAND across the full
+  // width of the bottom: the sheet, the rail turned horizontal on top of it
+  // (§05), and the hint line above that. A band takes the bottom of the stage
+  // away in a way a floating column does not.
+  //
+  // Measured as the union of those boxes rather than as the sheet alone. The
+  // first cut inset only the sheet, and at the raised detent that was visibly
+  // wrong: 150px of stage remains, the rail is 54px of it, so the specimen was
+  // framed into the band and landed squarely behind the rail and the hint.
+  //
+  // Observing the sheet also means the camera re-frames ACROSS its 0.22s
+  // detent transition rather than snapping at the end of it — the sheet
+  // reports every intermediate height, and the offset is only a projection
+  // matrix, so following it costs nothing.
+  useEffect(() => {
+    const el = containerRef.current
+    const root = stageRootRef.current
+    if (!renderer || !el) return
+    if (layout !== 'phone') {
+      renderer.setStageInsets({ bottom: 0 })
+      return
+    }
+
+    const furniture = (): HTMLElement[] => {
+      const found: HTMLElement[] = []
+      const sheet = overlayRef?.current
+      if (sheet) found.push(sheet)
+      for (const sel of ['.rail', '.stagehint', '.secplate']) {
+        const node = root?.querySelector<HTMLElement>(sel)
+        if (node) found.push(node)
+      }
+      return found
+    }
+
+    const publish = () => {
+      const stage = el.getBoundingClientRect()
+      if (stage.height <= 0) {
+        renderer.setStageInsets({ bottom: 0 })
+        return
+      }
+      // The highest top edge among the bottom-anchored furniture is where the
+      // covered strip begins. Anything sitting above the stage, or clear of it
+      // entirely, contributes nothing.
+      let top = stage.bottom
+      for (const node of furniture()) {
+        const box = node.getBoundingClientRect()
+        if (box.height <= 0 || box.bottom <= stage.top) continue
+        top = Math.min(top, Math.max(box.top, stage.top))
+      }
+      renderer.setStageInsets({ bottom: Math.min(stage.bottom - top, stage.height) })
+    }
+
+    publish()
+    if (typeof ResizeObserver === 'undefined') return
+    const ro = new ResizeObserver(publish)
+    ro.observe(el)
+    for (const node of furniture()) ro.observe(node)
+    return () => {
+      ro.disconnect()
+      // Leaving an inset behind when the sheet goes — a rotation to tablet, or
+      // the renderer being swapped — would frame every later specimen into a
+      // band that is not covered by anything.
+      renderer.setStageInsets({ bottom: 0 })
+    }
+    // sectionOn is a dependency because §09 swaps the hint line for the section
+    // plate on that same edge, and the two are not the same height.
+  }, [renderer, overlayRef, layout, sectionOn, ready])
+
   const dots = useHotspotDots(renderer, specimen, ready)
 
   const openDot = dots.find((d) => d.hotspot.id === openHotspotId) ?? null
@@ -173,7 +261,6 @@ export function Stage({
   // furniture, gone the moment the tool is back at rest.
   // The plate owns the bottom edge whenever the cut is engaged, and the hint
   // line and the rail both answer to that (§09).
-  const sectionOn = renderer?.toolState('cross-section')?.active === true
 
   const shownHint =
     status.state === 'loading'
@@ -183,7 +270,7 @@ export function Stage({
       : ((renderer && toolCaption(renderer)) ?? hint)
 
   return (
-    <div className={`stage stage--${dressing}`}>
+    <div ref={stageRootRef} className={`stage stage--${dressing}`}>
       <div ref={containerRef} data-testid="renderer-container" style={{ position: 'absolute', inset: 0 }} />
 
       {/* §06: paper stage announces itself */}
