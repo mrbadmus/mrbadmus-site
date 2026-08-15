@@ -50,6 +50,55 @@
     } catch (e) { /* private mode — the lesson works, it just doesn't save */ }
   }
 
+  /* ── the visit log (MRB-212) ────────────────────────────────────
+     ks3_visits — { "<slug>": { t: <epoch ms>, done: <bool> } }
+
+     One key for the whole key stage rather than one per lesson: the hub's
+     picker has to sort ALL published lessons on open, and 183 separate
+     getItem calls to answer one question is the wrong shape.
+
+     It records that a lesson was OPENED, which is what "pick up where you
+     left off" means. `done` is set by the ladder when a student resolves
+     all four rungs — a finished lesson drops out of the picker rather
+     than nagging from the top of it.
+
+     Capped at the 50 most recent so it cannot grow without bound on a
+     shared classroom machine. Same wrapped access as everything else:
+     private mode degrades to "works but does not remember", never throws.
+
+     ⚠️ Deliberately LOCAL ONLY. Server-side progress logging is broken
+     platform-wide; this neither calls it nor waits on it. */
+  var VISITS_KEY = "ks3_visits";
+  var VISITS_CAP = 50;
+
+  function readVisits() {
+    var v = readStore(VISITS_KEY);
+    return (v && typeof v === "object" && !(v instanceof Array)) ? v : {};
+  }
+
+  function writeVisits(map) {
+    var slugs = Object.keys(map);
+    if (slugs.length > VISITS_CAP) {
+      slugs.sort(function (a, b) { return (map[b].t || 0) - (map[a].t || 0); });
+      var trimmed = {};
+      slugs.slice(0, VISITS_CAP).forEach(function (s) { trimmed[s] = map[s]; });
+      map = trimmed;
+    }
+    writeStore(VISITS_KEY, map);
+  }
+
+  /* Merges, never replaces: opening a finished lesson again refreshes its
+     timestamp without un-finishing it. */
+  function markVisit(slug, done) {
+    if (!slug) { return; }
+    var map = readVisits();
+    var rec = map[slug] || {};
+    rec.t = Date.now();
+    if (done) { rec.done = true; }
+    map[slug] = rec;
+    writeVisits(map);
+  }
+
   /* ── the drawn marks (SPEC §9.3) ────────────────────────────────
      ✓ and ✕ are NOT in the latin woff2 subsets Design shipped, so typed
      as characters they drop to a system font mid-badge. Both marks are
@@ -309,6 +358,10 @@
         bestSaved = got;
         writeStore(BEST_PREFIX + slug, { got: got, total: total });
       }
+      /* MRB-212: all four rungs resolved means finished, whatever the
+         score. The picker stops offering it — "pick up where you left
+         off" is about unfinished work, not about marks. */
+      if (resolved) { markVisit(slug, true); }
       setHidden(retryWrap, misses === 0);
     }
 
@@ -1132,12 +1185,128 @@
     each(root.querySelectorAll(".ks3-sim"), wireSim);
   }
 
+  /* ── the hub's lesson picker (MRB-212) ──────────────────────────
+     A disclosure button over two groups. The server rendered every
+     published lesson into "Start something new"; this moves the ones the
+     browser has seen into "Pick up where you left off" and hides whichever
+     group ends up empty.
+
+     Every row is already a real <a href> — nothing here creates a control,
+     it only reorders and hides. With this function never running, the panel
+     is still a correct (if unsorted) list of every published lesson. */
+  var RESUME_MAX = 5;
+  var NEW_MAX = 10;
+
+  function wirePicker(root) {
+    var btn = root.querySelector(".ks3-picker-btn");
+    var panel = root.querySelector(".ks3-picker-panel");
+    if (!btn || !panel) { return; }
+
+    var groups = {};
+    each(panel.querySelectorAll(".ks3-picker-group"), function (g) {
+      groups[g.getAttribute("data-group")] = g;
+    });
+    // Cached at wire time: arrange() detaches every row before re-placing
+    // them, so the DOM cannot be the list of what exists.
+    var rows = toArray(panel.querySelectorAll("li[data-slug]"));
+
+    function links() { return toArray(panel.querySelectorAll("a")); }
+
+    function arrange() {
+      var visits = readVisits();
+      var resume = [];
+      var fresh = [];
+      rows.forEach(function (li) {
+        var rec = visits[li.getAttribute("data-slug")];
+        if (rec && rec.t && !rec.done) {
+          resume.push(li);
+        } else if (!rec) {
+          fresh.push(li);
+        }
+        // A finished lesson appears in neither group.
+        if (li.parentNode) { li.parentNode.removeChild(li); }
+      });
+      resume.sort(function (a, b) {
+        return (visits[b.getAttribute("data-slug")].t
+                - visits[a.getAttribute("data-slug")].t);
+      });
+      fill(groups.resume, resume.slice(0, RESUME_MAX));
+      fill(groups["new"], fresh.slice(0, NEW_MAX));
+    }
+
+    function fill(group, items) {
+      if (!group) { return; }
+      var ul = group.querySelector(".ks3-picker-list");
+      items.forEach(function (li) { ul.appendChild(li); });
+      setHidden(group, items.length === 0);
+    }
+
+    function isOpen() { return btn.getAttribute("aria-expanded") === "true"; }
+
+    function open() {
+      arrange();
+      btn.setAttribute("aria-expanded", "true");
+      setHidden(panel, false);
+      var first = links()[0];
+      if (first) { first.focus(); }
+    }
+
+    function close(refocus) {
+      btn.setAttribute("aria-expanded", "false");
+      setHidden(panel, true);
+      if (refocus) { btn.focus(); }
+    }
+
+    btn.addEventListener("click", function () {
+      if (isOpen()) { close(false); } else { open(); }
+    });
+
+    // Escape closes from anywhere inside, and hands focus back to the
+    // control that opened it — otherwise focus is stranded on a hidden row.
+    panel.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" || ev.key === "Esc") {
+        ev.preventDefault();
+        close(true);
+        return;
+      }
+      if (ev.key !== "ArrowDown" && ev.key !== "ArrowUp") { return; }
+      var all = links();
+      var i = all.indexOf(document.activeElement);
+      if (i < 0) { return; }
+      ev.preventDefault();
+      var next = ev.key === "ArrowDown" ? i + 1 : i - 1;
+      if (next < 0) { next = all.length - 1; }
+      if (next >= all.length) { next = 0; }
+      all[next].focus();
+    });
+
+    btn.addEventListener("keydown", function (ev) {
+      if (isOpen() && (ev.key === "Escape" || ev.key === "Esc")) {
+        ev.preventDefault();
+        close(true);
+      }
+    });
+
+    // Click or tap outside. `pointerdown` rather than `click` so a tap that
+    // starts outside closes it without also firing at the new target.
+    document.addEventListener("pointerdown", function (ev) {
+      if (!isOpen()) { return; }
+      if (panel.contains(ev.target) || btn.contains(ev.target)) { return; }
+      close(false);
+    });
+  }
+
   function init() {
     wirePredictions(document);
     wireCriteria(document);
     wireCards(document);
     wireSims(document);
     each(document.querySelectorAll(".ks3-ladder"), wireLadder);
+    wirePicker(document);
+    // The page IS a lesson — record the visit. `data-ks3-lesson` is on
+    // <body> for every lesson page, written or not, which is why the
+    // ladder's own `data-lesson` could not be the source.
+    markVisit(document.body ? document.body.getAttribute("data-ks3-lesson") : null);
   }
 
   if (document.readyState === "loading") {
