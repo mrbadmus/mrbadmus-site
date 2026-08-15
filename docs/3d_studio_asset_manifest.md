@@ -21,7 +21,7 @@ It is deliberately **not** in the student-facing panel — see MRB-186.
 
 | Specimen | Mesh | 2D fallback | Thumbnail |
 | --- | --- | --- | --- |
-| Heart | /3d/assets/heart.glb | _unauthored_ | _unauthored_ |
+| Heart | /3d/assets/heart.glb | _unauthored_ | /3d/assets/heart.webp |
 
 ## Spec points
 
@@ -53,5 +53,5 @@ Specimen default: _unauthored_
 
 ## Authoring state
 
-3 placeholder string(s) across 1 record(s) still await Mide's Stage 8 science gate. `python3 3d-studio/validate_content.py` prints the itemised checklist.
+2 placeholder string(s) across 1 record(s) still await Mide's Stage 8 science gate. `python3 3d-studio/validate_content.py` prints the itemised checklist.
 

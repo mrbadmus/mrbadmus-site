@@ -86,6 +86,14 @@ describe('build hygiene — generated fixtures never ship', () => {
     // bundle; this is the other side of that care. `heart.glb` is acquired and
     // must ship.
     expect(files).toContain('assets/heart.glb')
+    // And so must the library thumbnail (MRB-218). It is RENDERED — by
+    // tools/make_thumbnail.py, out of this same build — which makes it exactly
+    // the kind of file the underscore convention exists to catch, and exactly
+    // the kind that must nonetheless ship. The distinction the convention
+    // draws is not "generated vs authored", it is "test fixture vs acquired
+    // asset", and this is the assertion that keeps those two from being
+    // conflated the next time someone reads the stripper.
+    expect(files).toContain('assets/heart.webp')
   })
 
   it('no emitted file references a fixture by its served path', () => {
