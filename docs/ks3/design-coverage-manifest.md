@@ -874,6 +874,99 @@ These are gaps in the current build, not design instructions.
 
 ---
 
+## 10. AUTHORITATIVE REGISTRY — the rows `verify_ks3.py` reads
+
+⚠️ **Sections 0–9 above are descriptive. This section is not.** `verify_ks3.py` parses
+the two tables below and **fails the build** against them. MRB-203, ruled after Design
+sign-off on 11 August 2026:
+
+> The parity gate cannot see a component that was never registered. Layer C measures
+> registered components to ±1px and layer B checks structural rules. Neither can see a
+> component that is not in the reference set at all.
+
+Absence-of-selector already fails. This section makes **absence-of-registration** fail too,
+which is the hole that let B1 ship with no progress rail, smaller type and a flat uniform
+stack while the gate reported green over 116 assertions across 40 components.
+
+Do not edit a row here to make a build pass. A row is a claim that Design has **drawn**
+the thing. If the drawing does not exist, the correct action is to get it drawn.
+
+### 10.1 Architecture family → the reference screen that defines it
+
+A lesson may only be authored in a family that has an approved reference screen. Author a
+lesson in a family with no row here, or with a row pointing at a file that does not exist,
+and the build fails naming the family.
+
+| Family | Slots | Reference screen | Approved |
+|---|---|---|---|
+| MODEL | 50 | `docs/ks3/design-reference/b1/b1-03-animal-and-plant-cells.dc.html` | Mide, 12 Aug 2026 |
+| PROCESS | 34 | `docs/ks3/design-reference/KS3 Reference Set (offline).html` | Mide, 8 Aug 2026 |
+| SYSTEM | 32 | `docs/ks3/design-reference/b1/b1-04-specialised-cells.dc.html` | Mide, 12 Aug 2026 |
+| INVESTIGATION | 18 | `docs/ks3/design-reference/b1/b1-02-using-a-microscope.dc.html` | Mide, 12 Aug 2026 |
+| CONTRAST | 18 | `docs/ks3/design-reference/b1/b1-06-unicellular-organisms.dc.html` | Mide, 12 Aug 2026 |
+| CLASSIFY | 15 | `docs/ks3/design-reference/b1/b1-01-life-processes.dc.html` | Mide, 12 Aug 2026 |
+| QUANTITATIVE | 17 | — NONE — | ✗ NOT DRAWN |
+
+**QUANTITATIVE is deliberately unrowed.** Seventeen slots, no approved screen, no authored
+lesson. The first person to author one will be stopped by this table rather than by Mide
+finding it at sign-off. That is the whole point of the section.
+
+Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 183
+slots**, every one of which would have inherited whatever Code invented. Design's approved
+B1 pages are what closed them.
+
+### 10.2 Block type → the registered components that gate it
+
+Every block type the generator can emit must map to at least one component registered in
+`ks3_parity.COMPONENTS`. Render a block type with no row, or name a component in a row that
+`ks3_parity` does not define, and the build fails naming the block type.
+
+> **The `quiz` and `check` answered-state names were reconciled on 2026-08-13, and the
+> registry is what caught it.** MRB-202 was worked twice on the night of 11–12 August by two
+> sessions that never saw each other (MRB-211). Both registered every answered option state;
+> they chose different names for them. This table was written against one set of names and
+> the surviving `ks3_parity.COMPONENTS` uses the other, so on the first run after the rebase
+> the registry failed with *"the registry claims cover that does not exist"* for both block
+> types — twelve component names that no longer resolved. It named the block type and every
+> missing component, which is precisely the job §10.2 was built for: a stale row here is a
+> block type gated by nothing, and before this section existed it would have passed green.
+
+| Block type | Registered components |
+|---|---|
+| hook | `hook is ink-dark, accent shadow`, `hook art sits on its own night ground`, `Motion control clears the 44px tap target` |
+| explainer | `body prose (type row 4)`, `page ground + body type` |
+| figure | `figure frame`, `figure caption`, `figure pending slot` |
+| keyword | `vocabulary card`, `card term type` |
+| quiz | `ladder shell`, `ladder heading`, `page-marked rung is accent`, `page-marked rung heading`, `self-marked rung is violet`, `ladder option CHOSEN-CORRECT`, `ladder option CHOSEN-CORRECT badge`, `ladder option CHOSEN-WRONG`, `ladder option CHOSEN-WRONG badge`, `ladder option SPENT`, `ladder option SPENT badge`, `ladder feedback CORRECT`, `ladder feedback WRONG` |
+| summary | `key note is ink-dark`, `key note type drops to 700` |
+| misconception | `misconception is amber`, `second confrontation is divided in amber`, `scorecard figure is mono 32px, not a heading` |
+| check | `activity option resting`, `activity option CHOSEN`, `activity option CHOSEN badge`, `board lamp is a column, not an option row`, `board lamp badge is a 28px display square`, `board verdict is ink-dark`, `board tally is mono 24px`, `sorter row is a card on a hairline, not an option`, `sorter chip is 16px, narrower than a segment`, `self-check options are a plain grid`, `settles-it feature is a panel, not a row`, `settles-it choice is 16px on the ground`, `settles-it why is ONE tone (MRB-196)`, `case verdict is ink-dark with an alert label`, `bench cell picker is a full-width ROW, not a segment`, `tuning dial is a fixed 74px mono chip`, `zoom slider clears the 44px tap target`, `zoom gain label is accent-text mono`, `awkward row is unmarked until opened`, `cell-bench part row carries a numbered badge`, `cell-bench readout name is display 800 at 25px`, `pair row is the sorter's sibling, not the sorter`, `fit-parts installs into a responsive grid`, `critique step is a full-width tappable row`, `critique verdict is indented under its badge`, `FIFA field is a real text input at tap size`, `model line is mono, so it reads as working` |
+| worked-example | `R8 answer box`, `R8 check-my-answer button` |
+| practical | `sim canvas`, `sim live figure is mono`, `sabotage chain's first link is the cell itself`, `removal outcome lands on a LIGHT panel` |
+| key-fact | `KEY FACT box is band on an ACCENT shadow`, `KEY FACT label is mono accent-text`, `KEY FACT statement is display 700` |
+| rule | `statement panel is band on a 3px ink border`, `statement is display 800 at the ruled clamp`, `statement cards take the option border` |
+| formula | `formula panel is centred`, `formula statement takes the FORMULA clamp, not the rule's`, `formula triangle is drawn, not typed`, `triangle cover is ink and starts invisible` |
+| comparison | `comparison rows are flex, not grid`, `comparison label stacks below 820`, `comparison content cells shrink to zero` |
+
+⊕ **The four rows above are B1 round two's (13 Aug 2026).** Each block type is a
+distinct SHELL, and every component registered against it pins the property that
+makes it distinct rather than the properties it shares with everything else:
+
+- `key-fact`'s shadow is **accent**, where a `.ks3-block`'s is ink. That single
+  value is what stops the box reading as one more card. It is also why the box
+  carries no badge, letter or mark — `--ks3-band` is the ground a chosen-WRONG
+  ladder option takes (MRB-202), so anything mark-like here reads as a verdict
+  on a line that is simply true.
+- `rule`'s border is **3px with no shadow**, and its statement takes drift 3's
+  **ruled** clamp rather than any one page's own.
+- `formula`'s statement is **centred with `max-width: none`**. That is the
+  entire difference between it and `rule`, whose statement is left-aligned at
+  20ch; the two shells are otherwise identical and a future tidy-up will try to
+  merge them. The pair exists to make that merge fail.
+- `comparison` is **flex and never grid**, because a grid cannot produce the
+  820px stack without a second query (MRB-210).
+
+
 ## Provenance
 
 Every figure in this document was measured on 8 August 2026 against the working branch

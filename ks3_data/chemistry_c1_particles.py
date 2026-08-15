@@ -1450,11 +1450,16 @@ UNIT = {
     "requires":    ["particle-model", "changes-of-state", "gas-pressure",
                     "diffusion"],
     "assumes":     [],
+    # ⊖ §8.10 — `why` RENDERS to the student, in the "Connects to" card, and this
+    #   one has been live on the published C1 draft. It read "P11 owns it (§7.4);
+    #   this lesson points at it and must render gracefully before P11 exists" —
+    #   a build requirement, addressed to nobody the reader is. Rewritten to say
+    #   what the connection IS, which is also the more interesting sentence.
     "references":  [{"unit": "P11", "lesson": "why-ice-floats",
-                     "why": "The ice–water anomaly is the model's most famous "
-                            "hard case. P11 owns it (§7.4); this lesson points "
-                            "at it and must render gracefully before P11 "
-                            "exists."}],
+                     "why": "Nearly everything shrinks when it freezes. Water "
+                            "does the opposite, which is why ice floats instead "
+                            "of sinking — and it is the hardest thing this "
+                            "model has to explain."}],
     "ks4_links":   ["chemistry/bonding/states-of-matter"],
 
     "big_question": "Is the particle model true, or just useful?",

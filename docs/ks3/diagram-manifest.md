@@ -18,8 +18,10 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 
 | Status | Figures |
 |---|---|
-| `needed` | 11 |
-| **Total** | **11** |
+| `drafted` | 1 |
+| `final` | 1 |
+| `needed` | 13 |
+| **Total** | **15** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -27,6 +29,10 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 
 | Unit | Lesson | Figure ID | Kind | Status | Caption |
 |---|---|---|---|---|---|
+| B1 | `animal-and-plant-cells` | `b1-cell-bench` | css-art | `drafted` | The cell bench drawing: a leaf cell and a cheek cell, each as a textbook drawing and as a ×400 field of view. |
+| B1 | `life-processes` | `b1-candle-flame` | css-art | `final` | A burning candle: a flickering flame above the wick, with soot rising from it. |
+| B1 | `using-a-microscope` | `b1-onion-epidermis-x100` | micrograph | `needed` | Onion epidermis, ×100. Cells countable, edges sharp. |
+| B1 | `using-a-microscope` | `b1-onion-epidermis-x400` | micrograph | `needed` | The same spot, ×400. One cell wall crossing an empty grey field. |
 | C1 | `changes-of-state` | `c1-sealed-bag` | apparatus | `needed` | Sealed bag with ice on a balance, before and after. |
 | C1 | `changes-of-state` | `c1-state-change-map` | schematic | `needed` | The six changes of state as arrows between solid, liquid and gas. |
 | C1 | `diffusion` | `c1-bromine-jars` | apparatus | `needed` | Two gas jars, bromine below air, before and after the cover slip is removed. |

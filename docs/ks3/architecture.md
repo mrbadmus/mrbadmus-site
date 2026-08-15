@@ -483,6 +483,14 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   "ladder":          {...},                        # the four rungs, §5.8
   "key_note":        "...",                        # revision card, last
 
+  # ---- navigation and framing (⊕ B1 round two, §4.8.1) ----------------
+  "rail":            [...stages...],               # ⊕ progress rail, §4.8.1 A
+  "key_facts":       [{...}],                      # ⊕ KEY FACT boxes, §4.8.1 B
+  "tutor":           {...},                        # ⊕ tutor card copy, §4.8.1 C
+  "before_this":     "...",                        # ⊕ prose, used only when requires == []
+  "ks4_becomes":     "...",                        # ⊕ prose, used only when ks4_links == []
+  "safety_note":     "...",                        # ⊕ lesson-specific safety line, §4.8.1 D
+
   # ---- working scientifically ----------------------------------------
   "ws":              ["analysis-and-evaluation"],  # §5.7
 
@@ -490,6 +498,88 @@ Authoritative. Fields not listed here do not exist without an amendment to this 
   "review_state":    "draft",                      # draft | examiner-reviewed | frozen (§5.10)
 }
 ```
+
+#### 4.8.1 Amendment — the six fields B1 round two added
+
+Adopted 13 Aug 2026, building Design's approved B1 delivery (MRB-205, MRB-208). Every field
+here was measured on an approved page before it was written down; the per-lesson evidence is in
+`docs/ks3/b1-inventory/`. Nothing in this amendment is optional-by-omission — a lesson that does
+not need a field omits it, and the renderer emits nothing.
+
+**A · `rail` — the progress rail (MRB-208 rule 2).**
+
+```python
+"rail": [
+  {"anchor": "s-hook", "short": "HOOK", "label": "The flame", "done_when": "committed"},
+  ...
+]
+```
+
+`anchor` must name a section the lesson actually emits, and every id-bearing section carries
+`scroll-margin-top: 92px` whether or not the rail references it — otherwise a hash link from
+anywhere else lands under the sticky bar. `short` is ≤6 characters and renders in the side rail's
+mono label; `label` is sentence case and renders in the sub-1340px top bar. Two label sets, both
+authored, neither derivable from the block titles.
+
+`done_when` names a completion predicate over state the block already owns. **Both rail variants
+are completion-based and nothing is ticked on load** — ruled on MRB-208, 13 Aug, against the
+delivered narrow variant, which was `IntersectionObserver`-driven and read "4 / 4" with a full
+accent bar for a student who scrolled to the bottom and answered nothing. Where the approved page
+contradicts a settled ruling, the ruling wins and the page gets corrected.
+
+**B · `key_facts` — the KEY FACT box (MRB-208 rule 3).**
+
+```python
+"key_facts": [
+  {"text": "...", "placement": "top-level", "ground": "band", "eyebrow": "Key fact"}
+]
+```
+
+A list, because b1-03 carries two. `placement` is `"top-level"` (a direct child of `.ks3-lesson`,
+in `core` order) or `"inside:<section-id>"` (appended as the last child of a named block).
+`ground` is `band` by default — drift 5's ruling, 5:1 — and `card` where the box is nested inside
+a block that is itself `--ks3-band`, which is the only reason the outlier existed. **Never amber:**
+amber is a wrong idea being confronted and a key fact must never be confusable with a
+misconception. The box carries no badge, no letter and no mark, because `--ks3-band` is also the
+chosen-wrong ladder ground (MRB-202) and anything mark-like here reads as a verdict.
+
+**C · `tutor` — the tutor card.**
+
+```python
+"tutor": {"prompt": "Stuck on why a flame isn't alive?", "cta": "Ask about this lesson",
+          "anchor": "s-board"}
+```
+
+Replaces hard-coded generic copy. `anchor`, when present, makes the CTA a real in-page link; when
+absent the card renders the non-interactive `<span>` §8.8 requires, because a KS3 student can
+reach no tutor today.
+
+**D · `before_this`, `ks4_becomes`, `safety_note` — three prose slots.**
+
+`before_this` renders in the endmatter's first card **only when `requires` is empty** ("Nothing —
+this is where the unit starts."). `ks4_becomes` renders in the third card **only when `ks4_links`
+is empty**. Both exist because the generator previously omitted the card entirely and Design's
+pages carry prose there. `safety_note` is a lesson-specific line rendered alongside `LEGAL_LINE`,
+not instead of it.
+
+#### 4.8.2 Amendment — extensions inside existing records
+
+Four records gain sub-shapes. These are not new top-level fields; they are shapes the existing
+records could not express.
+
+| Record | Extension | Why |
+|---|---|---|
+| `figures[]` | `kind` gains `css-art` and `photo`; new `art: "<registered-art-id>"`; new `slot_label: "..."` | A DOM/CSS illustration is not derivable from any data shape — it must bind to a registered named art component. `slot_label` distinguishes "Photo coming soon" from "Diagram coming soon": a micrograph is not a diagram and §4.10 says the two sourcing efforts must not be merged. |
+| `phenomenon` | `tiles: [{n, label, note}]`, `art: "<figure-id>"`, `figures: [id, id]` | The hook carries a numbered part-tile row on b1-03 and a two-up pending-photo pair on b1-02. |
+| `explainer` block | `pills: [{initial, label}]` | The MRS GREN initial row. Decorative reference, not a control: no `aria-pressed`, no cursor, no hover. |
+| `misconception` activity | `scorecards: [{figure, title, note}]`; `statements: [...]` | Two mono-numeral cards; and b1-03/04/05/06 each carry **one** misconception block holding **two** misconceptions, which the single-`statement` shape cannot express. |
+
+**One breaking change.** `activities[].fifa` becomes a **list** of `{letter, name, line, note}`
+rather than a dict of four fixed keys, so a worked example can stage its reveal one step at a time
+(MRB-204 step 3). This breaks two shipped KS3 lessons and the migration ships in the same commit.
+`.ks3-fifa` keeps the **scaffold** job Design gives it — the method as instructions beside a
+question the student is about to answer — and the worked answer moves to the `worked-example`
+block's staged stepper.
 
 And the unit record that wraps them — one per module in `ks3_data/` (§8.3):
 
@@ -647,6 +737,30 @@ these types and no others; a new type requires an amendment to this document.
 | `misconception` | The confrontation activity. Law 3. Required. |
 | `summary` | Consolidation. |
 | `quiz` | The mastery ladder (§5.8) and micro-checks. |
+| `key-fact` | ⊕ The one line that must survive the lesson. §4.8.1 B. |
+| `rule` | ⊕ The statement panel — the lesson's rule, in the student's own words. |
+| `formula` | ⊕ MRB-204's standalone formula. Its own block, nothing else in it. |
+| `comparison` | ⊕ Two things held against each other, row by row. CONTRAST's spine. |
+
+⊕ **Amendment, 13 Aug 2026 — four block types added (MRB-205, MRB-204, MRB-208).** The vocabulary
+is still closed; it is now fourteen types rather than ten. Each of the four was drawn by Design on
+an approved B1 page before it was written here, which is the order MRB-205 requires — Design draws,
+Code renders, and the registry (MRB-203) fails the build on a type with no registered component.
+
+- **`key-fact`** and **`rule`** were both rendering as `explainer` prose or not at all. They are
+  distinct shells: `key-fact` is `--ks3-band` on a 2px ink border with a 5px **accent** offset
+  shadow (the accent shadow is what separates it from a `.ks3-block`, whose shadow is ink);
+  `rule` is `--ks3-band` on a **3px** ink border with no shadow and a display-type statement at
+  `clamp(28px, 3.9vw, 44px)` — drift 3's ruled value, the modal and median of the four real
+  statements in the delivery.
+- **`formula`** exists because MRB-204 ruled that a formula stands alone in its own block, "not
+  embedded in a paragraph, not inside a worked example, not sharing a card. A student flicking back
+  through the lesson to find the formula must be able to see it from the scroll position." Its
+  statement is **centred with no `max-width`**, which is what distinguishes it from `rule`'s
+  left-aligned 20ch measure; the two shells are otherwise identical and a future tidy-up will try to
+  merge them, so a parity pair asserts they stay apart.
+- **`comparison`** is the CONTRAST family's spine and 18 lessons inherit it. It is flex, never grid:
+  a grid cannot produce the 820px stack without a second query.
 
 **The grammar** — the seven families (§6) decide **which** segments a lesson uses, **how many**, and
 **in what order** the middle runs. The families are unchanged.
@@ -1592,6 +1706,22 @@ no pathway and no tier — which is the point.
   page. Emitted by `build_ks3.py` (`NAV_BRAND`), styled by `.ks3-brand` in `shared/ks3.css`, and
   measured by the parity gate: a layer C pin on the wordmark and two layer D pairs (wordmark 4.5:1,
   chevron 3:1 as an identifying mark) against the resolved nav ground.
+- ⊖ **OPEN FOR MIDE — Design's B1 delivery draws the mark differently, and it was not adopted
+  (2026-08-15).** Design's approved B1 lesson pages redraw the nav brand as a **cream `#FBF3E6`
+  chevron inside a 34px `#E4572E` rounded tile**, not an accent chevron on the ground. MRB-197 above
+  is the standing ruling and says the latter. Not adopted on the B1 replay, for one structural
+  reason: `NAV_BRAND` is a **single mark for all 294 KS3 pages**, so taking the tile would have
+  restyled the browse layer Mide approved days earlier (MRB-182/212) on the strength of a delivery
+  that never mentioned the brand. The tile is also absent from Design's own browse prototype, which
+  draws a third variant again — a letter "B" in a 38px tile with a 3px offset shadow — so there is no
+  reading of the two deliverables that makes one mark true everywhere. Kept MRB-197's mark: the
+  option that changes nothing currently live. **What it cost:** the six B1 lesson headers differ
+  from their approved reference in this one element. **What it would take to reverse:** restore the
+  tile span in `NAV_BRAND`, restore `.ks3-brand-tile` in `shared/ks3.css`, re-add the tile's
+  component row and retarget the chevron's 3:1 contrast pair from `.ks3-nav` back to
+  `.ks3-brand-tile` — about ten lines across three files, and every KS3 page changes. This is the
+  one thing in the replay that is a decision rather than a reconciliation, which is why it is parked
+  here rather than taken.
 - ⊕ **Cache-bust stamps are mandatory on KS3 pages — added 2026-07-30.** KS3 shipped linking
   `tokens.css`, `styles.css` and `nav.css` with **no `?v=` stamp at all**, while every KS4 page
   carried one. A device can then serve a stale `tokens.css` indefinitely — it survives hard-refresh
@@ -2617,3 +2747,4 @@ This document is law. Changing it changes what gets built.
 | 2026-08-09 | **R9 collapsed in the data.** Claude Design's R9 observed that `predict-then-reveal` carried an identical key set to `predict` and rendered identically — an authoring label masquerading as a component. Collapsed in `ks3_data` as R9 recommends, rather than special-cased in the stylesheet. One instance, no rendering change, one fewer kind for a renderer to know about. **R10 (per-option feedback on activities) and R17 (a stepper for PROCESS lessons) are NOT done** — both are flagged for Mide on Design's own classification, R10 because it changes what an activity is and R17 because it changes the block sequence. | Claude (Opus 5) |
 | 2026-08-12 | **MRB-199 ruled by Mide as examiner: B1 drops to six lessons, and neither departing slot becomes a bridge row.** `stem-cells-and-meristems` and `enzymes-and-rate` were declared as B1 slots at Phase 1 and had no statutory statement to own — the CELLS strand is six statements and B1 was carrying eight lessons, so the two were beyond-statutory by accident rather than by declaration. Both removed from `ks3_data/structure.py`. **Stem cells** becomes a Year 9 GCSE-bridge candidate when §7.6's units exist. **Enzymes already had a statutory home, and it was never B1**: `KS3.B.NUT.04` covers "the tissues and organs of the human digestive system... **(enzymes simply as biological catalysts)**" and B3 Nutrition and digestion already declares `enzymes-in-digestion` to own it. **No slot was carried across** — moving one would have given B3 two enzyme lessons and put the statutory one into competition for its own statement, recreating the defect this ruling closes. An enzyme lesson in a digestion context is a different lesson and gets planned fresh under MRB-205. **`bridge-register.md` was deliberately NOT created**: no KS3 lesson is beyond-statutory any more, and §7.6's register waits for the bridge unit that mandates it. Every piece of the `beyond_statutory` machinery is kept — it is correct, it is what made this finding legible, and the bridge unit will exercise it. Totals move 185 → **183** lesson slots (182 distinct slugs), Biology 60 → **58**. B1's coverage ratio goes 6 statements / 8 lessons `0.75 ⚠️` → 6/6 **1.00**, the first unit in the register to sit exactly 1:1. | Claude (Opus 5) |
 | 2026-08-12 | **MRB-202 investigated on main and answered with evidence: the ladder was never wrong, and the reported defect is R3 working as Design specified.** Driven in headless Chrome against main's published C1, measuring after transitions settle rather than during them. **The mastery ladder is correct and always has been** — correct `--ks3-ok-tint` on `--ks3-ok` with a drawn ✓, wrong `--ks3-band` on `--ks3-ink` with a drawn ✕, spent `--ks3-row-dim`, matching SPEC.md §5's table on every one of its four rows. **The surface Mide saw is the activity block**, where a chosen option takes `--ks3-accent-tint` and an accent badge above an accent-bordered reveal — identically whether the student was right or wrong. That is **not new to `feat/ks3-instruments` and not a Code defect**: it is SPEC.md's rule R3, *"Activity buttons never mark correctness... green and red must not appear on an activity button"*, rendered faithfully, and it has been live on C1's six lessons since the MRB-183 merge. Reversing it is Design's **R10**, already flagged for Mide on 2026-08-09 and still unruled, so **no rendering was changed** in this amendment. **What was fixed is the gate.** Option-button states were unregistered, which is why 116 green assertions had nothing to say about the state a student actually looks at. Layers C and D gain the ability to **drive** a page into a state before measuring (`DRIVES`, one fresh page load each, transitions cancelled so the measurement is deterministic rather than usually-long-enough); all four ladder states, both activity states and both ink-dark states are registered with computed-style and contrast assertions; R3 is promoted from a proxy (`data-correct` appears only inside the ladder) to a direct runtime assertion that presses every activity option and requires identical resolved colours and no marking colour; and the whole thing is mutation-tested — repainting a correct answer in the accent must fail the gate naming the component, and does. Gate goes 34 → **51** components, 39 → **55** contrast pairs, 116 → **136** style assertions. One contrast pair, the spent option's badge glyph at 2.63:1, is recorded as WCAG 1.4.3 exempt **conditionally** — the gate proves the control is really disabled, so the exemption fails the day spent options become clickable. | Claude (Opus 5) |
+| 2026-08-15 | **B1 replayed onto main. The two generators did NOT contradict — they were two treatments of one landmark.** MRB-211's five single-owner files were worked twice by sessions that never saw each other: main rebuilt the KS3 browse layer (MRB-182/212), `feat/ks3-b1` built six authored lessons, ~30 component renderers and the instrument engines. Replayed onto `origin/main` rather than rebased. **595 conflicts, of which 590 were the generated trees** (`ks3/`, `mrbadmus_site/ks3/`) — rebuilt, never merged. **Eleven real hunks in five files**, each adjudicated. Both sessions had independently implemented MRB-208's *breadcrumbs live in the header* ruling, in different markup for different page types: main's `.ks3-crumbs` (mono 14px — unit indices, discipline hubs, year and half-term screens, browse layer) and B1's `.ks3-trail` (body 17px/600 — authored lessons only). `shell()` now takes the union of both signatures and renders **one** header slot after **one** divider, `trail_html or crumb_html`, so a page carries exactly one trail whichever it is and nothing announces a landmark twice. B1's progress rail sits between the header and `<main>` — a position readout for the page, not part of its content, and sticky-under-sticky only works if the two are siblings. Two values where main was newer and won: MRB-182's summer season `#22B8CF`, and main's `.ks3-nav-divider`, whose rail already supplies the 20px gap B1's margin was compensating for. **One thing not adopted and parked for Mide: the nav brand tile — see §8.** The gate caught that one itself: with the tile's CSS gone, B1's cream chevron measured 1.00:1 cream-on-cream and layer D failed by name. Result: 12 authored lessons, 294 pages, `verify_ks3.py` fully green with 2 items manual, kinds gate zero unrendered (14 dispatched, 7 declared generic), 1,454 internal links resolving, byte-identical across both generator orders. | Claude (Opus 5) |

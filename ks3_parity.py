@@ -76,8 +76,10 @@ Provenance for every number in ``COMPONENTS`` below is
 ``docs/ks3/design-reference/SPEC.md``, which cites the artifact it came from.
 """
 
+import json
 import os
 import re
+from html import unescape as _unescape
 
 REF_DIR = os.path.join("docs", "ks3", "design-reference")
 ARTIFACTS = (
@@ -268,6 +270,46 @@ def check_structure(ks3_root):
                         "R12: %s renders an EMPTY %s layer — an empty layer "
                         "must render nothing at all" % (rel, head))
 
+        # MRB-198 — every sim, statically: the R5 cover present, the
+        # control panel emitted EMPTY (the JS builds it; placeholder text
+        # is a promise the page cannot keep). For the two payload-carrying
+        # kinds: an aria-label that actually narrates the mechanism — not
+        # a stub, because it is the only description a non-sighted student
+        # gets — and a parseable, non-empty payload. A gutted SIM_ARIA
+        # entry or a dropped payload attribute fails HERE, by name.
+        for m in re.finditer(r'<div class="ks3-sim" data-sim="([a-z-]+)"'
+                             r'[^>]*>', html):
+            kind = m.group(1)
+            attrs = m.group(0)
+            window = html[m.start():m.start() + 6000]
+            if '<div class="ks3-sim-controls"></div>' not in window:
+                problems.append("SIM: %s %s — control panel not emitted "
+                                "empty" % (rel, kind))
+            if 'class="ks3-sim-cover"' not in window:
+                problems.append("SIM: %s %s — missing the R5 cover"
+                                % (rel, kind))
+            if kind in ("microscope", "system-parts"):
+                am = re.search(r'aria-label="([^"]*)"', window)
+                aria = _unescape(am.group(1)) if am else ""
+                if not aria.startswith("Animation:") or len(aria) < 120:
+                    problems.append(
+                        "SIM: %s %s — aria-label missing or gutted "
+                        "(%d chars); it must narrate the mechanism"
+                        % (rel, kind, len(aria)))
+                pattr = ("data-specimens" if kind == "microscope"
+                         else "data-parts")
+                pm = re.search(pattr + r'="([^"]*)"', attrs)
+                try:
+                    payload = json.loads(_unescape(pm.group(1))) if pm else []
+                except ValueError:
+                    payload = []
+                if not payload:
+                    problems.append(
+                        "SIM: %s %s — no parseable %s payload; the "
+                        "instrument would render an empty %s"
+                        % (rel, kind, pattr,
+                           "slide" if kind == "microscope" else "system"))
+
     return (problems, notes)
 
 
@@ -283,11 +325,54 @@ def check_structure(ks3_root):
 TOL_PX = 1.0
 
 LESSON = "chemistry/particles-and-their-behaviour/gas-pressure.html"
+# MRB-198 — the two new instrument kinds, each gated on the page whose
+# payload exercises it hardest: the microscope on L2 (three slides), and
+# system-parts on L5 (five levels of a stomach, including the one_of_many
+# scale rule). Both sims sit in dark `practical` shells in B1, so the new
+# kinds' locked covers, captions, controls and readouts are all measured
+# on the ink-dark ground here; the amber-ground cover pair stays measured
+# on the C1 lesson above.
+B1_MICRO = "biology/cells-and-organisation/using-a-microscope.html"
+B1_PARTS = "biology/cells-and-organisation/levels-of-organisation.html"
+# ⊕ B1 round two. A component is registered on a page that RENDERS it — a
+# component measured on a page that lacks it reports "selector not present" and
+# passes, which is the absence-of-assertion failure this gate exists to close.
+B1_LIFE = "biology/cells-and-organisation/life-processes.html"
+B1_UNI = "biology/cells-and-organisation/unicellular-organisms.html"
+
+# ── parking, and why it is not deletion ──────────────────────────────────
+#
+# A spec may carry `parked="<reason>"`. It is then not measured, and it is
+# REPORTED as parked in the run's output rather than passing quietly.
+#
+# This exists for one narrow case: machinery that is sound, registered, and
+# currently rendered by no page. `system-parts` is exactly that — B1-05 used to
+# carry it, and Design's approved B1-05 replaces it with `removal-cases`
+# (measured: zero `.ks3-sim`, zero `<select>`, no dependency graph anywhere on
+# the page). The engine in `shared/ks3.js` is audited and correct; nothing
+# renders it.
+#
+# Deleting the registrations would throw away real coverage the day a lesson
+# uses the kind again. Leaving them pointed at a page that no longer has the
+# component fails the gate forever, and a gate that always fails is a gate
+# everyone learns to ignore — which is how the 11 August sign-off happened.
+#
+# Parking is neither. Nothing is lost, nothing silently passes, and the output
+# says in words which components are not currently being measured and why.
+# MRB-203's registry still guards the real risk: if a lesson renders a block
+# type whose components are not defined, the build fails naming it.
+_PARKED_SYSTEM_PARTS = (
+    "no lesson renders a system-parts sim — Design's approved B1-05 replaces "
+    "it with `removal-cases`. Engine and audit kept; un-park when a lesson "
+    "uses the kind again.")
 UNIT = "chemistry/particles-and-their-behaviour/index.html"
 # C1 is fully authored, so its index carries no Coming soon badge; and B3 is
 # the ONLY unit in the key stage with a §4.6 reference slot, so it is the only
 # page where the pointer can be measured at all.
-UNIT_SOON = "biology/cells-and-organisation/index.html"
+# UNIT_SOON moved off B1 when MRB-198 landed Design's B1 content — a fully
+# authored unit has no coming-soon rows to measure. B2 is the next unit in
+# the same discipline with none of its lessons authored.
+UNIT_SOON = "biology/movement-skeleton-and-muscles/index.html"
 UNIT_REF = "biology/nutrition-and-digestion/index.html"
 LANDING = "index.html"
 YEAR = "year-7/index.html"
@@ -306,7 +391,14 @@ COMPONENTS = [
     dict(name="eyebrow (type row 6)", on=LESSON, sel=".ks3-eyebrow",
          props={"font-size": "13px", "font-weight": "700",
                 "text-transform": "uppercase", "color": "#5F564F"}),
-    dict(name="breadcrumb is mono", on=LESSON, sel=".ks3-crumbs",
+    # ⊕ MRB-208 amendment 1: on a LESSON page the trail moved into the header
+    # bar and `.ks3-crumbs` came off. It is body 17px/600, not the row's mono
+    # 14px — they are two different components and only one of them is a
+    # lesson's. The mono row survives on unit indices, discipline hubs and the
+    # browse layer, and is gated there.
+    dict(name="header trail is body type (MRB-208)", on=LESSON, sel=".ks3-trail",
+         props={"font-family": "Instrument Sans", "font-size": "17px"}),
+    dict(name="breadcrumb row is mono", on=UNIT, sel=".ks3-crumbs",
          props={"font-family": "DM Mono", "font-size": "14px"}),
     # MRB-197: Design's nav mark. Pinned to the frozen reference's header —
     # if the wordmark shrinks below display size, the chevron's 3:1 pair
@@ -314,6 +406,98 @@ COMPONENTS = [
     dict(name="nav brand wordmark (MRB-197)", on=LESSON, sel=".ks3-brand",
          props={"font-family": "Bricolage Grotesque", "font-weight": "800",
                 "font-size": "22px", "color": "#221E1B"}),
+    # ⊖ Design's B1 delivery drew the chevron inside a 34px accent tile. NOT
+    # adopted on the replay: MRB-197 is Mide's standing brand ruling and
+    # `NAV_BRAND` is one mark for all 296 KS3 pages, so taking the tile would
+    # have restyled the browse layer Mide has just approved. Parked for Mide —
+    # see the ledger entry of 15 Aug 2026. The row is removed rather than left
+    # pointing at a selector nothing emits, so MRB-203's registry stays honest.
+
+    # ── B1 round two: the four block types §5.1.1 added ──
+    #
+    # Each is registered on a page that actually renders it, because a
+    # component measured on a page without it reports "selector not present"
+    # and passes — which is the absence-of-assertion failure MRB-198 fixed one
+    # level down and MRB-203 fixed one level up.
+    dict(name="KEY FACT box is band on an ACCENT shadow", on=B1_LIFE,
+         sel=".ks3-keyfact",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px",
+                "border-top-left-radius": "20px",
+                # The accent shadow is the whole distinction from a
+                # `.ks3-block`, whose shadow is ink. If this ever resolves to
+                # ink the box stops reading as a key fact and starts reading
+                # as one more card.
+                "box-shadow": "rgb(228, 87, 46) 5px 5px 0px 0px"}),
+    dict(name="KEY FACT label is mono accent-text", on=B1_LIFE,
+         sel=".ks3-keyfact-label",
+         props={"font-family": "DM Mono", "font-size": "13px",
+                "text-transform": "uppercase", "color": "#A93411"}),
+    dict(name="KEY FACT statement is display 700", on=B1_LIFE,
+         sel=".ks3-keyfact-body",
+         props={"font-family": "Bricolage Grotesque", "font-size": "22px",
+                "font-weight": "700", "color": "#221E1B"}),
+    # The statement panel. 3px and no shadow is what separates it from a
+    # `.ks3-block`; the clamp is drift 3's RULED value, not this page's own.
+    dict(name="statement panel is band on a 3px ink border", on=B1_LIFE,
+         sel=".ks3-rule",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "3px", "border-top-left-radius": "28px",
+                "box-shadow": "none"}),
+    # ⚠️ NO `font-size` HERE, and the omission is deliberate. The statement is
+    # `clamp(28px, 3.9vw, 44px)` — drift 3's ruled value — so its computed size
+    # is a function of the VIEWPORT, and this harness pins no viewport: headless
+    # Chrome lands around 756px, where the clamp resolves to 29.48px. Asserting
+    # 44px here would fail on a correct page, and asserting 29.48px would pin
+    # the harness's window size as if it were a design decision. The clamp is
+    # gated where a viewport actually exists — `tools/compare_b1.py`, at
+    # 1280 / 1340 / 820 / 390.
+    dict(name="statement is display 800 at the ruled clamp", on=B1_LIFE,
+         sel=".ks3-rule-statement",
+         # `text-align: start` is the viewport-free half of the rule/formula
+         # distinction — the formula's statement is centred with no measure,
+         # this one is left-aligned at 20ch. `max-width` cannot be asserted
+         # here: `ch` resolves against the clamped font size, so it computes to
+         # a different px value at every viewport.
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "color": "#221E1B", "text-align": "start"}),
+    # `--ks3-option-border` and not ink — that is what separates these from the
+    # misconception block's cards.
+    dict(name="statement cards take the option border", on=B1_LIFE,
+         sel=".ks3-rule-cards li",
+         props={"background-color": "#FFFCF5",
+                "border-top-color": "#DDCFB6", "border-top-width": "2px",
+                "border-top-left-radius": "22px"}),
+    # The formula. Centred with NO max-width is the entire difference between
+    # this and `rule`'s left-aligned 20ch measure — the shells are otherwise
+    # identical and a future tidy-up will try to merge them.
+    dict(name="formula panel is centred", on=B1_MICRO,
+         sel=".ks3-formula-statement",
+         props={"background-color": "#F4E9D8", "border-top-width": "3px",
+                "text-align": "center"}),
+    # `max-width: none` is the assertion that matters and it is viewport-free:
+    # it is the ONLY thing separating this shell from `rule`'s, which caps its
+    # statement at 20ch. Its own clamp (26/3.6vw/40 against the rule's
+    # 28/3.9vw/44) is viewport-dependent for the reason above.
+    dict(name="formula statement takes the FORMULA clamp, not the rule's",
+         on=B1_MICRO, sel=".ks3-formula-statement p",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "max-width": "none", "text-align": "center"}),
+    # The comparison rows. FLEX, never grid — a grid cannot produce the 820px
+    # stack without a second query (MRB-210).
+    dict(name="comparison rows are flex, not grid", on=B1_UNI,
+         sel=".ks3-compare-row",
+         props={"display": "flex", "flex-wrap": "wrap",
+                "border-top-width": "2px"}),
+    # The harness pins no viewport and headless lands under 820px, so what it
+    # measures here is the STACKED state — which is the one MRB-210 cares about
+    # and the one that breaks the discrimination on a phone if it regresses.
+    # The wide 118px basis is gated by `tools/compare_b1.py` at 1280 and 1340.
+    dict(name="comparison label stacks below 820", on=B1_UNI,
+         sel=".ks3-compare-name", props={"flex-basis": "100%"}),
+    dict(name="comparison content cells shrink to zero", on=B1_UNI,
+         sel=".ks3-compare-cell",
+         props={"flex-basis": "250px", "min-width": "0px"}),
 
     # ── blocks ──
     dict(name="standard block shell", on=LESSON, sel=".ks3-check",
@@ -441,6 +625,21 @@ COMPONENTS = [
          sel=".ks3-feedback.is-wrong",
          props={"background-color": "#F4E9D8", "border-top-color": "#221E1B"}),
 
+    # ── figure. Surfaced by MRB-203's §10.2 registry: `figure` is the
+    # second most-rendered block type in the key stage (27 uses across
+    # 12 lessons) and had no registered component at all. The gate that
+    # asks "does every rendered block type map to something registered?"
+    # found it on its first run, which is the whole argument for the
+    # registry being authoritative rather than descriptive.
+    dict(name="figure frame", on=LESSON, sel=".ks3-figure",
+         props={"margin-top": "28px"}),
+    dict(name="figure caption", on=LESSON, sel=".ks3-figure figcaption",
+         props={"font-size": "17px", "color": "#3B342E",
+                "margin-top": "12px"}),
+    dict(name="figure pending slot", on=LESSON, sel=".ks3-figure-slot",
+         props={"border-top-width": "3px", "border-top-style": "dashed",
+                "border-top-color": "#C3B191"}),
+
     # ── R4: the dog-ear card ──
     dict(name="vocabulary card", on=LESSON, sel=".ks3-card-btn",
          props={"background-color": "#FFFCF5", "border-top-left-radius": "22px",
@@ -483,6 +682,36 @@ COMPONENTS = [
     dict(name="sim live figure is mono", on=LESSON, sel=".ks3-sim-figure",
          props={"font-family": "DM Mono", "font-weight": "500"}),
 
+    # ── MRB-198: the two new instrument kinds ──
+    dict(name="microscope canvas (dark practical shell)", on=B1_MICRO,
+         sel='.ks3-sim[data-sim="microscope"] .ks3-sim-canvas',
+         props={"background-color": "#F7EFE1", "border-top-color": "#C6B9A7",
+                "border-top-left-radius": "20px"}),
+    dict(name="system-parts canvas (dark practical shell)", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
+         sel='.ks3-sim[data-sim="system-parts"] .ks3-sim-canvas',
+         props={"background-color": "#F7EFE1", "border-top-color": "#C6B9A7",
+                "border-top-left-radius": "20px"}),
+    # The control panel only exists in the DOM once built and only shows
+    # once unlocked (R5), so these run in the page's after-unlock pass.
+    dict(name="microscope control label on dark ground", on=B1_MICRO,
+         sel=".ks3-practical .ks3-sim-control", drive="sim-unlocked",
+         props={"font-size": "17px", "font-weight": "600",
+                "color": "#E7DECE"}),
+    dict(name="microscope specimen select", on=B1_MICRO,
+         sel=".ks3-practical .ks3-sim-control select", drive="sim-unlocked",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "font-size": "17px", "min-height": "44px",
+                "border-top-left-radius": "14px", "color": "#221E1B"}),
+    dict(name="microscope focus wheel takes the accent", on=B1_MICRO,
+         sel='.ks3-practical .ks3-sim-control input[type="range"]',
+         drive="sim-unlocked",
+         props={"accent-color": "#E4572E", "height": "44px"}),
+    dict(name="system-parts part selector", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
+         sel=".ks3-practical .ks3-sim-control select", drive="sim-unlocked",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "font-size": "17px", "min-height": "44px",
+                "border-top-left-radius": "14px", "color": "#221E1B"}),
+
     # ── layers ──
     dict(name="stretch layer is violet", on=LESSON, sel=".ks3-stretch .ks3-layer-body",
          props={"background-color": "#F0EAFC", "border-top-color": "#6B3FD4"}),
@@ -523,6 +752,146 @@ COMPONENTS = [
     dict(name="half-term card, summer season", on=YEAR,
          sel='.ks3-browse-ht[data-season="summer"] .ks3-code',
          props={"background-color": "#22B8CF"}),
+
+    # ── ⊕ the eleven instruments (14 Aug 2026) ──────────────────────────
+    #
+    # Each row pins the property that makes its instrument DISTINCT, not the
+    # ones it shares with every card on the page. That is the whole point:
+    # `test-board` and `sort-rows` passed the kinds gate for a fortnight with
+    # a dispatch-table entry, no CSS and no JS, because the gate asks whether a
+    # renderer exists and a renderer is not a component. A layer-C assertion
+    # cannot be satisfied that way — with no stylesheet the selector resolves
+    # to the browser default and fails by name. Registration now IMPLIES
+    # realisation, which is what §10.2 was always supposed to mean.
+    #
+    # Every row is `on` a page that actually renders it: a component registered
+    # on a page that lacks it reports "selector not present" and passes.
+    dict(name="board lamp is a column, not an option row", on=B1_LIFE,
+         sel=".ks3-lamp",
+         props={"display": "flex", "flex-direction": "column",
+                "border-top-width": "2px",
+                "border-top-left-radius": "16px"}),
+    dict(name="board lamp badge is a 28px display square", on=B1_LIFE,
+         sel=".ks3-lamp-badge",
+         props={"width": "28px", "height": "28px",
+                "font-family": "Bricolage Grotesque", "font-weight": "800"}),
+    dict(name="board verdict is ink-dark", on=B1_LIFE,
+         sel=".ks3-board-verdict",
+         props={"background-color": "#221E1B", "color": "#FBF3E6"}),
+    dict(name="board tally is mono 24px", on=B1_LIFE,
+         sel=".ks3-board-tally",
+         props={"font-family": "DM Mono", "font-size": "24px"}),
+    dict(name="sorter row is a card on a hairline, not an option", on=B1_LIFE,
+         sel=".ks3-sortrow",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E0D2B9",
+                "border-top-width": "2px"}),
+    dict(name="sorter chip is 16px, narrower than a segment", on=B1_LIFE,
+         sel=".ks3-sort-chip",
+         props={"font-size": "16px", "min-height": "44px",
+                "border-top-left-radius": "14px"}),
+    # The self-check is MRB-196's, and the ONLY thing that proves it is not a
+    # marked question is that its options carry no correctness data at all —
+    # asserted structurally by check_r3_runtime, and here by its being an
+    # ordinary option group on an ordinary ground.
+    dict(name="self-check options are a plain grid", on=B1_LIFE,
+         sel=".ks3-selfcheck-options",
+         props={"display": "grid"}),
+
+    dict(name="settles-it feature is a panel, not a row", on=B1_UNI,
+         sel=".ks3-feature",
+         props={"background-color": "#FFFCF5", "border-top-color": "#C3B191",
+                "border-top-left-radius": "20px"}),
+    dict(name="settles-it choice is 16px on the ground", on=B1_UNI,
+         sel=".ks3-settle-choice",
+         props={"font-size": "16px", "background-color": "#FBF3E6",
+                "min-height": "44px"}),
+    # ⚖️ MRB-196: ONE tone. If this ever resolves to `--ks3-ink` the instrument
+    # has started marking the student again, ~6 ΔL* at a time.
+    dict(name="settles-it why is ONE tone (MRB-196)", on=B1_UNI,
+         sel=".ks3-feature-why", props={"color": "#3B342E"}),
+    dict(name="case verdict is ink-dark with an alert label", on=B1_UNI,
+         sel=".ks3-case-verdict", props={"background-color": "#221E1B"}),
+
+    dict(name="bench cell picker is a full-width ROW, not a segment",
+         on="biology/cells-and-organisation/specialised-cells.html",
+         sel=".ks3-bench-cell",
+         props={"min-height": "56px", "text-align": "left",
+                "border-top-left-radius": "16px"}),
+    dict(name="tuning dial is a fixed 74px mono chip",
+         on="biology/cells-and-organisation/specialised-cells.html",
+         sel=".ks3-tune-dial",
+         props={"font-family": "DM Mono", "font-size": "12px",
+                "border-top-width": "2px"}),
+    dict(name="sabotage chain's first link is the cell itself",
+         on="biology/cells-and-organisation/specialised-cells.html",
+         sel=".ks3-chain-link:first-child",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B"}),
+
+    dict(name="zoom slider clears the 44px tap target", on=B1_PARTS,
+         sel=".ks3-zoom-range", props={"height": "44px"}),
+    dict(name="zoom gain label is accent-text mono", on=B1_PARTS,
+         sel=".ks3-zoom-gain-label",
+         props={"font-family": "DM Mono", "color": "#A93411"}),
+    dict(name="awkward row is unmarked until opened", on=B1_PARTS,
+         sel=".ks3-hardrow",
+         props={"background-color": "#FFFCF5",
+                "border-top-color": "#C3B191"}),
+    dict(name="removal outcome lands on a LIGHT panel", on=B1_PARTS,
+         sel=".ks3-removal-out",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+
+    dict(name="cell-bench part row carries a numbered badge",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-part-num",
+         props={"width": "28px", "font-family": "Bricolage Grotesque",
+                "font-weight": "800"}),
+    dict(name="cell-bench readout name is display 800 at 25px",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-readout-name",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "font-size": "25px"}),
+    dict(name="pair row is the sorter's sibling, not the sorter",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-pairrow",
+         props={"background-color": "#FFFCF5",
+                "border-top-left-radius": "20px"}),
+    dict(name="fit-parts installs into a responsive grid",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-fit-parts", props={"display": "grid"}),
+
+    dict(name="critique step is a full-width tappable row", on=B1_MICRO,
+         sel=".ks3-step-btn",
+         props={"min-height": "44px", "text-align": "left",
+                "border-top-left-radius": "16px"}),
+    # The 46px indent is 32px of badge plus the 14px gap — derived, and the one
+    # value that keeps the verdict reading as belonging to its step.
+    dict(name="critique verdict is indented under its badge", on=B1_MICRO,
+         sel=".ks3-step-verdict", props={"margin-left": "46px"}),
+    dict(name="formula triangle is drawn, not typed", on=B1_MICRO,
+         sel=".ks3-tri-svg", props={"width": "260px"}),
+    dict(name="triangle cover is ink and starts invisible", on=B1_MICRO,
+         sel=".ks3-tri-cover", props={"opacity": "0"}),
+    dict(name="FIFA field is a real text input at tap size", on=B1_MICRO,
+         sel=".ks3-fifa-input",
+         props={"min-height": "44px", "border-top-width": "2px",
+                "background-color": "#FFFCF5"}),
+    dict(name="model line is mono, so it reads as working", on=B1_MICRO,
+         sel=".ks3-model-line",
+         props={"font-family": "DM Mono", "font-size": "17px"}),
+
+    # The hook's media column and its Motion control — Mide's named complaint.
+    dict(name="hook art sits on its own night ground", on=B1_LIFE,
+         sel=".ks3-hook-art",
+         props={"height": "226px", "background-color": "#17130F"}),
+    dict(name="Motion control clears the 44px tap target", on=B1_LIFE,
+         sel=".ks3-motion-btn", props={"min-height": "44px"}),
+    dict(name="scorecard figure is mono 32px, not a heading", on=B1_LIFE,
+         sel=".ks3-scorecard-fig",
+         props={"font-family": "DM Mono", "font-size": "32px"}),
+    # Amber is a wrong idea being confronted — the one place it is right.
+    dict(name="second confrontation is divided in amber", on=B1_UNI,
+         sel=".ks3-mis-next",
+         props={"border-top-color": "#D9821A", "border-top-width": "2px"}),
 ]
 
 
@@ -539,7 +908,11 @@ CONTRAST = [
          fg=".ks3-eyebrow", bg="body", need=4.5),
     dict(name="big question on page ground", on=LESSON,
          fg=".ks3-bigq", bg="body", need=4.5),
-    dict(name="breadcrumb link on page ground", on=LESSON,
+    dict(name="header trail link on page ground", on=LESSON,
+         fg=".ks3-trail a", bg=".ks3-nav", need=4.5),
+    dict(name="header trail current page on page ground", on=LESSON,
+         fg=".ks3-trail [aria-current]", bg=".ks3-nav", need=4.5),
+    dict(name="breadcrumb row link on page ground", on=UNIT,
          fg=".ks3-crumbs a", bg="body", need=4.5),
     dict(name="nav brand wordmark on page ground", on=LESSON,
          fg=".ks3-brand", bg=".ks3-nav", need=4.5),
@@ -707,6 +1080,39 @@ CONTRAST = [
     dict(name="cross-reference badge on its tint", on=UNIT_REF,
          fg=".ks3-lesson-row.is-ref .ks3-badge",
          bg=".ks3-lesson-row.is-ref .ks3-badge", need=4.5),
+    # ── MRB-198: the new kinds' surfaces, measured on their real dark
+    #    ground. Cover pairs run LOCKED; control/readout pairs run in the
+    #    after-unlock pass because R5 hides both until the prediction. ──
+    dict(name="microscope locked cover on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-cover",
+         bg=".ks3-practical .ks3-sim-cover", need=4.5),
+    dict(name="microscope caption on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-caption", bg=".ks3-practical", need=4.5),
+    dict(name="microscope control label on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-control", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
+    dict(name="microscope select text on its own ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-control select",
+         bg=".ks3-practical .ks3-sim-control select", need=4.5,
+         drive="sim-unlocked"),
+    dict(name="microscope readout on dark ground", on=B1_MICRO,
+         fg=".ks3-practical .ks3-sim-readout", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
+    dict(name="system-parts locked cover on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
+         fg=".ks3-practical .ks3-sim-cover",
+         bg=".ks3-practical .ks3-sim-cover", need=4.5),
+    dict(name="system-parts caption on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
+         fg=".ks3-practical .ks3-sim-caption", bg=".ks3-practical", need=4.5),
+    dict(name="system-parts control label on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
+         fg=".ks3-practical .ks3-sim-control", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
+    dict(name="system-parts select text on its own ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
+         fg=".ks3-practical .ks3-sim-control select",
+         bg=".ks3-practical .ks3-sim-control select", need=4.5,
+         drive="sim-unlocked"),
+    dict(name="system-parts readout on dark ground", on=B1_PARTS, parked=_PARKED_SYSTEM_PARTS,
+         fg=".ks3-practical .ks3-sim-readout", bg=".ks3-practical",
+         need=4.5, drive="sim-unlocked"),
     # identifying / state-bearing marks — 3:1 is the bar (R1)
     dict(name="MARK block border on page ground", on=LESSON,
          fg=".ks3-check", bg="body", need=3.0, prop="border-top-color"),
@@ -723,6 +1129,388 @@ CONTRAST = [
          fg=".ks3-check .ks3-option", bg="body", need=3.0,
          prop="outline-color", force_focus=True),
 ]
+
+
+# ── MRB-198: canvas-drawn marks — the pairs CSS cannot measure ───────────
+#
+# The two new instruments paint text and state marks straight onto the
+# canvas with token colours read via cssVar(). Layer D reads resolved CSS
+# and cannot see canvas pixels, so these pairs are computed HERE, from the
+# same tokens.css the canvas reads. `overrides` exists so the checker
+# itself can be mutation-tested: feed it a broken value and it must fail.
+
+CANVAS_PAIRS = (
+    ("part name ink on a working node", "--ks3-ink", "--ks3-card", 4.5),
+    ("part name ink on a stopped node", "--ks3-ink", "--ks3-option-spent", 4.5),
+    ("stopped hatch + stop-mark ink on spent fill", "--ks3-ink",
+     "--ks3-option-spent", 3.0),
+    ("origin accent border on canvas ground", "--ks3-accent",
+     "--ks3-inset", 3.0),
+    ("origin accent border against a node", "--ks3-accent",
+     "--ks3-card", 3.0),
+    ("microscope drawn ink on the bright field", "--ks3-ink",
+     "--ks3-card", 4.5),
+    ("Euglena's biology green on the bright field", "--ks3-biology",
+     "--ks3-card", 3.0),
+)
+
+
+# MRB-210 §2 — every range control is bound on BOTH `input` and `change`.
+#
+# This is a SOURCE check, deliberately, after a runtime one was written,
+# measured and thrown away. The runtime version dragged each slider and
+# compared the sim's readout before and after. It is unsound in both
+# directions and both were observed:
+#
+#   FALSE PASS — a particle sim repaints from an animation loop, so its
+#     readout ("wall hits per second: 60") drifts on its own. A drag that
+#     did nothing still "changed" the text.
+#   FALSE FAIL — B1-06's focus slider changes nothing at ×40, because the
+#     readout short-circuits on magnification before it mentions focus. It
+#     is correctly wired and only speaks from ×100 up.
+#
+# So readout-diffing measures animation noise and lesson content, not
+# binding. An assertion whose result depends on which frame it lands in is
+# not an assertion. What is deterministic is that every range in ks3.js is
+# bound through the one helper that attaches both listeners.
+#
+# ⚠️ METHODOLOGICAL NOTE, kept where the next person will find it.
+# Design's words, verbatim:
+#
+#   "Shrinking `.ks3-main` in a probe does not fire a `max-width` media
+#    query — the viewport is still wide. Container-driven wrapping is
+#    testable that way; viewport queries are not."
+#
+# Design's first attempt at a narrow-width fix measured as a no-op for
+# exactly that reason. THIS harness overrides device metrics
+# (`Emulation.setDeviceMetricsOverride` — see ks3_browser.py's header), so
+# it DOES fire viewport queries correctly. Any future check that resizes an
+# element instead will pass silently over a broken layout.
+
+
+def check_range_binding(repo_root="."):
+    """Returns (problems, rows). Static, so it cannot be flaky."""
+    path = os.path.join(repo_root, "shared", "ks3.js")
+    with open(path, encoding="utf-8") as fh:
+        src = fh.read()
+    problems, rows = [], []
+
+    helper = re.search(r"function onRange\(el, fn\) \{(.*?)\n  \}",
+                       src, re.S)
+    if not helper:
+        problems.append(
+            "MRB-210: shared/ks3.js has no onRange() helper — the one place "
+            "that binds a range on both `input` and `change`.")
+        return problems, rows
+    body = helper.group(1)
+    for ev in ("input", "change"):
+        ok = ('addEventListener("%s", fn)' % ev) in body
+        rows.append(("onRange binds " + ev, "yes" if ok else "NO", ok))
+        if not ok:
+            problems.append(
+                "MRB-210: onRange() does not attach a `%s` listener. Design's "
+                "approved B1-06 binds both to the same handler." % ev)
+
+    # No range may be bound directly — that is how one gets missed.
+    #
+    # Scanned forward from each `X.type = "range"` rather than by matching
+    # variable names globally. ks3.js reuses the name `input` for the
+    # microscope's two <select> controls, which are correctly bound on
+    # `change` alone; a name-based check calls those a leak and is wrong.
+    lines = src.splitlines()
+    leaked = []
+    for i, line in enumerate(lines):
+        m = re.search(r'(\w+)\.type = "range"', line)
+        if not m:
+            continue
+        var = m.group(1)
+        window = "\n".join(lines[i:i + 40])
+        if re.search(r'\b%s\.addEventListener\(' % re.escape(var), window):
+            leaked.append("line %d (%s)" % (i + 1, var))
+        elif not re.search(r'\bonRange\(\s*%s\b' % re.escape(var), window):
+            leaked.append("line %d (%s: bound by neither)" % (i + 1, var))
+    rows.append(("every range goes through onRange",
+                 "clean, %d range declaration(s)"
+                 % len(re.findall(r'\.type = "range"', src))
+                 if not leaked else "leaked: %s" % leaked, not leaked))
+    if leaked:
+        problems.append(
+            "MRB-210: range input(s) at %s are bound with a direct "
+            "addEventListener instead of onRange(), so they get one event "
+            "and not the other." % ", ".join(leaked))
+    rows.append(("onRange call sites", str(len(re.findall(r"onRange\(", src)) - 1),
+                 len(re.findall(r"onRange\(", src)) - 1 > 0))
+    return problems, rows
+
+
+def check_no_section_refs(ks3_root):
+    """§8.10 — an architecture §-reference must never reach student prose.
+
+    §8.10 is a DISCERNMENT test, not a banned-phrase list, and architecture.md
+    says plainly that a blanket rule here would be the same failure as the
+    callout that prompted the rule. So this checks exactly one thing, the one
+    that is never a judgement call: a `§` followed by a section number, in the
+    VISIBLE text of a built page. That is this project talking to itself.
+
+    The live instance it was written for: `references[].why` renders into the
+    "Connects to" endmatter card, and C1's `testing-the-model` shipped
+    "P11 owns it (§7.4); this lesson points at it and must render gracefully
+    before P11 exists" to students on the published draft.
+
+    Script and style contents are stripped before the scan, then tags, so this
+    measures what a reader sees rather than what the source contains — an
+    authoring comment in a data module is fine, a rendered one is not.
+    """
+    problems, scanned = [], 0
+    pat = re.compile(r"§\s*\d")
+    for path in _all_pages(ks3_root):
+        with open(path, encoding="utf-8") as fh:
+            src = fh.read()
+        scanned += 1
+        src = re.sub(r"<script.*?</script>", " ", src, flags=re.S)
+        src = re.sub(r"<style.*?</style>", " ", src, flags=re.S)
+        text = _unescape(re.sub(r"<[^>]+>", " ", src))
+        m = pat.search(text)
+        if m:
+            near = " ".join(
+                text[max(0, m.start() - 80):m.start() + 90].split())
+            rel = os.path.relpath(path, ks3_root)
+            problems.append("%s — student text carries an architecture "
+                            "section reference: …%s…" % (rel, near))
+    return problems, scanned
+
+
+def check_internal_links(ks3_root):
+    """MRB-209 §4 — every internal /ks3/ link must resolve to a real page.
+
+    Prerequisite edges and `ks4_links` were already gated. Links written in
+    PROSE and in the ENDMATTER were not, and that is where the defect
+    landed: B1-04's endmatter pointed at `b1-07-stem-cells-and-meristems`
+    after MRB-199 removed it. Design happened to spot it. A removed slug
+    should fail the build, not 404 in front of a student.
+
+    Deliberately checks the BUILT tree rather than the lesson records,
+    because that is the only place a hand-written prose link exists at all.
+    """
+    problems = []
+    served = os.path.dirname(os.path.abspath(ks3_root))
+    checked = 0
+    for path in _all_pages(ks3_root):
+        rel = os.path.relpath(path, ks3_root)
+        with open(path, encoding="utf-8") as fh:
+            html = fh.read()
+        for href in set(re.findall(r'href="(/ks3/[^"#?]+)"', html)):
+            checked += 1
+            target = os.path.join(served, href.lstrip("/"))
+            if not os.path.exists(target):
+                problems.append(
+                    "MRB-209: /%s links to %s, which does not exist. A "
+                    "cross-lesson link to a removed slug is a 404 in front "
+                    "of a student." % (rel, href))
+    return problems, checked
+
+
+MANIFEST = "docs/ks3/design-coverage-manifest.md"
+
+
+def check_rail_anchors(ks3_root):
+    """Every `data-rail-stages` anchor names an element that exists.
+
+    The rail is emitted from the lesson record and the sections are emitted by
+    the block renderers, and nothing joined the two up. `#s-hook` and
+    `#s-ladder` were missing from every lesson page in the key stage — see the
+    gate's own note in `verify_ks3.py` for how.
+
+    Read out of the BUILT page rather than the record, deliberately: the record
+    is what we meant, and the question is what a browser will find.
+    """
+    problems, total = [], 0
+    for page in _lesson_pages(ks3_root):
+        with open(page, encoding="utf-8") as fh:
+            html = fh.read()
+        name = os.path.basename(page)
+        m = re.search(r'data-rail-stages="([^"]*)"', html)
+        if not m:
+            continue
+        try:
+            stages = json.loads(_unescape(m.group(1)))
+        except ValueError as err:
+            problems.append("%s: unparseable data-rail-stages (%s)"
+                            % (name, err))
+            continue
+        ids = set(re.findall(r'\sid="([^"]+)"', html))
+        for st in stages:
+            anchor = st.get("anchor")
+            if not anchor:
+                problems.append("%s: a rail stop declares no anchor" % name)
+                continue
+            total += 1
+            if anchor not in ids:
+                problems.append(
+                    "%s: rail stop %r points at #%s, which is on no element — "
+                    "the link goes nowhere and the stop can never tick"
+                    % (name, st.get("short") or anchor, anchor))
+    return problems, total
+
+
+def _manifest_rows(repo_root, heading):
+    """Parse the markdown table under `heading` in §10 of the manifest.
+
+    Returns [(col0, col1, ...), ...] with the header and separator dropped.
+    Deliberately strict: a heading that has moved or a table that has been
+    turned into prose raises rather than silently returning nothing, because
+    an empty registry would make every check below vacuously pass — the
+    exact defect class MRB-203 exists to close.
+    """
+    path = os.path.join(repo_root, MANIFEST)
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    if heading not in text:
+        raise ValueError(
+            "design-coverage-manifest.md has no %r heading. §10 is the "
+            "authoritative registry the build reads; if it has been renamed "
+            "or removed, fix the manifest rather than this parser." % heading)
+    body = text.split(heading, 1)[1]
+    rows = []
+    for line in body.splitlines():
+        line = line.strip()
+        if not line.startswith("|"):
+            if rows:
+                break          # table ended
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        if not cells or set("".join(cells)) <= set("-: "):
+            continue           # separator row
+        if cells[0].lower() in ("family", "block type"):
+            continue           # header row
+        rows.append(cells)
+    if not rows:
+        raise ValueError("no rows parsed under %r in %s" % (heading, MANIFEST))
+    return rows
+
+
+def check_design_coverage(repo_root=".", units=None):
+    """MRB-203 — absence of REGISTRATION fails, not just absence of selector.
+
+    Two questions the old gate could not ask:
+
+      1. Is this lesson's architecture family one Design has actually drawn?
+         Layer C measures registered components to ±1px, but a family with no
+         reference screen registers nothing, so it had nothing to disagree
+         with. B1 was the first unit to author SYSTEM and CLASSIFY — 47 of
+         the 184 slots between them — and the gate reported green over
+         invented shapes.
+
+      2. Does every block type the tree actually renders map to a registered
+         component that exists in COMPONENTS?
+
+    Returns (problems, rows) where rows are (label, detail, ok) for printing.
+    """
+    problems, rows = [], []
+
+    fam_rows = _manifest_rows(repo_root, "### 10.1")
+    families = {}
+    for cells in fam_rows:
+        fam = cells[0].strip("`* ")
+        screen = cells[2].strip("`* ")
+        families[fam] = None if screen.strip("— ") in ("", "NONE") else screen
+
+    # Every family a lesson is AUTHORED in must have a drawn screen.
+    if units is None:
+        import ks3_data
+        units = ks3_data.KS3_UNITS
+    authored = [(u, l) for u in units for l in u["lessons"] if l.get("authored")]
+    for u, l in authored:
+        fam = l.get("family")
+        if fam not in families:
+            problems.append(
+                "MRB-203: %s/%s is authored in family %s, which has NO ROW in "
+                "%s §10.1. A family with no reference screen has no registered "
+                "component, so the parity gate cannot see anything wrong with "
+                "it. Get the screen drawn — do not add the row to pass the "
+                "build." % (u["code"], l["slug"], fam, MANIFEST))
+            continue
+        screen = families[fam]
+        if not screen:
+            problems.append(
+                "MRB-203: %s/%s is authored in family %s, which §10.1 records "
+                "as NOT DRAWN. Design has not supplied a reference screen for "
+                "this family." % (u["code"], l["slug"], fam))
+            continue
+        if not os.path.exists(os.path.join(repo_root, screen)):
+            problems.append(
+                "MRB-203: family %s points at reference screen %r, which does "
+                "not exist. A registry row that names a missing file is worse "
+                "than no row — it reports coverage that is not there."
+                % (fam, screen))
+    for fam, screen in sorted(families.items()):
+        used = sorted({l.get("family") for _u, l in authored})
+        rows.append(("family " + fam,
+                     (screen or "NOT DRAWN") + (" · authored" if fam in used
+                                                else " · none authored yet"),
+                     fam not in used or bool(screen)))
+
+    # Every RENDERED block type must map to components that really exist.
+    blk_rows = _manifest_rows(repo_root, "### 10.2")
+    registered = {c["name"] for c in COMPONENTS}
+    mapping = {}
+    for cells in blk_rows:
+        btype = cells[0].strip("`* ")
+        # Component names contain commas ("hook is ink-dark, accent shadow"),
+        # so the cell is parsed as backtick-delimited spans, never split on
+        # the comma. Splitting on commas turned one component into two
+        # non-existent ones and failed three real rows.
+        names = re.findall(r"`([^`]+)`", cells[1])
+        mapping[btype] = names
+
+    rendered = set()
+    for _u, l in authored:
+        for b in (l.get("core") or []):
+            if b.get("type"):
+                rendered.add(b["type"])
+    for btype in sorted(rendered):
+        names = mapping.get(btype)
+        if not names:
+            problems.append(
+                "MRB-203: block type %r is rendered in the built tree but has "
+                "NO ROW in %s §10.2 — it is drawn on screen with no registered "
+                "component gating it." % (btype, MANIFEST))
+            rows.append(("block " + btype, "NO ROW", False))
+            continue
+        missing = [n for n in names if n not in registered]
+        if missing:
+            problems.append(
+                "MRB-203: block type %r maps to component(s) %s, which are not "
+                "defined in ks3_parity.COMPONENTS. The registry claims cover "
+                "that does not exist." % (btype, missing))
+        rows.append(("block " + btype,
+                     "%d component(s): %s" % (len(names), ", ".join(names[:3])
+                                              + ("…" if len(names) > 3 else "")),
+                     not missing))
+    return problems, rows
+
+
+def check_canvas_contrast(repo_root=".", overrides=None):
+    """Returns (problems, rows). rows = (name, ratio, need, ok)."""
+    tokens = ks3_token_colours(repo_root)
+    if overrides:
+        tokens = dict(tokens, **overrides)
+    problems, rows = [], []
+    for name, fg, bg, need in CANVAS_PAIRS:
+        f = parse_rgb(tokens.get(fg, ""))
+        g = parse_rgb(tokens.get(bg, ""))
+        if f is None or g is None:
+            problems.append("canvas pair %r: token %s or %s missing from "
+                            "tokens.css" % (name, fg, bg))
+            continue
+        ratio = contrast(f, g)
+        ok = ratio >= need - 0.005
+        rows.append((name, ratio, need, ok))
+        if not ok:
+            problems.append(
+                "CANVAS CONTRAST FAIL: %s — %.2f:1 against %.1f:1 required "
+                "(%s on %s)" % (name, ratio, need, fg, bg))
+    return (problems, rows)
 
 
 # ── colour maths ─────────────────────────────────────────────────────────
@@ -789,6 +1577,21 @@ def same_colour(got, want):
     return g is not None and w is not None and g == w
 
 
+# ⚠️ A 1px tolerance is for LAYOUT, and it is wrong for a hairline.
+#
+# `TOL_PX = 1.0` exists because a measured width or height lands a fraction off
+# after rounding, and failing a build over 0.4px would make the gate useless.
+# Applied to a BORDER, it makes 2px and 3px indistinguishable — and 2px against
+# 3px is exactly what separates `.ks3-rule` from a `.ks3-block`, and
+# `.ks3-ladder` from both.
+#
+# Found by mutation-testing the statement panel: repainting its 3px border to
+# 2px changed the page and the gate did not notice, which is the definition of
+# an assertion that cannot fail. Below 5px a length is a design decision, not a
+# rounding artefact, so it is compared exactly.
+_HAIRLINE_PX = 5.0
+
+
 def close_length(got, want):
     def px(v):
         m = re.match(r'(-?[\d.]+)px$', (v or "").strip())
@@ -796,6 +1599,8 @@ def close_length(got, want):
     a, b = px(got), px(want)
     if a is None or b is None:
         return None
+    if abs(b) < _HAIRLINE_PX:
+        return a == b
     return abs(a - b) <= TOL_PX
 
 
@@ -905,6 +1710,34 @@ DRIVES = {
   return "";
 })()
 """,
+    # R5 hides a sim's control panel and readout behind a cover until the
+    # student has committed a prediction, so every control, label, select and
+    # readout pair can only be measured on an unlocked panel — and the cover's
+    # own pairs only on a locked one. MRB-198 carried these specs as
+    # `after_unlock` flags with a bespoke second pass; they are drives here
+    # instead, which buys the fresh load, the settle, the console drain and the
+    # "could not reach its state" failure that every other driven state gets.
+    #
+    # Unlocking goes through the sim's OWN activity option (Law 4) rather than
+    # by stripping data-locked: the cover comes off the way a student takes it
+    # off, so a regression in the unlock path fails here instead of being
+    # measured around.
+    "sim-unlocked": r"""
+(function () {
+  var sims = document.querySelectorAll('.ks3-sim[data-locked="1"]');
+  if (!sims.length) { return "no locked sim on the page"; }
+  for (var i = 0; i < sims.length; i++) {
+    var act = sims[i].closest('[data-activity]');
+    var opt = act && act.querySelector('.ks3-option');
+    if (opt) { opt.click(); }
+  }
+  var still = document.querySelectorAll('.ks3-sim[data-locked="1"]');
+  if (still.length) {
+    return still.length + " sim(s) still locked after clicking their activity option";
+  }
+  return "";
+})()
+""",
 }
 
 
@@ -947,42 +1780,112 @@ _JS_SETTLE = r"""
 # resolved colours are identical whichever was pressed, and that none of them
 # is a marking colour. If a correct answer were ever tinted differently from a
 # wrong one on an activity block, this fails and names the block.
+#
+# ⚖️ SCOPE, ruled by chat-app Claude on MRB-202, 13 Aug 2026.
+#
+# The assertion is scoped to THE OPTION BUTTON, and to nothing else:
+#
+#     "R3's text is about the control... The rule protects the *moment of
+#      committing*. A student looking at a row of options must not be able to
+#      read the answer off the buttons. What happens **after** they commit is a
+#      reveal, and every activity in the system has one — that is Law 4's whole
+#      shape: commit, then find out. A reveal that states the answer is not a
+#      violation; it is the mechanism. So the assertion tests one thing: no
+#      `.ks3-option` carries a correctness treatment — no `data-correct`, no
+#      ok/alert ground, no drawn ✓ or ✕ — outside the mastery ladder. Reveal
+#      panels, answer notes and after-the-fact prose are out of scope."
+#
+# Two consequences for how this is written:
+#
+#   1. The scope is now EVERY `.ks3-option` outside `.ks3-ladder`, not the three
+#      block classes it used to name. That is strictly stronger — an option in a
+#      block type nobody has invented yet is covered on the day it appears,
+#      which is the MRB-203 failure mode one level down.
+#   2. It reads the button's OWN resolved style and never walks up to an
+#      ancestor for an effective ground. b1-05's `#s-hard` marks the ROW
+#      CONTAINER after the student opens the answers (`--ks3-inset`/ink for
+#      right, `--ks3-alert-tint`/`--ks3-alert-border` for wrong) and leaves the
+#      choice buttons untouched — measured, b1-inventory §3.4.2. That is a
+#      reveal, so it passes, and it must pass without an exception list. No
+#      exception list is created: "an exception list is how a rule stops being
+#      a rule — the first entry is always justified and the tenth never gets
+#      read."
+#
+# Amber note: on an ink-dark block Design's chosen option takes an `--ks3-alert`
+# BORDER on the unchanged `--ks3-dark-panel` ground. That is the drawn
+# chosen-state and is identical whichever option is picked, so it is choosing,
+# not marking. Grounds are checked against the marking families; borders are
+# only checked through the "all alike" test, which is what separates the two.
 _JS_R3_RUNTIME = r"""
 (function () {
-  var MARKING = ['rgb(18, 161, 80)', 'rgb(228, 247, 235)', 'rgb(10, 107, 54)'];
+  // ok family (the ladder's correct state) and the alert TINTS that would read
+  // as a verdict if they ever landed on a control's ground.
+  var MARKING_GROUND = ['rgb(18, 161, 80)',   /* --ks3-ok       */
+                        'rgb(228, 247, 235)', /* --ks3-ok-tint  */
+                        'rgb(10, 107, 54)',   /* --ks3-ok-text  */
+                        'rgb(255, 243, 212)'  /* --ks3-alert-tint */];
   var out = [];
-  var blocks = document.querySelectorAll('.ks3-block.ks3-check, .ks3-block.ks3-misconception, .ks3-block.ks3-practical');
-  for (var b = 0; b < blocks.length; b++) {
-    var opts = blocks[b].querySelectorAll('.ks3-option');
-    if (!opts.length) { continue; }
-    var seen = [], disabled = false;
-    for (var i = 0; i < opts.length; i++) {
-      opts[i].click();
-      var cs = getComputedStyle(opts[i]);
-      var mk = opts[i].querySelector('.ks3-opt-mark');
-      var sig = [cs.backgroundColor, cs.borderTopColor,
+  // Every option button on the page that is not a mastery-ladder rung's.
+  var all = document.querySelectorAll('.ks3-option');
+  var opts = [];
+  for (var k = 0; k < all.length; k++) {
+    if (!all[k].closest('.ks3-ladder')) { opts.push(all[k]); }
+  }
+  // Group by the activity/block that owns each option, so a failure names it.
+  var groups = {}, order = [];
+  for (var j = 0; j < opts.length; j++) {
+    var own = opts[j].closest('[data-activity]') || opts[j].closest('section') || document.body;
+    var id = own.getAttribute && (own.getAttribute('data-activity') || own.id);
+    id = id || ('block ' + j);
+    if (!groups[id]) { groups[id] = []; order.push(id); }
+    groups[id].push(opts[j]);
+  }
+  for (var g = 0; g < order.length; g++) {
+    var id = order[g], list = groups[id], seen = [], disabled = false;
+    for (var i = 0; i < list.length; i++) {
+      var o = list[i];
+      // (a) marking DATA never reaches an activity option.
+      if (o.hasAttribute('data-correct')) {
+        out.push(id + ': an activity option carries data-correct');
+      }
+      o.click();
+      var cs = getComputedStyle(o);
+      var mk = o.querySelector('.ks3-opt-mark');
+      // (b) a drawn mark never appears on an activity option. The ladder draws
+      //     its ✓/✕ as an <svg class="ks3-mark"> inside the badge; a typed ✓/✕
+      //     in the badge text is the same claim by another route.
+      if (o.querySelector('svg.ks3-mark')) {
+        out.push(id + ': a drawn ✓/✕ appears on an activity option');
+      }
+      if (mk && /[✓✔✕✖✗✘×]/.test(mk.textContent || '')) {
+        out.push(id + ': a typed ✓/✕ appears on an activity option badge');
+      }
+      // (c) the ground never takes a marking colour.
+      var grounds = [cs.backgroundColor, mk ? getComputedStyle(mk).backgroundColor : ''];
+      for (var q = 0; q < grounds.length; q++) {
+        for (var m = 0; m < MARKING_GROUND.length; m++) {
+          if (grounds[q] === MARKING_GROUND[m]) {
+            out.push(id + ': a marking colour (' + MARKING_GROUND[m] +
+                     ') is the ground of an activity option');
+          }
+        }
+      }
+      // (d) whichever option was pressed, the button looks the same. This is
+      //     the assertion that separates CHOOSING from MARKING, and it is read
+      //     off the button, never off an ancestor.
+      seen.push([cs.backgroundColor, cs.borderTopColor,
                  mk ? getComputedStyle(mk).backgroundColor : '',
-                 mk ? getComputedStyle(mk).color : ''].join(' | ');
-      seen.push(sig);
-      if (opts[i].disabled) { disabled = true; }
+                 mk ? getComputedStyle(mk).color : ''].join(' | '));
+      if (o.disabled) { disabled = true; }
     }
-    var id = blocks[b].getAttribute('data-activity') || ('block ' + b);
     var uniq = seen.filter(function (v, i, a) { return a.indexOf(v) === i; });
     if (uniq.length !== 1) {
       out.push(id + ': chosen options do not all render alike — ' +
                uniq.length + ' distinct treatments: ' + uniq.join('  //  '));
     }
-    for (var u = 0; u < uniq.length; u++) {
-      for (var m = 0; m < MARKING.length; m++) {
-        if (uniq[u].indexOf(MARKING[m]) !== -1) {
-          out.push(id + ': a marking colour (' + MARKING[m] +
-                   ') appears on an activity option — ' + uniq[u]);
-        }
-      }
-    }
     if (disabled) { out.push(id + ': an activity option was disabled'); }
   }
-  return { problems: out, blocks: blocks.length };
+  return { problems: out, blocks: order.length, options: opts.length };
 })()
 """
 
@@ -1021,6 +1924,250 @@ _JS_GLYPH_AUDIT = r"""
            svgMarks: document.querySelectorAll('svg.ks3-mark').length };
 })()
 """
+
+
+# ── MRB-198: the sim audits — behaviour, gated in a real browser ─────────
+#
+# Layer C proves the controls LOOK right; these prove the instruments DO
+# what the lesson teaches. Each runs on a real generated page: first the
+# R5 locked contract, then Law 4's unlock (an option inside the sim's own
+# activity), then the mechanism itself, asserted through the WRITTEN
+# readout — deliberately, because R6 makes the written readout carry the
+# whole result, so if these strings are right the reduced-motion
+# experience is right too. Every expected figure below is the model's,
+# not a screenshot's: ×40 ↔ 4.5 mm and ×400 ↔ 0.45 mm are fov = 180/mag.
+
+_JS_R5_CHECKS = r"""
+  function r5(sim, kind, P) {
+    function disp(s) {
+      var el = sim.querySelector(s);
+      return el ? getComputedStyle(el).display : "MISSING";
+    }
+    if (sim.getAttribute('data-locked') !== '1') {
+      P.push(kind + ": not locked on load - the Law 4 gate did not engage");
+      return;
+    }
+    if (disp('.ks3-sim-cover') === 'none') {
+      P.push(kind + " R5: locked cover not shown");
+    }
+    if (disp('.ks3-sim-controls') !== 'none') {
+      P.push(kind + " R5: control panel visible while locked - it must be hidden entirely");
+    }
+    if (disp('.ks3-sim-readout') !== 'none') {
+      P.push(kind + " R5: readout visible while locked");
+    }
+    if (disp('.ks3-sim-caption') === 'none') {
+      P.push(kind + " R5: caption hidden while locked - it holds the prediction instructions");
+    }
+    var filt = getComputedStyle(sim.querySelector('.ks3-sim-canvas')).filter;
+    if (filt.indexOf('blur') < 0) {
+      P.push(kind + " R5: canvas not blurred while locked (filter=" + filt + ")");
+    }
+  }
+  function unlockViaOwnActivity(sim, kind, P) {
+    var act = sim.closest('[data-activity]');
+    var opt = act && act.querySelector('.ks3-option');
+    if (!opt) {
+      P.push(kind + ": no .ks3-option inside its own [data-activity] - Law 4 has nothing to gate on");
+      return false;
+    }
+    opt.click();
+    if (sim.getAttribute('data-locked') === '1') {
+      P.push(kind + ": still locked after an option in its own activity was pressed");
+      return false;
+    }
+    return true;
+  }
+  function controlsRendered(sim, kind, P) {
+    var wanted = (sim.getAttribute('data-controls') || '').split(',');
+    var built = sim.querySelectorAll('.ks3-sim-controls .ks3-sim-control');
+    if (built.length !== wanted.length) {
+      P.push(kind + ": " + wanted.length + " controls declared, " + built.length
+             + " rendered - SIM_CONTROLS and CONTROL_LABELS have drifted apart");
+    }
+    var bad = 0;
+    for (var i = 0; i < built.length; i++) {
+      var input = built[i].querySelector('select, input');
+      var forId = built[i].getAttribute('for');
+      if (!input || !forId || input.id !== forId
+          || !built[i].textContent.trim()) { bad++; }
+    }
+    if (bad) {
+      P.push(kind + " R15: " + bad + " control(s) lack a real labelled input");
+    }
+    if (sim.querySelector('[data-correct]')) {
+      P.push(kind + " R3: a data-correct mark inside the instrument");
+    }
+  }
+"""
+
+_JS_MICRO_AUDIT = "(function () {" + _JS_R5_CHECKS + r"""
+  var P = [];
+  var sim = document.querySelector('.ks3-sim[data-sim="microscope"]');
+  if (!sim) { return { problems: ["no microscope sim on the page"] }; }
+  r5(sim, "microscope", P);
+  if (!unlockViaOwnActivity(sim, "microscope", P)) { return { problems: P }; }
+  controlsRendered(sim, "microscope", P);
+
+  // ⚠️ FIND CONTROLS BY NAME, NEVER BY POSITION.
+  //
+  // This used to read `sels[0]` as the specimen selector and `sels[1]` as the
+  // magnification one. That held only while every microscope declared both.
+  // Design's approved B1-02 draws TWO controls over ONE slide — magnification
+  // and focus, no specimen selector, because there is nothing to select — so
+  // positional indexing read the magnification select as the specimen select
+  // and reported two failures on a correct page. A gate that assumes a control
+  // layout fails the first lesson that legitimately has a different one.
+  var declared = (sim.getAttribute('data-controls') || '').split(',');
+  function controlNamed(name) {
+    var wraps = sim.querySelectorAll('.ks3-sim-control');
+    for (var i = 0; i < wraps.length; i++) {
+      if (wraps[i].getAttribute('data-control') === name) { return wraps[i]; }
+    }
+    // Fall back to declaration order among the controls that render a select.
+    var idx = declared.indexOf(name);
+    var sels = sim.querySelectorAll('.ks3-sim-controls select');
+    return idx >= 0 && sels[idx] ? sels[idx].closest('.ks3-sim-control') : null;
+  }
+  function selectIn(name) {
+    var w = controlNamed(name);
+    return w ? w.querySelector('select') : null;
+  }
+  var hasSpecimen = declared.indexOf('specimen') >= 0;
+  var specSel = hasSpecimen ? selectIn('specimen') : null;
+  var magSel = selectIn('magnification');
+  var focusInput = sim.querySelector('.ks3-sim-controls input[type="range"]');
+  var readout = sim.querySelector('.ks3-sim-readout');
+  var specimens = [];
+  try { specimens = JSON.parse(sim.getAttribute('data-specimens') || '[]'); }
+  catch (e) {}
+  // A lesson with one slide draws no selector, and that is correct. What is
+  // never correct is DECLARING the control and not rendering it.
+  if (hasSpecimen && (!specSel || specSel.options.length !== specimens.length)) {
+    P.push("microscope: specimen select offers "
+           + (specSel ? specSel.options.length : 0) + " slides, payload has "
+           + specimens.length);
+  }
+  if (!hasSpecimen && specimens.length > 1) {
+    P.push("microscope: " + specimens.length + " slides in the payload but no "
+           + "specimen control declared — the student cannot reach them");
+  }
+  // The objective control may be a select or a segmented group (B1-06).
+  if (!magSel) {
+    var segs = sim.querySelectorAll('.ks3-sim-seg-btn');
+    if (segs.length !== 3) {
+      P.push("microscope: magnification must offer the three objectives");
+    }
+  } else if (magSel.options.length !== 3) {
+    P.push("microscope: magnification select must offer the three objectives");
+  }
+  if (!focusInput) { P.push("microscope: no focus wheel rendered"); }
+
+  var r40 = readout.textContent;
+  if (r40.indexOf('×40') < 0 || r40.indexOf('4.5 mm') < 0) {
+    P.push("microscope model: at the lowest lens the readout must carry ×40 "
+           + "and a 4.5 mm field of view - got: " + r40.slice(0, 90));
+  }
+  if (magSel && focusInput) {
+    magSel.value = '2';
+    magSel.dispatchEvent(new Event('change'));
+    var r400 = readout.textContent;
+    if (r400.indexOf('×400') < 0 || r400.indexOf('0.45 mm') < 0) {
+      P.push("microscope model (b): at ×400 the field of view must read "
+             + "0.45 mm - one model drives every reading. got: "
+             + r400.slice(0, 90));
+    }
+    if (!/focus/i.test(r400) || /packed in rows/.test(r400)) {
+      P.push("microscope model (c): stepping ×40 to ×400 must throw the "
+             + "image out of focus until corrected - got: " + r400.slice(0, 120));
+    }
+    // "Correcting the focus at ×400 brings a layer back" is asserted as the
+    // PROPERTY — that some correction exists — by sweeping the wheel, rather
+    // than by driving one hardcoded position. It used to be `value = '8'`,
+    // which worked only because 8 plus the 22-unit parfocal shift landed
+    // exactly on the one onion layer's depth of 30 in the old slider-unit
+    // model. MRB-210 moved the model to millimetres and the onion to three
+    // layers, so that constant silently stopped meaning anything and the
+    // audit failed against a correct engine. A gate that encodes a magic
+    // number derived from engine constants breaks whenever those constants
+    // are ruled on; a gate that sweeps for the behaviour does not.
+    var found = -1, sample = '';
+    for (var fw = 0; fw <= 100; fw++) {
+      focusInput.value = String(fw);
+      focusInput.dispatchEvent(new Event('input'));
+      var rw = readout.textContent;
+      if (/onion cell/.test(rw) && !/nowhere near|nothing sharp/.test(rw)) {
+        found = fw; sample = rw.slice(0, 120); break;
+      }
+    }
+    if (found < 0) {
+      P.push("microscope model: at ×400 NO position of the focus wheel brings "
+             + "an onion layer sharp - the highest lens is unusable, which is "
+             + "not what the lesson teaches. last readout: "
+             + readout.textContent.slice(0, 120));
+    }
+  }
+  return { problems: P };
+})()"""
+
+_JS_PARTS_AUDIT = "(function () {" + _JS_R5_CHECKS + r"""
+  var P = [];
+  var sim = document.querySelector('.ks3-sim[data-sim="system-parts"]');
+  if (!sim) { return { problems: ["no system-parts sim on the page"] }; }
+  r5(sim, "system-parts", P);
+  if (!unlockViaOwnActivity(sim, "system-parts", P)) { return { problems: P }; }
+  controlsRendered(sim, "system-parts", P);
+
+  var parts = [];
+  try { parts = JSON.parse(sim.getAttribute('data-parts') || '[]'); }
+  catch (e) {}
+  var sel = sim.querySelector('.ks3-sim-controls select');
+  var readout = sim.querySelector('.ks3-sim-readout');
+  if (!sel || sel.options.length !== parts.length + 1) {
+    P.push("system-parts: the selector must offer every part plus "
+           + "'every part on' - " + (sel ? sel.options.length : 0)
+           + " options for " + parts.length + " parts");
+    return { problems: P };
+  }
+
+  // The cascade is DERIVED: kill the muscle tissue and the failure must
+  // climb the levels, in order, all the way to the organism - and the
+  // glandular side must be reported still working.
+  sel.value = 'muscle-tissue';
+  sel.dispatchEvent(new Event('change'));
+  var r = readout.textContent;
+  if (!(/Stopped, in the order/.test(r) && /Stomach/.test(r)
+        && /Digestive system/.test(r) && /organism/i.test(r))) {
+    P.push("system-parts cascade: switching off the muscle tissue must stop "
+           + "the stomach, the digestive system and the organism in order - "
+           + "got: " + r.slice(0, 160));
+  }
+  if (!/Still working/.test(r) || !/Gland/i.test(r)) {
+    P.push("system-parts cascade: the readout must also carry what still "
+           + "works - got: " + r.slice(0, 160));
+  }
+
+  // The scale rule: one cell out of thousands is absorbed, never cascaded.
+  sel.value = 'muscle-cell';
+  sel.dispatchEvent(new Event('change'));
+  var r2 = readout.textContent;
+  if (/Stopped, in the order/.test(r2) || !/cover for it/.test(r2)) {
+    P.push("system-parts scale rule: switching off ONE muscle cell must be "
+           + "absorbed by the tissue (one_of_many), not cascaded - got: "
+           + r2.slice(0, 160));
+  }
+  return { problems: P };
+})()"""
+
+SIM_AUDITS = {
+    B1_MICRO: ("microscope", _JS_MICRO_AUDIT),
+    # `system-parts` is PARKED, not deleted — see `_PARKED_SYSTEM_PARTS`. No
+    # lesson renders the kind since Design's approved B1-05 replaced it with
+    # `removal-cases`, so the audit has nothing to drive and would report "no
+    # system-parts sim on the page" on every run. `_JS_PARTS_AUDIT` stays in
+    # this file, with its cascade and scale-rule assertions intact, and this
+    # row goes back the day a lesson uses the kind again.
+}
 
 
 def check_rendered_glyphs(page):
@@ -1229,6 +2376,10 @@ def run_browser_layers(ks3_root, browser_mod):
         for spec in COMPONENTS:
             if spec["on"] != rel or spec.get("drive") != drive:
                 continue
+            if spec.get("parked"):
+                style_rows.append((spec["name"], "—", "PARKED",
+                                   spec["parked"], True))
+                continue
             sel = spec["sel"]
             if not page.eval("!!window.__ks3.q(%r)" % sel):
                 problems.append("PARITY: %s — selector %s not present on /%s%s"
@@ -1242,7 +2393,14 @@ def run_browser_layers(ks3_root, browser_mod):
                     ok = want.lower() in got.lower()
                 elif want.startswith("#"):
                     ok = same_colour(got, want)
-                elif want.endswith("px"):
+                # ⚠️ A LENGTH IS ONE TOKEN. `box-shadow: rgb(228, 87, 46) 5px
+                # 5px 0px 0px` ends in "px" and is not a length — routing it to
+                # `close_length` made an assertion fail while printing an
+                # expected and a resolved value that were CHARACTER-IDENTICAL,
+                # which is the most confusing failure a gate can produce. Found
+                # registering the KEY FACT box's accent shadow, which is the one
+                # property that distinguishes it from every other card.
+                elif want.endswith("px") and " " not in want.strip():
                     ok = close_length(got, want)
                 else:
                     ok = (got.lower() == want.lower())
@@ -1255,6 +2413,10 @@ def run_browser_layers(ks3_root, browser_mod):
     def measure_d(page, rel, drive):
         for spec in CONTRAST:
             if spec["on"] != rel or spec.get("drive") != drive:
+                continue
+            if spec.get("parked"):
+                contrast_rows.append(("%s [PARKED]" % spec["name"],
+                                      None, None, None, spec.get("need"), True))
                 continue
             fg_sel, bg_sel = spec["fg"], spec["bg"]
             if not page.eval("!!window.__ks3.q(%r)" % fg_sel):
@@ -1367,6 +2529,28 @@ def run_browser_layers(ks3_root, browser_mod):
                              % (len(ginfo["before"]), len(ginfo["after"]),
                                 ginfo["feedbackShown"], ginfo["svgMarks"]),
                              not gl))
+
+                # ── MRB-198: the sim audits — behaviour, not appearance ──
+                # An instrument's physics is not measurable as computed style,
+                # so each kind carries a behavioural audit that asserts the R5
+                # cover, unlocks through the sim's own activity, then drives the
+                # mechanism and reads what it says. Its own fresh load, because
+                # it clicks and it changes the readout.
+                if rel in SIM_AUDITS:
+                    audit_kind, audit_js = SIM_AUDITS[rel]
+                    page = fresh(b, url, rel)
+                    if page is not None:
+                        got = page.eval(audit_js)
+                        audit_problems = (got or {}).get("problems") or []
+                        for ap in audit_problems:
+                            problems.append("SIM AUDIT (/%s): %s" % (rel, ap))
+                        drain_console(page, rel,
+                                      " during the %s sim audit" % audit_kind)
+                        style_rows.append(
+                            ("sim audit · " + audit_kind,
+                             "behavioural assertions", "0 problems",
+                             "%d problem(s)" % len(audit_problems),
+                             not audit_problems))
     finally:
         server.shutdown()
 
