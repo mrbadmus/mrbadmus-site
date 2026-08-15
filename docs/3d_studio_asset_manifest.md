@@ -53,5 +53,5 @@ Specimen default: _unauthored_
 
 ## Authoring state
 
-4 placeholder string(s) across 1 record(s) still await Mide's Stage 8 science gate. `python3 3d-studio/validate_content.py` prints the itemised checklist.
+3 placeholder string(s) across 1 record(s) still await Mide's Stage 8 science gate. `python3 3d-studio/validate_content.py` prints the itemised checklist.
 

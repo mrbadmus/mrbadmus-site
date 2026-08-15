@@ -387,6 +387,7 @@ export default function App({
             <PhoneSheet
               rootRef={sheetRef}
               specimen={specimen}
+              keyStage={keyStage}
               raised={sheetRaised}
               onRaisedChange={setSheetRaised}
               openHotspotId={openHotspotId}
@@ -401,6 +402,7 @@ export default function App({
           <TabletPanel
             key="side"
             specimen={specimen}
+            keyStage={keyStage}
             openHotspotId={openHotspotId}
             onOpenHotspot={setOpenHotspotId}
             onStartRetrieval={enterRetrieval}
@@ -418,6 +420,7 @@ export default function App({
           <InfoPanel
             key="side"
             specimen={specimen}
+            keyStage={keyStage}
             openHotspotId={openHotspotId}
             onOpenHotspot={setOpenHotspotId}
             onStartRetrieval={enterRetrieval}

@@ -4,13 +4,14 @@
 // link shrinks to a glyph beside it.
 
 import { useRef } from 'react'
-import type { SpecimenRecord } from '../studio/types'
+import type { KeyStage, SpecimenRecord } from '../studio/types'
 import { SheetContent, LessonLink } from './InfoPanel'
 import { BookIcon } from './icons'
 
 export function PhoneSheet({
   rootRef,
   specimen,
+  keyStage,
   raised,
   onRaisedChange,
   openHotspotId,
@@ -21,6 +22,8 @@ export function PhoneSheet({
    * renderer frame the specimen above it (MRB-216). */
   rootRef?: React.Ref<HTMLDivElement>
   specimen: SpecimenRecord
+  /** whose key stage decides whether the lesson link is offered (spec §11) */
+  keyStage: KeyStage | null
   raised: boolean
   onRaisedChange: (raised: boolean) => void
   openHotspotId: string | null
@@ -53,12 +56,13 @@ export function PhoneSheet({
       <div className="sheet__body">
         <SheetContent
           specimen={specimen}
+          keyStage={keyStage}
           openHotspotId={openHotspotId}
           onOpenHotspot={onOpenHotspot}
         />
       </div>
       <div className="sheet__foot">
-        <LessonLink specimen={specimen} className="lessonglyph">
+        <LessonLink specimen={specimen} keyStage={keyStage} className="lessonglyph">
           <BookIcon />
         </LessonLink>
         <button type="button" className="btn btn--primary" onClick={onStartRetrieval}>

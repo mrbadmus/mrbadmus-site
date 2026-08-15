@@ -75,6 +75,31 @@ export function viewingKeyStage(profile: LearnerProfile): KeyStage | null {
 }
 
 /**
+ * Whether this viewer is offered the lesson link at all (spec §11).
+ *
+ * KS4 and anonymous viewers: yes. A KS3 viewer: NO — and ABSENT rather than
+ * disabled or pointed somewhere else.
+ *
+ * `lessonUrl` resolves to a single page, and the studio's content is written at
+ * triple-higher depth, so that page is a GCSE one. There is no KS3 circulation
+ * content anywhere in the scheme, so there is nothing else to point a Year 7
+ * student at. Sending one to a triple-higher GCSE page serves them worse than
+ * never showing the control: a disabled button says "this exists but not for
+ * you", which invites the click anyway and then teaches nothing.
+ *
+ * Anonymous keeps it for the same reason `viewingKeyStage` returns null for
+ * them — the studio is a public shopfront, and a parent or a head of department
+ * looking at what the thing can do should see the whole of it.
+ *
+ * A per-key-stage lessonUrl map would make this a routing question instead of a
+ * visibility one. That is a bigger change than spec §11 asked for and it needs
+ * KS3 pages to exist first.
+ */
+export function offersLesson(keyStage: KeyStage | null): boolean {
+  return keyStage !== 'KS3'
+}
+
+/**
  * The specimen as one viewer sees it — the single record every surface then
  * reads, so the stage, the panel, the sheet and the round cannot disagree
  * about what is on the heart.

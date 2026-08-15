@@ -317,3 +317,144 @@ describe('gate 14 — the panel, the library card and the stage report one numbe
     expect(seen.dots).toBe(ALL_STRUCTURES)
   })
 })
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The lesson link (spec §11's URL map, MRB-218).
+//
+// `lessonUrl` now resolves to a real page — the triple-higher organisation
+// lesson, because the studio's content is written at triple-higher depth and
+// that is the page that matches it.
+//
+// It is therefore a GCSE page, and a Year 7 student sent to one is worse served
+// than a Year 7 student who never sees the control. There is no KS3 circulation
+// content anywhere in the scheme, so there is nothing else to point them at.
+// The control is ABSENT for a KS3 viewer — not disabled, not redirected.
+//
+// Asserted through the real App at every layout that carries the link, because
+// there are four call sites and "absent" has to mean absent at all of them.
+
+describe('gate 14 — the lesson link is offered by key stage', () => {
+  /** The layout is chosen from `window.innerWidth` by `layoutFor`, NOT from
+   * the capability report's viewport — so the width has to be set on the
+   * window before render or all three "layouts" are the jsdom default and this
+   * asserts the desktop panel three times. (It did, on the first run: the
+   * phone assertions passed against the desktop button and the sheet was never
+   * mounted at all.) */
+  async function lessonLinksFor(profile: LearnerProfile, width = 1440) {
+    const previous = window.innerWidth
+    Object.defineProperty(window, 'innerWidth', {
+      value: width,
+      writable: true,
+      configurable: true,
+    })
+    const { unmount } = render(
+      createElement(App, {
+        capability: { ...TIER_A, viewport: { width, height: 900 } },
+        createRenderer: viewportPlaceholder,
+        profile,
+      }),
+    )
+    await waitFor(() =>
+      expect(document.querySelectorAll('.hotspot').length).toBeGreaterThan(0),
+    )
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>(
+        'a.btn--outline, a.lessonrow, a.lessonglyph',
+      ),
+    )
+    const result = {
+      count: links.length,
+      hrefs: links.map((a) => a.getAttribute('href')),
+      /** which construction rendered — the desktop/tablet button, the sheet
+       * row, or the sheet foot glyph */
+      marks: links.map((a) => a.className).join(' '),
+      // The divider that heads the phone sheet's link must go with it.
+      relatedRule: Array.from(document.querySelectorAll('.sectionrule .eyebrow')).some(
+        (e) => e.textContent === 'Related lesson',
+      ),
+    }
+    unmount()
+    Object.defineProperty(window, 'innerWidth', {
+      value: previous,
+      writable: true,
+      configurable: true,
+    })
+    return result
+  }
+
+  const LESSON = '/triple/higher/biology/organisation/heart-blood-vessels.html'
+  // The three layouts `layoutFor` resolves, and between them all four
+  // LessonLink call sites: desktop panel foot, tablet actions, phone sheet
+  // body row, phone sheet foot glyph.
+  const LAYOUTS = [
+    ['desktop', 1440],
+    ['tablet', 900],
+    ['phone', 390],
+  ] as const
+
+  it('the record points at a real generated page, not a placeholder', () => {
+    // validate_content.py gate 3 proves it resolves on disk; this proves the
+    // app is reading the resolved value rather than a TODO string.
+    expect(heart.lessonUrl).toBe(LESSON)
+    expect(heart.lessonUrl.startsWith('TODO')).toBe(false)
+  })
+
+  it('the three widths really do produce three different layouts', async () => {
+    // Guards the trap this harness fell into once already: if `layoutFor` ever
+    // stops reading window.innerWidth, every assertion below silently becomes
+    // the desktop one repeated three times.
+    expect((await lessonLinksFor(KS4_HIGHER, 1440)).marks).toContain('btn--outline')
+    expect((await lessonLinksFor(KS4_HIGHER, 900)).marks).toContain('btn--outline')
+    expect((await lessonLinksFor(KS4_HIGHER, 390)).marks).toContain('lessonglyph')
+    expect((await lessonLinksFor(KS4_HIGHER, 390)).marks).toContain('lessonrow')
+  })
+
+  for (const [layout, width] of LAYOUTS) {
+    it(`a KS4 student is offered it on ${layout}`, async () => {
+      const seen = await lessonLinksFor(KS4_HIGHER, width)
+      expect(seen.count).toBeGreaterThan(0)
+      for (const href of seen.hrefs) expect(href).toBe(LESSON)
+    })
+
+    it(`an anonymous visitor is offered it on ${layout}`, async () => {
+      // The shopfront rule: no account means no key stage to filter by.
+      const seen = await lessonLinksFor(PROVISIONAL_ANONYMOUS_PROFILE, width)
+      expect(seen.count).toBeGreaterThan(0)
+      for (const href of seen.hrefs) expect(href).toBe(LESSON)
+    })
+
+    it(`a KS3 student is offered NOTHING on ${layout} — absent, not disabled`, async () => {
+      const seen = await lessonLinksFor(KS3_STUDENT, width)
+      expect(seen.count, `${layout}: KS3 was offered ${seen.hrefs.join(', ')}`).toBe(0)
+      // Not merely hidden by CSS or disabled: nothing pointing at the lesson
+      // may be in the document at all.
+      expect(document.querySelector(`a[href="${LESSON}"]`)).toBeNull()
+    })
+  }
+
+  it('the phone sheet drops the "Related lesson" rule along with the link', async () => {
+    // A section rule standing over nothing reads as content that failed to
+    // load, which is a worse answer than the absence it is trying to express.
+    const phone = 390
+    expect((await lessonLinksFor(KS4_HIGHER, phone)).relatedRule).toBe(true)
+    expect((await lessonLinksFor(KS3_STUDENT, phone)).relatedRule).toBe(false)
+  })
+
+  it('KS3 keeps everything else the panel offers — only the lesson goes', async () => {
+    // The failure mode this guards: hiding the link by hiding the panel foot,
+    // which would take Start retrieval with it and cost a KS3 student the
+    // round they are entitled to.
+    render(
+      createElement(App, {
+        capability: TIER_A,
+        createRenderer: viewportPlaceholder,
+        profile: KS3_STUDENT,
+      }),
+    )
+    await waitFor(() =>
+      expect(document.querySelectorAll('.hotspot').length).toBeGreaterThan(0),
+    )
+    const buttons = Array.from(document.querySelectorAll('button')).map((b) => b.textContent)
+    expect(buttons).toContain('Start retrieval')
+  })
+})

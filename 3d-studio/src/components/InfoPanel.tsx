@@ -15,7 +15,8 @@
 // tools/asset_manifest.py, is where a school's procurement question is
 // answered. Spec points went with them (see RecordSection).
 
-import type { SpecimenRecord } from '../studio/types'
+import type { KeyStage, SpecimenRecord } from '../studio/types'
+import { offersLesson } from '../studio/content'
 import { ArrowIcon } from './icons'
 
 function isPlaceholder(value: string): boolean {
@@ -119,15 +120,35 @@ export function Callouts({ specimen }: { specimen: SpecimenRecord }) {
   )
 }
 
+/**
+ * The way out to the lesson — or nothing at all.
+ *
+ * TWO SEPARATE ABSENCES, and they are not the same thing:
+ *
+ *   `offersLesson(keyStage)` false → the control is NOT RENDERED. A KS3 viewer
+ *     is not offered a triple-higher GCSE page (see `offersLesson`). Returning
+ *     null here rather than at four call sites is what keeps the desktop panel,
+ *     the tablet panel, the phone sheet and the sheet foot from drifting apart.
+ *
+ *   a TODO `lessonUrl` → the control renders and is DISABLED. That is the
+ *     pre-acquisition state: the lesson exists as an intention, the record has
+ *     not been pointed at it yet, and the disabled control carries the TODO in
+ *     its title so it is visible to whoever is authoring. Dead for the heart
+ *     since spec §11's map landed; still the right behaviour for the seven
+ *     specimens that follow it.
+ */
 export function LessonLink({
   specimen,
+  keyStage,
   className,
   children,
 }: {
   specimen: SpecimenRecord
+  keyStage: KeyStage | null
   className: string
   children: React.ReactNode
 }) {
+  if (!offersLesson(keyStage)) return null
   const placeholder = isPlaceholder(specimen.lessonUrl)
   return (
     <a
@@ -180,11 +201,14 @@ export function RecordSection({ specimen }: { specimen: SpecimenRecord }) {
 /** Desktop right-hand panel (§01) */
 export function InfoPanel({
   specimen,
+  keyStage,
   openHotspotId,
   onOpenHotspot,
   onStartRetrieval,
 }: {
   specimen: SpecimenRecord
+  /** whose key stage decides whether the lesson link is offered (spec §11) */
+  keyStage: KeyStage | null
   openHotspotId: string | null
   onOpenHotspot: (id: string | null) => void
   onStartRetrieval: () => void
@@ -205,7 +229,7 @@ export function InfoPanel({
         <RecordSection specimen={specimen} />
       </div>
       <div className="panel__foot">
-        <LessonLink specimen={specimen} className="btn btn--outline">
+        <LessonLink specimen={specimen} keyStage={keyStage} className="btn btn--outline">
           Open lesson
         </LessonLink>
         <button type="button" className="btn btn--primary" onClick={onStartRetrieval}>
@@ -220,11 +244,14 @@ export function InfoPanel({
  * title so they stay above the fold (§04) */
 export function TabletPanel({
   specimen,
+  keyStage,
   openHotspotId,
   onOpenHotspot,
   onStartRetrieval,
 }: {
   specimen: SpecimenRecord
+  /** whose key stage decides whether the lesson link is offered (spec §11) */
+  keyStage: KeyStage | null
   openHotspotId: string | null
   onOpenHotspot: (id: string | null) => void
   onStartRetrieval: () => void
@@ -237,7 +264,7 @@ export function TabletPanel({
           <TitleBlock specimen={specimen} />
         </div>
         <div className="tpanel__actions">
-          <LessonLink specimen={specimen} className="btn btn--outline">
+          <LessonLink specimen={specimen} keyStage={keyStage} className="btn btn--outline">
             Open lesson
           </LessonLink>
           <button type="button" className="btn btn--primary" onClick={onStartRetrieval}>
@@ -268,10 +295,13 @@ export function TabletPanel({
  * itself lives in PhoneSheet (§05) */
 export function SheetContent({
   specimen,
+  keyStage,
   openHotspotId,
   onOpenHotspot,
 }: {
   specimen: SpecimenRecord
+  /** whose key stage decides whether the lesson link is offered (spec §11) */
+  keyStage: KeyStage | null
   openHotspotId: string | null
   onOpenHotspot: (id: string | null) => void
 }) {
@@ -287,20 +317,27 @@ export function SheetContent({
       />
       <KeyFactsSection specimen={specimen} />
       <Callouts specimen={specimen} />
-      <div className="sectionrule">
-        <span className="eyebrow">Related lesson</span>
-        <span className="sectionrule__line" aria-hidden="true" />
-      </div>
-      <LessonLink specimen={specimen} className="lessonrow">
-        <span className="lessonrow__thumb" aria-hidden="true" />
-        <span>
-          <span className="lessonrow__title">{specimen.name}</span>
-          <span className="lessonrow__meta">{specimen.keyStages.join(' · ')}</span>
-        </span>
-        <span className="lessonrow__arrow" aria-hidden="true">
-          <ArrowIcon size={18} />
-        </span>
-      </LessonLink>
+      {/* The divider goes with the link it heads. A "Related lesson" rule
+          standing over nothing is worse than no rule: it reads as content that
+          failed to load rather than as content this viewer is not offered. */}
+      {offersLesson(keyStage) && (
+        <>
+          <div className="sectionrule">
+            <span className="eyebrow">Related lesson</span>
+            <span className="sectionrule__line" aria-hidden="true" />
+          </div>
+          <LessonLink specimen={specimen} keyStage={keyStage} className="lessonrow">
+            <span className="lessonrow__thumb" aria-hidden="true" />
+            <span>
+              <span className="lessonrow__title">{specimen.name}</span>
+              <span className="lessonrow__meta">{specimen.keyStages.join(' · ')}</span>
+            </span>
+            <span className="lessonrow__arrow" aria-hidden="true">
+              <ArrowIcon size={18} />
+            </span>
+          </LessonLink>
+        </>
+      )}
       <RecordSection specimen={specimen} />
       <div style={{ height: 16 }} aria-hidden="true" />
     </>
