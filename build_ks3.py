@@ -10220,6 +10220,7 @@ def r_activity(lesson, block_type, act_id, block=None):
     # goes. Only a block that authors `head_counter` takes the row, so no
     # shipped block moves.
     hc = a.get("head_counter")
+    head_emitted_content = False
     if block_type == "misconception":
         parts.append('<div class="ks3-mis-head">'
                      '<span class="ks3-mis-badge" aria-hidden="true">!</span>'
@@ -10229,6 +10230,11 @@ def r_activity(lesson, block_type, act_id, block=None):
         # C1's seven confrontations do not move: none of them carries any of
         # the new keys.
         parts.append(r_confrontation(lesson, a, act_id))
+        # ⊕ MRB-244 — a `misconception` block renders its whole body HERE, in
+        # the head branch, before the framing mark below. Without this flag the
+        # empty-activity gate would read every confrontation in the key stage
+        # as having produced nothing and fail six live B1 lessons.
+        head_emitted_content = True
     elif hc:
         parts.append('<div class="ks3-blockhead"><div>'
                      '<p class="ks3-eyebrow">%s</p>%s</div>%s</div>'
@@ -10256,6 +10262,12 @@ def r_activity(lesson, block_type, act_id, block=None):
         # wording of "Your turn" — a live check silently disarmed.
         tag = "p" if a.get("cards") else prompt_tag
         parts.append("<%s>%s</%s>" % (tag, t(a["prompt"]), tag))
+
+    # ⊕ MRB-244 — everything appended so far is FRAMING: eyebrow, heading,
+    # head-counter, prompt. Everything after this line is the activity itself.
+    # The check at the end of this function compares against this mark, so a
+    # kind with no renderer cannot ship an empty block. See it for why.
+    head_len = len(parts)
 
     # ⊕ MRB-228 — one lookup, replacing the fifty-line `if kind ==` chain. See
     # `ACTIVITY_KIND_FN` for what the chain cost. The branches were mutually
@@ -10317,6 +10329,44 @@ def r_activity(lesson, block_type, act_id, block=None):
                          % t(rev))
     if a.get("success"):
         parts.append(r_criteria(a["success"]))
+
+    # ⊕ MRB-244 — AN ACTIVITY THAT RENDERS NOTHING IS A BUILD FAILURE.
+    #
+    # Both dispatch lookups above are `.get()` with a silent fall-through
+    # (`if instrument:` / `if fn:`), so an activity whose `kind` has no
+    # registered renderer emitted its eyebrow, its heading, its prompt and its
+    # head-counter — and then stopped. The section still carried the practical
+    # shell, so it looked like an instrument block with the instrument missing.
+    #
+    # This is not hypothetical and it is not cheap. B5 was authored by eight
+    # passes in parallel while the engine pass that owned the eight renderers
+    # was killed mid-run before writing any of them. Seven lesson records
+    # landed naming `cycle-dial`, `flower-jobs`, `disperse-sort` and the rest;
+    # every page built, and `build_ks3.py` printed ✅ validation passed. One of
+    # them shipped a block reading "0 of 3 lengths tried" with nothing on the
+    # page to try, above a rail stop that could never tick.
+    #
+    # The contract's gate 6 says a dispatch-table entry is not a component and
+    # that instruments have shipped as bare bullet lists past a green kinds
+    # gate. This is the same defect one step further on — no bullet list, no
+    # dispatch row, and still green. A gate that only a browser can fail is not
+    # protecting the eleven units still to be authored.
+    #
+    # The test is deliberately "did this activity produce any content at all"
+    # rather than "is this kind in the registry": several legitimate kinds
+    # carry no `ACTIVITY_KIND_FN` row and render through `options`, `cards`,
+    # `sim`, `fifa`, `reveal` or `statements` instead, and enumerating them
+    # here would be a second registry to keep in step with the first.
+    if len(parts) == head_len and not head_emitted_content:
+        raise ValueError(
+            "%s: activity %r (kind %r) rendered NOTHING but its heading and "
+            "prompt. Either the kind has no renderer registered in "
+            "ACTIVITY_KIND_RENDERERS/ACTIVITY_KIND_FN, or it is authored with "
+            "no options, cards, sim, fifa, reveal or success. A practical "
+            "shell with no instrument inside it is an empty block, not a "
+            "lesson."
+            % (lesson.get("slug"), act_id, kind))
+
     parts.append("</section>")
     return "".join(parts)
 
