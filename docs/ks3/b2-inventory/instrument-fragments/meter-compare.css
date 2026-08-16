@@ -1,0 +1,84 @@
+/* ── meter-compare (b2-04 #s-meters) — three groups, three readings each ──
+   Append to the B2 group in shared/ks3.css, after `.ks3-lstep-*`.
+
+   A light `check` block on the DEFAULT card ground, so nothing here needs the
+   `.ks3-dark …` scoping the rig does — and it must not acquire it: `#s-build`
+   directly above sits on the inset ground and this one does not, which is
+   Design's own measured difference between the two light blocks. */
+
+.ks3-meters { margin-top: 0; }
+/* 34rem, Design's own measure. These options are three candidate ORDERINGS
+   read against each other, and a full-width answer button on a 60rem column
+   is a target the eye has to travel to compare with the one above it. */
+.ks3-meters-commit .ks3-options { max-width: 34rem; }
+
+.ks3-meters-reveal { margin-top: 20px; }
+/* Auto-fit rather than three fixed columns: at 1450 N the leg-press card
+   carries the widest readings row on the page, and a fixed grid would either
+   wrap that line or squeeze the other two. The `min()` keeps a single card
+   from overflowing a phone. */
+.ks3-meters-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 14px;
+}
+/* Card on a 2px INK border, not the option border the commit buttons take.
+   These are not answers — they are the measurements, and the heavier rule is
+   what separates data from a control. */
+.ks3-meters-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-meters-name {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* ⚖️ THE THREE READINGS ARE MONO AND THEY ARE NOT SMALL PRINT. They are the
+   evidence the mean is drawn from, and setting them as a caption under the
+   headline number would teach that the mean is the measurement and the
+   spread is a footnote — which is the misconception the closing band exists
+   to break. */
+.ks3-meters-readings {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-meters-mean {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+/* The label under the headline says what the headline IS. Without it a 305
+   in display type reads as "the strength of a hand grip" rather than as one
+   summary of three disagreeing pulls. */
+.ks3-meters-meanlabel {
+  margin: 4px 0 0;
+  font-size: 16px;
+  color: var(--ks3-ink-muted);
+}
+/* The band closes the block, on the same ground a key fact takes but with no
+   shadow — it is the conclusion drawn from the three cards above it rather
+   than a standing law, and the accent shadow is what marks the difference. */
+.ks3-meters-close {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}

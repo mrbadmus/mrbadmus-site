@@ -35,6 +35,9 @@ painted on the wrong ground. Measured from Design's own markup, page by page:
     b2-02 #s-cases   ks3-block (inset ground)         light  → check
     b2-03 #s-bench   ks3-block ks3-dark ks3-practical dark   → practical
     b2-03 #s-pairs   ks3-block (inset ground)         light  → check
+    b2-04 #s-bench   ks3-block ks3-dark ks3-practical dark   → practical
+    b2-04 #s-build   ks3-block (inset ground)         light  → check
+    b2-04 #s-meters  ks3-block (default ground)       light  → check
 
 The inset ground is authored per block (`ground: "inset"`), because it is a
 property of the block Design drew and not of the instrument inside it — the
@@ -52,6 +55,15 @@ _INSTRUMENT_SEGMENTS = {
     "job-sort":      "check",
     "joint-bench":   "practical",
     "muscle-pair":   "practical",
+    # ⊕ b2-04. `arm-lever` is the only one of the three that inverts: Design
+    # paints the rig on ink like the other two benches, and paints both of
+    # b2-04's other instruments on a light block. `#s-meters` takes the
+    # DEFAULT card ground rather than the inset one `#s-build` takes, so it
+    # authors no `ground` at all — two light blocks, two different grounds,
+    # and the difference is measured off Design's markup rather than assumed.
+    "arm-lever":     "practical",
+    "lever-steps":   "check",
+    "meter-compare": "check",
 }
 
 # Keys that stay on the BLOCK when an instrument is lifted, because they

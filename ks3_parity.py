@@ -430,9 +430,17 @@ UNIT = "chemistry/particles-and-their-behaviour/index.html"
 # the ONLY unit in the key stage with a §4.6 reference slot, so it is the only
 # page where the pointer can be measured at all.
 # UNIT_SOON moved off B1 when MRB-198 landed Design's B1 content — a fully
-# authored unit has no coming-soon rows to measure. B2 is the next unit in
-# the same discipline with none of its lessons authored.
-UNIT_SOON = "biology/movement-skeleton-and-muscles/index.html"
+# authored unit has no coming-soon rows to measure. It moved off B2 on
+# 16 Aug 2026 (MRB-228) for exactly the same reason, the moment b2-04 made B2
+# four of four.
+#
+# ⊕ Chosen to STOP MOVING. B1 → B2 in a week is a reference page that has to be
+# repointed every time a unit completes, and each repoint is a chance to point
+# it somewhere that quietly has nothing to measure. C3 has no delivered content
+# anywhere in the repo and is in no queued ticket's scope — not this run's
+# B3–B7, not MRB-223's P1–P3 — so it will still have coming-soon rows long
+# after the biology units are done.
+UNIT_SOON = "chemistry/mixtures-and-separation/index.html"
 UNIT_REF = "biology/nutrition-and-digestion/index.html"
 LANDING = "index.html"
 YEAR = "year-7/index.html"
@@ -449,6 +457,10 @@ C1_STATES = "chemistry/particles-and-their-behaviour/solids-liquids-and-gases.ht
 
 
 
+
+# ═══ BEGIN B2 ═══
+B2_BIO = "biology/movement-skeleton-and-muscles/biomechanics-forces-in-the-body.html"
+# ═══ END B2 ═══
 
 COMPONENTS = [
     # ── foundations ──
@@ -1972,6 +1984,190 @@ COMPONENTS = [
          sel=".ks3-smatrix-foot",
          props={"color": "#5F564F", "font-size": "18px"}),
     # ═══ END C1 ═══ rows
+    # ═══ BEGIN B2 ═══ rows
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b2-04. It is the only ink-dark instrument in the
+# lesson, which is why three of the four rows below exist.
+#
+#     B2_BIO = "biology/movement-skeleton-and-muscles/biomechanics-forces-in-the-body.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── arm-lever (b2-04 #s-bench) ──
+    #
+    # ⚠️ THIS ROW IS THE SPECIFICITY GUARD, and it is the reason the rest of
+    # the block's rules are written `.ks3-dark …`. `.ks3-dark p` is (0,1,1);
+    # a bare `.ks3-lever-tile-label` is (0,1,0) and LOSES, so an unscoped
+    # colour renders the mono uppercase caption in `--ks3-on-dark-body` — the
+    # same tone as the value under it, which stops the tile reading as a
+    # caption over a number. Legible, so nobody reports it; wrong, so the
+    # three measured tiles quietly stop being tiles. B1's zoom instrument
+    # shipped exactly this and the joint bench nearly repeated it.
+    dict(name="rig tile caption is mono muted on the dark panel, not body copy",
+         on=B2_BIO, drive="lever-opened", sel=".ks3-lever-tile-label",
+         props={"color": "#C6B9A7", "font-size": "13px",
+                "text-transform": "uppercase"}),
+    # ⚖️ THE TWO TILE TREATMENTS ARE THE GATE MADE VISIBLE. The three measured
+    # tiles are mono 25px and the force tile is 19px/700 prose type, because
+    # until the meter is fitted it holds a sentence. A single treatment would
+    # set "not measured — you work it out" in a 25px readout face, which reads
+    # as a broken number rather than as a refusal.
+    dict(name="a measured tile is a 25px mono readout", on=B2_BIO,
+         drive="lever-opened",
+         sel='.ks3-lever-tile-value[data-lever-out="weight"]',
+         props={"font-size": "25px", "font-weight": "500",
+                "color": "#FBF3E6"}),
+    dict(name="the withheld force tile is prose type, not a readout",
+         on=B2_BIO, drive="lever-opened",
+         sel='.ks3-lever-tile-value[data-lever-out="force"]',
+         props={"font-size": "19px", "font-weight": "700"}),
+    # The rig's frame matches the joint bench's value for value — same 2px
+    # muted rule, same card radius. Two canvases framed differently on two
+    # pages of one unit is drift a student notices before an adult does.
+    dict(name="rig canvas frame is a 2px muted rule on a card radius",
+         on=B2_BIO, drive="lever-opened", sel=".ks3-lever-stage",
+         props={"border-top-color": "#C6B9A7", "border-top-width": "2px",
+                "border-top-left-radius": "22px"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# Measured on b2-04, the only page that renders the WIDENED triangle. b1-02
+# renders the narrow one and is asserted separately, by byte-identity across
+# the splice rather than by a resolved-style row — a rule that passes on both
+# variants would prove nothing about either.
+#
+#     B2_BIO = "biology/movement-skeleton-and-muscles/biomechanics-forces-in-the-body.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule below was deliberately broken in shared/ks3.css
+# and the row confirmed to fail before it was kept.
+
+    # ── cover-triangle · triangle variant (b2-04's rule block) ──
+    #
+    # ⚠️ THIS ROW IS THE b1-02 GUARD. Every widened declaration is scoped
+    # `[data-tri-layout="row"]`, and the row layout is what proves the scope
+    # exists: if a future tidy-up moved the flex onto bare `.ks3-triangle`,
+    # b1-02's centred stack would silently become a two-column row and this
+    # row would still pass — so it asserts the SIDE panel's own flex basis,
+    # which only the widened markup has an element for.
+    dict(name="the widened triangle puts the reading beside the figure",
+         on=B2_BIO, sel='.ks3-triangle[data-tri-layout="row"] .ks3-tri-row',
+         props={"display": "flex", "flex-wrap": "wrap",
+                "column-gap": "52px", "row-gap": "34px"}),
+    dict(name="the side panel is left-aligned and can stack at 260px",
+         on=B2_BIO, sel=".ks3-tri-side",
+         props={"text-align": "left", "min-width": "260px"}),
+    # The arrangement is the line a student writes down, so it is display type
+    # at the same 30px the bar variant's result takes — one reading treatment
+    # across both shapes of the same component, or a student meeting both
+    # would read them as two different kinds of statement.
+    dict(name="the covered cell's arrangement is 30px display type",
+         on=B2_BIO, sel='.ks3-tri-result:not([hidden])',
+         props={"font-size": "30px", "font-weight": "800",
+                "color": "#221E1B"}),
+    # ⚠️ THE ROW'S NOTE IS A BARE PARAGRAPH. b1-02's is an inset panel on a
+    # 2px ink border, and that rule is still in the stylesheet above this one
+    # — this row is what proves the override reaches, because a box around one
+    # of five stacked blocks in a column reads as a callout rather than as the
+    # sentence explaining the line above it.
+    dict(name="the row variant's sentence is not the inset panel",
+         on=B2_BIO, sel='.ks3-tri-note:not([hidden])',
+         props={"border-top-width": "0px", "padding-top": "0px",
+                "font-size": "19px"}),
+    # The balanced condition, set apart. It is the statement that makes every
+    # question on the page solvable, and it is deliberately NOT the 18px
+    # ink-body the rule line above it takes.
+    dict(name="the balanced condition is set apart in display type",
+         on=B2_BIO, sel=".ks3-tri-condition",
+         props={"font-family": "Bricolage Grotesque", "font-size": "21px",
+                "font-weight": "700"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b2-04.
+#
+#     B2_BIO = "biology/movement-skeleton-and-muscles/biomechanics-forces-in-the-body.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── lever-steps (b2-04 #s-build) ──
+    #
+    # ⚖️ THE TWO MRB-204 STEP-4 BLOCKS MUST LOOK THE SAME. This row's values
+    # are `.ks3-pick-opt`'s, deliberately: c2-06 asks a chemistry student to
+    # pick between three candidate equations and b2-04 asks a biology student
+    # to do exactly that, and a student meeting both would otherwise read them
+    # as two different kinds of task. If either drifts, this fails.
+    dict(name="a candidate equation is left-aligned mono on the option border",
+         on=B2_BIO, sel=".ks3-lstep-opt",
+         props={"font-family": "DM Mono", "font-size": "16px",
+                "text-align": "left", "min-height": "44px",
+                "border-top-color": "#DDCFB6"}),
+    # R3 lives in this row. The chosen pick takes the accent BORDER and tint
+    # and nothing else — no green, no mark, no verdict — because only the
+    # mastery ladder marks correctness. A regression that added `is-correct`
+    # styling here would turn the whole page into a test.
+    dict(name="a chosen equation is chosen, never correct", on=B2_BIO,
+         drive="lsteps-committed",
+         sel='.ks3-lstep-opt[aria-pressed="true"]',
+         props={"border-top-color": "#E4572E",
+                "background-color": "#FCE7DE"}),
+    # ⚠️ THE MODEL ANSWER INVERTS TO INK inside a light block, and the chip is
+    # ALERT rather than the accent the worked example upstairs uses. Two FIFA
+    # sets on one page, same four letters, two grounds — and the accent does
+    # not carry on ink, which is why the pair changes.
+    dict(name="the model answer lands on ink with an alert chip", on=B2_BIO,
+         drive="lsteps-opened", sel=".ks3-lstep-chip",
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "width": "34px"}),
+    # ⚖️ The closing line quotes the student's answer beside the worked one in
+    # ordinary on-dark body copy — NOT a verdict colour. It is a comparison
+    # the student makes, never a mark the page makes (R3 / MRB-196 R10).
+    dict(name="the closing comparison is body copy, not a verdict", on=B2_BIO,
+         drive="lsteps-opened", sel=".ks3-lstep-close",
+         props={"color": "#E7DECE", "font-size": "19px"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b2-04.
+#
+#     B2_BIO = "biology/movement-skeleton-and-muscles/biomechanics-forces-in-the-body.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── meter-compare (b2-04 #s-meters) ──
+    #
+    # ⚖️ THE READINGS ARE EVIDENCE, NOT SMALL PRINT. This row is the one that
+    # matters pedagogically: 17px mono in ink-BODY, not a 13px muted caption.
+    # Shrink them and the card teaches that the mean is the measurement and
+    # the spread is a footnote, which is exactly the idea the closing band
+    # exists to break — and it would be invisible to reading the CSS, because
+    # a caption under a headline looks tidy.
+    dict(name="the three readings are evidence, at readable mono", on=B2_BIO,
+         drive="meters-ranked", sel=".ks3-meters-readings",
+         props={"font-family": "DM Mono", "font-size": "17px",
+                "color": "#3B342E"}),
+    dict(name="the mean is the card's headline in display type", on=B2_BIO,
+         drive="meters-ranked", sel=".ks3-meters-mean",
+         props={"font-family": "Bricolage Grotesque", "font-size": "30px",
+                "font-weight": "800"}),
+    # A 2px INK border, not the `--ks3-option-border` the commit buttons take.
+    # These cards are the measurements and the heavier rule is what separates
+    # data from a control on the same cream ground.
+    dict(name="a meter card is a card on ink, not on the option border",
+         on=B2_BIO, drive="meters-ranked", sel=".ks3-meters-card",
+         props={"border-top-color": "#221E1B", "border-top-width": "2px",
+                "background-color": "#FFFCF5"}),
+    # 34rem, Design's own measure. Three candidate orderings are read against
+    # each other, and a full-width button on a 60rem column is a target the
+    # eye has to travel to compare with the one above it.
+    dict(name="the ranking options keep Design's 34rem measure", on=B2_BIO,
+         sel=".ks3-meters-commit .ks3-options",
+         props={"max-width": "544px"}),
+    # ═══ END B2 ═══ rows
 ]
 
 
@@ -3398,6 +3594,260 @@ DRIVES = {
 })()
 """,
     # ═══ END C1 ═══ drives
+    # ═══ BEGIN B2 ═══ drives
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # Nothing inside the rig exists in the document's layout until the commit
+    # gate is answered — `r_bench_gate` hides the whole body rather than
+    # greying it, so every measurement above needs this first. Which gate
+    # option is deliberately unspecified: under R3 all four render identically
+    # and open the same instrument.
+    "lever-opened": r"""
+(function () {
+  var sec = document.querySelector('[data-leverblock]');
+  if (!sec) { return "no arm-lever on the page"; }
+  var opt = sec.querySelector('[data-benchgate] .ks3-option');
+  if (!opt) { return "the rig offers no commit gate"; }
+  opt.click();
+  var body = sec.querySelector('[data-lever]');
+  if (!body || body.hasAttribute('hidden')) {
+    return "the gate was answered and the rig is still hidden";
+  }
+  if (!body.querySelector('[data-lever-canvas]')) {
+    return "the rig opened with no canvas in it";
+  }
+  return "";
+})()
+""",
+    # ⚖️ THE WITHHELD NUMBER, ASSERTED RATHER THAN TRUSTED. This drive is what
+    # stops the lesson being quietly deleted by a refactor: it proves the
+    # force is unreadable before the meter, readable after it, and that the
+    # canvas label follows the same gate — a screen-reader user must not be
+    # handed the answer a sighted student has to work out.
+    "lever-metered": r"""
+(function () {
+  var sec = document.querySelector('[data-leverblock]');
+  if (!sec) { return "no arm-lever on the page"; }
+  var opt = sec.querySelector('[data-benchgate] .ks3-option');
+  if (opt) { opt.click(); }
+  var body = sec.querySelector('[data-lever]');
+  if (!body) { return "the rig never opened"; }
+  var tile = body.querySelector('[data-lever-out="force"]');
+  var canvas = body.querySelector('[data-lever-canvas]');
+  if (!tile || !canvas) { return "the rig has no force tile or no canvas"; }
+  var withheld = body.getAttribute('data-unmeasured');
+  if (tile.textContent.trim() !== withheld.trim()) {
+    return "the force tile reads " + tile.textContent + " before the meter was fitted";
+  }
+  // The distances legitimately carry digits, so the label is checked against
+  // the MEASURED CLAUSE's own opening words rather than against "any number".
+  if (body.getAttribute('data-alt-measured')
+      && canvas.getAttribute('aria-label').indexOf(
+           body.getAttribute('data-alt-measured').split('{force}')[0]) >= 0) {
+    return "the canvas label carried the meter reading before the meter was fitted";
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the rail stop ticked before any control was moved";
+  }
+  var slider = body.querySelector('[data-lever-input="load"]');
+  var tabs = body.querySelectorAll('[data-lever-tab="hand"]');
+  if (!slider || tabs.length < 2) { return "the rig is missing its controls"; }
+  slider.value = '4';
+  slider.dispatchEvent(new Event('input', { bubbles: true }));
+  tabs[1].click();
+  var btn = body.querySelector('[data-lever-meter]');
+  if (!btn) { return "the rig has no meter button"; }
+  btn.click();
+  if (!/\d/.test(tile.textContent)) {
+    return "the meter was fitted and the force tile still has no number in it";
+  }
+  if (!btn.hasAttribute('disabled')) {
+    return "the meter button is still live after being fitted — it is one-way";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "two controls moved and the meter fitted, and the stop has not ticked";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # ⚠️ NO DRIVE IS NEEDED FOR THE RESTING MEASUREMENT, and that is the
+    # point of `covered`: b2-04 opens with F already covered, so the result
+    # line, the sentence and the pressed button are all in their final state
+    # in the built HTML before a single line of JS runs. The rows above
+    # measure that page as delivered.
+    #
+    # This drive exists to prove the RADIO contract — that the control never
+    # returns to an uncovered state, which is the one behaviour that differs
+    # from b1-02 and the one a regression would restore by accident.
+    "triangle-radio-held": r"""
+(function () {
+  var tri = document.querySelector('[data-triangle][data-cover-mode="radio"]');
+  if (!tri) { return "no radio-mode triangle on the page"; }
+  var start = tri.getAttribute('data-covered');
+  if (!start) { return "a radio triangle opened with nothing covered"; }
+  var btn = tri.querySelector('.ks3-tri-btn[data-cover="' + start + '"]');
+  if (!btn) { return "no button for the covered cell " + start; }
+  // Press the ALREADY-covered cell. A toggle would uncover here; a radio
+  // must not, because an uncovered triangle asks the student nothing.
+  btn.click();
+  if (tri.getAttribute('data-covered') !== start) {
+    return "pressing the covered cell uncovered it — the radio has become a toggle";
+  }
+  var other = tri.querySelector('.ks3-tri-btn:not([data-cover="' + start + '"])');
+  if (!other) { return "the triangle offers only one cover"; }
+  other.click();
+  var now = other.getAttribute('data-cover');
+  if (tri.getAttribute('data-covered') !== now) {
+    return "pressing a second cell did not move the cover";
+  }
+  if (!tri.querySelector('.ks3-tri-result[data-result="' + now + '"]:not([hidden])')) {
+    return "the cover moved and the arrangement line did not follow it";
+  }
+  if (!tri.querySelector('.ks3-tri-note[data-note="' + now + '"]:not([hidden])')) {
+    return "the cover moved and the sentence did not follow it";
+  }
+  if (tri.querySelectorAll('.ks3-tri-result:not([hidden])').length !== 1) {
+    return "more than one arrangement line is showing";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # Two picks and a number with a unit — the three commitments the block
+    # asks for. Which options are pressed is deliberately unspecified: under
+    # R3 all three in a ladder render identically and none of them is marked.
+    #
+    # ⊕ THIS DRIVE IS ALSO THE RAIL CORRECTION'S ASSERTION. It fails if the
+    # stop ticks before the third commitment — which is what Design's own
+    # `buildOpen` predicate did, one tap after arriving.
+    "lsteps-committed": r"""
+(function () {
+  var sec = document.querySelector('[data-lstepblock]');
+  if (!sec) { return "no lever-steps on the page"; }
+  var wrap = sec.querySelector('[data-lstep]');
+  var btn = wrap.querySelector('[data-lstep-open]');
+  var ans = wrap.querySelector('[data-lstep-ans]');
+  var unit = wrap.querySelector('[data-lstep-unit]');
+  if (!btn || !ans || !unit) { return "the block is missing a commitment control"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var g0 = wrap.querySelector('.ks3-lstep-opt[data-group="0"]');
+  var g1 = wrap.querySelector('.ks3-lstep-opt[data-group="1"]');
+  if (!g0 || !g1) { return "the block offers fewer than two pick ladders"; }
+  g0.click();
+  g1.click();
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on two picks — the answer is the third commitment";
+  }
+  ans.value = '160';
+  ans.dispatchEvent(new Event('input', { bubbles: true }));
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on a number with no unit";
+  }
+  if (!btn.hasAttribute('disabled')) {
+    return "the open button unlocked before a unit was chosen";
+  }
+  unit.value = 'N';
+  unit.dispatchEvent(new Event('change', { bubbles: true }));
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "all three lines committed and the stop has not ticked";
+  }
+  if (btn.hasAttribute('disabled')) {
+    return "all three lines committed and the button is still locked";
+  }
+  return "";
+})()
+""",
+    # The reveal panel does not exist in the document's layout until the
+    # button is pressed, so every measurement inside it needs this. It also
+    # asserts the LIVE COUPLING: the closing line has to quote the force the
+    # rig implies, which is the block's whole claim to be the same problem.
+    "lsteps-opened": r"""
+(function () {
+  var sec = document.querySelector('[data-lstepblock]');
+  if (!sec) { return "no lever-steps on the page"; }
+  var wrap = sec.querySelector('[data-lstep]');
+  var g0 = wrap.querySelector('.ks3-lstep-opt[data-group="0"]');
+  var g1 = wrap.querySelector('.ks3-lstep-opt[data-group="1"]');
+  var ans = wrap.querySelector('[data-lstep-ans]');
+  var unit = wrap.querySelector('[data-lstep-unit]');
+  var btn = wrap.querySelector('[data-lstep-open]');
+  if (!g0 || !g1 || !ans || !unit || !btn) { return "the block is incomplete"; }
+  g0.click(); g1.click();
+  ans.value = '160';
+  ans.dispatchEvent(new Event('input', { bubbles: true }));
+  unit.value = 'N';
+  unit.dispatchEvent(new Event('change', { bubbles: true }));
+  btn.click();
+  var panel = wrap.querySelector('[data-reveal]');
+  if (!panel || panel.hasAttribute('hidden')) {
+    return "the three lines were committed, the button pressed, and the panel is still hidden";
+  }
+  if (!wrap.querySelector('.ks3-lstep-chip')) {
+    return "the model answer opened with no steps in it";
+  }
+  var close = wrap.querySelector('[data-lstep-close]');
+  if (!close || close.textContent.indexOf('160') < 0) {
+    return "the closing line does not quote the student's own answer back";
+  }
+  if (/[{}]/.test(wrap.textContent)) {
+    return "an unfilled template reached the page: " + wrap.textContent.slice(0, 120);
+  }
+  var locked = wrap.querySelector('.ks3-lstep-opt:not([disabled])');
+  if (locked) {
+    return "the model is on screen and a pick can still be changed";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # The cards do not exist in the document's layout until an ordering is
+    # committed, so every measurement above needs this. Which ordering is
+    # deliberately unspecified: under R3 all three render identically and all
+    # three open the same cards, and `check_r3_runtime()` asserts that rather
+    # than trusting it.
+    "meters-ranked": r"""
+(function () {
+  var sec = document.querySelector('[data-metersblock]');
+  if (!sec) { return "no meter-compare on the page"; }
+  var wrap = sec.querySelector('[data-meters]');
+  var opt = wrap && wrap.querySelector('.ks3-option');
+  if (!opt) { return "the block offers no ranking options"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  opt.click();
+  var panel = wrap.querySelector('[data-reveal]');
+  if (!panel || panel.hasAttribute('hidden')) {
+    return "an ordering was committed and the cards are still hidden";
+  }
+  if (wrap.querySelectorAll('.ks3-meters-card').length < 2) {
+    return "the reveal opened with fewer than two groups to compare";
+  }
+  // ⚠️ ALL THE CARDS, NOT ONE. The commitment is about the ORDER of the
+  // three, so revealing them a card at a time would answer part of the
+  // question still being asked.
+  if (wrap.querySelectorAll('.ks3-meters-card').length
+      !== wrap.querySelectorAll('.ks3-meters-mean').length) {
+    return "a card arrived without its mean";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "an ordering was committed and the stop has not ticked";
+  }
+  // R3, asserted here as well as globally: a ranking is a commitment, not an
+  // answer, so nothing may be marked or spent.
+  if (wrap.querySelector('.ks3-option[data-correct], .ks3-option.is-correct, .ks3-option.is-wrong, .ks3-option[disabled]')) {
+    return "a ranking option was marked or disabled — this block marks nothing";
+  }
+  return "";
+})()
+""",
+    # ═══ END B2 ═══ drives
 }
 
 

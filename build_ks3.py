@@ -6079,6 +6079,996 @@ def r_state_matrix(a, act_id):
 
 
 
+# renderers: ═══ BEGIN B2 ═══
+# DISPATCH: "arm-lever": ("ks3-lever-block", ' data-instrument data-leverblock data-stage-done="0"'),
+#
+# and in ACTIVITY_KIND_FN, beside the other B2 rows:
+#     "arm-lever":              r_arm_lever,
+#
+# Place `r_arm_lever` and the two helpers below beside `r_muscle_pair` in the
+# B2 group (build_ks3.py ~3079). Needs `e`, `t`, `r_bench_gate`. No new
+# imports: the only arithmetic here is a divide and a round, and
+# `int(v + 0.5)` is `math.floor` for a positive v, which every value on this
+# rig is (the sliders' floors are 0.5 kg and 3 cm).
+#
+# ⚠️ `_lever_num` and `_lever_alt` are MODULE-LEVEL, not nested, because the
+# RESTING render needs the same formatter and the same composition the runtime
+# uses. Two copies of "how is this number written" is two answers to it, and
+# the number is on screen before any JS runs.
+
+
+# Values the rig COMPUTES rather than reads off a control. Both are Design's
+# `.toFixed(0)` — a weight and a force are whole newtons on this page.
+_LEVER_COMPUTED = {"weight": 0, "force": 0}
+
+
+def _lever_decimals(step):
+    """How many decimal places a control's own step needs.
+
+    DERIVED, never authored. A step of 0.5 needs one place and an integer set
+    needs none; a `decimals` key would be a second statement of the same fact
+    and a second place for it to disagree with the slider.
+    """
+    if step is None:
+        return 0
+    return 0 if float(step) == int(float(step)) else 1
+
+
+def _lever_num(value, decimals, fmt):
+    """One readout, formatted. `fmt` is an authored "{n} kg"-shaped string."""
+    return (fmt or "{n}").replace("{n}", "%.*f" % (decimals, float(value)))
+
+
+def _lever_alt(alt, load, ins, hand, force=None):
+    """The canvas's aria-label, composed the same way in Python and in JS.
+
+    ⚖️ THE LABEL IS THE WHOLE DRAWING for a screen-reader user: the two
+    dimension lines, the load's weight arrow and the joint are painted inside
+    the canvas and exist nowhere in the DOM. So every number a sighted student
+    can see on the drawing has to be in here.
+
+    ⚠️ AND NOT ONE MORE THAN THAT. `force` is appended only once the meter has
+    been fitted — the same gate the muscle tile takes, reached by the other
+    route. Handing the answer to a screen-reader user before they have worked
+    it out is not an accommodation, it is a different lesson.
+
+    ⚠️ SINGULAR/PLURAL. C1 shipped "after 1 halvings" and it had to be fixed,
+    so the guard is here from the start rather than after somebody reads it
+    aloud. No control on this rig can currently reach a bare 1 — `load` and
+    `ins` render to one decimal ("1.0 kilograms" is correct English) and
+    `hand` offers 32 and 16 — but a future payload with `step: 1` on the load
+    would, and a plural that only breaks for one authored value is exactly the
+    kind of defect that ships.
+    """
+    out = (alt.get("template", "")
+           .replace("{load}", load).replace("{ins}", ins)
+           .replace("{hand}", hand))
+    if force is not None and alt.get("measured"):
+        out += alt["measured"].replace("{force}", force)
+    for word in ("kilogram", "centimetre", "newton"):
+        out = out.replace(" 1 %ss" % word, " 1 %s" % word)
+    return out
+
+
+def r_arm_lever(a, act_id):
+    """⊕ b2-04 `#s-bench` — the forearm rig, and the number it will not give you.
+
+    ⚖️ THE MISSING FOURTH NUMBER IS THE WHOLE INSTRUMENT. The rig hands over
+    the load and both distances and refuses the muscle force: the tile reads
+    the authored `unmeasured` sentence, and the muscle arrow on the canvas
+    carries the bare word "muscle" and deliberately no magnitude. A student
+    who could read the force off the rig would never divide anything, and the
+    meter exists so they can CHECK their arithmetic rather than skip it.
+    That gate is why the meter button is one-way and why fitting it is half
+    the rail stop.
+
+    ⚠️ NOT `sim`, and not `joint-bench`. Three measured differences, any one
+    of which is fatal:
+
+      * `sim`'s controls are a CLOSED ENUM validated against `SIM_CONTROLS`;
+        this rig's three are a mass, an attachment distance and a two-tab
+        distance, and none of them is in that list. Adding them would give
+        every KS3 sim a "muscle attached at" slider.
+      * `joint-bench` reads a per-joint record and paints a linkage; every
+        readout it has is a lookup. Every readout here is ARITHMETIC on the
+        three live values, and the one that matters is withheld.
+      * a mixed control topology — two sliders and an exclusive two-tab set —
+        whose product decides four readouts, a canvas and a rail predicate.
+
+    ⚠️ INK-DARK, so every text rule in the stylesheet is scoped `.ks3-dark …`.
+    `.ks3-dark p` is (0,1,1) and a bare instrument class is (0,1,0): unscoped,
+    the tile labels and the meter note lose and render in on-dark body copy
+    against a panel that is not the ground they were coloured for. That is the
+    defect B1 shipped with the zoom instrument and B2 was bitten by again.
+
+    ⊕ ADDITIONS inside the drawn component, both stated in the report:
+      * `alt.measured` — Design's `benchAlt` never mentions the muscle force,
+        so once the meter is fitted a screen-reader user is the only person on
+        the page who cannot read it. Appended, and only then.
+      * `done_at` — Design hard-codes `>= 2` inside its own rail predicate.
+        Authored once here and read by the wiring, so the rail's demand is
+        data rather than a number nobody can find.
+    """
+    controls = a.get("controls") or []
+    if not controls:
+        raise ValueError("arm-lever %r declares no controls[]." % act_id)
+
+    by_key, decimals = {}, {}
+    for c in controls:
+        key = c.get("key")
+        if not key:
+            raise ValueError(
+                "arm-lever %r has a control with no `key`; the key is what the "
+                "tiles, the canvas and the steps block all name it by."
+                % act_id)
+        if c.get("options"):
+            if c.get("start") not in c["options"]:
+                raise ValueError(
+                    "arm-lever %r control %r starts at %r, which is not one of "
+                    "the tabs it offers (%s)."
+                    % (act_id, key, c.get("start"),
+                       ", ".join(str(o) for o in c["options"])))
+            decimals[key] = 0
+        else:
+            for bound in ("min", "max", "step"):
+                if c.get(bound) is None:
+                    raise ValueError(
+                        "arm-lever %r control %r is a slider and declares no "
+                        "`%s`; a range with an open end renders as a browser "
+                        "default and reads any value at all."
+                        % (act_id, key, bound))
+            if not float(c["min"]) <= float(c["start"]) <= float(c["max"]):
+                raise ValueError(
+                    "arm-lever %r control %r starts at %r, outside its own "
+                    "%r–%r range." % (act_id, key, c.get("start"),
+                                      c.get("min"), c.get("max")))
+            decimals[key] = _lever_decimals(c.get("step"))
+        by_key[key] = c
+
+    tiles = a.get("tiles") or []
+    if not tiles:
+        raise ValueError("arm-lever %r declares no tiles[]." % act_id)
+    for tl in tiles:
+        if tl.get("key") not in by_key and tl.get("key") not in _LEVER_COMPUTED:
+            raise ValueError(
+                "arm-lever %r tile %r reads %r, which is neither a control nor "
+                "a computed value (%s). A tile with no source is a box that "
+                "never fills." % (act_id, tl.get("label"), tl.get("key"),
+                                  ", ".join(sorted(_LEVER_COMPUTED))))
+
+    meter = a.get("meter") or {}
+    for key in ("label", "label_done", "note", "note_done"):
+        if not meter.get(key):
+            raise ValueError(
+                "arm-lever %r meter is missing %r. All four are drawn: the "
+                "button says two things and the line beside it says two more, "
+                "and a missing one leaves the previous state's sentence on "
+                "screen after the meter is fitted." % (act_id, key))
+    if not a.get("unmeasured"):
+        raise ValueError(
+            "arm-lever %r declares no `unmeasured` sentence. That string IS "
+            "the gate — without it the force tile would open empty and the "
+            "block would look broken rather than withholding." % act_id)
+
+    canvas = a.get("canvas") or {}
+    for key in ("title", "joint", "muscle", "load"):
+        if not canvas.get(key):
+            raise ValueError(
+                "arm-lever %r canvas is missing %r." % (act_id, key))
+    alt = a.get("alt") or {}
+    if not alt.get("template"):
+        raise ValueError(
+            "arm-lever %r has no alt template; the dimension lines, the weight "
+            "arrow and the joint are painted on the canvas and reach a screen "
+            "reader through nothing else." % act_id)
+
+    done_at = int(a.get("done_at") or 0)
+    if not 1 <= done_at <= len(controls):
+        raise ValueError(
+            "arm-lever %r ticks its rail stop at %r control(s) moved; it "
+            "offers %d. A stop that cannot be reached is worse than none."
+            % (act_id, a.get("done_at"), len(controls)))
+
+    g = float(a.get("g") or 0)
+    if g <= 0:
+        raise ValueError(
+            "arm-lever %r declares g = %r N/kg. The whole page's arithmetic "
+            "runs through it." % (act_id, a.get("g")))
+
+    # ── the resting state, computed here so the page is never a set of empty
+    # boxes for the instant before the wiring runs ──
+    start = {k: float(c["start"]) for k, c in by_key.items()}
+    weight = start["load"] * g
+    values = {"weight": weight, "force": weight * start["hand"] / start["ins"]}
+
+    def readout(key, fmt):
+        if key in _LEVER_COMPUTED:
+            return _lever_num(values[key], _LEVER_COMPUTED[key], fmt)
+        return _lever_num(start[key], decimals[key], fmt)
+
+    rows = []
+    for c in controls:
+        key = c["key"]
+        cid = "%s-%s" % (act_id, key)
+        if c.get("options"):
+            tabs = "".join(
+                '<button type="button" class="ks3-sim-seg-btn ks3-lever-tab" '
+                'data-lever-tab="%s" data-value="%s" aria-pressed="%s">%s'
+                '</button>'
+                % (e(key), e(o), "true" if float(o) == start[key] else "false",
+                   t(_lever_num(o, decimals[key], c.get("format"))))
+                for o in c["options"])
+            rows.append('<div class="ks3-lever-control">'
+                        '<p class="ks3-lever-label">%s</p>'
+                        '<div class="ks3-lever-tabs">%s</div></div>'
+                        % (t(c.get("label", "")), tabs))
+            continue
+        # ⚠️ The <label> is real and its `for` reaches a real id. A slider
+        # whose only name is the paragraph above it is unnamed to a screen
+        # reader, and this one is the difference between two distances.
+        rows.append(
+            '<div class="ks3-lever-control">'
+            '<div class="ks3-lever-row">'
+            '<label class="ks3-lever-label" for="%s">%s</label>'
+            '<p class="ks3-lever-value" data-lever-value="%s" '
+            'data-format="%s">%s</p></div>'
+            '<input class="ks3-slider ks3-lever-slider" type="range" id="%s" '
+            'min="%s" max="%s" step="%s" value="%s" data-lever-input="%s">'
+            '</div>'
+            % (e(cid), t(c.get("label", "")), e(key),
+               e(c.get("format") or "{n}"),
+               t(readout(key, c.get("format"))), e(cid),
+               e(c["min"]), e(c["max"]), e(c["step"]), e(c["start"]), e(key)))
+
+    cells = []
+    for tl in tiles:
+        key = tl["key"]
+        # The force tile opens on the withheld sentence, not on a number.
+        value = (a["unmeasured"] if key == "force"
+                 else readout(key, tl.get("format")))
+        cells.append('<div class="ks3-lever-tile">'
+                     '<p class="ks3-lever-tile-label">%s</p>'
+                     '<p class="ks3-lever-tile-value%s" data-lever-out="%s" '
+                     'data-format="%s">%s</p></div>'
+                     % (t(tl.get("label", "")),
+                        " ks3-lever-tile-mono" if tl.get("mono") else "",
+                        e(key), e(tl.get("format") or "{n}"), t(value)))
+
+    gate_html, hide = r_bench_gate(a.get("gate"))
+
+    return (gate_html
+            + '<div class="ks3-lever" data-lever%s data-rig="%s" data-g="%s" '
+              'data-done-at="%d" data-load="%s" data-ins="%s" data-hand="%s" '
+              'data-dp-load="%d" data-dp-ins="%d" data-dp-hand="%d" '
+              'data-unmeasured="%s" data-alt="%s" data-alt-measured="%s" '
+              'data-canvas-title="%s" data-canvas-joint="%s" '
+              'data-canvas-muscle="%s" data-canvas-load="%s" '
+              'data-meter-label="%s" data-meter-done="%s" '
+              'data-meter-note="%s" data-meter-note-done="%s">'
+              '<div class="ks3-lever-controls">%s</div>'
+              '<div class="ks3-lever-stage">'
+              '<canvas class="ks3-lever-canvas" width="1800" height="700" '
+              'role="img" aria-label="%s" data-lever-canvas></canvas></div>'
+              '<div class="ks3-lever-tiles">%s</div>'
+              '<div class="ks3-lever-foot">'
+              '<button type="button" class="ks3-sim-seg-btn ks3-lever-meter" '
+              'data-lever-meter>%s</button>'
+              '<p class="ks3-lever-note" data-lever-note role="status">%s</p>'
+              '</div></div>'
+            % (hide, e(act_id), e(a["g"]), done_at,
+               e(start["load"]), e(start["ins"]), e(start["hand"]),
+               decimals["load"], decimals["ins"], decimals["hand"],
+               e(a["unmeasured"]), e(alt.get("template", "")),
+               e(alt.get("measured", "")),
+               e(canvas["title"]), e(canvas["joint"]), e(canvas["muscle"]),
+               e(canvas["load"]),
+               e(meter["label"]), e(meter["label_done"]),
+               e(meter["note"]), e(meter["note_done"]),
+               "".join(rows),
+               e(_lever_alt(alt,
+                            _lever_num(start["load"], decimals["load"], "{n}"),
+                            _lever_num(start["ins"], decimals["ins"], "{n}"),
+                            _lever_num(start["hand"], decimals["hand"], "{n}"))),
+               "".join(cells),
+               t(meter["label"]), t(meter["note"])))
+
+
+# ⚠️ NO DISPATCH ROW — DO NOT ADD ONE, AND DO NOT WRITE THE WORD ABOVE IN
+# THE SPLICE MARKER'S OWN SHAPE.
+#
+# `cover-triangle` is NOT an activity kind and must not become one: it is a
+# `formula` BLOCK sub-key, exactly as its bar variant is. There is no
+# ACTIVITY_KIND_RENDERERS entry, no ACTIVITY_KIND_FN entry and no
+# `data-stage-done` — the block is read, not done, and MRB-208 keeps it off
+# the rail.
+#
+# (This header used to open `# DISPATCH: none. …`. The splice tool matched the
+# marker, took the prose after it as a table row and emitted
+# `none. \`cover-triangle\` is NOT an activity kind and must not become,` into
+# ACTIVITY_KIND_RENDERERS, which is a SyntaxError in build_ks3.py. A marker
+# that means "no row" has to not be the marker.)
+#
+# ── HOW THIS SPLICES, and why it is a widening rather than a fork ─────────
+#
+# `cover-triangle` already ships in TWO forms and this fragment touches only
+# one of them:
+#
+#   BAR variant      `r_cover_bar(cov)`, reached from `r_formula` via
+#                    `block["cover"]` with `shape: "bar"`. c2-06's part–whole
+#                    model. **NOT TOUCHED BY THIS FRAGMENT AT ALL** — no line
+#                    of `r_cover_bar`, `.ks3-bar-*` or `wireCoverBar` changes,
+#                    which is why c2-06 is byte-identical by construction
+#                    rather than by inspection.
+#   TRIANGLE variant `r_formula_triangle(tri)`, reached from `r_formula` via
+#                    `block["triangle"]`. b1-02's magnification triangle ships
+#                    it today. THIS is what widens.
+#
+# ⊕ THE SPLICE IS SELF-APPLYING. Both functions below go in verbatim and
+# nothing else in `build_ks3.py` needs touching: `r_formula` is unchanged,
+# `_triangle_geometry()` is unchanged, `TRI_W/TRI_H/TRI_PAD/TRI_DIV_Y` are
+# unchanged, and the old `r_formula_triangle` at ~1562 can stay exactly where
+# it is. The delegate at the foot of this file REBINDS that name, and because
+# this fragment lands after it in the module, the later binding is the one
+# `r_formula` resolves at call time. The superseded body is then dead code and
+# should be deleted in a follow-up tidy — but the splice is correct with it
+# still there, which is the property worth having.
+#
+# ⚠️ b1-02 MUST COME OUT BYTE-IDENTICAL, and the four new keys are what makes
+# that true: `result`, `order`, `covered` and a dict-shaped `close` are all
+# OPT-IN. b1-02 authors none of them, so every widened branch below collapses
+# to the empty string and the emitted markup is the same characters in the same
+# order. The evidence is a diff of the built page across the splice, and it is
+# in the report.
+#
+# Place `r_cover_triangle` where `r_formula_triangle` is now (build_ks3.py
+# ~1562), immediately after `_triangle_geometry()`. Needs `e`, `t`, `rich`,
+# `hashlib` — all already in scope.
+
+_TRI_CELLS = ("top", "left", "right")
+
+
+def r_cover_triangle(tri, act_id=None):
+    """MRB-204 step 2 — the formula drawn as a triangle, in KS3 tokens.
+
+    ⚖️ A TRIANGLE IS THE PRODUCT'S FIGURE. `T = F × d` is a product, so it
+    takes this; conservation of mass is a sum and takes the bar. Drawing a sum
+    as a triangle — or a product as a beam — teaches a false relationship in
+    order to make one rule fit two shapes.
+
+    ⚠️ CORRECTED, AND THE CORRECTION IS INHERITED, NOT NEW. Design's three
+    cover boxes overhang the sloping sides (the b1-02 `total` box by about 35
+    units at its top edge). It is not a slip and it is not nudgeable: a
+    rectangle inside a triangle always overhangs unless it is sized at its own
+    narrowest edge, and a box that narrow cannot hold the word it exists to
+    hide. The covers are therefore sized to their labels and CLIPPED to the
+    triangle path. Both the boxes and the clip are derived from the frame;
+    nothing is authored per lesson.
+
+    ── ⊕ WIDENED FOR b2-04, four opt-in keys ────────────────────────────
+
+    `result`   per cell. Design's b2-04 side panel says the ARRANGEMENT in
+               display type ("F = T ÷ d") and then says WHY in a sentence.
+               b1-02 has only the sentence. Folding the two into one note
+               loses the line a student actually reads off the page, and
+               emitting the arrangement into the sentence would put maths
+               inside prose.
+    `order`    the button order. Design's b2-04 is F, T, d — the unknown this
+               lesson always solves for comes first — against the
+               top/left/right default b1-02 ships.
+    `covered`  the cell covered on load, and it is more than a default: a
+               triangle that declares one becomes a RADIO. b1-02's toggle
+               un-covers on a second press, which is right for a triangle
+               being explored and wrong for one whose whole demand is "cover
+               the one you want" — an uncovered triangle asks nothing. Both
+               interactions are drawn, so both are kept, and the payload is
+               what decides which. Emitted as `data-cover-mode="radio"`;
+               `wireTriangle` reads it and b1-02, which emits no attribute,
+               keeps the toggle.
+    `close`    a STRING stays one closing paragraph, exactly as today. A DICT
+               takes Design's three trailing blocks — a prose rule, a mono
+               unit legend, and the balanced condition in display type. The
+               condition is not a fourth arrangement of T, F and d; it is the
+               statement that makes every question on the page solvable, and
+               that is why Design sets it apart in display type.
+
+    A triangle that authors any `result` also takes Design's TWO-COLUMN row
+    (`data-tri-layout="row"`): the figure on the left, the buttons and the
+    reading on the right. b1-02's stacked, centred column is untouched — it
+    has no side panel to put beside anything.
+
+    ⚠️ EMIT-BOTH-SHOW-ONE for both the notes and the results. Every cell's
+    sentence and every cell's arrangement is in the document, hidden, and the
+    wiring swaps which pair is shown. Nothing science-bearing is rebuilt in JS,
+    so `÷`, `×` and the em dashes survive — which the bar variant's
+    `textContent` route cannot promise.
+    """
+    cells = {k: (tri.get(k) or {}) for k in _TRI_CELLS}
+    missing = [k for k in _TRI_CELLS if not cells[k].get("label")]
+    if missing:
+        raise ValueError(
+            "cover-triangle %s has no label on cell(s) %s. All three corners "
+            "are drawn and an unlabelled one is a blank corner of a figure."
+            % (act_id or tri.get("heading") or "?", ", ".join(missing)))
+
+    # ⊕ WIDENED. All three or none: a side panel that goes blank on one of the
+    # three covers is worse than one that never had a result line, and it
+    # would only be found by pressing the third button.
+    with_result = [k for k in _TRI_CELLS if cells[k].get("result")]
+    if with_result and len(with_result) != len(_TRI_CELLS):
+        raise ValueError(
+            "cover-triangle %s gives a `result` to %s and not to the others. "
+            "The result line is a slot in the side panel: covering a cell "
+            "that has none would empty it."
+            % (act_id or "?", ", ".join(with_result)))
+    wide = bool(with_result)
+
+    order = tuple(tri.get("order") or _TRI_CELLS)
+    if sorted(order) != sorted(_TRI_CELLS):
+        raise ValueError(
+            "cover-triangle %s orders its buttons %r; the three cells are %s "
+            "and the order names each exactly once."
+            % (act_id or "?", list(order), ", ".join(_TRI_CELLS)))
+
+    covered = tri.get("covered")
+    if covered is not None and covered not in _TRI_CELLS:
+        raise ValueError(
+            "cover-triangle %s opens with %r covered; the three cells are %s."
+            % (act_id or "?", covered, ", ".join(_TRI_CELLS)))
+
+    g = _triangle_geometry()
+    # One triangle per page today; the id is derived from the aria-label so two
+    # on one page would still not collide.
+    clip_id = "ks3-tri-clip-%s" % hashlib.md5(
+        (tri.get("aria_label", "") or "t").encode("utf-8")).hexdigest()[:8]
+    ax, ay = g["apex"]
+    x1, y1, x2, y2 = g["base"]
+    dh = g["div_half"]
+
+    def cover(key):
+        x, y, w, h = g[key]
+        return ('<rect class="ks3-tri-cover" data-cover="%s" x="%.2f" y="%.2f" '
+                'width="%.2f" height="%.2f" rx="8"></rect>'
+                % (e(key), x, y, w, h))
+
+    labels = ""
+    for key, (lx, ly) in (("top", (ax, TRI_DIV_Y - 42)),
+                          ("left", (ax - 44, TRI_DIV_Y + 46)),
+                          ("right", (ax + 44, TRI_DIV_Y + 46))):
+        labels += ('<text class="ks3-tri-label" x="%.2f" y="%.2f" '
+                   'text-anchor="middle">%s</text>'
+                   % (lx, ly, t(cells[key].get("label", ""))))
+
+    # ⊕ WIDENED. The pressed state opens on the covered cell rather than on
+    # nothing, so the control and the figure agree before a student touches
+    # either. With no `covered` every button is `false`, exactly as today.
+    btns = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-tri-btn" '
+        'data-cover="%s" aria-pressed="%s">%s</button>'
+        % (e(k), "true" if k == covered else "false",
+           t(cells[k].get("button", "")))
+        for k in order)
+
+    # ⊕ WIDENED. `hidden` unless this cell is the one covered on load. With no
+    # `covered` all three stay hidden, which is today's output.
+    notes = "".join(
+        '<p class="ks3-tri-note" data-note="%s"%s>%s</p>'
+        % (e(k), "" if k == covered else " hidden",
+           rich(cells[k].get("text", "")))
+        for k in _TRI_CELLS)
+
+    results = "".join(
+        '<p class="ks3-tri-result" data-result="%s"%s>%s</p>'
+        % (e(k), "" if k == covered else " hidden", t(cells[k]["result"]))
+        for k in _TRI_CELLS) if wide else ""
+
+    # ⊕ WIDENED. A string is one paragraph and is what b1-02 authors; a dict is
+    # Design's b2-04 stack of three.
+    raw_close = tri.get("close")
+    if isinstance(raw_close, dict):
+        close = ""
+        if raw_close.get("rule"):
+            close += '<p class="ks3-tri-close">%s</p>' % rich(raw_close["rule"])
+        if raw_close.get("units"):
+            # `<br>`-joined rather than a list, because it is a legend of three
+            # one-line glosses and a bulleted `<ul>` would read as three
+            # instructions.
+            close += ('<p class="ks3-tri-units">%s</p>'
+                      % "<br>".join(t(u) for u in raw_close["units"]))
+        if raw_close.get("condition"):
+            close += ('<p class="ks3-tri-condition">%s</p>'
+                      % t(raw_close["condition"]))
+    else:
+        close = ('<p class="ks3-tri-close">%s</p>' % rich(raw_close)
+                 if raw_close else "")
+
+    root_attrs = ""
+    if covered is not None:
+        root_attrs += ' data-covered="%s" data-cover-mode="radio"' % e(covered)
+    if wide:
+        root_attrs += ' data-tri-layout="row"'
+
+    svg = ('<svg class="ks3-tri-svg" viewBox="0 0 %d %d" role="img" '
+           'aria-label="%s">'
+           '<defs><clipPath id="%s">'
+           '<path d="M %.2f %.2f L %.2f %.2f L %.2f %.2f Z"/></clipPath></defs>'
+           '<path class="ks3-tri-path" d="M %.2f %.2f L %.2f %.2f L %.2f %.2f Z"/>'
+           '<line class="ks3-tri-div" x1="%.2f" y1="%d" x2="%.2f" y2="%d"/>'
+           '<line class="ks3-tri-div" x1="%.2f" y1="%d" x2="%.2f" y2="%.2f"/>'
+           '%s%s%s</svg>'
+           % (TRI_W, TRI_H, e(tri.get("aria_label", "")),
+              clip_id, ax, ay, x2, y2, x1, y1,
+              ax, ay, x2, y2, x1, y1,
+              ax - dh, TRI_DIV_Y, ax + dh, TRI_DIV_Y,
+              ax, TRI_DIV_Y, ax, y2,
+              labels,
+              '<g clip-path="url(#%s)">%s</g>'
+              % (clip_id, cover("top") + cover("left") + cover("right")), ""))
+
+    head = ('<p class="ks3-eyebrow">%s</p><p class="ks3-tri-heading">%s</p>'
+            % (t(tri.get("eyebrow", "")), t(tri.get("heading", ""))))
+    controls = '<div class="ks3-tri-btns">%s</div>' % btns
+
+    if not wide:
+        # ⚠️ TODAY'S OUTPUT, CHARACTER FOR CHARACTER. Do not "tidy" this branch
+        # into the row one — b1-02 is live and this is the whole byte-identity
+        # claim.
+        return ('<div class="ks3-triangle" data-triangle%s>%s%s%s%s%s</div>'
+                % (root_attrs, head, svg, controls, notes, close))
+
+    return ('<div class="ks3-triangle" data-triangle%s>%s'
+            '<div class="ks3-tri-row">%s'
+            '<div class="ks3-tri-side">%s%s%s%s</div></div></div>'
+            % (root_attrs, head, svg, controls, results, notes, close))
+
+
+def r_formula_triangle(tri):
+    """⊖ SUPERSEDED NAME, kept so nothing above has to change.
+
+    `r_formula` reaches the triangle through this name and b1-02 has shipped
+    against it since MRB-204 landed. Rebinding it here rather than renaming
+    the call site means the widening is one appended block and zero edits to
+    working code — and b1-02 goes through the identical path it always did,
+    because `r_cover_triangle` with none of the four opt-in keys emits the
+    same characters in the same order.
+
+    The original definition further up the module is now dead and should be
+    deleted in a follow-up tidy. It is left in place deliberately for this
+    splice: a delete is a change to working code and this pass is meant not
+    to be one.
+    """
+    return r_cover_triangle(tri)
+
+
+# DISPATCH: "lever-steps": ("ks3-lstep-block", ' data-instrument data-lstepblock data-stage-done="0"'),
+#
+# and in ACTIVITY_KIND_FN, beside the other B2 rows:
+#     "lever-steps":            r_lever_steps,
+#
+# ╔═══════════════════════════════════════════════════════════════════════╗
+# ║  TWO HAND EDITS, AND THIS FRAGMENT IS WRONG WITHOUT BOTH.             ║
+# ║  Neither is derivable from the file, so neither can be spliced        ║
+# ║  mechanically. `arm-lever`, `meter-compare` and `cover-triangle`      ║
+# ║  need none — this is the only one.                                    ║
+# ╚═══════════════════════════════════════════════════════════════════════╝
+#
+# ── EDIT 1 · this kind takes the LESSON — and needs NO edit ─────────────
+#
+# ⊕ Superseded 16 Aug 2026 (MRB-228). This used to say "add it to
+# `_KIND_FN_TAKES_LESSON` beside the three already there", and that set no
+# longer exists: `_kinds_taking_lesson()` reads the signature, so a renderer
+# whose first parameter is named `lesson` is handed the lesson.
+#
+# The instruction was written because leaving it out made the build die with a
+# TypeError naming the kind — loud, immediate, not a silent wrong render. It
+# did exactly that when `lever-steps` first spliced in. Loud is not the same as
+# unnecessary: name the parameter `lesson` and there is nothing to remember.
+#
+# It has to take the lesson because the block's whole argument is that it is
+# the SAME problem as the rig upstairs: it reads that instrument's own control
+# defaults out of `lesson["activities"]` to render its resting state, and
+# refuses to build if the rig it names is missing. A copy of "2 kg at 32 cm,
+# muscle at 4 cm" here would go stale the first time anyone moved a slider in
+# the payload, and nothing would say so.
+#
+# ── EDIT 2 · the block heading ships its braces without this ────────────
+#
+# Design draws this block's <h2> as the LIVE rig line — *"Your rig: 2.0 kg at
+# 32 cm, muscle at 4.0 cm."* — and the shell emits the <h2> before any
+# instrument renderer runs, so `r_lever_steps` cannot reach it. Add these two
+# lines to `r_activity`, anywhere after `kind` is computed (~line 6372) and
+# before the `if a.get("heading") and not hc:` branch (~line 6440):
+#
+#     # ⊕ b2-04 #s-build — this block's heading quotes the rig the student
+#     # left set, so it is filled from that instrument before the shell
+#     # emits the <h2>. `wireLeverSteps` repaints the same element.
+#     if kind == "lever-steps":
+#         a = dict(a, heading=_lever_steps_heading(lesson, a))
+#
+# WITHOUT IT the page ships `<h2>Your rig: {load} kg at {hand} cm, muscle at
+# {ins} cm.</h2>` — which the wiring then overwrites, so it is invisible in a
+# browser and permanent in the HTML a crawler reads and in every no-JS view.
+#
+# Filling it at BUILD TIME as well as at runtime is the whole point.
+# `dict(a, …)` rather than `a["heading"] = …` so the lesson record is never
+# mutated: `r_activity` runs once per page, but the record is shared with
+# every gate that reads it afterwards.
+#
+# Place `r_lever_steps` and its two helpers beside `r_fifa_pick`
+# (build_ks3.py ~3888), which is the component it is closest to. Needs `e`,
+# `t`, `rich`, and `_lever_num` / `_lever_decimals` from the `arm-lever`
+# fragment — splice that one first.
+
+
+def _lever_steps_rig(lesson, a, act_id):
+    """The `arm-lever` this block mirrors, and the substitutions it implies.
+
+    Returns `(subs, fill)`. Separated from the renderer because the block's
+    own <h2> is emitted by the shell and has to be filled from the same three
+    values through the same formatter — two copies of "how many decimal
+    places does 0.04 get" is two answers to it.
+    """
+    rig_id = a.get("rig")
+    rig = next((x for x in (lesson.get("activities") or [])
+                if x.get("id") == rig_id), None)
+    if rig is None:
+        raise ValueError(
+            "lever-steps %r reads rig %r and the lesson declares no activity "
+            "with that id. The block's whole claim is that it is the same "
+            "problem as the bench upstairs." % (act_id, rig_id))
+    if rig.get("kind") != "arm-lever":
+        raise ValueError(
+            "lever-steps %r names rig %r, which is a %r. Only `arm-lever` "
+            "carries the load, the two distances and g that every template "
+            "here interpolates." % (act_id, rig_id, rig.get("kind")))
+
+    controls = {c["key"]: c for c in (rig.get("controls") or [])}
+    missing = [k for k in ("load", "ins", "hand") if k not in controls]
+    if missing:
+        raise ValueError(
+            "lever-steps %r reads rig %r, which has no %s control. Every "
+            "template in this block interpolates all three."
+            % (act_id, rig_id, ", ".join(missing)))
+    dp = {k: (0 if controls[k].get("options")
+              else _lever_decimals(controls[k].get("step")))
+          for k in ("load", "ins", "hand")}
+    start = {k: float(controls[k]["start"]) for k in ("load", "ins", "hand")}
+    g = float(rig.get("g") or 0)
+
+    W = start["load"] * g
+    dM, dL = start["ins"] / 100.0, start["hand"] / 100.0
+    # ⚠️ Two decimal places on the distances and on the turning effect, and
+    # NONE on the weight or the force. That is Design's own arithmetic and it
+    # is not tidiness: `0.04` and `0.32` are the metre conversions a student
+    # writes down, and `6.40` is what `20 × 0.32` gives on a calculator. A
+    # weight and a force are whole newtons on this page.
+    subs = {
+        "{load}": _lever_num(start["load"], dp["load"], "{n}"),
+        "{ins}": _lever_num(start["ins"], dp["ins"], "{n}"),
+        "{hand}": _lever_num(start["hand"], dp["hand"], "{n}"),
+        "{W}": "%.0f" % W,
+        "{dM}": "%.2f" % dM,
+        "{dL}": "%.2f" % dL,
+        "{TE}": "%.2f" % (W * dL),
+        "{F}": "%.0f" % (W * dL / dM),
+        "{ratio}": "%.1f" % (start["hand"] / start["ins"]),
+    }
+
+    def fill(s):
+        out = s or ""
+        for k, v in subs.items():
+            out = out.replace(k, v)
+        return out
+
+    return subs, fill
+
+
+def _lever_steps_heading(lesson, a):
+    """The block's <h2>, filled from the rig. Spliced into `r_activity`."""
+    _, fill = _lever_steps_rig(lesson, a, a.get("id"))
+    return fill(a.get("heading", ""))
+
+
+def r_lever_steps(lesson, a, act_id):
+    """⊕ b2-04 `#s-build` — MRB-204 step 4, on the student's OWN rig.
+
+    ⚖️ NOT `fifa-pick`, and the difference is arithmetic rather than taste.
+    c2-06's block has the same furniture — two pick ladders, a number field, a
+    unit select, a locked open button and a four-step ink reveal — and every
+    string in it is STATIC. Here, five of the eight authored strings are
+    templates over three live values: the heading quotes the rig, the second
+    ladder's three options are this student's own numbers arranged three ways,
+    all four reveal steps carry them, and the closing line holds the student's
+    typed answer against the force their own rig implies. `r_fifa_pick` emits
+    finished text and `wirePick` never recomputes anything, so pointing this
+    payload at it would print `F × {dM} = {W} × {dL}` into a button.
+
+    ⚖️ AND THE GENERATION IS THE PEDAGOGY, not a convenience. Authoring the
+    insert options would pin the rig at 2 kg and 32 cm and make every other
+    setting of the sliders unanswerable — the block would quietly stop being
+    about the student's own arm the moment they touched a control, which is
+    the one thing the whole page asked them to do.
+
+    ⚠️ NOT `fifa-construct` either: four free-text inputs and a tick list
+    against two multiple-choice ladders and a number, and that renderer
+    asserts `len(fields) == len(model) == len(success)` — three commitments
+    against four model lines and no criteria would raise, and rightly.
+
+    ── ⊕ CORRECTION: THE RAIL STOP DEMANDS SOMETHING ────────────────────
+
+    Design ticks `#s-build` on `buildOpen` alone — on the student pressing
+    "Show the four steps". A student who scrolls here and presses the button
+    has committed to nothing and the rail says the stage is done. MRB-208 has
+    a rail stop requiring the student to DO something, so the stop now ticks
+    on the three commitments the block itself asks for: the formula picked,
+    the insertion picked, and a non-empty answer WITH a unit.
+
+    That is strictly earlier than the button, which needs the same three, so
+    nothing a student can do gets harder — the stop simply stops being
+    reachable by pressing one thing. It is also why the reveal is not the
+    signal: opening an answer is the reward for committing, not the commitment.
+
+    ⚠️ THE UNIT IS ITS OWN COMMITMENT. "160" is not an answer to a question
+    about force, and the placeholder `<option>` carries an EMPTY value so that
+    a student who never chose one cannot satisfy the gate. Measured in a
+    browser on c2-06, not read off the source.
+
+    ⚠️ NO `value` ATTRIBUTE ON THE INPUT. An authored `value` is an attribute,
+    the element reads it only as its default, and the first repaint wipes what
+    the student typed. B1 fixed this once already; Design's page re-introduces
+    it (`<input … value="{{ ansValue }}">`) and it is not reproduced.
+    """
+    subs, fill = _lever_steps_rig(lesson, a, act_id)
+
+    picks = a.get("picks") or []
+    if len(picks) != 2:
+        raise ValueError(
+            "lever-steps %r declares %d pick ladder(s); it takes two — the "
+            "rule and the insertion." % (act_id, len(picks)))
+    steps = a.get("steps") or []
+    if not steps:
+        raise ValueError("lever-steps %r reveals no steps[]." % act_id)
+    field = a.get("field") or {}
+    if not field.get("units"):
+        raise ValueError(
+            "lever-steps %r offers no units[]. The unit is a separate "
+            "commitment: `160` is not an answer to a question about force."
+            % act_id)
+
+    panels = []
+    for i, p in enumerate(picks):
+        opts = "".join(
+            '<button type="button" class="ks3-lstep-opt" data-group="%d" '
+            'data-i="%d" data-template="%s" aria-pressed="false">%s</button>'
+            # ⚠️ BOTH the filled text AND the template are emitted. The button
+            # renders finished at build time and the wiring refills it from
+            # the same template when the rig moves, so there is exactly one
+            # authored string and no second copy in JS to drift from it.
+            % (i, j, e(o), t(fill(o)))
+            for j, o in enumerate(p.get("options") or []))
+        panels.append(
+            '<div class="ks3-lstep-panel">'
+            '<p class="ks3-lstep-label">%s</p>'
+            '<p class="ks3-lstep-q">%s</p>'
+            '<div class="ks3-lstep-opts">%s</div></div>'
+            % (t(p.get("label", "")), t(p.get("question", "")), opts))
+
+    aid, uid = "%s-ans" % act_id, "%s-unit" % act_id
+    units = ('<option value="">%s</option>' % t(field["unit_placeholder"])
+             if field.get("unit_placeholder") else "")
+    units += "".join('<option value="%s">%s</option>' % (e(u), t(u))
+                     for u in field["units"])
+    panels.append(
+        '<div class="ks3-lstep-panel">'
+        '<p class="ks3-lstep-label">%s</p>'
+        '<p class="ks3-lstep-q">%s</p>'
+        '<div class="ks3-lstep-answer">'
+        '<label class="ks3-sr-only" for="%s">%s</label>'
+        '<input class="ks3-lstep-input" type="text" inputmode="decimal" '
+        'id="%s" placeholder="%s" autocomplete="off" data-lstep-ans>'
+        '<label class="ks3-sr-only" for="%s">%s</label>'
+        '<select class="ks3-sim-units ks3-lstep-unit" id="%s" data-lstep-unit>'
+        '%s</select></div></div>'
+        % (t(field.get("label", "")), t(field.get("question", "")),
+           e(aid), t(field.get("hint", "")), e(aid),
+           e(field.get("placeholder", "")), e(uid),
+           t(field.get("unit_hint", "")), e(uid), units))
+
+    reveal = "".join(
+        '<div class="ks3-lstep-step">'
+        '<span class="ks3-lstep-chip" aria-hidden="true">%s</span>'
+        '<div class="ks3-lstep-stepbody">'
+        '<p class="ks3-lstep-steplabel">%s</p>'
+        '<p class="ks3-lstep-stepline" data-template="%s">%s</p>'
+        '<p class="ks3-lstep-stepnote" data-template="%s">%s</p></div></div>'
+        % (t(s.get("letter", "")), t(s.get("label", "")),
+           e(s.get("line", "")), t(fill(s.get("line", ""))),
+           e(s.get("note", "")), rich(fill(s.get("note", ""))))
+        for s in steps)
+
+    close = a.get("close") or {}
+    progress = a.get("progress") or {}
+    return ('<div class="ks3-lstep" data-lstep data-rig="%s" data-total="3" '
+            'data-head="%s" '
+            'data-close="%s" data-blank="%s" data-progress="%s" '
+            'data-done-label="%s">'
+            '<div class="ks3-lstep-panels">%s</div>'
+            '<div class="ks3-lstep-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-lstep-btn" '
+            'data-lstep-open disabled>%s</button>'
+            '<span class="ks3-lstep-progress" data-lstep-progress>%s</span>'
+            '</div>'
+            '<div class="ks3-lstep-reveal" hidden data-reveal>'
+            '<p class="ks3-lstep-revealhead">%s</p>%s'
+            '<p class="ks3-lstep-close" data-lstep-close></p></div></div>'
+            # The heading's raw template rides on the instrument so
+            # `wireLeverSteps` can repaint the shell's <h2> from the same
+            # authored string the build filled — never from a second copy.
+            % (e(a.get("rig", "")), e(a.get("heading", "")),
+               e(close.get("template", "")),
+               e(close.get("blank") or "—"),
+               e(progress.get("format", "")),
+               e(progress.get("done", "")),
+               "".join(panels), t(a.get("button", "")),
+               t(progress.get("format", "").replace("{n}", "0")),
+               t(a.get("reveal_head", "")), reveal))
+
+
+# DISPATCH: "meter-compare": ("ks3-meters-block", ' data-instrument data-metersblock data-stage-done="0"'),
+#
+# and in ACTIVITY_KIND_FN, beside the other B2 rows:
+#     "meter-compare":          r_meter_compare,
+#
+# ⚠️ THIS RENDERER CONSUMES `options`, so `_KIND_FN_OWNS_OPTIONS` picks it up
+# on its own — the literal `a.get("options")` below is what
+# `_kinds_consuming()` reads out of the source. Nothing has to be added to a
+# list by hand, which is the whole point of that mechanism, but it also means
+# a future edit that stopped reading `options` would silently hand them back
+# to the generic branch. It reads them; do not "tidy" that away.
+#
+# Place `r_meter_compare` beside `r_job_sort` in the B2 group
+# (build_ks3.py ~2846). Needs `e`, `t`, `rich`, `r_activity_options`.
+
+
+def r_meter_compare(a, act_id):
+    """⊕ b2-04 `#s-meters` — three muscle groups, three readings each.
+
+    ⚖️ THIS BLOCK IS WHY THE LESSON BELONGS TO BIOLOGY. `KS3.B.SKEL.02` asks
+    for "the measurement of force exerted by different muscles" in as many
+    words, and this is the only place on the page where a force is measured
+    rather than calculated. Everything else here is a lever; this is a
+    dynamometer and a mean.
+
+    ⚖️ AND THE MEAN IS THE SECOND LESSON. Every group is reported as the mean
+    of three readings that disagree — 312, 298, 305 — with the closing band
+    saying in words that a single pull would have told you almost nothing.
+    Three cards each showing one number would teach that muscles have exact
+    strengths, which is the opposite.
+
+    ⚠️ NOT `verdict-cards` and not `job-sort`. Both of those reveal PER ITEM,
+    the instant that item is decided, and that is the pedagogy in each — a
+    student finds out about item 1 before committing on item 2. Here there is
+    ONE commitment about all three groups at once (their ORDER), and all three
+    cards arrive together, because a ranking cannot be revealed a third at a
+    time without giving the rest away.
+
+    ⚠️ R3 — NOTHING MARKS. The three options are ranked orders and the cards
+    arrive whichever one was chosen. There is no `data-correct` in this
+    instrument, no per-option feedback and no disabling: the block is a
+    commitment device, and the data is what settles it.
+
+    `answer_index` is read HERE AND ONLY HERE — at build time, to check it is
+    in range and, more usefully, that the numbers still support it. If a
+    `rows` edit ever reordered the means, the build says so instead of the
+    page quietly arguing for an option the data no longer backs. It reaches no
+    attribute, no class and no student; the precedent is `keyed-commit`'s.
+
+    ⚠️ A LIGHT `check` block on the DEFAULT card ground. `#s-build` directly
+    above it takes the inset one. Two light blocks, two different grounds,
+    measured off Design's markup — which is why this activity authors no
+    `ground` key at all rather than authoring `card`.
+    """
+    rows = a.get("rows") or []
+    if len(rows) < 2:
+        raise ValueError(
+            "meter-compare %r declares %d row(s). The block asks a student to "
+            "rank groups against each other and one group is not a ranking."
+            % (act_id, len(rows)))
+    for r in rows:
+        for key in ("name", "readings", "mean"):
+            if not r.get(key):
+                raise ValueError(
+                    "meter-compare %r row %r is missing %r. The readings and "
+                    "the mean are the pair that teaches: a mean with no "
+                    "spread behind it is just a number."
+                    % (act_id, r.get("name"), key))
+
+    options = a.get("options") or []
+    if len(options) < 2:
+        raise ValueError(
+            "meter-compare %r offers %d option(s); the commitment is a choice "
+            "between candidate orderings." % (act_id, len(options)))
+
+    # ⚠️ Build time only. See the docstring — this never reaches the page.
+    ans = a.get("answer_index")
+    if ans is not None:
+        if not isinstance(ans, int) or isinstance(ans, bool):
+            raise ValueError(
+                "meter-compare %r answer_index is %r; it is an index into "
+                "options[]." % (act_id, ans))
+        if not 0 <= ans < len(options):
+            raise ValueError(
+                "meter-compare %r answer_index %d is out of range for %d "
+                "option(s)." % (act_id, ans, len(options)))
+        # ⚖️ The useful half of the check. Every row's name has to appear in
+        # the option the lesson argues for, in descending order of its own
+        # mean — so a row whose readings changed, or a fourth group added
+        # without touching the options, fails the build instead of leaving
+        # the page arguing for an order its own data contradicts.
+        order = sorted(rows, key=lambda r: _meter_mean(r, act_id), reverse=True)
+        text = options[ans].lower()
+        at = -1
+        for r in order:
+            # The card's name qualifies the group ("Biceps, pulling up") and
+            # the option names it plainly ("Biceps"), so the match is on the
+            # head of the name — everything before the first comma. Matching
+            # the whole string would fail on Design's own payload, and
+            # authoring a second short name per row would be one more place
+            # for the two to disagree.
+            head = r["name"].split(",")[0].strip().lower()
+            i = text.find(head)
+            if i < 0:
+                raise ValueError(
+                    "meter-compare %r names %r as the correct order and it "
+                    "does not mention %r at all."
+                    % (act_id, options[ans], head))
+            if i < at:
+                raise ValueError(
+                    "meter-compare %r says the correct order is %r, but its "
+                    "own means rank them %s. The data and the answer have "
+                    "stopped agreeing."
+                    % (act_id, options[ans],
+                       ", ".join(x["name"] for x in order)))
+            at = i
+
+    cards = "".join(
+        '<div class="ks3-meters-card">'
+        '<p class="ks3-meters-name">%s</p>'
+        '<p class="ks3-meters-readings">%s</p>'
+        '<p class="ks3-meters-mean">%s</p>'
+        '<p class="ks3-meters-meanlabel">%s</p></div>'
+        % (t(r["name"]), t(r["readings"]), t(r["mean"]),
+           t(a.get("mean_label", "")))
+        for r in rows)
+
+    close = ('<p class="ks3-meters-close">%s</p>' % rich(a["close"])
+             if a.get("close") else "")
+
+    # `r_activity_options` rather than a second copy of the answer button:
+    # this block's commitment is an ordinary four-square option list and the
+    # only thing that differs is the measure it is set on.
+    return ('<div class="ks3-meters" data-meters>'
+            '<div class="ks3-meters-commit">%s</div>'
+            '<div class="ks3-meters-reveal" hidden data-reveal>'
+            '<div class="ks3-meters-cards">%s</div>%s</div></div>'
+            % (r_activity_options(options), cards, close))
+
+
+def _meter_mean(row, act_id):
+    """The leading number of a row's `mean` string, for the build-time check.
+
+    Parsed rather than authored as a second numeric field: the string on the
+    page IS the value, and a `mean_value: 305` beside `mean: "305 N"` is two
+    places for one number to live.
+    """
+    m = re.match(r"\s*(-?\d+(?:\.\d+)?)", str(row.get("mean", "")))
+    if not m:
+        raise ValueError(
+            "meter-compare %r row %r has mean %r, which does not start with a "
+            "number. The ordering check reads it."
+            % (act_id, row.get("name"), row.get("mean")))
+    return float(m.group(1))
+# renderers: ═══ END B2 ═══
+
 ACTIVITY_KIND_RENDERERS = {
     "test-board":    ("ks3-board",
                       ' data-instrument data-board data-stage-done="0"'),
@@ -6169,6 +7159,11 @@ ACTIVITY_KIND_RENDERERS = {
     "state-bench": ("ks3-sbench-block", ' data-instrument data-sbenchblock data-stage-done="0"'),
     "state-matrix": ("ks3-smatrix-block", ' data-instrument data-smatrixblock'),
     # ═══ END C1 dispatch ═══
+    # ═══ BEGIN B2 dispatch ═══
+    "arm-lever": ("ks3-lever-block", ' data-instrument data-leverblock data-stage-done="0"'),
+    "lever-steps": ("ks3-lstep-block", ' data-instrument data-lstepblock data-stage-done="0"'),
+    "meter-compare": ("ks3-meters-block", ' data-instrument data-metersblock data-stage-done="0"'),
+    # ═══ END B2 dispatch ═══
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -6270,11 +7265,47 @@ ACTIVITY_KIND_FN = {
     "state-bench":            r_state_bench,
     "state-matrix":           r_state_matrix,
     # ═══ END C1 renderfn ═══
+    # ═══ BEGIN B2 renderfn ═══
+    "arm-lever":              r_arm_lever,
+    "lever-steps":            r_lever_steps,
+    "meter-compare":          r_meter_compare,
+    # ═══ END B2 renderfn ═══
 }
 
 # The three that need the whole lesson, not just the activity, because they
 # read the lesson's equation or its misconception register.
-_KIND_FN_TAKES_LESSON = {"fifa-construct", "sabotage", "fifa-pick"}
+def _kinds_taking_lesson():
+    """Which renderers need the whole LESSON, not just the activity.
+
+    ⊕ MRB-228, second pass. This was a hand-written set —
+    `{"fifa-construct", "sabotage", "fifa-pick"}` — and it was the same shape
+    of bug as the two registries above, one size down: a fact about a function,
+    kept somewhere other than the function. B2's
+    `r_lever_steps(lesson, a, act_id)` was spliced in, nobody added it to the
+    set, and the build died with `missing 1 required positional argument`.
+
+    That failure was loud, which is why it is not the complaint. The complaint
+    is that a correct new renderer could not be added without editing a list
+    somewhere else, and a registry like that goes out of step quietly far more
+    often than it goes out of step loudly.
+
+    So: ask the function. A renderer whose FIRST parameter is named `lesson`
+    gets the lesson. The declaration lives on the function and cannot disagree
+    with itself.
+    """
+    import inspect
+    out = set()
+    for kind, fn in ACTIVITY_KIND_FN.items():
+        try:
+            params = list(inspect.signature(fn).parameters)
+        except (TypeError, ValueError):
+            continue
+        if params and params[0] == "lesson":
+            out.add(kind)
+    return out
+
+
+_KIND_FN_TAKES_LESSON = _kinds_taking_lesson()
 
 # Which instruments draw the activity's OWN `options` and `reveal`, and so must
 # not also get the generic list underneath.
@@ -6371,6 +7402,32 @@ def r_activity(lesson, block_type, act_id, block=None):
     shell_cls, eyebrow, prompt_tag = ACTIVITY_SHELLS[block_type]
     kind = a.get("kind") or ""
 
+    # ⊕ MRB-228 — fill a LIVE heading at build time as well as at runtime.
+    #
+    # b2-04's `#s-build` heading is a readout of the rig the student left set:
+    # "Your rig: {load} kg at {hand} cm, muscle at {ins} cm." The shell emits
+    # the <h2> before any instrument renderer runs, and `wireLeverSteps`
+    # repaints it on load — so in a browser the braces are never seen, and in
+    # the shipped HTML they are permanent. A crawler, a reader with JS off, and
+    # anything that quotes the page get the template.
+    #
+    # ⚠️ THE FILLED HEADING IS A LOCAL, and that is the whole correctness of
+    # this. The first cut did `a = dict(a, heading=filled)`, which also handed
+    # the filled sentence to `r_lever_steps` — and that renderer emits the
+    # heading again as `data-head`, the template `wireLeverSteps` refills every
+    # time the student moves the rig. So `data-head` shipped a string with no
+    # placeholders left in it and the runtime repaint rewrote the heading with
+    # itself: correct on load, frozen for ever after. The step options below it
+    # updated and the sentence above them did not.
+    #
+    # Filling a local leaves `a` exactly as authored, so the instrument still
+    # receives its raw template and the two paths agree. `a` is never mutated
+    # either way — `r_activity` runs once per page, but the lesson record is
+    # shared with every gate that reads it afterwards.
+    heading = a.get("heading")
+    if kind == "lever-steps" and heading:
+        heading = _lever_steps_heading(lesson, a)
+
     # ⊕ §4.8.2 — the two CLASSIFY instruments. Each takes a modifier class and
     # a marker attribute: the class is what the stylesheet hangs the instrument
     # on, and the attribute is what shared/ks3.js dispatches on. `data-board`
@@ -6426,8 +7483,7 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append('<div class="ks3-blockhead"><div>'
                      '<p class="ks3-eyebrow">%s</p>%s</div>%s</div>'
                      % (t(eyebrow),
-                        ("<h2>%s</h2>" % t(a["heading"])) if a.get("heading")
-                        else "",
+                        ("<h2>%s</h2>" % t(heading)) if heading else "",
                         _head_counter(hc)))
         prompt_tag = "p"
     else:
@@ -6437,8 +7493,8 @@ def r_activity(lesson, block_type, act_id, block=None):
     # promotes the PROMPT to the block's <h2>, which works while a block has
     # only one of the two. Design's instruments carry both a title and a line
     # of instruction under it, and without this the title would be lost.
-    if a.get("heading") and not hc:
-        parts.append("<h2>%s</h2>" % t(a["heading"]))
+    if heading and not hc:
+        parts.append("<h2>%s</h2>" % t(heading))
         prompt_tag = "p"
 
     if a.get("prompt"):
@@ -7332,13 +8388,27 @@ def lesson_page(unit, lesson, registry, units_by_code):
         tgt_unit = units_by_code.get(r["unit"])
         tgt = registry.get(r["lesson"])
         why = ('<p>%s</p>' % t(r["why"])) if r.get("why") else ""
+        # ⊕ MRB-228 — an authored `label` overrides the target's own title.
+        #
+        # The card printed the TARGET's title, always. Usually right and
+        # occasionally wrong in a way only the referring lesson can see: b2-04
+        # points at P4's `moments` slot, whose title is "Moments: the turning
+        # effect", and b2-04 is the one lesson in the key stage where the word
+        # `moment` is barred. So the page carried it twice — once in the
+        # endmatter's permitted forward-reference to GCSE, and once here, where
+        # nobody had chosen it. Design's own label for the card is "Physics:
+        # Forces", and it was being discarded.
+        #
+        # The reference is an edge and the label is a property OF THE EDGE, not
+        # of either end: how this lesson names that one. Defaulting to the
+        # target's title keeps every existing card byte-identical.
+        label = r.get("label") or (tgt["title"] if tgt else r["lesson"])
         if tgt_unit and tgt and tgt.get("authored"):
             connects.append(
                 '<li><a href="/ks3/%s/%s/%s.html">%s %s</a>%s</li>'
                 % (e(tgt_unit["discipline"]), e(tgt_unit["slug"]),
-                   e(r["lesson"]), t(tgt["title"]), MARK_ARROW, why))
+                   e(r["lesson"]), t(label), MARK_ARROW, why))
         else:
-            label = tgt["title"] if tgt else r["lesson"]
             unit_title = tgt_unit["title"] if tgt_unit else r["unit"]
             connects.append(
                 '<li><span class="ks3-pending">%s <em>(%s — coming soon)</em>'
@@ -7380,6 +8450,28 @@ def lesson_page(unit, lesson, registry, units_by_code):
     if lesson.get("safety_note"):
         body.append('<p class="ks3-legal ks3-safety">%s</p>'
                     % t(lesson["safety_note"]))
+    # ⊕ MRB-228 — the CONVENTION line, and it is not the safety line.
+    #
+    # b2-04's foot reads "Weight in newtons is taken as mass in kilograms ×
+    # 10 N/kg throughout." That is a measurement convention scoped to the whole
+    # page, and there was nowhere to put it: the only lesson-level foot slot was
+    # `safety_note`, which ships `class="ks3-safety"`. Routing it there would
+    # have printed a units convention in the treatment reserved for "never light
+    # a candle without an adult", which devalues the safety line every time a
+    # lesson needs a convention — and b2-04's author correctly refused to, and
+    # dropped the sentence instead.
+    #
+    # Dropping it is the wrong outcome. The convention is load-bearing: g = 10
+    # is stated inside two worked steps, and "throughout" is what tells a
+    # student the same assumption holds in the rung they are about to attempt.
+    #
+    # Plain `ks3-legal`, no modifier — it reads as what it is, a note about how
+    # the numbers on this page were taken. Ordered before the standing legal
+    # line for the same reason `safety_note` is: page-specific first, standing
+    # text last.
+    if lesson.get("convention_note"):
+        body.append('<p class="ks3-legal">%s</p>'
+                    % t(lesson["convention_note"]))
     body.append(LEGAL_LINE)
     body.append("</div>")
 

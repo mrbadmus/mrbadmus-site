@@ -1,0 +1,107 @@
+/* ── cover-triangle · TRIANGLE variant, widened for b2-04 ──
+   Append below the existing `MRB-204 step 2 — the triangle` group in
+   shared/ks3.css (~line 2990). Nothing above it changes.
+
+   ⚠️ EVERY RULE HERE IS SCOPED `[data-tri-layout="row"]` OR NAMES A CLASS
+   THAT DID NOT EXIST. That is the byte-identity guarantee for b1-02, made
+   structurally rather than by care: b1-02's triangle emits no
+   `data-tri-layout` attribute and no `.ks3-tri-result`, `.ks3-tri-units` or
+   `.ks3-tri-condition` element, so not one declaration below can reach it.
+
+   The triangle sits on the CARD ground inside a `.ks3-formula` block, never
+   on ink, so none of this needs the `.ks3-dark …` scoping the benches do. */
+
+/* Design draws the figure and the reading side by side and lets them stack on
+   a narrow screen — the reading is a sentence about the figure, and putting a
+   paragraph 260px under a drawing loses that. FLEX, not grid: the stack point
+   is the SVG's own 260px plus the side panel's 260px minimum, which a grid
+   would need a query to express. */
+.ks3-triangle[data-tri-layout="row"] {
+  /* The head stays centred with the block; only the body becomes a row. */
+  text-align: center;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 34px 52px;
+  margin-top: 22px;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-svg {
+  flex: 0 0 auto;
+  margin: 0;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-side {
+  flex: 1 1 320px;
+  min-width: 260px;
+  text-align: left;
+}
+/* The buttons belong to the reading, not to the figure, so they lead the
+   side column left-aligned rather than sitting centred under the triangle. */
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-btns {
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+/* ⊕ WIDENED, and it is a correction as much as an addition. `.ks3-tri-label`
+   is 22px, which is right for b1-02's three- to five-character words
+   ("total", "eye", "obj") and far too small for a single letter: a 22px "T"
+   inside a 260px triangle reads as a stray mark rather than as the subject of
+   the block. Design draws these at 62px in a 300-wide box — about 54px here —
+   and 44px is what fits inside the derived 52px cover box with its corner
+   radius, so the cover still hides the letter completely. */
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-label { font-size: 44px; }
+
+/* The ARRANGEMENT, in display type. This is the line a student reads off the
+   page and writes down; the sentence under it says why it is that line. */
+.ks3-tri-result {
+  margin: 18px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+/* ⚠️ The row variant's note is a BARE PARAGRAPH, not the inset panel b1-02
+   takes. A boxed panel is right when the sentence is the only thing under the
+   figure; here it is the second of five stacked blocks in a column and a box
+   around one of them would read as a callout. Overrides only inside the row. */
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-note {
+  margin: 12px 0 0;
+  max-width: none;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font-size: 19px;
+  line-height: 1.55;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-close {
+  margin: 14px 0 0;
+  max-width: none;
+}
+/* The unit legend. Mono, because these are symbols and their units, and the
+   1.9 line-height is what keeps three `<br>`-joined lines readable as a list
+   without being one. */
+.ks3-tri-units {
+  margin: 16px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.9;
+  color: var(--ks3-ink-body);
+}
+/* ⚖️ The balanced condition, set apart in display type because it is not a
+   fourth arrangement of T, F and d — it is the statement that makes every
+   question on the page solvable. Subscript ₁ and ₂ land here; both are in the
+   display face's subset, and the font gate is what keeps that true. */
+.ks3-tri-condition {
+  margin: 16px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.4;
+  color: var(--ks3-ink);
+}

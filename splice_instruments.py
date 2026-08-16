@@ -1,13 +1,37 @@
 #!/usr/bin/env python3
-"""splice_c1.py — integrate the C1 instrument fragments into the engine.
+"""splice_instruments.py — fold a unit's instrument fragments into the engine.
 
-Run from the repo root:  python3 <this> [frag_dir] [tag]
+    python3 splice_instruments.py <frag_dir> "<TAG>"
 
-The six lesson authors wrote their instruments as fragment files rather than
-editing the engine, because five of the engine's files have a single-writer
-rule and six agents editing `build_ks3.py` concurrently is how you lose a
-renderer without noticing. This puts them in, in one pass, in a deterministic
-order.
+    python3 splice_instruments.py docs/ks3/c1-inventory/instrument-fragments \\
+            "C1 · Particles and their behaviour (MRB-228)"
+
+The first word of the TAG is the KEY, and the KEY names the BEGIN/END markers
+this writes between. One key per unit keeps units from overwriting each other's
+spliced regions.
+
+⊕ Promoted out of `docs/ks3/c1-inventory/` on 16 Aug 2026 (MRB-228), once B2
+became its second caller. It was never C1-specific — the unit is an argument —
+but leaving it filed under C1 meant every later unit reaching into C1's
+inventory folder for a tool, which is how a shared thing quietly becomes
+somebody's private copy.
+
+Lesson authors write their instruments as fragment files rather than editing
+the engine, because five of the engine's files have a single-writer rule and
+several agents editing `build_ks3.py` concurrently is how you lose a renderer
+without noticing. This puts them in, in one pass, in a deterministic order.
+
+Four files per instrument kind, in `<frag_dir>`:
+
+    <kind>.renderer.py   the r_<kind_with_underscores>() function, plus a
+                         `# DISPATCH:` line giving its ACTIVITY_KIND_RENDERERS
+                         row. The DRAWING function is DERIVED from the kind and
+                         checked against the file — see the ACTIVITY_KIND_FN
+                         splice below for why that second registry exists.
+    <kind>.css           the complete CSS block
+    <kind>.js            the wire<Name>() function, plus a `// WIRE:` line
+    <kind>.parity.py     COMPONENTS rows, DRIVES entries and a commented page
+                         constant, in `# ── … ──` sections
 
 **Re-runnable.** Everything it writes sits between BEGIN/END markers, and a
 second run replaces the whole marked region rather than appending beside it.
@@ -45,14 +69,27 @@ def read(kind, ext):
 
 
 def replace_region(text, begin, end, body, anchor, before=True):
-    """Swap the marked region, or create it at `anchor` if absent."""
-    block = "%s\n%s\n%s\n" % (begin, body.rstrip(), end)
+    """Swap the marked region, or create it at `anchor` if absent.
+
+    ⚠️ IDEMPOTENT, and it was not (MRB-228). The block used to be built with a
+    trailing newline AND a separator newline added at insert time, so every
+    re-run put back one more blank line than it removed and the file grew by a
+    line per splice — one in `build_ks3.py`, one in `shared/ks3.js`, one in
+    `ks3_parity.py`, every time.
+
+    Harmless to render and corrosive to everything else: two runs over the same
+    fragments produced different bytes, so "byte-identical output" became a
+    claim about how many times someone had run the splice. The separator now
+    belongs to the insert path only; the replace path returns what it was
+    given, exactly.
+    """
+    block = "%s\n%s\n%s" % (begin, body.rstrip(), end)
     if begin in text:
         pre, rest = text.split(begin, 1)
         _old, post = rest.split(end, 1)
         return pre + block + post
     i = text.index(anchor)
-    return (text[:i] + block + "\n" + text[i:]) if before else (
+    return (text[:i] + block + "\n\n" + text[i:]) if before else (
         text[:i + len(anchor)] + "\n" + block + text[i + len(anchor):])
 
 
@@ -113,7 +150,17 @@ def main():
     # ── 1. build_ks3.py — renderer functions, then dispatch entries ──────
     src = open("build_ks3.py", encoding="utf-8").read()
 
-    bodies, dispatch = [], []
+    # A kind is an ACTIVITY KIND if and only if its fragment registers a shell.
+    #
+    # ⊕ MRB-228. `cover-triangle` is the case that settles this: it is a
+    # sub-key of the `formula` BLOCK, like its bar sibling, so it has no shell,
+    # no marker attribute and no rail contract — it is read, not done. Its
+    # fragment therefore carries no `# DISPATCH:` line at all, and the ABSENCE
+    # is the declaration. Deriving it that way rather than from a magic
+    # `DISPATCH: none` keeps the two registries in step by construction: no
+    # shell means no drawing-function row, and build_ks3 asserts exactly that
+    # pairing on import.
+    bodies, dispatch, activities = [], [], set()
     for k in ks:
         r = read(k, "renderer.py")
         if not r:
@@ -121,8 +168,21 @@ def main():
             continue
         for line in r.split("\n"):
             m = re.match(r'\s*#\s*DISPATCH:\s*(.+?),?\s*$', line)
-            if m:
-                dispatch.append("    " + m.group(1).rstrip(",") + ",")
+            if not m:
+                continue
+            # `# DISPATCH: none` — the fragment is NOT an activity kind and
+            # registers nothing in either table. `cover-triangle` is the first:
+            # it is a sub-key of the `formula` BLOCK, exactly as its bar
+            # variant is, so it has no shell, no marker attribute and no rail
+            # contract. Before this, "none" plus the sentence explaining it was
+            # spliced into the dict as if it were a row, and the file stopped
+            # parsing — which is the good failure, but "not an activity kind"
+            # is a thing a fragment must be able to SAY rather than a thing it
+            # says by breaking the build.
+            if re.match(r'(?i)none\b', m.group(1)):
+                continue
+            dispatch.append("    " + m.group(1).rstrip(",") + ",")
+            activities.add(k)
         bodies.append(r)
 
     src = replace_region(
@@ -150,7 +210,7 @@ def main():
     renderfn = []
     for k in ks:
         r = read(k, "renderer.py")
-        if not r:
+        if not r or k not in activities:
             continue
         fname = "r_" + k.replace("-", "_")
         if ("def %s(" % fname) not in r:
@@ -159,14 +219,13 @@ def main():
             continue
         renderfn.append('    "%s": %s%s,' % (k, " " * max(0, 22 - len(k)), fname))
 
-    rb = "    # ═══ BEGIN %s renderfn ═══" % KEY
-    re_ = "    # ═══ END %s renderfn ═══" % KEY
-    if rb not in src:
-        raise SystemExit("build_ks3.py has no %r marker — ACTIVITY_KIND_FN "
-                         "must carry one for the splice to fill" % rb)
-    pre, rest = src.split(rb, 1)
-    _o, post = rest.split(re_, 1)
-    src = pre + rb + "\n" + "\n".join(renderfn) + "\n" + re_ + post
+    # Create the region if this unit has never been spliced before, exactly as
+    # the shell dispatch above does. The first cut required the marker to exist
+    # already, which is fine for the unit the script was written for and wrong
+    # for the second one — B2 hit it immediately.
+    src = splice_into(src, "ACTIVITY_KIND_FN = {", "}",
+                      "    # ═══ BEGIN %s renderfn ═══" % KEY,
+                      "    # ═══ END %s renderfn ═══" % KEY, renderfn)
 
     open("build_ks3.py", "w", encoding="utf-8").write(src)
     print("  build_ks3.py  — %d renderer(s), %d shell entr(ies), %d draw fn(s)"

@@ -6610,3 +6610,524 @@ body.rd[data-mode="ks3"] {
   .ks3-smatrix-table td { padding: 9px 10px; }
 }
 /* ═══ END C1 ═══ */
+
+/* ═══ BEGIN B2 ═══ */
+/* ── arm-lever (b2-04 #s-bench) — the forearm rig ──
+   Append to the B2 group in shared/ks3.css, after the two canvas benches
+   (`.ks3-joint-*` / `.ks3-muscle-*`, ~line 4430).
+
+   ⚠️ EVERY <p> AND <label> RULE BELOW IS SCOPED `.ks3-dark …`, AND IT HAS TO
+   BE. This instrument's only drawn instance sits on `ks3-block ks3-dark
+   ks3-practical`. `.ks3-dark p { color: var(--ks3-on-dark-body) }` is (0,1,1)
+   and a bare `.ks3-lever-tile-label` is (0,1,0), so an unscoped colour LOSES
+   and the mono uppercase caption renders in on-dark body copy — legible, so
+   nobody reads it as a bug, and wrong, so the three measured tiles stop
+   reading as captions over values. That is the exact defect B1 shipped with
+   the zoom instrument and B2 was bitten by again on the joint bench, and the
+   layer-C assertions are what found it both times.
+
+   The frame, the stage and the tiles deliberately match `.ks3-joint-*` value
+   for value. They are drawn differently and framed identically, and a third
+   copy of the frame is the drift a shared stylesheet exists to stop — but
+   they are NOT merged into one selector list, because the joint bench is a
+   shipped, approved page and a shared rule makes every future change to this
+   rig a change to that one. */
+
+.ks3-lever-controls {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+/* 240px basis with a 220px floor: two controls sit side by side on a tablet
+   and all three do on a laptop, and none of them ever gets narrower than the
+   slider's own usable travel. */
+.ks3-lever-control { flex: 1 1 240px; min-width: 220px; }
+.ks3-lever-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-dark .ks3-lever-label {
+  display: block;
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* The live value beside its own label, in the alert yellow. The same treatment
+   the joint bench gives its angle readout, because they are the same thing:
+   the number the control is currently set to. */
+.ks3-dark .ks3-lever-value {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ks3-alert);
+}
+/* `.ks3-slider` is full-width by default, which is right inside the joint
+   bench's own control strip and wrong in a three-column row: a 60rem block
+   would give the mass slider a 20rem travel and make 0.5 kg a pixel. */
+.ks3-lever-slider { max-width: 18rem; }
+.ks3-lever-tabs { display: flex; gap: 9px; flex-wrap: wrap; }
+
+.ks3-lever-stage {
+  margin-top: 20px;
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-on-dark-muted);
+  overflow: hidden;
+}
+.ks3-lever-canvas { display: block; width: 100%; height: auto; }
+
+.ks3-lever-tiles {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-lever-tile {
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-dark .ks3-lever-tile-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* ⚖️ TWO TILE TREATMENTS, AND THE SPLIT IS THE GATE. The three MEASURED tiles
+   are mono 25px — they hold numbers the rig is giving you. The fourth is
+   19px/700 prose type, because until the meter is fitted it holds a sentence
+   ("not measured — you work it out") and a sentence set in a 25px mono
+   readout face reads as a broken number. It keeps the prose treatment after
+   the meter is fitted too: the force is the student's own answer being
+   confirmed, not a fourth thing the rig measured for them. */
+.ks3-dark .ks3-lever-tile-value {
+  margin: 5px 0 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-lever-tile-value.ks3-lever-tile-mono {
+  font-family: var(--ks3-font-mono);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.ks3-lever-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+/* One-way, and the spent state says so: the button carries its own second
+   word ("Meter reading shown") as well as the dim, because R2 forbids colour
+   alone as a state. */
+.ks3-lever-meter[disabled] { opacity: .5; cursor: default; }
+.ks3-dark .ks3-lever-note {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── cover-triangle · TRIANGLE variant, widened for b2-04 ──
+   Append below the existing `MRB-204 step 2 — the triangle` group in
+   shared/ks3.css (~line 2990). Nothing above it changes.
+
+   ⚠️ EVERY RULE HERE IS SCOPED `[data-tri-layout="row"]` OR NAMES A CLASS
+   THAT DID NOT EXIST. That is the byte-identity guarantee for b1-02, made
+   structurally rather than by care: b1-02's triangle emits no
+   `data-tri-layout` attribute and no `.ks3-tri-result`, `.ks3-tri-units` or
+   `.ks3-tri-condition` element, so not one declaration below can reach it.
+
+   The triangle sits on the CARD ground inside a `.ks3-formula` block, never
+   on ink, so none of this needs the `.ks3-dark …` scoping the benches do. */
+
+/* Design draws the figure and the reading side by side and lets them stack on
+   a narrow screen — the reading is a sentence about the figure, and putting a
+   paragraph 260px under a drawing loses that. FLEX, not grid: the stack point
+   is the SVG's own 260px plus the side panel's 260px minimum, which a grid
+   would need a query to express. */
+.ks3-triangle[data-tri-layout="row"] {
+  /* The head stays centred with the block; only the body becomes a row. */
+  text-align: center;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 34px 52px;
+  margin-top: 22px;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-svg {
+  flex: 0 0 auto;
+  margin: 0;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-side {
+  flex: 1 1 320px;
+  min-width: 260px;
+  text-align: left;
+}
+/* The buttons belong to the reading, not to the figure, so they lead the
+   side column left-aligned rather than sitting centred under the triangle. */
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-btns {
+  margin-top: 0;
+  justify-content: flex-start;
+}
+
+/* ⊕ WIDENED, and it is a correction as much as an addition. `.ks3-tri-label`
+   is 22px, which is right for b1-02's three- to five-character words
+   ("total", "eye", "obj") and far too small for a single letter: a 22px "T"
+   inside a 260px triangle reads as a stray mark rather than as the subject of
+   the block. Design draws these at 62px in a 300-wide box — about 54px here —
+   and 44px is what fits inside the derived 52px cover box with its corner
+   radius, so the cover still hides the letter completely. */
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-label { font-size: 44px; }
+
+/* The ARRANGEMENT, in display type. This is the line a student reads off the
+   page and writes down; the sentence under it says why it is that line. */
+.ks3-tri-result {
+  margin: 18px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+/* ⚠️ The row variant's note is a BARE PARAGRAPH, not the inset panel b1-02
+   takes. A boxed panel is right when the sentence is the only thing under the
+   figure; here it is the second of five stacked blocks in a column and a box
+   around one of them would read as a callout. Overrides only inside the row. */
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-note {
+  margin: 12px 0 0;
+  max-width: none;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  font-size: 19px;
+  line-height: 1.55;
+}
+.ks3-triangle[data-tri-layout="row"] .ks3-tri-close {
+  margin: 14px 0 0;
+  max-width: none;
+}
+/* The unit legend. Mono, because these are symbols and their units, and the
+   1.9 line-height is what keeps three `<br>`-joined lines readable as a list
+   without being one. */
+.ks3-tri-units {
+  margin: 16px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.9;
+  color: var(--ks3-ink-body);
+}
+/* ⚖️ The balanced condition, set apart in display type because it is not a
+   fourth arrangement of T, F and d — it is the statement that makes every
+   question on the page solvable. Subscript ₁ and ₂ land here; both are in the
+   display face's subset, and the font gate is what keeps that true. */
+.ks3-tri-condition {
+  margin: 16px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.4;
+  color: var(--ks3-ink);
+}
+
+/* ── lever-steps (b2-04 #s-build) — MRB-204 step 4, on the student's own rig ──
+   Append to the B2 group in shared/ks3.css, after `.ks3-lever-*`.
+
+   The block sits on the INSET ground inside a light `check` shell, so nothing
+   here needs the `.ks3-dark …` scoping the rig above it does — with ONE
+   exception, marked below: the reveal panel inverts to ink inside a light
+   block, and everything inside it is scoped through `.ks3-lstep-reveal`
+   rather than through `.ks3-dark`, because that class is not on this section.
+
+   ⚠️ The panels, the option buttons, the number field and the unit select are
+   deliberately the same values as `.ks3-pick-*` (c2-06's `#s-build`). Two
+   MRB-204 step-4 blocks that look different would teach a student that the
+   two are different kinds of task, and they are the same task on two
+   subjects. They are NOT merged into one selector list: c2-06 is a shipped,
+   approved page and a shared rule makes every future change here a change
+   there. `.ks3-sr-only` and `.ks3-sim-units` ARE reused, because those are
+   already shared helpers rather than one block's chrome. */
+
+.ks3-lstep { margin-top: 22px; }
+.ks3-lstep-panels { display: flex; flex-direction: column; gap: 18px; }
+/* Card on the option border, standing off the inset ground the block sits on
+   — the three commitments are foreground and the block is their backing. */
+.ks3-lstep-panel {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+.ks3-lstep-label {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* ⊕ The question. c2-06's panels carry only the mono step label; Design gives
+   each of these three a sentence saying what to do — "Which line says that?",
+   "Put your rig's numbers in, with the distances in metres." — and without a
+   slot for it the panels would be three unexplained option lists. */
+.ks3-lstep-q { margin: 0 0 12px; font-size: 19px; font-weight: 600; }
+
+/* ⚖️ STACKED AND LEFT-ALIGNED. These are candidate EQUATIONS, and centring
+   three lines of mono maths makes them unscannable — the eye needs the `F ×`
+   of every option to start in the same column to see what differs. */
+.ks3-lstep-opts { display: flex; flex-direction: column; gap: 9px; }
+.ks3-lstep-opt {
+  font: inherit;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  padding: 11px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  cursor: pointer;
+}
+/* R2/R3 — the chosen state carries `aria-pressed` as well as the border, and
+   it is CHOSEN and not correct: no green, no mark, and nothing here is ever
+   `is-correct`. Only the mastery ladder marks. */
+.ks3-lstep-opt[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+/* Locked once the model is on screen: a pick changed after reading the answer
+   is not a pick. */
+.ks3-lstep-opt[disabled] { opacity: .45; cursor: default; }
+
+.ks3-lstep-answer {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ks3-lstep-input {
+  font: inherit;
+  font-family: var(--ks3-font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  width: 8.5rem;
+  padding: 12px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-option);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-lstep-unit { font-size: 18px; }
+.ks3-lstep-input[disabled],
+.ks3-lstep-unit[disabled] { opacity: .55; }
+
+.ks3-lstep-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-lstep-btn[disabled] { opacity: .45; cursor: default; }
+.ks3-lstep-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+
+/* ── the model answer, on INK inside a light block ──
+   The same inversion the joint bench's verdict and c2-06's model take: the
+   student's own working has just been committed on cream, and the worked
+   version arrives on a different ground so the two cannot be confused for
+   each other at a glance. */
+.ks3-lstep-reveal {
+  margin-top: 20px;
+  padding: 26px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-lstep-reveal .ks3-lstep-revealhead {
+  margin: 0 0 16px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-alert);
+}
+.ks3-lstep-step { display: flex; gap: 14px; align-items: flex-start; }
+/* The rule between steps belongs to the step BELOW it, so the first step has
+   none — otherwise the panel opens with a hairline under its own heading. */
+.ks3-lstep-step + .ks3-lstep-step {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid var(--ks3-dark-rule);
+}
+/* ⚠️ ALERT ON INK, not accent. The worked example upstairs chips its four
+   steps in `--ks3-accent-text` on the inset ground; this panel is ink, where
+   the accent does not carry, and the alert yellow is the pair Design uses for
+   every emphasis inside an ink panel in this unit. Same four letters, same
+   four labels, two grounds. */
+.ks3-lstep-chip {
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 18px;
+}
+.ks3-lstep-stepbody { flex: 1 1 auto; min-width: 0; }
+.ks3-lstep-reveal .ks3-lstep-steplabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-lstep-reveal .ks3-lstep-stepline {
+  margin: 5px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+  /* The lines are equations and can outrun a narrow column; they scroll
+     inside themselves rather than pushing the panel wide. */
+  overflow-wrap: break-word;
+}
+.ks3-lstep-reveal .ks3-lstep-stepnote {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+/* ⚖️ The closing line quotes the student's own answer back beside the worked
+   one. It takes the same body treatment as a step note and NOT a verdict
+   colour, because it is a comparison the student makes and never a mark the
+   page makes. */
+.ks3-lstep-reveal .ks3-lstep-close {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── meter-compare (b2-04 #s-meters) — three groups, three readings each ──
+   Append to the B2 group in shared/ks3.css, after `.ks3-lstep-*`.
+
+   A light `check` block on the DEFAULT card ground, so nothing here needs the
+   `.ks3-dark …` scoping the rig does — and it must not acquire it: `#s-build`
+   directly above sits on the inset ground and this one does not, which is
+   Design's own measured difference between the two light blocks. */
+
+.ks3-meters { margin-top: 0; }
+/* 34rem, Design's own measure. These options are three candidate ORDERINGS
+   read against each other, and a full-width answer button on a 60rem column
+   is a target the eye has to travel to compare with the one above it. */
+.ks3-meters-commit .ks3-options { max-width: 34rem; }
+
+.ks3-meters-reveal { margin-top: 20px; }
+/* Auto-fit rather than three fixed columns: at 1450 N the leg-press card
+   carries the widest readings row on the page, and a fixed grid would either
+   wrap that line or squeeze the other two. The `min()` keeps a single card
+   from overflowing a phone. */
+.ks3-meters-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 14px;
+}
+/* Card on a 2px INK border, not the option border the commit buttons take.
+   These are not answers — they are the measurements, and the heavier rule is
+   what separates data from a control. */
+.ks3-meters-card {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-meters-name {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* ⚖️ THE THREE READINGS ARE MONO AND THEY ARE NOT SMALL PRINT. They are the
+   evidence the mean is drawn from, and setting them as a caption under the
+   headline number would teach that the mean is the measurement and the
+   spread is a footnote — which is the misconception the closing band exists
+   to break. */
+.ks3-meters-readings {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ks3-ink-body);
+}
+.ks3-meters-mean {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 30px;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+/* The label under the headline says what the headline IS. Without it a 305
+   in display type reads as "the strength of a hand grip" rather than as one
+   summary of three disagreeing pulls. */
+.ks3-meters-meanlabel {
+  margin: 4px 0 0;
+  font-size: 16px;
+  color: var(--ks3-ink-muted);
+}
+/* The band closes the block, on the same ground a key fact takes but with no
+   shadow — it is the conclusion drawn from the three cards above it rather
+   than a standing law, and the accent shadow is what marks the difference. */
+.ks3-meters-close {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+/* ═══ END B2 ═══ */

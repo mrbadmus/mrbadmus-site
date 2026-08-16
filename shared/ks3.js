@@ -4970,28 +4970,15 @@
     repaint();
   }
 
-  /* MRB-204 step 2. Cover the one you want. */
-  function wireTriangle(root) {
-    each(root.querySelectorAll("[data-triangle]"), function (tri) {
-      var btns = toArray(tri.querySelectorAll(".ks3-tri-btn"));
-      var notes = toArray(tri.querySelectorAll(".ks3-tri-note"));
-      each(btns, function (b) {
-        b.addEventListener("click", function () {
-          var key = b.getAttribute("data-cover");
-          var on = tri.getAttribute("data-covered") === key;
-          if (on) { tri.removeAttribute("data-covered"); }
-          else { tri.setAttribute("data-covered", key); }
-          each(btns, function (x) {
-            x.setAttribute("aria-pressed",
-              !on && x.getAttribute("data-cover") === key ? "true" : "false");
-          });
-          each(notes, function (n) {
-            setHidden(n, on || n.getAttribute("data-note") !== key);
-          });
-        });
-      });
-    });
-  }
+  /* MRB-204 step 2. Cover the one you want.
+     ⊖ SUPERSEDED 16 Aug 2026 (MRB-228) and deleted here. The B2 splice appends
+     a widened `wireTriangle` in this same function scope, and the later
+     declaration wins for the whole scope — so this body has been unreachable
+     since b2-04 landed, and every call already resolved to the widened one.
+     Deleting unreachable code cannot change behaviour, and leaving it is the
+     exact hazard the splice markers exist to prevent: two copies of one
+     function, with only the live one's bugs visible. The widened version is
+     below, beside the rest of the B2 wiring. */
 
   /* ═══════════════════════════════════════════════════════════════
      B2 · Movement: skeleton and muscles  (⊕ 16 Aug 2026, MRB-220)
@@ -9331,6 +9318,710 @@
 
 
 
+/* ═══ BEGIN B2 ═══ */
+/* WIRE: each(root.querySelectorAll("[data-leverblock]"), wireArmLever);
+   — add to wireInstruments(), in the B2 group beside wireMusclePair. Uses
+   each / toArray / setHidden / setCount / markStage / wireBenchGate, all
+   already in scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── arm-lever (b2-04 #s-bench) — the forearm rig ──
+
+     ⚖️ THE INSTRUMENT WITHHOLDS ONE NUMBER AND THAT IS THE LESSON. Three
+     readouts are handed over; the fourth says "not measured — you work it
+     out" until the meter is fitted, and the muscle arrow on the canvas is
+     labelled with a word and no magnitude. Both routes to the answer are
+     closed by the same flag, so there is one thing to get wrong rather
+     than two. If a future change makes the force readable before the
+     meter, the lesson is gone and every gate on this page still passes.
+
+     ⚖️ THE RAIL STOP IS A SET, NOT A COUNT. `touched` keys on the control
+     NAME, so dragging the mass slider twenty times is one control moved.
+     Design's own predicate is already a set and this keeps it one —
+     `Math.max(touched, n)` is the shape that let c1-04 read "all controls
+     tried" after a single button.
+
+     ⚖️ NOTHING ANIMATES. The rig is a static drawing repainted when a
+     control moves, so `prefers-reduced-motion` has nothing to degrade
+     here (the same note `wireHalvingBench` and `wireClaimSwitch` carry)
+     and the reduced-motion experience is the COMPLETE one rather than a
+     lesser one. There is no tick to scale, and adding one would animate
+     an arm that is deliberately held still — the whole page is about the
+     case where nothing is moving.
+
+     The number formatter and the aria-label composition are duplicated in
+     `build_ks3.py` (`_lever_num`, `_lever_alt`) on purpose: the resting
+     page has to render "20 N" and its label before any JS runs. Two
+     implementations, one composition, checked at both ends of both
+     sliders.
+     ═══════════════════════════════════════════════════════════════ */
+  function wireArmLever(sec) {
+    var wrap = sec.querySelector("[data-lever]");
+    if (!wrap) { return; }
+
+    var G = parseFloat(wrap.getAttribute("data-g")) || 10;
+    var DONE_AT = parseInt(wrap.getAttribute("data-done-at"), 10) || 2;
+    var UNMEASURED = wrap.getAttribute("data-unmeasured") || "";
+    var ALT = wrap.getAttribute("data-alt") || "";
+    var ALT_MEASURED = wrap.getAttribute("data-alt-measured") || "";
+    var C_TITLE = wrap.getAttribute("data-canvas-title") || "";
+    var C_JOINT = wrap.getAttribute("data-canvas-joint") || "";
+    var C_MUSCLE = wrap.getAttribute("data-canvas-muscle") || "";
+    var C_LOAD = wrap.getAttribute("data-canvas-load") || "{n} N";
+    var M_LABEL = wrap.getAttribute("data-meter-label") || "";
+    var M_DONE = wrap.getAttribute("data-meter-done") || "";
+    var M_NOTE = wrap.getAttribute("data-meter-note") || "";
+    var M_NOTE_DONE = wrap.getAttribute("data-meter-note-done") || "";
+
+    var canvas = wrap.querySelector("[data-lever-canvas]");
+    var values = toArray(wrap.querySelectorAll("[data-lever-value]"));
+    var outs = toArray(wrap.querySelectorAll("[data-lever-out]"));
+    var inputs = toArray(wrap.querySelectorAll("[data-lever-input]"));
+    var tabs = toArray(wrap.querySelectorAll("[data-lever-tab]"));
+    var meterBtn = wrap.querySelector("[data-lever-meter]");
+    var note = wrap.querySelector("[data-lever-note]");
+
+    var dp = {
+      load: parseInt(wrap.getAttribute("data-dp-load"), 10) || 0,
+      ins: parseInt(wrap.getAttribute("data-dp-ins"), 10) || 0,
+      hand: parseInt(wrap.getAttribute("data-dp-hand"), 10) || 0
+    };
+    var state = {
+      load: parseFloat(wrap.getAttribute("data-load")),
+      ins: parseFloat(wrap.getAttribute("data-ins")),
+      hand: parseFloat(wrap.getAttribute("data-hand"))
+    };
+    var touched = {};
+    var meterShown = false;
+
+    /* Weight is mass × g; the turning effect of the load is weight × its
+       distance from the joint; and the muscle, attached far closer in, must
+       produce the same turning effect over a much smaller distance. Both
+       distances go into metres, which cancels — the ratio is what matters —
+       but they are converted anyway so the arithmetic here is the same
+       arithmetic the student is asked to write down. */
+    function weight() { return state.load * G; }
+    function muscleForce() {
+      return (weight() * (state.hand / 100)) / (state.ins / 100);
+    }
+
+    function num(v, places, fmt) {
+      return (fmt || "{n}").replace("{n}", Number(v).toFixed(places));
+    }
+
+    /* ⚠️ "after 1 halvings" is why this exists. No control on this rig can
+       currently reach a bare 1 — the two sliders render to one decimal and
+       the tabs offer 32 and 16 — but the guard is cheap and a plural that
+       breaks for one authored value is exactly the defect that ships. */
+    function altText() {
+      var out = ALT.replace("{load}", num(state.load, dp.load))
+        .replace("{ins}", num(state.ins, dp.ins))
+        .replace("{hand}", num(state.hand, dp.hand));
+      if (meterShown && ALT_MEASURED) {
+        out += ALT_MEASURED.replace("{force}", num(muscleForce(), 0));
+      }
+      return out.split(" 1 kilograms").join(" 1 kilogram")
+        .split(" 1 centimetres").join(" 1 centimetre")
+        .split(" 1 newtons").join(" 1 newton");
+    }
+
+    function arrow(ctx, x, y, dy, colour, label) {
+      ctx.strokeStyle = colour;
+      ctx.fillStyle = colour;
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(x, y);
+      ctx.lineTo(x, y + dy);
+      ctx.stroke();
+      var s = dy > 0 ? 1 : -1;
+      ctx.beginPath();
+      ctx.moveTo(x, y + dy + s * 14);
+      ctx.lineTo(x - 11, y + dy);
+      ctx.lineTo(x + 11, y + dy);
+      ctx.closePath();
+      ctx.fill();
+      ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "center";
+      ctx.fillText(label, x, y + dy + s * 34);
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 350;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+
+      var scale = 17;                       // px per cm
+      var elx = 150, ely = 190;
+      var handX = elx + state.hand * scale;
+      var insX = elx + state.ins * scale;
+
+      // Upper arm: an ink outline under a bone-coloured core, which is what
+      // gives every limb on this canvas a drawn edge against the ink ground.
+      ctx.lineCap = "round";
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 30;
+      ctx.beginPath();
+      ctx.moveTo(elx, ely);
+      ctx.lineTo(elx, ely - 128);
+      ctx.stroke();
+      ctx.strokeStyle = "#F4E9D8";
+      ctx.lineWidth = 24;
+      ctx.beginPath();
+      ctx.moveTo(elx, ely);
+      ctx.lineTo(elx, ely - 128);
+      ctx.stroke();
+
+      // The muscle, curving from high on the upper arm down to its
+      // attachment. The attachment point MOVES with the slider — that is the
+      // whole variable, and a muscle drawn at a fixed angle would hide it.
+      ctx.strokeStyle = "#FFC53D";
+      ctx.lineWidth = 15;
+      ctx.beginPath();
+      ctx.moveTo(elx + 16, ely - 118);
+      ctx.quadraticCurveTo(elx + 34, ely - 60, insX, ely - 12);
+      ctx.stroke();
+
+      // Forearm, held level.
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 28;
+      ctx.beginPath();
+      ctx.moveTo(elx, ely);
+      ctx.lineTo(handX, ely);
+      ctx.stroke();
+      ctx.strokeStyle = "#F4E9D8";
+      ctx.lineWidth = 22;
+      ctx.beginPath();
+      ctx.moveTo(elx, ely);
+      ctx.lineTo(handX, ely);
+      ctx.stroke();
+
+      // The joint, named on the drawing: every distance on this page is
+      // measured from it and an unlabelled pivot leaves "from the elbow"
+      // pointing at nothing.
+      ctx.beginPath();
+      ctx.arc(elx, ely, 16, 0, Math.PI * 2);
+      ctx.fillStyle = "#C6B9A7";
+      ctx.fill();
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.fillStyle = "#C6B9A7";
+      ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "center";
+      ctx.fillText(C_JOINT, elx, ely + 44);
+
+      // The hand, and the load hanging from it. The block grows with the
+      // mass so the slider has something to say on the drawing as well as in
+      // the readout.
+      ctx.fillStyle = "#F4E9D8";
+      ctx.beginPath();
+      ctx.arc(handX, ely, 15, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      var bw = 34 + state.load * 7;
+      ctx.fillStyle = "#8FB7FF";
+      ctx.fillRect(handX - bw / 2, ely + 24, bw, 26 + state.load * 3);
+      ctx.strokeRect(handX - bw / 2, ely + 24, bw, 26 + state.load * 3);
+
+      // ⚖️ THE TWO ARROWS ARE NOT SYMMETRICAL, AND THAT IS THE GATE. The load
+      // arrow carries its magnitude, because the rig measured it. The muscle
+      // arrow carries a WORD and never a number, in every state including
+      // after the meter is fitted — the meter reading lands in the tile,
+      // where the student can hold it against their own working, and putting
+      // it on the arrow would let them read the answer off the picture.
+      arrow(ctx, insX, ely - 26, -58, "#FFC53D", C_MUSCLE);
+      arrow(ctx, handX + 46, ely + 30, 62, "#8FB7FF",
+            num(weight(), 0, C_LOAD));
+
+      // The two distances, drawn as dimension lines in each one's own colour
+      // so the muscle's short reach and the load's long one are one glance
+      // apart. These exist only on the canvas, which is why the aria-label
+      // has to carry both numbers.
+      function dim(x1, x2, y, colour, label) {
+        ctx.strokeStyle = colour;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x1, y - 8); ctx.lineTo(x1, y + 8);
+        ctx.moveTo(x2, y - 8); ctx.lineTo(x2, y + 8);
+        ctx.moveTo(x1, y); ctx.lineTo(x2, y);
+        ctx.stroke();
+        ctx.fillStyle = colour;
+        ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "center";
+        ctx.fillText(label, (x1 + x2) / 2, y - 14);
+      }
+      dim(elx, insX, ely + 92, "#FFC53D",
+          num(state.ins, dp.ins) + " cm");
+      dim(elx, handX, ely + 132, "#8FB7FF",
+          num(state.hand, dp.hand) + " cm");
+
+      ctx.fillStyle = "#C6B9A7";
+      ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillText(C_TITLE, 30, 34);
+
+      if (canvas.setAttribute) { canvas.setAttribute("aria-label", altText()); }
+    }
+
+    function repaint() {
+      each(values, function (p) {
+        var key = p.getAttribute("data-lever-value");
+        p.textContent = num(state[key], dp[key],
+                            p.getAttribute("data-format"));
+      });
+      each(outs, function (p) {
+        var key = p.getAttribute("data-lever-out");
+        var fmt = p.getAttribute("data-format");
+        if (key === "force") {
+          p.textContent = meterShown ? num(muscleForce(), 0, fmt) : UNMEASURED;
+        } else if (key === "weight") {
+          p.textContent = num(weight(), 0, fmt);
+        } else {
+          p.textContent = num(state[key], dp[key], fmt);
+        }
+      });
+      each(tabs, function (b) {
+        var key = b.getAttribute("data-lever-tab");
+        b.setAttribute("aria-pressed",
+          parseFloat(b.getAttribute("data-value")) === state[key]
+            ? "true" : "false");
+      });
+      if (meterBtn) {
+        meterBtn.textContent = meterShown ? M_DONE : M_LABEL;
+        if (meterShown) { meterBtn.setAttribute("disabled", ""); }
+      }
+      if (note) { note.textContent = meterShown ? M_NOTE_DONE : M_NOTE; }
+      setCount(sec, meterShown ? 1 : 0);
+      draw();
+      // ⚖️ A SET AND A FLAG, both required. Two DIFFERENT controls moved says
+      // the student explored the trade; the meter says they committed to an
+      // answer first and then checked it. Either alone is half the block.
+      markStage(sec,
+        Object.keys(touched).length >= DONE_AT && meterShown);
+      // The steps block downstream is built out of this rig's live state, so
+      // it is told rather than left to poll. `bubbles` so a listener on the
+      // document catches it wherever the two blocks sit.
+      if (wrap.dispatchEvent && window.CustomEvent) {
+        wrap.dispatchEvent(new window.CustomEvent("ks3:lever", {
+          bubbles: true,
+          detail: {
+            rig: wrap.getAttribute("data-rig"),
+            load: state.load, ins: state.ins, hand: state.hand,
+            g: G, dp: dp, weight: weight(), force: muscleForce()
+          }
+        }));
+      }
+    }
+
+    each(inputs, function (input) {
+      input.addEventListener("input", function () {
+        var key = input.getAttribute("data-lever-input");
+        state[key] = parseFloat(input.value);
+        touched[key] = true;
+        repaint();
+      });
+    });
+    each(tabs, function (b) {
+      b.addEventListener("click", function () {
+        var key = b.getAttribute("data-lever-tab");
+        state[key] = parseFloat(b.getAttribute("data-value"));
+        touched[key] = true;
+        repaint();
+      });
+    });
+    if (meterBtn) {
+      // One-way. What a student found out by fitting the meter cannot be
+      // un-found by pressing it again, and re-hiding the reading would offer
+      // a way to pretend the check never happened.
+      meterBtn.addEventListener("click", function () {
+        if (meterShown) { return; }
+        meterShown = true;
+        repaint();
+      });
+    }
+
+    repaint();
+    wireBenchGate(sec);
+  }
+
+
+/* WIRE: no new line in wireInstruments(). `wireTriangle(root)` is already
+   called there (beside `wireCoverBar(root)`); REPLACE the existing
+   `wireTriangle` with the one below. `wireCoverBar` is not touched, which is
+   why c2-06's bar keeps its own contract. */
+
+  /* ── cover-triangle · TRIANGLE variant (b1-02 #s-formula, b2-04's rule) ──
+
+     ⚖️ TWO INTERACTION CONTRACTS, AND THE PAYLOAD PICKS ONE.
+
+       TOGGLE (b1-02, the default and today's behaviour) — pressing the
+       covered cell again UNCOVERS it. Right for a triangle being explored:
+       a student wants to see the whole relationship back.
+
+       RADIO (b2-04, `data-cover-mode="radio"`) — one cell is always covered
+       and pressing the covered one changes nothing. Right for a block whose
+       whole demand is "cover the one you want": an uncovered triangle asks
+       nothing, and this lesson's every question solves for the same unknown,
+       so it opens with that one already covered.
+
+     A triangle with no `data-cover-mode` keeps the toggle exactly as it is
+     today, which is the b1-02 guarantee.
+
+     ⚠️ EMIT-BOTH-SHOW-ONE, for the results as well as the notes. Every
+     arrangement and every sentence is already in the document and this
+     function only swaps which pair is not hidden. Nothing is assembled from
+     an attribute, so `÷`, `×` and the em dashes survive — the failure mode
+     the bar variant's `textContent` route cannot rule out.
+
+     ⚖️ NOTHING ANIMATES and nothing counts, so `prefers-reduced-motion` has
+     nothing to degrade here: the cover's own 0.16s opacity fade is a CSS
+     transition and the stylesheet's standing reduced-motion block already
+     covers it. The reduced-motion experience is the complete one.
+
+     ⚠️ NOT A RAIL STOP. There is no `markStage` call in this function and
+     there must not be one: MRB-208 has the rail carrying only sections that
+     require the student to do something, and this block is read. */
+  function wireTriangle(root) {
+    each(root.querySelectorAll("[data-triangle]"), function (tri) {
+      var btns = toArray(tri.querySelectorAll(".ks3-tri-btn"));
+      var notes = toArray(tri.querySelectorAll(".ks3-tri-note"));
+      var results = toArray(tri.querySelectorAll(".ks3-tri-result"));
+      var radio = tri.getAttribute("data-cover-mode") === "radio";
+
+      function show(key) {
+        tri.setAttribute("data-covered", key);
+        each(btns, function (x) {
+          x.setAttribute("aria-pressed",
+            x.getAttribute("data-cover") === key ? "true" : "false");
+        });
+        each(notes, function (n) {
+          setHidden(n, n.getAttribute("data-note") !== key);
+        });
+        each(results, function (r) {
+          setHidden(r, r.getAttribute("data-result") !== key);
+        });
+      }
+
+      function clear() {
+        tri.removeAttribute("data-covered");
+        each(btns, function (x) { x.setAttribute("aria-pressed", "false"); });
+        each(notes, function (n) { setHidden(n, true); });
+        each(results, function (r) { setHidden(r, true); });
+      }
+
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          var key = b.getAttribute("data-cover");
+          // The radio never uncovers. Pressing the covered cell is a no-op
+          // rather than a state change, which is what keeps the figure and
+          // the reading beside it always agreeing.
+          if (!radio && tri.getAttribute("data-covered") === key) {
+            clear();
+            return;
+          }
+          show(key);
+        });
+      });
+    });
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-lstepblock]"), wireLeverSteps);
+   — add to wireInstruments(), in the B2 group AFTER wireArmLever, so the rig
+   has painted once and dispatched its first `ks3:lever` before this block
+   subscribes. Uses each / toArray / setHidden / markStage, all already in
+   scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── lever-steps (b2-04 #s-build) — MRB-204 step 4 ──
+
+     Three commitments — the rule, the insertion, and a number with a unit
+     — then the worked version of the STUDENT'S OWN rig beside what they
+     wrote.
+
+     ⚖️ IT IS THE SAME PROBLEM AS THE BENCH, AND IT SAYS SO IN NUMBERS.
+     The heading, the second ladder's three options, all four reveal steps
+     and the closing line are templates over the rig's live state, refilled
+     whenever a control up there moves. That is the whole difference from
+     c2-06's `fifa-pick`, whose eight strings are static, and it is why the
+     rig broadcasts `ks3:lever` rather than this block polling for it.
+
+     ⚠️ THE TEMPLATES ARE READ OFF `data-template`, NEVER REBUILT. Each
+     option button and each step line carries the authored string it came
+     from, so there is exactly one copy of every sentence on this page and
+     it is the one the build rendered. Nothing here composes prose.
+
+     ⊕ CORRECTION — THE RAIL STOP DEMANDS SOMETHING. Design ticks this
+     stage on `buildOpen`, i.e. on pressing "Show the four steps", so a
+     student who committed to nothing could tick it with one tap. MRB-208
+     has a rail stop requiring the student to do something, so it ticks on
+     the three commitments instead: formula picked, insertion picked, and a
+     non-empty answer WITH a unit. Strictly earlier than the button, which
+     needs the same three — nothing gets harder, the stop just stops being
+     reachable by pressing one thing.
+
+     ⚖️ THE UNIT IS ITS OWN COMMITMENT. "160" is not an answer to a
+     question about force. The placeholder option carries an empty value,
+     so `unit.value` is falsy until a real unit is chosen.
+
+     ⚖️ NOTHING ANIMATES and nothing counts, so `prefers-reduced-motion`
+     has nothing to degrade here and the reduced-motion experience is the
+     complete one.
+     ═══════════════════════════════════════════════════════════════ */
+  function wireLeverSteps(sec) {
+    var wrap = sec.querySelector("[data-lstep]");
+    if (!wrap) { return; }
+
+    var RIG = wrap.getAttribute("data-rig") || "";
+    var HEAD = wrap.getAttribute("data-head") || "";
+    var TPL = wrap.getAttribute("data-close") || "";
+    var BLANK = wrap.getAttribute("data-blank") || "—";
+    var FMT = wrap.getAttribute("data-progress") || "";
+    var DONE = wrap.getAttribute("data-done-label") || "";
+    var TOTAL = parseInt(wrap.getAttribute("data-total"), 10) || 3;
+
+    var opts = toArray(wrap.querySelectorAll(".ks3-lstep-opt"));
+    var lines = toArray(wrap.querySelectorAll("[data-template]"));
+    var ans = wrap.querySelector("[data-lstep-ans]");
+    var unit = wrap.querySelector("[data-lstep-unit]");
+    var btn = wrap.querySelector("[data-lstep-open]");
+    var progress = wrap.querySelector("[data-lstep-progress]");
+    var reveal = wrap.querySelector("[data-reveal]");
+    var closeEl = wrap.querySelector("[data-lstep-close]");
+    /* The shell emits the block's <h2> before any instrument renderer runs,
+       so the build fills it through `_lever_steps_heading` and this repaints
+       the same element. It is the ONLY <h2> inside this section — the reveal
+       head, the panel labels and the questions are all paragraphs — which is
+       what makes the plain selector safe. */
+    var head = sec.querySelector("h2");
+
+    var picked = {};
+    var open = false;
+    var subs = {};
+
+    function fill(s) {
+      var out = s || "";
+      for (var k in subs) {
+        if (Object.prototype.hasOwnProperty.call(subs, k)) {
+          out = out.split(k).join(subs[k]);
+        }
+      }
+      return out;
+    }
+
+    function pad(v, places) { return Number(v).toFixed(places); }
+
+    /* The rig's state, turned into the nine substitutions every template on
+       this block is written against. Identical composition to
+       `_lever_steps_rig` in build_ks3.py, which renders the resting page.
+
+       ⚠️ Two decimal places on the distances and the turning effect, none on
+       the weight or the force. `0.04` and `0.32` are the metre conversions a
+       student writes down; a weight and a force are whole newtons here. */
+    function adopt(d) {
+      var dM = d.ins / 100, dL = d.hand / 100;
+      subs = {
+        "{load}": pad(d.load, d.dp.load),
+        "{ins}": pad(d.ins, d.dp.ins),
+        "{hand}": pad(d.hand, d.dp.hand),
+        "{W}": pad(d.weight, 0),
+        "{dM}": pad(dM, 2),
+        "{dL}": pad(dL, 2),
+        "{TE}": pad(d.weight * dL, 2),
+        "{F}": pad(d.force, 0),
+        "{ratio}": pad(d.hand / d.ins, 1)
+      };
+    }
+
+    function committed() {
+      var n = 0;
+      if (picked["0"] !== undefined) { n += 1; }
+      if (picked["1"] !== undefined) { n += 1; }
+      if (ans && ans.value.trim() && unit && unit.value) { n += 1; }
+      return n;
+    }
+
+    function repaintText() {
+      if (head && HEAD) { head.textContent = fill(HEAD); }
+      each(lines, function (el) {
+        el.textContent = fill(el.getAttribute("data-template"));
+      });
+      if (open && closeEl && TPL) {
+        closeEl.textContent = fill(TPL)
+          .split("{answer}").join(ans && ans.value.trim() ? ans.value.trim() : BLANK)
+          .split("{unit}").join(unit && unit.value ? unit.value : "");
+      }
+    }
+
+    function refresh() {
+      var n = committed();
+      if (progress) {
+        progress.textContent = open ? DONE : FMT.split("{n}").join(String(n));
+      }
+      if (btn) {
+        if (open || n < TOTAL) { btn.setAttribute("disabled", ""); }
+        else { btn.removeAttribute("disabled"); }
+      }
+      // ⊕ The corrected predicate. Three commitments, not `buildOpen`.
+      markStage(sec, n >= TOTAL);
+    }
+
+    each(opts, function (b) {
+      b.addEventListener("click", function () {
+        if (open) { return; }
+        var group = b.getAttribute("data-group");
+        picked[group] = b.getAttribute("data-i");
+        each(opts, function (x) {
+          if (x.getAttribute("data-group") !== group) { return; }
+          x.setAttribute("aria-pressed",
+            x.getAttribute("data-i") === picked[group] ? "true" : "false");
+        });
+        refresh();
+      });
+    });
+    each([ans, unit], function (el) {
+      if (!el) { return; }
+      each(["input", "change"], function (evt) {
+        el.addEventListener(evt, refresh);
+      });
+    });
+    if (btn) {
+      btn.addEventListener("click", function () {
+        if (open || committed() < TOTAL) { return; }
+        open = true;
+        // Everything locks. The model is on screen, so a changed pick would
+        // be choosing after reading the answer.
+        each(opts, function (x) { x.setAttribute("disabled", ""); });
+        if (ans) { ans.setAttribute("disabled", ""); }
+        if (unit) { unit.setAttribute("disabled", ""); }
+        setHidden(reveal, false);
+        repaintText();
+        refresh();
+      });
+    }
+
+    /* ⚠️ SEEDED FROM THE RIG'S OWN ATTRIBUTES, NOT FROM ITS FIRST BROADCAST.
+       `wireArmLever` paints once at construction and dispatches `ks3:lever`
+       there, and it is wired BEFORE this block — so the first event has
+       already gone by the time this function runs. Subscribing alone left
+       `subs` empty until a student happened to move a control, and the
+       closing line then rendered a literal `{F}`.
+
+       Found by `lsteps-opened`'s own `/[{}]/` check in a real browser, which
+       is exactly what that assertion is for: nothing about this is visible
+       from reading either file, because both are individually correct.
+
+       Reading the rig's build-time attributes rather than re-ordering the two
+       wire calls is the fix that survives: a future instrument wired between
+       them, or a rig that moves further down the page, would break the
+       ordering fix and not this one. */
+    function seed() {
+      var rig = document.querySelector(
+        RIG ? '[data-lever][data-rig="' + RIG + '"]' : "[data-lever]");
+      if (!rig) { return; }
+      var load = parseFloat(rig.getAttribute("data-load"));
+      var ins = parseFloat(rig.getAttribute("data-ins"));
+      var hand = parseFloat(rig.getAttribute("data-hand"));
+      var g = parseFloat(rig.getAttribute("data-g"));
+      if (isNaN(load) || isNaN(ins) || isNaN(hand) || isNaN(g) || !ins) {
+        return;
+      }
+      adopt({
+        load: load, ins: ins, hand: hand, g: g,
+        dp: {
+          load: parseInt(rig.getAttribute("data-dp-load"), 10) || 0,
+          ins: parseInt(rig.getAttribute("data-dp-ins"), 10) || 0,
+          hand: parseInt(rig.getAttribute("data-dp-hand"), 10) || 0
+        },
+        weight: load * g,
+        force: (load * g * (hand / 100)) / (ins / 100)
+      });
+    }
+
+    /* The rig broadcasts; this listens. `document` rather than the rig
+       element, because the two blocks are siblings far apart in the document
+       and the event bubbles — and because a page where the rig is missing
+       must still render this block's resting state rather than throwing. */
+    document.addEventListener("ks3:lever", function (ev) {
+      if (!ev.detail || (RIG && ev.detail.rig !== RIG)) { return; }
+      adopt(ev.detail);
+      repaintText();
+    });
+
+    seed();
+    refresh();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-metersblock]"), wireMeterCompare);
+   — add to wireInstruments(), in the B2 group. Uses each / toArray /
+   setHidden / setCount / markStage, all already in scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── meter-compare (b2-04 #s-meters) — measured, not guessed ──
+
+     Rank three muscle groups, then read what a force meter actually says
+     about each of them: three readings and their mean.
+
+     ⚖️ ONE COMMITMENT, ALL THREE CARDS. `job-sort` and `verdict-cards`
+     reveal per item, the instant that item is decided, and that sequence
+     is the pedagogy in both. It cannot be that here: the commitment is
+     about the ORDER of the three groups, and revealing one card would
+     give away part of the answer to the question still being asked.
+
+     ⚠️ R3 — NOTHING MARKS. All three orderings render identically and all
+     three open the same cards. There is no `data-correct` in this
+     instrument and there must not be: `answer_index` is checked against
+     the rows' own means at build time and never reaches the page. The
+     choice also stays changeable — a student who reads the means and
+     wants to change their mind is the block working, not a leak.
+
+     ⚖️ THE MEAN IS THE SECOND LESSON, and it is why the readings are in
+     the document rather than composed here: 312, 298 and 305 disagree,
+     and the closing band says in words that one pull would have told you
+     almost nothing. Nothing in this function builds a number.
+
+     ⚖️ NOTHING ANIMATES and nothing counts, so `prefers-reduced-motion`
+     has nothing to degrade and the reduced-motion experience is the
+     complete one.
+     ═══════════════════════════════════════════════════════════════ */
+  function wireMeterCompare(sec) {
+    var wrap = sec.querySelector("[data-meters]");
+    if (!wrap) { return; }
+    var opts = toArray(wrap.querySelectorAll(".ks3-option"));
+    var panel = wrap.querySelector("[data-reveal]");
+    if (!opts.length || !panel) { return; }
+
+    each(opts, function (btn) {
+      btn.addEventListener("click", function () {
+        var i = btn.getAttribute("data-i");
+        each(opts, function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-i") === i ? "true" : "false");
+        });
+        if (panel.hasAttribute("hidden")) {
+          setHidden(panel, false);
+          // Announced for screen-reader users, who would otherwise get no
+          // signal that three cards of data appeared below the buttons.
+          panel.setAttribute("role", "status");
+        }
+        // The block-head readout is a two-state label here ("Not ranked yet"
+        // → "Ranked"), not a count — there is one thing to report and it is
+        // a boolean. `setCount` carries that shape.
+        setCount(sec, 1);
+        markStage(sec, true);   // `ranked`
+      });
+    });
+  }
+/* ═══ END B2 ═══ */
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -9380,6 +10071,11 @@
     each(root.querySelectorAll("[data-sbenchblock]"), wireStateBench);
     each(root.querySelectorAll("[data-smatrixblock]"), wireStateMatrix);
     // ═══ END C1 wiring ═══
+    // ═══ BEGIN B2 wiring ═══
+    each(root.querySelectorAll("[data-leverblock]"), wireArmLever);
+    each(root.querySelectorAll("[data-lstepblock]"), wireLeverSteps);
+    each(root.querySelectorAll("[data-metersblock]"), wireMeterCompare);
+    // ═══ END B2 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

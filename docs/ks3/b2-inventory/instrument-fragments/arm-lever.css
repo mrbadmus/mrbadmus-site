@@ -1,0 +1,129 @@
+/* ── arm-lever (b2-04 #s-bench) — the forearm rig ──
+   Append to the B2 group in shared/ks3.css, after the two canvas benches
+   (`.ks3-joint-*` / `.ks3-muscle-*`, ~line 4430).
+
+   ⚠️ EVERY <p> AND <label> RULE BELOW IS SCOPED `.ks3-dark …`, AND IT HAS TO
+   BE. This instrument's only drawn instance sits on `ks3-block ks3-dark
+   ks3-practical`. `.ks3-dark p { color: var(--ks3-on-dark-body) }` is (0,1,1)
+   and a bare `.ks3-lever-tile-label` is (0,1,0), so an unscoped colour LOSES
+   and the mono uppercase caption renders in on-dark body copy — legible, so
+   nobody reads it as a bug, and wrong, so the three measured tiles stop
+   reading as captions over values. That is the exact defect B1 shipped with
+   the zoom instrument and B2 was bitten by again on the joint bench, and the
+   layer-C assertions are what found it both times.
+
+   The frame, the stage and the tiles deliberately match `.ks3-joint-*` value
+   for value. They are drawn differently and framed identically, and a third
+   copy of the frame is the drift a shared stylesheet exists to stop — but
+   they are NOT merged into one selector list, because the joint bench is a
+   shipped, approved page and a shared rule makes every future change to this
+   rig a change to that one. */
+
+.ks3-lever-controls {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 30px;
+}
+/* 240px basis with a 220px floor: two controls sit side by side on a tablet
+   and all three do on a laptop, and none of them ever gets narrower than the
+   slider's own usable travel. */
+.ks3-lever-control { flex: 1 1 240px; min-width: 220px; }
+.ks3-lever-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-dark .ks3-lever-label {
+  display: block;
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* The live value beside its own label, in the alert yellow. The same treatment
+   the joint bench gives its angle readout, because they are the same thing:
+   the number the control is currently set to. */
+.ks3-dark .ks3-lever-value {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ks3-alert);
+}
+/* `.ks3-slider` is full-width by default, which is right inside the joint
+   bench's own control strip and wrong in a three-column row: a 60rem block
+   would give the mass slider a 20rem travel and make 0.5 kg a pixel. */
+.ks3-lever-slider { max-width: 18rem; }
+.ks3-lever-tabs { display: flex; gap: 9px; flex-wrap: wrap; }
+
+.ks3-lever-stage {
+  margin-top: 20px;
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-on-dark-muted);
+  overflow: hidden;
+}
+.ks3-lever-canvas { display: block; width: 100%; height: auto; }
+
+.ks3-lever-tiles {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-lever-tile {
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-dark .ks3-lever-tile-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* ⚖️ TWO TILE TREATMENTS, AND THE SPLIT IS THE GATE. The three MEASURED tiles
+   are mono 25px — they hold numbers the rig is giving you. The fourth is
+   19px/700 prose type, because until the meter is fitted it holds a sentence
+   ("not measured — you work it out") and a sentence set in a 25px mono
+   readout face reads as a broken number. It keeps the prose treatment after
+   the meter is fitted too: the force is the student's own answer being
+   confirmed, not a fourth thing the rig measured for them. */
+.ks3-dark .ks3-lever-tile-value {
+  margin: 5px 0 0;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-lever-tile-value.ks3-lever-tile-mono {
+  font-family: var(--ks3-font-mono);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.ks3-lever-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+/* One-way, and the spent state says so: the button carries its own second
+   word ("Meter reading shown") as well as the dim, because R2 forbids colour
+   alone as a state. */
+.ks3-lever-meter[disabled] { opacity: .5; cursor: default; }
+.ks3-dark .ks3-lever-note {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
