@@ -2612,10 +2612,32 @@ def _pages_needed():
 
 
 def _drives_needed(rel):
-    """Drive names used by any spec on this page, in declaration order."""
+    """Drive names used by any LIVE spec on this page, in declaration order.
+
+    ⊕ MRB-228 — parked specs are skipped, and that is load-bearing rather than
+    tidy. Parking means "registered, sound, and rendered by no page today"; a
+    parked spec is not measured, so it must not summon the drive that would
+    have measured it either.
+
+    It did. Every `system-parts` spec on b1-05 is parked — Design's approved
+    B1-05 replaced that sim with `removal-cases` — but they still pulled the
+    `sim-unlocked` drive onto the page, where it found no locked sim, could not
+    reach its state, and reported that its assertions had not run. A true
+    statement about specs that were never going to run, raised as a problem on
+    every single build.
+
+    That noise had somewhere to hide because the caller was discarding the
+    problem list entirely (see verify_ks3.py's layer-C note). Now that a
+    "registered but not rendered" component fails the build, the distinction
+    has to be exact: a REAL missing component must fail, and a parked one must
+    stay quiet. Otherwise the first thing anyone does with the new gate is
+    learn to ignore it.
+    """
     seen = []
     for spec in COMPONENTS + CONTRAST:
         d = spec.get("drive")
+        if spec.get("parked"):
+            continue
         if spec["on"] == rel and d and d not in seen:
             seen.append(d)
     return seen

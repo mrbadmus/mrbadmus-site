@@ -1069,6 +1069,41 @@ def main():
         style_problems, style_rows, contrast_rows = \
             PARITY.run_browser_layers(KS3_OUT, ks3_browser)
         css_fails = [r for r in style_rows if not r[4]]
+
+        # ⊕ MRB-228 — `style_problems` was ASSIGNED AND NEVER READ, and that is
+        # the whole of this defect.
+        #
+        # `run_browser_layers` already does the right thing: a registered
+        # component whose selector matches nothing on its page appends a
+        # "selector not present" problem and `continue`s. But `continue` means
+        # it appends no ROW, and this check was driven off `style_rows` alone —
+        # so a component that vanished contributed zero failures, zero rows,
+        # and the gate went green. It then printed "N assertions across
+        # len(COMPONENTS) components", claiming coverage of all 144 while
+        # measuring fewer.
+        #
+        # That is the exact failure MRB-203 exists to prevent, one level down:
+        # the registry gate catches a component that was never registered, and
+        # nothing caught a registered component that stopped being rendered.
+        # A gate that cannot tell "measured and correct" from "not measured at
+        # all" is not measuring.
+        #
+        # It matters most on a REBUILD. C1's six pages carry a third of the
+        # registry between them, so replacing them silently drops any component
+        # whose block the new pages do not use — and the build would have said
+        # nothing. A component that no page renders any more is a real event:
+        # either it moves to a page that does render it, or it is PARKED with a
+        # reason (the mechanism already exists, and prints, and is honest).
+        check("C · every registered component is still ON its page",
+              not style_problems,
+              "%d component(s) registered but not rendered: %s"
+              % (len(style_problems),
+                 "; ".join(p.split(" — ")[0].replace("PARITY: ", "")
+                           for p in style_problems[:4]))
+              if style_problems
+              else "all %d components resolved on their reference page"
+                   % len(PARITY.COMPONENTS))
+
         check("C · resolved computed style matches Design, ±%gpx on lengths"
               % PARITY.TOL_PX,
               not css_fails,
