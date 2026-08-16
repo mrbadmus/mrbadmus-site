@@ -12,6 +12,7 @@ device) are printed as MANUAL so the list stays honest about what has actually
 been verified and what has not.
 """
 
+import glob
 import os
 import re
 import shutil
@@ -766,6 +767,100 @@ def main():
     manual("keyboard walk + touch model on a real device",
            "needs a human and a phone; ladder and predict-gates are "
            "button-based and focusable, which is the precondition.")
+
+    # ── the font subset, against the characters that carry science ──────
+    #
+    # ⊕ MRB-220. Design's NOTES-C2 flag 13 asks whether `CaCO₃`'s subscript
+    # survives the generator's font subset. It does not, and the flag
+    # understates the count: FIVE subscripts are used across C2 (₁₂₃₄₆) and
+    # none of them is in any shipped woff2. Every other meaning-bearing
+    # codepoint in the unit IS — U+2212 MINUS, °, ³, ã — and this gate is
+    # what keeps that true.
+    #
+    # The build's own precedent for taking this seriously is in `build_ks3.py`
+    # beside LADDER_RUNGS: circled digits U+2460–2463 "are not [in the subset],
+    # and rendered as tofu inside a Bricolage-800 heading."
+    #
+    # Two halves, deliberately. The COVERED set is a real check and fails the
+    # build if a font is ever re-subset smaller. The uncovered subscripts are
+    # a MANUAL item, not a FAIL: the characters are Design's own bytes on an
+    # approved page (MRB-205 — page wins), a browser renders them through
+    # system fallback rather than as tofu on every platform measured, and the
+    # fix is either re-subsetting the fonts or changing science-bearing copy.
+    # Both are Mide's, and neither is something a build should decide.
+    def _font_coverage():
+        try:
+            from fontTools.ttLib import TTFont
+        except ImportError:
+            return None, None
+        covered, faces = {}, sorted(glob.glob("shared/fonts/*.woff2"))
+        for path in faces:
+            f = TTFont(path, fontNumber=0, lazy=True)
+            cps = set()
+            for tbl in f["cmap"].tables:
+                cps |= set(tbl.cmap.keys())
+            f.close()
+            covered[os.path.basename(path)] = cps
+        return covered, faces
+
+    # Every meaning-bearing non-ASCII codepoint C2 uses, measured over the six
+    # frozen pages (PAYLOAD-MAP §0 F3), plus the typographic set every unit
+    # relies on. Name each, so a failure says what broke rather than a number.
+    SCIENCE_CHARS = [
+        (0x2212, "U+2212 MINUS — c2-06's arithmetic, five times"),
+        (0x00B0, "U+00B0 DEGREE — `0 °C` in c2-02's rung 2"),
+        (0x00E3, "U+00E3 a-tilde — `São Paulo` in c2-04's big question"),
+        (0x00B7, "U+00B7 MIDDLE DOT — every eyebrow and rung title"),
+        (0x2014, "U+2014 EM DASH — prose punctuation throughout"),
+        (0x201C, "U+201C LEFT DOUBLE QUOTE — every misconception quote"),
+        (0x201D, "U+201D RIGHT DOUBLE QUOTE — every misconception quote"),
+        (0x2026, "U+2026 ELLIPSIS — every self-rung placeholder"),
+        (0x203A, "U+203A SINGLE ANGLE — every breadcrumb separator"),
+    ]
+    # The gaps. Five subscripts, absent from all three KS3 faces; and ³, which
+    # is present in the display and mono faces and absent from the BODY face —
+    # the one `cm³` actually lands on, because `.ks3-sim-units` is
+    # `font: inherit`. Grouped with the subscripts because the fix and the
+    # decision are the same one.
+    SUBSCRIPTS = [(0x2081, "₁"), (0x2082, "₂"), (0x2083, "₃"),
+                  (0x2084, "₄"), (0x2086, "₆"), (0x00B3, "³")]
+
+    covered, faces = _font_coverage()
+    if covered is None:
+        manual("font subset covers the characters that carry science",
+               "fontTools is not installed on this machine; run "
+               "`pip install fonttools` to turn this into a real gate.")
+    else:
+        # Only the faces KS3 actually loads. Fraunces and Plus Jakarta are
+        # KS4's, and asserting against them would fail on somebody else's
+        # stylesheet.
+        ks3_faces = [n for n in covered
+                     if n.startswith(("bricolage", "instrument", "dm-mono"))]
+        gaps = ["%s absent from %s" % (why, face)
+                for cp, why in SCIENCE_CHARS
+                for face in ks3_faces if cp not in covered[face]]
+        check("font subset covers the non-ASCII that carries science",
+              not gaps,
+              "%d codepoints × %d KS3 faces"
+              % (len(SCIENCE_CHARS), len(ks3_faces)) if not gaps
+              else "; ".join(gaps[:4]))
+
+        dead = [ch for cp, ch in SUBSCRIPTS
+                if any(cp not in covered[f] for f in ks3_faces)]
+        if dead:
+            manual("%s are not in every shipped KS3 woff2 subset"
+                   % "".join(dead),
+                   "NOTES-C2 flag 13, and it understates it — five subscripts, "
+                   "not one, plus ³ (absent from the BODY face, which is the "
+                   "one `cm³` lands on because `.ks3-sim-units` is "
+                   "`font: inherit`). They are Design's own bytes on approved "
+                   "pages (c2-04 CaCO₃, c2-05 throughout, c2-06's unit "
+                   "picker), so MRB-205 says the page wins and nothing is "
+                   "ASCII-folded here. Measured in headless Chrome: they "
+                   "render through system fallback rather than as tofu, at a "
+                   "matching advance in the mono face. Mide's call — re-subset "
+                   "the three KS3 faces to include U+2080–208E and U+00B3, or "
+                   "accept the fallback.")
 
     # ══ MRB-183 — the parity gate ══════════════════════════════════════
     #

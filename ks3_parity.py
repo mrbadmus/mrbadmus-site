@@ -349,6 +349,18 @@ B2_SKEL = "biology/movement-skeleton-and-muscles/what-the-skeleton-does.html"
 B2_JOINTS = "biology/movement-skeleton-and-muscles/joints.html"
 B2_MUSCLE = "biology/movement-skeleton-and-muscles/antagonistic-muscle-pairs.html"
 
+# ⊕ C2 · Atoms, elements and compounds (MRB-220). Same rule again: a component
+# is registered on the page that RENDERS it. `verdict-cards` appears on two
+# pages and is measured on c2-04, whose instance carries the mono-formula
+# headline and the four-option row — the wider of the two shapes, so the
+# narrower one cannot pass on a rule the wide one would fail.
+C2_ATOM = "chemistry/atoms-elements-and-compounds/the-atom-daltons-model.html"
+C2_ELEM = "chemistry/atoms-elements-and-compounds/elements.html"
+C2_COMP = "chemistry/atoms-elements-and-compounds/compounds.html"
+C2_SYM = "chemistry/atoms-elements-and-compounds/chemical-symbols.html"
+C2_FORM = "chemistry/atoms-elements-and-compounds/formulae.html"
+C2_MASS = "chemistry/atoms-elements-and-compounds/conservation-of-mass.html"
+
 # ── parking, and why it is not deletion ──────────────────────────────────
 #
 # A spec may carry `parked="<reason>"`. It is then not measured, and it is
@@ -1035,6 +1047,115 @@ COMPONENTS = [
          drive="bench-gate-opened", sel=".ks3-muscle-status",
          props={"color": "#FBF3E6", "font-weight": "700",
                 "font-size": "19px"}),
+
+    # ══ C2 · Atoms, elements and compounds (⊕ MRB-220) ═══════════════════
+    #
+    # Same rule as B2's: each row pins the property that makes its component
+    # DISTINCT, and each was mutation-tested — the CSS rule was deliberately
+    # broken and the row confirmed to fail before it was kept.
+
+    # ── the dark-canvas frame (map N12) ──
+    # One wrapper, four instruments. Registered on c2-01 because it is the
+    # first page that renders it; if it ever loses the 2px muted rule, all
+    # four canvases go edge-to-edge on the ink and stop reading as instruments.
+    dict(name="canvas frame is a 2px muted rule on a card radius", on=C2_ATOM,
+         sel=".ks3-canvas-frame",
+         props={"border-top-color": "#C6B9A7", "border-top-width": "2px",
+                "border-top-left-radius": "22px", "overflow-x": "hidden"}),
+    dict(name="canvas foot is a dark panel under the drawing", on=C2_ATOM,
+         sel=".ks3-canvas-foot",
+         props={"background-color": "#3E3730", "border-top-color": "#C6B9A7"}),
+
+    # ── claim-switch (c2-01 #s-model) ──
+    # ⚠️ A LIGHT block. The claim's ground is `--ks3-card` on a 2px INK border,
+    # which is what a light block gives it; if this row ever reports
+    # `#221E1B` the instrument has been mapped to `practical` and the whole
+    # thing is painted on ink — the exact trap the payload map names.
+    dict(name="claim toggle is a card on ink, 44px tall", on=C2_ATOM,
+         drive="bench-gate-opened", sel=".ks3-claim",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "min-height": "44px", "font-size": "18px"}),
+    dict(name="claim SWITCHED OFF dims to the row-dim ground", on=C2_ATOM,
+         drive="claim-off", sel='.ks3-claim[aria-pressed="false"]',
+         props={"background-color": "#FBF6EC", "border-top-color": "#E0D2B9",
+                "color": "#6E655D"}),
+    # The chip is a READOUT, not decoration: "OFF" in words is what makes the
+    # state legible without relying on the ground going dim.
+    dict(name="claim state chip is mono ink-on-cream", on=C2_ATOM,
+         drive="bench-gate-opened", sel=".ks3-claim-chip",
+         props={"font-family": "DM Mono", "font-size": "13px",
+                "background-color": "#221E1B", "color": "#FBF3E6"}),
+    dict(name="claim chip INVERTS when the claim is off", on=C2_ATOM,
+         drive="claim-off", sel='.ks3-claim[aria-pressed="false"] .ks3-claim-chip',
+         props={"background-color": "#F4E9D8", "color": "#5F564F"}),
+    dict(name="observation row is a two-column grid on the option border",
+         on=C2_ATOM, drive="bench-gate-opened", sel=".ks3-obs-row",
+         props={"display": "grid", "background-color": "#FFFCF5",
+                "border-top-color": "#DDCFB6", "border-top-width": "2px"}),
+    # ⚖️ THE TEACHING. An observation that stops being explained takes the
+    # BAND ground on a 2px ink border — the KEY FACT treatment, deliberately
+    # not a red and not a dim. It is not an error the student made.
+    dict(name="a broken observation is BAND on ink, never a red", on=C2_ATOM,
+         drive="claim-off", sel='.ks3-obs-row[data-dead="1"]',
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+    dict(name="a broken observation's verdict is accent-TEXT", on=C2_ATOM,
+         drive="claim-off",
+         sel='.ks3-obs-row[data-dead="1"] .ks3-obs-verdict',
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "14px", "text-transform": "uppercase"}),
+    dict(name="model note is a band panel on ink", on=C2_ATOM,
+         drive="bench-gate-opened", sel=".ks3-claim-note",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "font-size": "19px"}),
+
+    # ── scale-zoom (c2-01 #s-scale) ──
+    # Both rows exist to prove the SPECIFICITY fix. `.ks3-dark p` is (0,1,1)
+    # and a bare `.ks3-scale-note` is (0,1,0): unscoped, the note would lose
+    # and render in on-dark body copy — the defect B1 shipped with the zoom
+    # instrument and B2 was bitten by again.
+    dict(name="zoom scale readout is mono 17px ALERT on ink", on=C2_ATOM,
+         sel=".ks3-scale-readout",
+         props={"font-family": "DM Mono", "font-size": "17px",
+                "color": "#FFC53D"}),
+    dict(name="zoom note is on-dark body, not the block's own colour",
+         on=C2_ATOM, sel=".ks3-scale-note",
+         props={"color": "#E7DECE", "font-size": "19px"}),
+
+    # ── test-budget-bench (c2-02 #s-bench) ──
+    # ⚖️ The budget line is the ONE counter in the key stage painted in
+    # accent-text rather than ink-muted, because it is a resource running down
+    # rather than a tally going up. If it ever resolves to #5F564F the budget
+    # stops reading as a cost and the lesson's pressure goes with it.
+    dict(name="budget line is the accent-text counter", on=C2_ELEM,
+         sel='.ks3-blockhead-count[data-tone="accent"]',
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "15px"}),
+    dict(name="sample panel is inset on a 2px ink border", on=C2_ELEM,
+         sel=".ks3-sample",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+    # A bought result is a CARD on the hairline rule, at a bare 14px radius —
+    # Design's one non-token radius in the unit, kept because it is what
+    # separates a result from the panel it sits in.
+    dict(name="a bought result is a card on the hairline rule", on=C2_ELEM,
+         drive="budget-test-spent", sel=".ks3-result",
+         props={"background-color": "#FFFCF5", "border-top-color": "#E0D2B9",
+                "border-top-left-radius": "14px"}),
+    dict(name="a SPENT test stays legible at .45, never disappears",
+         on=C2_ELEM, drive="budget-test-spent", sel=".ks3-test-btn[disabled]",
+         props={"opacity": "0.45"}),
+    # ⚖️ The verdict panel is INK inside a light block and fires whether or
+    # not the student was right. It is a reveal, never a mark — if it ever
+    # picks up the ok or danger hue the bench starts marking, which R3
+    # reserves for the ladder alone.
+    dict(name="verdict panel is INK inside a light block, and never marks",
+         on=C2_ELEM, drive="budget-verdict-given", sel="[data-verdict-panel]",
+         props={"background-color": "#221E1B", "color": "#FBF3E6"}),
+    dict(name="the sample's real name is display 800 on ink", on=C2_ELEM,
+         drive="budget-verdict-given", sel=".ks3-verdict-name",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "font-size": "24px", "color": "#FBF3E6"}),
 ]
 
 
@@ -1936,6 +2057,67 @@ DRIVES = {
   var body = document.querySelector('[data-benchbody]');
   if (!body || body.hasAttribute('hidden')) {
     return "bench did not appear after the gate was answered";
+  }
+  return "";
+})()
+""",
+    # ── C2 · Atoms, elements and compounds (⊕ MRB-220) ──
+    #
+    # Each state reached through the instrument's own control, so a regression
+    # in the interaction path fails HERE rather than being measured around.
+
+    # The gate opened AND the first claim switched off. Produces three states
+    # in one document: the dimmed toggle, the inverted chip, and the two
+    # observations that stop being explained.
+    "claim-off": r"""
+(function () {
+  var gate = document.querySelector('[data-benchgate]');
+  if (!gate) { return "no commit gate on the page"; }
+  gate.querySelector('.ks3-option').click();
+  var claim = document.querySelector('.ks3-claim');
+  if (!claim) { return "no claim toggle on the page"; }
+  claim.click();
+  if (claim.getAttribute('aria-pressed') !== 'false') {
+    return "the claim is still on after its toggle was clicked";
+  }
+  if (!document.querySelector('.ks3-obs-row[data-dead="1"]')) {
+    return "a claim is off and no observation stopped being explained";
+  }
+  return "";
+})()
+""",
+    # One test bought out of the budget of eight. Produces the result card
+    # and the spent-button state in one document.
+    "budget-test-spent": r"""
+(function () {
+  var gate = document.querySelector('[data-benchgate]');
+  if (gate) { gate.querySelector('.ks3-option').click(); }
+  var panel = document.querySelector('.ks3-sample:not([hidden])');
+  if (!panel) { return "no sample panel on the page"; }
+  var btn = panel.querySelector('.ks3-test-btn');
+  if (!btn) { return "the sample offers no tests"; }
+  btn.click();
+  if (!btn.hasAttribute('disabled')) {
+    return "a test was bought and its button is still live";
+  }
+  if (!panel.querySelector('.ks3-result:not([hidden])')) {
+    return "a test was bought and no result appeared";
+  }
+  return "";
+})()
+""",
+    # A verdict given on one sample — the reveal that names it.
+    "budget-verdict-given": r"""
+(function () {
+  var gate = document.querySelector('[data-benchgate]');
+  if (gate) { gate.querySelector('.ks3-option').click(); }
+  var panel = document.querySelector('.ks3-sample:not([hidden])');
+  if (!panel) { return "no sample panel on the page"; }
+  var v = panel.querySelector('.ks3-verdict-btn');
+  if (!v) { return "the sample offers no verdict"; }
+  v.click();
+  if (panel.querySelector('[data-verdict-panel]').hasAttribute('hidden')) {
+    return "a verdict was given and the sample was never named";
   }
   return "";
 })()

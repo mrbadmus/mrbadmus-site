@@ -2624,26 +2624,52 @@ def r_fifa(fifa, staged=False, buttons=None):
     else:
         steps = list(fifa or [])
 
-    out = []
+    # ⊕ MRB-220 — the CHIPPED step (map N5). Design draws each step as a 38px
+    # accent-text square holding the bare letter, then a mono uppercase label,
+    # a 26px display line and a note. The shipped shape concatenates
+    # `letter · name` into a `<strong>` and has nowhere to put a note that is
+    # its own paragraph. A step that authors `label` takes the drawn treatment;
+    # every shipped record authors `name` and does not move.
+    out, chipped = [], False
     for i, s in enumerate(steps):
+        hide = ' hidden data-step="%d"' % i if staged else ""
+        if s.get("label"):
+            chipped = True
+            out.append(
+                '<div class="ks3-fifa-step ks3-fifa-chipped"%s>'
+                '<span class="ks3-fifa-chip" aria-hidden="true">%s</span>'
+                '<div class="ks3-fifa-body">'
+                '<p class="ks3-fifa-label">%s</p>'
+                '<p class="ks3-fifa-line">%s</p>'
+                '<p class="ks3-fifa-stepnote">%s</p></div></div>'
+                % (hide, t(s.get("letter", "")), t(s["label"]),
+                   t(s.get("line", "")), rich(s.get("note", ""))))
+            continue
         # The letter is chrome and the name is the label; a step with neither
         # would render a bare line with nothing saying which step it is.
         label = " · ".join(x for x in (s.get("letter"), s.get("name")) if x)
         note = ('<span class="ks3-fifa-note">%s</span>' % rich(s["note"])
                 if s.get("note") else "")
         out.append('<p class="ks3-fifa-step"%s><strong>%s</strong> %s%s</p>'
-                   % (' hidden data-step="%d"' % i if staged else "",
-                      t(label), t(s.get("line")), note))
+                   % (hide, t(label), t(s.get("line")), note))
     if not staged:
         return '<div class="ks3-fifa">%s</div>' % "".join(out)
     b = buttons or {}
-    return ('<div class="ks3-fifa ks3-fifa-staged" data-stepper '
+    # ⊕ The done-note (map N5): Design's *"Now the same four steps on the other
+    # reaction."* appears beside the button once every step is out. It had no
+    # field, so the sentence that hands the student on to `#s-build` reached
+    # nobody.
+    done_note = ('<span class="ks3-step-donenote" hidden data-step-donenote>'
+                 '%s</span>' % t(b["done_note"])) if b.get("done_note") else ""
+    return ('<div class="ks3-fifa ks3-fifa-staged%s" data-stepper '
             'data-total="%d" data-next="%s" data-done="%s">%s'
+            '<div class="ks3-fifa-foot">'
             '<button type="button" class="ks3-reveal-btn ks3-step-next" '
-            'data-step-next>%s</button></div>'
-            % (len(out), e(b.get("next", "Show the next step")),
+            'data-step-next>%s</button>%s</div></div>'
+            % (" ks3-fifa-chips" if chipped else "",
+               len(out), e(b.get("next", "Show the next step")),
                e(b.get("done", "All steps shown")), "".join(out),
-               t(b.get("first", "Show the first step"))))
+               t(b.get("first", "Show the first step")), done_note))
 
 
 def r_criteria(success):
@@ -2688,17 +2714,58 @@ def r_criteria(success):
 def _head_counter(spec):
     """The block-head progress readout: a count, or a two-state label.
 
-    Two shapes because Design authored two. b2-01/02/03 count ("3 of 6
+    Three shapes because Design authored three. b2-01/02/03 count ("3 of 6
     decided"); b2-04's rig and meter blocks are booleans ("Meter not fitted
-    yet" → "Meter fitted"). One element, one JS updater, so a third variant
-    cannot arrive as a third copy of the same paragraph.
+    yet" → "Meter fitted"); c2-01's is a count with a bespoke zero ("All three
+    claims on" → "2 switched off"). One element, one JS updater, so a fourth
+    cannot arrive as a fourth copy of the same paragraph.
+
+    ⊕ `constants` / `start` / `start_extra` (MRB-220, C2) let one format string
+    carry more than one live number — c2-02's budget line quotes three — while
+    keeping every value authored exactly once.
     """
     if spec.get("format"):
         total = int(spec.get("total") or 0)
-        first = spec["format"].replace("{n}", "0").replace("{total}", str(total))
+        fmt = spec["format"]
+        # ⊕ `constants` — placeholders that never move, BAKED INTO THE FORMAT
+        # at build time. c2-02's readout is "{left} of {budget} tests left ·
+        # {n} of 6 decided": the budget is a fixed teaching dial and only
+        # `left` and `n` are live, so baking it keeps the runtime to the two
+        # numbers it can actually compute and keeps `budget` authored once.
+        for k, v in sorted((spec.get("constants") or {}).items()):
+            fmt = fmt.replace("{%s}" % k, str(v))
+        # ⊕ `start` — the count the readout OPENS on, before any JS runs. Every
+        # B2 counter opens on nothing done and so opens at 0; c2-01's zoom
+        # opens on step one of five, because a student is already looking at a
+        # level. Without this the resting page reads "0 of 5 steps" for the
+        # instant before `wireScaleZoom` corrects it, which is a wrong number
+        # on screen and a wrong number in the HTML a search engine reads.
+        first = (fmt.replace("{n}", str(int(spec.get("start") or 0)))
+                 .replace("{total}", str(total)))
+        # `start_extra` fills the live placeholders that are not the count, for
+        # the resting render only. The runtime recomputes them.
+        for k, v in sorted((spec.get("start_extra") or {}).items()):
+            first = first.replace("{%s}" % k, str(v))
+        spec = dict(spec, format=fmt)
+        # ⊕ MRB-220 / C2 — a THIRD variant, and the reason this is one element
+        # with one JS updater rather than three paragraphs. c2-01's readout is
+        # a count with a bespoke zero: "All three claims on", then "2 switched
+        # off". Neither the count shape nor the two-state shape says that.
+        # `zero` is opt-in, so every shipped counter still opens on its own
+        # "0 of 6 decided".
+        # ⊕ `tone` — c2-02's budget line is the one counter in the key stage
+        # Design paints in `--ks3-accent-text` rather than ink-muted, because
+        # it is a resource running down and not a tally going up. An attribute
+        # rather than a class so `.ks3-blockhead-count` stays one component.
+        tone = (' data-tone="%s"' % e(spec["tone"])) if spec.get("tone") else ""
+        if spec.get("zero"):
+            return ('<p class="ks3-blockhead-count" data-count data-format="%s" '
+                    'data-zero="%s" data-total="%d"%s>%s</p>'
+                    % (e(spec["format"]), e(spec["zero"]), total, tone,
+                       t(spec["zero"])))
         return ('<p class="ks3-blockhead-count" data-count data-format="%s" '
-                'data-total="%d">%s</p>'
-                % (e(spec["format"]), total, t(first)))
+                'data-total="%d"%s>%s</p>'
+                % (e(spec["format"]), total, tone, t(first)))
     if not (spec.get("off") and spec.get("on")):
         raise ValueError(
             "head_counter needs either `format` (+ `total`) or both `off` and "
@@ -3114,6 +3181,859 @@ def _muscle_alt(alt, biceps_key, triceps_key):
             .replace("{triceps}", words.get(triceps_key, "")))
 
 
+# ═══ C2 · Atoms, elements and compounds (⊕ MRB-220) ══════════════════════
+#
+# Nine instruments across six lessons. Everything below has markup here, real
+# CSS in `shared/ks3.css`, real behaviour in `shared/ks3.js` reached from
+# `wireInstruments()`, and at least one measured row in `ks3_parity.COMPONENTS`
+# on a page that renders it. A dispatch-table entry is not a component.
+
+
+def _canvas_frame(inner, foot, row=False):
+    """The dark-canvas frame — one shape, used four times in C2 (map N12).
+
+    c2-01's zoom, c2-03's dish, c2-05's builder and c2-06's balance all draw
+    into the same wrapper: a `--ks3-r-card` box with a 2px `--ks3-on-dark-muted`
+    outline, `overflow: hidden`, and a `--ks3-dark-panel` strip under the canvas
+    carrying the controls or the caption. It was unnamed in the map because
+    Design inlines it four times; it is one component here so the fifth
+    instrument that wants it inherits a measured box rather than a fourth copy.
+    """
+    return ('<div class="ks3-canvas-frame">%s'
+            '<div class="ks3-canvas-foot"%s>%s</div></div>'
+            % (inner, ' data-row="1"' if row else "", foot))
+
+
+def r_claim_switch(a, act_id):
+    """⊕ c2-01 `#s-model` — three claims as toggles, four observations as
+    dependants.
+
+    ⚠️ A LIGHT `.ks3-block`, not a practical. The map calls this out by name:
+    it is the flagship of a MODEL lesson and it looks like a bench, and
+    painting it on ink resolves every text token wrong.
+
+    ⚖️ THE FAILURE SENTENCE IS THE TEACHING. An observation whose claim is off
+    does not grey out or get a cross — its text is REPLACED by the sentence
+    saying why it stops being explained. Both sentences are in the document and
+    one is hidden (emit-both-show-one), so no text is ever assembled from an
+    attribute and `<em>` survives in either.
+
+    ⚠️ `touched >= 2` counts EVERY press, including switching a claim back on.
+    That is Design's rule as written (map §2.4) and a component must not tighten
+    it silently to "two claims off".
+    """
+    claims = a.get("claims") or []
+    obs = a.get("observations") or []
+    if not claims or not obs:
+        raise ValueError(
+            "claim-switch %r needs both claims[] and observations[]." % act_id)
+    ids = {c["id"] for c in claims}
+    for o in obs:
+        missing = [n for n in (o.get("needs") or []) if n not in ids]
+        if missing:
+            raise ValueError(
+                "claim-switch %r observation %r needs claim(s) %s, which are "
+                "not declared." % (act_id, o.get("id"), missing))
+
+    gate = dict(a.get("gate") or {})
+    # ⊕ The gate's options ARE the three claim texts, lettered (map §2.5). They
+    # are read from `claims` rather than authored twice: a second copy of a
+    # science-bearing sentence is a second place for it to drift, and R5's
+    # point is that every authored key has exactly one meaning.
+    if gate and not gate.get("options") and gate.get("options_from") == "claims":
+        gate["options"] = [c.get("text", "") for c in claims]
+    gate_html, hide = r_bench_gate(gate)
+
+    labels = a.get("labels") or {}
+    verdicts = a.get("verdicts") or {}
+    note = a.get("note") or {}
+
+    rows = "".join(
+        '<button type="button" class="ks3-claim" data-claim="%s" '
+        'aria-pressed="true"><span class="ks3-claim-chip" data-claim-chip>%s'
+        '</span><span class="ks3-claim-text">%s</span></button>'
+        % (e(c["id"]), t(labels.get("on") or "ON"), rich(c.get("text", "")))
+        for c in claims)
+
+    obs_rows = "".join(
+        '<div class="ks3-obs-row" data-obs="%s" data-needs="%s">'
+        '<div class="ks3-obs-texts">'
+        '<p class="ks3-obs-text" data-obs-alive>%s</p>'
+        '<p class="ks3-obs-text" data-obs-dead hidden>%s</p></div>'
+        '<p class="ks3-obs-verdict" data-obs-verdict>%s</p></div>'
+        % (e(o.get("id", "")), e(" ".join(o.get("needs") or [])),
+           rich(o.get("text", "")), rich(o.get("fail", "")),
+           t(verdicts.get("alive") or ""))
+        for o in obs)
+
+    words = note.get("claim_word") or {}
+    return (gate_html
+            + '<div class="ks3-claimswitch" data-claimswitch%s data-total="%d" '
+              'data-done-at="%d" data-on="%s" data-off="%s" '
+              'data-alive="%s" data-dead="%s" data-all-on="%s" '
+              'data-none-broken="%s" data-some-broken="%s" data-word-one="%s" '
+              'data-word-many="%s">'
+              '<p class="ks3-claims-label">%s</p>'
+              '<div class="ks3-claims">%s</div>'
+              '<p class="ks3-claims-label ks3-obs-label">%s</p>'
+              '<div class="ks3-obs">%s</div>'
+              '<p class="ks3-claim-note" data-claimnote role="status">%s</p>'
+              '</div>'
+            % (hide, len(claims), int(a.get("done_at") or 2),
+               e(labels.get("on") or "ON"), e(labels.get("off") or "OFF"),
+               e(verdicts.get("alive") or ""), e(verdicts.get("dead") or ""),
+               e(note.get("all_on") or ""), e(note.get("none_broken") or ""),
+               e(note.get("some_broken") or ""),
+               e(words.get("one") or ""), e(words.get("many") or ""),
+               t(labels.get("claims") or ""), rows,
+               t(labels.get("observations") or ""), obs_rows,
+               rich(note.get("all_on") or "")))
+
+
+# The five drawings c2-01's zoom ladder steps through, validated at build time
+# so a typo is a build error and never a blank canvas.
+#
+# ⚠️ This is NOT `zoom-ladder`. That kind is B1's plant→cell ladder — a slider,
+# a tick row, an authored orange next-box per level, and its own validated
+# `ZOOM_DRAWINGS` set that would raise on every name below. c2-01 has two step
+# buttons, no ticks, no next-box and five drawings that do not exist there. Two
+# different instruments that share the word zoom.
+SCALE_DRAWINGS = {"wire", "grains", "scratches", "beyond-light", "lattice"}
+
+
+def _scale_alt(alt, level):
+    """The zoom canvas's aria-label. Same composition in Python and in JS."""
+    return (alt.get("template", "")
+            .replace("{scale}", level.get("scale", ""))
+            .replace("{label}", (level.get("label") or "").lower()))
+
+
+def r_mixture_compound_dish(a, act_id):
+    """⊕ c2-03 `#s-bench` — iron and sulfur, before and after heating.
+
+    ⚖️ **THE PROPORTION CONTROL IS DISABLED ONCE HEATED, AND THAT IS THE
+    LESSON.** NOTES §3.3 is explicit. In the mixture a student picks any of
+    three proportions and the drawing changes; heat it and the control refuses,
+    because a compound's proportion is not adjustable. A generic tab group that
+    stays live would delete the entire argument of the lesson and leave a
+    picture. The refusal is enforced in the markup (`disabled`), in the JS
+    (a re-check inside the handler, exactly as Design's own click guard does)
+    and in the drawing (the heated state has no ratio to draw).
+
+    ⚖️ The CONTRAST spine: three of the four tests give a vivid answer in both
+    states and settle nothing; the quiet one — weigh what actually combines —
+    settles everything. `settles` is authored per test and drives which of the
+    two verdict words is emitted, so the pattern is data rather than prose.
+
+    ⚑ NOTES flag 8 is the drawing Design most wants an examiner's eye on: iron
+    sulfide is a 1:1 giant structure and the lattice is a fair KS3 picture of
+    it, but it is not molecules. The 5 × 17 grid draws one iron and one sulfur
+    joined by a stub, repeating — which is the honest reading.
+    """
+    tests = a.get("tests") or []
+    ratios = a.get("ratios") or []
+    states = a.get("states") or []
+    if len(states) != 2:
+        raise ValueError(
+            "mixture-compound-dish %r takes exactly two states (before and "
+            "after heating); got %d." % (act_id, len(states)))
+    if not tests:
+        raise ValueError("mixture-compound-dish %r declares no tests[]." % act_id)
+    fracs = a.get("ratio_fracs") or []
+    if len(fracs) != len(ratios):
+        raise ValueError(
+            "mixture-compound-dish %r declares %d ratio label(s) and %d "
+            "fraction(s). The label a student reads and the mix the canvas "
+            "draws are the same control and must not drift."
+            % (act_id, len(ratios), len(fracs)))
+
+    gate_html, hide = r_bench_gate(a.get("gate"))
+    labels = a.get("labels") or {}
+    words = a.get("verdict_words") or {}
+    alt = a.get("dish_alt") or {}
+    notes = a.get("dish_note") or {}
+    caps = a.get("captions") or {}
+
+    state_btns = "".join(
+        '<button type="button" class="ks3-sim-seg-btn ks3-dish-state" '
+        'data-heated="%s" aria-pressed="%s">%s</button>'
+        % ("1" if st.get("heated") else "0",
+           "true" if i == 0 else "false", t(st.get("label", "")))
+        for i, st in enumerate(states))
+    ratio_btns = "".join(
+        '<button type="button" class="ks3-sim-seg-btn ks3-dish-ratio" '
+        'data-ratio="%d" aria-pressed="%s">%s</button>'
+        % (i, "true" if i == int(a.get("start_ratio") or 0) else "false",
+           t(lab))
+        for i, lab in enumerate(ratios))
+    test_btns = "".join(
+        '<button type="button" class="ks3-sim-seg-btn ks3-dish-test" '
+        'data-test="%s" aria-pressed="%s">%s</button>'
+        % (e(tt["id"]), "true" if i == 0 else "false", t(tt.get("name", "")))
+        for i, tt in enumerate(tests))
+
+    cards = []
+    for i, tt in enumerate(tests):
+        cards.append(
+            '<div class="ks3-dish-result" data-testcard="%s"%s>'
+            '<p class="ks3-dish-testname">%s</p>'
+            '<div class="ks3-dish-cols">'
+            '<div class="ks3-dish-col ks3-dish-before">'
+            '<p class="ks3-dish-collabel">%s</p><p class="ks3-dish-body">%s</p>'
+            '</div>'
+            '<div class="ks3-dish-col ks3-dish-after">'
+            '<p class="ks3-dish-collabel">%s</p><p class="ks3-dish-body">%s</p>'
+            '</div></div>'
+            '<p class="ks3-dish-verdict"><strong>%s</strong> %s</p></div>'
+            % (e(tt["id"]), "" if i == 0 else " hidden",
+               t(tt.get("name", "")),
+               t(labels.get("before") or ""), rich(tt.get("before", "")),
+               t(labels.get("after") or ""), rich(tt.get("after", "")),
+               t(words.get("settles" if tt.get("settles") else "not") or ""),
+               rich(tt.get("verdict", ""))))
+
+    cfg = {"fracs": fracs, "captions": caps}
+    canvas = ('<canvas class="ks3-dish-canvas" width="1700" height="560" '
+              'role="img" aria-label="%s" data-dish-canvas></canvas>'
+              % e(alt.get("mixed", "")))
+    foot = ('<p class="ks3-dish-note" data-dish-note>%s</p>'
+            % t(notes.get("mixed", "")))
+    return (gate_html
+            + '<div class="ks3-dish" data-dish%s data-total="%d" '
+              'data-cfg="%s" data-alt-mixed="%s" data-alt-heated="%s" '
+              'data-note-mixed="%s" data-note-heated="%s">'
+              '<div class="ks3-dish-groups">'
+              '<div class="ks3-dish-group"><p class="ks3-dish-grouplabel">%s</p>'
+              '<div class="ks3-dish-btns">%s</div></div>'
+              '<div class="ks3-dish-group"><p class="ks3-dish-grouplabel">%s</p>'
+              '<div class="ks3-dish-btns">%s</div></div></div>'
+              '%s'
+              '<div class="ks3-dish-tests">%s</div>%s</div>'
+            % (hide, len(tests),
+               e(json.dumps(cfg, separators=(",", ":"), sort_keys=True,
+                            ensure_ascii=False)),
+               e(alt.get("mixed", "")), e(alt.get("heated", "")),
+               e(notes.get("mixed", "")), e(notes.get("heated", "")),
+               t(labels.get("dish") or ""), state_btns,
+               t(labels.get("ratio") or ""), ratio_btns,
+               _canvas_frame(canvas, foot), test_btns, "".join(cards)))
+
+
+# `verdict-cards` and `origin-grid` are ONE component with two layouts and
+# three headline types (map §10.2). They differ only in how the cards are laid
+# out and what the card leads with; the contract — one shot per card, the
+# unchosen options dim, the row's border goes to ink, a display-font answer
+# word and a why paragraph — is identical, and three instances across two
+# lessons is exactly the case for building it once.
+_CARD_LAYOUTS = {"column", "grid"}
+_CARD_HEADLINES = {"prose", "formula", "symbol"}
+
+
+def r_verdict_cards(a, act_id):
+    """⊕ c2-03 `#s-sort` · c2-04 `#s-read` · c2-04 `#s-sort`.
+
+    One-shot commit-and-reveal cards. Nearest shipped kinds are `sort-rows`
+    (chips into named columns) and `sort-task` (`ks3-hard`), and it is neither:
+    both of those gate EVERY row behind one "open the answers" button, and
+    this reveals each card the instant that card is decided.
+
+    ⚠️ R3 / MRB-196 R10 — nothing marks correctness. The chosen option keeps
+    the ordinary chosen treatment, the unchosen ones dim, the CARD's border
+    goes to ink, and the why paragraph is one tone whether the student had it
+    or not. The answer word is display type because it is the answer, not
+    because it is a verdict on the student.
+
+    ⚠️ NO ANSWER VALIDATION against the offered options, deliberately, and for
+    the same reason `job-sort` has none: c2-04's `answer` strings are counts
+    ("Three") offered against `['One','Two','Three','Four']`, but c2-03's are
+    sentences that are not any of `['Mixture','Compound']`. Validating would
+    refuse Design's payload at build time.
+    """
+    items = a.get("items") or []
+    if not items:
+        raise ValueError("verdict-cards %r declares no items[]." % act_id)
+    layout = a.get("layout") or "column"
+    headline = a.get("headline") or "prose"
+    if layout not in _CARD_LAYOUTS:
+        raise ValueError("verdict-cards %r layout %r; the drawn set is %s."
+                         % (act_id, layout, ", ".join(sorted(_CARD_LAYOUTS))))
+    if headline not in _CARD_HEADLINES:
+        raise ValueError("verdict-cards %r headline %r; the drawn set is %s."
+                         % (act_id, headline, ", ".join(sorted(_CARD_HEADLINES))))
+    shared = a.get("options") or []
+
+    cards = []
+    for it in items:
+        opts = it.get("options") or shared
+        if not opts:
+            raise ValueError(
+                "verdict-cards %r item %r offers no options and the activity "
+                "declares no shared options[]." % (act_id, it.get("id")))
+        btns = "".join(
+            '<button type="button" class="ks3-seg-btn ks3-vcard-opt" '
+            'data-i="%d" aria-pressed="false">%s</button>' % (i, t(lab))
+            for i, lab in enumerate(opts))
+        # Three headline shapes, one element. `symbol` is c2-04's 42px display
+        # letter set; `formula` is its mono 26px `CaCO₃`; `prose` is c2-03's
+        # sentence. A `sub` line under the headline exists only where Design
+        # draws one, which is `symbol` and `formula`.
+        head = ('<p class="ks3-vcard-head" data-headline="%s">%s</p>'
+                % (e(headline), rich(it.get("headline") or it.get("text", ""))))
+        sub = ('<p class="ks3-vcard-sub">%s</p>' % rich(it["sub"])
+               if it.get("sub") else "")
+        # ⚠️ The answer WORD is optional, and its absence is Design's. c2-03's
+        # and c2-04's `#s-read` cards open with a display-font answer ("Mixture."
+        # / "Three elements.") before the reason; c2-04's `#s-sort` cards open
+        # with the reason alone, because the bucket the student just pressed IS
+        # the answer and repeating it would be the card telling them what they
+        # already said. Emitting an empty `<strong>` would put a stray space
+        # and an empty element on nine cards.
+        answer = (('<strong class="ks3-vcard-answer">%s</strong> '
+                   % t(it["answer"])) if it.get("answer") else "")
+        cards.append(
+            '<div class="ks3-vcard" data-vcard="%s">%s%s'
+            '<div class="ks3-vcard-opts">%s</div>'
+            '<p class="ks3-vcard-why" hidden data-reveal>%s%s</p></div>'
+            % (e(it.get("id", "")), head, sub, btns,
+               answer, rich(it.get("why", ""))))
+
+    close = ('<div class="ks3-vcards-close" hidden data-vcards-close>'
+             '<p>%s</p></div>' % rich(a["close"])) if a.get("close") else ""
+    return ('<div class="ks3-vcards" data-vcards data-layout="%s" '
+            'data-total="%d">%s%s</div>'
+            % (e(layout), len(items), "".join(cards), close))
+
+
+def r_formula_builder(a, act_id):
+    """⊕ c2-05 `#s-builder` — three pairs × three × three, five substances.
+
+    ⚖️ **"NOT A SUBSTANCE" IS THE TEACHING.** Twenty-two of the twenty-seven
+    reachable combinations say so, and Design's NOTES §8 calls that "the first
+    honest thing a formula builder can teach". A builder that only offered the
+    five real ones would teach that any formula you can write exists, which is
+    the misconception the block is aimed at.
+
+    ⊕ **The opening substance is banked at mount, which Design's page does
+    not do.** `mark()` is passed as the setState callback of the three control
+    groups only, so the H₂O the instrument OPENS on is displayed, is one of the
+    five, and can never be counted unless the student navigates away and back
+    (map F6). That is an addition INSIDE a component Design drew and it
+    contradicts nothing on the page: the substance is on screen, named, and
+    drawn. Without it the progress readout opens at "0 of 5" while showing one.
+
+    ⚠️ The not-a-substance name composes with ASCII DIGITS — `H3O2`, not
+    `H₃O₂` — while every authored name in `known` uses proper subscripts. That
+    is Design's page as written (line 641) and the page wins; changing it is a
+    content decision, not a build one.
+    """
+    pairs = a.get("pairs") or []
+    known = a.get("known") or {}
+    counts = a.get("counts") or [1, 2, 3]
+    if not pairs or not known:
+        raise ValueError(
+            "formula-builder %r needs both pairs[] and known{}." % act_id)
+    ids = {p["id"] for p in pairs}
+    for key in known:
+        pid = key.split(":")[0]
+        if pid not in ids:
+            raise ValueError(
+                "formula-builder %r knows %r, whose pair %r is not offered. "
+                "A substance the controls cannot reach is a substance no "
+                "student can find." % (act_id, key, pid))
+    start = a.get("start") or {}
+    gate_html, hide = r_bench_gate(a.get("gate"))
+    labels = a.get("labels") or {}
+    nf = a.get("not_found") or {}
+
+    def first(p_id):
+        return next(p for p in pairs if p["id"] == p_id)
+
+    p0 = first(start.get("pair") or pairs[0]["id"])
+    a0 = int(start.get("a") or counts[0])
+    b0 = int(start.get("b") or counts[0])
+    k0 = "%s:%d:%d" % (p0["id"], a0, b0)
+    found0 = known.get(k0)
+
+    pair_btns = "".join(
+        '<button type="button" class="ks3-sim-seg-btn ks3-fb-pair" '
+        'data-pair="%s" aria-pressed="%s">%s</button>'
+        % (e(p["id"]), "true" if p["id"] == p0["id"] else "false",
+           t("%s and %s" % (p.get("a", ""), p.get("b", ""))))
+        for p in pairs)
+
+    def count_btns(axis, chosen):
+        return "".join(
+            '<button type="button" class="ks3-sim-seg-btn ks3-fb-count" '
+            'data-axis="%s" data-n="%d" aria-pressed="%s">%d</button>'
+            % (axis, n, "true" if n == chosen else "false", n)
+            for n in counts)
+
+    cfg = {"pairs": pairs, "known": known, "counts": counts,
+           "colours": a.get("colours") or {},
+           "not_found": nf, "captions": a.get("captions") or {},
+           "alt": a.get("alt") or {},
+           "start": {"pair": p0["id"], "a": a0, "b": b0}}
+    canvas = ('<canvas class="ks3-fb-canvas" width="1700" height="520" '
+              'role="img" aria-label="%s" data-fb-canvas></canvas>'
+              % e(_fb_alt(a, found0)))
+    foot = ('<p class="ks3-fb-name" data-fb-name>%s</p>'
+            '<p class="ks3-fb-note" data-fb-note>%s</p>'
+            % (t(_fb_name(p0, a0, b0, found0, nf)),
+               rich((found0 or {}).get("note") or nf.get("note", ""))))
+    return (gate_html
+            + '<div class="ks3-fb" data-fb%s data-total="%d" data-done-at="%d" '
+              'data-cfg="%s">'
+              '<div class="ks3-fb-groups">'
+              '<div class="ks3-fb-group"><p class="ks3-fb-grouplabel">%s</p>'
+              '<div class="ks3-fb-btns">%s</div></div>'
+              '<div class="ks3-fb-group">'
+              '<p class="ks3-fb-grouplabel" data-fb-label="a">%s</p>'
+              '<div class="ks3-fb-btns">%s</div></div>'
+              '<div class="ks3-fb-group">'
+              '<p class="ks3-fb-grouplabel" data-fb-label="b">%s</p>'
+              '<div class="ks3-fb-btns">%s</div></div></div>%s</div>'
+            % (hide, len(known), int(a.get("done_at") or len(known)),
+               e(json.dumps(cfg, separators=(",", ":"), sort_keys=True,
+                            ensure_ascii=False)),
+               t(labels.get("pairs") or ""), pair_btns,
+               t(p0.get("aName", "")), count_btns("a", a0),
+               t(p0.get("bName", "")), count_btns("b", b0),
+               _canvas_frame(canvas, foot)))
+
+
+def _fb_name(pair, na, nb, found, nf):
+    """The name under the drawing. Composed the same way in Python and in JS.
+
+    ⚠️ ASCII digits on the not-found branch, subscripts on the authored names.
+    Design's own asymmetry (page line 641), reproduced rather than tidied.
+    """
+    if found:
+        return found.get("name", "")
+    return "%s%s%s%s%s" % (pair.get("a", ""), na if na > 1 else "",
+                           pair.get("b", ""), nb if nb > 1 else "",
+                           nf.get("name_suffix", ""))
+
+
+def _fb_alt(a, found):
+    """The builder canvas's aria-label. Three-way, composed in both languages."""
+    alt = a.get("alt") or {}
+    if not found:
+        return alt.get("none", "")
+    tail = alt.get("giant" if found.get("giant") else "molecule", "")
+    return alt.get("template", "").replace("{name}", found.get("name", "")) + tail
+
+
+def r_model_limit(a, act_id):
+    """⊕ c2-05 `#s-limit` — the MODEL family's *where it breaks* step.
+
+    Two cards, a commit and an ungated reveal. The light/ink asymmetry IS the
+    argument and is not decoration: the molecule sits on a card and the giant
+    structure sits on ink, so the thing the model does not cover looks
+    different before a word of it is read.
+
+    ⚠️ THREE options, not four. Every other commit in KS3 offers four, and
+    this is recorded (map N9) so it is not "corrected" to four by a later pass.
+
+    ⚠️ The reveal is UNGATED BY THE ANSWER — it opens on any commitment.
+    Commitment, never marking (R3).
+    """
+    cards = a.get("cards") or []
+    if len(cards) != 2:
+        raise ValueError(
+            "model-limit %r takes exactly two contrast cards; got %d. The "
+            "light/ink pair is the argument, and one card cannot make it."
+            % (act_id, len(cards)))
+    grounds = [c.get("ground") for c in cards]
+    if sorted(grounds) != ["card", "ink"]:
+        raise ValueError(
+            "model-limit %r draws grounds %s; it takes one `card` and one "
+            "`ink`. Two cards on the same ground is a comparison table, which "
+            "is not what Design drew." % (act_id, grounds))
+    # The commit line sits BETWEEN the cards and the options, which is the one
+    # slot `r_activity`'s fixed order does not have — the shell's `prompt` is
+    # already the lede above the cards. It belongs to the component because
+    # Design draws it inside the block, at 19px/700, not as a second lede.
+    commit = ('<p class="ks3-limit-commit">%s</p>' % t(a["commit"])
+              if a.get("commit") else "")
+    return ('<div class="ks3-limit" data-limit>'
+            '<div class="ks3-limit-cards">%s</div>%s</div>'
+            % ("".join(
+                '<div class="ks3-limit-card" data-ground="%s">'
+                '<p class="ks3-limit-caption">%s</p>'
+                '<p class="ks3-limit-body">%s</p></div>'
+                % (e(c.get("ground", "card")), t(c.get("caption", "")),
+                   rich(c.get("text", "")))
+                for c in cards), commit))
+
+
+def r_balance_bench(a, act_id):
+    """⊕ c2-06 `#s-balance` — two reactions × two vessels on one balance.
+
+    ⚖️ **THE THIRD TILE NEVER MEASURES ANYTHING**, and it is the whole
+    QUANTITATIVE move. `Mass before` and `Mass after` are read off the display;
+    `Where it went` reads *not measured — you work it out* and takes no data,
+    for ever. It is the same refusal `p3-01`'s light gates make. It has to be a
+    real tile beside the two that do report, or the refusal reads as prose
+    somebody forgot to fill in.
+
+    ⚖️ The VESSEL CHANGES THE PICTURE — a sealed flask gets a drawn bung — and
+    a run that moves gas draws the gas leaving or joining. A control that
+    changes only a number teaches that the apparatus is incidental.
+
+    ⚠️ `showAfter` RESETS on every control change (Design's own rule): switch
+    reaction or vessel and the balance goes back to its before-reading, because
+    it is now a different run and the after-mass of the last one is not a fact
+    about this one.
+    """
+    runs = a.get("runs") or {}
+    reactions = a.get("reactions") or []
+    vessels = a.get("vessels") or []
+    if not runs or not reactions or not vessels:
+        raise ValueError(
+            "balance-bench %r needs runs{}, reactions[] and vessels[]." % act_id)
+    for r in reactions:
+        for v in vessels:
+            key = "%s:%s" % (r["id"], v["id"])
+            if key not in runs:
+                raise ValueError(
+                    "balance-bench %r offers %r but declares no run for it. "
+                    "Every combination the controls can reach must have a "
+                    "reading." % (act_id, key))
+    tiles = a.get("tiles") or []
+    if len(tiles) != 3:
+        raise ValueError(
+            "balance-bench %r draws %d tile(s); it takes three, and the third "
+            "is the one that refuses to measure." % (act_id, len(tiles)))
+
+    gate_html, hide = r_bench_gate(a.get("gate"))
+    labels = a.get("labels") or {}
+    dec = int(a.get("decimals", 2))
+    r0, v0 = reactions[0]["id"], (a.get("start_vessel") or vessels[0]["id"])
+    first = runs["%s:%s" % (r0, v0)]
+
+    def group(cls, key, items, chosen):
+        return "".join(
+            '<button type="button" class="ks3-sim-seg-btn %s" data-%s="%s" '
+            'aria-pressed="%s">%s</button>'
+            % (cls, key, e(i["id"]), "true" if i["id"] == chosen else "false",
+               t(i.get("label", "")))
+            for i in items)
+
+    tile_html = "".join(
+        '<div class="ks3-bal-tile"><p class="ks3-bal-tile-label">%s</p>'
+        '<p class="ks3-bal-tile-value%s"%s>%s</p></div>'
+        % (t(tl.get("label", "")),
+           "" if tl.get("body") else " ks3-bal-tile-mono",
+           "" if tl.get("body") else ' data-tile="%s"' % e(tl.get("id", "")),
+           t(tl.get("body") or _mass(first["before"] if tl.get("id") == "before"
+                                     else None, dec, labels)))
+        for tl in tiles)
+
+    cfg = {"runs": runs, "labels": labels, "decimals": dec,
+           "run_labels": a.get("run_labels") or {},
+           "liquids": a.get("liquid_colours") or {},
+           "gas_labels": a.get("gas_labels") or {},
+           "alt": a.get("alt") or {},
+           "start": {"reaction": r0, "vessel": v0}}
+    canvas = ('<canvas class="ks3-bal-canvas" width="1700" height="560" '
+              'role="img" aria-label="%s" data-bal-canvas></canvas>'
+              % e(_bal_alt(a, v0, first["before"], False, dec)))
+    foot = ('<button type="button" class="ks3-bal-run" data-bal-run>%s</button>'
+            '<p class="ks3-bal-status" data-bal-status>%s</p>'
+            % (t((a.get("run_labels") or {}).get("idle", "")),
+               t(labels.get("status_idle", ""))))
+    return (gate_html
+            + '<div class="ks3-bal" data-bal%s data-total="%d" '
+              'data-done-at="%d" data-cfg="%s">'
+              '<div class="ks3-bal-groups">'
+              '<div class="ks3-bal-group"><p class="ks3-bal-grouplabel">%s</p>'
+              '<div class="ks3-bal-btns">%s</div></div>'
+              '<div class="ks3-bal-group"><p class="ks3-bal-grouplabel">%s</p>'
+              '<div class="ks3-bal-btns">%s</div></div></div>'
+              '%s<div class="ks3-bal-tiles">%s</div>'
+              '<p class="ks3-bal-note" data-bal-note>%s</p></div>'
+            % (hide, len(runs), int(a.get("done_at") or len(runs)),
+               e(json.dumps(cfg, separators=(",", ":"), sort_keys=True,
+                            ensure_ascii=False)),
+               t(labels.get("reaction") or ""),
+               group("ks3-bal-rxn", "rxn", reactions, r0),
+               t(labels.get("vessel") or ""),
+               group("ks3-bal-vessel", "vessel", vessels, v0),
+               _canvas_frame(canvas, foot, row=True), tile_html,
+               rich(labels.get("idle_note", ""))))
+
+
+def _mass(value, dec, labels):
+    """`152.00 g`, or the em-dash the After tile shows before a run."""
+    if value is None:
+        return labels.get("unmeasured") or "—"
+    return ("%%.%df %%s" % dec) % (value, labels.get("unit") or "g")
+
+
+def _bal_alt(a, vessel, mass, after, dec):
+    """The balance canvas's aria-label. Composed the same way in JS."""
+    alt = a.get("alt") or {}
+    return (alt.get("template", "")
+            .replace("{vessel}", alt.get(vessel, ""))
+            .replace("{mass}", ("%%.%df" % dec) % mass)
+            .replace("{when}", alt.get("after" if after else "before", "")))
+
+
+def r_fifa_pick(lesson, a, act_id):
+    """⊕ c2-06 `#s-build` — MRB-204 part 4, and NOT `fifa-construct`.
+
+    The shipped `fifa-construct` renders four free-text inputs, a Check button,
+    a model `<ol>` and a success-criteria tick list, and asserts
+    `len(fields) == len(model) == len(success)`. Design's page is a different
+    mechanism: two multiple-choice ladders of three, one number field beside a
+    unit `<select>`, and a four-step ink reveal that quotes the student's own
+    input back. Three commitments against four model lines and no criteria at
+    all — the existing assertions would raise on it, and rightly.
+
+    ⚖️ The two ladders are MULTIPLE CHOICE ON PURPOSE. A student who cannot yet
+    write `152.00 = 149.80 + mass of gas` can still recognise it, and the two
+    distractors are the two real errors — conserving only the solid, and adding
+    the gas to the wrong side. A free-text box would fail them silently.
+
+    ⚖️ THE BUTTON IS LOCKED UNTIL ALL FOUR PARTS ARE SET — both picks, a
+    number, and a unit. The unit is a separate commitment because "2.2" is not
+    an answer to a question about mass.
+    """
+    steps = a.get("steps") or []
+    picks = a.get("picks") or []
+    field = a.get("field") or {}
+    if len(picks) != 2:
+        raise ValueError(
+            "fifa-pick %r declares %d pick ladder(s); it takes two — the rule "
+            "and the insertion." % (act_id, len(picks)))
+    if not steps:
+        raise ValueError("fifa-pick %r reveals no steps[]." % act_id)
+    if not field.get("units"):
+        raise ValueError(
+            "fifa-pick %r offers no units[]. The unit is a separate "
+            "commitment: `2.2` is not an answer to a question about mass."
+            % act_id)
+
+    panels = []
+    for i, p in enumerate(picks):
+        opts = "".join(
+            '<button type="button" class="ks3-pick-opt" data-group="%d" '
+            'data-i="%d" aria-pressed="false">%s</button>' % (i, j, t(o))
+            for j, o in enumerate(p.get("options") or []))
+        panels.append(
+            '<div class="ks3-pick-panel"><p class="ks3-pick-label">%s</p>'
+            '<div class="ks3-pick-opts">%s</div></div>'
+            % (t(p.get("label", "")), opts))
+
+    # ⊕ N10 — the visually-hidden label. No `.ks3-sr-only` existed in
+    # `shared/ks3.css`; Design inlines `position:absolute; left:-9999px` twice.
+    # One class now, because the next form control will want it too.
+    aid, uid = "%s-ans" % act_id, "%s-unit" % act_id
+    # ⚠️ THE PLACEHOLDER OPTION CARRIES AN EMPTY VALUE, and that is
+    # load-bearing rather than tidy: the unit is one of the four commitments
+    # the open button waits for, and a placeholder with its own value ("choose
+    # a unit") satisfies `unit.value` — so the gate opens on a student who
+    # never chose a unit. Measured in a browser, not read off the source.
+    units = ('<option value="">%s</option>' % t(field["unit_placeholder"])
+             if field.get("unit_placeholder") else "")
+    units += "".join('<option value="%s">%s</option>' % (e(u), t(u))
+                     for u in field["units"])
+    panels.append(
+        '<div class="ks3-pick-panel"><p class="ks3-pick-label">%s</p>'
+        '<div class="ks3-pick-answer">'
+        '<label class="ks3-sr-only" for="%s">%s</label>'
+        '<input class="ks3-pick-input" type="text" inputmode="decimal" '
+        'id="%s" placeholder="%s" data-pick-ans>'
+        '<label class="ks3-sr-only" for="%s">%s</label>'
+        '<select class="ks3-sim-units ks3-pick-unit" id="%s" data-pick-unit>'
+        '%s</select></div></div>'
+        # ⚠️ NO `value` attribute on the input. B1 already fixed this once:
+        # an authored `value` is an attribute, the runtime re-renders, and the
+        # student's own typing is wiped on the next state change.
+        % (t(field.get("label", "")), e(aid), t(field.get("hint", "")),
+           e(aid), e(field.get("placeholder", "")), e(uid),
+           t(field.get("unit_hint", "")), e(uid), units))
+
+    reveal = "".join(
+        '<div class="ks3-pick-step">'
+        '<span class="ks3-pick-chip" aria-hidden="true">%s</span>'
+        '<div class="ks3-pick-stepbody"><p class="ks3-pick-steplabel">%s</p>'
+        '<p class="ks3-pick-stepline">%s</p>'
+        '<p class="ks3-pick-stepnote">%s</p></div></div>'
+        % (t(s.get("letter", "")), t(s.get("label", "")),
+           t(s.get("line", "")), rich(s.get("note", "")))
+        for s in steps)
+
+    close = a.get("close") or {}
+    return ('<div class="ks3-pick" data-pick data-total="3" '
+            'data-close="%s" data-blank="%s" data-done-label="%s">'
+            '<div class="ks3-pick-panels">%s</div>'
+            '<div class="ks3-pick-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-pick-btn" '
+            'data-pick-open disabled>%s</button>'
+            '<span class="ks3-pick-progress" data-pick-progress>%s</span>'
+            '</div>'
+            '<div class="ks3-pick-reveal" hidden data-reveal>'
+            '<p class="ks3-pick-revealhead">%s</p>%s'
+            '<p class="ks3-pick-close" data-pick-close></p></div></div>'
+            % (e(close.get("template", "")), e(close.get("blank") or "—"),
+               e((a.get("progress") or {}).get("done", "")),
+               "".join(panels),
+               t(a.get("button", "")),
+               t((a.get("progress") or {}).get("format", "")
+                 .replace("{n}", "0")),
+               t(a.get("reveal_head", "")), reveal))
+
+
+def r_test_budget_bench(a, act_id):
+    """⊕ c2-02 `#s-bench` — six samples, four tests, and eight tests to spend.
+
+    ⚖️ **THE BUDGET IS THE PEDAGOGY, NOT A GAME MECHANIC.** With unlimited
+    tests a student runs everything and learns nothing about which evidence
+    discriminates; the whole lesson is discovering that *looks like a metal*,
+    *conducts* and *is shiny* are the three most interesting results you can
+    buy and all three are worthless. Design's NOTES §3.2 says it in as many
+    words: "if Code drops the budget the lesson quietly becomes a
+    click-through." So the budget is required, it is validated as reachable,
+    and it is GLOBAL across all six samples rather than per-sample.
+
+    ⚠️ THE INSTRUMENT NEVER MARKS. The verdict panel fires on the student's
+    verdict whether or not that verdict was right, and it is the only place a
+    sample is named. `element` is authored on every sample and read by nothing
+    (map N16) — it is correctness data waiting for a marker that R3 says must
+    not arrive here. Kept, and flagged rather than deleted.
+
+    ⚠️ Emit-all-show-one, as the board does: every sample panel is in the
+    document and one is shown, so returning to a sample finds its results and
+    its verdict exactly as they were left and no state lives outside the DOM.
+    """
+    samples = a.get("samples") or []
+    tests = a.get("tests") or []
+    if not samples or not tests:
+        raise ValueError(
+            "test-budget-bench %r needs both samples[] and tests[]." % act_id)
+    budget = int(a.get("budget") or 0)
+    if budget < len(samples):
+        # Fewer tests than samples means a sample that can never be tested at
+        # all, which is not a hard lesson — it is a broken one.
+        raise ValueError(
+            "test-budget-bench %r has a budget of %d over %d samples. A budget "
+            "below one test per sample makes the bench unusable rather than "
+            "demanding." % (act_id, budget, len(samples)))
+    for s in samples:
+        missing = [t["id"] for t in tests if t["id"] not in (s.get("results") or {})]
+        if missing:
+            raise ValueError(
+                "test-budget-bench %r sample %r has no result for test(s) %s. "
+                "A test a student can spend a budget point on must say "
+                "something." % (act_id, s.get("id"), missing))
+
+    gate_html, hide = r_bench_gate(a.get("gate"))
+    labels = a.get("labels") or {}
+    verdicts = a.get("verdicts") or []
+
+    tabs = "".join(
+        '<button type="button" class="ks3-seg-btn ks3-sample-tab" '
+        'data-sample="%s" aria-pressed="%s"><span data-tab-label>%s</span>'
+        '</button>'
+        % (e(s["id"]), "true" if i == 0 else "false", t(s.get("tab", "")))
+        for i, s in enumerate(samples))
+
+    panels = []
+    for i, s in enumerate(samples):
+        test_btns = "".join(
+            '<button type="button" class="ks3-seg-btn ks3-test-btn" '
+            'data-test="%s" aria-pressed="false">%s</button>'
+            % (e(tt["id"]), t(tt.get("label", ""))) for tt in tests)
+        results = "".join(
+            '<li class="ks3-result" data-result="%s" hidden>'
+            '<p class="ks3-result-test">%s</p>'
+            '<p class="ks3-result-body">%s</p></li>'
+            % (e(tt["id"]), t(tt.get("label", "")),
+               rich((s.get("results") or {}).get(tt["id"], "")))
+            for tt in tests)
+        vbtns = "".join(
+            '<button type="button" class="ks3-seg-btn ks3-verdict-btn" '
+            'data-verdict="%s" aria-pressed="false">%s</button>'
+            % (e(v.get("id", "")), t(v.get("label", "")))
+            for v in verdicts)
+        panels.append(
+            '<div class="ks3-sample" data-sample="%s"%s>'
+            '<p class="ks3-sample-name">%s</p>'
+            '<p class="ks3-sample-look">%s</p>'
+            '<div class="ks3-sample-tests">%s</div>'
+            '<ul class="ks3-results" hidden data-results role="list">%s</ul>'
+            '<div class="ks3-sample-verdict">'
+            '<p class="ks3-sample-ask">%s</p>'
+            '<div class="ks3-verdict-btns">%s</div>'
+            '<div class="ks3-verdict-panel" hidden data-verdict-panel>'
+            '<p class="ks3-verdict-name">%s</p>'
+            '<p class="ks3-verdict-why">%s</p></div></div></div>'
+            % (e(s["id"]), "" if i == 0 else " hidden",
+               t(s.get("name", "")), rich(s.get("look", "")), test_btns,
+               results, t(labels.get("ask") or ""), vbtns,
+               t(s.get("name2", "")), rich(s.get("why", ""))))
+
+    close = ('<div class="ks3-bench-close" hidden data-bench-close><p>%s</p>'
+             '</div>' % rich(a["close"])) if a.get("close") else ""
+    return (gate_html
+            + '<div class="ks3-budget" data-budgetbench%s data-budget="%d" '
+              'data-total="%d" data-marker="%s">'
+              '<div class="ks3-sample-tabs">%s</div>%s%s</div>'
+            % (hide, budget, len(samples), e(labels.get("decided") or " ·"),
+               tabs, "".join(panels), close))
+
+
+def r_scale_zoom(a, act_id):
+    """⊕ c2-01 `#s-scale` — five steps from a centimetre of wire to the atoms.
+
+    ⚖️ The lesson is that FOUR OF THE FIVE STEPS SHOW NOTHING NEW. Copper stays
+    copper down past the reach of any light microscope, and the fourth drawing
+    says so in words on the canvas rather than showing a smaller orange thing.
+    Collapsing the ladder to "wire, then atoms" would delete the argument and
+    leave the picture.
+
+    Stage 3 is done when all five levels have been REACHED BY STEPPING IN —
+    `seenZoom` seeds level 0 and only the in-button adds to it (map §2.4), so
+    backing out and climbing again is the only route. Reproduced, not tightened.
+    """
+    levels = a.get("levels") or []
+    if len(levels) < 2:
+        raise ValueError("scale-zoom %r declares %d level(s); it steps between "
+                         "at least two." % (act_id, len(levels)))
+    for lv in levels:
+        if lv.get("drawing") not in SCALE_DRAWINGS:
+            raise ValueError(
+                "scale-zoom %r level %r names drawing %r; the drawn set is %s."
+                % (act_id, lv.get("scale"), lv.get("drawing"),
+                   ", ".join(sorted(SCALE_DRAWINGS))))
+    labels = a.get("labels") or {}
+    alt = a.get("alt") or {}
+    start = int(a.get("start") or 0)
+    first = levels[start]
+
+    foot = ('<div class="ks3-scale-controls">'
+            '<button type="button" class="ks3-sim-seg-btn ks3-scale-btn" '
+            'data-step="-1"%s>%s</button>'
+            '<button type="button" class="ks3-sim-seg-btn ks3-scale-btn" '
+            'data-step="1"%s>%s</button>'
+            '<p class="ks3-scale-readout" data-scale-readout>%s</p></div>'
+            % (" disabled" if start == 0 else "", t(labels.get("out") or ""),
+               " disabled" if start >= len(levels) - 1 else "",
+               t(labels.get("in") or ""), t(first.get("scale", ""))))
+    canvas = ('<canvas class="ks3-scale-canvas" width="1800" height="620" '
+              'role="img" aria-label="%s" data-scale-canvas></canvas>'
+              % e(_scale_alt(alt, first)))
+    return ('<div class="ks3-scale" data-scalezoom data-total="%d" '
+            'data-start="%d" data-levels="%s" data-alt="%s">%s'
+            '<p class="ks3-scale-note" data-scale-note>%s</p></div>'
+            % (len(levels), start,
+               e(json.dumps(levels, separators=(",", ":"), sort_keys=True,
+                            ensure_ascii=False)),
+               e(alt.get("template", "")),
+               _canvas_frame(canvas, foot), rich(first.get("note", ""))))
+
+
 # The four activity shells: classes, eyebrow, and the element the prompt takes.
 #
 # `check` and `worked-example` set the prompt as the block's heading — Design's
@@ -3207,6 +4127,40 @@ ACTIVITY_KIND_RENDERERS = {
                       ' data-instrument data-jointblock data-stage-done="0"'),
     "muscle-pair":   ("ks3-muscle-block",
                       ' data-instrument data-muscleblock data-stage-done="0"'),
+
+    # ── C2 · Atoms, elements and compounds (⊕ MRB-220) ──
+    # All nine carry a completion contract, so all nine emit
+    # `data-stage-done="0"` and the rail reads the instrument's own predicate
+    # rather than guessing from `aria-pressed` — which on `#s-model` would tick
+    # on load, because every claim starts pressed ON.
+    "claim-switch":  ("ks3-claim-block",
+                      ' data-instrument data-claimblock data-stage-done="0"'),
+    "scale-zoom":    ("ks3-scale-block",
+                      ' data-instrument data-scaleblock data-stage-done="0"'),
+    "test-budget-bench": ("ks3-budget-block",
+                          ' data-instrument data-budgetblock '
+                          'data-stage-done="0"'),
+    "mixture-compound-dish": ("ks3-dish-block",
+                              ' data-instrument data-dishblock '
+                              'data-stage-done="0"'),
+    # One component, three instances, two layouts, three headline types.
+    "verdict-cards": ("ks3-vcards-block",
+                      ' data-instrument data-vcardsblock data-stage-done="0"'),
+    "formula-builder": ("ks3-fb-block",
+                        ' data-instrument data-fbblock data-stage-done="0"'),
+    # `model-limit` renders the two contrast cards, then falls through to the
+    # shell's own `options` + `reveal` — which IS Design's commit and reveal,
+    # so the block keeps the ordinary Law 4 wiring and needs no engine of its
+    # own. It carries no `data-instrument`: `wirePredictions` owns the three
+    # options, which is correct, because there is no instrument to own them.
+    "model-limit": ("ks3-limit-block", ""),
+    "balance-bench": ("ks3-bal-block",
+                      ' data-instrument data-balblock data-stage-done="0"'),
+    # NOT `fifa-construct`. Two multiple-choice ladders, a number field and a
+    # unit select against four free-text inputs and a tick list — a different
+    # mechanism, whose assertions the existing one would raise on.
+    "fifa-pick": ("ks3-pick-block",
+                  ' data-instrument data-pickblock data-stage-done="0"'),
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -3372,6 +4326,24 @@ def r_activity(lesson, block_type, act_id, block=None):
         parts.append(r_joint_bench(a, act_id))
     if kind == "muscle-pair":
         parts.append(r_muscle_pair(a, act_id))
+    if kind == "claim-switch":
+        parts.append(r_claim_switch(a, act_id))
+    if kind == "scale-zoom":
+        parts.append(r_scale_zoom(a, act_id))
+    if kind == "test-budget-bench":
+        parts.append(r_test_budget_bench(a, act_id))
+    if kind == "mixture-compound-dish":
+        parts.append(r_mixture_compound_dish(a, act_id))
+    if kind == "verdict-cards":
+        parts.append(r_verdict_cards(a, act_id))
+    if kind == "formula-builder":
+        parts.append(r_formula_builder(a, act_id))
+    if kind == "model-limit":
+        parts.append(r_model_limit(a, act_id))
+    if kind == "balance-bench":
+        parts.append(r_balance_bench(a, act_id))
+    if kind == "fifa-pick":
+        parts.append(r_fifa_pick(lesson, a, act_id))
     if a.get("scorecards"):
         parts.append(r_scorecards(a["scorecards"]))
 
@@ -3686,9 +4658,174 @@ def r_formula(lesson, block):
     # both are the formula, and a student flicking back wants them together.
     tri = (r_formula_triangle(block["triangle"])
            if block.get("triangle") else "")
-    return ('<section class="ks3-formula"%s>'
-            '<div class="ks3-formula-statement"><p>%s</p></div>%s</section>'
-            % (_id_attr(block), t(block.get("statement", "")), tri))
+    # ⊕ MRB-220 / MRB-204 as amended 15 Aug 2026 — a formula that is a SUM.
+    #
+    # `figure` draws the relationship in the shape the relationship has; `cover`
+    # is the MRB-204 cover interaction over that shape. For `c2-06` the figure
+    # is a BALANCE BEAM and the cover is a PART–WHOLE BAR, because conservation
+    # of mass is a sum and a triangle encodes a product or a quotient. Drawing a
+    # sum as a triangle would teach a false relationship to make a rule fit.
+    # Measured, not inferred: c2-06 contains the word "triangle" zero times.
+    #
+    # The triangle path above is untouched, which is the point of two branches —
+    # `b2-04` is a product, it keeps its triangle, and neither knows about the
+    # other.
+    figure = r_formula_figure(block["figure"]) if block.get("figure") else ""
+    support = ('<p class="ks3-formula-support">%s</p>'
+               % "<br>".join(t(s) for s in block["support"])
+               ) if block.get("support") else ""
+    bar = r_cover_bar(block["cover"]) if block.get("cover") else ""
+    eyebrow = ('<p class="ks3-eyebrow ks3-formula-eyebrow">%s</p>'
+               % t(block["eyebrow"])) if block.get("eyebrow") else ""
+    return ('<section class="ks3-formula"%s%s>%s%s'
+            '<div class="ks3-formula-statement"><p>%s</p></div>%s%s%s</section>'
+            % (_id_attr(block),
+               ' data-shape="sum"' if (figure or bar) else "",
+               eyebrow, figure,
+               t(block.get("statement", "")), support, tri, bar))
+
+
+# Design draws the sum's figure as a level balance beam: a fulcrum, a post, a
+# beam, an accent pivot, two hangers, two pans and a caption. Every number below
+# is measured off the frozen page's SVG (c2-06 lines 186–198) in its own 520×210
+# viewBox, so the drawing is Design's geometry and not a redraw.
+_BEAM = (
+    '<path d="M260 176L216 200H304Z" class="ks3-beam-stand"></path>'
+    '<line x1="260" y1="60" x2="260" y2="178" class="ks3-beam-post"></line>'
+    '<line x1="70" y1="60" x2="450" y2="60" class="ks3-beam-arm"></line>'
+    '<circle cx="260" cy="60" r="13" class="ks3-beam-pivot"></circle>'
+    '<line x1="70" y1="60" x2="70" y2="96" class="ks3-beam-hanger"></line>'
+    '<line x1="450" y1="60" x2="450" y2="96" class="ks3-beam-hanger"></line>'
+    '<rect x="10" y="96" width="120" height="44" rx="12" class="ks3-beam-pan">'
+    '</rect>'
+    '<rect x="390" y="96" width="120" height="44" rx="12" class="ks3-beam-pan">'
+    '</rect>'
+    '<text x="70" y="126" text-anchor="middle" class="ks3-beam-label">%s</text>'
+    '<text x="450" y="126" text-anchor="middle" class="ks3-beam-label">%s</text>'
+    '<text x="260" y="30" text-anchor="middle" class="ks3-beam-caption">%s</text>')
+
+
+def r_formula_figure(fig):
+    """The drawn relationship. `balance` today; the triangle keeps its own path.
+
+    ⚖️ **A LEVEL BEAM IS A CLAIM, and it is the claim the lesson makes.** The
+    two pans are `before` and `after`, the beam is dead level, and the caption
+    says `always level`. Tilting it — or animating it — would say that mass
+    can be out of balance and then settle, which is exactly the idea the lesson
+    exists to kill.
+    """
+    shape = fig.get("shape")
+    if shape != "balance":
+        raise ValueError(
+            "formula figure shape %r is not drawn. `balance` is the sum's "
+            "figure; a product's figure is the `triangle` key, which has its "
+            "own renderer." % shape)
+    pans = fig.get("pans") or {}
+    return ('<div class="ks3-formula-figure">'
+            '<svg viewBox="0 0 520 210" role="img" aria-label="%s" '
+            'class="ks3-beam">%s</svg></div>'
+            % (e(fig.get("aria_label", "")),
+               _BEAM % (t(pans.get("left", "")), t(pans.get("right", "")),
+                        t(fig.get("caption", "")))))
+
+
+def r_cover_bar(cov):
+    """⊕ The `cover-triangle` kind, BAR variant — c2-06's part–whole model.
+
+    ⚖️ **THE PARTS SUM TO THE WHOLE, TO THE PIXEL.** Design draws 450 = 296 + 8
+    + 146, and that arithmetic IS the teaching. So the widths are DERIVED from
+    the authored weights rather than laid out by flex: a flex row would make
+    the two parts whatever the container allowed, and a bar whose halves do not
+    add up is a bar model that lies.
+
+    Five ways this is not the triangle, all measured (map §8.2):
+
+      * geometry — one bar over two, not a 260×216 triangle with a divider;
+      * slots — `whole` and n parts, not `top`/`left`/`right`;
+      * a GHOST LABEL under the plate, so a student can still see what they
+        covered. The triangle's cover is a plain opaque rect;
+      * RADIO, not toggle. The triangle un-covers on a second press; this never
+        uncovers and it STARTS covered;
+      * two fields per cover — a display-type `result` and a `sentence` —
+        against the triangle's one note.
+    """
+    if cov.get("shape") != "bar":
+        raise ValueError(
+            "cover shape %r is not drawn; the bar variant is `bar`."
+            % cov.get("shape"))
+    whole = cov.get("whole") or {}
+    parts = cov.get("parts") or []
+    if len(parts) < 2:
+        raise ValueError(
+            "cover-bar declares %d part(s). A part–whole bar needs at least "
+            "two, or there is no sum to see." % len(parts))
+    results = cov.get("results") or {}
+    covered = cov.get("covered") or parts[-1]["id"]
+
+    # Design's own viewBox and geometry (page lines 207–227). GAP is the 8px
+    # that makes 296 + 8 + 146 = 450 true, and it is subtracted from the
+    # available width before the weights are shared out, so the parts always
+    # sum to the whole no matter what weights an author writes.
+    X, Y_W, Y_P, W, H, GAP, R = 10, 18, 108, 450, 56, 8, 12
+    total = sum(float(p.get("weight") or 0) for p in parts) or len(parts)
+    span = W - GAP * (len(parts) - 1)
+
+    def plate(x, w, y, label, size, key):
+        return ('<g class="ks3-bar-cover" data-cover-plate="%s" hidden>'
+                '<rect x="%.2f" y="%d" width="%.2f" height="%d" rx="%d" '
+                'class="ks3-bar-plate"></rect>'
+                '<text x="%.2f" y="%d" text-anchor="middle" '
+                'class="ks3-bar-ghost" style="font-size:%dpx">%s</text></g>'
+                % (e(key), x, y, w, H, R, x + w / 2.0, y + 36, size, t(label)))
+
+    cells = ['<rect x="%d" y="%d" width="%d" height="%d" rx="%d" '
+             'class="ks3-bar-cell"></rect>'
+             '<text x="%.1f" y="%d" text-anchor="middle" class="ks3-bar-label" '
+             'style="font-size:24px">%s</text>'
+             % (X, Y_W, W, H, R, X + W / 2.0, Y_W + 36,
+                t(whole.get("label", "")))]
+    covers = [plate(X, W, Y_W, whole.get("label", ""), 24,
+                    whole.get("id", "whole"))]
+    x = float(X)
+    for p in parts:
+        w = span * (float(p.get("weight") or 1) / total)
+        cells.append('<rect x="%.2f" y="%d" width="%.2f" height="%d" rx="%d" '
+                     'class="ks3-bar-cell"></rect>'
+                     '<text x="%.2f" y="%d" text-anchor="middle" '
+                     'class="ks3-bar-label" style="font-size:22px">%s</text>'
+                     % (x, Y_P, w, H, R, x + w / 2.0, Y_P + 36,
+                        t(p.get("label", ""))))
+        covers.append(plate(x, w, Y_P, p.get("label", ""), 22, p["id"]))
+        x += w + GAP
+
+    btns = "".join(
+        '<button type="button" class="ks3-bar-btn" data-cover="%s" '
+        'aria-pressed="%s">%s</button>'
+        % (e(c["id"]), "true" if c["id"] == covered else "false",
+           t(c.get("button", "")))
+        for c in ([whole] + list(parts)) if c.get("button"))
+
+    first = results.get(covered) or {}
+    return ('<div class="ks3-bar-block" data-coverbar data-covered="%s" '
+            'data-results="%s">'
+            '<div class="ks3-bar-head"><p class="ks3-eyebrow">%s</p>'
+            '<h2>%s</h2></div>'
+            '<div class="ks3-bar-row">'
+            '<svg viewBox="0 0 470 196" role="img" aria-label="%s" '
+            'class="ks3-bar">%s'
+            '<line x1="10" y1="86" x2="460" y2="86" class="ks3-bar-split">'
+            '</line>%s</svg>'
+            '<div class="ks3-bar-side"><div class="ks3-bar-btns">%s</div>'
+            '<p class="ks3-bar-result" data-bar-result>%s</p>'
+            '<p class="ks3-bar-sentence" data-bar-sentence>%s</p>'
+            '<p class="ks3-bar-close">%s</p></div></div></div>'
+            % (e(covered),
+               e(json.dumps(results, separators=(",", ":"), sort_keys=True,
+                            ensure_ascii=False)),
+               t(cov.get("eyebrow", "")), t(cov.get("heading", "")),
+               e(cov.get("aria_label", "")), "".join(cells), "".join(covers),
+               btns, t(first.get("result", "")), t(first.get("sentence", "")),
+               rich(cov.get("close", ""))))
 
 
 def r_comparison(lesson, block):

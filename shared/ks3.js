@@ -4894,14 +4894,21 @@
     var shown = 0;
     var nextWord = wrap.getAttribute("data-next") || "Show the next step";
     var doneWord = wrap.getAttribute("data-done") || "All steps shown";
+    // ⊕ MRB-220 (map N5). Two readouts Design draws and the shipped stepper
+    // had no field for: a live "Step {n} of 4" in the block head, and the
+    // sentence beside the button that hands the student on to the next block.
+    var doneNote = wrap.querySelector("[data-step-donenote]");
     if (!btn) { return; }
+    setCount(sec, 0);
     btn.addEventListener("click", function () {
       if (shown >= total) { return; }
       setHidden(lines[shown], false);
       shown += 1;
+      setCount(sec, shown);
       if (shown >= total) {
         btn.textContent = doneWord;
         btn.setAttribute("disabled", "");
+        if (doneNote) { setHidden(doneNote, false); }
         markStage(sec, true);   // `all_steps_shown`
       } else {
         btn.textContent = nextWord;
@@ -5012,13 +5019,28 @@
     return !!(B2_RM && B2_RM.matches);
   }
 
-  /* The block head's live progress readout. Two authored shapes — a count
-     ("3 of 6 decided") and a two-state label ("Meter fitted") — one
-     element and one updater, so a third cannot arrive as a third copy. */
-  function setCount(sec, n) {
+  /* The block head's live progress readout. Three authored shapes — a count
+     ("3 of 6 decided"), a two-state label ("Meter fitted") and a count with
+     a bespoke zero ("All three claims on" → "2 switched off") — one element
+     and one updater, so a fourth cannot arrive as a fourth copy. */
+  function setCount(sec, n, extra) {
     var el = sec && sec.querySelector("[data-count]");
     if (!el) { return; }
     var fmt = el.getAttribute("data-format");
+    // ⊕ C2. `data-zero` is opt-in, so every shipped counter still opens on
+    // its own "0 of 6 decided" and only c2-01's reads a sentence at zero.
+    var zero = el.getAttribute("data-zero");
+    if (fmt && zero && !n) { el.textContent = zero; return; }
+    // ⊕ C2. `extra` carries the live numbers that are NOT the count —
+    // c2-02's budget line quotes both "{left}" and "{n}" and the two move
+    // independently. Constants like "{budget}" were baked in at build time.
+    if (fmt && extra) {
+      for (var k in extra) {
+        if (Object.prototype.hasOwnProperty.call(extra, k)) {
+          fmt = fmt.split("{" + k + "}").join(String(extra[k]));
+        }
+      }
+    }
     if (fmt) {
       // ⊕ CLAMPED. b2-03's counter runs over a mixed key space — four
       // contraction modes and two kill switches — so a student who tries
@@ -5763,6 +5785,1156 @@
     wireBenchGate(sec);
   }
 
+  /* ═══ C2 · Atoms, elements and compounds (⊕ MRB-220) ═══════════════
+     Nine instruments. NOTHING IN THIS UNIT ANIMATES — no rAF, no tick,
+     no loop. Every canvas redraws on a control change and on nothing
+     else, so `prefers-reduced-motion` has nothing to degrade here and
+     the four canvases cost a browser nothing once they are painted. */
+
+  /* ── claim-switch (c2-01 #s-model) ──
+     Three claims as toggles; four observations that lose their text and
+     gain a failure sentence when a claim they need goes off.
+
+     ⚖️ THE STAGE TICKS ON TWO PRESSES IN ANY DIRECTION. Design's own
+     rule (`touched >= 2`), and it counts switching a claim back ON. A
+     component must not quietly tighten that to "two claims off": the
+     lesson is that turning one off and back on is itself the
+     investigation. */
+  function wireClaimSwitch(sec) {
+    var wrap = sec.querySelector("[data-claimswitch]");
+    if (!wrap) { return; }
+    var claims = toArray(wrap.querySelectorAll(".ks3-claim"));
+    var rows = toArray(wrap.querySelectorAll(".ks3-obs-row"));
+    var note = wrap.querySelector("[data-claimnote]");
+    var doneAt = parseInt(wrap.getAttribute("data-done-at"), 10) || 2;
+    var ON = wrap.getAttribute("data-on") || "ON";
+    var OFF = wrap.getAttribute("data-off") || "OFF";
+    var ALIVE = wrap.getAttribute("data-alive") || "";
+    var DEAD = wrap.getAttribute("data-dead") || "";
+    var ALL_ON = wrap.getAttribute("data-all-on") || "";
+    var NONE = wrap.getAttribute("data-none-broken") || "";
+    var SOME = wrap.getAttribute("data-some-broken") || "";
+    var W1 = wrap.getAttribute("data-word-one") || "";
+    var WN = wrap.getAttribute("data-word-many") || "";
+    var off = {};
+    var touched = 0;
+
+    function repaint() {
+      var offCount = 0, key;
+      for (key in off) { if (off[key]) { offCount += 1; } }
+
+      var broken = 0;
+      each(rows, function (row) {
+        var needs = (row.getAttribute("data-needs") || "").split(" ");
+        var dead = false;
+        for (var i = 0; i < needs.length; i++) {
+          if (needs[i] && off[needs[i]]) { dead = true; }
+        }
+        if (dead) { broken += 1; }
+        // Emit-both-show-one: both sentences are in the document, so no
+        // text is ever assembled from an attribute and the author's
+        // <em> survives in either state.
+        row.setAttribute("data-dead", dead ? "1" : "0");
+        setHidden(row.querySelector("[data-obs-alive]"), dead);
+        setHidden(row.querySelector("[data-obs-dead]"), !dead);
+        var v = row.querySelector("[data-obs-verdict]");
+        if (v) { v.textContent = dead ? DEAD : ALIVE; }
+      });
+
+      if (note) {
+        if (!offCount) {
+          note.textContent = ALL_ON;
+        } else if (!broken) {
+          note.textContent = NONE;
+        } else {
+          note.textContent = SOME.replace("{n}", String(offCount))
+            .replace("{claim}", offCount === 1 ? W1 : WN)
+            .replace("{broken}", String(broken));
+        }
+      }
+      setCount(sec, offCount);
+    }
+
+    each(claims, function (btn) {
+      btn.addEventListener("click", function () {
+        var id = btn.getAttribute("data-claim");
+        off[id] = !off[id];
+        btn.setAttribute("aria-pressed", off[id] ? "false" : "true");
+        var chip = btn.querySelector("[data-claim-chip]");
+        if (chip) { chip.textContent = off[id] ? OFF : ON; }
+        touched += 1;
+        repaint();
+        if (touched >= doneAt) { markStage(sec, true); }
+      });
+    });
+
+    repaint();
+    wireBenchGate(sec);
+  }
+
+  /* ── mixture-compound-dish (c2-03 #s-bench) ──
+     Iron and sulfur, stirred and then heated.
+
+     ⚖️ THE PROPORTION CONTROL IS DISABLED ONCE HEATED, AND THAT IS THE
+     LESSON — a compound's proportion is not adjustable. Enforced three
+     ways: `disabled` on the button, a re-check inside the handler (as
+     Design's own click guard does), and a heated drawing that has no
+     ratio to draw. A generic tab group that stayed live would delete the
+     whole argument and leave a picture. */
+  function wireDish(sec) {
+    var wrap = sec.querySelector("[data-dish]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = {}; }
+    var fracs = cfg.fracs || [];
+    var caps = cfg.captions || {};
+    var canvas = wrap.querySelector("[data-dish-canvas]");
+    var noteEl = wrap.querySelector("[data-dish-note]");
+    var stateBtns = toArray(wrap.querySelectorAll(".ks3-dish-state"));
+    var ratioBtns = toArray(wrap.querySelectorAll(".ks3-dish-ratio"));
+    var testBtns = toArray(wrap.querySelectorAll(".ks3-dish-test"));
+    var cards = toArray(wrap.querySelectorAll("[data-testcard]"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || testBtns.length;
+    var heated = false;
+    var ratio = 0;
+    var seen = {};
+
+    var IRON = "#9AA0A6", SULFUR = "#E9C445";
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 850, H = 280;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+
+      // Everything is clipped to the dish, then the dish is re-stroked —
+      // so nothing can spill onto the bench and the outline stays crisp.
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(W / 2, H / 2 + 10, 330, 96, 0, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.fillStyle = heated ? "#2A2622" : "#1A1713";
+      ctx.fillRect(0, 0, W, H);
+
+      if (!heated) {
+        // A hand-rolled LCG rather than Math.random: the mixture must be
+        // the SAME scatter every repaint, or changing the proportion
+        // would look like stirring rather than like a different mix.
+        var frac = fracs[ratio];
+        var n = 0;
+        for (var i = 0; i < 120; i++) {
+          n = (n * 1103515245 + 12345) % 2147483648;
+          var a = n / 2147483648;
+          n = (n * 1103515245 + 12345) % 2147483648;
+          var b = n / 2147483648;
+          n = (n * 1103515245 + 12345) % 2147483648;
+          var k = n / 2147483648;
+          var x = W / 2 + (a - 0.5) * 600, y = H / 2 + 10 + (b - 0.5) * 170;
+          ctx.beginPath();
+          ctx.arc(x, y, k < frac ? 9 : 7, 0, Math.PI * 2);
+          ctx.fillStyle = k < frac ? IRON : SULFUR;
+          ctx.fill();
+          ctx.strokeStyle = "rgba(0,0,0,0.45)";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+        }
+      } else {
+        // ⚖️ One iron to one sulfur, joined, regular, repeating. It is a
+        // giant structure and NOT molecules — the stub joins each pair to
+        // its own partner and the grid goes on past the dish's edge,
+        // which is what "repeating" has to look like.
+        for (var row = 0; row < 5; row++) {
+          for (var col = 0; col < 17; col++) {
+            var px = W / 2 - 290 + col * 36, py = H / 2 - 58 + row * 34;
+            ctx.beginPath();
+            ctx.arc(px, py, 9, 0, Math.PI * 2);
+            ctx.fillStyle = IRON;
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(px + 17, py, 7, 0, Math.PI * 2);
+            ctx.fillStyle = SULFUR;
+            ctx.fill();
+            ctx.strokeStyle = "#6E655D";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(px + 8, py);
+            ctx.lineTo(px + 11, py);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.restore();
+
+      ctx.strokeStyle = "#5C5249";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.ellipse(W / 2, H / 2 + 10, 330, 96, 0, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#FFC53D";
+      ctx.fillText((heated ? caps.left_heated : caps.left_mixed) || "", 24, 28);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#C6B9A7";
+      ctx.fillText((heated ? caps.right_heated : caps.right_mixed) || "",
+                   W - 24, 28);
+      // The legend is drawn as two coloured words rather than swatches:
+      // the colour IS the label, so naming it in its own colour is the
+      // shortest honest key.
+      ctx.textAlign = "left";
+      ctx.fillStyle = IRON;
+      ctx.fillText(caps.iron || "", 24, H - 18);
+      ctx.fillStyle = SULFUR;
+      ctx.fillText(caps.sulfur || "", 80, H - 18);
+      ctx.textAlign = "center";
+      if (canvas.setAttribute) {
+        canvas.setAttribute("aria-label",
+          wrap.getAttribute(heated ? "data-alt-heated" : "data-alt-mixed") || "");
+      }
+    }
+
+    function repaint() {
+      each(ratioBtns, function (b) {
+        // The refusal, enforced on the button as well as in the handler.
+        if (heated) { b.setAttribute("disabled", ""); }
+        else { b.removeAttribute("disabled"); }
+      });
+      if (noteEl) {
+        noteEl.textContent =
+          wrap.getAttribute(heated ? "data-note-heated" : "data-note-mixed") || "";
+      }
+      draw();
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      setCount(sec, n);
+      if (n >= total) { markStage(sec, true); }
+    }
+
+    each(stateBtns, function (b) {
+      b.addEventListener("click", function () {
+        heated = b.getAttribute("data-heated") === "1";
+        each(stateBtns, function (x) {
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        repaint();
+      });
+    });
+
+    each(ratioBtns, function (b) {
+      b.addEventListener("click", function () {
+        // ⚖️ Re-checked here, not only on the attribute. Design's own
+        // handler does the same, and it is the difference between a
+        // control that is styled as refused and one that refuses.
+        if (heated) { return; }
+        ratio = parseInt(b.getAttribute("data-ratio"), 10) || 0;
+        each(ratioBtns, function (x) {
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        repaint();
+      });
+    });
+
+    each(testBtns, function (b) {
+      b.addEventListener("click", function () {
+        var id = b.getAttribute("data-test");
+        seen[id] = true;
+        each(testBtns, function (x) {
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        each(cards, function (c) {
+          setHidden(c, c.getAttribute("data-testcard") !== id);
+        });
+        repaint();
+      });
+    });
+
+    // The opening test is on screen, so it counts as seen — the same rule
+    // Design's own `seenTests: {look: true}` seed sets, which is why three
+    // taps finish the stage rather than four.
+    if (testBtns.length) {
+      seen[testBtns[0].getAttribute("data-test")] = true;
+    }
+    repaint();
+    wireBenchGate(sec);
+  }
+
+  /* ── formula-builder (c2-05 #s-builder) ──
+     Three pairs × three × three = 27 combinations, of which FIVE are
+     substances.
+
+     ⚖️ "NOT A SUBSTANCE" IS THE TEACHING, and it is the answer 22 times
+     out of 27. A builder that only offered the real ones would teach
+     that any formula you can write exists, which is exactly the idea
+     this block is aimed at.
+
+     ⊕ The opening substance is banked AT MOUNT, which Design's page does
+     not do: `mark()` is wired to the three control groups only, so the
+     H₂O the instrument opens on is displayed, named, drawn — and could
+     never be counted. Addition inside a drawn component; contradicts
+     nothing on the page. */
+  function wireFormulaBuilder(sec) {
+    var wrap = sec.querySelector("[data-fb]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = {}; }
+    var pairs = cfg.pairs || [];
+    var known = cfg.known || {};
+    var colours = cfg.colours || {};
+    var nf = cfg.not_found || {};
+    var caps = cfg.captions || {};
+    if (!pairs.length) { return; }
+
+    var canvas = wrap.querySelector("[data-fb-canvas]");
+    var nameEl = wrap.querySelector("[data-fb-name]");
+    var noteEl = wrap.querySelector("[data-fb-note]");
+    var labelA = wrap.querySelector('[data-fb-label="a"]');
+    var labelB = wrap.querySelector('[data-fb-label="b"]');
+    var pairBtns = toArray(wrap.querySelectorAll(".ks3-fb-pair"));
+    var countBtns = toArray(wrap.querySelectorAll(".ks3-fb-count"));
+    var doneAt = parseInt(wrap.getAttribute("data-done-at"), 10) || 3;
+
+    var pid = (cfg.start || {}).pair || pairs[0].id;
+    var na = (cfg.start || {}).a || 1;
+    var nb = (cfg.start || {}).b || 1;
+    var seen = {};
+
+    function pairOf(id) {
+      for (var i = 0; i < pairs.length; i++) {
+        if (pairs[i].id === id) { return pairs[i]; }
+      }
+      return pairs[0];
+    }
+    function key() { return pid + ":" + na + ":" + nb; }
+
+    function name(p, found) {
+      if (found) { return found.name || ""; }
+      // ⚠️ ASCII digits here and subscripts in the authored names. Design's
+      // own asymmetry (page line 641), reproduced rather than tidied.
+      return (p.a || "") + (na > 1 ? na : "") + (p.b || "")
+        + (nb > 1 ? nb : "") + (nf.name_suffix || "");
+    }
+
+    function draw(found) {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 850, H = 260;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+      var cx = W / 2, cy = H / 2 + 6;
+      ctx.textAlign = "center";
+
+      if (!found) {
+        // ⚖️ The refusal is DRAWN, in words, in the frame where a particle
+        // would be. An empty frame would read as a bug.
+        var lines = nf.canvas_lines || [];
+        ctx.fillStyle = "#6E655D";
+        ctx.font = '500 17px "DM Mono", ui-monospace, monospace';
+        ctx.fillText(lines[0] || "", cx, cy - 6);
+        ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+        ctx.fillText(lines[1] || "", cx, cy + 24);
+        return;
+      }
+
+      if (found.giant) {
+        // A repeating stack, not a particle — every atom labelled, and the
+        // grid runs off the frame on purpose.
+        var step = 58;
+        for (var row = 0; row < 4; row++) {
+          for (var col = 0; col < 12; col++) {
+            var x = cx - 320 + col * step, y = cy - 82 + row * step;
+            var isNa = (row + col) % 2 === 0;
+            ctx.beginPath();
+            ctx.arc(x, y, isNa ? 19 : 23, 0, Math.PI * 2);
+            ctx.fillStyle = isNa ? colours.Na : colours.Cl;
+            ctx.fill();
+            ctx.strokeStyle = "#100D0A";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.fillStyle = "#100D0A";
+            ctx.font = '800 13px "Bricolage Grotesque", system-ui, sans-serif';
+            ctx.fillText(isNa ? "Na" : "Cl", x, y + 5);
+          }
+        }
+        ctx.fillStyle = "#C6B9A7";
+        ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+        ctx.fillText(caps.giant || "", cx, H - 18);
+        return;
+      }
+
+      ctx.strokeStyle = "#5C5249";
+      ctx.lineWidth = 7;
+      each(found.bonds || [], function (bd) {
+        var p = found.atoms[bd[0]], q = found.atoms[bd[1]];
+        ctx.beginPath();
+        ctx.moveTo(cx + p.x, cy + p.y);
+        ctx.lineTo(cx + q.x, cy + q.y);
+        ctx.stroke();
+      });
+      each(found.atoms || [], function (at) {
+        ctx.beginPath();
+        ctx.arc(cx + at.x, cy + at.y, at.r, 0, Math.PI * 2);
+        ctx.fillStyle = colours[at.s] || "#C6B9A7";
+        ctx.fill();
+        ctx.strokeStyle = "#100D0A";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.fillStyle = "#100D0A";
+        ctx.font = '800 16px "Bricolage Grotesque", system-ui, sans-serif';
+        ctx.fillText(at.s, cx + at.x, cy + at.y + 6);
+      });
+      ctx.fillStyle = "#C6B9A7";
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(caps.molecule || "", cx, H - 18);
+    }
+
+    function repaint() {
+      var p = pairOf(pid);
+      var found = known[key()];
+      if (found) { seen[key()] = true; }
+      if (labelA) { labelA.textContent = p.aName || ""; }
+      if (labelB) { labelB.textContent = p.bName || ""; }
+      if (nameEl) { nameEl.textContent = name(p, found); }
+      if (noteEl) { noteEl.textContent = (found && found.note) || nf.note || ""; }
+      if (canvas && canvas.setAttribute) {
+        // Three-way, and composed rather than authored because it quotes
+        // the live substance name and the live drawing mode.
+        var A = cfg.alt || {};
+        canvas.setAttribute("aria-label", found
+          ? (A.template || "").replace("{name}", found.name || "")
+            + (found.giant ? (A.giant || "") : (A.molecule || ""))
+          : (A.none || ""));
+      }
+      draw(found);
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      setCount(sec, n);
+      if (n >= doneAt) { markStage(sec, true); }
+    }
+
+    each(pairBtns, function (b) {
+      b.addEventListener("click", function () {
+        pid = b.getAttribute("data-pair");
+        each(pairBtns, function (x) {
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        repaint();
+      });
+    });
+    each(countBtns, function (b) {
+      b.addEventListener("click", function () {
+        var axis = b.getAttribute("data-axis");
+        var v = parseInt(b.getAttribute("data-n"), 10) || 1;
+        if (axis === "a") { na = v; } else { nb = v; }
+        each(countBtns, function (x) {
+          if (x.getAttribute("data-axis") !== axis) { return; }
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        repaint();
+      });
+    });
+
+    repaint();
+    wireBenchGate(sec);
+  }
+
+  /* ── balance-bench (c2-06 #s-balance) ──
+     Two reactions × two vessels on one top-pan balance.
+
+     ⚖️ THE THIRD TILE NEVER MEASURES. Two tiles report; the third reads
+     "not measured — you work it out" for ever and takes no data. It is
+     the QUANTITATIVE family's refusal-to-tell, and it is why this is an
+     instrument rather than a readout.
+
+     ⚖️ The vessel CHANGES THE PICTURE (a sealed flask gets a bung) and a
+     finished run draws the gas leaving or joining. A control that
+     changes only a number teaches that the apparatus is incidental.
+
+     ⚠️ Changing either control RESETS the after-reading — Design's own
+     rule, and the right one: it is a different run now, and the last
+     run's after-mass is not a fact about this one. */
+  function wireBalanceBench(sec) {
+    var wrap = sec.querySelector("[data-bal]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = {}; }
+    var runs = cfg.runs || {};
+    var L = cfg.labels || {};
+    var DEC = cfg.decimals === undefined ? 2 : cfg.decimals;
+    var canvas = wrap.querySelector("[data-bal-canvas]");
+    var runBtn = wrap.querySelector("[data-bal-run]");
+    var statusEl = wrap.querySelector("[data-bal-status]");
+    var noteEl = wrap.querySelector("[data-bal-note]");
+    var beforeTile = wrap.querySelector('[data-tile="before"]');
+    var afterTile = wrap.querySelector('[data-tile="after"]');
+    var rxnBtns = toArray(wrap.querySelectorAll(".ks3-bal-rxn"));
+    var vesselBtns = toArray(wrap.querySelectorAll(".ks3-bal-vessel"));
+    var doneAt = parseInt(wrap.getAttribute("data-done-at"), 10) || 3;
+
+    var rxn = (cfg.start || {}).reaction;
+    var vessel = (cfg.start || {}).vessel;
+    var showAfter = false;
+    var ran = {};
+
+    function key() { return rxn + ":" + vessel; }
+    function run() { return runs[key()] || {}; }
+    function mass(v) {
+      return v.toFixed(DEC) + " " + (L.unit || "g");
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 850, H = 280;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+
+      var r = run();
+      var done = !!ran[key()] && showAfter;
+      var cx = 300, base = 214;
+
+      ctx.fillStyle = "#3E3730";
+      ctx.beginPath();
+      ctx.moveTo(cx - 150, base);
+      ctx.lineTo(cx + 150, base);
+      ctx.lineTo(cx + 132, base + 34);
+      ctx.lineTo(cx - 132, base + 34);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#5C5249";
+      ctx.fillRect(cx - 128, base - 10, 256, 12);
+
+      ctx.strokeStyle = "#C6B9A7";
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(cx - 22, base - 122);
+      ctx.lineTo(cx - 22, base - 74);
+      ctx.lineTo(cx - 62, base - 12);
+      ctx.lineTo(cx + 62, base - 12);
+      ctx.lineTo(cx + 22, base - 74);
+      ctx.lineTo(cx + 22, base - 122);
+      ctx.stroke();
+      ctx.fillStyle = (cfg.liquids || {})[rxn] || "rgba(198,185,167,0.3)";
+      ctx.beginPath();
+      ctx.moveTo(cx - 54, base - 24);
+      ctx.lineTo(cx + 54, base - 24);
+      ctx.lineTo(cx + 40, base - 44);
+      ctx.lineTo(cx - 40, base - 44);
+      ctx.closePath();
+      ctx.fill();
+
+      // ⚖️ The bung is DRAWN. "Sealed" that changes only a number would
+      // teach that the apparatus is incidental to the reading.
+      if (vessel === "sealed") {
+        ctx.fillStyle = "#8A7A62";
+        ctx.fillRect(cx - 28, base - 132, 56, 16);
+      }
+
+      if (done && r.gas && r.gas !== "none") {
+        ctx.fillStyle = r.gas === "out" ? "#8FB7FF" : "#FFC53D";
+        for (var i = 0; i < 7; i++) {
+          var y = base - 140 - i * 16;
+          var x = cx + Math.sin(i * 1.7) * 26;
+          ctx.beginPath();
+          ctx.arc(x, y, 6 - i * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "left";
+        ctx.fillText((cfg.gas_labels || {})[r.gas] || "", cx + 44, base - 168);
+      }
+
+      var dx = 570, dy = 96;
+      ctx.fillStyle = "#221E1B";
+      ctx.fillRect(dx, dy, 236, 86);
+      ctx.strokeStyle = "#5C5249";
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(dx, dy, 236, 86);
+      ctx.fillStyle = "#C6B9A7";
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillText(done ? (L.after_tag || "AFTER") : (L.before_tag || "BEFORE"),
+                   dx + 16, dy + 24);
+      ctx.fillStyle = "#FFC53D";
+      ctx.font = '500 34px "DM Mono", ui-monospace, monospace';
+      ctx.fillText((done ? r.after : r.before).toFixed(DEC), dx + 16, dy + 64);
+      ctx.fillStyle = "#C6B9A7";
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(L.unit || "g", dx + 150, dy + 64);
+      ctx.fillText(L[vessel] || "", dx, dy + 116);
+      ctx.textAlign = "center";
+
+      if (canvas.setAttribute) {
+        var A = cfg.alt || {};
+        canvas.setAttribute("aria-label", (A.template || "")
+          .replace("{vessel}", A[vessel] || "")
+          .replace("{mass}", (done ? r.after : r.before).toFixed(DEC))
+          .replace("{when}", done ? (A.after || "") : (A.before || "")));
+      }
+    }
+
+    function repaint() {
+      var r = run();
+      var done = showAfter;
+      if (beforeTile) { beforeTile.textContent = mass(r.before); }
+      if (afterTile) {
+        afterTile.textContent = done ? mass(r.after) : (L.unmeasured || "—");
+      }
+      if (runBtn) {
+        runBtn.textContent = (cfg.run_labels || L)[done ? "done" : "idle"]
+          || runBtn.textContent;
+        if (done) { runBtn.setAttribute("disabled", ""); }
+        else { runBtn.removeAttribute("disabled"); }
+      }
+      if (statusEl) {
+        statusEl.textContent = (L[done ? "status_done" : "status_idle"]) || "";
+      }
+      if (noteEl) {
+        noteEl.textContent = done ? (r.note || "") : (L.idle_note || "");
+      }
+      draw();
+      var n = 0, k;
+      for (k in ran) { if (ran[k]) { n += 1; } }
+      setCount(sec, n);
+      if (n >= doneAt) { markStage(sec, true); }
+    }
+
+    function pick(btns, attr, setter) {
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          setter(b.getAttribute(attr));
+          each(btns, function (x) {
+            x.setAttribute("aria-pressed", x === b ? "true" : "false");
+          });
+          // A different run: the last one's after-mass is not a fact
+          // about this one.
+          showAfter = false;
+          repaint();
+        });
+      });
+    }
+    pick(rxnBtns, "data-rxn", function (v) { rxn = v; });
+    pick(vesselBtns, "data-vessel", function (v) { vessel = v; });
+
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        if (showAfter) { return; }
+        showAfter = true;
+        ran[key()] = true;
+        repaint();
+      });
+    }
+
+    repaint();
+    wireBenchGate(sec);
+  }
+
+  /* ── the part–whole cover bar (c2-06's rule block) ──
+     The MRB-204 cover interaction on the shape the relationship
+     actually has. Conservation of mass is a SUM, so it gets a bar.
+
+     ⚠️ RADIO, NOT TOGGLE, and it STARTS COVERED — the opposite
+     interaction contract from `wireTriangle`, which removes the cover on
+     a second press. Uncovering everything would leave a bar with no
+     question in it, and the block's whole demand is "cover the one you
+     want". Two different components; the triangle is untouched. */
+  function wireCoverBar(root) {
+    each(root.querySelectorAll("[data-coverbar]"), function (bar) {
+      var results;
+      try { results = JSON.parse(bar.getAttribute("data-results") || "{}"); }
+      catch (err) { results = {}; }
+      var btns = toArray(bar.querySelectorAll(".ks3-bar-btn"));
+      var plates = toArray(bar.querySelectorAll("[data-cover-plate]"));
+      var resultEl = bar.querySelector("[data-bar-result]");
+      var sentenceEl = bar.querySelector("[data-bar-sentence]");
+
+      function show(id) {
+        each(plates, function (p) {
+          setHidden(p, p.getAttribute("data-cover-plate") !== id);
+        });
+        each(btns, function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-cover") === id ? "true" : "false");
+        });
+        var r = results[id] || {};
+        if (resultEl) { resultEl.textContent = r.result || ""; }
+        if (sentenceEl) { sentenceEl.textContent = r.sentence || ""; }
+        bar.setAttribute("data-covered", id);
+      }
+
+      each(btns, function (b) {
+        b.addEventListener("click", function () {
+          show(b.getAttribute("data-cover"));
+        });
+      });
+      show(bar.getAttribute("data-covered") || "");
+    });
+  }
+
+  /* ── fifa-pick (c2-06 #s-build) — MRB-204 part 4 ──
+     Two multiple-choice ladders, a number and a unit. NOT
+     `fifa-construct`, whose four free-text inputs and tick list are a
+     different mechanism.
+
+     ⚖️ THE BUTTON IS LOCKED UNTIL ALL FOUR PARTS ARE SET. The unit is
+     its own commitment: "2.2" is not an answer to a question about mass.
+     Once opened, every control locks — the model is on screen, so a
+     changed pick would be choosing after reading the answer. */
+  function wirePick(sec) {
+    var wrap = sec.querySelector("[data-pick]");
+    if (!wrap) { return; }
+    var opts = toArray(wrap.querySelectorAll(".ks3-pick-opt"));
+    var ans = wrap.querySelector("[data-pick-ans]");
+    var unit = wrap.querySelector("[data-pick-unit]");
+    var btn = wrap.querySelector("[data-pick-open]");
+    var progress = wrap.querySelector("[data-pick-progress]");
+    var reveal = wrap.querySelector("[data-reveal]");
+    var closeEl = wrap.querySelector("[data-pick-close]");
+    var TPL = wrap.getAttribute("data-close") || "";
+    var BLANK = wrap.getAttribute("data-blank") || "—";
+    var FMT = progress ? progress.textContent.replace(/^\d+/, "{n}") : "";
+    var DONE = wrap.getAttribute("data-done-label") || "";
+    var picked = {};
+    var open = false;
+
+    function committed() {
+      var n = 0;
+      if (picked["0"] !== undefined) { n += 1; }
+      if (picked["1"] !== undefined) { n += 1; }
+      if (ans && ans.value.trim() && unit && unit.value) { n += 1; }
+      return n;
+    }
+
+    function repaint() {
+      var n = committed();
+      if (progress && !open) {
+        progress.textContent = FMT.replace("{n}", String(n));
+      }
+      if (btn) {
+        if (n >= 3 && !open) { btn.removeAttribute("disabled"); }
+        else { btn.setAttribute("disabled", ""); }
+      }
+    }
+
+    each(opts, function (b) {
+      b.addEventListener("click", function () {
+        if (open) { return; }
+        var g = b.getAttribute("data-group");
+        picked[g] = b.getAttribute("data-i");
+        each(opts, function (x) {
+          if (x.getAttribute("data-group") !== g) { return; }
+          x.setAttribute("aria-pressed", x === b ? "true" : "false");
+        });
+        repaint();
+      });
+    });
+    if (ans) {
+      ans.addEventListener("input", repaint);
+      ans.addEventListener("change", repaint);
+    }
+    if (unit) { unit.addEventListener("change", repaint); }
+
+    if (btn) {
+      btn.addEventListener("click", function () {
+        if (open || committed() < 3) { return; }
+        open = true;
+        // Everything locks: the model is on screen now.
+        each(opts, function (x) { x.setAttribute("disabled", ""); });
+        if (ans) { ans.setAttribute("disabled", ""); }
+        if (unit) { unit.setAttribute("disabled", ""); }
+        btn.setAttribute("disabled", "");
+        if (progress && DONE) { progress.textContent = DONE; }
+        // ⚖️ The closing line quotes the student's OWN input back beside
+        // the worked answer. Not a mark — a comparison they make.
+        if (closeEl) {
+          closeEl.textContent = TPL
+            .replace("{answer}", (ans && ans.value.trim()) || BLANK)
+            .replace("{unit}", (unit && unit.value) || "");
+        }
+        setHidden(reveal, false);
+        markStage(sec, true);
+      });
+    }
+    repaint();
+  }
+
+  /* ── verdict-cards (c2-03 #s-sort · c2-04 #s-sort · c2-04 #s-read) ──
+     One-shot commit-and-reveal cards. NOT `sort-task` and NOT
+     `sort-rows`: both of those gate every row behind one "open the
+     answers" button, and this reveals EACH CARD the instant that card is
+     decided — so a student finds out about card 1 before committing on
+     card 2, which is what makes the sequence teach.
+
+     ⚖️ Nothing marks correctness (R3 / MRB-196 R10). The chosen option
+     keeps the ordinary chosen treatment, the rest dim, the CARD's border
+     goes to ink, and the why paragraph is one tone either way. */
+  function wireVerdictCards(sec) {
+    var wrap = sec.querySelector("[data-vcards]");
+    if (!wrap) { return; }
+    var cards = toArray(wrap.querySelectorAll(".ks3-vcard"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || cards.length;
+    var closer = wrap.querySelector("[data-vcards-close]");
+
+    function decided() {
+      var n = 0;
+      each(cards, function (c) {
+        if (c.getAttribute("data-open") === "1") { n += 1; }
+      });
+      return n;
+    }
+
+    each(cards, function (card) {
+      var opts = toArray(card.querySelectorAll(".ks3-vcard-opt"));
+      each(opts, function (btn) {
+        btn.addEventListener("click", function () {
+          // One commitment per card, and it is final: the reveal is
+          // already on screen, so a second pick would be choosing after
+          // reading the answer.
+          if (card.getAttribute("data-open") === "1") { return; }
+          each(opts, function (b) {
+            b.setAttribute("aria-pressed", "false");
+            b.setAttribute("disabled", "");
+          });
+          btn.setAttribute("aria-pressed", "true");
+          card.setAttribute("data-open", "1");
+          setHidden(card.querySelector("[data-reveal]"), false);
+          var n = decided();
+          setCount(sec, n);
+          if (n >= total) {
+            if (closer) { setHidden(closer, false); }
+            markStage(sec, true);
+          }
+        });
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── test-budget-bench (c2-02 #s-bench) ──
+     Six samples, four tests, and eight tests to spend across all six.
+
+     ⚖️ THE BUDGET IS THE PEDAGOGY. It is GLOBAL, not per sample, and it
+     is enforced here as well as by the `disabled` attribute — with
+     unlimited tests a student runs everything and never discovers that
+     shine, colour and conducting are the three most interesting results
+     they can buy and all three are worthless.
+
+     ⚖️ THE INSTRUMENT NEVER MARKS. The verdict panel opens on the
+     student's verdict whether or not it was right, and it is the only
+     place a sample is named. `element` is authored and read by nothing;
+     R3 says a marker must not arrive here. */
+  function wireBudgetBench(sec) {
+    var wrap = sec.querySelector("[data-budgetbench]");
+    if (!wrap) { return; }
+    var budget = parseInt(wrap.getAttribute("data-budget"), 10) || 0;
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+    var MARK = wrap.getAttribute("data-marker") || "";
+    var tabs = toArray(wrap.querySelectorAll(".ks3-sample-tab"));
+    var panels = toArray(wrap.querySelectorAll(".ks3-sample"));
+    var closer = wrap.querySelector("[data-bench-close]");
+    var used = 0;
+    var decided = {};
+
+    function left() { return budget - used; }
+
+    function repaint() {
+      var n = 0, k;
+      for (k in decided) { if (decided[k]) { n += 1; } }
+      setCount(sec, n, { left: left() });
+      each(tabs, function (tab) {
+        var id = tab.getAttribute("data-sample");
+        var lab = tab.querySelector("[data-tab-label]");
+        if (!lab) { return; }
+        var base = lab.getAttribute("data-base");
+        if (base === null) {
+          base = lab.textContent;
+          lab.setAttribute("data-base", base);
+        }
+        // Design's only "done" affordance on a tab is a middot appended to
+        // the label — a character, not a mark element, so it survives a
+        // screen reader reading the button's name.
+        lab.textContent = decided[id] ? base + MARK : base;
+      });
+      each(panels, function (panel) {
+        var id = panel.getAttribute("data-sample");
+        var spent = !!decided[id];
+        each(toArray(panel.querySelectorAll(".ks3-test-btn")), function (b) {
+          var ran = b.getAttribute("aria-pressed") === "true";
+          if (ran || spent || left() <= 0) { b.setAttribute("disabled", ""); }
+          else { b.removeAttribute("disabled"); }
+        });
+        each(toArray(panel.querySelectorAll(".ks3-verdict-btn")), function (b) {
+          if (spent) { b.setAttribute("disabled", ""); }
+          else { b.removeAttribute("disabled"); }
+        });
+      });
+      if (n >= total) {
+        if (closer) { setHidden(closer, false); }
+        markStage(sec, true);
+      }
+    }
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        var id = tab.getAttribute("data-sample");
+        each(tabs, function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-sample") === id ? "true" : "false");
+        });
+        // Emit-all-show-one: a sample returned to is found exactly as it
+        // was left, because its results and verdict never left the DOM.
+        each(panels, function (p) {
+          setHidden(p, p.getAttribute("data-sample") !== id);
+        });
+      });
+    });
+
+    each(panels, function (panel) {
+      var id = panel.getAttribute("data-sample");
+      var list = panel.querySelector("[data-results]");
+      var vpanel = panel.querySelector("[data-verdict-panel]");
+
+      each(toArray(panel.querySelectorAll(".ks3-test-btn")), function (btn) {
+        btn.addEventListener("click", function () {
+          // Belt and braces on top of `disabled`: a double-spend here
+          // would be the budget quietly not meaning what it says.
+          if (btn.getAttribute("aria-pressed") === "true") { return; }
+          if (decided[id] || left() <= 0) { return; }
+          used += 1;
+          btn.setAttribute("aria-pressed", "true");
+          var row = panel.querySelector('[data-result="'
+            + btn.getAttribute("data-test") + '"]');
+          if (row) { setHidden(row, false); }
+          if (list) { setHidden(list, false); }
+          repaint();
+        });
+      });
+
+      each(toArray(panel.querySelectorAll(".ks3-verdict-btn")), function (btn) {
+        btn.addEventListener("click", function () {
+          if (decided[id]) { return; }
+          decided[id] = true;
+          btn.setAttribute("aria-pressed", "true");
+          if (vpanel) { setHidden(vpanel, false); }
+          repaint();
+        });
+      });
+    });
+
+    repaint();
+    wireBenchGate(sec);
+  }
+
+  /* ── scale-zoom (c2-01 #s-scale) ──
+     Five steps from a centimetre of wire to the atoms, two buttons, one
+     canvas. NOT `zoom-ladder`: that one is a slider over a validated set
+     of five plant drawings and would raise on every name here.
+
+     ⚖️ FOUR OF THE FIVE STEPS SHOW NOTHING NEW, and that is the lesson.
+     The fourth drawing says "past the reach of any light microscope" in
+     words on the canvas rather than showing a smaller orange thing.
+
+     ⚖️ The stage needs every level reached BY STEPPING IN. `seen` seeds
+     the opening level and only the in-button adds to it, so backing out
+     and climbing again is the only route to the last one — which is
+     exactly what Design's own tick condition says. */
+  var SCALE_DRAW = {
+    /* A cut length of wire, lit along its top edge. */
+    "wire": function (ctx, W, H, cx, cy) {
+      ctx.fillStyle = "#B7692F";
+      ctx.fillRect(120, cy - 26, W - 240, 52);
+      ctx.fillStyle = "#D98A4A";
+      ctx.fillRect(120, cy - 26, W - 240, 16);
+      ctx.fillStyle = "#8A4A1E";
+      ctx.fillRect(120, cy + 14, W - 240, 12);
+    },
+    /* The cut end under a lens: grains, still unmistakably copper. */
+    "grains": function (ctx, W, H, cx, cy) {
+      ctx.fillStyle = "#B7692F";
+      ctx.beginPath();
+      ctx.arc(cx, cy, 118, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "rgba(217,138,74,0.75)";
+      for (var i = 0; i < 40; i++) {
+        var a = i * 2.4, r = 20 + (i % 7) * 14;
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.8,
+                8 + (i % 3) * 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    },
+    /* A school microscope's limit: scratches and grain boundaries. */
+    "scratches": function (ctx, W, H) {
+      ctx.fillStyle = "#A85F2A";
+      ctx.fillRect(60, 34, W - 120, H - 88);
+      ctx.strokeStyle = "#D98A4A";
+      ctx.lineWidth = 3;
+      for (var i = 0; i < 14; i++) {
+        ctx.beginPath();
+        ctx.moveTo(70 + i * 58, 40);
+        ctx.lineTo(70 + i * 58 + 26, H - 56);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = "#8A4A1E";
+      ctx.lineWidth = 5;
+      for (var j = 0; j < 5; j++) {
+        ctx.beginPath();
+        ctx.moveTo(60, 60 + j * 44);
+        ctx.bezierCurveTo(300, 50 + j * 44, 560, 90 + j * 44,
+                          W - 60, 66 + j * 44);
+        ctx.stroke();
+      }
+    },
+    /* ⚖️ The honest step. Light cannot resolve this, so the canvas says
+       so in words instead of drawing a smaller orange thing. */
+    "beyond-light": function (ctx, W, H, cx, cy, caption) {
+      ctx.fillStyle = "#7A4520";
+      ctx.fillRect(60, 34, W - 120, H - 88);
+      ctx.fillStyle = "rgba(217,138,74,0.30)";
+      for (var i = 0; i < 26; i++) {
+        ctx.beginPath();
+        ctx.arc(90 + (i * 137) % (W - 180), 60 + (i * 79) % (H - 140),
+                30 + (i % 4) * 12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = "#C6B9A7";
+      ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "center";
+      ctx.fillText(caption || "", cx, cy);
+    },
+    /* The atoms: a hexagonally offset lattice, each with a highlight. */
+    "lattice": function (ctx) {
+      var step = 62;
+      for (var row = -1; row < 5; row++) {
+        for (var col = -1; col < 16; col++) {
+          var x = 70 + col * step + (row % 2 ? step / 2 : 0);
+          var y = 50 + row * step * 0.86;
+          ctx.beginPath();
+          ctx.arc(x, y, 25, 0, Math.PI * 2);
+          ctx.fillStyle = "#D98A4A";
+          ctx.fill();
+          ctx.strokeStyle = "#5A3212";
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(x - 7, y - 8, 7, 0, Math.PI * 2);
+          ctx.fillStyle = "rgba(255,255,255,0.28)";
+          ctx.fill();
+        }
+      }
+    }
+  };
+
+  function wireScaleZoom(sec) {
+    var wrap = sec.querySelector("[data-scalezoom]");
+    if (!wrap) { return; }
+    var levels;
+    try { levels = JSON.parse(wrap.getAttribute("data-levels") || "[]"); }
+    catch (err) { levels = []; }
+    if (!levels.length) { return; }
+
+    var canvas = wrap.querySelector("[data-scale-canvas]");
+    var readout = wrap.querySelector("[data-scale-readout]");
+    var noteEl = wrap.querySelector("[data-scale-note]");
+    var btns = toArray(wrap.querySelectorAll(".ks3-scale-btn"));
+    var ALT = wrap.getAttribute("data-alt") || "";
+    var z = parseInt(wrap.getAttribute("data-start"), 10) || 0;
+    var seen = {};
+    seen[z] = true;
+
+    function alt(level) {
+      return ALT.replace("{scale}", level.scale || "")
+        .replace("{label}", (level.label || "").toLowerCase());
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 310;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+      var cx = W / 2, cy = H / 2 + 6;
+      var lv = levels[z] || levels[0];
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(60, 34, W - 120, H - 88);
+      ctx.clip();
+      var fn = SCALE_DRAW[lv.drawing];
+      if (fn) { fn(ctx, W, H, cx, cy, lv.caption); }
+      ctx.restore();
+
+      ctx.strokeStyle = "#5C5249";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(60, 34, W - 120, H - 88);
+
+      ctx.fillStyle = "#FFC53D";
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillText((lv.label || "").toUpperCase(), 62, 24);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#C6B9A7";
+      ctx.fillText(lv.scale || "", W - 62, 24);
+      ctx.textAlign = "center";
+
+      // The step strip: how far in you are, drawn rather than counted.
+      var bw = (W - 120) / levels.length;
+      for (var i = 0; i < levels.length; i++) {
+        ctx.fillStyle = i <= z ? "#FFC53D" : "#3E3730";
+        ctx.fillRect(60 + i * bw + 3, H - 42, bw - 6, 9);
+      }
+      if (canvas.setAttribute) { canvas.setAttribute("aria-label", alt(lv)); }
+    }
+
+    function repaint() {
+      var lv = levels[z] || levels[0];
+      if (readout) { readout.textContent = lv.scale || ""; }
+      if (noteEl) { noteEl.textContent = lv.note || ""; }
+      each(btns, function (b) {
+        var d = parseInt(b.getAttribute("data-step"), 10);
+        var at = d < 0 ? z === 0 : z >= levels.length - 1;
+        if (at) { b.setAttribute("disabled", ""); }
+        else { b.removeAttribute("disabled"); }
+      });
+      draw();
+      setCount(sec, z + 1);
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      if (n >= levels.length) { markStage(sec, true); }
+    }
+
+    each(btns, function (b) {
+      b.addEventListener("click", function () {
+        var d = parseInt(b.getAttribute("data-step"), 10) || 0;
+        var next = Math.max(0, Math.min(levels.length - 1, z + d));
+        if (next === z) { return; }
+        z = next;
+        // Only stepping IN banks a level, which is Design's own rule and
+        // is what makes the last step a thing a student went and got.
+        if (d > 0) { seen[z] = true; }
+        repaint();
+      });
+    });
+
+    repaint();
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -5789,6 +6961,16 @@
     each(root.querySelectorAll("[data-switchblock]"), wireSwitch);
     each(root.querySelectorAll("[data-jointblock]"), wireJointBench);
     each(root.querySelectorAll("[data-muscleblock]"), wireMusclePair);
+    // ⊕ C2 · Atoms, elements and compounds (MRB-220).
+    each(root.querySelectorAll("[data-claimblock]"), wireClaimSwitch);
+    each(root.querySelectorAll("[data-scaleblock]"), wireScaleZoom);
+    each(root.querySelectorAll("[data-budgetblock]"), wireBudgetBench);
+    each(root.querySelectorAll("[data-dishblock]"), wireDish);
+    each(root.querySelectorAll("[data-vcardsblock]"), wireVerdictCards);
+    each(root.querySelectorAll("[data-fbblock]"), wireFormulaBuilder);
+    each(root.querySelectorAll("[data-balblock]"), wireBalanceBench);
+    each(root.querySelectorAll("[data-pickblock]"), wirePick);
+    wireCoverBar(root);
     wireTriangle(root);
   }
 

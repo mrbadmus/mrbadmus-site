@@ -4289,6 +4289,11 @@ body.rd[data-mode="ks3"] {
 .ks3-switch-all p { margin: 0; font-size: 19px; line-height: 1.6; }
 @media (max-width: 620px) {
   .ks3-switch-row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  /* Design's own page rule (c2-01 style block, line 253): the observation row
+     collapses to one column, so a 150px verdict column never squeezes the
+     sentence to nothing. */
+  .ks3-obs-row { grid-template-columns: minmax(0, 1fr); }
+  .ks3-obs-verdict { text-align: left; }
 }
 
 /* ── the two canvas benches (b2-02 joint-bench, b2-03 muscle-pair) ──
@@ -4495,6 +4500,886 @@ body.rd[data-mode="ks3"] {
 /* Prose standing in for a list in an end-matter card (⊕ §4.8.1 D). */
 .ks3-endmatter-prose { color: var(--ks3-ink-body); }
 .ks3-safety { border-top: 0; margin-top: 18px; }
+
+/* ═══════════════════════════════════════════════════════════════════
+   C2 · Atoms, elements and compounds  (⊕ 16 Aug 2026, MRB-220)
+
+   Nine instruments across six lessons, measured off Design's six frozen
+   pages in `docs/ks3/design-reference/c2/`. Same standing rule as B2's:
+   where a value differs from one already shipped, the SHIPPED one wins and
+   the difference is reported as drift (contract R3).
+
+   ⚠️ SPECIFICITY. `.ks3-dark p` is (0,1,1) and beats a bare instrument
+   class (0,1,0), so every rule below that paints a <p> inside an ink-dark
+   block is scoped `.ks3-dark …`. That is the defect the B2 pass was bitten
+   by and the one B1 shipped with the zoom instrument; it is invisible to a
+   grep and obvious in a browser.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── the dark-canvas frame (map N12) ──
+   One wrapper shape, four instruments: a `--ks3-r-card` box with a 2px
+   on-dark-muted outline and a dark-panel strip under the canvas carrying the
+   controls. Design inlines it four times; it is one component here. */
+.ks3-canvas-frame {
+  margin-top: 20px;
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-on-dark-muted);
+  overflow: hidden;
+}
+.ks3-canvas-frame canvas { display: block; width: 100%; height: auto; }
+.ks3-canvas-foot {
+  padding: 16px 18px 18px;
+  border-top: 2px solid var(--ks3-on-dark-muted);
+  background: var(--ks3-dark-panel);
+}
+
+/* ── claim-switch (c2-01 #s-model) ──
+   A LIGHT block. Nothing here is scoped `.ks3-dark`, and it must not be —
+   the instrument is a card-ground panel inside a card-ground block, and the
+   whole readability of the off state depends on ink-on-cream. */
+.ks3-claimswitch { margin-top: 22px; }
+.ks3-claims-label {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-obs-label { margin-top: 22px; }
+.ks3-claims,
+.ks3-obs { display: flex; flex-direction: column; gap: 10px; }
+
+/* A claim is a full-width toggle carrying its own state word. The chip is a
+   READOUT, not decoration: "OFF" in words is what makes the state legible to
+   a student who cannot rely on the ground going dim. */
+.ks3-claim {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  cursor: pointer;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-option);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  min-height: var(--ks3-tap);
+  text-align: left;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink);
+}
+.ks3-claim[aria-pressed="false"] {
+  background: var(--ks3-row-dim);
+  border-color: var(--ks3-rule);
+  color: var(--ks3-ink-faint);
+}
+.ks3-claim-chip {
+  flex: 0 0 52px;
+  display: inline-grid;
+  place-items: center;
+  padding: 5px 0;
+  border-radius: 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-claim[aria-pressed="false"] .ks3-claim-chip {
+  background: var(--ks3-band);
+  color: var(--ks3-ink-muted);
+}
+.ks3-claim-text { flex: 1; text-align: left; }
+
+/* An observation row: the sentence on the left, a mono verdict right. Under
+   620px it stacks, which is Design's own page rule. */
+.ks3-obs-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 150px);
+  gap: 14px;
+  align-items: center;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+/* ⚖️ The dead state is the BAND ground on a 2px ink border — the same
+   treatment a KEY FACT takes, and deliberately not a red or a dim. An
+   observation that stops being explained is not an error the student made. */
+.ks3-obs-row[data-dead="1"] {
+  background: var(--ks3-band);
+  border-color: var(--ks3-ink);
+}
+.ks3-obs-text { margin: 0; font-size: 18px; line-height: 1.5; }
+.ks3-obs-verdict {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  text-align: right;
+  color: var(--ks3-ink-muted);
+}
+.ks3-obs-row[data-dead="1"] .ks3-obs-verdict { color: var(--ks3-accent-text); }
+.ks3-claim-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+/* ── test-budget-bench (c2-02 #s-bench) ──
+   A LIGHT block. The budget line lives in the block head and is the only
+   counter in the key stage painted in `--ks3-accent-text` rather than
+   ink-muted — because it is a resource running down, not a tally going up. */
+.ks3-budget { margin-top: 20px; }
+.ks3-blockhead-count[data-tone="accent"] { color: var(--ks3-accent-text); }
+.ks3-sample-tabs,
+.ks3-sample-tests,
+.ks3-verdict-btns { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-sample {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-sample-name {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-sample-look { margin: 8px 0 0; font-size: 20px; line-height: 1.5; }
+.ks3-sample-tests { margin-top: 18px; }
+/* ⚖️ A SPENT test button stays legible. Design dims it to .45, which is the
+   budget being visible: a student must be able to read what they already
+   bought while deciding what to buy next. */
+.ks3-test-btn[disabled] { opacity: .45; cursor: default; }
+.ks3-results {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ks3-result {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-rule);
+}
+.ks3-result-test {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-result-body { margin: 5px 0 0; font-size: 18px; line-height: 1.5; }
+.ks3-sample-verdict {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 2px solid var(--ks3-rule);
+}
+.ks3-sample-ask { margin: 0 0 10px; font-size: 19px; font-weight: 700; }
+/* ⚖️ The verdict panel is INK inside a light block, and it fires on the
+   student's verdict whether or not that verdict was right. It is a reveal,
+   never a mark — the instrument does not know who was correct and must not
+   look as though it does. */
+.ks3-verdict-panel {
+  margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-verdict-panel .ks3-verdict-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+}
+.ks3-verdict-panel .ks3-verdict-why {
+  margin: 10px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-bench-close {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-bench-close p { margin: 0; font-size: 19px; line-height: 1.6; }
+
+/* ── mixture-compound-dish (c2-03 #s-bench) ──
+   Ink-dark. Every <p> rule is scoped `.ks3-dark …` or lives on the LIGHT
+   result panel nested inside, where the scoping is the other way round. */
+.ks3-dish { margin-top: 4px; }
+.ks3-dish-groups { display: flex; flex-wrap: wrap; gap: 20px 30px; }
+.ks3-dark .ks3-dish-grouplabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dish-btns,
+.ks3-dish-tests { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-dish-tests { margin-top: 18px; }
+/* ⚖️ THE REFUSAL IS THE LESSON. A proportion control that has been heated is
+   disabled and SAYS SO by dimming, rather than vanishing — a student has to
+   see the control they can no longer use, or the lesson is that it was never
+   there. Same reasoning as the joint bench's locked slider. */
+.ks3-dish-ratio[disabled] { opacity: .45; cursor: default; }
+.ks3-dark .ks3-dish-note {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ks3-on-dark);
+}
+/* The result card is the CONTRAST spine, and it lands on a LIGHT ground
+   inside the ink block — the same move `removal-cases` and the joint bench's
+   verdict make, and for the same reason: the sentence a student takes away
+   must not read as one more dark readout. */
+.ks3-dish-result {
+  margin-top: 16px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-dish-testname {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-dish-cols {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-dish-col { padding: 16px 18px; border-radius: 16px; }
+.ks3-dish-before { background: var(--ks3-inset); border: 2px solid var(--ks3-rule); }
+.ks3-dish-after { background: var(--ks3-card); border: 2px solid var(--ks3-ink); }
+.ks3-dark .ks3-dish-collabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* The AFTER column's label is the one accent in the pair — it is the state
+   that changed, and the colour is what says so before the words do. */
+.ks3-dark .ks3-dish-after .ks3-dish-collabel { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-dish-body { margin: 6px 0 0; font-size: 18px; line-height: 1.5; }
+.ks3-dark .ks3-dish-verdict {
+  margin: 14px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-dish-verdict strong { font-family: var(--ks3-font-display); }
+
+/* ── verdict-cards (c2-03 #s-sort · c2-04 #s-sort · c2-04 #s-read) ──
+   One component, two layouts, three headline types. LIGHT blocks in all
+   three instances, so nothing here is scoped `.ks3-dark`. */
+.ks3-vcards { margin-top: 22px; }
+.ks3-vcards[data-layout="column"] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+/* Design's own page rule (c2-04 style block, line 23). */
+.ks3-vcards[data-layout="grid"] {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-vcard {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+.ks3-vcards[data-layout="grid"] .ks3-vcard { padding: 18px 20px; }
+/* ⚖️ The only mark the card makes is its OWN border going to ink. It marks
+   the card as decided, never the button as right — which is what keeps a
+   per-card reveal clear of R3. */
+.ks3-vcard[data-open="1"] { border-color: var(--ks3-ink); }
+.ks3-vcard-head { margin: 0; font-size: 19px; line-height: 1.5; font-weight: 600; }
+.ks3-vcard-head[data-headline="formula"] {
+  font-family: var(--ks3-font-mono);
+  font-size: 26px;
+  font-weight: 500;
+}
+.ks3-vcard-head[data-headline="symbol"] {
+  font-family: var(--ks3-font-display);
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.ks3-vcard-sub {
+  margin: 6px 0 0;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--ks3-ink-body);
+}
+.ks3-vcards[data-layout="grid"] .ks3-vcard-sub { font-size: 19px; }
+.ks3-vcard-opts { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+.ks3-vcard-opt[disabled] { cursor: default; }
+.ks3-vcard-opt[disabled][aria-pressed="false"] { opacity: .5; }
+.ks3-vcard-why {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+.ks3-vcards[data-layout="grid"] .ks3-vcard-why { font-size: 17px; }
+.ks3-vcard-answer { font-family: var(--ks3-font-display); }
+.ks3-vcards-close {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-vcards-close p { margin: 0; font-size: 19px; line-height: 1.6; }
+
+/* ── formula-builder (c2-05 #s-builder) ──
+   Ink-dark. Three control groups, two of which carry a LIVE label — the
+   count group's caption is the element's name and changes with the pair. */
+.ks3-fb { margin-top: 4px; }
+.ks3-fb-groups { display: flex; flex-wrap: wrap; gap: 20px 30px; }
+.ks3-dark .ks3-fb-grouplabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-fb-btns { display: flex; gap: 9px; flex-wrap: wrap; align-items: center; }
+/* ⚖️ The name is 30px display 800 whether or not the formula is a real
+   substance — "H3O2 — not a substance" gets the same weight as "Water". The
+   refusal is an answer, not an error state, and dimming it would teach that
+   the student did something wrong. */
+.ks3-dark .ks3-fb-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-fb-note {
+  margin: 8px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── model-limit (c2-05 #s-limit) ──
+   A LIGHT block on inset. ⚖️ The light/ink asymmetry IS the argument: the
+   molecule sits on a card and the giant structure sits on ink, so the thing
+   the model does not cover looks different before a word of it is read. */
+.ks3-limit { margin-top: 20px; }
+.ks3-limit-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 16px;
+}
+.ks3-limit-card { padding: 22px 24px; border-radius: var(--ks3-r-panel); }
+.ks3-limit-card[data-ground="card"] {
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-limit-card[data-ground="ink"] {
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+  border: 0;
+}
+.ks3-limit-caption {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* On the ink card the caption goes ALERT — the one place in this block amber
+   appears, and it is marking the boundary of a model rather than a mistake. */
+.ks3-limit-card[data-ground="ink"] .ks3-limit-caption { color: var(--ks3-alert); }
+.ks3-limit-body { margin: 8px 0 0; font-size: 18px; line-height: 1.55; }
+.ks3-limit-card[data-ground="ink"] .ks3-limit-body { color: var(--ks3-on-dark-body); }
+.ks3-limit-commit { margin: 18px 0 12px; font-size: 19px; font-weight: 700; }
+
+/* ── balance-bench (c2-06 #s-balance) ── */
+.ks3-bal { margin-top: 4px; }
+.ks3-bal-groups { display: flex; flex-wrap: wrap; gap: 20px 30px; }
+.ks3-dark .ks3-bal-grouplabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-bal-btns { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-canvas-foot[data-row="1"] {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+/* The run button is the one control in the unit on the ALERT ground: it is
+   the thing that makes the reaction happen, and it is spent afterwards. */
+.ks3-bal-run {
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 13px 22px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-bal-run[disabled] { opacity: .55; cursor: default; }
+.ks3-dark .ks3-bal-status {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ks3-on-dark);
+}
+.ks3-bal-tiles {
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 12px;
+}
+.ks3-bal-tile {
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-dark .ks3-bal-tile-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* ⚖️ THE THIRD TILE NEVER MEASURES. Two tiles are mono readouts; the third is
+   a 19px/700 sentence that reads "not measured — you work it out" for ever.
+   The type difference is what says it is a refusal and not a pending value. */
+.ks3-dark .ks3-bal-tile-value {
+  margin: 5px 0 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-bal-tile-value.ks3-bal-tile-mono {
+  font-family: var(--ks3-font-mono);
+  font-size: 25px;
+  font-weight: 500;
+}
+/* The AFTER reading is the one that changes, so it is the one in alert. */
+.ks3-dark .ks3-bal-tile-value[data-tile="after"] { color: var(--ks3-alert); }
+.ks3-dark .ks3-bal-note {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+}
+
+/* ── the SUM's formula block: a balance beam and a part–whole bar ──
+   MRB-204 as amended. A triangle encodes a product or a quotient; a sum gets
+   a beam and a bar, because drawing a sum as a triangle would teach a false
+   relationship to make a rule fit. The triangle path is untouched. */
+.ks3-formula[data-shape="sum"] {
+  background: var(--ks3-band);
+  border: 3px solid var(--ks3-ink);
+  border-radius: var(--ks3-r-block);
+  padding: 32px;
+}
+.ks3-formula-eyebrow { text-align: center; color: var(--ks3-accent-text); }
+.ks3-formula-figure {
+  display: flex;
+  justify-content: center;
+  margin-top: 18px;
+}
+.ks3-beam { width: 100%; max-width: 470px; height: auto; }
+.ks3-beam-stand { fill: var(--ks3-ink); }
+.ks3-beam-post,
+.ks3-beam-arm {
+  stroke: var(--ks3-ink);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.ks3-beam-pivot { fill: var(--ks3-accent); stroke: var(--ks3-ink); stroke-width: 5; }
+.ks3-beam-hanger { stroke: var(--ks3-ink); stroke-width: 4; }
+.ks3-beam-pan { fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 5; }
+.ks3-beam-label,
+.ks3-beam-caption {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  fill: var(--ks3-ink);
+}
+.ks3-beam-label { font-size: 27px; }
+.ks3-beam-caption { font-size: 30px; }
+.ks3-formula-support {
+  margin: 14px 0 0;
+  text-align: center;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.9;
+  color: var(--ks3-ink-body);
+}
+
+/* ── the part–whole bar with cover plates ── */
+.ks3-bar-block { margin-top: 30px; padding-top: 28px; border-top: 3px solid var(--ks3-ink); }
+.ks3-bar-head .ks3-eyebrow { color: var(--ks3-accent-text); }
+.ks3-bar-head h2 {
+  margin: 6px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 32px;
+  line-height: 1.1;
+  letter-spacing: -.03em;
+}
+.ks3-bar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 30px 44px;
+  margin-top: 22px;
+}
+.ks3-bar { flex: 1 1 300px; min-width: 280px; max-width: 470px; height: auto; }
+.ks3-bar-cell { fill: var(--ks3-card); stroke: var(--ks3-ink); stroke-width: 4; }
+.ks3-bar-label {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  fill: var(--ks3-ink);
+}
+.ks3-bar-split { stroke: var(--ks3-rule-strong); stroke-width: 3; stroke-dasharray: 8 7; }
+.ks3-bar-plate { fill: var(--ks3-ink); }
+/* ⚖️ THE GHOST LABEL. The covered quantity stays faintly readable on top of
+   the plate, so a student can see what they covered. The triangle's cover is
+   a plain opaque rect and this is the measured difference. */
+.ks3-bar-ghost {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  fill: var(--ks3-ink-ghost);
+}
+.ks3-bar-side { flex: 1 1 300px; min-width: 260px; }
+.ks3-bar-btns { display: flex; gap: 9px; flex-wrap: wrap; }
+/* Its own control style — neither `seg` nor `segLight`. The 2px ink border is
+   ALWAYS there and only the ground swaps, because all three buttons are live
+   at all times: this is a radio, and there is no spent state. */
+.ks3-bar-btn {
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 11px 18px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  color: var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-bar-btn[aria-pressed="true"] {
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-bar-result {
+  margin: 18px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.ks3-bar-sentence { margin: 12px 0 0; font-size: 19px; line-height: 1.55; }
+.ks3-bar-close {
+  margin: 14px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── the chipped worked-example step (map N5) ── */
+.ks3-fifa-chips { display: flex; flex-direction: column; gap: 12px; }
+.ks3-fifa-chipped {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-option-border);
+}
+.ks3-fifa-chip {
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: var(--ks3-accent-text);
+  color: var(--ks3-ground);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 20px;
+}
+.ks3-fifa-body { flex: 1 1 auto; min-width: 0; }
+.ks3-fifa-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-fifa-line {
+  margin: 5px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+.ks3-fifa-stepnote { margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
+.ks3-fifa-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-step-donenote { font-size: 18px; font-weight: 700; color: var(--ks3-ink-body); }
+
+/* ── fifa-pick (c2-06 #s-build) — MRB-204 part 4 ── */
+/* ⊕ N10. Design inlines `position:absolute; left:-9999px` on two <label>s and
+   `shared/ks3.css` had no helper. One class now. */
+.ks3-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+.ks3-pick { margin-top: 22px; }
+.ks3-pick-panels { display: flex; flex-direction: column; gap: 18px; }
+.ks3-pick-panel {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+.ks3-pick-label {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+/* ⚖️ STACKED and LEFT-ALIGNED — the only left-aligned control set in the key
+   stage, and it has to be: these are candidate EQUATIONS, and centring them
+   would make three lines of mono maths unscannable. */
+.ks3-pick-opts { display: flex; flex-direction: column; gap: 9px; }
+.ks3-pick-opt {
+  font: inherit;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  padding: 11px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-pick-opt[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+.ks3-pick-opt[disabled] { opacity: .45; cursor: default; }
+.ks3-pick-answer { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.ks3-pick-input {
+  font: inherit;
+  font-family: var(--ks3-font-mono);
+  font-size: 22px;
+  font-weight: 500;
+  width: 8.5rem;
+  padding: 12px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-option);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-pick-unit { font-size: 18px; }
+.ks3-pick-input[disabled],
+.ks3-pick-unit[disabled] { opacity: .55; }
+.ks3-pick-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-pick-btn[disabled] { opacity: .45; cursor: default; }
+.ks3-pick-progress {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+/* The model answer lands on INK inside a light block — the same inversion the
+   verdict panel and the switch chain make, and for the same reason. */
+.ks3-pick-reveal {
+  margin-top: 20px;
+  padding: 26px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ink);
+  color: var(--ks3-on-dark);
+}
+.ks3-pick-reveal .ks3-pick-revealhead {
+  margin: 0 0 16px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-alert);
+}
+.ks3-pick-step { display: flex; gap: 14px; align-items: flex-start; }
+.ks3-pick-step + .ks3-pick-step {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 2px solid var(--ks3-dark-rule);
+}
+.ks3-pick-chip {
+  flex: 0 0 34px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 18px;
+}
+.ks3-pick-stepbody { flex: 1 1 auto; min-width: 0; }
+.ks3-pick-reveal .ks3-pick-steplabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-pick-reveal .ks3-pick-stepline {
+  margin: 5px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+  color: var(--ks3-on-dark);
+}
+.ks3-pick-reveal .ks3-pick-stepnote {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-pick-reveal .ks3-pick-close {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ── scale-zoom (c2-01 #s-scale) ──
+   Ink-dark, so every <p> below is scoped past `.ks3-dark p`. */
+.ks3-scale { margin-top: 4px; }
+.ks3-scale-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ks3-scale-btn[disabled] { opacity: .45; cursor: default; }
+.ks3-dark .ks3-scale-readout {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ks3-alert);
+}
+.ks3-dark .ks3-scale-note {
+  margin: 16px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
 
 /* ── narrow screens ────────────────────────────────────────────────
    A real 390px phone. The reference set is desktop-first, so these are

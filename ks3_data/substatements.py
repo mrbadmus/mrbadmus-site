@@ -81,6 +81,31 @@ SUBSTATEMENTS = {
               "the types of joint, and what each one allows and refuses.",
          "B2"),
     ],
+    # Minted for C2 (2026-08-16, MRB-220). The bullet reads:
+    #   "differences between atoms, elements and compounds"
+    # Two ideas, and C2 teaches them as two lessons a week apart: what makes
+    # something an element (and why nothing about how it looks will tell you),
+    # then what a compound is and how it differs from a mixture.
+    "KS3.C.AEC.02": [
+        ("a", "What an element is: one kind of atom, and not separable into "
+              "anything simpler by chemistry.", "C2"),
+        ("b", "What a compound is, and how it differs from a mixture: fixed "
+              "proportion, joined in a reaction, new properties.", "C2"),
+    ],
+    # Minted for C2 (2026-08-16, MRB-220). The bullet reads:
+    #   "chemical symbols and formulae for elements and compounds"
+    # The bullet itself prints two things joined by "and", and Design's NOTES
+    # §1 gives the pedagogic reason for keeping them apart: "symbols are a
+    # notation to be read, formulae are a model of what is in a particle, and
+    # teaching them in one sitting is what makes students think a formula is
+    # just a longer symbol."
+    "KS3.C.AEC.03": [
+        ("a", "Chemical symbols for the elements: one capital starts one "
+              "element, and the case of a second letter is not a style choice.",
+         "C2"),
+        ("b", "Formulae for compounds: which elements are present and how many "
+              "atoms of each.", "C2"),
+    ],
 }
 
 
