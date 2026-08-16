@@ -1,0 +1,191 @@
+/* ── band-commit (b3-01 #s-plate) — seven commitments, one reveal ──
+   Append to shared/ks3.css in a new "B3 · Nutrition and digestion" group,
+   after the B2 rules.
+
+   ⚠️ SPECIFICITY, AND IT IS LOAD-BEARING ON EVERY RULE BELOW.
+   `.ks3-dark p` is (0,1,1) and `.ks3-dark .ks3-eyebrow` is (0,2,0); a bare
+   `.ks3-plate-note` is (0,1,0) and LOSES to the first of those. This block is
+   on ink on Design's page and so is every other flagship in B3, so an unscoped
+   colour here does not fail loudly — it renders the note in `--ks3-on-dark-body`
+   on a CREAM panel, which is a pale grey sentence on cream and is invisible to
+   anyone reading the stylesheet. That is the defect B1's zoom instrument
+   shipped with and B2's muscle bench nearly repeated. Every text rule below is
+   scoped `.ks3-dark …` or tighter.
+
+   The light rules under each are the fallback and are not dead weight: the
+   component is shared, the one drawn instance is ink-dark, and a second
+   instance on a light block must not render a `--ks3-dark-panel` row with no
+   readable text in it. */
+
+.ks3-plate { margin-top: 22px; }
+.ks3-plate-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+/* The resting row carries a TRANSPARENT border of the same width as the lit
+   one. Adding the border on reveal instead would move all seven rows down by
+   4px at the moment the answers arrive, which reads as the page flinching. */
+.ks3-plate-row {
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid transparent;
+}
+.ks3-plate-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.ks3-plate-name { margin: 0; font-size: 19px; font-weight: 700; }
+.ks3-plate-hint {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-plate-bands { margin-top: 11px; display: flex; gap: 9px; flex-wrap: wrap; }
+/* Design's own segmented control, at the sizes she drew for this block:
+   16px/700 in a 44px tap target. Same shape as `.ks3-sim-seg-btn`, deliberately
+   NOT that class — these are seven independent three-way pickers inside one
+   list, not a sim's control strip, and sharing the class would tie the two
+   together for a resemblance rather than for a reason. */
+.ks3-plate-band {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 15px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-plate-band[aria-pressed="true"] {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+}
+/* Locked, not marked. Once the answers are open every band button stops
+   responding; the CHOSEN one keeps exactly the treatment it had and the other
+   two dim. Nothing here says whether the choice was right — that is the row's
+   job and the why panel's, and it is the whole of R3 in this instrument. */
+.ks3-plate-band[disabled] { cursor: default; }
+.ks3-plate-band[disabled][aria-pressed="false"] { opacity: .45; }
+.ks3-plate-why {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+}
+.ks3-plate-real {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-plate-note { margin: 7px 0 0; font-size: 18px; line-height: 1.55; }
+.ks3-plate-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-plate-open[disabled] { opacity: .45; cursor: default; transform: none; }
+.ks3-plate-count {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-plate-verdict {
+  margin-top: 22px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+}
+.ks3-plate-vlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-plate-vhead {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 27px;
+  line-height: 1.18;
+  letter-spacing: -.025em;
+}
+.ks3-plate-vwhy { margin: 12px 0 0; font-size: 19px; line-height: 1.6; }
+
+/* ── the drawn state: on ink ──────────────────────────────────────── */
+
+.ks3-dark .ks3-plate-row { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-plate-name { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-plate-hint { color: var(--ks3-on-dark-muted); }
+/* Design's dark pair, identical to `.ks3-sim-seg-btn`'s: the lit state is the
+   alert yellow with ink text, the resting state transparent on the muted rule.
+   ⚖️ AMBER HERE IS "CHOSEN", NOT "WRONG". On an ink ground it is the only
+   colour in the system with enough lift to read as a pressed control, and
+   Design uses it that way on all three B3 dark blocks. Nothing in this
+   instrument uses it to mark a mistake. */
+.ks3-dark .ks3-plate-band {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-plate-band[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* ⊕ CORRECTED FROM THE SHIPPED STYLESHEET, and reported. `.ks3-reveal-btn` is
+   `background: var(--ks3-ink)` on a `border: 2px solid var(--ks3-ink)`, which
+   on a `.ks3-dark` block whose own ground IS `--ks3-ink` paints an invisible
+   button — Design's page reads as a line of floating text where the control
+   should be. The inverse of the light treatment is the only reading that keeps
+   the contrast the light button has, so it is what the dark one takes. */
+.ks3-dark .ks3-plate-open {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-plate-count { color: var(--ks3-on-dark-muted); }
+/* ⚠️ THE WHY PANEL IS CREAM INSIDE AN INK BLOCK, which is why its two text
+   rules below are the ones that must be scoped. Unscoped they lose to
+   `.ks3-dark p` and render `--ks3-on-dark-body` on `--ks3-ground`. */
+.ks3-dark .ks3-plate-why { background: var(--ks3-ground); }
+.ks3-dark .ks3-plate-real { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-plate-note { color: var(--ks3-ink); }
+/* The row's own answer state, and the only marking anywhere in the block.
+   `hit` keeps the panel ground it already had and gains the lit rule; `miss`
+   drops to the block ground behind a muted rule. Read together they say "these
+   were the ones you placed correctly" without a colour that means correct —
+   no `--ks3-ok`, no tint, no glyph. */
+.ks3-dark .ks3-plate-row[data-state="hit"] {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-alert);
+}
+.ks3-dark .ks3-plate-row[data-state="miss"] {
+  background: transparent;
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-plate-verdict { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-plate-vlabel { color: var(--ks3-alert); }
+.ks3-dark .ks3-plate-vhead { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-plate-vwhy { color: var(--ks3-on-dark-body); }

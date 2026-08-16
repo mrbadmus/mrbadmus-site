@@ -1,0 +1,273 @@
+/* ── enzyme-run (b3-06 #s-bench) — three counters, one of which never moves ──
+   Append to shared/ks3.css in the B3 group, after `.ks3-gut-*`.
+
+   ⚠️ SPECIFICITY, AND IT IS LOAD-BEARING. `.ks3-dark p` is (0,1,1) and every
+   bare class below is (0,1,0), so an unscoped `color` LOSES. On this block the
+   rate readout and the temperature figure are what would visibly break: amber
+   mono is how a student reads a dial, and left to `.ks3-dark p` they resolve
+   to on-dark body copy and stop looking like numbers at all. Every colour rule
+   is scoped `.ks3-dark …` at (0,2,0). Geometry is safe unscoped —
+   `.ks3-dark p` sets colour and nothing else.
+
+   The light rules under them are the fallback, not dead weight: the component
+   is registered for the key stage and a future light instance must not paint a
+   `--ks3-dark-panel` box with no readable text in it.
+
+   ⚠️ The two dial rows take `.ks3-sim-seg-btn`, which drift 4 already ruled as
+   THE segmented control and which already carries the ink-dark pair. Design's
+   own `seg()` on this page draws 16px / 10px 15px against the shipped control's
+   17px / 11px 17px; under contract R3 the SHIPPED value wins and the difference
+   is reported as drift rather than given a fourth control class. */
+
+.ks3-erun { margin-top: 22px; }
+
+/* ── the two dials ────────────────────────────────────────────────────── */
+.ks3-erun-dials { display: flex; flex-wrap: wrap; gap: 20px 30px; }
+.ks3-erun-diallabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-erun-seg { display: flex; flex-wrap: wrap; gap: 9px; }
+
+/* ── the temperature panel ────────────────────────────────────────────── */
+.ks3-erun-temp {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-erun-temphead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-erun-temphead .ks3-erun-diallabel { margin: 0; }
+.ks3-erun-tempvalue {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 21px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+/* The slider is labelled for a screen reader and captioned for everyone else
+   by the figure above it, which is Design's own arrangement. Off-screen rather
+   than `display:none`, because a hidden label labels nothing. */
+.ks3-erun-srlabel {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.ks3-erun-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 38px;
+  background: transparent;
+}
+.ks3-erun-slider::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-rule-strong);
+}
+.ks3-erun-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  margin-top: -12px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-erun-slider::-moz-range-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-rule-strong);
+}
+.ks3-erun-slider::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-erun-tempnotes {
+  margin: 4px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── the tube ─────────────────────────────────────────────────────────── */
+.ks3-erun-tube {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-erun-tubehead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-erun-reaction {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+.ks3-erun-rate {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+
+.ks3-erun-counters {
+  list-style: none;
+  margin: 18px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.ks3-erun-counterhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-erun-counterlabel {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ks3-ink);
+}
+.ks3-erun-countervalue {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-erun-track {
+  display: block;
+  margin-top: 6px;
+  height: 18px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-rule);
+  overflow: hidden;
+}
+.ks3-erun-bar {
+  display: block;
+  height: 100%;
+  background: var(--ks3-rule-strong);
+  transition: width .3s linear;
+}
+.ks3-erun-counter[data-counter="product"] .ks3-erun-bar {
+  background: var(--ks3-accent);
+}
+/* ⚑ FOR MIDE — `--ks3-ok` outside the ladder. The token's own comment reserves
+   green for the ladder marking correctness, and this is a bar meaning
+   "unchanged" on a block that marks nothing. Design drew it; it is reproduced
+   as drawn, flagged in the lesson module, and asserted in a parity row so the
+   day the palette question is ruled the gate names the value.
+
+   `-fixed` also carries no `transition`, because nothing about this bar ever
+   changes — it is the one counter with no handle for the runtime at all. */
+.ks3-erun-bar-fixed {
+  background: var(--ks3-ok);
+  transition: none;
+}
+
+.ks3-erun-controls {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.ks3-erun-clock {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-erun-run[disabled],
+.ks3-erun-reset[disabled] { opacity: .45; cursor: default; }
+
+/* The verdict inverts to the page ground inside the ink block — Design's own
+   move, and what makes it read as the answer rather than as more bench. */
+.ks3-erun-verdict {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ks3-erun-bar { transition: none; }
+}
+
+/* ── the drawn state, on ink ───────────────────────────────────────────── */
+.ks3-dark .ks3-erun-diallabel,
+.ks3-dark .ks3-erun-countervalue,
+.ks3-dark .ks3-erun-clock { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-erun-temp,
+.ks3-dark .ks3-erun-tube { background: var(--ks3-dark-panel); }
+/* ⚠️ THE TWO DIAL FIGURES. Unscoped these are (0,1,0), lose to `.ks3-dark p`
+   and render in on-dark body copy — the temperature and the rate stop reading
+   as instrument readings and become two more sentences. */
+.ks3-dark .ks3-erun-tempvalue,
+.ks3-dark .ks3-erun-rate { color: var(--ks3-alert); }
+.ks3-dark .ks3-erun-tempnotes { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-erun-reaction,
+.ks3-dark .ks3-erun-counterlabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-erun-slider::-webkit-slider-runnable-track {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-erun-slider::-webkit-slider-thumb { background: var(--ks3-alert); }
+.ks3-dark .ks3-erun-slider::-moz-range-track {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-erun-slider::-moz-range-thumb { background: var(--ks3-alert); }
+.ks3-dark .ks3-erun-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-erun-bar { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-erun-counter[data-counter="product"] .ks3-erun-bar {
+  background: var(--ks3-alert);
+}
+/* ⚠️ THE SAME SPECIFICITY TRAP, ONE LEVEL IN, AND IT BITES THE ONE BAR THE
+   LESSON IS ABOUT. The fixed bar carries BOTH classes, so `.ks3-dark
+   .ks3-erun-bar` at (0,2,0) beats a bare `.ks3-erun-bar-fixed` at (0,1,0) and
+   the enzyme counter would render in the same muted grey as the substrate —
+   three identical bars, and the counter that never moves would stop being
+   visibly different from the one that does. Scoped to (0,2,0) and placed after
+   its sibling so source order settles the tie. */
+.ks3-dark .ks3-erun-bar-fixed { background: var(--ks3-ok); }
+/* ⚠️ (0,2,0), and the one that catches people: the verdict sits on the CREAM
+   ground inside an ink block, so it has to be pulled back to ink explicitly or
+   `.ks3-dark p` paints #E7DECE on #FBF3E6 at 1.2:1 — the answer rendered
+   invisible on the one panel that carries it. */
+.ks3-dark .ks3-erun-verdict { color: var(--ks3-ink); }

@@ -68,6 +68,7 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `CELL` | Cells, microscopy and the organisation of living things | 2026-08-09, by B1 |
 | `BODY` | Body systems, and how they do mechanical work | 2026-08-16, by B2 |
 | `ATOM` | Atoms having kinds, and substances versus their ingredients | 2026-08-16, by B2's sibling delivery, C2 |
+| `DIET` | Food, what a body needs from it, and what the gut does to it | 2026-08-16, by B3 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: `PART` (particles and states),
@@ -297,3 +298,50 @@ sealed-bag confrontation may not be dropped on the grounds that C2 covers it.
 
 If the answer is no, the lesson is not finished, however attractive it looks. This register is the
 record of the answers.
+
+
+### `DIET` — food, what a body needs from it, and what the gut does to it
+
+Opened 16 Aug 2026 by B3 (MRB-228). Seventeen entries across eight lessons — the
+largest family in the register, because nutrition is where a student arrives with
+the most already believed. Almost none of it comes from a previous lesson; it
+comes from packaging, from adults, and from years of being told which foods are
+good ones.
+
+⚠️ **`DIET-06`/`07` and `DIET-08`/`09` were nearly the same two numbers.** Three
+authors worked this unit in parallel and two of them independently minted
+`DIET-06` and `DIET-07`, for four different beliefs. Nothing had been registered
+yet, so the family was renumbered into teaching order before any id became
+permanent — which is the only window in which renumbering is allowed at all.
+Recorded here because the next unit built by parallel authors meets the same
+edge, and the fix is to open the family in THIS file before the lessons are
+written rather than after.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `DIET-01` | A balanced diet means equal amounts of each food group. | `seven-bands` | `think-balanced` | `a-balanced-diet` |
+| `DIET-02` | Vitamins give you energy. | `think-balanced` | `think-balanced` | `a-balanced-diet` |
+| `DIET-03` | Fat is bad for you, so a healthy diet has none in it. | `think-balanced` | `think-balanced` | `a-balanced-diet` |
+| `DIET-04` | The deeper the colour, the more of the nutrient there was. | `twenty-combinations` | `think-colour` | `food-tests` |
+| `DIET-05` | A negative result proves the nutrient is not there. | `twenty-combinations` | `think-colour` | `food-tests` |
+| `DIET-06` | The energy in food gets used up and disappears. | `feed-a-day` | `think-requirement` | `energy-in-food-and-what-you-need` |
+| `DIET-07` | Everyone needs about the same amount of food in a day. | `feed-a-day` | `think-requirement` | `energy-in-food-and-what-you-need` |
+| `DIET-08` | Malnourished means not having enough to eat. | `three-wrong-ideas` | `three-wrong-ideas` | `when-diet-goes-wrong` |
+| `DIET-09` | Deficiency diseases are all in the past. | `three-wrong-ideas` | `three-wrong-ideas` | `when-diet-goes-wrong` |
+| `DIET-10` | You can tell what someone eats by looking at them. | `three-wrong-ideas` | `three-wrong-ideas` | `when-diet-goes-wrong` |
+| `DIET-11` | Digestion is food being squashed into smaller and smaller pieces. | `two-wrong-ideas` | `two-wrong-ideas` | `the-digestive-system` |
+| `DIET-12` | Food sits in your stomach until it is digested, then goes to the intestine. | `two-wrong-ideas` | `two-wrong-ideas` | `the-digestive-system` |
+| `DIET-13` | Enzymes are killed by heat. | `the-bench` | `two-wrong-ideas` | `enzymes-in-digestion` |
+| `DIET-14` | The enzyme gets used up as the food is digested. | `the-bench` | `two-wrong-ideas` | `enzymes-in-digestion` |
+| `DIET-15` | Villi make the intestine longer. | `fold-builder` | `villi-and-length` | `absorption-and-the-small-intestine` |
+| `DIET-16` | The muscles push the food through the gut wall into the blood. | `villi-and-length` | `villi-and-length` | `absorption-and-the-small-intestine` |
+| `DIET-17` | Bacteria are germs. Having bacteria inside you means you are ill. | `hook` | `germs-and-simplicity` | `bacteria-in-the-gut` |
+| `CELL-08` | A single-celled organism is just a simpler version of one of our cells — the same parts, doing less. | `job-switch` | `germs-and-simplicity` | `bacteria-in-the-gut` |
+
+**`CELL-08` reappears here and is not re-minted.** `bacteria-in-the-gut`'s second
+confrontation is the belief that a single-celled organism is a simpler version of
+one of our cells — which `unicellular-organisms` already owns, and which Design's
+own copy names on the page ("You met this in Unicellular organisms and it comes
+back with a bigger consequence"). A second id for one belief is precisely what
+this register exists to prevent, so the row above carries the existing id and the
+costume the student reads comes from the lesson's own `statements[]`.

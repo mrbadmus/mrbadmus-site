@@ -1,0 +1,154 @@
+/* ── job-switch (b3-08 #s-jobs) — five jobs, switched off one at a time ──
+   Append to shared/ks3.css in the B3 group, after `.ks3-fold-*`.
+
+   ⚠️ INK-DARK, AND ONE RULE HERE IS THE DIFFERENCE BETWEEN A SENTENCE AND A
+   BLANK. `.ks3-dark p` is (0,1,1) and a bare `.ks3-jobsw-without` is (0,1,0),
+   so unscoped the consequence paragraph paints `--ks3-on-dark-body` #E7DECE
+   on the cream `--ks3-ground` #FBF3E6 it is drawn on: contrast 1.1:1, present
+   in the DOM, invisible on screen, and invisible to anyone reading the
+   stylesheet. Every text rule below is scoped to at least (0,2,0). This is
+   the same defect class as B1's zoom instrument and B2's muscle bench, and it
+   is the one row of the parity fragment that must never be dropped.
+
+   No light fallback, deliberately: `ks3_data/b3/__init__.py` records that all
+   eight B3 flagships sit on `ks3-block ks3-dark ks3-practical`, so a light
+   instance of this component does not exist and a speculative second
+   treatment would be one nobody has drawn or measured. */
+
+.ks3-jobsw { margin-top: 22px; }
+
+.ks3-jobsw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ⚖️ THE GROUND INVERTS, and it is the opposite way round from
+   `fold-builder`. A job that is still being done sits on the nested panel —
+   it is a working part of the system. Switching it off drops the row back to
+   the block's bare ink with an alert rule around it, so a switched-off job
+   visibly stops being part of anything. Amber marks a part that has been
+   REMOVED, never a student who was wrong. */
+.ks3-jobsw-job {
+  padding: 19px 21px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+  border: 2px solid transparent;
+}
+.ks3-jobsw-job[data-off="1"] {
+  background: transparent;
+  border-color: var(--ks3-alert);
+}
+
+.ks3-jobsw-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-jobsw-what { flex: 1 1 280px; min-width: 0; }
+
+.ks3-jobsw .ks3-jobsw-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-jobsw .ks3-jobsw-name {
+  margin: 5px 0 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ks3-on-dark);
+}
+.ks3-jobsw .ks3-jobsw-does {
+  margin: 6px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+
+/* The same dark toggle the fold builder takes, because it is the same control
+   doing the same thing on the same ground. 44px minimum target; the pressed
+   state is the alert fill carrying ink. */
+.ks3-jobsw-toggle {
+  flex: 0 0 auto;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 11px 17px;
+  min-height: 44px;
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-jobsw-toggle[aria-pressed="true"] {
+  border-color: var(--ks3-alert);
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+
+/* ⚖️ CREAM INSIDE THE INK BLOCK, and this is the rule the whole file warns
+   about. The consequence is what the student came for, and Design lifts it
+   out of the dark onto the page's own ground so it reads as the answer rather
+   than as more of the row. `--ks3-ink` on `--ks3-ground` is 14.2:1; the
+   unscoped version is 1.1:1. */
+.ks3-jobsw .ks3-jobsw-without {
+  margin: 13px 0 0;
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-size: 18px;
+  line-height: 1.6;
+}
+.ks3-jobsw .ks3-jobsw-without strong { font-family: var(--ks3-font-display); }
+
+.ks3-jobsw-all {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+}
+.ks3-jobsw .ks3-jobsw-alltag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-alert);
+}
+/* The payoff is a HEADLINE, in display type. Set as body copy it would read
+   as one more consequence in a list of five, and it is the conclusion drawn
+   from all five at once. */
+.ks3-jobsw .ks3-jobsw-allhead {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -.025em;
+  color: var(--ks3-on-dark);
+}
+.ks3-jobsw .ks3-jobsw-allbody {
+  margin: 12px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* Nothing in this instrument animates: rows appear and disappear, they do not
+   travel. `prefers-reduced-motion` therefore has nothing to degrade here and
+   the reduced-motion experience is the complete one — the same standing as
+   `meter-compare`. Design's page adds a 340ms arrive keyframe to the
+   consequence paragraph and guards it; the shipped stylesheet has no such
+   keyframe and one is not invented for two pages. */

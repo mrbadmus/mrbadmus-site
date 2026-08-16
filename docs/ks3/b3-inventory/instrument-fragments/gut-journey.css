@@ -1,0 +1,241 @@
+/* ── gut-journey (b3-05 #s-journey) — seven stops and a chart that argues ──
+   Append to shared/ks3.css in the B3 group, after `.ks3-clinic-*`.
+
+   ⚠️ SPECIFICITY, AND IT IS LOAD-BEARING. `.ks3-dark p` is (0,1,1) and every
+   bare class below is (0,1,0), so an unscoped `color` LOSES. The tiles are
+   what would visibly break: three labels and three values resolving to one
+   on-dark body colour is a panel that has quietly lost its structure while
+   still looking tidy. Every colour rule is scoped `.ks3-dark …` at (0,2,0).
+   Geometry is safe unscoped — `.ks3-dark p` sets colour and nothing else.
+
+   ⚠️ A THIRD CONTROL GEOMETRY, registered as its own rather than folded into
+   `.ks3-seg-btn`. That control and `.ks3-sim-seg-btn` are one centred line at
+   one weight; this stacks a mono two-digit number over a 700 name and is read
+   DOWN its left edge, because the seven are a sequence and not a set. The
+   precedent for a stacked, left-aligned step button is `.ks3-mtl-step`. */
+
+.ks3-gut { margin-top: 22px; }
+
+.ks3-gut-tabs {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 22px;
+  padding: 0;
+}
+.ks3-gut-tab {
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 9px 15px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-gut-tabnum {
+  display: block;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  opacity: .75;
+}
+.ks3-gut-tablabel { display: block; }
+.ks3-gut-tab[aria-pressed="true"] {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+}
+
+/* ── one stop ─────────────────────────────────────────────────────────── */
+.ks3-gut-stop {
+  padding: 26px 28px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-gut-stophead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-gut-name {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 29px;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+  color: var(--ks3-ink);
+}
+/* ⚖️ WHAT KIND OF STOP THIS IS, in the one colour nothing else in the panel
+   uses. Four of the seven do mechanical or chemical work, one does transport
+   only, one secretes without food passing through and one stores — and a
+   student who cannot tell those apart at a glance reads the journey as seven
+   equal organs, which is exactly the flat picture the chart then contradicts. */
+.ks3-gut-kind {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+.ks3-gut-what {
+  margin: 14px 0 0;
+  max-width: 62ch;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
+.ks3-gut-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+.ks3-gut-tile {
+  padding: 15px 17px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+}
+.ks3-gut-tilelabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-gut-tilevalue {
+  margin: 5px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ks3-ink);
+}
+/* The TIME tile is mono and larger than the other two. It is the quantity the
+   chart under it is drawn from, and reading it as one of three equal facts is
+   how the four-hours-against-sixteen argument gets missed. */
+.ks3-gut-tile[data-tile="time"] .ks3-gut-tilevalue {
+  font-family: var(--ks3-font-mono);
+  font-size: 23px;
+  font-weight: 500;
+}
+
+/* The note inverts to the page ground inside the ink block — Design's own
+   move, and what makes it read as an aside rather than as more panel. */
+.ks3-gut-note {
+  margin: 18px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-size: 18px;
+  line-height: 1.6;
+}
+.ks3-gut-note strong { font-family: var(--ks3-font-display); }
+
+/* ── the chart ────────────────────────────────────────────────────────── */
+.ks3-gut-chart {
+  margin-top: 22px;
+  padding: 24px 26px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-gut-chartlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-gut-rows {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.ks3-gut-row { display: flex; align-items: center; gap: 13px; }
+.ks3-gut-rowname {
+  flex: 0 0 132px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ks3-ink);
+}
+.ks3-gut-track {
+  flex: 1 1 auto;
+  height: 20px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-rule);
+  overflow: hidden;
+}
+/* ⚠️ THE WIDTH IS INLINE AND COMES FROM THE PYTHON, computed from the same
+   `hours` the printed figure is authored beside. Nothing here or in the
+   wiring may set a width — the bar and the number would then have two
+   sources and one of them would eventually be stale. */
+.ks3-gut-bar {
+  display: block;
+  height: 100%;
+  background: var(--ks3-rule-strong);
+  transition: background-color .3s ease;
+}
+.ks3-gut-row[data-lit="1"] .ks3-gut-bar { background: var(--ks3-accent); }
+.ks3-gut-rowhours {
+  flex: 0 0 74px;
+  text-align: right;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-gut-chartclose {
+  margin: 16px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ks3-gut-bar { transition: none; }
+}
+
+/* ── the drawn state, on ink ───────────────────────────────────────────── */
+.ks3-dark .ks3-gut-tab {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-gut-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-gut-stop,
+.ks3-dark .ks3-gut-chart { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-gut-name { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-gut-kind { color: var(--ks3-alert); }
+.ks3-dark .ks3-gut-what,
+.ks3-dark .ks3-gut-chartclose { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-gut-tile { background: rgba(255, 255, 255, .06); }
+.ks3-dark .ks3-gut-tilelabel,
+.ks3-dark .ks3-gut-rowhours,
+.ks3-dark .ks3-gut-chartlabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-gut-tilevalue,
+.ks3-dark .ks3-gut-rowname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-gut-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-gut-bar { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-gut-row[data-lit="1"] .ks3-gut-bar { background: var(--ks3-alert); }
+/* ⚠️ (0,2,0), and this is the one that catches people: the note sits on the
+   CREAM ground inside an ink block, so it has to be pulled back to ink
+   explicitly or `.ks3-dark p` paints #E7DECE on #FBF3E6 at 1.2:1 — seven
+   invisible paragraphs, one per stop. */
+.ks3-dark .ks3-gut-note { color: var(--ks3-ink); }

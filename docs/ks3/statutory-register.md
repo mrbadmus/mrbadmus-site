@@ -74,11 +74,38 @@ Strand code `NUT`.
 | ID | Statutory statement (verbatim) | Proposed owning unit |
 |---|---|---|
 | `KS3.B.NUT.01` | the content of a healthy human diet: carbohydrates, lipids (fats and oils), proteins, vitamins, minerals, dietary fibre and water, and why each is needed | B3 |
-| `KS3.B.NUT.02` | calculations of energy requirements in a healthy daily diet | B3 |
+| `KS3.B.NUT.02` | calculations of energy requirements in a healthy daily diet | **B3 + P2, split — see below** |
 | `KS3.B.NUT.03` | the consequences of imbalances in the diet, including obesity, starvation and deficiency diseases | B3 |
 | `KS3.B.NUT.04` | the tissues and organs of the human digestive system, including adaptations to function and how the digestive system digests food (enzymes simply as biological catalysts) | B3 |
 | `KS3.B.NUT.05` | the importance of bacteria in the human digestive system | B3 |
 | `KS3.B.NUT.06` | plants making carbohydrates in their leaves by photosynthesis and gaining mineral nutrients and water from the soil via their roots | B7 |
+
+##### `KS3.B.NUT.02` is SPLIT between B3 and P2 — ruled 16 Aug 2026 (MRB-232)
+
+It was claimed by both units, and §7.4 had given the whole of it to Physics P2
+with B3 holding a reference slot that generated no page. Mide ruled that it is
+two lessons wearing one bullet, and it splits at that seam:
+
+| clause | owner | lesson |
+|---|---|---|
+| what you need and why — requirements, imbalance, what follows from getting it wrong | **B3** | `energy-in-food-and-what-you-need` |
+| comparing energy values from food labels in kJ — the arithmetic and the units | **P2** | `energy-in-food` |
+
+Each clause is owned exactly once, so §4.4 rule 3 still holds. **P2's link back
+to B3 is a `references` EDGE, never prose** — neither page repeats the other,
+and §4.6's single-source rule is intact.
+
+⚠️ **This is settled. Do not re-open it from one file.** The reason it needs
+saying is that the two sources disagreed for months and each looked
+self-consistent alone: `ks3_data/structure.py` marked the B3 slot `owned_by=P2`
+while the row above said `B3`, so whichever file you opened first told you the
+whole story and told you the wrong one. Both now carry the ruling and point at
+each other.
+
+B3's slug is `energy-in-food-and-what-you-need`, matching Design's delivery.
+§8.4 forbids renaming a slug — the exception holds here because the slot never
+generated a page, so there was no URL, no `requires` edge and no
+scheme-of-work row to break.
 
 #### Gas exchange systems
 

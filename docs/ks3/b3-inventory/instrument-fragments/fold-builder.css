@@ -1,0 +1,183 @@
+/* ══════════════════════════════════════════════════════════════════
+   B3 · Nutrition and digestion (⊕ MRB-220)
+
+   ── fold-builder (b3-07 #s-fold) — three levels, one area ──
+   Three toggles that multiply, and a readout that says what the multiplying
+   came to. Append to shared/ks3.css in the B3 group.
+
+   ⚠️ INK-DARK, AND THE SCOPING IS LOAD-BEARING. `.ks3-dark p` is (0,1,1);
+   a bare `.ks3-fold-note` is (0,1,0) and LOSES, so an unscoped colour would
+   leave the readout note rendering in the block's own on-dark body copy
+   rather than in the panel's. Every text rule below is scoped to at least
+   (0,2,0). This is the defect B1 shipped with the zoom instrument, B2 was
+   bitten by again on the muscle bench, and B3 would have hit on all eight
+   pages at once.
+
+   There is NO light fallback under these rules, and that is deliberate rather
+   than an omission: `ks3_data/b3/__init__.py` records that every one of B3's
+   eight flagship instruments sits on `ks3-block ks3-dark ks3-practical`, so a
+   light instance of this component does not exist and a speculative fallback
+   would be a second treatment nobody has drawn or measured.
+   ══════════════════════════════════════════════════════════════════ */
+
+.ks3-fold { margin-top: 22px; }
+
+.ks3-fold-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ⚖️ THE ROW LIGHTS WHEN THE LEVEL IS ON, and the lit state is the panel
+   ground plus the alert rule. Amber here is a level the student CHOSE to
+   add, never a mistake — nothing in this instrument marks anything, and
+   there is no right number of levels to have on. */
+.ks3-fold-level {
+  padding: 19px 21px;
+  border-radius: var(--ks3-r-panel);
+  background: transparent;
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-fold-level[data-on="1"] {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-alert);
+}
+
+.ks3-fold-levelmain {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-fold-levelwhat { flex: 1 1 260px; min-width: 0; }
+
+.ks3-fold .ks3-fold-name {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ks3-on-dark);
+}
+.ks3-fold .ks3-fold-what {
+  margin: 5px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-on-dark-body);
+}
+/* ⚖️ THE SCALE LINE IS MONO AND IT IS NOT DECORATION. "About 1 mm — visible
+   with a hand lens" against "About 0.001 mm — needs an electron microscope"
+   is what makes the three levels three SIZES of one trick rather than three
+   separate facts, and mono is what makes the two measurements line up to be
+   compared. */
+.ks3-fold .ks3-fold-scale {
+  margin: 7px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+
+/* A toggle, not an answer button: 44px minimum target, and the pressed state
+   is the alert fill carrying INK text — the same dark segmented pair the sims
+   use, so a control means the same thing everywhere on an ink block. */
+.ks3-fold-toggle {
+  flex: 0 0 auto;
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 11px 17px;
+  min-height: 44px;
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-fold-toggle[aria-pressed="true"] {
+  border-color: var(--ks3-alert);
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+
+.ks3-fold-readout {
+  margin-top: 22px;
+  padding: 24px 26px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-dark-panel);
+}
+.ks3-fold-readhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-fold .ks3-fold-readlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+/* The number is the headline of the block and it is MONO, not display type:
+   it changes six times while a student watches, and a proportional display
+   face would make the readout jump on every toggle. */
+.ks3-fold .ks3-fold-area {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ks3-alert);
+}
+
+.ks3-fold-track {
+  display: block;
+  margin-top: 14px;
+  height: 26px;
+  border-radius: var(--ks3-r-pill);
+  border: 2px solid var(--ks3-on-dark-muted);
+  background: rgba(255, 255, 255, .06);
+  overflow: hidden;
+}
+/* ⚖️ THE BAR GOES GREEN ONLY WHEN ALL THREE LEVELS ARE ON, and green here is
+   NOT a mark. It is the completed model: the state the real small intestine
+   is actually in. Nothing about the bar says the student was right — there
+   was no question — and `--ks3-ok` is being used as "this is the finished
+   thing", which is the one reading R3 leaves open to it. */
+.ks3-fold-bar {
+  display: block;
+  height: 100%;
+  width: 2%;
+  background: var(--ks3-alert);
+  transition: width .45s ease;
+}
+.ks3-fold-bar[data-full="1"] { background: var(--ks3-ok); }
+
+.ks3-fold-noteline { margin: 14px 0 0; }
+.ks3-fold .ks3-fold-note {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+.ks3-fold .ks3-fold-multiple {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ks3-on-dark-muted);
+}
+
+/* The bar is the only thing in this instrument that moves, and it moves
+   because the growth is the point — half a square metre to thirty is a
+   distance, not a jump. Under reduced motion the width still changes; it
+   simply arrives at once. Nothing is lost, because the number, the note and
+   the multiple all state the same fact in words. */
+@media (prefers-reduced-motion: reduce) {
+  .ks3-fold-bar { transition: none; }
+}

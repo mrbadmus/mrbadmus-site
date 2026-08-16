@@ -272,10 +272,23 @@ def main():
     # into as many forward references as it likes; that is their call and not a
     # defect in the platform. So this never runs against a school scheme.
     #
-    # KNOWN_FORWARD holds the one case Mide has not yet ruled on (§4.5). It is
-    # an allowance, not a suppression: anything NOT in this set fails the build,
-    # so the set can only shrink by a ruling, never grow by an accident.
-    KNOWN_FORWARD = {("energy-in-food", "P2")}
+    # KNOWN_FORWARD holds the cases Mide has not yet ruled on (§4.5). It is an
+    # allowance, not a suppression: anything NOT in this set fails the build, so
+    # the set can only shrink by a ruling, never grow by an accident.
+    #
+    # ⊖ EMPTY since 16 Aug 2026 (MRB-228), and it emptied by a RULING, which is
+    # the only way it is allowed to. Its single entry was
+    # `("energy-in-food", "P2")` — B3's slot pointing forward at a Physics unit
+    # taught a year later. MRB-232 split `KS3.B.NUT.02` and gave B3 its own
+    # owned lesson, so the reference slot that created the forward edge no
+    # longer exists and there is nothing left to allow.
+    #
+    # The `stale` check below is what made this visible rather than leaving a
+    # dead allowance sitting here: an entry that no longer describes a real
+    # forward reference is a standing permission for a defect nobody is
+    # watching for. It failed the build the moment the ruling landed, which is
+    # exactly what it is for.
+    KNOWN_FORWARD = set()
 
     year_of_unit = {u["code"]: u["typical_year"] for u in units}
     slug_unit = {l["slug"]: u["code"] for u in units for l in u["lessons"]}

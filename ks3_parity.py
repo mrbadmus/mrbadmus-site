@@ -442,6 +442,21 @@ UNIT = "chemistry/particles-and-their-behaviour/index.html"
 # after the biology units are done.
 UNIT_SOON = "chemistry/mixtures-and-separation/index.html"
 UNIT_REF = "biology/nutrition-and-digestion/index.html"
+# ⊖ PARKED 16 Aug 2026 (MRB-228). B3's `energy-in-food` slot was the LAST §4.6
+# reference slot in the key stage — a slot that generates no page of its own
+# and renders in the unit index as a cross-link to its owner. MRB-232 split
+# `KS3.B.NUT.02` and made it an owned B3 lesson, so the cross-reference row and
+# its badge now render on no page anywhere.
+#
+# The machinery is sound and the day a unit declares a reference slot again it
+# should be measured, so the rows are parked rather than deleted — same
+# reasoning as `_PARKED_SYSTEM_PARTS`. `UNIT_REF` is kept pointing at B3
+# because that is where the component last lived and where the diff will be
+# read from; the constant is not what makes the rows skip.
+_PARKED_NO_REF_SLOT = (
+    "no unit declares a §4.6 reference slot — B3's was the last, and MRB-232 "
+    "made it an owned lesson. Un-park when a unit declares one again "
+    "(a fourth element on a lesson tuple in ks3_data/structure.py).")
 LANDING = "index.html"
 YEAR = "year-7/index.html"
 
@@ -461,6 +476,17 @@ C1_STATES = "chemistry/particles-and-their-behaviour/solids-liquids-and-gases.ht
 # ═══ BEGIN B2 ═══
 B2_BIO = "biology/movement-skeleton-and-muscles/biomechanics-forces-in-the-body.html"
 # ═══ END B2 ═══
+
+# ═══ BEGIN B3 ═══
+B3_DIET = "biology/nutrition-and-digestion/a-balanced-diet.html"
+B3_WRONG = "biology/nutrition-and-digestion/when-diet-goes-wrong.html"
+B3_ENZ = "biology/nutrition-and-digestion/enzymes-in-digestion.html"
+B3_VILLUS = "biology/nutrition-and-digestion/absorption-and-the-small-intestine.html"
+B3_GUT = "biology/nutrition-and-digestion/the-digestive-system.html"
+B3_BACTERIA = "biology/nutrition-and-digestion/bacteria-in-the-gut.html"
+B3_ENERGY = "biology/nutrition-and-digestion/energy-in-food-and-what-you-need.html"
+B3_TESTS = "biology/nutrition-and-digestion/food-tests.html"
+# ═══ END B3 ═══
 
 COMPONENTS = [
     # ── foundations ──
@@ -2168,6 +2194,403 @@ COMPONENTS = [
          sel=".ks3-meters-commit .ks3-options",
          props={"max-width": "544px"}),
     # ═══ END B2 ═══ rows
+    # ═══ BEGIN B3 ═══ rows
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-01. Splice the constant beside the other unit
+# constants in ks3_parity.py.
+#
+#     B3_DIET = "biology/nutrition-and-digestion/a-balanced-diet.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── band-commit (b3-01 #s-plate) ──
+    #
+    # ⚠️ THIS ROW EXISTS TO PROVE THE SPECIFICITY SCOPING, and it is the one
+    # that would otherwise ship broken. The why panel is CREAM (`--ks3-ground`)
+    # inside an ink-dark block, so its note has to resolve to `--ks3-ink`.
+    # `.ks3-dark p` is (0,1,1) and a bare `.ks3-plate-note` is (0,1,0), so
+    # unscoped the note loses and paints `--ks3-on-dark-body` #E7DECE on cream
+    # #FBF3E6 — a 1.1:1 sentence that is technically present and unreadable,
+    # and invisible to anyone reading the stylesheet. Same defect class as B1's
+    # zoom instrument and B2's muscle bench.
+    # ⚖️ CORRECTED (MRB-228). One row asked the note for the PANEL's
+    # background and resolved `rgba(0, 0, 0, 0)` — a paragraph has no ground of
+    # its own. Split: the note's own claim is that it beats `.ks3-dark p`
+    # (0,1,1) and stays ink; the panel's claim is the cream ground it sits on.
+    dict(name="the why note is ink on the cream panel, not on-dark body",
+         on=B3_DIET, drive="plate-opened", sel=".ks3-plate-note",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    dict(name="the why panel is the page ground on an ink block",
+         on=B3_DIET, drive="plate-opened", sel=".ks3-plate-why",
+         props={"background-color": "#FBF3E6"}),
+    # Design's dark segmented pair, identical to `.ks3-sim-seg-btn`'s: lit is
+    # the alert yellow carrying INK text, resting is transparent on the muted
+    # rule. ⚖️ Amber here is CHOSEN, never wrong — nothing in this instrument
+    # marks a mistake, and this row pins the colour to the pressed state so a
+    # later pass cannot quietly repurpose it.
+    dict(name="a chosen band is alert with ink text", on=B3_DIET,
+         drive="plate-opened", sel='.ks3-plate-band[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "border-top-color": "#FFC53D", "min-height": "44px"}),
+    # The row is the ONLY thing in the block that reports whether the student
+    # had it, and it does so with the block's own lit rule rather than with a
+    # marking colour. If this row ever resolves to `--ks3-ok` #12A150 or
+    # `--ks3-ok-tint` #E4F7EB, an activity has started marking (R3).
+    dict(name="a correctly placed row is the dark panel on an alert rule",
+         on=B3_DIET, drive="plate-opened",
+         sel='.ks3-plate-row[data-state="hit"]',
+         props={"background-color": "#3E3730", "border-top-color": "#FFC53D",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    # The verdict is the block's payoff and is set in display type, not body:
+    # "3 of 7 in the right band." has to read as a headline or the three
+    # branches under it read as a footnote to a number nobody noticed.
+    dict(name="the verdict headline is display 800 on on-dark", on=B3_DIET,
+         drive="plate-opened", sel=".ks3-plate-vhead",
+         props={"font-family": "Bricolage Grotesque", "font-size": "27px",
+                "font-weight": "800", "color": "#FBF3E6"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-04.
+#
+#     B3_WRONG = "biology/nutrition-and-digestion/when-diet-goes-wrong.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Every value below is read out of `shared/tokens.css`, not estimated:
+#   --ks3-alert #FFC53D · --ks3-on-dark #FBF3E6 · --ks3-on-dark-muted #C6B9A7
+#   --ks3-dark-panel #3E3730 · --ks3-ground #FBF3E6 · --ks3-ink #221E1B
+#   --ks3-accent-text #A93411 · --ks3-r-panel 20px
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── clinic-cases (b3-04 #s-cases) ──
+    #
+    # ⚠️ THE THREE ROWS BELOW ARE THE SPECIFICITY PROOF, and they are the
+    # reason this instrument has a parity entry at all. `.ks3-dark p` is
+    # (0,1,1); every bare class in the fragment is (0,1,0) and LOSES. Unscoped,
+    # all three of these paragraphs resolve to `--ks3-on-dark-body` #E7DECE —
+    # which is a plausible-looking panel and a broken one, and it is invisible
+    # to reading the CSS.
+    dict(name="the intake line is amber mono, not another sentence of prose",
+         on=B3_WRONG, drive="clinic-diagnosed", sel=".ks3-clinic-intake",
+         props={"font-family": "DM Mono", "font-size": "16px",
+                "color": "#FFC53D"}),
+    # ⚖️ THE VERDICT INVERTS. It sits on the CREAM ground inside an ink block,
+    # so its paragraphs have to be pulled back to ink explicitly. Left to
+    # `.ks3-dark p` they would paint #E7DECE on #FBF3E6 — 1.2:1, the answer
+    # rendered invisible on the one panel that carries it.
+    dict(name="the verdict panel inverts to the page ground", on=B3_WRONG,
+         drive="clinic-diagnosed", sel=".ks3-clinic-verdict",
+         props={"background-color": "#FBF3E6",
+                "border-top-left-radius": "20px"}),
+    dict(name="the answer is ink display type on that cream, not on-dark body",
+         on=B3_WRONG, drive="clinic-diagnosed", sel=".ks3-clinic-answer",
+         props={"font-family": "Bricolage Grotesque", "font-size": "26px",
+                "font-weight": "800", "color": "#221E1B"}),
+    # ⚖️ THE SPENT STATE IS THE ONLY THING THIS BLOCK PAINTS ABOUT THE ANSWER,
+    # and it dims what was NOT chosen. R3: nothing marks correctness here, so
+    # this row asserts a dim and there is deliberately no green/red row to
+    # pair it with anywhere in this instrument.
+    dict(name="after diagnosis the unticked imbalances dim, and nothing marks",
+         on=B3_WRONG, drive="clinic-diagnosed",
+         sel='.ks3-clinic-panel[data-open="1"] .ks3-clinic-pick[aria-pressed="false"]',
+         props={"opacity": "0.45"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-06.
+#
+#     B3_ENZ = "biology/nutrition-and-digestion/enzymes-in-digestion.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Every value below is read out of `shared/tokens.css`, not estimated:
+#   --ks3-alert #FFC53D · --ks3-ok #12A150 · --ks3-on-dark #FBF3E6
+#   --ks3-on-dark-muted #C6B9A7 · --ks3-dark-panel #3E3730 · --ks3-ink #221E1B
+#   --ks3-ground #FBF3E6 · --ks3-r-panel 20px
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── enzyme-run (b3-06 #s-bench) ──
+    #
+    # ⚠️ THE TWO DIAL FIGURES ARE THE SPECIFICITY PROOF. `.ks3-dark p` is
+    # (0,1,1) and a bare `.ks3-erun-rate` is (0,1,0): unscoped, the rate and
+    # the temperature resolve to `--ks3-on-dark-body` #E7DECE and stop reading
+    # as instrument readings at all. That is invisible to reading the CSS and
+    # obvious in a browser, which is exactly why it is a gate row.
+    dict(name="the rate reads as an instrument figure, in amber mono",
+         on=B3_ENZ, sel=".ks3-erun-rate",
+         props={"font-family": "DM Mono", "font-size": "16px",
+                "color": "#FFC53D"}),
+    dict(name="the temperature figure takes the same treatment", on=B3_ENZ,
+         sel=".ks3-erun-tempvalue",
+         props={"font-family": "DM Mono", "font-size": "21px",
+                "color": "#FFC53D"}),
+    # ⚖️ THE COUNTER THAT NEVER MOVES HAS TO LOOK DIFFERENT FROM THE TWO THAT
+    # DO, and this row is the one that matters pedagogically. The fixed bar
+    # carries BOTH `.ks3-erun-bar` and `.ks3-erun-bar-fixed`, so the ink-scoped
+    # sibling rule at (0,2,0) beats an unscoped `-fixed` at (0,1,0) and the
+    # enzyme counter renders in the same muted grey as the substrate — three
+    # identical bars, and the whole argument of the block invisible.
+    #
+    # ⚑ THE VALUE ITSELF IS FLAGGED FOR MIDE. `--ks3-ok` is documented in
+    # tokens.css as the ladder's correctness green, and this is a bar meaning
+    # "unchanged" on a block that marks nothing. Design drew it and it is
+    # reproduced as drawn; this row is what makes the day it is re-ruled a
+    # loud one. Same handling as `scale-cards`' amber distance label.
+    dict(name="the enzyme counter's bar keeps Design's green on ink",
+         on=B3_ENZ, sel=".ks3-erun-bar-fixed",
+         props={"background-color": "#12A150"}),
+    # ⚖️ THE VERDICT INVERTS. It sits on the cream ground inside an ink block,
+    # so its text has to be pulled back to ink explicitly; left to
+    # `.ks3-dark p` it paints #E7DECE on #FBF3E6 at about 1.2:1 — the answer
+    # rendered invisible on the one panel that carries it.
+    dict(name="the verdict panel inverts to cream and reads in ink",
+         on=B3_ENZ, drive="erun-denatured", sel=".ks3-erun-verdict",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "border-top-left-radius": "20px"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-07. Splice the constant beside the other unit
+# constants in ks3_parity.py, inside the B3 group.
+#
+#     B3_VILLUS = "biology/nutrition-and-digestion/absorption-and-the-small-intestine.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept. Every hex below is read out of
+# shared/tokens.css, not estimated.
+
+    # ── fold-builder (b3-07 #s-fold) ──
+    #
+    # ⚠️ THIS ROW EXISTS TO PROVE THE SPECIFICITY SCOPING. `.ks3-dark p` is
+    # (0,1,1) and a bare `.ks3-fold-note` is (0,1,0), so unscoped the note
+    # loses and takes the BLOCK's on-dark body copy instead of the PANEL's.
+    # Here the two happen to resolve to the same token, which is exactly what
+    # makes it dangerous: the defect would be invisible to reading and to the
+    # eye, and would surface the first time the panel's treatment moved. The
+    # row pins the panel's own value so the cascade is asserted rather than
+    # assumed.
+    dict(name="the area note is the panel's body copy, not the block's",
+         on=B3_VILLUS, sel=".ks3-fold-note:not([hidden])",
+         props={"color": "#E7DECE", "font-size": "19px",
+                "font-family": "Instrument Sans"}),
+    # The readout is the block's payoff and the number is MONO, not display
+    # type: it changes six times while a student watches, and a proportional
+    # face would make it jump on every toggle. Alert amber on the dark panel
+    # is a value being reported, never a mistake being marked.
+    dict(name="the area readout is mono alert on a dark panel", on=B3_VILLUS,
+         sel=".ks3-fold-area",
+         props={"font-family": "DM Mono", "font-size": "26px",
+                "color": "#FFC53D"}),
+    dict(name="the readout sits on the nested dark panel at card radius",
+         on=B3_VILLUS, sel=".ks3-fold-readout",
+         props={"background-color": "#3E3730",
+                "border-top-left-radius": "22px"}),
+    # ⚖️ THE ROW THAT MATTERS PEDAGOGICALLY. The bar is amber while the model
+    # is part-built and green only when all three levels are on — and green
+    # here is "this is the finished thing", not "you were right": there is no
+    # question in this block and nothing to be right about. If this ever
+    # resolves to `--ks3-ok` #12A150 at a count below three, the instrument has
+    # started congratulating a student for a state, which is the first step
+    # towards an activity that marks (R3).
+    dict(name="the bar turns green only with all three levels on",
+         on=B3_VILLUS, drive="fold-all-on", sel=".ks3-fold-bar",
+         props={"background-color": "#12A150"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-05.
+#
+#     B3_GUT = "biology/nutrition-and-digestion/the-digestive-system.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Every value below is read out of `shared/tokens.css`, not estimated:
+#   --ks3-alert #FFC53D · --ks3-on-dark #FBF3E6 · --ks3-on-dark-muted #C6B9A7
+#   --ks3-on-dark-body #E7DECE · --ks3-dark-panel #3E3730 · --ks3-ink #221E1B
+#   --ks3-ground #FBF3E6 · --ks3-r-card 22px · --ks3-r-panel 20px
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── gut-journey (b3-05 #s-journey) ──
+    #
+    # ⚖️ THE TIME TILE IS THE QUANTITY THE WHOLE BLOCK ARGUES FROM, and this
+    # row is the one that matters pedagogically: 23px mono at weight 500,
+    # against the 18px/700 the other two tiles take. Level the three and the
+    # panel reads as three equal facts, which is precisely how "four hours in
+    # the stomach, sixteen in the small intestine" gets missed — and it would
+    # be invisible to reading the CSS, because three matching tiles look tidy.
+    dict(name="the time tile is larger mono, not one fact of three",
+         on=B3_GUT, sel='.ks3-gut-tile[data-tile="time"] .ks3-gut-tilevalue',
+         props={"font-family": "DM Mono", "font-size": "23px",
+                "color": "#FBF3E6"}),
+    dict(name="the other two tiles stay 18px body weight", on=B3_GUT,
+         sel='.ks3-gut-tile[data-tile="absorbs"] .ks3-gut-tilevalue',
+         props={"font-family": "Instrument Sans", "font-size": "18px",
+                "font-weight": "700", "color": "#FBF3E6"}),
+    # ⚠️ SPECIFICITY. The note sits on the CREAM ground inside an ink block, so
+    # it must be pulled back to ink at (0,2,0). `.ks3-dark p` is (0,1,1) and a
+    # bare `.ks3-gut-note` is (0,1,0): unscoped it paints #E7DECE on #FBF3E6 at
+    # about 1.2:1 — seven invisible paragraphs, one per stop.
+    dict(name="the worth-knowing note inverts to cream and reads in ink",
+         on=B3_GUT, sel=".ks3-gut-note",
+         props={"background-color": "#FBF3E6", "color": "#221E1B",
+                "font-size": "18px"}),
+    # ⚖️ THE LIT ROW IS THE ONLY THING THE RUNTIME MOVES ON THIS CHART. The
+    # width is inline from the Python; if this row ever fails, the highlight
+    # has been re-implemented somewhere that can also touch the width.
+    dict(name="the chart lights the current organ's bar in amber", on=B3_GUT,
+         drive="gut-stomach", sel='.ks3-gut-row[data-lit="1"] .ks3-gut-bar',
+         props={"background-color": "#FFC53D"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-08. Splice the constant beside the other unit
+# constants in ks3_parity.py, inside the B3 group.
+#
+#     B3_BACTERIA = "biology/nutrition-and-digestion/bacteria-in-the-gut.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept. Every hex below is read out of
+# shared/tokens.css, not estimated.
+
+    # ── job-switch (b3-08 #s-jobs) ──
+    #
+    # ⚠️ THE ROW THAT WOULD OTHERWISE SHIP BROKEN, and the only one in this
+    # unit where the failure is total rather than subtle. The consequence
+    # paragraph is CREAM (`--ks3-ground`) inside an ink-dark block, so its text
+    # has to resolve to `--ks3-ink`. `.ks3-dark p` is (0,1,1) and a bare
+    # `.ks3-jobsw-without` is (0,1,0): unscoped it paints `--ks3-on-dark-body`
+    # #E7DECE on #FBF3E6, which is 1.1:1 — the sentence is in the DOM, is
+    # correct, and cannot be read. Invisible to reading the stylesheet, and
+    # the same defect class as B1's zoom instrument and B2's muscle bench.
+    dict(name="the consequence is ink on the cream panel, not on-dark body",
+         on=B3_BACTERIA, drive="jobs-one-off", sel=".ks3-jobsw-without",
+         props={"color": "#221E1B", "background-color": "#FBF3E6",
+                "font-size": "18px"}),
+    # ⚖️ THE GROUND INVERTS, and it is the opposite way round from b3-07's
+    # fold builder one lesson earlier. A job STILL BEING DONE sits on the
+    # nested dark panel — it is a working part of the system. This row pins
+    # the resting state so a later tidy-up cannot align the two instruments
+    # and destroy the distinction.
+    dict(name="a job still being done sits on the dark panel", on=B3_BACTERIA,
+         sel=".ks3-jobsw-job",
+         props={"background-color": "#3E3730",
+                "border-top-left-radius": "20px",
+                "border-top-width": "2px"}),
+    # Switched off, the row loses the panel and gains the alert rule. Amber
+    # marks a part that has been REMOVED, never a student who was wrong (§8),
+    # and if this ever resolves to `--ks3-ok` #12A150 or `--ks3-ok-tint`
+    # #E4F7EB an experiment has started marking (R3).
+    dict(name="a switched-off job falls back to bare ink on an alert rule",
+         on=B3_BACTERIA, drive="jobs-one-off", sel='.ks3-jobsw-job[data-off="1"]',
+         props={"border-top-color": "#FFC53D", "border-top-width": "2px"}),
+    # The payoff is a HEADLINE and is set in display type. As body copy it
+    # would read as a sixth consequence rather than as the conclusion drawn
+    # from all five — and the sentence it carries is the one the lesson is
+    # built to deliver.
+    dict(name="the germ-free-mouse payoff is a display headline", on=B3_BACTERIA,
+         drive="jobs-all-off", sel=".ks3-jobsw-allhead",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "800",
+                "font-size": "26px", "color": "#FBF3E6"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-03.
+#
+#     B3_ENERGY = "biology/nutrition-and-digestion/energy-in-food-and-what-you-need.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── person-ledger (b3-03 #s-ledger) ──
+    #
+    # ⚠️ THE ROW THAT WOULD OTHERWISE SHIP BROKEN. The match panel is CREAM
+    # inside an ink-dark block, so its copy has to resolve to `--ks3-ink`.
+    # `.ks3-dark p` is (0,1,1) and a bare `.ks3-ledger-mwhy` is (0,1,0):
+    # unscoped it paints #E7DECE on #FBF3E6, and the sentence lost is
+    # *"Now switch person without changing the food"* — the one NOTES-B3 §3.3
+    # names as the thing that must not be lost, because without it a match
+    # reads as having finished.
+    # ⚖️ CORRECTED (MRB-228) — see the note in band-commit.parity.py. The
+    # background belongs to `.ks3-ledger-match`, not to the paragraph in it.
+    dict(name="the match copy is ink on the cream panel", on=B3_ENERGY,
+         drive="ledger-matched", sel=".ks3-ledger-mwhy",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    dict(name="the match panel is the page ground on an ink block",
+         on=B3_ENERGY, drive="ledger-matched", sel=".ks3-ledger-match",
+         props={"background-color": "#FBF3E6"}),
+    # ⚖️ THE MATCHED BAR IS NOT GREEN, AND THAT IS THE POINT. `--ks3-ok`
+    # #12A150 is the ladder's colour for a correct answer and a plate is not an
+    # answer; the bar reports a measurement. If this row ever resolves to
+    # #12A150 or #E4F7EB the block has started marking (R3), and it would look
+    # like an improvement.
+    dict(name="a matched day reads as on target, never as correct",
+         on=B3_ENERGY, drive="ledger-matched", sel='.ks3-ledger-fill[data-state="matched"]',
+         props={"background-color": "#2F5CE0"}),
+    # The running total is the block's headline number and is mono, not
+    # display: it is a quantity being watched change, and setting it in the
+    # display face would make it read as a conclusion.
+    dict(name="the running total is readable mono, not display", on=B3_ENERGY,
+         drive="ledger-matched", sel=".ks3-ledger-total",
+         props={"font-family": "DM Mono", "font-size": "22px",
+                "color": "#FBF3E6"}),
+    # A food with portions on it takes the same lit treatment as a chosen tab —
+    # alert on ink — because adding a portion IS a selection. Pinned so the two
+    # cannot drift into two different "on" colours in one block.
+    dict(name="a food with portions on it takes the lit treatment",
+         on=B3_ENERGY, drive="ledger-matched",
+         sel='.ks3-ledger-food[data-count]:not([data-count="0"])',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# One drawn instance, on b3-02.
+#
+#     B3_TESTS = "biology/nutrition-and-digestion/food-tests.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── test-bench (b3-02 #s-bench) ──
+    #
+    # ⚠️ THE ROW THAT WOULD OTHERWISE SHIP BROKEN. The result panel is CREAM
+    # inside an ink-dark block, so the honest note has to resolve to
+    # `--ks3-ink`. `.ks3-dark p` is (0,1,1) and a bare `.ks3-tbench-why` is
+    # (0,1,0): unscoped it paints `--ks3-on-dark-body` #E7DECE on #FBF3E6 —
+    # the four false-negative explanations, which are the entire point of the
+    # lesson, present and unreadable.
+    # ⚖️ CORRECTED (MRB-228) — see the note in band-commit.parity.py. The
+    # background belongs to `.ks3-tbench-result`, not to the paragraph in it.
+    dict(name="the honest note is ink on the cream result panel", on=B3_TESTS,
+         drive="bench-run", sel=".ks3-tbench-why",
+         props={"color": "#221E1B", "font-size": "18px"}),
+    dict(name="the result panel is the page ground on an ink block",
+         on=B3_TESTS, drive="bench-run", sel=".ks3-tbench-result",
+         props={"background-color": "#FBF3E6"}),
+    # ⚖️ THE CLAIM LINE IS RULED OFF, and the rule is load-bearing rather than
+    # decorative: above it is what happened, below it is what the student may
+    # write down. Losing the rule runs the observation and the licensed claim
+    # together, which is precisely the slip the lesson exists to stop.
+    dict(name="the claim line is ruled off from the explanation", on=B3_TESTS,
+         drive="bench-run", sel=".ks3-tbench-claim",
+         props={"border-top-color": "#E0D2B9", "border-top-width": "2px",
+                "padding-top": "12px", "color": "#221E1B"}),
+    # ⚖️ THE TUBE IS THE ONE PLACE IN THE KEY STAGE WHERE A COLOUR IS REAL.
+    # This row asserts the tube's own frame comes from tokens while its FILL
+    # does not — the fill is checked in the drive below, against the reagent's
+    # authored hex. A token creeping onto the fill would tint an observation.
+    dict(name="the tube frame is the muted rule, 62px wide", on=B3_TESTS,
+         sel=".ks3-tbench-tube",
+         props={"border-top-color": "#C6B9A7", "border-top-width": "3px",
+                "width": "62px", "height": "168px"}),
+    # Design's dark tab pair, shared with band-commit and person-ledger: lit is
+    # alert with ink text, resting transparent on the muted rule.
+    dict(name="a chosen bench tab is alert with ink text", on=B3_TESTS,
+         sel='.ks3-tbench-tab[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+    # ═══ END B3 ═══ rows
 ]
 
 
@@ -2359,8 +2782,10 @@ CONTRAST = [
     dict(name="family chip on its ground", on=UNIT,
          fg=".ks3-family", bg=".ks3-family", need=4.5),
     dict(name="cross-reference pointer on card", on=UNIT_REF,
+         parked=_PARKED_NO_REF_SLOT,
          fg=".ks3-ref-note", bg=".ks3-lesson-list", need=4.5),
     dict(name="cross-reference badge on its tint", on=UNIT_REF,
+         parked=_PARKED_NO_REF_SLOT,
          fg=".ks3-lesson-row.is-ref .ks3-badge",
          bg=".ks3-lesson-row.is-ref .ks3-badge", need=4.5),
     # ── MRB-198: the new kinds' surfaces, measured on their real dark
@@ -3848,6 +4273,609 @@ DRIVES = {
 })()
 """,
     # ═══ END B2 ═══ drives
+    # ═══ BEGIN B3 ═══ drives
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # Nothing measured above exists in the document's layout until all seven
+    # rows are committed and the reveal is opened, so every row needs this.
+    #
+    # ⚠️ IT COMMITS THROUGH THE REAL CONTROLS. Seven `.click()`s on seven band
+    # buttons and one on the reveal, exactly as a student would — never by
+    # setting `data-state` or unhiding a panel, because a drive that reaches
+    # the state by hand proves the stylesheet and nothing about the gate.
+    #
+    # Which band is deliberately unspecified: it presses the FIRST option in
+    # every row, so on Design's payload some rows are right and some are wrong
+    # and both `hit` and `miss` states exist to be measured.
+    "plate-opened": r"""
+(function () {
+  var sec = document.querySelector('[data-plateblock]');
+  if (!sec) { return "no band-commit on the page"; }
+  var wrap = sec.querySelector('[data-plate]');
+  if (!wrap) { return "the block drew no plate"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var rows = wrap.querySelectorAll('.ks3-plate-row');
+  if (rows.length < 2) { return "fewer than two rows to commit"; }
+  var open = wrap.querySelector('[data-plate-open]');
+  if (!open) { return "the block offers no reveal"; }
+  if (!open.disabled) {
+    return "the reveal was open before anything was committed — the gate is the lesson";
+  }
+  // Commit every row but the last, and check the gate is still shut.
+  for (var i = 0; i < rows.length; i++) {
+    if (i === rows.length - 1) {
+      if (!open.disabled) {
+        return "the reveal unlocked with a row still uncommitted";
+      }
+    }
+    var b = rows[i].querySelector('.ks3-plate-band');
+    if (!b) { return "a row offers no bands"; }
+    b.click();
+  }
+  if (open.disabled) {
+    return "every row is committed and the reveal is still locked";
+  }
+  open.click();
+  var verdict = wrap.querySelector('[data-plate-verdict]');
+  if (!verdict || verdict.hasAttribute('hidden')) {
+    return "the reveal was pressed and the verdict is still hidden";
+  }
+  if (!wrap.querySelector('.ks3-plate-why:not([hidden])')) {
+    return "the verdict opened with no row explanation showing";
+  }
+  if (!verdict.querySelector('.ks3-plate-vwhy:not([hidden])')) {
+    return "the verdict opened on none of its three branches";
+  }
+  if (verdict.querySelectorAll('.ks3-plate-vwhy:not([hidden])').length !== 1) {
+    return "the verdict opened on more than one branch at once";
+  }
+  if (!wrap.querySelector('.ks3-plate-row[data-state="hit"]')
+      && !wrap.querySelector('.ks3-plate-row[data-state="miss"]')) {
+    return "no row reported whether it was placed correctly";
+  }
+  // R3, asserted here as well as globally: the band buttons are commitments,
+  // not answers, so nothing on them may be marked.
+  if (wrap.querySelector('.ks3-plate-band[data-correct], .ks3-plate-band.is-correct, .ks3-plate-band.is-wrong')) {
+    return "a band button was marked — this block marks no control";
+  }
+  if (wrap.querySelector('svg.ks3-mark')) {
+    return "a drawn tick or cross appears inside band-commit";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the answers are open and the stop has not ticked";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # The verdict does not exist in the document's layout until a clinic has
+    # been diagnosed, so every measurement above needs this. It reaches that
+    # state through the instrument's OWN controls — a pick, then the reveal
+    # button — and never by setting an attribute.
+    "clinic-diagnosed": r"""
+(function () {
+  var sec = document.querySelector('[data-clinicblock]');
+  if (!sec) { return "no clinic-cases on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var wrap = sec.querySelector('[data-clinic]');
+  var panel = wrap && wrap.querySelector('.ks3-clinic-panel:not([hidden])');
+  if (!panel) { return "no clinic panel is showing"; }
+  var picks = panel.querySelectorAll('.ks3-clinic-pick');
+  var btn = panel.querySelector('[data-clinic-reveal]');
+  if (picks.length < 2 || !btn) { return "the clinic offers no imbalances to tick"; }
+  if (!btn.hasAttribute('disabled')) {
+    return "the diagnosis was available before anything was ticked";
+  }
+  // ⚠️ TWO ticks, on one clinic, because the multi-select IS the instrument.
+  // A single-select would drop the first when the second is pressed, and this
+  // check would then catch it.
+  picks[0].click();
+  picks[1].click();
+  if (panel.querySelectorAll('.ks3-clinic-pick[aria-pressed="true"]').length !== 2) {
+    return "two imbalances were ticked and the block kept only one";
+  }
+  if (btn.hasAttribute('disabled')) {
+    return "two imbalances are ticked and the diagnosis is still locked";
+  }
+  btn.click();
+  var v = panel.querySelector('[data-reveal]');
+  if (!v || v.hasAttribute('hidden')) {
+    return "the diagnosis was opened and the verdict is still hidden";
+  }
+  if (!panel.querySelector('.ks3-clinic-answer') ||
+      !panel.querySelector('.ks3-clinic-verdict-label')) {
+    return "the verdict opened without its answer or its label";
+  }
+  // R3, asserted here as well as globally: nothing in this block marks.
+  if (wrap.querySelector('.ks3-clinic-pick[data-correct], .ks3-clinic-pick.is-correct, .ks3-clinic-pick.is-wrong')) {
+    return "an imbalance button was marked — this block marks nothing";
+  }
+  // One clinic of five, so the stop must NOT have ticked yet: the argument is
+  // the five held against each other.
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on one clinic of five";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # ⚖️ THE DRIVE IS THE MISCONCEPTION, END TO END, and it reaches the state
+    # through the instrument's OWN controls: drag the slider past the
+    # threshold, drag it back to the optimum, run. Nothing here sets an
+    # attribute, and every assertion is about what the bench then says.
+    "erun-denatured": r"""
+(function () {
+  var sec = document.querySelector('[data-erunblock]');
+  if (!sec) { return "no enzyme-run on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var wrap = sec.querySelector('[data-erun]');
+  var cfg;
+  try { cfg = JSON.parse(wrap.getAttribute('data-cfg') || '{}'); }
+  catch (err) { return "the bench carries no readable config"; }
+  var slider = wrap.querySelector('[data-temp]');
+  var runBtn = wrap.querySelector('[data-run]');
+  var rate = wrap.querySelector('[data-rate]');
+  if (!slider || !runBtn || !rate) { return "the bench has no dial or no run button"; }
+
+  function setTemp(v) {
+    slider.value = String(v);
+    slider.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  // The third counter, read BEFORE anything happens. It is the one readout
+  // nothing in the instrument may move, and it is checked again at the end.
+  var fixed = wrap.querySelector('.ks3-erun-bar-fixed');
+  var enzCell = wrap.querySelector('.ks3-erun-counter[data-counter="enzyme"] .ks3-erun-countervalue');
+  if (!fixed || !enzCell) { return "the bench draws no enzyme counter"; }
+  if (enzCell.hasAttribute('data-value')) {
+    return "the enzyme counter has a runtime handle — it must have none";
+  }
+  var enzBefore = enzCell.textContent;
+  var widthBefore = fixed.style.width || '';
+
+  // 1. Above the threshold: the rate must fall to zero WITHOUT a run.
+  setTemp(Number(cfg.denature_c) + 10);
+  if (!/(^|\D)0(\D|$)/.test(rate.textContent)) {
+    return "heated past the threshold and the rate is not zero";
+  }
+  if (!wrap.querySelector('.ks3-erun-tempnote[data-note="denatured_hot"]:not([hidden])')) {
+    return "heated past the threshold and the hot-denatured note is not showing";
+  }
+
+  // 2. Cooled back to the optimum: STILL zero. This is the latch, and it is
+  // the whole reason the instrument exists.
+  setTemp(Number(cfg.optimum_c));
+  if (!/(^|\D)0(\D|$)/.test(rate.textContent)) {
+    return "cooling a denatured enzyme brought the rate back — the latch is broken";
+  }
+  if (!wrap.querySelector('.ks3-erun-tempnote[data-note="denatured_cool"]:not([hidden])')) {
+    return "cooled after denaturing and the cool-denatured note is not showing";
+  }
+
+  // 3. Run it anyway: nothing is digested and the verdict says so.
+  runBtn.click();
+  var v = wrap.querySelector('[data-reveal]');
+  if (!v || v.hasAttribute('hidden')) {
+    return "a denatured run finished and no verdict appeared";
+  }
+  if (!wrap.querySelector('.ks3-erun-verdicttext[data-verdict="denatured"]:not([hidden])')) {
+    return "a denatured run showed a verdict that was not the denatured one";
+  }
+  var prod = wrap.querySelector('[data-value="product"]');
+  if (prod && !/(^|\D)0(\D|$)/.test(prod.textContent)) {
+    return "a denatured enzyme produced something";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the reaction was run and the stop has not ticked";
+  }
+
+  // 4. The counter that never moves has not moved.
+  if (enzCell.textContent !== enzBefore || (fixed.style.width || '') !== widthBefore) {
+    return "the enzyme counter moved — it is the one readout nothing may touch";
+  }
+  // R3: nothing in this block marks correctness.
+  if (wrap.querySelector('[data-correct], .is-correct, .is-wrong')) {
+    return "a bench control was marked — this block marks nothing";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # All three levels ON, through the instrument's own three buttons and
+    # nothing else — no attribute is set by hand, so a regression in the
+    # toggle path fails here rather than being stepped over.
+    "fold-all-on": r"""
+(function () {
+  var sec = document.querySelector('[data-foldblock]');
+  if (!sec) { return "no fold-builder on the page"; }
+  var wrap = sec.querySelector('[data-fold]');
+  if (!wrap) { return "the block has no fold-builder in it"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var bar = wrap.querySelector('[data-fold-bar]');
+  if (!bar) { return "the readout has no bar"; }
+  if (bar.getAttribute('data-full') === '1') {
+    return "the bar was already full before any level was added";
+  }
+  var toggles = wrap.querySelectorAll('[data-fold-toggle]');
+  if (toggles.length < 3) {
+    return "the builder offers " + toggles.length + " levels, not three";
+  }
+  for (var i = 0; i < toggles.length; i++) { toggles[i].click(); }
+  if (bar.getAttribute('data-full') !== '1') {
+    return "every level is on and the bar has not filled";
+  }
+  // The note is indexed by the COUNT of levels, so the last one is the
+  // finished model's. A note stuck at index 0 means emit-both-show-one has
+  // stopped swapping and the student is reading about a plain tube.
+  var shown = wrap.querySelector('.ks3-fold-note:not([hidden])');
+  if (!shown) { return "no area note is showing"; }
+  if (shown.getAttribute('data-note') !== String(toggles.length)) {
+    return "the note showing is for " + shown.getAttribute('data-note')
+      + " level(s), not " + toggles.length;
+  }
+  if (wrap.querySelectorAll('.ks3-fold-note:not([hidden])').length !== 1) {
+    return "more than one area note is showing at once";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "every level is on and the stop has not ticked";
+  }
+  // ⚖️ THE STOP LATCHES. Switching a level back off must leave the rail
+  // alone — MRB-208 says a stop ticks when the activity is finished, and
+  // nothing un-finishes it. The bar and the note are allowed to follow the
+  // live state; the rail is not.
+  toggles[0].click();
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the stop un-ticked when a level was switched back off";
+  }
+  toggles[0].click();
+  // R3, asserted here as well as globally: three toggles are not answers, so
+  // nothing in this instrument may be marked, spent or disabled.
+  if (wrap.querySelector('.ks3-option, [data-correct], .is-correct, .is-wrong')) {
+    return "the fold builder is marking something — this block asks no question";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # Drives the journey to the STOMACH — stop three, and the one the lesson's
+    # argument turns on. Reached through the instrument's own tab, never by
+    # setting an attribute.
+    "gut-stomach": r"""
+(function () {
+  var sec = document.querySelector('[data-gutblock]');
+  if (!sec) { return "no gut-journey on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var wrap = sec.querySelector('[data-gut]');
+  var tabs = wrap ? wrap.querySelectorAll('.ks3-gut-tab') : [];
+  if (tabs.length < 7) { return "the journey draws fewer than seven stops"; }
+  var tab = wrap.querySelector('.ks3-gut-tab[data-stop="stomach"]');
+  if (!tab) { return "the journey has no stomach stop"; }
+  tab.click();
+  var panel = wrap.querySelector('.ks3-gut-stop[data-stop="stomach"]');
+  if (!panel || panel.hasAttribute('hidden')) {
+    return "the stomach tab was pressed and its panel is still hidden";
+  }
+  if (wrap.querySelectorAll('.ks3-gut-stop:not([hidden])').length !== 1) {
+    return "more than one stop panel is showing at once";
+  }
+  if (panel.querySelectorAll('.ks3-gut-tile').length !== 3) {
+    return "a stop panel arrived without all three tiles";
+  }
+  var lit = wrap.querySelectorAll('.ks3-gut-row[data-lit="1"]');
+  if (lit.length !== 1 || lit[0].getAttribute('data-stop') !== 'stomach') {
+    return "the chart is not lighting the stop that is showing";
+  }
+  // ⚠️ THE BAR WIDTHS ARE THE PYTHON'S AND MUST SURVIVE A TAB PRESS. If the
+  // wiring ever starts computing them, this is where it shows up.
+  var bar = lit[0].querySelector('.ks3-gut-bar');
+  if (!bar || !/^\s*\d/.test(bar.style.width || '')) {
+    return "the lit bar has no inline width from the build";
+  }
+  // Three of seven visited (mouth seeded, stomach pressed) — the stop must not
+  // have ticked: the whole journey is the argument.
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked before the journey was finished";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # ONE job off, through that row's own button. The consequence paragraph
+    # does not exist in the document's layout until it is pressed.
+    "jobs-one-off": r"""
+(function () {
+  var sec = document.querySelector('[data-jobswblock]');
+  if (!sec) { return "no job-switch on the page"; }
+  var wrap = sec.querySelector('[data-jobsw]');
+  if (!wrap) { return "the block has no job-switch in it"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  if (wrap.querySelector('.ks3-jobsw-without:not([hidden])')) {
+    return "a consequence was showing before any job was switched off";
+  }
+  var btn = wrap.querySelector('[data-jobsw-toggle]');
+  if (!btn) { return "the block offers no job to switch off"; }
+  btn.click();
+  var job = wrap.querySelector('.ks3-jobsw-job[data-off="1"]');
+  if (!job) { return "a job was switched off and the row did not change state"; }
+  if (!job.querySelector('.ks3-jobsw-without:not([hidden])')) {
+    return "a job was switched off and its consequence is still hidden";
+  }
+  // ⚖️ ONE JOB IS NOT THE ANIMAL. The summary panel is a claim about all
+  // five at once and must stay shut until it is true.
+  var all = wrap.querySelector('[data-jobsw-all]');
+  if (all && !all.hasAttribute('hidden')) {
+    return "the germ-free-mouse panel opened after one job";
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked after one of five jobs";
+  }
+  return "";
+})()
+""",
+
+    # ALL FIVE off, through the five buttons and nothing else. This is the
+    # state the lesson exists to reach.
+    "jobs-all-off": r"""
+(function () {
+  var sec = document.querySelector('[data-jobswblock]');
+  if (!sec) { return "no job-switch on the page"; }
+  var wrap = sec.querySelector('[data-jobsw]');
+  var all = wrap && wrap.querySelector('[data-jobsw-all]');
+  if (!all) { return "the block has no all-off summary to reach"; }
+  var btns = wrap.querySelectorAll('[data-jobsw-toggle]');
+  if (btns.length < 5) {
+    return "the block offers " + btns.length + " jobs, not five";
+  }
+  for (var i = 0; i < btns.length; i++) { btns[i].click(); }
+  if (all.hasAttribute('hidden')) {
+    return "every job is off and the germ-free-mouse panel is still hidden";
+  }
+  if (wrap.querySelectorAll('.ks3-jobsw-without:not([hidden])').length
+      !== btns.length) {
+    return "a job was switched off without its consequence arriving";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "every job is off and the stop has not ticked";
+  }
+  // ⚖️ THE PANEL FOLLOWS THE STATE AND THE RAIL DOES NOT. Switch one back on:
+  // the animal is no longer germ-free, so the claim must go — but MRB-208
+  // says a stop ticks when the activity is finished, and nothing un-finishes
+  // it. This pair is the whole reason job-switch is not `system-switch`.
+  btns[0].click();
+  if (!all.hasAttribute('hidden')) {
+    return "a job came back on and the panel still claims a germ-free mouse";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the stop un-ticked when a job was switched back on";
+  }
+  btns[0].click();
+  if (all.hasAttribute('hidden')) {
+    return "the panel did not come back when the last job went off again";
+  }
+  // R3, asserted here as well as globally: five toggles are not answers.
+  if (wrap.querySelector('.ks3-option, [data-correct], .is-correct, .is-wrong')) {
+    return "the job switch is marking something — this block asks no question";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # The match panel does not exist in the layout until the plate lands inside
+    # the tolerance, so the rows above need this. It builds the day the way a
+    # student does — repeated `.click()` on real food buttons — and stops the
+    # moment the panel opens.
+    "ledger-matched": r"""
+(function () {
+  var sec = document.querySelector('[data-ledgerblock]');
+  if (!sec) { return "no person-ledger on the page"; }
+  var wrap = sec.querySelector('[data-ledger]');
+  if (!wrap) { return "the block drew no ledger"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var match = wrap.querySelector('[data-match]');
+  if (!match || !match.hasAttribute('hidden')) {
+    return "the match panel was open on an empty plate";
+  }
+  var foods = wrap.querySelectorAll('.ks3-ledger-food');
+  if (foods.length < 2) { return "fewer than two foods to add"; }
+  // Add portions until the bar lands in tolerance. The ledger's own
+  // wrap-around clears a food once it passes `data-max`, so this walks across
+  // the foods rather than hammering one and cycling it back to zero.
+  var bar = wrap.querySelector('[data-bar]');
+  var max = parseInt(wrap.getAttribute('data-max'), 10) || 6;
+  // ⚖️ CORRECTED (MRB-228). The first cut advanced `guard` on a SKIP as well
+  // as on a click, and the target index is derived from `guard` — so every
+  // food already at `data-max` shifted the walk onto a different food, and the
+  // total stepped straight past the tolerance window into `over`. The drive
+  // then returned success on a bar reading `over`, and the row that measures
+  // the matched fill found nothing.
+  //
+  // Walk the foods in order, one click at a time, and STOP the instant the bar
+  // reports a match — the state is set synchronously in the click handler, so
+  // reading it straight after the click is sound. Reachable in nine clicks.
+  var guard = 0;
+  for (var f = 0; f < foods.length && bar.getAttribute('data-state') !== 'matched'; f++) {
+    while ((parseInt(foods[f].getAttribute('data-count'), 10) || 0) < max
+           && bar.getAttribute('data-state') !== 'matched' && guard < 400) {
+      foods[f].click();
+      guard += 1;
+    }
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "food is on the plate and the stop has not ticked";
+  }
+  if (bar.getAttribute('data-state') !== 'matched') {
+    return "no combination of the offered portions lands inside the tolerance";
+  }
+  if (match.hasAttribute('hidden')) {
+    return "the plate is inside the tolerance and the match panel is shut";
+  }
+  if (!match.querySelector('.ks3-ledger-mhead:not([hidden])')) {
+    return "the match panel opened without naming who it matches";
+  }
+  if (match.querySelectorAll('.ks3-ledger-mhead:not([hidden])').length !== 1) {
+    return "the match panel named more than one eater at once";
+  }
+  // ⚖️ THE EXPERIMENT: switching the person must NOT touch the plate. This is
+  // the assertion the whole instrument exists for, and it is cheap to break by
+  // "tidying" the tab handler into a reset.
+  var before = wrap.querySelector('[data-portions]').textContent;
+  var tabs = wrap.querySelectorAll('.ks3-ledger-tab[data-person]');
+  var other = null;
+  for (i = 0; i < tabs.length; i++) {
+    if (tabs[i].getAttribute('aria-pressed') !== 'true') { other = tabs[i]; break; }
+  }
+  if (!other) { return "the ledger offers only one eater"; }
+  var was = null;
+  for (i = 0; i < tabs.length; i++) {
+    if (tabs[i].getAttribute('aria-pressed') === 'true') { was = tabs[i]; break; }
+  }
+  other.click();
+  if (wrap.querySelector('[data-portions]').textContent !== before) {
+    return "switching the person changed the plate — the plate is the control";
+  }
+  // ⚖️ SWITCH BACK (MRB-228). The experiment above is the point of the
+  // instrument, and it necessarily leaves the bar reading `over` — the plate
+  // that matched one eater does not match the next, which is the whole lesson.
+  // But this drive is named `ledger-matched` and four rows measure the matched
+  // state after it, so it must END where its name says. Returning to the
+  // original eater restores the match without touching the plate, which is
+  // itself the same claim the experiment just made, in reverse.
+  if (was) { was.click(); }
+  if (bar.getAttribute('data-state') !== 'matched') {
+    return "returning to the first eater did not restore the match";
+  }
+  // R3: there is no answer here and nothing may be marked.
+  if (wrap.querySelector('.ks3-option, [data-correct], svg.ks3-mark')) {
+    return "an answer control or a drawn mark appeared inside person-ledger";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+
+    # The result panel does not exist in the layout until a combination has
+    # been predicted, so every panel row above needs this.
+    #
+    # ⚠️ IT RUNS THE TEST THE WAY A STUDENT DOES — one `.click()` on a real
+    # prediction button. There is no run control to reach for: in this block
+    # predicting IS running, and a drive that unhid the panel directly would
+    # prove the stylesheet while leaving that mechanism unasserted.
+    "bench-run": r"""
+(function () {
+  var sec = document.querySelector('[data-tbenchblock]');
+  if (!sec) { return "no test-bench on the page"; }
+  var wrap = sec.querySelector('[data-tbench]');
+  if (!wrap) { return "the block drew no bench"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var tube = wrap.querySelector('[data-tube]');
+  if (!tube) { return "the bench drew no tube"; }
+  var resting = getComputedStyle(tube).backgroundColor;
+  if (tube.getAttribute('data-run') !== '0') {
+    return "the tube reports a run before anything was run";
+  }
+  var predict = wrap.querySelector('[data-predict]');
+  if (!predict || predict.hasAttribute('hidden')) {
+    return "an unrun combination is not asking for a prediction";
+  }
+  if (!wrap.querySelector('.ks3-tbench-prompt:not([hidden])')) {
+    return "the prediction gate opened with no prompt showing";
+  }
+  if (wrap.querySelectorAll('.ks3-tbench-prompt:not([hidden])').length !== 1) {
+    return "more than one prediction prompt is showing at once";
+  }
+  var opt = predict.querySelector('.ks3-option');
+  if (!opt) { return "the prediction gate offers no options"; }
+  opt.click();
+  var panel = wrap.querySelector('.ks3-tbench-result:not([hidden])');
+  if (!panel) { return "a prediction was made and no result opened"; }
+  if (wrap.querySelectorAll('.ks3-tbench-result:not([hidden])').length !== 1) {
+    return "more than one result panel is showing at once";
+  }
+  if (!panel.querySelector('.ks3-tbench-claim')) {
+    return "a result opened with no claim line — the claim line is the lesson";
+  }
+  if (!panel.querySelector('.ks3-tbench-verdict:not([hidden])')) {
+    return "a result opened without saying whether the prediction matched";
+  }
+  if (!predict.hasAttribute('hidden')) {
+    return "the combination has run and the prediction gate is still asking";
+  }
+  if (tube.getAttribute('data-run') !== '1') {
+    return "the test ran and the tube still reads unrun";
+  }
+  // ⚖️ THE FILL IS THE REAGENT'S OWN COLOUR. It has to CHANGE on a positive
+  // and it must never resolve to an accent token — #E4572E is --ks3-accent
+  // and #FFC53D is --ks3-alert, and either on this element would be tinting
+  // an observation.
+  var after = getComputedStyle(tube).backgroundColor;
+  if (after === 'rgb(228, 87, 46)' || after === 'rgb(255, 197, 61)') {
+    return "the tube fill resolved to an accent token, not a reagent colour";
+  }
+  if (!panel.getAttribute('data-colour')) {
+    return "the result panel carries no reagent colour for the tube";
+  }
+  if (panel.getAttribute('data-outcome') === 'pos' && after === resting) {
+    return "a positive result left the tube the colour it started";
+  }
+  // R3: the prediction options are commitments, not answers.
+  if (wrap.querySelector('.ks3-option[data-correct], .ks3-option[disabled], .ks3-option.is-correct, .ks3-option.is-wrong')) {
+    return "a prediction option was marked or disabled";
+  }
+  return "";
+})()
+""",
+
+    # The rail stop asks for FOUR combinations, not one, so it needs its own
+    # drive: `bench-run` deliberately stops at one to prove the panel, and a
+    # stop that ticked there would be a rail that lies in the student's favour.
+    "bench-four": r"""
+(function () {
+  var sec = document.querySelector('[data-tbenchblock]');
+  if (!sec) { return "no test-bench on the page"; }
+  var wrap = sec.querySelector('[data-tbench]');
+  var target = parseInt(wrap.getAttribute('data-target'), 10) || 4;
+  var tests = wrap.querySelectorAll('.ks3-tbench-tab[data-test]');
+  if (tests.length < target) {
+    return "fewer tests on the bench than the rail stop asks for";
+  }
+  for (var i = 0; i < target; i++) {
+    tests[i].click();
+    var opt = wrap.querySelector('[data-predict] .ks3-option');
+    if (!opt) { return "a fresh combination offered no prediction"; }
+    if (i === target - 1 && sec.getAttribute('data-stage-done') === '1') {
+      return "the stop ticked before the last combination was run";
+    }
+    opt.click();
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "four combinations have been run and the stop has not ticked";
+  }
+  return "";
+})()
+""",
+    # ═══ END B3 ═══ drives
 }
 
 

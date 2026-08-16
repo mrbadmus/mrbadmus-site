@@ -1,0 +1,147 @@
+/* ── clinic-cases (b3-04 #s-cases) — five clinics, two with two answers ──
+   Append to shared/ks3.css in a new B3 group.
+
+   ⚠️ SPECIFICITY, AND IT IS LOAD-BEARING. `.ks3-dark p` is (0,1,1) and every
+   bare class below is (0,1,0), so an unscoped `color` LOSES and the whole
+   panel renders in on-dark body copy: the mono clinic label, the amber intake
+   line and the ink verdict panel would all read as one undifferentiated
+   paragraph. Every colour rule is therefore scoped `.ks3-dark …` at (0,2,0).
+   Geometry is safe unscoped — `.ks3-dark p` sets colour and nothing else.
+
+   The light rules are the fallback rather than dead weight: the component is
+   registered for the key stage, this instance happens to be ink-dark, and a
+   future light instance must not paint a `--ks3-dark-panel` box with no
+   readable text in it. Same construction as `keyed-commit`.
+
+   ⚠️ The tab and pick buttons take `.ks3-sim-seg-btn`, which drift 4 already
+   ruled as THE segmented control and which already carries the ink-dark pair
+   (`--ks3-alert` fill, `--ks3-ink` text, `--ks3-on-dark-muted` resting
+   border). Design's own `seg(on, true)` is that declaration value for value,
+   so nothing here re-declares it. What IS declared is the SPENT state, which
+   the shared control has no notion of. */
+
+.ks3-clinic { margin-top: 22px; }
+
+.ks3-clinic-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 20px;
+}
+
+/* The brief — one clinic's whole evidence, on the nested panel ground. */
+.ks3-clinic-brief {
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+}
+.ks3-clinic-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-clinic-desc { margin: 8px 0 0; font-size: 20px; line-height: 1.5; }
+/* ⚖️ THE INTAKE LINE IS THE MEASUREMENT AND IT IS SET APART FROM THE STORY.
+   Mono, and in the one colour nothing else in the panel uses, because the
+   whole lesson is "reason from the measurement, not from the description" —
+   a student who cannot find the number in three lines of clinical prose
+   cannot do the exercise. */
+.ks3-clinic-intake {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+
+.ks3-clinic-picklabel {
+  margin: 20px 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-clinic-picks { display: flex; flex-wrap: wrap; gap: 9px; }
+
+/* ⚖️ THE SPENT STATE DIMS WHAT WAS *NOT* CHOSEN, and that is the only thing
+   this block ever paints about the student's answer. It records what has been
+   spent; it says nothing about whether it was right. There is deliberately no
+   rule keyed on correctness anywhere in this file — R3, and MRB-196 R10 for
+   the verdict that used to carry it. */
+.ks3-clinic-panel[data-open="1"] .ks3-clinic-pick[aria-pressed="false"] {
+  opacity: .45;
+  cursor: default;
+}
+
+.ks3-clinic-foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+.ks3-clinic-count {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+
+/* The verdict lands on the PAGE GROUND inside an ink block — Design's own
+   inversion, and the reason it is legible as an answer rather than as more
+   bench. Everything inside it therefore takes ink and must NOT be scoped
+   `.ks3-dark`: that is the one panel in this instrument where the dark
+   branch would be wrong. */
+.ks3-clinic-verdict {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-clinic-verdict-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-clinic-answer {
+  margin: 10px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 26px;
+  line-height: 1.18;
+  letter-spacing: -.025em;
+  color: var(--ks3-ink);
+}
+.ks3-clinic-why {
+  margin: 12px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── the drawn state, on ink ───────────────────────────────────────────── */
+.ks3-dark .ks3-clinic-brief { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-clinic-label,
+.ks3-dark .ks3-clinic-picklabel,
+.ks3-dark .ks3-clinic-count { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-clinic-desc { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-clinic-intake { color: var(--ks3-alert); }
+/* ⚠️ (0,2,0) BOTH TIMES, and the second is the one that is easy to miss: the
+   verdict sits on the CREAM ground inside an ink block, so its three
+   paragraphs have to be pulled back to ink explicitly or `.ks3-dark p` paints
+   `--ks3-on-dark-body` on cream at 1.2:1 — invisible text on the one panel
+   that carries the answer. */
+.ks3-dark .ks3-clinic-answer,
+.ks3-dark .ks3-clinic-why { color: var(--ks3-ink); }
+.ks3-dark .ks3-clinic-verdict-label { color: var(--ks3-accent-text); }

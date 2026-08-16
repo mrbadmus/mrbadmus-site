@@ -10022,6 +10022,1236 @@
   }
 /* ═══ END B2 ═══ */
 
+/* ═══ BEGIN B3 ═══ */
+/* WIRE: each(root.querySelectorAll("[data-plateblock]"), wireBandCommit);
+   — add to wireInstruments(), in a new B3 group. Uses each / toArray /
+   setHidden / setCount / markStage, all already in scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── band-commit (b3-01 #s-plate) — commit all seven, then open ──
+
+     Seven nutrients, three amount bands, one reveal that is locked until
+     every one of the seven has been placed.
+
+     ⚖️ THE LOCK IS THE LESSON. The block's own lede says it: *a guess you
+     did not make cannot be wrong, and a guess that is never wrong teaches
+     you nothing.* Opening a row at a time — which is what `job-sort` does
+     and what this looks like from a distance — would let a student read
+     row one's answer before committing on row two, and the argument of
+     the block is that the SPREAD is the surprise. Nobody is surprised by
+     a spread they were shown a seventh at a time.
+
+     ⚖️ THE ALL-SAME BRANCH IS THE POINT OF THE VERDICT. A student who
+     puts all seven in one band is told so, in their own answer. That is
+     the only place in the lesson where "balanced means equal amounts" is
+     named back rather than argued against in the abstract, and it is why
+     the branch is chosen here before the score is: a 0-of-7 all-same day
+     and a 0-of-7 scattered day are different mistakes and get different
+     sentences.
+
+     ⚠️ R3 — NOTHING MARKS A CONTROL. The band buttons are not
+     `.ks3-option`, they never gain a correct or wrong class, and once the
+     answers are open the chosen one keeps exactly the treatment it had
+     while the other two dim. What changes is the ROW and the words in its
+     why panel. There is no `--ks3-ok`, no green, no drawn ✓ and no ✕
+     anywhere in this instrument, and nothing here may grow one.
+
+     Emit-both-show-one: every why panel, both band verdicts per row and
+     all three closing branches are already in the document. This function
+     only ever changes which of them is hidden — no authored sentence is
+     assembled here, so the em dashes and the right single quotes survive.
+
+     ⚖️ NOTHING ANIMATES and nothing runs on a clock, so
+     `prefers-reduced-motion` has nothing to degrade and the reduced-motion
+     experience is the complete one.
+     ═══════════════════════════════════════════════════════════════ */
+  function wireBandCommit(sec) {
+    var wrap = sec.querySelector("[data-plate]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll(".ks3-plate-row"));
+    var openBtn = wrap.querySelector("[data-plate-open]");
+    var countEl = wrap.querySelector("[data-plate-count]");
+    var verdict = wrap.querySelector("[data-plate-verdict]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || rows.length;
+    if (!rows.length || !openBtn || !verdict) { return; }
+
+    var picks = {};       // row index -> band id
+    var opened = false;
+
+    function committed() {
+      var n = 0, k;
+      for (k in picks) {
+        if (Object.prototype.hasOwnProperty.call(picks, k)) { n += 1; }
+      }
+      return n;
+    }
+
+    /* The block-head readout ("3 of 7 set") and the foot readout ("3 of 7
+       committed") are two different sentences about the same number, and
+       Design draws both. `setCount` owns the first; the second has its own
+       format because it also has a bespoke DONE string ("Opened") that the
+       count shape has no slot for. */
+    function paintCount() {
+      var n = committed();
+      setCount(sec, n);
+      if (!countEl) { return; }
+      if (opened) {
+        countEl.textContent = countEl.getAttribute("data-done") || "";
+        return;
+      }
+      countEl.textContent = (countEl.getAttribute("data-format") || "")
+        .split("{n}").join(String(n))
+        .split("{total}").join(String(total));
+    }
+
+    function open() {
+      if (opened || committed() < total) { return; }
+      opened = true;
+      var right = 0, chosen = {}, kinds = 0, k;
+
+      each(rows, function (row, i) {
+        var want = row.getAttribute("data-answer");
+        var got = picks[i];
+        var hit = got === want;
+        if (hit) { right += 1; }
+        chosen[got] = true;
+        row.setAttribute("data-state", hit ? "hit" : "miss");
+        each(row.querySelectorAll("[data-real]"), function (span) {
+          setHidden(span, span.getAttribute("data-real") !== (hit ? "hit" : "miss"));
+        });
+        setHidden(row.querySelector("[data-why]"), false);
+        each(row.querySelectorAll(".ks3-plate-band"), function (b) {
+          b.disabled = true;
+        });
+      });
+
+      for (k in chosen) {
+        if (Object.prototype.hasOwnProperty.call(chosen, k)) { kinds += 1; }
+      }
+
+      var head = verdict.querySelector("[data-vhead]");
+      if (head) {
+        head.textContent = (head.getAttribute("data-format") || "")
+          .split("{n}").join(String(right))
+          .split("{total}").join(String(total));
+      }
+      /* ⚖️ ORDER MATTERS. All-same is tested FIRST and independently of the
+         score, because it is a different mistake from a low score and gets a
+         different sentence. A student who put all seven in "tens of grams"
+         happens to score 3, which would otherwise fall through to the general
+         branch and never hear the one thing this block exists to say. */
+      var branch = kinds === 1 ? "all_same" : (right >= total - 1 ? "close" : "spread");
+      each(verdict.querySelectorAll("[data-v]"), function (p) {
+        setHidden(p, p.getAttribute("data-v") !== branch);
+      });
+
+      setHidden(verdict, false);
+      openBtn.disabled = true;
+      openBtn.setAttribute("aria-expanded", "true");
+      paintCount();
+      markStage(sec, true);      // `all_seven_committed_and_opened`
+    }
+
+    each(rows, function (row, i) {
+      each(row.querySelectorAll(".ks3-plate-band"), function (btn) {
+        btn.addEventListener("click", function () {
+          if (opened) { return; }
+          var id = btn.getAttribute("data-band");
+          picks[i] = id;
+          each(row.querySelectorAll(".ks3-plate-band"), function (b) {
+            b.setAttribute("aria-pressed",
+              b.getAttribute("data-band") === id ? "true" : "false");
+          });
+          paintCount();
+          openBtn.disabled = committed() < total;
+        });
+      });
+    });
+
+    openBtn.addEventListener("click", open);
+    paintCount();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-clinicblock]"), wireClinicCases);
+   — add to wireInstruments(), in a new B3 group. Uses each / toArray /
+   setHidden / setCount / markStage, all already in scope. */
+
+  /* ── clinic-cases (b3-04 #s-cases) ──
+     Five clinics. Tick every imbalance that applies, then open the
+     diagnosis. Two of the five have two answers.
+
+     ⚖️ MULTI-SELECT, NOT A PICKER, and every line below exists to keep it
+     that way. A pick toggles rather than replacing the others, the reveal
+     button unlocks on ONE tick rather than on a complete answer (a student
+     who thinks one applies must be allowed to commit to that — being
+     unwilling to tick two is the error the block is built to show, and it
+     cannot be shown if the page refuses to accept the one-tick answer),
+     and the picks freeze the moment the diagnosis opens.
+
+     ⚠️ NOTHING MARKS. There is no `data-correct` in this instrument and
+     there must not be. The correct kinds are not in the document as data
+     at all — the answer is prose, in `.ks3-clinic-answer`, revealed
+     identically to every student. The verdict LABEL is a fact about the
+     case ("Two imbalances apply here"), authored per case, and it is not
+     computed from what the student ticked; MRB-196 R10 replaced that
+     computation with the self-check below.
+
+     ⚖️ THE STAGE IS EVERY CLINIC DIAGNOSED, not every clinic looked at.
+     Design's own predicate is the same and it is right: one clinic is one
+     judgement, and the lesson's argument is the five held against each
+     other — clinic 4 is a deficiency in a fed child, clinic 5 is not a
+     diet problem at all, and neither means anything alone.
+
+     ⚖️ NOTHING ANIMATES and nothing counts down, so `prefers-reduced-motion`
+     has nothing to degrade here: the reduced-motion experience is the
+     complete one. */
+  function wireClinicCases(sec) {
+    var wrap = sec.querySelector("[data-clinic]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll(".ks3-clinic-tab"));
+    var panels = toArray(wrap.querySelectorAll(".ks3-clinic-panel"));
+    var selfcheck = sec.querySelector("[data-selfcheck]");
+    if (!panels.length) { return; }
+
+    function show(id) {
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-case") === id ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-case") !== id);
+      });
+    }
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        show(tab.getAttribute("data-case"));
+      });
+    });
+
+    function diagnosed() {
+      var n = 0;
+      each(panels, function (p) {
+        if (p.getAttribute("data-open") === "1") { n += 1; }
+      });
+      return n;
+    }
+
+    function refreshStage() {
+      var n = diagnosed();
+      setCount(sec, n);
+      var all = n >= panels.length;
+      markStage(sec, all);
+      /* The self-check has nothing to compare against until every answer is
+         showing, so it does not exist in the layout until then. R10: the
+         page asks, the student answers, and nothing is graded. */
+      if (all && selfcheck) {
+        setHidden(selfcheck, false);
+        selfcheck.setAttribute("role", "status");
+      }
+    }
+
+    each(panels, function (panel) {
+      var picks = toArray(panel.querySelectorAll(".ks3-clinic-pick"));
+      var btn = panel.querySelector("[data-clinic-reveal]");
+      var count = panel.querySelector("[data-clinic-count]");
+      var verdict = panel.querySelector("[data-reveal]");
+
+      function ticked() {
+        var n = 0;
+        each(picks, function (p) {
+          if (p.getAttribute("aria-pressed") === "true") { n += 1; }
+        });
+        return n;
+      }
+
+      function repaint() {
+        var open = panel.getAttribute("data-open") === "1";
+        var n = ticked();
+        if (count) {
+          /* Three authored states, all three in the document as attributes
+             and none of them assembled here from words — only the number is
+             substituted. */
+          count.textContent = open
+            ? (count.getAttribute("data-done") || "")
+            : (n
+               ? String(count.getAttribute("data-some") || "")
+                   .split("{n}").join(String(n))
+               : (count.getAttribute("data-none") || ""));
+        }
+        if (btn) {
+          /* One tick is enough to commit. See the header: refusing the
+             one-tick answer would hide the mistake being taught. */
+          if (!n || open) { btn.setAttribute("disabled", ""); }
+          else { btn.removeAttribute("disabled"); }
+        }
+      }
+
+      each(picks, function (p) {
+        p.addEventListener("click", function () {
+          if (panel.getAttribute("data-open") === "1") { return; }
+          /* TOGGLE, never replace. This is the one control in the key stage
+             where more than one may be pressed at once. */
+          p.setAttribute("aria-pressed",
+            p.getAttribute("aria-pressed") === "true" ? "false" : "true");
+          repaint();
+        });
+      });
+
+      if (btn) {
+        btn.addEventListener("click", function () {
+          if (panel.getAttribute("data-open") === "1" || !ticked()) { return; }
+          panel.setAttribute("data-open", "1");
+          setHidden(verdict, false);
+          /* ⚠️ NO SECOND `role="status"` HERE, deliberately. `keyed-commit`
+             and `meter-compare` announce their revealed panel because they
+             have no other live element; this panel has one — the count —
+             and it goes to "Diagnosed" in the same turn. Announcing both
+             reads the whole verdict over the top of the state change. One
+             live region per panel; the count is it. */
+          each(picks, function (p) { p.setAttribute("disabled", ""); });
+          repaint();
+          refreshStage();
+        });
+      }
+
+      repaint();
+    });
+
+    refreshStage();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-erunblock]"), wireEnzymeRun);
+   — add to wireInstruments(), in the B3 group. Uses each / toArray /
+   setHidden / setCount / markStage / motionReduced, all already in scope. */
+
+  /* ── enzyme-run (b3-06 #s-bench) ──
+     One tube, two dials and a run. Substrate falls, product rises, and the
+     enzyme count does not move.
+
+     ⚖️ THE THIRD COUNTER IS THE LESSON, so there is nothing in this
+     function that touches it. `r_enzyme_run` emits it with no
+     `data-value` and no `data-bar`; there is no handle here to take hold
+     of, and that is deliberate rather than an omission. The same
+     construction as `heating-bench`'s mass tile.
+
+     ⚖️ THE DENATURE LATCH FIRES ON THE TEMPERATURE CONTROL, not inside
+     the tick. NOTES-B3 flag 16 records what the other arrangement cost: a
+     student who dragged to 60 °C, watched the rate read 0% and dragged
+     back to 37 °C was shown a full recovery to 100%, so the instrument
+     built to kill "cooling brings it back" was demonstrating it. Dragging
+     the slider is the cheaper interaction and it must be the one that
+     latches. Switching enzyme and taking a fresh tube both RE-latch while
+     the tube is still hot, which closes the obvious loophole.
+
+     ⚖️ REDUCED MOTION SCALES THE RATE AND NEVER STOPS THE COUNTER. The
+     run is the argument — substrate down, product up, enzyme unchanged —
+     so a reduced-motion student must reach the same end state, and does:
+     every one of the authored ticks happens, each one further apart. It
+     is asked INSIDE the tick, so an OS setting or the page's Motion
+     control changed mid-run takes effect without a reload.
+
+     ⚠️ NOTHING IS ASSEMBLED FROM WORDS HERE. Six temperature notes and
+     three verdicts are all in the document, eight hidden; this function
+     swaps which one is shown. Only two live numbers are substituted, the
+     tick count and the rate percentage, and both are substituted into
+     authored format strings.
+
+     ⊕ ONE ADDITION, where Design's page is silent: the verdict shows
+     whenever a run has FINISHED, whatever finished it. Design shows it on
+     twenty ticks or on denaturing, so a rate of exactly zero that is NOT
+     denatured — stomach protease dropped into pH 8, one press of one
+     button — finished on its first tick and showed nothing at all. The
+     "slow" verdict that exists to send the student back to the pH dial
+     never appeared. Design's three branches are unchanged. */
+  function wireEnzymeRun(sec) {
+    var wrap = sec.querySelector("[data-erun]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = {}; }
+    var L = cfg.labels || {};
+    var BANDS = cfg.bands || {};
+    var OPT = cfg.opt_ph || {};
+    if (!L.rate || !BANDS.optimum) { return; }
+
+    var ztabs = toArray(wrap.querySelectorAll(".ks3-erun-enzyme"));
+    var ptabs = toArray(wrap.querySelectorAll(".ks3-erun-ph"));
+    var slider = wrap.querySelector("[data-temp]");
+    var tempVal = wrap.querySelector("[data-temp-value]");
+    var notes = toArray(wrap.querySelectorAll(".ks3-erun-tempnote"));
+    var equations = toArray(wrap.querySelectorAll(".ks3-erun-equation"));
+    var names = toArray(wrap.querySelectorAll(".ks3-erun-countername"));
+    var rateEl = wrap.querySelector("[data-rate]");
+    var clockEl = wrap.querySelector("[data-clock]");
+    var runBtn = wrap.querySelector("[data-run]");
+    var resetBtn = wrap.querySelector("[data-reset]");
+    var verdict = wrap.querySelector("[data-reveal]");
+    var verdicts = toArray(wrap.querySelectorAll(".ks3-erun-verdicttext"));
+    var subVal = wrap.querySelector('[data-value="substrate"]');
+    var prodVal = wrap.querySelector('[data-value="product"]');
+    var subBar = wrap.querySelector('[data-bar="substrate"]');
+    var prodBar = wrap.querySelector('[data-bar="product"]');
+    if (!slider || !runBtn) { return; }
+
+    var DENATURE = Number(cfg.denature_c);
+    var OPTIMUM = Number(cfg.optimum_c);
+    var RISE = Number(cfg.rise_exponent);
+    var FALL = Number(cfg.fall_divisor);
+    var SPAN = Number(cfg.ph_span);
+    var TICKS = Number(cfg.ticks) || 20;
+    var TICK_MS = Number(cfg.tick_ms) || 160;
+    var PER_TICK = Number(cfg.units_per_tick) || 90;
+    var START_SUB = Number(cfg.start_substrate) || 1000;
+    var RM = Number(cfg.reduced_motion_scale) || 0.35;
+    var SLOW = Number(cfg.slow_below_pct) || 25;
+
+    var enzyme = ztabs.length ? ztabs[0].getAttribute("data-enzyme") : "";
+    var ph = ptabs.length ? Number(ptabs[0].getAttribute("data-ph")) : 7;
+    each(ptabs, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        ph = Number(b.getAttribute("data-ph"));
+      }
+    });
+    var temp = Number(slider.value);
+    var substrate = START_SUB;
+    var product = 0;
+    var denatured = temp >= DENATURE;
+    var running = false;
+    var clock = 0;
+    var everRan = false;
+    var finished = false;
+    var timer = null;
+
+    function fill(tpl, map) {
+      var out = String(tpl || ""), k;
+      for (k in map) {
+        if (Object.prototype.hasOwnProperty.call(map, k)) {
+          out = out.split("{" + k + "}").join(String(map[k]));
+        }
+      }
+      return out;
+    }
+
+    /* ⚠️ `_erun_rate` in build_ks3.py IS THIS FUNCTION. The resting page
+       prints a rate computed there and the first repaint recomputes it
+       here; if the two ever disagree the number visibly jumps on load. A
+       change to one is a change to both. */
+    function rateFor() {
+      if (denatured || temp >= DENATURE) { return 0; }
+      var tTerm = temp <= OPTIMUM
+        ? Math.pow(temp / OPTIMUM, RISE)
+        : Math.max(0, 1 - Math.pow((temp - OPTIMUM) / FALL, 2));
+      var gap = Math.abs(ph - Number(OPT[enzyme]));
+      var pTerm = Math.max(0, 1 - gap / SPAN);
+      return Math.max(0, Math.min(1, tTerm * pTerm));
+    }
+
+    function noteKey() {
+      if (denatured && temp >= DENATURE) { return "denatured_hot"; }
+      if (denatured) { return "denatured_cool"; }
+      if (temp >= Number(BANDS.past_optimum)) { return "past_optimum"; }
+      if (temp >= Number(BANDS.optimum)) { return "optimum"; }
+      if (temp >= Number(BANDS.cold)) { return "cold"; }
+      return "freezing";
+    }
+
+    function repaint() {
+      var pct = Math.round(rateFor() * 100);
+      var tempText = fill(cfg.temp_format, { t: temp });
+
+      if (tempVal) { tempVal.textContent = tempText; }
+      slider.setAttribute("aria-valuetext", tempText);
+      var key = noteKey();
+      each(notes, function (el) {
+        setHidden(el, el.getAttribute("data-note") !== key);
+      });
+      each(equations, function (el) {
+        setHidden(el, el.getAttribute("data-enzyme") !== enzyme);
+      });
+      each(names, function (el) {
+        setHidden(el, el.getAttribute("data-enzyme") !== enzyme);
+      });
+      if (rateEl) { rateEl.textContent = fill(L.rate, { pct: pct }); }
+      if (subVal) {
+        subVal.textContent = fill(cfg.units_format, { n: substrate });
+      }
+      if (prodVal) {
+        prodVal.textContent = fill(cfg.units_format, { n: product });
+      }
+      if (subBar) {
+        subBar.style.width = (substrate / START_SUB * 100).toFixed(1) + "%";
+      }
+      if (prodBar) {
+        prodBar.style.width = (product / START_SUB * 100).toFixed(1) + "%";
+      }
+      if (clockEl) {
+        clockEl.textContent = clock
+          ? fill(L.clock, { n: clock, total: TICKS })
+          : L.clock_fresh;
+      }
+      runBtn.textContent = running ? L.running : (clock ? L.more : L.start);
+      if (running || substrate === 0) { runBtn.setAttribute("disabled", ""); }
+      else { runBtn.removeAttribute("disabled"); }
+
+      /* ⊕ Any finished run shows a verdict — see the header. Which branch
+         is Design's, unchanged: denatured first, then a rate too low to be
+         doing anything, then the run that worked. */
+      if (finished && !running) {
+        var which = denatured ? "denatured" : (pct < SLOW ? "slow" : "worked");
+        each(verdicts, function (el) {
+          setHidden(el, el.getAttribute("data-verdict") !== which);
+        });
+        setHidden(verdict, false);
+      }
+
+      setCount(sec, everRan ? 1 : 0);
+      markStage(sec, everRan);
+    }
+
+    function stop() {
+      if (timer) { clearTimeout(timer); timer = null; }
+      running = false;
+    }
+
+    function tick() {
+      /* Asked EVERY tick, so an OS setting or the page's Motion control
+         changed mid-run takes effect without a reload — and the reaction
+         slows rather than stopping, so every authored tick still happens
+         and the reduced-motion student reaches the same end state. */
+      var scale = motionReduced() ? RM : 1;
+      var rate = rateFor();
+      var converted = Math.min(substrate, Math.round(rate * PER_TICK));
+      substrate -= converted;
+      product += converted;
+      clock += 1;
+      if (clock >= TICKS || (converted === 0 && rate === 0) || !substrate) {
+        finished = true;
+        stop();
+      } else {
+        timer = setTimeout(tick, TICK_MS / scale);
+      }
+      repaint();
+    }
+
+    each(ztabs, function (b) {
+      b.addEventListener("click", function () {
+        stop();
+        enzyme = b.getAttribute("data-enzyme");
+        each(ztabs, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        /* A new tube of a different enzyme — but a tube still above the
+           threshold denatures it at once, which closes the loophole of
+           switching enzyme to escape the latch. */
+        substrate = START_SUB;
+        product = 0;
+        clock = 0;
+        finished = false;
+        denatured = temp >= DENATURE;
+        setHidden(verdict, true);
+        repaint();
+      });
+    });
+
+    each(ptabs, function (b) {
+      b.addEventListener("click", function () {
+        ph = Number(b.getAttribute("data-ph"));
+        each(ptabs, function (o) {
+          o.setAttribute("aria-pressed", o === b ? "true" : "false");
+        });
+        /* The counters deliberately do NOT reset: changing the pH and
+           running on is how a student sees the same tube go faster. */
+        repaint();
+      });
+    });
+
+    function onTemp() {
+      temp = Number(slider.value);
+      /* THE LATCH. Once above the threshold, always denatured — cooling
+         does not clear it and only a fresh tube does. */
+      if (temp >= DENATURE) { denatured = true; }
+      repaint();
+    }
+    /* Bound to both, because some browsers fire only `change` for a
+       keyboard step. */
+    slider.addEventListener("input", onTemp);
+    slider.addEventListener("change", onTemp);
+
+    runBtn.addEventListener("click", function () {
+      if (running || substrate === 0) { return; }
+      stop();
+      running = true;
+      everRan = true;
+      finished = false;
+      clock = 0;
+      setHidden(verdict, true);
+      repaint();
+      /* ⊕ THE FIRST TICK HAPPENS ON THE PRESS, not one interval later.
+         Design schedules every tick including the first, so pressing Run
+         gives 160 ms of nothing — and when the rate is zero, 160 ms of
+         nothing followed by a run that is already over. `tick()` schedules
+         its own successor, so this shortens the run by one interval and
+         changes nothing else. */
+      tick();
+    });
+
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        stop();
+        substrate = START_SUB;
+        product = 0;
+        clock = 0;
+        finished = false;
+        /* Re-latches if the tube is still hot: a fresh tube in a hot bath
+           is a fresh enzyme that denatures on arrival. */
+        denatured = temp >= DENATURE;
+        setHidden(verdict, true);
+        repaint();
+      });
+    }
+
+    repaint();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-foldblock]"), wireFoldBuilder);
+   — add to wireInstruments(), in a new B3 group. Uses each / toArray /
+   setHidden / setCount / markStage, all already in scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── fold-builder (b3-07 #s-fold) — build the surface up ──
+
+     Three toggles, three multipliers, one area. Start at half a square
+     metre of plain tube and end at about thirty, with the length written
+     beside it never moving.
+
+     ⚖️ ONLY THE NUMBERS ARE BUILT HERE. All four notes are in the
+     document — one per COUNT of levels, not one per level — and this
+     function swaps which is shown. Every sentence a student reads about
+     the folding was authored in the lesson record, so the em dashes and
+     the `<em>` survive and nothing science-bearing is assembled from an
+     attribute. What IS assembled is an area and a multiple, which is
+     what an arithmetic readout is for.
+
+     ⚠️ THE NUMBER FORMAT IS DUPLICATED, DELIBERATELY. `areaText` and
+     `multText` below are the same rule as `_fold_area_text` /
+     `_fold_multiple_text` in build_ks3.py, which fill the RESTING
+     render. Two copies of four lines buys HTML that already says
+     "0.50 m²" before any script runs — the same trade `head_counter`'s
+     `start` makes one level up. `Math.round` and Python's `int(v + 0.5)`
+     were matched on purpose; `round()` would have rounded half to even
+     and disagreed at exactly 10.5.
+
+     ⚖️ THE STOP LATCHES, and Design's own predicate does not. Design
+     recomputes `s.on.folds && s.on.villi && s.on.microvilli` every
+     render, so a student who builds all three levels and then switches
+     one back off to look at it again has their rail stop taken away
+     from them. MRB-208 ruled the rail records PARTICIPATION: a stop
+     ticks when the activity is finished, and nothing un-finishes it.
+     So `markStage` is only ever called with `true` here. The BAR and
+     the NOTE still follow the live state, because those are claims
+     about the model currently on screen and would be false if they
+     latched.
+
+     ⚖️ NOTHING TICKS AND NOTHING COUNTS DOWN. NOTES-B3 §6 is explicit
+     that `enzyme-run` is the only instrument in the unit with a timer;
+     the one animation here is a CSS width transition, which the
+     stylesheet degrades under `prefers-reduced-motion` itself. There is
+     no rate for this function to scale, and the reduced-motion
+     experience is the complete one. (Same standing as `meter-compare`.)
+     ═══════════════════════════════════════════════════════════════ */
+  function wireFoldBuilder(sec) {
+    var wrap = sec.querySelector("[data-fold]");
+    if (!wrap) { return; }
+    var levels = toArray(wrap.querySelectorAll("[data-level]"));
+    if (!levels.length) { return; }
+
+    var areaEl = wrap.querySelector("[data-fold-area]");
+    var barEl = wrap.querySelector("[data-fold-bar]");
+    var multEl = wrap.querySelector("[data-fold-multiple]");
+    var notes = toArray(wrap.querySelectorAll("[data-note]"));
+
+    var base = parseFloat(wrap.getAttribute("data-base"));
+    if (!base || base <= 0) { return; }
+    var areaFmt = wrap.getAttribute("data-area-format") || "{a}";
+    var multFmt = wrap.getAttribute("data-multiple-format") || "{x}";
+
+    function factorOf(li) {
+      var f = parseFloat(li.getAttribute("data-factor"));
+      return f > 0 ? f : 1;
+    }
+
+    // The full stack, computed once: the bar is a fraction of what the
+    // finished model comes to, not of a magic number.
+    var most = base;
+    each(levels, function (li) { most *= factorOf(li); });
+
+    function areaText(v) {
+      if (v < 1) { return v.toFixed(2); }
+      if (v < 10) { return v.toFixed(1); }
+      return String(Math.round(v));
+    }
+    function multText(r) {
+      return r < 10 ? r.toFixed(1) : String(Math.round(r));
+    }
+
+    function refresh() {
+      var area = base, on = 0;
+      each(levels, function (li) {
+        if (li.getAttribute("data-on") === "1") {
+          area *= factorOf(li);
+          on += 1;
+        }
+      });
+      if (areaEl) {
+        areaEl.textContent = areaFmt.split("{a}").join(areaText(area));
+      }
+      if (multEl) {
+        multEl.textContent = multFmt.split("{x}").join(multText(area / base));
+      }
+      if (barEl) {
+        // A floor of 2%, so the plain tube is a visible sliver rather than
+        // an empty track that reads as "no data" instead of "half a square
+        // metre".
+        barEl.style.width = Math.max(2, (area / most) * 100).toFixed(1) + "%";
+        barEl.setAttribute("data-full", on === levels.length ? "1" : "0");
+      }
+      each(notes, function (p) {
+        setHidden(p, p.getAttribute("data-note") !== String(on));
+      });
+      setCount(sec, on);
+      if (on === levels.length) { markStage(sec, true); }
+    }
+
+    each(levels, function (li) {
+      var btn = li.querySelector("[data-fold-toggle]");
+      if (!btn) { return; }
+      btn.addEventListener("click", function () {
+        var on = li.getAttribute("data-on") !== "1";
+        li.setAttribute("data-on", on ? "1" : "0");
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
+        // Both faces were finished at build time — "Add this level" and
+        // "On · ×7" — so nothing here composes a label out of a factor.
+        btn.textContent = btn.getAttribute(on ? "data-label-on"
+                                              : "data-label-off") || "";
+        refresh();
+      });
+    });
+
+    // Opens on the plain tube: 0 of 3, 0.50 m², ×1.0, note zero. That is
+    // what the HTML already says, so this call changes nothing on load — it
+    // is here so there is exactly one place the readout is computed.
+    refresh();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-gutblock]"), wireGutJourney);
+   — add to wireInstruments(), in the B3 group. Uses each / toArray /
+   setHidden / setCount / markStage, all already in scope. */
+
+  /* ── gut-journey (b3-05 #s-journey) ──
+     Follow one meal through seven stops, with a time chart under them
+     that contradicts the intuition the lesson opens with.
+
+     ⚖️ NOTHING HERE BUILDS A NUMBER OR A WIDTH. Every bar width is inline
+     in the document, computed in `r_gut_journey` from the same `hours`
+     the printed figure beside it is authored from. This function moves
+     the HIGHLIGHT — which row is lit, which panel is shown — and nothing
+     else. A width set here would be a second source for one quantity,
+     and the two would eventually stop agreeing.
+
+     ⚖️ THE OPEN STOP IS SEEDED AS VISITED, and that is a real difference
+     from the c1-02 precedent rather than a copy of Design's defect.
+     c1-02's bench counted the state it was ABOUT to show while the whole
+     instrument was still behind a commit gate, so the readout claimed
+     something the student could not yet have seen. There is no gate here:
+     stop one is on screen, complete, from first paint. "1 of 7 stops
+     visited" is therefore true at rest — and the stage still needs six
+     more taps, so nothing ticks on load (MRB-208).
+
+     ⚖️ EVERY STOP, not five of seven. The stage is the whole journey
+     because the journey is the block's argument: a student who stops at
+     the small intestine has met the organ that does the work and not the
+     two that follow it, and egestion-is-not-excretion is on the last one.
+
+     ⚖️ NOTHING ANIMATES and nothing counts, so `prefers-reduced-motion`
+     has nothing to degrade here — the only transition in the component is
+     the highlight's colour, and the stylesheet's own reduced-motion block
+     already removes it. The reduced-motion experience is the complete
+     one. */
+  function wireGutJourney(sec) {
+    var wrap = sec.querySelector("[data-gut]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll(".ks3-gut-tab"));
+    var panels = toArray(wrap.querySelectorAll(".ks3-gut-stop"));
+    var rows = toArray(wrap.querySelectorAll(".ks3-gut-row"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || panels.length;
+    if (!panels.length) { return; }
+
+    var seen = {};
+
+    function show(id) {
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-stop") === id ? "true" : "false");
+      });
+      each(panels, function (p) {
+        setHidden(p, p.getAttribute("data-stop") !== id);
+      });
+      each(rows, function (r) {
+        if (r.getAttribute("data-stop") === id) {
+          r.setAttribute("data-lit", "1");
+        } else {
+          r.removeAttribute("data-lit");
+        }
+      });
+      seen[id] = true;
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      setCount(sec, n);
+      markStage(sec, n >= total);
+    }
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        show(tab.getAttribute("data-stop"));
+      });
+    });
+
+    /* Seed from the panel that is actually showing rather than from index
+       zero, so the renderer stays free to open on a different stop without
+       the count and the picture disagreeing. */
+    var open = wrap.querySelector(".ks3-gut-stop:not([hidden])");
+    if (open) { show(open.getAttribute("data-stop")); }
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-jobswblock]"), wireJobSwitch);
+   — add to wireInstruments(), in the B3 group, after wireFoldBuilder. Uses
+   each / toArray / setHidden / setCount / markStage, all already in scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── job-switch (b3-08 #s-jobs) — take one job away ──
+
+     Five things gut bacteria do that your own cells cannot. Switch each
+     off and read what the host loses; switch all five off and you have
+     built the germ-free mouse from the hook.
+
+     ⚖️ THE SUMMARY REPORTS THE PRESENT TENSE, and that is why this is
+     not `system-switch`. `wireSwitch` and `wireJobSort` both count what
+     has EVER been opened and fire their closing panel on that count —
+     one-way, cumulative, and right for both of them. This panel says
+     "You have just built the germ-free mouse", which is a claim about
+     the configuration on screen: switch a job back on and the animal
+     is no longer germ-free, so the panel has to go away again. A
+     component that counts history cannot express a component that
+     reports state.
+
+     ⚖️ THE RAIL STOP LATCHES, and the panel does not. MRB-208 ruled the
+     rail records PARTICIPATION — a stop ticks when the activity is
+     finished and nothing un-finishes it — so `markStage` is only ever
+     called with `true` here. Design's own `isDone` recomputes
+     `JOBS.every(j => s.off[j.id])` on every render and would take a
+     student's progress away for looking at a row again. The counter and
+     the panel still follow the live state, because both are statements
+     about what is true now.
+
+     ⚖️ NOTHING MARKS. Five toggles, no answer, no `data-correct`. The
+     block is an experiment, not a question, and a student who switches
+     everything off and everything back on has done the experiment
+     twice rather than got it wrong once.
+
+     ⚖️ NOTHING ANIMATES and nothing counts down, so
+     `prefers-reduced-motion` has nothing to degrade and the
+     reduced-motion experience is the complete one. NOTES-B3 §6 is
+     explicit that `enzyme-run` is the only instrument in this unit with
+     a timer.
+     ═══════════════════════════════════════════════════════════════ */
+  function wireJobSwitch(sec) {
+    var wrap = sec.querySelector("[data-jobsw]");
+    if (!wrap) { return; }
+    var jobs = toArray(wrap.querySelectorAll("[data-job]"));
+    if (!jobs.length) { return; }
+
+    var all = wrap.querySelector("[data-jobsw-all]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || jobs.length;
+
+    function refresh() {
+      var off = 0;
+      each(jobs, function (job) {
+        if (job.getAttribute("data-off") === "1") { off += 1; }
+      });
+      setCount(sec, off);
+      if (all) {
+        setHidden(all, off < total);
+        // Announced once, for screen-reader users who would otherwise get
+        // no signal that the block's conclusion had arrived below the last
+        // row. On the NOTE, never on the section — a live region around the
+        // whole instrument would re-read five job descriptions every time a
+        // switch moved.
+        if (off >= total && !all.getAttribute("role")) {
+          all.setAttribute("role", "status");
+        }
+      }
+      if (off >= total) { markStage(sec, true); }
+    }
+
+    each(jobs, function (job) {
+      var btn = job.querySelector("[data-jobsw-toggle]");
+      var note = job.querySelector("[data-reveal]");
+      if (!btn) { return; }
+      btn.addEventListener("click", function () {
+        var off = job.getAttribute("data-off") !== "1";
+        job.setAttribute("data-off", off ? "1" : "0");
+        btn.setAttribute("aria-pressed", off ? "true" : "false");
+        // Both faces were finished at build time — "Switch it off" and
+        // "Switched off" — so nothing here composes a label.
+        btn.textContent = btn.getAttribute(off ? "data-label-off"
+                                              : "data-label-on") || "";
+        if (note) {
+          setHidden(note, !off);
+          if (off && !note.getAttribute("role")) {
+            note.setAttribute("role", "status");
+          }
+        }
+        refresh();
+      });
+    });
+
+    // Opens with every job doing its job: 0 of 5 switched off, no
+    // consequences showing, no summary. That is what the HTML already says,
+    // so this call changes nothing on load — it is here so there is exactly
+    // one place the counter and the summary are decided.
+    refresh();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-ledgerblock]"), wirePersonLedger);
+   — add to wireInstruments(), in the B3 group. Uses each / toArray /
+   setHidden / setCount / markStage, all already in scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── person-ledger (b3-03 #s-ledger) — the person is the control ──
+
+     Twelve foods, five eaters, one running total. Build a day, then move
+     the person underneath it.
+
+     ⚖️ CHANGING THE PERSON NEVER TOUCHES THE PLATE, and that is the
+     whole instrument. The same food is a surplus for one body and a
+     shortfall for another with nothing about the food having moved, and
+     the match panel says so in words. A "clear on switch" would be tidier
+     and would destroy the experiment, so the person tabs deliberately
+     touch nothing but the requirement they are compared against.
+
+     ⚖️ MRB-232 — B3'S SIDE OF THE SPLIT. Everything here is intake
+     against requirement, in kJ. Nothing converts a unit, derives a joule
+     from power and time, or explains what a joule is: that is P2's half
+     of `KS3.B.NUT.02`, reached from this lesson by a `references` edge.
+     A kJ↔kcal toggle added to this block later would move the seam.
+
+     ⚠️ R3 — NOTHING MARKS. There is no `.ks3-option` in this instrument,
+     no correct plate and no score. The bar's three colours are readings
+     of a measurement — short, matched, over — and `--ks3-ok` is
+     deliberately not one of them: green is the ladder's colour for a
+     correct answer and a plate is not an answer.
+
+     Every authored sentence is already in the document and this function
+     only changes which is hidden. The three exceptions all quote a live
+     number that does not exist until a plate has been built, and each is
+     one authored template filled with digits — `_head_counter`'s own
+     mechanism, and safe for its reason: none of them carries markup.
+
+     ⚖️ NOTHING RUNS ON A CLOCK. The bar's width and colour move on a CSS
+     transition that the stylesheet turns off under
+     `prefers-reduced-motion`, and every number is in the document as
+     text, so the reduced-motion experience is the complete one (R6).
+     ═══════════════════════════════════════════════════════════════ */
+  function wirePersonLedger(sec) {
+    var wrap = sec.querySelector("[data-ledger]");
+    if (!wrap) { return; }
+    var bar = wrap.querySelector("[data-bar]");
+    var totalEl = wrap.querySelector("[data-total]");
+    var balanceEl = wrap.querySelector("[data-balance]");
+    var portionEl = wrap.querySelector("[data-portions]");
+    var matchEl = wrap.querySelector("[data-match]");
+    var clearBtn = wrap.querySelector("[data-ledger-clear]");
+    var foods = toArray(wrap.querySelectorAll(".ks3-ledger-food"));
+    if (!bar || !totalEl || !balanceEl || !foods.length) { return; }
+
+    var tolerance = (parseInt(wrap.getAttribute("data-tolerance"), 10) || 5) / 100;
+    var maxPer = parseInt(wrap.getAttribute("data-max"), 10) || 6;
+    var countFmt = wrap.getAttribute("data-count-format") || "×{n}";
+
+    function group(n) { return Number(n).toLocaleString("en-GB"); }
+
+    function fill(el, attr, values) {
+      var s = el.getAttribute(attr) || "", k;
+      for (k in values) {
+        if (Object.prototype.hasOwnProperty.call(values, k)) {
+          s = s.split("{" + k + "}").join(String(values[k]));
+        }
+      }
+      return s;
+    }
+
+    function paint() {
+      var person = wrap.getAttribute("data-person");
+      var tab = wrap.querySelector(".ks3-ledger-tab[data-person='" + person + "']");
+      var need = tab ? parseInt(tab.getAttribute("data-need"), 10) : 0;
+      var total = 0, portions = 0;
+
+      each(foods, function (b) {
+        var n = parseInt(b.getAttribute("data-count"), 10) || 0;
+        total += n * (parseInt(b.getAttribute("data-kj"), 10) || 0);
+        portions += n;
+        var label = b.querySelector("[data-count-label]");
+        if (label) {
+          label.textContent = n > 0 ? countFmt.split("{n}").join(String(n)) : "";
+        }
+      });
+
+      each(wrap.querySelectorAll(".ks3-ledger-tab[data-person]"), function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-person") === person ? "true" : "false");
+      });
+      each(wrap.querySelectorAll("[data-pname], [data-pneed], [data-pwhy]"),
+        function (s) {
+          var id = s.getAttribute("data-pname") || s.getAttribute("data-pneed")
+            || s.getAttribute("data-pwhy");
+          setHidden(s, id !== person);
+        });
+
+      var diff = total - need;
+      var matched = portions > 0 && Math.abs(diff) <= need * tolerance;
+      var frac = need ? total / need : 0;
+      bar.style.width = Math.min(100, frac * 100).toFixed(1) + "%";
+      bar.setAttribute("data-state",
+        matched ? "matched" : (frac > 1 + tolerance ? "over" : "short"));
+
+      totalEl.textContent = fill(totalEl, "data-format",
+        { total: group(total), need: group(need) });
+
+      if (!portions) {
+        balanceEl.textContent = balanceEl.getAttribute("data-empty") || "";
+      } else if (matched) {
+        balanceEl.textContent = balanceEl.getAttribute("data-matched") || "";
+      } else {
+        balanceEl.textContent = fill(balanceEl,
+          diff > 0 ? "data-surplus" : "data-short",
+          { n: group(Math.abs(diff)) });
+      }
+
+      if (portionEl) {
+        portionEl.textContent = portions
+          ? fill(portionEl, "data-format",
+              { n: portions, total: group(total) })
+          : (portionEl.getAttribute("data-empty") || "");
+      }
+
+      if (matchEl) {
+        setHidden(matchEl, !matched);
+        each(matchEl.querySelectorAll("[data-mhead]"), function (p) {
+          setHidden(p, p.getAttribute("data-mhead") !== person);
+        });
+      }
+
+      setCount(sec, portions);
+      markStage(sec, portions > 0);   // `food_on_the_plate`
+    }
+
+    each(wrap.querySelectorAll(".ks3-ledger-tab[data-person]"), function (b) {
+      b.addEventListener("click", function () {
+        // ⚖️ THE PLATE IS NOT TOUCHED. See the header — this is the experiment.
+        wrap.setAttribute("data-person", b.getAttribute("data-person"));
+        paint();
+      });
+    });
+
+    each(foods, function (b) {
+      b.addEventListener("click", function () {
+        var n = (parseInt(b.getAttribute("data-count"), 10) || 0) + 1;
+        // Design's own wrap-around: the count runs up to `max` and the next
+        // tap clears that food. It is what makes one control both add and
+        // remove, and the block's label says so.
+        b.setAttribute("data-count", String(n > maxPer ? 0 : n));
+        paint();
+      });
+    });
+
+    if (clearBtn) {
+      clearBtn.addEventListener("click", function () {
+        each(foods, function (b) { b.setAttribute("data-count", "0"); });
+        paint();
+      });
+    }
+
+    paint();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-tbenchblock]"), wireTestBench);
+   — add to wireInstruments(), in the B3 group. Uses each / toArray /
+   setHidden / setCount / markStage, all already in scope. */
+
+  /* ═══════════════════════════════════════════════════════════════
+     ── test-bench (b3-02 #s-bench) — the prediction runs the test ──
+
+     Five foods × four tests. Pick a pair, say what you expect, and the
+     saying is what runs it: there is no separate run button, because a
+     student who can see the colour first has not predicted anything.
+
+     ⚖️ THE RUN LATCHES, AND SO DOES THE PREDICTION. Design re-reads the
+     stored prediction every render, so a student who changed their answer
+     after the tube had changed colour would be told "You predicted this"
+     — the block would congratulate them for the thing it exists to stop.
+     The first press of a combination is the one that scores it, exactly
+     as c1-06's evidence bench latches its first call. Pressing again
+     still MOVES the pressed state (R3 requires every option to render
+     alike whichever was chosen), it simply does not rewrite history.
+
+     ⚖️ NOTHING IS ASSEMBLED HERE. All twenty prompts, all twenty results,
+     all twenty claim lines, the four methods and the nine tube-state
+     names are already in the document, and this function only changes
+     which is hidden. That is what keeps the em dashes, the curly quotes
+     and the `<strong>` in the claim line intact — and every one of those
+     sentences is the science of the lesson rather than chrome.
+
+     ⚠️ R3 — NOTHING MARKS. The two prediction options are ordinary
+     activity options: they show that they were chosen and nothing else,
+     they are never disabled, and neither carries `data-correct`. The
+     verdict line that follows reports whether the prediction matched the
+     tube — which is a fact about the world, printed in the result panel,
+     not a mark on a button.
+
+     ⚖️ NOTHING RUNS ON A CLOCK. The tube's colour transition is a CSS
+     one and `prefers-reduced-motion` turns it off in the stylesheet, so
+     there is nothing to scale here and the reduced-motion experience is
+     the complete one: the state line beside the tube says the colour in
+     words either way (R2).
+     ═══════════════════════════════════════════════════════════════ */
+  function wireTestBench(sec) {
+    var wrap = sec.querySelector("[data-tbench]");
+    if (!wrap) { return; }
+    var predictWrap = wrap.querySelector("[data-predict]");
+    var opts = toArray(wrap.querySelectorAll(".ks3-option"));
+    var tube = wrap.querySelector("[data-tube]");
+    var state = wrap.querySelector("[data-state]");
+    if (!predictWrap || !opts.length || !tube || !state) { return; }
+
+    var target = parseInt(wrap.getAttribute("data-target"), 10) || 4;
+    var ran = {};         // "food:test" -> the option index pressed FIRST
+    var count = 0;
+
+    function key() {
+      return wrap.getAttribute("data-food") + ":" + wrap.getAttribute("data-test");
+    }
+
+    function paint() {
+      var k = key();
+      var food = wrap.getAttribute("data-food");
+      var test = wrap.getAttribute("data-test");
+      var testTab = wrap.querySelector(".ks3-tbench-tab[data-test='" + test + "']");
+      var done = Object.prototype.hasOwnProperty.call(ran, k);
+      var result = wrap.querySelector("[data-result='" + k + "']");
+
+      each(wrap.querySelectorAll(".ks3-tbench-tab[data-food]"), function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-food") === food ? "true" : "false");
+      });
+      each(wrap.querySelectorAll(".ks3-tbench-tab[data-test]"), function (b) {
+        b.setAttribute("aria-pressed",
+          b.getAttribute("data-test") === test ? "true" : "false");
+      });
+      each(wrap.querySelectorAll("[data-lfood]"), function (s) {
+        setHidden(s, s.getAttribute("data-lfood") !== food);
+      });
+      each(wrap.querySelectorAll("[data-ltest]"), function (s) {
+        setHidden(s, s.getAttribute("data-ltest") !== test);
+      });
+      each(wrap.querySelectorAll("[data-method]"), function (p) {
+        setHidden(p, p.getAttribute("data-method") !== test);
+      });
+      each(wrap.querySelectorAll("[data-detects]"), function (p) {
+        setHidden(p, p.getAttribute("data-detects") !== test);
+      });
+      each(wrap.querySelectorAll("[data-prompt]"), function (p) {
+        setHidden(p, p.getAttribute("data-prompt") !== k);
+      });
+      each(wrap.querySelectorAll("[data-result]"), function (d) {
+        setHidden(d, !done || d.getAttribute("data-result") !== k);
+      });
+
+      /* An unrun combination shows the reagent's UNCHANGED colour — the
+         negative — because that is what is in the tube before the food goes
+         in. The colours ride on the test tab for exactly this: the resting
+         tube needs one before any result panel exists. */
+      var colour = done && result
+        ? result.getAttribute("data-colour")
+        : (testTab ? testTab.getAttribute("data-neg") : "");
+      if (colour) { tube.style.background = colour; }
+      tube.setAttribute("data-run", done ? "1" : "0");
+
+      // The state line: nine authored spans, one shown. Never composed.
+      var outcome = done && result ? result.getAttribute("data-outcome") : "";
+      var want = outcome ? test + ":" + outcome : "rest";
+      each(state.querySelectorAll("[data-sname]"), function (s) {
+        setHidden(s, s.getAttribute("data-sname") !== want);
+      });
+
+      // Gating by ABSENCE, as C6's bench gate does: a combination that has
+      // been run has no question left to ask.
+      setHidden(predictWrap, done);
+      each(opts, function (b) {
+        b.setAttribute("aria-pressed",
+          done && String(ran[k]) === b.getAttribute("data-i") ? "true" : "false");
+      });
+      if (done && result) {
+        /* Option 0 is "Yes — it will change colour" and option 1 is "No".
+           The prediction matched if the yes/no the student pressed agrees
+           with the outcome the payload records for this combination. */
+        var hit = (ran[k] === 0) === (outcome === "pos");
+        each(result.querySelectorAll("[data-verdict]"), function (p) {
+          setHidden(p, p.getAttribute("data-verdict") !== (hit ? "hit" : "miss"));
+        });
+      }
+      setCount(sec, count);
+      if (count >= target) { markStage(sec, true); }   // `four_run`
+    }
+
+    each(wrap.querySelectorAll(".ks3-tbench-tab[data-food]"), function (b) {
+      b.addEventListener("click", function () {
+        wrap.setAttribute("data-food", b.getAttribute("data-food"));
+        paint();
+      });
+    });
+    each(wrap.querySelectorAll(".ks3-tbench-tab[data-test]"), function (b) {
+      b.addEventListener("click", function () {
+        wrap.setAttribute("data-test", b.getAttribute("data-test"));
+        paint();
+      });
+    });
+
+    each(opts, function (btn) {
+      btn.addEventListener("click", function () {
+        var k = key();
+        // The FIRST press is the one that scores. A later press moves the
+        // pressed state and nothing else — see the header.
+        if (!Object.prototype.hasOwnProperty.call(ran, k)) {
+          ran[k] = parseInt(btn.getAttribute("data-i"), 10);
+          count += 1;
+          paint();
+          return;
+        }
+        each(opts, function (b) { b.setAttribute("aria-pressed", b === btn ? "true" : "false"); });
+      });
+    });
+
+    paint();
+  }
+/* ═══ END B3 ═══ */
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -10076,6 +11306,16 @@
     each(root.querySelectorAll("[data-lstepblock]"), wireLeverSteps);
     each(root.querySelectorAll("[data-metersblock]"), wireMeterCompare);
     // ═══ END B2 wiring ═══
+    // ═══ BEGIN B3 wiring ═══
+    each(root.querySelectorAll("[data-plateblock]"), wireBandCommit);
+    each(root.querySelectorAll("[data-clinicblock]"), wireClinicCases);
+    each(root.querySelectorAll("[data-erunblock]"), wireEnzymeRun);
+    each(root.querySelectorAll("[data-foldblock]"), wireFoldBuilder);
+    each(root.querySelectorAll("[data-gutblock]"), wireGutJourney);
+    each(root.querySelectorAll("[data-jobswblock]"), wireJobSwitch);
+    each(root.querySelectorAll("[data-ledgerblock]"), wirePersonLedger);
+    each(root.querySelectorAll("[data-tbenchblock]"), wireTestBench);
+    // ═══ END B3 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

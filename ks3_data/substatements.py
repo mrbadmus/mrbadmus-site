@@ -106,6 +106,49 @@ SUBSTATEMENTS = {
         ("b", "Formulae for compounds: which elements are present and how many "
               "atoms of each.", "C2"),
     ],
+    # Minted for B3 (2026-08-16, MRB-228), and this one splits ACROSS UNITS.
+    # The bullet reads:
+    #   "calculations of energy requirements in a healthy daily diet"
+    # It was claimed by Biology B3 and Physics P2 at once, and §7.4 had given
+    # the whole of it to P2 with B3 holding a reference slot that generated no
+    # page at all. **Ruled by Mide on 16 Aug 2026 (MRB-232):** it is two
+    # lessons wearing one bullet and it splits at that seam.
+    #
+    # The seam is worth naming, because it is not the obvious one. It is not
+    # "biology does the food and physics does the sums" — it is that a
+    # REQUIREMENT is a fact about a body and a kJ VALUE is a measurement of a
+    # substance, and only the second is what a joule is for. P2's link back to
+    # B3 is a `references` EDGE, never prose, so neither page repeats the
+    # other. Full ruling in `docs/ks3/statutory-register.md`.
+    "KS3.B.NUT.02": [
+        ("a", "What you need and why: that the energy a person needs varies "
+              "with who they are and what they do, and what follows from "
+              "taking in more or less than that.", "B3"),
+        ("b", "Comparing energy values from food labels in kJ: the arithmetic "
+              "and the units.", "P2"),
+    ],
+    # Minted for B3 (2026-08-16, MRB-228). The bullet reads:
+    #   "the tissues and organs of the human digestive system, including
+    #    adaptations to function and how the digestive system digests food
+    #    (enzymes simply as biological catalysts)"
+    # The longest statement in the strand, and it prints its own three clauses:
+    # the organs, what they do to food, and how their structure fits the job.
+    # B3 teaches them as three lessons and no scheme of work teaches them as
+    # one.
+    #
+    # ⚠️ `b` is the CATALYST clause and it is exactly as wide as the bullet's
+    # own parenthesis: enzymes simply as biological catalysts. Enzyme RATE —
+    # the temperature and pH curves, the optimum, denaturing — has no KS3
+    # statutory statement anywhere and belongs in the Year 9 bridge (MRB-199).
+    # Design's b3-06 teaches rate in full and the page renders as drawn, but
+    # none of that material is CLAIMED here. Widening `b` to cover it would
+    # mint a statement the national curriculum does not contain.
+    "KS3.B.NUT.04": [
+        ("a", "The tissues and organs of the human digestive system.", "B3"),
+        ("b", "How the digestive system digests food, with enzymes simply as "
+              "biological catalysts.", "B3"),
+        ("c", "Adaptations of the digestive system to its function.", "B3"),
+    ],
 }
 
 

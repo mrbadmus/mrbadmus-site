@@ -77,10 +77,32 @@ UNITS = [
      "Structure and function of living organisms", 7, [
         ("a-balanced-diet", "A balanced diet", "CLASSIFY"),
         ("food-tests", "Food tests", "INVESTIGATION"),
-        # ⇄ Owned by Physics P2 (§7.4: "Energy in food, energy calculations →
-        #   owner Physics P2, referenced by Biology B3"). Referenced here, never
-        #   duplicated — §4.6.
-        ("energy-in-food", "Energy in food and what you need", "QUANTITATIVE", "P2"),
+        # ⊕ OWNED BY B3. Ruled by Mide, 16 Aug 2026 (MRB-232).
+        #
+        # `KS3.B.NUT.02` was claimed by both B3 and Physics P2, and §7.4 gave
+        # the whole of it to P2 — "Energy in food, energy calculations → owner
+        # Physics P2, referenced by Biology B3" — so this slot was a reference
+        # that generated no page. The statement splits instead, because it is
+        # two different lessons wearing one bullet:
+        #
+        #   B3 owns WHAT YOU NEED AND WHY — requirements, imbalance, and what
+        #      follows from getting it wrong. That is a nutrition lesson and it
+        #      belongs beside the other seven.
+        #   P2 keeps COMPARING ENERGY VALUES FROM LABELS IN kJ — the arithmetic
+        #      and the units, which is a physics lesson about energy.
+        #
+        # P2's link back here is a `references` EDGE, never prose, so neither
+        # page repeats the other and §4.6's single-source rule still holds.
+        #
+        # ⚠️ THE SLUG MOVES, and that is the exception rather than the rule.
+        # §8.4 says renaming a lesson changes its title and never its slug —
+        # but this slot has never generated a page, so there is no URL to
+        # break, no `requires` edge pointing at it and no scheme-of-work row to
+        # move. The slug is aligned to what Design delivered
+        # (`energy-in-food-and-what-you-need`) rather than Design's file being
+        # renamed to match a slug that never shipped.
+        ("energy-in-food-and-what-you-need",
+         "Energy in food and what you need", "QUANTITATIVE"),
         ("when-diet-goes-wrong", "When diet goes wrong", "CONTRAST"),
         ("the-digestive-system", "The digestive system", "SYSTEM"),
         ("enzymes-in-digestion", "Enzymes in digestion", "PROCESS"),

@@ -1,0 +1,251 @@
+/* ── person-ledger (b3-03 #s-ledger) — the person is the control ──
+   Append to the B3 group in shared/ks3.css, after `.ks3-tbench-*`.
+
+   ⚠️ SPECIFICITY. `.ks3-dark p` is (0,1,1) and a bare `.ks3-ledger-mwhy` is
+   (0,1,0). The MATCH PANEL is cream (`--ks3-ground`) inside an ink-dark block,
+   so its three paragraphs are the ones that lose — and the sentence at risk is
+   *"Now switch person without changing the food"*, which NOTES-B3 §3.3 names
+   as the thing that must not be lost. Unscoped it would still be there, in
+   #E7DECE on #FBF3E6, and nobody would ever read it. Every text rule below is
+   scoped `.ks3-dark …` or tighter.
+
+   ⚖️ THE BAR HAS THREE STATES AND NONE OF THEM IS A MARK. Short, matched and
+   over are readings of a measurement, not verdicts on a plate: there is no
+   correct day in this block, which is why the copy under a match tells the
+   student to keep the food and change the person. */
+
+.ks3-ledger { margin-top: 20px; }
+.ks3-ledger-grouplabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ledger-tabs { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-ledger-tab {
+  cursor: pointer;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 11px 17px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-ledger-tab[aria-pressed="true"] {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+}
+.ks3-ledger-panel {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-ledger-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-ledger-name { margin: 0; font-size: 21px; font-weight: 700; }
+.ks3-ledger-need {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+.ks3-ledger-why { margin: 9px 0 0; font-size: 18px; line-height: 1.55; }
+.ks3-ledger-bar {
+  margin-top: 18px;
+  height: 30px;
+  border-radius: var(--ks3-r-pill);
+  border: 2px solid var(--ks3-rule-strong);
+  overflow: hidden;
+  position: relative;
+}
+.ks3-ledger-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: block;
+  width: 0;
+  transition: width .4s ease, background .4s ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ks3-ledger-fill { transition: none; }
+}
+/* ⚖️ THREE READINGS, NOT THREE VERDICTS. `--ks3-ok` is deliberately NOT used
+   here even though the middle state is a match: green is the ladder's colour
+   for a correct answer, and a plate is not an answer. `--ks3-blue` is the
+   practical block's own shadow colour and reads as "on target" without
+   claiming anyone scored. */
+.ks3-ledger-fill[data-state="short"]   { background: var(--ks3-alert); }
+.ks3-ledger-fill[data-state="matched"] { background: var(--ks3-blue); }
+.ks3-ledger-fill[data-state="over"]    { background: var(--ks3-accent); }
+.ks3-ledger-figures {
+  margin-top: 11px;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-ledger-total {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 22px;
+  font-weight: 500;
+}
+.ks3-ledger-balance {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ledger-foodlabel {
+  margin: 20px 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ledger-foods {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 11px;
+}
+.ks3-ledger-food {
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  padding: 15px 17px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-ledger-food[data-count]:not([data-count="0"]) {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+}
+.ks3-ledger-foodrow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.ks3-ledger-foodname { font-size: 18px; font-weight: 700; }
+.ks3-ledger-foodcount {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+}
+.ks3-ledger-foodkj {
+  display: block;
+  margin-top: 5px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: .82;
+}
+.ks3-ledger-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-ledger-portions {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ledger-match {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-ledger-mlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-ledger-mhead {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.ks3-ledger-mwhy { margin: 11px 0 0; font-size: 18px; line-height: 1.6; }
+
+/* ── the drawn state: on ink ──────────────────────────────────────── */
+
+.ks3-dark .ks3-ledger-grouplabel,
+.ks3-dark .ks3-ledger-foodlabel,
+.ks3-dark .ks3-ledger-portions,
+.ks3-dark .ks3-ledger-balance { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-ledger-tab,
+.ks3-dark .ks3-ledger-food {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-ledger-tab[aria-pressed="true"],
+.ks3-dark .ks3-ledger-food[data-count]:not([data-count="0"]) {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-ledger-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-ledger-name,
+.ks3-dark .ks3-ledger-total { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-ledger-need { color: var(--ks3-alert); }
+.ks3-dark .ks3-ledger-why { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-ledger-bar {
+  border-color: var(--ks3-on-dark-muted);
+  background: rgba(255, 255, 255, .06);
+}
+/* ⊕ CORRECTED FROM THE SHIPPED STYLESHEET, and reported. `.ks3-reveal-btn` is
+   ink on an ink border, which on a `.ks3-dark` block whose ground IS
+   `--ks3-ink` paints an invisible control. The inverse keeps the contrast the
+   light button has. Same correction as `.ks3-plate-open`. */
+.ks3-dark .ks3-ledger-clear {
+  background: var(--ks3-on-dark);
+  border-color: var(--ks3-on-dark);
+  color: var(--ks3-ink);
+}
+/* ⚠️ THE MATCH PANEL IS CREAM INSIDE THE INK BLOCK. These are the three rules
+   that would ship broken unscoped — see the header. */
+.ks3-dark .ks3-ledger-match {
+  background: var(--ks3-ground);
+  border-color: var(--ks3-ground);
+}
+.ks3-dark .ks3-ledger-mlabel { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-ledger-mhead,
+.ks3-dark .ks3-ledger-mwhy { color: var(--ks3-ink); }

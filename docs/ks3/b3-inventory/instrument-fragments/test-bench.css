@@ -1,0 +1,177 @@
+/* ── test-bench (b3-02 #s-bench) — predict, and the prediction runs it ──
+   Append to the B3 group in shared/ks3.css, after `.ks3-plate-*`.
+
+   ⚠️ SPECIFICITY. `.ks3-dark p` is (0,1,1) and a bare `.ks3-tbench-why` is
+   (0,1,0). The RESULT PANEL is cream (`--ks3-ground`) inside an ink-dark
+   block, so its four paragraphs are the ones that lose: unscoped they paint
+   `--ks3-on-dark-body` #E7DECE on #FBF3E6 and the honest note — the sentence
+   the whole lesson turns on — becomes invisible while still being present.
+   Every text rule below is scoped `.ks3-dark …` or tighter.
+
+   ⚖️ THE TUBE'S COLOUR IS NOT IN THIS FILE, and must not move into it. It is
+   the reagent's own colour, authored on the test and set inline on the fill.
+   A token here would tint a real observation. */
+
+.ks3-tbench { margin-top: 22px; }
+.ks3-tbench-picks { display: flex; flex-wrap: wrap; gap: 20px 30px; }
+.ks3-tbench-grouplabel {
+  margin: 0 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-tbench-tabs { display: flex; gap: 9px; flex-wrap: wrap; }
+.ks3-tbench-tab {
+  cursor: pointer;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 11px 17px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-tbench-tab[aria-pressed="true"] {
+  background: var(--ks3-accent-tint);
+  border-color: var(--ks3-accent);
+}
+.ks3-tbench-readout {
+  margin-top: 22px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.ks3-tbench-tubecard,
+.ks3-tbench-methodcard {
+  padding: 20px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-tbench-tubecard { display: flex; gap: 20px; align-items: center; }
+/* A test tube drawn in CSS: square shoulders, round bottom. `aria-hidden`,
+   because the state line beside it says in words what the colour is — R2, and
+   the reason a colour change is never the only signal in this block. */
+.ks3-tbench-tube {
+  flex: 0 0 62px;
+  height: 168px;
+  border-radius: 8px 8px 30px 30px;
+  border: 3px solid var(--ks3-rule-strong);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+.ks3-tbench-fill {
+  display: block;
+  height: 62%;
+  border-top: 2px solid rgba(0, 0, 0, .22);
+  transition: background .55s ease, height .55s ease;
+}
+/* Running the test adds reagent as well as colour, so the level rises. */
+.ks3-tbench-fill[data-run="1"] { height: 74%; }
+@media (prefers-reduced-motion: reduce) {
+  .ks3-tbench-fill { transition: none; }
+}
+.ks3-tbench-cap {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-tbench-tubelabel { margin: 6px 0 0; font-size: 19px; font-weight: 700; line-height: 1.35; }
+.ks3-tbench-state {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+.ks3-tbench-method { margin: 6px 0 0; font-size: 18px; line-height: 1.5; }
+.ks3-tbench-detects {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+.ks3-tbench-predict { margin-top: 22px; }
+.ks3-tbench-predict .ks3-options { max-width: 36rem; }
+.ks3-tbench-prompt { margin: 0 0 4px; }
+.ks3-tbench-result {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-tbench-verdict {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-tbench-head {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+}
+.ks3-tbench-why { margin: 11px 0 0; font-size: 18px; line-height: 1.6; }
+/* ⚖️ THE CLAIM LINE IS RULED OFF FROM THE EXPLANATION, and that is not
+   decoration. Everything above the rule is what happened; everything below it
+   is what the student is licensed to write down. Running the two together is
+   exactly the slip the lesson exists to stop. */
+.ks3-tbench-claim {
+  margin: 12px 0 0;
+  padding-top: 12px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.6;
+}
+.ks3-tbench-claim strong { font-family: var(--ks3-font-display); }
+
+/* ── the drawn state: on ink ──────────────────────────────────────── */
+
+.ks3-dark .ks3-tbench-grouplabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tbench-tab {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-tbench-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-tbench-tubecard,
+.ks3-dark .ks3-tbench-methodcard { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-tbench-tube { border-color: var(--ks3-on-dark-muted); background: rgba(255, 255, 255, .05); }
+.ks3-dark .ks3-tbench-cap,
+.ks3-dark .ks3-tbench-detects { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tbench-tubelabel { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-tbench-state { color: var(--ks3-alert); }
+.ks3-dark .ks3-tbench-method { color: var(--ks3-on-dark-body); }
+/* ⚠️ THE RESULT PANEL IS CREAM INSIDE THE INK BLOCK. These four rules are the
+   ones that would ship broken unscoped — see the header. */
+.ks3-dark .ks3-tbench-result {
+  background: var(--ks3-ground);
+  border-color: var(--ks3-ground);
+}
+.ks3-dark .ks3-tbench-verdict { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-tbench-head,
+.ks3-dark .ks3-tbench-why,
+.ks3-dark .ks3-tbench-claim { color: var(--ks3-ink); }
