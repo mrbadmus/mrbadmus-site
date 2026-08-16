@@ -963,6 +963,19 @@ def main():
           if not anchor_problems
           else "%d dead: %s" % (len(anchor_problems), anchor_problems[0][:160]))
 
+    # ⊕ MRB-228 ruling R2 — `done_when` becomes load-bearing HERE, in the gate,
+    # and deliberately not in the runtime. The check above proves a rail stop's
+    # anchor names a real element; this one proves that element can finish.
+    # Together they are what stops a rail stop being decorative.
+    reach_problems, reach_count = PARITY.check_rail_reachable(KS3_OUT)
+    check("MRB-208 · every rail stop can actually reach done (R2)",
+          not reach_problems,
+          "%d rail stops carry a done_when and a completion signal"
+          % reach_count
+          if not reach_problems
+          else "%d unreachable: %s" % (len(reach_problems),
+                                       reach_problems[0][:200]))
+
     # ── MRB-203, one level down: an activity KIND with no renderer ──────
     #
     # MRB-203's registry asks whether a BLOCK TYPE has a registered component.

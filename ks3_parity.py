@@ -1617,6 +1617,89 @@ def check_rail_anchors(ks3_root):
     return problems, total
 
 
+# The four ways `doneByDom()` in shared/ks3.js can decide a section is
+# complete, in its order of precedence. Kept as a table rather than prose
+# because the assertion below is only worth anything if it agrees with the
+# runtime exactly, and the runtime is the thing that can change underneath it.
+_DONE_SIGNALS = (
+    ('data-stage-done', 'declares its own completion'),
+    ('class="ks3-rung', 'is a ladder — every rung answered or self-checked'),
+    ('data-reveal', 'has a reveal that can be opened'),
+    ('ks3-reveal-btn', 'has a reveal button that can be expanded'),
+    ('class="ks3-option', 'has an option a student can press'),
+)
+
+
+def check_rail_reachable(ks3_root):
+    """⊕ MRB-228 (ruling R2) — every rail stage can actually REACH done.
+
+    `done_when` is authored on every rail stage of every lesson, serialised
+    into `data-rail-stages`, and read by NOTHING: the runtime decides
+    completion from `data-stage-done` and then from the DOM heuristics in
+    `doneByDom()`. R2 ruled that the field becomes load-bearing in the GATE
+    rather than in the runtime — re-deriving completion from a declared string
+    would change ticking behaviour on lessons that are live and in front of
+    students, to fix something invisible to them.
+
+    So this is what "wired" has to mean for the field to be worth authoring.
+    Two assertions, both read out of the BUILT page:
+
+    1. A stage must DECLARE a `done_when`. A blank one is an author saying
+       nothing about a stage that has to be completable.
+    2. The section it points at must carry at least one of the signals
+       `doneByDom()` actually looks for. A section with none of them can never
+       tick, no matter what the student does — MRB-208 says the rail is
+       completion-based, so a stop that cannot complete is a rail that lies.
+
+    `check_rail_anchors` already proves the anchor names a real element. This
+    proves the element can finish. The two together are what stop a rail stop
+    being decorative, which is exactly the defect the C1 payload map found on
+    Design's own pages: c1-05's `#s-scale` is three static cards and two
+    paragraphs and ticks on the PREVIOUS stage's state, and c1-02's `#s-matrix`
+    does the same. Neither asks the student for anything.
+    """
+    problems, total = [], 0
+    for page in _lesson_pages(ks3_root):
+        with open(page, encoding="utf-8") as fh:
+            html = fh.read()
+        name = os.path.basename(page)
+        m = re.search(r'data-rail-stages="([^"]*)"', html)
+        if not m:
+            continue
+        try:
+            stages = json.loads(_unescape(m.group(1)))
+        except ValueError:
+            continue                      # check_rail_anchors owns this failure
+        for st in stages:
+            anchor = st.get("anchor")
+            if not anchor:
+                continue                  # ditto
+            label = st.get("short") or anchor
+            total += 1
+
+            if not (st.get("done_when") or "").strip():
+                problems.append(
+                    "%s: rail stop %r declares no done_when — every stop has to "
+                    "name the condition that completes it" % (name, label))
+
+            # The section's own markup, from its id to the start of the next
+            # top-level section. Cheap, and it does not need a parser: the
+            # question is only whether a signal appears inside this section.
+            start = html.find('id="%s"' % anchor)
+            if start < 0:
+                continue                  # check_rail_anchors owns this too
+            nxt = html.find('<section', start + 1)
+            body = html[start:nxt if nxt > 0 else len(html)]
+
+            if not any(sig in body for sig, _why in _DONE_SIGNALS):
+                problems.append(
+                    "%s: rail stop %r (#%s) carries none of the signals "
+                    "doneByDom() reads, so it can never tick. It is either a "
+                    "section that must gain a demand, or a section that must "
+                    "come off the rail." % (name, label, anchor))
+    return problems, total
+
+
 def _manifest_rows(repo_root, heading):
     """Parse the markdown table under `heading` in §10 of the manifest.
 
