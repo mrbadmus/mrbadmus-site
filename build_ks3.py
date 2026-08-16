@@ -10091,10 +10091,11 @@ def lesson_page(unit, lesson, registry, units_by_code):
             "<h1>%s</h1>" % t(lesson["title"])]
     if lesson.get("big_question"):
         head.append('<p class="ks3-bigq">%s</p>' % t(lesson["big_question"]))
-    if lesson.get("review_state") != "frozen":
-        # The dot before the text is a ::before in ks3.css. Do not emit a glyph.
-        head.append('<p class="ks3-review-flag">Draft — not yet '
-                    'science-reviewed.</p>')
+    # ⊕ MRB-221 (Mide, 16 Aug 2026) — the under-review marker is GONE. The
+    # content has been reviewed, architecture §5.10.1's carve-out is revoked,
+    # and publishing is no longer conditioned on `review_state`. Nothing is
+    # emitted here now, and nothing should be added back: the assertion that
+    # used to demand the marker went in the same commit.
     head.append("</header>")
 
     # §4's block order, inside the 60rem lesson column. Core blocks are DIRECT
@@ -10438,14 +10439,9 @@ def lesson_row(unit, lesson, position, units_by_code):
         # says "not written yet".
         state = " is-soon"
         badge = '<span class="ks3-badge is-soon">Coming soon</span>'
-    elif lesson.get("review_state") != "frozen":
-        # §5.10.1 carve-out: a draft may publish, but only with a visible
-        # marker. The lesson page carries `Draft — not yet science-reviewed.`;
-        # this is the same fact, at list size, saying the same thing.
-        state = ""
-        badge = ('<span class="ks3-badge is-draft" title="Draft — not yet '
-                 'science-reviewed.">Draft</span>')
     else:
+        # ⊕ MRB-221 — the `is-draft` badge is gone with the page marker it
+        # mirrored at list size. An authored row now carries no badge at all.
         state = ""
         badge = ""
     return ('<li class="ks3-lesson-row%s"><span class="ks3-num">%d</span>'

@@ -849,9 +849,10 @@ COMPONENTS = [
          props={"font-size": "19px", "font-weight": "700"}),
 
     # ── browse layer ──
-    dict(name="draft badge", on=UNIT, sel=".ks3-badge.is-draft",
-         props={"background-color": "#FCE7DE", "border-top-color": "#E4572E",
-                "color": "#A93411"}),
+    # ⊕ MRB-221 — the `draft badge` layer-C pin is deleted with the badge. A
+    # computed-style pin on a selector that matches nothing does not fail; it
+    # measures nothing and reports PASS, which is the vacuous-gate failure mode
+    # this file's own docstring warns about.
     dict(name="lesson row number tile", on=UNIT, sel=".ks3-num",
          props={"background-color": "#F4E9D8",
                 "font-family": "Bricolage Grotesque"}),
@@ -2639,8 +2640,7 @@ CONTRAST = [
          fg=".ks3-brand svg path", bg=".ks3-nav", need=3.0, prop="stroke"),
     dict(name="body text on card", on=LESSON,
          fg=".ks3-check p", bg=".ks3-check", need=4.5),
-    dict(name="draft marker text on its tint", on=LESSON,
-         fg=".ks3-review-flag", bg=".ks3-review-flag", need=4.5),
+    # ⊕ MRB-221 — the draft-marker contrast pair is deleted with the marker.
     dict(name="misconception quote on amber tint", on=LESSON,
          fg=".ks3-mis-quote", bg=".ks3-misconception", need=4.5),
     dict(name="hook body on ink-dark", on=LESSON,
@@ -2791,8 +2791,7 @@ CONTRAST = [
     dict(name="tutor heading on accent", on=LESSON,
          fg=".ks3-endmatter .ks3-tutor h2", bg=".ks3-endmatter .ks3-tutor",
          need=3.0),
-    dict(name="draft badge text on its tint", on=UNIT,
-         fg=".ks3-badge.is-draft", bg=".ks3-badge.is-draft", need=4.5),
+    # ⊕ MRB-221 — the draft-badge contrast pair is deleted with the badge.
     dict(name="coming-soon badge text on its tint", on=UNIT_SOON,
          fg=".ks3-badge.is-soon", bg=".ks3-badge.is-soon", need=4.5),
     dict(name="coming-soon row title on dimmed row", on=UNIT_SOON,

@@ -32,7 +32,9 @@ INVESTIGATION lesson that teaches no new subject content by design, and WS is
 exempt from the exactly-once rule (§5.7).
 
 **review_state is `draft` on every lesson.** Mide is the sole science gate
-(§5.10); `draft` → `examiner-reviewed` → `frozen`.
+(§5.10); `draft` → `examiner-reviewed` → `frozen`. ⊕ MRB-221 — the field no
+longer gates publishing: §5.10.1's carve-out is revoked and no page carries a
+review marker. It records review position, nothing more.
 """
 
 from .b3 import lessons as _b3_lessons

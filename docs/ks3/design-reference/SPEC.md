@@ -277,8 +277,17 @@ Lesson container `60rem`; prose sections `46rem`; sections separated by `28px`.
 | 12 | End matter | 4-card grid `minmax(250px, 1fr)` | `22px` | — | — | Before this lesson · Connects to · At GCSE this becomes · **Ask Mr Badmus AI on `--ks3-accent`** |
 | 13 | Footer line | none | — | — | — | 15px muted, `border-top: 1px solid --ks3-rule`, `padding-top: 16px` |
 
-**Draft pill:** inline-flex, `999px`, `--ks3-accent-tint` ground, `2px solid --ks3-accent`,
-`--ks3-accent-text` text, 16px/700, with a 9px accent dot. Text: "Draft — not yet science-reviewed."
+**Draft pill:** ⛔ **REVOKED — MRB-221, 16 Aug 2026. Not built, not transcribed.** Design drew an
+inline-flex `999px` pill on `--ks3-accent-tint` with a `2px solid --ks3-accent` border,
+`--ks3-accent-text` text at 16px/700 and a 9px accent dot. Architecture §5.10.1 is revoked, the
+build emits no such element, `.ks3-review-flag` is deleted from `shared/ks3.css`, and `verify_ks3.py`
+asserts its absence. The measurement is kept as a record of what Design drew; its wording is not
+reproduced, because MRB-221 requires the marker string to return zero hits across the docs.
+
+> This is a transcription, not the archive. The frozen artifacts under `docs/ks3/design-reference/`
+> still contain the pill as Design shipped it, and are **deliberately not edited** — they are
+> byte-exact provenance whose md5s are recorded in §1 above, and rewriting them to tidy a revoked
+> component would destroy the evidence the layer-A gate reads.
 
 **Activity option buttons (all activities):** full width, `min-height: 44px`, radius `16px`,
 18px/600, letter badge (A/B/C/D) 28px at radius `9px`. Resting `--ks3-ground` on

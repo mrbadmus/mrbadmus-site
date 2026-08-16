@@ -8,7 +8,12 @@
 #
 # Cloudflare 308-redirects /x.html -> /x, so this follows redirects and asserts on
 # the FINAL response. Per lesson it checks four things:
-#   200 · the draft marker · the ks3.css stamp · the ks3.js stamp
+#   200 · the ks3.css stamp · the ks3.js stamp · absence of the revoked marker
+#
+# ⊕ MRB-221 (16 Aug 2026) — the third column used to REQUIRE the under-review
+# marker. Architecture §5.10.1 is revoked and the build no longer emits it, so
+# the assertion is inverted rather than dropped: a marker reappearing live is now
+# the failure. Both halves moved in the same commit as the emission, deliberately.
 #
 # ── Why the stamps are derived and never typed ──────────────────────────────
 #
@@ -46,7 +51,7 @@ echo "expecting  ks3.css?v=$CSS   ks3.js?v=$JS"
 echo
 
 FAIL=0; N=0; SKIP=0
-printf '  %-52s %-9s %-7s %-9s %s\n' LESSON HTTP DRAFT CSS JS
+printf '  %-52s %-9s %-9s %-9s %s\n' LESSON HTTP CSS JS NOMARK
 
 # Which unit folders to check. Unit code -> discipline/slug comes from
 # structure.py, so a new unit needs no edit here and a renamed one cannot go
@@ -86,18 +91,21 @@ for f in $(find "$OUT" -name '*.html' ! -name 'index.html' | sort); do
   N=$((N+1))
 
   [ "$code" = "200" ] && c="200 ✅" || { c="$code ❌"; FAIL=1; }
-  grep -q 'Draft — not yet science-reviewed' <<<"$body" && d="✅" || { d="❌";       FAIL=1; }
-  grep -q "ks3.css?v=$CSS"                   <<<"$body" && a="✅" || { a="❌ stale"; FAIL=1; }
-  grep -q "ks3.js?v=$JS"                     <<<"$body" && j="✅" || { j="❌ stale"; FAIL=1; }
-  grep -q 'Coming soon'                      <<<"$body" && { c="$c(soon)"; FAIL=1; }
+  grep -q "ks3.css?v=$CSS" <<<"$body" && a="✅" || { a="❌ stale"; FAIL=1; }
+  grep -q "ks3.js?v=$JS"   <<<"$body" && j="✅" || { j="❌ stale"; FAIL=1; }
+  grep -q 'Coming soon'    <<<"$body" && { c="$c(soon)"; FAIL=1; }
+  # ⊕ MRB-221 — the under-review marker is revoked, so this asserts its ABSENCE.
+  # The old line passed only when it FOUND the string; leaving it in place after
+  # the build stopped emitting it would have turned all 30 live lessons red.
+  grep -q 'science-reviewed' <<<"$body" && { m="❌ marker"; FAIL=1; } || m="✅"
 
-  printf '  %-52s %-9s %-7s %-9s %s\n' "${rel%.html}" "$c" "$d" "$a" "$j"
+  printf '  %-52s %-9s %-9s %-9s %s\n' "${rel%.html}" "$c" "$a" "$j" "$m"
 done
 
 echo
 echo "checked $N authored lesson(s); skipped $SKIP still-placeholder slot(s)"
 if [ $FAIL -eq 0 ] && [ $N -gt 0 ]; then
-  echo "✅ all live, carrying the draft marker, on THIS build's assets"
+  echo "✅ all live, clean of the revoked marker, on THIS build's assets"
 elif [ $N -eq 0 ]; then
   echo "⚠️  nothing matched — check the unit codes you passed"; exit 1
 else

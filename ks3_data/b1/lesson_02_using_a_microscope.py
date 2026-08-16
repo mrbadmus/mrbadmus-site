@@ -702,8 +702,10 @@ LESSON = {
            "analysis-and-evaluation"],
 
     # ── governance (§5.10) ──────────────────────────────────────────────────
-    # The approved page renders "Draft — not yet science-reviewed." The ×100
-    # correction and ~1,139 words of new science-bearing content arrive with
-    # this record and need the examiner gate.
+    # The ×100 correction and ~1,139 words of new science-bearing content
+    # arrived with this record and went through the examiner gate. ⊕ MRB-221:
+    # this field no longer gates publishing — §5.10.1's carve-out and the page
+    # marker it required are both revoked — but it still records where the
+    # lesson sits in §5.10's review sequence.
     "review_state": "draft",
 }

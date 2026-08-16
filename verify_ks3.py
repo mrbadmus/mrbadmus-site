@@ -19,13 +19,13 @@ import shutil
 import subprocess
 import sys
 import tempfile
-from datetime import date
 
-# architecture.md §5.10.1 — the pre-launch carve-out that lets draft lessons
-# publish expires when real students return. Hard-coded so the expiry is a
-# fact the harness enforces, not a promise in a document. Moving this date
-# requires an explicit §12 amendment with Mide's decision on the record.
-CARVE_OUT_EXPIRY = date(2026, 9, 1)
+# ⊕ MRB-221 (Mide, 16 Aug 2026) — `CARVE_OUT_EXPIRY` and the pair of checks it
+# drove are DELETED, not disabled. Architecture §5.10.1 is revoked: the content
+# has been reviewed, publishing is no longer conditioned on `review_state`, and
+# the page marker the checks demanded is no longer emitted. The assertion had to
+# go in the same commit as the marker — an assertion that passes only when it
+# FINDS a string the build no longer writes turns every live lesson red.
 
 # The served KS3 tree. Cloudflare serves from mrbadmus_site/, so this is the
 # tree every gate below reads — never the ./ks3 root mirror, which is a copy.
@@ -121,10 +121,16 @@ def main():
     check("C1 has six authored lessons", len(authored) == 6,
           "%d authored" % len(authored))
 
-    # review_state: the ruling was `draft` for Mide's review, NOT frozen.
+    # ⊕ MRB-221 — this used to pin every lesson to `draft`, which was correct
+    # only while §5.10.1's carve-out made `draft` the publishing state. With the
+    # carve-out revoked, publishing no longer consults `review_state` at all, so
+    # pinning a value asserts nothing and would fail a later pass that legitimately
+    # freezes a reviewed lesson. What survives is the field's §5.10 contract: it
+    # must carry one of the three legal states, on every lesson.
+    LEGAL_STATES = {"draft", "examiner-reviewed", "frozen"}
     states = {l.get("review_state") for l in authored}
-    check("all six carry review_state: draft", states == {"draft"},
-          "states=%s" % sorted(states))
+    check("every C1 lesson carries a legal §5.10 review_state",
+          states and states <= LEGAL_STATES, "states=%s" % sorted(states))
 
     # 1b. B1 authored. MRB-199 is now RULED: both slots that owned no statutory
     # statement are gone. `stem-cells-and-meristems` has no statement anywhere
@@ -137,8 +143,9 @@ def main():
     check("B1 has six authored lessons", len(b1_authored) == 6,
           "%d authored" % len(b1_authored))
     b1_states = {l.get("review_state") for l in b1_authored}
-    check("all six B1 lessons carry review_state: draft",
-          b1_states == {"draft"}, "states=%s" % sorted(b1_states))
+    check("every B1 lesson carries a legal §5.10 review_state",
+          b1_states and b1_states <= LEGAL_STATES,
+          "states=%s" % sorted(b1_states))
     # The §7.6 exemption machinery is deliberately KEPT and stays
     # mutation-tested — the Year 9 bridge unit will exercise it for real. What
     # MRB-199 changes is only the expected COUNT, which is now zero: no Year 7
@@ -155,37 +162,30 @@ def main():
     manual("examiner-reviewed → frozen",
            "Mide's science gate (§5.10). Cannot be automated; the slice stops here.")
 
-    # §5.10.1 pre-launch carve-out — draft lessons may publish, but only until
-    # real students return, and only with a visible marker. Both halves are
-    # checked here so the carve-out cannot lapse silently: after the expiry the
-    # rule flips and this check starts failing on any unfrozen published lesson.
-    unfrozen = [(u, l) for u, l in all_authored
-                if l.get("review_state") != "frozen"]
-    if unfrozen:
-        missing_marker = []
-        for u, l in unfrozen:
+    # ⊕ MRB-221 — the under-review marker and the two checks that policed it are
+    # gone. What replaces them is the inverse assertion: the marker must NOT
+    # reach a page. Removing an emission without asserting its absence is how a
+    # deleted mechanism grows back — a later pass copies a header from a page
+    # built before the deletion and nothing notices.
+    # Deliberately swept over EVERY authored lesson in the key stage, not over
+    # `all_authored` — that list is C1 + B1 only, which was the whole key stage
+    # when it was written and is now 12 of 30. A gate whose coverage silently
+    # stops growing with the build is the same defect as no gate.
+    marker_back = []
+    for u in units:
+        for l in u["lessons"]:
+            if not l.get("authored"):
+                continue
             page = ("mrbadmus_site/ks3/%s/%s/%s.html"
                     % (u["discipline"], u["slug"], l["slug"]))
             html = open(page).read() if os.path.exists(page) else ""
-            if "ks3-review-flag" not in html:
-                missing_marker.append(l["slug"])
-        check("every published draft lesson carries the under-review marker",
-              not missing_marker,
-              "missing on %s" % missing_marker if missing_marker
-              else "%d draft lessons, all marked" % len(unfrozen))
-
-        if date.today() < CARVE_OUT_EXPIRY:
-            days = (CARVE_OUT_EXPIRY - date.today()).days
-            check("§5.10.1 carve-out still in force — draft publishing allowed",
-                  True, "expires %s (%d days)" % (CARVE_OUT_EXPIRY, days))
-        else:
-            check("§5.10.1 carve-out EXPIRED — only frozen lessons may publish",
-                  False,
-                  "expired %s; %d lesson(s) still draft and still publishing: %s. "
-                  "Freeze them or revert them to coming-soon slots (architecture "
-                  "§5.10). Extending the carve-out needs an explicit §12 amendment."
-                  % (CARVE_OUT_EXPIRY, len(unfrozen),
-                     [l["slug"] for _, l in unfrozen]))
+            if "ks3-review-flag" in html or "science-reviewed" in html:
+                marker_back.append(l["slug"])
+    swept = sum(1 for u in units for l in u["lessons"] if l.get("authored"))
+    check("no lesson page carries the revoked under-review marker (MRB-221)",
+          not marker_back,
+          "marker is back on %s" % marker_back if marker_back
+          else "%d authored lessons swept, none marked" % swept)
 
     # ⊕ MRB-228 · the rung heading a student actually reads.
     #

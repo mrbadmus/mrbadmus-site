@@ -263,30 +263,9 @@ body.rd[data-mode="ks3"] {
   padding-bottom: 28px;
 }
 
-/* §5.10.1's draft marker. MRB-181 explicitly keeps this prominent: it
-   is the one note that outranks "no callouts", because it protects a
-   student from unreviewed science. */
-.ks3-review-flag {
-  margin: 22px 0 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 17px;
-  border-radius: var(--ks3-r-pill);
-  background: var(--ks3-accent-tint);
-  border: 2px solid var(--ks3-accent);
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ks3-accent-text);
-}
-.ks3-review-flag::before {
-  content: "";
-  width: 9px;
-  height: 9px;
-  border-radius: 99px;
-  background: var(--ks3-accent);
-  flex: 0 0 auto;
-}
+/* ⊕ MRB-221 — `.ks3-review-flag` and its ::before dot are DELETED. §5.10.1 is
+   revoked, no page emits the marker, and CSS for an element that cannot exist
+   is dead weight a grep mistakes for evidence (contract §6 gate 9). */
 
 /* ── blocks ─────────────────────────────────────────────────────── */
 
@@ -1476,11 +1455,7 @@ body.rd[data-mode="ks3"] {
   border: 2px solid var(--ks3-rule-strong);
   color: var(--ks3-ink-muted);
 }
-.ks3-badge.is-draft {
-  background: var(--ks3-accent-tint);
-  border-color: var(--ks3-accent);
-  color: var(--ks3-accent-text);
-}
+/* ⊕ MRB-221 — `.ks3-badge.is-draft` deleted with the marker it mirrored. */
 .ks3-badge.is-soon {
   background: var(--ks3-band);
   border-color: var(--ks3-rule-strong);

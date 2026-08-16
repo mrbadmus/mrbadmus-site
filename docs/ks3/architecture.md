@@ -1050,10 +1050,36 @@ all `core`/`stretch`/`support` explanation text, all ladder questions, answers a
   quietly shipped.
 - Non-science copy (button labels, encouragement, layout) is freely editable.
 
-`review_state` transitions: `draft` → `examiner-reviewed` → `frozen`. Only frozen lessons publish —
-**except during the pre-launch carve-out below.**
+`review_state` transitions: `draft` → `examiner-reviewed` → `frozen`.
 
-#### 5.10.1 CARVE-OUT — draft lessons may publish before real students return ⊕
+⊕ **MRB-221, ruled by Mide 16 August 2026 — publishing no longer consults `review_state` at all.**
+The content has been reviewed by Mide and colleagues. `review_state` survives as the record of where
+a lesson sits in the review sequence above; it is not a publish condition, and no page carries a
+marker derived from it. Mide remains the sole science gate — that is §5.10 and it is untouched. What
+is gone is the *publish-time* machinery: the old "only frozen lessons publish" rule, the carve-out
+that excepted it, the header marker, the browse-list badge and the two harness checks that policed
+them.
+
+#### 5.10.1 ⛔ REVOKED — the pre-launch draft carve-out (MRB-221, 16 August 2026)
+
+> **⛔ This section is history. Nothing in it is live.** The mechanism it describes was deleted from
+> `build_ks3.py`, `shared/ks3.css`, `ks3_parity.py`, `verify_ks3.py` and `check_ks3_live.sh` on
+> 16 August 2026. Kept in place, unedited except for this banner and the removal of the marker's
+> literal wording, per §12's rule that a superseded ruling is never deleted. **Do not implement it.**
+>
+> **Why it went.** It existed for one reason — to let unreviewed work be seen in situ while there
+> were no students to protect. The review has now happened, so the exception has nothing left to
+> except. It was revoked rather than allowed to lapse on its own expiry date because a revoked
+> mechanism and an expired one leave the build in opposite states: on expiry the harness would have
+> started *failing* every published lesson, which is the correct behaviour for a carve-out nobody
+> acted on and the wrong behaviour for one that did its job.
+>
+> **The one engineering lesson worth carrying forward.** The harness check demanded the marker be
+> PRESENT. Removing the emission without removing the check in the same commit would have turned all
+> thirty live lessons red — a green-to-red flip caused entirely by the fix. Both halves moved
+> together. What replaced the check is its inverse: the marker must now be **absent**, asserted in
+> `verify_ks3.py` and again in `check_ks3_live.sh`, because a deleted mechanism grows back when a
+> later pass copies a header from a page built before the deletion and nothing notices.
 
 **For the pre-launch period only, a lesson with `review_state: draft` MAY publish, provided the page
 carries a visible marker saying the content is under review.**
@@ -1066,10 +1092,12 @@ smoke-tested on a real device, and the review itself gets harder because Mide ha
 instead of pages. Publishing drafts makes the work reviewable. That is the entire justification, and
 it evaporates the moment a student can land on the page.
 
-The marker is mandatory, not advisory. A draft lesson renders
-`<p class="ks3-review-flag">Draft — not yet science-reviewed.</p>` in the lesson header — emitted by
-`build_ks3.py` for any lesson whose `review_state` is not `frozen`, and styled to be legible rather
-than decorative. A draft page with no marker is a defect, not a draft.
+The marker is mandatory, not advisory. A draft lesson renders a `.ks3-review-flag` paragraph in the
+lesson header — emitted by `build_ks3.py` for any lesson whose `review_state` is not `frozen`, and
+styled to be legible rather than decorative. A draft page with no marker is a defect, not a draft.
+*(The marker's literal wording is deliberately not reproduced here: MRB-221 requires the string to
+return zero hits across the source and the docs, and a revoked mechanism quoted verbatim in a
+document is exactly how it gets copied back into a build.)*
 
 What the carve-out does NOT change:
 
@@ -1943,14 +1971,14 @@ exhaustive register — a new case gets the question asked afresh.
 | *"This lesson is planned **and its place in the course is fixed**, but it has not been written yet."* | **Trimmed** to *"This lesson has not been written yet."* | The status is honest and useful; the middle clause is §11 decision 8's structure-first policy justifying itself. |
 | *"All three sciences run together through every half term —* pick one to see the lessons." | **Trimmed** to *"Pick a science to see the lessons."* | The leading clause states a `half_terms.py` derivation rule. The instruction was already doing the work. |
 | *"Taught in Chemistry — Particles and their behaviour. You'll meet the full lesson there."* (`REF_POINTER`) | **Kept** | Says WHERE the thing in front of them lives. Load-bearing under §4.5 ruling 3. |
-| *"Draft — not yet science-reviewed."* (`.ks3-review-flag`), `Draft` badge, `Coming soon` tag | **Kept** | §5.10.1. These protect a student from unreviewed science, which is the one thing on a page more important than the science. |
+| The `.ks3-review-flag` under-review marker and the `Draft` badge | **Kept** — ⛔ then **deleted outright**, MRB-221, 16 Aug 2026 | §5.10.1's reasoning was sound while it held: these protected a student from unreviewed science, which is the one thing on a page more important than the science. The review has since happened, §5.10.1 is revoked, and a marker that no longer says anything true is not a protection — it is noise the reader learns to ignore. The `Coming soon` tag is **unaffected and stays**: it answers a different question, and an unauthored slot is still unauthored. |
 | *"Prefer to browse by subject? Every lesson also sits in its subject and its unit… Same lessons, same pages — a different way in."* | **Kept** | Two navigation routes are visible on the page; this answers the question the reader is *actually* holding, which is whether the other route leads somewhere different. |
 | *"Not sure which one? Years 7, 8 and 9 are KS3. Years 10 and 11 are GCSE."* (the chooser) | **Kept** | Directional. It resolves the exact choice the page is asking the reader to make. |
 
-**Where a note genuinely earns its place** — legal, data protection, safeguarding, or an under-review
-marker — it stays, but **small, at the bottom edge, never a callout**. The one class of exception that
-outranks even that is §5.10.1's draft marker, which must stay visible enough to do its job; it is
-sized and coloured to be seen, and MRB-179 strengthened its border precisely so it could not fade out.
+**Where a note genuinely earns its place** — legal, data protection, or safeguarding — it stays, but
+**small, at the bottom edge, never a callout**. There is no longer any exception to that: §5.10.1's
+draft marker used to be one, sized and coloured to be seen with MRB-179 strengthening its border so
+it could not fade out, and MRB-221 removed the marker entirely. The rule is now uniform.
 
 **Consequence for §4.5.2.** That section required the browse layer to be *"labelled as such on the
 page"*. That obligation is **discharged differently from now on**: the requirement is that no browse
@@ -2078,7 +2106,7 @@ A lesson ships only when every line is true:
 - [ ] `requires` edges authored; graph still acyclic.
 - [ ] `ks4_links` authored or deliberately empty.
 - [ ] Keyboard-complete, WCAG AA, touch-tested.
-- [ ] Science examiner-reviewed; `review_state: frozen`; any net-new science flagged ⚑.
+- [ ] Science examiner-reviewed; `review_state` advanced to reflect it; any net-new science flagged ⚑. *(⊕ MRB-221 — this used to require `frozen` specifically, because `frozen` was the state that let a lesson publish. Publishing no longer consults the field, so what the done-list asks for is the review, not a particular string.)*
 
 *Added 2026-07-26, from the ruled decisions:*
 
@@ -2759,3 +2787,4 @@ This document is law. Changing it changes what gets built.
 | 2026-08-12 | **MRB-199 ruled by Mide as examiner: B1 drops to six lessons, and neither departing slot becomes a bridge row.** `stem-cells-and-meristems` and `enzymes-and-rate` were declared as B1 slots at Phase 1 and had no statutory statement to own — the CELLS strand is six statements and B1 was carrying eight lessons, so the two were beyond-statutory by accident rather than by declaration. Both removed from `ks3_data/structure.py`. **Stem cells** becomes a Year 9 GCSE-bridge candidate when §7.6's units exist. **Enzymes already had a statutory home, and it was never B1**: `KS3.B.NUT.04` covers "the tissues and organs of the human digestive system... **(enzymes simply as biological catalysts)**" and B3 Nutrition and digestion already declares `enzymes-in-digestion` to own it. **No slot was carried across** — moving one would have given B3 two enzyme lessons and put the statutory one into competition for its own statement, recreating the defect this ruling closes. An enzyme lesson in a digestion context is a different lesson and gets planned fresh under MRB-205. **`bridge-register.md` was deliberately NOT created**: no KS3 lesson is beyond-statutory any more, and §7.6's register waits for the bridge unit that mandates it. Every piece of the `beyond_statutory` machinery is kept — it is correct, it is what made this finding legible, and the bridge unit will exercise it. Totals move 185 → **183** lesson slots (182 distinct slugs), Biology 60 → **58**. B1's coverage ratio goes 6 statements / 8 lessons `0.75 ⚠️` → 6/6 **1.00**, the first unit in the register to sit exactly 1:1. | Claude (Opus 5) |
 | 2026-08-12 | **MRB-202 investigated on main and answered with evidence: the ladder was never wrong, and the reported defect is R3 working as Design specified.** Driven in headless Chrome against main's published C1, measuring after transitions settle rather than during them. **The mastery ladder is correct and always has been** — correct `--ks3-ok-tint` on `--ks3-ok` with a drawn ✓, wrong `--ks3-band` on `--ks3-ink` with a drawn ✕, spent `--ks3-row-dim`, matching SPEC.md §5's table on every one of its four rows. **The surface Mide saw is the activity block**, where a chosen option takes `--ks3-accent-tint` and an accent badge above an accent-bordered reveal — identically whether the student was right or wrong. That is **not new to `feat/ks3-instruments` and not a Code defect**: it is SPEC.md's rule R3, *"Activity buttons never mark correctness... green and red must not appear on an activity button"*, rendered faithfully, and it has been live on C1's six lessons since the MRB-183 merge. Reversing it is Design's **R10**, already flagged for Mide on 2026-08-09 and still unruled, so **no rendering was changed** in this amendment. **What was fixed is the gate.** Option-button states were unregistered, which is why 116 green assertions had nothing to say about the state a student actually looks at. Layers C and D gain the ability to **drive** a page into a state before measuring (`DRIVES`, one fresh page load each, transitions cancelled so the measurement is deterministic rather than usually-long-enough); all four ladder states, both activity states and both ink-dark states are registered with computed-style and contrast assertions; R3 is promoted from a proxy (`data-correct` appears only inside the ladder) to a direct runtime assertion that presses every activity option and requires identical resolved colours and no marking colour; and the whole thing is mutation-tested — repainting a correct answer in the accent must fail the gate naming the component, and does. Gate goes 34 → **51** components, 39 → **55** contrast pairs, 116 → **136** style assertions. One contrast pair, the spent option's badge glyph at 2.63:1, is recorded as WCAG 1.4.3 exempt **conditionally** — the gate proves the control is really disabled, so the exemption fails the day spent options become clickable. | Claude (Opus 5) |
 | 2026-08-15 | **B1 replayed onto main. The two generators did NOT contradict — they were two treatments of one landmark.** MRB-211's five single-owner files were worked twice by sessions that never saw each other: main rebuilt the KS3 browse layer (MRB-182/212), `feat/ks3-b1` built six authored lessons, ~30 component renderers and the instrument engines. Replayed onto `origin/main` rather than rebased. **595 conflicts, of which 590 were the generated trees** (`ks3/`, `mrbadmus_site/ks3/`) — rebuilt, never merged. **Eleven real hunks in five files**, each adjudicated. Both sessions had independently implemented MRB-208's *breadcrumbs live in the header* ruling, in different markup for different page types: main's `.ks3-crumbs` (mono 14px — unit indices, discipline hubs, year and half-term screens, browse layer) and B1's `.ks3-trail` (body 17px/600 — authored lessons only). `shell()` now takes the union of both signatures and renders **one** header slot after **one** divider, `trail_html or crumb_html`, so a page carries exactly one trail whichever it is and nothing announces a landmark twice. B1's progress rail sits between the header and `<main>` — a position readout for the page, not part of its content, and sticky-under-sticky only works if the two are siblings. Two values where main was newer and won: MRB-182's summer season `#22B8CF`, and main's `.ks3-nav-divider`, whose rail already supplies the 20px gap B1's margin was compensating for. **One thing not adopted and parked for Mide: the nav brand tile — see §8.** The gate caught that one itself: with the tile's CSS gone, B1's cream chevron measured 1.00:1 cream-on-cream and layer D failed by name. Result: 12 authored lessons, 294 pages, `verify_ks3.py` fully green with 2 items manual, kinds gate zero unrendered (14 dispatched, 7 declared generic), 1,454 internal links resolving, byte-identical across both generator orders. | Claude (Opus 5) |
+| 2026-08-16 | ⛔ **§5.10.1's draft carve-out REVOKED and the whole draft mechanism DELETED. RULED by Mide, MRB-221.** Mide and colleagues have reviewed the KS3 content; there is no draft state any more. Publishing no longer consults `review_state` in any way. Removed in one commit, deliberately together: the header marker and the browse-list `Draft` badge in `build_ks3.py`; `.ks3-review-flag`, its `::before` dot and `.ks3-badge.is-draft` in `shared/ks3.css`; the layer-C pin and two layer-D contrast pairs in `ks3_parity.py`; `CARVE_OUT_EXPIRY` and both §5.10.1 checks in `verify_ks3.py`; and the marker column in `check_ks3_live.sh`. **Why one commit and not two:** the harness check passed only when it FOUND the marker, so deleting the emission on its own would have turned all thirty live lessons red — a green-to-red flip caused entirely by the fix. **What replaced the check is its inverse:** `verify_ks3.py` and `check_ks3_live.sh` now both assert the marker is ABSENT, because a deleted mechanism grows back when a later pass copies a header from a page built before the deletion and nothing notices; deleting an emission without asserting its absence is a half-finished deletion. `review_state` itself is KEPT as the record of review position and is no longer a publish condition — its remaining read site is a `verify_ks3.py` check that the value is one of §5.10's three legal states, replacing two checks that pinned it to `draft` and would have failed any later pass that legitimately froze a reviewed lesson. §5.10.1 is kept in place marked ⛔ per §12's reversal rule, with its literal marker wording removed so the string returns zero hits across the source and the docs. §5.10, §8.10's table row, §10.2's done-list and the MRB-220 build contract swept to match. `Coming soon` is untouched — it answers a different question. | Claude (Opus 5) |

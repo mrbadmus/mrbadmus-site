@@ -395,8 +395,11 @@ from the block title** — both must be authored, as §4.8.1 A already requires.
 | c2-05 | — | — | — | — |
 | c2-06 | `startSealed` | boolean | default `false` | The balance bench |
 
-`showDraft` gates `<p class="ks3-review-flag">Draft — not yet science-reviewed.</p>` in
-the lesson head on all six. `testBudget` is NOTES §7's teaching dial and **is the
+`showDraft` gated the `.ks3-review-flag` under-review marker in the lesson head on all
+six. ⊕ **MRB-221, 16 Aug 2026 — that marker is revoked and the build no longer emits it,
+so `showDraft` is a Design preview switch with no student-facing meaning. Do not wire it.**
+(This is a record of what Design drew, kept as measured; the literal marker wording is not
+reproduced, because MRB-221 requires the string to return zero hits across the docs.) `testBudget` is NOTES §7's teaching dial and **is the
 pedagogy of c2-02** — a generator that drops it turns the lesson into a click-through.
 
 ---

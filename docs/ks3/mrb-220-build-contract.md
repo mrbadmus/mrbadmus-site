@@ -53,7 +53,10 @@ two passes editing `build_ks3.py` at once is a lost afternoon.
 - **§8.10, no platform self-explanation** — student pages carry no meta-text about how the platform
   works. Default is cut. Legal/safety notes stay, small, at the bottom edge, never a callout.
 - **Prose bar** — if a sentence is not teaching or setting up a decision, cut it.
-- **Every lesson carries `Draft — not yet science-reviewed`.**
+- ⛔ **REVOKED 16 Aug 2026 (MRB-221, Mide).** This line used to read *"every lesson carries the
+  under-review marker."* The content has been reviewed; there is no draft state. No lesson carries a
+  review marker, the browse-list `Draft` badge is gone with it, and `verify_ks3.py` now asserts the
+  marker's **absence**. Kept in place, marked, per §12's reversal rule.
 
 ---
 
@@ -199,10 +202,11 @@ follow the measurement, not this table, where they disagree.
 
 - **P1–P3 are authored and deliberately held for MRB-223.** If they appear on disk, ignore them.
 - No new page structure, no new layout, no component Design has not drawn.
-- No change to the nav brand (R6), the carve-out date `verify_ks3.py:27 CARVE_OUT_EXPIRY`
-  (needs an explicit §12 amendment with Mide's decision on the record), or `shell()`'s signature —
-  it is composed from two sessions' work and the single `trail_html or crumb_html` slot is
-  deliberate.
+- No change to the nav brand (R6) or `shell()`'s signature — it is composed from two sessions' work
+  and the single `trail_html or crumb_html` slot is deliberate.
+  ⊕ **`CARVE_OUT_EXPIRY` no longer exists.** This bullet used to protect it, requiring an explicit
+  §12 amendment with Mide's decision on the record before it could move. MRB-221 is that amendment:
+  Mide revoked the carve-out on 16 Aug 2026 and the constant was deleted rather than moved.
 
 ---
 

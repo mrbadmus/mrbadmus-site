@@ -47,7 +47,9 @@ in the same lesson in both (PAYLOAD-MAP §7.4). Nothing in
 `docs/ks3/misconception-register.md` moves.
 
 **review_state is `draft` on every lesson.** Mide is the sole science gate
-(§5.10); `draft` → `examiner-reviewed` → `frozen`.
+(§5.10); `draft` → `examiner-reviewed` → `frozen`. ⊕ MRB-221 — the field no
+longer gates publishing: §5.10.1's carve-out is revoked and no page carries a
+review marker. It records review position, nothing more.
 """
 
 from .c1 import lessons as _c1_lessons
