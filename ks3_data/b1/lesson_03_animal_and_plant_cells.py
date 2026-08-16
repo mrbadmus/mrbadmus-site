@@ -133,8 +133,11 @@ FOR THE RENDERER — what this record assumes, and does not say twice
     count; `headline_one` is the authored singular.
   · `finding_words` end in "— " **with a trailing space**; it is inside the
     display-face span.
-  · Progress lines compose as "<n> of <total> " + `progress_unit`, which
-    reproduces "3 of 5 sent", "2 of 4 cells run" and "5 of 7 installed".
+  · Progress lines compose as "<n> of <total> " + a unit word: `progress_unit`
+    on `#s-wall` ("3 of 5 sent"), `install_unit` on `#s-fit`'s foot hint
+    ("5 of 7 installed"). ⊕ MRB-242 — `#s-fit`'s "2 of 4 cells run" is NOT one
+    of these: it is the block-head counter and its whole sentence is authored
+    in `head_counter.format`, the mechanism every other counting block uses.
   · `#s-bench` and `#s-wall` are bare `ks3-block` on Design's page. The
     `check` shell's extra `ks3-check` class would take the heading to 28px
     where Design measures **30px** — the modifier must not be emitted here.
@@ -419,11 +422,11 @@ CELL_BENCH = {"id": "seven-parts-two-cells",
               "demand": "compare two real specimens part by part, and tell "
                         "'not there' apart from 'there but not visible'",
               "eyebrow": "The bench · seven parts, one job each",
-              "title": "One cell, two organisms, two ways of looking",
-              "intro": "Switch the specimen and watch which parts stay put. "
-                       "Then switch from the textbook drawing to what a "
-                       "school microscope actually shows you, and watch "
-                       "which parts disappear.",
+              "heading": "One cell, two organisms, two ways of looking",
+              "prompt": "Switch the specimen and watch which parts stay "
+                        "put. Then switch from the textbook drawing to "
+                        "what a school microscope actually shows you, and "
+                        "watch which parts disappear.",
               "figure": "b1-cell-bench",
               "start": "leaf",
               "mark_space": {"w": 900, "h": 560},
@@ -497,11 +500,11 @@ SORT_PAIRS = {"id": "wall-or-membrane",
                         "only separate if the wall and the membrane are two "
                         "different things",
               "eyebrow": "Your turn · tell two apart",
-              "title": "Wall or membrane?",
-              "intro": "These two get swapped for each other more than any "
-                       "other pair on the list. Send each statement to the "
-                       "one it belongs to. Change your mind as often as you "
-                       "like — nothing is marked here.",
+              "heading": "Wall or membrane?",
+              "prompt": "These two get swapped for each other more than "
+                        "any other pair on the list. Send each statement "
+                        "to the one it belongs to. Change your mind as "
+                        "often as you like — nothing is marked here.",
               "categories": [{"id": "wall", "label": "Cell wall"},
                              {"id": "membrane", "label": "Cell membrane"}],
               "rows": SORT,
@@ -639,17 +642,25 @@ FIT_PARTS = {"id": "fit-the-cell",
              "demand": "build four real cells from one parts list, so that "
                        "'which parts' becomes a consequence of 'what job'",
              "eyebrow": "Build it",
-             "title": "Fit the cell to the job",
-             "intro": "Four real cells, four different jobs. Install the "
-                      "parts each one needs — no more than that — then run "
-                      "it. The cell will tell you what you got away with.",
+             "heading": "Fit the cell to the job",
+             # ⊕ MRB-242 — Design draws a progress readout on the block head,
+             # right-aligned beside the <h2> ("0 of 4 cells run", reference
+             # line 293). It was never emitted, so the only number on the
+             # block was the foot hint. `head_counter` is the mechanism every
+             # other counting block already uses; the words now live here and
+             # `progress_unit` — which was serialised into `labels.unit` and
+             # read by nothing — is gone with them (R5).
+             "head_counter": {"format": "{n} of 4 cells run", "total": 4},
+             "prompt": "Four real cells, four different jobs. Install the "
+                       "parts each one needs — no more than that — then "
+                       "run it. The cell will tell you what you got away "
+                       "with.",
              "parts_from": "seven-parts-two-cells",
              "job_label": "The job",
              "install_label": "Install the parts",
              "run_label": "Run this cell",
              "rerun_label": "Run it again",
              "clear_label": "Strip it back out",
-             "progress_unit": "cells run",
              "install_unit": "installed",
              "install_empty_hint": "Install something first",
              "specimens": FIT_CELLS,

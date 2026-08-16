@@ -1167,11 +1167,21 @@ body.rd[data-mode="ks3"] {
 }
 /* On the ink-dark practical block, Design's own pair: the lit state is the
    alert yellow with ink text, the resting state transparent on the muted
-   rule. */
+   rule.
+   ⊕ MRB-242 — `.ks3-seg-btn` was missing from BOTH of these, so the ruling
+   three comments up ("one segmented control, two class names, one set of
+   values") held for the light branch and broke for the dark one. Every
+   `.ks3-seg-btn` on an ink block fell through to the light accent branch:
+   unpressed at 1.35:1, pressed in accent where Design draws amber. 16 buttons
+   across b1-03, b1-04 and b1-05 — the fit tabs, the sabotage tabs, the zoom
+   ticks and the removal tabs — all of them in `ks3-dark ks3-practical`
+   instrument blocks, all of them corrected by adding the name back. */
+.ks3-dark .ks3-seg-btn,
 .ks3-dark .ks3-sim-seg-btn {
   border-color: var(--ks3-on-dark-muted);
   color: var(--ks3-on-dark);
 }
+.ks3-dark .ks3-seg-btn[aria-pressed="true"],
 .ks3-dark .ks3-sim-seg-btn[aria-pressed="true"] {
   background: var(--ks3-alert);
   border-color: var(--ks3-alert);
@@ -3304,38 +3314,57 @@ body.rd[data-mode="ks3"] {
 }
 .ks3-fit-job-text { margin: 6px 0 0; font-size: 21px; line-height: 1.4; font-weight: 700; }
 .ks3-fit-job-where { margin: 10px 0 0; font-size: 18px; line-height: 1.6; color: var(--ks3-ink-body); }
+/* ⊕ MRB-242 — "Install the parts" is a plain bold line in Design (reference
+   line 310), not the mono uppercase eyebrow this rule used to draw. It labels
+   a row of controls; it is not a section marker. */
 .ks3-fit-install-label {
-  margin: 20px 0 10px;
-  font-family: var(--ks3-font-mono);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-  color: var(--ks3-ink-muted);
+  margin: 22px 0 0;
+  font-size: 18px;
+  font-weight: 700;
 }
+/* ⊕ MRB-242 — Design lays the chips out as a WRAPPING ROW of pills sized to
+   their own words (reference line 309), not as a fixed-column grid. A grid
+   stretches a pill to a 232px column, which is a rectangle with rounded ends
+   rather than a chip. The parity row that asserted `display: grid` was written
+   against this stylesheet rather than against the reference, and has been
+   corrected with it. */
 .ks3-fit-parts {
   list-style: none;
-  margin: 0;
+  margin: 12px 0 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
-  gap: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 .ks3-fit-part {
-  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
   text-align: left;
   cursor: pointer;
   font: inherit;
   font-size: 17px;
   font-weight: 700;
-  padding: 12px 14px;
-  min-height: var(--ks3-tap);
-  border-radius: var(--ks3-r-control);
+  padding: 11px 17px;
+  /* 48px, Design's own value, and comfortably over `--ks3-tap`'s 44px floor. */
+  min-height: 48px;
+  border-radius: 999px;
   border: 2px solid var(--ks3-option-border);
   background: var(--ks3-ground);
   color: var(--ks3-ink);
 }
 .ks3-fit-part[aria-pressed="true"] { border-color: var(--ks3-accent); background: var(--ks3-accent-tint); }
+/* ⊕ MRB-242 — the chip's number is the bench's badge component, reused. One
+   badge, one set of values, a size modifier here and a dark branch below —
+   the same discipline the segmented control takes, and the reason there is no
+   second `.ks3-fit-part-num`. Design draws it at 24px/7px (reference 1213). */
+.ks3-fit-part .ks3-part-num {
+  flex: 0 0 24px;
+  height: 24px;
+  border: 0;
+  border-radius: 7px;
+  font-size: 14px;
+}
 .ks3-fit-foot { margin-top: 18px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
 .ks3-fit-run[disabled] { opacity: .45; cursor: default; transform: none; }
 .ks3-fit-clear {
@@ -3363,8 +3392,30 @@ body.rd[data-mode="ks3"] {
   background: var(--ks3-inset);
   border: 2px solid var(--ks3-ink);
 }
-.ks3-fit-verdict {
+/* ⊕ MRB-242 — Design's verdict pill, `verdictBadgeStyle` at reference line
+   1243: mono, 14px/500, tracked .08em, uppercased, on a 999px capsule with a
+   2px ink border and a fill that carries the state. No badge element was ever
+   emitted, so the three authored badge words had nowhere to land at all. */
+.ks3-fit-badge {
   margin: 0;
+  display: inline-block;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 2px solid var(--ks3-ink);
+  color: var(--ks3-ink);
+}
+.ks3-fit-badge[data-state="fails"] { background: var(--ks3-alert-tint); }
+.ks3-fit-badge[data-state="waste"] { background: var(--ks3-band); }
+.ks3-fit-badge[data-state="works"] { background: var(--ks3-accent-tint); }
+
+/* 12px, not 0 — the headline now has the pill above it (reference line 329). */
+.ks3-fit-verdict {
+  margin: 12px 0 0;
   font-family: var(--ks3-font-display);
   font-weight: 800;
   font-size: 26px;
@@ -3390,6 +3441,102 @@ body.rd[data-mode="ks3"] {
 .ks3-fit-finding[data-kind="missing"] { background: var(--ks3-alert-tint); border-color: var(--ks3-alert-border); }
 .ks3-fit-finding strong { font-family: var(--ks3-font-display); }
 .ks3-fit-note { margin: 16px 0 0; padding-top: 14px; border-top: 2px solid var(--ks3-rule); font-size: 19px; line-height: 1.6; }
+
+/* ── #s-fit ON THE INK BLOCK (⊕ MRB-242) ───────────────────────────────────
+   Everything above was written for a cream ground. The instrument only ever
+   ships on `ks3-block ks3-dark ks3-practical`, so everything above was wrong
+   everywhere it ran: measured on the built page, the job panel and the output
+   text came out at 1.17:1, the clear button and the unpressed tabs at 1.35:1
+   and the foot hint at 2.31:1. That is the "faded" report, and it is one
+   stylesheet writing cream-on-cream and ink-on-ink.
+
+   ⚠️ EVERY PARAGRAPH RULE HERE HAS TO BE SCOPED, and that is the whole trap.
+   `.ks3-dark p` is (0,1,1); `.ks3-fit-job-label` and its five siblings are
+   (0,1,0). Unscoped they lose every time and the block's own classes never
+   paint a single <p>. `.ks3-dark p` is right for `#s-hook` and `#s-keynote`
+   and is left exactly as it is — the fix is on this side. Same trap, same
+   fix, as `.ks3-plate-note` and `.ks3-tbench-why` in B3. */
+
+/* Design's h2 here is 34px, not `.ks3-block h2`'s 30px — measured and
+   recorded in the lesson record's own notes long before the heading was
+   emitted at all. Reference line 291. */
+.ks3-fit-block .ks3-blockhead h2 {
+  font-size: 34px;
+  line-height: 1.12;
+  letter-spacing: -.03em;
+}
+
+/* The nested job panel is `--ks3-dark-panel`, a step up from the block's own
+   ink rather than a cream inset. Design draws it borderless; the border stays
+   in the box so the geometry does not move, painted in the panel's colour. */
+.ks3-dark .ks3-fit-job {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-dark-panel);
+}
+.ks3-dark .ks3-fit-job-label { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-fit-job-text { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-fit-job-where { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-fit-install-label { color: var(--ks3-on-dark); }
+
+/* The chips: transparent on the muted rule, amber with ink text when
+   installed — Design's own dark pair, the same one the segmented control
+   takes. The pressed rule is (0,3,0) so it still wins over the light
+   `[aria-pressed="true"]` rule above and over this block's unpressed rule. */
+.ks3-dark .ks3-fit-part {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-fit-part[aria-pressed="true"] {
+  border-color: var(--ks3-alert);
+  background: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-fit-part .ks3-part-num {
+  background: var(--ks3-dark-panel);
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-fit-part[aria-pressed="true"] .ks3-part-num {
+  background: var(--ks3-ink);
+  color: var(--ks3-alert);
+}
+
+/* ⊕ CORRECTED FROM THE SHIPPED STYLESHEET, and reported. `.ks3-reveal-btn` is
+   ink on an ink border, which on a block whose ground IS `--ks3-ink` paints an
+   invisible control — the same defect already corrected for `.ks3-plate-open`
+   and `.ks3-ledger-clear`. Those two took `--ks3-on-dark`; Design draws THIS
+   one in `--ks3-ground` (reference line 320), so this one takes `--ks3-ground`
+   and the difference is Design's, not a third invention. */
+.ks3-dark .ks3-fit-run {
+  background: var(--ks3-ground);
+  border-color: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-fit-clear {
+  border-color: var(--ks3-on-dark-muted);
+  color: var(--ks3-on-dark-body);
+}
+.ks3-dark .ks3-fit-progress { color: var(--ks3-on-dark-muted); }
+
+/* ⚠️ THE RESULTS CARD IS CREAM INSIDE THE INK BLOCK. Design sets `color:
+   var(--ks3-ink)` on the card explicitly (reference line 328) and the omission
+   of that one declaration is why the verdict and the note read
+   `--ks3-on-dark-body` on cream at 1.17:1. A panel that reverses the ground
+   must re-declare its own text colour; it cannot inherit it. */
+.ks3-dark .ks3-fit-out {
+  background: var(--ks3-ground);
+  border-color: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-fit-verdict { color: var(--ks3-ink); }
+.ks3-dark .ks3-fit-note { color: var(--ks3-ink); }
+/* ⊕ MRB-242 — the badge is a <p> inside that cream card, so it needs the
+   card's ink and not the block's on-dark body colour. This rule is (0,2,0)
+   and `.ks3-dark p` is (0,1,1); unscoped, `.ks3-fit-badge` would be (0,1,0)
+   and lose — the same trap that painted the verdict and the note at 1.17:1.
+   The three fills above are already (0,2,0) via their attribute selector and
+   are not colour rules, so they need no dark twin. */
+.ks3-dark .ks3-fit-badge { color: var(--ks3-ink); }
 
 /* ── b1-05's three instruments (⊕ 14 Aug 2026) ──────────────────────
    `zoom-ladder`, `sort-task` and `removal-cases`. All three rendered as
@@ -4666,6 +4813,16 @@ body.rd[data-mode="ks3"] {
    budget being visible: a student must be able to read what they already
    bought while deciding what to buy next. */
 .ks3-test-btn[disabled] { opacity: .45; cursor: default; }
+/* ⊕ MRB-242 — the SEVENTH instance of the trap, and the first found by a gate
+   rather than by someone looking at a page. c2-02's results list ships
+   `hidden` and gave itself `display: flex`, which beats the UA rule.
+   ⚖️ Scope, stated honestly: every `.ks3-result` INSIDE it is separately
+   `hidden` and correctly stays so, so no bought-test result was ever exposed
+   — the pedagogy held. What shipped was an empty flex box with an 18px top
+   margin on all six benches. Cosmetic, not a leak. It is fixed here because
+   it is the same defect one layer out, and because the next element to be
+   added to that list would not have been hidden at all. */
+.ks3-results[hidden] { display: none; }
 .ks3-results {
   list-style: none;
   margin: 18px 0 0;
@@ -5152,6 +5309,16 @@ body.rd[data-mode="ks3"] {
 
 /* ── the chipped worked-example step (map N5) ── */
 .ks3-fifa-chips { display: flex; flex-direction: column; gap: 12px; }
+/* ⊕ MRB-242 — the SIXTH time this trap has been laid in this stylesheet (see
+   `.ks3-card-back[hidden]`, `.ks3-ticks[hidden]`, `.ks3-picker-panel[hidden]`,
+   `.ks3-hb [hidden]`, `.ks3-sortcards [hidden]`). An AUTHOR `display` beats
+   the UA stylesheet's `[hidden] { display: none }` at ANY specificity, so the
+   `display: flex` below silently un-hid every staged step the generator wrote
+   `hidden` on: b2-04 shipped its worked example with all four FIFA steps
+   already showing, above a counter reading "Step 0 of 4" and a button with
+   nothing left to do. verify_ks3.py now fails the build on any element that
+   ships `hidden` and still computes a display, so there is no seventh. */
+.ks3-fifa-chipped[hidden] { display: none; }
 .ks3-fifa-chipped {
   display: flex;
   gap: 16px;
@@ -5194,6 +5361,45 @@ body.rd[data-mode="ks3"] {
   color: var(--ks3-ink);
 }
 .ks3-fifa-stepnote { margin: 6px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body); }
+
+/* ⊕ MRB-242 — the SUM LEDGER. B3's three running totals ("4 slices toast and
+   butter · 4 × 780 = 3120 kJ") author a name and a line and no letter, because
+   they are sums and not F-I-F-A. MRB-242 rules one FIFA layout, so they take
+   the same markup as every other step — but a five-row sum rendered as five
+   bordered panels of 26px display type is not a sum any more, it is five
+   worked examples. This gives those rows back the compact metrics they read
+   with as a paragraph list, without a second markup shape existing to drift. */
+.ks3-fifa-sum { gap: 2px; }
+.ks3-fifa-sum .ks3-fifa-chipped {
+  padding: 0;
+  border: 0;
+  background: none;
+  border-radius: 0;
+  gap: 0;
+}
+.ks3-fifa-sum .ks3-fifa-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 .6ch;
+}
+/* The label is the row's name, not a step label: display type at body size,
+   not a mono uppercase eyebrow. Shouting "4 SLICES TOAST AND BUTTER" at a
+   student adding up a day's food would be the eyebrow treatment misapplied. */
+.ks3-fifa-sum .ks3-fifa-label {
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 19px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ks3-ink);
+}
+.ks3-fifa-sum .ks3-fifa-line {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
 .ks3-fifa-foot {
   margin-top: 18px;
   display: flex;

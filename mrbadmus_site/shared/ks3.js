@@ -4690,6 +4690,7 @@
     var clearBtn = wrap.querySelector("[data-fit-clear]");
     var prog = wrap.querySelector("[data-fit-progress]");
     var out = wrap.querySelector("[data-reveal]");
+    var badge = wrap.querySelector("[data-fit-badge]");
     var verdict = wrap.querySelector("[data-fit-verdict]");
     var findings = wrap.querySelector("[data-fit-findings]");
     var note = wrap.querySelector("[data-fit-note]");
@@ -4700,11 +4701,32 @@
 
     // The parts list is the BENCH's, named by `parts_from`, so a part cannot
     // exist in the builder and not on the bench.
-    var bench = document.querySelector("[data-cellbench]");
+    //
+    // ⊕ MRB-242 — resolve the bench through the id `parts_from` NAMES, never
+    // through `document.querySelector("[data-cellbench]")`. Two emitters chose
+    // that attribute name: the cell-bench SECTION carries it valueless as the
+    // JS dispatch marker, and the bench's own <div> carries the JSON payload.
+    // The section comes first in the document, so the old line got `""`, threw
+    // in JSON.parse, and the bare `catch` below rendered zero chips and left
+    // the run button permanently disabled — the whole instrument, silently.
+    // The failure is now LOUD, because a silent one is what shipped this.
+    var benchSec = spec.parts_from
+      ? document.querySelector('[data-activity="' + spec.parts_from + '"]')
+      : null;
+    var bench = benchSec && benchSec.querySelector("[data-cellbench]");
     var allParts = [];
     if (bench) {
-      try { allParts = JSON.parse(bench.getAttribute("data-cellbench")).parts; }
-      catch (err) { allParts = []; }
+      try { allParts = JSON.parse(bench.getAttribute("data-cellbench")).parts || []; }
+      catch (err) {
+        console.error("wireFit: parts_from=" + spec.parts_from +
+                      " resolved to a bench whose payload will not parse", err);
+      }
+    }
+    if (!allParts.length) {
+      console.error("wireFit: no parts to install. parts_from=" +
+                    JSON.stringify(spec.parts_from) + " named " +
+                    (benchSec ? "a section with no [data-cellbench] payload"
+                              : "no activity on this page") + ".");
     }
 
     var current = spec.specimens[0].id;
@@ -4729,6 +4751,18 @@
         b.className = "ks3-fit-part";
         b.setAttribute("data-part", p.id);
         b.setAttribute("aria-pressed", chosen[p.id] ? "true" : "false");
+        // ⊕ MRB-242 — Design's chip is a numbered pill, and the number is the
+        // SAME number the bench gave that part. It is the bench's badge
+        // component (`.ks3-part-num`), reused rather than copied: one badge,
+        // a dark branch in the stylesheet, exactly as the segmented control
+        // is one control with two class names.
+        if (p.num) {
+          var n = document.createElement("span");
+          n.className = "ks3-part-num";
+          n.setAttribute("aria-hidden", "true");
+          n.appendChild(document.createTextNode(p.num));
+          b.appendChild(n);
+        }
         b.appendChild(document.createTextNode(p.name));
         b.addEventListener("click", function () {
           var c = installed[current] || (installed[current] = {});
@@ -4756,14 +4790,21 @@
         else { runBtn.removeAttribute("disabled"); }
       }
       if (prog) {
+        // ⊕ MRB-242 — Design's foot hint is "3 of 7 installed": the total is
+        // the parts list's own length, so it cannot disagree with the chips
+        // above it. The shipped line dropped "of 7" and read "3 installed".
         prog.textContent = count()
-          ? count() + " " + (L.installed || "")
+          ? count() + " of " + allParts.length + " " + (L.installed || "")
           : (L.empty || "");
       }
       each(tabs, function (tb) {
         tb.setAttribute("aria-pressed",
           tb.getAttribute("data-fit") === current ? "true" : "false");
       });
+      // ⊕ MRB-242 — the BLOCK-HEAD counter Design draws beside the <h2>:
+      // "0 of 4 cells run". Cells RUN, not cells touched — the same predicate
+      // the stage below ticks on, so the head and the rail cannot disagree.
+      setCount(sec, Object.keys(ran).length);
       markStage(sec, Object.keys(ran).length === spec.specimens.length);
     }
 
@@ -4777,11 +4818,35 @@
       });
       ran[current] = true;
       var W = spec.finding_words || {};
-      if (verdict) {
-        verdict.textContent = !missing.length && !extra.length
-          ? (spec.verdicts || {}).ok || "It runs."
-          : ((spec.verdicts || {}).problem || "It runs, after a fashion.");
+      // ⊕ MRB-242 — THREE states, not two, and Design's own line is the rule:
+      //   const status = missing.length ? 'fails' : (extra.length ? 'waste' : 'works');
+      // (b1-03 reference, line 961). Anything missing fails outright — a cell
+      // short of a part does not get partial credit for the parts it has;
+      // complete-but-with-spares is `waste`; only exactly-the-needs `works`.
+      //
+      // This read `verdicts.ok` / `verdicts.problem`, which nothing authors,
+      // so it always fell through to two strings hardcoded here and the
+      // lesson's five headlines and three badges never reached a student.
+      // Those fallbacks are gone: `r_fit_parts` fails the BUILD on a missing
+      // headline, so there is nothing left for a fallback to cover, and
+      // inventing student-facing prose in the engine is what caused this.
+      var V = spec.verdicts || {};
+      var status = missing.length ? "fails" : (extra.length ? "waste" : "works");
+      var vd = V[status] || {};
+      // One part short reads "One part short."; two or more substitute the
+      // count into the plural headline, which is authored with `{n}`.
+      var headline = status === "fails"
+        ? (missing.length === 1
+             ? vd.headline_one
+             : String(vd.headline_many || "").replace(/\{n\}/g, missing.length))
+        : vd.headline;
+      if (badge) {
+        badge.textContent = vd.badge || "";
+        // The state drives the pill's fill in the stylesheet — alert tint,
+        // band, accent tint — exactly as Design branches `verdictBadgeStyle`.
+        badge.setAttribute("data-state", status);
       }
+      if (verdict) { verdict.textContent = headline || ""; }
       if (findings) {
         findings.innerHTML = "";
         function add(kind, id, word) {

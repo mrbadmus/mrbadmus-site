@@ -879,11 +879,11 @@ LESSON = {
         {"type": "system-bench",
          "anchor": "s-tuned",
          "eyebrow": "The bench · same seven parts",
-         "title": "Nothing new was added. Something was turned up, and "
-                  "something was turned down.",
-         "intro": "These are the same seven parts you numbered last lesson. "
-                  "Pick a cell and read what has been tuned — and what the "
-                  "tuning is for.",
+         "heading": "Nothing new was added. Something was turned up, and "
+                    "something was turned down.",
+         "prompt": "These are the same seven parts you numbered last "
+                   "lesson. Pick a cell and read what has been tuned — "
+                   "and what the tuning is for.",
          "start": "red",
          "specimens": _SPECIMENS},
 
@@ -912,7 +912,7 @@ LESSON = {
          "anchor": "s-break",
          "bench": "s-tuned",
          "eyebrow": "Break it on purpose",
-         "title": "Take the adaptation away",
+         "heading": "Take the adaptation away",
          # {specimen} interpolates the bench's current cell name — the
          # delivered string is '… one thing about ' + cellName + ', say
          # …'. It is the one authored line on the page that is not a

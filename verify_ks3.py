@@ -1236,9 +1236,23 @@ def main():
                "headless Chrome not available on this machine; run "
                "`python3 verify_ks3.py` where it is. NOT counted as a pass.")
     else:
-        style_problems, style_rows, contrast_rows = \
+        style_problems, style_rows, contrast_rows, hidden_audit = \
             PARITY.run_browser_layers(KS3_OUT, ks3_browser)
         css_fails = [r for r in style_rows if not r[4]]
+
+        # ⊕ MRB-242 — an element the generator wrote `hidden` on must load
+        # hidden. Its own check, not folded into `style_problems`: that list
+        # means "a registered component stopped being rendered", and a staged
+        # step that is showing when it should not be is the opposite problem.
+        hidden_problems, n_hidden = hidden_audit
+        check("⊕ MRB-242 · every element shipped `hidden` loads hidden",
+              not hidden_problems,
+              "%d hidden element(s) across the key stage, all display:none"
+              % n_hidden if not hidden_problems
+              else "%d of %d VISIBLE on load — an author `display` is beating "
+                   "the UA [hidden] rule: %s"
+                   % (len(hidden_problems), n_hidden,
+                      "; ".join(hidden_problems[:3])))
 
         # ⊕ MRB-228 — `style_problems` was ASSIGNED AND NEVER READ, and that is
         # the whole of this defect.

@@ -367,8 +367,8 @@ LESSON = {
              {"letter": "F",
               "name": "Formula",
               "line": "total magnification = eyepiece × objective",
-              "note": "Written down before any numbers. It is worth a mark on "
-                      "its own at GCSE and it stops the next step going wrong."},
+              "note": "Written down before any numbers. That is what stops the "
+                      "next step going wrong."},
              {"letter": "I",
               "name": "Insert",
               "line": "total magnification = 10 × 40",
@@ -377,16 +377,13 @@ LESSON = {
              {"letter": "F",
               "name": "Fine-tune",
               "line": "nothing to convert — both are already “times”",
-              "note": "Sometimes this step is units. Sometimes it is where you "
-                      "rearrange the equation, if the thing you are asked for "
-                      "is not the one on the left. Here it is a warning: "
-                      "multiply, never add. 10 + 40 = 50 is the commonest wrong "
+              "note": "Multiply, never add. 10 + 40 = 50 is the commonest wrong "
                       "answer on this calculation."},
              {"letter": "A",
               "name": "Answer",
               "line": "×400",
-              "note": "Magnification has no unit. It means four hundred times "
-                      "bigger, so it is written ×400 and never 400 mm."},
+              "note": "Magnification has no unit — ×400 means four hundred "
+                      "times bigger, never 400 mm."},
          ],
          # The stepper's three button labels. One-way: there is no collapse and
          # no reset, and the button is `disabled` at the end.

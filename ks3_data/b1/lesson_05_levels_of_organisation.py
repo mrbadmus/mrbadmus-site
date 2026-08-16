@@ -244,11 +244,12 @@ LESSON = {
         {"type": "zoom-ladder",
          "anchor": "s-zoom",
          "eyebrow": "Zoom in · five stops",
-         "title": "From a whole plant to one cell, without leaving the leaf",
-         "intro": "Drag the slider. The orange box shows you where the next "
-                  "stop down is hiding inside this one — and the panel "
-                  "underneath says what this level can do that the level "
-                  "below cannot.",
+         "heading": "From a whole plant to one cell, without leaving the "
+                    "leaf",
+         "prompt": "Drag the slider. The orange box shows you where the "
+                   "next stop down is hiding inside this one — and the "
+                   "panel underneath says what this level can do that the "
+                   "level below cannot.",
          "slider": True,
          "slider_label": "Zoom level",  # visually hidden <label for>
          "start": "organism",  # the startZoom prop: organism | cell
@@ -368,11 +369,11 @@ LESSON = {
         {"type": "sort-task",
          "anchor": "s-hard",
          "eyebrow": "Your turn · the awkward ones",
-         "title": "Eight things that get put on the wrong rung",
-         "intro": "The easy examples teach you nothing. These are the ones "
-                  "people argue about. Put each on a rung — change your mind "
-                  "as often as you like, nothing is marked — then open the "
-                  "answers.",
+         "heading": "Eight things that get put on the wrong rung",
+         "prompt": "The easy examples teach you nothing. These are the "
+                   "ones people argue about. Put each on a rung — change "
+                   "your mind as often as you like, nothing is marked — "
+                   "then open the answers.",
          "choices": ["Cell", "Tissue", "Organ", "Organ system",
                      "Organism", "Not on the ladder"],
          "gate_label": "Open the answers",
@@ -448,7 +449,7 @@ LESSON = {
         {"type": "removal-cases",
          "anchor": "s-break",
          "eyebrow": "Take a level out",
-         "title": "Keep every cell alive. Remove the organisation.",
+         "heading": "Keep every cell alive. Remove the organisation.",
          "lede": "Nothing here is killed and nothing is taken away. In each "
                  "case the parts are all present and all healthy — only the "
                  "arrangement is gone. Pick one, say what stops, then read "

@@ -1803,13 +1803,21 @@ def r_sort_pairs(a, act_id):
                len(rows), e(unit), len(rows), t(unit), panel))
 
 
-def r_fit_parts(a, act_id):
+def r_fit_parts(lesson, a, act_id):
     """⊕ Build four real cells from one parts list, then run them.
 
     "Which parts" becomes a consequence of "what job". Rendered as an empty
     section. The parts list is `parts_from` — it names the bench's activity, so
     the two instruments share one list and a part cannot exist in the builder
     and not on the bench.
+
+    ⊕ MRB-242 — takes `lesson` (which is all `_kinds_taking_lesson` needs to
+    see: it asks the signature) so that `parts_from` can be RESOLVED here, at
+    build time, instead of being trusted at runtime. The instrument shipped
+    with zero part chips for a fortnight because the runtime lookup silently
+    found the wrong element and `catch {}` swallowed it; the fix in
+    `wireFit` reads the bench through this id, and a build error is the only
+    thing that can stop a renamed or misspelt id doing it again quietly.
     """
     specimens = a.get("specimens") or []
     if not specimens:
@@ -1819,6 +1827,52 @@ def r_fit_parts(a, act_id):
             raise ValueError(
                 "fit-parts %r specimen %r needs no parts at all — there would "
                 "be nothing to get right." % (act_id, sp.get("id")))
+
+    # ⊕ MRB-242 / R5 — `parts_from` finally has a read site, and this is half
+    # of it. The runtime half is `wireFit`, which resolves the bench by
+    # `[data-activity="<parts_from>"]`; both halves fail loudly rather than
+    # rendering an instrument with nothing in it.
+    src_id = a.get("parts_from") or ""
+    src = _activity(lesson, src_id) if src_id else None
+    if not src or not src.get("parts"):
+        raise ValueError(
+            "fit-parts %r names parts_from=%r, which is not an activity in "
+            "this lesson carrying a parts[] list. The builder's chips ARE the "
+            "bench's parts; with no source there is nothing to install."
+            % (act_id, src_id))
+
+    # ⊕ MRB-242 / R5 — the verdict copy is AUTHORED, in full, or the build
+    # stops. `wireFit` used to read `verdicts.ok` and `verdicts.problem`, two
+    # keys this lesson has never authored, so every run printed one of two
+    # strings hardcoded in the ENGINE — "It runs." / "It runs, after a
+    # fashion." — and all five real headlines and all three badges were dead
+    # keys. That is the B1-replay failure exactly: 146 unread keys, one of
+    # them an approved science correction that never reached a student.
+    #
+    # So there is no fallback prose, here or in the engine. Every word a
+    # student reads is a word someone wrote for this lesson; a missing one is
+    # a build error, the way `parts_from` above is.
+    verdicts = a.get("verdicts") or {}
+    for state, keys in (("works", ("badge", "headline")),
+                        ("waste", ("badge", "headline")),
+                        ("fails", ("badge", "headline_one", "headline_many"))):
+        block = verdicts.get(state) or {}
+        for k in keys:
+            if not str(block.get(k) or "").strip():
+                raise ValueError(
+                    "fit-parts %r authors no verdicts[%r][%r]. A run lands in "
+                    "one of three states — works / waste / fails — and each "
+                    "carries its own badge and headline. The engine has no "
+                    "fallback prose and must never invent student-facing "
+                    "copy." % (act_id, state, k))
+    # `headline_many` is the plural branch and the number is the only thing
+    # that varies in it, so it has to say where the number goes.
+    many = str(verdicts["fails"]["headline_many"])
+    if "{n}" not in many:
+        raise ValueError(
+            "fit-parts %r: verdicts['fails']['headline_many'] is chosen when "
+            "two or more parts are missing and must carry the {n} "
+            "placeholder for that count. Got %r." % (act_id, many))
 
     tabs = "".join(
         '<button type="button" class="ks3-seg-btn ks3-fit-tab" data-fit="%s" '
@@ -1840,10 +1894,14 @@ def r_fit_parts(a, act_id):
             "rerun": a.get("rerun_label", "Run it again"),
             "clear": a.get("clear_label", "Strip it back out"),
             "empty": a.get("install_empty_hint", "Install something first"),
-            "unit": a.get("progress_unit", "cells run"),
+            # ⊕ MRB-242 — `unit` ("cells run") is gone. It was serialised here
+            # and read by nothing: the words belong to the BLOCK-HEAD counter
+            # Design draws, which is now authored as `head_counter` and
+            # rendered by `_head_counter` like every other one. `installed` is
+            # the foot hint's unit word and is read — "5 of 7 installed".
             "installed": a.get("install_unit", "installed"),
         },
-        "verdicts": a.get("verdicts") or {},
+        "verdicts": verdicts,
         "finding_words": a.get("finding_words") or {},
         "consequence": a.get("consequence") or {},
         "note_when": a.get("note_when", ""),
@@ -1865,6 +1923,11 @@ def r_fit_parts(a, act_id):
             '</button>'
             '<span class="ks3-fit-progress" data-fit-progress></span></div>'
             '<div class="ks3-fit-out" hidden data-reveal>'
+            # ⊕ MRB-242 — Design draws a mono uppercase pill ABOVE the
+            # headline, its fill carrying the state (reference line 328 /
+            # `verdictBadgeStyle` line 1243). No badge element was ever
+            # emitted, so `verdicts.*.badge` had nowhere to land.
+            '<p class="ks3-fit-badge" data-fit-badge></p>'
             '<p class="ks3-fit-verdict" data-fit-verdict></p>'
             '<ul class="ks3-fit-findings" role="list" data-fit-findings></ul>'
             '<p class="ks3-fit-note" data-fit-note></p></div>'
@@ -2587,73 +2650,65 @@ def r_activity_options(options):
 # The four FIFA steps as the OLD dict shape names them, in method order. Kept
 # as data rather than a hard-coded run of four `<p>`s so the two shapes go
 # through one renderer and cannot drift apart.
-#
-# No letters here on purpose: the dict shape has always rendered "Formula",
-# never "F · Formula", and this migration is not the place to restyle a shipped
-# page. The list shape carries its own letters because Design authored them.
-_FIFA_DICT_STEPS = (("formula", "Formula"), ("insert", "Insert"),
-                    ("fix", "Fix"), ("answer", "Answer"))
-
-
 def r_fifa(fifa, staged=False, buttons=None):
-    """FIFA, in either authored shape (⊕ §4.8.2's one breaking change).
+    """FIFA, in ONE layout — the chipped one (⊕ MRB-242 ruling 2).
 
-    §4.8.2 turns `activities[].fifa` from a dict of four fixed keys into a LIST
-    of `{letter, name, line, note}`, so a worked example can name its own steps
-    ("Fine-tune", not "Fix") and hang a teaching note on each — which MRB-204
-    step 3 needs and four flat strings have nowhere to put.
+    `activities[].fifa` is a LIST of `{letter, label|name, line, note}`, so a
+    worked example can name its own steps ("Fine-tune", not "Fix") and hang a
+    teaching note on each — which MRB-204 step 3 needs.
 
-    BOTH SHAPES RENDER, and that is a deliberate choice over migrating the one
-    record still on the old shape (C1's `mass-fifa`). `ks3_data/` is owned by
-    another agent this session and editing it would be a collision; and a
-    renderer that accepts both is worth having anyway, because the old shape is
-    a strict subset of the new one — it is the new one with the letters and
-    names implied and no notes. Normalising here means there is exactly one
-    piece of markup, not two that are free to diverge.
+    ⊕ MRB-242 RETIRES THE INLINE VARIANT. There used to be two: a step that
+    authored `label` took Design's drawn treatment (letter chip, mono label,
+    display line, note underneath) and a step that authored `name` took a
+    run-on `<p>`. That was not a choice anyone made per page — it was whichever
+    key the author happened to reach for, so b1-02 and b2-04 rendered the same
+    construct two different ways. The inline variant also concatenated `line`
+    and `note` with NO separator at all, which is why b1-02 shipped the words
+    "…eyepiece × objectiveWritten down before any numbers."
 
-    ⚠️ The STAGED reveal is not built here. §4.8.2 moves the worked answer out
-    of `.ks3-fifa` into the `worked-example` block's stepper, which is b1-02's
-    task; until it lands, every step renders at once, exactly as the dict shape
-    always did. That is the status quo rather than a regression — but it means
-    b1-02's worked example currently shows its answer without asking, and the
-    stepper is what fixes that.
+    `label` and `name` mean the same thing and both are read. The note is now
+    always its own `<p>`, so the concatenation defect is not fixed so much as
+    made unreachable: there is no longer a code path that puts two strings next
+    to each other.
+
+    ⊕ The LETTER is what makes a step a FIFA step, and the chip is emitted only
+    when there is one. B3's three sum ledgers ("4 slices toast and butter =
+    3120 kJ") author a name and a line and no letter, because they are running
+    totals, not F-I-F-A. They keep this markup and take compact ledger metrics
+    from `.ks3-fifa-sum` rather than being inflated into 26px display panels —
+    one layout, not a second variant wearing the same key.
+
+    The old dict shape (`{formula, insert, fix, answer}`) is gone: no lesson
+    authors it. It is in git history if it is ever wanted back.
     """
-    if isinstance(fifa, dict):
-        steps = [{"name": name, "line": fifa.get(key)}
-                 for key, name in _FIFA_DICT_STEPS]
-    else:
-        steps = list(fifa or [])
+    steps = list(fifa or [])
 
-    # ⊕ MRB-220 — the CHIPPED step (map N5). Design draws each step as a 38px
-    # accent-text square holding the bare letter, then a mono uppercase label,
-    # a 26px display line and a note. The shipped shape concatenates
-    # `letter · name` into a `<strong>` and has nowhere to put a note that is
-    # its own paragraph. A step that authors `label` takes the drawn treatment;
-    # every shipped record authors `name` and does not move.
-    out, chipped = [], False
+    out, lettered = [], False
     for i, s in enumerate(steps):
+        # ⚠️ An element that ships `hidden` must not be given a `display` by
+        # any author rule — see `.ks3-fifa-chipped[hidden]` in shared/ks3.css
+        # and the gate in verify_ks3.py. This is where the attribute is
+        # written; that is where it was being undone.
         hide = ' hidden data-step="%d"' % i if staged else ""
-        if s.get("label"):
-            chipped = True
-            out.append(
-                '<div class="ks3-fifa-step ks3-fifa-chipped"%s>'
-                '<span class="ks3-fifa-chip" aria-hidden="true">%s</span>'
-                '<div class="ks3-fifa-body">'
-                '<p class="ks3-fifa-label">%s</p>'
-                '<p class="ks3-fifa-line">%s</p>'
-                '<p class="ks3-fifa-stepnote">%s</p></div></div>'
-                % (hide, t(s.get("letter", "")), t(s["label"]),
-                   t(s.get("line", "")), rich(s.get("note", ""))))
-            continue
-        # The letter is chrome and the name is the label; a step with neither
-        # would render a bare line with nothing saying which step it is.
-        label = " · ".join(x for x in (s.get("letter"), s.get("name")) if x)
-        note = ('<span class="ks3-fifa-note">%s</span>' % rich(s["note"])
+        letter = s.get("letter") or ""
+        if letter:
+            lettered = True
+        chip = ('<span class="ks3-fifa-chip" aria-hidden="true">%s</span>'
+                % t(letter)) if letter else ""
+        note = ('<p class="ks3-fifa-stepnote">%s</p>' % rich(s["note"])
                 if s.get("note") else "")
-        out.append('<p class="ks3-fifa-step"%s><strong>%s</strong> %s%s</p>'
-                   % (hide, t(label), t(s.get("line")), note))
+        out.append(
+            '<div class="ks3-fifa-step ks3-fifa-chipped"%s>%s'
+            '<div class="ks3-fifa-body">'
+            '<p class="ks3-fifa-label">%s</p>'
+            '<p class="ks3-fifa-line">%s</p>%s</div></div>'
+            % (hide, chip, t(s.get("label") or s.get("name") or ""),
+               t(s.get("line") or ""), note))
+    # A letterless run is a sum ledger; `.ks3-fifa-sum` gives it back the
+    # compact metrics it had as a paragraph list, inside the shared markup.
+    shape = " ks3-fifa-chips" + ("" if lettered else " ks3-fifa-sum")
     if not staged:
-        return '<div class="ks3-fifa">%s</div>' % "".join(out)
+        return '<div class="ks3-fifa%s">%s</div>' % (shape, "".join(out))
     b = buttons or {}
     # ⊕ The done-note (map N5): Design's *"Now the same four steps on the other
     # reaction."* appears beside the button once every step is out. It had no
@@ -2666,7 +2721,7 @@ def r_fifa(fifa, staged=False, buttons=None):
             '<div class="ks3-fifa-foot">'
             '<button type="button" class="ks3-reveal-btn ks3-step-next" '
             'data-step-next>%s</button>%s</div></div>'
-            % (" ks3-fifa-chips" if chipped else "",
+            % (shape,
                len(out), e(b.get("next", "Show the next step")),
                e(b.get("done", "All steps shown")), "".join(out),
                t(b.get("first", "Show the first step")), done_note))

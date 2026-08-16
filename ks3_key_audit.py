@@ -142,8 +142,13 @@ def main(argv):
               "or pre-existing\n" % (control, len(baseline)))
 
     total = 0
+    skipped = []
     for code in targets:
         if not raw and code == control:
+            # A unit cannot be its own control: its dead keys go into the
+            # baseline and are then subtracted from themselves, so the audit
+            # can only ever come back empty.
+            skipped.append(code)
             continue
         found = {slug: sorted(d - baseline) for slug, d in unread(code).items()}
         found = {s: d for s, d in found.items() if d}
@@ -158,6 +163,25 @@ def main(argv):
             print("%-4s ✓ every authored key has a read site "
                   "(%d keys over %d lessons)"
                   % (code, keys_seen, len(unit_keys(units[code]))))
+
+    # ⊕ MRB-242 — a run that audited NOTHING used to print the same green tick
+    # as a run that audited everything. `ks3_key_audit.py B1` skipped B1 as its
+    # own control, checked no units at all, and reported "✓ no dead authored
+    # keys" — which is how B1's 103 dead keys (the `fit-parts` verdict badge
+    # and all five of its headlines among them) sat behind a passing gate. A
+    # gate that cannot fail is not a gate.
+    if skipped and not [c for c in targets if c not in skipped]:
+        print("\n✗ nothing was audited: %s %s its own control, so every dead "
+              "key would be subtracted from itself.\n"
+              "  Re-run as `--raw %s` to see its real dead keys, or name a "
+              "different `--control`."
+              % (", ".join(skipped),
+                 "is" if len(skipped) == 1 else "are",
+                 " ".join(skipped)))
+        return 1
+    if skipped:
+        print("\n! skipped %s — a unit cannot be its own control. Audit it "
+              "with `--raw` or a different `--control`." % ", ".join(skipped))
 
     if total:
         print("\n✗ %d authored key(s) read by nothing. A key with no read "

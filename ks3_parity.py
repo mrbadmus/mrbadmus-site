@@ -977,9 +977,27 @@ COMPONENTS = [
          sel=".ks3-pairrow",
          props={"background-color": "#FFFCF5",
                 "border-top-left-radius": "20px"}),
-    dict(name="fit-parts installs into a responsive grid",
+    # ⊕ MRB-242 — this row used to assert `display: grid`, which is what the
+    # STYLESHEET did, not what Design draws: reference line 309 is a wrapping
+    # flex row of pills. An assertion copied off the implementation cannot
+    # catch the implementation drifting, and this one did not. Re-pointed at
+    # the reference, and given the two properties that make a pill a pill.
+    dict(name="fit-parts installs as a wrapping row of pills",
          on="biology/cells-and-organisation/animal-and-plant-cells.html",
-         sel=".ks3-fit-parts", props={"display": "grid"}),
+         sel=".ks3-fit-parts",
+         props={"display": "flex", "flex-wrap": "wrap"}),
+    dict(name="a fit chip is a pill on the dark block, not a light option row",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-fit-part",
+         props={"border-top-left-radius": "999px", "min-height": "48px",
+                "border-top-color": "#C6B9A7", "color": "#FBF3E6"}),
+    dict(name="the fit job panel is the dark nested panel, not a cream inset",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-fit-job", props={"background-color": "#3E3730"}),
+    dict(name="the fit results card re-declares ink on its own cream ground",
+         on="biology/cells-and-organisation/animal-and-plant-cells.html",
+         sel=".ks3-fit-out",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
 
     dict(name="critique step is a full-width tappable row", on=B1_MICRO,
          sel=".ks3-step-btn",
@@ -5028,6 +5046,53 @@ _JS_R3_RUNTIME = r"""
 """
 
 
+_JS_HIDDEN_AUDIT = r"""
+(function () {
+  // Every element the GENERATOR wrote `hidden` on must actually be hidden when
+  // the page loads. The UA stylesheet's `[hidden] { display: none }` is the
+  // weakest rule in the cascade: ANY author `display` beats it at ANY
+  // specificity, so a component that gives itself `display: flex` un-hides its
+  // own hidden children and nothing anywhere says so.
+  var out = [], n = 0;
+  var els = document.querySelectorAll("[hidden]");
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    n++;
+    var cs = getComputedStyle(el);
+    if (cs.display === "none") { continue; }
+    // Name it the way an author would recognise it: the class that is most
+    // likely carrying the offending `display` rule.
+    var cls = (el.className && el.className.baseVal !== undefined)
+      ? el.className.baseVal : (el.className || "");
+    out.push((el.tagName.toLowerCase() +
+             (cls ? "." + String(cls).trim().split(/\s+/).join(".") : "")) +
+             " computes display:" + cs.display +
+             (el.hasAttribute("data-step") ? " [staged reveal step]" : ""));
+  }
+  return { problems: out, checked: n };
+})()
+"""
+
+
+def check_hidden_stays_hidden(page):
+    """⊕ MRB-242 — an element that ships `hidden` must load hidden.
+
+    This exists because the trap has now been laid six times in one stylesheet
+    and shipped to students once. `.ks3-fifa-chipped` set `display: flex`, which
+    beats the UA `[hidden] { display: none }` at any specificity, so b2-04's
+    worked example rendered all four FIFA steps at once above a counter reading
+    "Step 0 of 4" and a button with nothing left to do — a staged reveal with
+    nothing staged, and no gate with anything to say about it.
+
+    Asserted on the UNDRIVEN load, because that is the only moment the claim is
+    unambiguous: after any click, some of these are meant to be showing.
+
+    Returns (problems, info). Read-only — safe on the pass-1 page.
+    """
+    info = page.eval(_JS_HIDDEN_AUDIT)
+    return (["HIDDEN: " + p for p in info["problems"]], info)
+
+
 def check_r3_runtime(page):
     """R3, asserted on the painted button rather than on the markup.
 
@@ -5629,17 +5694,40 @@ def run_browser_layers(ks3_root, browser_mod):
                     "CONTRAST FAIL: %s — %.2f:1 against %.1f:1 required "
                     "(%s on %s)" % (spec["name"], ratio, need, fg, bg))
 
+    n_hidden_checked = 0
+    hidden_problems = []
     server, port = browser_mod.serve(served_root)
     try:
-        with browser_mod.Browser() as b:
-            for rel in _pages_needed():
-                url = "http://127.0.0.1:%d/%s/%s" % (port, prefix, rel)
+        # ⊕ MRB-242 — a FRESH Chrome PER PAGE, which is what the build contract
+        # §6 has said all along and what this loop was not doing. One browser
+        # held open across every page accumulates the KS3 canvas rAF loops (they
+        # keep running after the driver moves on) until the DevTools socket
+        # degrades around the twelfth page; from there `__ks3.q()` starts
+        # answering null for selectors that are demonstrably in the DOM. That is
+        # not a slow gate, it is a gate whose result depends on how many pages
+        # ran before it — it reported all six of c2-02's components "registered
+        # but not rendered" while the page rendered them perfectly in isolation.
+        # It passed at HEAD by luck, and one extra per-page read tipped it over.
+        for rel in _pages_needed():
+            url = "http://127.0.0.1:%d/%s/%s" % (port, prefix, rel)
+            with browser_mod.Browser() as b:
 
                 # ── pass 1: the page as the generator wrote it ──
                 page = fresh(b, url, rel)
                 if page is None:
                     continue
                 drain_console(page, rel, "")
+                # ⊕ MRB-242 — on the UNDRIVEN load, before anything is clicked,
+                # so "hidden means hidden" is an unambiguous claim. Free: this
+                # page is already open, and the audit only reads.
+                hid, hidinfo = check_hidden_stays_hidden(page)
+                # ⚠️ Kept OUT of `problems`. verify_ks3.py reads that list as
+                # "a registered component is no longer rendered" and would
+                # report these six as six vanished components, which is a
+                # different defect on a different page. They are returned in
+                # their own channel and get their own check.
+                hidden_problems.extend("/%s — %s" % (rel, h) for h in hid)
+                n_hidden_checked += hidinfo["checked"]
                 measure_c(page, rel, None)
                 measure_d(page, rel, None)
 
@@ -5714,4 +5802,5 @@ def run_browser_layers(ks3_root, browser_mod):
     finally:
         server.shutdown()
 
-    return (problems, style_rows, contrast_rows)
+    return (problems, style_rows, contrast_rows,
+            (hidden_problems, n_hidden_checked))
