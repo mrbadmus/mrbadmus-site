@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The atom: Dalton's model · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes c2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: c2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-obsrow] { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 150px); gap: 14px; align-items: center; }
+  @media (max-width: 620px) { [data-obsrow] { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Atoms, elements and compounds</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">The atom: Dalton's model</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Atoms, elements and compounds · Model</p>
+        <h1>The atom: Dalton's model</h1>
+        <p class="ks3-bigq">People tried to turn lead into gold for fifteen hundred years and never once managed it. What would have to be true for that to be impossible?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Fifteen centuries of failure is a result.</h2>
+        <p class="ks3-hook-prompt">Alchemists were not fools. They were careful, they kept records, and they had furnaces, acids and time. They dissolved lead, burned it, mixed it with everything available — and not one of them ever produced a single grain of gold.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What would explain a failure that complete?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Lead is built from one kind of particle and gold from another, and nothing you can do in a flask changes one kind into the other. In 1803 John Dalton wrote that idea down properly, and modern chemistry starts there.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>You already have a particle model: everything is made of particles, too small to see, always moving. It explained melting, pressure and diffusion. It said nothing at all about there being different <em>kinds</em> of particle — and without that, nothing in chemistry works.</p>
+      </section>
+
+      <section id="s-model" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The model · switch a claim off</p>
+            <h2 style="margin: 6px 0 0;">Dalton made three claims. Take one away.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ modelProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A model earns its place by explaining things that were already known. Switch a claim off and watch which observations it takes down with it.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. Which claim do you think the other two could not manage without?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="3">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ modelOpen }}">
+          <div data-arrive="1" style="margin-top: 22px;">
+            <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Dalton's claims — tap to switch one off</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ claims }}" as="c" hint-placeholder-count="3">
+                <button type="button" onClick="{{ c.onClick }}" aria-pressed="{{ c.on }}" style="{{ c.style }}">
+                  <span style="{{ c.chipStyle }}">{{ c.state }}</span>
+                  <span style="flex: 1; text-align: left;">{{ c.text }}</span>
+                </button>
+              </sc-for>
+            </div>
+
+            <p style="margin: 22px 0 12px; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Things known before Dalton wrote</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <sc-for list="{{ observations }}" as="o" hint-placeholder-count="4">
+                <div data-obsrow="1" style="{{ o.rowStyle }}">
+                  <p style="margin: 0; font-size: 18px; line-height: 1.5;">{{ o.text }}</p>
+                  <p style="{{ o.verdictStyle }}">{{ o.verdict }}</p>
+                </div>
+              </sc-for>
+            </div>
+
+            <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ modelNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">An atom is the smallest particle of an element. There are about a hundred kinds, and no chemical reaction turns one kind into another.</p>
+      </div>
+
+      <section id="s-scale" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">How small · zoom until you find one</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Small is not a strong enough word</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ zoomProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Start at a centimetre of copper wire and magnify. Each step is ten times closer than the last.</p>
+
+        <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+          <canvas width="1800" height="620" ref="{{ zoomRef }}" role="img" aria-label="{{ zoomAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+          <div style="padding: 16px 18px 18px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel);">
+            <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+              <button type="button" onClick="{{ onZoomOut }}" disabled="{{ zoomMin }}" style="{{ zoomOutStyle }}">Back out</button>
+              <button type="button" onClick="{{ onZoomIn }}" disabled="{{ zoomMax }}" style="{{ zoomInStyle }}">Ten times closer</button>
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 17px; font-weight: 500; color: var(--ks3-alert);">{{ zoomScale }}</p>
+            </div>
+          </div>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ zoomNote }}</p>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“A copper atom is a tiny bit of copper — orange, shiny, and it conducts electricity.”</p>
+        <p style="max-width: 54ch;">Copper is orange, shiny, bendable and conducts. Commit to how much of that a single copper atom has before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">None of it. Colour is what happens when light meets a huge number of atoms together. Conducting is something that only makes sense when there is somewhere for the charge to go. Bending needs layers of atoms to slide over each other, and one atom has no layers.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The properties of a substance belong to the crowd, not to the individual. What a copper atom has is a kind — it is a copper atom rather than a lead one — and a mass. Everything else about copper emerges when you put enough of them together.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Dalton: everything is made of atoms; all atoms of one element are the same and different from every other element's; atoms are rearranged in reactions, never created, destroyed or changed into another kind. Two of those turned out to be not quite true, and the model is still the one you use.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Dalton said atoms cannot be split. A century later J. J. Thomson knocked pieces off them and found electrons, and it turned out that atoms of the same element can have different masses. Both of Dalton's claims were wrong. The model did not get thrown away, because everything it was built to explain is still explained by it — what happened is that it got a boundary: <em>chemistry</em> never splits an atom or turns one element into another, and that is exactly the range Dalton was working in. Being wrong in a way you can draw a line around is how most good models end up.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c1-01-particle-model.html">The particle model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c2-02-elements.html">Elements<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The nuclear atom, electron shells, and the experiments that forced each change.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why a model can be wrong and still be used?</p>
+          <a class="ks3-tutor-cta" href="#s-model">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startZoom&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;min&quot;:0,&quot;max&quot;:4,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;How small&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Lead into gold', short: 'HOOK' },
+  { id: 's-model', label: 'Switch a claim off', short: 'MODEL' },
+  { id: 's-scale', label: 'How small', short: 'SCALE' },
+  { id: 's-think', label: 'One copper atom', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const CLAIMS = [
+  { id: 'kinds', text: 'All atoms of one element are the same as each other, and different from the atoms of every other element.' },
+  { id: 'solid', text: 'Atoms cannot be broken into anything smaller, and cannot be created or destroyed.' },
+  { id: 'ratio', text: 'When elements combine, their atoms join in simple whole-number ratios.' }
+];
+
+const OBS = [
+  { id: 'o1', text: 'No amount of heating, dissolving or burning ever turned lead into gold.',
+    needs: ['kinds', 'solid'],
+    fail: 'If atoms could change kind or be taken apart, there is no reason this should never have worked.' },
+  { id: 'o2', text: 'Water from a river, from the sea and from a laboratory always contains exactly the same proportion of hydrogen to oxygen by mass.',
+    needs: ['kinds', 'ratio'],
+    fail: 'Without identical atoms joining in fixed ratios, the proportions would come out differently every time.' },
+  { id: 'o3', text: 'Seal a reaction in a flask and its mass is exactly the same afterwards as before.',
+    needs: ['solid'],
+    fail: 'If atoms could be destroyed or made, mass would drift up or down and nobody would expect it to balance.' },
+  { id: 'o4', text: 'Copper and oxygen combine to make one compound in one ratio, and a second compound in another — but never anything in between.',
+    needs: ['ratio'],
+    fail: 'Without whole-number ratios there is nothing to stop every proportion in between existing too.' }
+];
+
+const ZOOM = [
+  { scale: '1 cm across', label: 'A piece of copper wire',
+    note: 'A centimetre of wire. Solid, orange, bendable — everything you know about copper is true at this size.' },
+  { scale: '1 mm across', label: 'The cut end, under a lens',
+    note: 'Ten times closer. Still copper, still orange. Nothing has changed except how much of it you can see.' },
+  { scale: '0.1 mm across', label: 'Under a school microscope',
+    note: 'This is about as far as the microscope from B1 reaches. Scratches and grains, and still no sign of anything smaller.' },
+  { scale: '0.001 mm across', label: 'Beyond any light microscope',
+    note: 'Light itself is now too coarse to show what is here. Everything past this point comes from other kinds of instrument, and from the reasoning you have just done.' },
+  { scale: '0.0000001 mm across', label: 'Individual atoms',
+    note: 'Atoms, in a repeating stack. About 0.0000001 mm across — you would need to lay ten million of them side by side to cross a single millimetre. Nothing here is orange, and nothing here is bendable.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What is an atom?',
+    options: [
+      { text: 'The smallest particle of an element', correct: true },
+      { text: 'The smallest particle of any substance', correction: 'Close, and it is the word "element" that does the work. A particle of water is made of more than one atom.' },
+      { text: 'A very small piece of a solid', correction: 'Gases and liquids are made of atoms too. The state has nothing to do with it.' },
+      { text: 'Anything too small to see with a microscope', correction: 'A bacterium is too small for the naked eye and is not an atom. Size is not the definition.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Two of Dalton\u2019s three claims are now known to be wrong. Why is his model still taught and still used?',
+    options: [
+      { text: 'It still explains everything it was built to explain, and the parts that are wrong are outside chemistry', correct: true },
+      { text: 'Because it is simpler, and students are not ready for the truth', correction: 'It is not a simplified lie. Chemists use it, because for chemical reactions it gives the right answer.' },
+      { text: 'Because nobody has managed to replace it', correction: 'It has been replaced, several times over, for the questions it cannot answer. It is still the right tool for reactions.' },
+      { text: 'Because the experiments that disproved it were later shown to be faulty', correction: 'They were not. Electrons and isotopes are both real; Dalton was genuinely wrong about them.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain why the failure of alchemy is evidence for Dalton\u2019s model, and say what alchemists would have had to be able to do for the model to be wrong.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'For lead to become gold…',
+    criteria: [
+      'Says lead and gold are made of different kinds of atom.',
+      'Says a chemical change rearranges atoms but does not change what kind they are.',
+      'Says that turning lead into gold would mean changing one kind of atom into another.',
+      'Says that fifteen hundred years of careful failure is evidence, not just an absence of success.',
+      'Says the model would be wrong if anyone ever did it chemically.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student says: "Dalton was wrong about atoms being unsplittable, so his model should be thrown away." Reply to them, using one thing the model still explains and one thing it cannot.',
+    fieldLabel: 'Your reply',
+    placeholder: 'Being wrong about one thing does not…',
+    criteria: [
+      'Says a model is judged by what it explains, not by being completely true.',
+      'Names something Dalton\u2019s model still explains — fixed proportions, conservation of mass, or why alchemy failed.',
+      'Names something it cannot explain — electricity from atoms, radioactivity, or atoms of one element with different masses.',
+      'Says the model now has a known boundary rather than being discarded.',
+      'Does not claim the later experiments were mistaken.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    off: {},
+    touched: 0,
+    zoom: Math.min(4, Math.max(0, Number(this.props.startZoom) || 0)),
+    seenZoom: { 0: true },
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+  }
+
+  componentDidUpdate() { this.draw(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  draw() {
+    const c = this.canvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 310;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const z = this.state.zoom;
+    const cx = W / 2, cy = H / 2 + 6;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(60, 34, W - 120, H - 88);
+    ctx.clip();
+
+    if (z === 0) {
+      ctx.fillStyle = '#B7692F';
+      ctx.fillRect(120, cy - 26, W - 240, 52);
+      ctx.fillStyle = '#D98A4A';
+      ctx.fillRect(120, cy - 26, W - 240, 16);
+      ctx.fillStyle = '#8A4A1E';
+      ctx.fillRect(120, cy + 14, W - 240, 12);
+    } else if (z === 1) {
+      ctx.fillStyle = '#B7692F';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 118, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = 'rgba(217,138,74,0.75)';
+      for (let i = 0; i < 40; i++) {
+        const a = i * 2.4, r = 20 + (i % 7) * 14;
+        ctx.beginPath();
+        ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r * 0.8, 8 + (i % 3) * 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    } else if (z === 2) {
+      ctx.fillStyle = '#A85F2A';
+      ctx.fillRect(60, 34, W - 120, H - 88);
+      ctx.strokeStyle = '#D98A4A';
+      ctx.lineWidth = 3;
+      for (let i = 0; i < 14; i++) {
+        ctx.beginPath();
+        ctx.moveTo(70 + i * 58, 40);
+        ctx.lineTo(70 + i * 58 + 26, H - 56);
+        ctx.stroke();
+      }
+      ctx.strokeStyle = '#8A4A1E';
+      ctx.lineWidth = 5;
+      for (let i = 0; i < 5; i++) {
+        ctx.beginPath();
+        ctx.moveTo(60, 60 + i * 44);
+        ctx.bezierCurveTo(300, 50 + i * 44, 560, 90 + i * 44, W - 60, 66 + i * 44);
+        ctx.stroke();
+      }
+    } else if (z === 3) {
+      ctx.fillStyle = '#7A4520';
+      ctx.fillRect(60, 34, W - 120, H - 88);
+      ctx.fillStyle = 'rgba(217,138,74,0.30)';
+      for (let i = 0; i < 26; i++) {
+        ctx.beginPath();
+        ctx.arc(90 + (i * 137) % (W - 180), 60 + (i * 79) % (H - 140), 30 + (i % 4) * 12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = '#C6B9A7';
+      ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('past the reach of any light microscope', cx, cy);
+    } else {
+      const step = 62;
+      for (let row = -1; row < 5; row++) {
+        for (let col = -1; col < 16; col++) {
+          const x = 70 + col * step + (row % 2 ? step / 2 : 0);
+          const y = 50 + row * step * 0.86;
+          ctx.beginPath();
+          ctx.arc(x, y, 25, 0, Math.PI * 2);
+          ctx.fillStyle = '#D98A4A';
+          ctx.fill();
+          ctx.strokeStyle = '#5A3212';
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(x - 7, y - 8, 7, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255,255,255,0.28)';
+          ctx.fill();
+        }
+      }
+    }
+    ctx.restore();
+
+    ctx.strokeStyle = '#5C5249';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(60, 34, W - 120, H - 88);
+
+    ctx.fillStyle = '#FFC53D';
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(ZOOM[z].label.toUpperCase(), 62, 24);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#C6B9A7';
+    ctx.fillText(ZOOM[z].scale, W - 62, 24);
+    ctx.textAlign = 'center';
+
+    // the zoom ladder
+    const bw = (W - 120) / ZOOM.length;
+    ZOOM.forEach((s, i) => {
+      ctx.fillStyle = i <= z ? '#FFC53D' : '#3E3730';
+      ctx.fillRect(60 + i * bw + 3, H - 42, bw - 6, 9);
+    });
+  }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';' + (dis ? 'opacity:.45;' : '');
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.45;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const offCount = Object.keys(s.off).filter((k) => s.off[k]).length;
+    const z = s.zoom;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    const broken = OBS.filter((o) => o.needs.some((n) => s.off[n]));
+
+    let modelNote;
+    if (offCount === 0) {
+      modelNote = 'All three claims on, and every observation is accounted for. That is what a model is for: not being true, but paying its way.';
+    } else if (broken.length === 0) {
+      modelNote = 'Nothing has broken — which would mean that claim was doing no work. Look again: every one of Dalton\u2019s three is holding something up.';
+    } else {
+      modelNote = 'Switching off ' + offCount + (offCount === 1 ? ' claim leaves ' : ' claims leaves ') + broken.length +
+        ' of the four observations with no explanation at all. A claim earns its place by what falls over without it.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-model') return s.touched >= 2;
+          if (id === 's-scale') return Object.keys(s.seenZoom).length >= ZOOM.length;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'They were not skilled enough, and modern equipment would manage it' },
+        { letter: 'B', text: 'Lead and gold are made of different kinds of particle, and no reaction changes one kind into another' },
+        { letter: 'C', text: 'Gold is heavier, so more material would be needed' },
+        { letter: 'D', text: 'They were kept secret whenever it worked' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      modelProgress: offCount === 0 ? 'All three claims on' : offCount + ' switched off',
+      gateOpen: s.gate === null,
+      gateOptions: CLAIMS.map((c, i) => ({
+        letter: String.fromCharCode(65 + i), text: c.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      modelOpen: s.gate !== null,
+      claims: CLAIMS.map((c) => {
+        const on = !s.off[c.id];
+        return {
+          text: c.text, on: on, state: on ? 'ON' : 'OFF',
+          style: 'display:flex;align-items:center;gap:14px;width:100%;cursor:pointer;padding:16px 18px;border-radius:var(--ks3-r-option);font:inherit;font-size:18px;font-weight:600;min-height:var(--ks3-tap);text-align:left;background:' +
+            (on ? 'var(--ks3-card)' : 'var(--ks3-row-dim)') + ';border:2px solid ' +
+            (on ? 'var(--ks3-ink)' : 'var(--ks3-rule)') + ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-ink-faint)') + ';',
+          chipStyle: 'flex:0 0 52px;display:inline-grid;place-items:center;padding:5px 0;border-radius:9px;font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;background:' +
+            (on ? 'var(--ks3-ink)' : 'var(--ks3-band)') + ';color:' + (on ? 'var(--ks3-on-dark)' : 'var(--ks3-ink-muted)') + ';',
+          onClick: () => this.setState((st) => ({
+            off: Object.assign({}, st.off, { [c.id]: !st.off[c.id] }),
+            touched: st.touched + 1
+          }))
+        };
+      }),
+      observations: OBS.map((o) => {
+        const dead = o.needs.some((n) => s.off[n]);
+        return {
+          text: dead ? o.fail : o.text,
+          verdict: dead ? 'no longer explained' : 'explained',
+          rowStyle: 'padding:16px 18px;border-radius:var(--ks3-r-panel);background:' + (dead ? 'var(--ks3-band)' : 'var(--ks3-card)') +
+            ';border:2px solid ' + (dead ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';',
+          verdictStyle: 'margin:0;font-family:var(--ks3-font-mono);font-size:14px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;text-align:right;color:' +
+            (dead ? 'var(--ks3-accent-text)' : 'var(--ks3-ink-muted)') + ';'
+        };
+      }),
+      modelNote: modelNote,
+
+      zoomRef: (el) => { this.canvas = el; if (el) this.draw(); },
+      zoomProgress: (z + 1) + ' of ' + ZOOM.length + ' steps',
+      zoomScale: ZOOM[z].scale,
+      zoomNote: ZOOM[z].note,
+      zoomAlt: 'A magnified view of copper at ' + ZOOM[z].scale + ': ' + ZOOM[z].label.toLowerCase() + '.',
+      zoomMin: z === 0,
+      zoomMax: z === ZOOM.length - 1,
+      zoomInStyle: this.seg(false, true, z === ZOOM.length - 1),
+      zoomOutStyle: this.seg(false, true, z === 0),
+      onZoomIn: () => this.setState((st) => {
+        const n = Math.min(ZOOM.length - 1, st.zoom + 1);
+        return { zoom: n, seenZoom: Object.assign({}, st.seenZoom, { [n]: true }) };
+      }),
+      onZoomOut: () => this.setState((st) => ({ zoom: Math.max(0, st.zoom - 1) })),
+
+      thinkOptions: [
+        { letter: 'A', text: 'All of it — it is copper, just smaller' },
+        { letter: 'B', text: 'The colour, but not the conducting' },
+        { letter: 'C', text: 'None of it' },
+        { letter: 'D', text: 'The conducting, but not the colour' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

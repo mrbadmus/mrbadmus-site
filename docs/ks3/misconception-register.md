@@ -66,6 +66,8 @@ conceptual, not disciplinary — the same wrong idea crosses subject boundaries,
 | `PART` | Particles, states and the particle model | 2026-07-26, by C1 (Phase 1 slice) |
 | `LIFE` | What counts as living, and the life processes | 2026-08-09, by B1 |
 | `CELL` | Cells, microscopy and the organisation of living things | 2026-08-09, by B1 |
+| `BODY` | Body systems, and how they do mechanical work | 2026-08-16, by B2 |
+| `ATOM` | Atoms having kinds, and substances versus their ingredients | 2026-08-16, by B2's sibling delivery, C2 |
 
 Suggested starting families, from the misconception fields architecture.md §1 and §9 name explicitly
 — **not yet opened, listed so numbering starts consistently**: `PART` (particles and states),
@@ -181,6 +183,18 @@ Opened by **B1 *Cells and organisation*** (2026-08-09, authored by Claude Design
 | `CELL-10` | A specialised cell can change into a different kind whenever the body needs it — a skin cell can become a nerve cell. | `where-from` | `once-you-choose` | `stem-cells-and-meristems` |
 | `CELL-11` | The enzymes were killed by the heat. | `what-did-boiling-do` | `not-killed-changed` | `enzymes-and-rate` |
 | `CELL-12` | The hotter it is the faster any reaction goes, so an enzyme works best as hot as possible. | `predict-the-curve` | `two-halves-of-the-curve` | `enzymes-and-rate` |
+| `CELL-13` | No nucleus means no instructions — so a bacterium cannot divide. | — (see below) | `s-think` | `unicellular-organisms` |
+
+⊕ **`CELL-13` registered 2026-08-16 (MRB-220), closing a dead join.** The ID was authored and
+referenced in `ks3_data/b1/lesson_06_unicellular_organisms.py` — with a full `statement` and a
+`pairs_with` edge back to `specialised-cells` — but never given a row here, and that module's own
+comment asked for it. A lesson naming an ID the register does not define is the same defect as an
+ID with no lesson, read from the other end: the join is silently broken and nothing fails.
+
+Its `elicited_by` is empty and that is **honest, not an omission**. On Design's approved page both
+of `#s-think`'s misconceptions are static markup with no gate and no eliciting activity, so Law 3's
+elicit-then-confront is discharged for `LIFE-03` by the settles-it activity and for this pair by
+nothing at all. Recorded as a gap rather than papered over. `CELL-08` has the same shape.
 
 **Where these are expected to resurface** (`reappears_in`, for filling as later units are
 authored):
@@ -197,6 +211,80 @@ authored):
 list above) with its own pair — `how-does-oxygen-get-in` and `membrane-diffusion-lab` — because a
 register row records where an idea was *opened*, not everywhere it is fought. `PART-10`'s own row
 keeps its C1 `elicited_by`/`confronted_by`.
+
+### `BODY` — body systems, and how they do mechanical work
+
+Opened by **B2 *Movement: skeleton and muscles*** (2026-08-16, authored by Claude Design, MRB-220).
+All eleven are `review_state: draft` — the `statement` field is science-bearing (§5.10) and needs
+Mide's review before any of these freeze.
+
+`CELL` is about cells. These are about **body systems and how they do work**, which is why they are
+a family rather than `CELL-13` onwards. Design requested a ruling on the family before any ID was
+referenced; the family is opened here, and the IDs below are now permanent (§5.3).
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `BODY-01` | Bones are dead — they are the hard leftovers, like a tent frame. | `think-commit-alive` | `think-reveal-alive` | `what-the-skeleton-does` |
+| `BODY-02` | The skeleton's job is holding you up; the other things bones do are extras. | `hook-two-breaks` | `switch-off-chains` | `what-the-skeleton-does` |
+| `BODY-03` | How bad a break is depends on how big the bone is. | `hook-two-breaks` | `hook-reveal` | `what-the-skeleton-does` |
+| `BODY-04` | Muscles hold the bones together at a joint. | `think-commit-achilles` | `think-reveal-achilles` | `joints` |
+| `BODY-05` | All joints work the same way; some are just stiffer than others. | `bench-gate-knee-shoulder` | `joint-bench` | `joints` |
+| `BODY-06` | A joint could rotate further if the muscles were stronger or the ligaments looser. | `ladder-r2` | `ladder-r2-feedback` | `joints` |
+| `BODY-07` | Muscles push as well as pull. | `hook-commit-door` | `muscle-pair` | `antagonistic-muscle-pairs` |
+| `BODY-08` | When a muscle relaxes it stretches itself back out. | `think-commit-stretch` | `think-reveal-stretch` | `antagonistic-muscle-pairs` |
+| `BODY-09` | If both muscles of a pair contract, the movement is faster or stronger. | `bench-gate-both` | `muscle-pair-both` | `antagonistic-muscle-pairs` |
+| `BODY-10` | A muscle pulls with the same force as the weight it is holding. | `hook-commit-bag` | `arm-lever-rig` | `biomechanics-forces-in-the-body` |
+| `BODY-11` | Levers always make things easier, so the body's levers reduce the force needed. | `think-commit-lever` | `think-reveal-lever` | `biomechanics-forces-in-the-body` |
+
+**Where these are expected to resurface** (`reappears_in`, filled as the units are authored):
+
+- `BODY-01` (organs are just plumbing) → B3 `the-digestive-system` and B9. The same instinct, a
+  different organ.
+- `BODY-07` (muscles push) → P4's coming "forces are things objects have". It is the biology face
+  of one wrong idea about force, and the two should be fought as one.
+- `BODY-10`/`BODY-11` (levers make things easier) → P4 `moments` and P1 `simple-machines`, where
+  the force-for-distance trade is the whole lesson. That is the natural place to say *this is the
+  arm again*.
+
+### `ATOM` — atoms having kinds, and substances versus their ingredients
+
+Opened by **C2 *Atoms, elements and compounds*** (2026-08-16, authored by Claude Design, MRB-220).
+All eleven are `review_state: draft`, as above.
+
+`PART` is particles and states, opened by C1. These are about **atoms having kinds**, and about a
+substance not keeping the properties of what went into it. Design requested a ruling on the family
+before the IDs were referenced; it is opened here and the IDs are permanent.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `ATOM-01` | An atom of a substance has the properties of the substance — a copper atom is orange and conducts. | `think-commit-copper` | `think-reveal-copper` | `the-atom-daltons-model` |
+| `ATOM-02` | A model that turns out to be wrong about something has been disproved and should be discarded. | `ladder-r2` | `stretch-boundary` | `the-atom-daltons-model` |
+| `ATOM-03` | If it looks like a metal, it is an element. | `think-commit-brass` | `think-reveal-brass` | `elements` |
+| `ATOM-04` | An element is a pure substance, so anything pure is an element. | `sample-water` | `sample-reveal` | `elements` |
+| `ATOM-05` | Reacting violently means being broken down. | `sample-sodium` | `sample-reveal` | `elements` |
+| `ATOM-06` | A compound is a very thoroughly mixed mixture. | `bench-gate-proportions` | `weigh-what-combines` | `compounds` |
+| `ATOM-07` | The elements are still in there behaving as themselves, so the compound keeps their properties. | `think-commit-magnet` | `think-reveal-magnet` | `compounds` |
+| `ATOM-08` | A symbol is the English name shortened, so any sensible abbreviation will do. | `think-commit-co` | `think-reveal-co` | `chemical-symbols` |
+| `ATOM-09` | The small number in a formula changes how much of the substance there is. | `builder-gate` | `formula-builder` | `formulae` |
+| `ATOM-10` | 2H₂O and H₂O₂ are the same thing written two ways. | `think-commit-big-small` | `think-reveal-big-small` | `formulae` |
+| `ATOM-11` | Burning destroys matter — the mass turns into heat and light. | `think-commit-burning` | `sealed-flask-run` | `conservation-of-mass` |
+
+**Where these are expected to resurface:**
+
+- `ATOM-01` (an atom is a tiny lump of the substance) is the big one → C4
+  `reactions-rearrange-atoms`, C8 `metals-and-non-metals`, P11 `density`, and every bonding lesson
+  at KS4.
+- `ATOM-02` belongs with `PART-12`/`PART-13` and is **the third piece of evidence that a `NOS`
+  family is wanted**. The ruling under the `PART` entries says the call should be made before
+  `C8 mendeleev` is authored; `the-atom-daltons-model` has now made the same shape of argument a
+  second time. The call is still open and is Mide's.
+
+**Cross-family note — `ATOM-11` is `PART-05` in a chemical costume.** Exactly as the `PART` list
+predicted when it wrote that *"the puddle dried up"* becomes *"the mass went down when it burned"*.
+It is minted as its own ID because the confrontation is a different one — a sealed flask, not a
+sealed bag — but it is the same belief, and `PART-05`'s row is where the idea was opened.
+`c2-06 conservation-of-mass` may not be dropped on the grounds that C1 covers it, and `c1-03`'s
+sealed-bag confrontation may not be dropped on the grounds that C2 covers it.
 
 ---
 

@@ -4986,6 +4986,783 @@
     });
   }
 
+  /* ═══════════════════════════════════════════════════════════════
+     B2 · Movement: skeleton and muscles  (⊕ 16 Aug 2026, MRB-220)
+
+     Four instruments, and two pieces three of them share.
+
+     ⚖️ REDUCED MOTION IS ASKED EVERY FRAME, not once at construction.
+     Design's b2-03 reads `prefers-reduced-motion` in `componentDidMount`
+     and never consults it again, so the arm animates under reduced
+     motion; its own sibling b2-02 checks correctly inside the tick. That
+     is a slip rather than an intention, and a ruling already covers it
+     (R6: reduced motion is a COMPLETE experience, never a lesser one),
+     so it is corrected here rather than reproduced. Asking live also
+     means the Motion control and an OS setting changed mid-lesson both
+     take effect without a reload.
+     ═══════════════════════════════════════════════════════════════ */
+
+  var B2_RM = window.matchMedia
+    && window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  function motionReduced() {
+    if (document.documentElement.getAttribute("data-motion") === "off") {
+      return true;
+    }
+    return !!(B2_RM && B2_RM.matches);
+  }
+
+  /* The block head's live progress readout. Two authored shapes — a count
+     ("3 of 6 decided") and a two-state label ("Meter fitted") — one
+     element and one updater, so a third cannot arrive as a third copy. */
+  function setCount(sec, n) {
+    var el = sec && sec.querySelector("[data-count]");
+    if (!el) { return; }
+    var fmt = el.getAttribute("data-format");
+    if (fmt) {
+      // ⊕ CLAMPED. b2-03's counter runs over a mixed key space — four
+      // contraction modes and two kill switches — so a student who tries
+      // three modes and both switches reads "5 of 4 settings tried" on
+      // Design's own page. Clamping does not contradict the drawn label; it
+      // is the label meaning what it says. What ticks is unchanged.
+      var total = parseInt(el.getAttribute("data-total"), 10);
+      if (!isNaN(total) && n > total) { n = total; }
+      el.textContent = fmt.replace("{n}", String(n))
+        .replace("{total}", el.getAttribute("data-total") || "");
+    } else {
+      el.textContent = n ? (el.getAttribute("data-on") || "")
+                         : (el.getAttribute("data-off") || "");
+    }
+  }
+
+  /* C6's commit gate. Answered, the gate is GONE and the instrument
+     arrives in the space the question was occupying — gating by absence,
+     which is what Design draws on three of the four B2 pages. */
+  function wireBenchGate(sec) {
+    var gate = sec.querySelector("[data-benchgate]");
+    var body = sec.querySelector("[data-benchbody]");
+    if (!gate || !body) { return; }
+    each(gate.querySelectorAll(".ks3-option"), function (btn) {
+      btn.addEventListener("click", function () {
+        each(gate.querySelectorAll(".ks3-option"), function (b) {
+          b.setAttribute("aria-pressed", "false");
+        });
+        btn.setAttribute("aria-pressed", "true");
+        setHidden(gate, true);
+        setHidden(body, false);
+        body.setAttribute("role", "status");
+      });
+    });
+  }
+
+  /* job-sort — the per-item sorter. Each row opens the instant IT is
+     decided, which is the whole difference from `sort-task`: a student
+     finds out about item 1 before committing on item 2.
+
+     ⚖️ Nothing marks correctness (R3 / MRB-196 R10). The chosen option
+     keeps the ordinary chosen treatment, the rest dim, the ROW's border
+     goes to ink, and the why paragraph is one tone either way. */
+  function wireJobSort(sec) {
+    var wrap = sec.querySelector("[data-jobsort]");
+    if (!wrap) { return; }
+    var items = toArray(wrap.querySelectorAll(".ks3-jobsort-item"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || items.length;
+    var closer = wrap.querySelector("[data-jobsort-close]");
+
+    function decided() {
+      var n = 0;
+      each(items, function (it) {
+        if (it.getAttribute("data-open") === "1") { n += 1; }
+      });
+      return n;
+    }
+
+    each(items, function (item) {
+      var opts = toArray(item.querySelectorAll(".ks3-jobsort-opt"));
+      each(opts, function (btn) {
+        btn.addEventListener("click", function () {
+          // One commitment per row, and it is final: the reveal is
+          // already on screen, so a second pick would be choosing after
+          // reading the answer.
+          if (item.getAttribute("data-open") === "1") { return; }
+          each(opts, function (b) {
+            b.setAttribute("aria-pressed", "false");
+            b.setAttribute("disabled", "");
+          });
+          btn.setAttribute("aria-pressed", "true");
+          item.setAttribute("data-open", "1");
+          setHidden(item.querySelector("[data-reveal]"), false);
+          var n = decided();
+          setCount(sec, n);
+          if (n >= total) {
+            if (closer) { setHidden(closer, false); }
+            markStage(sec, true);
+          }
+        });
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* system-switch — take one part away and follow the damage.
+     Emit-all-show-one: four panels in the document, one shown, so going
+     back to a part finds it exactly as it was left. */
+  function wireSwitch(sec) {
+    var wrap = sec.querySelector("[data-switch-block]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll(".ks3-switch-tab"));
+    var panels = toArray(wrap.querySelectorAll(".ks3-switch-panel"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || panels.length;
+    var all = wrap.querySelector("[data-switch-all]");
+    var readyHint = wrap.getAttribute("data-hint-ready") || "";
+    var doneHint = wrap.getAttribute("data-hint-done") || "";
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        var id = tab.getAttribute("data-part");
+        each(tabs, function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-part") === id ? "true" : "false");
+        });
+        each(panels, function (p) {
+          setHidden(p, p.getAttribute("data-part") !== id);
+        });
+      });
+    });
+
+    function opened() {
+      var n = 0;
+      each(panels, function (p) {
+        if (p.getAttribute("data-open") === "1") { n += 1; }
+      });
+      return n;
+    }
+
+    each(panels, function (panel) {
+      var opts = toArray(panel.querySelectorAll(".ks3-option"));
+      var btn = panel.querySelector("[data-switch]");
+      var hint = panel.querySelector("[data-switch-hint]");
+      var chain = panel.querySelector("[data-switch-chain]");
+
+      each(opts, function (o) {
+        o.addEventListener("click", function () {
+          // A prediction made before the switch is thrown stays visible
+          // and stops being changeable once it has been tested — the
+          // student's own guess is the evidence the chain is read
+          // against.
+          if (panel.getAttribute("data-open") === "1") { return; }
+          each(opts, function (b) { b.setAttribute("aria-pressed", "false"); });
+          o.setAttribute("aria-pressed", "true");
+          if (btn) { btn.removeAttribute("disabled"); }
+          if (hint) { hint.textContent = readyHint; }
+        });
+      });
+
+      if (!btn) { return; }
+      btn.addEventListener("click", function () {
+        if (panel.getAttribute("data-open") === "1") { return; }
+        if (!panel.querySelector('.ks3-option[aria-pressed="true"]')) { return; }
+        panel.setAttribute("data-open", "1");
+        each(opts, function (b) { b.setAttribute("disabled", ""); });
+        setHidden(chain, false);
+        btn.textContent = btn.getAttribute("data-done-label") || "";
+        btn.setAttribute("disabled", "");
+        if (hint) { hint.textContent = doneHint; }
+        var n = opened();
+        setCount(sec, n);
+        if (n >= total) {
+          if (all) { setHidden(all, false); }
+          markStage(sec, true);
+        }
+      });
+    });
+    setCount(sec, 0);
+  }
+
+  /* ── joint-bench (b2-02) ──
+     A two-bone linkage drawn from the payload. The allowed sweep, the
+     glyph radius, the hinge groove, the fixed joint's seam and the twist
+     verdict are all functions of `bend[]` and `twist`, which is why a
+     fifth joint needs data and no drawing code.
+
+     ⚖️ THE REFUSAL IS DRAWN. A pivot and a fixed joint get a disabled
+     slider, the literal readout `locked` and a label saying the joint
+     does not bend — three coordinated readouts a generic range control
+     cannot give, and the reason this is an instrument, not a `sim`. */
+  function wireJointBench(sec) {
+    var wrap = sec.querySelector("[data-jointbench]");
+    if (!wrap) { return; }
+    var joints;
+    try { joints = JSON.parse(wrap.getAttribute("data-joints") || "[]"); }
+    catch (err) { joints = []; }
+    if (!joints.length) { return; }
+
+    var canvas = wrap.querySelector("[data-joint-canvas]");
+    var slider = wrap.querySelector("[data-angle]");
+    var angleLabel = wrap.querySelector("[data-angle-label]");
+    var angleValue = wrap.querySelector("[data-angle-value]");
+    var twistBtn = wrap.querySelector("[data-twist]");
+    var twistNote = wrap.querySelector("[data-twist-note]");
+    var tabs = toArray(wrap.querySelectorAll(".ks3-joint-tab"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || joints.length;
+
+    var LOCKED = wrap.getAttribute("data-locked") || "locked";
+    var TW_OFF = wrap.getAttribute("data-twist-off") || "";
+    var TW_ON = wrap.getAttribute("data-twist-on") || "";
+    var TW_IDLE = wrap.getAttribute("data-twist-idle") || "";
+    var ALT = wrap.getAttribute("data-alt") || "";
+    var ALT_CAN = wrap.getAttribute("data-alt-can") || "";
+    var ALT_CANNOT = wrap.getAttribute("data-alt-cannot") || "";
+
+    var current = joints[0].id;
+    var angles = {};
+    var twists = {};
+    var tried = {};
+    var spin = 0;
+    var last = 0;
+    each(joints, function (j) { angles[j.id] = j.start; });
+
+    function joint() {
+      for (var i = 0; i < joints.length; i++) {
+        if (joints[i].id === current) { return joints[i]; }
+      }
+      return joints[0];
+    }
+
+    function tile(key, value) {
+      var el = wrap.querySelector('[data-tile="' + key + '"]');
+      if (el) { el.textContent = value; }
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 370;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+
+      var j = joint();
+      var px = 470, py = 250;
+      var upperLen = 250, lowerLen = 235;
+      var ang = (angles[j.id] || 0) * Math.PI / 180;
+      var twisting = !!(j.twist && twists[j.id]);
+      // Frozen at one representative phase under reduced motion: the ring
+      // still draws solid and the orbiting dot is still there, it simply
+      // does not move. R6 — a complete experience, not a lesser one.
+      var phase = motionReduced() ? 1.2 : spin;
+
+      if (j.bend[1] > 0) {
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.arc(px, py, lowerLen * 0.86, 0, -j.bend[1] * Math.PI / 180, true);
+        ctx.closePath();
+        ctx.fillStyle = "rgba(143,183,255,0.13)";
+        ctx.fill();
+        ctx.strokeStyle = "rgba(143,183,255,0.5)";
+        ctx.setLineDash([6, 6]);
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#8FB7FF";
+        ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "left";
+        ctx.fillText("range of movement: 0 to " + j.bend[1] + " degrees",
+                     px - 250, py + 92);
+      } else {
+        ctx.fillStyle = "#8FB7FF";
+        ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "left";
+        ctx.fillText("range of bending: none", px - 250, py + 92);
+      }
+
+      function bone(x1, y1, x2, y2) {
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#F4E9D8";
+        ctx.lineWidth = 26;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.strokeStyle = "#100D0A";
+        ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        ctx.strokeStyle = "#F4E9D8";
+        ctx.lineWidth = 20;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+      }
+
+      bone(px - upperLen, py, px, py);
+      var lx = px + Math.cos(-ang) * lowerLen;
+      var ly = py + Math.sin(-ang) * lowerLen;
+      bone(px, py, lx, ly);
+
+      ctx.beginPath();
+      ctx.arc(px, py, j.id === "ball" ? 27 : 20, 0, Math.PI * 2);
+      ctx.fillStyle = j.id === "fixed" ? "#5C5249" : "#FFC53D";
+      ctx.fill();
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      if (j.id === "hinge") {
+        ctx.beginPath();
+        ctx.moveTo(px - 20, py - 26); ctx.lineTo(px - 20, py + 26);
+        ctx.moveTo(px + 20, py - 26); ctx.lineTo(px + 20, py + 26);
+        ctx.strokeStyle = "#8FB7FF";
+        ctx.lineWidth = 4;
+        ctx.stroke();
+      }
+      if (j.id === "fixed") {
+        ctx.strokeStyle = "#C6B9A7";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (var i = -30; i <= 30; i += 10) {
+          ctx.moveTo(px + i, py - 22);
+          ctx.lineTo(px + i + 5, py + 22);
+        }
+        ctx.stroke();
+      }
+
+      var mx = px + Math.cos(-ang) * lowerLen * 0.62;
+      var my = py + Math.sin(-ang) * lowerLen * 0.62;
+      ctx.save();
+      ctx.translate(mx, my);
+      ctx.rotate(-ang);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, 20, 42, 0, 0, Math.PI * 2);
+      if (j.twist) {
+        ctx.strokeStyle = twisting ? "#FFC53D" : "#6E655D";
+        ctx.setLineDash(twisting ? [] : [5, 5]);
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.setLineDash([]);
+        if (twisting) {
+          ctx.beginPath();
+          ctx.arc(Math.sin(phase) * 20, Math.cos(phase) * 42, 8, 0, Math.PI * 2);
+          ctx.fillStyle = "#FFC53D";
+          ctx.fill();
+        }
+      } else {
+        // The refusal, drawn: a dashed ring AND a struck-through cross.
+        ctx.strokeStyle = "#6E655D";
+        ctx.setLineDash([5, 5]);
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.strokeStyle = "#C6B9A7";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(-14, -14); ctx.lineTo(14, 14);
+        ctx.moveTo(14, -14); ctx.lineTo(-14, 14);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+      var label = (j.name || "").toUpperCase();
+      var w = ctx.measureText(label).width + 30;
+      ctx.fillStyle = "#221E1B";
+      var rx = 24, ry = 24;
+      ctx.beginPath();
+      ctx.moveTo(rx + 12, ry);
+      ctx.lineTo(rx + w - 12, ry);
+      ctx.quadraticCurveTo(rx + w, ry, rx + w, ry + 12);
+      ctx.lineTo(rx + w, ry + 26);
+      ctx.quadraticCurveTo(rx + w, ry + 38, rx + w - 12, ry + 38);
+      ctx.lineTo(rx + 12, ry + 38);
+      ctx.quadraticCurveTo(rx, ry + 38, rx, ry + 26);
+      ctx.lineTo(rx, ry + 12);
+      ctx.quadraticCurveTo(rx, ry, rx + 12, ry);
+      ctx.closePath();
+      ctx.fill();
+      ctx.strokeStyle = "#FFC53D";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.fillStyle = "#FFC53D";
+      ctx.textAlign = "left";
+      ctx.fillText(label, rx + 15, ry + 25);
+      ctx.textAlign = "center";
+    }
+
+    function alt(j) {
+      return ALT.replace("{name}", (j.name || "").toLowerCase())
+        .replace("{angle}", String(angles[j.id] || 0))
+        .replace("{max}", String(j.bend[1]))
+        .replace("{twist}", j.twist ? ALT_CAN : ALT_CANNOT);
+    }
+
+    function repaint() {
+      var j = joint();
+      var twisting = !!twists[j.id];
+      var locked = j.bend[1] === 0;
+      if (slider) {
+        slider.min = String(j.bend[0]);
+        slider.max = String(j.bend[1] || 1);
+        slider.value = String(angles[j.id] || 0);
+        if (locked) { slider.setAttribute("disabled", ""); }
+        else { slider.removeAttribute("disabled"); }
+      }
+      if (angleLabel) { angleLabel.textContent = j.angle_label || ""; }
+      if (angleValue) {
+        angleValue.textContent = locked ? LOCKED
+                                        : (angles[j.id] || 0) + "°";
+      }
+      if (twistBtn) {
+        twistBtn.setAttribute("aria-pressed", twisting ? "true" : "false");
+        twistBtn.textContent = twisting ? TW_ON : TW_OFF;
+      }
+      if (twistNote) {
+        twistNote.textContent = twisting ? j.twist_yes
+          : (j.twist ? TW_IDLE : j.twist_no);
+      }
+      tile("axes", j.axes || "");
+      tile("where", j.where || "");
+      tile("hold", j.hold || "");
+      tile("trade", j.trade || "");
+      if (canvas) { canvas.setAttribute("aria-label", alt(j)); }
+      draw();
+    }
+
+    function touch(id) {
+      tried[id] = true;
+      var n = 0;
+      for (var k in tried) { if (tried[k]) { n += 1; } }
+      setCount(sec, n);
+      if (n >= total) { markStage(sec, true); }
+    }
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        current = tab.getAttribute("data-joint");
+        each(tabs, function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-joint") === current ? "true" : "false");
+        });
+        touch(current);
+        repaint();
+      });
+    });
+
+    if (slider) {
+      // BOTH events, deliberately: `input` is what a drag fires and
+      // `change` is what a keyboard arrow lands on in older engines.
+      each(["input", "change"], function (evt) {
+        slider.addEventListener(evt, function () {
+          var j = joint();
+          angles[j.id] = Number(slider.value) || 0;
+          touch(j.id);
+          repaint();
+        });
+      });
+    }
+    if (twistBtn) {
+      twistBtn.addEventListener("click", function () {
+        var j = joint();
+        twists[j.id] = !twists[j.id];
+        touch(j.id);
+        repaint();
+      });
+    }
+
+    function tick(now) {
+      var dt = Math.min(0.05, (now - (last || now)) / 1000);
+      last = now;
+      var j = joint();
+      // Asked EVERY FRAME, not once at construction.
+      if (j.twist && twists[j.id] && !motionReduced()) {
+        spin += dt * 1.1;
+        draw();
+      }
+      window.requestAnimationFrame(tick);
+    }
+
+    repaint();
+    setCount(sec, 0);
+    if (window.requestAnimationFrame) { window.requestAnimationFrame(tick); }
+    wireBenchGate(sec);
+  }
+
+  /* ── muscle-pair (b2-03) ──
+     The only B2 instrument with a continuous physical state, and the
+     mechanism IS the teaching:
+
+        both pulling → the joint LOCKS wherever it is
+        biceps only  → 135°     triceps only → 6°     neither → 6°
+
+     and falling (55 °/s) is SLOWER than pulling (90 °/s). "Gravity
+     straightens a hanging arm for free" is taught by pressing Neither
+     and watching it come down more slowly than it went up; equalise the
+     two rates and the lesson is gone, leaving the animation.
+
+     ⚠️ The settings counter is over a MIXED KEY SPACE — four mode ids
+     and two kill ids — so "4 of 4 settings tried" is reachable as two
+     modes plus two kills. That is Design's own behaviour and its own
+     label; it is honest about "settings touched" and loose about "all
+     four contraction modes tried". Reproduced as drawn and reported,
+     because tightening it would contradict the label on the page. */
+  function wireMusclePair(sec) {
+    var wrap = sec.querySelector("[data-musclepair]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = {}; }
+
+    var canvas = wrap.querySelector("[data-muscle-canvas]");
+    var statusEl = wrap.querySelector("[data-muscle-status]");
+    var modeBtns = toArray(wrap.querySelectorAll(".ks3-muscle-mode"));
+    var killBtns = toArray(wrap.querySelectorAll(".ks3-muscle-kill"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 4;
+
+    var targets = cfg.targets || {};
+    var rates = cfg.rates || {};
+    var notes = cfg.notes || {};
+    var status = cfg.status || {};
+    var states = cfg.states || {};
+    var CL = cfg.canvas_labels || {};
+    var ALT = cfg.alt || {};
+
+    var mode = "none";
+    each(modeBtns, function (b) {
+      if (b.getAttribute("aria-pressed") === "true") {
+        mode = b.getAttribute("data-mode");
+      }
+    });
+    var dead = { biceps: false, triceps: false };
+    var tried = {};
+    var angle = Number(cfg.start_angle) || 0;
+    var last = 0;
+
+    function acting() {
+      return {
+        bi: (mode === "biceps" || mode === "both") && !dead.biceps,
+        tri: (mode === "triceps" || mode === "both") && !dead.triceps
+      };
+    }
+    function target() {
+      var a = acting();
+      if (a.bi && a.tri) { return angle; }   // both pulling: the joint locks
+      if (a.bi) { return Number(targets.biceps); }
+      if (a.tri) { return Number(targets.triceps); }
+      return Number(targets.none);           // nothing pulling: it falls
+    }
+
+    function band(ctx, x1, y1, x2, y2, thick, colour) {
+      var mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+      var dx = x2 - x1, dy = y2 - y1;
+      var len = Math.sqrt(dx * dx + dy * dy) || 1;
+      var nx = -dy / len, ny = dx / len;
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.quadraticCurveTo(mx + nx * thick, my + ny * thick, x2, y2);
+      ctx.quadraticCurveTo(mx - nx * thick, my - ny * thick, x1, y1);
+      ctx.closePath();
+      ctx.fillStyle = colour;
+      ctx.fill();
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 370;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+
+      var a = acting();
+      var sh = { x: 380, y: 70 }, el = { x: 380, y: 232 };
+      var ang = angle * Math.PI / 180;
+      // 0° is the forearm hanging straight down; the angle opens to +x.
+      var dirx = Math.sin(ang), diry = Math.cos(ang);
+      var hand = { x: el.x + dirx * 168, y: el.y + diry * 168 };
+
+      function bone(p, q, w) {
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#100D0A";
+        ctx.lineWidth = w + 6;
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+        ctx.strokeStyle = "#F4E9D8";
+        ctx.lineWidth = w;
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+      }
+
+      // Muscles are drawn BEHIND the bones, and thickness encodes
+      // contraction: a pulling belly is fatter as well as brighter, so
+      // the state is legible without colour alone (R2).
+      var bIns = { x: el.x + dirx * 46, y: el.y + diry * 46 };
+      var tIns = { x: el.x - dirx * 30, y: el.y - diry * 30 };
+      var bOrigin = { x: sh.x + 16, y: sh.y + 18 };
+      var tOrigin = { x: sh.x - 16, y: sh.y + 18 };
+      var bColour = dead.biceps ? "#4A4038" : (a.bi ? "#FFC53D" : "#8A7A62");
+      var tColour = dead.triceps ? "#4A4038" : (a.tri ? "#FFC53D" : "#8A7A62");
+      band(ctx, bOrigin.x, bOrigin.y, bIns.x, bIns.y, a.bi ? 34 : 20, bColour);
+      band(ctx, tOrigin.x, tOrigin.y, tIns.x, tIns.y, a.tri ? 30 : 18, tColour);
+
+      bone(sh, el, 22);
+      bone(el, hand, 20);
+
+      ctx.beginPath();
+      ctx.arc(el.x, el.y, 15, 0, Math.PI * 2);
+      ctx.fillStyle = "#C6B9A7";
+      ctx.fill();
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(hand.x, hand.y, 16, 0, Math.PI * 2);
+      ctx.fillStyle = "#F4E9D8";
+      ctx.fill();
+      ctx.strokeStyle = "#100D0A";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillStyle = dead.biceps ? "#6E655D" : "#FFC53D";
+      ctx.fillText((CL.biceps || "")
+        + (dead.biceps ? (CL.off || "") : (a.bi ? (CL.pulling || "")
+                                               : (CL.relaxed || ""))),
+        600, 44);
+      ctx.fillStyle = dead.triceps ? "#6E655D" : "#FFC53D";
+      ctx.fillText((CL.triceps || "")
+        + (dead.triceps ? (CL.off || "") : (a.tri ? (CL.pulling || "")
+                                                  : (CL.relaxed || ""))),
+        40, 44);
+
+      ctx.beginPath();
+      ctx.arc(el.x, el.y, 58, Math.PI / 2, Math.PI / 2 - ang, true);
+      ctx.strokeStyle = "#8FB7FF";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.fillStyle = "#8FB7FF";
+      ctx.textAlign = "left";
+      ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(Math.round(angle) + "°", el.x + 34, el.y + 84);
+      ctx.textAlign = "center";
+    }
+
+    function stateWord(muscle, pulling) {
+      if (dead[muscle]) { return states.dead || ""; }
+      return pulling ? (states.contracted || "") : (states.relaxed || "");
+    }
+
+    function noteKey() {
+      var a = acting();
+      if (dead.biceps && !dead.triceps) { return "biceps_dead"; }
+      if (dead.triceps && !dead.biceps) { return "triceps_dead"; }
+      if (dead.biceps && dead.triceps) { return "both_dead"; }
+      if (a.bi && a.tri) { return "both"; }
+      if (a.bi) { return "biceps"; }
+      if (a.tri) { return "triceps"; }
+      return "none";
+    }
+    function statusKey() {
+      var a = acting();
+      if (a.bi && a.tri) { return "both"; }
+      if (a.bi) { return "biceps"; }
+      if (a.tri) { return "triceps"; }
+      return "none";
+    }
+    function altWordKey(muscle, pulling) {
+      if (dead[muscle]) { return "dead"; }
+      return pulling ? (muscle === "biceps" ? "biceps_pulling"
+                                            : "triceps_pulling")
+                     : "relaxed";
+    }
+
+    function tile(key, value) {
+      var el = wrap.querySelector('[data-tile="' + key + '"]');
+      if (el) { el.textContent = value; }
+    }
+
+    /* ⚠️ THE DEGREE TILE AND THE CANVAS UPDATE ON DIFFERENT CLOCKS, and
+       that split is deliberate. The canvas repaints every frame while the
+       arm travels; the readouts repaint only when a control changes,
+       which is what Design's own render does. Driving the tiles at 60 Hz
+       would repaint a third of the block sixty times a second for a
+       number nobody can read while it moves. `settle()` writes the final
+       angle once the arm has arrived. */
+    function repaintReadouts() {
+      var a = acting();
+      var words = ALT.words || {};
+      if (statusEl) { statusEl.textContent = status[statusKey()] || ""; }
+      tile("angle", Math.round(angle) + "°");
+      tile("biceps", stateWord("biceps", a.bi));
+      tile("triceps", stateWord("triceps", a.tri));
+      tile("note", notes[noteKey()] || "");
+      if (canvas) {
+        canvas.setAttribute("aria-label", (ALT.template || "")
+          .replace("{biceps}", words[altWordKey("biceps", a.bi)] || "")
+          .replace("{triceps}", words[altWordKey("triceps", a.tri)] || ""));
+      }
+      draw();
+    }
+
+    function touch(key) {
+      tried[key] = true;
+      var n = 0;
+      for (var k in tried) { if (tried[k]) { n += 1; } }
+      setCount(sec, n);
+      if (n >= total) { markStage(sec, true); }
+    }
+
+    each(modeBtns, function (b) {
+      b.addEventListener("click", function () {
+        mode = b.getAttribute("data-mode");
+        each(modeBtns, function (x) {
+          x.setAttribute("aria-pressed",
+            x.getAttribute("data-mode") === mode ? "true" : "false");
+        });
+        touch(mode);
+        repaintReadouts();
+      });
+    });
+    each(killBtns, function (b) {
+      b.addEventListener("click", function () {
+        var id = b.getAttribute("data-kill");
+        dead[id] = !dead[id];
+        b.setAttribute("aria-pressed", dead[id] ? "true" : "false");
+        touch("off-" + id);
+        repaintReadouts();
+      });
+    });
+
+    function tick(now) {
+      var dt = Math.min(0.05, (now - (last || now)) / 1000);
+      last = now;
+      var t = target();
+      if (Math.abs(t - angle) > 0.3) {
+        if (motionReduced()) {
+          // R6 / contract R4 — reduced motion SNAPS to the mechanism's
+          // answer. The arm still ends up where the physics says; it
+          // just does not travel there. Asked every frame, so an OS
+          // setting changed mid-lesson takes effect without a reload.
+          angle = t;
+          repaintReadouts();
+        } else {
+          var a = acting();
+          var rate = (!a.bi && !a.tri) ? Number(rates.fall)
+                                       : Number(rates.pull);
+          var step = (t > angle ? 1 : -1) * rate * dt;
+          angle = Math.abs(step) > Math.abs(t - angle) ? t : angle + step;
+          draw();
+          // The tile catches up the moment the arm arrives, so the
+          // number a student reads is the number the arm is at.
+          if (Math.abs(t - angle) <= 0.3) { tile("angle", Math.round(angle) + "°"); }
+        }
+      }
+      window.requestAnimationFrame(tick);
+    }
+
+    repaintReadouts();
+    setCount(sec, 0);
+    if (window.requestAnimationFrame) { window.requestAnimationFrame(tick); }
+    wireBenchGate(sec);
+  }
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -5006,6 +5783,12 @@
     each(root.querySelectorAll("[data-stepper]"), function (w) {
       wireStepper(w.closest("[data-activity]") || w.parentNode);
     });
+    // ⊕ B2 · Movement (MRB-220). Each of these owns every option inside
+    // its section — `data-instrument` keeps `wirePredictions` out.
+    each(root.querySelectorAll("[data-jobsort-block]"), wireJobSort);
+    each(root.querySelectorAll("[data-switchblock]"), wireSwitch);
+    each(root.querySelectorAll("[data-jointblock]"), wireJointBench);
+    each(root.querySelectorAll("[data-muscleblock]"), wireMusclePair);
     wireTriangle(root);
   }
 

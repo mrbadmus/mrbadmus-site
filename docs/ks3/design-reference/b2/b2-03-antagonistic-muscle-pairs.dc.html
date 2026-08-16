@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Antagonistic muscle pairs · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Movement: skeleton and muscles</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Antagonistic muscle pairs</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Movement: skeleton and muscles · System</p>
+        <h1>Antagonistic muscle pairs</h1>
+        <p class="ks3-bigq">Every muscle you own can do exactly one thing. So how does an arm come back?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A digger can push its arm out. You cannot.</h2>
+        <p class="ks3-hook-prompt">A hydraulic ram does both jobs: pump oil in and it extends, let oil out and it retracts. A muscle has one move. It shortens, and it pulls. There is nothing it can do to push.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">You push a door open, straightening your arm. What straightens it?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">A second muscle, on the other side of the same bone, pulling the opposite way. The biceps cannot push your forearm out any more than a rope can push a bucket up a well. Everything you do twice — up and down, open and shut — needs two muscles.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Muscles are attached to bones by tendons, across a joint. When a muscle contracts it gets shorter and fatter, and the bone it is attached to has no choice but to move.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">At the bench · drive the arm, then break it</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Two muscles, one elbow</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-on-dark-muted);">{{ benchProgress }}</p>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Contract one, contract the other, contract both, contract neither. Then switch a muscle off and find out exactly what is lost.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 22px;">
+            <p class="ks3-commit" style="margin: 0 0 4px;">Commit first. If both muscles contract hard at the same time, what does the arm do?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 24px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 20px 30px;">
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Contract</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ modeTabs }}" as="t" hint-placeholder-count="4">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+              <div>
+                <p style="margin: 0 0 9px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Switch a muscle off</p>
+                <div style="display: flex; gap: 9px; flex-wrap: wrap;">
+                  <sc-for list="{{ killTabs }}" as="t" hint-placeholder-count="2">
+                    <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+              <canvas width="1800" height="740" ref="{{ benchRef }}" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+              <div style="padding: 15px 18px 17px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-size: 19px; font-weight: 700; color: var(--ks3-on-dark);">{{ benchStatus }}</p>
+              </div>
+            </div>
+
+            <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr)); gap: 12px;">
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Elbow angle</p>
+                <p style="margin: 5px 0 0; font-family: var(--ks3-font-mono); font-size: 27px; font-weight: 500; color: var(--ks3-alert);">{{ angleLabel }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Biceps · in front</p>
+                <p style="margin: 5px 0 0; font-size: 19px; font-weight: 700; color: var(--ks3-on-dark);">{{ bicepsState }}</p>
+              </div>
+              <div style="padding: 15px 17px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel);">
+                <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Triceps · behind</p>
+                <p style="margin: 5px 0 0; font-size: 19px; font-weight: 700; color: var(--ks3-on-dark);">{{ tricepsState }}</p>
+              </div>
+            </div>
+
+            <p style="margin: 18px 0 0; padding: 17px 19px; border-radius: var(--ks3-r-panel); background: var(--ks3-ground); color: var(--ks3-ink); font-size: 19px; line-height: 1.6;"><strong style="font-family: var(--ks3-font-display);">What this tells you:</strong> {{ benchNote }}</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">A muscle can only pull. Moving a bone back again needs a second muscle pulling the other way — an antagonistic pair.</p>
+      </div>
+
+      <section id="s-pairs" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-inset);">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · four movements</p>
+            <h2 style="margin: 6px 0 0;">Which muscle is doing the work?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ moveProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">In every pair, one muscle contracts and its partner relaxes. Decide which one is contracting. The last one is not what most people say.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ moves }}" as="m" hint-placeholder-count="4">
+            <div style="{{ m.style }}">
+              <p style="margin: 0; font-size: 19px; line-height: 1.5; font-weight: 600;">{{ m.text }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ m.options }}" as="o" hint-placeholder-count="4">
+                  <button type="button" onClick="{{ o.onClick }}" aria-pressed="{{ o.pressed }}" disabled="{{ o.disabled }}" style="{{ o.style }}">{{ o.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ m.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);"><strong style="font-family: var(--ks3-font-display);">{{ m.answer }}</strong> {{ m.why }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“To straighten your arm, the triceps contracts and the biceps stretches itself back out.”</p>
+        <p style="max-width: 54ch;">Half of that sentence is right. Commit to which half before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">The triceps contracting is right. The biceps stretching itself is not: a muscle has no way of making itself longer. It can shorten, or it can stop shortening. What lengthens it is <strong>being pulled</strong> — by its partner, or by the weight of whatever it is holding.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">This is why the word is <em>relaxes</em>, not <em>stretches</em>. Relaxing is a muscle letting go so that something else can lengthen it. If both muscles refuse to let go, the joint locks — you felt that on the bench.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Muscles pull and never push. They work in antagonistic pairs on either side of a joint: as one contracts, the other relaxes and is lengthened. Biceps and triceps at the elbow; quadriceps and hamstrings at the knee.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Contracting both muscles of a pair at once is not a mistake — it is how you hold something steady. A surgeon's hand, a gymnast on the rings and a hand steadying a phone camera are all doing it. The joint stiffens because both sides are pulling, so a small knock cannot move it. It costs energy and it tires you quickly, which is why you cannot hold a heavy tray at arm's length for long even though the tray is not going anywhere.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b2-02-joints.html">Joints<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b2-04-biomechanics-forces-in-the-body.html">Biomechanics: forces in the body<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Muscle fibres and how a contraction actually happens, and respiration supplying the energy for it.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why a muscle cannot push?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Only ever a pull', short: 'HOOK' },
+  { id: 's-bench', label: 'Two muscles, one elbow', short: 'BENCH' },
+  { id: 's-pairs', label: 'Four movements', short: 'PAIRS' },
+  { id: 's-think', label: 'Relax or stretch', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const MOVES = [
+  { id: 'm1', text: 'You stand up from a chair. The knee straightens.',
+    options: ['Quadriceps, on the front of the thigh', 'Hamstrings, on the back of the thigh', 'Both together', 'Neither — gravity does it'],
+    answer: 'The quadriceps contract.', why: 'They pull the lower leg straight while the hamstrings relax. Gravity is pulling the other way here, which is why standing up is work and sitting down is not.' },
+  { id: 'm2', text: 'You pull your heel up towards your bottom, bending the knee.',
+    options: ['Quadriceps, on the front of the thigh', 'Hamstrings, on the back of the thigh', 'Both together', 'Neither — gravity does it'],
+    answer: 'The hamstrings contract.', why: 'The same joint, the opposite muscle. Every pair is one muscle for each direction, and neither can do the other one\u2019s job.' },
+  { id: 'm3', text: 'You rise onto your tiptoes.',
+    options: ['The calf muscle, behind the shin', 'The muscle down the front of the shin', 'Both together', 'Neither — gravity does it'],
+    answer: 'The calf muscle contracts.', why: 'It pulls upwards on the heel bone through the Achilles tendon, and the whole body pivots over the toes. The muscle at the front relaxes; its job is lifting the toes, which is the opposite movement.' },
+  { id: 'm4', text: 'You lower a heavy box slowly to the floor, straightening your arms as it goes down.',
+    options: ['The biceps, still contracting', 'The triceps, contracting', 'Both together', 'Neither — gravity does it'],
+    answer: 'The biceps — still contracting.', why: 'This is the one most people get wrong. Gravity is doing the moving; the biceps is holding on and letting the box down a little at a time, getting longer while it pulls. Let go and the box drops. The triceps has nothing to do here at all.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Which pair of muscles works the knee?',
+    options: [
+      { text: 'Quadriceps and hamstrings', correct: true },
+      { text: 'Biceps and triceps', correction: 'That pair works the elbow. The same arrangement, a different joint and different muscles.' },
+      { text: 'The calf and the Achilles', correction: 'The Achilles is a tendon, not a muscle — it is how the calf muscle reaches the heel bone.' },
+      { text: 'Quadriceps and the calf muscle', correction: 'Both real muscles, but they act on different joints, so neither can undo the other.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'The biceps and the triceps both contract hard at the same time. What is the main effect?',
+    options: [
+      { text: 'The elbow stiffens and becomes hard to move in either direction', correct: true },
+      { text: 'The arm bends twice as fast', correction: 'They pull opposite ways, so nothing is added. Two people pulling on opposite ends of a rope do not move it faster.' },
+      { text: 'The arm moves to halfway and stops', correction: 'It holds wherever it already was. Nothing moves it to a halfway position.' },
+      { text: 'Nothing at all is happening in either muscle', correction: 'A great deal is happening — both are working hard and using energy. It is just that nothing moves.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain why one muscle at the elbow could never be enough, however strong it was.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'A muscle can only…',
+    criteria: [
+      'Says a muscle can only pull — it shortens, and cannot push.',
+      'Says one muscle could therefore move the forearm in one direction only.',
+      'Says a second muscle on the other side of the joint is needed to move it back.',
+      'Says that when one contracts the other relaxes and is lengthened by the pull.',
+      'Says strength does not help, because the problem is direction and not force.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A nerve injury leaves someone with a working biceps and a triceps that will not contract at all. Describe what they can and cannot do with that arm, and how they could still get it straight.',
+    fieldLabel: 'Your answer',
+    placeholder: 'They can still…',
+    criteria: [
+      'Says they can still bend the elbow, because the biceps works.',
+      'Says they cannot straighten it by their own muscle action.',
+      'Says the arm can still straighten by relaxing the biceps and letting gravity pull it down.',
+      'Says that only works when the arm is hanging, so pushing a door open or reaching upwards fails.',
+      'Uses the words contract and relax correctly, and does not say the biceps pushes.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    mode: 'none',
+    dead: { biceps: false, triceps: false },
+    tried: {},
+    movePick: {},
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.angle = 10;
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.draw();
+    this.tick();
+  }
+
+  componentDidUpdate() { this.draw(); }
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  // which muscle is actually pulling, once the switches are applied
+  acting() {
+    const s = this.state;
+    const bi = (s.mode === 'biceps' || s.mode === 'both') && !s.dead.biceps;
+    const tri = (s.mode === 'triceps' || s.mode === 'both') && !s.dead.triceps;
+    return { bi: bi, tri: tri };
+  }
+
+  target() {
+    const a = this.acting();
+    if (a.bi && a.tri) return this.angle;      // both pulling: the joint locks
+    if (a.bi) return 135;
+    if (a.tri) return 6;
+    return 6;                                   // nothing pulling: the arm falls
+  }
+
+  tick() {
+    this.raf = requestAnimationFrame((now) => {
+      const prev = this.lastFrame || now;
+      const dt = Math.min(0.05, (now - prev) / 1000);
+      this.lastFrame = now;
+      const t = this.target();
+      if (Math.abs(t - this.angle) > 0.3) {
+        const a = this.acting();
+        const rate = (!a.bi && !a.tri) ? 55 : 90;   // falling is slower than pulling
+        const step = Math.sign(t - this.angle) * rate * dt;
+        this.angle = Math.abs(step) > Math.abs(t - this.angle) ? t : this.angle + step;
+        if (this.canvas) this.draw();
+      }
+      this.tick();
+    });
+  }
+
+  band(ctx, x1, y1, x2, y2, thick, colour) {
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const dx = x2 - x1, dy = y2 - y1;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    const nx = -dy / len, ny = dx / len;
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.quadraticCurveTo(mx + nx * thick, my + ny * thick, x2, y2);
+    ctx.quadraticCurveTo(mx - nx * thick, my - ny * thick, x1, y1);
+    ctx.closePath();
+    ctx.fillStyle = colour;
+    ctx.fill();
+    ctx.strokeStyle = '#100D0A';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+  }
+
+  draw() {
+    const c = this.canvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 370;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const s = this.state;
+    const a = this.acting();
+    const sh = { x: 380, y: 70 }, el = { x: 380, y: 232 };
+    const ang = this.angle * Math.PI / 180;
+    // 0 degrees = forearm hanging straight down; angle opens towards +x
+    const dirx = Math.sin(ang), diry = Math.cos(ang);
+    const hand = { x: el.x + dirx * 168, y: el.y + diry * 168 };
+
+    const bone = (p, q, w) => {
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#100D0A';
+      ctx.lineWidth = w + 6;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(q.x, q.y);
+      ctx.stroke();
+      ctx.strokeStyle = '#F4E9D8';
+      ctx.lineWidth = w;
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      ctx.lineTo(q.x, q.y);
+      ctx.stroke();
+    };
+
+    // muscles are drawn behind the bones
+    const bIns = { x: el.x + dirx * 46, y: el.y + diry * 46 };
+    const tIns = { x: el.x - dirx * 30, y: el.y - diry * 30 };
+    const bOrigin = { x: sh.x + 16, y: sh.y + 18 };
+    const tOrigin = { x: sh.x - 16, y: sh.y + 18 };
+    const bColour = s.dead.biceps ? '#4A4038' : (a.bi ? '#FFC53D' : '#8A7A62');
+    const tColour = s.dead.triceps ? '#4A4038' : (a.tri ? '#FFC53D' : '#8A7A62');
+    this.band(ctx, bOrigin.x, bOrigin.y, bIns.x, bIns.y, a.bi ? 34 : 20, bColour);
+    this.band(ctx, tOrigin.x, tOrigin.y, tIns.x, tIns.y, a.tri ? 30 : 18, tColour);
+
+    bone(sh, el, 22);
+    bone(el, hand, 20);
+
+    // joint and hand
+    ctx.beginPath();
+    ctx.arc(el.x, el.y, 15, 0, Math.PI * 2);
+    ctx.fillStyle = '#C6B9A7';
+    ctx.fill();
+    ctx.strokeStyle = '#100D0A';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(hand.x, hand.y, 16, 0, Math.PI * 2);
+    ctx.fillStyle = '#F4E9D8';
+    ctx.fill();
+    ctx.strokeStyle = '#100D0A';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // labels
+    ctx.font = '500 15px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillStyle = s.dead.biceps ? '#6E655D' : '#FFC53D';
+    ctx.fillText('BICEPS · IN FRONT' + (s.dead.biceps ? ' — SWITCHED OFF' : (a.bi ? ' — PULLING' : ' — RELAXED')), 600, 44);
+    ctx.fillStyle = s.dead.triceps ? '#6E655D' : '#FFC53D';
+    ctx.fillText('TRICEPS · BEHIND' + (s.dead.triceps ? ' — SWITCHED OFF' : (a.tri ? ' — PULLING' : ' — RELAXED')), 40, 44);
+
+    // angle arc at the elbow
+    ctx.beginPath();
+    ctx.arc(el.x, el.y, 58, Math.PI / 2, Math.PI / 2 - ang, true);
+    ctx.strokeStyle = '#8FB7FF';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.fillStyle = '#8FB7FF';
+    ctx.textAlign = 'left';
+    ctx.font = '500 16px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(Math.round(this.angle) + '°', el.x + 34, el.y + 84);
+    ctx.textAlign = 'center';
+  }
+
+  seg(on, dark) {
+    const base = 'cursor:pointer;font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';';
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);';
+  }
+
+  renderVals() {
+    const s = this.state;
+    const a = this.acting();
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let note;
+    if (s.dead.biceps && !s.dead.triceps) {
+      note = 'With the biceps switched off, nothing can bend the elbow. The triceps can straighten it and gravity can drop it, and that is the whole repertoire.';
+    } else if (s.dead.triceps && !s.dead.biceps) {
+      note = 'With the triceps switched off, the arm still bends. It can only straighten by relaxing and letting the weight of the forearm take it down — so it works while the arm hangs, and fails the moment you try to push anything.';
+    } else if (s.dead.biceps && s.dead.triceps) {
+      note = 'Both switched off. The arm hangs, and nothing you decide changes anything.';
+    } else if (a.bi && a.tri) {
+      note = 'Both pulling. The elbow does not move — it stiffens. Nothing has cancelled out inside the muscles; both are working hard, and both are using energy.';
+    } else if (a.bi) {
+      note = 'The biceps pulls the forearm up and the triceps relaxes. Relaxing is not doing nothing: it is letting go so the partner can lengthen it.';
+    } else if (a.tri) {
+      note = 'The triceps pulls on the bone behind the elbow, and the forearm swings down. This is the only muscle that can straighten the arm against a resistance.';
+    } else {
+      note = 'Neither is pulling, so the arm falls under its own weight. Gravity will straighten a hanging arm for free — which is one reason the triceps is the smaller of the two.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return Object.keys(s.tried).length >= 4;
+          if (id === 's-pairs') return Object.keys(s.movePick).length >= 4;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'The biceps pushes the forearm out' },
+        { letter: 'B', text: 'The biceps gets longer on its own' },
+        { letter: 'C', text: 'A different muscle, behind the arm, pulls' },
+        { letter: 'D', text: 'Nothing does — the arm falls straight' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'It bends twice as fast' },
+        { letter: 'B', text: 'It goes to halfway and stops there' },
+        { letter: 'C', text: 'It stiffens and stays where it is' },
+        { letter: 'D', text: 'Nothing happens in either muscle' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      benchOpen: s.gate !== null,
+      benchProgress: Object.keys(s.tried).length + ' of 4 settings tried',
+      modeTabs: [
+        { id: 'biceps', label: 'Biceps' },
+        { id: 'triceps', label: 'Triceps' },
+        { id: 'both', label: 'Both' },
+        { id: 'none', label: 'Neither' }
+      ].map((m) => ({
+        label: m.label, pressed: s.mode === m.id, style: this.seg(s.mode === m.id, true),
+        onClick: () => this.setState((st) => ({ mode: m.id, tried: Object.assign({}, st.tried, { [m.id]: true }) }))
+      })),
+      killTabs: [
+        { id: 'biceps', label: 'Biceps off' },
+        { id: 'triceps', label: 'Triceps off' }
+      ].map((m) => ({
+        label: m.label, pressed: s.dead[m.id], style: this.seg(s.dead[m.id], true),
+        onClick: () => this.setState((st) => ({
+          dead: Object.assign({}, st.dead, { [m.id]: !st.dead[m.id] }),
+          tried: Object.assign({}, st.tried, { ['off-' + m.id]: true })
+        }))
+      })),
+      benchRef: (el) => { this.canvas = el; if (el) this.draw(); },
+      benchAlt: 'A model arm at the elbow, with the biceps drawn in front of the upper arm and the triceps behind it. The biceps is ' +
+        (s.dead.biceps ? 'switched off' : (a.bi ? 'contracted and pulling the forearm up' : 'relaxed')) + ' and the triceps is ' +
+        (s.dead.triceps ? 'switched off' : (a.tri ? 'contracted and pulling the forearm down' : 'relaxed')) + '.',
+      benchStatus: (a.bi && a.tri) ? 'Both are pulling. Nothing moves, and both are using energy.'
+        : (a.bi ? 'The biceps is shortening. Watch which way the forearm goes.'
+          : (a.tri ? 'The triceps is shortening, and the forearm swings the other way.'
+            : 'Nothing is pulling. The arm is falling under its own weight.')),
+      angleLabel: Math.round(this.angle || 0) + '°',
+      bicepsState: s.dead.biceps ? 'switched off' : (a.bi ? 'contracted' : 'relaxed'),
+      tricepsState: s.dead.triceps ? 'switched off' : (a.tri ? 'contracted' : 'relaxed'),
+      benchNote: note,
+
+      moveProgress: Object.keys(s.movePick).length + ' of 4 decided',
+      moves: MOVES.map((m) => {
+        const pick = s.movePick[m.id];
+        const open = pick !== undefined;
+        return {
+          text: m.text, answer: m.answer, why: m.why, open: open,
+          style: 'padding:20px 22px;border-radius:var(--ks3-r-panel);background:var(--ks3-card);border:2px solid ' +
+            (open ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';',
+          options: m.options.map((lab, i) => ({
+            label: lab, pressed: pick === i, disabled: open,
+            style: this.seg(pick === i, false) + 'font-size:16px;padding:10px 15px;' + (open && pick !== i ? 'opacity:.5;' : ''),
+            onClick: () => this.setState((st) => {
+              if (st.movePick[m.id] !== undefined) return null;
+              return { movePick: Object.assign({}, st.movePick, { [m.id]: i }) };
+            })
+          }))
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'Both halves are right' },
+        { letter: 'B', text: 'The triceps part is right; the biceps part is not' },
+        { letter: 'C', text: 'The biceps part is right; the triceps part is not' },
+        { letter: 'D', text: 'Neither half is right' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

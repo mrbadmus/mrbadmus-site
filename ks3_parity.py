@@ -340,6 +340,15 @@ B1_PARTS = "biology/cells-and-organisation/levels-of-organisation.html"
 B1_LIFE = "biology/cells-and-organisation/life-processes.html"
 B1_UNI = "biology/cells-and-organisation/unicellular-organisms.html"
 
+# ⊕ B2 · Movement (MRB-220). Same rule as B1's: a component is registered on
+# the page that RENDERS it. `job-sort` is on three pages and is measured on
+# b2-01, whose sorter carries the shared category set and the widest payload;
+# the two canvas benches are each measured on their own page, because neither
+# renders anywhere else.
+B2_SKEL = "biology/movement-skeleton-and-muscles/what-the-skeleton-does.html"
+B2_JOINTS = "biology/movement-skeleton-and-muscles/joints.html"
+B2_MUSCLE = "biology/movement-skeleton-and-muscles/antagonistic-muscle-pairs.html"
+
 # ── parking, and why it is not deletion ──────────────────────────────────
 #
 # A spec may carry `parked="<reason>"`. It is then not measured, and it is
@@ -892,6 +901,140 @@ COMPONENTS = [
     dict(name="second confrontation is divided in amber", on=B1_UNI,
          sel=".ks3-mis-next",
          props={"border-top-color": "#D9821A", "border-top-width": "2px"}),
+
+    # ══ B2 · Movement (⊕ MRB-220) ═══════════════════════════════════════
+    #
+    # Every row below pins the property that makes its component DISTINCT,
+    # never the properties it shares with everything else. Each was
+    # mutation-tested: the CSS rule was deliberately broken and the row
+    # confirmed to fail before being kept.
+
+    # ── the block head row ──
+    # The counter is the only element in the key stage that sits on the same
+    # baseline as an <h2>. If the flex row ever collapses it drops under the
+    # heading and reads as a caption on the lede instead.
+    dict(name="block head puts the counter on the heading's row", on=B2_SKEL,
+         sel=".ks3-blockhead",
+         props={"display": "flex", "justify-content": "space-between",
+                "align-items": "flex-end", "flex-wrap": "wrap"}),
+    dict(name="block head counter is mono ink-muted", on=B2_SKEL,
+         sel=".ks3-blockhead-count",
+         props={"font-family": "DM Mono", "font-size": "15px",
+                "color": "#5F564F"}),
+
+    # ── job-sort ──
+    # The row is a CARD ON THE OPTION BORDER and goes to INK when decided.
+    # That border is the only mark the sorter makes, and it marks the row
+    # rather than the button — which is what keeps a per-item reveal clear of
+    # R3. If it ever lands on the button, the block becomes a test.
+    dict(name="sorter row is a card on the option border", on=B2_SKEL,
+         sel=".ks3-jobsort-item",
+         props={"background-color": "#FFFCF5", "border-top-color": "#DDCFB6",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    dict(name="sorter row goes to INK once decided", on=B2_SKEL,
+         drive="jobsort-decided", sel='.ks3-jobsort-item[data-open="1"]',
+         props={"border-top-color": "#221E1B", "border-top-width": "2px"}),
+    dict(name="sorter option clears the 44px tap target", on=B2_SKEL,
+         sel=".ks3-jobsort-opt",
+         props={"min-height": "44px", "font-size": "16px",
+                "background-color": "#FBF3E6", "border-top-color": "#DDCFB6"}),
+    # R3: the CHOSEN option takes the ordinary chosen treatment and nothing
+    # else — no green, no tick, no verdict.
+    dict(name="sorter CHOSEN option is accent-tint, never a verdict",
+         on=B2_SKEL, drive="jobsort-decided",
+         sel='.ks3-jobsort-opt[aria-pressed="true"]',
+         props={"background-color": "#FCE7DE", "border-top-color": "#E4572E"}),
+    dict(name="sorter SPENT option dims rather than disappearing",
+         on=B2_SKEL, drive="jobsort-decided",
+         sel='.ks3-jobsort-opt[disabled][aria-pressed="false"]',
+         props={"opacity": "0.5"}),
+    dict(name="sorter answer word is display type", on=B2_SKEL,
+         sel=".ks3-jobsort-answer", props={"font-family": "Bricolage Grotesque"}),
+
+    # ── system-switch ──
+    # The chain panel is INK-DARK inside a LIGHT block. That inversion is the
+    # measured difference from `sabotage`, whose whole shell is dark, and it
+    # is why the two are not one component.
+    dict(name="switch chain is ink-dark inside a light block", on=B2_SKEL,
+         sel=".ks3-switch-chain",
+         props={"background-color": "#221E1B", "color": "#FBF3E6",
+                "border-top-left-radius": "20px"}),
+    dict(name="switch chain title is mono ALERT on ink", on=B2_SKEL,
+         sel=".ks3-switch-title",
+         props={"font-family": "DM Mono", "color": "#FFC53D",
+                "text-transform": "uppercase"}),
+    # 104px + 16px, and the chip column is what makes the levels scannable
+    # down the left edge rather than read as a prefix to the sentence.
+    dict(name="switch chain row is a two-column grid", on=B2_SKEL,
+         sel=".ks3-switch-row",
+         props={"display": "grid", "column-gap": "16px"}),
+    # Colour is a function of the LEVEL STRING, never of position — the
+    # chains do not all climb, so a chip keyed on index would be a claim
+    # about direction the data does not make.
+    dict(name="switch level chip goes ALERT at the cell", on=B2_SKEL,
+         sel='.ks3-switch-chip[data-level="cell"]', props={"color": "#FFC53D"}),
+    dict(name="switch level chip is muted above the cell", on=B2_SKEL,
+         sel='.ks3-switch-chip[data-level="tissue"]', props={"color": "#C6B9A7"}),
+    dict(name="switch all-done band is the band ground on ink", on=B2_SKEL,
+         drive="switch-thrown", sel=".ks3-switch-all",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+
+    # ── the two-paragraph reveal ──
+    # A CARD panel on a 2px ink border, not `.ks3-reveal`'s accent tint. The
+    # distinction is load-bearing: the hook's reveal on the same page IS the
+    # tinted one, so if these ever resolve the same the two stop being
+    # distinguishable.
+    dict(name="two-paragraph reveal is a card on ink, not accent tint",
+         on=B2_SKEL, drive="think-committed", sel=".ks3-reveal-panel",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+
+    # ── the range control (b2-02) ──
+    # 28px of thumb on a 10px track: the whole control is a 44px tap target,
+    # and there was NO KS3 rule for `input[type=range]` before this — the
+    # slider would have rendered as browser default on two pages.
+    dict(name="joint slider clears the 44px tap target", on=B2_JOINTS,
+         drive="bench-gate-opened", sel=".ks3-slider",
+         # ⚠️ NO `width` here. The slider is `width: 100%` of a column whose
+         # px value is a function of the viewport, and this harness pins none —
+         # asserting a number would fail on a correct page at any other window
+         # size. The 28px height and the reset appearance are viewport-free and
+         # are what make it a real control rather than a browser default.
+         props={"height": "28px", "appearance": "none"}),
+
+    # ── joint-bench ──
+    dict(name="bench readout tile is a dark panel", on=B2_JOINTS,
+         drive="bench-gate-opened", sel=".ks3-joint-tile",
+         props={"background-color": "#3E3730",
+                "border-top-left-radius": "20px"}),
+    dict(name="bench axes readout is mono 27px alert", on=B2_JOINTS,
+         drive="bench-gate-opened", sel=".ks3-joint-tile-mono",
+         props={"font-family": "DM Mono", "font-size": "27px",
+                "color": "#FFC53D"}),
+    # The verdict lands on a LIGHT panel inside the ink-dark block — the same
+    # move `removal-cases` makes, and for the same reason: the sentence a
+    # student takes away must not read as one more dark readout.
+    dict(name="bench verdict lands on a LIGHT panel", on=B2_JOINTS,
+         drive="bench-gate-opened", sel=".ks3-joint-trade",
+         props={"background-color": "#FBF3E6", "color": "#221E1B"}),
+    dict(name="bench canvas frame is a 2px muted rule", on=B2_JOINTS,
+         drive="bench-gate-opened", sel=".ks3-joint-stage",
+         props={"border-top-color": "#C6B9A7", "border-top-width": "2px",
+                "border-top-left-radius": "22px"}),
+
+    # ── muscle-pair ──
+    # Two control GROUPS in one instrument, each with its own mono caption.
+    # No shipped instrument has this topology, and the captions are the only
+    # thing telling a student that the second group is not more of the first.
+    dict(name="muscle control group carries a mono caption", on=B2_MUSCLE,
+         drive="bench-gate-opened", sel=".ks3-muscle-grouplabel",
+         props={"font-family": "DM Mono", "font-size": "14px",
+                "color": "#C6B9A7", "text-transform": "uppercase"}),
+    dict(name="muscle status line is on-dark 700", on=B2_MUSCLE,
+         drive="bench-gate-opened", sel=".ks3-muscle-status",
+         props={"color": "#FBF3E6", "font-weight": "700",
+                "font-size": "19px"}),
 ]
 
 
@@ -1734,6 +1877,80 @@ DRIVES = {
   var still = document.querySelectorAll('.ks3-sim[data-locked="1"]');
   if (still.length) {
     return still.length + " sim(s) still locked after clicking their activity option";
+  }
+  return "";
+})()
+""",
+
+    # ── B2 · Movement (⊕ MRB-220) ──
+    #
+    # Four states that exist only after a student does something. Each is
+    # reached the way a student reaches it — through the instrument's own
+    # control — so a regression in the interaction path fails HERE instead of
+    # being measured around.
+
+    # One row decided. Produces three states in one document: the row's ink
+    # border, the chosen option, and the spent siblings.
+    "jobsort-decided": r"""
+(function () {
+  var row = document.querySelector('.ks3-jobsort-item');
+  if (!row) { return "no job-sort row on the page"; }
+  var opt = row.querySelector('.ks3-jobsort-opt');
+  if (!opt) { return "job-sort row offers no options"; }
+  opt.click();
+  if (row.getAttribute('data-open') !== '1') {
+    return "row did not open after its option was clicked";
+  }
+  return "";
+})()
+""",
+    # All four parts switched off, which is the only way the closing band
+    # exists at all.
+    "switch-thrown": r"""
+(function () {
+  var wrap = document.querySelector('[data-switch-block]');
+  if (!wrap) { return "no system-switch on the page"; }
+  var tabs = wrap.querySelectorAll('.ks3-switch-tab');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].click();
+    var p = wrap.querySelector('.ks3-switch-panel:not([hidden])');
+    p.querySelector('.ks3-option').click();
+    p.querySelector('[data-switch]').click();
+  }
+  if (document.querySelector('[data-switch-all]').hasAttribute('hidden')) {
+    return "all four parts switched off and the closing band is still hidden";
+  }
+  return "";
+})()
+""",
+    # C6's commit gate. The bench does not exist in the document's layout
+    # until it is answered, so every bench measurement needs this first.
+    "bench-gate-opened": r"""
+(function () {
+  var gate = document.querySelector('[data-benchgate]');
+  if (!gate) { return "no commit gate on the page"; }
+  var opt = gate.querySelector('.ks3-option');
+  if (!opt) { return "commit gate offers no options"; }
+  opt.click();
+  if (!gate.hasAttribute('hidden')) { return "gate did not disappear"; }
+  var body = document.querySelector('[data-benchbody]');
+  if (!body || body.hasAttribute('hidden')) {
+    return "bench did not appear after the gate was answered";
+  }
+  return "";
+})()
+""",
+    # `#s-think`'s two-paragraph reveal, opened the way a student opens it.
+    "think-committed": r"""
+(function () {
+  var sec = document.getElementById('s-think');
+  if (!sec) { return "no #s-think on the page"; }
+  var opt = sec.querySelector('.ks3-option');
+  if (!opt) { return "#s-think offers no options"; }
+  opt.click();
+  var rev = sec.querySelector('[data-reveal]');
+  if (!rev || rev.hasAttribute('hidden')) {
+    return "the reveal is still hidden after a commitment";
   }
   return "";
 })()

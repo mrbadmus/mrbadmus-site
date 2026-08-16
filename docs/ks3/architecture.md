@@ -1722,6 +1722,17 @@ no pathway and no tier — which is the point.
   `.ks3-brand-tile` — about ten lines across three files, and every KS3 page changes. This is the
   one thing in the replay that is a decision rather than a reconciliation, which is why it is parked
   here rather than taken.
+  - ⊞ **Evidence added 16 Aug 2026 (MRB-220), decision still parked.** Design's B2, C1 and C2
+    delivery — sixteen further approved pages — draws the **tile** on every one of them: a cream
+    `#FBF3E6` chevron inside a 34px `#E4572E` rounded tile, identical markup on all sixteen. So the
+    tally is no longer six pages against a ruling; it is **twenty-two approved pages drawing the
+    tile** against MRB-197's accent-chevron-on-the-ground, which remains what `NAV_BRAND` emits for
+    all 294 KS3 pages.
+    This run did **not** adopt it, for the reason the entry already gives: the mark is one asset for
+    every KS3 page, and changing it restyles the browse layer Mide approved separately. It is
+    recorded here because that is what this entry is for, and because the argument has now changed
+    shape — "Design drew it once and we kept the ruling" is a different question from "Design has
+    drawn it twenty-two times". **Still Mide's call, still about ten lines, still not taken.**
 - ⊕ **Cache-bust stamps are mandatory on KS3 pages — added 2026-07-30.** KS3 shipped linking
   `tokens.css`, `styles.css` and `nav.css` with **no `?v=` stamp at all**, while every KS4 page
   carried one. A device can then serve a stale `tokens.css` indefinitely — it survives hard-refresh

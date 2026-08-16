@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solids, liquids and gases · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes c1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: c1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-matrix] { width: 100%; border-collapse: collapse; font-size: 18px; }
+  [data-matrix] th, [data-matrix] td { border: 2px solid var(--ks3-ink); padding: 12px 14px; text-align: left; }
+  [data-matrix] th { font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; background: var(--ks3-band); }
+  @media (max-width: 700px) { [data-matrix] { font-size: 16px; } [data-matrix] th, [data-matrix] td { padding: 9px 10px; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Particles and their behaviour</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Solids, liquids and gases</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Particles and their behaviour · Contrast</p>
+        <h1>Solids, liquids and gases</h1>
+        <p class="ks3-bigq">Ice, water and steam are the same substance and the same particles. So what exactly is different about them?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>A steel girder on a hot day.</h2>
+        <p class="ks3-hook-prompt">A bridge is longer in August than in January — by centimetres, enough that bridges are built with gaps to swallow it. The steel gains nothing and loses nothing. The same iron particles are there in both months, and there are exactly as many of them.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">So what got bigger?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">The gaps. Heating makes the particles vibrate harder, so each one needs more elbow room, so the spaces between them grow. Every particle is exactly the size it was in January. Hold on to that, because it is the single idea this lesson is built to defend.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Three states, one substance. The particles do not change — not their size, not their mass, not what they are. What changes is how close together they sit and how much they move. Every difference you can see and feel between ice, water and steam comes out of those two things.</p>
+      </section>
+
+      <section id="s-bench" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The state bench · watch one substance</p>
+            <h2 style="margin: 6px 0 0;">Same particles. Three arrangements.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ benchProgress }}</p>
+        </div>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. In a block of ice sitting in a freezer, what are the particles doing?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ benchOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <canvas width="1800" height="620" ref="{{ benchRef }}" role="img" aria-label="{{ benchAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <p style="margin: 0 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">State</p>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <sc-for list="{{ stateButtons }}" as="b" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ b.onClick }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+                </sc-for>
+              </div>
+              <p style="margin: 18px 0 10px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Instruments</p>
+              <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <button type="button" onClick="{{ onToggleMotion }}" aria-pressed="{{ motionOn }}" style="{{ motionStyle }}">{{ motionLabel }}</button>
+                <button type="button" onClick="{{ onToggleTrails }}" aria-pressed="{{ trailsOn }}" style="{{ trailsStyle }}">{{ trailsLabel }}</button>
+                <button type="button" onClick="{{ onSquash }}" aria-pressed="{{ squashOn }}" style="{{ squashStyle }}">Try to squash it</button>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ benchNote }}</p>
+        </sc-if>
+      </section>
+
+      <section id="s-matrix" class="ks3-block" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">The contrast, in one table</p>
+        <h2 style="margin: 6px 0 14px;">What each arrangement forces to be true</h2>
+        <p style="margin: 0 0 18px; max-width: 54ch;">Nothing in this table is a fact to memorise separately. Every row is a consequence of the two rows above it.</p>
+        <div style="overflow-x: auto; border-radius: var(--ks3-r-panel); border: 2px solid var(--ks3-ink);">
+          <table data-matrix="1">
+            <thead>
+              <tr>
+                <th scope="col">Property</th>
+                <th scope="col">Solid</th>
+                <th scope="col">Liquid</th>
+                <th scope="col">Gas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ matrixRows }}" as="row" hint-placeholder-count="6">
+                <tr style="{{ row.style }}">
+                  <th scope="row" style="{{ row.headStyle }}">{{ row.label }}</th>
+                  <td>{{ row.solid }}</td>
+                  <td>{{ row.liquid }}</td>
+                  <td>{{ row.gas }}</td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <p style="margin: 16px 0 0; font-size: 18px; color: var(--ks3-ink-muted);">The highlighted row is the one your current bench setting is showing.</p>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">The state of a substance is set by how its particles are arranged and how fast they move — never by any change in the particles themselves.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“When ice melts, the particles go soft and squash into the new shape.”</p>
+        <p style="max-width: 54ch;">This is the most common wrong idea in the whole of KS3 physical science, and it is worth catching now, because it will follow you into pressure, expansion and density. Commit before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">A water particle in ice and a water particle in steam are identical. Same size, same mass, same three atoms joined the same way. Melting does not soften anything and boiling does not stretch anything.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">Test it against the freezer: ice floats. If melting made particles smaller you would expect water to be less dense than ice, and it is the other way round. Test it against the bridge: the girder gets longer, and no one thinks the iron atoms inflate. What changes is always the spacing and the speed. <em>Soft</em>, <em>runny</em> and <em>squashy</em> are words about a crowd of particles, never about one.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Solid: touching, ordered, vibrating in place. Liquid: touching, disordered, sliding past each other. Gas: far apart, disordered, moving fast and freely. The particles are identical in all three.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>Three states is a school simplification, and a good one — it covers almost everything you will meet. But glass is a genuine embarrassment to it: it holds its shape like a solid while its particles sit in the jumbled arrangement of a liquid, so it is neither, and arguments about which box it belongs in have been running for a century. Liquid crystals, the material in the screen you may be reading this on, flow like a liquid while staying lined up like a solid. And most of the matter in the universe is in a fourth state, plasma, which is what stars are made of. None of this makes the three-state model wrong. It makes it a model, with edges, exactly like Dalton's will turn out to be.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c1-01-particle-model.html">The particle model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c1-03-changes-of-state.html">Changes of state<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Bonding, structure and the properties of materials — why a state has the properties it does, in terms of the forces between particles.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure why a solid vibrates but does not move?</p>
+          <a class="ks3-tutor-cta" href="#s-bench">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;solid&quot;,&quot;liquid&quot;,&quot;gas&quot;],&quot;default&quot;:&quot;solid&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;State bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The long bridge', short: 'HOOK' },
+  { id: 's-bench', label: 'State bench', short: 'BENCH' },
+  { id: 's-matrix', label: 'The contrast', short: 'TABLE' },
+  { id: 's-think', label: 'Softening particles', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const STATES = ['solid', 'liquid', 'gas'];
+
+const MATRIX = [
+  { key: 'arrangement', label: 'Arrangement', solid: 'Regular rows, all touching', liquid: 'Touching, but jumbled', gas: 'Far apart, random' },
+  { key: 'movement', label: 'Movement', solid: 'Vibrating on the spot', liquid: 'Sliding over each other', gas: 'Fast, in all directions' },
+  { key: 'shape', label: 'Shape', solid: 'Keeps its own', liquid: 'Takes the container\u2019s', gas: 'Fills the container' },
+  { key: 'volume', label: 'Volume', solid: 'Fixed', liquid: 'Fixed', gas: 'Fills whatever it is given' },
+  { key: 'squash', label: 'Can it be squashed?', solid: 'Almost not at all', liquid: 'Almost not at all', gas: 'Easily' },
+  { key: 'pour', label: 'Can it be poured?', solid: 'No', liquid: 'Yes', gas: 'It escapes instead' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Which state has particles that are close together but not in a regular pattern?',
+    options: [
+      { text: 'Liquid', correct: true },
+      { text: 'Solid', correction: 'A solid is close together and regular. It is the pattern that makes it a solid.' },
+      { text: 'Gas', correction: 'A gas is not close together at all \u2014 the particles are mostly far apart.' },
+      { text: 'All three are equally spaced', correction: 'The whole point of the three states is that spacing differs.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A gas can be squashed into a fifth of its volume. A liquid cannot be squashed at all. Why not?',
+    options: [
+      { text: 'A liquid\u2019s particles are already touching, so there is no space to squash out', correct: true },
+      { text: 'Liquid particles are harder than gas particles', correction: 'They are the same particles. Water vapour and water are made of identical things.' },
+      { text: 'Liquid particles are bigger', correction: 'Size does not change with state \u2014 that is the misconception this lesson exists to kill.' },
+      { text: 'Liquids are heavier, so they resist', correction: 'Weight is not what resists the squash. Space is.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'A gas fills any container it is put in; a liquid of the same amount sits in a puddle at the bottom. Explain both, using the arrangement and movement of the particles.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'In a gas the particles…',
+    criteria: [
+      'Says gas particles are far apart with large spaces between them.',
+      'Says gas particles move fast in random directions.',
+      'Says nothing holds gas particles together, so they spread until the walls stop them.',
+      'Says liquid particles are touching and attracted to each other, so they stay as one body.',
+      'Says liquid particles can still slide past each other, which is why the puddle takes the shape of the floor.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A steel railway rail is 30 m long in winter and about 1 cm longer on a hot summer day. Explain what has happened to the particles, and say clearly what has NOT happened.',
+    fieldLabel: 'Your answer',
+    placeholder: 'Heating the rail gives the particles…',
+    criteria: [
+      'Says heating gives the particles more energy so they vibrate faster or further.',
+      'Says the average spacing between the particles increases.',
+      'Says the number of particles is unchanged.',
+      'States explicitly that the particles themselves have NOT got bigger.',
+      'Says the steel is still a solid \u2014 the particles are still in fixed positions, just further apart.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    stateIdx: STATES.indexOf(this.props.startState) >= 0 ? STATES.indexOf(this.props.startState) : 0,
+    seen: {},
+    motion: true,
+    trails: false,
+    squash: false,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.seed();
+    this.tick = 0;
+    this.loop();
+  }
+
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  seed() {
+    this.parts = [];
+    for (let i = 0; i < 48; i++) {
+      this.parts.push({ x: Math.random(), y: Math.random(), vx: (Math.random() - 0.5), vy: (Math.random() - 0.5), ph: Math.random() * 6.28, trail: [] });
+    }
+  }
+
+  loop() {
+    this.raf = requestAnimationFrame(() => this.loop());
+    this.tick += 1;
+    this.draw();
+  }
+
+  draw() {
+    const c = this.benchCanvas;
+    if (!c || !this.parts) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 310;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const st = STATES[this.state.stateIdx];
+    const moving = this.state.motion && !this.reduced;
+    const t = this.tick * 0.05;
+
+    const boxX = 70, boxW = W - 140;
+    const squashed = this.state.squash;
+    const lidDrop = squashed ? (st === 'gas' ? 92 : 8) : 0;
+    const boxY = 42 + lidDrop, boxH = H - 110 - lidDrop;
+
+    // container
+    ctx.fillStyle = '#F6EEE0';
+    ctx.fillRect(boxX, boxY, boxW, boxH);
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(boxX, boxY - 6);
+    ctx.lineTo(boxX, boxY + boxH);
+    ctx.lineTo(boxX + boxW, boxY + boxH);
+    ctx.lineTo(boxX + boxW, boxY - 6);
+    ctx.stroke();
+
+    if (squashed) {
+      ctx.fillStyle = '#E4572E';
+      ctx.fillRect(boxX - 6, boxY - 16, boxW + 12, 12);
+      ctx.fillStyle = '#A93411';
+      ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(st === 'gas' ? 'PISTON PUSHED IN \u2014 IT GAVE WAY' : 'PISTON PUSHED HARD \u2014 IT BARELY MOVED', W / 2, boxY - 24);
+    }
+
+    const r = 13;
+    const drawP = (x, y, ghost) => {
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fillStyle = ghost ? 'rgba(217,138,74,0.16)' : '#D98A4A';
+      ctx.fill();
+      if (!ghost) {
+        ctx.strokeStyle = '#5A3212';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(x - 4, y - 5, 4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.62)';
+        ctx.fill();
+      }
+    };
+
+    if (st === 'solid') {
+      const cols = 10, rows = 4;
+      const gx = boxW / (cols + 1), gy = Math.min(46, boxH / (rows + 1));
+      const y0 = boxY + boxH - rows * gy - 12;
+      for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < cols; col++) {
+          const p = this.parts[row * cols + col];
+          const bx = boxX + gx * (col + 1);
+          const by = y0 + gy * (row + 1);
+          const j = moving ? 4.5 : 0;
+          const x = bx + Math.sin(t * 2.4 + p.ph) * j;
+          const y = by + Math.cos(t * 2.1 + p.ph * 1.7) * j;
+          if (this.state.trails) {
+            ctx.strokeStyle = 'rgba(228,87,46,0.5)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(bx, by, 5.5, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          drawP(x, y, false);
+        }
+      }
+    } else if (st === 'liquid') {
+      const n = 40;
+      for (let i = 0; i < n; i++) {
+        const p = this.parts[i];
+        if (moving) {
+          p.x += p.vx * 0.0016;
+          p.y += p.vy * 0.0009;
+          if (p.x < 0.03 || p.x > 0.97) p.vx *= -1;
+          if (p.y < 0.02 || p.y > 0.98) p.vy *= -1;
+        }
+        const surface = boxY + boxH * 0.42;
+        const x = boxX + 22 + p.x * (boxW - 44);
+        const y = surface + 14 + p.y * (boxY + boxH - surface - 40);
+        if (this.state.trails) {
+          p.trail.push([x, y]);
+          if (p.trail.length > 26) p.trail.shift();
+          ctx.strokeStyle = 'rgba(228,87,46,0.35)';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          p.trail.forEach((pt, k) => { k ? ctx.lineTo(pt[0], pt[1]) : ctx.moveTo(pt[0], pt[1]); });
+          ctx.stroke();
+        }
+        drawP(x, y, false);
+      }
+      ctx.strokeStyle = '#8A7355';
+      ctx.setLineDash([6, 5]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(boxX, boxY + boxH * 0.42);
+      ctx.lineTo(boxX + boxW, boxY + boxH * 0.42);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    } else {
+      const n = squashed ? 22 : 22;
+      for (let i = 0; i < n; i++) {
+        const p = this.parts[i];
+        if (moving) {
+          p.x += p.vx * 0.006;
+          p.y += p.vy * 0.006;
+          if (p.x < 0.02) { p.x = 0.02; p.vx *= -1; }
+          if (p.x > 0.98) { p.x = 0.98; p.vx *= -1; }
+          if (p.y < 0.02) { p.y = 0.02; p.vy *= -1; }
+          if (p.y > 0.98) { p.y = 0.98; p.vy *= -1; }
+        }
+        const x = boxX + 20 + p.x * (boxW - 40);
+        const y = boxY + 20 + p.y * (boxH - 40);
+        if (this.state.trails) {
+          p.trail.push([x, y]);
+          if (p.trail.length > 34) p.trail.shift();
+          ctx.strokeStyle = 'rgba(228,87,46,0.32)';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          p.trail.forEach((pt, k) => { k ? ctx.lineTo(pt[0], pt[1]) : ctx.moveTo(pt[0], pt[1]); });
+          ctx.stroke();
+        }
+        drawP(x, y, false);
+      }
+    }
+
+    // fixed-size reference particle: the size never changes, whatever the state
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('ONE PARTICLE, ACTUAL SIZE \u2014 THE SAME IN ALL THREE STATES', boxX + 34, H - 30);
+    drawP(boxX + 14, H - 34, false);
+
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#A93411';
+    ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+    ctx.fillText(st.toUpperCase(), boxX + boxW, 30);
+  }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.45;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const st = STATES[s.stateIdx];
+    const seenCount = Object.keys(s.seen).length + (s.seen[st] ? 0 : 1);
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let benchNote;
+    if (s.squash) {
+      benchNote = st === 'gas'
+        ? 'The gas gave way immediately, because most of a gas is empty space and squashing it just removes some of that space. The particles did not get smaller \u2014 they got closer.'
+        : 'Barely a millimetre. The particles are already touching, so there is no space left to remove, and pushing harder only pushes particle against particle. This is why you can compress air in a syringe and not water.';
+    } else if (s.trails) {
+      benchNote = st === 'solid'
+        ? 'Every particle has a home position and never leaves it. The trails are tiny circles \u2014 that is vibration, not travel, and it is why a solid keeps its shape.'
+        : st === 'liquid'
+          ? 'The trails wander. Particles change neighbours constantly but stay in contact, which is exactly what pouring looks like from the inside.'
+          : 'Long straight runs between collisions. Nothing steers a gas particle; it goes until it hits something.';
+    } else {
+      benchNote = st === 'solid'
+        ? 'A solid is not still. Every particle is vibrating about a fixed point \u2014 switch the motion off and on and watch the difference between vibrating and travelling.'
+        : st === 'liquid'
+          ? 'The particles are still touching, exactly as in the solid, but the neat rows have gone. Same crowding, no order: that is the entire difference between a solid and a liquid.'
+          : 'Almost all of this box is empty. That emptiness is what lets you squash a gas, and nothing else about it has changed.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-bench') return Object.keys(s.seen).length >= 3;
+          if (id === 's-matrix') return Object.keys(s.seen).length >= 3;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Each iron particle expanded in the heat' },
+        { letter: 'B', text: 'The gaps between the particles got bigger' },
+        { letter: 'C', text: 'The steel absorbed moisture from the summer air' },
+        { letter: 'D', text: 'Extra particles were added by the heat' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      benchProgress: Object.keys(s.seen).length >= 3 ? 'all three seen' : seenCount + ' of 3 states seen',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Nothing — they are completely still' },
+        { letter: 'B', text: 'Vibrating on the spot without moving anywhere' },
+        { letter: 'C', text: 'Sliding slowly past each other' },
+        { letter: 'D', text: 'Moving freely, just very slowly' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState((prev) => ({ gate: i, seen: Object.assign({}, prev.seen, { solid: true }) }))
+      })),
+      benchOpen: s.gate !== null,
+      benchRef: (el) => { this.benchCanvas = el; },
+      benchAlt: 'A particle box showing the ' + st + ' state: ' +
+        (st === 'solid' ? 'particles in regular rows, vibrating in place.'
+          : st === 'liquid' ? 'particles touching but jumbled, sliding past each other below a surface line.'
+            : 'widely separated particles moving fast in all directions.'),
+      stateButtons: STATES.map((v, i) => ({
+        label: v.charAt(0).toUpperCase() + v.slice(1),
+        on: s.stateIdx === i,
+        style: this.seg(s.stateIdx === i, false),
+        onClick: () => this.setState((prev) => ({ stateIdx: i, squash: false, seen: Object.assign({}, prev.seen, { [v]: true }) }))
+      })),
+      motionOn: s.motion,
+      motionLabel: s.motion ? 'Freeze the motion' : 'Start the motion',
+      motionStyle: this.seg(!s.motion, false),
+      onToggleMotion: () => this.setState((prev) => ({ motion: !prev.motion })),
+      trailsOn: s.trails,
+      trailsLabel: s.trails ? 'Hide the paths' : 'Show the paths',
+      trailsStyle: this.seg(s.trails, false),
+      onToggleTrails: () => this.setState((prev) => ({ trails: !prev.trails })),
+      squashOn: s.squash,
+      squashStyle: this.seg(s.squash, false),
+      onSquash: () => this.setState((prev) => ({ squash: !prev.squash })),
+      benchNote: benchNote,
+
+      matrixRows: MATRIX.map((row) => {
+        const lit = (s.squash && row.key === 'squash') || (!s.squash && s.trails && row.key === 'movement') || (!s.squash && !s.trails && row.key === 'arrangement');
+        return {
+          label: row.label, solid: row.solid, liquid: row.liquid, gas: row.gas,
+          style: lit ? 'background:var(--ks3-accent-tint);' : 'background:var(--ks3-card);',
+          headStyle: 'font-family:var(--ks3-font-mono);font-size:13px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;background:' +
+            (lit ? 'var(--ks3-accent-tint)' : 'var(--ks3-band)') + ';'
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'True — that is what melting is' },
+        { letter: 'B', text: 'The particles stay identical; only their spacing and movement change' },
+        { letter: 'C', text: 'The particles get smaller so they can fit the new shape' },
+        { letter: 'D', text: 'Some particles break apart to make room' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

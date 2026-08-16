@@ -59,6 +59,28 @@ SUBSTATEMENTS = {
         ("b", "How to observe, interpret and record cell structure using a "
               "light microscope.", "B1"),
     ],
+    # Minted for B2 (2026-08-16, MRB-220). The bullet reads:
+    #   "the structure and functions of the human skeleton, to include
+    #    support, protection, movement and making blood cells"
+    # It names TWO things — a structure and a set of functions — and B2 is
+    # written at that grain: `what-the-skeleton-does` owns the four functions,
+    # `joints` owns the structure at the places bones meet.
+    #
+    # ⚑ Minted because §10.2 (non-empty `covers`) and §4.4 rule 3 (owned
+    # exactly once) cannot both hold for `joints` otherwise. Design's NOTES §1
+    # says so in as many words: "the 2014 document does not name joints, but
+    # it names movement, and a movement lesson that never mentions how a bone
+    # can move at all is not teachable." That is exactly the compound-bullet
+    # case this file exists for. **Flagged for Mide** in
+    # `ks3_data/biology_b2_movement.py` — it is a curriculum-mapping call,
+    # and the alternative NOTES offers is merging the two lesson slots.
+    "KS3.B.SKEL.01": [
+        ("a", "The functions of the human skeleton: support, protection, "
+              "movement, and making blood cells.", "B2"),
+        ("b", "The structure of the human skeleton at the places bones meet: "
+              "the types of joint, and what each one allows and refuses.",
+         "B2"),
+    ],
 }
 
 

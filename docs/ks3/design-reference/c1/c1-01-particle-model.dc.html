@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The particle model · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes c1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: c1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-readout] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 620px) { [data-readout] { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Particles and their behaviour</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">The particle model</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Particles and their behaviour · Model</p>
+        <h1>The particle model</h1>
+        <p class="ks3-bigq">Pour 50 ml of water into 50 ml of alcohol and you get 97 ml. Nothing leaked, nothing evaporated. Where did the three millilitres go?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Fifty and fifty makes ninety-seven.</h2>
+        <p class="ks3-hook-prompt">Two measuring cylinders, both read to the millilitre. 50 ml of water, 50 ml of pure alcohol. Tip one into the other, wait for the froth to settle and read the level: 97 ml. Do it again tomorrow and you get 97 ml again.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Three millilitres of liquid are missing. Commit to a reason.</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing is missing. Every drop you poured is still in the cylinder. The only way 50 and 50 can make 97 is if liquids are not solid stuff all the way through — if there are gaps, and the small particles of one liquid can settle into the gaps between the large particles of the other. That is the whole model, arrived at by arithmetic.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Everything in this unit rests on one claim: matter is not continuous. It is made of separate particles, far too small to see, with nothing at all in between them, and they never stop moving. That claim is worth nothing to you until you have tried to break it — so the rest of this lesson is two attempts to break it.</p>
+      </section>
+
+      <section id="s-cut" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The cutting bench · attempt one</p>
+            <h2 style="margin: 6px 0 0;">Keep cutting it in half.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ cutProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A sugar cube, one centimetre on each side. A knife with a perfect edge, and no limit on your patience. Cut it in half, throw one half away, cut what is left in half again.</p>
+
+        <sc-if value="{{ cutGateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit before you start. With a perfect knife and forever to work, how many times could you cut?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ cutGateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ cutOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <canvas width="1800" height="640" ref="{{ cutRef }}" role="img" aria-label="{{ cutAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <div data-readout="1">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Cuts made</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">{{ cutCount }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Edge of the piece</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">{{ cutSize }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Still sugar?</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: {{ cutVerdictColor }};">{{ cutVerdict }}</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
+                <button type="button" onClick="{{ onCut }}" disabled="{{ cutAtFloor }}" style="{{ cutBtnStyle }}">Cut it in half</button>
+                <button type="button" onClick="{{ onUncut }}" disabled="{{ cutAtStart }}" style="{{ uncutBtnStyle }}">Undo a cut</button>
+                <button type="button" onClick="{{ onCutTen }}" disabled="{{ cutAtFloor }}" style="{{ cutTenBtnStyle }}">Cut ten more times</button>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ cutNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">All matter is made of particles, far too small to see, with nothing between them, and they are always moving.</p>
+      </div>
+
+      <section id="s-gap" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Attempt two · the gap</p>
+            <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">What is between the particles?</h2>
+          </div>
+        </div>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Zoom into the sugar until you can see individual particles with spaces between them. Pick what is in the space, then run the test that would tell them apart.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ gapOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ gapOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-on-dark-muted); overflow: hidden;">
+            <canvas width="1800" height="520" ref="{{ gapRef }}" role="img" aria-label="{{ gapAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 16px 18px 18px; border-top: 2px solid var(--ks3-on-dark-muted); background: var(--ks3-dark-panel);">
+              <p style="margin: 0 0 12px; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-on-dark-muted);">Take the gap away and see what happens</p>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <sc-for list="{{ gapTests }}" as="t" hint-placeholder-count="3">
+                  <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.on }}" style="{{ t.style }}">{{ t.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 16px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">{{ gapNote }}</p>
+        </sc-if>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“You stopped cutting because the knife was not sharp enough. A better knife would keep going.”</p>
+        <p style="max-width: 54ch;">This is the sensible objection, and it is worth taking seriously before you answer it. Commit.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">A sharper knife would keep going. Cut a sugar particle in half and you will get something — but not sugar. You get carbon, hydrogen and oxygen, and they are not sweet, not white, and one of them is a gas. The cut is possible; what is impossible is a smaller piece <em>that is still sugar</em>.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">That is what the model claims, and it is a much stronger claim than "things are small". It says matter comes in units with a floor, and below that floor the substance stops existing. Everything you meet in this unit — melting, pressure, diffusion — is that floor doing work.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Matter is made of particles with a floor you cannot cut past, nothing at all between them, and constant motion. Three claims. You have tested two of them tonight and the third is the next five lessons.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>The Greeks got here by argument alone, around 400 BC — Democritus reasoned that cutting must stop somewhere and called the last piece <em>atomos</em>, uncuttable. He had no evidence, and for two thousand years his idea sat next to the equally reasonable one that matter is continuous, with nothing to choose between them. What broke the tie was not a better argument but a measurement: gases combining in fixed whole-number ratios, mass balancing exactly through a reaction, and eventually the water-and-alcohol arithmetic you did at the top of this page. An idea does not become science when someone thinks of it. It becomes science when a number forces it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="../ks3/index.html">Nothing — this is where the unit starts<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c1-02-solids-liquids-and-gases.html">Solids, liquids and gases<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>The kinetic theory of matter, ionic and covalent structure, and the limits of the simple particle picture.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still think something must be in the gap?</p>
+          <a class="ks3-tutor-cta" href="#s-gap">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startCuts&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;min&quot;:0,&quot;max&quot;:24,&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Cutting bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: '50 + 50 = 97', short: 'HOOK' },
+  { id: 's-cut', label: 'Keep cutting', short: 'CUT' },
+  { id: 's-gap', label: 'What is in the gap', short: 'GAP' },
+  { id: 's-think', label: 'A sharper knife', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const FLOOR = 24;
+
+const GAP_TESTS = [
+  { id: 'squash', label: 'Squash the gas',
+    on: 'With gaps: the particles are pushed closer and the gas takes up a fifth of the space. That is why a bike pump works.',
+    off: 'Fill the gaps with air and there is nothing left to squash — the air would need gaps of its own, and so would that air, forever.' },
+  { id: 'mix', label: 'Pour the water in',
+    on: 'With gaps: small particles drop into the spaces between large ones, and 50 + 50 comes out at 97.',
+    off: 'Fill the gaps with something and the volumes must simply add. 50 and 50 would make 100, and it does not.' },
+  { id: 'smell', label: 'Let the smell spread',
+    on: 'With gaps: a moving particle has somewhere to go, and it works its way across the room without any draught.',
+    off: 'Pack the space solid and nothing can move anywhere. A smell would never cross a still room, and it does.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'What does the particle model say is between the particles of a gas?',
+    options: [
+      { text: 'Nothing at all', correct: true },
+      { text: 'Air', correction: 'Air is itself a gas made of particles. Saying the gaps are full of air just asks the same question one layer down.' },
+      { text: 'A very thin gas', correction: 'Same problem: that gas would have gaps too, and you would never finish.' },
+      { text: 'Dust too small to see', correction: 'Dust is matter, made of particles, with gaps of its own. Nothing is nothing.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A student cuts a sugar cube in half twenty-four times and reaches one particle. Why can they not make the twenty-fifth cut?',
+    options: [
+      { text: 'They can cut it, but what comes out is no longer sugar', correct: true },
+      { text: 'No knife is thin enough to fit', correction: 'A sharp enough tool can split a particle. The limit is not mechanical.' },
+      { text: 'Particles are too hard to cut', correction: 'Hardness is a property of a large lump of a substance, not of one particle.' },
+      { text: 'The piece is too small to see, so the cut cannot be aimed', correction: 'Difficulty in aiming is a practical problem. The model makes a stronger claim than that.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain, using the particle model, why 50 ml of water added to 50 ml of alcohol gives 97 ml and not 100 ml.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Both liquids are made of…',
+    criteria: [
+      'Says both liquids are made of particles with gaps between them.',
+      'Says the particles of the two liquids are different sizes.',
+      'Says the smaller particles fit into the gaps between the larger ones.',
+      'Says no particles are lost or destroyed — the total amount of matter is unchanged.',
+      'Says the volume drops because the particles pack more closely, not because anything disappears.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A student says the gaps between particles in a gas must contain air, "because otherwise it would be a vacuum in there, and you cannot have a vacuum in the middle of a room." Reply to them.',
+    fieldLabel: 'Your reply',
+    placeholder: 'If the gaps were full of air…',
+    criteria: [
+      'Points out that air is itself made of particles.',
+      'Says that filling the gaps with air only pushes the same question down a level, and never ends.',
+      'Says the gaps genuinely contain nothing.',
+      'Uses evidence: a gas can be squashed, which would be impossible if the space were already full.',
+      'Notes that this is not the same as a vacuum you could stand in — the space is smaller than a particle.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    cutGate: null,
+    cuts: Math.min(FLOOR, Math.max(0, Number(this.props.startCuts) || 0)),
+    reachedFloor: (Number(this.props.startCuts) || 0) >= FLOOR,
+    gapChoice: null,
+    gapTest: null,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.drawCut();
+    this.drawGap();
+  }
+
+  componentDidUpdate() { this.drawCut(); this.drawGap(); }
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  sizeLabel(n) {
+    const cm = 1 / Math.pow(2, n);
+    if (cm >= 0.1) return this.sig(cm * 10) + ' mm';
+    if (cm >= 1e-4) return this.sig(cm * 1e4) + ' \u00B5m';
+    return this.sig(cm * 1e7) + ' nm';
+  }
+
+  sig(v) {
+    if (v >= 100) return String(Math.round(v));
+    if (v >= 10) return v.toFixed(1).replace(/\.0$/, '');
+    return v.toFixed(2).replace(/0$/, '').replace(/\.$/, '');
+  }
+
+  drawCut() {
+    const c = this.cutCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 320;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const n = this.state.cuts;
+    const cx = W / 2, cy = H / 2 - 4;
+    const box = 176;
+
+    // ghost of the previous piece, twice the size
+    if (n > 0) {
+      ctx.strokeStyle = '#D9CDBA';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([7, 6]);
+      ctx.strokeRect(cx - box, cy - box, box * 2, box * 2);
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#A79A88';
+      ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText('the piece before this cut', cx - box, cy - box - 10);
+    }
+
+    const grainy = n >= FLOOR - 4;
+    if (!grainy) {
+      ctx.fillStyle = '#F2E4CB';
+      ctx.fillRect(cx - box / 2, cy - box / 2, box, box);
+      ctx.fillStyle = '#FBF3E6';
+      ctx.fillRect(cx - box / 2, cy - box / 2, box, box * 0.22);
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(cx - box / 2, cy - box / 2, box, box);
+    } else {
+      // close to the floor: the piece resolves into countable particles
+      const across = Math.max(1, Math.pow(2, FLOOR - n));
+      const r = (box / across) / 2;
+      ctx.save();
+      for (let row = 0; row < across; row++) {
+        for (let col = 0; col < across; col++) {
+          ctx.beginPath();
+          ctx.arc(cx - box / 2 + r + col * r * 2, cy - box / 2 + r + row * r * 2, r * 0.92, 0, Math.PI * 2);
+          ctx.fillStyle = '#E8D3AC';
+          ctx.fill();
+          ctx.strokeStyle = '#8A7355';
+          ctx.lineWidth = Math.min(2.5, r * 0.28);
+          ctx.stroke();
+          if (r > 12) {
+            ctx.beginPath();
+            ctx.arc(cx - box / 2 + r + col * r * 2 - r * 0.3, cy - box / 2 + r + row * r * 2 - r * 0.32, r * 0.24, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.fill();
+          }
+        }
+      }
+      ctx.restore();
+      ctx.strokeStyle = '#1A1714';
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(cx - box / 2, cy - box / 2, box, box);
+      ctx.fillStyle = '#A93411';
+      ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(across === 1 ? 'ONE PARTICLE' : (across * across) + ' PARTICLES LEFT', cx, cy + box / 2 + 24);
+    }
+
+    // scale bar
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx - box / 2, cy + box / 2 + 46);
+    ctx.lineTo(cx + box / 2, cy + box / 2 + 46);
+    ctx.moveTo(cx - box / 2, cy + box / 2 + 40);
+    ctx.lineTo(cx - box / 2, cy + box / 2 + 52);
+    ctx.moveTo(cx + box / 2, cy + box / 2 + 40);
+    ctx.lineTo(cx + box / 2, cy + box / 2 + 52);
+    ctx.stroke();
+    ctx.fillStyle = '#1A1714';
+    ctx.font = '600 15px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(this.sizeLabel(n), cx, cy + box / 2 + 72);
+
+    // progress to the floor
+    const bw = (W - 120) / FLOOR;
+    for (let i = 0; i < FLOOR; i++) {
+      ctx.fillStyle = i < n ? '#E4572E' : '#E4DACA';
+      ctx.fillRect(60 + i * bw + 2, H - 20, bw - 4, 8);
+    }
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('CUT 0', 60, H - 28);
+    ctx.textAlign = 'right';
+    ctx.fillText('CUT ' + FLOOR, W - 60, H - 28);
+  }
+
+  drawGap() {
+    const c = this.gapCanvas;
+    if (!c) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 260;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#100D0A';
+    ctx.fillRect(0, 0, W, H);
+
+    const filled = this.state.gapChoice !== null && this.state.gapChoice !== 3;
+    const half = W / 2;
+
+    const drawBox = (x0, label, packed) => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(x0 + 34, 52, half - 68, H - 108);
+      ctx.clip();
+      if (packed) {
+        ctx.fillStyle = '#4A4038';
+        ctx.fillRect(x0 + 34, 52, half - 68, H - 108);
+      }
+      for (let row = 0; row < 4; row++) {
+        for (let col = 0; col < 7; col++) {
+          const x = x0 + 62 + col * 54 + (row % 2 ? 16 : 0);
+          const y = 78 + row * 44;
+          ctx.beginPath();
+          ctx.arc(x, y, 17, 0, Math.PI * 2);
+          ctx.fillStyle = '#D98A4A';
+          ctx.fill();
+          ctx.strokeStyle = '#5A3212';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+      ctx.strokeStyle = '#5C5249';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x0 + 34, 52, half - 68, H - 108);
+      ctx.fillStyle = packed ? '#FF8A5B' : '#FFC53D';
+      ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(label, x0 + half / 2, 40);
+    };
+
+    drawBox(0, 'GAPS EMPTY', false);
+    drawBox(half, filled ? 'GAPS FILLED IN' : 'GAPS EMPTY', filled);
+
+    ctx.fillStyle = '#C6B9A7';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(filled ? 'your answer, on the right' : 'your answer says nothing is there \u2014 both boxes agree', W / 2, H - 20);
+  }
+
+  seg(on, dark, dis) {
+    const base = 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' + (dis ? 'default' : 'pointer') + ';';
+    if (dark) {
+      return base + 'border:2px solid ' + (on ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') +
+        ';background:' + (on ? 'var(--ks3-alert)' : 'transparent') +
+        ';color:' + (on ? 'var(--ks3-ink)' : 'var(--ks3-on-dark)') + ';' + (dis ? 'opacity:.45;' : '');
+    }
+    return base + 'border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.45;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const n = s.cuts;
+    const atFloor = n >= FLOOR;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let cutNote;
+    if (atFloor) {
+      cutNote = 'Twenty-four cuts. Not twenty-four thousand, not forever \u2014 twenty-four. The knife has not gone blunt and your hand has not got tired. There is simply no piece of sugar smaller than this one, because this one is a single particle, and halving matter runs out.';
+    } else if (n >= FLOOR - 4) {
+      cutNote = 'The edge has stopped being smooth. What looked like a solid block four cuts ago is a countable number of particles, and you can see the end coming.';
+    } else if (n === 0) {
+      cutNote = 'A centimetre of sugar. Cut it and watch the size, not the picture \u2014 the numbers are where this lesson happens.';
+    } else {
+      cutNote = 'Still sugar, still sweet, still white, still behaving exactly like sugar. Halving does not seem to be getting you anywhere. Keep going.';
+    }
+
+    const gapTest = s.gapTest === null ? null : GAP_TESTS[s.gapTest];
+    const filled = s.gapChoice !== null && s.gapChoice !== 3;
+
+    let gapNote;
+    if (gapTest) {
+      gapNote = filled ? gapTest.off : gapTest.on;
+    } else if (s.gapChoice === 3) {
+      gapNote = 'Nothing is the hard answer to accept and the only one that survives. Run a test and see why the alternatives do not.';
+    } else {
+      gapNote = 'You have put something in the gap. Now run a test and watch it fail.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-cut') return s.reachedFloor;
+          if (id === 's-gap') return s.gapTest !== null;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'Some of it evaporated while you were pouring' },
+        { letter: 'B', text: 'The two liquids reacted and made something smaller' },
+        { letter: 'C', text: 'Particles of one liquid settled into gaps between particles of the other' },
+        { letter: 'D', text: 'The measuring cylinder is not accurate enough' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      cutProgress: atFloor ? 'floor reached' : n + ' of ' + FLOOR + ' possible cuts',
+      cutGateOpen: s.cutGate === null,
+      cutGateOptions: [
+        { letter: 'A', text: 'Forever — there is always a smaller half' },
+        { letter: 'B', text: 'Millions of times, then the piece is too small to see' },
+        { letter: 'C', text: 'A few dozen times, then no smaller piece of sugar exists' },
+        { letter: 'D', text: 'Until it turns into a liquid' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.cutGate === i,
+        onClick: () => this.setState({ cutGate: i })
+      })),
+      cutOpen: s.cutGate !== null,
+      cutRef: (el) => { this.cutCanvas = el; if (el) this.drawCut(); },
+      cutCount: String(n),
+      cutSize: this.sizeLabel(n),
+      cutVerdict: atFloor ? 'Floor' : 'Yes',
+      cutVerdictColor: atFloor ? 'var(--ks3-accent-text)' : 'var(--ks3-ink)',
+      cutAlt: 'A piece of sugar after ' + n + ' halvings, ' + this.sizeLabel(n) + ' across' +
+        (n >= FLOOR - 4 ? ', now visibly made of separate round particles.' : ', still a smooth solid block.'),
+      cutAtFloor: atFloor,
+      cutAtStart: n === 0,
+      cutBtnStyle: this.seg(false, false, atFloor),
+      uncutBtnStyle: this.seg(false, false, n === 0),
+      cutTenBtnStyle: this.seg(false, false, atFloor),
+      onCut: () => this.setState((st) => {
+        const v = Math.min(FLOOR, st.cuts + 1);
+        return { cuts: v, reachedFloor: st.reachedFloor || v >= FLOOR };
+      }),
+      onCutTen: () => this.setState((st) => {
+        const v = Math.min(FLOOR, st.cuts + 10);
+        return { cuts: v, reachedFloor: st.reachedFloor || v >= FLOOR };
+      }),
+      onUncut: () => this.setState((st) => ({ cuts: Math.max(0, st.cuts - 1) })),
+      cutNote: cutNote,
+
+      gapOptions: [
+        { letter: 'A', text: 'Air' },
+        { letter: 'B', text: 'A gas we have not discovered yet' },
+        { letter: 'C', text: 'Dust and moisture, too small to see' },
+        { letter: 'D', text: 'Nothing at all' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gapChoice === i,
+        onClick: () => this.setState({ gapChoice: i })
+      })),
+      gapOpen: s.gapChoice !== null,
+      gapRef: (el) => { this.gapCanvas = el; if (el) this.drawGap(); },
+      gapAlt: 'Two particle boxes side by side. Left: particles with empty space between them. Right: ' +
+        (filled ? 'the same particles with the space packed solid.' : 'the same picture, because the answer was that nothing is there.'),
+      gapTests: GAP_TESTS.map((t, i) => ({
+        label: t.label, on: s.gapTest === i,
+        style: this.seg(s.gapTest === i, true, false),
+        onClick: () => this.setState({ gapTest: i })
+      })),
+      gapNote: gapNote,
+
+      thinkOptions: [
+        { letter: 'A', text: 'True — a sharper knife would just keep going' },
+        { letter: 'B', text: 'The knife could cut it, but what comes out is not sugar any more' },
+        { letter: 'C', text: 'False — particles cannot be cut by anything' },
+        { letter: 'D', text: 'The piece would be too small for the knife to touch' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

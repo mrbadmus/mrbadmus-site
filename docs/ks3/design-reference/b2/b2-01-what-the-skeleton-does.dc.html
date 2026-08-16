@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What the skeleton does · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes b2-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: b2-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-chainrow] { display: grid; grid-template-columns: minmax(0, 104px) minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 620px) { [data-chainrow] { grid-template-columns: minmax(0, 1fr); gap: 8px; } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Biology</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Movement: skeleton and muscles</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">What the skeleton does</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Movement: skeleton and muscles · System</p>
+        <h1>What the skeleton does</h1>
+        <p class="ks3-bigq">A broken finger is an inconvenience. A broken rib makes every breath hurt. Same material — so what makes the difference?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>Two broken bones, two completely different disasters.</h2>
+        <p class="ks3-hook-prompt">Break a finger and you tape it to the next one and carry on. Break a femur and you are in hospital, off your feet for months, and at real risk from a blood clot. Both are bone. Both heal.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">What actually decides how serious a broken bone is?</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Not the size, and not the pain. What matters is the job that bone was doing, and how many other things were relying on it. The skeleton is doing four jobs at once, and they fail in four different ways.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>The way to find out what a part does is not to label it. It is to switch it off and follow what breaks next.</p>
+      </section>
+
+      <section id="s-switch" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · four parts, switched off</p>
+            <h2 style="margin: 6px 0 0;">Take one part away and follow the damage</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ switchProgress }}</p>
+        </div>
+
+        <div style="margin-top: 20px; display: flex; gap: 9px; flex-wrap: wrap;">
+          <sc-for list="{{ partTabs }}" as="t" hint-placeholder-count="4">
+            <button type="button" onClick="{{ t.onClick }}" aria-pressed="{{ t.pressed }}" style="{{ t.style }}">{{ t.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; padding: 22px 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--ks3-ink-muted);">{{ partName }}</p>
+          <p style="margin: 8px 0 0; font-size: 20px; line-height: 1.5; max-width: 58ch;">{{ partDoes }}</p>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <p style="margin: 0 0 12px; font-size: 19px; font-weight: 700;">{{ partPrompt }}</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ partOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+        </div>
+
+        <div style="margin-top: 18px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
+          <button type="button" class="ks3-reveal-btn" onClick="{{ onSwitch }}" disabled="{{ switchLocked }}" style="{{ switchBtnStyle }}">{{ switchBtnLabel }}</button>
+          <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ switchHint }}</span>
+        </div>
+
+        <sc-if value="{{ chainOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; padding: 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-ink); color: var(--ks3-on-dark);">
+            <p style="margin: 0 0 18px; font-family: var(--ks3-font-mono); font-size: 14px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--ks3-alert);">{{ chainTitle }}</p>
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <sc-for list="{{ chain }}" as="step" hint-placeholder-count="4">
+                <div data-chainrow="1" style="{{ step.rowStyle }}">
+                  <span style="{{ step.chipStyle }}">{{ step.level }}</span>
+                  <p style="margin: 0; font-size: 19px; line-height: 1.55; color: var(--ks3-on-dark-body);">{{ step.text }}</p>
+                </div>
+              </sc-for>
+            </div>
+            <p style="margin: 20px 0 0; padding-top: 18px; border-top: 2px solid var(--ks3-dark-rule); font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark);">{{ chainClose }}</p>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ allSwitched }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">Four parts, four different routes, one destination. The ribcage kills in minutes and the marrow takes months, and both end in exactly the same place: cells with no oxygen to respire with.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">The skeleton does four jobs at once: support, protection, movement, and making blood cells. Every one of them, when it fails, ends at the same place — cells that can no longer work.</p>
+      </div>
+
+      <section id="s-sort" class="ks3-block" style="scroll-margin-top: 92px; background: var(--ks3-inset);">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">Your turn · six things people notice</p>
+            <h2 style="margin: 6px 0 0;">Which job is this?</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ sortProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">Every one of these is something you could see or measure. Decide which of the four jobs it is evidence for. One of them is evidence for two.</p>
+
+        <div style="margin-top: 22px; display: flex; flex-direction: column; gap: 14px;">
+          <sc-for list="{{ sortItems }}" as="it" hint-placeholder-count="6">
+            <div style="{{ it.style }}">
+              <p style="margin: 0; font-size: 19px; line-height: 1.5; font-weight: 600;">{{ it.text }}</p>
+              <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+                <sc-for list="{{ it.jobs }}" as="j" hint-placeholder-count="4">
+                  <button type="button" onClick="{{ j.onClick }}" aria-pressed="{{ j.pressed }}" disabled="{{ j.disabled }}" style="{{ j.style }}">{{ j.label }}</button>
+                </sc-for>
+              </div>
+              <sc-if value="{{ it.open }}">
+                <p data-arrive="1" style="margin: 12px 0 0; font-size: 18px; line-height: 1.55; color: var(--ks3-ink-body);"><strong style="font-family: var(--ks3-font-display);">{{ it.answer }}</strong> {{ it.why }}</p>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“Bones are dead. They are the hard bits left over — like the frame of a tent.”</p>
+        <p style="max-width: 54ch;">The skeleton in the corner of the lab is dead. The one you are sitting on is not. Commit to an answer before you read on.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">All four are true, and every one of them is impossible for something dead. Bone is a living tissue: it is made of cells, it has its own blood supply, it repairs itself when it breaks, and it is rebuilt continuously — you replace roughly a tenth of your skeleton every year.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">It also responds to what you do with it. Load a bone regularly and it lays down more material exactly where the force goes; stop loading it and it thins. That is why a tennis player's racket arm has measurably denser bone than the other one, and why astronauts come home with weaker skeletons than they left with.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Support, protection, movement, blood cells. Bone is living tissue with its own cells and blood supply, and it rebuilds itself around the forces you put through it. Switch any part of the skeleton off and the failure ends at the cells.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>A femur is hollow. So is every long bone you own, and so is the wing bone of a bird. Filling it in would add weight everywhere and strength almost nowhere, because a bar loaded from the side is barely stressed down its middle — the work happens near the surface. Engineers reached the same answer independently: scaffolding poles, bicycle frames and aircraft spars are all tubes. And the space inside the tube is not wasted. That is where your blood is made.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="b1-05-levels-of-organisation.html">Levels of organisation<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="b2-02-joints.html">Joints<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Bone as a tissue, osteoporosis, and the transport system that carries what the marrow makes.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Not sure how one broken bone reaches every cell?</p>
+          <a class="ks3-tutor-cta" href="#s-switch">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startPart&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;skull&quot;,&quot;ribs&quot;,&quot;femur&quot;,&quot;marrow&quot;],&quot;default&quot;:&quot;skull&quot;,&quot;tsType&quot;:&quot;'skull' | 'ribs' | 'femur' | 'marrow'&quot;,&quot;section&quot;:&quot;Switch a part off&quot;},&quot;showLevels&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Switch a part off&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'Two broken bones', short: 'HOOK' },
+  { id: 's-switch', label: 'Switch a part off', short: 'SWITCH' },
+  { id: 's-sort', label: 'Which job is this', short: 'SORT' },
+  { id: 's-think', label: 'Living or dead', short: 'THINK' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const PARTS = [
+  {
+    id: 'skull', tab: 'The skull', name: 'The skull',
+    does: 'Eight curved plates, fused into a single box around the brain, with holes only where nerves and blood vessels have to pass through.',
+    prompt: 'Switch it off. What is the first thing that goes wrong?',
+    options: [
+      'Nothing much — the brain floats in fluid anyway',
+      'A knock that skin would survive now damages brain tissue',
+      'You could not hold your head upright',
+      'You would not be able to see'
+    ],
+    title: 'Skull switched off',
+    chain: [
+      { level: 'Cell', text: 'Nerve cells are torn or crushed by an impact that the skin above them survives easily.' },
+      { level: 'Tissue', text: 'Unlike skin, nerve tissue does not replace what it loses. The damaged patch stops carrying signals for good.' },
+      { level: 'Organ', text: 'Whatever that region of the brain controlled — a hand, speech, balance, breathing — is weakened or gone.' },
+      { level: 'Organism', text: 'A bump that would have been a bruise is now permanent, and it can be fatal.' }
+    ],
+    close: 'Protection is the only job on this list where nothing happens at all until something goes wrong — and then everything does.'
+  },
+  {
+    id: 'ribs', tab: 'The ribcage', name: 'The ribcage',
+    does: 'Twelve pairs of curved bones hinged at the spine, with muscles slung between them. It is the only reason the space inside your chest can be made bigger.',
+    prompt: 'Switch it off. What is the first thing that goes wrong?',
+    options: [
+      'You would breathe normally using the diaphragm',
+      'The heart would be exposed, but breathing would carry on',
+      'Nothing can lift the chest wall, so air stops coming in',
+      'You would simply breathe faster'
+    ],
+    title: 'Ribcage switched off',
+    chain: [
+      { level: 'Organ', text: 'Nothing lifts and swings the chest wall outwards, so the volume of the chest cannot be increased.' },
+      { level: 'Organ', text: 'Air only moves into the lungs because that volume increases. It stops moving in.' },
+      { level: 'Tissue', text: 'No fresh oxygen reaches the blood at the alveoli, so the blood leaving the lungs is no better than the blood arriving.' },
+      { level: 'Cell', text: 'Within minutes every cell in the body — brain cells first — has no oxygen for respiration.' }
+    ],
+    close: 'This one is fast. Minutes, not months. The ribcage is doing protection and movement at the same time, and it is the movement you die without.'
+  },
+  {
+    id: 'femur', tab: 'Femur and hip', name: 'The femur and hip',
+    does: 'The thigh bone is the longest and strongest bone you have. Standing still, it carries the entire weight of everything above it into the ground.',
+    prompt: 'Switch it off. What is the first thing that goes wrong?',
+    options: [
+      'You would sit down more often',
+      'Leg muscles contract, but with nothing rigid to pull on, nothing moves',
+      'You would be shorter but otherwise fine',
+      'It would hurt, but you could still walk on it'
+    ],
+    title: 'Femur and hip switched off',
+    chain: [
+      { level: 'Tissue', text: 'The big muscles of the leg still contract and shorten. There is nothing rigid for them to pull against.' },
+      { level: 'Organ', text: 'The leg cannot straighten or take weight, so it cannot hold up the body above it.' },
+      { level: 'Organism', text: 'No standing, no walking, no carrying. Nothing can be reached, and nothing can be escaped from.' },
+      { level: 'Cell', text: 'The route to food is gone, and within days the cells that depend on it have nothing to respire.' }
+    ],
+    close: 'Support and movement are the same job seen from two sides: a rigid bar to hold you up, and a rigid bar for muscles to pull on.'
+  },
+  {
+    id: 'marrow', tab: 'The marrow inside', name: 'The marrow inside the bones',
+    does: 'The soft tissue in the hollow middle of the big bones. It makes about two million new red blood cells every second, for your whole life.',
+    prompt: 'Switch it off. What is the first thing that goes wrong?',
+    options: [
+      'Nothing — the blood you have already is permanent',
+      'You would run out of blood immediately',
+      'No new red blood cells are made, and the old ones wear out',
+      'Your bones would become hollow'
+    ],
+    title: 'Marrow switched off',
+    chain: [
+      { level: 'Cell', text: 'No new red blood cells are made anywhere in the body.' },
+      { level: 'Tissue', text: 'The red blood cells you already have wear out and are removed after about four months. Nothing replaces them.' },
+      { level: 'Organ', text: 'The blood carries less and less oxygen with every week that passes.' },
+      { level: 'Cell', text: 'Every cell in the body is short of the oxygen it needs to respire, and the whole organism slows down and fails.' }
+    ],
+    close: 'Slow, invisible, and it ends up in exactly the same place as the ribcage. This is the job nobody guesses, because it is the only one you cannot see from the outside.'
+  }
+];
+
+const JOBS = [
+  { id: 'support', label: 'Support' },
+  { id: 'protect', label: 'Protection' },
+  { id: 'move', label: 'Movement' },
+  { id: 'blood', label: 'Making blood cells' }
+];
+
+const SORT = [
+  { id: 'i1', text: 'A doctor takes a sample from inside the hip bone of a patient who is short of red blood cells.',
+    answer: 'Making blood cells.', why: 'The marrow is the factory, so it is the marrow you sample when the supply has failed.' },
+  { id: 'i2', text: 'A 60 kg person stands still for an hour and does not fold up.',
+    answer: 'Support.', why: 'Soft tissue cannot hold that load. Rigid bars, stacked in line, carry it into the ground.' },
+  { id: 'i3', text: 'A cyclist\u2019s helmet is designed to crush and be thrown away after one impact.',
+    answer: 'Protection.', why: 'The helmet is doing the skull\u2019s job, more slowly. Both work by taking the energy so the brain does not.' },
+  { id: 'i4', text: 'Your ribs swing up and outwards every time you breathe in.',
+    answer: 'Movement and protection — both.', why: 'This is the one that is evidence for two jobs at once. The same cage that shields the heart is also the thing that pulls air in.' },
+  { id: 'i5', text: 'A tennis player\u2019s racket arm has denser bone than the other arm.',
+    answer: 'Support.', why: 'The bone has been loaded harder, so it has built more material where the force goes. That only makes sense for something alive.' },
+  { id: 'i6', text: 'A sprinter\u2019s heel bone has a tendon attached to the back of it, well behind the ankle joint.',
+    answer: 'Movement.', why: 'A muscle needs something rigid to pull on, and where it attaches decides what the pull does.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Where are new red blood cells made?',
+    options: [
+      { text: 'In the marrow inside the bones', correct: true },
+      { text: 'In the heart', correction: 'The heart pumps blood; it does not make any of it. Nothing about a pump implies a factory.' },
+      { text: 'In the lungs', correction: 'The lungs load oxygen onto red blood cells that already exist. They do not build them.' },
+      { text: 'In the liver', correction: 'A reasonable guess — the liver does make them before you are born. After birth the job moves to the marrow for good.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'Why would damage to the ribcage stop oxygen reaching the cells in your toes?',
+    options: [
+      { text: 'Because the chest cannot be made bigger, so air stops entering the lungs', correct: true },
+      { text: 'Because the ribs carry oxygen to the rest of the body', correction: 'Bone carries loads, not oxygen. Blood carries oxygen, and blood needs the lungs to be filled first.' },
+      { text: 'Because the ribs protect the heart, and the heart would stop', correction: 'That is a different job of the same bones. The chain here starts with air, not with the heart.' },
+      { text: 'Because the ribs contain marrow, so blood cells would stop being made', correction: 'Ribs do contain marrow, which makes this tempting. But that failure takes months; the breathing one takes minutes.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: '"The skeleton is a frame that holds you up." Explain why that is not good enough, using two jobs a frame does not do.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'Holding you up is only one of…',
+    criteria: [
+      'Names protection, with an example of an organ and the bone that shields it.',
+      'Names making blood cells, and says where in the bone it happens.',
+      'Says bone is living tissue — it has cells, a blood supply, and it heals.',
+      'Says muscles need something rigid to pull against, so movement is a skeletal job too.',
+      'Says a frame is fixed and does none of these, while a skeleton rebuilds itself.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'Astronauts lose roughly 1 to 2% of their bone mass every month in orbit, even though they eat well and exercise. Explain which of the skeleton\u2019s four jobs is being lost, which are not, and why weightlessness causes it.',
+    fieldLabel: 'Your answer',
+    placeholder: 'In orbit, the job that stops being needed is…',
+    criteria: [
+      'Says support is the job that is not being demanded, because nothing has to be held up.',
+      'Says bone responds to the forces put through it, and thins when they are removed.',
+      'Says protection and making blood cells are still needed and still happening.',
+      'Says bone must be living for any of this to happen.',
+      'Predicts a consequence on return to Earth — a weakened skeleton and a higher risk of breaks.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    partId: PARTS.some((p) => p.id === this.props.startPart) ? this.props.startPart : PARTS[0].id,
+    predict: {},
+    opened: {},
+    sortPick: {},
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+  }
+
+  componentWillUnmount() { if (this.io) this.io.disconnect(); }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:17px;font-weight:700;padding:11px 17px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis && !on ? 'opacity:.5;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+    const part = PARTS.find((p) => p.id === s.partId) || PARTS[0];
+    const predicted = s.predict[part.id] !== undefined;
+    const opened = !!s.opened[part.id];
+    const openedCount = Object.keys(s.opened).length;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((x) => x.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-switch') return Object.keys(s.opened).length >= 4;
+          if (id === 's-sort') return Object.keys(s.sortPick).length >= 6;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'How big the bone is' },
+        { letter: 'B', text: 'How much it hurts' },
+        { letter: 'C', text: 'What job that bone was doing, and what depended on it' },
+        { letter: 'D', text: 'How long it takes to heal' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      switchProgress: openedCount + ' of 4 parts switched off',
+      partTabs: PARTS.map((p) => ({
+        label: p.tab, pressed: p.id === s.partId, style: this.seg(p.id === s.partId, false),
+        onClick: () => this.setState({ partId: p.id })
+      })),
+      partName: part.name,
+      partDoes: part.does,
+      partPrompt: part.prompt,
+      partOptions: part.options.map((text, i) => ({
+        letter: String.fromCharCode(65 + i), text: text,
+        pressed: s.predict[part.id] === i,
+        disabled: opened,
+        onClick: () => this.setState((st) => {
+          if (st.opened[part.id]) return null;
+          return { predict: Object.assign({}, st.predict, { [part.id]: i }) };
+        })
+      })),
+      switchLocked: !predicted || opened,
+      switchBtnLabel: opened ? 'Switched off' : 'Switch this part off',
+      switchBtnStyle: (!predicted || opened) ? 'opacity:.45;cursor:default;' : '',
+      switchHint: opened ? 'Now try another part.' : (predicted ? 'Ready.' : 'Commit to a prediction first.'),
+      onSwitch: () => this.setState((st) => {
+        if (st.predict[part.id] === undefined) return null;
+        return { opened: Object.assign({}, st.opened, { [part.id]: true }) };
+      }),
+      chainOpen: opened,
+      chainTitle: part.title,
+      chain: part.chain.map((st, i) => ({
+        level: this.props.showLevels === false ? '' : st.level, text: st.text,
+        rowStyle: i ? 'padding-top:16px;border-top:2px solid var(--ks3-dark-rule);' : '',
+        chipStyle: 'display:inline-block;padding:5px 11px;border-radius:9px;background:var(--ks3-dark-panel);color:' +
+          (st.level === 'Cell' ? 'var(--ks3-alert)' : 'var(--ks3-on-dark-muted)') +
+          ';font-family:var(--ks3-font-mono);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;text-align:center;'
+      })),
+      chainClose: part.close,
+      allSwitched: openedCount >= 4,
+
+      sortProgress: Object.keys(s.sortPick).length + ' of 6 decided',
+      sortItems: SORT.map((it) => {
+        const pick = s.sortPick[it.id];
+        const open = pick !== undefined;
+        return {
+          text: it.text, answer: it.answer, why: it.why, open: open,
+          style: 'padding:20px 22px;border-radius:var(--ks3-r-panel);background:' + (open ? 'var(--ks3-card)' : 'var(--ks3-card)') +
+            ';border:2px solid ' + (open ? 'var(--ks3-ink)' : 'var(--ks3-option-border)') + ';',
+          jobs: JOBS.map((j) => ({
+            label: j.label, pressed: pick === j.id, disabled: open,
+            style: this.seg(pick === j.id, open) + 'font-size:16px;padding:10px 15px;',
+            onClick: () => this.setState((st) => {
+              if (st.sortPick[it.id] !== undefined) return null;
+              return { sortPick: Object.assign({}, st.sortPick, { [it.id]: j.id }) };
+            })
+          }))
+        };
+      }),
+
+      thinkOptions: [
+        { letter: 'A', text: 'A broken bone heals itself' },
+        { letter: 'B', text: 'Bone has its own blood supply' },
+        { letter: 'C', text: 'Bone gets thicker where it is used hardest' },
+        { letter: 'D', text: 'All three of these are true' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((x) => x.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((st) => {
+                if (st.answers[r.id] !== null && st.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, st.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((st) => ({ text: Object.assign({}, st.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((st) => ({ checked: Object.assign({}, st.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((st) => {
+              const next = (st.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, st.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked — rung met.' : met + ' of ' + r.criteria.length + ' ticked — not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

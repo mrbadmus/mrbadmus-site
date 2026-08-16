@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diffusion · MrBadmusAI KS3</title>
+<link rel="stylesheet" href="_ds/mrbadmusai-design-system-53dad5ae-951a-44a1-95e1-394b9762b2d1/styles.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #FBF3E6; }
+  a { color: var(--ks3-accent-text); }
+  a:hover { color: var(--ks3-accent-hover); }
+  @keyframes c1-arrive { 0% { transform: translateY(6px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+  [data-arrive] { animation: c1-arrive .34s ease-out both; }
+  [data-rail="side"] { display: none; }
+  @media (min-width: 1340px) { [data-rail="side"] { display: block; } [data-rail="top"] { display: none; } }
+  @media (prefers-reduced-motion: reduce) { [data-arrive] { animation: none !important; } }
+  [data-readout] { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 620px) { [data-readout] { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</helmet>
+
+<div class="rd" data-mode="ks3" style="background: var(--ks3-ground); color: var(--ks3-ink); font-family: var(--ks3-font-body); font-size: 19px; line-height: 1.6; min-height: 100vh; -webkit-font-smoothing: antialiased; text-wrap: pretty;">
+
+  <nav class="ks3-nav" style="flex-wrap: wrap; gap: 6px 0;">
+    <a class="ks3-brand" href="../index.html">
+      <span aria-hidden="true" style="display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--ks3-accent); flex: 0 0 34px;"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16L12 7l8 9" fill="none" stroke="#FBF3E6" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>MrBadmusAI</a>
+    <span aria-hidden="true" style="width: 2px; height: 26px; margin: 0 20px; background: var(--ks3-rule); flex: 0 0 2px;"></span>
+    <ol aria-label="Breadcrumb" style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 9px; font-size: 17px; line-height: 1.3;">
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">KS3</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="../index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Chemistry</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li><a href="index.html" style="color: var(--ks3-accent-text); text-decoration: none; font-weight: 600; white-space: nowrap;">Particles and their behaviour</a></li>
+      <li aria-hidden="true" style="color: var(--ks3-rule-strong);">›</li>
+      <li aria-current="page" style="color: var(--ks3-ink-muted); font-weight: 500;">Diffusion</li>
+    </ol>
+    <a class="ks3-nav-link" href="../index.html">KS3</a>
+  </nav>
+
+  <nav data-rail="top" aria-label="Lesson progress" style="position: sticky; top: 0; z-index: 20; background: var(--ks3-ground); border-bottom: 2px solid var(--ks3-rule); padding: 9px 16px 10px;">
+    <div style="display: flex; align-items: center; gap: 12px; max-width: 60rem; margin: 0 auto;">
+      <span style="font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted); flex: 0 0 auto;">{{ railCountLabel }}</span>
+      <span style="font-size: 16px; font-weight: 700; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ railCurrentLabel }}</span>
+      <span style="flex: 0 0 96px; height: 8px; border-radius: 99px; background: var(--ks3-band); border: 2px solid var(--ks3-ink); overflow: hidden;"><span style="{{ railBarStyle }}"></span></span>
+    </div>
+  </nav>
+
+  <nav data-rail="side" aria-label="Lesson progress" style="position: fixed; top: 150px; left: calc(50% - 632px); width: 104px; z-index: 20;">
+    <ol style="list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;">
+      <sc-for list="{{ rail }}" as="node" hint-placeholder-count="5">
+        <li style="display: flex; flex-direction: column; align-items: center;">
+          <a href="{{ node.href }}" style="{{ node.linkStyle }}">
+            <span aria-hidden="true" style="{{ node.chipStyle }}">
+              <sc-if value="{{ node.done }}"><svg class="ks3-mark" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+              <sc-if value="{{ node.showNum }}" hint-placeholder-val="{{ true }}">{{ node.num }}</sc-if>
+            </span>
+            <span style="{{ node.textStyle }}">{{ node.label }}</span>
+          </a>
+          <sc-if value="{{ node.hasLine }}" hint-placeholder-val="{{ true }}"><span aria-hidden="true" style="{{ node.lineStyle }}"></span></sc-if>
+        </li>
+      </sc-for>
+    </ol>
+  </nav>
+
+  <main class="ks3-main">
+    <div class="ks3-lesson">
+      <header class="ks3-lesson-head">
+        <p class="ks3-eyebrow">Particles and their behaviour · Model</p>
+        <h1>Diffusion</h1>
+        <p class="ks3-bigq">Someone opens a bottle of perfume at the far end of a sealed, still room with no draught at all. Two minutes later you can smell it. What carried it to you?</p>
+        <sc-if value="{{ draftVisible }}" hint-placeholder-val="{{ true }}">
+          <p class="ks3-review-flag">Draft — not yet science-reviewed.</p>
+        </sc-if>
+      </header>
+
+      <section id="s-hook" class="ks3-block ks3-dark ks3-hook" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Start here</p>
+        <h2>No draught. No fan. No one waving.</h2>
+        <p class="ks3-hook-prompt">The windows are shut, the air is dead still, and a candle flame at the centre of the room stands perfectly upright — so there is genuinely no air current. The perfume still reaches you.</p>
+        <div class="ks3-hook-commit">
+          <p class="ks3-commit">Commit to what moved it.</p>
+          <ul class="ks3-options">
+            <sc-for list="{{ hookOptions }}" as="opt" hint-placeholder-count="4">
+              <li>
+                <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                  <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                  <span class="ks3-opt-label">{{ opt.text }}</span>
+                </button>
+              </li>
+            </sc-for>
+          </ul>
+          <sc-if value="{{ hookRevealed }}">
+            <div class="ks3-reveal" data-arrive="1">
+              <p style="margin: 0;">Nothing carried it. Each perfume particle was already moving — hundreds of metres per second — and it bounced its way across the room off air particles, in a path so tangled that covering four metres took two minutes. No push was needed, because the movement never stopped in the first place.</p>
+            </div>
+          </sc-if>
+        </div>
+      </section>
+
+      <section class="ks3-explainer">
+        <p>Diffusion is the one piece of the particle model that people find hardest to accept, because it looks purposeful. Something spreads out and fills a space, evenly, every time — and evenly-and-every-time is what deliberate things do. This lesson takes the purpose out of it and leaves nothing but random movement, which turns out to be enough.</p>
+      </section>
+
+      <section id="s-walk" class="ks3-block" style="scroll-margin-top: 92px;">
+        <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
+          <div>
+            <p class="ks3-eyebrow">The random-walk bench · watch one particle, then all of them</p>
+            <h2 style="margin: 6px 0 0;">No one is steering.</h2>
+          </div>
+          <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 15px; font-weight: 500; color: var(--ks3-ink-muted);">{{ walkProgress }}</p>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 19px; line-height: 1.6; max-width: 54ch;">A drop of dye released on the left of a sealed tank of still water. Every particle takes a step in a random direction, over and over. Nothing else is happening.</p>
+
+        <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top: 20px; padding: 20px 22px; border-radius: var(--ks3-r-panel); background: var(--ks3-inset); border: 2px solid var(--ks3-ink);">
+            <p class="ks3-commit" style="margin: 0 0 12px; color: var(--ks3-accent-text);">Commit first. Once the dye has spread out completely and the tank looks even, what are the particles doing?</p>
+            <ul class="ks3-options">
+              <sc-for list="{{ gateOptions }}" as="opt" hint-placeholder-count="4">
+                <li>
+                  <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                    <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                    <span class="ks3-opt-label">{{ opt.text }}</span>
+                  </button>
+                </li>
+              </sc-for>
+            </ul>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ walkOpen }}">
+          <div data-arrive="1" style="margin-top: 22px; border-radius: var(--ks3-r-card); border: 2px solid var(--ks3-ink); overflow: hidden; background: var(--ks3-card);">
+            <canvas width="1800" height="640" ref="{{ walkRef }}" role="img" aria-label="{{ walkAlt }}" style="display: block; width: 100%; height: auto;"></canvas>
+            <div style="padding: 18px; border-top: 2px solid var(--ks3-ink); background: var(--ks3-inset);">
+              <div data-readout="1">
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Crossings left to right</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">{{ crossRight }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Crossings right to left</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: var(--ks3-ink);">{{ crossLeft }}</p>
+                </div>
+                <div>
+                  <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-ink-muted);">Spread out?</p>
+                  <p style="margin: 4px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 30px; line-height: 1.1; color: {{ evenColor }};">{{ evenLabel }}</p>
+                </div>
+              </div>
+              <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
+                <button type="button" onClick="{{ onRun }}" aria-pressed="{{ running }}" style="{{ runStyle }}">{{ runLabel }}</button>
+                <button type="button" onClick="{{ onReset }}" style="{{ resetStyle }}">Put the drop back</button>
+                <button type="button" onClick="{{ onTrace }}" aria-pressed="{{ traceOn }}" style="{{ traceStyle }}">{{ traceLabel }}</button>
+                <button type="button" onClick="{{ onWarm }}" aria-pressed="{{ warm }}" style="{{ warmStyle }}">{{ warmLabel }}</button>
+              </div>
+            </div>
+          </div>
+          <p style="margin: 18px 0 0; padding: 18px 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-band); border: 2px solid var(--ks3-ink); font-size: 19px; line-height: 1.6;">{{ walkNote }}</p>
+        </sc-if>
+      </section>
+
+      <div style="margin: 28px 0 0; padding: 22px 26px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink); box-shadow: 6px 6px 0 var(--ks3-accent);">
+        <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 13px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-accent-text);">Key fact</p>
+        <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 25px; line-height: 1.32; letter-spacing: -.015em; color: var(--ks3-ink);">Diffusion is the spreading out of particles from where they are crowded to where they are not, caused by their own random movement. Nothing pushes them and nothing stops when it is finished.</p>
+      </div>
+
+      <section id="s-think" class="ks3-block ks3-misconception" style="scroll-margin-top: 92px;">
+        <div class="ks3-mis-head">
+          <span class="ks3-mis-badge" aria-hidden="true">!</span>
+          <p class="ks3-eyebrow">Think again</p>
+        </div>
+        <p class="ks3-mis-quote">“The particles spread out because they want to fill the space evenly.”</p>
+        <p style="max-width: 54ch;">Every word of that sentence is doing damage, and it is the sentence almost everyone writes. Commit to what is wrong with it.</p>
+
+        <ul class="ks3-options" style="max-width: 34rem;">
+          <sc-for list="{{ thinkOptions }}" as="opt" hint-placeholder-count="4">
+            <li>
+              <button type="button" class="ks3-option" aria-pressed="{{ opt.pressed }}" onClick="{{ opt.onClick }}">
+                <span class="ks3-opt-mark" aria-hidden="true">{{ opt.letter }}</span>
+                <span class="ks3-opt-label">{{ opt.text }}</span>
+              </button>
+            </li>
+          </sc-for>
+        </ul>
+
+        <sc-if value="{{ thinkOpen }}">
+          <div data-arrive="1" style="margin-top: 20px; padding: 24px; border-radius: var(--ks3-r-panel); background: var(--ks3-card); border: 2px solid var(--ks3-ink);">
+            <p style="margin: 0; font-size: 19px; line-height: 1.6;">A particle has no goal, no information about the rest of the tank, and no way to prefer one direction over another. It cannot want anything. The evenness is not aimed at — it is what randomness produces when you start with a crowd on one side.</p>
+            <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.6;">The counters on the bench are the proof. At the start, far more particles cross left-to-right than right-to-left — not because they are heading that way, but because there are more of them on the left to make the crossing. Once the two sides are even, the two counts climb at the same rate and keep climbing. The spreading has finished; the moving has not. If the particles were trying to fill the space, they would stop when the job was done.</p>
+          </div>
+        </sc-if>
+      </section>
+
+      <section id="s-scale" class="ks3-block ks3-dark ks3-practical" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Where this does real work</p>
+        <h2 style="margin: 0; font-size: 34px; line-height: 1.12; letter-spacing: -.03em; color: var(--ks3-on-dark);">Two minutes across a room, a fraction of a second across a cell</h2>
+        <p style="margin: 14px 0 0; font-size: 19px; line-height: 1.65; color: var(--ks3-on-dark-body); max-width: 58ch;">Diffusion is hopeless over long distances and unbeatable over short ones, and that single fact shapes a great deal of biology.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-top: 20px;">
+          <sc-for list="{{ scaleCards }}" as="card" hint-placeholder-count="3">
+            <div style="padding: 20px; border-radius: var(--ks3-r-panel); background: var(--ks3-dark-panel); border: 2px solid var(--ks3-on-dark-muted);">
+              <p style="margin: 0; font-family: var(--ks3-font-mono); font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: var(--ks3-alert);">{{ card.distance }}</p>
+              <p style="margin: 8px 0 0; font-family: var(--ks3-font-display); font-weight: 700; font-size: 28px; line-height: 1.15; color: var(--ks3-on-dark);">{{ card.time }}</p>
+              <p style="margin: 10px 0 0; font-size: 17px; line-height: 1.5; color: var(--ks3-on-dark-body);">{{ card.text }}</p>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin: 18px 0 0; font-size: 19px; line-height: 1.6; color: var(--ks3-on-dark-body);">Double the distance and diffusion takes four times as long, not twice. That is why every cell in your body is microscopic, why lungs are folded into millions of tiny sacs instead of two smooth bags, and why anything larger than an insect needs a heart.</p>
+      </section>
+
+      <section id="s-ladder" class="ks3-ladder" style="scroll-margin-top: 92px;">
+        <div class="ks3-ladder-head">
+          <div>
+            <h2>Mastery ladder</h2>
+            <p class="ks3-ladder-sub">Four rungs. Two the page marks, two you mark.</p>
+          </div>
+          <div class="ks3-ladder-score" aria-live="polite">
+            <p class="ks3-score">{{ scoreLine }}</p>
+            <p class="ks3-score-note">{{ scoreNote }}</p>
+          </div>
+        </div>
+
+        <div class="ks3-rungs">
+          <sc-for list="{{ markedRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <ul class="ks3-options">
+                <sc-for list="{{ rung.options }}" as="opt" hint-placeholder-count="4">
+                  <li>
+                    <button type="button" class="{{ opt.className }}" onClick="{{ opt.onClick }}" disabled="{{ opt.disabled }}">
+                      <span class="ks3-opt-mark" aria-hidden="true">
+                        <sc-if value="{{ opt.isCorrect }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                        <sc-if value="{{ opt.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                        <sc-if value="{{ opt.showLetter }}" hint-placeholder-val="{{ true }}">{{ opt.letter }}</sc-if>
+                      </span>
+                      <span class="ks3-opt-label">{{ opt.text }}</span>
+                    </button>
+                  </li>
+                </sc-for>
+              </ul>
+              <sc-if value="{{ rung.answered }}">
+                <p class="{{ rung.feedbackClass }}" role="status">
+                  <span class="ks3-feedback-word">
+                    <sc-if value="{{ rung.isRight }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.6 4.5L19 7"></path></svg></sc-if>
+                    <sc-if value="{{ rung.isWrong }}"><svg class="ks3-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 6.5l11 11M17.5 6.5l-11 11"></path></svg></sc-if>
+                    {{ rung.feedbackWord }}</span> {{ rung.feedbackText }}
+                </p>
+              </sc-if>
+            </section>
+          </sc-for>
+
+          <sc-for list="{{ selfRungs }}" as="rung" hint-placeholder-count="2">
+            <section class="ks3-rung ks3-rung-self">
+              <h3>{{ rung.title }}</h3>
+              <p class="ks3-rung-q">{{ rung.question }}</p>
+              <label class="ks3-answer-label" for="{{ rung.fieldId }}">{{ rung.fieldLabel }}</label>
+              <textarea class="ks3-answer" id="{{ rung.fieldId }}" value="{{ rung.value }}" onChange="{{ rung.onChange }}" placeholder="{{ rung.placeholder }}"></textarea>
+              <button type="button" class="ks3-check-btn" onClick="{{ rung.onCheck }}">Check my answer</button>
+              <sc-if value="{{ rung.checked }}">
+                <ul class="ks3-ticks">
+                  <sc-for list="{{ rung.criteria }}" as="crit" hint-placeholder-count="4">
+                    <li class="ks3-tick">
+                      <input type="checkbox" id="{{ crit.id }}" checked="{{ crit.checked }}" onChange="{{ crit.onToggle }}">
+                      <label for="{{ crit.id }}"><span class="ks3-tick-num">{{ crit.num }}</span> {{ crit.text }}</label>
+                    </li>
+                  </sc-for>
+                </ul>
+                <p class="{{ rung.tallyClass }}" role="status">{{ rung.tallyText }}</p>
+              </sc-if>
+            </section>
+          </sc-for>
+        </div>
+
+        <div class="ks3-retry-wrap">
+          <button type="button" class="ks3-retry" onClick="{{ onRetry }}">Retry my misses</button>
+          <p class="ks3-retry-note">Clears the ticks on rungs 3 and 4 and keeps what you wrote.</p>
+        </div>
+      </section>
+
+      <section class="ks3-block ks3-dark ks3-keynote" style="scroll-margin-top: 92px;">
+        <p class="ks3-eyebrow">Key note</p>
+        <p>Random movement, no pushing, no purpose. Particles go from crowded to less crowded because there are more of them to leave the crowded side. Warmer means faster. The movement never stops, even when the spreading looks finished.</p>
+      </section>
+
+      <section class="ks3-layer">
+        <div class="ks3-layer-head">
+          <p class="ks3-eyebrow">Going further</p>
+          <span class="ks3-layer-rule" aria-hidden="true"></span>
+        </div>
+        <div class="ks3-layer-body">
+          <p>In 1827 the botanist Robert Brown watched pollen grains in water through a microscope and found them jittering about, endlessly, with nothing touching them. He could not explain it and nor could anyone else for nearly eighty years. Then in 1905 Einstein worked out that the jitter was exactly what you would see if the water were made of invisible particles battering the grain from every side, slightly unevenly, millions of times a second — and he predicted precisely how far a grain should wander in a given time. When Jean Perrin measured it and the numbers matched, the last serious scientific doubt that atoms exist was gone. A dancing speck of pollen settled it.</p>
+        </div>
+      </section>
+
+      <div class="ks3-endmatter">
+        <section>
+          <h2>Before this lesson</h2>
+          <ul>
+            <li><a href="c1-04-gas-pressure.html">Gas pressure<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>Next in this unit</h2>
+          <ul>
+            <li><a href="c1-06-testing-the-model.html">Testing the model<svg class="ks3-mark ks3-mark-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg></a></li>
+          </ul>
+        </section>
+        <section>
+          <h2>At GCSE this becomes</h2>
+          <p>Rate of diffusion, surface area to volume ratio, and osmosis — diffusion with a membrane in the way.</p>
+        </section>
+        <section class="ks3-tutor">
+          <h2>Ask Mr Badmus AI</h2>
+          <p>Still feels like something must be pushing them?</p>
+          <a class="ks3-tutor-cta" href="#s-walk">Ask about this lesson</a>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="ks3-footer">
+    <p>MrBadmusAI · Key Stage 3 Science</p>
+  </footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;showDraft&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Lesson state&quot;},&quot;startWarm&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Random-walk bench&quot;}}">
+const RAIL = [
+  { id: 's-hook', label: 'The still room', short: 'HOOK' },
+  { id: 's-walk', label: 'Random walk', short: 'WALK' },
+  { id: 's-think', label: 'Wanting to spread', short: 'THINK' },
+  { id: 's-scale', label: 'Distance and time', short: 'SCALE' },
+  { id: 's-ladder', label: 'Mastery ladder', short: 'LADDER' }
+];
+
+const SCALE_CARDS = [
+  { distance: 'Across a cell · 0.01 mm', time: 'Under a millisecond',
+    text: 'Fast enough that a cell needs no delivery system at all. Oxygen simply arrives.' },
+  { distance: 'Across a fingertip · 10 mm', time: 'About three hours',
+    text: 'Already hopeless. This is why you have a bloodstream, and why the blood is never more than a fraction of a millimetre from any cell.' },
+  { distance: 'Across a room · 4 m', time: 'Minutes, in a gas',
+    text: 'Gas particles move far faster and travel further between collisions, so a smell crosses a room while a dye crawls across a tank.' }
+];
+
+const RUNGS = [
+  { id: 'r1', title: 'Rung 1 · Recall',
+    question: 'Diffusion is the movement of particles from where they are…',
+    options: [
+      { text: 'More crowded to where they are less crowded', correct: true },
+      { text: 'Colder to where they are warmer', correction: 'Temperature changes how fast diffusion happens, but the direction is set by crowding.' },
+      { text: 'Lower to where they are higher', correction: 'Diffusion works in every direction, including downwards.' },
+      { text: 'Heavier to where they are lighter', correction: 'Mass affects speed, not the direction of the spread.' }
+    ] },
+  { id: 'r2', title: 'Rung 2 · The one that catches people',
+    question: 'A tank of dye has completely evened out. What is happening to the particles now?',
+    options: [
+      { text: 'They are still moving randomly, with equal numbers crossing each way', correct: true },
+      { text: 'They have stopped, because the job is done', correction: 'Nothing tells a particle the job is done. Movement does not switch off.' },
+      { text: 'They slow down and settle to the bottom', correction: 'Settling is what happens to particles too big to be jostled \u2014 sand, not dye.' },
+      { text: 'They keep moving but only sideways now', correction: 'There is no mechanism that could restrict them to one direction.' }
+    ] }
+];
+
+const SELF_RUNGS = [
+  { id: 'r3', title: 'Rung 3 · Explain',
+    question: 'Explain how the smell of perfume crosses a completely still room, and why it takes minutes rather than seconds even though the particles travel at hundreds of metres per second.',
+    fieldLabel: 'Your explanation',
+    placeholder: 'The perfume particles are already moving…',
+    criteria: [
+      'Says the perfume particles are moving randomly on their own.',
+      'Says no draught, push or carrier is needed.',
+      'Says they collide constantly with air particles.',
+      'Says each collision sends them off in a new direction, so the path is not straight.',
+      'Says the actual distance travelled is enormous compared with the straight-line distance across the room.'
+    ] },
+  { id: 'r4', title: 'Rung 4 · Take it somewhere new',
+    question: 'A drop of food colouring is put into a glass of cold water and an identical drop into a glass of hot water. The hot one spreads much faster. Explain why \u2014 and explain why the cold one still spreads completely if you wait.',
+    fieldLabel: 'Your answer',
+    placeholder: 'In the hot water the particles…',
+    criteria: [
+      'Says particles in hot water have more energy and move faster.',
+      'Says faster movement means the colouring is jostled further in a given time.',
+      'Says the direction of movement is random in both glasses.',
+      'Says the cold glass spreads by exactly the same mechanism, only more slowly.',
+      'Says neither needs stirring \u2014 stirring is a different process that moves whole regions of liquid at once.'
+    ] }
+];
+
+class Component extends DCLogic {
+  state = {
+    hookChoice: null,
+    gate: null,
+    running: false,
+    warm: this.props.startWarm === true,
+    trace: false,
+    everRan: false,
+    even: false,
+    tickCount: 0,
+    thinkChoice: null,
+    answers: { r1: null, r2: null },
+    text: { r3: '', r4: '' },
+    checked: { r3: false, r4: false },
+    ticks: { r3: [], r4: [] },
+    active: 0
+  };
+
+  componentDidMount() {
+    this.io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const i = RAIL.findIndex((r) => r.id === e.target.id);
+        if (i >= 0) this.setState({ active: i });
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    RAIL.forEach((r) => {
+      const el = document.getElementById(r.id);
+      if (el) this.io.observe(el);
+    });
+    this.reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.reset();
+    this.loop();
+  }
+
+  componentWillUnmount() {
+    if (this.io) this.io.disconnect();
+    if (this.raf) cancelAnimationFrame(this.raf);
+  }
+
+  reset() {
+    this.parts = [];
+    for (let i = 0; i < 130; i++) {
+      this.parts.push({ x: 0.04 + Math.random() * 0.13, y: 0.18 + Math.random() * 0.64, side: 0, trail: [] });
+    }
+    this.crossR = 0;
+    this.crossL = 0;
+    this.frames = 0;
+  }
+
+  loop() {
+    this.raf = requestAnimationFrame(() => this.loop());
+    if (this.state.running) this.step();
+    this.draw();
+  }
+
+  step() {
+    const step = (this.state.warm ? 0.011 : 0.0055) * (this.reduced ? 0.4 : 1);
+    this.frames += 1;
+    this.parts.forEach((p, i) => {
+      const a = Math.random() * Math.PI * 2;
+      p.x += Math.cos(a) * step;
+      p.y += Math.sin(a) * step * 1.5;
+      if (p.x < 0.015) p.x = 0.015 + (0.015 - p.x);
+      if (p.x > 0.985) p.x = 0.985 - (p.x - 0.985);
+      if (p.y < 0.03) p.y = 0.03 + (0.03 - p.y);
+      if (p.y > 0.97) p.y = 0.97 - (p.y - 0.97);
+      const side = p.x > 0.5 ? 1 : 0;
+      if (side !== p.side) {
+        if (side === 1) this.crossR += 1; else this.crossL += 1;
+        p.side = side;
+      }
+      if (this.state.trace && i === 0) {
+        p.trail.push([p.x, p.y]);
+        if (p.trail.length > 900) p.trail.shift();
+      }
+    });
+    if (this.frames % 20 === 0) {
+      const right = this.parts.filter((p) => p.x > 0.5).length;
+      const even = Math.abs(right - this.parts.length / 2) < this.parts.length * 0.09;
+      if (even !== this.state.even || this.frames % 40 === 0) this.setState({ even: even, tickCount: this.frames });
+    }
+  }
+
+  draw() {
+    const c = this.walkCanvas;
+    if (!c || !this.parts) return;
+    const ctx = c.getContext('2d');
+    const W = 900, H = 320;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.setTransform(2, 0, 0, 2, 0, 0);
+    ctx.fillStyle = '#FFFDF8';
+    ctx.fillRect(0, 0, W, H);
+
+    const bx = 56, by = 44, bw = W - 112, bh = H - 118;
+    ctx.fillStyle = '#F3F6F5';
+    ctx.fillRect(bx, by, bw, bh);
+
+    // the dividing line the counters use
+    ctx.strokeStyle = '#B9AE9C';
+    ctx.setLineDash([7, 6]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx + bw / 2, by);
+    ctx.lineTo(bx + bw / 2, by + bh);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    if (this.state.trace && this.parts[0].trail.length > 1) {
+      ctx.strokeStyle = 'rgba(26,23,20,0.55)';
+      ctx.lineWidth = 1.4;
+      ctx.beginPath();
+      this.parts[0].trail.forEach((pt, k) => {
+        const x = bx + pt[0] * bw, y = by + pt[1] * bh;
+        k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      });
+      ctx.stroke();
+    }
+
+    this.parts.forEach((p, i) => {
+      const traced = this.state.trace && i === 0;
+      ctx.beginPath();
+      ctx.arc(bx + p.x * bw, by + p.y * bh, traced ? 8 : 5.5, 0, Math.PI * 2);
+      ctx.fillStyle = traced ? '#1A1714' : '#8E44AD';
+      ctx.fill();
+      if (traced) {
+        ctx.strokeStyle = '#E4572E';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+    });
+
+    ctx.strokeStyle = '#1A1714';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(bx, by, bw, bh);
+
+    const left = this.parts.filter((p) => p.x <= 0.5).length;
+    const right = this.parts.length - left;
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('LEFT HALF: ' + left, bx + bw * 0.25, by - 14);
+    ctx.fillText('RIGHT HALF: ' + right, bx + bw * 0.75, by - 14);
+
+    // concentration profile along the tank
+    const bins = 18, counts = new Array(bins).fill(0);
+    this.parts.forEach((p) => { counts[Math.min(bins - 1, Math.floor(p.x * bins))] += 1; });
+    const maxc = Math.max(1, Math.max.apply(null, counts));
+    const py0 = by + bh + 20, ph = 44;
+    counts.forEach((v, i) => {
+      const h = (v / maxc) * ph;
+      ctx.fillStyle = '#8E44AD';
+      ctx.fillRect(bx + (i * bw) / bins + 2, py0 + ph - h, bw / bins - 4, h);
+    });
+    ctx.strokeStyle = '#D9CDBA';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(bx, py0 + ph);
+    ctx.lineTo(bx + bw, py0 + ph);
+    ctx.stroke();
+    ctx.fillStyle = '#6B6055';
+    ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText('HOW CROWDED, ALONG THE TANK', bx, py0 + ph + 18);
+  }
+
+  seg(on, dis) {
+    return 'font:inherit;font-size:16px;font-weight:700;padding:11px 16px;min-height:44px;border-radius:var(--ks3-r-control);cursor:' +
+      (dis ? 'default' : 'pointer') + ';border:2px solid ' + (on ? 'var(--ks3-accent)' : 'var(--ks3-option-border)') +
+      ';background:' + (on ? 'var(--ks3-accent-tint)' : 'var(--ks3-ground)') + ';color:var(--ks3-ink);' + (dis ? 'opacity:.45;' : '');
+  }
+
+  renderVals() {
+    const s = this.state;
+
+    let score = 0;
+    RUNGS.forEach((r) => { if (s.answers[r.id] === r.options.findIndex((y) => y.correct)) score += 1; });
+    SELF_RUNGS.forEach((r) => {
+      const t = s.ticks[r.id] || [];
+      if (s.checked[r.id] && t.filter(Boolean).length === r.criteria.length) score += 1;
+    });
+
+    let walkNote;
+    if (!s.everRan) {
+      walkNote = 'The drop is sitting on the left. Nothing is pushing it, nothing is stirring, and there is no current in the tank. Press start and watch what randomness alone does.';
+    } else if (s.trace) {
+      walkNote = 'The single traced particle is not going anywhere in particular. Its path doubles back on itself constantly \u2014 and the tangle is exactly why crossing a few centimetres takes so long when the particle itself is fast.';
+    } else if (s.even) {
+      walkNote = 'Evened out \u2014 and look at the two crossing counters. They are still climbing, at the same rate as each other. Particles are pouring across the middle in both directions, in equal numbers, forever. Nothing has stopped; the two flows have simply balanced.';
+    } else {
+      walkNote = 'Early on, far more particles cross left-to-right than right-to-left. Not because they know where to go \u2014 because there are more of them on the left available to make the crossing. That imbalance is the whole of diffusion.';
+    }
+
+    return {
+      draftVisible: this.props.showDraft !== false,
+      rail: RAIL.map((r, i) => {
+        const done = (function (id) {
+          if (id === 's-hook') return s.hookChoice !== null;
+          if (id === 's-walk') return s.even;
+          if (id === 's-think') return s.thinkChoice !== null;
+          if (id === 's-scale') return s.thinkChoice !== null;
+          if (id === 's-ladder') return s.answers.r1 !== null && s.answers.r2 !== null && s.checked.r3 && s.checked.r4;
+          return false;
+        })(r.id);
+        const cur = i === s.active;
+        return {
+          href: '#' + r.id, label: r.short, num: String(i + 1),
+          done: done, showNum: !done,
+          hasLine: i < RAIL.length - 1,
+          linkStyle: 'display:flex;flex-direction:column;align-items:center;gap:7px;text-decoration:none;color:inherit;padding:2px 0;',
+          chipStyle: 'display:grid;place-items:center;width:32px;height:32px;border-radius:10px;font-family:var(--ks3-font-display);font-weight:800;font-size:16px;background:' +
+            (done ? 'var(--ks3-accent)' : 'var(--ks3-card)') + ';border:2px solid ' +
+            (done || cur ? 'var(--ks3-ink)' : 'var(--ks3-rule-strong)') + ';color:' +
+            (done ? 'var(--ks3-on-dark)' : cur ? 'var(--ks3-ink)' : 'var(--ks3-ink-ghost)') +
+            ';box-shadow:' + (cur ? '0 0 0 4px var(--ks3-accent-tint)' : 'none') + ';',
+          textStyle: 'font-family:var(--ks3-font-mono);font-size:11px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;text-align:center;line-height:1.2;color:' +
+            (cur ? 'var(--ks3-ink)' : done ? 'var(--ks3-ink-muted)' : 'var(--ks3-ink-ghost)') + ';',
+          lineStyle: 'display:block;width:2px;height:20px;margin:7px 0;background:' + (done ? 'var(--ks3-accent)' : 'var(--ks3-rule)') + ';'
+        };
+      }),
+      railCountLabel: (s.active + 1) + ' / ' + RAIL.length,
+      railCurrentLabel: RAIL[s.active] ? RAIL[s.active].label : RAIL[0].label,
+      railBarStyle: 'display:block;height:100%;width:' + (((s.active + 1) / RAIL.length) * 100) + '%;background:var(--ks3-accent);',
+
+      hookOptions: [
+        { letter: 'A', text: 'A draught too small to see' },
+        { letter: 'B', text: 'The perfume particles moved there themselves, bouncing off air particles' },
+        { letter: 'C', text: 'Warm air rising carried it across' },
+        { letter: 'D', text: 'The particles were attracted towards the empty part of the room' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.hookChoice === i,
+        onClick: () => this.setState({ hookChoice: i })
+      })),
+      hookRevealed: s.hookChoice !== null,
+
+      walkProgress: s.even ? 'evened out' : s.everRan ? 'spreading' : 'not started',
+      gateOpen: s.gate === null,
+      gateOptions: [
+        { letter: 'A', text: 'Nothing — they have stopped where they are' },
+        { letter: 'B', text: 'Still moving randomly, equal numbers crossing each way' },
+        { letter: 'C', text: 'Slowly sinking to the bottom' },
+        { letter: 'D', text: 'Moving, but only away from where they started' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.gate === i,
+        onClick: () => this.setState({ gate: i })
+      })),
+      walkOpen: s.gate !== null,
+      walkRef: (el) => { this.walkCanvas = el; },
+      walkAlt: 'A tank of water with dye particles' + (s.even ? ' spread evenly throughout' : ' concentrated towards the left') +
+        ', and a bar chart underneath showing how crowded each part of the tank is.',
+      crossRight: String(this.crossR || 0),
+      crossLeft: String(this.crossL || 0),
+      evenLabel: s.even ? 'Yes' : 'Not yet',
+      evenColor: s.even ? 'var(--ks3-accent-text)' : 'var(--ks3-ink)',
+      running: s.running,
+      runLabel: s.running ? 'Pause' : (s.everRan ? 'Continue' : 'Start the run'),
+      runStyle: this.seg(s.running, false),
+      onRun: () => this.setState((p) => ({ running: !p.running, everRan: true })),
+      resetStyle: this.seg(false, false),
+      onReset: () => { this.reset(); this.setState({ running: false, even: false, tickCount: 0 }); },
+      traceOn: s.trace,
+      traceLabel: s.trace ? 'Stop following one particle' : 'Follow one particle',
+      traceStyle: this.seg(s.trace, false),
+      onTrace: () => { if (this.parts) this.parts[0].trail = []; this.setState((p) => ({ trace: !p.trace })); },
+      warm: s.warm,
+      warmLabel: s.warm ? 'Cool the water' : 'Warm the water',
+      warmStyle: this.seg(s.warm, false),
+      onWarm: () => this.setState((p) => ({ warm: !p.warm })),
+      walkNote: walkNote,
+
+      thinkOptions: [
+        { letter: 'A', text: 'Nothing — that is a fair description' },
+        { letter: 'B', text: 'Particles cannot want anything; the evenness is what random movement produces' },
+        { letter: 'C', text: 'They spread because they repel each other' },
+        { letter: 'D', text: 'Only gases do this, not liquids' }
+      ].map((op, i) => ({
+        letter: op.letter, text: op.text,
+        pressed: s.thinkChoice === i,
+        onClick: () => this.setState({ thinkChoice: i })
+      })),
+      thinkOpen: s.thinkChoice !== null,
+
+      scaleCards: SCALE_CARDS,
+
+      markedRungs: RUNGS.map((r) => {
+        const chosen = s.answers[r.id];
+        const done = chosen !== null && chosen !== undefined;
+        const correctIndex = r.options.findIndex((y) => y.correct);
+        return {
+          title: r.title, question: r.question,
+          answered: done,
+          isRight: done && chosen === correctIndex,
+          isWrong: done && chosen !== correctIndex,
+          feedbackClass: 'ks3-feedback ' + (chosen === correctIndex ? 'is-correct' : 'is-wrong'),
+          feedbackWord: chosen === correctIndex ? 'Correct.' : 'Not this one.',
+          feedbackText: chosen === correctIndex ? '' : (done ? r.options[chosen].correction : ''),
+          options: r.options.map((op, i) => {
+            const isCorrect = done && i === correctIndex;
+            const isWrong = done && i === chosen && i !== correctIndex;
+            let cls = 'ks3-option';
+            if (done) cls += isCorrect ? ' is-correct' : (isWrong ? ' is-wrong' : ' is-spent');
+            return {
+              text: op.text, className: cls, letter: String.fromCharCode(65 + i),
+              isCorrect: isCorrect, isWrong: isWrong, showLetter: !isCorrect && !isWrong,
+              disabled: done,
+              onClick: () => this.setState((prev) => {
+                if (prev.answers[r.id] !== null && prev.answers[r.id] !== undefined) return null;
+                return { answers: Object.assign({}, prev.answers, { [r.id]: i }) };
+              })
+            };
+          })
+        };
+      }),
+      selfRungs: SELF_RUNGS.map((r) => {
+        const ticks = s.ticks[r.id] || [];
+        const met = ticks.filter(Boolean).length;
+        const all = met === r.criteria.length;
+        return {
+          title: r.title, question: r.question,
+          fieldId: 'ans-' + r.id, fieldLabel: r.fieldLabel, placeholder: r.placeholder,
+          value: s.text[r.id] || '', checked: !!s.checked[r.id],
+          onChange: (e) => this.setState((prev) => ({ text: Object.assign({}, prev.text, { [r.id]: e.target.value }) })),
+          onCheck: () => this.setState((prev) => ({ checked: Object.assign({}, prev.checked, { [r.id]: true }) })),
+          criteria: r.criteria.map((cr, i) => ({
+            id: r.id + '-c' + i, num: String(i + 1), text: cr, checked: !!ticks[i],
+            onToggle: () => this.setState((prev) => {
+              const next = (prev.ticks[r.id] || []).slice();
+              next[i] = !next[i];
+              return { ticks: Object.assign({}, prev.ticks, { [r.id]: next }) };
+            })
+          })),
+          tallyClass: 'ks3-tally' + (all ? ' is-met' : ''),
+          tallyText: all ? 'All ' + r.criteria.length + ' ticked \u2014 rung met.' : met + ' of ' + r.criteria.length + ' ticked \u2014 not yet.'
+        };
+      }),
+      scoreLine: 'You got ' + score + ' of 4.',
+      scoreNote: 'You marked rungs 3 and 4 yourself.',
+      onRetry: () => this.setState({
+        answers: { r1: null, r2: null },
+        checked: { r3: false, r4: false },
+        ticks: { r3: [], r4: [] }
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

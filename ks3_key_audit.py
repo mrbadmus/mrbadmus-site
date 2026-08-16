@@ -1,0 +1,171 @@
+"""Every authored key, against the code that reads it.
+
+MRB-220. The B1 replay shipped 234 authored keys of which **146 were read by
+nothing** — one of them an approved science correction that therefore never
+reached a student. A key with no read site is invisible: the data says the
+lesson teaches something, the page does not, and no gate fires because nothing
+is broken. It is the cheapest possible way to lose content.
+
+    python3 ks3_key_audit.py B2 C1 C2            # audit these units
+    python3 ks3_key_audit.py --control B1 B2 C2  # ...against a known-good unit
+    python3 ks3_key_audit.py --raw B2            # no control, every unread key
+
+Exit status is 1 if any key is read by nothing, so this can gate a build.
+
+── Why there is a CONTROL, and why a bare run over-reports ──────────────
+
+A lesson record mixes two kinds of dict key and only one of them is a schema
+field:
+
+  * **Schema keys** — `rail`, `done_when`, `why_openers`. Named as string
+    literals by a renderer. If one is unread, that is the defect this exists
+    to catch.
+  * **Content keys** — `mitochondria`, `chloroplasts`, `"400"`. Keys of an
+    authored MAP, read by iterating the dict, never by literal name. A
+    renderer that says `for part, val in parts.items()` mentions neither, and
+    it is correct that it does not.
+
+Nothing in the tree distinguishes them structurally, so a bare run reports
+every content key as dead — 150 of them on B1, a unit that is verified and
+correct. That is noise, and a gate that cries wolf is a gate people switch off.
+
+So the default mode is DIFFERENTIAL. B1 is authored, reviewed and shipped, so
+any key unread in B1 is either a content key or a pre-existing condition —
+either way it is not something this run introduced. Subtracting B1's unread
+set leaves the keys that are unread *and new*, which is exactly the failure
+mode: a field authored in this run and never wired.
+
+`--raw` gives the unsubtracted list when you want to audit the control itself.
+
+⚠️ This is a LINT, not a proof. It answers "does any source file mention this
+name?", not "does this lesson's value reach this page". A key named only in a
+comment counts as read, and a key read on a branch that never runs counts as
+read. It catches a field authored and then forgotten. The browser-driven
+assertions in verify_ks3.py are what cover the rest.
+"""
+
+import re
+import sys
+
+# Consumed by ks3_data/__init__.py, structure.py or a unit normaliser rather
+# than by a renderer, so "no read site" is correct for these and not a finding.
+STRUCTURAL = {
+    "code", "slug", "title", "discipline", "unit", "family", "lessons",
+    "statutory_area", "split_rationale", "intro", "id", "kind", "type",
+}
+
+# Every file that legitimately reads an authored key. The generator and the
+# runtime are the obvious two; the gates and the data layer read schema fields
+# the renderers never touch (`covers`, `assumes`, `threads`), and omitting them
+# reports those as dead.
+SOURCES = (
+    "build_ks3.py", "shared/ks3.js", "shared/ks3.css", "ks3_parity.py",
+    "verify_ks3.py", "ks3_data/__init__.py", "ks3_data/structure.py",
+    "ks3_statutory.py", "ks3_data/b1/__init__.py", "ks3_data/b2/__init__.py",
+    "ks3_data/c1/__init__.py", "ks3_data/c2/__init__.py",
+)
+
+
+def _keys(node, out):
+    """Every dict key appearing anywhere in a literal tree."""
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if isinstance(k, str):
+                out.add(k)
+            _keys(v, out)
+    elif isinstance(node, (list, tuple)):
+        for v in node:
+            _keys(v, out)
+
+
+def unit_keys(unit):
+    """lesson slug -> set of every key in that lesson record."""
+    per = {}
+    for lesson in unit.get("lessons") or []:
+        ks = set()
+        _keys(lesson, ks)
+        per[lesson.get("slug") or "?"] = ks
+    return per
+
+
+def read_sites():
+    """Every identifier the generator, runtime, gates and data layer mention."""
+    seen = set()
+    for path in SOURCES:
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                src = fh.read()
+        except OSError:
+            continue
+        seen |= set(re.findall(r"[\"']([A-Za-z_0-9][A-Za-z0-9_+\- ]*)[\"']", src))
+        seen |= set(re.findall(r"\.get\(\s*[\"']([^\"']+)[\"']", src))
+        seen |= set(re.findall(r"\.([A-Za-z_][A-Za-z0-9_]*)\b", src))
+    return seen
+
+
+def main(argv):
+    sys.path.insert(0, ".")
+    import ks3_data
+
+    args = [a for a in argv[1:]]
+    raw = "--raw" in args
+    if raw:
+        args.remove("--raw")
+    control = "B1"
+    if "--control" in args:
+        i = args.index("--control")
+        control = args[i + 1]
+        del args[i:i + 2]
+    wanted = {a.upper() for a in args}
+
+    units = {(u.get("code") or "").upper(): u for u in ks3_data.build_units()}
+    targets = [c for c in sorted(wanted or units) if c in units]
+    if not targets:
+        print("no units matched %s" % (sorted(wanted) or "<all>"))
+        return 1
+
+    reads = read_sites()
+
+    def unread(code):
+        out = {}
+        for slug, keys in unit_keys(units[code]).items():
+            dead = {k for k in keys if k not in STRUCTURAL and k not in reads}
+            if dead:
+                out[slug] = dead
+        return out
+
+    baseline = set()
+    if not raw and control in units:
+        for dead in unread(control).values():
+            baseline |= dead
+        print("control: %s — %d unread key name(s) subtracted as content keys "
+              "or pre-existing\n" % (control, len(baseline)))
+
+    total = 0
+    for code in targets:
+        if not raw and code == control:
+            continue
+        found = {slug: sorted(d - baseline) for slug, d in unread(code).items()}
+        found = {s: d for s, d in found.items() if d}
+        n = sum(len(d) for d in found.values())
+        keys_seen = sum(len(k) for k in unit_keys(units[code]).values())
+        if n:
+            total += n
+            print("%s — %d key(s) read by NOTHING" % (code, n))
+            for slug, dead in sorted(found.items()):
+                print("   %-34s %s" % (slug, ", ".join(dead)))
+        else:
+            print("%-4s ✓ every authored key has a read site "
+                  "(%d keys over %d lessons)"
+                  % (code, keys_seen, len(unit_keys(units[code]))))
+
+    if total:
+        print("\n✗ %d authored key(s) read by nothing. A key with no read "
+              "site is content that never reaches a student." % total)
+        return 1
+    print("\n✓ no dead authored keys")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

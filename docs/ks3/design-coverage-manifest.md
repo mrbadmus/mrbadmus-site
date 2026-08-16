@@ -905,15 +905,41 @@ and the build fails naming the family.
 | INVESTIGATION | 18 | `docs/ks3/design-reference/b1/b1-02-using-a-microscope.dc.html` | Mide, 12 Aug 2026 |
 | CONTRAST | 18 | `docs/ks3/design-reference/b1/b1-06-unicellular-organisms.dc.html` | Mide, 12 Aug 2026 |
 | CLASSIFY | 15 | `docs/ks3/design-reference/b1/b1-01-life-processes.dc.html` | Mide, 12 Aug 2026 |
-| QUANTITATIVE | 17 | — NONE — | ✗ NOT DRAWN |
+| QUANTITATIVE | 17 | `docs/ks3/design-reference/b2/b2-04-biomechanics-forces-in-the-body.dc.html` | Design delivered 15 Aug 2026 · **awaiting Mide** |
 
-**QUANTITATIVE is deliberately unrowed.** Seventeen slots, no approved screen, no authored
-lesson. The first person to author one will be stopped by this table rather than by Mide
-finding it at sign-off. That is the whole point of the section.
+⊕ **QUANTITATIVE rowed 16 Aug 2026 (MRB-220). It was the last unrowed family.** Design's B2/C1/C2
+delivery includes two QUANTITATIVE pages — `b2-04 biomechanics-forces-in-the-body` and
+`c2-06 conservation-of-mass` — so the drawing now exists, which is the only thing §10.1 asks for.
+
+`b2-04` is named as the screen because it is the **product** case, and products are the majority
+shape across the seventeen slots (speed, density, pressure, moments). It carries the MRB-204
+four-part treatment in full: the formula alone in its own block, the drawn triangle, the
+staged-reveal worked example, and the student filling the same steps before any independent
+question.
+
+`c2-06` is the **sum** case and is the second screen for the family, not a competitor to the first:
+
+| Relationship | Drawn as | Screen |
+|---|---|---|
+| product — `A = B × C` | triangle | `b2-04` |
+| sum / conservation — `before = after` | balance beam + part–whole bar | `c2-06` |
+
+Under **MRB-204 as amended 15 Aug 2026**, that split is the ruling rather than a divergence from
+it: a triangle encodes one quantity as the product or quotient of two others, and *everything
+before = everything after* is neither, so drawing it as a triangle would teach a false
+relationship to make a rule fit. Measured on the page, `c2-06` contains the word "triangle" **zero
+times**; it draws a level beam with two pans, and a part–whole bar whose parts sum to the whole to
+the pixel (296 + 8 gap + 146 = 450). Design flagged this as an open question (NOTES-C2 flag 14);
+the amendment answers it and the page is already compliant. **No redraw is needed.**
+
+The **Approved** column is deliberately not "Mide, 16 Aug 2026". Design has drawn it and the
+family is unblocked for authoring, but the science on both pages is `draft` and Mide has not
+reviewed either. The row records who drew it and when, and that his gate is still ahead.
 
 Before the B1 delivery, SYSTEM and CLASSIFY were unrowed too — 32 + 15 = **47 of the 183
 slots**, every one of which would have inherited whatever Code invented. Design's approved
-B1 pages are what closed them.
+B1 pages are what closed them; this delivery closes the last 17, and **every one of the seven
+families now has a screen.**
 
 ### 10.2 Block type → the registered components that gate it
 
