@@ -8939,3 +8939,980 @@ body.rd[data-mode="ks3"] {
 .ks3-dark .ks3-tbench-why,
 .ks3-dark .ks3-tbench-claim { color: var(--ks3-ink); }
 /* ═══ END B3 ═══ */
+
+/* ═══ BEGIN B4 ═══ */
+
+/* ── B4 · Breathing and gas exchange (⊕ MRB-244) ──
+   Five instruments, and every one of them on ink.
+
+   ⚠️ SPECIFICITY, AND ON THIS UNIT IT IS LOAD-BEARING FIVE TIMES OVER.
+   `.ks3-dark p` is (0,1,1) and every bare class below is (0,1,0), so an
+   unscoped `color` LOSES. Every B4 practical is
+   `ks3-block ks3-dark ks3-practical` — measured on all five pages, no
+   exceptions — so unlike B2, where the trap could catch one block, here it
+   would catch the whole unit in one pass and each page would still look tidy.
+   Every colour rule is written under `.ks3-dark …` at (0,2,0); geometry is
+   safe unscoped, because `.ks3-dark p` sets colour and nothing else.
+
+   The five panels that INVERT to the cream ground inside the ink block are the
+   dangerous ones — gas-compare's closing paragraph, bell-jar's chain,
+   crossing-counter's note, fault-bench's reveal and two-process-ledger's
+   verdict. Each has to be pulled back to ink explicitly or `.ks3-dark p`
+   paints #E7DECE on #FBF3E6 at about 1.2:1: text that is present, correct,
+   and invisible.
+
+   ⊕ SIX ELEMENTS, NOT FIVE PANELS, AND THE DIFFERENCE COST A DEFECT. Counting
+   PANELS is what let `.ks3-bell-chainlabel` ship invisible: the chain panel was
+   on the list, its steps and its note were rescued, and its LABEL — a seventh
+   `<p>` in the same cream panel — was not. `.ks3-dark p` beat it at (0,1,1)
+   and it rendered #E7DECE on #FBF3E6 at 1.21:1 in all three phases. The list
+   that matters is therefore of ELEMENTS:
+
+     `.ks3-gas-close` · `.ks3-bell-chainlabel` · `.ks3-bell-step` ·
+     `.ks3-bell-note` · `.ks3-cross-note` · `.ks3-fault-verdict` ·
+     `.ks3-fault-answer` · `.ks3-fault-row dt` · `.ks3-fault-row dd` ·
+     `.ks3-tpl-vtag` · `.ks3-tpl-vhead` · `.ks3-tpl-vwhy`
+
+   Every one has a `.ks3-dark …` rule below at (0,2,0). Add a text element to
+   any cream panel in this unit and it joins this list in the same commit.
+
+   ⚠️ NO `display` ON ANYTHING THAT ALSO TAKES `[hidden]`. An author `display`
+   beats the UA stylesheet's `[hidden] { display: none }` regardless of
+   specificity — the defect that has now cost seven builds. The elements that
+   are hidden at rest in this unit are: `.ks3-gas-table`, `.ks3-gas-close`,
+   `.ks3-bell-phaseval` / `-airval` / `-diaval`, `.ks3-bell-chain`,
+   `.ks3-bell-note`, `.ks3-cross-note`, `.ks3-fault-scenario`,
+   `.ks3-fault-reveal`, `.ks3-fault-verdict span`, `.ks3-tpl-flownote[data-note]`
+   and `.ks3-tpl-verdict`. Not one of them is given a `display` here, and the
+   two places where a hidden element genuinely needs one when shown carry an
+   explicit `[hidden] { display: none }` companion. */
+
+/* ── the B4 range control (b4-02, b4-05) ──
+   ⚠️ NOT `.ks3-slider`, and the difference is measured rather than a
+   preference. B2's control is a 28px thumb, 28px tall, on a
+   `--ks3-dark-track`. Design draws B4's at 30px, 38px tall, on a
+   `--ks3-dark-panel` track. Three properties, and reusing B2's would silently
+   redraw a control Design specified twice, identically, on two pages. This is
+   the same call `.ks3-gut-tab` made against `.ks3-seg-btn`. */
+.ks3-b4slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 38px;
+  margin: 12px 0 0;
+  background: transparent;
+  cursor: pointer;
+}
+.ks3-b4slider::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-b4slider::-moz-range-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+.ks3-b4slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  margin-top: -12px;
+  border-radius: 50%;
+  background: var(--ks3-alert);
+  border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-b4slider::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--ks3-alert);
+  border: 3px solid var(--ks3-ink);
+  cursor: pointer;
+}
+.ks3-b4slider:focus-visible {
+  outline: var(--ks3-r-focus) solid var(--ks3-accent);
+  outline-offset: 3px;
+}
+
+/* ═══ gas-compare (b4-01 #s-air) ══════════════════════════════════════════
+   Four gases, a prediction on each, then both bags side by side.
+
+   ⚖️ THE BAR IS CLAMPED AND THE NUMERAL IS NOT. Carbon dioxide inhaled is
+   0.04% and its bar is drawn at the payload's `min_bar_pct`, about thirty-
+   seven times too wide, because a truthful bar there is zero pixels. The
+   figure beside it is the correction, which is why `.ks3-gas-num` sits
+   ABOVE the track in every cell and is never smaller than the bar it
+   corrects. Do not move it below, and do not drop it on a narrow screen. */
+.ks3-gas { margin-top: 22px; }
+
+.ks3-gas-rows {
+  list-style: none;
+  margin: 22px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.ks3-gas-row {
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid transparent;
+}
+.ks3-gas-rowname { margin: 0; font-size: 19px; font-weight: 700; }
+.ks3-gas-choices {
+  margin-top: 11px;
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-gas-choice {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 15px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+/* ⚖️ THE ROW LOCKS AT THE REVEAL, and the lock is drawn on the buttons that
+   were NOT chosen. R3: nothing marks correctness while the prediction is
+   being made, so this state cannot exist before `[data-open="1"]`. */
+.ks3-gas[data-open="1"] .ks3-gas-choice { cursor: default; }
+.ks3-gas[data-open="1"] .ks3-gas-choice[aria-pressed="false"] { opacity: .45; }
+
+.ks3-gas-foot {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-gas-open[disabled] { opacity: .45; cursor: default; }
+.ks3-gas-open[disabled]:hover { transform: none; }
+.ks3-gas-count {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+
+/* ⚠️ NO `display` HERE. `.ks3-gas-table` is emitted `hidden`. */
+.ks3-gas-table {
+  margin-top: 22px;
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-rule-strong);
+  background: var(--ks3-inset);
+  overflow: hidden;
+}
+/* ⚠️ FLEX, NOT GRID, and that is Design's own choice rather than a
+   simplification: the name column is fixed at 152px and the two data cells
+   flex from 190px, so on a narrow screen the name takes a full row and the
+   two bags sit side by side underneath — which is the comparison the block
+   is for. A three-column grid would stack all three and put the bags on
+   different screens. */
+.ks3-gas-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: flex-start;
+}
+.ks3-gas-head { padding: 13px 16px; background: rgba(0, 0, 0, .28); }
+.ks3-gas-body {
+  padding: 15px 16px;
+  align-items: start;
+  border-top: 2px solid rgba(255, 255, 255, .12);
+}
+.ks3-gas-body[data-band="1"] { background: rgba(255, 255, 255, .03); }
+.ks3-gas-hname,
+.ks3-gas-name { flex: 0 0 152px; }
+.ks3-gas-hcell,
+.ks3-gas-cell { flex: 1 1 190px; min-width: 0; }
+.ks3-gas-hname {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+.ks3-gas-hcell {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 17px;
+}
+.ks3-gas-gname { margin: 0; font-size: 18px; font-weight: 700; }
+.ks3-gas-verdict {
+  margin: 3px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+}
+/* The per-cell caption is a NARROW-SCREEN affordance: the head row goes away
+   below 880px and each figure has to say for itself which bag it came from.
+   It carries `display` and never carries `[hidden]`. */
+.ks3-gas-cap { display: none; }
+.ks3-gas-num {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+}
+.ks3-gas-track {
+  display: block;
+  margin-top: 5px;
+  height: 12px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-rule);
+  overflow: hidden;
+}
+.ks3-gas-bar {
+  display: block;
+  height: 100%;
+  background: var(--ks3-rule-strong);
+  transition: width .4s ease;
+}
+/* ⚠️ NO `display`. `.ks3-gas-close` is emitted `hidden`. */
+.ks3-gas-close {
+  margin: 18px 0 0;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+}
+.ks3-gas-close strong { font-family: var(--ks3-font-display); }
+
+/* ⚠️ A MEDIA QUERY ADDS NO SPECIFICITY, and this block is where that bit me.
+   `.ks3-gas-cap` in here is (0,1,0) whatever it is wrapped in, so `.ks3-dark p`
+   at (0,1,1) still wins — which meant the cap was rendering `--ks3-on-dark-body`
+   and was READABLE BY ACCIDENT at 8.77:1, with the authored colour never
+   applied and therefore never checked.
+
+   ⚠️ AND THE COLOUR IT WAS TRYING TO APPLY WAS THE WRONG TOKEN, which is why
+   the cascade bug had to be fixed with it rather than before it.
+   `--ks3-accent-text` #A93411 is the CREAM-GROUND orange (tokens.css says so
+   in as many words); on the `--ks3-dark-panel` this cap actually sits on it
+   measures 1.78:1. Scoping the rule without changing the token would have
+   turned a lucky pass into a real failure, and the fix would have looked
+   exactly like the defect.
+
+   The cap REPLACES the head row below 880px, so it takes the head row's own
+   colour: `--ks3-on-dark-muted`, as `.ks3-gas-hname` does, at 6.2:1. */
+@media (max-width: 880px) {
+  .ks3-gas-name { flex: 1 1 100%; }
+  .ks3-gas-head { display: none; }
+  .ks3-gas-cap {
+    display: block;
+    margin: 0 0 3px;
+    font-family: var(--ks3-font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--ks3-ink-muted);
+  }
+  .ks3-dark .ks3-gas-cap { color: var(--ks3-on-dark-muted); }
+}
+
+/* ── gas-compare on ink ────────────────────────────────────────────────── */
+.ks3-dark .ks3-gas-row { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-gas-rowname,
+.ks3-dark .ks3-gas-gname,
+.ks3-dark .ks3-gas-num { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-gas-choice {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-gas-choice[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+/* ⚖️ RIGHT KEEPS ITS PANEL, WRONG LOSES IT. This is not marking — the reveal
+   has already happened and the answer is on screen either way. It is the row
+   saying which of the four predictions the student got, in the one place they
+   are looking. */
+.ks3-dark .ks3-gas-row[data-verdict="right"] {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-alert);
+}
+.ks3-dark .ks3-gas-row[data-verdict="wrong"] {
+  background: transparent;
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-gas-count,
+.ks3-dark .ks3-gas-hname,
+.ks3-dark .ks3-gas-verdict { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-gas-table {
+  border-color: var(--ks3-on-dark-muted);
+  background: var(--ks3-dark-panel);
+}
+.ks3-dark .ks3-gas-hcell { color: var(--ks3-on-dark); }
+/* The exhaled column is the one that changed, and it is alert in the heading,
+   in the figure and in the bar — three places, one colour, so a student can
+   follow one bag down the table. */
+.ks3-dark .ks3-gas-hcell[data-side="out"],
+.ks3-dark .ks3-gas-cell[data-side="out"] .ks3-gas-num { color: var(--ks3-alert); }
+.ks3-dark .ks3-gas-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-gas-bar { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-gas-cell[data-side="out"] .ks3-gas-bar { background: var(--ks3-alert); }
+/* ⚠️ (0,2,0). The closing paragraph sits on the CREAM ground inside the ink
+   block; unscoped, `.ks3-dark p` paints it #E7DECE on #FBF3E6. */
+.ks3-dark .ks3-gas-close { color: var(--ks3-ink); }
+
+/* ═══ bell-jar (b4-02 #s-model) ═══════════════════════════════════════════
+   ⚖️ THE CHAIN IS THE INSTRUMENT, NOT THE PICTURE. The jar is a rectangle
+   whose height scales and a circle that scales with it; the chain is four
+   ordered lines whose first is always the muscle and whose last is always the
+   air. That is why the chain gets the cream panel, the largest type in the
+   block and the whole width, and the jar gets a 250px column. */
+.ks3-bell { margin-top: 22px; }
+
+.ks3-bell-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  gap: 18px;
+  align-items: start;
+}
+.ks3-bell-card {
+  padding: 22px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-bell-cap {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-bell-jar {
+  height: 220px;
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  border: 3px solid var(--ks3-rule-strong);
+  border-radius: 6px 6px 14px 14px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, .04);
+}
+/* The chest's HEIGHT is the volume and its border-top is the diaphragm. Both
+   are set inline by the wiring, because the control is continuous and there
+   are 101 of them. */
+.ks3-bell-chest {
+  position: relative;
+  display: block;
+  height: 40%;
+  background: rgba(255, 255, 255, .07);
+  border-top: 4px solid var(--ks3-alert);
+  transition: height .35s ease, background-color .35s ease;
+}
+.ks3-bell-lung {
+  position: absolute;
+  left: 50%;
+  top: 12px;
+  width: 54px;
+  height: 54px;
+  margin-left: -27px;
+  border-radius: 50%;
+  border: 3px solid var(--ks3-on-dark);
+  background: rgba(255, 255, 255, .10);
+  transition: transform .35s ease;
+}
+.ks3-bell-phase {
+  margin: 12px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+.ks3-bell-reads { margin: 12px 0 0; }
+.ks3-bell-read {
+  padding: 11px 0;
+  border-top: 2px solid var(--ks3-rule);
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-bell-read dt { margin: 0; font-size: 17px; }
+.ks3-bell-read dd {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 18px;
+  font-weight: 500;
+  text-align: right;
+}
+.ks3-bell-control {
+  margin-top: 18px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-bell-controlhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-bell-controlhead .ks3-bell-cap { font-size: 14px; }
+.ks3-bell-dia {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+.ks3-bell-presets {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.ks3-bell-chainpanel {
+  margin-top: 18px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-bell-chainlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+/* ⚠️ NO `display`. Two of the three chains are emitted `hidden`, and an
+   `<ol>` is `display: block` from the UA stylesheet anyway. */
+.ks3-bell-chain {
+  margin: 12px 0 0;
+  padding-left: 24px;
+  font-size: 18px;
+  line-height: 1.65;
+}
+.ks3-bell-step { margin: 0 0 7px; color: var(--ks3-ink); }
+/* ⚖️ THE RESTING CHAIN IS MUTED, and it is the only one that is. Design greys
+   the whole list at rest because at rest the chain is not describing anything
+   that is happening — "No net air movement in either direction." The moment
+   the slider moves off `rest` the lines go to full ink. */
+.ks3-bell-chain[data-chain="rest"] .ks3-bell-step { color: var(--ks3-ink-muted); }
+/* ⚠️ NO `display`. Two of the three notes are emitted `hidden`. */
+.ks3-bell-note {
+  margin: 14px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── bell-jar on ink ───────────────────────────────────────────────────── */
+.ks3-dark .ks3-bell-card,
+.ks3-dark .ks3-bell-control { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-bell-cap { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-bell-jar {
+  border-color: var(--ks3-on-dark-muted);
+  background: rgba(255, 255, 255, .04);
+}
+.ks3-dark .ks3-bell-phase,
+.ks3-dark .ks3-bell-dia { color: var(--ks3-alert); }
+/* ⚖️ THE CHEST WARMS ON THE WAY IN. The tint is `--ks3-accent` at 20% and it
+   is the only place in B4 the orange appears inside an instrument: the jar has
+   no numbers on it, so the fill is the only thing saying which half of the
+   breath the picture is showing. */
+.ks3-dark .ks3-bell-chest[data-phase-now="in"] {
+  background: rgba(228, 87, 46, .20);
+}
+.ks3-dark .ks3-bell-read { border-top-color: rgba(255, 255, 255, .12); }
+.ks3-dark .ks3-bell-read dt { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-bell-read dd { color: var(--ks3-on-dark); }
+/* ⚠️ (0,2,0), and the four lines this protects are the lesson. The chain sits
+   on the CREAM ground inside the ink block; unscoped it is #E7DECE on
+   #FBF3E6 — four invisible steps and an invisible note, in the one component
+   NOTES-B4 §3.2 says the lesson dies without. */
+/* ⊕ THE LABEL, AND IT IS THE ONE THAT SHIPPED WRONG. `.ks3-bell-chainlabel` is
+   a `<p>` in the same cream panel as the steps it heads, so it loses to
+   `.ks3-dark p` (0,1,1) exactly as they do — but it was missing from this
+   block while they were in it, and rendered #E7DECE on #FBF3E6 at 1.21:1 in
+   all three phases: `THE ORDER OF EVENTS` invisible above four visible steps.
+   It is not the steps' rule because it does not take their colour: it is the
+   accent eyebrow, the same treatment `.ks3-tpl-vtag` takes on b4-05, at
+   5.98:1. */
+.ks3-dark .ks3-bell-chainlabel { color: var(--ks3-accent-text); }
+.ks3-dark .ks3-bell-step { color: var(--ks3-ink); }
+.ks3-dark .ks3-bell-chain[data-chain="rest"] .ks3-bell-step {
+  color: var(--ks3-ink-muted);
+}
+.ks3-dark .ks3-bell-note { color: var(--ks3-ink); }
+
+/* ═══ crossing-counter (b4-03 #s-gradient) ════════════════════════════════
+   ⚖️ TWO BARS, AND THE OUTWARD ONE IS DRAWN AS SERIOUSLY AS THE INWARD ONE.
+   It is `--ks3-on-dark-muted` against the inward bar's alert, which is a
+   figure/ground distinction and not a demotion: the same pairing the gas
+   table uses for inhaled against exhaled. What it must never become is
+   absent. */
+.ks3-cross { margin-top: 22px; }
+
+.ks3-cross-switches {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.ks3-cross-switch {
+  cursor: pointer;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 12px 18px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-cross-panel {
+  margin-top: 20px;
+  padding: 24px 26px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-cross-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(190px, 100%), 1fr));
+  gap: 14px;
+}
+.ks3-cross-tile {
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+}
+.ks3-cross-tilelabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cross-tileval {
+  margin: 5px 0 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ks3-ink);
+}
+.ks3-cross-bars {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ks3-cross-barhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ks3-cross-barname { margin: 0; font-size: 17px; font-weight: 600; }
+.ks3-cross-barval {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+}
+.ks3-cross-track {
+  display: block;
+  margin-top: 6px;
+  height: 20px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-rule);
+  overflow: hidden;
+}
+.ks3-cross-fill {
+  display: block;
+  height: 100%;
+  background: var(--ks3-rule-strong);
+  transition: width .4s ease;
+}
+/* ⚠️ NO `display`. Three of the four notes are emitted `hidden`. */
+.ks3-cross-note {
+  margin: 20px 0 0;
+  padding: 17px 19px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* ── crossing-counter on ink ───────────────────────────────────────────── */
+.ks3-dark .ks3-cross-switch {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-cross-switch[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-cross-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-cross-tile { background: rgba(255, 255, 255, .06); }
+.ks3-dark .ks3-cross-tilelabel { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-cross-tileval { color: var(--ks3-on-dark); }
+/* The NET tile is the only alert-coloured figure in the panel, because it is
+   the only one that is a difference rather than a reading. */
+.ks3-dark .ks3-cross-tile[data-tone="net"] .ks3-cross-tileval {
+  color: var(--ks3-alert);
+}
+.ks3-dark .ks3-cross-barname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-cross-barval { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-cross-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-cross-fill[data-fill="in"] { background: var(--ks3-alert); }
+.ks3-dark .ks3-cross-fill[data-fill="out"] { background: var(--ks3-on-dark-muted); }
+/* ⚠️ (0,2,0) — cream panel inside the ink block. */
+.ks3-dark .ks3-cross-note { color: var(--ks3-ink); }
+
+/* ═══ fault-bench (b4-04 #s-bench) ════════════════════════════════════════
+   ⚖️ THE REVEAL IS NEVER WITHHELD FOR A WRONG ANSWER, so there is no
+   "wrong" treatment on the panel — only a verdict line saying which of the
+   two happened, in the same mono eyebrow either way. Nothing here is red and
+   nothing is green: this is a diagnosis, not a mark. */
+.ks3-fault { margin-top: 22px; }
+
+.ks3-fault-tabs {
+  display: flex;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+.ks3-fault-tab {
+  cursor: pointer;
+  font: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 11px 17px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-fault-scenarios { margin-top: 20px; }
+/* ⚠️ NO `display`. All but one scenario is emitted `hidden`. */
+.ks3-fault-scenario {
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+}
+.ks3-fault-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-fault-text { margin: 8px 0 0; font-size: 20px; line-height: 1.5; }
+.ks3-fault-q {
+  margin: 20px 0 9px;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-fault-foot {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-fault-open[disabled] { opacity: .45; cursor: default; }
+.ks3-fault-open[disabled]:hover { transform: none; }
+.ks3-fault-hint {
+  font-family: var(--ks3-font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ks3-ink-muted);
+}
+/* ⚠️ NO `display`. Every reveal is emitted `hidden`, and stays hidden until
+   this factor's own button is pressed. */
+.ks3-fault-reveal {
+  margin-top: 20px;
+  padding: 24px 26px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-fault-verdict {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-fault-answer {
+  margin: 9px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 25px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+.ks3-fault-rows { margin: 16px 0 0; }
+.ks3-fault-row { padding: 13px 0; border-top: 2px solid var(--ks3-rule); }
+.ks3-fault-row dt {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-fault-row dd {
+  margin: 5px 0 0;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-body);
+}
+
+/* ── fault-bench on ink ────────────────────────────────────────────────── */
+.ks3-dark .ks3-fault-tab {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-fault-tab[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-fault-scenario { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-fault-tag,
+.ks3-dark .ks3-fault-q,
+.ks3-dark .ks3-fault-hint { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-fault-text { color: var(--ks3-on-dark); }
+/* ⚠️ (0,2,0). The whole reveal — verdict, headline and eight paragraphs
+   across four rows — is on the CREAM ground inside the ink block. This is the
+   largest run of text in the unit that `.ks3-dark p` would swallow. */
+.ks3-dark .ks3-fault-answer { color: var(--ks3-ink); }
+.ks3-dark .ks3-fault-row dt { color: var(--ks3-ink-muted); }
+.ks3-dark .ks3-fault-row dd { color: var(--ks3-ink-body); }
+.ks3-dark .ks3-fault-verdict { color: var(--ks3-accent-text); }
+
+/* ═══ two-process-ledger (b4-05 #s-ledger) ════════════════════════════════
+   ⚖️ THE TOP BAR NEVER MOVES. `[data-fill="resp"]` has its width written once,
+   at build time, from `resp_rate` — nothing in `shared/ks3.js` touches it, and
+   nothing here transitions it, because it has nothing to transition to. The
+   whole lesson is a student dragging the light from one end to the other and
+   watching it refuse to move.
+
+   ⚖️ THE NET BAR IS THE ONLY THREE-COLOUR ELEMENT IN THE KEY STAGE, and the
+   three are a sign rather than a judgement: `--ks3-ok` for uptake,
+   `--ks3-alert` for release, `--ks3-blue` at the compensation point. Blue is
+   used nowhere else in B4, which is what makes the balanced state read as a
+   third thing rather than as a weak version of one of the other two. */
+.ks3-tpl { margin-top: 22px; }
+
+.ks3-tpl-control {
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-tpl-controlhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ks3-tpl-cap {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-tpl-light {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--ks3-accent-text);
+}
+.ks3-tpl-presets {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+.ks3-tpl-preset {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 10px 15px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-tpl-panel {
+  margin-top: 18px;
+  padding: 24px 26px;
+  border-radius: var(--ks3-r-card);
+  background: var(--ks3-inset);
+}
+.ks3-tpl-flows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.ks3-tpl-flowhead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ks3-tpl-flowname { margin: 0; font-size: 18px; font-weight: 700; }
+.ks3-tpl-flowval {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 17px;
+  font-weight: 500;
+}
+.ks3-tpl-track {
+  display: block;
+  margin-top: 6px;
+  height: 22px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-rule);
+  overflow: hidden;
+}
+.ks3-tpl-fill {
+  display: block;
+  height: 100%;
+  background: var(--ks3-rule-strong);
+  transition: width .35s ease, background-color .35s ease;
+}
+/* ⚠️ NO `display`. One of the photosynthesis notes is always `hidden`. */
+.ks3-tpl-flownote { margin: 6px 0 0; font-size: 17px; line-height: 1.5; }
+.ks3-tpl-verdicts {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+/* ⚠️ NO `display`. Two of the three verdicts are emitted `hidden`. */
+.ks3-tpl-vtag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-tpl-vhead {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 800;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: -.02em;
+  color: var(--ks3-ink);
+}
+.ks3-tpl-vwhy {
+  margin: 11px 0 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ks3-ink-body);
+}
+
+/* ── two-process-ledger on ink ─────────────────────────────────────────── */
+.ks3-dark .ks3-tpl-control,
+.ks3-dark .ks3-tpl-panel { background: var(--ks3-dark-panel); }
+.ks3-dark .ks3-tpl-cap { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tpl-light { color: var(--ks3-alert); }
+.ks3-dark .ks3-tpl-preset {
+  border-color: var(--ks3-on-dark-muted);
+  background: transparent;
+  color: var(--ks3-on-dark);
+}
+.ks3-dark .ks3-tpl-preset[aria-pressed="true"] {
+  background: var(--ks3-alert);
+  border-color: var(--ks3-alert);
+  color: var(--ks3-ink);
+}
+.ks3-dark .ks3-tpl-flowname { color: var(--ks3-on-dark); }
+.ks3-dark .ks3-tpl-flowval { color: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tpl-flownote { color: var(--ks3-on-dark-body); }
+.ks3-dark .ks3-tpl-track { background: rgba(255, 255, 255, .08); }
+.ks3-dark .ks3-tpl-fill[data-fill="resp"] { background: var(--ks3-on-dark-muted); }
+.ks3-dark .ks3-tpl-fill[data-fill="photo"] { background: var(--ks3-ok); }
+.ks3-dark .ks3-tpl-fill[data-tone="uptake"] { background: var(--ks3-ok); }
+.ks3-dark .ks3-tpl-fill[data-tone="release"] { background: var(--ks3-alert); }
+.ks3-dark .ks3-tpl-fill[data-tone="balanced"] { background: var(--ks3-blue); }
+/* ⚠️ (0,2,0) — the verdict panel is cream inside the ink block, and its three
+   paragraphs are where the compensation point is explained. */
+.ks3-dark .ks3-tpl-vhead { color: var(--ks3-ink); }
+.ks3-dark .ks3-tpl-vwhy { color: var(--ks3-ink-body); }
+.ks3-dark .ks3-tpl-vtag { color: var(--ks3-accent-text); }
+
+/* ── B4 · reduced motion ───────────────────────────────────────────────────
+   ⊖ THERE IS NO B4 REDUCED-MOTION BLOCK, DELIBERATELY, and this comment is
+   here so the next pass does not add one back.
+
+   The first cut of this file listed B4's five transitioning elements under
+   `@media (prefers-reduced-motion: reduce) { … transition: none }`. It was
+   dead: R6's platform rule above (`*, *::before, *::after {
+   transition-duration: .001ms !important }`) already covers every transition
+   on every page, and `!important` beats a later bare declaration, so the B4
+   block could never win and never needed to. Measured in a browser under
+   emulated `prefers-reduced-motion: reduce`: the five elements compute to
+   1e-06s from the platform rule with the B4 block present and without it.
+   Dead CSS is evidence to a grep and nothing to a browser.
+
+   What makes the unit safe under reduced motion is not CSS anyway. NOTES-B4
+   §6 records that nothing in B4 animates and nothing uses a timer; there is no
+   rAF loop in any of the five wire functions, so there is no tick that would
+   have to test the query inside itself (MRB-220 R4). The bars and the jar jump
+   to their new values instead of easing to them, every figure and every
+   sentence is unchanged, and the reduced-motion experience is the complete
+   one. */
+
+/* ═══ END B4 ═══ */
+

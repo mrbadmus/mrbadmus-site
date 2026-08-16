@@ -20,8 +20,8 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 |---|---|
 | `drafted` | 1 |
 | `final` | 1 |
-| `needed` | 4 |
-| **Total** | **6** |
+| `needed` | 5 |
+| **Total** | **7** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -35,3 +35,4 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x400` | micrograph | `needed` | The same spot, ×400. One cell wall crossing an empty grey field. |
 | B3 | `absorption-and-the-small-intestine` | `b3-villus-labelled` | diagram | `needed` | A single villus, labelled: the wall one cell thick, the capillary network running through it, and the microvilli on the outer surface of each covering cell. |
 | B3 | `the-digestive-system` | `b3-gut-labelled` | diagram | `needed` | The human digestive system, labelled: mouth, oesophagus, stomach, small intestine, large intestine, rectum and anus, with the pancreas, liver and gall bladder shown feeding into the small intestine without food passing through them. |
+| B4 | `the-gas-exchange-system` | `b4-gas-exchange-labelled` | diagram | `needed` | The human gas exchange system, labelled: nose and mouth, trachea, bronchi, bronchioles and alveoli, with the ribs, intercostal muscles and diaphragm drawn around the lungs rather than as part of the airway. |

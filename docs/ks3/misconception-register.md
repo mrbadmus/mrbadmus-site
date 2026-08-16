@@ -345,3 +345,68 @@ own copy names on the page ("You met this in Unicellular organisms and it comes
 back with a bigger consequence"). A second id for one belief is precisely what
 this register exists to prevent, so the row above carries the existing id and the
 costume the student reads comes from the lesson's own `statements[]`.
+
+---
+
+### `BREATH` — air, breathing, and what an exchange surface actually does
+
+Opened 16 Aug 2026 by B4 (MRB-244). Fifteen entries across five lessons. The unit
+is unusual in the register: three of its beliefs are not brought in from outside
+at all but are manufactured by earlier *teaching* — "you breathe in oxygen and
+breathe out carbon dioxide" is a sentence a student was taught, and it has to be
+taken apart rather than corrected.
+
+⚠️ **The `DIET` collision happened again, and it was avoidable.** Five authors
+worked this unit in parallel and two pairs of them independently minted the same
+ids — `BREATH-03` for two different beliefs, and `BREATH-08` for two more. The
+`DIET` note above had already diagnosed this and written down the fix: *open the
+family in THIS file before the lessons are written rather than after.* That fix
+was recorded and then not applied, so the second unit built by parallel authors
+met the identical edge.
+
+Nothing had been registered yet, so the family was renumbered into teaching order
+before any id became permanent — the only window in which renumbering is allowed.
+For B5 and B6 the fix is applied rather than re-noted: their families are opened
+in this file **before** their authors are dispatched.
+
+**The family is fifteen, not Design's thirteen, and that was a decision.**
+NOTES-B4 §5 mints thirteen ids; the five pages carry fifteen quotes. The two
+surplus beliefs were authored inline in `statements[]` with no register entry,
+which reaches the student perfectly well — an authored statement wins over the
+register in `r_confrontation`. They were minted anyway, as `BREATH-14` and
+`BREATH-15`. An id is not for the student; it is the JOIN. `BREATH-12`/`13` are
+already marked as resurfacing in B7, and a belief with no id cannot be joined to
+a later unit, counted, or re-confronted on purpose — it can only be rewritten
+from scratch by an author who never knew it had been fought before.
+
+| ID | Statement (as a student holds it) | Elicited by | Confronted by | Lesson |
+|---|---|---|---|---|
+| `BREATH-01` | You breathe in oxygen and breathe out carbon dioxide. | `two-bags` | `three-wrong-ideas` | `the-gas-exchange-system` |
+| `BREATH-02` | Breathing and respiration are the same thing. | `three-wrong-ideas` | `three-wrong-ideas` | `the-gas-exchange-system` |
+| `BREATH-03` | Your lungs are hollow bags that fill up like balloons. | `three-wrong-ideas` | `three-wrong-ideas` | `the-gas-exchange-system` |
+| `BREATH-04` | The lungs expand and pull the air in. | `work-the-diaphragm` | `think-what-moves-first` | `how-breathing-works` |
+| `BREATH-05` | Air rushes in, and that is what makes the chest get bigger. | `work-the-diaphragm` | `think-what-moves-first` | `how-breathing-works` |
+| `BREATH-06` | Oxygen is pumped across into the blood. | `count-the-crossings` | `think-crossings` | `alveoli-built-for-exchange` |
+| `BREATH-07` | Oxygen moves in because it wants to spread out evenly. | `count-the-crossings` | `think-crossings` | `alveoli-built-for-exchange` |
+| `BREATH-08` | Alveoli are where the air is stored. | `count-the-crossings` | `think-crossings` | `alveoli-built-for-exchange` |
+| `BREATH-09` | Being out of breath means your lungs cannot hold enough air. | `locate-the-fault` | `think-what-changed` | `exercise-asthma-and-smoking` |
+| `BREATH-10` | During an asthma attack there is not enough oxygen in the air. | `hook` | `think-what-changed` | `exercise-asthma-and-smoking` |
+| `BREATH-11` | Tar is the harmful part of cigarette smoke. | `locate-the-fault` | `think-what-changed` | `exercise-asthma-and-smoking` |
+| `BREATH-12` | Plants take in carbon dioxide and give out oxygen. Animals do the opposite. | `light-ledger` | `think-net` | `stomata-and-gas-exchange-in-plants` |
+| `BREATH-13` | Plants respire at night and photosynthesise in the day. | `light-ledger` | `think-net` | `stomata-and-gas-exchange-in-plants` |
+| `BREATH-14` | Something sucks the air in. | `work-the-diaphragm` | `think-what-moves-first` | `how-breathing-works` |
+| `BREATH-15` | Plants breathe through their stomata. | `think-net` | `think-net` | `stomata-and-gas-exchange-in-plants` |
+
+**`PART-10`/`PART-11` are re-confronted here and are not re-minted.**
+`alveoli-built-for-exchange` fights *diffusion needs a push* and *particles intend
+to spread* for the third time in the key stage, now doing real biological work
+against a live counter. The `PART` reappears list above already named this lesson
+as the site, written before it existed; the claim is now true. `BREATH-06` and
+`BREATH-07` are the costumes those two ideas wear in a biology lesson, and they
+carry their own ids because the belief a student states here is about oxygen and
+blood, not about particles in a room.
+
+**`BREATH-10` is elicited by the hook, not by the bench.** The asthma inhaler
+opens the lesson and the belief is stated in the student's own answer before any
+instrument runs. Recorded because the pattern in this unit is otherwise
+instrument-elicited, and a wrong `elicited_by` is a join that looks right.

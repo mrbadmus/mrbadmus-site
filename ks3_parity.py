@@ -488,6 +488,14 @@ B3_ENERGY = "biology/nutrition-and-digestion/energy-in-food-and-what-you-need.ht
 B3_TESTS = "biology/nutrition-and-digestion/food-tests.html"
 # ═══ END B3 ═══
 
+# ═══ BEGIN B4 ═══
+B4_BAGS = "biology/breathing-and-gas-exchange/the-gas-exchange-system.html"
+B4_JAR = "biology/breathing-and-gas-exchange/how-breathing-works.html"
+B4_CROSS = "biology/breathing-and-gas-exchange/alveoli-built-for-exchange.html"
+B4_FAULT = "biology/breathing-and-gas-exchange/exercise-asthma-and-smoking.html"
+B4_LEAF = "biology/breathing-and-gas-exchange/stomata-and-gas-exchange-in-plants.html"
+# ═══ END B4 ═══
+
 COMPONENTS = [
     # ── foundations ──
     dict(name="page ground + body type", on=LESSON, sel="body",
@@ -2610,6 +2618,177 @@ COMPONENTS = [
          props={"background-color": "#FFC53D", "color": "#221E1B",
                 "min-height": "44px"}),
     # ═══ END B3 ═══ rows
+    # ═══ BEGIN B4 ═══ rows
+    #
+    # Every value below is read out of `shared/tokens.css`, not estimated:
+    #   --ks3-alert #FFC53D · --ks3-on-dark #FBF3E6 · --ks3-on-dark-muted #C6B9A7
+    #   --ks3-on-dark-body #E7DECE · --ks3-dark-panel #3E3730 · --ks3-ink #221E1B
+    #   --ks3-ink-muted #5F564F · --ks3-ink-body #3B342E · --ks3-ground #FBF3E6 · --ks3-ok #12A150
+    #   --ks3-blue #2F5CE0 · --ks3-accent-text #A93411
+    # Mutation-tested: each rule was deliberately broken in `shared/ks3.css` and
+    # the row confirmed to fail before it was kept.
+    #
+    # ⚠️ FIVE OF THESE ROWS ARE ONE ROW, FIVE TIMES. Every B4 practical is
+    # `ks3-block ks3-dark ks3-practical` and every one of the five instruments
+    # inverts a panel to the CREAM ground inside that ink block. `.ks3-dark p`
+    # is (0,1,1) and a bare instrument class is (0,1,0), so each of those five
+    # panels loses unless its colour rule is scoped — and the failure is
+    # #E7DECE on #FBF3E6, about 1.2:1: text that is present, correct, spelt
+    # right and invisible. On B2 that defect could take one block. On B4 it
+    # takes the whole unit in one pass, which is why all five are pinned
+    # separately rather than one being taken as representative.
+
+    # ── gas-compare (b4-01 #s-air) ──
+    dict(name="the closing paragraph is ink on the cream panel",
+         on=B4_BAGS, drive="gas-revealed", sel=".ks3-gas-close",
+         props={"color": "#221E1B", "background-color": "#FBF3E6",
+                "font-size": "19px"}),
+    # ⚖️ ONE BAG, ONE COLOUR, IN THREE PLACES. The exhaled column is alert in
+    # its heading, in its figure and in its bar, so a student can follow one
+    # bag down the table; the inhaled column is the muted pair. Level the two
+    # and the table becomes eight numbers rather than a comparison.
+    dict(name="the exhaled figure is alert and the inhaled one is not",
+         on=B4_BAGS, drive="gas-revealed",
+         sel='.ks3-gas-cell[data-side="out"] .ks3-gas-num',
+         props={"color": "#FFC53D", "font-family": "DM Mono"}),
+    dict(name="the inhaled figure stays on-dark", on=B4_BAGS,
+         drive="gas-revealed",
+         sel='.ks3-gas-cell[data-side="in"] .ks3-gas-num',
+         props={"color": "#FBF3E6"}),
+    # ⚠️ REGISTERED AFTER THE FACT, and that is the point of the row. The cap
+    # replaces the head row below 880px, and its colour rule lives inside the
+    # media query — where it was (0,1,0), lost to `.ks3-dark p`, and rendered
+    # `--ks3-on-dark-body` by accident at 8.77:1 while the authored
+    # `--ks3-accent-text` was never applied. A rule that never applies cannot be
+    # measured wrong, which is how it survived: had it won it would have been
+    # #A93411 on `--ks3-dark-panel` at 1.78:1. This row pins the token that is
+    # actually right for an ink ground and the specificity that lets it win.
+    # The harness pins no viewport and headless lands under 820px, so the cap is
+    # in its shown state here.
+    dict(name="the narrow-screen cell caption takes the head row's own colour",
+         on=B4_BAGS, drive="gas-revealed", sel=".ks3-gas-cap",
+         props={"color": "#C6B9A7", "font-family": "DM Mono",
+                "font-size": "12px"}),
+    # ⚖️ A CHOSEN PREDICTION IS ALERT AND NOTHING ELSE. R3: nothing marks while
+    # the prediction is being made. If this row ever resolves to `--ks3-ok`
+    # #12A150 an activity has started marking.
+    dict(name="a chosen gas prediction is alert with ink text", on=B4_BAGS,
+         sel='.ks3-gas-choice[aria-pressed="true"]',
+         drive="gas-revealed",
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "min-height": "44px"}),
+
+    # ── bell-jar (b4-02 #s-model) ──
+    #
+    # ⚠️ THE ROW THAT MATTERS MOST IN THE UNIT. NOTES-B4 §3.2: *the chain is the
+    # instrument, not the picture*. The chain sits on the cream ground inside
+    # the ink block, so unscoped its four steps paint #E7DECE on #FBF3E6 — and
+    # what is lost is not decoration, it is the ordered claim the whole lesson
+    # and rung 1 are built on.
+    dict(name="the chain steps are ink on the cream panel", on=B4_JAR,
+         drive="bell-in", sel='.ks3-bell-chain[data-chain="in"] .ks3-bell-step',
+         props={"color": "#221E1B", "font-size": "18px"}),
+    dict(name="the chain panel is the page ground on an ink block", on=B4_JAR,
+         drive="bell-in", sel=".ks3-bell-chainpanel",
+         props={"background-color": "#FBF3E6"}),
+    # ⚠️ THE LABEL, REGISTERED SEPARATELY FROM THE STEPS IT HEADS, because
+    # registering the PANEL is what let it ship invisible. The steps and the
+    # note were both rescued from `.ks3-dark p` and the label — a seventh `<p>`
+    # in the same cream panel, taking a different colour from either — was not,
+    # so `THE ORDER OF EVENTS` rendered at 1.21:1 above four perfectly legible
+    # steps. It is visible from first paint in all three phases, so this row
+    # needs no drive: if it is ever lost again the gate says so on load.
+    dict(name="the chain label is the accent eyebrow, not on-dark body",
+         on=B4_JAR, sel=".ks3-bell-chainlabel",
+         props={"color": "#A93411", "font-family": "DM Mono",
+                "font-size": "13px"}),
+    # ⚖️ THE RESTING CHAIN IS THE ONLY MUTED ONE, because at rest it is not
+    # describing anything happening. Level it with the other two and the block
+    # opens looking as though a breath is under way.
+    dict(name="the resting chain is muted, and only the resting one",
+         on=B4_JAR, sel='.ks3-bell-chain[data-chain="rest"] .ks3-bell-step',
+         props={"color": "#5F564F"}),
+    dict(name="the pressure readout is mono on ink", on=B4_JAR,
+         sel='.ks3-bell-read dd[data-read="pressure"]',
+         props={"font-family": "DM Mono", "color": "#FBF3E6",
+                "font-size": "18px"}),
+
+    # ── crossing-counter (b4-03 #s-gradient) ──
+    dict(name="the state note is ink on the cream panel", on=B4_CROSS,
+         drive="cross-both-stopped", sel=".ks3-cross-note",
+         props={"color": "#221E1B", "background-color": "#FBF3E6",
+                "font-size": "18px"}),
+    # ⚖️ THE OUTWARD BAR IS DRAWN, NOT DIMMED OUT OF EXISTENCE. Muted against
+    # the inward bar's alert is a figure/ground distinction; if this row ever
+    # resolves to the track colour or to `transparent`, the bar has become
+    # invisible and the lesson has taught the one-way picture it exists to
+    # remove. The `drive` puts both switches OFF first, which is the state a
+    # student is most likely to read as "nothing is happening".
+    dict(name="the outward bar is drawn in on-dark-muted, in every state",
+         on=B4_CROSS, drive="cross-both-stopped",
+         sel='.ks3-cross-fill[data-fill="out"]',
+         props={"background-color": "#C6B9A7"}),
+    dict(name="the inward bar is alert", on=B4_CROSS,
+         drive="cross-both-stopped", sel='.ks3-cross-fill[data-fill="in"]',
+         props={"background-color": "#FFC53D"}),
+    # The NET tile is the only alert figure in the panel because it is the only
+    # one that is a difference rather than a reading.
+    dict(name="the net tile is the alert figure and the other two are not",
+         on=B4_CROSS, sel='.ks3-cross-tile[data-tone="net"] .ks3-cross-tileval',
+         props={"color": "#FFC53D", "font-family": "DM Mono",
+                "font-size": "24px"}),
+    dict(name="the alveolar tile stays on-dark", on=B4_CROSS,
+         sel='.ks3-cross-tileval[data-tile="alveolar"]',
+         props={"color": "#FBF3E6"}),
+
+    # ── fault-bench (b4-04 #s-bench) ──
+    #
+    # The reveal is the largest run of cream-on-ink text in the unit: a
+    # verdict, a headline and up to eight paragraphs across four rows.
+    dict(name="the reveal headline is ink on the cream panel", on=B4_FAULT,
+         drive="fault-opened", sel=".ks3-fault-answer",
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque",
+                "font-size": "25px"}),
+    dict(name="the reveal rows read in ink body, not on-dark body",
+         on=B4_FAULT, drive="fault-opened", sel=".ks3-fault-row dd",
+         props={"color": "#3B342E", "font-size": "18px"}),
+    dict(name="the reveal panel is the page ground on an ink block",
+         on=B4_FAULT, drive="fault-opened", sel=".ks3-fault-reveal",
+         props={"background-color": "#FBF3E6"}),
+    # ⚖️ THE VERDICT IS NOT A MARK. It is the accent eyebrow whether the
+    # student located the fault or not — never `--ks3-ok`, never `--ks3-danger`.
+    # The reveal opens either way and this row is what keeps it that way.
+    dict(name="the verdict is the accent eyebrow, not a marking colour",
+         on=B4_FAULT, drive="fault-opened", sel=".ks3-fault-verdict",
+         props={"color": "#A93411", "font-family": "DM Mono"}),
+
+    # ── two-process-ledger (b4-05 #s-ledger) ──
+    #
+    # ⚖️ BLUE IS THE COMPENSATION POINT AND IS USED NOWHERE ELSE IN B4. It is
+    # what makes a balanced reading read as a THIRD thing rather than as a weak
+    # uptake — the flat line produced by two processes at full rate, which a
+    # sensor cannot tell from a dead plant. The `drive` reaches it through the
+    # slider, computing the balanced light from the instrument's own authored
+    # constants, so this row also proves the branch is reachable in a browser.
+    dict(name="the net bar is blue at the compensation point", on=B4_LEAF,
+         drive="tpl-balanced", sel='.ks3-tpl-fill[data-tone="balanced"]',
+         props={"background-color": "#2F5CE0"}),
+    dict(name="the verdict panel is ink on cream at the compensation point",
+         on=B4_LEAF, drive="tpl-balanced",
+         sel='.ks3-tpl-verdict[data-verdict="balanced"] .ks3-tpl-vhead',
+         props={"color": "#221E1B", "font-family": "Bricolage Grotesque"}),
+    # ⚖️ THE RESPIRATION BAR IS MUTED, NOT GREEN, and it is never the
+    # photosynthesis colour. The two bars being different colours is how a
+    # student reads the top one as a constant and the second as the variable;
+    # if this row ever resolves to #12A150 the ledger has two green bars and
+    # the flat one stops looking like a different KIND of quantity.
+    dict(name="the respiration bar is on-dark-muted, never the photo green",
+         on=B4_LEAF, sel='.ks3-tpl-fill[data-fill="resp"]',
+         props={"background-color": "#C6B9A7"}),
+    dict(name="the photosynthesis bar is the ok green", on=B4_LEAF,
+         drive="tpl-balanced", sel='.ks3-tpl-fill[data-fill="photo"]',
+         props={"background-color": "#12A150"}),
+    # ═══ END B4 ═══ rows
 ]
 
 
@@ -4893,6 +5072,293 @@ DRIVES = {
 })()
 """,
     # ═══ END B3 ═══ drives
+    # ═══ BEGIN B4 ═══ drives
+    #
+    # ⚠️ EVERY B4 DRIVE IS STRUCTURAL, NOT KEYED ON AN AUTHORED ID. B3's
+    # `gut-stomach` reaches its panel by `data-stop="stomach"`, which is right
+    # when the engine and the content ship in one pass. B4's five instruments
+    # were engineered before their lessons were authored, so a drive that named
+    # `co2` or `dawn` would be asserting a payload nobody had written yet — and
+    # would fail as a colour regression on the day an author chose a different
+    # id. These reach the state they want through the instrument's own
+    # controls, by position or by computing it from the instrument's own
+    # attributes, and every one asserts the invariant it drove for.
+
+    # Commits a prediction on every gas row and opens the two bags. Reached
+    # through the choice buttons and the reveal button, never by setting an
+    # attribute — which is also what makes it a test of the lock.
+    "gas-revealed": r"""
+(function () {
+  var sec = document.querySelector('[data-gasblock]');
+  if (!sec) { return "no gas-compare on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-gas]');
+  var rows = w ? w.querySelectorAll('.ks3-gas-row') : [];
+  if (rows.length < 2) { return "the block draws fewer than two gas rows"; }
+  var btn = w.querySelector('[data-gas-open]');
+  if (!btn) { return "the block has no reveal button"; }
+  if (!btn.disabled) {
+    return "the reveal was open before a single prediction was committed";
+  }
+  for (var i = 0; i < rows.length; i++) {
+    var choices = rows[i].querySelectorAll('.ks3-gas-choice');
+    if (choices.length < 2) { return "a gas row offers fewer than two choices"; }
+    // The FIRST choice on every row, so some rows are right and some wrong —
+    // which is the state the verdict styling has to survive.
+    choices[0].click();
+    if (i < rows.length - 1 && !btn.disabled) {
+      return "the reveal unlocked before every row was committed";
+    }
+  }
+  if (btn.disabled) { return "the reveal is still locked with every row committed"; }
+  btn.click();
+  var table = w.querySelector('[data-gas-table]');
+  var close = w.querySelector('[data-gas-close]');
+  if (!table || table.hasAttribute('hidden')) {
+    return "the two bags were analysed and the table is still hidden";
+  }
+  if (!close || close.hasAttribute('hidden')) {
+    return "the table arrived without its closing paragraph";
+  }
+  // ⚠️ THE CLAMP. Every bar must be drawn wide enough to see, including the
+  // 0.04% one, and every cell must carry its numeral beside it — the numeral
+  // is the correction to the clamp and the block is dishonest without it.
+  var bars = w.querySelectorAll('.ks3-gas-bar');
+  for (var b = 0; b < bars.length; b++) {
+    if (bars[b].getBoundingClientRect().width < 1) {
+      return "a gas bar was drawn at zero width; the clamp is not applied";
+    }
+  }
+  var nums = w.querySelectorAll('.ks3-gas-cell .ks3-gas-num');
+  if (nums.length !== bars.length) {
+    return "a bar is drawn without the numeral that corrects it";
+  }
+  var marked = w.querySelectorAll('.ks3-gas-row[data-verdict]');
+  if (marked.length !== rows.length) {
+    return "the reveal did not record a verdict on every row";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the two bags were analysed and the stop did not tick";
+  }
+  return "";
+})()
+""",
+
+    # Drives the diaphragm to the fullest inhale the instrument offers, by
+    # taking the HIGHEST preset rather than a named one.
+    "bell-in": r"""
+(function () {
+  var sec = document.querySelector('[data-bellblock]');
+  if (!sec) { return "no bell-jar on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-bell]');
+  var slider = w ? w.querySelector('[data-bell-slider]') : null;
+  if (!slider) { return "the bell jar has no diaphragm slider"; }
+  var rest = Number(w.getAttribute('data-rest'));
+  var presets = w.querySelectorAll('[data-preset]');
+  if (presets.length < 2) { return "the bell jar draws fewer than two presets"; }
+  var top = null, best = -1;
+  for (var i = 0; i < presets.length; i++) {
+    var v = Number(presets[i].getAttribute('data-preset'));
+    if (v > best) { best = v; top = presets[i]; }
+  }
+  if (best <= rest) { return "no preset drives the diaphragm past its resting position"; }
+  var restChain = w.querySelector('[data-chain="rest"]');
+  if (!restChain || restChain.hasAttribute('hidden')) {
+    return "the block did not open on its resting chain";
+  }
+  top.click();
+  var chain = w.querySelector('[data-chain="in"]');
+  if (!chain || chain.hasAttribute('hidden')) {
+    return "the diaphragm was contracted and the inhale chain is still hidden";
+  }
+  if (w.querySelectorAll('.ks3-bell-chain:not([hidden])').length !== 1) {
+    return "more than one chain is showing at once";
+  }
+  // ⚠️ FOUR STEPS, MUSCLE FIRST AND AIR LAST. This is the instrument. If the
+  // count ever drops or the order is rebuilt from something other than the
+  // authored list, it shows up here rather than in a reader's confusion.
+  var steps = chain.querySelectorAll('.ks3-bell-step');
+  if (steps.length !== 4) {
+    return "the causal chain is drawing " + steps.length + " steps, not four";
+  }
+  for (var s = 0; s < steps.length; s++) {
+    if (!steps[s].textContent.replace(/\s/g, '')) {
+      return "chain step " + (s + 1) + " arrived empty";
+    }
+    if (steps[s].textContent.indexOf('{') >= 0) {
+      return "a chain step shipped with an unfilled placeholder: "
+        + steps[s].textContent;
+    }
+  }
+  var reads = w.querySelectorAll('.ks3-bell-read dd');
+  for (var r = 0; r < reads.length; r++) {
+    if (reads[r].textContent.indexOf('{') >= 0) {
+      return "a readout shipped with an unfilled placeholder: " + reads[r].textContent;
+    }
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the model was worked and the stop did not tick";
+  }
+  return "";
+})()
+""",
+
+    # Stops BOTH flows — the state a student is most likely to misread as
+    # nothing happening, and the one where the outward bar has to stay drawn.
+    "cross-both-stopped": r"""
+(function () {
+  var sec = document.querySelector('[data-crossblock]');
+  if (!sec) { return "no crossing-counter on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-cross]');
+  var sw = w ? w.querySelectorAll('[data-switch]') : [];
+  if (sw.length !== 2) { return "the counter draws " + sw.length + " switches, not two"; }
+  if (w.querySelectorAll('.ks3-cross-note').length !== 4) {
+    return "the lookup table does not carry all four states";
+  }
+  for (var i = 0; i < sw.length; i++) {
+    if (sw[i].getAttribute('aria-pressed') === 'true') { sw[i].click(); }
+  }
+  if (w.getAttribute('data-state') !== '0-0') {
+    return "both switches were pressed off and the state is " + w.getAttribute('data-state');
+  }
+  var live = w.querySelectorAll('.ks3-cross-note:not([hidden])');
+  if (live.length !== 1) {
+    return live.length + " state notes are showing at once";
+  }
+  // ⚠️ THE GATE THE WHOLE BLOCK EXISTS FOR. Both flows stopped, both counts
+  // equal — and the OUTWARD bar is still drawn and still reads a real number.
+  // A student who watches it disappear here has learnt the one-way picture.
+  var out = w.querySelector('[data-fill="out"]');
+  var outVal = w.querySelector('[data-bar="out"]');
+  if (!out || out.getBoundingClientRect().width < 1) {
+    return "with both flows stopped the outward bar has no width";
+  }
+  if (!outVal || !/[1-9]/.test(outVal.textContent)) {
+    return "the outward count reads zero: " + (outVal ? outVal.textContent : "(absent)");
+  }
+  var inVal = w.querySelector('[data-bar="in"]');
+  if (!inVal || inVal.textContent !== outVal.textContent) {
+    return "with both flows stopped the two counts are not equal: "
+      + (inVal ? inVal.textContent : "(absent)") + " vs " + outVal.textContent;
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "a switch was used and the stop did not tick";
+  }
+  return "";
+})()
+""",
+
+    # Commits the FIRST part on the FIRST factor and opens it. Whether that
+    # pick is right or wrong is the author's business — the reveal opens either
+    # way, and the row this drives asserts exactly that.
+    "fault-opened": r"""
+(function () {
+  var sec = document.querySelector('[data-faultblock]');
+  if (!sec) { return "no fault-bench on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-fault]');
+  var tabs = w ? w.querySelectorAll('.ks3-fault-tab') : [];
+  if (tabs.length < 2) { return "the bench draws fewer than two factors"; }
+  var opts = w.querySelectorAll('.ks3-option');
+  if (opts.length < 2) { return "the bench offers fewer than two parts"; }
+  var btn = w.querySelector('[data-fault-open]');
+  if (!btn) { return "the bench has no reveal button"; }
+  if (!btn.disabled) { return "the reveal was open before a part was chosen"; }
+  opts[0].click();
+  if (btn.disabled) { return "a part was chosen and the reveal is still locked"; }
+  btn.click();
+  var rev = w.querySelector('.ks3-fault-reveal:not([hidden])');
+  if (!rev) { return "the reveal was opened and no panel is showing"; }
+  if (w.querySelectorAll('.ks3-fault-reveal:not([hidden])').length !== 1) {
+    return "more than one reveal is showing at once";
+  }
+  // ⚖️ EXACTLY ONE VERDICT, AND THE REVEAL OPENED REGARDLESS. If a future pass
+  // ever withholds the explanation from a student who guessed wrong, the
+  // headline below goes missing and this fails.
+  var verdicts = rev.querySelectorAll('[data-verdict]:not([hidden])');
+  if (verdicts.length !== 1) {
+    return verdicts.length + " verdict lines are showing; there must be exactly one";
+  }
+  var answer = rev.querySelector('.ks3-fault-answer');
+  if (!answer || !answer.textContent.replace(/\s/g, '')) {
+    return "the reveal opened without its answer headline";
+  }
+  if (!rev.querySelectorAll('.ks3-fault-row').length) {
+    return "the reveal opened with no explanation rows";
+  }
+  var locked = w.querySelectorAll('.ks3-option[disabled]');
+  if (locked.length !== opts.length) {
+    return "the options did not lock when the factor was opened";
+  }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked with only one of the factors opened";
+  }
+  return "";
+})()
+""",
+
+    # Drives the light to the compensation point, computing it from the
+    # instrument's OWN authored constants rather than from a named preset — so
+    # this proves the balanced branch is reachable in a browser whatever the
+    # author set the presets to.
+    "tpl-balanced": r"""
+(function () {
+  var sec = document.querySelector('[data-tplblock]');
+  if (!sec) { return "no two-process-ledger on the page"; }
+  if (sec.getAttribute('data-stage-done') === '1') {
+    return "the stop ticked on load";
+  }
+  var w = sec.querySelector('[data-tpl]');
+  var slider = w ? w.querySelector('[data-tpl-slider]') : null;
+  if (!slider) { return "the ledger has no light slider"; }
+  var resp = Number(w.getAttribute('data-resp'));
+  var max = Number(w.getAttribute('data-max'));
+  var k = Number(w.getAttribute('data-const'));
+  var win = Number(w.getAttribute('data-window'));
+  var restW = w.querySelector('[data-fill="resp"]').getBoundingClientRect().width;
+  var target = null;
+  for (var n = 0; n <= 100; n += 1) {
+    if (Math.abs(max * (1 - Math.exp(-n / k)) - resp) < win) { target = n; break; }
+  }
+  if (target === null) {
+    return "no light level reaches the balanced window; the branch is unreachable";
+  }
+  slider.value = target;
+  slider.dispatchEvent(new Event('input', {bubbles: true}));
+  var fill = w.querySelector('[data-fill="net"]');
+  if (!fill || fill.getAttribute('data-tone') !== 'balanced') {
+    return "light " + target + " is inside the window and the net bar reads "
+      + (fill ? fill.getAttribute('data-tone') : "(absent)");
+  }
+  var v = w.querySelectorAll('.ks3-tpl-verdict:not([hidden])');
+  if (v.length !== 1 || v[0].getAttribute('data-verdict') !== 'balanced') {
+    return "the compensation point is showing " + v.length + " verdict(s)";
+  }
+  // ⚖️ THE BAR THAT NEVER MOVES. Measured at darkness and again at the
+  // compensation point. If these ever differ, respiration has acquired a light
+  // term and the lesson's whole confrontation is gone.
+  var nowW = w.querySelector('[data-fill="resp"]').getBoundingClientRect().width;
+  if (Math.abs(nowW - restW) > 0.5) {
+    return "the respiration bar moved with the light: " + restW.toFixed(2)
+      + "px -> " + nowW.toFixed(2) + "px";
+  }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "the light was adjusted and the stop did not tick";
+  }
+  return "";
+})()
+""",
+    # ═══ END B4 ═══ drives
 }
 
 

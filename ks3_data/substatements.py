@@ -149,6 +149,84 @@ SUBSTATEMENTS = {
               "biological catalysts.", "B3"),
         ("c", "Adaptations of the digestive system to its function.", "B3"),
     ],
+    # Minted for B4 (2026-08-16, MRB-244). The bullet reads:
+    #   "the structure and functions of the gas exchange system in humans,
+    #    including adaptations to function"
+    # The bullet's own "including" is the seam, and B4 is written across it:
+    # `the-gas-exchange-system` walks the six parts and what each does, and
+    # `alveoli-built-for-exchange` is entirely about why the exchange surface
+    # has the shape it has. Teaching adaptation before the student knows what
+    # the parts ARE is the order that makes adaptation sound like decoration.
+    "KS3.B.GAS.01": [
+        ("a", "The structure and functions of the human gas exchange system: "
+              "the parts air passes through, and what each one does.", "B4"),
+        ("b", "Adaptations of the gas exchange surface to its function: why "
+              "the alveoli have the surface, thinness and blood supply they "
+              "have.", "B4"),
+    ],
+    # Minted for B5 (2026-08-16, MRB-244). The bullet reads:
+    #   "reproduction in humans (as an example of a mammal), including the
+    #    structure and function of the male and female reproductive systems,
+    #    menstrual cycle (without details of hormones), gametes, fertilisation,
+    #    gestation and birth, to include the effect of maternal lifestyle on
+    #    the foetus through the placenta"
+    # The longest bullet in the KS3 biology spine. It does not need
+    # interpreting to split — it prints its own clause list, and B5's five
+    # human lessons are that list in that order.
+    "KS3.B.REP.01": [
+        ("a", "The structure and function of the male and female reproductive "
+              "systems.", "B5"),
+        ("b", "Gametes and fertilisation.", "B5"),
+        ("c", "The menstrual cycle, without details of hormones.", "B5"),
+        ("d", "Gestation and birth.", "B5"),
+        ("e", "The effect of maternal lifestyle on the foetus through the "
+              "placenta.", "B5"),
+    ],
+    # Minted for B5 (2026-08-16, MRB-244). The bullet reads:
+    #   "reproduction in plants, including flower structure, wind and insect
+    #    pollination, fertilisation, seed and fruit formation and dispersal,
+    #    including quantitative investigation of some dispersal mechanisms"
+    # Three lessons, and again the bullet prints the seams itself.
+    #
+    # ⚑ FLAGGED FOR MIDE — the STATUTORY GAP is inside clause `c`, and it is
+    # recorded here rather than hidden by the split. The bullet asks for a
+    # "quantitative investigation of some dispersal mechanisms"; Design's
+    # `seed-dispersal` is a CLASSIFY lesson in which the student measures
+    # nothing. The clause is deliberately minted at the bullet's full width —
+    # including the quantitative words — so that what is missing is legible
+    # against what is claimed. Narrowing `c` to drop those words would make
+    # the register read as fully covered and the gap would vanish from every
+    # gate that reads it. Ruled NOT to block this build (MRB-244); Design
+    # patches it later.
+    "KS3.B.REP.02": [
+        ("a", "Flower structure, and wind and insect pollination.", "B5"),
+        ("b", "Fertilisation in plants, and seed and fruit formation.", "B5"),
+        ("c", "Seed dispersal, including quantitative investigation of some "
+              "dispersal mechanisms.", "B5"),
+    ],
+    # Minted for B6 (2026-08-16, MRB-244). The bullet reads:
+    #   "the effects of recreational drugs (including substance misuse) on
+    #    behaviour, health and life processes"
+    # One bullet, three lessons, and B6 previously showed in the register's
+    # own coverage table as 1 statement across 3 lessons (0.33 ⚠️) — the
+    # warning this file exists to answer.
+    #
+    # ⚑ FLAGGED FOR MIDE — this split is a CURRICULUM-MAPPING CALL, not a
+    # reading of the bullet's punctuation, and it is the weakest-provenance
+    # mint in this file. The bullet names "recreational drugs" and "substance
+    # misuse" but does not itself name alcohol or tobacco; clause `b` is
+    # justified by them being the two drugs the statement's own words
+    # ("behaviour, health and life processes") bite hardest on at this age,
+    # not by the document naming them. The alternative is a two-way split with
+    # b6-01 and b6-02 sharing clause `a`, which §4.4 rule 3 forbids.
+    "KS3.B.HLTH.01": [
+        ("a", "What a recreational drug is, and how one acts on behaviour, "
+              "health and life processes once it is in the blood.", "B6"),
+        ("b", "The effects of alcohol and of tobacco smoke on behaviour, "
+              "health and life processes.", "B6"),
+        ("c", "Substance misuse: its effects, and how a claim made about a "
+              "drug is judged as evidence.", "B6"),
+    ],
 }
 
 

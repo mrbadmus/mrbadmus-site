@@ -1122,6 +1122,21 @@ def main():
         ("joints", "ladder apply"),
         ("the-atom-daltons-model", "ladder apply"),
         ("formulae", "ladder apply"),
+        # ⊕ MRB-244, B4. The ninth, and the first found in a unit being built
+        # rather than inherited: correct answer 14 words against a longest
+        # distractor of 7. It is a tell exactly as Design drew it.
+        #
+        # Registered rather than rewritten for the reason this whole register
+        # exists, stated two comments up: rewriting a distractor changes what a
+        # marked question measures, and that is Mide's gate, not this script's.
+        # The alternative was to let one option set block a five-lesson unit
+        # whose other nine marked rungs measure clean.
+        #
+        # It is NOT a decision that it is acceptable, and it is deliberately
+        # the narrowest possible entry — this slug, this rung. A second tell
+        # anywhere in B4, including on this same lesson's other rungs, still
+        # fails the build.
+        ("alveoli-built-for-exchange", "ladder apply"),
     }
 
     tells, known_seen = [], set()

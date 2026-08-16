@@ -11317,6 +11317,529 @@
   }
 /* ═══ END B3 ═══ */
 
+/* ═══ BEGIN B4 ═══ */
+
+  /* ── B4 · Breathing and gas exchange (⊕ MRB-244) ──
+     Five instruments, five wire functions, and one shared discipline:
+     NOTHING HERE ANIMATES AND NOTHING HERE USES A TIMER. NOTES-B4 §6 says it
+     of the unit and it is true of the engine — there is no rAF loop in any of
+     these five, so there is no tick that would have to test
+     `prefers-reduced-motion` inside itself (MRB-220 R4). The only motion in
+     B4 is a CSS transition on a bar width or a panel height, and the
+     stylesheet's reduced-motion block removes every one of them.
+
+     Two of the five compute numbers in the browser and three do not, and the
+     line between them is the CONTROL rather than a preference. `gas-compare`,
+     `crossing-counter` and `fault-bench` have finite state — four rows, four
+     states, three factors — so every figure they print and every bar width
+     they draw is computed in `build_ks3.py` and ships as a finished string in
+     the document; these functions move the highlight and nothing else, which
+     is `gut-journey`'s rule. `bell-jar` and `two-process-ledger` are driven by
+     a 0–100 slider, and 101 states cannot be enumerated, so those two carry
+     their model's constants as attributes and evaluate them here. Where that
+     happens, the constants are the AUTHORED ones and the format strings are
+     the AUTHORED ones: no number and no sentence originates in this file. */
+
+  /* ── gas-compare (b4-01 #s-air) ──
+     Four gases, a prediction on each, then both bags.
+
+     ⚖️ THE COUNT CHANGES WHAT IT IS COUNTING AT THE REVEAL. Before it, the
+     line reads how many rows are committed; after it, how many were right.
+     Both templates are authored and both ride as attributes, because each
+     quotes a number that does not exist until the student has acted — the
+     mechanism `_head_counter` already uses.
+
+     ⚖️ NOTHING MARKS UNTIL THE REVEAL. R3: an option shows that it was chosen
+     and nothing else. `data-verdict` is written on the ROW, once, at the
+     moment the two bags appear — and by then the answer is on screen anyway,
+     so it is a record of what the student predicted rather than a mark. */
+  function wireGasCompare(sec) {
+    var wrap = sec.querySelector("[data-gas]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll(".ks3-gas-row"));
+    var btn = wrap.querySelector("[data-gas-open]");
+    var countEl = wrap.querySelector("[data-gas-count]");
+    var table = wrap.querySelector("[data-gas-table]");
+    var close = wrap.querySelector("[data-gas-close]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || rows.length;
+    if (!rows.length || !btn) { return; }
+
+    var COMMITTED = wrap.getAttribute("data-committed") || "";
+    var SCORED = wrap.getAttribute("data-scored") || "";
+    var picks = {};
+    var open = false;
+
+    function fill(tpl, n) {
+      return tpl.split("{n}").join(String(n))
+        .split("{total}").join(String(total));
+    }
+
+    function committed() {
+      var n = 0, k;
+      for (k in picks) { if (picks[k]) { n += 1; } }
+      return n;
+    }
+
+    function refresh() {
+      var n = committed();
+      if (countEl) { countEl.textContent = fill(COMMITTED, n); }
+      btn.disabled = n < total;
+    }
+
+    each(rows, function (row) {
+      var id = row.getAttribute("data-gasrow");
+      each(row.querySelectorAll(".ks3-gas-choice"), function (choice) {
+        choice.addEventListener("click", function () {
+          if (open) { return; }
+          each(row.querySelectorAll(".ks3-gas-choice"), function (b) {
+            b.setAttribute("aria-pressed", "false");
+          });
+          choice.setAttribute("aria-pressed", "true");
+          picks[id] = choice.getAttribute("data-choice");
+          refresh();
+        });
+      });
+    });
+
+    btn.addEventListener("click", function () {
+      if (open || committed() < total) { return; }
+      open = true;
+      wrap.setAttribute("data-open", "1");
+      btn.disabled = true;
+      var right = 0;
+      each(rows, function (row) {
+        var id = row.getAttribute("data-gasrow");
+        var ok = picks[id] === row.getAttribute("data-change");
+        if (ok) { right += 1; }
+        row.setAttribute("data-verdict", ok ? "right" : "wrong");
+      });
+      if (countEl) { countEl.textContent = fill(SCORED, right); }
+      setHidden(table, false);
+      setHidden(close, false);
+      if (table) { table.setAttribute("role", "status"); }
+      /* ⚖️ THE STAGE TICKS ON THE REVEAL, NOT ON THE FOURTH PREDICTION.
+         Design's own `isDone` for this stop reads `airOpen`, and it is the
+         right reading: a student who committed four predictions and never
+         pressed the button has not seen the two bags, which is the whole
+         activity. */
+      markStage(sec, true);
+    });
+
+    refresh();
+  }
+
+  /* ── bell-jar (b4-02 #s-model) ──
+     ⚖️ THE CHAIN IS THE INSTRUMENT, NOT THE PICTURE, and this function is
+     written so that it could not become otherwise: all three chains are in the
+     document, complete and authored, and what happens here is that one of them
+     is shown and its number-bearing lines are refilled. Every sentence a
+     student reads was written by the author; the only thing built at runtime
+     is a decimal.
+
+     ⚖️ THE PHASE IS DECIDED AGAINST `rest`, ONCE, and everything else follows
+     from it — the chain, the note, the phase caption, the diaphragm caption
+     and the air-movement readout. Five readouts, one decision, so they cannot
+     disagree about which half of a breath is happening. */
+  function wireBellJar(sec) {
+    var wrap = sec.querySelector("[data-bell]");
+    if (!wrap) { return; }
+    var slider = wrap.querySelector("[data-bell-slider]");
+    var chest = wrap.querySelector("[data-chest]");
+    var lung = wrap.querySelector("[data-lung]");
+    if (!slider) { return; }
+
+    var REST = Number(wrap.getAttribute("data-rest"));
+    var VBASE = Number(wrap.getAttribute("data-vbase"));
+    var VSPAN = Number(wrap.getAttribute("data-vspan"));
+    var PZERO = Number(wrap.getAttribute("data-pzero"));
+    var PSPAN = Number(wrap.getAttribute("data-pspan"));
+
+    /* The jar's geometry, and the ONLY numbers in this component that are not
+       the author's. They are drawing — a rectangle's height and a circle's
+       scale — and nothing student-readable comes out of either. */
+    var CHEST_BASE = 28, CHEST_SPAN = 58;
+    var LUNG_BASE = 0.62, LUNG_SPAN = 0.55;
+
+    var steps = toArray(wrap.querySelectorAll(".ks3-bell-step"));
+    var reads = {
+      volume: wrap.querySelector('[data-read="volume"]'),
+      pressure: wrap.querySelector('[data-read="pressure"]')
+    };
+
+    function phaseOf(dia) {
+      return dia > REST ? "in" : (dia < REST ? "out" : "rest");
+    }
+
+    /* Two decimals for pressure, one for volume — Design's own precision, and
+       it is not arbitrary: the pressure difference that fills a lung is a
+       fraction of a kilopascal, and printed to one place the whole readout
+       would sit at 0.0 through half the slider's travel. */
+    function fill(tpl, vol, pres) {
+      return tpl.split("{volume}").join(vol.toFixed(1))
+        .split("{pressure_abs}").join(Math.abs(pres).toFixed(2))
+        .split("{pressure}").join(pres.toFixed(2));
+    }
+
+    function showByAttr(attr, phase) {
+      each(wrap.querySelectorAll("[data-" + attr + "]"), function (el) {
+        setHidden(el, el.getAttribute("data-" + attr) !== phase);
+      });
+    }
+
+    function draw() {
+      var dia = Number(slider.value);
+      var f = dia / 100;
+      var vol = VBASE + f * VSPAN;
+      var pres = -(f - PZERO) * PSPAN;
+      var phase = phaseOf(dia);
+
+      if (chest) {
+        chest.style.height = (CHEST_BASE + f * CHEST_SPAN).toFixed(1) + "%";
+        chest.setAttribute("data-phase-now", phase);
+      }
+      if (lung) {
+        lung.style.transform =
+          "scale(" + (LUNG_BASE + f * LUNG_SPAN).toFixed(2) + ")";
+      }
+      if (reads.volume) {
+        reads.volume.textContent =
+          (reads.volume.getAttribute("data-format") || "")
+            .split("{volume}").join(vol.toFixed(1));
+      }
+      if (reads.pressure) {
+        /* An explicit `+` on a positive pressure, because the row it sits
+           above reads "0.00 kPa (atmospheric)" and the whole readout is a
+           comparison against it. An unsigned 0.18 there says nothing about
+           which side of atmospheric the chest is on. */
+        reads.pressure.textContent =
+          (reads.pressure.getAttribute("data-format") || "")
+            .split("{pressure}")
+            .join((pres >= 0 ? "+" : "") + pres.toFixed(2));
+      }
+      showByAttr("phase", phase);
+      showByAttr("air", phase);
+      showByAttr("dia", phase);
+      showByAttr("chain", phase);
+      showByAttr("note", phase);
+      each(steps, function (step) {
+        var tpl = step.getAttribute("data-format");
+        if (tpl) { step.textContent = fill(tpl, vol, pres); }
+      });
+    }
+
+    function onMove() {
+      draw();
+      /* ⚖️ THE STAGE TICKS WHEN THE MODEL HAS BEEN WORKED, which is Design's
+         own `moved` flag. Not on load, and not on scroll: the block's argument
+         is the ORDER the chain reports, and the order cannot be read without
+         moving the sheet. */
+      markStage(sec, true);
+    }
+
+    /* Bound to both, per NOTES-B4 §6. `input` is the live drag and `change`
+       is the keyboard and the release; a slider on `change` alone does not
+       move its readouts while it is being dragged. */
+    slider.addEventListener("input", onMove);
+    slider.addEventListener("change", onMove);
+
+    each(wrap.querySelectorAll("[data-preset]"), function (btn) {
+      btn.addEventListener("click", function () {
+        slider.value = btn.getAttribute("data-preset");
+        onMove();
+      });
+    });
+
+    draw();
+    markStage(sec, false);
+  }
+
+  /* ── crossing-counter (b4-03 #s-gradient) ──
+     ⚖️ NOTHING HERE COMPUTES A COUNT OR A WIDTH. Both bar widths and all five
+     printed figures were computed in `r_crossing_counter` from one pair of kPa
+     values per state and ship as finished strings on that state's own note
+     element. This function reads them across. That is `gut-journey`'s rule and
+     it holds for the same reason: a width built here would be a second source
+     for a number the document already carries, and the two would eventually
+     stop agreeing.
+
+     ⚖️ THE OUTWARD BAR IS NEVER SET TO ZERO BY THIS FUNCTION, because it is
+     never set by this function at all — it is copied from a value the renderer
+     already refused to accept as zero. There is no code path in B4 that can
+     make molecules stop crossing outwards. */
+  function wireCrossingCounter(sec) {
+    var wrap = sec.querySelector("[data-cross]");
+    if (!wrap) { return; }
+    var notes = toArray(wrap.querySelectorAll(".ks3-cross-note"));
+    var switches = toArray(wrap.querySelectorAll("[data-switch]"));
+    if (notes.length !== 4 || switches.length !== 2) { return; }
+
+    var tiles = {
+      alveolar: wrap.querySelector('[data-tile="alveolar"]'),
+      blood: wrap.querySelector('[data-tile="blood"]'),
+      net: wrap.querySelector('[data-tile="net"]')
+    };
+    var vals = {
+      "in": wrap.querySelector('[data-bar="in"]'),
+      out: wrap.querySelector('[data-bar="out"]')
+    };
+    var fills = {
+      "in": wrap.querySelector('[data-fill="in"]'),
+      out: wrap.querySelector('[data-fill="out"]')
+    };
+    var state = { breathing: true, blood_flow: true };
+    each(switches, function (sw) {
+      state[sw.getAttribute("data-switch")] =
+        sw.getAttribute("aria-pressed") === "true";
+    });
+
+    function key() {
+      return (state.breathing ? "1" : "0") + "-" +
+        (state.blood_flow ? "1" : "0");
+    }
+
+    function put(el, text) { if (el && text !== null) { el.textContent = text; } }
+
+    function draw() {
+      var k = key();
+      var live = null;
+      each(notes, function (note) {
+        var on = note.getAttribute("data-state") === k;
+        setHidden(note, !on);
+        if (on) { live = note; }
+      });
+      if (!live) { return; }
+      wrap.setAttribute("data-state", k);
+      put(tiles.alveolar, live.getAttribute("data-alveolar"));
+      put(tiles.blood, live.getAttribute("data-blood"));
+      put(tiles.net, live.getAttribute("data-net"));
+      put(vals["in"], live.getAttribute("data-in"));
+      put(vals.out, live.getAttribute("data-out"));
+      if (fills["in"]) {
+        fills["in"].style.width = live.getAttribute("data-inw") + "%";
+      }
+      if (fills.out) {
+        fills.out.style.width = live.getAttribute("data-outw") + "%";
+      }
+      each(switches, function (sw) {
+        var id = sw.getAttribute("data-switch");
+        var on = !!state[id];
+        sw.setAttribute("aria-pressed", on ? "true" : "false");
+        sw.textContent = sw.getAttribute(on ? "data-on-label" : "data-off-label");
+      });
+    }
+
+    each(switches, function (sw) {
+      sw.addEventListener("click", function () {
+        var id = sw.getAttribute("data-switch");
+        state[id] = !state[id];
+        draw();
+        /* ⚖️ ONE SWITCH IS ENOUGH TO TICK, which is Design's own `tried`.
+           The block opens with both flows running and its argument is what
+           happens when one stops, so the first stop IS the activity; requiring
+           all four states would make the stop turn on exploring rather than on
+           the thing being explored. */
+        markStage(sec, true);
+      });
+    });
+
+    draw();
+  }
+
+  /* ── fault-bench (b4-04 #s-bench) ──
+     ⚖️ EVERY FACTOR KEEPS ITS OWN PICK AND ITS OWN OPENED FLAG, and the state
+     lives in the DOM rather than in this closure: a factor's pick is the
+     `aria-pressed` on its own hidden option set… except that there is one
+     shared option set, so the picks are held here and re-applied on every tab
+     change. Moving away from a factor and back finds it exactly as it was.
+
+     ⚖️ THE REVEAL IS NEVER WITHHELD FOR A WRONG ANSWER. The verdict line says
+     which of the two happened and the four rows follow either way. */
+  function wireFaultBench(sec) {
+    var wrap = sec.querySelector("[data-fault]");
+    if (!wrap) { return; }
+    var tabs = toArray(wrap.querySelectorAll(".ks3-fault-tab"));
+    var scenarios = toArray(wrap.querySelectorAll(".ks3-fault-scenario"));
+    var options = toArray(wrap.querySelectorAll(".ks3-option"));
+    var reveals = toArray(wrap.querySelectorAll(".ks3-fault-reveal"));
+    var btn = wrap.querySelector("[data-fault-open]");
+    var hint = wrap.querySelector("[data-fault-hint]");
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || tabs.length;
+    if (!tabs.length || !btn) { return; }
+
+    var HINTS = {
+      none: wrap.getAttribute("data-hint-none") || "",
+      ready: wrap.getAttribute("data-hint-ready") || "",
+      opened: wrap.getAttribute("data-hint-opened") || ""
+    };
+    var picks = {};
+    var opened = {};
+    var current = wrap.getAttribute("data-factor");
+
+    function openedCount() {
+      var n = 0, k;
+      for (k in opened) { if (opened[k]) { n += 1; } }
+      return n;
+    }
+
+    function draw() {
+      var pick = picks[current];
+      var isOpen = !!opened[current];
+
+      each(tabs, function (tab) {
+        tab.setAttribute("aria-pressed",
+          tab.getAttribute("data-factor") === current ? "true" : "false");
+      });
+      each(scenarios, function (p) {
+        setHidden(p, p.getAttribute("data-factor") !== current);
+      });
+      each(options, function (opt) {
+        opt.setAttribute("aria-pressed",
+          pick && opt.getAttribute("data-part") === pick ? "true" : "false");
+        opt.disabled = isOpen;
+      });
+      each(reveals, function (r) {
+        var on = isOpen && r.getAttribute("data-factor") === current;
+        setHidden(r, !on);
+        if (!on) { return; }
+        var right = pick === r.getAttribute("data-answer");
+        each(r.querySelectorAll("[data-verdict]"), function (v) {
+          setHidden(v, v.getAttribute("data-verdict") !==
+            (right ? "right" : "wrong"));
+        });
+        r.setAttribute("role", "status");
+      });
+      btn.disabled = isOpen || !pick;
+      if (hint) {
+        hint.textContent = isOpen ? HINTS.opened : (pick ? HINTS.ready : HINTS.none);
+      }
+      /* ⚖️ ALL THREE FACTORS. The block's argument is that different factors
+         hit different parts of the same system, and a student who has opened
+         one has met a case rather than the comparison. */
+      markStage(sec, openedCount() >= total);
+    }
+
+    each(tabs, function (tab) {
+      tab.addEventListener("click", function () {
+        current = tab.getAttribute("data-factor");
+        wrap.setAttribute("data-factor", current);
+        draw();
+      });
+    });
+    each(options, function (opt) {
+      opt.addEventListener("click", function () {
+        if (opened[current]) { return; }
+        picks[current] = opt.getAttribute("data-part");
+        draw();
+      });
+    });
+    btn.addEventListener("click", function () {
+      if (opened[current] || !picks[current]) { return; }
+      opened[current] = true;
+      draw();
+    });
+
+    draw();
+  }
+
+  /* ── two-process-ledger (b4-05 #s-ledger) ──
+     ⚖️ THE RESPIRATION FILL IS NEVER TOUCHED BY THIS FUNCTION. Its width was
+     written once, at build time, from the authored `resp_rate`, and there is
+     no line below that selects it. That is the whole confrontation:
+     `BREATH-12`/`BREATH-13` is the belief that plants respire only at night,
+     and a student drags the light from midnight to noon and watches the top
+     bar refuse to move. A respiration width computed here — even from a
+     constant — would be one refactor away from acquiring a light term.
+
+     ⚖️ THE MIDDLE BRANCH IS A THIRD THING, NOT A WEAK VERSION OF THE OTHER
+     TWO. `balanced` takes its own colour and its own three paragraphs, because
+     a flat line produced by two processes at full rate is the reading the
+     lesson exists to explain, and a sensor cannot tell it from a dead plant. */
+  function wireTwoProcessLedger(sec) {
+    var wrap = sec.querySelector("[data-tpl]");
+    if (!wrap) { return; }
+    var slider = wrap.querySelector("[data-tpl-slider]");
+    if (!slider) { return; }
+
+    var RESP = Number(wrap.getAttribute("data-resp"));
+    var MAX = Number(wrap.getAttribute("data-max"));
+    var CONST = Number(wrap.getAttribute("data-const"));
+    var SCALE = Number(wrap.getAttribute("data-scale"));
+    var WINDOW = Number(wrap.getAttribute("data-window"));
+    var RATE = wrap.getAttribute("data-rate-format") || "{v}";
+    var IN = wrap.getAttribute("data-in-format") || "{v}";
+    var OUT = wrap.getAttribute("data-out-format") || "{v}";
+
+    var lightEl = wrap.querySelector("[data-light]");
+    var photoVal = wrap.querySelector('[data-val="photo"]');
+    var netVal = wrap.querySelector('[data-val="net"]');
+    var photoFill = wrap.querySelector('[data-fill="photo"]');
+    var netFill = wrap.querySelector('[data-fill="net"]');
+    var notes = toArray(wrap.querySelectorAll("[data-note]"));
+    var verdicts = toArray(wrap.querySelectorAll("[data-verdict]"));
+
+    function draw() {
+      var light = Number(slider.value);
+      var photo = MAX * (1 - Math.exp(-light / CONST));
+      var net = photo - RESP;
+      var branch = Math.abs(net) < WINDOW
+        ? "balanced" : (net > 0 ? "uptake" : "release");
+
+      if (lightEl) {
+        lightEl.textContent = light === 0
+          ? (lightEl.getAttribute("data-dark") || "")
+          : (lightEl.getAttribute("data-format") || "")
+              .split("{n}").join(String(light));
+      }
+      if (photoVal) {
+        photoVal.textContent = RATE.split("{v}").join(photo.toFixed(1));
+      }
+      if (netVal) {
+        netVal.textContent = (net >= 0 ? IN : OUT)
+          .split("{v}").join(Math.abs(net).toFixed(1));
+      }
+      if (photoFill) {
+        photoFill.style.width = (photo / SCALE * 100).toFixed(1) + "%";
+      }
+      if (netFill) {
+        netFill.style.width = (Math.abs(net) / SCALE * 100).toFixed(1) + "%";
+        netFill.setAttribute("data-tone", branch);
+      }
+      each(notes, function (n) {
+        setHidden(n, n.getAttribute("data-note") !== (light === 0 ? "dark" : "light"));
+      });
+      each(verdicts, function (v) {
+        setHidden(v, v.getAttribute("data-verdict") !== branch);
+      });
+      each(wrap.querySelectorAll("[data-preset]"), function (b) {
+        b.setAttribute("aria-pressed",
+          Number(b.getAttribute("data-preset")) === light ? "true" : "false");
+      });
+    }
+
+    function onMove() {
+      draw();
+      /* Design's own `moved`. The ledger opens in darkness with the net bar
+         already reading a release, so ticking on load would credit a student
+         for a reading they were handed. */
+      markStage(sec, true);
+    }
+
+    slider.addEventListener("input", onMove);
+    slider.addEventListener("change", onMove);
+    each(wrap.querySelectorAll("[data-preset]"), function (btn) {
+      btn.addEventListener("click", function () {
+        slider.value = btn.getAttribute("data-preset");
+        onMove();
+      });
+    });
+
+    draw();
+    markStage(sec, false);
+  }
+
+/* ═══ END B4 ═══ */
+
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -11381,6 +11904,13 @@
     each(root.querySelectorAll("[data-ledgerblock]"), wirePersonLedger);
     each(root.querySelectorAll("[data-tbenchblock]"), wireTestBench);
     // ═══ END B3 wiring ═══
+    // ═══ BEGIN B4 wiring ═══
+    each(root.querySelectorAll("[data-gasblock]"), wireGasCompare);
+    each(root.querySelectorAll("[data-bellblock]"), wireBellJar);
+    each(root.querySelectorAll("[data-crossblock]"), wireCrossingCounter);
+    each(root.querySelectorAll("[data-faultblock]"), wireFaultBench);
+    each(root.querySelectorAll("[data-tplblock]"), wireTwoProcessLedger);
+    // ═══ END B4 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

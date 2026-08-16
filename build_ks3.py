@@ -39,6 +39,7 @@ changes nothing else, which is the property §9's reorder proof already tests.
 import hashlib
 import html
 import json
+import math
 import os
 import re
 import shutil
@@ -8801,6 +8802,985 @@ def r_test_bench(a, act_id):
                "".join(results)))
 # renderers: ═══ END B3 ═══
 
+
+# renderers: ═══ BEGIN B4 ═══
+#
+# Five lessons, five instruments, and every one of them on ink.
+#
+# ⚠️ THAT UNIFORMITY IS THE HAZARD, NOT A CONVENIENCE. `.ks3-dark p` is (0,1,1)
+# and a bare instrument class is (0,1,0), so an unscoped colour rule LOSES —
+# and because all five B4 practicals are `ks3-block ks3-dark ks3-practical`,
+# that trap would bite all five lessons at once rather than one. Every colour
+# rule these five hang on is scoped `.ks3-dark …` in `shared/ks3.css`, and the
+# panels that invert to the CREAM ground inside the ink block (gas-compare's
+# closing paragraph, bell-jar's chain, crossing-counter's note,
+# fault-bench's reveal, two-process-ledger's verdict) are the ones that would
+# silently lose: `.ks3-dark p` would paint #E7DECE on #FBF3E6 at about 1.2:1.
+#
+# ⚠️ NOTHING IN B4 ANIMATES AND NOTHING USES A TIMER. All five instruments are
+# pure functions of their controls' state; the only motion in the unit is a CSS
+# transition, and the stylesheet's reduced-motion block removes every one. There
+# is no rAF loop in this unit to check `prefers-reduced-motion` inside.
+
+
+def r_gas_compare(a, act_id):
+    """⊕ b4-01 `#s-air` — four gases, a prediction on each, then both bags.
+
+    ⚖️ THE NUMERAL IS NOT A CAPTION FOR THE BAR, IT IS THE CORRECTION TO IT.
+    Carbon dioxide is 0.04% inhaled, and a bar drawn honestly at 0.04% of its
+    track is zero pixels wide — so the bar is clamped to `min_bar_pct`, which
+    on Design's payload makes it about thirty-seven times too wide. That clamp
+    is the one dishonest pixel in the unit. It is survivable only because the
+    figure sits beside the bar in every cell, which is why `in_label` and
+    `out_label` are required and why this renderer will not compose them.
+
+    ⚖️ `in_label` / `out_label` ARE AUTHORED, NOT FORMATTED FROM THE PERCENT.
+    Water vapour's two cells read "variable, often low" and "saturated" —
+    Design's deliberate refusal to give a percentage for a figure that has
+    none. A template filling "{pct}%" would print "1%" there and invent a
+    measurement. The percents drive the BARS and nothing else.
+
+    ⚠️ THE PREDICTION IS NOT MARKED WHILE IT IS BEING MADE. Only the mastery
+    ladder marks correctness (R3), so the three buttons per row take
+    `aria-pressed` and no verdict class until the reveal opens. What happens at
+    the reveal is not marking either: the row that predicted correctly keeps
+    its panel and its border goes to alert, and the row that did not loses the
+    panel. Design draws exactly that, and the count beside the button changes
+    from "committed" to "predicted correctly" in the same instant.
+    """
+    gases = a.get("gases") or []
+    if len(gases) < 2:
+        raise ValueError(
+            "gas-compare %r declares %d gas(es). The block is a comparison of "
+            "two bags across the gases in them, and one row cannot make it."
+            % (act_id, len(gases)))
+
+    choices = a.get("choices") or []
+    if len(choices) < 2:
+        raise ValueError(
+            "gas-compare %r declares %d choice(s). A prediction needs "
+            "something to choose between." % (act_id, len(choices)))
+    for c in choices:
+        if not (c.get("id") and c.get("label")):
+            raise ValueError(
+                "gas-compare %r choice %r needs `id` and `label`."
+                % (act_id, c.get("id")))
+    choice_ids = [c["id"] for c in choices]
+
+    for g in gases:
+        for key in ("id", "name", "change", "in_label", "out_label", "verdict"):
+            if not g.get(key):
+                raise ValueError(
+                    "gas-compare %r gas %r is missing %r. `in_label` and "
+                    "`out_label` are the printed figures and are authored: "
+                    "water vapour's read “variable, often low” and "
+                    "“saturated”, and composing them from the "
+                    "percentages would print a measurement Design refused to "
+                    "give." % (act_id, g.get("id"), key))
+        if g["change"] not in choice_ids:
+            raise ValueError(
+                "gas-compare %r gas %r predicts %r, which is not one of the "
+                "offered choices %s. A row whose right answer is not on the "
+                "buttons can never be predicted correctly, and the closing "
+                "count would be wrong for every student."
+                % (act_id, g["id"], g["change"], choice_ids))
+        for key in ("in_pct", "out_pct"):
+            v = g.get(key)
+            if not isinstance(v, (int, float)) or isinstance(v, bool) or v < 0:
+                raise ValueError(
+                    "gas-compare %r gas %r has %s %r; it is the bar's width as "
+                    "a percentage of its track and cannot be negative."
+                    % (act_id, g["id"], key, v))
+
+    count = a.get("count") or {}
+    if not (count.get("committed") and count.get("scored")):
+        raise ValueError(
+            "gas-compare %r needs both `count.committed` and `count.scored`. "
+            "The line beside the button says how many rows are committed "
+            "before the reveal and how many were right after it — one "
+            "string cannot do both, and a blank one is a readout that goes "
+            "dark at the moment the block pays off." % act_id)
+
+    table = a.get("table") or {}
+    missing = sorted({"gas", "inhaled", "exhaled"} - set(table))
+    if missing:
+        raise ValueError(
+            "gas-compare %r table is missing %s. The two data headings are "
+            "also the per-cell captions on a narrow screen, where the columns "
+            "stack and an uncaptioned figure is a number with nothing saying "
+            "which bag it came from." % (act_id, ", ".join(missing)))
+
+    for key in ("reveal_label", "close_lead", "close"):
+        if not a.get(key):
+            raise ValueError(
+                "gas-compare %r declares no %r." % (act_id, key))
+
+    min_bar = float(a.get("min_bar_pct") or 1.5)
+
+    rows = "".join(
+        '<li class="ks3-gas-row" data-gasrow="%s" data-change="%s">'
+        '<p class="ks3-gas-rowname">%s</p>'
+        '<div class="ks3-gas-choices">%s</div></li>'
+        % (e(g["id"]), e(g["change"]), t(g["name"]),
+           "".join(
+               '<button type="button" class="ks3-gas-choice" data-gas="%s" '
+               'data-choice="%s" aria-pressed="false">%s</button>'
+               % (e(g["id"]), e(c["id"]), t(c["label"]))
+               for c in choices))
+        for g in gases)
+
+    def cell(g, side):
+        pct = float(g["in_pct"] if side == "in" else g["out_pct"])
+        label = g["in_label"] if side == "in" else g["out_label"]
+        cap = table["inhaled"] if side == "in" else table["exhaled"]
+        return ('<div class="ks3-gas-cell" data-side="%s">'
+                '<p class="ks3-gas-cap">%s</p>'
+                '<p class="ks3-gas-num">%s</p>'
+                '<span class="ks3-gas-track">'
+                '<span class="ks3-gas-bar" style="width:%s%%"></span>'
+                '</span></div>'
+                % (side, t(cap), t(label), ("%.2f" % max(min_bar, pct))))
+
+    body = "".join(
+        '<div class="ks3-gas-grid ks3-gas-body" data-gasout="%s" data-band="%d">'
+        '<div class="ks3-gas-name">'
+        '<p class="ks3-gas-gname">%s</p>'
+        '<p class="ks3-gas-verdict">%s</p></div>%s%s</div>'
+        % (e(g["id"]), i % 2, t(g["name"]), t(g["verdict"]),
+           cell(g, "in"), cell(g, "out"))
+        for i, g in enumerate(gases))
+
+    return ('<div class="ks3-gas" data-gas data-total="%d" '
+            'data-committed="%s" data-scored="%s">'
+            '<ul class="ks3-gas-rows" role="list">%s</ul>'
+            '<div class="ks3-gas-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-gas-open" '
+            'data-gas-open disabled>%s</button>'
+            '<span class="ks3-gas-count" data-gas-count role="status">%s</span>'
+            '</div>'
+            '<div class="ks3-gas-table" data-gas-table hidden>'
+            '<div class="ks3-gas-grid ks3-gas-head">'
+            '<p class="ks3-gas-hname">%s</p>'
+            '<p class="ks3-gas-hcell">%s</p>'
+            '<p class="ks3-gas-hcell" data-side="out">%s</p></div>%s</div>'
+            '<p class="ks3-gas-close" data-gas-close hidden>'
+            '<strong>%s</strong> %s</p></div>'
+            % (len(gases), e(count["committed"]), e(count["scored"]), rows,
+               t(a["reveal_label"]),
+               t(count["committed"].replace("{n}", "0")
+                 .replace("{total}", str(len(gases)))),
+               t(table["gas"]), t(table["inhaled"]), t(table["exhaled"]), body,
+               t(a["close_lead"]), rich(a["close"])))
+
+
+def r_bell_jar(a, act_id):
+    """⊕ b4-02 `#s-model` — the bell jar, and the chain that is the instrument.
+
+    ⚖️ THE CHAIN IS THE INSTRUMENT, NOT THE PICTURE. NOTES-B4 §3.2 says it in
+    one line and it decides the whole shape of this renderer: the jar drawing
+    is a rectangle whose height scales and a circle that scales with it, and if
+    that were the block, the block would be decoration. The chain's job is that
+    its FIRST line is always the muscle and its LAST line is always the air —
+    the exact order `#s-ladder` rung 1 then asks for. Rendering it as static
+    text loses the lesson's central confrontation, so all three phases are
+    authored in full and the live numbers are filled into them.
+
+    ⚖️ THREE PHASES, ALL THREE AUTHORED, BECAUSE ALL THREE ARE REACHABLE. The
+    slider passes through `rest` on its way anywhere, and Design writes a
+    distinct four-line chain for it — "No net air movement in either
+    direction." A missing phase is not a rare state, it is the state the
+    instrument opens in.
+
+    ⚠️ `{pressure}` IS SIGNED AND `{pressure_abs}` IS NOT, and the difference is
+    a sentence's meaning. Design's `out` chain reads "rises to 0.18 kPa above
+    atmospheric" from `Math.abs(pressure)`; its `in` chain reads "falls to
+    -0.79 kPa below atmospheric" from the signed value — a double negative on
+    the drawn page. Both placeholders exist here and the renderer takes no
+    view: which one a sentence uses is a property of that sentence, and the
+    sentence is the author's. See `docs/ks3/b4-inventory/PAYLOAD-SCHEMA.md` §2.
+
+    ⚠️ `pressure_zero` MUST AGREE WITH `rest`. The phase a chain shows is
+    decided by the slider against `rest`; the pressure printed inside that
+    chain is decided by the slider against `pressure_zero`. Let them differ and
+    there is a band of the slider that says "at rest between breaths" while
+    printing a pressure difference, or says "breathing in" at 0.00 kPa. The
+    renderer raises rather than shipping a model that disagrees with its own
+    readout.
+    """
+    model = a.get("model") or {}
+    for key in ("volume_base", "volume_span", "pressure_zero", "pressure_span"):
+        v = model.get(key)
+        if not isinstance(v, (int, float)) or isinstance(v, bool):
+            raise ValueError(
+                "bell-jar %r model.%s is %r. The four numbers are the model's "
+                "physics and are authored, because they are the figures the "
+                "chain quotes and the science owner has to be able to correct "
+                "them without opening the generator."
+                % (act_id, key, v))
+
+    start = int(a.get("start", 20))
+    rest = int(a.get("rest", 20))
+    for name, v in (("start", start), ("rest", rest)):
+        if not 0 <= v <= 100:
+            raise ValueError(
+                "bell-jar %r %s is %d; the slider runs 0–100."
+                % (act_id, name, v))
+    if abs(float(model["pressure_zero"]) * 100 - rest) > 1e-9:
+        raise ValueError(
+            "bell-jar %r has rest=%d but model.pressure_zero=%r (which is "
+            "%.1f on the slider). The phase and the pressure would then "
+            "disagree: there would be slider positions reading “at "
+            "rest” with a pressure difference printed under them."
+            % (act_id, rest, model["pressure_zero"],
+               float(model["pressure_zero"]) * 100))
+
+    readouts = a.get("readouts") or {}
+    missing = sorted({"volume_label", "volume_format", "pressure_label",
+                      "pressure_format", "outside_label", "outside_value",
+                      "air_label"} - set(readouts))
+    if missing:
+        raise ValueError(
+            "bell-jar %r readouts is missing %s. Four rows are drawn and every "
+            "one of them is a claim: the outside pressure row is FIXED at "
+            "atmospheric and is the reference the inside row is read against, "
+            "so an unlabelled or absent one leaves the inside figure meaning "
+            "nothing." % (act_id, ", ".join(missing)))
+
+    for key in ("slider_label", "slider_aria", "jar_label", "readouts_label",
+                "chain_label"):
+        if not a.get(key):
+            raise ValueError(
+                "bell-jar %r declares no %r. `slider_aria` is the "
+                "visually-hidden label on the range input and is the only "
+                "thing a screen-reader user has to go on."
+                % (act_id, key))
+
+    presets = a.get("presets") or []
+    if not presets:
+        raise ValueError(
+            "bell-jar %r declares no presets. Design draws two — breathe "
+            "in and breathe out — and they are what make the two ends of "
+            "the slider reachable in one press." % act_id)
+    for p in presets:
+        if not p.get("label"):
+            raise ValueError(
+                "bell-jar %r preset %r has no label." % (act_id, p.get("id")))
+        v = p.get("value")
+        if not isinstance(v, int) or isinstance(v, bool) or not 0 <= v <= 100:
+            raise ValueError(
+                "bell-jar %r preset %r has value %r; it is a slider position "
+                "0–100." % (act_id, p.get("id"), v))
+
+    phases = a.get("phases") or {}
+    missing = sorted({"in", "out", "rest"} - set(phases))
+    if missing:
+        raise ValueError(
+            "bell-jar %r declares no %s phase. The slider passes through all "
+            "three and opens in one of them; a phase with no text is a chain "
+            "that goes blank while the student is holding the control."
+            % (act_id, ", ".join(missing)))
+    for name in ("in", "out", "rest"):
+        ph = phases[name] or {}
+        for key in ("phase_label", "dia_label", "air", "note"):
+            if not ph.get(key):
+                raise ValueError(
+                    "bell-jar %r phase %r is missing %r."
+                    % (act_id, name, key))
+        chain = ph.get("chain") or []
+        if len(chain) != 4:
+            raise ValueError(
+                "bell-jar %r phase %r declares %d chain line(s), not 4. The "
+                "four steps are muscle → volume → pressure → "
+                "air, and the count is the argument: drop one and the "
+                "remaining three no longer say that the air is last."
+                % (act_id, name, len(chain)))
+
+    def figures(dia):
+        """Volume, signed pressure and its magnitude at a slider position."""
+        f = dia / 100.0
+        vol = float(model["volume_base"]) + f * float(model["volume_span"])
+        pres = -(f - float(model["pressure_zero"])) * float(model["pressure_span"])
+        return vol, pres
+
+    def fill(tpl, dia):
+        vol, pres = figures(dia)
+        return (tpl.replace("{volume}", "%.1f" % vol)
+                .replace("{pressure_abs}", "%.2f" % abs(pres))
+                .replace("{pressure}", "%.2f" % pres))
+
+    open_phase = "in" if start > rest else ("out" if start < rest else "rest")
+
+    def switched(cls, attr, value_of):
+        """Emit every authored variant, show the one the slider opens on."""
+        return "".join(
+            '<span class="%s" data-%s="%s"%s>%s</span>'
+            % (cls, attr, name, "" if name == open_phase else " hidden",
+               value_of(phases[name]))
+            for name in ("in", "out", "rest"))
+
+    chains = "".join(
+        '<ol class="ks3-bell-chain" data-chain="%s"%s>%s</ol>'
+        % (name, "" if name == open_phase else " hidden",
+           "".join(
+               '<li class="ks3-bell-step"%s>%s</li>'
+               % ((' data-format="%s"' % e(line))
+                  if ("{volume}" in line or "{pressure" in line) else "",
+                  t(fill(line, start)))
+               for line in phases[name]["chain"]))
+        for name in ("in", "out", "rest"))
+
+    notes = "".join(
+        '<p class="ks3-bell-note" data-note="%s"%s>%s</p>'
+        % (name, "" if name == open_phase else " hidden",
+           rich(phases[name]["note"]))
+        for name in ("in", "out", "rest"))
+
+    preset_html = "".join(
+        '<button type="button" class="ks3-reveal-btn ks3-bell-preset" '
+        'data-preset="%d">%s</button>' % (p["value"], t(p["label"]))
+        for p in presets)
+
+    vol0, pres0 = figures(start)
+    sid = "bell-" + str(act_id)
+
+    return ('<div class="ks3-bell" data-bell data-rest="%d" data-vbase="%s" '
+            'data-vspan="%s" data-pzero="%s" data-pspan="%s">'
+            '<div class="ks3-bell-panels">'
+            '<div class="ks3-bell-card">'
+            '<p class="ks3-bell-cap">%s</p>'
+            '<div class="ks3-bell-jar" aria-hidden="true">'
+            '<span class="ks3-bell-chest" data-chest>'
+            '<span class="ks3-bell-lung" data-lung></span></span></div>'
+            '<p class="ks3-bell-phase" role="status">%s</p></div>'
+            '<div class="ks3-bell-card">'
+            '<p class="ks3-bell-cap">%s</p>'
+            '<dl class="ks3-bell-reads">'
+            '<div class="ks3-bell-read"><dt>%s</dt>'
+            '<dd data-read="volume" data-format="%s">%s</dd></div>'
+            '<div class="ks3-bell-read"><dt>%s</dt>'
+            '<dd data-read="pressure" data-format="%s">%s</dd></div>'
+            '<div class="ks3-bell-read"><dt>%s</dt><dd>%s</dd></div>'
+            '<div class="ks3-bell-read"><dt>%s</dt><dd>%s</dd></div>'
+            '</dl></div></div>'
+            '<div class="ks3-bell-control">'
+            '<div class="ks3-bell-controlhead">'
+            '<p class="ks3-bell-cap">%s</p>'
+            '<p class="ks3-bell-dia">%s</p></div>'
+            '<label class="ks3-sr-only" for="%s">%s</label>'
+            '<input class="ks3-b4slider ks3-bell-slider" type="range" id="%s" '
+            'min="0" max="100" step="1" value="%d" data-bell-slider>'
+            '<div class="ks3-bell-presets">%s</div></div>'
+            '<div class="ks3-bell-chainpanel">'
+            '<p class="ks3-bell-chainlabel">%s</p>%s%s</div></div>'
+            % (rest, model["volume_base"], model["volume_span"],
+               model["pressure_zero"], model["pressure_span"],
+               t(a["jar_label"]),
+               switched("ks3-bell-phaseval", "phase",
+                        lambda ph: t(ph["phase_label"])),
+               t(a["readouts_label"]),
+               t(readouts["volume_label"]), e(readouts["volume_format"]),
+               t(readouts["volume_format"].replace("{volume}", "%.1f" % vol0)),
+               t(readouts["pressure_label"]), e(readouts["pressure_format"]),
+               t(readouts["pressure_format"].replace(
+                   "{pressure}", "%+.2f" % pres0)),
+               t(readouts["outside_label"]), t(readouts["outside_value"]),
+               t(readouts["air_label"]),
+               switched("ks3-bell-airval", "air", lambda ph: t(ph["air"])),
+               t(a["slider_label"]),
+               switched("ks3-bell-diaval", "dia", lambda ph: t(ph["dia_label"])),
+               e(sid), t(a["slider_aria"]), e(sid), start, preset_html,
+               t(a["chain_label"]), chains, notes))
+
+
+def r_crossing_counter(a, act_id):
+    """⊕ b4-03 `#s-gradient` — four states, and neither bar ever reads zero.
+
+    ⚖️ THE OUTWARD BAR IS THE LESSON. `PART-10`/`PART-11` have been confronted
+    twice before this and survive because every picture a student has seen of
+    diffusion shows movement one way. Here the outward count is on screen in
+    all four states, including the one where both flows are stopped and the
+    two counts are IDENTICAL — molecules still crossing, nothing settled,
+    nothing finished, only the imbalance gone. A state whose outward count fell
+    to zero would teach the belief this instrument exists to remove, so
+    `blood_kpa` must be positive and the renderer raises when it is not.
+
+    ⚖️ FOUR STATES, ENUMERATED, NOT SIMULATED. NOTES-B4 §6 is explicit: the
+    table is a lookup and the four narrative notes are hand-written per state.
+    Computing the pair from two rate terms would make the four notes
+    unwritable, because each one says something different about WHY the two
+    counts came together, and only three of the four are the same mechanism.
+
+    ⚖️ EVERY NUMBER ON THIS INSTRUMENT IS COMPUTED HERE, AT BUILD TIME, and
+    ships as a finished string on the state's own element. The two bar widths
+    and the five printed figures come out of one pair of kPa values per state,
+    in one place, so a bar and the figure beside it cannot disagree. The wiring
+    copies them; it computes nothing. This is `gut-journey`'s rule and it holds
+    for the same reason.
+
+    ⚠️ THE BOTH-ON NOTE QUOTES ITS OWN NUMBERS — "1197 in, 477 out" —
+    and they are `13.3 × 90` and `5.3 × 90`. Nothing can check a
+    figure embedded in prose, and nothing here tries. If a science review moves
+    a kPa value, that sentence moves with it.
+    """
+    states = a.get("states") or []
+    switches = a.get("switches") or []
+    if len(switches) != 2:
+        raise ValueError(
+            "crossing-counter %r declares %d switch(es), not 2. Four states is "
+            "two switches squared, and the lookup table is built from the pair."
+            % (act_id, len(switches)))
+    for w in switches:
+        for key in ("id", "on_label", "off_label"):
+            if not w.get(key):
+                raise ValueError(
+                    "crossing-counter %r switch %r is missing %r. The caption "
+                    "IS the state — Design's switch says “Breathing: "
+                    "stopped” rather than greying out — so both "
+                    "halves are authored."
+                    % (act_id, w.get("id"), key))
+    if [w["id"] for w in switches] != ["breathing", "blood_flow"]:
+        raise ValueError(
+            "crossing-counter %r switches are %s; they must be `breathing` "
+            "then `blood_flow`, because `states[]` is keyed on those two names."
+            % (act_id, [w.get("id") for w in switches]))
+
+    if len(states) != 4:
+        raise ValueError(
+            "crossing-counter %r declares %d state(s), not 4."
+            % (act_id, len(states)))
+    seen = {}
+    for st in states:
+        for key in ("breathing", "blood_flow"):
+            if not isinstance(st.get(key), bool):
+                raise ValueError(
+                    "crossing-counter %r state %r has %s=%r; it is a bool."
+                    % (act_id, st.get("note", "")[:24], key, st.get(key)))
+        key = (st["breathing"], st["blood_flow"])
+        if key in seen:
+            raise ValueError(
+                "crossing-counter %r declares breathing=%s blood_flow=%s "
+                "twice. Both switches are reachable, so a duplicated state "
+                "means a missing one." % (act_id, key[0], key[1]))
+        seen[key] = st
+        if not st.get("note"):
+            raise ValueError(
+                "crossing-counter %r state breathing=%s blood_flow=%s has no "
+                "note. Each of the four says something different about why the "
+                "counts came together, and a state with none is the readout "
+                "going silent exactly where the argument is."
+                % (act_id, key[0], key[1]))
+        for field in ("alveolar_kpa", "blood_kpa"):
+            v = st.get(field)
+            if not isinstance(v, (int, float)) or isinstance(v, bool) or v <= 0:
+                raise ValueError(
+                    "crossing-counter %r state breathing=%s blood_flow=%s has "
+                    "%s=%r. It must be positive: it is a bar width as well as "
+                    "a readout, and an outward bar that disappears teaches the "
+                    "one-way picture the block exists to kill."
+                    % (act_id, key[0], key[1], field, v))
+    missing = [k for k in ((True, True), (True, False), (False, True),
+                           (False, False)) if k not in seen]
+    if missing:
+        raise ValueError(
+            "crossing-counter %r declares no state for %s. Every combination "
+            "is one tap away from every other." % (act_id, missing))
+
+    tiles = a.get("tiles") or {}
+    tmissing = sorted({"alveolar", "blood", "net"} - set(tiles))
+    if tmissing:
+        raise ValueError(
+            "crossing-counter %r tiles is missing %s."
+            % (act_id, ", ".join(tmissing)))
+    bars = a.get("bars") or {}
+    bmissing = sorted({"into", "out_of"} - set(bars))
+    if bmissing:
+        raise ValueError(
+            "crossing-counter %r bars is missing %s. The outward bar is named "
+            "as explicitly as the inward one because a student who reads only "
+            "one label reads only one direction."
+            % (act_id, ", ".join(bmissing)))
+    for key in ("kpa_format", "crossing_format", "net_zero"):
+        if not a.get(key):
+            raise ValueError(
+                "crossing-counter %r declares no %r." % (act_id, key))
+
+    per_kpa = float(a.get("crossings_per_kpa") or 90)
+    max_cross = float(a.get("max_crossings") or 1250)
+    if per_kpa <= 0 or max_cross <= 0:
+        raise ValueError(
+            "crossing-counter %r needs positive `crossings_per_kpa` and "
+            "`max_crossings`." % act_id)
+    biggest = max(max(st["alveolar_kpa"], st["blood_kpa"]) for st in states)
+    if biggest * per_kpa > max_cross:
+        raise ValueError(
+            "crossing-counter %r scales its bars against max_crossings=%s, but "
+            "the largest count is %d. A bar wider than its track is a readout "
+            "that has run off the end of the instrument."
+            % (act_id, max_cross, round(biggest * per_kpa)))
+
+    zero_below = float(a.get("net_zero_below") or 20)
+
+    def fmt_kpa(v):
+        return a["kpa_format"].replace("{v}", "%.1f" % v)
+
+    def fmt_cross(n):
+        return a["crossing_format"].replace("{n}", str(int(n)))
+
+    panels = []
+    for st in states:
+        sid = "%d-%d" % (1 if st["breathing"] else 0,
+                         1 if st["blood_flow"] else 0)
+        into = round(st["alveolar_kpa"] * per_kpa)
+        out_of = round(st["blood_kpa"] * per_kpa)
+        net = into - out_of
+        panels.append(
+            '<p class="ks3-cross-note" data-state="%s" data-alveolar="%s" '
+            'data-blood="%s" data-in="%s" data-out="%s" data-net="%s" '
+            'data-inw="%s" data-outw="%s"%s>%s</p>'
+            % (sid, e(fmt_kpa(st["alveolar_kpa"])), e(fmt_kpa(st["blood_kpa"])),
+               e(fmt_cross(into)), e(fmt_cross(out_of)),
+               e(a["net_zero"] if net <= zero_below else fmt_cross(net)),
+               ("%.1f" % (into / max_cross * 100)),
+               ("%.1f" % (out_of / max_cross * 100)),
+               "" if st is states[0] else " hidden",
+               rich(st["note"])))
+
+    first = states[0]
+    first_in = round(first["alveolar_kpa"] * per_kpa)
+    first_out = round(first["blood_kpa"] * per_kpa)
+    first_net = first_in - first_out
+
+    switch_html = "".join(
+        '<button type="button" class="ks3-cross-switch" data-switch="%s" '
+        'aria-pressed="%s" data-on-label="%s" data-off-label="%s">%s</button>'
+        % (e(w["id"]),
+           "true" if w.get("start", True) else "false",
+           e(w["on_label"]), e(w["off_label"]),
+           t(w["on_label"] if w.get("start", True) else w["off_label"]))
+        for w in switches)
+
+    def tile(key, value, tone=""):
+        return ('<div class="ks3-cross-tile"%s>'
+                '<p class="ks3-cross-tilelabel">%s</p>'
+                '<p class="ks3-cross-tileval" data-tile="%s">%s</p></div>'
+                % (tone, t(tiles[key]), key, t(value)))
+
+    def bar(side, name, value, width):
+        return ('<li class="ks3-cross-barrow">'
+                '<div class="ks3-cross-barhead">'
+                '<p class="ks3-cross-barname">%s</p>'
+                '<p class="ks3-cross-barval" data-bar="%s">%s</p></div>'
+                '<span class="ks3-cross-track">'
+                '<span class="ks3-cross-fill" data-fill="%s" '
+                'style="width:%s%%"></span></span></li>'
+                % (t(name), side, t(value), side, width))
+
+    return ('<div class="ks3-cross" data-cross data-state="%d-%d">'
+            '<div class="ks3-cross-switches">%s</div>'
+            '<div class="ks3-cross-panel">'
+            '<div class="ks3-cross-tiles">%s%s%s</div>'
+            '<ul class="ks3-cross-bars" role="list">%s%s</ul>%s</div></div>'
+            % (1 if first["breathing"] else 0, 1 if first["blood_flow"] else 0,
+               switch_html,
+               tile("alveolar", fmt_kpa(first["alveolar_kpa"])),
+               tile("blood", fmt_kpa(first["blood_kpa"])),
+               tile("net",
+                    a["net_zero"] if first_net <= zero_below
+                    else fmt_cross(first_net),
+                    ' data-tone="net"'),
+               bar("in", bars["into"], fmt_cross(first_in),
+                   "%.1f" % (first_in / max_cross * 100)),
+               bar("out", bars["out_of"], fmt_cross(first_out),
+                   "%.1f" % (first_out / max_cross * 100)),
+               "".join(panels)))
+
+
+def r_fault_bench(a, act_id):
+    """⊕ b4-04 `#s-bench` — the switch-a-part-off idiom, run backwards.
+
+    ⚖️ THE STUDENT LOCATES, THEY DO NOT SWITCH. B2's `system-switch` removes a
+    part and reports the symptom; this hands over the symptom and asks which
+    part is at fault. Same anatomy of reasoning, opposite direction, and it is
+    why this is not `system-switch` with different copy: there is no chain, no
+    part to open, and the commitment is a DIAGNOSIS whose truth the block then
+    settles.
+
+    ⚖️ THE REVEAL IS NEVER WITHHELD FOR A WRONG ANSWER. The verdict line says
+    which of the two happened and the four rows follow either way. A block that
+    only explained itself to students who had already guessed right would teach
+    nobody, and Design draws exactly one reveal per factor.
+
+    ⚖️ EVERY FACTOR KEEPS ITS OWN PICK AND ITS OWN OPENED FLAG. Three tabs over
+    one shared option list, and a student who opens exercise and moves to
+    asthma must find asthma uncommitted and exercise exactly as they left it.
+    Emit-all-show-one, with the state in the DOM and nowhere else.
+
+    ⚠️ AN ANSWER THAT IS NOT ON THE LIST CANNOT BE LOCATED. Every factor's
+    `part` is checked against the offered `parts` at build time; a typo there
+    would produce a factor no student could ever get right, and the verdict
+    line would read "Not the part you chose" on all four options.
+    """
+    parts = a.get("parts") or []
+    if len(parts) < 2:
+        raise ValueError(
+            "fault-bench %r declares %d part(s). Locating a fault needs "
+            "somewhere else it could have been." % (act_id, len(parts)))
+    for p in parts:
+        if not (p.get("id") and p.get("text")):
+            raise ValueError(
+                "fault-bench %r part %r needs `id` and `text`."
+                % (act_id, p.get("id")))
+    part_ids = [p["id"] for p in parts]
+
+    factors = a.get("factors") or []
+    if len(factors) < 2:
+        raise ValueError(
+            "fault-bench %r declares %d factor(s). The block's argument is "
+            "that different factors hit different parts, and one factor cannot "
+            "make it." % (act_id, len(factors)))
+    for f in factors:
+        for key in ("id", "label", "tag", "scenario", "part", "answer"):
+            if not f.get(key):
+                raise ValueError(
+                    "fault-bench %r factor %r is missing %r."
+                    % (act_id, f.get("id"), key))
+        if f["part"] not in part_ids:
+            raise ValueError(
+                "fault-bench %r factor %r is at fault in %r, which is not one "
+                "of the offered parts %s. Every option would read “not "
+                "the part you chose” and the factor would be unanswerable."
+                % (act_id, f["id"], f["part"], part_ids))
+        rows = f.get("rows") or []
+        if not rows:
+            raise ValueError(
+                "fault-bench %r factor %r declares no rows. The reveal is the "
+                "explanation, and a headline with nothing under it is a "
+                "verdict without a reason." % (act_id, f["id"]))
+        for r in rows:
+            if not (r.get("label") and r.get("text")):
+                raise ValueError(
+                    "fault-bench %r factor %r has a row missing `label` or "
+                    "`text`." % (act_id, f["id"]))
+
+    for key in ("question", "open_label"):
+        if not a.get(key):
+            raise ValueError("fault-bench %r declares no %r." % (act_id, key))
+    hints = a.get("hints") or {}
+    hmissing = sorted({"none", "ready", "opened"} - set(hints))
+    if hmissing:
+        raise ValueError(
+            "fault-bench %r hints is missing %s. The line beside the button is "
+            "the only thing telling a student why it is disabled."
+            % (act_id, ", ".join(hmissing)))
+    verdicts = a.get("verdicts") or {}
+    vmissing = sorted({"right", "wrong"} - set(verdicts))
+    if vmissing:
+        raise ValueError(
+            "fault-bench %r verdicts is missing %s."
+            % (act_id, ", ".join(vmissing)))
+
+    first = factors[0]
+    for f in factors:
+        if f["id"] == a.get("start_factor"):
+            first = f
+            break
+
+    tabs = "".join(
+        '<button type="button" class="ks3-fault-tab" data-factor="%s" '
+        'aria-pressed="%s">%s</button>'
+        % (e(f["id"]), "true" if f is first else "false", t(f["label"]))
+        for f in factors)
+
+    scenarios = "".join(
+        '<div class="ks3-fault-scenario" data-factor="%s"%s>'
+        '<p class="ks3-fault-tag">%s</p>'
+        '<p class="ks3-fault-text">%s</p></div>'
+        % (e(f["id"]), "" if f is first else " hidden", t(f["tag"]),
+           rich(f["scenario"]))
+        for f in factors)
+
+    options = "".join(
+        '<li><button type="button" class="ks3-option" data-part="%s" '
+        'aria-pressed="false">'
+        '<span class="ks3-opt-mark" aria-hidden="true">%s</span>'
+        '<span class="ks3-opt-label">%s</span></button></li>'
+        % (e(p["id"]), t(option_letter(i)), t(p["text"]))
+        for i, p in enumerate(parts))
+
+    reveals = "".join(
+        '<div class="ks3-fault-reveal" data-factor="%s" data-answer="%s" hidden>'
+        '<p class="ks3-fault-verdict">'
+        '<span data-verdict="right" hidden>%s</span>'
+        '<span data-verdict="wrong" hidden>%s</span></p>'
+        '<p class="ks3-fault-answer">%s</p>'
+        '<dl class="ks3-fault-rows">%s</dl></div>'
+        % (e(f["id"]), e(f["part"]), t(verdicts["right"]), t(verdicts["wrong"]),
+           t(f["answer"]),
+           "".join(
+               '<div class="ks3-fault-row"><dt>%s</dt><dd>%s</dd></div>'
+               % (t(r["label"]), rich(r["text"])) for r in f["rows"]))
+        for f in factors)
+
+    return ('<div class="ks3-fault" data-fault data-total="%d" '
+            'data-factor="%s" data-hint-none="%s" data-hint-ready="%s" '
+            'data-hint-opened="%s">'
+            '<div class="ks3-fault-tabs">%s</div>'
+            '<div class="ks3-fault-scenarios">%s</div>'
+            '<p class="ks3-fault-q">%s</p>'
+            '<ul class="ks3-options">%s</ul>'
+            '<div class="ks3-fault-foot">'
+            '<button type="button" class="ks3-reveal-btn ks3-fault-open" '
+            'data-fault-open disabled>%s</button>'
+            '<span class="ks3-fault-hint" data-fault-hint role="status">%s'
+            '</span></div>'
+            '<div class="ks3-fault-reveals">%s</div></div>'
+            % (len(factors), e(first["id"]), e(hints["none"]),
+               e(hints["ready"]), e(hints["opened"]), tabs, scenarios,
+               t(a["question"]), options, t(a["open_label"]),
+               t(hints["none"]), reveals))
+
+
+def r_two_process_ledger(a, act_id):
+    """⊕ b4-05 `#s-ledger` — two processes, one net figure, and a flat bar.
+
+    ⚖️ THE RESPIRATION BAR NEVER MOVES, AND THAT IS THE INSTRUMENT. Its width
+    is written once, here, from `resp_rate`, and no code path anywhere can
+    change it: the wiring never touches that fill. `BREATH-12`/`BREATH-13` are
+    the belief that plants respire only at night, and the whole confrontation is
+    a student dragging the light from one end to the other and watching the top
+    bar refuse to move. A respiration bar computed per frame, even from a
+    constant, would be one refactor away from acquiring a light term.
+
+    ⚖️ THE MIDDLE BRANCH IS THE POINT. Net uptake and net release are the two
+    readings a student expects; the compensation point is the one that overturns
+    something, because it is a flat line produced by two processes at full rate
+    rather than by nothing happening. Design's own copy for that branch opens
+    "This is the dawn reading from the hook."
+
+    ⚠️ THE BALANCED BRANCH MUST BE REACHABLE, and the renderer proves it rather
+    than assuming it. `curve.max` must exceed `resp_rate` or the two never
+    cross; some integer light level must land inside `balanced_window` or the
+    branch is copy no student can reach. And when the payload NAMES a preset as
+    the compensation point (`balanced_preset`), that preset is held to it —
+    Design's `dawn = 21` gives a net of +2.33 against its own curve, which is
+    firmly net uptake, while the balanced copy claims to be the dawn reading.
+    The engine does not choose which side is right. It refuses to let the two
+    disagree silently. See `docs/ks3/b4-inventory/PAYLOAD-SCHEMA.md` §5.
+    """
+    curve = a.get("curve") or {}
+    for key in ("max", "constant", "scale"):
+        v = curve.get(key)
+        if not isinstance(v, (int, float)) or isinstance(v, bool) or v <= 0:
+            raise ValueError(
+                "two-process-ledger %r curve.%s is %r; it must be a positive "
+                "number." % (act_id, key, v))
+    resp = a.get("resp_rate")
+    if not isinstance(resp, (int, float)) or isinstance(resp, bool) or resp <= 0:
+        raise ValueError(
+            "two-process-ledger %r resp_rate is %r. It is the flat bar and the "
+            "thing the net figure is measured against." % (act_id, resp))
+    if float(curve["max"]) <= float(resp):
+        raise ValueError(
+            "two-process-ledger %r has curve.max=%s and resp_rate=%s. "
+            "Photosynthesis could never overtake respiration, so the net "
+            "figure would be negative at every light level and the "
+            "compensation point would not exist."
+            % (act_id, curve["max"], resp))
+    if float(curve["scale"]) < max(float(curve["max"]), float(resp)):
+        raise ValueError(
+            "two-process-ledger %r scales its bars against curve.scale=%s, "
+            "which is smaller than curve.max=%s / resp_rate=%s. A bar wider "
+            "than its track has run off the end of the instrument."
+            % (act_id, curve["scale"], curve["max"], resp))
+
+    window = float(a.get("balanced_window") or 0.25)
+    if window <= 0:
+        raise ValueError(
+            "two-process-ledger %r balanced_window is %r; it is the half-width "
+            "of the window and must be positive." % (act_id, window))
+
+    def photo_at(light):
+        return float(curve["max"]) * (
+            1.0 - math.exp(-float(light) / float(curve["constant"])))
+
+    reachable = [n for n in range(0, 101)
+                 if abs(photo_at(n) - float(resp)) < window]
+    if not reachable:
+        raise ValueError(
+            "two-process-ledger %r: no light level between 0 and 100 puts the "
+            "net rate inside ±%s, so the balanced verdict is copy no "
+            "student can reach. The curve and the respiration rate cross at "
+            "light %.1f — either widen the window or move the rate."
+            % (act_id, window,
+               -float(curve["constant"]) * math.log(1 - float(resp) / float(curve["max"]))))
+
+    presets = a.get("presets") or []
+    if not presets:
+        raise ValueError(
+            "two-process-ledger %r declares no presets." % act_id)
+    for p in presets:
+        if not (p.get("id") and p.get("label")):
+            raise ValueError(
+                "two-process-ledger %r preset %r needs `id` and `label`."
+                % (act_id, p.get("id")))
+        v = p.get("value")
+        if not isinstance(v, int) or isinstance(v, bool) or not 0 <= v <= 100:
+            raise ValueError(
+                "two-process-ledger %r preset %r has value %r; it is a light "
+                "level 0–100." % (act_id, p["id"], v))
+    preset_ids = [p["id"] for p in presets]
+
+    named = a.get("balanced_preset")
+    if named:
+        if named not in preset_ids:
+            raise ValueError(
+                "two-process-ledger %r names %r as the compensation point and "
+                "there is no such preset. The presets are %s."
+                % (act_id, named, preset_ids))
+        chosen = [p for p in presets if p["id"] == named][0]
+        net_there = photo_at(chosen["value"]) - float(resp)
+        if abs(net_there) >= window:
+            raise ValueError(
+                "two-process-ledger %r names preset %r (light %d) as the "
+                "compensation point, but the net rate there is %+.2f, outside "
+                "±%s. Pressing it reads as net %s, not as balance. The "
+                "window reaches light %d–%d; move the preset rather than "
+                "widening the window, which at ±%.2f would call every "
+                "reading balanced."
+                % (act_id, named, chosen["value"], net_there, window,
+                   "uptake" if net_there > 0 else "release",
+                   reachable[0], reachable[-1], abs(net_there)))
+
+    start = int(a.get("start_light") or 0)
+    if not 0 <= start <= 100:
+        raise ValueError(
+            "two-process-ledger %r start_light is %d; the slider runs "
+            "0–100." % (act_id, start))
+
+    for key in ("light_label", "light_aria", "dark_label", "light_format",
+                "rate_format"):
+        if not a.get(key):
+            raise ValueError(
+                "two-process-ledger %r declares no %r." % (act_id, key))
+    resp_spec = a.get("respiration") or {}
+    if not (resp_spec.get("name") and resp_spec.get("note")):
+        raise ValueError(
+            "two-process-ledger %r respiration needs `name` and `note`. The "
+            "note is the sentence that tells a student to watch the bar NOT "
+            "move, which is the only instruction the flat bar gets." % act_id)
+    photo_spec = a.get("photosynthesis") or {}
+    pmissing = sorted({"name", "note_dark", "note_light"} - set(photo_spec))
+    if pmissing:
+        raise ValueError(
+            "two-process-ledger %r photosynthesis is missing %s. Darkness gets "
+            "its own note because zero is the reading the misconception lives "
+            "on." % (act_id, ", ".join(pmissing)))
+    net_spec = a.get("net") or {}
+    nmissing = sorted({"name", "in_format", "out_format", "note"} - set(net_spec))
+    if nmissing:
+        raise ValueError(
+            "two-process-ledger %r net is missing %s. The two formats carry "
+            "the DIRECTION in words — the bar's magnitude cannot, because "
+            "it is drawn from an absolute value."
+            % (act_id, ", ".join(nmissing)))
+    verdicts = a.get("verdicts") or {}
+    for branch in ("balanced", "uptake", "release"):
+        spec = verdicts.get(branch) or {}
+        for key in ("tag", "head", "why"):
+            if not spec.get(key):
+                raise ValueError(
+                    "two-process-ledger %r verdicts.%s is missing %r. All "
+                    "three branches are reachable from the slider."
+                    % (act_id, branch, key))
+
+    scale = float(curve["scale"])
+    photo0 = photo_at(start)
+    net0 = photo0 - float(resp)
+    branch0 = ("balanced" if abs(net0) < window
+               else ("uptake" if net0 > 0 else "release"))
+
+    def rate(v):
+        return a["rate_format"].replace("{v}", "%.1f" % v)
+
+    def net_label(v):
+        fmt = net_spec["in_format"] if v >= 0 else net_spec["out_format"]
+        return fmt.replace("{v}", "%.1f" % abs(v))
+
+    preset_html = "".join(
+        '<button type="button" class="ks3-tpl-preset" data-preset="%d" '
+        'aria-pressed="%s">%s</button>'
+        % (p["value"], "true" if p["value"] == start else "false",
+           t(p["label"]))
+        for p in presets)
+
+    verdict_html = "".join(
+        '<div class="ks3-tpl-verdict" data-verdict="%s"%s>'
+        '<p class="ks3-tpl-vtag">%s</p>'
+        '<p class="ks3-tpl-vhead">%s</p>'
+        '<p class="ks3-tpl-vwhy">%s</p></div>'
+        % (branch, "" if branch == branch0 else " hidden",
+           t(verdicts[branch]["tag"]), t(verdicts[branch]["head"]),
+           rich(verdicts[branch]["why"]))
+        for branch in ("balanced", "uptake", "release"))
+
+    sid = "tpl-" + str(act_id)
+
+    return ('<div class="ks3-tpl" data-tpl data-resp="%s" data-max="%s" '
+            'data-const="%s" data-scale="%s" data-window="%s" '
+            'data-rate-format="%s" data-in-format="%s" data-out-format="%s">'
+            '<div class="ks3-tpl-control">'
+            '<div class="ks3-tpl-controlhead">'
+            '<p class="ks3-tpl-cap">%s</p>'
+            '<p class="ks3-tpl-light" data-light data-dark="%s" '
+            'data-format="%s">%s</p></div>'
+            '<label class="ks3-sr-only" for="%s">%s</label>'
+            '<input class="ks3-b4slider ks3-tpl-slider" type="range" id="%s" '
+            'min="0" max="100" step="1" value="%d" data-tpl-slider>'
+            '<div class="ks3-tpl-presets">%s</div></div>'
+            '<div class="ks3-tpl-panel">'
+            '<ul class="ks3-tpl-flows" role="list">'
+            '<li class="ks3-tpl-flow" data-flow="resp">'
+            '<div class="ks3-tpl-flowhead"><p class="ks3-tpl-flowname">%s</p>'
+            '<p class="ks3-tpl-flowval">%s</p></div>'
+            '<span class="ks3-tpl-track">'
+            '<span class="ks3-tpl-fill" data-fill="resp" style="width:%s%%">'
+            '</span></span>'
+            '<p class="ks3-tpl-flownote">%s</p></li>'
+            '<li class="ks3-tpl-flow" data-flow="photo">'
+            '<div class="ks3-tpl-flowhead"><p class="ks3-tpl-flowname">%s</p>'
+            '<p class="ks3-tpl-flowval" data-val="photo">%s</p></div>'
+            '<span class="ks3-tpl-track">'
+            '<span class="ks3-tpl-fill" data-fill="photo" style="width:%s%%">'
+            '</span></span>'
+            '<p class="ks3-tpl-flownote" data-note="dark"%s>%s</p>'
+            '<p class="ks3-tpl-flownote" data-note="light"%s>%s</p></li>'
+            '<li class="ks3-tpl-flow" data-flow="net">'
+            '<div class="ks3-tpl-flowhead"><p class="ks3-tpl-flowname">%s</p>'
+            '<p class="ks3-tpl-flowval" data-val="net">%s</p></div>'
+            '<span class="ks3-tpl-track">'
+            '<span class="ks3-tpl-fill" data-fill="net" data-tone="%s" '
+            'style="width:%s%%"></span></span>'
+            '<p class="ks3-tpl-flownote">%s</p></li></ul>'
+            '<div class="ks3-tpl-verdicts">%s</div></div></div>'
+            % (resp, curve["max"], curve["constant"], curve["scale"], window,
+               e(a["rate_format"]), e(net_spec["in_format"]),
+               e(net_spec["out_format"]),
+               t(a["light_label"]), e(a["dark_label"]), e(a["light_format"]),
+               t(a["dark_label"] if start == 0
+                 else a["light_format"].replace("{n}", str(start))),
+               e(sid), t(a["light_aria"]), e(sid), start, preset_html,
+               t(resp_spec["name"]), t(rate(float(resp))),
+               ("%.1f" % (float(resp) / scale * 100)),
+               rich(resp_spec["note"]),
+               t(photo_spec["name"]), t(rate(photo0)),
+               ("%.1f" % (photo0 / scale * 100)),
+               "" if start == 0 else " hidden", rich(photo_spec["note_dark"]),
+               " hidden" if start == 0 else "", rich(photo_spec["note_light"]),
+               t(net_spec["name"]), t(net_label(net0)), branch0,
+               ("%.1f" % (abs(net0) / scale * 100)), rich(net_spec["note"]),
+               verdict_html))
+# renderers: ═══ END B4 ═══
+
 ACTIVITY_KIND_RENDERERS = {
     "test-board":    ("ks3-board",
                       ' data-instrument data-board data-stage-done="0"'),
@@ -8906,6 +9886,17 @@ ACTIVITY_KIND_RENDERERS = {
     "person-ledger": ("ks3-ledger-block", ' data-instrument data-ledgerblock data-stage-done="0"'),
     "test-bench": ("ks3-tbench-block", ' data-instrument data-tbenchblock data-stage-done="0"'),
     # ═══ END B3 dispatch ═══
+    # ═══ BEGIN B4 dispatch ═══
+    # All five sit on a `practical` segment — measured on all five
+    # pages, no exceptions — so all five are on ink and every colour rule
+    # they hang on is scoped `.ks3-dark …`. All five carry a completion
+    # contract, so all five emit `data-stage-done="0"`.
+    "gas-compare": ("ks3-gas-block", ' data-instrument data-gasblock data-stage-done="0"'),
+    "bell-jar": ("ks3-bell-block", ' data-instrument data-bellblock data-stage-done="0"'),
+    "crossing-counter": ("ks3-cross-block", ' data-instrument data-crossblock data-stage-done="0"'),
+    "fault-bench": ("ks3-fault-block", ' data-instrument data-faultblock data-stage-done="0"'),
+    "two-process-ledger": ("ks3-tpl-block", ' data-instrument data-tplblock data-stage-done="0"'),
+    # ═══ END B4 dispatch ═══
 }
 
 # Kinds that ARE the generic shell, and are not waiting for a component.
@@ -9022,6 +10013,13 @@ ACTIVITY_KIND_FN = {
     "person-ledger":          r_person_ledger,
     "test-bench":             r_test_bench,
     # ═══ END B3 renderfn ═══
+    # ═══ BEGIN B4 renderfn ═══
+    "gas-compare":            r_gas_compare,
+    "bell-jar":               r_bell_jar,
+    "crossing-counter":       r_crossing_counter,
+    "fault-bench":            r_fault_bench,
+    "two-process-ledger":     r_two_process_ledger,
+    # ═══ END B4 renderfn ═══
 }
 
 # The three that need the whole lesson, not just the activity, because they
