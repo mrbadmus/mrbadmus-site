@@ -1,0 +1,119 @@
+/* ── random-walk-bench (c1-05 #s-walk) ──
+   A LIGHT block, and every rule below depends on that. Design draws the tank
+   on cream inside a `--ks3-card` frame with a 2px INK rule; nothing here is
+   scoped `.ks3-dark` and nothing here may be, or the dye goes purple-on-black
+   and the two counters lose their contrast.
+
+   ⚠️ This frame is NOT `.ks3-canvas-frame`. That one is the dark twin — a 2px
+   `--ks3-on-dark-muted` rule over a `--ks3-dark-panel` foot, shared by four C2
+   instruments. Same shape, two grounds, two components. */
+
+.ks3-walk { margin-top: 22px; }
+
+.ks3-walk-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-walk-canvas { display: block; width: 100%; height: auto; }
+.ks3-walk-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+/* Three readouts across, one under the other on a phone. The single-column
+   fallback is Design's own query (page line 24), not a translation. */
+.ks3-walk-readouts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 620px) {
+  .ks3-walk-readouts { grid-template-columns: minmax(0, 1fr); }
+}
+.ks3-walk-readout-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-walk-readout-value {
+  margin: 4px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ks3-ink);
+  /* ⊕ An addition. The two counters climb into four and five digits while a
+     student is reading them, and proportional figures make the number jump
+     sideways on every repaint — which reads as the instrument being unsteady
+     rather than the count going up. */
+  font-variant-numeric: tabular-nums;
+}
+/* ⚖️ THE ONE STATE CHANGE IN THE READOUT ROW. "Spread out? Yes" goes to
+   accent-TEXT — the 6:1 orange, never `--ks3-accent`, which is large-text-only
+   and would fail at 30px display weight on inset. It is not a verdict on the
+   student and carries no mark: the tank evened out, that is all. */
+.ks3-walk-readout-value[data-walk-even="1"] { color: var(--ks3-accent-text); }
+
+.ks3-walk-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+/* The four controls ARE `.ks3-sim-seg-btn` — the key stage's segmented
+   control, reused rather than re-declared. Design's C1 draws it 1px smaller
+   than the shipped rule in both branches (16px / 11px 16px against 17px /
+   11px 17px) and the map reopens drift 4 over exactly that, on all six pages.
+   Until it is re-ruled, a fourth private copy of this button would make the
+   ruling a four-place change instead of a one-place one. `.ks3-walk-btn` adds
+   nothing but a selector to measure and to hang any future correction on. */
+.ks3-walk-btn { flex: 0 0 auto; }
+
+/* The live note. `--ks3-band` on a 2px ink border — the KEY FACT treatment,
+   which is right: this is the bench telling the student what they are looking
+   at, not marking anything. All four branches live in here and one is shown. */
+.ks3-walk-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-walk-note p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* The commit gate, scoped to THIS block and no further. `r_bench_gate` emits
+   the same markup on every bench in the key stage and `.ks3-benchgate` sets
+   only a margin, because B2's three gates sit on ink where `.ks3-commit`'s
+   amber is legible. This one sits on cream, where amber is not: Design paints
+   it `--ks3-accent-text` and draws the panel that carries it (page 121–122).
+   Scoping to `.ks3-walk-block` keeps the shared component shared. */
+.ks3-walk-block .ks3-benchgate {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-walk-block .ks3-benchgate .ks3-commit {
+  margin: 0 0 12px;
+  color: var(--ks3-accent-text);
+}
+
+@media (max-width: 34rem) {
+  .ks3-walk-foot { padding: 16px 14px; }
+  /* Four controls at 44px tall stack rather than shrink — a tap target that
+     has been squeezed to fit is not a tap target. */
+  .ks3-walk-controls { gap: 10px; }
+}

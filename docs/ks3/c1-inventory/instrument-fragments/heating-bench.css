@@ -1,0 +1,159 @@
+/* ── heating-bench (c1-03 #s-curve) ──
+   A LIGHT bench. Every rule below paints on cream, because the block is a
+   plain `.ks3-block` on Design's page and not a practical — the canvas fills
+   itself with paper, and on an ink ground that fill reads as a hole.
+
+   Two things here are not in the stylesheet yet and are the reason this is a
+   component rather than four inline styles:
+
+   1. A LIGHT canvas frame. `.ks3-canvas-frame` is the ink-dark wrapper the
+      four C2 instruments share (2px `--ks3-on-dark-muted` on a dark foot);
+      on cream, both of those resolve as a smudge. Same shape, light tokens.
+   2. A LIGHT range control. `.ks3-slider` is b2-02's, and it is a dark-ground
+      control: an alert thumb on a `--ks3-dark-track`. The GEOMETRY is
+      deliberately identical — a 28px thumb on a 10px track — so the key
+      stage has one slider in two palettes rather than two sliders; only the
+      paint changes, and the 44px height is Design's own (page CSS line 25).
+
+   ⚠️ Specificity. The paragraph rules are written two classes deep. This
+   block is light so `.ks3-dark p` (0,1,1) does not reach it today — but a
+   bench is exactly the component someone later drops into a practical, and
+   at (0,1,0) every note in it would silently repaint to on-dark body copy.
+   That has bitten two builds already. */
+
+.ks3-hb { margin-top: 22px; }
+
+/* `hidden` is the source of truth and it is backed up here for the same
+   reason ks3.js backs it up inline: an author `display` beats the UA
+   stylesheet's `[hidden] { display: none }` at any specificity, and this
+   instrument holds five notes and five phase words of which exactly one of
+   each may ever be readable. */
+.ks3-hb [hidden] { display: none; }
+
+.ks3-hb-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  overflow: hidden;
+}
+.ks3-hb-canvas { display: block; width: 100%; height: auto; }
+.ks3-hb-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+.ks3-hb .ks3-hb-scrub-label {
+  display: block;
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+
+/* The scrub. 44px of control around a 10px track, so the whole thing is a
+   tap target and not just the thumb. `accent-color` is Design's own line and
+   is kept as the paint for any engine that ignores the pseudo-elements. */
+.ks3-hb-scrub {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: var(--ks3-tap);
+  margin: 6px 0 0;
+  background: transparent;
+  accent-color: var(--ks3-accent);
+  cursor: pointer;
+}
+.ks3-hb-scrub::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-hb-scrub::-moz-range-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-hb-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -11px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+}
+.ks3-hb-scrub::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+}
+.ks3-hb-scrub:focus-visible {
+  outline: var(--ks3-r-focus) solid var(--ks3-accent);
+  outline-offset: 3px;
+}
+
+/* Three readouts across, one down on a phone — Design's own breakpoint
+   (page CSS line 24). */
+.ks3-hb-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+@media (max-width: 620px) {
+  .ks3-hb-tiles { grid-template-columns: minmax(0, 1fr); }
+}
+.ks3-hb .ks3-hb-tile-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-hb .ks3-hb-tile-value {
+  margin: 4px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ks3-ink);
+}
+/* The state word takes the accent only while the state is CHANGING. It is
+   `--ks3-accent-text` and not `--ks3-accent`: this is a 30px word, but the
+   readout is the kind of thing a student reads at a glance from a metre
+   away, and R1's large-text allowance is not an excuse to spend it. */
+.ks3-hb .ks3-hb-phase[data-tone="accent"] { color: var(--ks3-accent-text); }
+
+.ks3-hb-jumps {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* The live note under the bench: a BAND panel on a 2px ink rule — the KEY
+   FACT treatment, because what it says while the thermometer is stuck is the
+   fact the lesson exists to deliver. */
+.ks3-hb-notes { margin-top: 18px; }
+.ks3-hb .ks3-hb-note {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}

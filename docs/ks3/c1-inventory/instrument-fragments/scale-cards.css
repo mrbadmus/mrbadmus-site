@@ -1,0 +1,70 @@
+/* ── scale-cards (c1-05 #s-scale) ──
+   Ink-dark and STATIC. Three cards, each a distance, a time and what that
+   costs biology, closed by the rule they add up to.
+
+   ⚠️ SPECIFICITY. `.ks3-dark p { color: var(--ks3-on-dark-body) }` is (0,1,1)
+   and a bare `.ks3-scard-time` is (0,1,0), so every <p> rule below is scoped
+   `.ks3-dark`. The one that would visibly break is the 28px display TIME:
+   unscoped it loses its `--ks3-on-dark` and drops to body colour, which reads
+   as a caption rather than the answer. This has bitten two separate builds. */
+
+.ks3-scards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* A panel nested inside an ink-dark block: `--ks3-dark-panel` on the muted
+   rule, never the ground the block is already painted in. */
+.ks3-scard {
+  padding: 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+/* ⚑ AMBER FOR A BODY LABEL, and the map flags it rather than resolving it
+   (§5.5.2). Amber on ink has meant "control" since B1 and "misconception" as
+   a block treatment; this is neither. Design drew it, the page wins, and the
+   parity row pins the value so a re-ruling shows up as a failure rather than
+   as a quiet repaint. */
+.ks3-dark .ks3-scard-distance {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-alert);
+}
+
+/* The answer to the question the label asks. Display type, full on-dark. */
+.ks3-dark .ks3-scard-time {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--ks3-on-dark);
+}
+
+.ks3-dark .ks3-scard-text {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-on-dark-body);
+}
+
+/* The closing line — the rule the three cards add up to. Body size, not card
+   size: it is the paragraph the panel is FOR. */
+.ks3-dark .ks3-scards-close {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+@media (max-width: 34rem) {
+  .ks3-scard { padding: 18px 16px; }
+}

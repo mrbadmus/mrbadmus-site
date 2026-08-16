@@ -1,0 +1,49 @@
+/* ── keyed-commit (c1-06 #s-verdict, c1-03 #s-bubble) ──
+   Four options, each carrying its own answer, then one panel whose first
+   paragraph is the student's and whose rest is everyone's.
+
+   ⚠️ SPECIFICITY, AND IT IS LOAD-BEARING. `.ks3-dark p` is (0,1,1); a bare
+   `.ks3-keyed-reply` is (0,1,0) and LOSES, so an unscoped colour would leave
+   the reply rendering in on-dark body copy — the same defect the zoom
+   instrument shipped with in B1 and the muscle bench nearly repeated in B2.
+   Every text rule below is scoped `.ks3-dark …`.
+
+   The light rules under them are the fallback, not dead weight: the component
+   is shared, both drawn instances happen to be ink-dark, and a third instance
+   on a light block must not render a `--ks3-dark-panel` box with no readable
+   text in it. */
+.ks3-keyed { margin-top: 0; }
+/* 36rem, which is Design's own measure on both pages. The options are answers
+   rather than prose and a full-width answer button is a target the eye has to
+   travel. */
+.ks3-keyed-options { max-width: 36rem; }
+
+.ks3-keyed-reveal {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  /* Light fallback: the card-on-ink panel, matching `.ks3-reveal-panel`. */
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-keyed-reply,
+.ks3-keyed-static {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+}
+/* The gaps are between PARAGRAPHS, and the sibling selectors still match a
+   hidden reply — three of the four replies are `hidden` and the first static
+   paragraph follows the last of them in document order, so it takes its
+   14px whether or not any reply is showing. The visible reply is first in
+   flow and keeps `margin: 0`. */
+.ks3-keyed-reply + .ks3-keyed-static,
+.ks3-keyed-static + .ks3-keyed-static { margin-top: 14px; }
+
+/* The drawn state, on ink. */
+.ks3-dark .ks3-keyed-reveal {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-keyed-reply,
+.ks3-dark .ks3-keyed-static { color: var(--ks3-on-dark-body); }

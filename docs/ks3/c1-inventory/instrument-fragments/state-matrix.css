@@ -1,0 +1,67 @@
+/* ── state-matrix (c1-02 #s-matrix) ──
+   Design carries this in a page-local <style> (lines 23–26) because its tool
+   has nowhere else to put it; here it is a component, so the 700px breakpoint
+   and the mono column heads live with the table rather than with the page.
+
+   A LIGHT block. Nothing is scoped `.ks3-dark` — c1-02's only ink grounds are
+   the hook and the keynote — and the row text rule is scoped `.ks3-smatrix …`
+   at (0,2,0) for the same reason the bench's note is: `.ks3-dark p` is (0,1,1)
+   and beats a bare instrument class. */
+
+.ks3-smatrix { margin-top: 18px; }
+
+/* The table can be wider than a phone, so it scrolls INSIDE its own box and
+   the page body never scrolls sideways. The border and the radius are on the
+   scroller, so the rounded outline survives the overflow. */
+.ks3-smatrix-scroll {
+  overflow-x: auto;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-smatrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+.ks3-smatrix-table th,
+.ks3-smatrix-table td {
+  border: 2px solid var(--ks3-ink);
+  padding: 12px 14px;
+  text-align: left;
+}
+/* Column heads and row heads take the same mono uppercase treatment on band —
+   this is a matrix, so the first column is a head as much as the first row is. */
+.ks3-smatrix-table thead th,
+.ks3-smatrix-row > th {
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  background: var(--ks3-band);
+}
+.ks3-smatrix-row { background: var(--ks3-card); }
+.ks3-smatrix .ks3-smatrix-table td { color: var(--ks3-ink); }
+
+/* ⚖️ THE LIT ROW. Accent TINT, on the row and on its head, and never the
+   accent fill — this is "the bench is showing you this one", not a verdict and
+   not an answer (R3 / MRB-196 R10). It is also never amber: amber is a wrong
+   idea being confronted.
+
+   The tint is not the only signal. `r_state_matrix` puts `aria-current="true"`
+   on the lit row's head, because Design signals this with colour alone and the
+   footnote under the table promises the student a highlight (R2). */
+.ks3-smatrix-row[data-lit="1"],
+.ks3-smatrix-row[data-lit="1"] > th { background: var(--ks3-accent-tint); }
+
+.ks3-smatrix .ks3-smatrix-foot {
+  margin: 16px 0 0;
+  font-size: 18px;
+  color: var(--ks3-ink-muted);
+}
+
+@media (max-width: 700px) {
+  .ks3-smatrix-table { font-size: 16px; }
+  .ks3-smatrix-table th,
+  .ks3-smatrix-table td { padding: 9px 10px; }
+}

@@ -1,0 +1,87 @@
+/* ══════════════════════════════════════════════════════════════════
+   C1 · Particles and their behaviour (⊕ MRB-228)
+
+   ── halving-bench (c1-01 #s-cut) ──
+   ⚠️ A LIGHT instrument. Its sibling on the same page (`gap-test-rig`) is
+   ink-dark, so nothing here may assume `.ks3-dark`; the frame is the light
+   counterpart of `.ks3-canvas-frame` — 2px INK on the card ground, with an
+   INSET foot — and it is its own class for that reason rather than a
+   `[data-light]` modifier on a dark component.
+   ══════════════════════════════════════════════════════════════════ */
+
+.ks3-cut { margin-top: 22px; }
+
+.ks3-cut-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-cut-frame canvas { display: block; width: 100%; height: auto; }
+.ks3-cut-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+/* Three readouts on one row, one per row on a phone. Design's own breakpoint:
+   at 620px the third column has 100px of space and "Edge of the piece" wraps
+   to three lines under a 30px number. */
+.ks3-cut-readouts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 620px) {
+  .ks3-cut-readouts { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Both text rules are scoped past `.ks3-check p` (0,1,1) at (0,2,0) — the
+   block is light today, but a shell can be re-measured and an unscoped
+   instrument is how the last two builds lost their captions. */
+.ks3-cut .ks3-cut-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cut .ks3-cut-value {
+  margin: 4px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ks3-ink);
+}
+/* ⚖️ The one accent in the readout row, and it is not a mark. "Floor" is a
+   MEASUREMENT that has stopped moving, not a verdict on the student — the
+   colour rides on the word, which is in the document from the start with its
+   sibling hidden beside it, so no state is ever colour alone (R2). */
+.ks3-cut .ks3-cut-value [data-verdict="floor"] { color: var(--ks3-accent-text); }
+
+.ks3-cut-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+/* Spent, not gone: a control at an end of the ladder stays readable at .45,
+   which is the same treatment `.ks3-scale-btn` and the budget bench take. */
+.ks3-cut-btn[disabled] { opacity: .45; cursor: default; }
+
+/* The running note. BAND on a 2px ink border — the panel treatment
+   `claim-switch` uses for the same job, and deliberately not amber: this is
+   the state of the model, never a wrong idea. It carries no badge, letter or
+   mark, because band is also the chosen-wrong ladder ground (MRB-202) and
+   anything mark-like here would read as a verdict. */
+.ks3-cut-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-cut .ks3-cut-note p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}

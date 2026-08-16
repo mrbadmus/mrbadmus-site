@@ -1,0 +1,89 @@
+/* ═══ collision-counter (c1-04 #s-bench) ═══════════════════════════════
+   The LIGHT canvas frame. `.ks3-canvas-frame` is C2's DARK one — a 2px
+   `--ks3-on-dark-muted` rule over a `--ks3-dark-panel` foot — and this
+   block is a plain `.ks3-block`, so it takes a 2px INK rule over an
+   `--ks3-inset` control strip instead. Two frames, because they sit on
+   two different grounds; sharing one would put a muted rule on cream,
+   where it is nearly invisible.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED `.ks3-counter …`, at (0,2,0). A bare
+   `.ks3-counter-grouplabel` is (0,1,0) and loses to `.ks3-dark p` at
+   (0,1,1) the day anything puts this instrument on ink. It is a LIGHT
+   block today and the guard costs nothing; two separate builds have
+   been bitten by exactly this.
+
+   The three segmented groups use `.ks3-sim-seg-btn` and NOT a private
+   control. Drift 4 ruled one segmented control for the key stage; a
+   second copy at Design's 16px / 11px 16px is the drift the ruling
+   exists to stop. Reported. */
+
+.ks3-counter-stage {
+  margin-top: 22px;
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-counter-canvas { display: block; width: 100%; height: auto; }
+
+.ks3-counter-controls {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+/* Design's `[data-ctl]` (page CSS line 23). Three captioned groups that
+   drop to one column below ~510px rather than squeezing three 3-way
+   button rows into a phone width. */
+.ks3-counter-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 18px;
+}
+.ks3-counter .ks3-counter-grouplabel {
+  margin: 0 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-counter-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* The bumps toggle takes the FULL WIDTH under the three groups, with its
+   caption beside it. It is not a fourth control group and must not read
+   as one: the groups change the gas, and this changes what is drawn on
+   top of it. */
+.ks3-counter-bumps {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ks3-counter .ks3-counter-bumpnote {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-muted);
+  flex: 1 1 16rem;
+}
+
+/* The live note — a BAND panel on a 2px ink rule, which is the KEY FACT
+   treatment and deliberately so: it is the sentence the bench just
+   proved, not a verdict on anything the student did. */
+.ks3-counter .ks3-counter-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}

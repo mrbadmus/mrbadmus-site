@@ -1,0 +1,89 @@
+/* ── model-timeline (c1-06 #s-history) ──
+   Five models as a wrapping row, one detail card under them. A LIGHT block;
+   nothing here is scoped `.ks3-dark` and nothing may be.
+
+   ⚠️ A THIRD CONTROL GEOMETRY, registered as its own rather than folded into
+   the segmented control. `.ks3-seg-btn` and `.ks3-sim-seg-btn` are both one
+   centred line at one weight; this is left-aligned, `10px 14px`, and stacks a
+   mono year over a 700 name. Folding it into `seg()` would centre the two
+   lines against each other and lose the left edge the row is read down. */
+.ks3-mtl { margin-top: 20px; }
+.ks3-mtl-steps {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.ks3-mtl-step {
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  padding: 10px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-mtl-step[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+/* `display: block` on both spans is what makes the button two lines. Without
+   it the year and the name run together and the row reads as five long
+   labels rather than five dated positions. */
+.ks3-mtl-year {
+  display: block;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+}
+.ks3-mtl-who {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* One card, five states, emit-all-show-one. Card ground on a 2px ink border —
+   the ordinary panel, because the claim inside it is not a verdict on anyone. */
+.ks3-mtl-card {
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-mtl-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+/* 26px display. The claim is the model in one sentence and it is meant to be
+   readable from the scroll position, which is the same argument `formula`
+   makes for standing alone. */
+.ks3-mtl-claim {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.ks3-mtl-body { margin: 12px 0 0; font-size: 19px; line-height: 1.6; }
+/* The rule is what separates the model from the evidence that killed it. The
+   line is muted and the label is not: "What broke it:" has to survive being
+   skimmed. */
+.ks3-mtl-broke {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-muted);
+}
+.ks3-mtl-broke strong { color: var(--ks3-ink); }

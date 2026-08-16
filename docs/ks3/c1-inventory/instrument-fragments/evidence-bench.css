@@ -1,0 +1,118 @@
+/* ── evidence-bench (c1-06 #s-bench) ──
+   Seven observations, judged one at a time, on a LIGHT block. Nothing here is
+   scoped `.ks3-dark` and nothing may be: the two verdict grounds are cream
+   tints (`--ks3-inset` and `--ks3-band`) and both resolve to mud on ink.
+
+   ⚖️ The two-tone verdict panel is a fact about THE MODEL, never about the
+   student. `--ks3-inset` behind a `--ks3-rule-strong` edge when the model
+   handles it; `--ks3-band` behind `--ks3-accent` when it fails — the KEY FACT
+   ground, deliberately not a red. A student who called all seven wrong sees
+   exactly these panels. R3 lives in that. */
+.ks3-ebench { margin-top: 20px; }
+.ks3-ebench-list { display: flex; flex-direction: column; gap: 12px; }
+
+.ks3-ebench-case {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+/* The border going to ink is the only thing commitment changes on the case,
+   and it marks the CASE rather than the button — the same move `job-sort`
+   makes, and for the same reason. */
+.ks3-ebench-case[data-open="1"] { border-color: var(--ks3-ink); }
+
+/* Statement left, the two calls right; one column under 720px, which is
+   Design's own page rule (line 23–24). `minmax(0, 1fr)` and not `1fr`: a long
+   observation must be allowed to shrink rather than push the buttons out. */
+.ks3-ebench-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .ks3-ebench-row { grid-template-columns: minmax(0, 1fr); }
+}
+
+.ks3-ebench-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ebench-text {
+  margin: 6px 0 0;
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.ks3-ebench-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+/* C1's segmented geometry: 16px / 11px 16px in BOTH branches on all six pages.
+   Drift 4 ruled 17px / 11px 17px on b1-06's single variant; six pages against
+   one, and re-ruling it is §1.6 (d)'s job, not this component's. Written to
+   C1's number so the bench matches the page it is on. */
+.ks3-ebench-btn {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 11px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-ebench-btn[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+
+/* 6px on the leading edge, not a full outline: the verdict reads as a
+   continuation of the case it sits under rather than as a second card. */
+.ks3-ebench-verdict {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border-left: 6px solid var(--ks3-accent);
+}
+.ks3-ebench-case[data-ok="1"] .ks3-ebench-verdict {
+  background: var(--ks3-inset);
+  border-left-color: var(--ks3-rule-strong);
+}
+.ks3-ebench-vlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-ebench-case[data-ok="1"] .ks3-ebench-vlabel { color: var(--ks3-ink-muted); }
+.ks3-ebench-vtext { margin: 8px 0 0; font-size: 18px; line-height: 1.55; }
+
+/* The whole-set close: the counted line in display type, then the static
+   shared-cause paragraph that is the actual bridge into C2. */
+.ks3-ebench-tally {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-ebench-tallyline {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+}
+.ks3-ebench-cause { margin: 10px 0 0; font-size: 19px; line-height: 1.6; }
