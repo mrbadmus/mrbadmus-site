@@ -13,14 +13,15 @@ properly, verify the fix, note it, carry on. Do not stop to ask.
 A stop costs a full human round trip and Mide's attention. Treat it as expensive. Never use a
 stop as a substitute for thinking harder.
 
-### Stop ONLY for these four
+### Stop ONLY for these three
 1. **Irreversible loss** — an action that would destroy data, history, or work that cannot be
    recovered (force-push, dropping a table, deleting uncommitted work, wiping an OAuth token).
 2. **Science or content accuracy** — whether GCSE science is correct, or whether AQA would credit
    a given answer. Mide is examiner-qualified; this is his sole gate.
-3. **Production deploy** — the push itself. You may commit freely; Mide pushes.
-4. **Genuinely blocked** — you have tried at least two substantively different approaches and
+3. **Genuinely blocked** — you have tried at least two substantively different approaches and
    cannot proceed. Say what you tried and why each failed.
+
+**Pushing is NOT one of them.** See below.
 
 ### Everything else, you handle
 - Missing prerequisite → create it, use it, remove it if it was temporary
@@ -30,6 +31,32 @@ stop as a substitute for thinking harder.
 - Small adjacent defect spotted in passing → fix it, note it
 - Ambiguous scope → take the reading that best serves the student, state it
 - Something in the prompt is wrong or impossible → do the right thing instead, and say what you changed
+
+### Push authorisation is STANDING and PERMANENT ⊕ (MRB-228, 16 Aug 2026)
+
+**You push. `git push origin main` from the terminal is authorised, always, and needs no
+per-run permission.** The remote is SSH and works without intervention.
+
+This used to say the opposite — production deploy was a stop-for item, and several other places
+in this file still said "GitHub Desktop only". That was true when the repo had no working SSH
+key from a terminal session and pushing genuinely required Mide. It stopped being true on
+15 Aug 2026, and the stale instruction then cost real work: sessions reached the end of a long
+build, stopped at the push, and a session limit killed one of them with everything unshipped.
+
+The rule that replaces it is a SHIPPING rule, and it matters more than the old one did:
+
+> **One unit is one commit and one push.** Finish a unit, run its gates, commit, push, verify
+> live. Never carry two units' work in an uncommitted tree. Assume you will be interrupted —
+> what has shipped has shipped, and the next session resumes at a clean boundary.
+
+What still binds:
+- **A red gate means no commit and no push for that unit.** Never weaken a gate to make
+  something pass. A failing gate is a finding, not an obstacle.
+- **Verify live after pushing** — `./check_ks3_live.sh` for KS3. Check the cache-bust stamps,
+  not just the status code: a 200 carrying stale assets is the failure mode that looks like
+  success. Pin the stamps from the committed build, not the working tree.
+- **Force-push is still a stop.** It is item 1 above, and it always was.
+- If a live check fails, report it — do not revert unilaterally.
 
 ### Deviations go in the report, not mid-run
 Where you'd have stopped, write one line at the end instead:
@@ -219,7 +246,8 @@ The script reads structured data from `all_subtopics_*.py` files (topics, subtop
 ```bash
 cd 3d-studio && npm run build && cd ..   # 1. build the studio  ← easy to forget
 python3 generate_site_v5.py              # 2. build the site and publish the studio
-                                         # 3. commit + push in GitHub Desktop
+git add -A && git commit && git push     # 3. commit + push (authorised, see the
+                                         #    Autonomy Contract) — then verify live
 ```
 
 **Step 1 is only needed when `3d-studio/` has changed.** For an ordinary KS4 content change, `python3 generate_site_v5.py` on its own is still the whole job.
@@ -324,7 +352,10 @@ Mide is a teacher and creative founder, not a developer. Keep this in mind at al
 - **Prefer small, reversible changes over big rewrites.**
 - **When suggesting terminal commands, always explain what each one does** — not just what to type, but what will happen when it runs.
 - **Flag anything that could break the live site** before proceeding. 135+ students rely on this site.
-- **Never `git push` in Terminal** — Mide uses GitHub Desktop exclusively for commits and pushes.
+- **You push, from the Terminal.** ⊕ Superseded 16 Aug 2026 (MRB-228) — this line used to read
+  "Never `git push` in Terminal; Mide uses GitHub Desktop exclusively". Push authorisation is now
+  standing and permanent; see the Autonomy Contract at the top of this file. Mide may still use
+  GitHub Desktop when he wants to; that is a preference of his, not a restriction on you.
 - **For Supabase admin tasks**, give Mide direct SQL to paste into the Supabase SQL Editor. Never try to migrate schemas from code.
 
 ---
@@ -372,7 +403,12 @@ of us stays the thing in front of us.
 Supabase MCPs (prod + test) are never live simultaneously.
 `claude mcp remove supabase-test` before any prod step, re-add after.
 
-**9. Never `git push` from terminal.** GitHub Desktop only. Always.
+**9. You push, one unit at a time.** ⊕ Superseded 16 Aug 2026 (MRB-228) —
+this item used to read "Never `git push` from terminal. GitHub Desktop
+only. Always." Push authorisation is now standing and permanent. The
+discipline that replaces it is one unit = one commit = one push =
+verify live, so that an interrupted session leaves shipped work
+shipped rather than a long uncommitted tree.
 
 **10. Mide manages his own schedule.** Chat-Claude does not project
 fatigue or advise breaks unless Mide explicitly raises it. Speed of
@@ -437,4 +473,7 @@ Act, do not ask. Only stop for Mide on: anything touching the live site,
 anything that cannot be undone, a real product or scope decision, and the
 merge decision. Everything else, just do it and say what you did.
 
-Never git push. Mide pushes via GitHub Desktop. One session works one worktree.
+You push. ⊕ Superseded 16 Aug 2026 (MRB-228) — this line used to read "Never git
+push. Mide pushes via GitHub Desktop." Push authorisation is standing and
+permanent: one unit is one commit and one push, then verify live. One session
+still works one worktree.

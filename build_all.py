@@ -66,7 +66,11 @@ def main():
 
     print("─" * 72)
     print("✅ build_all complete — both generators ran, in order.")
-    print("   Next: check `git status`, then Mide pushes via GitHub Desktop.")
+    # ⊕ MRB-228 — this used to say "then Mide pushes via GitHub Desktop".
+    # Push authorisation is standing and permanent; see CLAUDE.md's Autonomy
+    # Contract. The shipping discipline is one unit, one commit, one push.
+    print("   Next: check `git status`, run the unit's gates, commit and push,")
+    print("         then verify live with ./check_ks3_live.sh <UNIT>.")
     print("─" * 72)
     return 0
 
