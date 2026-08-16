@@ -1,0 +1,61 @@
+/* ═══ prediction-stack (c1-04 #s-predict) ══════════════════════════════
+   Three panels on the ink-dark practical block, each a `--ks3-dark-panel`
+   card on a 2px muted rule that goes to `--ks3-alert` once the student
+   has it right.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED `.ks3-predict …` AT (0,2,0), AND IT
+   HAS TO BE. `.ks3-dark p { color: var(--ks3-on-dark-body) }` is (0,1,1)
+   and a bare `.ks3-predict-q` is (0,1,0), so unscoped the question would
+   render in on-dark BODY copy instead of on-dark, and the wrong-answer
+   note would lose its alert entirely. This block IS ink-dark, so it is
+   not a hypothetical — it is the exact defect B1 shipped with the zoom
+   instrument and B2 was bitten by again.
+
+   The three-way buttons are `.ks3-sim-seg-btn`, whose dark branch is
+   already Design's `segDark`: alert fill with ink text when pressed,
+   transparent on the muted rule when not. No private control. */
+
+.ks3-predicts {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ks3-predict {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+/* The panel — not the option — carries the verdict, so the chosen button
+   keeps the ordinary chosen treatment and nothing inside the option list
+   marks the student. */
+.ks3-predict[data-right="1"] { border-color: var(--ks3-alert); }
+
+.ks3-predict .ks3-predict-q {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--ks3-on-dark);
+}
+
+.ks3-predict-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ks3-predict .ks3-predict-note {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-on-dark-body);
+}
+/* The one shared fallback. It sends the student back to the bench and
+   gives nothing away, so it is a prompt rather than a correction — and
+   the alert is the ink-dark palette's lit colour, not a red. */
+.ks3-predict .ks3-predict-note[data-tone="wrong"] {
+  color: var(--ks3-alert);
+}

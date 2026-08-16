@@ -5451,3 +5451,1162 @@ body.rd[data-mode="ks3"] {
   .ks3-hook h2 { font-size: 30px; }
   .ks3-rung { padding-left: 16px; }
 }
+
+/* ═══ BEGIN C1 ═══ */
+/* ═══ collision-counter (c1-04 #s-bench) ═══════════════════════════════
+   The LIGHT canvas frame. `.ks3-canvas-frame` is C2's DARK one — a 2px
+   `--ks3-on-dark-muted` rule over a `--ks3-dark-panel` foot — and this
+   block is a plain `.ks3-block`, so it takes a 2px INK rule over an
+   `--ks3-inset` control strip instead. Two frames, because they sit on
+   two different grounds; sharing one would put a muted rule on cream,
+   where it is nearly invisible.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED `.ks3-counter …`, at (0,2,0). A bare
+   `.ks3-counter-grouplabel` is (0,1,0) and loses to `.ks3-dark p` at
+   (0,1,1) the day anything puts this instrument on ink. It is a LIGHT
+   block today and the guard costs nothing; two separate builds have
+   been bitten by exactly this.
+
+   The three segmented groups use `.ks3-sim-seg-btn` and NOT a private
+   control. Drift 4 ruled one segmented control for the key stage; a
+   second copy at Design's 16px / 11px 16px is the drift the ruling
+   exists to stop. Reported. */
+
+.ks3-counter-stage {
+  margin-top: 22px;
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-counter-canvas { display: block; width: 100%; height: auto; }
+
+.ks3-counter-controls {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+/* Design's `[data-ctl]` (page CSS line 23). Three captioned groups that
+   drop to one column below ~510px rather than squeezing three 3-way
+   button rows into a phone width. */
+.ks3-counter-groups {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(230px, 100%), 1fr));
+  gap: 18px;
+}
+.ks3-counter .ks3-counter-grouplabel {
+  margin: 0 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-counter-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* The bumps toggle takes the FULL WIDTH under the three groups, with its
+   caption beside it. It is not a fourth control group and must not read
+   as one: the groups change the gas, and this changes what is drawn on
+   top of it. */
+.ks3-counter-bumps {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.ks3-counter .ks3-counter-bumpnote {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-ink-muted);
+  flex: 1 1 16rem;
+}
+
+/* The live note — a BAND panel on a 2px ink rule, which is the KEY FACT
+   treatment and deliberately so: it is the sentence the bench just
+   proved, not a verdict on anything the student did. */
+.ks3-counter .ks3-counter-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── evidence-bench (c1-06 #s-bench) ──
+   Seven observations, judged one at a time, on a LIGHT block. Nothing here is
+   scoped `.ks3-dark` and nothing may be: the two verdict grounds are cream
+   tints (`--ks3-inset` and `--ks3-band`) and both resolve to mud on ink.
+
+   ⚖️ The two-tone verdict panel is a fact about THE MODEL, never about the
+   student. `--ks3-inset` behind a `--ks3-rule-strong` edge when the model
+   handles it; `--ks3-band` behind `--ks3-accent` when it fails — the KEY FACT
+   ground, deliberately not a red. A student who called all seven wrong sees
+   exactly these panels. R3 lives in that. */
+.ks3-ebench { margin-top: 20px; }
+.ks3-ebench-list { display: flex; flex-direction: column; gap: 12px; }
+
+.ks3-ebench-case {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+/* The border going to ink is the only thing commitment changes on the case,
+   and it marks the CASE rather than the button — the same move `job-sort`
+   makes, and for the same reason. */
+.ks3-ebench-case[data-open="1"] { border-color: var(--ks3-ink); }
+
+/* Statement left, the two calls right; one column under 720px, which is
+   Design's own page rule (line 23–24). `minmax(0, 1fr)` and not `1fr`: a long
+   observation must be allowed to shrink rather than push the buttons out. */
+.ks3-ebench-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 16px;
+  align-items: start;
+}
+@media (max-width: 720px) {
+  .ks3-ebench-row { grid-template-columns: minmax(0, 1fr); }
+}
+
+.ks3-ebench-tag {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-ebench-text {
+  margin: 6px 0 0;
+  font-size: 19px;
+  line-height: 1.5;
+  font-weight: 600;
+}
+
+.ks3-ebench-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+/* C1's segmented geometry: 16px / 11px 16px in BOTH branches on all six pages.
+   Drift 4 ruled 17px / 11px 17px on b1-06's single variant; six pages against
+   one, and re-ruling it is §1.6 (d)'s job, not this component's. Written to
+   C1's number so the bench matches the page it is on. */
+.ks3-ebench-btn {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 11px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-ebench-btn[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+
+/* 6px on the leading edge, not a full outline: the verdict reads as a
+   continuation of the case it sits under rather than as a second card. */
+.ks3-ebench-verdict {
+  margin-top: 14px;
+  padding: 16px 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border-left: 6px solid var(--ks3-accent);
+}
+.ks3-ebench-case[data-ok="1"] .ks3-ebench-verdict {
+  background: var(--ks3-inset);
+  border-left-color: var(--ks3-rule-strong);
+}
+.ks3-ebench-vlabel {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+.ks3-ebench-case[data-ok="1"] .ks3-ebench-vlabel { color: var(--ks3-ink-muted); }
+.ks3-ebench-vtext { margin: 8px 0 0; font-size: 18px; line-height: 1.55; }
+
+/* The whole-set close: the counted line in display type, then the static
+   shared-cause paragraph that is the actual bridge into C2. */
+.ks3-ebench-tally {
+  margin-top: 20px;
+  padding: 22px 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-ebench-tallyline {
+  margin: 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.25;
+  letter-spacing: -.015em;
+}
+.ks3-ebench-cause { margin: 10px 0 0; font-size: 19px; line-height: 1.6; }
+
+/* ── gap-test-rig (c1-01 #s-gap) ──
+   ⚠️ INK-DARK, and `.ks3-dark p` is (0,1,1). Every text rule below is scoped
+   to at least (0,2,0) so it wins — the defect that shipped with the zoom
+   instrument on B1 and bit B2 again is exactly an unscoped instrument caption
+   losing to the block it sits in.
+
+   The drawing reuses `.ks3-canvas-frame` / `.ks3-canvas-foot` (map N12) rather
+   than growing a fifth copy: Design's frame here is the same 2px muted rule on
+   a card radius over a dark-panel foot, measured property for property. */
+
+.ks3-gap { margin-top: 4px; }
+/* Design's own measure on the choice list — four short answers at full column
+   width read as a form, not as a question. */
+.ks3-gap .ks3-options { max-width: 34rem; }
+
+.ks3-gap-rig { margin-top: 20px; }
+
+.ks3-gap .ks3-gap-caption {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-gap-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* The outcome paragraph sits OUTSIDE the frame, on the block's own ink — it is
+   the sentence the student takes away, not another readout on the instrument.
+   All eight branches are in the document and seven are hidden. */
+.ks3-gap-note { margin: 16px 0 0; }
+.ks3-gap .ks3-gap-note p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   C1 · Particles and their behaviour (⊕ MRB-228)
+
+   ── halving-bench (c1-01 #s-cut) ──
+   ⚠️ A LIGHT instrument. Its sibling on the same page (`gap-test-rig`) is
+   ink-dark, so nothing here may assume `.ks3-dark`; the frame is the light
+   counterpart of `.ks3-canvas-frame` — 2px INK on the card ground, with an
+   INSET foot — and it is its own class for that reason rather than a
+   `[data-light]` modifier on a dark component.
+   ══════════════════════════════════════════════════════════════════ */
+
+.ks3-cut { margin-top: 22px; }
+
+.ks3-cut-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-cut-frame canvas { display: block; width: 100%; height: auto; }
+.ks3-cut-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+/* Three readouts on one row, one per row on a phone. Design's own breakpoint:
+   at 620px the third column has 100px of space and "Edge of the piece" wraps
+   to three lines under a 30px number. */
+.ks3-cut-readouts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 620px) {
+  .ks3-cut-readouts { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* Both text rules are scoped past `.ks3-check p` (0,1,1) at (0,2,0) — the
+   block is light today, but a shell can be re-measured and an unscoped
+   instrument is how the last two builds lost their captions. */
+.ks3-cut .ks3-cut-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-cut .ks3-cut-value {
+  margin: 4px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ks3-ink);
+}
+/* ⚖️ The one accent in the readout row, and it is not a mark. "Floor" is a
+   MEASUREMENT that has stopped moving, not a verdict on the student — the
+   colour rides on the word, which is in the document from the start with its
+   sibling hidden beside it, so no state is ever colour alone (R2). */
+.ks3-cut .ks3-cut-value [data-verdict="floor"] { color: var(--ks3-accent-text); }
+
+.ks3-cut-btns { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+/* Spent, not gone: a control at an end of the ladder stays readable at .45,
+   which is the same treatment `.ks3-scale-btn` and the budget bench take. */
+.ks3-cut-btn[disabled] { opacity: .45; cursor: default; }
+
+/* The running note. BAND on a 2px ink border — the panel treatment
+   `claim-switch` uses for the same job, and deliberately not amber: this is
+   the state of the model, never a wrong idea. It carries no badge, letter or
+   mark, because band is also the chosen-wrong ladder ground (MRB-202) and
+   anything mark-like here would read as a verdict. */
+.ks3-cut-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-cut .ks3-cut-note p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── heating-bench (c1-03 #s-curve) ──
+   A LIGHT bench. Every rule below paints on cream, because the block is a
+   plain `.ks3-block` on Design's page and not a practical — the canvas fills
+   itself with paper, and on an ink ground that fill reads as a hole.
+
+   Two things here are not in the stylesheet yet and are the reason this is a
+   component rather than four inline styles:
+
+   1. A LIGHT canvas frame. `.ks3-canvas-frame` is the ink-dark wrapper the
+      four C2 instruments share (2px `--ks3-on-dark-muted` on a dark foot);
+      on cream, both of those resolve as a smudge. Same shape, light tokens.
+   2. A LIGHT range control. `.ks3-slider` is b2-02's, and it is a dark-ground
+      control: an alert thumb on a `--ks3-dark-track`. The GEOMETRY is
+      deliberately identical — a 28px thumb on a 10px track — so the key
+      stage has one slider in two palettes rather than two sliders; only the
+      paint changes, and the 44px height is Design's own (page CSS line 25).
+
+   ⚠️ Specificity. The paragraph rules are written two classes deep. This
+   block is light so `.ks3-dark p` (0,1,1) does not reach it today — but a
+   bench is exactly the component someone later drops into a practical, and
+   at (0,1,0) every note in it would silently repaint to on-dark body copy.
+   That has bitten two builds already. */
+
+.ks3-hb { margin-top: 22px; }
+
+/* `hidden` is the source of truth and it is backed up here for the same
+   reason ks3.js backs it up inline: an author `display` beats the UA
+   stylesheet's `[hidden] { display: none }` at any specificity, and this
+   instrument holds five notes and five phase words of which exactly one of
+   each may ever be readable. */
+.ks3-hb [hidden] { display: none; }
+
+.ks3-hb-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  background: var(--ks3-card);
+  overflow: hidden;
+}
+.ks3-hb-canvas { display: block; width: 100%; height: auto; }
+.ks3-hb-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+.ks3-hb .ks3-hb-scrub-label {
+  display: block;
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+
+/* The scrub. 44px of control around a 10px track, so the whole thing is a
+   tap target and not just the thumb. `accent-color` is Design's own line and
+   is kept as the paint for any engine that ignores the pseudo-elements. */
+.ks3-hb-scrub {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: var(--ks3-tap);
+  margin: 6px 0 0;
+  background: transparent;
+  accent-color: var(--ks3-accent);
+  cursor: pointer;
+}
+.ks3-hb-scrub::-webkit-slider-runnable-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-hb-scrub::-moz-range-track {
+  height: 10px;
+  border-radius: var(--ks3-r-pill);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-hb-scrub::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -11px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+}
+.ks3-hb-scrub::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ks3-accent);
+  border: 3px solid var(--ks3-ink);
+}
+.ks3-hb-scrub:focus-visible {
+  outline: var(--ks3-r-focus) solid var(--ks3-accent);
+  outline-offset: 3px;
+}
+
+/* Three readouts across, one down on a phone — Design's own breakpoint
+   (page CSS line 24). */
+.ks3-hb-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+@media (max-width: 620px) {
+  .ks3-hb-tiles { grid-template-columns: minmax(0, 1fr); }
+}
+.ks3-hb .ks3-hb-tile-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-hb .ks3-hb-tile-value {
+  margin: 4px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ks3-ink);
+}
+/* The state word takes the accent only while the state is CHANGING. It is
+   `--ks3-accent-text` and not `--ks3-accent`: this is a 30px word, but the
+   readout is the kind of thing a student reads at a glance from a metre
+   away, and R1's large-text allowance is not an excuse to spend it. */
+.ks3-hb .ks3-hb-phase[data-tone="accent"] { color: var(--ks3-accent-text); }
+
+.ks3-hb-jumps {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+/* The live note under the bench: a BAND panel on a 2px ink rule — the KEY
+   FACT treatment, because what it says while the thermometer is stuck is the
+   fact the lesson exists to deliver. */
+.ks3-hb-notes { margin-top: 18px; }
+.ks3-hb .ks3-hb-note {
+  margin: 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* ── keyed-commit (c1-06 #s-verdict, c1-03 #s-bubble) ──
+   Four options, each carrying its own answer, then one panel whose first
+   paragraph is the student's and whose rest is everyone's.
+
+   ⚠️ SPECIFICITY, AND IT IS LOAD-BEARING. `.ks3-dark p` is (0,1,1); a bare
+   `.ks3-keyed-reply` is (0,1,0) and LOSES, so an unscoped colour would leave
+   the reply rendering in on-dark body copy — the same defect the zoom
+   instrument shipped with in B1 and the muscle bench nearly repeated in B2.
+   Every text rule below is scoped `.ks3-dark …`.
+
+   The light rules under them are the fallback, not dead weight: the component
+   is shared, both drawn instances happen to be ink-dark, and a third instance
+   on a light block must not render a `--ks3-dark-panel` box with no readable
+   text in it. */
+.ks3-keyed { margin-top: 0; }
+/* 36rem, which is Design's own measure on both pages. The options are answers
+   rather than prose and a full-width answer button is a target the eye has to
+   travel. */
+.ks3-keyed-options { max-width: 36rem; }
+
+.ks3-keyed-reveal {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  /* Light fallback: the card-on-ink panel, matching `.ks3-reveal-panel`. */
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-keyed-reply,
+.ks3-keyed-static {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+}
+/* The gaps are between PARAGRAPHS, and the sibling selectors still match a
+   hidden reply — three of the four replies are `hidden` and the first static
+   paragraph follows the last of them in document order, so it takes its
+   14px whether or not any reply is showing. The visible reply is first in
+   flow and keeps `margin: 0`. */
+.ks3-keyed-reply + .ks3-keyed-static,
+.ks3-keyed-static + .ks3-keyed-static { margin-top: 14px; }
+
+/* The drawn state, on ink. */
+.ks3-dark .ks3-keyed-reveal {
+  background: var(--ks3-dark-panel);
+  border-color: var(--ks3-on-dark-muted);
+}
+.ks3-dark .ks3-keyed-reply,
+.ks3-dark .ks3-keyed-static { color: var(--ks3-on-dark-body); }
+
+/* ── model-timeline (c1-06 #s-history) ──
+   Five models as a wrapping row, one detail card under them. A LIGHT block;
+   nothing here is scoped `.ks3-dark` and nothing may be.
+
+   ⚠️ A THIRD CONTROL GEOMETRY, registered as its own rather than folded into
+   the segmented control. `.ks3-seg-btn` and `.ks3-sim-seg-btn` are both one
+   centred line at one weight; this is left-aligned, `10px 14px`, and stacks a
+   mono year over a 700 name. Folding it into `seg()` would centre the two
+   lines against each other and lose the left edge the row is read down. */
+.ks3-mtl { margin-top: 20px; }
+.ks3-mtl-steps {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.ks3-mtl-step {
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  padding: 10px 14px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-mtl-step[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+/* `display: block` on both spans is what makes the button two lines. Without
+   it the year and the name run together and the row reads as five long
+   labels rather than five dated positions. */
+.ks3-mtl-year {
+  display: block;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .06em;
+}
+.ks3-mtl-who {
+  display: block;
+  font-size: 16px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* One card, five states, emit-all-show-one. Card ground on a 2px ink border —
+   the ordinary panel, because the claim inside it is not a verdict on anyone. */
+.ks3-mtl-card {
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-mtl-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-accent-text);
+}
+/* 26px display. The claim is the model in one sentence and it is meant to be
+   readable from the scroll position, which is the same argument `formula`
+   makes for standing alone. */
+.ks3-mtl-claim {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 26px;
+  line-height: 1.25;
+  letter-spacing: -.02em;
+}
+.ks3-mtl-body { margin: 12px 0 0; font-size: 19px; line-height: 1.6; }
+/* The rule is what separates the model from the evidence that killed it. The
+   line is muted and the label is not: "What broke it:" has to survive being
+   skimmed. */
+.ks3-mtl-broke {
+  margin: 14px 0 0;
+  padding-top: 14px;
+  border-top: 2px solid var(--ks3-rule);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ks3-ink-muted);
+}
+.ks3-mtl-broke strong { color: var(--ks3-ink); }
+
+/* ═══ prediction-stack (c1-04 #s-predict) ══════════════════════════════
+   Three panels on the ink-dark practical block, each a `--ks3-dark-panel`
+   card on a 2px muted rule that goes to `--ks3-alert` once the student
+   has it right.
+
+   ⚠️ EVERY TEXT RULE IS SELF-SCOPED `.ks3-predict …` AT (0,2,0), AND IT
+   HAS TO BE. `.ks3-dark p { color: var(--ks3-on-dark-body) }` is (0,1,1)
+   and a bare `.ks3-predict-q` is (0,1,0), so unscoped the question would
+   render in on-dark BODY copy instead of on-dark, and the wrong-answer
+   note would lose its alert entirely. This block IS ink-dark, so it is
+   not a hypothetical — it is the exact defect B1 shipped with the zoom
+   instrument and B2 was bitten by again.
+
+   The three-way buttons are `.ks3-sim-seg-btn`, whose dark branch is
+   already Design's `segDark`: alert fill with ink text when pressed,
+   transparent on the muted rule when not. No private control. */
+
+.ks3-predicts {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ks3-predict {
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+/* The panel — not the option — carries the verdict, so the chosen button
+   keeps the ordinary chosen treatment and nothing inside the option list
+   marks the student. */
+.ks3-predict[data-right="1"] { border-color: var(--ks3-alert); }
+
+.ks3-predict .ks3-predict-q {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--ks3-on-dark);
+}
+
+.ks3-predict-btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.ks3-predict .ks3-predict-note {
+  margin: 12px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-on-dark-body);
+}
+/* The one shared fallback. It sends the student back to the bench and
+   gives nothing away, so it is a prompt rather than a correction — and
+   the alert is the ink-dark palette's lit colour, not a red. */
+.ks3-predict .ks3-predict-note[data-tone="wrong"] {
+  color: var(--ks3-alert);
+}
+
+/* ── random-walk-bench (c1-05 #s-walk) ──
+   A LIGHT block, and every rule below depends on that. Design draws the tank
+   on cream inside a `--ks3-card` frame with a 2px INK rule; nothing here is
+   scoped `.ks3-dark` and nothing here may be, or the dye goes purple-on-black
+   and the two counters lose their contrast.
+
+   ⚠️ This frame is NOT `.ks3-canvas-frame`. That one is the dark twin — a 2px
+   `--ks3-on-dark-muted` rule over a `--ks3-dark-panel` foot, shared by four C2
+   instruments. Same shape, two grounds, two components. */
+
+.ks3-walk { margin-top: 22px; }
+
+.ks3-walk-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-walk-canvas { display: block; width: 100%; height: auto; }
+.ks3-walk-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+
+/* Three readouts across, one under the other on a phone. The single-column
+   fallback is Design's own query (page line 24), not a translation. */
+.ks3-walk-readouts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+@media (max-width: 620px) {
+  .ks3-walk-readouts { grid-template-columns: minmax(0, 1fr); }
+}
+.ks3-walk-readout-label {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-walk-readout-value {
+  margin: 4px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--ks3-ink);
+  /* ⊕ An addition. The two counters climb into four and five digits while a
+     student is reading them, and proportional figures make the number jump
+     sideways on every repaint — which reads as the instrument being unsteady
+     rather than the count going up. */
+  font-variant-numeric: tabular-nums;
+}
+/* ⚖️ THE ONE STATE CHANGE IN THE READOUT ROW. "Spread out? Yes" goes to
+   accent-TEXT — the 6:1 orange, never `--ks3-accent`, which is large-text-only
+   and would fail at 30px display weight on inset. It is not a verdict on the
+   student and carries no mark: the tank evened out, that is all. */
+.ks3-walk-readout-value[data-walk-even="1"] { color: var(--ks3-accent-text); }
+
+.ks3-walk-controls {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+/* The four controls ARE `.ks3-sim-seg-btn` — the key stage's segmented
+   control, reused rather than re-declared. Design's C1 draws it 1px smaller
+   than the shipped rule in both branches (16px / 11px 16px against 17px /
+   11px 17px) and the map reopens drift 4 over exactly that, on all six pages.
+   Until it is re-ruled, a fourth private copy of this button would make the
+   ruling a four-place change instead of a one-place one. `.ks3-walk-btn` adds
+   nothing but a selector to measure and to hang any future correction on. */
+.ks3-walk-btn { flex: 0 0 auto; }
+
+/* The live note. `--ks3-band` on a 2px ink border — the KEY FACT treatment,
+   which is right: this is the bench telling the student what they are looking
+   at, not marking anything. All four branches live in here and one is shown. */
+.ks3-walk-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-walk-note p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* The commit gate, scoped to THIS block and no further. `r_bench_gate` emits
+   the same markup on every bench in the key stage and `.ks3-benchgate` sets
+   only a margin, because B2's three gates sit on ink where `.ks3-commit`'s
+   amber is legible. This one sits on cream, where amber is not: Design paints
+   it `--ks3-accent-text` and draws the panel that carries it (page 121–122).
+   Scoping to `.ks3-walk-block` keeps the shared component shared. */
+.ks3-walk-block .ks3-benchgate {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-walk-block .ks3-benchgate .ks3-commit {
+  margin: 0 0 12px;
+  color: var(--ks3-accent-text);
+}
+
+@media (max-width: 34rem) {
+  .ks3-walk-foot { padding: 16px 14px; }
+  /* Four controls at 44px tall stack rather than shrink — a tap target that
+     has been squeezed to fit is not a tap target. */
+  .ks3-walk-controls { gap: 10px; }
+}
+
+/* ── scale-cards (c1-05 #s-scale) ──
+   Ink-dark and STATIC. Three cards, each a distance, a time and what that
+   costs biology, closed by the rule they add up to.
+
+   ⚠️ SPECIFICITY. `.ks3-dark p { color: var(--ks3-on-dark-body) }` is (0,1,1)
+   and a bare `.ks3-scard-time` is (0,1,0), so every <p> rule below is scoped
+   `.ks3-dark`. The one that would visibly break is the 28px display TIME:
+   unscoped it loses its `--ks3-on-dark` and drops to body colour, which reads
+   as a caption rather than the answer. This has bitten two separate builds. */
+
+.ks3-scards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+  margin-top: 20px;
+}
+
+/* A panel nested inside an ink-dark block: `--ks3-dark-panel` on the muted
+   rule, never the ground the block is already painted in. */
+.ks3-scard {
+  padding: 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-dark-panel);
+  border: 2px solid var(--ks3-on-dark-muted);
+}
+
+/* ⚑ AMBER FOR A BODY LABEL, and the map flags it rather than resolving it
+   (§5.5.2). Amber on ink has meant "control" since B1 and "misconception" as
+   a block treatment; this is neither. Design drew it, the page wins, and the
+   parity row pins the value so a re-ruling shows up as a failure rather than
+   as a quiet repaint. */
+.ks3-dark .ks3-scard-distance {
+  margin: 0;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-alert);
+}
+
+/* The answer to the question the label asks. Display type, full on-dark. */
+.ks3-dark .ks3-scard-time {
+  margin: 8px 0 0;
+  font-family: var(--ks3-font-display);
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.15;
+  color: var(--ks3-on-dark);
+}
+
+.ks3-dark .ks3-scard-text {
+  margin: 10px 0 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--ks3-on-dark-body);
+}
+
+/* The closing line — the rule the three cards add up to. Body size, not card
+   size: it is the paragraph the panel is FOR. */
+.ks3-dark .ks3-scards-close {
+  margin: 18px 0 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}
+
+@media (max-width: 34rem) {
+  .ks3-scard { padding: 18px 16px; }
+}
+
+/* ── sort-cards (c1-03 #s-think) ──
+   The sorter lives INSIDE the amber misconception shell, so every card is a
+   cream card on an amber ground. Nothing here is amber: amber is the wrong
+   IDEA being confronted, and these cards are the student's working.
+
+   ⚠️ Specificity, twice over. `.ks3-misconception > p` is (0,1,1) and only
+   reaches DIRECT children, so it does not touch the card's paragraphs today
+   — but the text rules below are written two classes deep anyway, because a
+   descendant rule on this shell, or the day someone drops this sorter into a
+   dark block, would repaint every note in it and nothing would fail.
+
+   ⚖️ THE ONE MARKED CARD IN C1. Design draws the card's border in the accent
+   when the word fits and in ink when it does not (page lines 767–768), and
+   the note in ink or accent-text to match. It is carried because the page
+   wins over the engine, and it is expressed against ONE attribute so a
+   ruling that R3 reaches this component is a two-line change here and
+   nowhere else. Note what it is NOT: never the ok family, never a tick,
+   never a cross — it cannot be mistaken for the ladder's verdict, and the
+   "wrong" state is exactly the neutral ink border a decided `job-sort` row
+   already takes. */
+
+.ks3-sortcards { margin-top: 18px; }
+.ks3-sortcards [hidden] { display: none; }
+
+.ks3-sortcards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.ks3-sortcards-card {
+  padding: 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+.ks3-sortcards-card[data-verdict="right"] { border-color: var(--ks3-accent); }
+.ks3-sortcards-card[data-verdict="wrong"] { border-color: var(--ks3-ink); }
+
+.ks3-sortcards .ks3-sortcards-text {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ks3-ink);
+}
+
+.ks3-sortcards-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.ks3-sortcards .ks3-sortcards-note {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ks3-ink);
+}
+/* The correction reads in accent-text — 6.0:1, the only orange the key stage
+   allows under 24px. */
+.ks3-sortcards .ks3-sortcards-note[data-note="wrong"] {
+  color: var(--ks3-accent-text);
+}
+
+/* The whole-set summary: a card panel on a 2px ink rule, the same treatment
+   as the two-paragraph reveal, because that is what it is. */
+.ks3-sortcards-close {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-sortcards .ks3-sortcards-close p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+.ks3-sortcards .ks3-sortcards-close p + p { margin-top: 14px; }
+
+/* ── state-bench (c1-02 #s-bench) ──
+   A LIGHT block, and it must stay one. c1-02 is the only C1 lesson with no
+   dark `practical` (map §2.3): its only ink grounds are the hook and the
+   keynote, and the particle drawing is cream-on-cream. Nothing below is
+   scoped `.ks3-dark` because nothing here may ever land on ink.
+
+   ⚠️ SPECIFICITY. The note's text rule is `.ks3-sbench .ks3-sbench-note-text`
+   at (0,2,0) rather than a bare class at (0,1,0). `.ks3-dark p` is (0,1,1) and
+   has already beaten a bare instrument class twice in this key stage; the
+   block cannot sit on ink today, and this is what makes that still true if
+   somebody moves it. */
+
+.ks3-sbench { margin-top: 22px; }
+
+/* Design draws the gate as a real INSET PANEL on a 2px ink border with the
+   commit line in accent-text (page lines 122–123). The shipped `.ks3-benchgate`
+   is a bare margin, which is right for B2's and C2's gates — so this is scoped
+   to this block rather than pushed onto the shared class, and no page Mide has
+   already approved moves. */
+.ks3-sbench-block .ks3-benchgate {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-sbench-block .ks3-benchgate .ks3-commit {
+  margin: 0 0 12px;
+  color: var(--ks3-accent-text);
+}
+
+/* The frame is the LIGHT twin of `.ks3-canvas-frame`: card ground, 2px INK
+   outline, inset control strip. It is not that component with a token swapped
+   — `.ks3-canvas-frame` is 2px `--ks3-on-dark-muted` over `--ks3-dark-panel`
+   and exists to sit inside an ink block. Two frames, two grounds, and neither
+   is a variant of the other. */
+.ks3-sbench-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-sbench-frame canvas { display: block; width: 100%; height: auto; }
+
+.ks3-sbench-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+.ks3-sbench-group + .ks3-sbench-group { margin-top: 18px; }
+.ks3-sbench-grouplabel {
+  margin: 0 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-sbench-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Design's own `seg()` (page lines 605–609), reproduced rather than routed
+   through `.ks3-seg-btn`, and the difference is not cosmetic in either
+   dimension:
+
+     * SIZE — C1 draws 16px / 11px 16px in BOTH branches on all six pages;
+       `.ks3-seg-btn` is 17px / 11px 17px under drift 4's ruling, which was
+       taken on b1-06's single variant. §1.6 (d) reopens that ruling on a
+       six-pages-against-one count and it is not this build's to settle, so
+       this block carries C1's own numbers under its own class and nothing
+       shipped moves.
+     * COLOUR — C1's chosen state keeps `--ks3-ink` text; `.ks3-seg-btn` goes
+       to `--ks3-accent-text`. On this bench the state buttons are a picker
+       and not an answer, and accent text on the chosen one would read as a
+       verdict (R3 / MRB-196 R10).
+
+   R2: the chosen state carries `aria-pressed` and, on the two toggles, its
+   own pair of words — never colour alone. */
+.ks3-sbench-seg {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 11px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-sbench-seg[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+
+/* The band panel under the frame carrying whichever of the eight notes is
+   live. All eight are in the document; seven are `hidden`. */
+.ks3-sbench-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-sbench .ks3-sbench-note-text {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* R7 / Law 9 — the canvas animates, so the student needs a stop that is not an
+   OS setting. It has one, in words, in the Instruments group ("Freeze the
+   motion"), and `wireStateBench` also scales the rate under
+   `prefers-reduced-motion` rather than stopping — asked every frame, so this
+   rule is documentation of a JS behaviour rather than a duplicate of it. */
+
+/* ── state-matrix (c1-02 #s-matrix) ──
+   Design carries this in a page-local <style> (lines 23–26) because its tool
+   has nowhere else to put it; here it is a component, so the 700px breakpoint
+   and the mono column heads live with the table rather than with the page.
+
+   A LIGHT block. Nothing is scoped `.ks3-dark` — c1-02's only ink grounds are
+   the hook and the keynote — and the row text rule is scoped `.ks3-smatrix …`
+   at (0,2,0) for the same reason the bench's note is: `.ks3-dark p` is (0,1,1)
+   and beats a bare instrument class. */
+
+.ks3-smatrix { margin-top: 18px; }
+
+/* The table can be wider than a phone, so it scrolls INSIDE its own box and
+   the page body never scrolls sideways. The border and the radius are on the
+   scroller, so the rounded outline survives the overflow. */
+.ks3-smatrix-scroll {
+  overflow-x: auto;
+  border-radius: var(--ks3-r-panel);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-smatrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 18px;
+}
+.ks3-smatrix-table th,
+.ks3-smatrix-table td {
+  border: 2px solid var(--ks3-ink);
+  padding: 12px 14px;
+  text-align: left;
+}
+/* Column heads and row heads take the same mono uppercase treatment on band —
+   this is a matrix, so the first column is a head as much as the first row is. */
+.ks3-smatrix-table thead th,
+.ks3-smatrix-row > th {
+  font-family: var(--ks3-font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  background: var(--ks3-band);
+}
+.ks3-smatrix-row { background: var(--ks3-card); }
+.ks3-smatrix .ks3-smatrix-table td { color: var(--ks3-ink); }
+
+/* ⚖️ THE LIT ROW. Accent TINT, on the row and on its head, and never the
+   accent fill — this is "the bench is showing you this one", not a verdict and
+   not an answer (R3 / MRB-196 R10). It is also never amber: amber is a wrong
+   idea being confronted.
+
+   The tint is not the only signal. `r_state_matrix` puts `aria-current="true"`
+   on the lit row's head, because Design signals this with colour alone and the
+   footnote under the table promises the student a highlight (R2). */
+.ks3-smatrix-row[data-lit="1"],
+.ks3-smatrix-row[data-lit="1"] > th { background: var(--ks3-accent-tint); }
+
+.ks3-smatrix .ks3-smatrix-foot {
+  margin: 16px 0 0;
+  font-size: 18px;
+  color: var(--ks3-ink-muted);
+}
+
+@media (max-width: 700px) {
+  .ks3-smatrix-table { font-size: 16px; }
+  .ks3-smatrix-table th,
+  .ks3-smatrix-table td { padding: 9px 10px; }
+}
+/* ═══ END C1 ═══ */

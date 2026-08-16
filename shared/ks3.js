@@ -6935,6 +6935,2402 @@
     repaint();
   }
 
+/* ═══ BEGIN C1 ═══ */
+// WIRE: each(root.querySelectorAll("[data-counterblock]"), wireCollisionCounter);
+//
+// Splice point: `wireInstruments()` in shared/ks3.js, in the new
+// "C1 · Particles and their behaviour" group. The function below belongs
+// beside the other instrument wirings and uses the file's existing helpers:
+// `each`, `toArray`, `setHidden`, `setCount`, `markStage`, `motionReduced`
+// and `wireBenchGate`.
+
+  /* ═══ C1 · Particles and their behaviour (⊕ MRB-228) ═══════════════
+     ── collision-counter (c1-04 #s-bench) ──
+
+     The one instrument in the key stage that COUNTS. Every wall bounce
+     pushes a timestamp; entries older than the window are shifted off;
+     the number on screen is the length of that array. It is not a
+     formula dressed up as a measurement, and that difference is the
+     whole reason a student believes "smaller box, same particles, same
+     speed — and the count is up".
+
+     ⚖️ THE BUMPS TOGGLE IS PART-08's CONFRONTATION. Grey rings are drawn
+     wherever two particles are within `bump_threshold` of each other,
+     there are dozens of them, and not one of them touches `hits`. The
+     wrong idea is "pressure is the particles pushing each other", and
+     this is the instrument that shows those pushes happening and then
+     shows them counting for nothing.
+
+     ⚖️ REDUCED MOTION SCALES THE SPEED, IT DOES NOT STOP THE GAS.
+     Design's own 0.35 — but asked EVERY FRAME rather than once at
+     construction (ruling R4, which corrected exactly this slip on
+     b2-03). A stopped gas has a wall-hit count of zero, which is not a
+     lesser experience, it is a broken one.
+
+     ⊕ FRAME-RATE INDEPENDENCE, where the page is silent. Design's step
+     is a fixed distance PER FRAME, so the same gas reads roughly twice
+     the hits per second on a 120 Hz display as on a 60 Hz one — the one
+     number the lesson is about would depend on the student's monitor.
+     The step is normalised to 60 Hz here, so the motion is identical at
+     60 Hz and the count means the same thing everywhere.
+
+     ⚠️ The note branches use literal indices 0 / 1 / 2, exactly as
+     Design writes them: index 0 is the coldest, largest and fewest, 1 is
+     the middle, 2 is the hottest, smallest and most. The renderer raises
+     unless there are exactly three of each, so the indices cannot drift
+     out from under this. */
+
+  // Design's own canvas literals (page 512–606). None of these is a KS3
+  // token: this is a drawing, and the drawing has its own cream that is
+  // one notch warmer than `--ks3-card`, its own near-black that is one
+  // notch warmer than `--ks3-ink`, and a particle orange that exists
+  // nowhere else in the system.
+  var COUNTER_INK = {
+    ground: "#FFFDF8",   // the canvas's own paper
+    dash: "#E4DACA",     // full-size reference outline, and the bar track
+    box: "#F6EEE0",      // the container's fill
+    line: "#1A1714",     // the container's outline, and the big number
+    particle: "#D98A4A",
+    particleEdge: "#5A3212",
+    flash: "228,87,46",  // the accent, as rgb components for the fade
+    bump: "rgba(120,110,98,0.75)",
+    label: "#6B6055",    // 6.0:1 on the canvas ground
+    bar: "#E4572E"
+  };
+
+  function wireCollisionCounter(sec) {
+    var wrap = sec.querySelector("[data-counter]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = {}; }
+
+    var canvas = wrap.querySelector("[data-counter-canvas]");
+    var bumpBtn = wrap.querySelector("[data-counter-bumps]");
+    var noteEls = toArray(wrap.querySelectorAll("[data-note]"));
+    var btns = toArray(wrap.querySelectorAll(".ks3-counter-btn"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 3;
+    var fullLabel = wrap.getAttribute("data-full-label") || "";
+
+    var TEMPS = cfg.temps || [];
+    var VOLS = cfg.vols || [];
+    var COUNTS = cfg.counts || [];
+    var CL = cfg.canvas_labels || {};
+    var ALT = cfg.alt || {};
+    var WINDOW = Number(cfg.window_ms) || 1000;
+    var FLASH = Number(cfg.flash_ms) || 420;
+    var RM = Number(cfg.reduced_motion_scale) || 0.35;
+    var STEP = Number(cfg.step_per_frame) || 0.0075;
+    var BUMP_T = Number(cfg.bump_threshold) || 0.0022;
+    var FULL = Number(cfg.pressure_full) || 170;
+    if (!TEMPS.length || !VOLS.length || !COUNTS.length) { return; }
+
+    var start = cfg.start || {};
+    var state = {
+      temp: Number(start.temp) || 0,
+      vol: Number(start.vol) || 0,
+      count: Number(start.count) || 0
+    };
+    var marks = false;
+    // ⊕ CORRECTED. Design keeps `touched = Math.max(prev.touched, N)` with
+    // N = 1 / 2 / 3, so pressing ONLY the particle-count button sets it to 3,
+    // ticks the stage and prints "all controls tried" when one was. The
+    // predicate wants a SET: three DISTINCT groups, in any order.
+    var tried = {};
+
+    var hits = [];
+    var flashes = [];
+    var pairs = [];
+    var parts = [];
+    var last = 0;
+    var lastAlt = 0;
+
+    var most = 0;
+    each(COUNTS, function (c) { most = Math.max(most, Number(c.n) || 0); });
+
+    function seed() {
+      parts = [];
+      for (var i = 0; i < most; i++) {
+        var a = Math.random() * Math.PI * 2;
+        parts.push({
+          x: 0.08 + Math.random() * 0.84,
+          y: 0.08 + Math.random() * 0.84,
+          dx: Math.cos(a),
+          dy: Math.sin(a)
+        });
+      }
+    }
+
+    function live() { return Number(COUNTS[state.count].n) || 0; }
+
+    function step(now, dt) {
+      // Asked every frame, so an OS setting or the page's Motion control
+      // changed mid-lesson takes effect without a reload — and the gas
+      // slows rather than stopping, so the count keeps running.
+      var scale = motionReduced() ? RM : 1;
+      // Design's distance is per FRAME. Normalised to 60 Hz so the count
+      // is a property of the gas rather than of the monitor.
+      var speed = (Number(TEMPS[state.temp].speed_multiplier) || 0)
+        * scale * STEP * dt * 60;
+      var n = live();
+      pairs = [];
+      for (var i = 0; i < n; i++) {
+        var p = parts[i];
+        p.x += p.dx * speed;
+        p.y += p.dy * speed;
+        var hit = false;
+        if (p.x < 0.02) { p.x = 0.02; p.dx = Math.abs(p.dx); hit = true; }
+        if (p.x > 0.98) { p.x = 0.98; p.dx = -Math.abs(p.dx); hit = true; }
+        if (p.y < 0.02) { p.y = 0.02; p.dy = Math.abs(p.dy); hit = true; }
+        if (p.y > 0.98) { p.y = 0.98; p.dy = -Math.abs(p.dy); hit = true; }
+        if (hit) {
+          hits.push(now);
+          flashes.push({ x: p.x, y: p.y, t: now });
+        }
+      }
+      // ⚖️ The bumps are found, drawn, and never counted. That omission is
+      // the teaching; it is not an optimisation and must not become one.
+      if (marks) {
+        for (var a = 0; a < n; a++) {
+          for (var b = a + 1; b < n; b++) {
+            var pa = parts[a], pb = parts[b];
+            var dx = pa.x - pb.x, dy = pa.y - pb.y;
+            if (dx * dx + dy * dy < BUMP_T) {
+              pairs.push([(pa.x + pb.x) / 2, (pa.y + pb.y) / 2]);
+            }
+          }
+        }
+      }
+      // The rolling window IS the measurement: what is left in the array
+      // is what happened in the last second, counted, not modelled.
+      while (hits.length && now - hits[0] > WINDOW) { hits.shift(); }
+      flashes = flashes.filter(function (f) { return now - f.t < FLASH; });
+    }
+
+    // The three status lines are a mono table, so the values line up in a
+    // column whatever the labels are. Design hard-codes the padding as
+    // literal spaces; this measures it instead, from the longest label.
+    var pad = 0;
+    each(["temperature", "container", "particles"], function (k) {
+      pad = Math.max(pad, (CL[k] || "").length);
+    });
+    function col(label) {
+      var s = CL[label] || "";
+      while (s.length < pad + 2) { s += " "; }
+      return s;
+    }
+
+    function draw(now) {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 340;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = COUNTER_INK.ground;
+      ctx.fillRect(0, 0, W, H);
+
+      var scale = Number(VOLS[state.vol].scale) || 1;
+      var maxW = 520, maxH = 236;
+      var bw = maxW * scale, bh = maxH * scale;
+      var bx = 60 + (maxW - bw) / 2, by = 46 + (maxH - bh) / 2;
+
+      // The full-size box stays drawn as a dashed ghost at every setting,
+      // so "smaller" is visible as a comparison rather than as a memory.
+      ctx.strokeStyle = COUNTER_INK.dash;
+      ctx.setLineDash([6, 6]);
+      ctx.lineWidth = 2;
+      ctx.strokeRect(60, 46, maxW, maxH);
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = COUNTER_INK.box;
+      ctx.fillRect(bx, by, bw, bh);
+      ctx.strokeStyle = COUNTER_INK.line;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(bx, by, bw, bh);
+
+      each(flashes, function (f) {
+        var age = (now - f.t) / FLASH;
+        ctx.beginPath();
+        ctx.arc(bx + f.x * bw, by + f.y * bh, 6 + age * 20, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(" + COUNTER_INK.flash + ","
+          + (0.85 * (1 - age)).toFixed(3) + ")";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      });
+
+      if (marks) {
+        each(pairs, function (b) {
+          ctx.beginPath();
+          ctx.arc(bx + b[0] * bw, by + b[1] * bh, 15, 0, Math.PI * 2);
+          ctx.strokeStyle = COUNTER_INK.bump;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        });
+      }
+
+      var n = live();
+      var r = 9;
+      var i;
+      for (i = 0; i < n; i++) {
+        var p = parts[i];
+        ctx.beginPath();
+        ctx.arc(bx + p.x * bw, by + p.y * bh, r, 0, Math.PI * 2);
+        ctx.fillStyle = COUNTER_INK.particle;
+        ctx.fill();
+        ctx.strokeStyle = COUNTER_INK.particleEdge;
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+
+      // ⚖️ THE REFERENCE PARTICLE. Fixed radius, bottom left, at EVERY
+      // setting — this is the visual proof that "heating makes particles
+      // swell" is false, and `#s-think`'s reveal points straight at it.
+      // If it ever scales with anything, that section stops being true.
+      ctx.beginPath();
+      ctx.arc(74, H - 34, r, 0, Math.PI * 2);
+      ctx.fillStyle = COUNTER_INK.particle;
+      ctx.fill();
+      ctx.strokeStyle = COUNTER_INK.particleEdge;
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.fillStyle = COUNTER_INK.label;
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillText(CL.reference || "", 92, H - 30);
+
+      // ── the live readout ──
+      // ⚑ NOTES flag 6 — a COUNT and a BAR, never a pascal. There is no
+      // unit anywhere here, deliberately: p = F/A is a KS4 calculation.
+      var count = hits.length;
+      var px = 620;
+      ctx.fillStyle = COUNTER_INK.label;
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(CL.hits || "", px, 66);
+      ctx.fillStyle = COUNTER_INK.line;
+      ctx.font = '700 58px "Bricolage Grotesque", system-ui, sans-serif';
+      ctx.fillText(String(count), px, 122);
+
+      ctx.fillStyle = COUNTER_INK.label;
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(CL.pressure || "", px, 158);
+      var barW = 220, barH = 22;
+      ctx.fillStyle = COUNTER_INK.dash;
+      ctx.fillRect(px, 168, barW, barH);
+      ctx.fillStyle = COUNTER_INK.bar;
+      ctx.fillRect(px, 168, barW * Math.min(1, count / FULL), barH);
+      ctx.strokeStyle = COUNTER_INK.line;
+      ctx.lineWidth = 2;
+      ctx.strokeRect(px, 168, barW, barH);
+
+      ctx.fillStyle = COUNTER_INK.label;
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.fillText(col("temperature")
+        + (TEMPS[state.temp].label || "").toUpperCase(), px, 216);
+      ctx.fillText(col("container")
+        + (VOLS[state.vol].label || "").toUpperCase(), px, 236);
+      ctx.fillText(col("particles") + n, px, 256);
+    }
+
+    /* Design's six branches, in Design's order of evaluation. The order is
+       load-bearing: `bumps` wins over everything because when the rings
+       are on they are the subject, and `smaller_box` is narrower than
+       `hot` so it has to be asked first. */
+    function noteKey() {
+      if (marks) { return "bumps"; }
+      if (state.vol > 0 && state.temp === 1) { return "smaller_box"; }
+      if (state.temp === 2) { return "hot"; }
+      if (state.temp === 0) { return "cold"; }
+      if (state.count === 2) { return "more_particles"; }
+      return "resting";
+    }
+
+    function repaintNote() {
+      var key = noteKey();
+      each(noteEls, function (el) {
+        setHidden(el, el.getAttribute("data-note") !== key);
+      });
+    }
+
+    function altText(h) {
+      return (ALT.template || "")
+        .split("{temp}").join((TEMPS[state.temp].label || "").toLowerCase())
+        .split("{vol}").join((VOLS[state.vol].label || "").toLowerCase())
+        .split("{n}").join(String(live()))
+        .split("{hits}").join(String(h));
+    }
+
+    function setAlt() {
+      if (canvas) { canvas.setAttribute("aria-label", altText(hits.length)); }
+    }
+
+    /* The head counter. `setCount` owns the element for every value the
+       format string can express; Design writes a different SENTENCE at
+       the top ("all controls tried", page 691) and `_head_counter` has a
+       `zero` hook but no `full` one, so the terminal label is written
+       here — on the same element, from the same authored payload. */
+    function progress() {
+      var n = 0, k;
+      for (k in tried) { if (tried[k]) { n += 1; } }
+      if (n >= total && fullLabel) {
+        var el = sec.querySelector("[data-count]");
+        if (el) { el.textContent = fullLabel; }
+      } else {
+        setCount(sec, n);
+      }
+      if (n >= total) { markStage(sec, true); }
+    }
+
+    each(btns, function (b) {
+      b.addEventListener("click", function () {
+        var group = b.getAttribute("data-group");
+        var i = parseInt(b.getAttribute("data-i"), 10) || 0;
+        if (!(group in state)) { return; }
+        state[group] = i;
+        each(btns, function (x) {
+          if (x.getAttribute("data-group") === group) {
+            x.setAttribute("aria-pressed", x === b ? "true" : "false");
+          }
+        });
+        tried[group] = true;
+        progress();
+        repaintNote();
+        setAlt();
+      });
+    });
+
+    if (bumpBtn) {
+      var showLabel = bumpBtn.querySelector("[data-bump-show]");
+      var hideLabel = bumpBtn.querySelector("[data-bump-hide]");
+      bumpBtn.addEventListener("click", function () {
+        marks = !marks;
+        bumpBtn.setAttribute("aria-pressed", marks ? "true" : "false");
+        setHidden(showLabel, marks);
+        setHidden(hideLabel, !marks);
+        if (!marks) { pairs = []; }
+        // ⚠️ NOT one of the three controls. The head says "3 controls" and
+        // means the three that change the GAS; this one changes what is
+        // drawn on top of it. Design does not count it either.
+        repaintNote();
+      });
+    }
+
+    function tick(now) {
+      var dt = Math.min(0.05, (now - (last || now)) / 1000);
+      last = now;
+      step(now, dt);
+      draw(now);
+      // The label is state-bound, but the state includes a number that
+      // moves every frame. Rewritten once a second — often enough that a
+      // screen reader arriving at the canvas gets a current reading,
+      // rarely enough that it is not sixty attribute writes a second.
+      if (now - lastAlt > 1000) { lastAlt = now; setAlt(); }
+      window.requestAnimationFrame(tick);
+    }
+
+    seed();
+    repaintNote();
+    setAlt();
+    setCount(sec, 0);
+    draw(0);
+    if (window.requestAnimationFrame) { window.requestAnimationFrame(tick); }
+    wireBenchGate(sec);
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-ebenchblock]"), wireEvidenceBench);
+   — add to wireInstruments(), in the C1 group. Uses each / toArray /
+   setHidden / setCount / markStage / appendAuthored, all already in scope. */
+
+  /* ── evidence-bench (c1-06 #s-bench) ──
+     Seven observations, each judged once and answered immediately. No gate:
+     the seven judgements ARE the commitment, which is why this is the one
+     flagship instrument in C1 that is open from the start.
+
+     ⚖️ THE SCORED CALL IS LATCHED ON THE FIRST PRESS. Design recomputes the
+     tally from live state, so a student who changes an answer after reading
+     the verdict moves a number whose own sentence says "before opening the
+     verdict". `data-called` records the first call and never moves; the
+     buttons stay live because Design leaves them live and pressing again
+     changes nothing else.
+
+     ⚠️ NOTHING HERE MARKS THE STUDENT (R3 / MRB-196 R10). The verdict panel's
+     ground is a fact about the model, decided at build time from `ok`. This
+     function never compares a call to it except to count, and the count is
+     never attached to a case. */
+  function wireEvidenceBench(sec) {
+    var wrap = sec.querySelector("[data-ebench]");
+    if (!wrap) { return; }
+    var cases = toArray(wrap.querySelectorAll(".ks3-ebench-case"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || cases.length;
+    var panel = wrap.querySelector("[data-ebench-tally]");
+    var line = wrap.querySelector("[data-tallyline]");
+    var fmt = wrap.getAttribute("data-tally") || "";
+    var allLabel = wrap.getAttribute("data-all") || "";
+    // The block-head counter belongs to the shell, not to this instrument;
+    // `setCount` writes it for every other counting block and this one only
+    // reaches past it for the authored full-set label, which `_head_counter`
+    // has no branch for.
+    var counter = sec.querySelector("[data-count]");
+
+    function judged() {
+      var n = 0;
+      each(cases, function (c) {
+        if (c.getAttribute("data-open") === "1") { n += 1; }
+      });
+      return n;
+    }
+
+    /* How many the student CALLED right, from the latched first press. */
+    function called() {
+      var n = 0;
+      each(cases, function (c) {
+        var call = c.getAttribute("data-called");
+        if (call !== null && call === c.getAttribute("data-ok")) { n += 1; }
+      });
+      return n;
+    }
+
+    function close() {
+      if (line) {
+        line.textContent = "";
+        // Authored text, never textContent: the sentence carries an em dash
+        // today and the helper is what draws → ✓ ✕ if one ever arrives.
+        appendAuthored(line, fmt.split("{n}").join(String(called())));
+      }
+      if (panel) { setHidden(panel, false); }
+      if (counter && allLabel) {
+        counter.textContent = "";
+        appendAuthored(counter, allLabel);
+      }
+      markStage(sec, true);
+    }
+
+    each(cases, function (c) {
+      var btns = toArray(c.querySelectorAll(".ks3-ebench-btn"));
+      each(btns, function (btn) {
+        btn.addEventListener("click", function () {
+          each(btns, function (b) { b.setAttribute("aria-pressed", "false"); });
+          btn.setAttribute("aria-pressed", "true");
+          if (c.getAttribute("data-called") === null) {
+            c.setAttribute("data-called", btn.getAttribute("data-call"));
+          }
+          c.setAttribute("data-open", "1");
+          setHidden(c.querySelector("[data-reveal]"), false);
+          var n = judged();
+          if (n >= total) { close(); } else { setCount(sec, n); }
+        });
+      });
+    });
+
+    setCount(sec, 0);
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-gapblock]"), wireGapTestRig); */
+
+  /* ── gap-test-rig (c1-01 #s-gap) ──
+
+     ⚖️ THE RIG NEVER MARKS THE CHOICE. It packs the gap with whatever the
+     student said is in it and then runs a test they already know the
+     answer to from the top of the page. Three tests, and every wrong
+     answer fails all three — which is an argument, not a verdict, and it
+     stays an argument only as long as nothing here goes green or red.
+
+     ⚠️ The discriminator is POSITIONAL and comes from the markup
+     (`data-empty-choice`), never from the option's text. Design compares
+     against a literal 3 written three lines from the list it indexes.
+
+     Nothing animates: the two boxes are a before-and-after, not a
+     process, so reduced motion loses nothing at all here. */
+  function wireGapTestRig(sec) {
+    var wrap = sec.querySelector("[data-gap]");
+    if (!wrap) { return; }
+
+    var EMPTY = parseInt(wrap.getAttribute("data-empty-choice"), 10);
+    var ALT = wrap.getAttribute("data-alt") || "";
+    var ALT_FILLED = wrap.getAttribute("data-alt-filled") || "";
+    var ALT_EMPTY = wrap.getAttribute("data-alt-empty") || "";
+    var L_EMPTY = wrap.getAttribute("data-label-empty") || "";
+    var L_FILLED = wrap.getAttribute("data-label-filled") || "";
+    var F_EMPTY = wrap.getAttribute("data-foot-empty") || "";
+    var F_FILLED = wrap.getAttribute("data-foot-filled") || "";
+
+    var rig = wrap.querySelector("[data-gap-rig]");
+    var canvas = wrap.querySelector("[data-gap-canvas]");
+    var opts = toArray(wrap.querySelectorAll(".ks3-option"));
+    var testBtns = toArray(wrap.querySelectorAll(".ks3-gap-test"));
+    var notes = toArray(wrap.querySelectorAll("[data-note]"));
+
+    var choice = null;
+    var test = null;
+
+    // "Something is in the gap" — the state every test is about to
+    // contradict. A choice not yet made is not a filled gap.
+    function filled() { return choice !== null && choice !== EMPTY; }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 260;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#100D0A";
+      ctx.fillRect(0, 0, W, H);
+
+      var half = W / 2;
+      var packed = filled();
+
+      function drawBox(x0, label, solid) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x0 + 34, 52, half - 68, H - 108);
+        ctx.clip();
+        // The fill IS the answer: the space between the particles stops
+        // being space. Clipped to the box so it cannot read as a
+        // background, and the particles are drawn identically in both
+        // boxes so the only difference on screen is the gap.
+        if (solid) {
+          ctx.fillStyle = "#4A4038";
+          ctx.fillRect(x0 + 34, 52, half - 68, H - 108);
+        }
+        for (var row = 0; row < 4; row++) {
+          for (var col = 0; col < 7; col++) {
+            var x = x0 + 62 + col * 54 + (row % 2 ? 16 : 0);
+            var y = 78 + row * 44;
+            ctx.beginPath();
+            ctx.arc(x, y, 17, 0, Math.PI * 2);
+            ctx.fillStyle = "#D98A4A";
+            ctx.fill();
+            ctx.strokeStyle = "#5A3212";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+        }
+        ctx.restore();
+        ctx.strokeStyle = "#5C5249";
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x0 + 34, 52, half - 68, H - 108);
+        ctx.fillStyle = solid ? "#FF8A5B" : "#FFC53D";
+        ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "center";
+        ctx.fillText(label, x0 + half / 2, 40);
+      }
+
+      drawBox(0, L_EMPTY, false);
+      drawBox(half, packed ? L_FILLED : L_EMPTY, packed);
+
+      ctx.fillStyle = "#C6B9A7";
+      ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "center";
+      ctx.fillText(packed ? F_FILLED : F_EMPTY, W / 2, H - 20);
+
+      if (canvas.setAttribute) {
+        canvas.setAttribute("aria-label",
+          ALT.replace("{right}", packed ? ALT_FILLED : ALT_EMPTY));
+      }
+    }
+
+    function repaint() {
+      // Which of the eight authored paragraphs is on screen. With a test
+      // running it is that test's outcome — `on` when the gap is genuinely
+      // empty, `off` when the student filled it — and before any test it
+      // is one of the two opening lines.
+      var want = test === null ? (filled() ? "filled" : "empty")
+        : test + (filled() ? "-off" : "-on");
+      each(notes, function (p) {
+        setHidden(p, p.getAttribute("data-note") !== want);
+      });
+      draw();
+      // One test run is the stage: the student has taken the model
+      // somewhere it can be checked. Changing the answer afterwards
+      // re-runs the same test against the new gap, which is the point.
+      if (test !== null) { markStage(sec, true); }
+    }
+
+    each(opts, function (btn, i) {
+      btn.addEventListener("click", function () {
+        choice = i;
+        each(opts, function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+        // Gating by absence, as everywhere else in the key stage: the rig
+        // is not there to be looked at until a claim has been made about
+        // what it is going to show.
+        if (rig) { setHidden(rig, false); }
+        repaint();
+      });
+    });
+
+    each(testBtns, function (btn) {
+      btn.addEventListener("click", function () {
+        test = btn.getAttribute("data-test");
+        each(testBtns, function (b) {
+          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+        });
+        repaint();
+      });
+    });
+
+    draw();
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-cutblock]"), wireHalvingBench); */
+
+  /* ═══════════════════════════════════════════════════════════════
+     C1 · Particles and their behaviour  (⊕ MRB-228)
+
+     ── halving-bench (c1-01 #s-cut) ──
+
+     ⚖️ THE FLOOR IS STICKY. Reaching 24 cuts ticks the rail stop and
+     undoing a cut does not untick it. Design's `reachedFloor` is a
+     one-way flag and this keeps it one-way: what a student found out at
+     the floor cannot be un-found by pressing undo, and MRB-208 has the
+     rail recording participation rather than current position.
+
+     ⚖️ NOTHING ANIMATES. "Cut ten more times" moves the count by ten in
+     one frame because ten halvings is not a journey — the point is that
+     the number falls off a cliff and the substance does not change. So
+     `prefers-reduced-motion` has nothing to degrade here (the same note
+     `wireClaimSwitch` carries), and the reduced-motion experience is the
+     complete one rather than a lesser one.
+
+     The size ladder is duplicated in `build_ks3.py` (`_size_label`) on
+     purpose: the resting page has to render "10 mm" and its aria-label
+     before any JS runs. Two implementations, one composition, checked at
+     both ends of the ladder.
+     ═══════════════════════════════════════════════════════════════ */
+  function wireHalvingBench(sec) {
+    var wrap = sec.querySelector("[data-cut]");
+    if (!wrap) { return; }
+
+    var FLOOR = parseInt(wrap.getAttribute("data-floor"), 10) || 0;
+    var START = parseFloat(wrap.getAttribute("data-start-cm")) || 1;
+    var GRAIN = parseInt(wrap.getAttribute("data-grain"), 10) || 0;
+    var FULL = wrap.getAttribute("data-full") || "";
+    var ALT = wrap.getAttribute("data-alt") || "";
+    var ALT_SMOOTH = wrap.getAttribute("data-alt-smooth") || "";
+    var ALT_GRAINY = wrap.getAttribute("data-alt-grainy") || "";
+    var L_GHOST = wrap.getAttribute("data-label-ghost") || "";
+    var L_ONE = wrap.getAttribute("data-label-one") || "";
+    var L_MANY = wrap.getAttribute("data-label-many") || "";
+    var L_START = wrap.getAttribute("data-label-start") || "";
+    var L_END = wrap.getAttribute("data-label-end") || "";
+
+    var canvas = wrap.querySelector("[data-cut-canvas]");
+    var outCount = wrap.querySelector('[data-cut-out="count"]');
+    var outSize = wrap.querySelector('[data-cut-out="size"]');
+    var verdicts = toArray(wrap.querySelectorAll("[data-verdict]"));
+    var notes = toArray(wrap.querySelectorAll("[data-note]"));
+    var btns = toArray(wrap.querySelectorAll(".ks3-cut-btn"));
+    var counter = sec.querySelector("[data-count]");
+
+    var n = 0;
+    var reached = false;
+
+    /* Design's `sig()`. `Math.round` on the top branch, one trailing zero
+       stripped on the bottom one — reproduced rather than tidied, because
+       the same formatter runs at build time in Python and the two have to
+       agree digit for digit. */
+    function sig(v) {
+      if (v >= 100) { return String(Math.round(v)); }
+      if (v >= 10) { return v.toFixed(1).replace(/\.0$/, ""); }
+      return v.toFixed(2).replace(/0$/, "").replace(/\.$/, "");
+    }
+
+    /* 1 cm / 2ⁿ, in the unit that keeps it readable. µ is U+00B5, which
+       both faces this lands in — the display face in the readout, DM Mono
+       on the canvas — actually carry. */
+    function sizeLabel(k) {
+      var cm = START / Math.pow(2, k);
+      if (cm >= 0.1) { return sig(cm * 10) + " mm"; }
+      if (cm >= 1e-4) { return sig(cm * 1e4) + " µm"; }
+      return sig(cm * 1e7) + " nm";
+    }
+
+    function grainy() { return n >= FLOOR - GRAIN; }
+
+    function branch() {
+      // Design's own order: the floor first, then the grain, then the
+      // untouched cube, then the long middle.
+      if (n >= FLOOR) { return "at_floor"; }
+      if (grainy()) { return "near_floor"; }
+      if (n === 0) { return "at_start"; }
+      return "mid";
+    }
+
+    function altText() {
+      // ⊕ MRB-228. `{n} halvings` reads "after 1 halvings" at the first cut,
+      // and this label IS the drawing for a screen reader — the piece, the
+      // scale bar and the progress ticks are all on the canvas. The template
+      // stays as Design wrote it, with the plural taken off the one value
+      // where it is wrong, rather than a second template being authored for a
+      // single word.
+      return ALT.replace("{n} halvings", n === 1 ? "1 halving"
+                                                 : String(n) + " halvings")
+        .replace("{n}", String(n))
+        .replace("{size}", sizeLabel(n))
+        .replace("{tail}", grainy() ? ALT_GRAINY : ALT_SMOOTH);
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 320;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#FFFDF8";
+      ctx.fillRect(0, 0, W, H);
+
+      var cx = W / 2, cy = H / 2 - 4;
+      var box = 176;
+
+      // The ghost of the piece before this cut, at twice the size. Its top
+      // and bottom edges run off the canvas on purpose — the piece you
+      // just halved does not fit any more, which is the whole point.
+      if (n > 0) {
+        ctx.strokeStyle = "#D9CDBA";
+        ctx.lineWidth = 2;
+        ctx.setLineDash([7, 6]);
+        ctx.strokeRect(cx - box, cy - box, box * 2, box * 2);
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#A79A88";
+        ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "left";
+        // ⊕ CLAMPED, and this is a correction. Design draws this caption at
+        // `cy - box - 10`, which is y = -30 in a 320-tall design space: the
+        // string is painted off the top of the canvas and no student has
+        // ever seen it. Clamped to the first line inside the frame, so the
+        // label lands where the ghost box actually is.
+        ctx.fillText(L_GHOST, cx - box, Math.max(cy - box - 10, 16));
+      }
+
+      if (!grainy()) {
+        ctx.fillStyle = "#F2E4CB";
+        ctx.fillRect(cx - box / 2, cy - box / 2, box, box);
+        ctx.fillStyle = "#FBF3E6";
+        ctx.fillRect(cx - box / 2, cy - box / 2, box, box * 0.22);
+        ctx.strokeStyle = "#1A1714";
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(cx - box / 2, cy - box / 2, box, box);
+      } else {
+        // Close to the floor the piece stops being a block and resolves
+        // into a countable number of particles. `across` is 2^(FLOOR - n),
+        // so it doubles every time a cut is undone and is 1 at the floor.
+        var across = Math.max(1, Math.pow(2, FLOOR - n));
+        var r = (box / across) / 2;
+        ctx.save();
+        for (var row = 0; row < across; row++) {
+          for (var col = 0; col < across; col++) {
+            ctx.beginPath();
+            ctx.arc(cx - box / 2 + r + col * r * 2,
+                    cy - box / 2 + r + row * r * 2, r * 0.92, 0, Math.PI * 2);
+            ctx.fillStyle = "#E8D3AC";
+            ctx.fill();
+            ctx.strokeStyle = "#8A7355";
+            ctx.lineWidth = Math.min(2.5, r * 0.28);
+            ctx.stroke();
+            if (r > 12) {
+              ctx.beginPath();
+              ctx.arc(cx - box / 2 + r + col * r * 2 - r * 0.3,
+                      cy - box / 2 + r + row * r * 2 - r * 0.32,
+                      r * 0.24, 0, Math.PI * 2);
+              ctx.fillStyle = "rgba(255,255,255,0.7)";
+              ctx.fill();
+            }
+          }
+        }
+        ctx.restore();
+        ctx.strokeStyle = "#1A1714";
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(cx - box / 2, cy - box / 2, box, box);
+        ctx.fillStyle = "#A93411";
+        ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "center";
+        // ⚑ The count is across ONE FACE, and the words say PARTICLES LEFT.
+        // Design's wording, kept exactly (see the lesson module's science
+        // note): the drawing is a cross-section, so a face count is what is
+        // on screen, but a cube 16 particles on an edge holds 16³.
+        ctx.fillText(across === 1 ? L_ONE
+                     : L_MANY.replace("{n}", String(across * across)),
+                     cx, cy + box / 2 + 24);
+      }
+
+      // The scale bar: the number is the lesson, so it gets its own rule.
+      ctx.strokeStyle = "#1A1714";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(cx - box / 2, cy + box / 2 + 46);
+      ctx.lineTo(cx + box / 2, cy + box / 2 + 46);
+      ctx.moveTo(cx - box / 2, cy + box / 2 + 40);
+      ctx.lineTo(cx - box / 2, cy + box / 2 + 52);
+      ctx.moveTo(cx + box / 2, cy + box / 2 + 40);
+      ctx.lineTo(cx + box / 2, cy + box / 2 + 52);
+      ctx.stroke();
+      ctx.fillStyle = "#1A1714";
+      ctx.font = '600 15px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "center";
+      ctx.fillText(sizeLabel(n), cx, cy + box / 2 + 72);
+
+      // How far down to the floor, drawn rather than counted.
+      var bw = (W - 120) / FLOOR;
+      for (var i = 0; i < FLOOR; i++) {
+        ctx.fillStyle = i < n ? "#E4572E" : "#E4DACA";
+        ctx.fillRect(60 + i * bw + 2, H - 20, bw - 4, 8);
+      }
+      ctx.fillStyle = "#6B6055";
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillText(L_START, 60, H - 28);
+      ctx.textAlign = "right";
+      ctx.fillText(L_END, W - 60, H - 28);
+
+      if (canvas.setAttribute) { canvas.setAttribute("aria-label", altText()); }
+    }
+
+    function repaint() {
+      if (outCount) { outCount.textContent = String(n); }
+      if (outSize) { outSize.textContent = sizeLabel(n); }
+      // Emit-both-show-one: the word is in the document and the state is
+      // which one is hidden, so nothing science-bearing is built in JS and
+      // the accent on "Floor" is the stylesheet's, not a style attribute.
+      each(verdicts, function (v) {
+        setHidden(v, v.getAttribute("data-verdict")
+                  !== (n >= FLOOR ? "floor" : "open"));
+      });
+      var want = branch();
+      each(notes, function (p) {
+        setHidden(p, p.getAttribute("data-note") !== want);
+      });
+      each(btns, function (b) {
+        var end = b.getAttribute("data-dis") === "at_start"
+          ? n <= 0 : n >= FLOOR;
+        if (end) { b.setAttribute("disabled", ""); }
+        else { b.removeAttribute("disabled"); }
+      });
+      // The head counter reads "floor reached" at the floor, which is a
+      // third shape `setCount` does not carry; every other state is its
+      // ordinary "{n} of {total}".
+      if (n >= FLOOR && FULL && counter) { counter.textContent = FULL; }
+      else { setCount(sec, n); }
+      draw();
+      if (n >= FLOOR) { reached = true; }
+      if (reached) { markStage(sec, true); }
+    }
+
+    each(btns, function (b) {
+      b.addEventListener("click", function () {
+        var step = parseInt(b.getAttribute("data-step"), 10) || 0;
+        if (b.getAttribute("data-act") === "undo") { step = -step; }
+        var next = Math.max(0, Math.min(FLOOR, n + step));
+        if (next === n) { return; }
+        n = next;
+        repaint();
+      });
+    });
+
+    repaint();
+    wireBenchGate(sec);
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-hbblock]"), wireHeatingBench);   // inside wireInstruments()
+
+   Splice into shared/ks3.js beside the other C1 instruments. It calls
+   `wireBenchGate(sec)` itself, exactly as `wireBalanceBench` does, so the
+   commit gate needs no separate registration. */
+
+  /* ── heating-bench (c1-03 #s-curve) ──
+     Scrub through a run at constant power and watch the temperature stop
+     twice while the state changes.
+
+     ⚖️ THE MASS TILE IS NOT WIRED, AND THAT IS THE LESSON. There is no
+     `[data-hb-mass]` to bind to: the readout is markup, it says 50.0 g
+     through every frame of the run, and the one number that could report
+     a loss is the one number nothing here can move.
+
+     ⚖️ EVERY BOUNDARY COMES OUT OF `keys`. The five bands, the two
+     shaded plateaus and the flask's melt and boil fractions are derived
+     from the same authored breakpoints the curve is drawn from, so the
+     picture, the bands and the readouts cannot disagree. Design's page
+     writes the boundaries three times (`phaseAt` and the two flask
+     fractions) and they have to be kept in step by hand.
+
+     ⚠️ Emit-both-show-one for the phase word and the five plateau notes.
+     Those notes are the science of the block; none of them is ever
+     rebuilt from an attribute, so `<em>` survives and no sentence is
+     assembled in JS.
+
+     ⊕ There is no animation loop here — the drawing is a pure function
+     of the scrub position, so a frame is only ever produced by a student
+     moving the control. `prefers-reduced-motion` has nothing to degrade
+     and nothing is degraded: the bench is the same complete instrument
+     either way. */
+  function wireHeatingBench(sec) {
+    var wrap = sec.querySelector("[data-hb]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = {}; }
+    var KEYS = cfg.keys || [];
+    var PH = cfg.phases || [];
+    var G = cfg.graph || {};
+    if (KEYS.length < 2 || PH.length !== KEYS.length - 1) { return; }
+
+    var canvas = wrap.querySelector("[data-hb-canvas]");
+    var scrub = wrap.querySelector("[data-hb-scrub]");
+    var tempEl = wrap.querySelector("[data-hb-temp]");
+    var words = toArray(wrap.querySelectorAll(".ks3-hb-phase"));
+    var notes = toArray(wrap.querySelectorAll(".ks3-hb-note"));
+    var jumps = toArray(wrap.querySelectorAll(".ks3-hb-jump"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || 0;
+
+    /* U+2212 MINUS on the visible readout, ASCII on the spoken one — a
+       screen reader makes "minus 20" of `-20` and much less of `−20`. */
+    var MINUS = "−";
+    var UNIT = cfg.unit || "";
+
+    /* Design's canvas palette, lifted (c1-03 lines 467–612). These are
+       paint, not tokens: canvas takes no CSS custom properties, and the
+       four instruments already in the key stage hardcode theirs too. */
+    var PAPER = "#FFFDF8", GRID = "#E4DACA", AXIS = "#1A1714",
+        LABEL = "#6B6055", BAND = "rgba(228,87,46,0.10)", BANDTEXT = "#A93411",
+        GHOST = "#D9CDBA", LIVE = "#E4572E", GLASS = "#F6EEE0",
+        DOT = "#D98A4A", DOTLINE = "#5A3212";
+    var MONO = '"DM Mono", ui-monospace, monospace';
+
+    var value = parseInt(scrub && scrub.value, 10) || 0;
+    var visited = {};
+
+    function num(v, fallback) {
+      return (typeof v === "number" && isFinite(v)) ? v : fallback;
+    }
+    /* Halves UP, and the Python renderer floors `t + 0.5` for the same
+       reason: the resting readout and the first repaint must agree. */
+    function round(t) { return Math.round(t); }
+
+    function tempAt(x) {
+      for (var i = 0; i < KEYS.length - 1; i++) {
+        var x0 = KEYS[i][0], t0 = KEYS[i][1],
+            x1 = KEYS[i + 1][0], t1 = KEYS[i + 1][1];
+        if (x <= x1) { return t0 + (t1 - t0) * ((x - x0) / (x1 - x0)); }
+      }
+      return KEYS[KEYS.length - 1][1];
+    }
+    function phaseAt(x) {
+      for (var i = 0; i < KEYS.length - 1; i++) {
+        if (x < KEYS[i + 1][0]) { return i; }
+      }
+      return KEYS.length - 2;
+    }
+    function isPlateau(i) { return KEYS[i][1] === KEYS[i + 1][1]; }
+    function fill(tpl, t, label) {
+      return String(tpl || "").split("{t}").join(String(round(t)))
+        .split("{phase}").join(String(label || "").toLowerCase());
+    }
+
+    var plateaus = [];
+    for (var pi = 0; pi < KEYS.length - 1; pi++) {
+      if (isPlateau(pi)) { plateaus.push(pi); }
+    }
+    var firstPlateau = plateaus.length ? plateaus[0] : -1;
+    var lastPlateau = plateaus.length ? plateaus[plateaus.length - 1] : -1;
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 330;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = PAPER;
+      ctx.fillRect(0, 0, W, H);
+
+      var x = value, i = phaseAt(x), ph = PH[i] || {};
+      var tmin = num(G.t_min, -30), tmax = num(G.t_max, 130);
+
+      // ── the curve, left ──
+      var gx = 62, gy = 40, gw = 470, gh = H - 110;
+      function px(v) { return gx + (v / 100) * gw; }
+      function py(t) { return gy + gh - ((t - tmin) / (tmax - tmin)) * gh; }
+
+      ctx.strokeStyle = GRID;
+      ctx.lineWidth = 1.5;
+      each(G.grid || [], function (t) {
+        ctx.beginPath();
+        ctx.moveTo(gx, py(t));
+        ctx.lineTo(gx + gw, py(t));
+        ctx.stroke();
+      });
+
+      ctx.strokeStyle = AXIS;
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(gx, gy);
+      ctx.lineTo(gx, gy + gh);
+      ctx.lineTo(gx + gw, gy + gh);
+      ctx.stroke();
+
+      ctx.fillStyle = LABEL;
+      ctx.font = '500 12px ' + MONO;
+      ctx.textAlign = "right";
+      each(G.ticks || [], function (t) {
+        ctx.fillText((t < 0 ? MINUS : "") + Math.abs(t), gx - 8, py(t) + 4);
+      });
+      ctx.textAlign = "left";
+      ctx.fillText(G.y_label || "", gx - 4, gy - 14);
+      ctx.textAlign = "right";
+      ctx.fillText(G.x_label || "", gx + gw, gy + gh + 22);
+
+      // The shaded plateaus, and their captions. Both come out of `keys`,
+      // so a plateau cannot be shaded in one place and not another.
+      each(plateaus, function (p) {
+        ctx.fillStyle = BAND;
+        ctx.fillRect(px(KEYS[p][0]), gy,
+                     px(KEYS[p + 1][0]) - px(KEYS[p][0]), gh);
+        ctx.fillStyle = BANDTEXT;
+        ctx.font = '500 11px ' + MONO;
+        ctx.textAlign = "center";
+        ctx.fillText((PH[p] || {}).band || "",
+                     (px(KEYS[p][0]) + px(KEYS[p + 1][0])) / 2, gy + 14);
+      });
+
+      // The whole run ghosted, then the part that has been reached.
+      ctx.lineWidth = 3.5;
+      ctx.lineJoin = "round";
+      ctx.strokeStyle = GHOST;
+      ctx.beginPath();
+      each(KEYS, function (k, n) {
+        if (n) { ctx.lineTo(px(k[0]), py(k[1])); }
+        else { ctx.moveTo(px(k[0]), py(k[1])); }
+      });
+      ctx.stroke();
+
+      ctx.strokeStyle = LIVE;
+      ctx.beginPath();
+      ctx.moveTo(px(KEYS[0][0]), py(KEYS[0][1]));
+      for (var v = 0; v <= x; v += 1) { ctx.lineTo(px(v), py(tempAt(v))); }
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(px(x), py(tempAt(x)), 8, 0, Math.PI * 2);
+      ctx.fillStyle = LIVE;
+      ctx.fill();
+      ctx.strokeStyle = AXIS;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // ── the sealed flask, right ──
+      var fx = 596, fy = 44, fw = 250, fh = H - 120;
+      ctx.fillStyle = GLASS;
+      ctx.fillRect(fx, fy, fw, fh);
+      ctx.strokeStyle = AXIS;
+      ctx.lineWidth = 3;
+      ctx.strokeRect(fx, fy, fw, fh);
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(fx + 2, fy + 2, fw - 4, fh - 4);
+      ctx.clip();
+
+      function drawP(cxp, cyp, r) {
+        ctx.beginPath();
+        ctx.arc(cxp, cyp, r, 0, Math.PI * 2);
+        ctx.fillStyle = DOT;
+        ctx.fill();
+        ctx.strokeStyle = DOTLINE;
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+      }
+
+      // The population is constant across every routine below — 40
+      // particles in, 40 particles out, whatever state they are in.
+      var N = 40, rr = 10;
+      var frac = (x - KEYS[i][0]) / (KEYS[i + 1][0] - KEYS[i][0]);
+      var row, col, idx, n;
+
+      // ⚠️ Which routine runs is decided by the SHAPE OF THE CURVE, not by
+      // a phase id: before the first plateau it is a solid, between the two
+      // it is a liquid, after the last it is a gas. An authored id could be
+      // renamed; the physics of the curve cannot.
+      if (i < firstPlateau) {
+        for (row = 0; row < 5; row++) {
+          for (col = 0; col < 8; col++) {
+            drawP(fx + 26 + col * 28, fy + fh - 24 - row * 26, rr);
+          }
+        }
+      } else if (i === firstPlateau) {
+        for (row = 0; row < 5; row++) {
+          for (col = 0; col < 8; col++) {
+            idx = row * 8 + col;
+            var molten = idx < frac * N;
+            var jx = molten ? Math.sin(idx * 2.7) * 9 : 0;
+            var jy = molten ? Math.cos(idx * 1.9) * 7 : 0;
+            drawP(fx + 26 + col * 28 + jx, fy + fh - 24 - row * 26 + jy, rr);
+          }
+        }
+      } else if (i < lastPlateau) {
+        for (n = 0; n < N; n++) {
+          drawP(fx + 30 + ((n * 53) % (fw - 60)),
+                fy + fh - 22 - ((n * 37) % (fh * 0.6)) - Math.sin(n * 2.399) * 4,
+                rr);
+        }
+      } else if (i === lastPlateau) {
+        var nLiquid = Math.round(N * (1 - frac));
+        for (n = 0; n < nLiquid; n++) {
+          drawP(fx + 30 + ((n * 53) % (fw - 60)),
+                fy + fh - 22 - ((n * 37) % (fh * 0.5)), rr);
+        }
+        for (n = 0; n < N - nLiquid; n++) {
+          drawP(fx + 24 + ((n * 71) % (fw - 48)),
+                fy + 26 + ((n * 43) % Math.max(20, fh * 0.5)), rr);
+        }
+      } else {
+        for (n = 0; n < 24; n++) {
+          drawP(fx + 22 + ((n * 91) % (fw - 44)),
+                fy + 22 + ((n * 67) % (fh - 44)), rr);
+        }
+      }
+      ctx.restore();
+
+      // The banner exists only while a state is changing, which is why
+      // only a plateau carries one (the renderer refuses any other).
+      if (ph.banner) {
+        ctx.fillStyle = BANDTEXT;
+        ctx.font = '500 12px ' + MONO;
+        ctx.textAlign = "center";
+        ctx.fillText(ph.banner, fx + fw / 2, fy + 20);
+      }
+
+      ctx.fillStyle = LABEL;
+      ctx.font = '500 12px ' + MONO;
+      ctx.textAlign = "left";
+      ctx.fillText((cfg.flask || {}).caption || "", fx, fy + fh + 22);
+
+      if (canvas.setAttribute) {
+        canvas.setAttribute("aria-label",
+          fill((cfg.alt || {}).template, tempAt(x), ph.label));
+      }
+    }
+
+    function repaint() {
+      var i = phaseAt(value), ph = PH[i] || {};
+      var T = tempAt(value);
+
+      if (tempEl) {
+        var r = round(T);
+        tempEl.textContent = (r < 0 ? MINUS : "") + Math.abs(r) + " " + UNIT;
+      }
+      each(words, function (el, n) { setHidden(el, n !== i); });
+      each(notes, function (el, n) { setHidden(el, n !== i); });
+      each(jumps, function (b) {
+        var v = parseInt(b.getAttribute("data-v"), 10) || 0;
+        b.setAttribute("aria-pressed",
+                       Math.abs(value - v) < 3 ? "true" : "false");
+      });
+      if (scrub) {
+        scrub.value = String(value);
+        scrub.setAttribute("aria-valuetext", fill(cfg.valuetext, T, ph.label));
+      }
+      draw();
+
+      // ⚖️ BOTH plateaus, and only by LANDING on one. A student who has
+      // watched the temperature refuse to rise once has seen the argument;
+      // the lesson is that it happens twice, and for very different
+      // amounts of energy. The jump buttons are the affordance for anyone
+      // who cannot drag.
+      if (isPlateau(i)) { visited[i] = true; }
+      var n = 0, k;
+      for (k in visited) { if (visited[k]) { n += 1; } }
+      setCount(sec, n);
+      if (total && n >= total) { markStage(sec, true); }
+    }
+
+    function set(v) {
+      v = Math.max(0, Math.min(100, isNaN(v) ? 0 : v));
+      value = v;
+      repaint();
+    }
+
+    if (scrub) {
+      scrub.addEventListener("input", function () {
+        set(parseInt(scrub.value, 10));
+      });
+      // Some browsers fire only `change` for a keyboard step.
+      scrub.addEventListener("change", function () {
+        set(parseInt(scrub.value, 10));
+      });
+    }
+    each(jumps, function (b) {
+      b.addEventListener("click", function () {
+        set(parseInt(b.getAttribute("data-v"), 10));
+      });
+    });
+
+    repaint();
+    wireBenchGate(sec);
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-keyedblock]"), wireKeyedCommit);
+   — add to wireInstruments(), in the C1 group. Uses each / toArray /
+   setHidden / markStage, all already in scope. */
+
+  /* ── keyed-commit (c1-06 #s-verdict, c1-03 #s-bubble) ──
+     Four options, each carrying its own answer. The panel's first paragraph
+     is the one the student earned; the rest is what everybody reads.
+
+     Emit-both-show-one: all four replies are in the document and hidden, and
+     this function swaps which one is shown. Nothing is assembled from an
+     attribute, so `<em>`, em dashes and right single quotes survive intact —
+     which matters here more than usual, because every reply is a sentence
+     about what scientists actually did.
+
+     ⚠️ R3 — NOTHING MARKS. The chosen option takes the ordinary chosen
+     treatment and nothing else, and the panel opens on whatever was chosen.
+     There is no `data-correct` anywhere in this instrument and there must not
+     be: `answer_index` is checked at build time and never reaches the page.
+
+     The choice stays changeable. The block is a commitment, not a question:
+     a student who changes their mind reads the other answer, which is the
+     block working rather than a leak. */
+  function wireKeyedCommit(sec) {
+    var wrap = sec.querySelector("[data-keyed]");
+    if (!wrap) { return; }
+    var opts = toArray(wrap.querySelectorAll(".ks3-option"));
+    var panel = wrap.querySelector("[data-reveal]");
+    var replies = toArray(wrap.querySelectorAll(".ks3-keyed-reply"));
+    if (!opts.length || !panel) { return; }
+
+    each(opts, function (btn) {
+      btn.addEventListener("click", function () {
+        var i = btn.getAttribute("data-i");
+        each(opts, function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-i") === i ? "true" : "false");
+        });
+        each(replies, function (p) {
+          setHidden(p, p.getAttribute("data-reply") !== i);
+        });
+        if (panel.hasAttribute("hidden")) {
+          setHidden(panel, false);
+          // Announced for screen-reader users, who would otherwise get no
+          // signal that a panel of new prose appeared below the buttons.
+          panel.setAttribute("role", "status");
+        }
+        markStage(sec, true);
+      });
+    });
+  }
+
+
+/* WIRE: each(root.querySelectorAll("[data-mtlblock]"), wireModelTimeline);
+   — add to wireInstruments(), in the C1 group. Uses each / toArray /
+   setHidden / markStage, all already in scope. */
+
+  /* ── model-timeline (c1-06 #s-history) ──
+     Five models, one detail card, emit-all-show-one: every card is in the
+     document and one is shown, so going back to a model finds it as it was
+     and no authored sentence is ever rebuilt from an attribute.
+
+     ⚖️ THE STAGE PREDICATE IS A SET AND IT NEVER EMPTIES. Design's page ticks
+     on `history !== 1` — an inequality against the DEFAULT — so the stage
+     ticks when any other model is opened and UNTICKS when a student who has
+     read all five returns to Dalton. A rail stop that goes backwards is worse
+     than one that never moved. What the page means is "has looked at more
+     than the one it opened on", which is a set: seed it with the default,
+     add on every press, tick at two, never remove. Same class of defect as
+     c1-04's `Math.max(touched, N)`.
+
+     No timer, no animation, nothing to scale under reduced motion. */
+  function wireModelTimeline(sec) {
+    var wrap = sec.querySelector("[data-mtl]");
+    if (!wrap) { return; }
+    var btns = toArray(wrap.querySelectorAll(".ks3-mtl-step"));
+    var cards = toArray(wrap.querySelectorAll(".ks3-mtl-card"));
+    if (!btns.length) { return; }
+
+    // The row opens on Dalton, not on Democritus. Seeding the set with the
+    // default is what makes "more than the default" mean what it says.
+    var seen = {};
+    seen[wrap.getAttribute("data-default") || "0"] = true;
+
+    function counted() {
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      return n;
+    }
+
+    each(btns, function (btn) {
+      btn.addEventListener("click", function () {
+        var i = btn.getAttribute("data-step");
+        each(btns, function (b) {
+          b.setAttribute("aria-pressed",
+            b.getAttribute("data-step") === i ? "true" : "false");
+        });
+        each(cards, function (c) {
+          setHidden(c, c.getAttribute("data-step") !== i);
+        });
+        seen[i] = true;
+        // Sticky in one direction only: a stage that has been reached stays
+        // reached, whatever the student looks at next.
+        if (counted() >= 2) { markStage(sec, true); }
+      });
+    });
+  }
+
+
+// WIRE: each(root.querySelectorAll("[data-predictblock]"), wirePredictionStack);
+//
+// Splice point: `wireInstruments()` in shared/ks3.js, in the new
+// "C1 · Particles and their behaviour" group, beside wireCollisionCounter.
+// Uses the file's existing `each`, `toArray`, `setHidden` and `markStage`.
+
+  /* ── prediction-stack (c1-04 #s-predict) ──
+     Three predictions, one shared option set, one shared fallback.
+
+     ⚖️ A PREDICTION MAY BE CHANGED. Design's state is a map from
+     prediction id to index and a second press overwrites it, so a
+     student who reads "go back to the bench and try it" can come back
+     and answer again — which is exactly what that sentence asks them to
+     do. Locking the row after one press would make the instruction
+     impossible to follow.
+
+     ⚖️ THE PANEL CARRIES THE VERDICT, NOT THE OPTION. The chosen button
+     keeps the ordinary chosen treatment; what changes is the panel's
+     border and which of the two notes is showing. Nothing inside the
+     option list marks the student.
+
+     Both notes are already in the document — this only unhides one, so
+     no student-facing string is ever built here. */
+  function wirePredictionStack(sec) {
+    var wrap = sec.querySelector("[data-predictstack]");
+    if (!wrap) { return; }
+    var panels = toArray(wrap.querySelectorAll(".ks3-predict"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || panels.length;
+    var answered = {};
+
+    each(panels, function (panel) {
+      var id = panel.getAttribute("data-prediction");
+      var answer = parseInt(panel.getAttribute("data-answer"), 10);
+      var opts = toArray(panel.querySelectorAll(".ks3-predict-btn"));
+      var right = panel.querySelector('[data-tone="right"]');
+      var wrong = panel.querySelector('[data-tone="wrong"]');
+
+      each(opts, function (btn) {
+        btn.addEventListener("click", function () {
+          var i = parseInt(btn.getAttribute("data-i"), 10);
+          each(opts, function (b) {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+          });
+          var ok = i === answer;
+          panel.setAttribute("data-right", ok ? "1" : "0");
+          setHidden(right, !ok);
+          setHidden(wrong, ok);
+
+          answered[id] = true;
+          var n = 0, k;
+          for (k in answered) { if (answered[k]) { n += 1; } }
+          if (n >= total) { markStage(sec, true); }
+        });
+      });
+    });
+  }
+
+
+// WIRE: each(root.querySelectorAll("[data-walkblock]"), wireRandomWalk);
+//
+// Goes in `wireInstruments()` in shared/ks3.js, in a new "⊕ C1 · Particles and
+// their behaviour" group. Uses `each`, `toArray`, `setHidden`, `markStage`,
+// `setCount`, `motionReduced` and `wireBenchGate`, all already in scope.
+
+  /* ── random-walk-bench (c1-05 #s-walk) ──
+     130 particles released on the left of a sealed tank, each taking a step
+     in a random direction, over and over. Nothing else happens, and that is
+     the argument.
+
+     ⚖️ **THE TWO CROSSING COUNTERS ARE CLEARED BY "PUT THE DROP BACK" AND BY
+     NOTHING ELSE.** Not when the tank evens out, not when the note changes,
+     not when the run is paused. `PART-11` is the belief that particles move
+     *in order to* spread out, and the only thing that dislodges it is watching
+     both counters keep climbing — together, at the same rate — after the
+     readout has already said "Spread out? Yes". The spreading finishes; the
+     moving does not. `#s-think`'s reveal then argues from these two numbers in
+     words, so zeroing them would leave that paragraph describing something the
+     student cannot see.
+
+     ⚖️ THE COUNTER CADENCE IS A DECISION, NOT AN ACCIDENT. Design's counters
+     reach the DOM through `setState`, which `step()` calls at most every 20
+     frames and usually every 40 — so they move in visible jumps roughly twice
+     a second, and the interval is frame-COUNT based, which means a 120 Hz
+     laptop reads the same page twice as fast. Two things are wanted at once:
+     the numbers must be legible (a per-frame counter at 60–120 Hz is a blur,
+     and comparing left-to-right against right-to-left is the entire point of
+     having two of them), and they must visibly CLIMB (a counter that looks
+     parked reads as movement having stopped, which is the misconception).
+     So: a WALL-CLOCK cadence of `even.hz` = 3 per second, which is Design's
+     own sampling rate (every 20 frames at 60 fps), applied to the repaint as
+     well as the sample. Same feel on every display, three legible steps a
+     second, and the irregular 20-or-40 flicker gone.
+
+     ⚖️ REDUCED MOTION SCALES THE WALK, IT DOES NOT STOP IT (R4/R6), and it is
+     asked EVERY TICK rather than once at construction — Design reads it in
+     `componentDidMount` and never again, so an OS setting changed mid-lesson
+     does nothing. At 0.4× the tank still evens out and both counters still
+     climb; the student gets the whole experiment, more slowly.
+
+     The walk itself is time-stepped at a fixed 60 steps a second rather than
+     one step per frame, so the same dye takes the same time to spread on a
+     90 Hz phone as on a 60 Hz monitor. Design's step lengths are unchanged;
+     only what "a step" is timed against has moved off the refresh rate. */
+
+  var WALK_RATE = 60;        // steps per second, fixed
+  var WALK_CATCHUP = 6;      // most steps one frame may make up after a stall
+
+  function wireRandomWalk(sec) {
+    var wrap = sec.querySelector("[data-walk]");
+    if (!wrap) { return; }
+    var cfg;
+    try { cfg = JSON.parse(wrap.getAttribute("data-cfg") || "{}"); }
+    catch (err) { cfg = null; }
+    if (!cfg || !cfg.particles) { return; }
+
+    var canvas = wrap.querySelector("[data-walk-canvas]");
+    var outR = wrap.querySelector("[data-walk-cross-right]");
+    var outL = wrap.querySelector("[data-walk-cross-left]");
+    var outEven = wrap.querySelector("[data-walk-even]");
+    var evenYes = wrap.querySelector("[data-walk-even-yes]");
+    var evenNo = wrap.querySelector("[data-walk-even-no]");
+    var runBtn = wrap.querySelector("[data-walk-run]");
+    var resetBtn = wrap.querySelector("[data-walk-reset]");
+    var traceBtn = wrap.querySelector("[data-walk-trace]");
+    var warmBtn = wrap.querySelector("[data-walk-warm]");
+    var noteWrap = wrap.querySelector("[data-walk-note]");
+
+    var N = cfg.particles;
+    var SEED = cfg.seed, STEP = cfg.step, BOUND = cfg.bounds;
+    var TOL = cfg.even.tolerance, HZ = cfg.even.hz || 3;
+    var TRAIL = cfg.trail_max, BINS = cfg.bins, SLOW = cfg.reduced_scale;
+    var CL = cfg.canvas_labels, ALT = cfg.alt, PHASE = cfg.progress;
+
+    var parts = [];
+    // ⚖️ The two numbers the lesson is about. Written by `walk()`, zeroed by
+    // `reset()`, and touched nowhere else in this function.
+    var crossR = 0, crossL = 0;
+    var running = false, everRan = false, trace = false, warm = false;
+    var even = false;
+    // Has the tank EVER evened out. The rail reads this rather than `even`:
+    // Design ticks stage 2 on the live flag, so pressing "Put the drop back"
+    // un-ticks a stop the student already reached. Same defect as c1-06's
+    // stage 4, and the same fix — a stop records what was reached, not what
+    // is on screen now.
+    var everEven = false;
+    var left = N, right = 0;
+    var acc = 0, last = 0, sampleAt = 0;
+
+    function reset() {
+      parts = [];
+      for (var i = 0; i < N; i++) {
+        parts.push({
+          x: SEED.x[0] + Math.random() * (SEED.x[1] - SEED.x[0]),
+          y: SEED.y[0] + Math.random() * (SEED.y[1] - SEED.y[0]),
+          side: 0,
+          trail: []
+        });
+      }
+      crossR = 0;
+      crossL = 0;
+      left = N;
+      right = 0;
+    }
+
+    /* One step for every particle: a random direction, a fixed length, and a
+       reflecting wall that puts a particle back by exactly what it overshot,
+       so the step length is conserved rather than clipped. */
+    function walk(len) {
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        var ang = Math.random() * Math.PI * 2;
+        p.x += Math.cos(ang) * len;
+        p.y += Math.sin(ang) * len * STEP.y_scale;
+        if (p.x < BOUND.x[0]) { p.x = BOUND.x[0] + (BOUND.x[0] - p.x); }
+        if (p.x > BOUND.x[1]) { p.x = BOUND.x[1] - (p.x - BOUND.x[1]); }
+        if (p.y < BOUND.y[0]) { p.y = BOUND.y[0] + (BOUND.y[0] - p.y); }
+        if (p.y > BOUND.y[1]) { p.y = BOUND.y[1] - (p.y - BOUND.y[1]); }
+        var side = p.x > 0.5 ? 1 : 0;
+        if (side !== p.side) {
+          if (side === 1) { crossR += 1; } else { crossL += 1; }
+          p.side = side;
+        }
+        if (trace && i === 0) {
+          p.trail.push([p.x, p.y]);
+          if (p.trail.length > TRAIL) { p.trail.shift(); }
+        }
+      }
+    }
+
+    /* Evenness is a TOLERANCE, not an equality — within 9% of half the
+       particles on each side. Exact halves would essentially never occur and
+       the readout would never say Yes. */
+    function sample() {
+      right = 0;
+      for (var i = 0; i < parts.length; i++) {
+        if (parts[i].x > 0.5) { right += 1; }
+      }
+      left = parts.length - right;
+      even = Math.abs(right - parts.length / 2) < parts.length * TOL;
+      if (even && !everEven) {
+        everEven = true;
+        markStage(sec, true);
+      }
+    }
+
+    function counts() {
+      if (outR) { outR.textContent = String(crossR); }
+      if (outL) { outL.textContent = String(crossL); }
+    }
+
+    function label(btn, attr, key) {
+      if (!btn) { return; }
+      each(btn.querySelectorAll("[data-" + attr + "]"), function (s) {
+        setHidden(s, s.getAttribute("data-" + attr) !== key);
+      });
+    }
+
+    function altText() {
+      return (ALT.template || "")
+        .split("{state}").join(even ? ALT.even : ALT.uneven)
+        .split("{left}").join(String(left))
+        .split("{right}").join(String(right));
+    }
+
+    /* Which of the four authored notes is showing. Design's own order, and
+       tracing outranks evening out: a student who has asked to follow one
+       particle is being answered about that particle. */
+    function noteKey() {
+      if (!everRan) { return "idle"; }
+      if (trace) { return "tracing"; }
+      if (even) { return "even"; }
+      return "spreading";
+    }
+
+    function paint() {
+      if (runBtn) {
+        runBtn.setAttribute("aria-pressed", running ? "true" : "false");
+        label(runBtn, "run-label",
+              running ? "pause" : (everRan ? "continue" : "start"));
+      }
+      if (traceBtn) {
+        traceBtn.setAttribute("aria-pressed", trace ? "true" : "false");
+        label(traceBtn, "trace-label", trace ? "off" : "on");
+      }
+      if (warmBtn) {
+        warmBtn.setAttribute("aria-pressed", warm ? "true" : "false");
+        label(warmBtn, "warm-label", warm ? "off" : "on");
+      }
+      if (outEven) { outEven.setAttribute("data-walk-even", even ? "1" : "0"); }
+      setHidden(evenYes, !even);
+      setHidden(evenNo, even);
+      if (noteWrap) {
+        var key = noteKey();
+        each(noteWrap.querySelectorAll("[data-note]"), function (p) {
+          setHidden(p, p.getAttribute("data-note") !== key);
+        });
+      }
+      // The block head's readout. `{phase}` is a live WORD rather than a
+      // count, which is what `extra` is for; the count slot stays at zero.
+      setCount(sec, 0, {
+        phase: even ? PHASE.even : (everRan ? PHASE.spreading : PHASE.idle)
+      });
+      if (canvas && canvas.setAttribute) {
+        canvas.setAttribute("aria-label", altText());
+      }
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext || !parts.length) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 320;
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      // The opaque fill IS the clear — there is no `clearRect` here and none
+      // is wanted; every pixel is repainted.
+      ctx.fillStyle = "#FFFDF8";
+      ctx.fillRect(0, 0, W, H);
+
+      var bx = 56, by = 44, bw = W - 112, bh = H - 118;
+      ctx.fillStyle = "#F3F6F5";
+      ctx.fillRect(bx, by, bw, bh);
+
+      // The dividing line the two counters count across. Dashed, because it
+      // is a place to measure and not a wall.
+      ctx.strokeStyle = "#B9AE9C";
+      ctx.setLineDash([7, 6]);
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bx + bw / 2, by);
+      ctx.lineTo(bx + bw / 2, by + bh);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      if (trace && parts[0].trail.length > 1) {
+        ctx.strokeStyle = "rgba(26,23,20,0.55)";
+        ctx.lineWidth = 1.4;
+        ctx.beginPath();
+        for (var k = 0; k < parts[0].trail.length; k++) {
+          var pt = parts[0].trail[k];
+          var tx = bx + pt[0] * bw, ty = by + pt[1] * bh;
+          if (k) { ctx.lineTo(tx, ty); } else { ctx.moveTo(tx, ty); }
+        }
+        ctx.stroke();
+      }
+
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        var traced = trace && i === 0;
+        ctx.beginPath();
+        ctx.arc(bx + p.x * bw, by + p.y * bh, traced ? 8 : 5.5, 0, Math.PI * 2);
+        ctx.fillStyle = traced ? "#1A1714" : "#8E44AD";
+        ctx.fill();
+        if (traced) {
+          ctx.strokeStyle = "#E4572E";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+        }
+      }
+
+      ctx.strokeStyle = "#1A1714";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(bx, by, bw, bh);
+
+      // Readout one, drawn: how many are on each side, right now. These two
+      // numbers are what "spread out" means, and they are the ones the
+      // canvas `aria-label` carries for anyone who cannot see them.
+      var nRight = 0;
+      for (var j = 0; j < parts.length; j++) {
+        if (parts[j].x > 0.5) { nRight += 1; }
+      }
+      var nLeft = parts.length - nRight;
+      ctx.fillStyle = "#6B6055";
+      ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "center";
+      ctx.fillText(CL.left_half + nLeft, bx + bw * 0.25, by - 14);
+      ctx.fillText(CL.right_half + nRight, bx + bw * 0.75, by - 14);
+
+      // Readout two, drawn: the concentration profile along the tank. It is
+      // the shape that flattens, and watching it flatten is what makes
+      // "crowded to less crowded" a thing a student has seen rather than a
+      // phrase they have been given.
+      var counts18 = [], b;
+      for (b = 0; b < BINS; b++) { counts18.push(0); }
+      for (b = 0; b < parts.length; b++) {
+        var idx = Math.floor(parts[b].x * BINS);
+        if (idx < 0) { idx = 0; }
+        if (idx > BINS - 1) { idx = BINS - 1; }
+        counts18[idx] += 1;
+      }
+      var maxc = 1;
+      for (b = 0; b < BINS; b++) {
+        if (counts18[b] > maxc) { maxc = counts18[b]; }
+      }
+      var py0 = by + bh + 20, ph = 44;
+      for (b = 0; b < BINS; b++) {
+        var h = (counts18[b] / maxc) * ph;
+        ctx.fillStyle = "#8E44AD";
+        ctx.fillRect(bx + (b * bw) / BINS + 2, py0 + ph - h, bw / BINS - 4, h);
+      }
+      ctx.strokeStyle = "#D9CDBA";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(bx, py0 + ph);
+      ctx.lineTo(bx + bw, py0 + ph);
+      ctx.stroke();
+      ctx.fillStyle = "#6B6055";
+      ctx.font = '500 11px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillText(CL.profile, bx, py0 + ph + 18);
+    }
+
+    function tick(now) {
+      window.requestAnimationFrame(tick);
+      var dt = last ? Math.min(0.1, (now - last) / 1000) : 0;
+      last = now;
+      if (running) {
+        // Asked EVERY tick, not once at construction, and it scales the step
+        // rather than stopping the run.
+        var len = (warm ? STEP.warm : STEP.cool) * (motionReduced() ? SLOW : 1);
+        acc += dt;
+        var budget = WALK_CATCHUP;
+        while (acc >= 1 / WALK_RATE && budget > 0) {
+          walk(len);
+          acc -= 1 / WALK_RATE;
+          budget -= 1;
+        }
+        // A backgrounded tab banks minutes of `dt`; drop it rather than
+        // sprinting through it when the student comes back.
+        if (acc > 0.5) { acc = 0; }
+        if (now >= sampleAt) {
+          sampleAt = now + 1000 / HZ;
+          sample();
+          counts();
+          paint();
+        }
+      }
+      // Nothing is drawn while the commit gate still holds the bench closed.
+      if (!wrap.hasAttribute("hidden")) { draw(); }
+    }
+
+    if (runBtn) {
+      runBtn.addEventListener("click", function () {
+        running = !running;
+        // `everRan` latches on the first press, including the press that
+        // pauses — the button then reads "Continue", never "Start the run".
+        everRan = true;
+        last = 0;
+        paint();
+      });
+    }
+    if (resetBtn) {
+      resetBtn.addEventListener("click", function () {
+        // ⚖️ The ONLY thing in this instrument that zeroes the counters.
+        reset();
+        running = false;
+        even = false;
+        acc = 0;
+        counts();
+        paint();
+        if (!wrap.hasAttribute("hidden")) { draw(); }
+      });
+    }
+    if (traceBtn) {
+      traceBtn.addEventListener("click", function () {
+        // The trail starts empty each time it is asked for, so what is drawn
+        // is the path since the question was asked.
+        if (parts[0]) { parts[0].trail = []; }
+        trace = !trace;
+        paint();
+      });
+    }
+    if (warmBtn) {
+      warmBtn.addEventListener("click", function () {
+        warm = !warm;
+        paint();
+      });
+    }
+
+    reset();
+    counts();
+    paint();
+    if (window.requestAnimationFrame) { window.requestAnimationFrame(tick); }
+    wireBenchGate(sec);
+  }
+
+
+// WIRE: (none — `scale-cards` registers no wire function and takes no line in
+//        `wireInstruments()`.)
+//
+// This file exists so the question "where is the JS for scale-cards?" is
+// answered once, in the place someone will look, instead of being re-asked
+// every time the kind is touched.
+//
+// The component is STATIC. Three cards and a closing paragraph: no control, no
+// state, no canvas, nothing to reveal and nothing to count. There is no
+// behaviour to attach, so attaching an empty `wireScaleCards(sec)` would be a
+// dispatch-table entry pretending to be a component — the exact thing the
+// comment above `ACTIVITY_KIND_RENDERERS` warns about.
+//
+// Two consequences worth stating, because both look like omissions:
+//
+//   1. The section carries `data-instrument`, which has a real job even with
+//      no wiring: it keeps `wirePredictions` out. There are no `.ks3-option`
+//      elements inside this block today, so nothing would be mis-wired — but
+//      the exclusion is a property of the kind, not of this instance, and a
+//      future card that gained a control would otherwise inherit the generic
+//      Law 4 wiring silently.
+//
+//   2. `data-scalecards` is the marker attribute the dispatch table names. It
+//      selects nothing in `shared/ks3.js` and is not meant to: it is the hook
+//      the stylesheet and the parity rows and any future behaviour attach to,
+//      and having it means the day this kind DOES gain a control the selector
+//      already exists rather than being invented then.
+//
+// The block is not a rail stop either, so it declares no `data-stage-done` and
+// there is no `markStage` call to make. See the renderer's docstring.
+
+
+/* WIRE: each(root.querySelectorAll("[data-sortcardsblock]"), wireSortCards);   // inside wireInstruments()
+
+   Splice into shared/ks3.js beside the other C1 instruments. */
+
+  /* ── sort-cards (c1-03 #s-think) ──
+     Four everyday events and the word that fits each one.
+
+     ⚠️ NOT one-shot. `job-sort` and `verdict-cards` disable a row the
+     instant it is decided, because their reveal is the answer. This one
+     stays open on purpose: Design's page lets a student change the word
+     and follow the card as it changes, and the block's own lede says
+     "the sorting is the point, not the score". A locked card would make
+     it a test, which is what that sentence says it is not — and R3's own
+     rule for an activity option is that it "stays enabled so the student
+     can change their mind".
+
+     ⚖️ The stage ticks on all four DECIDED, right or wrong, and it never
+     unticks — a card that is re-answered was already answered. */
+  function wireSortCards(sec) {
+    var wrap = sec.querySelector("[data-sortcards]");
+    if (!wrap) { return; }
+    var cards = toArray(wrap.querySelectorAll(".ks3-sortcards-card"));
+    var total = parseInt(wrap.getAttribute("data-total"), 10) || cards.length;
+    var closer = wrap.querySelector("[data-sortcards-close]");
+    var decided = {};
+
+    function count() {
+      var n = 0, k;
+      for (k in decided) { if (decided[k]) { n += 1; } }
+      return n;
+    }
+
+    each(cards, function (card) {
+      var opts = toArray(card.querySelectorAll(".ks3-sortcards-opt"));
+      var right = card.querySelector('[data-note="right"]');
+      var wrong = card.querySelector('[data-note="wrong"]');
+      var answer = card.getAttribute("data-answer");
+      each(opts, function (btn) {
+        btn.addEventListener("click", function () {
+          var choice = btn.getAttribute("data-choice");
+          var ok = choice === answer;
+          each(opts, function (b) {
+            b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+          });
+          // Emit-both-show-one: both authored notes are already in the
+          // document and one of them is unhidden. Nothing is composed.
+          setHidden(right, !ok);
+          setHidden(wrong, ok);
+          // One attribute carries the card's whole marked state, so the
+          // border rule lives in CSS and can be ruled on there.
+          card.setAttribute("data-verdict", ok ? "right" : "wrong");
+          decided[card.getAttribute("data-card")] = true;
+          var n = count();
+          setCount(sec, n);
+          if (n >= total) {
+            if (closer) { setHidden(closer, false); }
+            markStage(sec, true);
+          }
+        });
+      });
+    });
+  }
+
+
+// WIRE: each(root.querySelectorAll("[data-sbenchblock]"), wireStateBench);
+//
+// ⚠️ Wire the BENCH BEFORE the matrix in `wireInstruments()` — same reason the
+// sabotage engine goes before the cell bench and the builder after it. The
+// matrix reads the bench's published attributes and listens for its broadcast;
+// it also does one standing read of its own at wire time, so the order is a
+// tidiness rather than a correctness dependency.
+
+  /* ═══ C1 · Particles and their behaviour (⊕ MRB-228) ═══════════════
+     state-bench (c1-02 #s-bench) — one substance, three arrangements.
+
+     ⚖️ THE FIXED-SIZE REFERENCE PARTICLE IS DRAWN IN EVERY STATE AND IN
+     EVERY SETTING, unconditionally, and there is no branch below that
+     can skip it. NOTES §3 flag 3 makes it non-negotiable: it is the
+     drawn form of the one sentence the lesson exists to defend, and a
+     bench that drops it for room is a bench that has lost its argument.
+
+     ⚖️ REDUCED MOTION SCALES THE RATE, IT DOES NOT STOP THE CLOCK.
+     Design reads `prefers-reduced-motion` once in `componentDidMount`
+     and then kills `moving` outright, which on THIS lesson deletes the
+     content: the difference between vibrating and travelling is the
+     thing the student is being asked to look at, and its own resting
+     note says "switch the motion off and on and watch the difference".
+     R6 says reduced motion is a complete experience and never a lesser
+     one, and the build contract says to scale rather than stop. So the
+     rate drops to a third and the mechanism still runs. The student's
+     OWN "Freeze the motion" is absolute — that is a choice, not a
+     safety setting — and so is the site's Motion control. Asked every
+     frame, so an OS setting changed mid-lesson needs no reload. */
+
+  // Design's own constants, kept per-FRAME and converted at the call site, so
+  // every number below can still be read against page lines 511–590.
+  var SB_FPS = 60;                     // the frame rate Design's numbers assume
+  var SB_RM_RATE = 0.35;               // reduced motion: a third speed, not zero
+
+  function sbRate(motion) {
+    if (!motion) { return 0; }
+    // The site's own Motion control is an explicit request and wins outright.
+    if (document.documentElement.getAttribute("data-motion") === "off") {
+      return 0;
+    }
+    // `B2_RM` is the one `prefers-reduced-motion` media query in this file;
+    // referenced rather than re-created so there is a single copy of it.
+    return (B2_RM && B2_RM.matches) ? SB_RM_RATE : 1;
+  }
+
+  function wireStateBench(sec) {
+    var wrap = sec.querySelector("[data-sbench]");
+    if (!wrap) { return; }
+    var states;
+    try { states = JSON.parse(wrap.getAttribute("data-states") || "[]"); }
+    catch (err) { states = []; }
+    if (!states.length) { return; }
+
+    var body = wrap.querySelector(".ks3-sbench-body");
+    var canvas = wrap.querySelector("[data-sbench-canvas]");
+    var notes = toArray(wrap.querySelectorAll("[data-note]"));
+    var gate = sec.querySelector("[data-benchgate]");
+    var FULL = wrap.getAttribute("data-full") || "";
+    var BANNER_GAS = wrap.getAttribute("data-banner-gas") || "";
+    var BANNER_OTHER = wrap.getAttribute("data-banner-other") || "";
+    var REFERENCE = wrap.getAttribute("data-reference") || "";
+
+    var idx = 0;
+    var motion = true, trails = false, squash = false;
+    var seen = {};
+    var phase = 0, last = 0, dirty = true, raf = null;
+
+    // 48 particles, seeded once. The solid uses the first 40 as a 10 × 4
+    // lattice, the liquid the first 40 loose, the gas the first 22.
+    var parts = [];
+    for (var i = 0; i < 48; i++) {
+      parts.push({ x: Math.random(), y: Math.random(),
+                   vx: (Math.random() - 0.5), vy: (Math.random() - 0.5),
+                   ph: Math.random() * 6.28, trail: [] });
+    }
+
+    function clearTrails() {
+      // ⊕ Design keeps every particle's trail across a state change and across
+      // a squash, so switching gas → liquid with the paths on draws the GAS's
+      // long straight runs inside the liquid for the next 26 frames, and
+      // squashing a gas leaves a path crossing the piston it has just moved.
+      // Both are pictures of something that did not happen. The history is
+      // dropped whenever the thing it is a history OF changes.
+      for (var k = 0; k < parts.length; k++) { parts[k].trail.length = 0; }
+    }
+
+    // ── the drawing ──────────────────────────────────────────────────
+    // Design space 900 × 310, backing store 1800 × 620, setTransform(2,…).
+    // No clearRect: the opaque ground fill covers the frame.
+
+    function drawP(ctx, x, y) {
+      ctx.beginPath();
+      ctx.arc(x, y, 13, 0, Math.PI * 2);
+      ctx.fillStyle = "#D98A4A";
+      ctx.fill();
+      ctx.strokeStyle = "#5A3212";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(x - 4, y - 5, 4, 0, Math.PI * 2);
+      ctx.fillStyle = "rgba(255,255,255,0.62)";
+      ctx.fill();
+    }
+
+    function draw() {
+      if (!canvas || !canvas.getContext) { return; }
+      var ctx = canvas.getContext("2d");
+      var W = 900, H = 310;
+      var st = states[idx] || states[0];
+      var key = st.key;
+      var moving = sbRate(motion) > 0;
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.setTransform(2, 0, 0, 2, 0, 0);
+      ctx.fillStyle = "#FFFDF8";
+      ctx.fillRect(0, 0, W, H);
+
+      var boxX = 70, boxW = W - 140;
+      // A gas gives way and a solid or liquid barely moves: 92px against 8px.
+      // That ratio IS the answer to "try to squash it", drawn.
+      var lidDrop = squash ? (key === "gas" ? 92 : 8) : 0;
+      var boxY = 42 + lidDrop, boxH = H - 110 - lidDrop;
+
+      ctx.fillStyle = "#F6EEE0";
+      ctx.fillRect(boxX, boxY, boxW, boxH);
+      ctx.strokeStyle = "#1A1714";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(boxX, boxY - 6);
+      ctx.lineTo(boxX, boxY + boxH);
+      ctx.lineTo(boxX + boxW, boxY + boxH);
+      ctx.lineTo(boxX + boxW, boxY - 6);
+      ctx.stroke();
+
+      if (squash) {
+        ctx.fillStyle = "#E4572E";
+        ctx.fillRect(boxX - 6, boxY - 16, boxW + 12, 12);
+        ctx.fillStyle = "#A93411";
+        ctx.font = '500 13px "DM Mono", ui-monospace, monospace';
+        ctx.textAlign = "center";
+        ctx.fillText(key === "gas" ? BANNER_GAS : BANNER_OTHER,
+                     W / 2, boxY - 24);
+      }
+
+      var p, x, y, n, j;
+      if (key === "solid") {
+        var cols = 10, rows = 4;
+        var gx = boxW / (cols + 1);
+        var gy = Math.min(46, boxH / (rows + 1));
+        var y0 = boxY + boxH - rows * gy - 12;
+        for (var row = 0; row < rows; row++) {
+          for (var col = 0; col < cols; col++) {
+            p = parts[row * cols + col];
+            var bx = boxX + gx * (col + 1);
+            var by = y0 + gy * (row + 1);
+            j = moving ? 4.5 : 0;
+            x = bx + Math.sin(phase * 2.4 + p.ph) * j;
+            y = by + Math.cos(phase * 2.1 + p.ph * 1.7) * j;
+            if (trails) {
+              // A home position, drawn as a ring. The trail of a solid is a
+              // circle the size of the wobble — that is the whole point, and
+              // it is why it is drawn as a ring rather than a path.
+              ctx.strokeStyle = "rgba(228,87,46,0.5)";
+              ctx.lineWidth = 1.5;
+              ctx.beginPath();
+              ctx.arc(bx, by, 5.5, 0, Math.PI * 2);
+              ctx.stroke();
+            }
+            drawP(ctx, x, y);
+          }
+        }
+      } else if (key === "liquid") {
+        var surface = boxY + boxH * 0.42;
+        for (n = 0; n < 40; n++) {
+          p = parts[n];
+          x = boxX + 22 + p.x * (boxW - 44);
+          y = surface + 14 + p.y * (boxY + boxH - surface - 40);
+          if (trails) {
+            p.trail.push([x, y]);
+            if (p.trail.length > 26) { p.trail.shift(); }
+            ctx.strokeStyle = "rgba(228,87,46,0.35)";
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            for (var q = 0; q < p.trail.length; q++) {
+              if (q) { ctx.lineTo(p.trail[q][0], p.trail[q][1]); }
+              else { ctx.moveTo(p.trail[q][0], p.trail[q][1]); }
+            }
+            ctx.stroke();
+          }
+          drawP(ctx, x, y);
+        }
+        ctx.strokeStyle = "#8A7355";
+        ctx.setLineDash([6, 5]);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(boxX, surface);
+        ctx.lineTo(boxX + boxW, surface);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      } else {
+        for (n = 0; n < 22; n++) {
+          p = parts[n];
+          x = boxX + 20 + p.x * (boxW - 40);
+          y = boxY + 20 + p.y * (boxH - 40);
+          if (trails) {
+            p.trail.push([x, y]);
+            if (p.trail.length > 34) { p.trail.shift(); }
+            ctx.strokeStyle = "rgba(228,87,46,0.32)";
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            for (var g = 0; g < p.trail.length; g++) {
+              if (g) { ctx.lineTo(p.trail[g][0], p.trail[g][1]); }
+              else { ctx.moveTo(p.trail[g][0], p.trail[g][1]); }
+            }
+            ctx.stroke();
+          }
+          drawP(ctx, x, y);
+        }
+      }
+
+      // ⚖️ THE FIXED-SIZE REFERENCE PARTICLE. Unconditional, outside every
+      // branch above, at the same radius the box uses. NOTES §3 flag 3.
+      ctx.fillStyle = "#6B6055";
+      ctx.font = '500 12px "DM Mono", ui-monospace, monospace';
+      ctx.textAlign = "left";
+      ctx.fillText(REFERENCE, boxX + 34, H - 30);
+      drawP(ctx, boxX + 14, H - 34);
+
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#A93411";
+      ctx.font = '500 14px "DM Mono", ui-monospace, monospace';
+      ctx.fillText((st.label || "").toUpperCase(), boxX + boxW, 30);
+    }
+
+    // ── the clock ────────────────────────────────────────────────────
+    // ⊕ TIME-BASED, not frame-count-based. Design advances `this.tick += 1`
+    // per frame, so its bench runs at double speed on a 120 Hz screen and at a
+    // crawl on a loaded Chromebook. `dtf` is "how many of Design's frames has
+    // this frame been worth", so every constant below is still Design's own
+    // per-frame number and the motion is the same speed everywhere.
+    function advance(dtf) {
+      var key = (states[idx] || states[0]).key;
+      var p, n;
+      phase += 0.05 * dtf;
+      if (key === "liquid") {
+        for (n = 0; n < 40; n++) {
+          p = parts[n];
+          p.x += p.vx * 0.0016 * dtf;
+          p.y += p.vy * 0.0009 * dtf;
+          if (p.x < 0.03 || p.x > 0.97) { p.vx *= -1; }
+          if (p.y < 0.02 || p.y > 0.98) { p.vy *= -1; }
+        }
+      } else if (key === "gas") {
+        for (n = 0; n < 22; n++) {
+          p = parts[n];
+          p.x += p.vx * 0.006 * dtf;
+          p.y += p.vy * 0.006 * dtf;
+          if (p.x < 0.02) { p.x = 0.02; p.vx *= -1; }
+          if (p.x > 0.98) { p.x = 0.98; p.vx *= -1; }
+          if (p.y < 0.02) { p.y = 0.02; p.vy *= -1; }
+          if (p.y > 0.98) { p.y = 0.98; p.vy *= -1; }
+        }
+      }
+    }
+
+    function loop(now) {
+      raf = window.requestAnimationFrame(loop);
+      var r = sbRate(motion);
+      var dtf = 0;
+      if (r > 0 && last) {
+        // Clamped, so a backgrounded tab returning does not teleport the
+        // particles across the box in one step.
+        dtf = Math.min(0.05, (now - last) / 1000) * SB_FPS * r;
+      }
+      last = now;
+      // A hidden bench is a bench nobody is looking at: behind its gate, off
+      // screen, or in a background tab. Costing a Chromebook a repaint for it
+      // buys nothing.
+      if (body.hasAttribute("hidden") || document.hidden) { return; }
+      if (dtf > 0) { advance(dtf); dirty = true; }
+      if (!dirty) { return; }
+      dirty = false;
+      draw();
+    }
+
+    // ── the note, the counter and the stage ──────────────────────────
+    function show(id) {
+      each(notes, function (el) {
+        setHidden(el, el.getAttribute("data-note") !== id);
+      });
+    }
+
+    function repaint() {
+      var st = states[idx] || states[0];
+      var key = st.key;
+
+      // Design's rule, in Design's order (page line 723 shares it with the
+      // matrix): squash first, then paths, then the resting note.
+      if (squash) { show("squash:" + (key === "gas" ? "gas" : "other")); }
+      else if (trails) { show("trails:" + key); }
+      else { show("rest:" + key); }
+
+      if (canvas) { canvas.setAttribute("aria-label", st.alt || ""); }
+
+      // The single source of truth for the bench's settings. `state-matrix`
+      // reads these; nothing anywhere keeps a second copy.
+      wrap.setAttribute("data-state", key);
+      wrap.setAttribute("data-motion", motion ? "1" : "0");
+      wrap.setAttribute("data-trails", trails ? "1" : "0");
+      wrap.setAttribute("data-squash", squash ? "1" : "0");
+      // The broadcast carries NO state — it is only "look again". Anything
+      // that put the values in the event would be a second copy of them.
+      document.dispatchEvent(new CustomEvent("ks3:statebench"));
+
+      var n = 0, k;
+      for (k in seen) { if (seen[k]) { n += 1; } }
+      var count = sec.querySelector("[data-count]");
+      if (FULL && count && n >= states.length) { count.textContent = FULL; }
+      else { setCount(sec, n); }
+      markStage(sec, n >= states.length);
+
+      dirty = true;
+    }
+
+    // ── controls ─────────────────────────────────────────────────────
+    each(toArray(wrap.querySelectorAll("[data-sbench-state]")), function (b) {
+      b.addEventListener("click", function () {
+        var key = b.getAttribute("data-sbench-state");
+        var next = -1;
+        for (var m = 0; m < states.length; m++) {
+          if (states[m].key === key) { next = m; }
+        }
+        if (next < 0) { return; }
+        idx = next;
+        // Design's own rule (line 707): choosing a state releases the piston.
+        // A student who squashed a gas and then asked for a liquid is asking
+        // to see a liquid, not a liquid under a piston they cannot see.
+        squash = false;
+        seen[key] = true;
+        clearTrails();
+        each(toArray(wrap.querySelectorAll("[data-sbench-state]")),
+             function (o) {
+               o.setAttribute("aria-pressed",
+                 o.getAttribute("data-sbench-state") === key ? "true" : "false");
+             });
+        var sq = wrap.querySelector("[data-sbench-squash]");
+        if (sq) { sq.setAttribute("aria-pressed", "false"); }
+        repaint();
+      });
+    });
+
+    function label(btn, on) {
+      each(toArray(btn.querySelectorAll("[data-lbl]")), function (s) {
+        setHidden(s, s.getAttribute("data-lbl") !== (on ? "on" : "off"));
+      });
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+
+    var mBtn = wrap.querySelector("[data-sbench-motion]");
+    if (mBtn) {
+      mBtn.addEventListener("click", function () {
+        motion = !motion;
+        // ⊕ `aria-pressed` follows the TINT: pressed means FROZEN, which is
+        // what the lit button means and what Design's own paths toggle does.
+        // Design announces the opposite (line 709) — see the renderer.
+        label(mBtn, !motion);
+        // Freezing must land even when nothing else is moving.
+        last = 0;
+        repaint();
+      });
+    }
+    var tBtn = wrap.querySelector("[data-sbench-trails]");
+    if (tBtn) {
+      tBtn.addEventListener("click", function () {
+        trails = !trails;
+        if (!trails) { clearTrails(); }
+        label(tBtn, trails);
+        repaint();
+      });
+    }
+    var sBtn = wrap.querySelector("[data-sbench-squash]");
+    if (sBtn) {
+      sBtn.addEventListener("click", function () {
+        squash = !squash;
+        clearTrails();
+        sBtn.setAttribute("aria-pressed", squash ? "true" : "false");
+        repaint();
+      });
+    }
+
+    // ── the gate ─────────────────────────────────────────────────────
+    // The same DOM contract as `wireBenchGate` — the gate goes, the body
+    // arrives — reimplemented here for one reason: `wireBenchGate` also sets
+    // `role="status"` on `[data-benchbody]`, and on this bench that wraps the
+    // canvas, six controls and the note in one live region, so every toggle
+    // would re-announce the whole instrument. The note has its own tight
+    // `role="status"` and announces exactly the sentence that changed.
+    if (gate) {
+      each(toArray(gate.querySelectorAll(".ks3-option")), function (btn) {
+        btn.addEventListener("click", function () {
+          each(toArray(gate.querySelectorAll(".ks3-option")), function (o) {
+            o.setAttribute("aria-pressed", "false");
+          });
+          btn.setAttribute("aria-pressed", "true");
+          setHidden(gate, true);
+          setHidden(body, false);
+          // The gate IS the first state observation — the bench opens on the
+          // state it opens on, and answering the gate is the moment a student
+          // first sees it. This is what moves the counter 0 → 1; it opens at
+          // 0 rather than at Design's 1, which counted a state nobody had
+          // been shown yet (map §2.5.1).
+          seen[states[0].key] = true;
+          last = 0;
+          repaint();
+        });
+      });
+    } else {
+      // No gate authored: the bench is open from the start, so the state it
+      // opens on has been seen.
+      seen[states[0].key] = true;
+    }
+
+    // Nothing has been seen until the gate is answered, so the counter opens
+    // at 0 and the stage opens unticked (MRB-208).
+    repaint();
+    if (window.requestAnimationFrame) { raf = window.requestAnimationFrame(loop); }
+  }
+
+
+// WIRE: each(root.querySelectorAll("[data-smatrixblock]"), wireStateMatrix);
+//
+// ⚠️ Wire this AFTER `wireStateBench` in `wireInstruments()`, beside it. The
+// order is tidiness rather than correctness: the matrix does a standing read of
+// its own at wire time and the bench's resting attributes are in the markup
+// from the build, so a matrix wired first still opens on the right row.
+
+  /* ── state-matrix (c1-02 #s-matrix) ──
+     Six properties against three states, with ONE ROW LIT by the bench
+     above it.
+
+     ⚖️ CROSS-BLOCK STATE, AND NO SECOND COPY OF IT. This is the first
+     component in the key stage that reads another block's state, and the
+     obvious build — keep `squash` and `trails` here too and update both
+     from one handler — is the wrong one: two copies of a fact are two
+     places for it to drift, and the bug that produces (a table lighting
+     the row the bench stopped showing) is silent. So the bench PUBLISHES
+     on `[data-sbench]` and the matrix READS. The broadcast it listens for
+     carries no payload at all; it means "look again", nothing more.
+
+     ⚖️ NOT A RAIL STOP. `markStage` is never called from here and the
+     renderer emits no `data-stage-done`: this section asks the student for
+     nothing, and MRB-208 rules the rail carries only sections that do.
+     Design's own stage 3 ticks on the bench's predicate — see the
+     renderer's docstring and the lesson module. */
+
+  function wireStateMatrix(sec) {
+    var wrap = sec.querySelector("[data-smatrix]");
+    if (!wrap) { return; }
+    var rows = toArray(wrap.querySelectorAll(".ks3-smatrix-row"));
+    if (!rows.length) { return; }
+
+    var from = wrap.getAttribute("data-from") || "";
+    var LIT = {
+      squash: wrap.getAttribute("data-lit-squash") || "",
+      trails: wrap.getAttribute("data-lit-trails") || "",
+      rest:   wrap.getAttribute("data-lit-rest") || ""
+    };
+
+    function bench() {
+      var host = from ? document.getElementById(from) : null;
+      return host ? host.querySelector("[data-sbench]") : null;
+    }
+
+    function paint() {
+      var b = bench();
+      // No bench on the page — a lesson that dropped it, or a build that
+      // renamed the section. The table still reads correctly: it stays on the
+      // resting row rather than lighting nothing, because the footnote under
+      // it promises a highlight and an unlit table would make that a lie.
+      var key = LIT.rest;
+      if (b) {
+        if (b.getAttribute("data-squash") === "1") { key = LIT.squash; }
+        else if (b.getAttribute("data-trails") === "1") { key = LIT.trails; }
+      }
+      each(rows, function (tr) {
+        var on = tr.getAttribute("data-row") === key;
+        tr.setAttribute("data-lit", on ? "1" : "0");
+        var head = tr.querySelector("th");
+        if (!head) { return; }
+        // R2 — the tint is never the only signal. Design draws colour alone
+        // and the footnote promises the student a highlight, so the lit row
+        // says so to a screen reader too.
+        if (on) { head.setAttribute("aria-current", "true"); }
+        else { head.removeAttribute("aria-current"); }
+      });
+    }
+
+    document.addEventListener("ks3:statebench", paint);
+    paint();
+  }
+/* ═══ END C1 ═══ */
+
+
+
+
+
   function wireInstruments(root) {
     each(root.querySelectorAll("[data-board]"), wireBoard);
     each(root.querySelectorAll("[data-sort]"), wireSort);
@@ -6970,6 +9366,20 @@
     each(root.querySelectorAll("[data-fbblock]"), wireFormulaBuilder);
     each(root.querySelectorAll("[data-balblock]"), wireBalanceBench);
     each(root.querySelectorAll("[data-pickblock]"), wirePick);
+    // ═══ BEGIN C1 wiring ═══
+    each(root.querySelectorAll("[data-counterblock]"), wireCollisionCounter);
+    each(root.querySelectorAll("[data-ebenchblock]"), wireEvidenceBench);
+    each(root.querySelectorAll("[data-gapblock]"), wireGapTestRig);
+    each(root.querySelectorAll("[data-cutblock]"), wireHalvingBench);
+    each(root.querySelectorAll("[data-hbblock]"), wireHeatingBench);
+    each(root.querySelectorAll("[data-keyedblock]"), wireKeyedCommit);
+    each(root.querySelectorAll("[data-mtlblock]"), wireModelTimeline);
+    each(root.querySelectorAll("[data-predictblock]"), wirePredictionStack);
+    each(root.querySelectorAll("[data-walkblock]"), wireRandomWalk);
+    each(root.querySelectorAll("[data-sortcardsblock]"), wireSortCards);
+    each(root.querySelectorAll("[data-sbenchblock]"), wireStateBench);
+    each(root.querySelectorAll("[data-smatrixblock]"), wireStateMatrix);
+    // ═══ END C1 wiring ═══
     wireCoverBar(root);
     wireTriangle(root);
   }

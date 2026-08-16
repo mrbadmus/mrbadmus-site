@@ -1,0 +1,77 @@
+/* ── sort-cards (c1-03 #s-think) ──
+   The sorter lives INSIDE the amber misconception shell, so every card is a
+   cream card on an amber ground. Nothing here is amber: amber is the wrong
+   IDEA being confronted, and these cards are the student's working.
+
+   ⚠️ Specificity, twice over. `.ks3-misconception > p` is (0,1,1) and only
+   reaches DIRECT children, so it does not touch the card's paragraphs today
+   — but the text rules below are written two classes deep anyway, because a
+   descendant rule on this shell, or the day someone drops this sorter into a
+   dark block, would repaint every note in it and nothing would fail.
+
+   ⚖️ THE ONE MARKED CARD IN C1. Design draws the card's border in the accent
+   when the word fits and in ink when it does not (page lines 767–768), and
+   the note in ink or accent-text to match. It is carried because the page
+   wins over the engine, and it is expressed against ONE attribute so a
+   ruling that R3 reaches this component is a two-line change here and
+   nowhere else. Note what it is NOT: never the ok family, never a tick,
+   never a cross — it cannot be mistaken for the ladder's verdict, and the
+   "wrong" state is exactly the neutral ink border a decided `job-sort` row
+   already takes. */
+
+.ks3-sortcards { margin-top: 18px; }
+.ks3-sortcards [hidden] { display: none; }
+
+.ks3-sortcards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+
+.ks3-sortcards-card {
+  padding: 18px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-option-border);
+}
+.ks3-sortcards-card[data-verdict="right"] { border-color: var(--ks3-accent); }
+.ks3-sortcards-card[data-verdict="wrong"] { border-color: var(--ks3-ink); }
+
+.ks3-sortcards .ks3-sortcards-text {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ks3-ink);
+}
+
+.ks3-sortcards-opts { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.ks3-sortcards .ks3-sortcards-note {
+  margin: 12px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--ks3-ink);
+}
+/* The correction reads in accent-text — 6.0:1, the only orange the key stage
+   allows under 24px. */
+.ks3-sortcards .ks3-sortcards-note[data-note="wrong"] {
+  color: var(--ks3-accent-text);
+}
+
+/* The whole-set summary: a card panel on a 2px ink rule, the same treatment
+   as the two-paragraph reveal, because that is what it is. */
+.ks3-sortcards-close {
+  margin-top: 20px;
+  padding: 24px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-card);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-sortcards .ks3-sortcards-close p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+.ks3-sortcards .ks3-sortcards-close p + p { margin-top: 14px; }

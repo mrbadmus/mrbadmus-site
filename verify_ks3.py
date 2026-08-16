@@ -1002,7 +1002,22 @@ def main():
     # table rather than a copy that drifts. `getattr` only so that the gate
     # degrades to "nothing is dispatched" instead of crashing if the constant
     # is ever renamed — a gate that dies is a gate that gets deleted.
-    dispatched = set(getattr(_B, "ACTIVITY_KIND_RENDERERS", {}))
+    # ⊕ MRB-228 — read the DRAWING table, not the shell table.
+    #
+    # This gate used to ask whether a kind appeared in
+    # `ACTIVITY_KIND_RENDERERS`, which registers a modifier class and the
+    # marker attribute ks3.js dispatches on — the SHELL. It does not draw
+    # anything. C1's thirteen instruments were all registered there and none of
+    # them was drawn, and this gate reported "none unrendered" while every C1
+    # page rendered Python dict reprs into its option buttons.
+    #
+    # `ACTIVITY_KIND_FN` maps a kind to the function that draws it, and
+    # build_ks3 now refuses to import if the two tables disagree. Reading the
+    # union is deliberate belt-and-braces: if the shell table ever regains an
+    # entry the drawing table lacks, this gate must not be the thing that
+    # excuses it.
+    dispatched = (set(getattr(_B, "ACTIVITY_KIND_FN", {}))
+                  | set(getattr(_B, "_KIND_FN_BY_BLOCK_TYPE", set())))
     generic = set(getattr(_B, "GENERIC_ACTIVITY_KINDS", set()))
     authored = {}
     for u in _B.ks3_data.build_units():
@@ -1023,6 +1038,135 @@ def main():
           % (len(unrendered),
              "; ".join("%s (%s)" % (k, ", ".join(sorted(authored[k])))
                        for k in unrendered)))
+
+    # ── MRB-177 · distractor length parity ──────────────────────────────
+    #
+    # ⊕ MRB-228, 16 Aug 2026. The last open MRB-177 item, and the one that
+    # could fail silently: PAYLOAD-MAP §7.5 recorded it as "Design's sets look
+    # balanced on inspection but this was not measured. **Open.**" Inspection is
+    # not measurement, and there were 21 lessons to inspect.
+    #
+    # The property: if the correct option is reliably the longest one, a student
+    # can score without knowing any science. They do learn this — it is one of
+    # the first things a class works out about multiple choice — and every
+    # question it works on is a question that measured nothing.
+    #
+    # The heuristic is `audit_content.py`'s `length_tell()`, which has been
+    # auditing KS4 since before KS3 existed. Porting rather than reinventing is
+    # deliberate: the same defect should have the same definition in both key
+    # stages, or a question that fails at KS4 passes at KS3 for no reason a
+    # student could name. Flag when the correct option is STRICTLY the longest
+    # AND clears the longest distractor by ≥4 words or by ≥1.4×. Two thresholds
+    # because a 2-vs-6-word gap is a tell at a ratio 4 words would miss, and a
+    # 20-vs-28 is a tell at a gap the ratio would miss.
+    #
+    # Sets of fewer than three options are skipped, as at KS4: with two options
+    # the longer one is longer half the time by construction.
+    def length_tell(texts, correct):
+        if correct is None or len(texts) < 3 or not (0 <= correct < len(texts)):
+            return None
+        wc = [len(re.findall(r"[^\s]+", str(t))) for t in texts]
+        others = [w for i, w in enumerate(wc) if i != correct]
+        top = max(others)
+        if wc[correct] == max(wc) and wc[correct] > top and (
+                wc[correct] - top >= 4 or wc[correct] >= 1.4 * top):
+            return (wc[correct], top)
+        return None
+
+    # Every option set in KS3, wherever it is authored. The ladder's four rungs
+    # and the activities are different shapes and both are marked, so both are
+    # measured. An option may be a plain string or a dict carrying `text` —
+    # `keyed-commit` and `verdict-cards` use the dict form — and the reply
+    # attached to a dict option is NOT part of what the student reads before
+    # choosing, so only `text` is counted.
+    def _opt_text(o):
+        return o.get("text", "") if isinstance(o, dict) else o
+
+    # ── the register of tells already live, 16 Aug 2026 ──────────────────
+    #
+    # The measurement found nine. One was C1's and is fixed in the same pass
+    # (`solids-liquids-and-gases · ladder apply` — the distractors were
+    # completed, the correct answer untouched). The other eight are on pages
+    # students are using now, across three units this run does not own.
+    #
+    # They are registered rather than silently tolerated, and registered
+    # individually rather than as a count, because the two behave differently
+    # under change: a count lets a new tell replace a fixed one with the gate
+    # still green, and a named entry cannot. Fixing one means deleting its
+    # line. A tell not on this list fails the build.
+    #
+    # ⚠️ This is NOT a decision that they are acceptable. Rewriting a
+    # distractor changes what a marked question measures, which is Mide's gate
+    # and not this script's — all nine are on the science worklist. The
+    # register exists so the finding survives until he rules on it, instead of
+    # being either forgotten or used to block six unrelated lessons.
+    KNOWN_TELLS = {
+        ("animal-and-plant-cells", "ladder apply"),
+        ("specialised-cells", "ladder apply"),
+        ("levels-of-organisation", "ladder apply"),
+        ("unicellular-organisms", "ladder apply"),
+        ("what-the-skeleton-does", "ladder recall"),
+        ("joints", "ladder apply"),
+        ("the-atom-daltons-model", "ladder apply"),
+        ("formulae", "ladder apply"),
+    }
+
+    tells, known_seen = [], set()
+    for u in _B.ks3_data.build_units():
+        for l in u.get("lessons", []):
+            sets = []
+            for rung, r in (l.get("ladder") or {}).items():
+                if isinstance(r, dict) and r.get("options"):
+                    sets.append(("ladder %s" % rung, r["options"],
+                                 r.get("answer")))
+            for a in l.get("activities", []):
+                if a.get("options"):
+                    sets.append(("activity %s" % a.get("id"), a["options"],
+                                 a.get("answer")))
+                # A `verdict-cards` item carries its own options and its own
+                # answer, and the answer is a STRING matched against them
+                # rather than an index — c2-04's are counts ("Three") and
+                # c2-03's are sentences. Resolve it to an index or skip.
+                for it in a.get("items") or []:
+                    opts = it.get("options") or a.get("options")
+                    if not opts:
+                        continue
+                    ans = it.get("answer")
+                    if isinstance(ans, str):
+                        texts = [_opt_text(o) for o in opts]
+                        ans = texts.index(ans) if ans in texts else None
+                    sets.append(("card %s" % (it.get("id") or a.get("id")),
+                                 opts, ans))
+            for where, opts, ans in sets:
+                t = length_tell([_opt_text(o) for o in opts], ans)
+                if not t:
+                    continue
+                if (l["slug"], where) in KNOWN_TELLS:
+                    known_seen.add((l["slug"], where))
+                    continue
+                tells.append("%s · %s: correct is %dw against a longest "
+                             "distractor of %dw" % (l["slug"], where,
+                                                    t[0], t[1]))
+
+    # A register entry that no longer describes a real tell is worse than
+    # useless: it is a live exemption for a question nobody is looking at any
+    # more. Fixing one is deleting its line, and forgetting to delete it fails
+    # here rather than quietly widening the gate.
+    stale = sorted(KNOWN_TELLS - known_seen)
+    check("MRB-177 · no option set gives its answer away by length",
+          not tells and not stale,
+          "measured every ladder rung and every activity option set in the "
+          "key stage — no NEW length tell; %d registered and awaiting Mide's "
+          "ruling (16 Aug 2026)" % len(KNOWN_TELLS)
+          if not tells and not stale else
+          "; ".join(
+              (["%d option set(s) where the correct answer is a length tell — "
+                "a student can score these without reading them: %s"
+                % (len(tells), "; ".join(tells))] if tells else [])
+              + (["%d register entr(ies) no longer describe a real tell and "
+                  "must be deleted: %s"
+                  % (len(stale), ", ".join("%s · %s" % s for s in stale))]
+                 if stale else [])))
 
     # §8.10 — the platform does not explain itself on the page.
     #
@@ -1117,13 +1261,32 @@ def main():
               else "all %d components resolved on their reference page"
                    % len(PARITY.COMPONENTS))
 
+        # ⊕ MRB-228 — say how many assertions DID NOT RUN, in the headline.
+        #
+        # A component whose selector is not on its page is skipped: the runner
+        # records the problem and `continue`s WITHOUT appending a style row. So
+        # `css_fails` stays 0 and this line used to print
+        # "543 assertions across 196 components" whether all 196 resolved or
+        # forty of them had vanished. The build did go red — on the check above
+        # — but the coverage headline went on claiming full coverage at an
+        # unchanged count, which is the number a person reads to decide whether
+        # the gate is watching. A gate that reports coverage it does not have is
+        # the same failure as one that reports none.
+        skipped = len(style_problems)
         check("C · resolved computed style matches Design, ±%gpx on lengths"
               % PARITY.TOL_PX,
               not css_fails,
-              "%d assertions across %d components"
-              % (len(style_rows), len(PARITY.COMPONENTS)) if not css_fails
-              else "%d of %d assertions failed" % (len(css_fails),
-                                                   len(style_rows)))
+              ("%d assertions across %d components"
+               % (len(style_rows), len(PARITY.COMPONENTS))
+               + ("" if not skipped else
+                  " — ⚠️ %d component(s) NOT MEASURED (see the check above); "
+                  "this count covers the rest" % skipped))
+              if not css_fails
+              else "%d of %d assertions failed%s"
+                   % (len(css_fails), len(style_rows),
+                      "" if not skipped
+                      else ", and %d component(s) were not measured at all"
+                           % skipped))
         cfails = [r for r in contrast_rows if not r[5]]
         # "worst" must mean the worst pair that had to CLEAR its bar. Letting a
         # WCAG-exempt row own that number reports the gate as weaker than it is

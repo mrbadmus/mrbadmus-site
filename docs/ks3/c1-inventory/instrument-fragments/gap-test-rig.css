@@ -1,0 +1,38 @@
+/* ── gap-test-rig (c1-01 #s-gap) ──
+   ⚠️ INK-DARK, and `.ks3-dark p` is (0,1,1). Every text rule below is scoped
+   to at least (0,2,0) so it wins — the defect that shipped with the zoom
+   instrument on B1 and bit B2 again is exactly an unscoped instrument caption
+   losing to the block it sits in.
+
+   The drawing reuses `.ks3-canvas-frame` / `.ks3-canvas-foot` (map N12) rather
+   than growing a fifth copy: Design's frame here is the same 2px muted rule on
+   a card radius over a dark-panel foot, measured property for property. */
+
+.ks3-gap { margin-top: 4px; }
+/* Design's own measure on the choice list — four short answers at full column
+   width read as a form, not as a question. */
+.ks3-gap .ks3-options { max-width: 34rem; }
+
+.ks3-gap-rig { margin-top: 20px; }
+
+.ks3-gap .ks3-gap-caption {
+  margin: 0 0 12px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-on-dark-muted);
+}
+.ks3-gap-btns { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* The outcome paragraph sits OUTSIDE the frame, on the block's own ink — it is
+   the sentence the student takes away, not another readout on the instrument.
+   All eight branches are in the document and seven are hidden. */
+.ks3-gap-note { margin: 16px 0 0; }
+.ks3-gap .ks3-gap-note p {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-on-dark-body);
+}

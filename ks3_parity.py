@@ -386,6 +386,45 @@ _PARKED_SYSTEM_PARTS = (
     "no lesson renders a system-parts sim — Design's approved B1-05 replaces "
     "it with `removal-cases`. Engine and audit kept; un-park when a lesson "
     "uses the kind again.")
+
+# ⊕ MRB-228, 16 Aug 2026 — the same case, found by the same gate, on the C1
+# rebuild. `LESSON` (c1-04 gas-pressure) was the reference page for the whole
+# generic block vocabulary, because the superseded C1 rendered nearly all of
+# it on one page. Design's rebuilt c1-04 renders none of these: no `figures`,
+# no vocabulary cards, no `sim` — its instruments are `collision-counter` and
+# `prediction-stack`, which draw their own canvases and their own controls.
+#
+# Everything that still exists SOMEWHERE was repointed rather than parked, and
+# the coverage is unchanged. Two components exist nowhere in the key stage:
+#
+#   `.ks3-figure*`   — no authored lesson carries a non-empty `figures` list
+#                      any more. This one matters and is not merely
+#                      bookkeeping: B4 and B5 name twelve diagram slots between
+#                      them, so the first of those units to land un-parks it.
+#   `.ks3-sim-figure` — the generic sim's live readout. B1's microscope draws
+#                      its readout inside its own `.ks3-micro-*` tree.
+_PARKED_NO_FIGURE = (
+    "no lesson in the key stage renders a `figure` block — the C1 rebuild's "
+    "six lessons carry `figures: []` and draw everything on canvas. Un-park "
+    "with the first delivered unit that names a diagram slot (B4 and B5 both "
+    "do).")
+_PARKED_NO_SIM_FIGURE = (
+    "no lesson renders a generic `.ks3-sim` live figure — B1's microscope, "
+    "the only surviving sim, draws its readout in its own class tree. Engine "
+    "and audit kept; un-park when a lesson uses the generic sim again.")
+
+# The sim's LIGHT-GROUND and MISCONCEPTION variants, as opposed to the sim
+# itself. Both surviving sims in the key stage (b1-02's microscope, b1-06's)
+# sit on `ks3-block ks3-dark ks3-practical`, so the ink-dark rows below are
+# measured and these two are not. Repointing them at b1-02 was the first thing
+# tried and it is wrong twice over: the canvas takes `--ks3-on-dark-rule` there
+# rather than ink, and a caption measured against `.ks3-check` resolves 1.88:1
+# because it is not on a check block at all. A row that has to be told which
+# ground to imagine is not measuring a ground.
+_PARKED_NO_LIGHT_SIM = (
+    "no lesson renders a sim on a light or amber ground — both surviving sims "
+    "are on ink-dark practical shells, and those variants ARE measured. "
+    "Un-park when a lesson puts a sim on a check or misconception block.")
 UNIT = "chemistry/particles-and-their-behaviour/index.html"
 # C1 is fully authored, so its index carries no Coming soon badge; and B3 is
 # the ONLY unit in the key stage with a §4.6 reference slot, so it is the only
@@ -397,6 +436,19 @@ UNIT_SOON = "biology/movement-skeleton-and-muscles/index.html"
 UNIT_REF = "biology/nutrition-and-digestion/index.html"
 LANDING = "index.html"
 YEAR = "year-7/index.html"
+
+# ═══ BEGIN C1 ═══
+C1_PRESSURE = "chemistry/particles-and-their-behaviour/gas-pressure.html"
+C1_TEST = "chemistry/particles-and-their-behaviour/testing-the-model.html"
+C1_MODEL = "chemistry/particles-and-their-behaviour/particle-model.html"
+C1_STATE = "chemistry/particles-and-their-behaviour/changes-of-state.html"
+C1_DIFF = "chemistry/particles-and-their-behaviour/diffusion.html"
+C1_STATES = "chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html"
+# ═══ END C1 ═══
+
+
+
+
 
 COMPONENTS = [
     # ── foundations ──
@@ -652,20 +704,25 @@ COMPONENTS = [
     # asks "does every rendered block type map to something registered?"
     # found it on its first run, which is the whole argument for the
     # registry being authoritative rather than descriptive.
-    dict(name="figure frame", on=LESSON, sel=".ks3-figure",
+    dict(name="figure frame", on=LESSON, parked=_PARKED_NO_FIGURE,
+         sel=".ks3-figure",
          props={"margin-top": "28px"}),
-    dict(name="figure caption", on=LESSON, sel=".ks3-figure figcaption",
+    dict(name="figure caption", on=LESSON, parked=_PARKED_NO_FIGURE,
+         sel=".ks3-figure figcaption",
          props={"font-size": "17px", "color": "#3B342E",
                 "margin-top": "12px"}),
-    dict(name="figure pending slot", on=LESSON, sel=".ks3-figure-slot",
+    dict(name="figure pending slot", on=LESSON, parked=_PARKED_NO_FIGURE,
+         sel=".ks3-figure-slot",
          props={"border-top-width": "3px", "border-top-style": "dashed",
                 "border-top-color": "#C3B191"}),
 
     # ── R4: the dog-ear card ──
-    dict(name="vocabulary card", on=LESSON, sel=".ks3-card-btn",
+    # ⊕ MRB-228 — repointed off the rebuilt c1-04, which authors no vocabulary
+    # cards. c2-05 is the only page left in the key stage that renders them.
+    dict(name="vocabulary card", on=C2_FORM, sel=".ks3-card-btn",
          props={"background-color": "#FFFCF5", "border-top-left-radius": "22px",
                 "min-height": "150px"}),
-    dict(name="card term type", on=LESSON, sel=".ks3-card-front",
+    dict(name="card term type", on=C2_FORM, sel=".ks3-card-front",
          props={"font-family": "Bricolage Grotesque", "font-weight": "800",
                 "font-size": "27px"}),
 
@@ -697,10 +754,16 @@ COMPONENTS = [
                 "min-height": "44px", "font-weight": "700"}),
 
     # ── simulations ──
-    dict(name="sim canvas", on=LESSON, sel=".ks3-sim-canvas",
+    # ⊕ MRB-228 — this is the sim canvas on a LIGHT ground, and the rebuilt
+    # c1-04 was the only page that had one. The dark-shell canvas is measured
+    # a few rows below as "microscope canvas (dark practical shell)", which is
+    # the same component with the ground it actually renders on.
+    dict(name="sim canvas", on=LESSON, parked=_PARKED_NO_LIGHT_SIM,
+         sel=".ks3-sim-canvas",
          props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
                 "border-top-left-radius": "20px"}),
-    dict(name="sim live figure is mono", on=LESSON, sel=".ks3-sim-figure",
+    dict(name="sim live figure is mono", on=LESSON,
+         parked=_PARKED_NO_SIM_FIGURE, sel=".ks3-sim-figure",
          props={"font-family": "DM Mono", "font-weight": "500"}),
 
     # ── MRB-198: the two new instrument kinds ──
@@ -1156,6 +1219,759 @@ COMPONENTS = [
          drive="budget-verdict-given", sel=".ks3-verdict-name",
          props={"font-family": "Bricolage Grotesque", "font-weight": "800",
                 "font-size": "24px", "color": "#FBF3E6"}),
+    # ═══ BEGIN C1 ═══ rows
+# Splice point: `COMPONENTS` in ks3_parity.py, in a new
+# "C1 · Particles and their behaviour (⊕ MRB-228)" section.
+#
+# Requires one page constant beside the C2 ones (~line 360):
+#
+#     C1_PRESSURE = "chemistry/particles-and-their-behaviour/gas-pressure.html"
+#
+# Every row below uses the EXISTING `bench-gate-opened` drive: the bench does
+# not exist in the document's layout until the commit gate is answered, so a
+# measurement without it would report on an element that is `hidden`.
+#
+# Each row pins the property that makes the component DISTINCT, in the sense
+# the file's own rule requires — break the CSS rule deliberately and the row
+# fails.
+
+    # ══ C1 · Particles and their behaviour (⊕ MRB-228) ═══════════════════
+
+    # ── collision-counter (c1-04 #s-bench) ──
+    # ⚠️ A LIGHT block. This is the row that catches the whole instrument
+    # being mapped to `practical`: the frame's rule is 2px INK on a card
+    # ground, and on ink it would report `#C6B9A7` over `#221E1B` — the
+    # canvas's own cream drawing in a black surround, and every label in the
+    # control strip resolving to its on-dark value.
+    dict(name="counter canvas frame is a 2px INK rule on a card radius",
+         on=C1_PRESSURE, drive="bench-gate-opened", sel=".ks3-counter-stage",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "22px",
+                "overflow-x": "hidden"}),
+    # The control strip is INSET, not card: it has to read as the bench's
+    # panel rather than as more of the drawing above it, and the 2px ink rule
+    # between them is the join.
+    dict(name="counter control strip is inset under a 2px ink rule",
+         on=C1_PRESSURE, drive="bench-gate-opened",
+         sel=".ks3-counter-controls",
+         props={"background-color": "#F7EFE1", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+    # Three captioned groups in one instrument. The captions are the only
+    # thing telling a student that the second group is not more of the first
+    # — the same argument as `muscle-pair`'s, with a third group.
+    dict(name="counter group caption is a mono ink-muted label",
+         on=C1_PRESSURE, drive="bench-gate-opened",
+         sel=".ks3-counter-grouplabel",
+         props={"font-family": "DM Mono", "font-size": "12px",
+                "color": "#5F564F", "text-transform": "uppercase"}),
+    # ⚖️ The live note takes the BAND-on-ink treatment — the KEY FACT
+    # treatment, deliberately, and deliberately NOT a verdict tone. It is the
+    # sentence the bench just proved, not a mark on anything the student did.
+    # If it ever resolves to the accent tint it starts reading as feedback.
+    dict(name="counter note is BAND on a 2px ink border, never a verdict tone",
+         on=C1_PRESSURE, drive="bench-gate-opened", sel=".ks3-counter-note",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "font-size": "19px",
+                "color": "#221E1B"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# Add beside C2_ATOM … C2_MASS. All three of c1-06's instruments render only
+# here, so all three are measured here — a component registered on a page that
+# does not render it reports "selector not present" and passes, which is the
+# absence-of-assertion failure this gate exists to close.
+#
+# C1_TEST = "chemistry/particles-and-their-behaviour/testing-the-model.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Each row pins the property that makes the component DISTINCT, not the ones it
+# shares with every other panel. Mutation-test each before keeping it: break the
+# rule in shared/ks3.css and confirm the row fails.
+
+    # ══ C1 · Testing the model (⊕ MRB-228) ═══════════════════════════════
+
+    # ── evidence-bench (c1-06 #s-bench) ──
+    # The topology. A statement that can shrink beside a button pair that
+    # cannot: if this ever resolves to `block`, the two calls drop under a
+    # 54ch sentence and the seven cases stop being scannable as a column.
+    dict(name="evidence case puts the calls beside the statement", on=C1_TEST,
+         sel=".ks3-ebench-row",
+         props={"display": "grid", "column-gap": "16px",
+                "align-items": "start"}),
+
+    # ⚖️ THE TWO-TONE VERDICT IS A FACT ABOUT THE MODEL, NOT ABOUT THE STUDENT.
+    # A failure takes the BAND ground behind a 6px accent edge — the KEY FACT
+    # treatment, deliberately not a red and not a dim. Both rows are driven,
+    # because neither panel exists in the document's layout until its case is
+    # judged, and both are measured in one document so the pair cannot drift
+    # apart unnoticed.
+    dict(name="a FAILING verdict is band behind a 6px accent edge", on=C1_TEST,
+         drive="ebench-judged",
+         sel='.ks3-ebench-case[data-ok="0"] .ks3-ebench-verdict',
+         props={"background-color": "#F4E9D8", "border-left-color": "#E4572E",
+                "border-left-width": "6px"}),
+    dict(name="a HANDLED verdict is inset behind a quiet edge", on=C1_TEST,
+         drive="ebench-judged",
+         sel='.ks3-ebench-case[data-ok="1"] .ks3-ebench-verdict',
+         props={"background-color": "#F7EFE1", "border-left-color": "#C3B191",
+                "border-left-width": "6px"}),
+
+    # The whole-set close. 24px display is what separates the counted line from
+    # the paragraph under it; at body size the two read as one block of prose
+    # and the number stops being the thing that lands.
+    dict(name="evidence tally line is display 700 at 24px", on=C1_TEST,
+         drive="ebench-all-judged", sel=".ks3-ebench-tallyline",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "700",
+                "font-size": "24px"}),
+
+# ⊖ NOT registered here, deliberately: `.ks3-ebench-case`'s resting card ground
+# and its ink border once decided. That is the same two-value pattern already
+# gated on `.ks3-jobsort-item` (rows 942 and 946) — one border going to ink on
+# commitment — and re-asserting it on a second class buys coverage of a rule
+# nobody can break independently.
+# ks3_parity.py — gap-test-rig (c1-01 #s-gap)
+#
+# Uses the same C1_MODEL constant the halving-bench fragment adds.
+#
+# DRIVES — two, and both are required before the rows below can be spliced
+# (`_unregistered_drives()` is fatal). The rig does not exist until a claim has
+# been made about what it will show, so every state here is behind a click.
+#
+#     "gap-answered": r"""
+# (function () {
+#   var wrap = document.querySelector('[data-gap]');
+#   if (!wrap) { return "no gap rig on the page"; }
+#   var opt = wrap.querySelector('.ks3-option');
+#   if (!opt) { return "the rig offers no choices"; }
+#   opt.click();
+#   var rig = wrap.querySelector('[data-gap-rig]');
+#   if (!rig || rig.hasAttribute('hidden')) {
+#     return "a choice was made and the rig never appeared";
+#   }
+#   return "";
+# })()
+# """,
+#
+#     "gap-tested": r"""
+# (function () {
+#   var wrap = document.querySelector('[data-gap]');
+#   if (!wrap) { return "no gap rig on the page"; }
+#   // The choice that FILLS the gap, so the test lands on its `off` outcome —
+#   // the failure that is the whole argument of the block.
+#   var empty = parseInt(wrap.getAttribute('data-empty-choice'), 10);
+#   var opts = wrap.querySelectorAll('.ks3-option');
+#   var pick = opts[empty === 0 ? 1 : 0];
+#   if (!pick) { return "the rig offers no choices"; }
+#   pick.click();
+#   var t = wrap.querySelector('.ks3-gap-test');
+#   if (!t) { return "the rig offers no tests"; }
+#   t.click();
+#   if (t.getAttribute('aria-pressed') !== 'true') {
+#     return "a test was run and its button never lit";
+#   }
+#   var sec = document.getElementById('s-gap');
+#   if (!sec || sec.getAttribute('data-stage-done') !== '1') {
+#     return "a test was run and the stage never completed";
+#   }
+#   return "";
+# })()
+# """,
+#
+# COMPONENTS — four rows.
+
+    # ── gap-test-rig (c1-01 #s-gap) ──
+    # ⚠️ Both text rows exist to prove the SPECIFICITY scoping. `.ks3-dark p`
+    # is (0,1,1) and a bare instrument class is (0,1,0): unscoped, the caption
+    # and the outcome paragraph both lose to the block they sit in and render
+    # in its body colour. That defect shipped with the zoom instrument on B1
+    # and bit B2 again, which is why it is pinned rather than assumed.
+    dict(name="gap control caption is mono 12px uppercase on-dark-muted",
+         on=C1_MODEL, drive="gap-answered", sel=".ks3-gap-caption",
+         props={"font-family": "DM Mono", "font-size": "12px",
+                "color": "#C6B9A7", "text-transform": "uppercase"}),
+    dict(name="gap outcome is on-dark BODY, not the block's own colour",
+         on=C1_MODEL, drive="gap-answered", sel=".ks3-gap-note p",
+         props={"color": "#E7DECE", "font-size": "19px"}),
+    # The dark branch of the segmented control, resting: on-dark text on the
+    # muted rule. If this resolves to ink the rig has been painted as a light
+    # instrument and the buttons vanish into the block.
+    dict(name="a gap test at rest is on-dark text on the muted rule",
+         on=C1_MODEL, drive="gap-answered", sel=".ks3-gap-test",
+         props={"color": "#FBF3E6", "border-top-color": "#C6B9A7",
+                "border-top-width": "2px", "min-height": "44px"}),
+    # ⚖️ The RUNNING test is the alert amber with ink on it — the shipped dark
+    # pressed state, measured in the state through the rig's own controls.
+    # Amber here is not a verdict on the student: it marks which test is on the
+    # bench, and the outcome paragraph is one tone whichever answer they gave.
+    dict(name="the running gap test is alert amber with ink on it",
+         on=C1_MODEL, drive="gap-tested",
+         sel='.ks3-gap-test[aria-pressed="true"]',
+         props={"background-color": "#FFC53D", "color": "#221E1B",
+                "border-top-color": "#FFC53D"}),
+# ks3_parity.py — halving-bench (c1-01 #s-cut)
+#
+# 1. PAGE CONSTANT — add beside C2_ATOM / C2_ELEM (~line 357):
+#
+#        C1_MODEL = "chemistry/particles-and-their-behaviour/particle-model.html"
+#
+# 2. DRIVE — add to DRIVES. ⚠️ `_unregistered_drives()` is FATAL, so the rows
+#    below cannot be spliced without it. `bench-gate-opened` already exists and
+#    is reused; this second one reaches the floor through the bench's own
+#    controls, so a regression in the interaction path fails HERE rather than
+#    being measured around.
+#
+#     "cut-floor-reached": r"""
+# (function () {
+#   var gate = document.querySelector('[data-benchgate]');
+#   if (!gate) { return "no commit gate on the page"; }
+#   gate.querySelector('.ks3-option').click();
+#   var bench = document.querySelector('[data-cut]');
+#   if (!bench) { return "the bench did not appear after the gate"; }
+#   var floor = parseInt(bench.getAttribute('data-floor'), 10) || 0;
+#   var ten = bench.querySelector('.ks3-cut-btn[data-step="10"]');
+#   var one = bench.querySelector('.ks3-cut-btn[data-step="1"][data-act="cut"]');
+#   if (!ten || !one) { return "the bench offers no cut controls"; }
+#   for (var i = 0; i < floor; i++) {
+#     if (!ten.hasAttribute('disabled')) { ten.click(); }
+#     else if (!one.hasAttribute('disabled')) { one.click(); }
+#     else { break; }
+#   }
+#   var count = bench.querySelector('[data-cut-out="count"]');
+#   if (!count || parseInt(count.textContent, 10) !== floor) {
+#     return "cutting stopped at " + (count && count.textContent) +
+#            " of " + floor;
+#   }
+#   if (!document.querySelector('[data-verdict="floor"]:not([hidden])')) {
+#     return "the floor was reached and the verdict never changed";
+#   }
+#   return "";
+# })()
+# """,
+#
+# 3. COMPONENTS — the four rows below. Each was chosen because it is the
+#    property that makes this instrument DISTINCT; the mono readout LABEL is
+#    deliberately not among them, because it is the shipped mono caption that
+#    `.ks3-joint-tile-mono` and the budget line already pin.
+
+    # ══ C1 · Particles and their behaviour (⊕ MRB-228) ═══════════════════
+
+    # ── halving-bench (c1-01 #s-cut) ──
+    # ⚠️ A LIGHT instrument, and this row is what proves it. Its sibling
+    # `#s-gap` on the same page is ink-dark and uses `.ks3-canvas-frame`; if
+    # this frame ever resolves to the muted rule (#C6B9A7) the bench has been
+    # mapped onto the dark frame and every text token inside it is wrong.
+    dict(name="cut bench frame is a 2px INK rule on the card ground",
+         on=C1_MODEL, drive="bench-gate-opened", sel=".ks3-cut-frame",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "22px"}),
+    # The readouts are the lesson — "watch the size, not the picture" — so they
+    # are display type at 30px, not the 25px mono a sim readout takes. If this
+    # row ever reports the mono face, the numbers have stopped being the
+    # headline of the block.
+    dict(name="cut readout value is display 700 30px ink", on=C1_MODEL,
+         drive="bench-gate-opened", sel=".ks3-cut-value",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "700",
+                "font-size": "30px", "color": "#221E1B"}),
+    # ⚖️ The floor verdict is accent-TEXT and never the accent itself: it is
+    # read at 30px but it is a state word, and #E4572E is 3.4:1. Measured in
+    # the state, through 24 real cuts.
+    dict(name="the floor verdict is accent-text, not the accent", on=C1_MODEL,
+         drive="cut-floor-reached",
+         sel='.ks3-cut-value [data-verdict="floor"]',
+         props={"color": "#A93411"}),
+    # ⚖️ The running note is a BAND panel on a 2px ink border — the same
+    # treatment `claim-switch`'s note takes, and deliberately not amber. Amber
+    # is a wrong idea being confronted; this paragraph is the state of the
+    # model, and a student who has cut nothing has made no mistake.
+    dict(name="cut note is a band panel on ink, never amber", on=C1_MODEL,
+         drive="bench-gate-opened", sel=".ks3-cut-note",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+# PAGE CONSTANT (add beside the other C1 page constants in ks3_parity.py):
+#
+#     C1_STATE = "chemistry/particles-and-their-behaviour/changes-of-state.html"
+#
+# DRIVE: none new. The bench lives behind C6's commit gate, so every row below
+# that measures the instrument itself uses the SHIPPED `bench-gate-opened`
+# drive; `#s-curve` is the only gate on this page, which is what that drive
+# selects. The mass tile is measured on the same driven load.
+
+    # ── heating-bench (c1-03 #s-curve) ──
+    # ⚠️ A LIGHT bench. If the frame row ever reports `#3E3730` or the note
+    # row reports on-dark body copy, the instrument has been mapped to
+    # `practical` and the graph's paper has become a hole in an ink block —
+    # the exact trap the payload map names for this lesson.
+    dict(name="heating bench frame is a 2px INK rule on a card ground",
+         on=C1_STATE, drive="bench-gate-opened", sel=".ks3-hb-frame",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "22px",
+                "overflow-x": "hidden"}),
+
+    # ⚖️ THE CONSTANT IS A FULL READOUT. `Mass in the flask · 50.0 g` is
+    # hard-coded markup and it is the confrontation of the lesson, so it is
+    # asserted at the same 30px display type as the two tiles that DO move.
+    # If it ever resolves as a caption, the one number that says nothing was
+    # lost has been quietly demoted below the two that change.
+    dict(name="the constant mass reads as a full display-type readout",
+         on=C1_STATE, drive="bench-gate-opened", sel=".ks3-hb-mass",
+         props={"font-family": "Bricolage Grotesque", "font-size": "30px",
+                "font-weight": "700", "color": "#221E1B"}),
+
+    # 44px of control around a 10px track, and the reset appearance is what
+    # makes it a drawn control rather than a browser default. No `width`: it
+    # is 100% of a column whose px value follows the viewport, and this
+    # harness pins none.
+    dict(name="the scrub clears the 44px tap target", on=C1_STATE,
+         drive="bench-gate-opened", sel=".ks3-hb-scrub",
+         props={"height": "44px", "appearance": "none",
+                "accent-color": "#E4572E"}),
+
+    # The plateau note takes the KEY FACT treatment — band on a 2px ink rule
+    # — because the sentence it carries while the thermometer is stuck is the
+    # fact the lesson exists to deliver. Never amber: this is not a wrong
+    # idea being confronted.
+    dict(name="the plateau note is a BAND panel on ink", on=C1_STATE,
+         drive="bench-gate-opened", sel=".ks3-hb-note",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "font-size": "19px",
+                "color": "#221E1B"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# `keyed-commit` renders on two pages. Measured on c1-06, whose instance is the
+# one PAYLOAD-MAP §6.5.2 ruled the shape from — four options each carrying a
+# reply, against c1-03's three branched responses. The wider shape cannot pass
+# on a rule the narrower one would fail.
+#
+# C1_TEST = "chemistry/particles-and-their-behaviour/testing-the-model.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Mutation-tested: each rule was deliberately broken in shared/ks3.css and the
+# row confirmed to fail before it was kept.
+
+    # ── keyed-commit (c1-06 #s-verdict) ──
+    #
+    # ⚠️ BOTH ROWS EXIST TO PROVE THE SPECIFICITY SCOPING. `.ks3-dark p` is
+    # (0,1,1) and a bare `.ks3-keyed-reply` is (0,1,0): unscoped, the reply
+    # loses and renders in `--ks3-on-dark-body` against the panel rather than
+    # in the panel's own treatment. That is the defect B1 shipped with the zoom
+    # instrument and B2 was bitten by again, and it is invisible to reading.
+    dict(name="verdict panel is a dark panel on a muted rule", on=C1_TEST,
+         drive="keyed-committed", sel=".ks3-keyed-reveal",
+         props={"background-color": "#3E3730", "border-top-color": "#C6B9A7",
+                "border-top-width": "2px",
+                "border-top-left-radius": "20px"}),
+    dict(name="the chosen reply is on-dark body copy, not muted", on=C1_TEST,
+         drive="keyed-committed",
+         sel='.ks3-keyed-reply:not([hidden])',
+         props={"color": "#E7DECE", "font-size": "19px"}),
+    # The reply and the static paragraphs must resolve IDENTICALLY. The panel's
+    # argument is that the student's answer and the historical record are the
+    # same kind of sentence; a reply painted differently from the paragraphs
+    # under it would read as a verdict on the choice, which is exactly what R3
+    # forbids here.
+    dict(name="the static close matches the reply exactly", on=C1_TEST,
+         drive="keyed-committed", sel=".ks3-keyed-static",
+         props={"color": "#E7DECE", "font-size": "19px",
+                "margin-top": "14px"}),
+    # 36rem, Design's own measure on both pages. Full-width answer buttons on a
+    # 60rem column are a target the eye has to travel.
+    dict(name="commit options keep Design's 36rem measure", on=C1_TEST,
+         sel=".ks3-keyed-options", props={"max-width": "576px"}),
+# ── PAGE CONSTANT ────────────────────────────────────────────────────────
+# Shares C1_TEST with the other two c1-06 instruments:
+#
+# C1_TEST = "chemistry/particles-and-their-behaviour/testing-the-model.html"
+
+
+# ── COMPONENTS entries ───────────────────────────────────────────────────
+# Every row was mutation-tested: the rule was deliberately broken in
+# shared/ks3.css and the row confirmed to fail before it was kept.
+
+    # ── model-timeline (c1-06 #s-history) ──
+    #
+    # ⚠️ THE THIRD CONTROL GEOMETRY. `.ks3-seg-btn` and `.ks3-sim-seg-btn` are
+    # both centred single lines; this one is LEFT-ALIGNED at `10px 14px`. If it
+    # ever resolves to `center`, the year and the name stop stacking against a
+    # common left edge and the five positions cannot be read down the row —
+    # which is the whole reason it was not folded into `seg()`.
+    dict(name="timeline step is a LEFT-ALIGNED 44px control", on=C1_TEST,
+         sel=".ks3-mtl-step",
+         props={"text-align": "left", "min-height": "44px",
+                "padding-left": "14px", "padding-top": "10px",
+                "background-color": "#FBF3E6",
+                "border-top-color": "#DDCFB6"}),
+    # The two-line stack. `display: block` on the year is the only thing making
+    # the button two lines; inline, the year and the name run together and the
+    # control collapses into a long label.
+    dict(name="timeline year is a mono line of its own", on=C1_TEST,
+         sel=".ks3-mtl-year",
+         props={"display": "block", "font-family": "DM Mono",
+                "font-size": "12px"}),
+    # The chosen step takes the accent tint and nothing else — R3: it shows it
+    # was chosen, and there is nothing here to be right or wrong about.
+    dict(name="the open model takes the accent tint, never a verdict",
+         on=C1_TEST, sel='.ks3-mtl-step[aria-pressed="true"]',
+         props={"background-color": "#FCE7DE", "border-top-color": "#E4572E"}),
+    # 26px display, and the muted rule-topped line under it. The claim has to
+    # out-rank the body from the scroll position; "What broke it:" has to
+    # survive being skimmed, which is why the label is ink and the line is not.
+    dict(name="timeline claim is display 700 at 26px", on=C1_TEST,
+         sel=".ks3-mtl-claim",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "700",
+                "font-size": "26px"}),
+
+# ⊖ No drive. The default card is open at rest — the row opens on Dalton, not
+# on Democritus — so every measured selector exists in the resting document.
+# That is itself worth knowing: if `default_index` ever stopped being honoured,
+# `.ks3-mtl-step[aria-pressed="true"]` would match nothing and the row above
+# would report a missing selector rather than passing quietly.
+# Splice point: `COMPONENTS` in ks3_parity.py, in the C1 section, directly
+# after the collision-counter rows. Uses the same page constant:
+#
+#     C1_PRESSURE = "chemistry/particles-and-their-behaviour/gas-pressure.html"
+#
+# ⚠️ THE LAST TWO ROWS NEED A NEW DRIVE. The answered states only exist after
+# a click, and no shipped drive reaches them: `dark-option-chosen` clicks the
+# first `.ks3-dark .ks3-option`, which on this page is in `#s-hook`, and these
+# are segmented buttons rather than lettered options. Splice this into `DRIVES`
+# beside the other C1/C2 entries, or drop the two driven rows:
+#
+#     # Two predictions in one document: one answered right, so the panel
+#     # takes the alert border, and one answered wrong, so the shared
+#     # fallback note is on screen in its own tone. Both states reached
+#     # through the instrument's own buttons, so a regression in the
+#     # interaction path fails HERE rather than being measured around.
+#     "prediction-answered": r"""
+# (function () {
+#   var panels = document.querySelectorAll('.ks3-predict');
+#   if (panels.length < 2) { return "need 2 predictions, found " + panels.length; }
+#   function pick(panel, correct) {
+#     var want = parseInt(panel.getAttribute('data-answer'), 10);
+#     var opts = panel.querySelectorAll('.ks3-predict-btn');
+#     for (var i = 0; i < opts.length; i++) {
+#       if ((i === want) === correct) { opts[i].click(); return true; }
+#     }
+#     return false;
+#   }
+#   if (!pick(panels[0], true))  { return "no correct option in prediction 1"; }
+#   if (!pick(panels[1], false)) { return "no wrong option in prediction 2"; }
+#   if (panels[0].getAttribute('data-right') !== '1') {
+#     return "the answered prediction did not take its verdict state";
+#   }
+#   return "";
+# })()
+# """,
+
+    # ── prediction-stack (c1-04 #s-predict) ──
+    # Three panels nested inside an ink-dark block: `--ks3-dark-panel` on the
+    # muted rule, which is the same nesting `joint-bench`'s tiles use. If this
+    # ever reports the block's own `#221E1B` the panels have stopped being
+    # panels and the three predictions read as one wall of text.
+    dict(name="prediction panel is a dark panel on a 2px muted rule",
+         on=C1_PRESSURE, sel=".ks3-predict",
+         props={"background-color": "#3E3730", "border-top-color": "#C6B9A7",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+    # ⚖️ THE SPECIFICITY ROW. `.ks3-dark p` is (0,1,1) and a bare
+    # `.ks3-predict-q` is (0,1,0): unscoped, the question renders in on-dark
+    # BODY copy at whatever weight the cascade leaves it, which is the defect
+    # B1 shipped and B2 repeated. `#FBF3E6` at 600 is the proof it is scoped.
+    dict(name="prediction question is on-dark 600, not on-dark body",
+         on=C1_PRESSURE, sel=".ks3-predict-q",
+         props={"color": "#FBF3E6", "font-size": "18px",
+                "font-weight": "600"}),
+    # The panel — never the option — carries the verdict.
+    dict(name="a matched prediction takes the ALERT border, on the panel",
+         on=C1_PRESSURE, drive="prediction-answered",
+         sel='.ks3-predict[data-right="1"]',
+         props={"border-top-color": "#FFC53D", "border-top-width": "2px",
+                "background-color": "#3E3730"}),
+    # The one shared fallback, in the ink-dark palette's lit colour. 7.4:1 on
+    # the panel; if it ever falls back to on-dark body it stops being
+    # distinguishable from the note that says the student had it right.
+    dict(name="the shared wrong-answer note is alert, not on-dark body",
+         on=C1_PRESSURE, drive="prediction-answered",
+         sel='.ks3-predict-note[data-tone="wrong"]',
+         props={"color": "#FFC53D", "font-size": "17px"}),
+# ks3_parity.py — COMPONENTS entries for `random-walk-bench` (c1-05 #s-walk).
+#
+# Needs the page constant, beside the C2 block near line 362:
+#
+#     # ⊕ C1 · Particles and their behaviour (rebuild, MRB-228). Same rule
+#     # again: a component is registered on the page that RENDERS it. Both new
+#     # C1 kinds live only on c1-05, so both are measured there.
+#     C1_DIFF = "chemistry/particles-and-their-behaviour/diffusion.html"
+#
+# `bench-gate-opened` is the existing generic drive and needs no new entry:
+# c1-05 has exactly one `[data-benchgate]`, and the bench is `hidden` until it
+# is answered, so three of the four rows below cannot be measured without it.
+#
+# ⚠️ NOT mutation-tested by the authoring agent — no browser in this run. Each
+# row names the property that makes its component distinct and would resolve to
+# a different value if the rule were dropped; the commander should break each
+# rule once and confirm the row fails before these are kept.
+
+    # ══ C1 · Particles and their behaviour (⊕ MRB-228) ═══════════════════
+
+    # ── random-walk-bench (c1-05 #s-walk) ──
+    # ⚠️ A LIGHT block, and this row is the guard on that. The frame is
+    # `--ks3-card` on a 2px INK rule; if it ever reports `#C6B9A7` the bench
+    # has been mapped onto `.ks3-canvas-frame`, which is the DARK twin, and the
+    # tank ends up outlined in an on-dark colour on cream. If it reports
+    # `#221E1B` as the BACKGROUND, the block has been mapped to `practical`
+    # and every text token in the instrument resolves wrong.
+    dict(name="walk frame is a card on a 2px ink rule, not the dark frame",
+         on=C1_DIFF, drive="bench-gate-opened", sel=".ks3-walk-frame",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px", "border-top-left-radius": "22px"}),
+
+    # ⚖️ THE TWO COUNTERS ARE THE LESSON. They are display 700 at 30px so that
+    # a student can watch them climb side by side after the tank has evened
+    # out — the confrontation of PART-11 is a comparison between two numbers,
+    # and a caption-sized readout is a number you check rather than watch.
+    # `tabular-nums` is what stops them jittering sideways as they gain digits.
+    dict(name="crossing counters are display 700 30px, tabular",
+         on=C1_DIFF, drive="bench-gate-opened", sel=".ks3-walk-readout-value",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "700",
+                "font-size": "30px", "color": "#221E1B",
+                "font-variant-numeric": "tabular-nums"}),
+
+    # The live note takes the KEY FACT treatment — band on a 2px ink border —
+    # deliberately, and not a tint or a dim: the bench is telling the student
+    # what they are looking at, and it is never marking them.
+    dict(name="walk note is a band panel on ink", on=C1_DIFF,
+         drive="bench-gate-opened", sel=".ks3-walk-note",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+
+    # ⚖️ THE CONTRAST FIX, and the reason it is scoped rather than global.
+    # `.ks3-commit` is `--ks3-alert` because every other commit in the key
+    # stage sits on ink. This one sits on `--ks3-inset` cream, where amber is
+    # unreadable, so the block repaints it `--ks3-accent-text` — the 6:1
+    # orange. No `drive`: the gate is what the page opens on.
+    dict(name="the light bench's commit is accent-TEXT, never the amber",
+         on=C1_DIFF, sel=".ks3-walk-block .ks3-benchgate .ks3-commit",
+         props={"color": "#A93411", "font-size": "22px",
+                "font-weight": "700"}),
+# ks3_parity.py — COMPONENTS entries for `scale-cards` (c1-05 #s-scale).
+#
+# Uses the same `C1_DIFF` page constant declared in the random-walk-bench
+# fragment. No `drive` on any row: the panel is static and is on the page from
+# the first paint, which is the whole character of the component.
+#
+# ⚠️ NOT mutation-tested by the authoring agent — no browser in this run. Each
+# row would resolve differently if its rule were dropped; the commander should
+# break each one once and confirm the row fails before these are kept.
+
+    # ── scale-cards (c1-05 #s-scale) ──
+    # A panel NESTED inside an ink-dark block, so it takes `--ks3-dark-panel`
+    # on the muted rule. If it ever reports the block's own ground the three
+    # cards stop reading as cards and the grid becomes three paragraphs.
+    dict(name="scale card is a dark panel on the muted rule", on=C1_DIFF,
+         sel=".ks3-scard",
+         props={"background-color": "#3E3730",
+                "border-top-color": "#C6B9A7", "border-top-width": "2px",
+                "border-top-left-radius": "20px"}),
+
+    # ⚑ REGISTERED BECAUSE IT IS FLAGGED, not because it is settled. PAYLOAD-MAP
+    # §5.5.2: amber on ink is established for CONTROLS since B1 and for
+    # misconception BLOCKS; this is amber for a body label, which is neither,
+    # and the map flags it without resolving it. Pinning the value here means a
+    # re-ruling arrives as a failing row that names itself, rather than as a
+    # repaint nobody notices.
+    dict(name="scale card distance is the flagged amber body label",
+         on=C1_DIFF, sel=".ks3-scard-distance",
+         props={"font-family": "DM Mono", "font-size": "12px",
+                "text-transform": "uppercase", "color": "#FFC53D"}),
+
+    # ⚠️ THE SPECIFICITY ROW. `.ks3-dark p` is (0,1,1) and a bare
+    # `.ks3-scard-time` is (0,1,0): unscoped, this loses its `--ks3-on-dark`
+    # and resolves to `#E7DECE` body copy, so the answer to the card's own
+    # question renders as a caption. Same defect B1 shipped with the zoom
+    # instrument and B2 was bitten by again.
+    dict(name="scale card time is display 28px full on-dark, not body copy",
+         on=C1_DIFF, sel=".ks3-scard-time",
+         props={"font-family": "Bricolage Grotesque", "font-weight": "700",
+                "font-size": "28px", "color": "#FBF3E6"}),
+# PAGE CONSTANT (shared with heating-bench.parity.py — declare it once):
+#
+#     C1_STATE = "chemistry/particles-and-their-behaviour/changes-of-state.html"
+#
+# DRIVE (new — add to ks3_parity.DRIVES):
+#
+#     # One card sorted CORRECTLY and one sorted WRONGLY, which is the only
+#     # way both card borders and both note tones exist in one document. The
+#     # sorter is not one-shot, so the second click is a real second card and
+#     # never a re-press of the first.
+#     "sortcards-decided": r"""
+# (function () {
+#   var cards = document.querySelectorAll('.ks3-sortcards-card');
+#   if (cards.length < 2) { return "need 2 sort cards, found " + cards.length; }
+#   function pick(card, correct) {
+#     var want = card.getAttribute('data-answer');
+#     var opts = card.querySelectorAll('.ks3-sortcards-opt');
+#     for (var j = 0; j < opts.length; j++) {
+#       if ((opts[j].getAttribute('data-choice') === want) === correct) {
+#         opts[j].click();
+#         return true;
+#       }
+#     }
+#     return false;
+#   }
+#   if (!pick(cards[0], true))  { return "no matching option on card 1"; }
+#   if (!pick(cards[1], false)) { return "no other option on card 2"; }
+#   if (cards[0].getAttribute('data-verdict') !== 'right'
+#       || cards[1].getAttribute('data-verdict') !== 'wrong') {
+#     return "cards did not record their verdicts";
+#   }
+#   return "";
+# })()
+# """,
+
+    # ── sort-cards (c1-03 #s-think) ──
+    # A cream card on the OPTION border, inside the amber misconception
+    # shell. If this row ever reports `#FFF3D4` the card has taken the
+    # shell's own ground and the student's working has become part of the
+    # wrong idea being confronted.
+    dict(name="sort card is a card on the option border", on=C1_STATE,
+         sel=".ks3-sortcards-card",
+         props={"background-color": "#FFFCF5", "border-top-color": "#DDCFB6",
+                "border-top-width": "2px", "border-top-left-radius": "20px"}),
+
+    # ⚖️ Design's own marking rule, and the only marked activity card in C1.
+    # Both states in one row-pair so neither can drift alone: accent when the
+    # word fits, plain ink when it does not — never the ok family, never a
+    # drawn mark. If the "wrong" row ever reports a red or a green, R3 has
+    # been broken here and the block has become a test.
+    dict(name="a card that FITS takes the accent border", on=C1_STATE,
+         drive="sortcards-decided", sel='.ks3-sortcards-card[data-verdict="right"]',
+         props={"border-top-color": "#E4572E", "border-top-width": "2px"}),
+    dict(name="a card that does not fit takes the plain INK border",
+         on=C1_STATE, drive="sortcards-decided",
+         sel='.ks3-sortcards-card[data-verdict="wrong"]',
+         props={"border-top-color": "#221E1B", "border-top-width": "2px"}),
+
+    # The correction is accent-TEXT at 16px — the only orange the key stage
+    # allows below 24px, and the reason the note is not painted in
+    # `--ks3-accent` to match the border it sits inside.
+    dict(name="the correction note is accent-text, not accent", on=C1_STATE,
+         drive="sortcards-decided",
+         sel='.ks3-sortcards-note[data-note="wrong"]:not([hidden])',
+         props={"color": "#A93411", "font-size": "16px"}),
+# ks3_parity.COMPONENTS entries for `state-bench` (c1-02 #s-bench).
+#
+# The page constant this needs does not exist yet — add it beside the other
+# per-lesson constants (ks3_parity.py ~line 357, where C2_ATOM … C2_MASS live):
+#
+#     C1_STATES = "chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html"
+#
+# ⚠️ Not `LESSON`. That constant is c1-04 (`gas-pressure.html`), which renders
+# no state bench at all — a component measured on a page without it reports
+# "selector not present" and PASSES, which is the absence-of-assertion failure
+# MRB-198 closed one level down.
+#
+# `drive="bench-gate-opened"` on all four: C6 gates the bench by ABSENCE, so
+# nothing inside `[data-benchbody]` exists in the layout until the commit is
+# answered. The existing driver is reused unchanged — it clicks the first
+# option, asserts the gate goes and asserts the body arrives, which is exactly
+# the contract `wireStateBench` implements for itself.
+
+    # ── state-bench (c1-02 #s-bench) ──
+    # ⚖️ The frame is the LIGHT twin of `.ks3-canvas-frame`, and the two must
+    # not converge. If this ever resolves to `--ks3-on-dark-muted` over
+    # `--ks3-dark-panel`, the bench has been repainted for an ink block that
+    # c1-02 does not have — its only dark grounds are the hook and the keynote,
+    # and the particle drawing is cream on cream.
+    dict(name="state bench frame is CARD on a 2px ink border", on=C1_STATES,
+         drive="bench-gate-opened", sel=".ks3-sbench-frame",
+         props={"background-color": "#FFFCF5", "border-top-color": "#221E1B",
+                "border-top-width": "2px",
+                "border-top-left-radius": "22px"}),
+    # ⚖️ The chosen state keeps INK text, deliberately. `.ks3-seg-btn`'s chosen
+    # state goes to `--ks3-accent-text`, and on this bench the three state
+    # buttons are a picker rather than an answer — accent text on the chosen
+    # one would read as a verdict (R3 / MRB-196 R10). The size is C1's own
+    # 16px, not drift 4's 17px; §1.6 (d) has that ruling reopened on a
+    # six-pages-against-one count and this block does not pre-empt it.
+    dict(name="chosen state button is accent-tint on ink text, at C1's 16px",
+         on=C1_STATES, drive="bench-gate-opened",
+         sel='.ks3-sbench-seg[aria-pressed="true"]',
+         props={"background-color": "#FCE7DE", "border-top-color": "#E4572E",
+                "color": "#221E1B", "font-size": "16px"}),
+    # The panel holding whichever of the eight notes is live: BAND on a 2px ink
+    # border, which is the KEY FACT treatment and deliberately not a tint. The
+    # note is the sentence that settles what the student has just done, not a
+    # verdict on it.
+    dict(name="bench note is a BAND panel on ink", on=C1_STATES,
+         drive="bench-gate-opened", sel=".ks3-sbench-note",
+         props={"background-color": "#F4E9D8", "border-top-color": "#221E1B",
+                "border-top-width": "2px"}),
+    # ⚠️ THE SPECIFICITY GUARD, and the reason it is a row rather than a
+    # comment. The text rule is `.ks3-sbench .ks3-sbench-note-text` at (0,2,0),
+    # because `.ks3-dark p` is (0,1,1) and would beat a bare instrument class
+    # at (0,1,0) — the defect B1 shipped with the zoom note and B2 was bitten
+    # by again. c1-02 has no dark block today; this is what keeps that true if
+    # the bench is ever reused on a page that does.
+    dict(name="bench note text is INK body copy, not the block's own colour",
+         on=C1_STATES, drive="bench-gate-opened", sel=".ks3-sbench-note-text",
+         props={"color": "#221E1B", "font-size": "19px",
+                "line-height": "30.4px"}),
+# ks3_parity.COMPONENTS entries for `state-matrix` (c1-02 #s-matrix).
+#
+# Same page constant as the bench — add it once:
+#
+#     C1_STATES = "chemistry/particles-and-their-behaviour/solids-liquids-and-gases.html"
+#
+# ⚠️ NO `drive` on any of these, and that is the assertion. The matrix is NOT
+# behind the bench's commit gate — Design draws the table in full from the
+# first paint and lights the `arrangement` row at rest — so every row below is
+# measurable on a page nobody has touched. If one of these ever needs a driver,
+# the table has been moved behind something and the section that promised "the
+# highlighted row is the one your current bench setting is showing" has stopped
+# being able to keep that promise on arrival.
+
+    # ── state-matrix (c1-02 #s-matrix) ──
+    # Column heads and row heads share one treatment, because in a matrix the
+    # first column is a head as much as the first row is. Mono on band, at the
+    # 13px the rest of the key stage's small mono uses.
+    dict(name="matrix column head is mono uppercase on band", on=C1_STATES,
+         sel=".ks3-smatrix-table thead th",
+         props={"font-family": "DM Mono", "font-size": "13px",
+                "text-transform": "uppercase",
+                "background-color": "#F4E9D8",
+                "border-top-color": "#221E1B", "border-top-width": "2px"}),
+    # ⚖️ THE LIT ROW, MEASURED AT REST. `arrangement` is lit on arrival —
+    # `r_state_matrix` emits it lit at build time by the same rule the runtime
+    # uses, so there is no unlit instant before the JS runs. Accent TINT and
+    # never the accent fill, and never amber: this is "the bench is showing you
+    # this one", not a verdict and not a wrong idea.
+    dict(name="the lit matrix row is accent TINT, on arrival", on=C1_STATES,
+         sel='.ks3-smatrix-row[data-lit="1"]',
+         props={"background-color": "#FCE7DE"}),
+    # And the row beside it, so the pair proves there is a visible difference
+    # rather than a tint that resolves to the same cream as the card.
+    dict(name="an unlit matrix row is CARD", on=C1_STATES,
+         sel='.ks3-smatrix-row[data-lit="0"]',
+         props={"background-color": "#FFFCF5"}),
+    # ⚖️ CORRECTED (MRB-228). This assertion was written on the ROW and asked
+    # it for `border-top-width: 2px`. It resolved 0px and the gate failed —
+    # correctly, and on the assertion rather than on the stylesheet. The 2px
+    # ink grid is set on `.ks3-smatrix-table th, td`, which is where a table
+    # grid belongs; a `<tr>` carries no border of its own. Measuring the row
+    # was asking the wrong element for someone else's property.
+    #
+    # Kept as its own row rather than folded into the one above, because the
+    # grid and the row ground are two different claims and a merged row would
+    # not say which of them broke.
+    dict(name="the matrix grid is a 2px ink rule on the cells", on=C1_STATES,
+         sel='.ks3-smatrix-row[data-lit="0"] > td',
+         props={"border-top-color": "#221E1B", "border-top-width": "2px"}),
+    # The footnote. Scoped `.ks3-smatrix .ks3-smatrix-foot` at (0,2,0) for the
+    # standing `.ks3-dark p` reason (0,1,1) — c1-02 has no dark block today and
+    # this is what keeps the rule winning if the table is ever reused on a page
+    # that does.
+    dict(name="matrix footnote is ink-muted at 18px", on=C1_STATES,
+         sel=".ks3-smatrix-foot",
+         props={"color": "#5F564F", "font-size": "18px"}),
+    # ═══ END C1 ═══ rows
 ]
 
 
@@ -1289,25 +2105,32 @@ CONTRAST = [
          drive="ladder-answered",
          fg=".ks3-feedback.is-wrong .ks3-mark",
          bg=".ks3-feedback.is-wrong", need=3.0),
-    dict(name="card hint on card", on=LESSON,
+    # ⊕ MRB-228 — the three repointed off the rebuilt c1-04. Cards moved to
+    # c2-05 and the criteria number to b1-02, the pages that still render them.
+    dict(name="card hint on card", on=C2_FORM,
          fg=".ks3-card-hint", bg=".ks3-card-btn", need=4.5),
-    dict(name="card term on card", on=LESSON,
+    dict(name="card term on card", on=C2_FORM,
          fg=".ks3-card-front", bg=".ks3-card-btn", need=4.5),
-    dict(name="criteria number on its tint", on=LESSON,
+    dict(name="criteria number on its tint", on=B1_MICRO,
          fg=".ks3-crit-num", bg=".ks3-crit-num", need=4.5),
     dict(name="self-rung heading on card", on=LESSON,
          fg='.ks3-rung[data-mode="self"] h3', bg=".ks3-ladder", need=4.5),
     dict(name="marked-rung heading on card", on=LESSON,
          fg='.ks3-rung[data-mode="marked"] h3', bg=".ks3-ladder", need=4.5),
+    # ⊕ MRB-228 — the two ink-dark rows repointed to b1-02, which really does
+    # render a sim on an ink-dark practical shell. The amber and light-card
+    # rows are parked: no page renders those grounds, and pointing them at a
+    # dark page would have them measure the wrong pair and pass or fail on it.
     dict(name="locked sim cover on amber block", on=LESSON,
+         parked=_PARKED_NO_LIGHT_SIM,
          fg=".ks3-misconception .ks3-sim-cover",
          bg=".ks3-misconception .ks3-sim-cover", need=4.5),
-    dict(name="locked sim cover on ink-dark block", on=LESSON,
+    dict(name="locked sim cover on ink-dark block", on=B1_MICRO,
          fg=".ks3-practical .ks3-sim-cover",
          bg=".ks3-practical .ks3-sim-cover", need=4.5),
-    dict(name="sim caption on ink-dark block", on=LESSON,
+    dict(name="sim caption on ink-dark block", on=B1_MICRO,
          fg=".ks3-practical .ks3-sim-caption", bg=".ks3-practical", need=4.5),
-    dict(name="sim caption on card", on=LESSON,
+    dict(name="sim caption on card", on=LESSON, parked=_PARKED_NO_LIGHT_SIM,
          fg=".ks3-sim-caption", bg=".ks3-check", need=4.5),
     dict(name="stretch eyebrow on its tint", on=LESSON,
          fg=".ks3-stretch .ks3-eyebrow", bg="body", need=4.5),
@@ -1380,7 +2203,8 @@ CONTRAST = [
     # identifying / state-bearing marks — 3:1 is the bar (R1)
     dict(name="MARK block border on page ground", on=LESSON,
          fg=".ks3-check", bg="body", need=3.0, prop="border-top-color"),
-    dict(name="MARK card dog-ear on card", on=LESSON,
+    # ⊕ MRB-228 — repointed to c2-05 with the other two card rows.
+    dict(name="MARK card dog-ear on card", on=C2_FORM,
          fg=".ks3-card-btn", bg=".ks3-card-btn", need=3.0,
          prop="border-top-color", via_after=True),
     dict(name="MARK marked-rung spine on card", on=LESSON,
@@ -2220,6 +3044,360 @@ DRIVES = {
   return "";
 })()
 """,
+    # ═══ BEGIN C1 ═══ drives
+# ── DRIVES entries ───────────────────────────────────────────────────────
+# Add to DRIVES. Each reaches its state through the instrument's OWN control,
+# so a regression in the interaction path fails here rather than being measured
+# around.
+
+    # One handled case and one failing case, in a single document, so both
+    # verdict grounds can be measured against each other.
+    "ebench-judged": r"""
+(function () {
+  var ok = document.querySelector('.ks3-ebench-case[data-ok="1"]');
+  var bad = document.querySelector('.ks3-ebench-case[data-ok="0"]');
+  if (!ok || !bad) { return "need one handled and one failing case"; }
+  ok.querySelector('.ks3-ebench-btn').click();
+  bad.querySelector('.ks3-ebench-btn').click();
+  if (ok.getAttribute('data-open') !== '1' || bad.getAttribute('data-open') !== '1') {
+    return "a case did not open after its call was pressed";
+  }
+  return "";
+})()
+""",
+    # All seven judged, which is the only way the tally panel exists at all.
+    "ebench-all-judged": r"""
+(function () {
+  var cases = document.querySelectorAll('.ks3-ebench-case');
+  if (!cases.length) { return "no evidence bench on the page"; }
+  for (var i = 0; i < cases.length; i++) {
+    cases[i].querySelector('.ks3-ebench-btn').click();
+  }
+  var panel = document.querySelector('[data-ebench-tally]');
+  if (!panel || panel.hasAttribute('hidden')) {
+    return "every case judged and the tally is still hidden";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+# ⊕ This section SUPERSEDES the commented sketch in this file's header.
+# Splice from here; the header copy is prose and is now out of date.
+#
+# ⚖️ THE TWO NAMES ARE TWO REAL STATES, and the rig separates them itself.
+# `wireGapTestRig` keeps `choice` and `test` as independent variables:
+# choosing unhides `[data-gap-rig]` and repaints an OPENING note, and only a
+# test press sets `aria-pressed="true"`, swaps the note for an OUTCOME
+# paragraph, and calls `markStage(sec, true)`. So `gap-answered` and
+# `gap-tested` differ in three independent ways — the pressed attribute, which
+# of the eight authored paragraphs is showing, and whether the rail stop has
+# ticked — and neither name is a dressed-up copy of the other.
+
+    # A claim has been made about the gap, and NO test has been run.
+    #
+    # This is what makes the three resting rows measurable at all: the caption,
+    # the note wrapper and the test buttons all live inside `[data-gap-rig]`,
+    # which the renderer emits `hidden` because the rig is not there to be
+    # looked at until the student has said what it is going to show.
+    #
+    # ⚠️ THE EMPTY CHOICE, DELIBERATELY, AND THE REASON IS FIRST-MATCH.
+    # `.ks3-gap-note p` is measured by `document.querySelector`, which takes
+    # the first match — and the renderer emits `data-note="empty"` first. Only
+    # the empty choice leaves THAT paragraph the one on screen; any filled
+    # choice shows `data-note="filled"` instead and the row would be measuring
+    # a display:none element and passing. `data-empty-choice` is read from the
+    # markup, never assumed: it is positional, and the renderer validates it
+    # against the choice list at build time for exactly that reason.
+    #
+    # The last guard is the one that keeps the pair honest — it asserts NO test
+    # is lit, so the "at rest" row cannot silently start measuring a pressed
+    # button and reporting it as the resting treatment.
+    "gap-answered": r"""
+(function () {
+  var wrap = document.querySelector('[data-gap]');
+  if (!wrap) { return "no gap rig on the page"; }
+  var opts = wrap.querySelectorAll('.ks3-option');
+  if (!opts.length) { return "the rig offers no choices"; }
+  var empty = parseInt(wrap.getAttribute('data-empty-choice'), 10);
+  if (isNaN(empty) || empty < 0 || empty >= opts.length) {
+    return "the rig declares no usable empty choice (data-empty-choice=" +
+           wrap.getAttribute('data-empty-choice') + ")";
+  }
+  opts[empty].click();
+  var rig = wrap.querySelector('[data-gap-rig]');
+  if (!rig || rig.hasAttribute('hidden')) {
+    return "a choice was made and the rig never appeared";
+  }
+  if (!wrap.querySelector('.ks3-gap-caption')) {
+    return "the rig opened with no control caption";
+  }
+  var p = wrap.querySelector('.ks3-gap-note p');
+  if (!p) { return "the rig opened with no outcome paragraph at all"; }
+  if (p.hasAttribute('hidden')) {
+    return "the rig opened and its first outcome paragraph is still hidden";
+  }
+  if (wrap.querySelector('.ks3-gap-test[aria-pressed="true"]')) {
+    return "a test is already running, so the resting-test row would not be resting";
+  }
+  return "";
+})()
+""",
+    # A test is ON THE BENCH — the state the amber row measures.
+    #
+    # The choice is one that FILLS the gap, found by walking the list for the
+    # first index that is not `data-empty-choice` rather than by assuming a
+    # position. That lands the test on its `off` outcome, which is the whole
+    # argument of the block: every wrong answer fails all three tests. The
+    # amber is not a verdict on the student — it marks which test is running,
+    # and the outcome paragraph is one tone whichever answer they gave.
+    #
+    # The stage check is the second, independent proof that a test really ran:
+    # `markStage` only fires from the test handler, never from the choice
+    # handler, so a regression that lit the button without repainting would
+    # still fail here. The section is found by `closest('[data-gapblock]')`
+    # rather than by its `#s-gap` id, so re-anchoring the lesson cannot turn
+    # this into a silent pass.
+    "gap-tested": r"""
+(function () {
+  var wrap = document.querySelector('[data-gap]');
+  if (!wrap) { return "no gap rig on the page"; }
+  var opts = wrap.querySelectorAll('.ks3-option');
+  if (!opts.length) { return "the rig offers no choices"; }
+  var empty = parseInt(wrap.getAttribute('data-empty-choice'), 10);
+  if (isNaN(empty)) {
+    return "the rig declares no empty choice, so a filled gap cannot be chosen";
+  }
+  var pick = null;
+  for (var i = 0; i < opts.length; i++) {
+    if (i !== empty) { pick = opts[i]; break; }
+  }
+  if (!pick) { return "the rig offers no choice that fills the gap"; }
+  pick.click();
+  var t = wrap.querySelector('.ks3-gap-test');
+  if (!t) { return "the rig offers no tests"; }
+  t.click();
+  if (t.getAttribute('aria-pressed') !== 'true') {
+    return "a test was run and its button never lit";
+  }
+  var sec = wrap.closest('[data-gapblock]');
+  if (!sec) { return "the rig is not inside a gap block"; }
+  if (sec.getAttribute('data-stage-done') !== '1') {
+    return "a test was run and the stage never completed";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+# ⊕ This section SUPERSEDES the commented sketch in this file's header (§2).
+# Splice from here; the header copy is prose and is now out of date.
+
+    # The floor, reached through 24 real halvings.
+    #
+    # Two gates stand between a fresh load and the only row that needs this
+    # drive (`.ks3-cut-value [data-verdict="floor"]`). First C6's commit gate,
+    # which removes the bench from the document's layout until it is answered —
+    # the same gate `bench-gate-opened` opens, re-opened here because a drive
+    # gets its own fresh load and inherits nothing. Then the cutting itself:
+    # the floor word is emit-both-show-one, so `[data-verdict="floor"]` is in
+    # the markup from the first byte and stays `hidden` until n reaches FLOOR.
+    # Measuring it without cutting would measure a display:none span and report
+    # a pass, which is the absence-of-assertion failure this gate exists to
+    # close.
+    #
+    # ⚠️ NOTHING IS COUNTED FROM THE OUTSIDE. FLOOR comes from `data-floor`
+    # (24 today, and load-bearing — 1 cm / 2²⁴ is the 0.6 nm the ladder rung
+    # quotes in words), and the steps come from the buttons' own `data-step`.
+    # The loop takes the largest LIVE cut button each pass, so it holds if the
+    # 10-step control is re-authored or removed; the smallest authored step is
+    # 1, so FLOOR clicks is the worst case and FLOOR + 2 is a bound with room.
+    # `data-act="cut"` excludes the undo control, which carries a step too and
+    # would otherwise walk the piece back up the ladder.
+    "cut-floor-reached": r"""
+(function () {
+  var gate = document.querySelector('[data-benchgate]');
+  if (!gate) { return "no commit gate on the page"; }
+  var opt = gate.querySelector('.ks3-option');
+  if (!opt) { return "the commit gate offers no options"; }
+  opt.click();
+  var bench = document.querySelector('[data-cut]');
+  if (!bench) { return "no halving bench on the page"; }
+  if (bench.hasAttribute('hidden')) {
+    return "the gate was answered and the bench is still hidden";
+  }
+  var floor = parseInt(bench.getAttribute('data-floor'), 10);
+  if (!floor || floor < 1) {
+    return "the bench declares no floor to cut down to (data-floor=" +
+           bench.getAttribute('data-floor') + ")";
+  }
+  var cuts = [];
+  var all = bench.querySelectorAll('.ks3-cut-btn[data-act="cut"]');
+  for (var i = 0; i < all.length; i++) { cuts.push(all[i]); }
+  if (!cuts.length) { return "the bench offers no cut controls"; }
+  cuts.sort(function (a, b) {
+    return (parseInt(b.getAttribute('data-step'), 10) || 0) -
+           (parseInt(a.getAttribute('data-step'), 10) || 0);
+  });
+  var out = bench.querySelector('[data-cut-out="count"]');
+  if (!out) { return "the bench has no count readout to check"; }
+  for (var pass = 0; pass < floor + 2; pass++) {
+    if (parseInt(out.textContent, 10) >= floor) { break; }
+    var moved = false;
+    for (var j = 0; j < cuts.length; j++) {
+      if (!cuts[j].hasAttribute('disabled')) {
+        cuts[j].click();
+        moved = true;
+        break;
+      }
+    }
+    if (!moved) { break; }
+  }
+  if (parseInt(out.textContent, 10) !== floor) {
+    return "cutting stopped at " + out.textContent + " of " + floor;
+  }
+  if (!bench.querySelector('.ks3-cut-value [data-verdict="floor"]:not([hidden])')) {
+    return "the floor was reached and the floor verdict is still hidden";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entry ─────────────────────────────────────────────────────────
+
+    # The panel does not exist in the document's layout until an option is
+    # pressed, so every panel measurement needs this first. Which option is
+    # deliberately unspecified: under R3 all four render identically and open
+    # the same panel, and `check_r3_runtime()` asserts that rather than
+    # trusting it.
+    "keyed-committed": r"""
+(function () {
+  var wrap = document.querySelector('[data-keyed]');
+  if (!wrap) { return "no keyed-commit on the page"; }
+  var opt = wrap.querySelector('.ks3-option');
+  if (!opt) { return "keyed-commit offers no options"; }
+  opt.click();
+  var panel = wrap.querySelector('[data-reveal]');
+  if (!panel || panel.hasAttribute('hidden')) {
+    return "an option was pressed and the panel is still hidden";
+  }
+  if (!wrap.querySelector('.ks3-keyed-reply:not([hidden])')) {
+    return "the panel opened with no reply showing";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+# ⊕ This section SUPERSEDES the commented sketch in this file's header.
+# Splice from here; the header copy is prose and is now out of date.
+
+    # Two predictions in one document: one answered WRONGLY, so the shared
+    # fallback note is on screen in its own tone, and one answered RIGHTLY, so
+    # its panel takes the alert border. Both states reached through the
+    # instrument's own buttons, so a regression in the interaction path fails
+    # HERE rather than being measured around.
+    #
+    # ⚠️ THE ORDER IS LOAD-BEARING, AND IT IS THE OPPOSITE OF THE OBVIOUS ONE.
+    # Both rows are measured with `document.querySelector`, which takes the
+    # FIRST match in document order, and `.ks3-predict-note[data-tone="wrong"]`
+    # carries no `:not([hidden])` — every panel emits both notes and hides one.
+    # Answer panel 1 right and its wrong note stays `hidden`, so that row would
+    # resolve to a display:none paragraph, still report a colour, and PASS
+    # having measured nothing a student can see. Answering panel 1 wrong puts a
+    # visible wrong note at the head of the document, and panel 2 right is then
+    # the first `[data-right="1"]`. Both rows land on live elements.
+    #
+    # The answer index is read from each panel's own `data-answer` and matched
+    # against the buttons' `data-i`, so re-authoring which option is correct —
+    # or how many options there are — cannot quietly invert this.
+    "prediction-answered": r"""
+(function () {
+  var panels = document.querySelectorAll('.ks3-predict');
+  if (panels.length < 2) {
+    return "need 2 predictions to hold both states at once, found " +
+           panels.length;
+  }
+  function pick(panel, correct) {
+    var want = parseInt(panel.getAttribute('data-answer'), 10);
+    if (isNaN(want)) { return false; }
+    var opts = panel.querySelectorAll('.ks3-predict-btn');
+    for (var i = 0; i < opts.length; i++) {
+      var idx = parseInt(opts[i].getAttribute('data-i'), 10);
+      if ((idx === want) === correct) { opts[i].click(); return true; }
+    }
+    return false;
+  }
+  if (!pick(panels[0], false)) { return "no wrong option in prediction 1"; }
+  if (!pick(panels[1], true)) { return "no correct option in prediction 2"; }
+  if (panels[0].getAttribute('data-right') !== '0') {
+    return "prediction 1 was answered wrongly and did not record it";
+  }
+  if (panels[1].getAttribute('data-right') !== '1') {
+    return "prediction 2 was answered correctly and did not record it";
+  }
+  var note = panels[0].querySelector('.ks3-predict-note[data-tone="wrong"]');
+  if (!note) { return "prediction 1 carries no wrong-answer note"; }
+  if (note.hasAttribute('hidden')) {
+    return "a prediction was answered wrongly and the shared note is still hidden";
+  }
+  return "";
+})()
+""",
+# ── DRIVES entries ───────────────────────────────────────────────────────
+# ⊕ This section SUPERSEDES the commented sketch in this file's header.
+# Splice from here; the header copy is prose and is now out of date.
+
+    # One card sorted CORRECTLY and one sorted WRONGLY, which is the only way
+    # both card borders and the correction note exist in one document — and
+    # measuring them together is the point, because the pair is a single rule
+    # (accent when the word fits, plain ink when it does not) and a drift in
+    # either half is a drift in the rule.
+    #
+    # The sorter is NOT one-shot — Design leaves every card open so a student
+    # can change the word and follow the card — so the second click is a real
+    # second card and never a re-press of the first. Card order matters for the
+    # two verdict rows only in that each selector names its own `data-verdict`,
+    # so first-match cannot cross over; the note row carries an explicit
+    # `:not([hidden])`, which the right-sorted card's hidden wrong note is
+    # correctly skipped by.
+    #
+    # Nothing is assumed about the choices. The answer is read from the card's
+    # `data-answer` and matched against each option's `data-choice`, so a card
+    # re-authored to answer the other way still drives correctly; `pick` simply
+    # fails and says which card it could not sort.
+    "sortcards-decided": r"""
+(function () {
+  var cards = document.querySelectorAll('.ks3-sortcards-card');
+  if (cards.length < 2) {
+    return "need 2 sort cards to hold both verdicts at once, found " +
+           cards.length;
+  }
+  function pick(card, correct) {
+    var want = card.getAttribute('data-answer');
+    if (!want) { return false; }
+    var opts = card.querySelectorAll('.ks3-sortcards-opt');
+    for (var i = 0; i < opts.length; i++) {
+      if ((opts[i].getAttribute('data-choice') === want) === correct) {
+        opts[i].click();
+        return true;
+      }
+    }
+    return false;
+  }
+  if (!pick(cards[0], true)) { return "no matching option on card 1"; }
+  if (!pick(cards[1], false)) { return "no other option on card 2"; }
+  if (cards[0].getAttribute('data-verdict') !== 'right') {
+    return "card 1 was sorted correctly and recorded " +
+           cards[0].getAttribute('data-verdict');
+  }
+  if (cards[1].getAttribute('data-verdict') !== 'wrong') {
+    return "card 2 was sorted wrongly and recorded " +
+           cards[1].getAttribute('data-verdict');
+  }
+  if (!document.querySelector('.ks3-sortcards-note[data-note="wrong"]:not([hidden])')) {
+    return "a card was sorted wrongly and its correction is still hidden";
+  }
+  return "";
+})()
+""",
+    # ═══ END C1 ═══ drives
 }
 
 

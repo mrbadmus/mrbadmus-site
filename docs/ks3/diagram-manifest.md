@@ -20,8 +20,8 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 |---|---|
 | `drafted` | 1 |
 | `final` | 1 |
-| `needed` | 13 |
-| **Total** | **15** |
+| `needed` | 2 |
+| **Total** | **4** |
 
 `needed` = declared by a lesson, not yet drawn. A lesson may ship with figures at `needed` — it is not a build blocker — but the need is then counted here rather than invisible.
 
@@ -33,14 +33,3 @@ MRB-103 also flagged an **anatomical/structural diagram gap** (cells, organs) an
 | B1 | `life-processes` | `b1-candle-flame` | css-art | `final` | A burning candle: a flickering flame above the wick, with soot rising from it. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x100` | micrograph | `needed` | Onion epidermis, ×100. Cells countable, edges sharp. |
 | B1 | `using-a-microscope` | `b1-onion-epidermis-x400` | micrograph | `needed` | The same spot, ×400. One cell wall crossing an empty grey field. |
-| C1 | `changes-of-state` | `c1-sealed-bag` | apparatus | `needed` | Sealed bag with ice on a balance, before and after. |
-| C1 | `changes-of-state` | `c1-state-change-map` | schematic | `needed` | The six changes of state as arrows between solid, liquid and gas. |
-| C1 | `diffusion` | `c1-bromine-jars` | apparatus | `needed` | Two gas jars, bromine below air, before and after the cover slip is removed. |
-| C1 | `diffusion` | `c1-diffusion-gradient` | schematic | `needed` | Particles spreading from a region of high concentration to low, shown at three times. |
-| C1 | `gas-pressure` | `c1-gas-pressure-collisions` | schematic | `needed` | Gas particles colliding with the walls of a container, with one collision arrowed. |
-| C1 | `gas-pressure` | `c1-vacuum-marshmallow` | apparatus | `needed` | Marshmallow in a bell jar, before and after pumping. |
-| C1 | `particle-model` | `c1-mixing-volumes` | apparatus | `needed` | Two measuring cylinders, before and after mixing. |
-| C1 | `particle-model` | `c1-particles-three-states` | schematic | `needed` | Particles drawn as circles in a solid, a liquid and a gas. |
-| C1 | `solids-liquids-and-gases` | `c1-arrangement-compare` | schematic | `needed` | Particle arrangement, movement and spacing in the three states, side by side. |
-| C1 | `testing-the-model` | `c1-ice-water-density` | graph | `needed` | Density of water against temperature, showing the maximum at 4 °C. |
-| C1 | `testing-the-model` | `c1-model-scorecard` | schematic | `needed` | A scorecard of observations against whether the simple particle model explains them. |

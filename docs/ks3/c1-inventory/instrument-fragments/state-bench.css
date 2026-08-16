@@ -1,0 +1,121 @@
+/* ── state-bench (c1-02 #s-bench) ──
+   A LIGHT block, and it must stay one. c1-02 is the only C1 lesson with no
+   dark `practical` (map §2.3): its only ink grounds are the hook and the
+   keynote, and the particle drawing is cream-on-cream. Nothing below is
+   scoped `.ks3-dark` because nothing here may ever land on ink.
+
+   ⚠️ SPECIFICITY. The note's text rule is `.ks3-sbench .ks3-sbench-note-text`
+   at (0,2,0) rather than a bare class at (0,1,0). `.ks3-dark p` is (0,1,1) and
+   has already beaten a bare instrument class twice in this key stage; the
+   block cannot sit on ink today, and this is what makes that still true if
+   somebody moves it. */
+
+.ks3-sbench { margin-top: 22px; }
+
+/* Design draws the gate as a real INSET PANEL on a 2px ink border with the
+   commit line in accent-text (page lines 122–123). The shipped `.ks3-benchgate`
+   is a bare margin, which is right for B2's and C2's gates — so this is scoped
+   to this block rather than pushed onto the shared class, and no page Mide has
+   already approved moves. */
+.ks3-sbench-block .ks3-benchgate {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-inset);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-sbench-block .ks3-benchgate .ks3-commit {
+  margin: 0 0 12px;
+  color: var(--ks3-accent-text);
+}
+
+/* The frame is the LIGHT twin of `.ks3-canvas-frame`: card ground, 2px INK
+   outline, inset control strip. It is not that component with a token swapped
+   — `.ks3-canvas-frame` is 2px `--ks3-on-dark-muted` over `--ks3-dark-panel`
+   and exists to sit inside an ink block. Two frames, two grounds, and neither
+   is a variant of the other. */
+.ks3-sbench-frame {
+  border-radius: var(--ks3-r-card);
+  border: 2px solid var(--ks3-ink);
+  overflow: hidden;
+  background: var(--ks3-card);
+}
+.ks3-sbench-frame canvas { display: block; width: 100%; height: auto; }
+
+.ks3-sbench-foot {
+  padding: 18px;
+  border-top: 2px solid var(--ks3-ink);
+  background: var(--ks3-inset);
+}
+.ks3-sbench-group + .ks3-sbench-group { margin-top: 18px; }
+.ks3-sbench-grouplabel {
+  margin: 0 0 10px;
+  font-family: var(--ks3-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ks3-ink-muted);
+}
+.ks3-sbench-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* Design's own `seg()` (page lines 605–609), reproduced rather than routed
+   through `.ks3-seg-btn`, and the difference is not cosmetic in either
+   dimension:
+
+     * SIZE — C1 draws 16px / 11px 16px in BOTH branches on all six pages;
+       `.ks3-seg-btn` is 17px / 11px 17px under drift 4's ruling, which was
+       taken on b1-06's single variant. §1.6 (d) reopens that ruling on a
+       six-pages-against-one count and it is not this build's to settle, so
+       this block carries C1's own numbers under its own class and nothing
+       shipped moves.
+     * COLOUR — C1's chosen state keeps `--ks3-ink` text; `.ks3-seg-btn` goes
+       to `--ks3-accent-text`. On this bench the state buttons are a picker
+       and not an answer, and accent text on the chosen one would read as a
+       verdict (R3 / MRB-196 R10).
+
+   R2: the chosen state carries `aria-pressed` and, on the two toggles, its
+   own pair of words — never colour alone. */
+.ks3-sbench-seg {
+  cursor: pointer;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 11px 16px;
+  min-height: var(--ks3-tap);
+  border-radius: var(--ks3-r-control);
+  border: 2px solid var(--ks3-option-border);
+  background: var(--ks3-ground);
+  color: var(--ks3-ink);
+}
+.ks3-sbench-seg[aria-pressed="true"] {
+  border-color: var(--ks3-accent);
+  background: var(--ks3-accent-tint);
+}
+
+/* The band panel under the frame carrying whichever of the eight notes is
+   live. All eight are in the document; seven are `hidden`. */
+.ks3-sbench-note {
+  margin: 18px 0 0;
+  padding: 18px 20px;
+  border-radius: var(--ks3-r-panel);
+  background: var(--ks3-band);
+  border: 2px solid var(--ks3-ink);
+}
+.ks3-sbench .ks3-sbench-note-text {
+  margin: 0;
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ks3-ink);
+}
+
+/* R7 / Law 9 — the canvas animates, so the student needs a stop that is not an
+   OS setting. It has one, in words, in the Instruments group ("Freeze the
+   motion"), and `wireStateBench` also scales the rate under
+   `prefers-reduced-motion` rather than stopping — asked every frame, so this
+   rule is documentation of a JS behaviour rather than a duplicate of it. */
