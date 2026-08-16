@@ -187,6 +187,43 @@ def main():
                   % (CARVE_OUT_EXPIRY, len(unfrozen),
                      [l["slug"] for _, l in unfrozen]))
 
+    # ⊕ MRB-228 · the rung heading a student actually reads.
+    #
+    # `ladder.<rung>.title` was authored on four live B1 lessons and read by
+    # NOTHING — every one of them shipped the engine's "2 · Apply" over the
+    # wording Design wrote. The relabel wired it. This assertion is what stops
+    # it going dead again, and it is deliberately an assertion about the BUILT
+    # PAGE rather than about the renderer: a read site that stops being called
+    # is exactly as silent as no read site at all.
+    #
+    # It checks the label reaches the page AND that the engine's number is in
+    # front of it, which is the other half of the same defect — Design writes
+    # the title as a whole heading ("Rung 1 · Name the job"), so a renderer that
+    # forwarded it verbatim would drop no text and still be wrong.
+    rung_misses = []
+    for u, l in all_authored:
+        page = ("mrbadmus_site/ks3/%s/%s/%s.html"
+                % (u["discipline"], u["slug"], l["slug"]))
+        if not os.path.exists(page):
+            continue
+        html = open(page).read()
+        for key, num, name in B.LADDER_RUNGS:
+            q = (l.get("ladder") or {}).get(key)
+            if not q or not q.get("title"):
+                continue
+            want = ('<h3 tabindex="-1">Rung %d · %s</h3>'
+                    % (num, B.e(B._rung_title(name, q))))
+            if want not in html:
+                rung_misses.append("%s/%s" % (l["slug"], key))
+    authored_titles = sum(
+        1 for _, l in all_authored for key, _n, _t in B.LADDER_RUNGS
+        if ((l.get("ladder") or {}).get(key) or {}).get("title"))
+    check("every authored ladder rung title reaches its built page",
+          not rung_misses,
+          "not on the page: %s" % rung_misses if rung_misses
+          else "%d authored rung titles, all rendered under their number"
+               % authored_titles)
+
     # 2. Register exists with C1's statements owned exactly once.
     check("statutory register exists",
           os.path.exists("docs/ks3/statutory-register.md"))

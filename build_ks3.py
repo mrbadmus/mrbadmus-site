@@ -4391,15 +4391,36 @@ def r_activity(lesson, block_type, act_id, block=None):
 # ── the mastery ladder (§5, MRB-184's ruling of 9 Aug) ───────────────────
 
 # Rung number is fixed to the rung, not to its position in what rendered. A
-# lesson missing one rung shows 1 · Recall, 3 · Explain, 4 · Produce — a gap
-# rather than a renumbering, because "3 · Explain" is the rung's name and a
-# student comparing two lessons should find the same name in both.
+# lesson missing one rung shows Rung 1, Rung 3, Rung 4 — a gap rather than a
+# renumbering, because the number belongs to the rung and a student comparing
+# two lessons should find the same number on the same kind of demand in both.
 #
 # The middle dot is U+00B7, which IS in the latin subset. The circled digits
 # this used to use (U+2460–2463) are not, and rendered as tofu inside a
 # Bricolage-800 heading.
-LADDER_RUNGS = (("recall", 1, "Recall"), ("apply", 2, "Apply"),
-                ("explain", 3, "Explain"), ("produce", 4, "Produce"))
+# ⊕ MRB-208 rung-title amendment (16 Aug 2026, MRB-228). The names below are
+# the DEFAULTS, and they are now Design's wording rather than the engine's.
+#
+# `recall / apply / explain / produce` are the schema's KEYS and they stay —
+# they are how a lesson record names a rung and they are not going anywhere.
+# What changed is that those key names were also being printed on the page, as
+# `2 · Apply` and `4 · Produce`. That vocabulary is internal: it describes what
+# the rung is FOR to the person writing it, and it says nothing to the student
+# about what the rung is going to do to them. Design's wording does — rung 2 is
+# the trap, and saying so is the whole point of the rung.
+#
+# Every approved delivery agrees on rungs 2 and 4 and varies rungs 1 and 3 per
+# lesson (b1 "Discriminate" / "Name the job" / "Read the list", b3 "Which
+# three", c2 "Calculate" / "Read it"), so 1 and 3 keep a neutral default and
+# every rung takes a per-lesson `title` override — read in `_rung_marked` and
+# `_rung_self`, not just declared here.
+#
+# This is a RELABEL, not a science change, and it moves live pages. It ships in
+# its own commit for that reason.
+LADDER_RUNGS = (("recall", 1, "Recall"),
+                ("apply", 2, "The one that catches people"),
+                ("explain", 3, "Explain"),
+                ("produce", 4, "Take it somewhere new"))
 
 # Runs to twelve because the browse layer counts lessons in a card, not just
 # ladder rungs (which never exceed four), and because the sorter says "All eight
@@ -4415,6 +4436,28 @@ def _count_word(n):
     return NUMBER_WORDS[n] if n < len(NUMBER_WORDS) else str(n)
 
 
+# ⊕ MRB-228. The rung NUMBER is structural — it is tied to the schema key, not
+# to anything an author decides — so the engine owns it and always prints it.
+# The authored `title` supplies the LABEL that follows it.
+#
+# Design writes the two together, as one finished heading: four B1 lessons
+# carry `"title": "Rung 1 · Name the job"`, and every B3–B7 page draws the same
+# full-heading shape. Those keys were read by NOTHING until the relabel wired
+# them, so the ambiguity had never surfaced; wiring them naively produced
+# "Rung 1 · Rung 1 · Name the job" on four live pages.
+#
+# So normalise instead of choosing a side: strip an author-supplied "Rung N · "
+# prefix and let the engine put the number back. Both authoring styles then
+# render identically, Design's delivered strings need no rewriting, and an
+# author who writes a bare label cannot silently lose the number.
+_RUNG_PREFIX = re.compile(r"^\s*Rung\s+\d+\s*[·:.\-]\s*", re.IGNORECASE)
+
+
+def _rung_title(name, q):
+    """The label after "Rung N · ", from the authored title or the default."""
+    return _RUNG_PREFIX.sub("", q.get("title") or name).strip() or name
+
+
 def _rung_marked(key, num, name, q):
     """Rungs the PAGE marks: options, one right answer, per-option correction.
 
@@ -4428,11 +4471,12 @@ def _rung_marked(key, num, name, q):
         opts.append(_option_li(
             i, o, ' data-correct="%s" data-feedback="%s"' % (correct, e(fb))))
     return ('<div class="ks3-rung" data-rung="%s" data-mode="marked">'
-            '<h3 tabindex="-1">%d · %s</h3>'
+            '<h3 tabindex="-1">Rung %d · %s</h3>'
             '<p class="ks3-rung-q">%s</p>'
             '<ul class="ks3-options" role="list">%s</ul>'
             '</div>'
-            % (e(key), num, e(name), t(q.get("q", "")), "".join(opts)))
+            % (e(key), num, e(_rung_title(name, q)), t(q.get("q", "")),
+               "".join(opts)))
 
 
 def _rung_self(slug, key, num, name, q):
@@ -4455,7 +4499,7 @@ def _rung_self(slug, key, num, name, q):
             '</li>' % (e(cid), e(cid), i + 1, t(s)))
     aid = "ks3-ans-%s-%s" % (slug, key)
     return ('<div class="ks3-rung ks3-rung-self" data-rung="%s" data-mode="self">'
-            '<h3 tabindex="-1">%d · %s</h3>'
+            '<h3 tabindex="-1">Rung %d · %s</h3>'
             '<p class="ks3-rung-q">%s</p>'
             '<label class="ks3-answer-label" for="%s">%s</label>'
             '<textarea class="ks3-answer" id="%s" data-answer rows="5"%s>'
@@ -4473,7 +4517,7 @@ def _rung_self(slug, key, num, name, q):
             # scaffold — reached no student at all. Exactly the defect R5
             # exists to catch, found by the byte-identity sweep rather than by
             # the lint. The generic label stays as the fallback.
-            % (e(key), num, e(name), t(q.get("q", "")), e(aid),
+            % (e(key), num, e(_rung_title(name, q)), t(q.get("q", "")), e(aid),
                t(q.get("field_label") or "Write your answer"), e(aid),
                (' placeholder="%s"' % e(q["placeholder"])
                 if q.get("placeholder") else ""),
