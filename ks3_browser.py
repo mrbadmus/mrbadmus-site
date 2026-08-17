@@ -80,6 +80,7 @@ Design notes
 
 from __future__ import annotations
 
+import atexit
 import base64
 import json
 import math
@@ -87,6 +88,7 @@ import os
 import random
 import select
 import shutil
+import signal
 import socket
 import struct
 import subprocess
@@ -545,6 +547,32 @@ class Page:
         return path
 
 
+# ⊕ MRB-245 — every started, not-yet-closed Browser.
+#
+# The harness contract asks for a FRESH BROWSER PER PAGE, so a run opens dozens.
+# Any path that skips `close()` — an assertion inside a `with`, a gate that
+# raises, a caller that simply forgets — used to leak a whole Chrome process
+# group and its profile directory each time. At roughly 60 MB apiece that filled
+# a 228 GB volume during a single verify run on 17 Aug 2026 and took two
+# sessions' Bash down with `ENOSPC`.
+#
+# A plain `set` and not a `WeakSet`: a Browser nobody references any more is
+# exactly the one whose Chrome is still running with nobody left to stop it, and
+# letting it be collected is how the leak stayed invisible. `close()` discards
+# its own entry, so a well-behaved caller leaves nothing here.
+_LIVE: set["Browser"] = set()
+
+
+@atexit.register
+def _close_live_browsers() -> None:
+    """Last resort at interpreter shutdown. Never raises."""
+    for b in list(_LIVE):
+        try:
+            b.close()
+        except Exception:
+            pass
+
+
 class Browser:
     """Launch, own, and tear down a headless Chrome instance."""
 
@@ -587,9 +615,19 @@ class Browser:
             "--hide-scrollbars",
             "--force-device-scale-factor=1",
         ] + self.extra_args + ["about:blank"]
+        # ⊕ MRB-245 — `start_new_session` puts Chrome in its OWN process group,
+        # so `close()` can signal the group and take the helper and renderer
+        # processes with it. Without it, `terminate()` reaches only the parent
+        # and every helper reparents to init still holding the profile
+        # directory open. See `close()`.
         self.proc = subprocess.Popen(
-            args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            args, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            start_new_session=True,
         )
+        # A Browser that is never closed — an exception between `start()` and
+        # `close()`, or a caller that simply forgets — used to leak both the
+        # process group and the profile directory until the volume filled.
+        _LIVE.add(self)
         self._await_devtools()
         return self
 
@@ -646,27 +684,70 @@ class Browser:
         """Navigate the browser's page target to `url` and return it, loaded and settled."""
         return self.attach().goto(url, settle=settle)
 
+    def _signal_group(self, sig) -> bool:
+        """Signal Chrome's whole process group. False if it is already gone.
+
+        The group is ours alone — `start_new_session=True` made this child a
+        session leader, so its pgid IS its pid and nothing else can be in it.
+        That is what makes this safe: it can never reach a Chrome the user is
+        running themselves.
+        """
+        try:
+            os.killpg(os.getpgid(self.proc.pid), sig)
+            return True
+        except (ProcessLookupError, PermissionError, OSError):
+            # Already reaped, or we never got our own group. Fall back to the
+            # single process rather than giving up on the teardown.
+            try:
+                self.proc.send_signal(sig)
+                return True
+            except (ProcessLookupError, OSError):
+                return False
+
     def close(self) -> None:
+        """Tear down Chrome AND its helpers, then the profile directory.
+
+        ⊕ MRB-245. This used to `terminate()` only `self.proc`. Chrome's helper
+        and renderer processes are its children, so SIGTERM to the parent alone
+        left them orphaned to init with the profile directory still open —
+        roughly 60 MB a page, and the harness contract asks for a FRESH BROWSER
+        PER PAGE. Across a full `verify_ks3.py` run that filled a 228 GB volume
+        to 100% and took the machine's Bash down with it, in this session and in
+        another running beside it. The profile dirs then could not be removed
+        either, because their owners were still alive.
+
+        Signalling the process group fixes both halves: the helpers die with the
+        parent, and `rmtree` then succeeds because nothing holds the directory.
+        """
         if self._ws is not None:
-            self._ws.close()
+            try:
+                self._ws.close()
+            except OSError:
+                pass
             self._ws = None
         self._page = None
         if self.proc is not None:
             if self.proc.poll() is None:
-                self.proc.terminate()
+                self._signal_group(signal.SIGTERM)
                 deadline = time.time() + 5.0
                 while time.time() < deadline and self.proc.poll() is None:
                     time.sleep(0.05)
                 if self.proc.poll() is None:
-                    self.proc.kill()
+                    self._signal_group(signal.SIGKILL)
                     try:
                         self.proc.wait(timeout=5)
                     except subprocess.TimeoutExpired:
                         pass
+            else:
+                # The parent exited on its own, which is the case that leaked
+                # most quietly: `poll()` reports it gone while the helpers it
+                # spawned are still running. Sweep the group regardless.
+                self._signal_group(signal.SIGKILL)
             self.proc = None
         if self.user_data_dir:
             shutil.rmtree(self.user_data_dir, ignore_errors=True)
             self.user_data_dir = None
+        _LIVE.discard(self)
 
     def __enter__(self) -> "Browser":
         return self.start()
